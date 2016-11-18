@@ -55,6 +55,8 @@
             this.dumpBinaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.flushTextureCacheToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.pbScanProgress = new System.Windows.Forms.ToolStripProgressBar();
+            this.lblScanStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
@@ -68,6 +70,7 @@
             this.rtb1 = new System.Windows.Forms.RichTextBox();
             this.hb1 = new Be.Windows.Forms.HexBox();
             this.menuStrip1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -265,14 +268,14 @@
             this.rotatingToolStripMenuItem.CheckOnClick = true;
             this.rotatingToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.rotatingToolStripMenuItem.Name = "rotatingToolStripMenuItem";
-            this.rotatingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.rotatingToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.rotatingToolStripMenuItem.Text = "Rotating";
             // 
             // wireframeToolStripMenuItem
             // 
             this.wireframeToolStripMenuItem.CheckOnClick = true;
             this.wireframeToolStripMenuItem.Name = "wireframeToolStripMenuItem";
-            this.wireframeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.wireframeToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.wireframeToolStripMenuItem.Text = "Wireframe";
             // 
             // solidToolStripMenuItem
@@ -281,7 +284,7 @@
             this.solidToolStripMenuItem.CheckOnClick = true;
             this.solidToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.solidToolStripMenuItem.Name = "solidToolStripMenuItem";
-            this.solidToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.solidToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.solidToolStripMenuItem.Text = "Solid";
             // 
             // debugToolStripMenuItem
@@ -317,11 +320,28 @@
             // 
             // statusStrip1
             // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.pbScanProgress,
+            this.lblScanStatus});
             this.statusStrip1.Location = new System.Drawing.Point(0, 478);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(686, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // pbScanProgress
+            // 
+            this.pbScanProgress.Maximum = 1000;
+            this.pbScanProgress.Name = "pbScanProgress";
+            this.pbScanProgress.Size = new System.Drawing.Size(100, 16);
+            this.pbScanProgress.Visible = false;
+            // 
+            // lblScanStatus
+            // 
+            this.lblScanStatus.Name = "lblScanStatus";
+            this.lblScanStatus.Size = new System.Drawing.Size(195, 17);
+            this.lblScanStatus.Text = "Scanning PCCS for texture exports...";
+            this.lblScanStatus.Visible = false;
             // 
             // toolStrip1
             // 
@@ -497,6 +517,8 @@
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Meshplorer_KeyUp);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -560,5 +582,7 @@
         private System.Windows.Forms.ToolStripMenuItem wireframeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem solidToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem flushTextureCacheToolStripMenuItem;
+        private System.Windows.Forms.ToolStripProgressBar pbScanProgress;
+        private System.Windows.Forms.ToolStripStatusLabel lblScanStatus;
     }
 }

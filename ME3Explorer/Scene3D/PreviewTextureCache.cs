@@ -311,6 +311,58 @@ namespace ME3Explorer.Scene3D
         private bool idle = false;
 
         /// <summary>
+        /// Texture scan progress, 0.0 - 1.0.
+        /// </summary>
+        private float scanProgress = 0;
+
+        /// <summary>
+        /// Whether the texture loader thread is currently scanning the pccs for texture exports.
+        /// </summary>
+        private bool scanning = false;
+
+        /// <summary>
+        /// Whether the texture loader thread is currently scanning the pccs for texture exports.
+        /// </summary>
+        public bool Scanning
+        {
+            get
+            {
+                lock (threadStatusLock)
+                {
+                    return scanning;
+                }
+            }
+            private set
+            {
+                lock (threadStatusLock)
+                {
+                    scanning = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Texture scan progress, 0.0 - 1.0.
+        /// </summary>
+        public float ScanProgress
+        {
+            get
+            {
+                lock (threadStatusLock)
+                {
+                    return scanProgress;
+                }
+            }
+            private set
+            {
+                lock (threadStatusLock)
+                {
+                    scanProgress = value;
+                }
+            }
+        }
+
+        /// <summary>
         /// Whether the texture loader thread is currently running.
         /// </summary>
         public bool LoaderRunning
@@ -521,68 +573,82 @@ namespace ME3Explorer.Scene3D
         private void ScanTextures()
         {
             //Console.WriteLine("[TEXCACHE] : Starting texture search...");
+            Scanning = true;
+            ScanProgress = 0;
+            int i = 0;
             foreach (string pccpath in pccs)
             {
-                using (ME3Package pcc = MEPackageHandler.OpenME3Package(pccpath))
+                try
                 {
-                    //Console.WriteLine("[TEXCACHE] : Scanning <" + System.IO.Path.GetFileName(pccpath) + "> for textures.");
-                    foreach (IExportEntry export in pcc.Exports)
+                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(pccpath))
                     {
-                        if (export.ClassName == "Texture2D")
+                        //Console.WriteLine("[TEXCACHE] : Scanning <" + System.IO.Path.GetFileName(pccpath) + "> for textures.");
+                        foreach (IExportEntry export in pcc.Exports)
                         {
-                            lock (cacheLock)
+                            if (export.ClassName == "Texture2D")
                             {
-                                if (knownTextures == null)
+                                lock (cacheLock)
                                 {
-                                    knownTextures = new Dictionary<string, TextureLocation>(); // important because the user could flush the cache at any time.
-                                }
-                                if (knownTextures.ContainsKey(export.GetFullPath.ToLower()))
-                                {
-                                    knownTextures[export.GetFullPath.ToLower()] = new TextureLocation(export.GetFullPath.ToLower(), pccpath, export.Index);
-                                }
-                                else
-                                {
-                                    knownTextures.Add(export.GetFullPath.ToLower(), new TextureLocation(export.GetFullPath.ToLower(), pccpath, export.Index));
-                                }
-                                foreach (PreviewTextureEntry entry in cache.Values)
-                                {
-                                    if (entry.State == StateCode.Searching && knownTextures.ContainsKey(entry.FullPath.ToLower()))
+                                    if (knownTextures == null)
                                     {
-                                        TextureLocation l = knownTextures[entry.FullPath.ToLower()];
-                                        try
+                                        knownTextures = new Dictionary<string, TextureLocation>(); // important because the user could flush the cache at any time.
+                                    }
+                                    if (knownTextures.ContainsKey(export.GetFullPath.ToLower()))
+                                    {
+                                        knownTextures[export.GetFullPath.ToLower()] = new TextureLocation(export.GetFullPath.ToLower(), pccpath, export.Index);
+                                    }
+                                    else
+                                    {
+                                        knownTextures.Add(export.GetFullPath.ToLower(), new TextureLocation(export.GetFullPath.ToLower(), pccpath, export.Index));
+                                    }
+                                    foreach (PreviewTextureEntry entry in cache.Values)
+                                    {
+                                        if (entry.State == StateCode.Searching && knownTextures.ContainsKey(entry.FullPath.ToLower()))
                                         {
-                                            using (ME3Package texpcc = MEPackageHandler.OpenME3Package(l.PCC))
+                                            TextureLocation l = knownTextures[entry.FullPath.ToLower()];
+                                            try
                                             {
-                                                Unreal.Classes.Texture2D metex = new Unreal.Classes.Texture2D(texpcc, l.ExportID);
-                                                Texture2DDescription desc = new Texture2DDescription();
-                                                entry.Texture = metex.generatePreviewTexture(Device, out desc);
-                                                entry.TextureView = new ShaderResourceView(Device, entry.Texture);
-                                                entry.State = StateCode.Loaded;
-                                                //Console.WriteLine("[TEXCACHE] : Loaded texture " + entry.FullPath + " from " + l.PCC);
+                                                using (ME3Package texpcc = MEPackageHandler.OpenME3Package(l.PCC))
+                                                {
+                                                    Unreal.Classes.Texture2D metex = new Unreal.Classes.Texture2D(texpcc, l.ExportID);
+                                                    Texture2DDescription desc = new Texture2DDescription();
+                                                    entry.Texture = metex.generatePreviewTexture(Device, out desc);
+                                                    entry.TextureView = new ShaderResourceView(Device, entry.Texture);
+                                                    entry.State = StateCode.Loaded;
+                                                    //Console.WriteLine("[TEXCACHE] : Loaded texture " + entry.FullPath + " from " + l.PCC);
+                                                }
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                entry.State = StateCode.Error;
+                                                entry.ErrorMessage = e.ToString();
                                             }
 
                                         }
-                                        catch (Exception e)
-                                        {
-                                            entry.State = StateCode.Error;
-                                            entry.ErrorMessage = e.ToString();
-                                        }
-
                                     }
                                 }
                             }
                         }
                     }
                 }
+                catch (Exception e)
+                {
+                    KFreonLib.Debugging.DebugOutput.PrintLn("Exception reading PCC <" + pccpath + ">:");
+                    KFreonLib.Debugging.DebugOutput.PrintLn(e.ToString());
+                }
                 if (shouldStop)
                 {
                     break;
                 }
+                i++;
+                ScanProgress = (float)i / pccs.Count;
             }
             /*lock (cacheLock)
             {
                 Console.WriteLine("[TEXCACHE] : Texture search complete! Found " + knownTextures.Count + " textures.");
             }*/
+            Scanning = false;
         }
         #endregion
     }
