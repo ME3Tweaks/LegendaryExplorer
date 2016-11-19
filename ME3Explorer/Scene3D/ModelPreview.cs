@@ -121,7 +121,7 @@ namespace ME3Explorer.Scene3D
     /// <summary>
     /// A material with only a diffuse texture.
     /// </summary>
-    public class TexturedMPreviewaterial : ModelPreviewMaterial
+    public class TexturedPreviewMaterial : ModelPreviewMaterial
     {
         /// <summary>
         /// The full name of the diffuse texture.
@@ -132,7 +132,7 @@ namespace ME3Explorer.Scene3D
         /// </summary>
         /// <param name="texcache">The texture cache to request textures from.</param>
         /// <param name="mat">The material that this ModelPreviewMaterial will try to look like.</param>
-        public TexturedMPreviewaterial(PreviewTextureCache texcache, Unreal.Classes.MaterialInstanceConstant mat) : base(texcache, mat)
+        public TexturedPreviewMaterial(PreviewTextureCache texcache, Unreal.Classes.MaterialInstanceConstant mat) : base(texcache, mat)
         {
             foreach (Unreal.Classes.MaterialInstanceConstant.TextureParam texparam in mat.Textures)
             {
@@ -233,7 +233,7 @@ namespace ME3Explorer.Scene3D
                 // TODO: pick what material class best fits based on what properties the 
                 // MaterialInstanceConstant mat has.
                 // For now, just use the default material.
-                material = new TexturedMPreviewaterial(texcache, mat);
+                material = new TexturedPreviewMaterial(texcache, mat);
                 if (!Materials.Keys.Contains(material.Properties["Name"]))
                 {
                     Materials.Add(material.Properties["Name"], material);
@@ -284,7 +284,7 @@ namespace ME3Explorer.Scene3D
                 // TODO: pick what material class best fits based on what properties the 
                 // MaterialInstanceConstant mat has.
                 // For now, just use the default material.
-                material = new TexturedMPreviewaterial(texcache, mat);
+                material = new TexturedPreviewMaterial(texcache, mat);
                 if (!Materials.ContainsKey(material.Properties["Name"]))
                 {
                     Materials.Add(material.Properties["Name"], material);
