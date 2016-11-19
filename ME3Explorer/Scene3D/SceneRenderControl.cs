@@ -46,7 +46,6 @@ namespace ME3Explorer.Scene3D
                 }
             }
         }
-        private bool AltKey = false;
         public bool Orbiting { get; private set; } = false;
         public bool Panning { get; private set; } = false;
         public bool Zooming { get; private set; } = false;
@@ -295,13 +294,13 @@ namespace ME3Explorer.Scene3D
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    if (AltKey && !Panning && !Zooming) Orbiting = true;
+                    if (!Panning && !Zooming) Orbiting = true;
                     break;
                 case MouseButtons.Middle:
-                    if (AltKey && !Orbiting && !Zooming) Panning = true;
+                    if (!Orbiting && !Zooming) Panning = true;
                     break;
                 case MouseButtons.Right:
-                    if (AltKey && !Orbiting && !Panning) Zooming = true;
+                    if (!Orbiting && !Panning) Zooming = true;
                     break;
             }
         }
@@ -369,30 +368,6 @@ namespace ME3Explorer.Scene3D
             base.OnResize(e);
             if (Device != null) UpdateSize();
             Camera.aspect = (float) Width / Height;
-        }
-
-        protected override void OnKeyDown(KeyEventArgs e)
-        {
-            base.OnKeyDown(e);
-            switch (e.KeyCode)
-            {
-                case Keys.Menu:
-                case Keys.Alt:
-                    AltKey = true;
-                    break;
-            }
-        }
-
-        protected override void OnKeyUp(KeyEventArgs e)
-        {
-            base.OnKeyUp(e);
-            switch (e.KeyCode)
-            {
-                case Keys.Menu:
-                case Keys.Alt:
-                    AltKey = false;
-                    break;
-            }
         }
     }
 }
