@@ -591,7 +591,6 @@ namespace ME3Explorer.Unreal.Classes
             byte[] pixels = new byte[data.Stride * data.Height];
             System.Runtime.InteropServices.Marshal.Copy(data.Scan0, pixels, 0, pixels.Length);
             bmp.UnlockBits(data);
-            bmp.Save("C:/Users/Admin/Desktop/me3tex_" + texFormat + ".png");
 
             // Create description of texture
             description.Width = width;
