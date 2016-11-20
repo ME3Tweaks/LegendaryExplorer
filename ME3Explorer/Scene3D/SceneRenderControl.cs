@@ -46,6 +46,10 @@ namespace ME3Explorer.Scene3D
                 }
             }
         }
+        public bool KeyW = false;
+        public bool KeyS = false;
+        public bool KeyA = false;
+        public bool KeyD = false;
         public bool Orbiting { get; private set; } = false;
         public bool Panning { get; private set; } = false;
         public bool Zooming { get; private set; } = false;
@@ -241,7 +245,25 @@ namespace ME3Explorer.Scene3D
 
         protected virtual void OnUpdate(float TimeStep)
         {
-
+            if (Camera.FirstPerson)
+            {
+                if (KeyW)
+                {
+                    Camera.Position += Camera.CameraForward * TimeStep * 5;
+                }
+                if (KeyS)
+                {
+                    Camera.Position += -Camera.CameraForward * TimeStep * 5;
+                }
+                if (KeyA)
+                {
+                    Camera.Position += Camera.CameraLeft * TimeStep * 5;
+                }
+                if (KeyD)
+                {
+                    Camera.Position += -Camera.CameraLeft * TimeStep * 5;
+                }
+            }
         }
 
         public new event System.EventHandler<float> Update;
@@ -368,6 +390,46 @@ namespace ME3Explorer.Scene3D
             base.OnResize(e);
             if (Device != null) UpdateSize();
             Camera.aspect = (float) Width / Height;
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            switch (e.KeyCode)
+            {
+                case Keys.W:
+                    KeyW = true;
+                    break;
+                case Keys.S:
+                    KeyS = true;
+                    break;
+                case Keys.A:
+                    KeyA = true;
+                    break;
+                case Keys.D:
+                    KeyD = true;
+                    break;
+            }
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+            switch (e.KeyCode)
+            {
+                case Keys.W:
+                    KeyW = false;
+                    break;
+                case Keys.S:
+                    KeyS = false;
+                    break;
+                case Keys.A:
+                    KeyA = false;
+                    break;
+                case Keys.D:
+                    KeyD = false;
+                    break;
+            }
         }
     }
 }

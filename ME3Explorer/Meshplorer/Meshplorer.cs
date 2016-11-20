@@ -24,6 +24,7 @@ namespace ME3Explorer.Meshplorer
         public StaticMesh stm;
         public SkeletalMesh skm;
         public SkeletalMeshOld skmold;
+        public float PreviewRotation = 0;
 
         public Meshplorer()
         {
@@ -826,12 +827,12 @@ namespace ME3Explorer.Meshplorer
                 if (solidToolStripMenuItem.Checked)
                 {
                     view.Wireframe = false;
-                    preview.Render(view, CurrentLOD, SharpDX.Matrix.Identity);
+                    preview.Render(view, CurrentLOD, SharpDX.Matrix.RotationY(PreviewRotation));
                 }
                 if (wireframeToolStripMenuItem.Checked)
                 {
                     view.Wireframe = true;
-                    SceneRenderControl.WorldConstants ViewConstants = new SceneRenderControl.WorldConstants(SharpDX.Matrix.Transpose(view.Camera.ProjectionMatrix), SharpDX.Matrix.Transpose(view.Camera.ViewMatrix), SharpDX.Matrix.Transpose(SharpDX.Matrix.Identity));
+                    SceneRenderControl.WorldConstants ViewConstants = new SceneRenderControl.WorldConstants(SharpDX.Matrix.Transpose(view.Camera.ProjectionMatrix), SharpDX.Matrix.Transpose(view.Camera.ViewMatrix), SharpDX.Matrix.Transpose(SharpDX.Matrix.RotationY(PreviewRotation)));
                     view.DefaultEffect.PrepDraw(view.ImmediateContext);
                     view.DefaultEffect.RenderObject(view.ImmediateContext, ViewConstants, preview.LODs[CurrentLOD].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
                 }
@@ -840,13 +841,28 @@ namespace ME3Explorer.Meshplorer
 
         private void view_Update(object sender, float e)
         {
-            if (rotatingToolStripMenuItem.Checked) view.Camera.Yaw += e * 0.05f;
+            if (rotatingToolStripMenuItem.Checked) PreviewRotation += e * 0.05f;
             //view.Camera.Pitch = (float)Math.Sin(view.Time);
         }
 
         private void flushTextureCacheToolStripMenuItem_Click(object sender, EventArgs e)
         {
             view.TextureCache.FlushAll();
+        }
+
+        private void firstPersonToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            bool old = view.Camera.FirstPerson;
+            view.Camera.FirstPerson = firstPersonToolStripMenuItem.Checked;
+            // Adjust view position so the camera doesn't teleport
+            if (!old && view.Camera.FirstPerson)
+            {
+                view.Camera.Position += -view.Camera.CameraForward * view.Camera.FocusDepth;
+            }
+            else if (old && !view.Camera.FirstPerson)
+            {
+                view.Camera.Position += view.Camera.CameraForward * view.Camera.FocusDepth;
+            }
         }
         #endregion
     }
