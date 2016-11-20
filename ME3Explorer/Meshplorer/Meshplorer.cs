@@ -34,6 +34,11 @@ namespace ME3Explorer.Meshplorer
         private void Meshplorer_Load(object sender, EventArgs e)
         {
             view.LoadDirect3D();
+            rotatingToolStripMenuItem.Checked = Properties.Settings.Default.MeshplorerViewRotating;
+            wireframeToolStripMenuItem.Checked = Properties.Settings.Default.MeshplorerViewWireframeEnabled;
+            solidToolStripMenuItem.Checked = Properties.Settings.Default.MeshplorerViewSolidEnabled;
+            firstPersonToolStripMenuItem.Checked = Properties.Settings.Default.MeshplorerViewFirstPerson;
+            firstPersonToolStripMenuItem_Click(null, null); // Force first/third person setting to take effect
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -181,6 +186,11 @@ namespace ME3Explorer.Meshplorer
             preview?.Dispose();
             preview = null;
             view.UnloadDirect3D();
+            Properties.Settings.Default.MeshplorerViewRotating = rotatingToolStripMenuItem.Checked;
+            Properties.Settings.Default.MeshplorerViewWireframeEnabled = wireframeToolStripMenuItem.Checked;
+            Properties.Settings.Default.MeshplorerViewSolidEnabled = solidToolStripMenuItem.Checked;
+            Properties.Settings.Default.MeshplorerViewFirstPerson = firstPersonToolStripMenuItem.Checked;
+            Properties.Settings.Default.Save();
         }
 
         private void exportToPSKToolStripMenuItem_Click(object sender, EventArgs e)
@@ -811,11 +821,15 @@ namespace ME3Explorer.Meshplorer
                 WorldMesh m = preview.LODs[CurrentLOD].Mesh;
                 view.Camera.Position = m.AABBCenter;
                 view.Camera.FocusDepth = Math.Max(m.AABBHalfSize.X * 2.0f, Math.Max(m.AABBHalfSize.Y * 2.0f, m.AABBHalfSize.Z * 2.0f));
+                if (view.Camera.FirstPerson)
+                {
+                    view.Camera.Position -= view.Camera.CameraForward * view.Camera.FocusDepth;
+                }
             }
             else
             {
                 view.Camera.Position = SharpDX.Vector3.Zero;
-                view.Camera.Pitch = (float) Math.PI / 3.0f;
+                view.Camera.Pitch = -(float) Math.PI / 5.0f;
                 view.Camera.Yaw = (float) Math.PI / 4.0f;
             }
         }
