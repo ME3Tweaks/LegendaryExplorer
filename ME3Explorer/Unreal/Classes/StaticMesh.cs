@@ -1636,6 +1636,54 @@ namespace ME3Explorer.Unreal.Classes
             return isSelected;
         }
 
+        public int GetSectionMaterialName(int lod, int section)
+        {
+            return Mesh.Mat.Lods[lod].Sections[section].Name;
+        }
+
+        public void SetSectionMaterial(int lod, int section, int materialname)
+        {
+            Section s = Mesh.Mat.Lods[lod].Sections[section];
+            int oldMaterialName = s.Name;
+            s.Name = materialname;
+            Mesh.Mat.Lods[lod].Sections[section] = s;
+            // Load the material if it isn't already loaded
+            bool found = false;
+            for (int i = 0; i < Mesh.Mat.MatInst.Count; i++)
+            {
+                if (Mesh.Mat.MatInst[i].index == materialname - 1)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                // Load the material
+                Mesh.Mat.MatInst.Add(new MaterialInstanceConstant(pcc, materialname - 1));
+            }
+            // Remove the previously assigned MaterialInstanceConstant if is isn't used anymore.
+            found = false;
+            foreach (Section sec in Mesh.Mat.Lods[lod].Sections)
+            {
+                if (sec.Name == oldMaterialName)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                for (int i = 0; i < Mesh.Mat.MatInst.Count; i++)
+                {
+                    if (Mesh.Mat.MatInst[i].index == oldMaterialName - 1)
+                    {
+                        Mesh.Mat.MatInst.RemoveAt(i);
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Export

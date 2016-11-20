@@ -677,35 +677,36 @@ namespace ME3Explorer.Meshplorer
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            int idx;
-            if (stm != null)
-            {
-                idx = stm.index;
-            }
-            else if (skm != null)
-            {
-                idx = skm.MyIndex;
-            }
-            else
-            {
-                return;
-            }
             int n = toolStripComboBox1.SelectedIndex;
             TreeNode t = treeView1.SelectedNode;
-            if (n == -1 || pcc == null || t == null || t.Parent == null  || t.Parent.Text !="Materials")
+            if (n == -1 || pcc == null || t == null || t.Parent == null)
                 return;
-            if (pcc.Exports[idx].ClassName == "StaticMesh")
-                return;
-            skm.Materials[t.Index] = Materials[n] + 1;
-            SerializingContainer con = new SerializingContainer();
-            con.Memory = new MemoryStream();
-            con.isLoading = false;
-            skm.Serialize(con);
-            int end = skm.GetPropertyEnd();
-            MemoryStream mem = new MemoryStream();
-            mem.Write(pcc.Exports[idx].Data, 0, end);
-            mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
-            pcc.Exports[idx].Data = mem.ToArray();
+
+            if (stm != null && t.Parent.Text == "Sections")
+            {
+                stm.SetSectionMaterial(CurrentLOD, t.Index, Materials[n] + 1);
+                //SerializingCont
+                MemoryStream ms = new MemoryStream();
+                pcc.Exports[stm.index].Data = stm.SerializeToBuffer();
+                // Update treeview
+
+                // Update preview
+                //preview.Dispose();
+                //preview = new ModelPreview(view.Device, stm, view.TextureCache);
+            }
+            else if (skm != null && t.Parent.Text == "Materials")
+            {
+                skm.Materials[t.Index] = Materials[n] + 1;
+                SerializingContainer con = new SerializingContainer();
+                con.Memory = new MemoryStream();
+                con.isLoading = false;
+                skm.Serialize(con);
+                int end = skm.GetPropertyEnd();
+                MemoryStream mem = new MemoryStream();
+                mem.Write(pcc.Exports[skm.MyIndex].Data, 0, end);
+                mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
+                pcc.Exports[skm.MyIndex].Data = mem.ToArray();
+            }
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)
