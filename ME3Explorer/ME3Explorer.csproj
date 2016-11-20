@@ -882,7 +882,6 @@
     <Compile Include="Meshplorer2\Meshplorer2.Designer.cs">
       <DependentUpon>Meshplorer2.cs</DependentUpon>
     </Compile>
-    <Compile Include="Meshplorer2\Renderer.cs" />
     <Compile Include="Meshplorer\ImportOptions.cs">
       <SubType>Form</SubType>
     </Compile>
