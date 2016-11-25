@@ -183,14 +183,17 @@ namespace ME3Explorer.Meshplorer
 
         private void Meshplorer_FormClosing(object sender, FormClosingEventArgs e)
         {
-            preview?.Dispose();
-            preview = null;
-            view.UnloadDirect3D();
-            Properties.Settings.Default.MeshplorerViewRotating = rotatingToolStripMenuItem.Checked;
-            Properties.Settings.Default.MeshplorerViewWireframeEnabled = wireframeToolStripMenuItem.Checked;
-            Properties.Settings.Default.MeshplorerViewSolidEnabled = solidToolStripMenuItem.Checked;
-            Properties.Settings.Default.MeshplorerViewFirstPerson = firstPersonToolStripMenuItem.Checked;
-            Properties.Settings.Default.Save();
+            if (!e.Cancel)
+            {
+                preview?.Dispose();
+                preview = null;
+                view.UnloadDirect3D();
+                Properties.Settings.Default.MeshplorerViewRotating = rotatingToolStripMenuItem.Checked;
+                Properties.Settings.Default.MeshplorerViewWireframeEnabled = wireframeToolStripMenuItem.Checked;
+                Properties.Settings.Default.MeshplorerViewSolidEnabled = solidToolStripMenuItem.Checked;
+                Properties.Settings.Default.MeshplorerViewFirstPerson = firstPersonToolStripMenuItem.Checked;
+                Properties.Settings.Default.Save();
+            }
         }
 
         private void exportToPSKToolStripMenuItem_Click(object sender, EventArgs e)
