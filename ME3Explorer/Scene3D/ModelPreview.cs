@@ -234,10 +234,7 @@ namespace ME3Explorer.Scene3D
                 // MaterialInstanceConstant mat has.
                 // For now, just use the default material.
                 material = new TexturedPreviewMaterial(texcache, mat);
-                if (!Materials.Keys.Contains(material.Properties["Name"]))
-                {
-                    Materials.Add(material.Properties["Name"], material);
-                }
+                AddMaterial(material.Properties["Name"], material);
             }
 
             // STEP 3: SECTIONS
@@ -269,6 +266,24 @@ namespace ME3Explorer.Scene3D
         }
 
         /// <summary>
+        /// Adds a <see cref="ModelPreviewMaterial"/> to this model, or adds another reference of any conflicting material.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="material"></param>
+        private void AddMaterial(string name, ModelPreviewMaterial material)
+        {
+            if (Materials.ContainsKey(name))
+            {
+                material.Dispose(); // We'll use the existing version of the duplicate, so this one is no longer needed.
+                AddMaterial(name + "_duplicate", Materials[name]);
+            }
+            else
+            {
+                Materials.Add(name, material);
+            }
+        }
+
+        /// <summary>
         /// Creates a preview of the given <see cref="Unreal.Classes.SkeletalMesh"/>.
         /// </summary>
         /// <param name="Device">The Direct3D device to use for buffer creation.</param>
@@ -285,10 +300,7 @@ namespace ME3Explorer.Scene3D
                 // MaterialInstanceConstant mat has.
                 // For now, just use the default material.
                 material = new TexturedPreviewMaterial(texcache, mat);
-                if (!Materials.ContainsKey(material.Properties["Name"]))
-                {
-                    Materials.Add(material.Properties["Name"], material);
-                }
+                AddMaterial(material.Properties["Name"], material);
             }
 
             // STEP 2: LODS
