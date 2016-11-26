@@ -20,6 +20,7 @@ namespace ME3Explorer.Meshplorer
     {
         public List<int> Objects = new List<int>();
         public List<int> Materials = new List<int>();
+        public List<int> ChosenMaterials = new List<int>(); // materials included in the skeletal mesh.
         public int MeshplorerMode = 0; //0=PCC,1=PSK
         public StaticMesh stm;
         public SkeletalMesh skm;
@@ -101,7 +102,7 @@ namespace ME3Explorer.Meshplorer
         public void RefreshMaterialList()
         {
             Materials.Clear();
-            toolStripComboBox1.Items.Clear();
+            MaterialBox.Items.Clear();
             IReadOnlyList<IExportEntry> Exports = pcc.Exports;
             IExportEntry exportEntry;
             for (int i = 0; i < Exports.Count(); i++)
@@ -110,7 +111,31 @@ namespace ME3Explorer.Meshplorer
                 if (exportEntry.ClassName == "Material" || exportEntry.ClassName == "MaterialInstanceConstant")
                 {
                     Materials.Add(i);
-                    toolStripComboBox1.Items.Add("#" + i + " : " + exportEntry.ObjectName);
+                    MaterialBox.Items.Add("#" + i + " : " + exportEntry.ObjectName);
+                }
+            }
+        }
+
+        public void RefreshChosenMaterialsList()
+        {
+            ChosenMaterials.Clear();
+            MaterialIndexBox.Items.Clear();
+            if (skm != null)
+            {
+                for (int i = 0; i < skm.Materials.Count; i++)
+                {
+                    ChosenMaterials.Add(skm.Materials[i]);
+                    string desc = "";
+                    if (skm.Materials[i] > 0)
+                    { // Material is export
+                        IExportEntry export = pcc.getExport(skm.Materials[i] - 1);
+                        desc = " Export #" + skm.Materials[i] + " : " + export.ObjectName; 
+                    }
+                    else if (skm.Materials[i] < 0)
+                    { // Material is import???
+                        desc = "Import #" + -skm.Materials[i];
+                    }
+                    MaterialIndexBox.Items.Add(i + " - " + desc);
                 }
             }
         }
@@ -122,6 +147,7 @@ namespace ME3Explorer.Meshplorer
             // Load meshes for the LODs
             preview?.Dispose();
             preview = new ModelPreview(view.Device, stm, view.TextureCache);
+            RefreshChosenMaterialsList();
             CenterView();
 
             // Update treeview
@@ -130,6 +156,10 @@ namespace ME3Explorer.Meshplorer
             treeView1.Nodes.Add(stm.ToTree());
             treeView1.Nodes[0].Expand();
             treeView1.EndUpdate();
+            MaterialBox.Visible = false;
+            MaterialApplyButton.Visible = false;
+            MaterialIndexBox.Visible = false;
+            MaterialIndexApplyButton.Visible = false;
         }
 
         public void LoadSkeletalMesh(int index)
@@ -142,7 +172,8 @@ namespace ME3Explorer.Meshplorer
 
             // Load preview model
             preview?.Dispose();
-            preview = new ModelPreview(view.Device, skm, view.TextureCache); 
+            preview = new ModelPreview(view.Device, skm, view.TextureCache);
+            RefreshChosenMaterialsList();
             CenterView();
 
             // Update treeview
@@ -160,6 +191,10 @@ namespace ME3Explorer.Meshplorer
                 lOD2ToolStripMenuItem.Enabled = true;
             if (skm.LODModels.Count > 3)
                 lOD3ToolStripMenuItem.Enabled = true;
+            MaterialBox.Visible = false;
+            MaterialApplyButton.Visible = false;
+            MaterialIndexBox.Visible = false;
+            MaterialIndexApplyButton.Visible = false;
         }
 
         public float dir;
@@ -528,6 +563,10 @@ namespace ME3Explorer.Meshplorer
             skmold = null;
             preview?.Dispose();
             preview = null;
+            MaterialBox.Visible = false;
+            MaterialApplyButton.Visible = false;
+            MaterialIndexBox.Visible = false;
+            MaterialIndexApplyButton.Visible = false;
             if (pcc.getExport(n).ClassName == "StaticMesh")
                 LoadStaticMesh(n);
             if (pcc.getExport(n).ClassName == "SkeletalMesh")
@@ -554,22 +593,56 @@ namespace ME3Explorer.Meshplorer
                 }
             }
             TreeNode t = e.Node;
-            if (t.Parent != null && t.Parent.Text == "Materials")
+            MaterialBox.Visible = false;
+            MaterialApplyButton.Visible = false;
+            MaterialIndexBox.Visible = false;
+            MaterialIndexApplyButton.Visible = false;
+            if (skm != null)
             {
-                try
+                if (t.Parent != null && t.Parent.Text == "Materials")
                 {
-                    string s = t.Text;
-                    for (int i = 0; i < s.Length; i++)
-                        if (s[i] == '#')
-                            s = s.Substring(i + 1);
-                    int idx = Convert.ToInt32(s) - 1;
-                    for (int i = 0; i < Materials.Count; i++)
-                        if (Materials[i] == idx)
-                            toolStripComboBox1.SelectedIndex = i;
-                }
-                catch
-                {
+                    MaterialBox.Visible = true;
+                    MaterialApplyButton.Visible = true;
+                    try
+                    {
+                        string s = t.Text.Split(' ')[0].Trim('#');
+                        int idx = Convert.ToInt32(s);
+                        for (int i = 0; i < Materials.Count; i++)
+                            if (Materials[i] == idx)
+                                MaterialBox.SelectedIndex = i;
+                    }
+                    catch
+                    {
 
+                    }
+                }
+                if (t.Parent != null && t.Parent.Text == "Sections")
+                {
+                    MaterialIndexBox.Visible = true;
+                    MaterialIndexApplyButton.Visible = true;
+                    try
+                    {
+                        int m = skm.LODModels[t.Parent.Parent.Index].Sections[t.Index].MaterialIndex;
+                        MaterialIndexBox.SelectedIndex = m;
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+            else if(stm != null)
+            {
+                if (t.Parent != null && t.Parent.Text == "Sections")
+                {
+                    MaterialBox.Visible = true;
+                    MaterialApplyButton.Visible = true;
+                    // HACK: assume that all static meshes have only 1 LOD. This has been true in my experience.
+                    int section = t.Index;
+                    int mat = stm.Mesh.Mat.Lods[0].Sections[section].Name - 1;
+                    for (int i = 0; i < Materials.Count; i++)
+                        if (Materials[i] == mat)
+                            MaterialBox.SelectedIndex = i;
                 }
             }
         }
@@ -691,7 +764,7 @@ namespace ME3Explorer.Meshplorer
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            int n = toolStripComboBox1.SelectedIndex;
+            int n = MaterialBox.SelectedIndex;
             TreeNode t = treeView1.SelectedNode;
             if (n == -1 || pcc == null || t == null || t.Parent == null)
                 return;
@@ -711,6 +784,27 @@ namespace ME3Explorer.Meshplorer
             else if (skm != null && t.Parent.Text == "Materials")
             {
                 skm.Materials[t.Index] = Materials[n] + 1;
+                SerializingContainer con = new SerializingContainer();
+                con.Memory = new MemoryStream();
+                con.isLoading = false;
+                skm.Serialize(con);
+                int end = skm.GetPropertyEnd();
+                MemoryStream mem = new MemoryStream();
+                mem.Write(pcc.Exports[skm.MyIndex].Data, 0, end);
+                mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
+                pcc.Exports[skm.MyIndex].Data = mem.ToArray();
+            }
+        }
+
+        private void MaterialIndexApplyButton_Click(object sender, EventArgs e)
+        {
+            TreeNode t = treeView1.SelectedNode;
+            if (skm != null && t != null && t.Parent != null && t.Parent.Parent != null && t.Parent.Text == "Sections")
+            {
+                SkeletalMesh.SectionStruct section = skm.LODModels[t.Parent.Parent.Index].Sections[t.Index];
+                section.MaterialIndex = (short) MaterialIndexBox.SelectedIndex;
+                skm.LODModels[t.Parent.Parent.Index].Sections[t.Index] = section;
+
                 SerializingContainer con = new SerializingContainer();
                 con.Memory = new MemoryStream();
                 con.isLoading = false;
