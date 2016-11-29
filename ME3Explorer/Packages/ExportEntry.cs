@@ -285,10 +285,6 @@ namespace ME3Explorer.Packages
             stream.Seek(40, SeekOrigin.Current);
             int count = stream.ReadValueS32();
             stream.Seek(4 + count * 12, SeekOrigin.Current);
-            if (count > 1)
-            {
-               Debugger.Break();
-            }
             count = stream.ReadValueS32();
             stream.Seek(16, SeekOrigin.Current);
             stream.Seek(4 + count * 4, SeekOrigin.Current);
