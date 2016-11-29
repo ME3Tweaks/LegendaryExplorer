@@ -1412,7 +1412,7 @@ namespace ME3Explorer
             }
             if (importpcc.Game == MEGame.ME3 && importpcc.getObjectName(ex.idxClass) == "SkeletalMesh")
             {
-                SkeletalMesh skl = new SkeletalMesh(null, importpcc as ME3Package, n);
+                SkeletalMesh skl = new SkeletalMesh(importpcc as ME3Package, n);
                 SkeletalMesh.BoneStruct bone;
                 for (int i = 0; i < skl.Bones.Count; i++)
                 {

@@ -166,7 +166,7 @@ namespace ME3Explorer.Meshplorer
         {
             DisableLODs();
             UnCheckLODs();
-            skm = new SkeletalMesh(view.Device, pcc as ME3Package, index);
+            skm = new SkeletalMesh(pcc as ME3Package, index);
             skmold = new SkeletalMeshOld(pcc as ME3Package, index);
             hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[index].Data);
 

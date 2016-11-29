@@ -5,9 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
 using ME3Explorer.Packages;
-using ME3Explorer.Scene3D;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -602,15 +600,12 @@ namespace ME3Explorer.Unreal.Classes
         public bool Loaded = false;
         private int ReadEnd;
 
-        public List<CustomVertex.PositionTextured[]> DirectXSections;
-
-
         public SkeletalMesh()
         {
             Loaded = true;
         }
 
-        public SkeletalMesh(SharpDX.Direct3D11.Device Device, ME3Package pcc, int Index)
+        public SkeletalMesh(ME3Package pcc, int Index)
         {
             Loaded = true;
             MyIndex = Index;
@@ -636,7 +631,6 @@ namespace ME3Explorer.Unreal.Classes
             catch
             {
             }
-            GeneratePreviewResources(Device);
         }
 
         public void Serialize(SerializingContainer Container)
@@ -777,45 +771,6 @@ namespace ME3Explorer.Unreal.Classes
             }
             for (int i = 0; i < count; i++)
                 Unk3[i] = Container + Unk3[i];
-        }
-
-        private void GeneratePreviewResources(SharpDX.Direct3D11.Device Device)
-        {
-            // Generate meshes for the legacy renderers.
-            DirectXSections = new List<CustomVertex.PositionTextured[]>();
-            for (int i = 0; i < LODModels.Count; i++)
-            { 
-                LODModelStruct l = LODModels[i];
-                CustomVertex.PositionTextured[] list = new CustomVertex.PositionTextured[l.IndexBuffer.Indexes.Count];
-                for (int j = 0; j < l.IndexBuffer.Indexes.Count; j++)
-                {
-                    int idx = l.IndexBuffer.Indexes[j];
-                    GPUSkinVertexStruct v =l.VertexBufferGPUSkin.Vertices[idx];
-                    list[j] = new CustomVertex.PositionTextured(v.Position, HalfToFloat(v.U), HalfToFloat(v.V));
-                }
-                DirectXSections.Add(list);
-            }
-
-        }
-
-        public void DrawMesh(Device device, int lod)
-        {
-            try
-            {
-                device.VertexFormat = CustomVertex.PositionTextured.Format;
-                device.RenderState.Lighting = false;
-                device.RenderState.FillMode = FillMode.Solid;
-                device.RenderState.CullMode = Cull.None;
-                if(DirectXSections[lod].Length > 2)
-                    device.DrawUserPrimitives(PrimitiveType.TriangleList, DirectXSections[lod].Length / 3, DirectXSections[lod]);
-                device.RenderState.FillMode = FillMode.WireFrame;
-                device.RenderState.Lighting = true;
-                if (DirectXSections[lod].Length > 2)
-                    device.DrawUserPrimitives(PrimitiveType.TriangleList, DirectXSections[lod].Length / 3, DirectXSections[lod]);
-            }
-            catch (Direct3DXException)
-            {
-            }
         }
 
         public TreeNode ToTree()

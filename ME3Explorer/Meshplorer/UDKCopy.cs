@@ -71,7 +71,7 @@ namespace ME3Explorer.Meshplorer
             int m = listBox2.SelectedIndex;
             if (m == -1)
                 return;
-            SkeletalMesh skm = new SkeletalMesh(null, pcc, SelectedObject);
+            SkeletalMesh skm = new SkeletalMesh(pcc, SelectedObject);
             SkeletalMesh.LODModelStruct lodpcc = skm.LODModels[SelectedLOD];
             UDKExplorer.UDK.Classes.SkeletalMesh skmudk = new UDKExplorer.UDK.Classes.SkeletalMesh(udk, Objects[n]);
             if (skm.Bones.Count != skmudk.Bones.Count)

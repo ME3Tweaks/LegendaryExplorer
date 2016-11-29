@@ -351,7 +351,7 @@ namespace ME3Explorer.Meshplorer2
                             ME3Package pcc = MEPackageHandler.OpenME3Package(ME3Directory.cookedPath + en.Filename);
                             if (en.isSkeletal)
                             {
-                                SkeletalMesh skmesh = new SkeletalMesh(null, pcc, en.Index); // TODO: pass device
+                                SkeletalMesh skmesh = new SkeletalMesh(pcc, en.Index); // TODO: pass device
                                 preview = new ModelPreview(view.Device, skmesh, view.TextureCache);
                                 CenterView();
                                 treeView2.Nodes.Clear();
@@ -392,7 +392,7 @@ namespace ME3Explorer.Meshplorer2
                                                 ME3Package pcc = MEPackageHandler.OpenME3Package(loc + filename);
                                                 if (en.isSkeletal)
                                                 {
-                                                    SkeletalMesh skmesh = new SkeletalMesh(null, pcc, en.Index);
+                                                    SkeletalMesh skmesh = new SkeletalMesh(pcc, en.Index);
                                                     CenterView();
                                                     treeView2.Nodes.Clear();
                                                     if (previewWithTreeToolStripMenuItem.Checked)
@@ -508,7 +508,7 @@ namespace ME3Explorer.Meshplorer2
                         if (en.isSkeletal)
                         {
                             pcc = MEPackageHandler.OpenME3Package(ME3Directory.cookedPath + en.Filename);
-                            skm = new SkeletalMesh(null, pcc, en.Index); // TODO: pass device
+                            skm = new SkeletalMesh(pcc, en.Index); // TODO: pass device
                         }
                         else
                         {
@@ -540,7 +540,7 @@ namespace ME3Explorer.Meshplorer2
                                             if (en.isSkeletal)
                                             {
                                                 pcc = MEPackageHandler.OpenME3Package(loc + "dlc.pcc");
-                                                skm = new SkeletalMesh(null, pcc, en.Index); // TODO: pass device
+                                                skm = new SkeletalMesh(pcc, en.Index);
                                                 break;
                                             }
                                             else
