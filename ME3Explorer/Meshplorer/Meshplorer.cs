@@ -910,14 +910,16 @@ namespace ME3Explorer.Meshplorer
         //private List<SharpDX.Direct3D11.Texture2D> CurrentTextures = new List<SharpDX.Direct3D11.Texture2D>();
         //private List<SharpDX.Direct3D11.ShaderResourceView> CurrentTextureViews = new List<SharpDX.Direct3D11.ShaderResourceView>();
         private ModelPreview preview = null;
+        private float globalscale = 1.0f;
 
         private void CenterView()
         {
             if (preview != null && preview.LODs.Count > 0)
             {
                 WorldMesh m = preview.LODs[CurrentLOD].Mesh;
-                view.Camera.Position = m.AABBCenter;
-                view.Camera.FocusDepth = Math.Max(m.AABBHalfSize.X * 2.0f, Math.Max(m.AABBHalfSize.Y * 2.0f, m.AABBHalfSize.Z * 2.0f));
+                globalscale = 0.5f / m.AABBHalfSize.Length();
+                view.Camera.Position = m.AABBCenter * globalscale;
+                view.Camera.FocusDepth = 1.0f;
                 if (view.Camera.FirstPerson)
                 {
                     view.Camera.Position -= view.Camera.CameraForward * view.Camera.FocusDepth;
@@ -928,6 +930,7 @@ namespace ME3Explorer.Meshplorer
                 view.Camera.Position = SharpDX.Vector3.Zero;
                 view.Camera.Pitch = -(float) Math.PI / 5.0f;
                 view.Camera.Yaw = (float) Math.PI / 4.0f;
+                globalscale = 1.0f;
             }
         }
 
@@ -938,12 +941,12 @@ namespace ME3Explorer.Meshplorer
                 if (solidToolStripMenuItem.Checked)
                 {
                     view.Wireframe = false;
-                    preview.Render(view, CurrentLOD, SharpDX.Matrix.RotationY(PreviewRotation));
+                    preview.Render(view, CurrentLOD, SharpDX.Matrix.Scaling(globalscale) * SharpDX.Matrix.RotationY(PreviewRotation));
                 }
                 if (wireframeToolStripMenuItem.Checked)
                 {
                     view.Wireframe = true;
-                    SceneRenderControl.WorldConstants ViewConstants = new SceneRenderControl.WorldConstants(SharpDX.Matrix.Transpose(view.Camera.ProjectionMatrix), SharpDX.Matrix.Transpose(view.Camera.ViewMatrix), SharpDX.Matrix.Transpose(SharpDX.Matrix.RotationY(PreviewRotation)));
+                    SceneRenderControl.WorldConstants ViewConstants = new SceneRenderControl.WorldConstants(SharpDX.Matrix.Transpose(view.Camera.ProjectionMatrix), SharpDX.Matrix.Transpose(view.Camera.ViewMatrix), SharpDX.Matrix.Transpose(SharpDX.Matrix.Scaling(globalscale) * SharpDX.Matrix.RotationY(PreviewRotation)));
                     view.DefaultEffect.PrepDraw(view.ImmediateContext);
                     view.DefaultEffect.RenderObject(view.ImmediateContext, ViewConstants, preview.LODs[CurrentLOD].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
                 }
