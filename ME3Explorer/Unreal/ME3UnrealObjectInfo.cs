@@ -206,9 +206,13 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static string getEnumTypefromProp(string className, string propName, bool inStruct = false)
+        public static string getEnumTypefromProp(string className, string propName)
         {
-            PropertyInfo p = getPropertyInfo(className, propName, inStruct);
+            PropertyInfo p = getPropertyInfo(className, propName, false);
+            if (p == null)
+            {
+                p = getPropertyInfo(className, propName, true);
+            }
             return p?.reference;
         }
 
