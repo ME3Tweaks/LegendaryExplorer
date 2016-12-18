@@ -11,4 +11,5 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Common Practices and Code Improvements", "RECS0060:Warns when a culture-aware 'IndexOf' call is used by default.", Justification = "Can't be bothered")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Common Practices and Code Improvements", "RECS0064:Warns when a culture-aware 'string.CompareTo' call is used by default", Justification = "Can't be bothered")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Language Usage Opportunities", "RECS0091:Use 'var' keyword when possible", Justification = "what nonsense")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Redundancies in Code", "RECS0113:Redundant comma in array initializer", Justification = "\"redundant\" commas make for cleaner diffs")]
 

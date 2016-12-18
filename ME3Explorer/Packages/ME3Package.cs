@@ -212,13 +212,7 @@ namespace ME3Explorer.Packages
                     e.DataOffset = (int)m.Position;
                     e.DataSize = e.Data.Length;
 
-                    //update offsets for pcc-stored audio in wwisestreams
-                    if (e.ClassName == "WwiseStream" && e.GetProperty<NameProperty>("Filename") == null)
-                    {
-                        byte[] binData = e.getBinaryData();
-                        binData.OverwriteRange(12, BitConverter.GetBytes(e.DataOffset + e.propsEnd() + 16));
-                        e.setBinaryData(binData);
-                    }
+                    UpdateOffsets(e);
 
                     m.WriteBytes(e.Data);
                     //update size and offset in already-written header
@@ -334,14 +328,7 @@ namespace ME3Explorer.Packages
                 {
                     export.DataOffset = (int)newPCCStream.Position;
                     export.DataSize = export.Data.Length;
-
-                    //update offsets for pcc-stored audio in wwisestreams
-                    if (export.ClassName == "WwiseStream" && export.GetProperty<NameProperty>("Filename") == null)
-                    {
-                        byte[] binData = export.getBinaryData();
-                        binData.OverwriteRange(12, BitConverter.GetBytes(export.DataOffset + export.propsEnd() + 16));
-                        export.setBinaryData(binData);
-                    }
+                    UpdateOffsets(export);
 
                     newPCCStream.WriteBytes(export.Data);
                 }
@@ -361,6 +348,38 @@ namespace ME3Explorer.Packages
                 newPCCStream.WriteBytes(header);
             }
             AfterSave();
+        }
+
+        private static void UpdateOffsets(IExportEntry export)
+        {
+            //update offsets for pcc-stored audio in wwisestreams
+            if (export.ClassName == "WwiseStream" && export.GetProperty<NameProperty>("Filename") == null)
+            {
+                byte[] binData = export.getBinaryData();
+                binData.OverwriteRange(12, BitConverter.GetBytes(export.DataOffset + export.propsEnd() + 16));
+                export.setBinaryData(binData);
+            }
+            //update offsets for pcc-stored mips in Textures
+            else if (export.ClassName == "Texture2D" || export.ClassName == "LightMapTexture2D" || export.ClassName == "TextureFlipBook")
+            {
+                int baseOffset = export.DataOffset + export.propsEnd();
+                MemoryStream binData = new MemoryStream(export.getBinaryData());
+                for (int i = binData.ReadValueS32(); i > 0 && binData.Position < binData.Length; i--)
+                {
+                    if (binData.ReadValueS32() == 0) //pcc-stored
+                    {
+                        int uncompressedSize = binData.ReadValueS32();
+                        binData.Seek(4, SeekOrigin.Current); //skip compressed size
+                        binData.WriteValueS32(baseOffset + (int)binData.Position + 4);//update offset
+                        binData.Seek(uncompressedSize + 8, SeekOrigin.Current); //skip texture and width + height values
+                    }
+                    else
+                    {
+                        binData.Seek(20, SeekOrigin.Current);//skip whole rest of mip definition
+                    }
+                }
+                export.setBinaryData(binData.ToArray());
+            }
         }
     }
 }

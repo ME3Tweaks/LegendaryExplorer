@@ -24,7 +24,7 @@ namespace ME3Explorer
     /// </summary>
     public partial class InitialSetup : Window
     {
-        Dictionary<string, string> prettyDLCNames = new Dictionary<string, string>()
+        Dictionary<string, string> prettyDLCNames = new Dictionary<string, string>
         {
             ["DLC_CON_APP01"] = "Alternate Appearance Pack 1",
             ["DLC_EXP_Pack003"] = "Citadel",
@@ -136,7 +136,7 @@ namespace ME3Explorer
 
                 try
                 {
-                    FileInfo info = new FileInfo(Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).Where(file => file.EndsWith(".sfar", StringComparison.OrdinalIgnoreCase)).First());
+                    FileInfo info = new FileInfo(Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).First(file => file.EndsWith(".sfar", StringComparison.OrdinalIgnoreCase)));
                     compressedSize += info.Length;
 
                     DLCPackage sfar = new DLCPackage(info.FullName);

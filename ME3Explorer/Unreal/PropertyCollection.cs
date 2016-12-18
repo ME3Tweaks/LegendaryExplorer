@@ -897,7 +897,7 @@ namespace ME3Explorer.Unreal
     {
         public abstract IEnumerable<UProperty> ValuesAsProperties { get; }
 
-        public ArrayPropertyBase(NameReference? name) : base(name)
+        protected ArrayPropertyBase(NameReference? name) : base(name)
         {
         }
     }
