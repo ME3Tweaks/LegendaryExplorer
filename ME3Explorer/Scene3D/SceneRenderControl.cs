@@ -135,8 +135,7 @@ namespace ME3Explorer.Scene3D
                     pccfiles.RemoveAt(i);
                 }
             }
-            TextureCache = new PreviewTextureCache(Device, pccfiles);
-            TextureCache.StartLoader();
+            TextureCache = new PreviewTextureCache(Device);
         }
 
         private void BuildBuffers()
@@ -212,20 +211,6 @@ namespace ME3Explorer.Scene3D
             buffer.Dispose();
             ms.Dispose();
             return texture;
-        }
-
-        public ShaderResourceView FindTextureOrDefault(string texfullname)
-        {
-            if (string.IsNullOrEmpty(texfullname))
-            {
-                return DefaultTextureView;
-            }
-            PreviewTextureState texstate = TextureCache.GetTexture(texfullname);
-            if (texstate == null || texstate.State != PreviewTextureCache.StateCode.Loaded)
-            {
-                return DefaultTextureView;
-            }
-            return texstate.Texture;
         }
 
         protected override void OnPaint(PaintEventArgs e)

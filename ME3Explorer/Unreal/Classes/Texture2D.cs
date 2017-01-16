@@ -198,6 +198,26 @@ namespace ME3Explorer.Unreal.Classes
                 outputImg.Write(saveImg, 0, saveImg.Length);
         }
 
+        public static string GetTFC(string arcname)
+        {
+            if (!arcname.EndsWith(".tfc"))
+                arcname += ".tfc";
+
+            List<string> sortedDLC = KFreonLib.Misc.Methods.GetInstalledDLC(ME3Directory.BIOGamePath + "DLC\\", true);
+            sortedDLC.Add(ME3Directory.BIOGamePath.TrimEnd('\\')); // include the basegame, but at the end of the list
+            foreach (string s in sortedDLC)
+            {
+                foreach (string file in Directory.EnumerateFiles(s + "\\CookedPCConsole\\"))
+                {
+                    if (Path.GetFileName(file) == arcname)
+                    {
+                        return file;
+                    }
+                }
+            }
+            return "";
+        }
+
         public byte[] extractRawData(ImageInfo imgInfo, string archiveDir = null)
         {
             byte[] imgBuffer;
@@ -210,11 +230,8 @@ namespace ME3Explorer.Unreal.Classes
                     break;
                 case storage.arcCpr:
                 case storage.arcUnc:
-                    string archivePath = archiveDir + "\\" + arcName + ".tfc";
-                    if (!File.Exists(archivePath))
-                    {
-                        throw new FileNotFoundException("Texture archive not found in " + archivePath);
-                    }
+                    string archivePath = GetTFC(arcName);
+                    Console.WriteLine("Loaded texture from tfc '" + archivePath + "'.");
 
                     using (FileStream archiveStream = File.OpenRead(archivePath))
                     {
@@ -291,7 +308,8 @@ namespace ME3Explorer.Unreal.Classes
             {
                 case storage.arcCpr: 
                 case storage.arcUnc:
-                    string archivePath = archiveDir + "\\" + arcName + ".tfc";
+                    string archivePath = GetTFC(arcName);
+                    Console.WriteLine("Loaded texture from tfc '" + archivePath + "'.");
                     if (!File.Exists(archivePath))
                         throw new FileNotFoundException("Texture archive not found in " + archivePath);
 
@@ -583,7 +601,7 @@ namespace ME3Explorer.Unreal.Classes
                     throw new FormatException("Unknown ME3 texture format");
             }
             Bitmap bmp;
-            byte[] compressedData = extractRawData(info, ME3Directory.cookedPath);
+            byte[] compressedData = extractRawData(info, System.IO.Path.GetDirectoryName(pccRef.FileName));
             bmp = AmaroK86.ImageFormat.DDSImage.ToBitmap(compressedData, format, width, height);
 
             // Load the decompressed data into an array

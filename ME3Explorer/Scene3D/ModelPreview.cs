@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpDX;
 using SharpDX.Direct3D11;
+using ME3Explorer.Packages;
 
 
 // MODEL RENDERING OVERVIEW:
@@ -90,7 +91,7 @@ namespace ME3Explorer.Scene3D
             {
                 if (texparam.TexIndex != 0)
                 {
-                    texcache.LoadTexture(mat.pcc.getEntry(texparam.TexIndex).GetFullPath);
+                    Textures.Add(texparam.Desc, FindTexture(texcache, mat.pcc.getEntry(texparam.TexIndex).GetFullPath, mat.pcc.FileName));
                 }
             }
         }
@@ -99,6 +100,8 @@ namespace ME3Explorer.Scene3D
         /// A Dictionary of string properties. Useful because some materials have properties that others don't.
         /// </summary>
         public Dictionary<string, string> Properties = new Dictionary<string, string>();
+
+        public Dictionary<string, PreviewTextureCache.PreviewTextureEntry> Textures = new Dictionary<string, PreviewTextureCache.PreviewTextureEntry>();
 
         /// <summary>
         /// Renders the given <see cref="ModelPreviewSection"/> of a <see cref="ModelPreviewLOD"/>. 
@@ -116,6 +119,74 @@ namespace ME3Explorer.Scene3D
         {
 
         }
+
+        private PreviewTextureCache.PreviewTextureEntry FindTexture(PreviewTextureCache texcache, string FullTextureName, string ImportPCC)
+        {
+            string importfiledir = System.IO.Path.GetDirectoryName(ImportPCC).ToLower();
+            string importfilename = System.IO.Path.GetFileName(ImportPCC).ToLower();
+            string pccpath = "";
+            int id = 0;
+
+            // First, check the pcc that contains the material
+            using (ME3Package pcc = MEPackageHandler.OpenME3Package(ImportPCC))
+            {
+                foreach (IExportEntry exp in pcc.Exports)
+                {
+                    if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
+                    {
+                        pccpath = ImportPCC;
+                        id = exp.Index;
+                        break;
+                    }
+                }
+            }
+            // Next, split the filename by underscores
+            string[] parts = System.IO.Path.GetFileNameWithoutExtension(importfilename).Split('_');
+            if (pccpath == "" && (importfilename.StartsWith("bioa") || importfilename.StartsWith("biod"))) {
+                // Maybe go for the one with one less segment? ex. for input BioA_Nor_201CIC.pcc, look in BioA_Nor.pcc
+                if (parts.Length == 3)
+                {
+                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(importfiledir + "\\" + parts[0] + "_" + parts[1] + ".pcc"))
+                    {
+                        foreach (IExportEntry exp in pcc.Exports)
+                        {
+                            if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
+                            {
+                                pccpath = importfiledir + "\\" + parts[0] + "_" + parts[1] + ".pcc";
+                                id = exp.Index;
+                                break;
+                            }
+                        }
+                    }
+                }
+                // Now go for the BioP one.
+                if (pccpath == "" && parts.Length >= 2)
+                {
+                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc"))
+                    {
+                        foreach (IExportEntry exp in pcc.Exports)
+                        {
+                            if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
+                            {
+                                pccpath = importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc";
+                                id = exp.Index;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (id > 0)
+            {
+                return texcache.LoadTexture(pccpath, id);
+            }
+            else
+            {
+                Console.WriteLine("[TEXLOAD]: Could not find texture \"" + FullTextureName + "\", imported in \"" + ImportPCC + "\".");
+                return null;
+            }
+        }
     }
 
     /// <summary>
@@ -124,7 +195,7 @@ namespace ME3Explorer.Scene3D
     public class TexturedPreviewMaterial : ModelPreviewMaterial
     {
         /// <summary>
-        /// The full name of the diffuse texture.
+        /// The full name of the diffuse texture property.
         /// </summary>
         public string DiffuseTextureFullName = "";
         /// <summary>
@@ -139,7 +210,7 @@ namespace ME3Explorer.Scene3D
                 if (texparam.Desc.ToLower().Contains("diff") || texparam.Desc.ToLower().Contains("tex"))
                 {
                     // we have found the diffuse texture!
-                    DiffuseTextureFullName = mat.pcc.getEntry(texparam.TexIndex).GetFullPath;
+                    DiffuseTextureFullName = texparam.Desc;
                     //Console.WriteLine("Diffuse texture of new material <" + Properties["Name"] + "> is " + DiffuseTextureFullName);
                     return;
                 }
@@ -149,7 +220,7 @@ namespace ME3Explorer.Scene3D
                 if (texparam.Desc.ToLower().Contains("detail"))
                 {
                     // I guess a detail texture is good enough if we didn't return for a diffuse texture earlier...
-                    DiffuseTextureFullName = mat.pcc.getEntry(texparam.TexIndex).GetFullPath;
+                    DiffuseTextureFullName = texparam.Desc;
                     //Console.WriteLine("Diffuse texture of new material <" + Properties["Name"] + "> is " + DiffuseTextureFullName);
                     return;
                 }
@@ -166,7 +237,7 @@ namespace ME3Explorer.Scene3D
         public override void RenderSection(ModelPreviewLOD lod, ModelPreviewSection s, Matrix transform, SceneRenderControl view)
         {
             view.DefaultEffect.PrepDraw(view.ImmediateContext);
-            view.DefaultEffect.RenderObject(view.ImmediateContext, new SceneRenderControl.WorldConstants(Matrix.Transpose(view.Camera.ProjectionMatrix), Matrix.Transpose(view.Camera.ViewMatrix), Matrix.Transpose(transform)), lod.Mesh, (int) s.StartIndex, (int) s.TriangleCount * 3, view.FindTextureOrDefault(DiffuseTextureFullName));
+            view.DefaultEffect.RenderObject(view.ImmediateContext, new SceneRenderControl.WorldConstants(Matrix.Transpose(view.Camera.ProjectionMatrix), Matrix.Transpose(view.Camera.ViewMatrix), Matrix.Transpose(transform)), lod.Mesh, (int) s.StartIndex, (int) s.TriangleCount * 3, Textures.ContainsKey(DiffuseTextureFullName) ? Textures[DiffuseTextureFullName]?.TextureView ?? view.DefaultTextureView : view.DefaultTextureView);
         }
     }
 

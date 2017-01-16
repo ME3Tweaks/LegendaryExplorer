@@ -54,7 +54,6 @@
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dumpBinaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.flushTextureCacheToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pbScanProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.lblScanStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -301,8 +300,7 @@
             // 
             this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exportTreeToolStripMenuItem,
-            this.dumpBinaryToolStripMenuItem,
-            this.flushTextureCacheToolStripMenuItem});
+            this.dumpBinaryToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.debugToolStripMenuItem.Text = "Debug";
@@ -310,23 +308,16 @@
             // exportTreeToolStripMenuItem
             // 
             this.exportTreeToolStripMenuItem.Name = "exportTreeToolStripMenuItem";
-            this.exportTreeToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.exportTreeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exportTreeToolStripMenuItem.Text = "Export Tree";
             this.exportTreeToolStripMenuItem.Click += new System.EventHandler(this.exportTreeToolStripMenuItem_Click);
             // 
             // dumpBinaryToolStripMenuItem
             // 
             this.dumpBinaryToolStripMenuItem.Name = "dumpBinaryToolStripMenuItem";
-            this.dumpBinaryToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.dumpBinaryToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.dumpBinaryToolStripMenuItem.Text = "Dump Binary";
             this.dumpBinaryToolStripMenuItem.Click += new System.EventHandler(this.dumpBinaryToolStripMenuItem_Click_1);
-            // 
-            // flushTextureCacheToolStripMenuItem
-            // 
-            this.flushTextureCacheToolStripMenuItem.Name = "flushTextureCacheToolStripMenuItem";
-            this.flushTextureCacheToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-            this.flushTextureCacheToolStripMenuItem.Text = "Flush Texture Cache";
-            this.flushTextureCacheToolStripMenuItem.Click += new System.EventHandler(this.flushTextureCacheToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -362,7 +353,7 @@
             this.MaterialIndexApplyButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(686, 27);
+            this.toolStrip1.Size = new System.Drawing.Size(686, 25);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -380,7 +371,7 @@
             this.MaterialApplyButton.Image = ((System.Drawing.Image)(resources.GetObject("MaterialApplyButton.Image")));
             this.MaterialApplyButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.MaterialApplyButton.Name = "MaterialApplyButton";
-            this.MaterialApplyButton.Size = new System.Drawing.Size(87, 24);
+            this.MaterialApplyButton.Size = new System.Drawing.Size(87, 22);
             this.MaterialApplyButton.Text = "Set as material";
             this.MaterialApplyButton.Visible = false;
             this.MaterialApplyButton.Click += new System.EventHandler(this.toolStripButton1_Click);
@@ -399,7 +390,7 @@
             this.MaterialIndexApplyButton.Image = ((System.Drawing.Image)(resources.GetObject("MaterialIndexApplyButton.Image")));
             this.MaterialIndexApplyButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.MaterialIndexApplyButton.Name = "MaterialIndexApplyButton";
-            this.MaterialIndexApplyButton.Size = new System.Drawing.Size(104, 19);
+            this.MaterialIndexApplyButton.Size = new System.Drawing.Size(104, 22);
             this.MaterialIndexApplyButton.Text = "Set material index";
             this.MaterialIndexApplyButton.Visible = false;
             this.MaterialIndexApplyButton.Click += new System.EventHandler(this.MaterialIndexApplyButton_Click);
@@ -413,7 +404,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 51);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 49);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -424,8 +415,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.hb1);
-            this.splitContainer1.Size = new System.Drawing.Size(686, 427);
-            this.splitContainer1.SplitterDistance = 319;
+            this.splitContainer1.Size = new System.Drawing.Size(686, 429);
+            this.splitContainer1.SplitterDistance = 320;
             this.splitContainer1.TabIndex = 3;
             // 
             // splitContainer2
@@ -442,7 +433,7 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.view);
             this.splitContainer2.Panel2.Controls.Add(this.rtb1);
-            this.splitContainer2.Size = new System.Drawing.Size(686, 319);
+            this.splitContainer2.Size = new System.Drawing.Size(686, 320);
             this.splitContainer2.SplitterDistance = 359;
             this.splitContainer2.TabIndex = 4;
             // 
@@ -459,7 +450,7 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.treeView1);
-            this.splitContainer3.Size = new System.Drawing.Size(359, 319);
+            this.splitContainer3.Size = new System.Drawing.Size(359, 320);
             this.splitContainer3.SplitterDistance = 81;
             this.splitContainer3.TabIndex = 0;
             // 
@@ -474,7 +465,7 @@
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
             this.listBox1.ScrollAlwaysVisible = true;
-            this.listBox1.Size = new System.Drawing.Size(81, 319);
+            this.listBox1.Size = new System.Drawing.Size(81, 320);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged_1);
             // 
@@ -485,7 +476,7 @@
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(274, 319);
+            this.treeView1.Size = new System.Drawing.Size(274, 320);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
@@ -494,7 +485,7 @@
             this.view.Dock = System.Windows.Forms.DockStyle.Fill;
             this.view.Location = new System.Drawing.Point(0, 0);
             this.view.Name = "view";
-            this.view.Size = new System.Drawing.Size(323, 319);
+            this.view.Size = new System.Drawing.Size(323, 320);
             this.view.TabIndex = 1;
             this.view.TabStop = false;
             this.view.Wireframe = false;
@@ -508,7 +499,7 @@
             this.rtb1.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtb1.Location = new System.Drawing.Point(0, 0);
             this.rtb1.Name = "rtb1";
-            this.rtb1.Size = new System.Drawing.Size(323, 319);
+            this.rtb1.Size = new System.Drawing.Size(323, 320);
             this.rtb1.TabIndex = 1;
             this.rtb1.Text = "";
             this.rtb1.Visible = false;
@@ -525,7 +516,7 @@
             this.hb1.Name = "hb1";
             this.hb1.ReadOnly = true;
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(686, 104);
+            this.hb1.Size = new System.Drawing.Size(686, 105);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
             this.hb1.UseFixedBytesPerLine = true;
@@ -615,7 +606,6 @@
         private Scene3D.SceneRenderControl view;
         private System.Windows.Forms.ToolStripMenuItem wireframeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem solidToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem flushTextureCacheToolStripMenuItem;
         private System.Windows.Forms.ToolStripProgressBar pbScanProgress;
         private System.Windows.Forms.ToolStripStatusLabel lblScanStatus;
         private System.Windows.Forms.ToolStripMenuItem firstPersonToolStripMenuItem;

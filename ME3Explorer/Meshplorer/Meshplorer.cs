@@ -46,12 +46,6 @@ namespace ME3Explorer.Meshplorer
         {
             view.UpdateScene();
             view.Invalidate();
-            if (view.TextureCache != null)
-            {
-                lblScanStatus.Visible = view.TextureCache.Scanning;
-                pbScanProgress.Visible = view.TextureCache.Scanning;
-                pbScanProgress.Value = (int) (view.TextureCache.ScanProgress * pbScanProgress.Maximum);
-            }
         }
 
         private void loadPCCToolStripMenuItem_Click(object sender, EventArgs e)
@@ -79,6 +73,7 @@ namespace ME3Explorer.Meshplorer
 
         public void RefreshMeshList()
         {
+            view.TextureCache.Dispose(); // Clear out the loaded textures from the previous pcc
             listBox1.Items.Clear();
             Objects.Clear();
             IReadOnlyList<IExportEntry> Exports = pcc.Exports;
@@ -957,11 +952,6 @@ namespace ME3Explorer.Meshplorer
         {
             if (rotatingToolStripMenuItem.Checked) PreviewRotation += e * 0.05f;
             //view.Camera.Pitch = (float)Math.Sin(view.Time);
-        }
-
-        private void flushTextureCacheToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            view.TextureCache.FlushAll();
         }
 
         private void firstPersonToolStripMenuItem_Click(object sender, EventArgs e)
