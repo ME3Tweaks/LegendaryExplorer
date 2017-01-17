@@ -13,7 +13,7 @@ Modders and users with more advanced needs may find the changes in the latest re
 For documentation on how to use ME3Explorer, take a look at [our wiki](http://me3explorer.wikia.com). Instructions for each tool are not yet complete; development of the wiki is ongoing.
 
 ## Contributing
-To contribute to this project, you can submit bug reports, make feature requests, or contribute code by forking the project and submiting pull requests. Contributing guidelines are currently being reassessed, but the existing version can be viewed [here](https://github.com/ME3Explorer/ME3Explorer/wiki/Contributing).
+To contribute to this project, you can submit bug reports, make feature requests, or contribute code by forking the project and submiting pull requests. Coders should consult the [Code Contribution Guidelines](https://github.com/ME3Explorer/ME3Explorer/blob/Beta/CodeContributionGuidelines.md) and [Style Guide](https://github.com/ME3Explorer/ME3Explorer/blob/Beta/STYLEGUIDE.md)  in the repo.
 
 ## Code of Conduct
 All contributors to ME3Explorer are expected to abide by our [Code of Conduct](https://github.com/ME3Explorer/ME3Explorer/blob/Beta/CodeofConduct.md). Please give it a quick read before you decide to contribute.
