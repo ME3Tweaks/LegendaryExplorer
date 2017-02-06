@@ -13,7 +13,10 @@ Modders and users with more advanced needs may find the changes in the latest re
 For documentation on how to use ME3Explorer, take a look at [our wiki](http://me3explorer.wikia.com). Instructions for each tool are not yet complete; development of the wiki is ongoing.
 
 ## Contributing
-To contribute to this project, you can submit bug reports, make feature requests, or contribute code by forking the project and submiting pull requests. Coders should consult the [Code Contribution Guidelines](https://github.com/ME3Explorer/ME3Explorer/blob/Beta/CodeContributionGuidelines.md) and [Style Guide](https://github.com/ME3Explorer/ME3Explorer/blob/Beta/STYLEGUIDE.md)  in the repo.
+To contribute to this project, you can submit bug reports, make feature requests, or contribute code by forking the project and submiting pull requests. Coders should consult the [Code Contribution Guidelines](https://github.com/ME3Explorer/ME3Explorer/blob/Beta/CodeContributionGuidelines.md) and [Style Guide](https://github.com/ME3Explorer/ME3Explorer/blob/Beta/STYLEGUIDE.md)  in the repo. 
+
+#### Kfreon's Tools
+Existing versions of Kfreon's tools (TPF Tools, Texplorer, ModMaker, or Image Engine) in the toolset are locked and in archival state. Please do not report bugs or request new features for these tools; submitted issues will be closed and pull requests rejected. Feature suggestions for the re-write can be made in [Kfreon's fork of ME3Explorer](https://github.com/KFreon/KFreons-ME3Explorer).
 
 ## Code of Conduct
 All contributors to ME3Explorer are expected to abide by our [Code of Conduct](https://github.com/ME3Explorer/ME3Explorer/blob/Beta/CodeofConduct.md). Please give it a quick read before you decide to contribute.
