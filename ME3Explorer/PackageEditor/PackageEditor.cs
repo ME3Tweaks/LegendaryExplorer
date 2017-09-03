@@ -10,6 +10,7 @@ using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using UsefulThings;
+using static ME3Explorer.Unreal.PropertyReader;
 
 namespace ME3Explorer
 {
@@ -347,6 +348,7 @@ namespace ME3Explorer
                     while (node.Tag as bool? != true)
                     {
                         node.Tag = true;
+                        //Debug.WriteLine(curIndex);
                         curIndex = pcc.getEntry(curIndex).idxLink;
                         link = curIndex >= 0 ? curIndex : (-curIndex + importsOffset);
                         nodeList[link].Nodes.Add(node);
@@ -725,6 +727,7 @@ namespace ME3Explorer
         }
 
         public List<string> RFiles;
+        private SortedDictionary<int, int> crossPCCObjectMapping;
 
         private void LoadRecentList()
         {
@@ -733,7 +736,7 @@ namespace ME3Explorer
             string path = PackageEditorDataFolder + "recentFiles.log";
             if (File.Exists(path))
             {
-                
+
                 FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
                 byte[] buff = new byte[4];
                 fs.Read(buff, 0, 4);
@@ -761,7 +764,7 @@ namespace ME3Explorer
             if (File.Exists(path))
                 File.Delete(path);
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
-            
+
             byte[] buff = BitConverter.GetBytes(RFiles.Count);
             fs.Write(buff, 0, 4);
             for (int i = 0; i < RFiles.Count; i++)
@@ -1269,7 +1272,7 @@ namespace ME3Explorer
         private void treeView1_DragDrop(object sender, DragEventArgs e)
         {
             TreeNode sourceNode;
-
+            crossPCCObjectMapping = new SortedDictionary<int, int>();
             if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
             {
                 Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
@@ -1308,15 +1311,129 @@ namespace ME3Explorer
                         importImport(importpcc, -n - 1, link);
                         nextIndex = -pcc.ImportCount;
                     }
+
+                    //if this node has children
                     if (sourceNode.Nodes.Count > 0)
                     {
                         importTree(sourceNode, importpcc, nextIndex);
                     }
 
+                    relinkObjects(importpcc);
+
                     RefreshView();
                     goToNumber(n >= 0 ? pcc.ExportCount - 1 : -pcc.ImportCount);
                 }
             }
+        }
+
+        /// <summary>
+        /// Attempts to relink unreal property data if object pointers pointed to items within the subtree.
+        /// </summary>
+        private void relinkObjects(IMEPackage importpcc)
+        {
+            foreach (KeyValuePair<int, int> entry in crossPCCObjectMapping)
+            {
+                if (entry.Key > 0)
+                {
+                    //Run an interpreter pass over it - we will find objectleafnodes and attempt to update the same offset in the destination file.
+                    Interpreter relinkInterpreter = new ME3Explorer.Interpreter(importpcc, importpcc.Exports[entry.Key], pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
+                }
+            }
+
+
+
+            if (true) return;
+            foreach (KeyValuePair<int, int> entry in crossPCCObjectMapping)
+            {
+                string debug = "Cross mapping: ";
+                if (entry.Value >= 0)
+                {
+
+                    debug += "EXP ";
+                    IExportEntry exp = importpcc.Exports[entry.Key];
+                    IExportEntry destexp = pcc.Exports[entry.Value];
+                    byte[] exportdata = destexp.Data;
+
+                    debug += exp.PackageFullName + "." + exp.ObjectName;
+                    debug += " -> ";
+                    debug += destexp.PackageFullName + "." + destexp.ObjectName;
+
+                    //Relinking objects.
+                    //PropertyCollection sourceprops = exp.GetProperties();
+                    //PropertyCollection destprops = destexp.GetProperties();
+                    List<PropertyReader.Property> sourceprops = PropertyReader.getPropList(exp);
+                    List<PropertyReader.Property> destprops = PropertyReader.getPropList(destexp);
+
+                    for (int i = 0; i < sourceprops.Count; i++)
+                    {
+                        Property prop = sourceprops[i];
+                        switch (prop.TypeVal)
+                        {
+                            case PropertyType.ObjectProperty:
+                                {
+                                    //ObjectProperty oprop = (ObjectProperty)prop;
+                                    int sourceObjReference = BitConverter.ToInt32(exp.Data, prop.offsetval);
+
+                                    if (sourceObjReference > 0)
+                                    {
+                                        sourceObjReference--; //make 0 based for mapping.
+                                    }
+
+                                    if (sourceObjReference < 0)
+                                    {
+                                        sourceObjReference++; //make 0 based for mapping.
+                                    }
+
+                                    int mapped; //may want to change this...
+                                    bool isMapped = crossPCCObjectMapping.TryGetValue(sourceObjReference, out mapped);
+
+                                    if (isMapped)
+                                    {
+                                        Property destprop = destprops[i];
+                                        //ObjectProperty destoprop = (ObjectProperty)destprops[i];
+                                        byte[] buff2 = BitConverter.GetBytes(mapped + 1); //+1 unreal indexing.
+                                        for (int o = 0; o < 4; o++)
+                                        {
+                                            //Write object property value
+                                            byte preval = exportdata[destprop.offsetval + o];
+                                            exportdata[destprop.offsetval + o] = buff2[o];
+                                            byte postval = exportdata[destprop.offsetval + o];
+
+                                            Debug.WriteLine("Updating Byte at 0x" + (destprop.offsetval + o).ToString("X4") + " from " + preval + " to " + postval + ". It should have been set to " + buff2[o]);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Debug.WriteLine("Object property not mapped " + sourceObjReference + " " + exp.PackageFullName + "." + exp.ObjectName);
+
+                                    }
+                                    //attempt relinkage
+                                }
+                                break;
+                            case PropertyType.ArrayProperty:
+                                //prop.
+                                break;
+                        }
+                    }
+                    destexp.Data = exportdata;
+                }
+                else
+                {
+                    //ImportEntry imp = pcc.Imports[-entry.Value/* + 1*/];
+                    debug += "IMP ";
+
+                    ImportEntry imp = importpcc.Imports[-entry.Key];
+                    ImportEntry destimp = pcc.Imports[-entry.Value];
+                    debug += imp.PackageFullName + "." + imp.ObjectName;
+                    debug += " -> ";
+                    debug += destimp.PackageFullName + "." + destimp.ObjectName;
+                }
+                //                Debug.WriteLine(debug);
+
+                //Read Props.
+            }
+
+            crossPCCObjectMapping = null;
         }
 
         private bool importTree(TreeNode sourceNode, IMEPackage importpcc, int n)
@@ -1350,6 +1467,90 @@ namespace ME3Explorer
             return true;
         }
 
+        //Use this method to import an import that is linked to another import in the source pcc.
+        //For example, Engine.Level is Level is linked to Engine, both of which are imports themselves.
+        //This will recursively add all higher up links as imports if necessary
+
+        ///
+        private int importImportedLinkedImport(IMEPackage importpcc, int n)
+        {
+            ImportEntry imp = importpcc.getImport(n);
+            Debug.WriteLine("Checking for upper imports on id " + n + " " + imp.PackageFullName + "." + imp.ObjectName);
+            int importingLink = imp.idxLink;
+
+            if (importingLink > 0)
+            {
+                return 0; //We can't deal with exports right now.
+            }
+            if (importingLink == 0)
+            {
+                //
+                Debug.WriteLine("TOP LEVEL IMPORT! " + imp.PackageFullName + "." + imp.ObjectName);
+                return FindOrAddImport(importpcc, imp, importingLink);
+            }
+
+            ImportEntry importingLinkImport = importpcc.getImport(Math.Abs(importingLink) - 1);
+            //Debug.WriteLine("Import Link: " + importingLinkImport.PackageFullName + "." + importingLinkImport.ObjectName);
+            int importLink = importImportedLinkedImport(importpcc, Math.Abs(importingLink) - 1);
+            return FindOrAddImport(importpcc, imp, (importLink + 1) * -1);
+            ////Upper linked imports now exist. We should check to see if our import exists - if it doesn't, we should add it and link it to the proper one.
+            //string requiredImportObject = imp.PackageFullName + "." + imp.ObjectName;
+
+            //ImportEntry localImport = null;
+            //int localImportIndex = 0;
+            //bool foundLocalImport = false;
+
+
+            //foreach (ImportEntry impentry in pcc.Imports)
+            //{
+            //    //This is 0 based - but the game uses 1 based!
+            //    string fullname = impentry.PackageName + "." + impentry.ObjectName;
+            //    if (fullname == requiredImportObject)
+            //    {
+            //        //Already Imported. 
+            //        foundLocalImport = true;
+            //        classValue = -1 * (localImportIndex + 1);
+            //        Debug.WriteLine("Set class to existing import " + requiredImportObject);
+            //        break;
+            //    }
+            //    localImportIndex++;
+            //}
+
+
+
+            //ImportEntry nimp = new ImportEntry(pcc, new MemoryStream(imp.header));
+            ////nimp.idxLink = link;
+            //nimp.idxClassName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxClassName));
+            //nimp.idxObjectName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxObjectName));
+            //nimp.idxPackageName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxPackageName));
+            //pcc.addImport(nimp);
+        }
+
+        private int FindOrAddImport(IMEPackage importpcc, ImportEntry import, int link)
+        {
+            string requiredImportObject = import.PackageFullName + "." + import.ObjectName;
+            int localImportIndex = 0;
+            foreach (ImportEntry impentry in pcc.Imports)
+            {
+                //This is 0 based - but the game uses 1 based!
+                string fullname = impentry.PackageName + "." + impentry.ObjectName;
+                if (fullname == requiredImportObject)
+                {
+                    //Already Imported.
+                    crossPCCObjectMapping[-import.Index] = -(localImportIndex); //0 based.
+                    return localImportIndex; //Returns 0 based positive array index.
+                }
+                localImportIndex++;
+            }
+
+            //Didn't find it.
+            Debug.WriteLine("Importing and linking to " + link);
+            importImport(importpcc, import.Index, link);
+            crossPCCObjectMapping[import.UIndex] = pcc.ImportCount - 1; //0 based.
+            //Debug.WriteLine("Added import: " + pcc.Imports[pcc.ImportCount - 1].PackageFullName + "." + pcc.Imports[pcc.ImportCount - 1].PackageFullName + " at " + pcc.Imports[pcc.ImportCount - 1]);
+            return pcc.ImportCount - 1;
+        }
+
         private void importImport(IMEPackage importpcc, int n, int link)
         {
             ImportEntry imp = importpcc.getImport(n);
@@ -1359,6 +1560,11 @@ namespace ME3Explorer
             nimp.idxObjectName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxObjectName));
             nimp.idxPackageName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxPackageName));
             pcc.addImport(nimp);
+            if (crossPCCObjectMapping != null)
+            {
+                crossPCCObjectMapping[-n] = -(pcc.ImportCount - 1); //0 based.
+
+            }
         }
 
         private bool importExport(IMEPackage importpcc, int n, int link)
@@ -1437,12 +1643,105 @@ namespace ME3Explorer
             {
                 res.Write(idata, end, idata.Length - end);
             }
+
+            int classValue = 0;
+            int archetype = 0;
+
+            if (pcc.Game == MEGame.ME3)
+            {
+                //Debug.WriteLine("Importing on ME3 game...");
+                //Set class. This will only work if the class is an import, as we can't reliably pull in exports without lots of other stuff.
+                if (ex.idxClass < 0)
+                {
+                    //The class of the export we are importing is an import. We should attempt to relink this.
+                    int localLink = 1 + (-1 * importImportedLinkedImport(importpcc, Math.Abs(ex.idxClass) - 1)); //Will ensure all upper links are available
+
+                    //Debug.WriteLine("IMPORTING A CLASS THAT IS AN IMPORT!");
+                    int iImportIndex = Math.Abs(ex.idxClass) - 1;
+                    ImportEntry classType = importpcc.Imports[iImportIndex];
+                    string requiredImportObject = classType.PackageFullName + "." + classType.ObjectName;
+                    //Debug.WriteLine("CLASSTYPE: " + classType.PackageFullName + "." + classType.ObjectName);
+
+                    //Check if this is an available import
+
+                    //ImportEntry localImport = null;
+                    int localImportIndex = 0;
+                    bool foundLocalImport = false;
+                    foreach (ImportEntry imp in pcc.Imports)
+                    {
+                        //This is 0 based - but the game uses 1 based!
+                        string fullname = imp.PackageFullName + "." + imp.ObjectName;
+                        if (fullname == requiredImportObject)
+                        {
+                            //Already Imported. 
+                            foundLocalImport = true;
+                            classValue = -1 * (localImportIndex + 1);
+                            //Debug.WriteLine("Set class to existing import " + requiredImportObject);
+                            break;
+                        }
+                        localImportIndex++;
+                    }
+
+                    if (!foundLocalImport)
+                    {
+                        //We need to add an import for this and recursively add required ones
+                        // importImport(importpcc, int n, int link)
+                        importImport(importpcc, iImportIndex, localLink);
+                    }
+                }
+
+                //Check archetype.
+                if (ex.idxArchtype < 0)
+                {
+                    //The class of the export we are importing is an import. We should attempt to relink this.
+                    int localArchetype = 1 + (-1 * importImportedLinkedImport(importpcc, Math.Abs(ex.idxArchtype) - 1)); //Will ensure all upper links are available
+
+                    //Debug.WriteLine("IMPORTING A CLASS THAT IS AN IMPORT!");
+                    int iImportIndex = Math.Abs(ex.idxArchtype) - 1;
+                    ImportEntry classType = importpcc.Imports[iImportIndex];
+                    string requiredImportObject = classType.PackageFullName + "." + classType.ObjectName;
+                    //Debug.WriteLine("CLASSTYPE: " + classType.PackageFullName + "." + classType.ObjectName);
+
+                    //Check if this is an available import
+
+                    //ImportEntry localImport = null;
+                    int localImportIndex = 0;
+                    bool foundLocalImport = false;
+                    foreach (ImportEntry imp in pcc.Imports)
+                    {
+                        //This is 0 based - but the game uses 1 based!
+                        string fullname = imp.PackageFullName + "." + imp.ObjectName;
+                        if (fullname == requiredImportObject)
+                        {
+                            //Already Imported. 
+                            foundLocalImport = true;
+                            archetype = -1 * (localImportIndex + 1);
+                            //Debug.WriteLine("Set class to existing import " + requiredImportObject);
+                            break;
+                        }
+                        localImportIndex++;
+                    }
+
+                    if (!foundLocalImport)
+                    {
+                        //We need to add an import for this and recursively add required ones
+                        // importImport(importpcc, int n, int link)
+                        importImport(importpcc, n, localArchetype);
+                    }
+                }
+            }
+
+
             nex.setHeader((byte[])ex.header.Clone());
             nex.Data = res.ToArray();
+            nex.idxClass = classValue;
             nex.idxObjectName = pcc.FindNameOrAdd(importpcc.getNameEntry(ex.idxObjectName));
             nex.idxLink = link;
-            nex.idxArchtype = nex.idxClass = nex.idxClassParent = 0;
+            nex.idxArchtype = archetype;
+            nex.idxClassParent = 0;
             pcc.addExport(nex);
+
+            crossPCCObjectMapping[n] = pcc.ExportCount - 1; //0 based.
             return true;
         }
 
@@ -1538,6 +1837,38 @@ namespace ME3Explorer
             {
                 pendingMetaDataUpdate = false;
                 RefreshMetaData();
+            }
+        }
+
+        private void reindexClassToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int n = 0;
+            if (GetSelected(out n))
+            {
+                IExportEntry exp = pcc.Exports[n];
+                string objectname = exp.ObjectName;
+                var confirmResult = MessageBox.Show("Confirming reindexing of all exports with object name:\n" + objectname + "\n\nEnsure this file has a backup - this operation will make many changes to export indexes!",
+                                     "Confirm Reindexing",
+                                     MessageBoxButtons.YesNo);
+                if (confirmResult == DialogResult.Yes)
+                {
+                    // Get list of all exports with that object name.
+                    //List<IExportEntry> exports = new List<IExportEntry>();
+                    //Could use LINQ... meh.
+
+                    int index = 1; //we'll start at 1.
+                    foreach (IExportEntry export in pcc.Exports)
+                    {
+                        if (objectname == export.ObjectName)
+                        {
+                            export.indexValue = index;
+                            index++;
+                        }
+                    }
+
+                    RefreshView();
+                    goToNumber(n);
+                }
             }
         }
     }

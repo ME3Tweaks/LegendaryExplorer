@@ -116,7 +116,7 @@ namespace ME3Explorer
             this.toggleHexWidthButton.Image = ((System.Drawing.Image)(resources.GetObject("toggleHexWidthButton.Image")));
             this.toggleHexWidthButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toggleHexWidthButton.Name = "toggleHexWidthButton";
-            this.toggleHexWidthButton.Size = new System.Drawing.Size(106, 22);
+            this.toggleHexWidthButton.Size = new System.Drawing.Size(105, 22);
             this.toggleHexWidthButton.Text = "Toggle Hex Width";
             this.toggleHexWidthButton.Click += new System.EventHandler(this.toggleHexWidthButton_Click);
             // 
@@ -301,7 +301,7 @@ namespace ME3Explorer
             this.expandAllChildrenToolStripMenuItem,
             this.collapseAllChildrenToolStripMenuItem});
             this.nodeContextMenuStrip1.Name = "nodeContextMenuStrip1";
-            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(185, 70);
+            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(185, 48);
             // 
             // expandAllChildrenToolStripMenuItem
             // 

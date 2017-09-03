@@ -124,6 +124,7 @@
             this.nodeContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cloneTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reindexClassToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
@@ -368,7 +369,7 @@
             this.Button5.Image = ((System.Drawing.Image)(resources.GetObject("Button5.Image")));
             this.Button5.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.Button5.Name = "Button5";
-            this.Button5.Size = new System.Drawing.Size(62, 22);
+            this.Button5.Size = new System.Drawing.Size(61, 22);
             this.Button5.Text = "Tree View";
             this.Button5.Click += new System.EventHandler(this.Button5_Click);
             // 
@@ -588,6 +589,7 @@
             // 
             this.propGrid.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.propGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propGrid.LineColor = System.Drawing.SystemColors.ControlDark;
             this.propGrid.Location = new System.Drawing.Point(3, 3);
             this.propGrid.Name = "propGrid";
             this.propGrid.Size = new System.Drawing.Size(664, 413);
@@ -1058,23 +1060,31 @@
             // 
             this.nodeContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cloneToolStripMenuItem,
-            this.cloneTreeToolStripMenuItem});
+            this.cloneTreeToolStripMenuItem,
+            this.reindexClassToolStripMenuItem});
             this.nodeContextMenuStrip1.Name = "nodeContextMenuStrip1";
-            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(132, 48);
+            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(238, 92);
             // 
             // cloneToolStripMenuItem
             // 
             this.cloneToolStripMenuItem.Name = "cloneToolStripMenuItem";
-            this.cloneToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.cloneToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.cloneToolStripMenuItem.Text = "Clone";
             this.cloneToolStripMenuItem.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
             // 
             // cloneTreeToolStripMenuItem
             // 
             this.cloneTreeToolStripMenuItem.Name = "cloneTreeToolStripMenuItem";
-            this.cloneTreeToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.cloneTreeToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.cloneTreeToolStripMenuItem.Text = "Clone Tree";
             this.cloneTreeToolStripMenuItem.Click += new System.EventHandler(this.cloneTreeToolStripMenuItem_Click);
+            // 
+            // reindexClassToolStripMenuItem
+            // 
+            this.reindexClassToolStripMenuItem.Name = "reindexClassToolStripMenuItem";
+            this.reindexClassToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.reindexClassToolStripMenuItem.Text = "Reindex objects with this name";
+            this.reindexClassToolStripMenuItem.Click += new System.EventHandler(this.reindexClassToolStripMenuItem_Click);
             // 
             // contextMenuStrip1
             // 
@@ -1245,5 +1255,6 @@
         private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem editInCurveEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem reindexClassToolStripMenuItem;
     }
 }
