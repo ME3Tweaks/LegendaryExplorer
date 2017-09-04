@@ -1871,5 +1871,58 @@ namespace ME3Explorer
                 }
             }
         }
+
+        private void setAllIndexesInThisTreeTo0ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int n = 0;
+            if (GetSelected(out n))
+            {
+                IExportEntry exp = pcc.Exports[n];
+                string objectname = exp.ObjectName;
+                var confirmResult = MessageBox.Show("Confirming setting of all indexes to 0 on " + objectname + " and its children.\n\nEnsure this file has a backup - this operation will make many changes to export indexes!",
+                                     "Confirm Reindexing",
+                                     MessageBoxButtons.YesNo);
+                if (confirmResult == DialogResult.Yes)
+                {
+                    // Get list of all exports with that object name.
+                    //List<IExportEntry> exports = new List<IExportEntry>();
+                    //Could use LINQ... meh.
+
+                    if (treeView1.SelectedNode != null)
+                    {
+                        recursiveSetIndexesToZero(treeView1.SelectedNode);
+                        RefreshView();
+                        goToNumber(n);
+                    }
+
+
+                }
+            }
+        }
+
+        private void recursiveSetIndexesToZero(TreeNode rootNode)
+        {
+            int index;
+            if (rootNode.Nodes.Count > 0)
+            {
+                foreach (TreeNode node in rootNode.Nodes)
+                {
+                    index = Convert.ToInt32(node.Name);
+                    if (index >= 0)
+                    {
+                        IExportEntry exportEntry = pcc.getExport(index);
+                        exportEntry.indexValue = 0;
+                        //pcc.;
+                    }
+                    recursiveSetIndexesToZero(node);
+                }
+            }
+            index = Convert.ToInt32(rootNode.Name);
+            if (index >= 0)
+            {
+                IExportEntry exportEntry = pcc.getExport(index);
+                exportEntry.indexValue = 0;
+            }
+        }
     }
 }

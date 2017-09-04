@@ -127,6 +127,7 @@
             this.reindexClassToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.setAllIndexesInThisTreeTo0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -1061,9 +1062,10 @@
             this.nodeContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cloneToolStripMenuItem,
             this.cloneTreeToolStripMenuItem,
-            this.reindexClassToolStripMenuItem});
+            this.reindexClassToolStripMenuItem,
+            this.setAllIndexesInThisTreeTo0ToolStripMenuItem});
             this.nodeContextMenuStrip1.Name = "nodeContextMenuStrip1";
-            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(238, 92);
+            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(238, 114);
             // 
             // cloneToolStripMenuItem
             // 
@@ -1099,6 +1101,13 @@
             this.cloneToolStripMenuItem1.Size = new System.Drawing.Size(105, 22);
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
+            // 
+            // setAllIndexesInThisTreeTo0ToolStripMenuItem
+            // 
+            this.setAllIndexesInThisTreeTo0ToolStripMenuItem.Name = "setAllIndexesInThisTreeTo0ToolStripMenuItem";
+            this.setAllIndexesInThisTreeTo0ToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.setAllIndexesInThisTreeTo0ToolStripMenuItem.Text = "Set all indexes in this tree to 0";
+            this.setAllIndexesInThisTreeTo0ToolStripMenuItem.Click += new System.EventHandler(this.setAllIndexesInThisTreeTo0ToolStripMenuItem_Click);
             // 
             // PackageEditor
             // 
@@ -1256,5 +1265,6 @@
         private System.Windows.Forms.ToolStripMenuItem editInCurveEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem reindexClassToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem setAllIndexesInThisTreeTo0ToolStripMenuItem;
     }
 }

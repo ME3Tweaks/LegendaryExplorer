@@ -150,7 +150,7 @@ namespace ME3Explorer
                     //leaf
                     if (rootNode.Tag != null)
                     {
-                        if ((nodeType)rootNode.Tag == nodeType.ObjectProperty || (nodeType)rootNode.Tag == nodeType.StructLeafObject)
+                        if ((nodeType)rootNode.Tag == nodeType.ObjectProperty || (nodeType)rootNode.Tag == nodeType.StructLeafObject || (nodeType)rootNode.Tag == nodeType.ArrayLeafObject)
                         {
 
                             int valueoffset = 0;
@@ -198,7 +198,7 @@ namespace ME3Explorer
                                     Debug.WriteLine("Relink miss: " + n + " " + rootNode.Text);
                                 }
                             }
-                            
+
 
 
                             //if (n > 0)
@@ -246,8 +246,140 @@ namespace ME3Explorer
                     tlkset = editorTlkSet;
                 }
             }
+            if (className != "Class" || pcc.Game != MEGame.ME3)
+            {
+                StartScan();
+            }
+            else
+            {
+                StartClassScan();
+            }
+        }
 
-            StartScan();
+        private void StartClassScan()
+        {
+            resetPropEditingControls();
+            treeView1.BeginUpdate();
+            treeView1.Nodes.Clear();
+            addPropButton.Visible = false;
+
+            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
+            topLevelTree.Tag = nodeType.Root;
+            topLevelTree.Name = "0";
+            try
+            {
+                List<TreeNode> subnodes = ReadTableBackwards(export);
+                subnodes.Reverse();
+                for (int i = 1; i < subnodes.Count; i++)
+                {
+                    string text = subnodes[i].Text;
+                    text = (i-1) + " | " + text;
+                    subnodes[i].Text = text;
+                }
+                topLevelTree.Nodes.AddRange(subnodes.ToArray());
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Nodes.Add("An error occured parsing the class: " + ex.Message);
+            }
+            treeView1.Nodes.Add(topLevelTree);
+            treeView1.CollapseAll();
+            treeView1.Nodes[0].Expand();
+            TreeNode[] nodes;
+            //if (expandedNodes != null)
+            //{
+            //    int memDiff = memory.Length - memsize;
+            //    int selectedPos = getPosFromNode(selectedNodeName);
+            //    int curPos = 0;
+            //    foreach (string item in expandedNodes)
+            //    {
+            //        curPos = getPosFromNode(item);
+            //        if (curPos > selectedPos)
+            //        {
+            //            curPos += memDiff;
+            //        }
+            //        nodes = treeView1.Nodes.Find((item[0] == '-' ? -curPos : curPos).ToString(), true);
+            //        if (nodes.Length > 0)
+            //        {
+            //            foreach (var node in nodes)
+            //            {
+            //                node.Expand();
+            //            }
+            //        }
+            //    }
+            //}
+            //nodes = treeView1.Nodes.Find(topNodeName, true);
+            //if (nodes.Length > 0)
+            //{
+            //    treeView1.TopNode = nodes[0];
+            //}
+            //nodes = treeView1.Nodes.Find(selectedNodeName, true);
+            //if (nodes.Length > 0)
+            //{
+            //    treeView1.SelectedNode = nodes[0];
+            //}
+            //else
+            //{
+            //    treeView1.SelectedNode = treeView1.Nodes[0];
+            //}
+            treeView1.SelectedNode = treeView1.Nodes[0];
+
+            treeView1.EndUpdate();
+            memsize = memory.Length;
+        }
+
+
+        private List<TreeNode> ReadTableBackwards(IExportEntry export)
+        {
+            List<TreeNode> tableItems = new List<TreeNode>();
+
+            byte[] data = export.Data;
+            int endOffset = data.Length;
+            int count = 0;
+            endOffset -= 4; //int
+            while (endOffset > 0)
+            {
+                int index = BitConverter.ToInt32(data, endOffset);
+                if (index < 0 && -index - 1 < pcc.Imports.Count)
+                {
+                    //import
+                    int localindex = Math.Abs(index) - 1;
+                    TreeNode node = new TreeNode();
+                    node.Tag = nodeType.ArrayLeafObject;
+                    node.Text = "0x" + endOffset.ToString("X4") + " [I] " + pcc.Imports[localindex].PackageFullName + "." + pcc.Imports[localindex].ObjectName;
+                    node.Name = endOffset.ToString();
+                    tableItems.Add(node);
+                }
+                else if (index > 0 && index != count)
+                {
+                    int localindex = index - 1;
+                    TreeNode node = new TreeNode();
+                    node.Tag = nodeType.ArrayLeafObject;
+                    node.Name = endOffset.ToString();
+                    node.Text = "0x" + endOffset.ToString("X4") + " [E] " + pcc.Exports[localindex].PackageFullName + "." + pcc.Exports[localindex].ObjectName + "_" + pcc.Exports[localindex].indexValue;
+                    tableItems.Add(node);
+                }
+                else
+                {
+                    //Console.WriteLine("UNPARSED INDEX: " + index);
+                }
+                //Console.WriteLine(index);
+                if (index == count)
+                {
+                    TreeNode node = new TreeNode();
+                    node.Tag = nodeType.ArrayLeafInt;
+                    node.Name = endOffset.ToString();
+                    node.Text = endOffset.ToString("X4") + " Class Functions Table Count";
+                    tableItems.Add(node);
+                    //Console.WriteLine("FOUND START OF LIST AT 0x" + endOffset.ToString("X8") + ", items: " + index);
+                    break;
+                }
+                endOffset -= 4;
+                count++;
+            }
+
+            //Console.WriteLine("Number of items processed: " + count);
+            return tableItems;
         }
 
         public new void Show()

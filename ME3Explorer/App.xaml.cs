@@ -61,7 +61,7 @@ namespace ME3Explorer
             }
             else
             {
-                
+
                 //PackageEditor editor = new PackageEditor();
                 //editor.Show();
                 //editor.LoadFile(@"C:\Users\Michael\Desktop\ME3CMM\mods\Extra MP Enemies\DLC_MOD_MP_Extras\CookedPCConsole\BioD_Cit003_600MechEvent.pcc");
