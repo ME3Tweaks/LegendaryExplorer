@@ -38,7 +38,8 @@ namespace ME3Explorer
             InitializeComponent();
             LoadRecentList();
             RefreshRecent();
-            tabControl1.TabPages.Remove(scriptTab);
+            packageEditorTabPane.TabPages.Remove(scriptTab);
+            packageEditorTabPane.TabPages.Remove(binaryEditorTab);
 
             SetView(View.Tree);
             interpreterControl.saveHexButton.Click += saveHexChangesButton_Click;
@@ -73,6 +74,7 @@ namespace ME3Explorer
                 currentFile = s;
                 LoadMEPackage(s);
                 interpreterControl.Pcc = pcc;
+                binaryInterpreterControl.Pcc = pcc;
                 treeView1.Tag = pcc;
                 RefreshView();
                 InitStuff();
@@ -88,7 +90,7 @@ namespace ME3Explorer
         public void RefreshMetaData()
         {
             int NameIdx, ClassIdx, LinkIdx, IndexIdx, ArchetypeIdx;
-            if (tabControl1.SelectedTab != metaDataPage)
+            if (packageEditorTabPane.SelectedTab != metaDataPage)
             {
                 return;
             }
@@ -402,7 +404,7 @@ namespace ME3Explorer
         {
             // keep disabled unless we're on the hex tab:
             int n;
-            if (tabControl1.SelectedTab == interpreterTab && GetSelected(out n) && n >= 0)
+            if (packageEditorTabPane.SelectedTab == interpreterTab && GetSelected(out n) && n >= 0)
             {
                 if (interpreterControl.treeView1.Nodes.Count > 0)
                 {
@@ -410,7 +412,7 @@ namespace ME3Explorer
                 }
             }
 
-            if (tabControl1.SelectedTab == metaDataPage)
+            if (packageEditorTabPane.SelectedTab == metaDataPage)
             {
                 RefreshMetaData();
             }
@@ -432,21 +434,21 @@ namespace ME3Explorer
                 if (n >= 0)
                 {
                     PreviewProps(n);
-                    if (!tabControl1.TabPages.ContainsKey(nameof(propertiesTab)))
+                    if (!packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
                     {
-                        tabControl1.TabPages.Insert(0, propertiesTab);
+                        packageEditorTabPane.TabPages.Insert(0, propertiesTab);
                     }
-                    if (!tabControl1.TabPages.ContainsKey(nameof(interpreterTab)))
+                    if (!packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
                     {
-                        tabControl1.TabPages.Insert(1, interpreterTab);
+                        packageEditorTabPane.TabPages.Insert(1, interpreterTab);
                     }
 
                     IExportEntry exportEntry = pcc.getExport(n);
                     if (exportEntry.ClassName == "Function" && pcc.Game != MEGame.ME2)
                     {
-                        if (!tabControl1.TabPages.ContainsKey(nameof(scriptTab)))
+                        if (!packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
                         {
-                            tabControl1.TabPages.Add(scriptTab);
+                            packageEditorTabPane.TabPages.Add(scriptTab);
                         }
                         if (pcc.Game == MEGame.ME3)
                         {
@@ -459,15 +461,38 @@ namespace ME3Explorer
                             rtb1.Text = func.ToRawText();
                         }
                     }
-                    else if (tabControl1.TabPages.ContainsKey(nameof(scriptTab)))
+                    else if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
                     {
-                        tabControl1.TabPages.Remove(scriptTab);
+                        packageEditorTabPane.TabPages.Remove(scriptTab);
                     }
+
+                    if (!ParsableBinaryClasses.Contains(exportEntry.ClassName) || pcc.Game != MEGame.ME3)
+                    {
+                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
+                        {
+                            packageEditorTabPane.TabPages.Remove(binaryEditorTab);
+                        }
+                    }
+                    else
+                    {
+                        if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
+                        {
+                            packageEditorTabPane.TabPages.Add(binaryEditorTab);
+                        }
+                    }
+
                     hb2.ByteProvider = new DynamicByteProvider(exportEntry.header);
                     if (!isRefresh)
                     {
                         interpreterControl.export = exportEntry;
                         interpreterControl.InitInterpreter();
+
+                        if (ParsableBinaryClasses.Contains(exportEntry.ClassName) && pcc.Game == MEGame.ME3)
+                        {
+                            binaryInterpreterControl.export = exportEntry;
+                            binaryInterpreterControl.InitInterpreter();
+
+                        }
                     }
                     UpdateStatusEx(n);
                 }
@@ -477,17 +502,21 @@ namespace ME3Explorer
                     n = -n - 1;
                     hb2.ByteProvider = new DynamicByteProvider(pcc.getImport(n).header);
                     UpdateStatusIm(n);
-                    if (tabControl1.TabPages.ContainsKey(nameof(interpreterTab)))
+                    if (packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
                     {
-                        tabControl1.TabPages.Remove(interpreterTab);
+                        packageEditorTabPane.TabPages.Remove(interpreterTab);
                     }
-                    if (tabControl1.TabPages.ContainsKey(nameof(propertiesTab)))
+                    if (packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
                     {
-                        tabControl1.TabPages.Remove(propertiesTab);
+                        packageEditorTabPane.TabPages.Remove(propertiesTab);
                     }
-                    if (tabControl1.TabPages.ContainsKey(nameof(scriptTab)))
+                    if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
                     {
-                        tabControl1.TabPages.Remove(scriptTab);
+                        packageEditorTabPane.TabPages.Remove(scriptTab);
+                    }
+                    if (packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
+                    {
+                        packageEditorTabPane.TabPages.Remove(binaryEditorTab);
                     }
                 }
             }
@@ -505,14 +534,19 @@ namespace ME3Explorer
                 infoExportDataBox.Visible = true;
                 IExportEntry exportEntry = pcc.getExport(n);
                 textBox1.Text = exportEntry.ObjectName;
-                textBox2.Text = exportEntry.ClassName;
+                textBox2.Text = exportEntry.ClassName + " (" + exportEntry.PackageFullName + "." + exportEntry.ClassName + ")";
                 superclassTextBox.Text = exportEntry.ClassParent;
                 textBox3.Text = exportEntry.PackageFullName;
                 textBox4.Text = exportEntry.header.Length + " bytes";
                 textBox5.Text = exportEntry.indexValue.ToString();
                 textBox6.Text = exportEntry.ArchtypeName;
+
                 if (exportEntry.idxArchtype != 0)
+                {
+                    IEntry archetype = pcc.getEntry(exportEntry.idxArchtype);
+                    textBox6.Text = archetype.PackageFullName + "." + archetype.ObjectName;
                     textBox6.Text += " (" + (exportEntry.idxArchtype < 0 ? "imported" : "local") + " class) " + exportEntry.idxArchtype;
+                }
                 textBox10.Text = "0x" + exportEntry.ObjectFlags.ToString("X16");
                 textBox7.Text = exportEntry.DataSize + " bytes";
                 textBox8.Text = "0x" + exportEntry.DataOffset.ToString("X8");
@@ -728,6 +762,7 @@ namespace ME3Explorer
 
         public List<string> RFiles;
         private SortedDictionary<int, int> crossPCCObjectMapping;
+        private readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor" }; //classes that have binary parse code
 
         private void LoadRecentList()
         {
@@ -876,7 +911,7 @@ namespace ME3Explorer
             {
                 return;
             }
-            InterpreterHost ip = new InterpreterHost(pcc.FileName, n);
+            BinaryInterpreterHost ip = new BinaryInterpreterHost(pcc.FileName, n);
             ip.Text = "Interpreter (Package Editor)";
             ip.MdiParent = this.MdiParent;
             ip.Show();
@@ -921,7 +956,15 @@ namespace ME3Explorer
                     TreeNode[] nodes = treeView1.Nodes.Find(n.ToString(), true);
                     if (nodes.Length > 0)
                     {
-                        treeView1.SelectedNode = nodes[0];
+                        try
+                        {
+                            treeView1.SelectedNode = nodes[0];
+                        }
+                        catch (AccessViolationException e)
+                        {
+                            //can't do much here... just avoid the error.
+                            //This is thrown due to 
+                        }
                         //treeView1.Focus();
                     }
                 }
@@ -1336,7 +1379,7 @@ namespace ME3Explorer
                 if (entry.Key > 0)
                 {
                     //Run an interpreter pass over it - we will find objectleafnodes and attempt to update the same offset in the destination file.
-                    Interpreter relinkInterpreter = new ME3Explorer.Interpreter(importpcc, importpcc.Exports[entry.Key], pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
+                    BinaryInterpreter relinkInterpreter = new ME3Explorer.BinaryInterpreter(importpcc, importpcc.Exports[entry.Key], pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
                 }
             }
 

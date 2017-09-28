@@ -2,7 +2,7 @@
 
 namespace ME3Explorer
 {
-    partial class Interpreter
+    partial class BinaryInterpreter
     {
         /// <summary>
         /// Erforderliche Designervariable.
@@ -31,7 +31,7 @@ namespace ME3Explorer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Interpreter));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BinaryInterpreter));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.exportButton = new System.Windows.Forms.ToolStripButton();
             this.saveHexButton = new System.Windows.Forms.ToolStripButton();
@@ -191,7 +191,7 @@ namespace ME3Explorer
             this.deleteArrayElementButton.Size = new System.Drawing.Size(121, 19);
             this.deleteArrayElementButton.Text = "Delete Array Element";
             this.deleteArrayElementButton.Visible = false;
-            this.deleteArrayElementButton.Click += new System.EventHandler(this.deleteArrayElement_Click);
+            this.deleteArrayElementButton.Click += new System.EventHandler(this.deleteElement_Click);
             // 
             // moveUpButton
             // 
@@ -317,12 +317,12 @@ namespace ME3Explorer
             this.collapseAllChildrenToolStripMenuItem.Text = "Collapse All Children";
             this.collapseAllChildrenToolStripMenuItem.Click += new System.EventHandler(this.collapseAllChildrenToolStripMenuItem_Click);
             // 
-            // Interpreter
+            // BinaryInterpreter
             // 
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.statusStrip1);
-            this.Name = "Interpreter";
+            this.Name = "BinaryInterpreter";
             this.Size = new System.Drawing.Size(992, 398);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();

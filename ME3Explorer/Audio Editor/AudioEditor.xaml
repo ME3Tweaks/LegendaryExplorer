@@ -58,7 +58,7 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
                     <GridSplitter ResizeDirection="Columns" Width="5"/>
-                    <global:PropertyEditorHost Grid.Column="1" Export="{Binding ElementName=exportListBox, Path=SelectedItem}"/>
+                    <global:BinaryPropertyEditorHost Grid.Column="1" Export="{Binding ElementName=exportListBox, Path=SelectedItem}"/>
                     <GridSplitter Grid.Row="1" Grid.ColumnSpan="2" ResizeDirection="Rows" ResizeBehavior="PreviousAndNext" Width="982"/>
                     <Grid Grid.Row="2" Grid.ColumnSpan="2">
                         

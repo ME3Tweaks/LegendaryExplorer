@@ -152,6 +152,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="BinaryInterpreter\BinaryAltPropertyEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="BinaryInterpreter\BinaryPropertyEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="BinaryInterpreter\BinaryPropertyEditorHost.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Interpreter\AltPropertyEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -176,6 +188,33 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="BinaryInterpreter\BinaryAddPropertyDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryAddPropertyDialog.Designer.cs">
+      <DependentUpon>BinaryAddPropertyDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryAltPropertyEditor.xaml.cs">
+      <DependentUpon>BinaryAltPropertyEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryInterpreter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryInterpreter.Designer.cs">
+      <DependentUpon>BinaryInterpreter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryInterpreterHost.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryInterpreterHost.Designer.cs">
+      <DependentUpon>BinaryInterpreterHost.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryPropertyEditor.xaml.cs">
+      <DependentUpon>BinaryPropertyEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryPropertyEditorHost.xaml.cs">
+      <DependentUpon>BinaryPropertyEditorHost.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Interpreter\AltPropertyEditor.xaml.cs">
       <DependentUpon>AltPropertyEditor.xaml</DependentUpon>
     </Compile>
@@ -963,6 +1002,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InterpEditor\Timeline.resx">
       <DependentUpon>Timeline.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BinaryInterpreter\BinaryAddPropertyDialog.resx">
+      <DependentUpon>BinaryAddPropertyDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BinaryInterpreter\BinaryInterpreter.resx">
+      <DependentUpon>BinaryInterpreter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BinaryInterpreter\BinaryInterpreterHost.resx">
+      <DependentUpon>BinaryInterpreterHost.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Interpreter\AddPropertyDialog.resx">
       <DependentUpon>AddPropertyDialog.cs</DependentUpon>

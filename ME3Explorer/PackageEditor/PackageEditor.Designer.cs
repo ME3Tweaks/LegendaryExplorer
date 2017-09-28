@@ -72,11 +72,13 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.listBox1 = new System.Windows.Forms.ListBox();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.packageEditorTabPane = new System.Windows.Forms.TabControl();
             this.propertiesTab = new System.Windows.Forms.TabPage();
             this.propGrid = new System.Windows.Forms.PropertyGrid();
             this.interpreterTab = new System.Windows.Forms.TabPage();
             this.interpreterControl = new ME3Explorer.Interpreter();
+            this.binaryEditorTab = new System.Windows.Forms.TabPage();
+            this.binaryInterpreterControl = new ME3Explorer.BinaryInterpreter();
             this.infoTab = new System.Windows.Forms.TabPage();
             this.infoExportDataBox = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -125,9 +127,9 @@
             this.cloneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cloneTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reindexClassToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setAllIndexesInThisTreeTo0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.setAllIndexesInThisTreeTo0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -136,9 +138,10 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.tabControl1.SuspendLayout();
+            this.packageEditorTabPane.SuspendLayout();
             this.propertiesTab.SuspendLayout();
             this.interpreterTab.SuspendLayout();
+            this.binaryEditorTab.SuspendLayout();
             this.infoTab.SuspendLayout();
             this.infoExportDataBox.SuspendLayout();
             this.infoHeaderBox.SuspendLayout();
@@ -520,7 +523,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
+            this.splitContainer1.Panel2.Controls.Add(this.packageEditorTabPane);
             this.splitContainer1.Size = new System.Drawing.Size(1016, 445);
             this.splitContainer1.SplitterDistance = 334;
             this.splitContainer1.TabIndex = 3;
@@ -559,21 +562,22 @@
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged_1);
             this.listBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listBox1_MouseDown);
             // 
-            // tabControl1
+            // packageEditorTabPane
             // 
-            this.tabControl1.Controls.Add(this.propertiesTab);
-            this.tabControl1.Controls.Add(this.interpreterTab);
-            this.tabControl1.Controls.Add(this.infoTab);
-            this.tabControl1.Controls.Add(this.metaDataPage);
-            this.tabControl1.Controls.Add(this.headerTab);
-            this.tabControl1.Controls.Add(this.scriptTab);
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(678, 445);
-            this.tabControl1.TabIndex = 4;
-            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
+            this.packageEditorTabPane.Controls.Add(this.propertiesTab);
+            this.packageEditorTabPane.Controls.Add(this.interpreterTab);
+            this.packageEditorTabPane.Controls.Add(this.binaryEditorTab);
+            this.packageEditorTabPane.Controls.Add(this.infoTab);
+            this.packageEditorTabPane.Controls.Add(this.metaDataPage);
+            this.packageEditorTabPane.Controls.Add(this.headerTab);
+            this.packageEditorTabPane.Controls.Add(this.scriptTab);
+            this.packageEditorTabPane.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.packageEditorTabPane.Location = new System.Drawing.Point(0, 0);
+            this.packageEditorTabPane.Name = "packageEditorTabPane";
+            this.packageEditorTabPane.SelectedIndex = 0;
+            this.packageEditorTabPane.Size = new System.Drawing.Size(678, 445);
+            this.packageEditorTabPane.TabIndex = 4;
+            this.packageEditorTabPane.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // propertiesTab
             // 
@@ -616,6 +620,26 @@
             this.interpreterControl.Pcc = null;
             this.interpreterControl.Size = new System.Drawing.Size(664, 413);
             this.interpreterControl.TabIndex = 0;
+            // 
+            // binaryEditorTab
+            // 
+            this.binaryEditorTab.Controls.Add(this.binaryInterpreterControl);
+            this.binaryEditorTab.Location = new System.Drawing.Point(4, 22);
+            this.binaryEditorTab.Name = "binaryEditorTab";
+            this.binaryEditorTab.Padding = new System.Windows.Forms.Padding(3);
+            this.binaryEditorTab.Size = new System.Drawing.Size(670, 419);
+            this.binaryEditorTab.TabIndex = 7;
+            this.binaryEditorTab.Text = "Binary Editor";
+            this.binaryEditorTab.UseVisualStyleBackColor = true;
+            // 
+            // binaryInterpreterControl
+            // 
+            this.binaryInterpreterControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.binaryInterpreterControl.Location = new System.Drawing.Point(3, 3);
+            this.binaryInterpreterControl.Name = "binaryInterpreterControl";
+            this.binaryInterpreterControl.Pcc = null;
+            this.binaryInterpreterControl.Size = new System.Drawing.Size(664, 413);
+            this.binaryInterpreterControl.TabIndex = 0;
             // 
             // infoTab
             // 
@@ -1065,7 +1089,7 @@
             this.reindexClassToolStripMenuItem,
             this.setAllIndexesInThisTreeTo0ToolStripMenuItem});
             this.nodeContextMenuStrip1.Name = "nodeContextMenuStrip1";
-            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(238, 114);
+            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(238, 92);
             // 
             // cloneToolStripMenuItem
             // 
@@ -1088,6 +1112,13 @@
             this.reindexClassToolStripMenuItem.Text = "Reindex objects with this name";
             this.reindexClassToolStripMenuItem.Click += new System.EventHandler(this.reindexClassToolStripMenuItem_Click);
             // 
+            // setAllIndexesInThisTreeTo0ToolStripMenuItem
+            // 
+            this.setAllIndexesInThisTreeTo0ToolStripMenuItem.Name = "setAllIndexesInThisTreeTo0ToolStripMenuItem";
+            this.setAllIndexesInThisTreeTo0ToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.setAllIndexesInThisTreeTo0ToolStripMenuItem.Text = "Set all indexes in this tree to 0";
+            this.setAllIndexesInThisTreeTo0ToolStripMenuItem.Click += new System.EventHandler(this.setAllIndexesInThisTreeTo0ToolStripMenuItem_Click);
+            // 
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1101,13 +1132,6 @@
             this.cloneToolStripMenuItem1.Size = new System.Drawing.Size(105, 22);
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
-            // 
-            // setAllIndexesInThisTreeTo0ToolStripMenuItem
-            // 
-            this.setAllIndexesInThisTreeTo0ToolStripMenuItem.Name = "setAllIndexesInThisTreeTo0ToolStripMenuItem";
-            this.setAllIndexesInThisTreeTo0ToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.setAllIndexesInThisTreeTo0ToolStripMenuItem.Text = "Set all indexes in this tree to 0";
-            this.setAllIndexesInThisTreeTo0ToolStripMenuItem.Click += new System.EventHandler(this.setAllIndexesInThisTreeTo0ToolStripMenuItem_Click);
             // 
             // PackageEditor
             // 
@@ -1139,9 +1163,10 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.tabControl1.ResumeLayout(false);
+            this.packageEditorTabPane.ResumeLayout(false);
             this.propertiesTab.ResumeLayout(false);
             this.interpreterTab.ResumeLayout(false);
+            this.binaryEditorTab.ResumeLayout(false);
             this.infoTab.ResumeLayout(false);
             this.infoExportDataBox.ResumeLayout(false);
             this.infoExportDataBox.PerformLayout();
@@ -1197,7 +1222,7 @@
         private System.Windows.Forms.ToolStripMenuItem createBinaryReplaceJobFromObjectToolStripMenuItem;
         public System.Windows.Forms.PropertyGrid propGrid;
         public System.Windows.Forms.RichTextBox rtb1;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl packageEditorTabPane;
         private System.Windows.Forms.TabPage propertiesTab;
         private System.Windows.Forms.TabPage scriptTab;
         private System.Windows.Forms.TabPage infoTab;
@@ -1255,6 +1280,7 @@
         private System.Windows.Forms.ToolStripMenuItem saveAsMenuItem;
         private System.Windows.Forms.TabPage interpreterTab;
         private Interpreter interpreterControl;
+        private BinaryInterpreter binaryInterpreterControl;
         private System.Windows.Forms.ToolStrip toolStrip2;
         private System.Windows.Forms.ToolStripButton saveHeaderHexChangesBtn;
         private System.Windows.Forms.ContextMenuStrip nodeContextMenuStrip1;
@@ -1266,5 +1292,6 @@
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem reindexClassToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setAllIndexesInThisTreeTo0ToolStripMenuItem;
+        private System.Windows.Forms.TabPage binaryEditorTab;
     }
 }

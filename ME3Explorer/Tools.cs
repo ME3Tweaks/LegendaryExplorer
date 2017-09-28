@@ -493,7 +493,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Interpreter",
-                type = typeof(InterpreterHost),
+                type = typeof(BinaryInterpreterHost),
                 icon = Application.Current.FindResource("iconInterpreter") as ImageSource,
                 tags = new List<string>(),
                 subCategory = "Other",
