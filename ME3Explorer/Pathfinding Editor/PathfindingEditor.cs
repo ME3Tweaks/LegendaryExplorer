@@ -33,7 +33,8 @@ namespace ME3Explorer
         private const int NODETYPE_PATHNODE = 1;
         private const int NODETYPE_SFXNAV_TURRETPOINT = 2;
         private const int NODETYPE_SFXNAV_JUMPNODE = 3;
-        private const string classDatabasePath = @"C:\Users\mgame\desktop\pathfindingclassdb.json";
+        private static string classDatabasePath = "";
+
         public static Dictionary<string, Dictionary<string, string>> importclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
         public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
 
@@ -43,6 +44,7 @@ namespace ME3Explorer
         public PathfindingEditor()
         {
             AllowRefresh = true;
+            classDatabasePath = Application.StartupPath + "//exec//pathfindingclassdb.json";
             InitializeComponent();
 
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
