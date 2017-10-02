@@ -73,9 +73,9 @@ namespace ME3Explorer
             disableSetupCheckBox.IsChecked = Properties.Settings.Default.DisableDLCCheckOnStart;
             Topmost = Properties.Settings.Default.AlwaysOnTop;
 
-            PathfindingEditor p = new PathfindingEditor();
-            p.LoadFile(@"C:\Users\mgame\Desktop\ME3CMM\mods\MP Map Expansion Pack\DLC_MOD_MPMapPack\CookedPCConsole\BioD_OmgJck_400Atrium.pcc");
-            p.Show();
+            //PathfindingEditor p = new PathfindingEditor();
+            //p.LoadFile(@"C:\Users\mgame\Desktop\ME3CMM\mods\MP Map Expansion Pack\DLC_MOD_MPMapPack\CookedPCConsole\BioD_OmgJck_400Atrium.pcc");
+            //p.Show();
 
             if (!Properties.Settings.Default.DisableDLCCheckOnStart)
             {
