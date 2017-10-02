@@ -275,9 +275,10 @@ namespace ME3Explorer
                     int entryval = BitConverter.ToInt32(data, offset);
                     if (entryval > 0 && entryval < pcc.ExportCount)
                     {
-                        IExportEntry export = (IExportEntry) pcc.getEntry(entryval);
+                        IExportEntry export = (IExportEntry)pcc.getEntry(entryval);
                         smacitems.Add(export);
-                    } else if (entryval == 0)
+                    }
+                    else if (entryval == 0)
                     {
                         smacitems.Add(null);
                     }
@@ -333,7 +334,7 @@ namespace ME3Explorer
                     string objtext = "Null - unused data";
                     if (assossiateddata != null)
                     {
-                        objtext = "[Export "+assossiateddata.Index + "] "+assossiateddata.ObjectName + "_" + assossiateddata.indexValue;
+                        objtext = "[Export " + assossiateddata.Index + "] " + assossiateddata.ObjectName + "_" + assossiateddata.indexValue;
 
                         //find associated static mesh value for display.
                         byte[] smc_data = assossiateddata.Data;
@@ -364,7 +365,7 @@ namespace ME3Explorer
                         }
                     }
 
-                    smcanode.Text = start.ToString("X4") + " "+objtext +" "+staticmesh;
+                    smcanode.Text = start.ToString("X4") + " [" + smcaindex + "] " + objtext + " " + staticmesh;
                     smcanode.Name = start.ToString();
                     topLevelTree.Nodes.Add(smcanode);
 
@@ -379,6 +380,9 @@ namespace ME3Explorer
                         string label = i.ToString();
                         switch (i)
                         {
+                            case 1:
+                                label = "ScalingXorY1:";
+                                break;
                             case 12:
                                 label = "LocX:";
                                 break;
@@ -388,12 +392,15 @@ namespace ME3Explorer
                             case 14:
                                 label = "LocZ:";
                                 break;
+                            case 15:
+                                label = "CameraLayerDistance?:";
+                                break;
                         }
 
-                        node.Text += " "+label+" " + smcadata;
+                        node.Text += " " + label + " " + smcadata;
 
                         //Lookup staticmeshcomponent so we can see what this actually is without flipping
-                       // export
+                        // export
 
                         node.Name = start.ToString();
                         smcanode.Nodes.Add(node);
@@ -2169,5 +2176,36 @@ namespace ME3Explorer
             return null;
         }
         #endregion
+
+        private void FindButton_Click(object sender, EventArgs e)
+        {
+            TreeNodeCollection collect = treeView1.Nodes;
+            if (collect.Count > 0)
+            {
+                collect = collect[0].Nodes;
+            }
+            string searchtext = findBox.Text;
+
+            foreach (TreeNode node in collect)
+            {
+                if (node.Text.Contains(searchtext))
+                {
+                    treeView1.SelectedNode = node;
+                    break;
+                }
+            }
+        }
+
+        private void findButton_Pressed(object sender, KeyPressEventArgs e)
+        {
+            if (this.findBox.Focused && e.KeyChar == '\r')
+            {
+                // click the Go button
+                this.findButton.PerformClick();
+                // don't allow the Enter key to pass to textbox
+                e.Handled = true;
+            }
+
+        }
     }
 }

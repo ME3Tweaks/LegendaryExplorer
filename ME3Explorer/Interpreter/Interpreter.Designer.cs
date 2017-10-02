@@ -188,7 +188,7 @@ namespace ME3Explorer
             this.deleteArrayElementButton.Image = ((System.Drawing.Image)(resources.GetObject("deleteArrayElementButton.Image")));
             this.deleteArrayElementButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.deleteArrayElementButton.Name = "deleteArrayElementButton";
-            this.deleteArrayElementButton.Size = new System.Drawing.Size(121, 19);
+            this.deleteArrayElementButton.Size = new System.Drawing.Size(121, 22);
             this.deleteArrayElementButton.Text = "Delete Array Element";
             this.deleteArrayElementButton.Visible = false;
             this.deleteArrayElementButton.Click += new System.EventHandler(this.deleteArrayElement_Click);
@@ -199,7 +199,7 @@ namespace ME3Explorer
             this.moveUpButton.Image = ((System.Drawing.Image)(resources.GetObject("moveUpButton.Image")));
             this.moveUpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.moveUpButton.Name = "moveUpButton";
-            this.moveUpButton.Size = new System.Drawing.Size(23, 19);
+            this.moveUpButton.Size = new System.Drawing.Size(23, 22);
             this.moveUpButton.Text = "▲";
             this.moveUpButton.ToolTipText = "Move element up";
             this.moveUpButton.Visible = false;
@@ -211,7 +211,7 @@ namespace ME3Explorer
             this.moveDownButton.Image = ((System.Drawing.Image)(resources.GetObject("moveDownButton.Image")));
             this.moveDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.moveDownButton.Name = "moveDownButton";
-            this.moveDownButton.Size = new System.Drawing.Size(23, 19);
+            this.moveDownButton.Size = new System.Drawing.Size(23, 22);
             this.moveDownButton.Text = "▼";
             this.moveDownButton.ToolTipText = "Move element down";
             this.moveDownButton.Visible = false;
@@ -223,7 +223,7 @@ namespace ME3Explorer
             this.addPropButton.Image = ((System.Drawing.Image)(resources.GetObject("addPropButton.Image")));
             this.addPropButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.addPropButton.Name = "addPropButton";
-            this.addPropButton.Size = new System.Drawing.Size(81, 19);
+            this.addPropButton.Size = new System.Drawing.Size(81, 22);
             this.addPropButton.Text = "Add Property";
             this.addPropButton.Click += new System.EventHandler(this.addPropButton_Click);
             // 

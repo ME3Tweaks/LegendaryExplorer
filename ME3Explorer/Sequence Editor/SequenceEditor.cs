@@ -686,7 +686,7 @@ namespace ME3Explorer
             }
             else
                 n = CurrentObjects[n];
-            BinaryInterpreterHost ip = new BinaryInterpreterHost(pcc.FileName, n);
+            InterpreterHost ip = new InterpreterHost(pcc.FileName, n);
             ip.Text = "Interpreter (SequenceEditor)";
             ip.Show();
         }

@@ -238,6 +238,8 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "compress", "decompress" },
                 subCategory = "Extractors + Repackers",
+                description = "PCC Repacker allows you to compress and decompress PCC files.",
+
             });
             set.Add(new Tool
             {
@@ -388,6 +390,19 @@ namespace ME3Explorer
                 tags = new List<string> { "developer", "coal", "ini", "bin" },
                 subCategory = "Core",
                 description = "Coalesced Editor converts between xml and bin formats for ME3 Coalesced.bin files for the base game and DLC. These are key game files that help control a large amount of content.",
+            });
+            set.Add(new Tool
+            {
+                name = "Pathfinding Editor",
+                type = typeof(PathfindingEditor),
+                icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,
+                open = () =>
+                {
+                    (new PathfindingEditor()).Show();
+                },
+                tags = new List<string> { "developer", "path", "mesh", "ai" },
+                subCategory = "Core",
+                description = "Pathfinding Editor allows you to modify pathing nodes so squadmates and enemies can move around a map.",
             });
             set.Add(new Tool
             {

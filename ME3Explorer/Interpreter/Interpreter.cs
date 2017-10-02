@@ -95,6 +95,12 @@ namespace ME3Explorer
             Root,
         }
 
+        internal void hideHexBox()
+        {
+            hb1.Visible = false;
+            splitContainer1.Panel1Collapsed = true;
+            splitContainer1.Panel1.Hide();
+        }
 
         private BioTlkFileSet tlkset;
         private int lastSetOffset = -1; //offset set by program, used for checking if user changed since set 

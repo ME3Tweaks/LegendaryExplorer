@@ -38,6 +38,7 @@ namespace ME3Explorer
             this.toggleHexWidthButton = new System.Windows.Forms.ToolStripButton();
             this.setValueSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.nameEntry = new System.Windows.Forms.ToolStripTextBox();
+            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.proptext = new System.Windows.Forms.ToolStripTextBox();
             this.objectNameLabel = new System.Windows.Forms.ToolStripLabel();
             this.propDropdown = new System.Windows.Forms.ToolStripComboBox();
@@ -47,6 +48,8 @@ namespace ME3Explorer
             this.moveUpButton = new System.Windows.Forms.ToolStripButton();
             this.moveDownButton = new System.Windows.Forms.ToolStripButton();
             this.addPropButton = new System.Windows.Forms.ToolStripButton();
+            this.findBox = new System.Windows.Forms.ToolStripTextBox();
+            this.findButton = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.hb1 = new Be.Windows.Forms.HexBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -73,6 +76,7 @@ namespace ME3Explorer
             this.toggleHexWidthButton,
             this.setValueSeparator,
             this.nameEntry,
+            this.toolStripTextBox1,
             this.proptext,
             this.objectNameLabel,
             this.propDropdown,
@@ -81,7 +85,9 @@ namespace ME3Explorer
             this.deleteArrayElementButton,
             this.moveUpButton,
             this.moveDownButton,
-            this.addPropButton});
+            this.addPropButton,
+            this.findBox,
+            this.findButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(992, 25);
@@ -134,6 +140,12 @@ namespace ME3Explorer
             this.nameEntry.Size = new System.Drawing.Size(200, 25);
             this.nameEntry.Visible = false;
             // 
+            // toolStripTextBox1
+            // 
+            this.toolStripTextBox1.Name = "toolStripTextBox1";
+            this.toolStripTextBox1.Size = new System.Drawing.Size(120, 25);
+            this.toolStripTextBox1.Visible = false;
+            // 
             // proptext
             // 
             this.proptext.Name = "proptext";
@@ -177,7 +189,7 @@ namespace ME3Explorer
             this.addArrayElementButton.Image = ((System.Drawing.Image)(resources.GetObject("addArrayElementButton.Image")));
             this.addArrayElementButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.addArrayElementButton.Name = "addArrayElementButton";
-            this.addArrayElementButton.Size = new System.Drawing.Size(110, 22);
+            this.addArrayElementButton.Size = new System.Drawing.Size(110, 19);
             this.addArrayElementButton.Text = "Add Array Element";
             this.addArrayElementButton.Visible = false;
             this.addArrayElementButton.Click += new System.EventHandler(this.addArrayElementButton_Click);
@@ -226,6 +238,22 @@ namespace ME3Explorer
             this.addPropButton.Size = new System.Drawing.Size(81, 19);
             this.addPropButton.Text = "Add Property";
             this.addPropButton.Click += new System.EventHandler(this.addPropButton_Click);
+            // 
+            // findBox
+            // 
+            this.findBox.Name = "findBox";
+            this.findBox.Size = new System.Drawing.Size(100, 23);
+            this.findBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.findButton_Pressed);
+            // 
+            // findButton
+            // 
+            this.findButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.findButton.Image = ((System.Drawing.Image)(resources.GetObject("findButton.Image")));
+            this.findButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.findButton.Name = "findButton";
+            this.findButton.Size = new System.Drawing.Size(34, 19);
+            this.findButton.Text = "Find";
+            this.findButton.Click += new System.EventHandler(this.FindButton_Click);
             // 
             // splitContainer1
             // 
@@ -362,5 +390,8 @@ namespace ME3Explorer
         private System.Windows.Forms.ContextMenuStrip nodeContextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem expandAllChildrenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem collapseAllChildrenToolStripMenuItem;
+        private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
+        private System.Windows.Forms.ToolStripTextBox findBox;
+        private System.Windows.Forms.ToolStripButton findButton;
     }
 }

@@ -13,6 +13,12 @@ namespace ME3Explorer.Packages
             importData.Read(header, 0, header.Length);
         }
 
+        public ImportEntry(IMEPackage pccFile)
+        {
+            FileRef = pccFile;
+            header = new byte[byteSize];
+        }
+
         public int Index { get; set; }
         public int UIndex { get { return -Index - 1; } }
         

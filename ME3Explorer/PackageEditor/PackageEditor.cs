@@ -911,7 +911,7 @@ namespace ME3Explorer
             {
                 return;
             }
-            BinaryInterpreterHost ip = new BinaryInterpreterHost(pcc.FileName, n);
+            InterpreterHost ip = new InterpreterHost(pcc.FileName, n);
             ip.Text = "Interpreter (Package Editor)";
             ip.MdiParent = this.MdiParent;
             ip.Show();
