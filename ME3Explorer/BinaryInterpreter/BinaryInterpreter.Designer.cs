@@ -50,6 +50,7 @@ namespace ME3Explorer
             this.addPropButton = new System.Windows.Forms.ToolStripButton();
             this.findBox = new System.Windows.Forms.ToolStripTextBox();
             this.findButton = new System.Windows.Forms.ToolStripButton();
+            this.viewModeDropDownList = new System.Windows.Forms.ToolStripComboBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.hb1 = new Be.Windows.Forms.HexBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -87,10 +88,11 @@ namespace ME3Explorer
             this.moveDownButton,
             this.addPropButton,
             this.findBox,
-            this.findButton});
+            this.findButton,
+            this.viewModeDropDownList});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(992, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(992, 27);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -100,7 +102,7 @@ namespace ME3Explorer
             this.exportButton.Image = ((System.Drawing.Image)(resources.GetObject("exportButton.Image")));
             this.exportButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.exportButton.Name = "exportButton";
-            this.exportButton.Size = new System.Drawing.Size(44, 22);
+            this.exportButton.Size = new System.Drawing.Size(44, 24);
             this.exportButton.Text = "Export";
             this.exportButton.Visible = false;
             this.exportButton.Click += new System.EventHandler(this.toolStripButton2_Click);
@@ -112,7 +114,7 @@ namespace ME3Explorer
             this.saveHexButton.Image = ((System.Drawing.Image)(resources.GetObject("saveHexButton.Image")));
             this.saveHexButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.saveHexButton.Name = "saveHexButton";
-            this.saveHexButton.Size = new System.Drawing.Size(107, 22);
+            this.saveHexButton.Size = new System.Drawing.Size(107, 24);
             this.saveHexButton.Text = "Save Hex Changes";
             this.saveHexButton.ToolTipText = "Saves hex changes in-memory (not to disk)";
             // 
@@ -122,7 +124,7 @@ namespace ME3Explorer
             this.toggleHexWidthButton.Image = ((System.Drawing.Image)(resources.GetObject("toggleHexWidthButton.Image")));
             this.toggleHexWidthButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toggleHexWidthButton.Name = "toggleHexWidthButton";
-            this.toggleHexWidthButton.Size = new System.Drawing.Size(105, 22);
+            this.toggleHexWidthButton.Size = new System.Drawing.Size(105, 24);
             this.toggleHexWidthButton.Text = "Toggle Hex Width";
             this.toggleHexWidthButton.Click += new System.EventHandler(this.toggleHexWidthButton_Click);
             // 
@@ -137,19 +139,19 @@ namespace ME3Explorer
             this.nameEntry.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.nameEntry.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.nameEntry.Name = "nameEntry";
-            this.nameEntry.Size = new System.Drawing.Size(200, 25);
+            this.nameEntry.Size = new System.Drawing.Size(200, 27);
             this.nameEntry.Visible = false;
             // 
             // toolStripTextBox1
             // 
             this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(120, 25);
+            this.toolStripTextBox1.Size = new System.Drawing.Size(120, 27);
             this.toolStripTextBox1.Visible = false;
             // 
             // proptext
             // 
             this.proptext.Name = "proptext";
-            this.proptext.Size = new System.Drawing.Size(120, 25);
+            this.proptext.Size = new System.Drawing.Size(120, 27);
             this.proptext.Visible = false;
             this.proptext.KeyUp += new System.Windows.Forms.KeyEventHandler(this.proptext_KeyUp);
             // 
@@ -158,7 +160,7 @@ namespace ME3Explorer
             this.objectNameLabel.BackColor = System.Drawing.SystemColors.ControlDark;
             this.objectNameLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.objectNameLabel.Name = "objectNameLabel";
-            this.objectNameLabel.Size = new System.Drawing.Size(0, 22);
+            this.objectNameLabel.Size = new System.Drawing.Size(0, 24);
             this.objectNameLabel.Visible = false;
             // 
             // propDropdown
@@ -168,7 +170,7 @@ namespace ME3Explorer
             this.propDropdown.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
             this.propDropdown.MaxDropDownItems = 20;
             this.propDropdown.Name = "propDropdown";
-            this.propDropdown.Size = new System.Drawing.Size(200, 25);
+            this.propDropdown.Size = new System.Drawing.Size(200, 27);
             this.propDropdown.Visible = false;
             // 
             // setPropertyButton
@@ -255,11 +257,25 @@ namespace ME3Explorer
             this.findButton.Text = "Find";
             this.findButton.Click += new System.EventHandler(this.FindButton_Click);
             // 
+            // viewModeDropDownList
+            // 
+            this.viewModeDropDownList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.viewModeDropDownList.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
+            this.viewModeDropDownList.Items.AddRange(new object[] {
+            "Objects",
+            "Names",
+            "Integers",
+            "Floats"});
+            this.viewModeDropDownList.Name = "viewModeDropDownList";
+            this.viewModeDropDownList.Size = new System.Drawing.Size(121, 23);
+            this.viewModeDropDownList.Text = "Objects";
+            this.viewModeDropDownList.SelectedIndexChanged += new System.EventHandler(this.viewModeChanged);
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 27);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -270,7 +286,7 @@ namespace ME3Explorer
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.treeView1);
-            this.splitContainer1.Size = new System.Drawing.Size(992, 351);
+            this.splitContainer1.Size = new System.Drawing.Size(992, 349);
             this.splitContainer1.SplitterDistance = 205;
             this.splitContainer1.TabIndex = 3;
             this.splitContainer1.SplitterMoving += new System.Windows.Forms.SplitterCancelEventHandler(this.splitContainer1_SplitterMoving);
@@ -287,7 +303,7 @@ namespace ME3Explorer
             this.hb1.MinBytesPerLine = 4;
             this.hb1.Name = "hb1";
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(205, 351);
+            this.hb1.Size = new System.Drawing.Size(205, 349);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
             this.hb1.VScrollBarVisible = true;
@@ -301,7 +317,7 @@ namespace ME3Explorer
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(783, 351);
+            this.treeView1.Size = new System.Drawing.Size(783, 349);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -393,5 +409,6 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
         private System.Windows.Forms.ToolStripTextBox findBox;
         private System.Windows.Forms.ToolStripButton findButton;
+        private System.Windows.Forms.ToolStripComboBox viewModeDropDownList;
     }
 }

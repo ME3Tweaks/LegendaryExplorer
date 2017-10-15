@@ -153,8 +153,7 @@ namespace UMD.HCIL.PathingGraphEditor
             //}
 
             edge.Reset();
-            edge.AddLine(start.X + node1.GlobalBounds.Width * 0.5f, start.Y+ node1.GlobalBounds.Height * 0.5f, end.X + node2.GlobalBounds.Width * 0.5f, end.Y+ node2.GlobalBounds.Height * 0.5f);
-            //edge.AddBezier(start.X, start.Y, start.X + h1x, start.Y + h1y, end.X - h2x, end.Y, end.X, end.Y);
+            edge.AddLine(start.X + node1.GlobalBounds.Width * 0.5f, start.Y + node1.GlobalBounds.Height * 0.5f, end.X + node2.GlobalBounds.Width * 0.5f, end.Y + node2.GlobalBounds.Height * 0.5f);
         }
 
         public void ScaleViewTo(float scale)
@@ -224,7 +223,7 @@ namespace UMD.HCIL.PathingGraphEditor
             components = new System.ComponentModel.Container();
         }
         #endregion
-        
+
         private int updatingCount = 0;
         protected override void OnPaint(PaintEventArgs e)
         {

@@ -77,6 +77,11 @@ namespace ME3Explorer
             //p.LoadFile(@"C:\Users\mgame\Desktop\ME3CMM\mods\MP Map Expansion Pack\DLC_MOD_MPMapPack\CookedPCConsole\BioD_OmgJck_400Atrium.pcc");
             //p.Show();
 
+            PackageEditor p = new PackageEditor();
+            p.LoadFile(@"C:\Users\mgame\Desktop\ME3CMM\mods\MP Map Expansion Pack\BioP_ProMar.pcc");
+            p.Show();
+
+
             if (!Properties.Settings.Default.DisableDLCCheckOnStart)
             {
                 if (Properties.Settings.Default.FirstRun == true)

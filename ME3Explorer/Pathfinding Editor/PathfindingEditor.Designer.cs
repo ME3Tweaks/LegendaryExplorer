@@ -42,13 +42,11 @@
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.savePccToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.savePCCAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveViewToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.saveViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadAlternateTLKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showOutputNumbersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.autoSaveViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.useGlobalSequenceRefSavesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.togglePathfindingNodes = new System.Windows.Forms.ToolStripMenuItem();
+            this.toggleActorNodes = new System.Windows.Forms.ToolStripMenuItem();
+            this.staticMeshCollectionActorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
@@ -60,13 +58,17 @@
             this.toSFXEnemySpawnPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toPathNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toSFXNavTurretPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toSFXNavBoostNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sFXNavBoostNodeTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sFXNavBoostNodeBottomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createReachSpecToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setGraphPositionAsNodeLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.generateNewRandomGUIDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.filenameLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.setGraphPositionAsNodeLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -209,9 +211,7 @@
             this.loadToolStripMenuItem,
             this.savePccToolStripMenuItem,
             this.savePCCAsMenuItem,
-            this.saveViewToolStripMenuItem1,
-            this.saveViewToolStripMenuItem,
-            this.loadAlternateTLKToolStripMenuItem});
+            this.saveViewToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -219,7 +219,7 @@
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
@@ -227,70 +227,61 @@
             // 
             this.savePccToolStripMenuItem.Name = "savePccToolStripMenuItem";
             this.savePccToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.savePccToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.savePccToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.savePccToolStripMenuItem.Text = "Save pcc";
             this.savePccToolStripMenuItem.Click += new System.EventHandler(this.savePccToolStripMenuItem_Click_1);
             // 
             // savePCCAsMenuItem
             // 
             this.savePCCAsMenuItem.Name = "savePCCAsMenuItem";
-            this.savePCCAsMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.savePCCAsMenuItem.Size = new System.Drawing.Size(160, 22);
             this.savePCCAsMenuItem.Text = "Save pcc As";
             this.savePCCAsMenuItem.Click += new System.EventHandler(this.savePCCAsMenuItem_Click);
-            // 
-            // saveViewToolStripMenuItem1
-            // 
-            this.saveViewToolStripMenuItem1.Name = "saveViewToolStripMenuItem1";
-            this.saveViewToolStripMenuItem1.Size = new System.Drawing.Size(187, 22);
-            this.saveViewToolStripMenuItem1.Text = "Save View";
-            //this.saveViewToolStripMenuItem1.Click += new System.EventHandler(this.saveViewToolStripMenuItem1_Click);
             // 
             // saveViewToolStripMenuItem
             // 
             this.saveViewToolStripMenuItem.Name = "saveViewToolStripMenuItem";
-            this.saveViewToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.saveViewToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.saveViewToolStripMenuItem.Text = "Save Image";
             this.saveViewToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
-            // 
-            // loadAlternateTLKToolStripMenuItem
-            // 
-            this.loadAlternateTLKToolStripMenuItem.Name = "loadAlternateTLKToolStripMenuItem";
-            this.loadAlternateTLKToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.loadAlternateTLKToolStripMenuItem.Text = "Manage Loaded TLKs";
-            this.loadAlternateTLKToolStripMenuItem.Click += new System.EventHandler(this.loadAlternateTLKToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.showOutputNumbersToolStripMenuItem,
-            this.autoSaveViewToolStripMenuItem,
-            this.useGlobalSequenceRefSavesToolStripMenuItem});
+            this.togglePathfindingNodes,
+            this.toggleActorNodes,
+            this.staticMeshCollectionActorsToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.optionsToolStripMenuItem.Text = "Options";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(95, 20);
+            this.optionsToolStripMenuItem.Text = "Viewing Mode";
             // 
-            // showOutputNumbersToolStripMenuItem
+            // togglePathfindingNodes
             // 
-            this.showOutputNumbersToolStripMenuItem.CheckOnClick = true;
-            this.showOutputNumbersToolStripMenuItem.Name = "showOutputNumbersToolStripMenuItem";
-            this.showOutputNumbersToolStripMenuItem.Size = new System.Drawing.Size(264, 22);
-            this.showOutputNumbersToolStripMenuItem.Text = "Show Output Numbers";
-            this.showOutputNumbersToolStripMenuItem.Click += new System.EventHandler(this.showOutputNumbersToolStripMenuItem_Click);
+            this.togglePathfindingNodes.Checked = true;
+            this.togglePathfindingNodes.CheckOnClick = true;
+            this.togglePathfindingNodes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.togglePathfindingNodes.Name = "togglePathfindingNodes";
+            this.togglePathfindingNodes.Size = new System.Drawing.Size(220, 22);
+            this.togglePathfindingNodes.Text = "Pathfinding Nodes";
+            this.togglePathfindingNodes.ToolTipText = "Toggle pathfinding nodes and reachspecs";
+            this.togglePathfindingNodes.Click += new System.EventHandler(this.togglePathfindingNodes_Click);
             // 
-            // autoSaveViewToolStripMenuItem
+            // toggleActorNodes
             // 
-            this.autoSaveViewToolStripMenuItem.CheckOnClick = true;
-            this.autoSaveViewToolStripMenuItem.Name = "autoSaveViewToolStripMenuItem";
-            this.autoSaveViewToolStripMenuItem.Size = new System.Drawing.Size(264, 22);
-            this.autoSaveViewToolStripMenuItem.Text = "Auto-Save View";
+            this.toggleActorNodes.CheckOnClick = true;
+            this.toggleActorNodes.Name = "toggleActorNodes";
+            this.toggleActorNodes.Size = new System.Drawing.Size(220, 22);
+            this.toggleActorNodes.Text = "Actor Nodes";
+            this.toggleActorNodes.ToolTipText = "Toggle showing actors such as static meshes and blocking volumes.";
+            this.toggleActorNodes.Click += new System.EventHandler(this.toggleActorNodes_Click);
             // 
-            // useGlobalSequenceRefSavesToolStripMenuItem
+            // staticMeshCollectionActorsToolStripMenuItem
             // 
-            this.useGlobalSequenceRefSavesToolStripMenuItem.CheckOnClick = true;
-            this.useGlobalSequenceRefSavesToolStripMenuItem.Name = "useGlobalSequenceRefSavesToolStripMenuItem";
-            this.useGlobalSequenceRefSavesToolStripMenuItem.Size = new System.Drawing.Size(264, 22);
-            this.useGlobalSequenceRefSavesToolStripMenuItem.Text = "Use Global Sequence Ref View Saves";
-            this.useGlobalSequenceRefSavesToolStripMenuItem.Click += new System.EventHandler(this.useGlobalSequenceRefSavesToolStripMenuItem_Click);
+            this.staticMeshCollectionActorsToolStripMenuItem.Name = "staticMeshCollectionActorsToolStripMenuItem";
+            this.staticMeshCollectionActorsToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.staticMeshCollectionActorsToolStripMenuItem.Text = "StaticMeshCollectionActors";
+            this.staticMeshCollectionActorsToolStripMenuItem.ToolTipText = "Locations of items in StaticMeshActorCollections. Enabling these options can lead to a significant de" +
+    "crease in editor performance.";
             // 
             // toolStrip1
             // 
@@ -320,7 +311,7 @@
             this.toolStripButton1.Text = "Scale";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
-            // contextMenuStrip1
+            // rightMouseButtonMenu
             // 
             this.rightMouseButtonMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openInPackageEditorToolStripMenuItem,
@@ -328,7 +319,8 @@
             this.breakLinksToolStripMenuItem,
             this.changeNodeTypeToolStripMenuItem,
             this.createReachSpecToolStripMenuItem,
-            this.setGraphPositionAsNodeLocationToolStripMenuItem});
+            this.setGraphPositionAsNodeLocationToolStripMenuItem,
+            this.generateNewRandomGUIDToolStripMenuItem});
             this.rightMouseButtonMenu.Name = "contextMenuStrip1";
             this.rightMouseButtonMenu.Size = new System.Drawing.Size(295, 158);
             // 
@@ -357,7 +349,8 @@
             this.changeNodeTypeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toSFXEnemySpawnPointToolStripMenuItem,
             this.toPathNodeToolStripMenuItem,
-            this.toSFXNavTurretPointToolStripMenuItem});
+            this.toSFXNavTurretPointToolStripMenuItem,
+            this.toSFXNavBoostNodeToolStripMenuItem});
             this.changeNodeTypeToolStripMenuItem.Name = "changeNodeTypeToolStripMenuItem";
             this.changeNodeTypeToolStripMenuItem.Size = new System.Drawing.Size(294, 22);
             this.changeNodeTypeToolStripMenuItem.Text = "Change Node Type";
@@ -383,6 +376,29 @@
             this.toSFXNavTurretPointToolStripMenuItem.Text = "To SFXNav_TurretPoint";
             this.toSFXNavTurretPointToolStripMenuItem.Click += new System.EventHandler(this.toSFXNavTurretPointToolStripMenuItem_Click);
             // 
+            // toSFXNavBoostNodeToolStripMenuItem
+            // 
+            this.toSFXNavBoostNodeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sFXNavBoostNodeTopToolStripMenuItem,
+            this.sFXNavBoostNodeBottomToolStripMenuItem});
+            this.toSFXNavBoostNodeToolStripMenuItem.Name = "toSFXNavBoostNodeToolStripMenuItem";
+            this.toSFXNavBoostNodeToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.toSFXNavBoostNodeToolStripMenuItem.Text = "To SFXNav_BoostNode";
+            // 
+            // sFXNavBoostNodeTopToolStripMenuItem
+            // 
+            this.sFXNavBoostNodeTopToolStripMenuItem.Name = "sFXNavBoostNodeTopToolStripMenuItem";
+            this.sFXNavBoostNodeTopToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+            this.sFXNavBoostNodeTopToolStripMenuItem.Text = "SFXNav_BoostNode (Top)";
+            this.sFXNavBoostNodeTopToolStripMenuItem.Click += new System.EventHandler(this.sFXNavBoostNodeTopToolStripMenuItem_Click);
+            // 
+            // sFXNavBoostNodeBottomToolStripMenuItem
+            // 
+            this.sFXNavBoostNodeBottomToolStripMenuItem.Name = "sFXNavBoostNodeBottomToolStripMenuItem";
+            this.sFXNavBoostNodeBottomToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+            this.sFXNavBoostNodeBottomToolStripMenuItem.Text = "SFXNav_BoostNode (Bottom)";
+            this.sFXNavBoostNodeBottomToolStripMenuItem.Click += new System.EventHandler(this.sFXNavBoostNodeBottomToolStripMenuItem_Click);
+            // 
             // createReachSpecToolStripMenuItem
             // 
             this.createReachSpecToolStripMenuItem.Name = "createReachSpecToolStripMenuItem";
@@ -390,10 +406,24 @@
             this.createReachSpecToolStripMenuItem.Text = "Create ReachSpec";
             this.createReachSpecToolStripMenuItem.Click += new System.EventHandler(this.createReachSpecToolStripMenuItem_Click);
             // 
+            // setGraphPositionAsNodeLocationToolStripMenuItem
+            // 
+            this.setGraphPositionAsNodeLocationToolStripMenuItem.Name = "setGraphPositionAsNodeLocationToolStripMenuItem";
+            this.setGraphPositionAsNodeLocationToolStripMenuItem.Size = new System.Drawing.Size(294, 22);
+            this.setGraphPositionAsNodeLocationToolStripMenuItem.Text = "Set Graph Position as Node Location (X,Y)";
+            this.setGraphPositionAsNodeLocationToolStripMenuItem.Click += new System.EventHandler(this.setGraphPositionAsNodeLocationToolStripMenuItem_Click);
+            // 
+            // generateNewRandomGUIDToolStripMenuItem
+            // 
+            this.generateNewRandomGUIDToolStripMenuItem.Name = "generateNewRandomGUIDToolStripMenuItem";
+            this.generateNewRandomGUIDToolStripMenuItem.Size = new System.Drawing.Size(294, 22);
+            this.generateNewRandomGUIDToolStripMenuItem.Text = "Generate new random NavGUID";
+            this.generateNewRandomGUIDToolStripMenuItem.Click += new System.EventHandler(this.generateNewRandomGUIDToolStripMenuItem_Click);
+            // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1,
+            this.filenameLabel,
             this.toolStripStatusLabel2});
             this.statusStrip1.Location = new System.Drawing.Point(0, 554);
             this.statusStrip1.Name = "statusStrip1";
@@ -401,12 +431,12 @@
             this.statusStrip1.TabIndex = 3;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // toolStripStatusLabel1
+            // filenameLabel
             // 
-            this.toolStripStatusLabel1.ForeColor = System.Drawing.Color.MediumBlue;
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(10, 17);
-            this.toolStripStatusLabel1.Text = " ";
+            this.filenameLabel.ForeColor = System.Drawing.Color.MediumBlue;
+            this.filenameLabel.Name = "filenameLabel";
+            this.filenameLabel.Size = new System.Drawing.Size(10, 17);
+            this.filenameLabel.Text = " ";
             // 
             // toolStripStatusLabel2
             // 
@@ -427,13 +457,6 @@
             this.addObjectToolStripMenuItem.Name = "addObjectToolStripMenuItem";
             this.addObjectToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.addObjectToolStripMenuItem.Text = "Add Object";
-            // 
-            // setGraphPositionAsNodeLocationToolStripMenuItem
-            // 
-            this.setGraphPositionAsNodeLocationToolStripMenuItem.Name = "setGraphPositionAsNodeLocationToolStripMenuItem";
-            this.setGraphPositionAsNodeLocationToolStripMenuItem.Size = new System.Drawing.Size(294, 22);
-            this.setGraphPositionAsNodeLocationToolStripMenuItem.Text = "Set Graph Position as Node Location (X,Y)";
-            this.setGraphPositionAsNodeLocationToolStripMenuItem.Click += new System.EventHandler(this.setGraphPositionAsNodeLocationToolStripMenuItem_Click);
             // 
             // PathfindingEditor
             // 
@@ -491,7 +514,6 @@
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveViewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem savePccToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveViewToolStripMenuItem1;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
@@ -499,13 +521,11 @@
         private System.Windows.Forms.ToolStripMenuItem openInPackageEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem breakLinksToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel filenameLabel;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem showOutputNumbersToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem autoSaveViewToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem useGlobalSequenceRefSavesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem loadAlternateTLKToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem togglePathfindingNodes;
+        private System.Windows.Forms.ToolStripMenuItem toggleActorNodes;
         private System.Windows.Forms.ToolStripMenuItem savePCCAsMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private System.Windows.Forms.ToolStripMenuItem addObjectToolStripMenuItem;
@@ -517,5 +537,10 @@
         private System.Windows.Forms.ToolStripMenuItem toSFXNavTurretPointToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createReachSpecToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setGraphPositionAsNodeLocationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toSFXNavBoostNodeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sFXNavBoostNodeTopToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sFXNavBoostNodeBottomToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem generateNewRandomGUIDToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem staticMeshCollectionActorsToolStripMenuItem;
     }
 }

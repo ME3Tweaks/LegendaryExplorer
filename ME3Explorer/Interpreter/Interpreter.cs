@@ -252,167 +252,13 @@ namespace ME3Explorer
                     tlkset = editorTlkSet;
                 }
             }
-            if (className != "Class" || pcc.Game != MEGame.ME3)
-            {
-                StartScan();
-            }
-            else
-            {
-                StartClassScan();
-            }
-        }
+            StartScan();
 
-        private void StartClassScan(string nodeNameToSelect = null)
-        {
-            const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
-            resetPropEditingControls();
-            treeView1.BeginUpdate();
-            treeView1.Nodes.Clear();
-            addPropButton.Visible = false;
-
-            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
-            topLevelTree.Tag = nodeType.Root;
-            topLevelTree.Name = "0";
-            try
-            {
-                List<TreeNode> subnodes = ReadTableBackwards(export);
-                subnodes.Reverse();
-                for (int i = nonTableEntryCount; i < subnodes.Count; i++)
-                {
-                    string text = subnodes[i].Text;
-                    text = (i - nonTableEntryCount) + " | " + text;
-                    subnodes[i].Text = text;
-                }
-                topLevelTree.Nodes.AddRange(subnodes.ToArray());
-            }
-            catch (Exception ex)
-            {
-                topLevelTree.Nodes.Add("An error occured parsing the class: " + ex.Message);
-            }
-            treeView1.Nodes.Add(topLevelTree);
-            treeView1.CollapseAll();
-            treeView1.Nodes[0].Expand();
-            TreeNode[] nodes;
-            //if (expandedNodes != null)
-            //{
-            //    int memDiff = memory.Length - memsize;
-            //    int selectedPos = getPosFromNode(selectedNodeName);
-            //    int curPos = 0;
-            //    foreach (string item in expandedNodes)
-            //    {
-            //        curPos = getPosFromNode(item);
-            //        if (curPos > selectedPos)
-            //        {
-            //            curPos += memDiff;
-            //        }
-            //        nodes = treeView1.Nodes.Find((item[0] == '-' ? -curPos : curPos).ToString(), true);
-            //        if (nodes.Length > 0)
-            //        {
-            //            foreach (var node in nodes)
-            //            {
-            //                node.Expand();
-            //            }
-            //        }
-            //    }
-            //}
-            if (nodeNameToSelect != null)
-            {
-                nodes = treeView1.Nodes.Find(nodeNameToSelect, true);
-                if (nodes.Length > 0)
-                {
-                    treeView1.SelectedNode = nodes[0];
-                }
-                else
-                {
-                    treeView1.SelectedNode = treeView1.Nodes[0];
-                }
-            }
-
-            treeView1.EndUpdate();
-            memsize = memory.Length;
-        }
-
-
-        private List<TreeNode> ReadTableBackwards(IExportEntry export)
-        {
-            List<TreeNode> tableItems = new List<TreeNode>();
-
-            byte[] data = export.Data;
-            int endOffset = data.Length;
-            int count = 0;
-            endOffset -= 4; //int
-            while (endOffset > 0)
-            {
-                int index = BitConverter.ToInt32(data, endOffset);
-                if (index < 0 && -index - 1 < pcc.Imports.Count)
-                {
-                    //import
-                    int localindex = Math.Abs(index) - 1;
-                    TreeNode node = new TreeNode();
-                    node.Tag = nodeType.ArrayLeafObject;
-                    node.Text = "0x" + endOffset.ToString("X4") + " [I] " + pcc.Imports[localindex].PackageFullName + "." + pcc.Imports[localindex].ObjectName;
-                    node.Name = endOffset.ToString();
-                    tableItems.Add(node);
-                }
-                else if (index > 0 && index != count)
-                {
-                    int localindex = index - 1;
-                    TreeNode node = new TreeNode();
-                    node.Tag = nodeType.ArrayLeafObject;
-                    node.Name = endOffset.ToString();
-                    node.Text = "0x" + endOffset.ToString("X4") + " [E] " + pcc.Exports[localindex].PackageFullName + "." + pcc.Exports[localindex].ObjectName + "_" + pcc.Exports[localindex].indexValue;
-                    tableItems.Add(node);
-                }
-                else
-                {
-                    //Console.WriteLine("UNPARSED INDEX: " + index);
-                }
-                //Console.WriteLine(index);
-                if (index == count)
-                {
-                    {
-                        TreeNode node = new TreeNode();
-                        node.Tag = nodeType.ArrayLeafInt;
-                        node.Name = endOffset.ToString();
-                        node.Text = endOffset.ToString("X4") + " Class Functions Table Count";
-                        tableItems.Add(node);
-                    }
-                    endOffset -= 4;
-                    if (endOffset > 0)
-                    {
-                        TreeNode node = new TreeNode();
-                        node.Tag = nodeType.ArrayLeafObject;
-                        node.Name = endOffset.ToString();
-                        string defaults = "";
-                        int defaultsindex = BitConverter.ToInt32(data, endOffset);
-                        if (defaultsindex < 0 && -index - 1 < pcc.Imports.Count)
-                        {
-                            defaultsindex = Math.Abs(defaultsindex) - 1;
-                            defaults = pcc.Imports[defaultsindex].PackageFullName + "." + pcc.Imports[defaultsindex].ObjectName;
-                        }
-                        else if (defaultsindex > 0 && defaultsindex - 1 < pcc.Exports.Count)
-                        {
-                            defaults = pcc.Exports[defaultsindex - 1].PackageFullName + "." + pcc.Exports[defaultsindex - 1].ObjectName;
-                        }
-
-                        node.Text = endOffset.ToString("X4") + " Class Defaults | " + defaults;
-                        tableItems.Add(node);
-                    }
-                    //Console.WriteLine("FOUND START OF LIST AT 0x" + endOffset.ToString("X8") + ", items: " + index);
-                    break;
-                }
-                endOffset -= 4;
-                count++;
-            }
-
-            //Console.WriteLine("Number of items processed: " + count);
-            return tableItems;
         }
 
         public new void Show()
         {
             base.Show();
-            //StartScan();
         }
 
         private void StartScan(IEnumerable<string> expandedNodes = null, string topNodeName = null, string selectedNodeName = null)
@@ -425,17 +271,16 @@ namespace ME3Explorer
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
             topLevelTree.Tag = nodeType.Root;
             topLevelTree.Name = "0";
-            //try
+            try
             {
                 List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
                 GenerateTree(topLevelTree, topLevelHeaders);
             }
-            //catch (Exception ex)
-            //{
-            //throw ex;
-            //topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
-            //  addPropButton.Visible = false;
-            //}
+            catch (Exception ex)
+            {
+                topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
+                addPropButton.Visible = false;
+            }
             treeView1.Nodes.Add(topLevelTree);
             treeView1.CollapseAll();
             treeView1.Nodes[0].Expand();
@@ -590,6 +435,11 @@ namespace ME3Explorer
                                         {
                                             if (pcc.ImportCount > value)
                                             {
+                                                if (pcc.getNameEntry(header.name) == "m_AutoPersistentObjects")
+                                                {
+                                                    s += pcc.getImport(value).GetFullPath + ".";
+                                                }
+
                                                 s += pcc.getImport(value).ObjectName + " [IMPORT " + value + "]";
                                             }
                                             else
@@ -601,6 +451,17 @@ namespace ME3Explorer
                                         {
                                             if (pcc.ExportCount > value)
                                             {
+                                                if (pcc.getNameEntry(header.name) == "m_AutoPersistentObjects")
+                                                {
+                                                    s += pcc.getExport(value).PackageFullName + ".";
+                                                }
+                                                if (pcc.getNameEntry(header.name) == "StreamingLevels")
+                                                {
+                                                    IExportEntry streamingLevel = pcc.getExport(value);
+                                                    NameProperty prop = streamingLevel.GetProperty<NameProperty>("PackageName");
+
+                                                    s += prop.Value.Name + "_" + prop.Value.Number + " in ";
+                                                }
                                                 s += pcc.getExport(value).ObjectName + " [EXPORT " + value + "]";
                                             }
                                             else
@@ -2330,7 +2191,6 @@ namespace ME3Explorer
 
             WriteMem(startpos + sizeOffset, BitConverter.GetBytes(newSize));
             WriteMem(startpos + countOffset, BitConverter.GetBytes(newCount));
-
         }
 
 
@@ -2352,14 +2212,8 @@ namespace ME3Explorer
             }
 
             var expandedNodes = allNodes.Where(x => x.IsExpanded).Select(x => x.Name);
-            if (className != "Class" || pcc.Game != MEGame.ME3)
-            {
-                StartScan(expandedNodes, treeView1.TopNode?.Name, selectedNodePos?.ToString());
-            }
-            else
-            {
-                StartClassScan(selectedNodePos?.ToString());
-            }
+            StartScan(expandedNodes, treeView1.TopNode?.Name, selectedNodePos?.ToString());
+
 
         }
 
@@ -2791,5 +2645,35 @@ namespace ME3Explorer
             return null;
         }
         #endregion
+
+        private void reorderArrayToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            int off = getPosFromNode(treeView1.SelectedNode);
+            int n = BitConverter.ToInt32(memory, off);
+            string name = pcc.getNameEntry(n);
+
+            ArrayProperty<ObjectProperty> prop = export.GetProperty<ArrayProperty<ObjectProperty>>(name);
+            if (prop != null)
+            {
+                List<string> itemsToSort = new List<string>();
+                foreach (ObjectProperty op in prop)
+                {
+                    int value = op.Value;
+                    IEntry entry = pcc.getEntry(value);
+                    itemsToSort.Add(entry.PackageFullName + "." + entry.ObjectName);
+                }
+                itemsToSort.Sort();
+                string str = "";
+                foreach (string item in itemsToSort)
+                {
+                    str += item;
+                    str += "\n";
+                }
+
+
+                Clipboard.SetText(str);
+            }
+        }
     }
 }

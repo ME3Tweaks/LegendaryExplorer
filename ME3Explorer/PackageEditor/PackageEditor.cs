@@ -466,7 +466,7 @@ namespace ME3Explorer
                         packageEditorTabPane.TabPages.Remove(scriptTab);
                     }
 
-                    if (!ParsableBinaryClasses.Contains(exportEntry.ClassName) || pcc.Game != MEGame.ME3)
+                    if (!BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) || pcc.Game != MEGame.ME3)
                     {
                         if (packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
                         {
@@ -487,7 +487,7 @@ namespace ME3Explorer
                         interpreterControl.export = exportEntry;
                         interpreterControl.InitInterpreter();
 
-                        if (ParsableBinaryClasses.Contains(exportEntry.ClassName) && pcc.Game == MEGame.ME3)
+                        if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) && pcc.Game == MEGame.ME3)
                         {
                             binaryInterpreterControl.export = exportEntry;
                             binaryInterpreterControl.InitInterpreter();
@@ -762,7 +762,6 @@ namespace ME3Explorer
 
         public List<string> RFiles;
         private SortedDictionary<int, int> crossPCCObjectMapping;
-        private readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor" }; //classes that have binary parse code
 
         private void LoadRecentList()
         {
@@ -1362,11 +1361,31 @@ namespace ME3Explorer
                     }
 
                     relinkObjects(importpcc);
+                    relinkBinaryObjects(importpcc);
+
+                    crossPCCObjectMapping = null;
 
                     RefreshView();
                     goToNumber(n >= 0 ? pcc.ExportCount - 1 : -pcc.ImportCount);
                 }
             }
+        }
+
+        /// <summary>
+        /// Attempts to relink unreal binary data to object pointers if they are part of the clone tree.
+        /// It's gonna be an ugly mess.
+        /// </summary>
+        /// <param name="importpcc">PCC being imported from</param>
+        private void relinkBinaryObjects(IMEPackage importpcc)
+        {
+            //foreach (KeyValuePair<int, int> entry in crossPCCObjectMapping)
+            //{
+            //    if (entry.Key > 0)
+            //    {
+            //        //Run an interpreter pass over it - we will find objectleafnodes and attempt to update the same offset in the destination file.
+            //        BinaryInterpreter binaryrelinkInterpreter = new ME3Explorer.BinaryInterpreter(importpcc, importpcc.Exports[entry.Key], pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
+            //    }
+            //}
         }
 
         /// <summary>
@@ -1379,13 +1398,10 @@ namespace ME3Explorer
                 if (entry.Key > 0)
                 {
                     //Run an interpreter pass over it - we will find objectleafnodes and attempt to update the same offset in the destination file.
-                    BinaryInterpreter relinkInterpreter = new ME3Explorer.BinaryInterpreter(importpcc, importpcc.Exports[entry.Key], pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
+                    Interpreter relinkInterpreter = new ME3Explorer.Interpreter(importpcc, importpcc.Exports[entry.Key], pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
                 }
             }
 
-
-
-            if (true) return;
             foreach (KeyValuePair<int, int> entry in crossPCCObjectMapping)
             {
                 string debug = "Cross mapping: ";
@@ -1454,7 +1470,8 @@ namespace ME3Explorer
                                 }
                                 break;
                             case PropertyType.ArrayProperty:
-                                //prop.
+                                //Todo: needs implementation (needs object detection code).
+                                //May not be necessary since "arrays" have objectproperties.
                                 break;
                         }
                     }
@@ -1475,8 +1492,6 @@ namespace ME3Explorer
 
                 //Read Props.
             }
-
-            crossPCCObjectMapping = null;
         }
 
         private bool importTree(TreeNode sourceNode, IMEPackage importpcc, int n)

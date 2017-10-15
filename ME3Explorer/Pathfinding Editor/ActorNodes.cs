@@ -15,58 +15,44 @@ using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.PathingGraphEditor;
 using ME3Explorer.Pathfinding_Editor;
 
-namespace ME3Explorer.PathfindingNodes
+namespace ME3Explorer.ActorNodes
 {
     public enum VarTypes { Int, Bool, Object, Float, StrRef, MatineeData, Extern, String };
 
-    public abstract class PathfindingNode : PathfindingNodeMaster
+    public class ActorNode : PathfindingNodeMaster
     {
-        //protected PPath shape;
-        //public IMEPackage pcc;
-        //public PathingGraphEditor g;
-        //public static ME1Explorer.TalkFiles talkfiles { get; set; }
+        public PathingGraphEditor g;
+        public static ME1Explorer.TalkFiles talkfiles { get; set; }
         static Color commentColor = Color.FromArgb(74, 63, 190);
         static Color intColor = Color.FromArgb(34, 218, 218);//cyan
         static Color floatColor = Color.FromArgb(23, 23, 213);//blue
         static Color boolColor = Color.FromArgb(215, 37, 33); //red
         static Color objectColor = Color.FromArgb(219, 39, 217);//purple
         static Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
-        protected static Brush nodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
-
-        //protected static Brush mostlyTransparentBrush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
-        //protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
-        //public static bool draggingOutlink = false;
-        //public static bool draggingVarlink = false;
-        //public static PNode dragTarget;
-        //public static bool OutputNumbers;
-
-        //public int Index { get { return index; } }
-        ////public float Width { get { return shape.Width; } }
-        ////public float Height { get { return shape.Height; } }
-
-        //protected int index;
-        //public IExportEntry export;
-        //protected Pen outlinePen;
-        //protected SText comment;
-        public List<IExportEntry> ReachSpecs = new List<IExportEntry>();
 
 
-        protected PathfindingNode(int idx, IMEPackage p, PathingGraphEditor grapheditor)
+
+        protected ActorNode(int idx, IMEPackage p, PathingGraphEditor grapheditor)
         {
             Tag = new ArrayList(); //outbound reachspec edges.
             pcc = p;
             g = grapheditor;
             index = idx;
             export = pcc.getExport(index);
+            comment = new SText("", commentColor, false);
+            comment.X = 0;
+            comment.Y = 52 + comment.Height;
+            comment.Pickable = false;
+            this.AddChild(comment);
             this.Pickable = true;
         }
 
-        protected PathfindingNode(int idx, IMEPackage p)
+        protected ActorNode(int idx, IMEPackage p)
         {
             pcc = p;
             index = idx;
             export = pcc.getExport(index);
-            comment = new SText(GetComment(), commentColor, false);
+            comment = new SText("", commentColor, false);
             comment.X = 0;
             comment.Y = 0 - comment.Height;
             comment.Pickable = false;
@@ -74,14 +60,60 @@ namespace ME3Explorer.PathfindingNodes
             this.Pickable = true;
         }
 
+        void appendToComment(string s)
+        {
+            if (comment.Text.Length > 0)
+            {
+                comment.TranslateBy(0, -1 * comment.Height);
+                comment.Text += s + "\n";
+            }
+            else
+            {
+                comment.Text += s + "\n";
+                comment.TranslateBy(0, -1 * comment.Height);
+            }
+        }
 
+        public void Select()
+        {
+            shape.Pen = selectedPen;
+        }
+
+        public void Deselect()
+        {
+            shape.Pen = outlinePen;
+        }
+
+        public override bool Intersects(RectangleF bounds)
+        {
+            Region ellipseRegion = new Region(shape.PathReference);
+            return ellipseRegion.IsVisible(bounds);
+        }
+
+        public void OnMouseEnter(object sender, PInputEventArgs e)
+        {
+            if (draggingVarlink)
+            {
+                ((PPath)((BlockingVolumeNode)sender)[1]).Pen = selectedPen;
+                dragTarget = (PNode)sender;
+            }
+        }
+
+        public void OnMouseLeave(object sender, PInputEventArgs e)
+        {
+            if (draggingVarlink)
+            {
+                ((PPath)((BlockingVolumeNode)sender)[1]).Pen = outlinePen;
+                dragTarget = null;
+            }
+        }
 
         /// <summary>
         /// Creates the reachspec connections from this pathfinding node to others.
         /// </summary>
-        public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
+        public virtual void CreateConnections(ref List<ActorNode> Objects)
         {
-            var outLinksProp = export.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+            /*var outLinksProp = export.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
             if (outLinksProp != null)
             {
                 foreach (var prop in outLinksProp)
@@ -118,7 +150,7 @@ namespace ME3Explorer.PathfindingNodes
 
                     if (othernodeidx != 0)
                     {
-                        foreach (PathfindingNodeMaster node in Objects)
+                        foreach (ActorNode node in Objects)
                         {
                             if (node.export.UIndex == othernodeidx)
                             {
@@ -138,23 +170,9 @@ namespace ME3Explorer.PathfindingNodes
                         g.edgeLayer.AddChild(edge);
                     }
                 }
-            }
+            }*/
         }
         public virtual void Layout(float x, float y) { }
-
-        protected string GetComment()
-        {
-            string res = "";
-            var comments = export.GetProperty<ArrayProperty<StrProperty>>("m_aObjComment");
-            if (comments != null)
-            {
-                foreach (var s in comments)
-                {
-                    res += s + "\n";
-                }
-            }
-            return res;
-        }
 
         protected Color getColor(VarTypes t)
         {
@@ -196,14 +214,14 @@ namespace ME3Explorer.PathfindingNodes
         }
     }
 
-    public class PathNode : PathfindingNode
+    public class BlockingVolumeNode : ActorNode
     {
         public VarTypes type { get; set; }
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
-        private static Color color = Color.FromArgb(34, 218, 218);
+        private static Color color = Color.FromArgb(255, 0, 0);
 
-        public PathNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+        public BlockingVolumeNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
             string s = export.ObjectName;
@@ -211,10 +229,10 @@ namespace ME3Explorer.PathfindingNodes
             // = getType(s);
             float w = 50;
             float h = 50;
-            shape = PPath.CreateEllipse(0, 0, w, h);
+            shape = PPath.CreateRectangle(0, 0, w, h);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -224,23 +242,21 @@ namespace ME3Explorer.PathfindingNodes
             val.X = w / 2 - val.Width / 2;
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
-            var props = export.GetProperties();
             this.TranslateBy(x, y);
             this.MouseEnter += OnMouseEnter;
             this.MouseLeave += OnMouseLeave;
         }
     }
 
-    public class SFXNav_BoostNode : PathfindingNode
+    public class PendingActorNode : ActorNode
     {
         public VarTypes type { get; set; }
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(34, 218, 218);
-        PointF[] boostdownshape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 50), new PointF(40, 40), new PointF(30, 50), new PointF(20, 40), new PointF(10, 50), new PointF(0, 40) };
-        PointF[] boostbottomshape = new PointF[] { new PointF(0, 50), new PointF(50, 50), new PointF(50, 0), new PointF(40, 10), new PointF(30, 0), new PointF(20, 10), new PointF(10, 0), new PointF(0, 10) };
+        PointF[] aShape = new PointF[] { new PointF(0, 50), new PointF(25, 0), new PointF(50, 50), new PointF(25, 30) };
 
-        public SFXNav_BoostNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+        public PendingActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
             string s = export.ObjectName;
@@ -248,16 +264,10 @@ namespace ME3Explorer.PathfindingNodes
             // = getType(s);
             float w = 50;
             float h = 50;
-            BoolProperty bTopNode = export.GetProperty<BoolProperty>("bTopNode");
-            PointF[] shapetouse = boostdownshape;
-            if (bTopNode == null || bTopNode.Value == false)
-            {
-                shapetouse = boostbottomshape;
-            }
-            shape = PPath.CreatePolygon(shapetouse);
+            shape = PPath.CreatePolygon(aShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -267,20 +277,19 @@ namespace ME3Explorer.PathfindingNodes
             val.X = w / 2 - val.Width / 2;
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
-            var props = export.GetProperties();
             this.TranslateBy(x, y);
             this.MouseEnter += OnMouseEnter;
             this.MouseLeave += OnMouseLeave;
         }
     }
 
-    public class WwiseAmbientSound : PathfindingNode
+    public class WwiseAmbientSound : ActorNode
     {
         public VarTypes type { get; set; }
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(0, 255, 0);
-        PointF[] soundShape = new PointF[] { new PointF(10, 10), new PointF(40, 10), new PointF(40, 0), new PointF(50, 0), new PointF(50, 10), new PointF(40, 10), new PointF(25, 50), new PointF(10, 10), new PointF(0, 10), new PointF(0,0), new PointF(10, 0) };
+        PointF[] soundShape = new PointF[] { new PointF(10, 10), new PointF(40, 10), new PointF(40, 0), new PointF(50, 0), new PointF(50, 10), new PointF(40, 10), new PointF(25, 50), new PointF(10, 10), new PointF(0, 10), new PointF(0, 0), new PointF(10, 0) };
 
         public WwiseAmbientSound(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
         {
@@ -292,7 +301,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = PPath.CreatePolygon(soundShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -302,7 +311,6 @@ namespace ME3Explorer.PathfindingNodes
             val.X = w / 2 - val.Width / 2;
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
-            var props = export.GetProperties();
             this.TranslateBy(x, y);
             this.MouseEnter += OnMouseEnter;
             this.MouseLeave += OnMouseLeave;
@@ -311,18 +319,18 @@ namespace ME3Explorer.PathfindingNodes
         /// <summary>
         /// Creates the connection to the annex node.
         /// </summary>
-        public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
+        public override void CreateConnections(ref List<ActorNode> Objects)
         {
             var annexZoneLocProp = export.GetProperty<ObjectProperty>("AnnexZoneLocation");
             if (annexZoneLocProp != null)
             {
                 //IExportEntry annexzonelocexp = pcc.Exports[annexZoneLocProp.Value - 1];
 
-                PathfindingNode othernode = null;
+                ActorNode othernode = null;
                 int othernodeidx = annexZoneLocProp.Value - 1;
                 if (othernodeidx != 0)
                 {
-                    foreach (PathfindingNode node in Objects)
+                    foreach (ActorNode node in Objects)
                     {
                         if (node.export.Index == othernodeidx)
                         {
@@ -346,7 +354,7 @@ namespace ME3Explorer.PathfindingNodes
         }
     }
 
-    public class SFXDoorMarker : PathfindingNode
+    public class SFXDoorMarker : ActorNode
     {
         public VarTypes type { get; set; }
         private SText val;
@@ -365,7 +373,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = PPath.CreatePolygon(doorshape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -375,22 +383,21 @@ namespace ME3Explorer.PathfindingNodes
             val.X = w / 2 - val.Width / 2;
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
-            var props = export.GetProperties();
             this.TranslateBy(x, y);
             this.MouseEnter += OnMouseEnter;
             this.MouseLeave += OnMouseLeave;
         }
     }
 
-    public class BioPathPoint : PathfindingNode
+    public class InterpActorNode : ActorNode
     {
         public VarTypes type { get; set; }
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
-        private static Color color = Color.FromArgb(255, 165, 0);
-        PointF[] upleftarrowshape = new PointF[] { new PointF(0, 0), new PointF(39, 0), new PointF(27, 13), new PointF(49, 35), new PointF(35, 49), new PointF(13, 27), new PointF(0, 39) };
+        private static Color color = Color.FromArgb(0, 130, 255);
+        PointF[] iShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 10), new PointF(35, 10), new PointF(35, 40), new PointF(50, 40), new PointF(50, 50), new PointF(0, 50), new PointF(0, 40), new PointF(10, 40), new PointF(10, 10), new PointF(0, 10) };
 
-        public BioPathPoint(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+        public InterpActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
             string s = export.ObjectName;
@@ -398,10 +405,10 @@ namespace ME3Explorer.PathfindingNodes
             // = getType(s);
             float w = 50;
             float h = 50;
-            shape = PPath.CreatePolygon(upleftarrowshape);
+            shape = PPath.CreatePolygon(iShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -411,23 +418,33 @@ namespace ME3Explorer.PathfindingNodes
             val.X = w / 2 - val.Width / 2;
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
-            var props = export.GetProperties();
             this.TranslateBy(x, y);
             this.MouseEnter += OnMouseEnter;
             this.MouseLeave += OnMouseLeave;
+            if (comment != null)
+            {
+                NameProperty tagProp = export.GetProperty<NameProperty>("Tag");
+                if (tagProp != null)
+                {
+                    string name = tagProp.Value;
+                    comment.Text = name;
+                }
+
+            }
+
         }
     }
 
-    //This is technically not a pathnode...
-    public class SFXObjectiveSpawnPoint : PathfindingNode
+    //This is technically not a BlockingVolumeNode...
+    public class SMAC_ActorNode : ActorNode
     {
         public VarTypes type { get; set; }
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(0, 255, 0);
-        PointF[] triangleshape = new PointF[] { new PointF(0, 50), new PointF(25, 0), new PointF(50, 50) };
+        PointF[] SShape = new PointF[] { new PointF(50, 0), new PointF(0, 17), new PointF(35, 33), new PointF(0, 50), new PointF(50, 33), new PointF(15, 17)};
 
-        public SFXObjectiveSpawnPoint(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+        public SMAC_ActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
             string s = export.ObjectName;
@@ -435,10 +452,10 @@ namespace ME3Explorer.PathfindingNodes
             // = getType(s);
             float w = 50;
             float h = 50;
-            shape = PPath.CreatePolygon(triangleshape);
+            shape = PPath.CreatePolygon(SShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -452,55 +469,24 @@ namespace ME3Explorer.PathfindingNodes
             this.TranslateBy(x, y);
             this.MouseEnter += OnMouseEnter;
             this.MouseLeave += OnMouseLeave;
-        }
-
-        /// <summary>
-        /// Creates the connection to the annex node.
-        /// </summary>
-        public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
-        {
-            var annexZoneLocProp = export.GetProperty<ObjectProperty>("AnnexZoneLocation");
-            if (annexZoneLocProp != null)
+            ObjectProperty sm = export.GetProperty<ObjectProperty>("StaticMesh");
+            if (sm != null)
             {
-                //IExportEntry annexzonelocexp = pcc.Exports[annexZoneLocProp.Value - 1];
-
-                PathfindingNodeMaster othernode = null;
-                int othernodeidx = annexZoneLocProp.Value - 1;
-                if (othernodeidx != 0)
-                {
-                    foreach (PathfindingNodeMaster node in Objects)
-                    {
-                        if (node.export.Index == othernodeidx)
-                        {
-                            othernode = node;
-                            break;
-                        }
-                    }
-                }
-
-                if (othernode != null)
-                {
-                    PPath edge = new PPath();
-                    ((ArrayList)Tag).Add(edge);
-                    ((ArrayList)othernode.Tag).Add(edge);
-                    edge.Tag = new ArrayList();
-                    ((ArrayList)edge.Tag).Add(this);
-                    ((ArrayList)edge.Tag).Add(othernode);
-                    g.edgeLayer.AddChild(edge);
-                }
+                IEntry meshexp = pcc.getEntry(sm.Value);
+                comment.Text = meshexp.ObjectName;
             }
         }
     }
 
-    //This is technically not a pathnode...
-    public class AnnexNode : PathfindingNode
+    //This is technically not a BlockingVolumeNode...
+    public class XXXAnnexNode : ActorNode
     {
         public VarTypes type { get; set; }
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(0, 0, 255);
 
-        public AnnexNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+        public XXXAnnexNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
             string s = export.ObjectName;
@@ -511,7 +497,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = PPath.CreateEllipse(0, 0, w, h);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -530,13 +516,13 @@ namespace ME3Explorer.PathfindingNodes
         /// <summary>
         /// This has no outbound connections.
         /// </summary>
-        public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
+        public override void CreateConnections(ref List<ActorNode> Objects)
         {
 
         }
     }
 
-    public class PendingNode : PathfindingNode
+    public class PendingNode : ActorNode
     {
         public VarTypes type { get; set; }
         private SText val;
@@ -554,7 +540,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = PPath.CreateRectangle(0, 0, w, h);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -571,7 +557,7 @@ namespace ME3Explorer.PathfindingNodes
         }
     }
 
-    public class SFXEnemySpawnPoint : PathfindingNode
+    public class SFXEnemySpawnPoint : ActorNode
     {
         public VarTypes type { get; set; }
         private SText val;
@@ -590,7 +576,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = PPath.CreatePolygon(starshape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -607,7 +593,7 @@ namespace ME3Explorer.PathfindingNodes
         }
     }
 
-    public class SFXNav_JumpNode : PathfindingNode
+    public class SFXNav_JumpNode : ActorNode
     {
         public VarTypes type { get; set; }
         private SText val;
@@ -627,7 +613,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = nodeShape;
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -644,7 +630,7 @@ namespace ME3Explorer.PathfindingNodes
         }
     }
 
-    public class SFXNav_TurretPoint : PathfindingNode
+    public class SFXNav_TurretPoint : ActorNode
     {
         public VarTypes type { get; set; }
         private SText val;
@@ -664,7 +650,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = nodeShape;
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -680,7 +666,4 @@ namespace ME3Explorer.PathfindingNodes
             this.MouseLeave += OnMouseLeave;
         }
     }
-
-
-    
 }

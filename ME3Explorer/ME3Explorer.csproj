@@ -355,6 +355,8 @@
       <DependentUpon>StateTaskListsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Packages\MEPackage.cs" />
+    <Compile Include="Pathfinding Editor\ActorNodes.cs" />
+    <Compile Include="Pathfinding Editor\PathfindingNodeMaster.cs" />
     <Compile Include="Pathfinding Editor\ReachSpecCreatorForm.cs">
       <SubType>Form</SubType>
     </Compile>

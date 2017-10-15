@@ -17,6 +17,12 @@
          "name":"PathNode",
          "cylindercomponentarchetype":"Engine.Default__PathNode.CollisionCylinder",
          "incomingreachspecclass":"Engine.ReachSpec"
+      },
+      "SFXNav_BoostNode":{
+         "class":"SFXGame.SFXNav_BoostNode",
+         "name":"SFXNav_BoostNode",
+         "cylindercomponentarchetype":"SFXGame.Default__SFXNav_BoostNode.CollisionCylinder",
+         "incomingreachspecclass":"Engine.ReachSpec"
       }
    },
    "importtypes":{
@@ -57,6 +63,18 @@
          "packagefile":"Engine"
       },
       "Engine.Default__PathNode.CollisionCylinder":{
+         "class":"Engine.CylinderComponent",
+         "packagefile":"Engine"
+      },
+      "SFXGame.SFXNav_BoostNode":{
+         "class":"Core.Class",
+         "packagefile":"Core"
+      },
+      "SFXGame.Default__SFXNav_BoostNode":{
+         "class":"SFXGame.SFXNav_BoostNode",
+         "packagefile":"SFXGame"
+      },
+      "SFXGame.Default__SFXNav_BoostNode.CollisionCylinder":{
          "class":"Engine.CylinderComponent",
          "packagefile":"Engine"
       }
