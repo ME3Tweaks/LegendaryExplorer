@@ -1544,13 +1544,13 @@ namespace ME3Explorer
             {
                 //
                 Debug.WriteLine("TOP LEVEL IMPORT! " + imp.PackageFullName + "." + imp.ObjectName);
-                return FindOrAddImport(importpcc, imp, importingLink);
+                return FindOrAddCrossImport(importpcc, imp, importingLink);
             }
 
             ImportEntry importingLinkImport = importpcc.getImport(Math.Abs(importingLink) - 1);
             //Debug.WriteLine("Import Link: " + importingLinkImport.PackageFullName + "." + importingLinkImport.ObjectName);
             int importLink = importImportedLinkedImport(importpcc, Math.Abs(importingLink) - 1);
-            return FindOrAddImport(importpcc, imp, (importLink + 1) * -1);
+            return FindOrAddCrossImport(importpcc, imp, (importLink + 1) * -1);
             ////Upper linked imports now exist. We should check to see if our import exists - if it doesn't, we should add it and link it to the proper one.
             //string requiredImportObject = imp.PackageFullName + "." + imp.ObjectName;
 
@@ -1584,15 +1584,23 @@ namespace ME3Explorer
             //pcc.addImport(nimp);
         }
 
-        private int FindOrAddImport(IMEPackage importpcc, ImportEntry import, int link)
+        /// <summary>
+        /// Used to remap export metadata and object properties across PCCs.
+        /// </summary>
+        /// <param name="importpcc"></param>
+        /// <param name="import"></param>
+        /// <param name="link"></param>
+        /// <returns></returns>
+        private int FindOrAddCrossImport(IMEPackage importpcc, ImportEntry import, int link)
         {
-            string requiredImportObject = import.PackageFullName + "." + import.ObjectName;
+            string requiredImportObject = import.GetFullPath;
             int localImportIndex = 0;
             foreach (ImportEntry impentry in pcc.Imports)
             {
                 //This is 0 based - but the game uses 1 based!
-                string fullname = impentry.PackageName + "." + impentry.ObjectName;
-                if (fullname == requiredImportObject)
+                string fullname = impentry.GetFullPath;
+                //Debug.WriteLine(fullname +" vs "+requiredImportObject);
+                if (fullname.Equals(requiredImportObject))
                 {
                     //Already Imported.
                     crossPCCObjectMapping[-import.Index] = -(localImportIndex); //0 based.
@@ -1602,9 +1610,9 @@ namespace ME3Explorer
             }
 
             //Didn't find it.
-            Debug.WriteLine("Importing and linking to " + link);
+            //Debug.WriteLine(import.GetFullPath+" Importing and linking to " + link);
             importImport(importpcc, import.Index, link);
-            crossPCCObjectMapping[import.UIndex] = pcc.ImportCount - 1; //0 based.
+            crossPCCObjectMapping[import.UIndex] = -pcc.ImportCount - 1; //0 based.
             //Debug.WriteLine("Added import: " + pcc.Imports[pcc.ImportCount - 1].PackageFullName + "." + pcc.Imports[pcc.ImportCount - 1].PackageFullName + " at " + pcc.Imports[pcc.ImportCount - 1]);
             return pcc.ImportCount - 1;
         }

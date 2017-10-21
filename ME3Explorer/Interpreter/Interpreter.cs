@@ -178,6 +178,10 @@ namespace ME3Explorer
                             //Debug.WriteLine(rootNode.Tag + " " + n + " " + rootNode.Text);
                             if (n != 0)
                             {
+                                if (n == -388)
+                                {
+                                    Debug.WriteLine("Should miss..");
+                                }
                                 int key;
                                 if (crossPCCReferences.TryGetValue(n, out key))
                                 {
@@ -201,7 +205,47 @@ namespace ME3Explorer
                                 }
                                 else
                                 {
-                                    Debug.WriteLine("Relink miss: " + n + " " + rootNode.Text);
+                                    Debug.WriteLine("Relink miss, attempting JIT relink on " + n + " " + rootNode.Text);
+                                    if (n < 0 && Math.Abs(n) - 1 < pcc.ImportCount)
+                                    {
+                                        //Lets add this as an import. Or at least find one
+                                        ImportEntry origImport = pcc.getImport(Math.Abs(n) - 1);
+                                        string origImportFullName = origImport.GetFullPath;
+                                        Debug.WriteLine("We should import " + origImport.GetFullPath);
+
+                                        int newFileObjectValue = n;
+                                        foreach(ImportEntry imp in destinationExport.FileRef.Imports)
+                                        {
+                                            if (imp.GetFullPath == origImportFullName)
+                                            {
+                                                Debug.WriteLine("RELINK " + n + " to " + imp.UIndex);
+                                                newFileObjectValue = imp.UIndex;
+                                                break;
+                                            }
+                                        }
+                                        if (newFileObjectValue == n)
+                                        {
+                                            //it doesn't exist locally so we need to find or add the upstream imports
+                                            ImportEntry newImport = getOrAddCrossImport(origImportFullName, destinationExport.FileRef);
+                                            if (newImport != null)
+                                            {
+                                                newFileObjectValue = newImport.UIndex;
+                                            }
+                                        }
+
+                                        if (newFileObjectValue != n)
+                                        {
+                                            //Write new value
+                                            byte[] data = destinationExport.Data;
+                                            byte[] buff2 = BitConverter.GetBytes(newFileObjectValue);
+                                            for (int o = 0; o < 4; o++)
+                                            {
+                                                data[off + o] = buff2[o];
+                                                //Debug.WriteLine("Updating Byte at 0x" + (destprop.offsetval + o).ToString("X4") + " from " + preval + " to " + postval + ". It should have been set to " + buff2[o]);
+                                            }
+                                            destinationExport.Data = data;
+                                        }
+                                    }
                                 }
                             }
 
@@ -222,6 +266,120 @@ namespace ME3Explorer
                     }
                 }
             }
+        }
+
+        private ImportEntry getOrAddCrossImport(string importFullName, IMEPackage destinationPCC)
+        {
+            //see if this import exists locally
+            foreach (ImportEntry imp in destinationPCC.Imports)
+            {
+                if (imp.GetFullPath == importFullName)
+                {
+                    return imp;
+                }
+            }
+
+            //Import doesn't exist, so we're gonna need to add it
+            //But first we need to figure out what needs to be added upstream as links
+            //Search upstream until we find something, or we can't g
+            string[] importParts = importFullName.Split('.');
+            List<int> upstreamLinks = new List<int>(); //0 = top level, 1 = next level... n = what we wanted to import
+            int upstreamCount = 1;
+
+            ImportEntry upstreamImport = null;
+            while (upstreamCount < importParts.Count())
+            {
+                string upstream = String.Join(".", importParts, 0, importParts.Count() - upstreamCount);
+                foreach (ImportEntry imp in destinationPCC.Imports)
+                {
+                    if (imp.GetFullPath == upstream)
+                    {
+                        upstreamImport = imp;
+                        break;
+                    }
+                }
+
+                if (upstreamImport != null)
+                {
+                    break;
+                }
+                upstreamCount++;
+            }
+
+            ImportEntry mostdownstreamimport = null;
+            if (upstreamImport == null)
+            {
+                string fullobjectname = importParts[0];
+
+                ImportEntry donorTopLevelImport = null;
+                foreach (ImportEntry imp in pcc.Imports) //importing side info we will move to our dest pcc
+                {
+                    if (imp.GetFullPath == fullobjectname)
+                    {
+                        donorTopLevelImport = imp;
+                        break;
+                    }
+                }
+
+                //Create new toplevel import and set that as the most downstream one.
+                int downstreamPackageName = destinationPCC.FindNameOrAdd(donorTopLevelImport.PackageFile);
+                int downstreamClassName = destinationPCC.FindNameOrAdd(donorTopLevelImport.ClassName);
+                int downstreamName = destinationPCC.FindNameOrAdd(fullobjectname);
+
+                mostdownstreamimport = new ImportEntry(destinationPCC);
+               // mostdownstreamimport.idxLink = downstreamLinkIdx; ??
+                mostdownstreamimport.idxClassName = downstreamClassName;
+                mostdownstreamimport.idxObjectName = downstreamName;
+                mostdownstreamimport.idxPackageName = downstreamPackageName;
+                destinationPCC.addImport(mostdownstreamimport);
+                upstreamImport = mostdownstreamimport;
+                upstreamCount--;
+                //return null;
+            }
+
+            //Have an upstream import, now we need to add downstream imports.
+
+            while (upstreamCount > 0)
+            {
+                upstreamCount--;
+                string fullobjectname = String.Join(".", importParts, 0, importParts.Count() - upstreamCount);
+                ImportEntry donorUpstreamImport = null;
+                foreach (ImportEntry imp in pcc.Imports) //importing side info we will move to our dest pcc
+                {
+                    if (imp.GetFullPath == fullobjectname)
+                    {
+                        donorUpstreamImport = imp;
+                        break;
+                    }
+                }
+
+
+                int downstreamName = destinationPCC.FindNameOrAdd(importParts[importParts.Count() - upstreamCount - 1]);
+                Debug.WriteLine(destinationPCC.Names[downstreamName]);
+                int downstreamLinkIdx = upstreamImport.UIndex;
+                Debug.WriteLine(upstreamImport.GetFullPath);
+
+                int downstreamPackageName = destinationPCC.FindNameOrAdd(donorUpstreamImport.PackageName);
+                int downstreamClassName = destinationPCC.FindNameOrAdd(donorUpstreamImport.ClassName);
+
+                //ImportEntry classImport = getOrAddImport();
+                //int downstreamClass = 0;
+                //if (classImport != null) {
+                //    downstreamClass = classImport.UIndex; //no recursion pls
+                //} else
+                //{
+                //    throw new Exception("No class was found for importing");
+                //}
+
+                mostdownstreamimport = new ImportEntry(destinationPCC);
+                mostdownstreamimport.idxLink = downstreamLinkIdx;
+                mostdownstreamimport.idxClassName = downstreamClassName;
+                mostdownstreamimport.idxObjectName = downstreamName;
+                mostdownstreamimport.idxPackageName = downstreamPackageName;
+                destinationPCC.addImport(mostdownstreamimport);
+                upstreamImport = mostdownstreamimport;
+            }
+            return mostdownstreamimport;
         }
 
         public void InitInterpreter(BioTlkFileSet editorTlkSet = null)
@@ -253,7 +411,6 @@ namespace ME3Explorer
                 }
             }
             StartScan();
-
         }
 
         public new void Show()

@@ -27,11 +27,11 @@
    },
    "importtypes":{
       "Engine.ReachSpec":{
-         "class":"Core.Class",
+         "class":"Class",
          "packagefile":"Core"
       },
       "SFXGame.SFXEnemySpawnPoint":{
-         "class":"Core.Class",
+         "class":"Class",
          "packagefile":"Core"
       },
       "SFXGame.Default__SFXEnemySpawnPoint":{
@@ -43,7 +43,7 @@
          "packagefile":"Engine"
       },
       "SFXGame.SFXNav_TurretPoint":{
-         "class":"Core.Class",
+         "class":"Class",
          "packagefile":"Core"
       },
       "SFXGame.Default__SFXNav_TurretPoint":{
@@ -55,7 +55,7 @@
          "packagefile":"Engine"
       },
       "Engine.PathNode":{
-         "class":"Core.Class",
+         "class":"Class",
          "packagefile":"Core"
       },
       "Engine.Default__PathNode":{
@@ -67,7 +67,7 @@
          "packagefile":"Engine"
       },
       "SFXGame.SFXNav_BoostNode":{
-         "class":"Core.Class",
+         "class":"Class",
          "packagefile":"Core"
       },
       "SFXGame.Default__SFXNav_BoostNode":{
