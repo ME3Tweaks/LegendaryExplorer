@@ -43,6 +43,7 @@ namespace ME3Explorer
 
             SetView(View.Tree);
             interpreterControl.saveHexButton.Click += saveHexChangesButton_Click;
+            binaryInterpreterControl.saveHexButton.Click += binarySaveHexChangesButton_Click;
         }
 
         public void LoadMostRecent()
@@ -680,6 +681,20 @@ namespace ME3Explorer
                 m.WriteByte(provider.ReadByte(i));
             pcc.getExport(n).Data = m.ToArray();
         }
+        private void binarySaveHexChangesButton_Click(object sender, EventArgs e)
+        {
+            int n;
+            if (pcc == null || !GetSelected(out n) || n < 0)
+            {
+                return;
+            }
+            MemoryStream m = new MemoryStream();
+            IByteProvider provider = binaryInterpreterControl.hb1.ByteProvider;
+            for (int i = 0; i < provider.Length; i++)
+                m.WriteByte(provider.ReadByte(i));
+            pcc.getExport(n).Data = m.ToArray();
+        }
+
 
         private void Search()
         {

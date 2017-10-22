@@ -594,7 +594,7 @@ namespace ME3Explorer
                                             {
                                                 if (pcc.getNameEntry(header.name) == "m_AutoPersistentObjects")
                                                 {
-                                                    s += pcc.getImport(value).GetFullPath + ".";
+                                                    s += pcc.getImport(value).PackageFullName + ".";
                                                 }
 
                                                 s += pcc.getImport(value).ObjectName + " [IMPORT " + value + "]";
@@ -2670,9 +2670,9 @@ namespace ME3Explorer
             int size = (int)hb1.ByteProvider.Length;
             try
             {
-                if (memory != null && start != -1 && start + len <= size)
+                if (memory != null && start != -1 && start + len < size)
                 {
-                    string s = $"Byte: {memory[start]}";
+                    string s = $"Byte: {memory[start]}"; //if selection is same as size this will crash.
                     if (start <= memory.Length - 4)
                     {
                         s += $", Int: {BitConverter.ToInt32(memory, start)}";

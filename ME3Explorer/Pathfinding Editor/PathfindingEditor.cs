@@ -61,7 +61,7 @@ namespace ME3Explorer
         public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
 
         public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "BioPathPoint", "SFXNav_TurretPoint", "CoverLink", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode", "WwiseAmbientSound" };
-        public string[] actorNodeClasses = { "BlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor" };
+        public string[] actorNodeClasses = { "BlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume" };
 
         public string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" };
         public bool ActorNodesActive = false;
@@ -586,6 +586,7 @@ namespace ME3Explorer
                             case "SFXDoorMarker":
                                 pathNode = new PathfindingNodes.SFXDoorMarker(index, x, y, pcc, graphEditor);
                                 break;
+                            
                             case "BioPathPoint":
                                 pathNode = new PathfindingNodes.BioPathPoint(index, x, y, pcc, graphEditor);
                                 break;
@@ -657,6 +658,9 @@ namespace ME3Explorer
                                 break;
                             case "InterpActor":
                                 actorNode = new InterpActorNode(index, x, y, pcc, graphEditor);
+                                break;
+                            case "BioTriggerVolume":
+                                actorNode = new ActorNodes.BioTriggerVolume(index, x, y, pcc, graphEditor);
                                 break;
                             default:
                                 actorNode = new PendingActorNode(index, x, y, pcc, graphEditor);
@@ -1225,7 +1229,7 @@ namespace ME3Explorer
 
         private void toSFXEnemySpawnPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex > 0)
+            if (listBox1.SelectedIndex >= 0)
             {
                 int n = CurrentObjects[listBox1.SelectedIndex];
                 if (n == -1)
@@ -1241,7 +1245,7 @@ namespace ME3Explorer
 
         private void toPathNodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex > 0)
+            if (listBox1.SelectedIndex >= 0)
             {
                 int n = CurrentObjects[listBox1.SelectedIndex];
                 if (n == -1)
@@ -1258,7 +1262,7 @@ namespace ME3Explorer
 
         private void toSFXNavTurretPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex > 0)
+            if (listBox1.SelectedIndex >= 0)
             {
                 int n = CurrentObjects[listBox1.SelectedIndex];
                 if (n == -1)
@@ -1672,11 +1676,11 @@ namespace ME3Explorer
                 return;
 
             PathfindingNode node = null;
-            foreach (PathfindingNode n in Objects)
+            foreach (PathfindingNodeMaster n in Objects)
             {
-                if (n.Index == sourceExportIndex)
+                if (n.Index == sourceExportIndex && n is PathfindingNode)
                 {
-                    node = n;
+                    node = (PathfindingNode) n;
                     break;
                 }
             }
@@ -1702,7 +1706,7 @@ namespace ME3Explorer
 
         private void sFXNavBoostNodeTopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex > 0)
+            if (listBox1.SelectedIndex >= 0)
             {
                 int n = CurrentObjects[listBox1.SelectedIndex];
                 if (n == -1)
@@ -1718,7 +1722,7 @@ namespace ME3Explorer
 
         private void sFXNavBoostNodeBottomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex > 0)
+            if (listBox1.SelectedIndex >= 0)
             {
                 int n = CurrentObjects[listBox1.SelectedIndex];
                 if (n == -1)

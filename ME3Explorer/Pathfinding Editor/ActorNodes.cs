@@ -442,7 +442,7 @@ namespace ME3Explorer.ActorNodes
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(0, 255, 0);
-        PointF[] SShape = new PointF[] { new PointF(50, 0), new PointF(0, 17), new PointF(35, 33), new PointF(0, 50), new PointF(50, 33), new PointF(15, 17)};
+        PointF[] SShape = new PointF[] { new PointF(50, 0), new PointF(0, 17), new PointF(35, 33), new PointF(0, 50), new PointF(50, 33), new PointF(15, 17) };
 
         public SMAC_ActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
@@ -479,14 +479,15 @@ namespace ME3Explorer.ActorNodes
     }
 
     //This is technically not a BlockingVolumeNode...
-    public class XXXAnnexNode : ActorNode
+    public class BioTriggerVolume : ActorNode
     {
         public VarTypes type { get; set; }
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(0, 0, 255);
+        PointF[] TShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 15), new PointF(35, 15), new PointF(35, 50), new PointF(15, 50), new PointF(15, 15), new PointF(0, 15) };
 
-        public XXXAnnexNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+        public BioTriggerVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
             string s = export.ObjectName;
@@ -494,7 +495,7 @@ namespace ME3Explorer.ActorNodes
             // = getType(s);
             float w = 50;
             float h = 50;
-            shape = PPath.CreateEllipse(0, 0, w, h);
+            shape = PPath.CreatePolygon(TShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
             shape.Brush = pathfindingNodeBrush;

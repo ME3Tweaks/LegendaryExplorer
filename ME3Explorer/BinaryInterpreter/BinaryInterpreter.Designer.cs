@@ -117,6 +117,7 @@ namespace ME3Explorer
             this.saveHexButton.Size = new System.Drawing.Size(107, 24);
             this.saveHexButton.Text = "Save Hex Changes";
             this.saveHexButton.ToolTipText = "Saves hex changes in-memory (not to disk)";
+            this.saveHexButton.Click += new System.EventHandler(this.saveHexButton_Click);
             // 
             // toggleHexWidthButton
             // 
@@ -268,7 +269,6 @@ namespace ME3Explorer
             "Floats"});
             this.viewModeDropDownList.Name = "viewModeDropDownList";
             this.viewModeDropDownList.Size = new System.Drawing.Size(121, 23);
-            this.viewModeDropDownList.Text = "Objects";
             this.viewModeDropDownList.SelectedIndexChanged += new System.EventHandler(this.viewModeChanged);
             // 
             // splitContainer1

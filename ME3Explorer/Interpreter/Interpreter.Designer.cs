@@ -303,7 +303,7 @@ namespace ME3Explorer
             this.collapseAllChildrenToolStripMenuItem,
             this.reorderArrayToolStripMenuItem});
             this.nodeContextMenuStrip1.Name = "nodeContextMenuStrip1";
-            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(185, 92);
+            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(185, 70);
             // 
             // expandAllChildrenToolStripMenuItem
             // 

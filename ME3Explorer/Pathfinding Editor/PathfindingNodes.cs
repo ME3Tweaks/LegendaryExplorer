@@ -58,6 +58,11 @@ namespace ME3Explorer.PathfindingNodes
             g = grapheditor;
             index = idx;
             export = pcc.getExport(index);
+            comment = new SText(GetComment(), commentColor, false);
+            comment.X = 0;
+            comment.Y = 55 - comment.Height;
+            comment.Pickable = false;
+            this.AddChild(comment);
             this.Pickable = true;
         }
 
@@ -280,7 +285,7 @@ namespace ME3Explorer.PathfindingNodes
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(0, 255, 0);
-        PointF[] soundShape = new PointF[] { new PointF(10, 10), new PointF(40, 10), new PointF(40, 0), new PointF(50, 0), new PointF(50, 10), new PointF(40, 10), new PointF(25, 50), new PointF(10, 10), new PointF(0, 10), new PointF(0,0), new PointF(10, 0) };
+        PointF[] soundShape = new PointF[] { new PointF(10, 10), new PointF(40, 10), new PointF(40, 0), new PointF(50, 0), new PointF(50, 10), new PointF(40, 10), new PointF(25, 50), new PointF(10, 10), new PointF(0, 10), new PointF(0, 0), new PointF(10, 0) };
 
         public WwiseAmbientSound(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
         {
@@ -431,7 +436,16 @@ namespace ME3Explorer.PathfindingNodes
             : base(idx, p, grapheditor)
         {
             string s = export.ObjectName;
+            string commentText = "";
 
+            var spawnTagsProp = export.GetProperty<ArrayProperty<StrProperty>>("SupportedSpawnTags");
+            if (spawnTagsProp != null)
+            {
+                foreach (string str in spawnTagsProp)
+                {
+                    commentText += str + "\n";
+                }
+            }
             // = getType(s);
             float w = 50;
             float h = 50;
@@ -447,8 +461,10 @@ namespace ME3Explorer.PathfindingNodes
             val.TextAlignment = StringAlignment.Center;
             val.X = w / 2 - val.Width / 2;
             val.Y = h / 2 - val.Height / 2;
+            comment.Text = commentText;
+
             this.AddChild(val);
-            var props = export.GetProperties();
+            //var props = export.GetProperties();
             this.TranslateBy(x, y);
             this.MouseEnter += OnMouseEnter;
             this.MouseLeave += OnMouseLeave;
@@ -682,5 +698,5 @@ namespace ME3Explorer.PathfindingNodes
     }
 
 
-    
+
 }

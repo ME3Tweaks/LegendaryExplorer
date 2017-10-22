@@ -696,8 +696,9 @@ Floats*/
                 }
 
                 treeView1.EndUpdate();
-                treeView1.ExpandAll();
+                topLevelTree.Expand();
                 memsize = memory.Length;
+
             }
             //catch (Exception e)
             //{
@@ -2401,6 +2402,11 @@ Floats*/
             {
                 RefreshMem();
             }
+        }
+
+        private void saveHexButton_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
