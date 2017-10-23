@@ -44,7 +44,7 @@ namespace ME3Explorer.Pathfinding_Editor
         protected int index;
         public IExportEntry export;
         protected Pen outlinePen;
-        protected SText comment;
+        public SText comment;
         public List<IExportEntry> ReachSpecs = new List<IExportEntry>();
 
         void appendToComment(string s)

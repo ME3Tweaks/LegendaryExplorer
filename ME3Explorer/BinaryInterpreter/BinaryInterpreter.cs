@@ -471,7 +471,7 @@ Floats*/
                 }
 
                 int smcaindex = 0;
-                while (start < data.Length)
+                while (start < data.Length && smcaindex < smacitems.Count - 1)
                 {
                     TreeNode smcanode = new TreeNode();
                     smcanode.Tag = nodeType.Unknown;
@@ -627,7 +627,7 @@ Floats*/
                 {
                     TreeNode node = new TreeNode();
                     node.Tag = nodeType.Unknown;
-                    node.Text = start.ToString("X4") + " Export pointer to bioworldinfo resolves to wrong export Resolved to " + bioworldinfo.ObjectName + " as export " + bioworldinfoexportid;
+                    node.Text = start.ToString("X4") + " Export pointer to bioworldinfo resolves to wrong export. Resolved to " + bioworldinfo.ObjectName + " as export " + bioworldinfoexportid;
                     node.Name = start.ToString();
                     topLevelTree.Nodes.Add(node);
                     treeView1.Nodes.Add(topLevelTree);
@@ -684,7 +684,8 @@ Floats*/
                 TreeNode[] nodes;
                 if (nodeNameToSelect != null)
                 {
-                    nodes = treeView1.Nodes.Find(nodeNameToSelect, true);
+                    //Needs fixed up
+                    nodes = topLevelTree.Nodes.Find(nodeNameToSelect, true);
                     if (nodes.Length > 0)
                     {
                         treeView1.SelectedNode = nodes[0];

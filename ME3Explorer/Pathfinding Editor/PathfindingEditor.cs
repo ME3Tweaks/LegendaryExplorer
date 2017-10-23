@@ -61,7 +61,7 @@ namespace ME3Explorer
         public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
 
         public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "BioPathPoint", "SFXNav_TurretPoint", "CoverLink", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode", "WwiseAmbientSound" };
-        public string[] actorNodeClasses = { "BlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume" };
+        public string[] actorNodeClasses = { "BlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume", "SFXAmmoContainer", "SFXGrenadeContainer" };
 
         public string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" };
         public bool ActorNodesActive = false;
@@ -411,7 +411,7 @@ namespace ME3Explorer
                                             int offset = binarypos + 12 * 4;
                                             float x = BitConverter.ToSingle(smacData, offset);
                                             float y = BitConverter.ToSingle(smacData, offset + 4);
-                                            Debug.WriteLine(offset.ToString("X4")+" "+x + "," + y);
+                                            Debug.WriteLine(offset.ToString("X4") + " " + x + "," + y);
                                             smacCoordinates[obj.Value - 1] = new PointF(x, y);
                                             binarypos += 64;
                                         }
@@ -586,7 +586,7 @@ namespace ME3Explorer
                             case "SFXDoorMarker":
                                 pathNode = new PathfindingNodes.SFXDoorMarker(index, x, y, pcc, graphEditor);
                                 break;
-                            
+
                             case "BioPathPoint":
                                 pathNode = new PathfindingNodes.BioPathPoint(index, x, y, pcc, graphEditor);
                                 break;
@@ -603,36 +603,45 @@ namespace ME3Explorer
                                 var annexZoneLocProp = export.GetProperty<ObjectProperty>("AnnexZoneLocation");
                                 if (annexZoneLocProp != null)
                                 {
-                                    IExportEntry annexzonelocexp = pcc.Exports[annexZoneLocProp.Value - 1];
-
-                                    PropertyCollection annexzoneprops = annexzonelocexp.GetProperties();
-                                    foreach (var annexprop in annexzoneprops)
+                                    int ind = annexZoneLocProp.Value - 1;
+                                    if (ind >= 0 && ind < pcc.Exports.Count)
                                     {
-                                        if (annexprop.Name == "location")
-                                        {
-                                            PropertyCollection sublocprops = (annexprop as StructProperty).Properties;
-                                            int locx = 0;
-                                            int locy = 0;
-                                            foreach (var locprop in sublocprops)
-                                            {
-                                                switch (locprop.Name)
-                                                {
-                                                    case "X":
-                                                        locx = Convert.ToInt32((locprop as FloatProperty).Value);
-                                                        break;
-                                                    case "Y":
-                                                        locy = Convert.ToInt32((locprop as FloatProperty).Value);
-                                                        break;
-                                                }
-                                            }
+                                        IExportEntry annexzonelocexp = pcc.Exports[ind];
 
-                                            AnnexNode annexNode = new PathfindingNodes.AnnexNode(annexzonelocexp.Index, locx, locy, pcc, graphEditor);
-                                            Objects.Add(annexNode); //this might cause concurrentmodificationexception...
-                                            listBox1.Items.Add("#" + (annexzonelocexp.Index) + " " + annexzonelocexp.ObjectName + " class: " + annexzonelocexp.ClassName);
-                                            //annexNode.MouseDown += node_MouseDown;
-                                            CurrentObjects.Add(annexzonelocexp.Index); //this might cause concurrentmodificationexception...
-                                            break;
+                                        PropertyCollection annexzoneprops = annexzonelocexp.GetProperties();
+                                        foreach (var annexprop in annexzoneprops)
+                                        {
+                                            if (annexprop.Name == "location")
+                                            {
+                                                PropertyCollection sublocprops = (annexprop as StructProperty).Properties;
+                                                int locx = 0;
+                                                int locy = 0;
+                                                foreach (var locprop in sublocprops)
+                                                {
+                                                    switch (locprop.Name)
+                                                    {
+                                                        case "X":
+                                                            locx = Convert.ToInt32((locprop as FloatProperty).Value);
+                                                            break;
+                                                        case "Y":
+                                                            locy = Convert.ToInt32((locprop as FloatProperty).Value);
+                                                            break;
+                                                    }
+                                                }
+
+                                                AnnexNode annexNode = new PathfindingNodes.AnnexNode(annexzonelocexp.Index, locx, locy, pcc, graphEditor);
+                                                Objects.Add(annexNode); //this might cause concurrentmodificationexception...
+                                                listBox1.Items.Add("#" + (annexzonelocexp.Index) + " " + annexzonelocexp.ObjectName + " class: " + annexzonelocexp.ClassName);
+                                                //annexNode.MouseDown += node_MouseDown;
+                                                CurrentObjects.Add(annexzonelocexp.Index); //this might cause concurrentmodificationexception...
+                                                break;
+                                            }
                                         }
+                                    }
+                                    else
+                                    {
+                                        pathNode.comment.Text += "\nBAD ANNEXZONELOC!";
+                                        pathNode.comment.TextBrush = new SolidBrush(Color.Red);
                                     }
                                 }
 
@@ -662,6 +671,13 @@ namespace ME3Explorer
                             case "BioTriggerVolume":
                                 actorNode = new ActorNodes.BioTriggerVolume(index, x, y, pcc, graphEditor);
                                 break;
+                            case "SFXGrenadeContainer":
+                                actorNode = new ActorNodes.SFXGrenadeContainer(index, x, y, pcc, graphEditor);
+                                break;
+                            case "SFXAmmoContainer":
+                                actorNode = new ActorNodes.SFXAmmoContainer(index, x, y, pcc, graphEditor);
+                                break;
+                                
                             default:
                                 actorNode = new PendingActorNode(index, x, y, pcc, graphEditor);
                                 break;
@@ -1680,7 +1696,7 @@ namespace ME3Explorer
             {
                 if (n.Index == sourceExportIndex && n is PathfindingNode)
                 {
-                    node = (PathfindingNode) n;
+                    node = (PathfindingNode)n;
                     break;
                 }
             }

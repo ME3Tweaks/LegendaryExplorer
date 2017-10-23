@@ -316,41 +316,74 @@ namespace ME3Explorer.ActorNodes
             this.MouseLeave += OnMouseLeave;
         }
 
-        /// <summary>
-        /// Creates the connection to the annex node.
-        /// </summary>
-        public override void CreateConnections(ref List<ActorNode> Objects)
+        
+    }
+
+    public class SFXAmmoContainer : ActorNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(178, 34, 34);
+        PointF[] ammoShape = new PointF[] { new PointF(0, 10), new PointF(10, 10), new PointF(10, 0), new PointF(50, 0), new PointF(50, 50), new PointF(10, 50), new PointF(10, 40), new PointF(0, 40) };
+
+        public SFXAmmoContainer(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
         {
-            var annexZoneLocProp = export.GetProperty<ObjectProperty>("AnnexZoneLocation");
-            if (annexZoneLocProp != null)
-            {
-                //IExportEntry annexzonelocexp = pcc.Exports[annexZoneLocProp.Value - 1];
+            string s = export.ObjectName;
 
-                ActorNode othernode = null;
-                int othernodeidx = annexZoneLocProp.Value - 1;
-                if (othernodeidx != 0)
-                {
-                    foreach (ActorNode node in Objects)
-                    {
-                        if (node.export.Index == othernodeidx)
-                        {
-                            othernode = node;
-                            break;
-                        }
-                    }
-                }
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreatePolygon(ammoShape);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = pathfindingNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            this.TranslateBy(x, y);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
+        }
+    }
 
-                if (othernode != null)
-                {
-                    PPath edge = new PPath();
-                    ((ArrayList)Tag).Add(edge);
-                    ((ArrayList)othernode.Tag).Add(edge);
-                    edge.Tag = new ArrayList();
-                    ((ArrayList)edge.Tag).Add(this);
-                    ((ArrayList)edge.Tag).Add(othernode);
-                    g.edgeLayer.AddChild(edge);
-                }
-            }
+    public class SFXGrenadeContainer : ActorNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(0, 100, 0);
+        PointF[] grenadeShape = new PointF[] { new PointF(0, 10), new PointF(15, 10), new PointF(15, 0), new PointF(35, 0), new PointF(35, 10), new PointF(50, 10), new PointF(50, 50), new PointF(0, 50) };
+
+        public SFXGrenadeContainer(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreatePolygon(grenadeShape);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = pathfindingNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            this.TranslateBy(x, y);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
         }
     }
 
