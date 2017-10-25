@@ -2832,5 +2832,15 @@ namespace ME3Explorer
                 Clipboard.SetText(str);
             }
         }
+
+        private void setValueKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Return)
+
+            {
+                // Then Do your Thang
+                setPropertyButton.PerformClick();
+            }
+        }
     }
 }

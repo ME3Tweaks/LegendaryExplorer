@@ -1,4 +1,6 @@
-﻿namespace ME3Explorer
+﻿using ME3Explorer.Pathfinding_Editor;
+
+namespace ME3Explorer
 {
     partial class PathfindingEditor
     {
@@ -34,9 +36,9 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.graphEditor = new UMD.HCIL.PathingGraphEditor.PathingGraphEditor();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
-            this.pg1 = new System.Windows.Forms.PropertyGrid();
-            this.interpreter1 = new ME3Explorer.Interpreter();
             this.listBox1 = new System.Windows.Forms.ListBox();
+            this.interpreter1 = new ME3Explorer.Interpreter();
+            this.pathfindingNodeInfoPanel = new ME3Explorer.Pathfinding_Editor.PathfindingNodeInfoPanel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,6 +49,7 @@
             this.togglePathfindingNodes = new System.Windows.Forms.ToolStripMenuItem();
             this.toggleActorNodes = new System.Windows.Forms.ToolStripMenuItem();
             this.staticMeshCollectionActorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sFXCombatZonesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
@@ -64,6 +67,7 @@
             this.createReachSpecToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setGraphPositionAsNodeLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateNewRandomGUIDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addToSFXCombatZoneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.filenameLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -100,7 +104,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.listBox1);
+            this.splitContainer1.Panel2.Controls.Add(this.pathfindingNodeInfoPanel);
             this.splitContainer1.Size = new System.Drawing.Size(1024, 552);
             this.splitContainer1.SplitterDistance = 698;
             this.splitContainer1.TabIndex = 0;
@@ -147,7 +151,7 @@
             // 
             // splitContainer3.Panel1
             // 
-            this.splitContainer3.Panel1.Controls.Add(this.pg1);
+            this.splitContainer3.Panel1.Controls.Add(this.listBox1);
             // 
             // splitContainer3.Panel2
             // 
@@ -155,29 +159,6 @@
             this.splitContainer3.Size = new System.Drawing.Size(698, 145);
             this.splitContainer3.SplitterDistance = 346;
             this.splitContainer3.TabIndex = 0;
-            // 
-            // pg1
-            // 
-            this.pg1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pg1.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
-            this.pg1.HelpVisible = false;
-            this.pg1.LineColor = System.Drawing.SystemColors.ControlDark;
-            this.pg1.Location = new System.Drawing.Point(0, 0);
-            this.pg1.Name = "pg1";
-            this.pg1.Size = new System.Drawing.Size(343, 120);
-            this.pg1.TabIndex = 0;
-            this.pg1.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.pg1_PropertyValueChanged);
-            // 
-            // interpreter1
-            // 
-            this.interpreter1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.interpreter1.Location = new System.Drawing.Point(0, 0);
-            this.interpreter1.Name = "interpreter1";
-            this.interpreter1.Pcc = null;
-            this.interpreter1.Size = new System.Drawing.Size(348, 145);
-            this.interpreter1.TabIndex = 0;
             // 
             // listBox1
             // 
@@ -193,6 +174,23 @@
             this.listBox1.Size = new System.Drawing.Size(320, 527);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            // 
+            // interpreter1
+            // 
+            this.interpreter1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.interpreter1.Location = new System.Drawing.Point(0, 0);
+            this.interpreter1.Name = "interpreter1";
+            this.interpreter1.Pcc = null;
+            this.interpreter1.Size = new System.Drawing.Size(348, 145);
+            this.interpreter1.TabIndex = 0;
+            // 
+            // pathfindingNodeInfoPanel
+            // 
+            this.pathfindingNodeInfoPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pathfindingNodeInfoPanel.Location = new System.Drawing.Point(0, 0);
+            this.pathfindingNodeInfoPanel.Name = "pathfindingNodeInfoPanel";
+            this.pathfindingNodeInfoPanel.Size = new System.Drawing.Size(322, 552);
+            this.pathfindingNodeInfoPanel.TabIndex = 0;
             // 
             // menuStrip1
             // 
@@ -250,7 +248,8 @@
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.togglePathfindingNodes,
             this.toggleActorNodes,
-            this.staticMeshCollectionActorsToolStripMenuItem});
+            this.staticMeshCollectionActorsToolStripMenuItem,
+            this.sFXCombatZonesToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(95, 20);
             this.optionsToolStripMenuItem.Text = "Viewing Mode";
@@ -280,8 +279,14 @@
             this.staticMeshCollectionActorsToolStripMenuItem.Name = "staticMeshCollectionActorsToolStripMenuItem";
             this.staticMeshCollectionActorsToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
             this.staticMeshCollectionActorsToolStripMenuItem.Text = "StaticMeshCollectionActors";
-            this.staticMeshCollectionActorsToolStripMenuItem.ToolTipText = "Locations of items in StaticMeshActorCollections. Enabling these options can lead to a significant de" +
-    "crease in editor performance.";
+            this.staticMeshCollectionActorsToolStripMenuItem.ToolTipText = "Locations of items in StaticMeshActorCollections. Enabling these options can lead" +
+    " to a significant decrease in editor performance.";
+            // 
+            // sFXCombatZonesToolStripMenuItem
+            // 
+            this.sFXCombatZonesToolStripMenuItem.Name = "sFXCombatZonesToolStripMenuItem";
+            this.sFXCombatZonesToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.sFXCombatZonesToolStripMenuItem.Text = "SFXCombatZones";
             // 
             // toolStrip1
             // 
@@ -320,9 +325,10 @@
             this.changeNodeTypeToolStripMenuItem,
             this.createReachSpecToolStripMenuItem,
             this.setGraphPositionAsNodeLocationToolStripMenuItem,
-            this.generateNewRandomGUIDToolStripMenuItem});
+            this.generateNewRandomGUIDToolStripMenuItem,
+            this.addToSFXCombatZoneToolStripMenuItem});
             this.rightMouseButtonMenu.Name = "contextMenuStrip1";
-            this.rightMouseButtonMenu.Size = new System.Drawing.Size(295, 158);
+            this.rightMouseButtonMenu.Size = new System.Drawing.Size(295, 180);
             // 
             // openInPackageEditorToolStripMenuItem
             // 
@@ -420,6 +426,12 @@
             this.generateNewRandomGUIDToolStripMenuItem.Text = "Generate new random NavGUID";
             this.generateNewRandomGUIDToolStripMenuItem.Click += new System.EventHandler(this.generateNewRandomGUIDToolStripMenuItem_Click);
             // 
+            // addToSFXCombatZoneToolStripMenuItem
+            // 
+            this.addToSFXCombatZoneToolStripMenuItem.Name = "addToSFXCombatZoneToolStripMenuItem";
+            this.addToSFXCombatZoneToolStripMenuItem.Size = new System.Drawing.Size(294, 22);
+            this.addToSFXCombatZoneToolStripMenuItem.Text = "Add to SFXCombatZone";
+            // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -508,7 +520,6 @@
         private System.Windows.Forms.SplitContainer splitContainer2;
         private UMD.HCIL.PathingGraphEditor.PathingGraphEditor graphEditor;
         private System.Windows.Forms.SplitContainer splitContainer3;
-        private System.Windows.Forms.PropertyGrid pg1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
@@ -531,6 +542,7 @@
         private System.Windows.Forms.ToolStripMenuItem addObjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem;
         private Interpreter interpreter1;
+        private PathfindingNodeInfoPanel pathfindingNodeInfoPanel;
         private System.Windows.Forms.ToolStripMenuItem changeNodeTypeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toSFXEnemySpawnPointToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toPathNodeToolStripMenuItem;
@@ -542,5 +554,7 @@
         private System.Windows.Forms.ToolStripMenuItem sFXNavBoostNodeBottomToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem generateNewRandomGUIDToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem staticMeshCollectionActorsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sFXCombatZonesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addToSFXCombatZoneToolStripMenuItem;
     }
 }

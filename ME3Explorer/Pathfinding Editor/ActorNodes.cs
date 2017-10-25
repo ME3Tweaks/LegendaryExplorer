@@ -22,7 +22,6 @@ namespace ME3Explorer.ActorNodes
     public class ActorNode : PathfindingNodeMaster
     {
         public PathingGraphEditor g;
-        public static ME1Explorer.TalkFiles talkfiles { get; set; }
         static Color commentColor = Color.FromArgb(74, 63, 190);
         static Color intColor = Color.FromArgb(34, 218, 218);//cyan
         static Color floatColor = Color.FromArgb(23, 23, 213);//blue
@@ -369,6 +368,40 @@ namespace ME3Explorer.ActorNodes
             float w = 50;
             float h = 50;
             shape = PPath.CreatePolygon(grenadeShape);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = pathfindingNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            this.TranslateBy(x, y);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
+        }
+    }
+
+    public class SFXCombatZone : ActorNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(20, 34, 34);
+        PointF[] cShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 8), new PointF(8, 8), new PointF(8, 42), new PointF(50, 42), new PointF(50, 50), new PointF(0, 50) };
+
+        public SFXCombatZone(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreatePolygon(cShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
             shape.Brush = pathfindingNodeBrush;

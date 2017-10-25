@@ -134,12 +134,14 @@ namespace ME3Explorer
             this.nameEntry.Name = "nameEntry";
             this.nameEntry.Size = new System.Drawing.Size(200, 25);
             this.nameEntry.Visible = false;
+            this.nameEntry.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.setValueKeyPress);
             // 
             // proptext
             // 
             this.proptext.Name = "proptext";
             this.proptext.Size = new System.Drawing.Size(120, 25);
             this.proptext.Visible = false;
+            this.proptext.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.setValueKeyPress);
             this.proptext.KeyUp += new System.Windows.Forms.KeyEventHandler(this.proptext_KeyUp);
             // 
             // objectNameLabel

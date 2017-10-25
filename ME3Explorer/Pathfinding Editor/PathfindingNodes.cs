@@ -32,7 +32,9 @@ namespace ME3Explorer.PathfindingNodes
         static Color objectColor = Color.FromArgb(219, 39, 217);//purple
         static Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
         protected static Brush nodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
-
+        static Pen blackPen = Pens.Black;
+        static Pen slotToSlotPen = Pens.DarkOrange;
+        private Pen edgePen = blackPen;
         //protected static Brush mostlyTransparentBrush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
         //protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
         //public static bool draggingOutlink = false;
@@ -97,6 +99,13 @@ namespace ME3Explorer.PathfindingNodes
 
                 foreach (IExportEntry spec in ReachSpecs)
                 {
+                    Pen penToUse = blackPen;
+                    switch (spec.ObjectName)
+                    {
+                        case "SlotToSlotReachSpec":
+                            penToUse = slotToSlotPen;
+                            break;
+                    }
                     //Get ending
                     PNode othernode = null;
                     int othernodeidx = 0;
@@ -135,11 +144,13 @@ namespace ME3Explorer.PathfindingNodes
                     if (othernode != null)
                     {
                         PPath edge = new PPath();
+                        edge.Pen = penToUse;
                         ((ArrayList)Tag).Add(edge);
                         ((ArrayList)othernode.Tag).Add(edge);
                         edge.Tag = new ArrayList();
                         ((ArrayList)edge.Tag).Add(this);
                         ((ArrayList)edge.Tag).Add(othernode);
+
                         g.edgeLayer.AddChild(edge);
                     }
                 }
@@ -568,6 +579,42 @@ namespace ME3Explorer.PathfindingNodes
             float w = 50;
             float h = 50;
             shape = PPath.CreateRectangle(0, 0, w, h);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = nodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            var props = export.GetProperties();
+            this.TranslateBy(x, y);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
+        }
+    }
+
+    public class CoverSlotMarker : PathfindingNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(153, 153, 0);
+        PointF[] shieldshape = new PointF[] { new PointF(0, 15), new PointF(25, 0), new PointF(50, 15), new PointF(25,50) };
+
+        public CoverSlotMarker(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreatePolygon(shieldshape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
             shape.Brush = nodeBrush;

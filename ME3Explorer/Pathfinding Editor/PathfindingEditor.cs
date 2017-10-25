@@ -61,8 +61,8 @@ namespace ME3Explorer
         public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
 
         public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "BioPathPoint", "SFXNav_TurretPoint", "CoverLink", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode", "WwiseAmbientSound" };
-        public string[] actorNodeClasses = { "BlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume", "SFXAmmoContainer", "SFXGrenadeContainer" };
-
+        public string[] actorNodeClasses = { "BlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone" };
+        public List<int> SFXCombatZoneExportIDs = new List<int>();
         public string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" };
         public bool ActorNodesActive = false;
         public bool PathfindingNodesActive = true;
@@ -73,7 +73,7 @@ namespace ME3Explorer
             AllowRefresh = true;
             classDatabasePath = Application.StartupPath + "//exec//pathfindingclassdb.json";
             InitializeComponent();
-
+            pathfindingNodeInfoPanel.PassPathfindingNodeEditorIn(this);
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
             graphEditor.Camera.MouseDown += backMouseDown_Handler;
             graphEditor.AddInputEventListener(new PathfindingMouseListener(this));
@@ -110,22 +110,8 @@ namespace ME3Explorer
             interpreter1.hideHexBox();
         }
 
-        private struct SaveData
-        {
-            public bool absoluteIndex;
-            public int index;
-            public float X;
-            public float Y;
-
-            public SaveData(int i) : this()
-            {
-                index = i;
-            }
-        }
-
         //public static readonly string OptionsPath = Path.Combine(PathfindingEditorDataFolder, "PathfindingEditorOptions.JSON");
 
-        private ME1Explorer.TalkFiles talkFiles;
         private bool selectedByNode;
         private int selectedIndex;
         private PathingZoomController zoomController;
@@ -139,12 +125,11 @@ namespace ME3Explorer
         /// List of nodes in the graph
         /// </summary>
         public List<PathfindingNodeMaster> Objects;
-        private List<SaveData> SavedPositions;
         public bool RefOrRefChild;
 
         public string CurrentFile;
         public string JSONpath;
-
+        public List<int> sfxCombatZones = new List<int>();
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -156,10 +141,12 @@ namespace ME3Explorer
             }
         }
 
+
+
         public void LoadFile(string fileName)
         {
-            //try
-            //{
+            ActiveCombatZoneExportIndex = -1;
+            sfxCombatZones = new List<int>();
             smacCoordinates = new Dictionary<int, PointF>();
             bool isFirstLoad = CurrentFile == null;
             VisibleActorCollections = new List<int>();
@@ -249,23 +236,11 @@ namespace ME3Explorer
 
             staticMeshCollectionActorsToolStripMenuItem.DropDownItems.Clear();
             staticMeshCollectionActorsToolStripMenuItem.Enabled = false;
-
+            sFXCombatZonesToolStripMenuItem.DropDownItems.Clear();
+            sFXCombatZonesToolStripMenuItem.Enabled = false;
+            SFXCombatZoneExportIDs = new List<int>();
             CurrentObjects = new List<int>();
             listBox1.Items.Clear();
-
-
-            /*var seqObjs = export.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-            if (seqObjs != null)
-            {
-                var objIndices = seqObjs.Select(x => x.Value - 1).ToList();
-                objIndices.Sort();
-                foreach (int seqObj in objIndices)
-                {
-                    CurrentObjects.Add(seqObj);
-                    IExportEntry exportEntry = pcc.getExport(seqObj);
-                    listBox1.Items.Add("#" + seqObj + " :" + exportEntry.ObjectName + " class: " + exportEntry.ClassName);
-                }
-            }*/
 
             foreach (IExportEntry exp in pcc.Exports)
             {
@@ -371,6 +346,8 @@ namespace ME3Explorer
                                     CurrentObjects.Add(exportEntry.Index);
                                     listBox1.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
                                 }
+
+
                             }
 
                             if (ActorNodesActive)
@@ -381,6 +358,28 @@ namespace ME3Explorer
                                     listBox1.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
                                 }
                             }
+
+                            //SFXCombatZone 
+                            if (exportEntry.ClassName == "SFXCombatZone")
+                            {
+                                sfxCombatZones.Add(exportEntry.Index);
+                                ToolStripMenuItem testItem = new ToolStripMenuItem(exportEntry.Index + " " + exportEntry.ObjectName + "_" + exportEntry.indexValue);
+                                if (exportEntry.Index == ActiveCombatZoneExportIndex)
+                                {
+                                    testItem.Checked = true;
+                                }
+                                testItem.Click += (object o, EventArgs args) =>
+                                {
+                                    setSFXCombatZoneBGActive(testItem, exportEntry, testItem.Checked);
+                                };
+                                sFXCombatZonesToolStripMenuItem.DropDown.Items.Add(testItem);
+                                sFXCombatZonesToolStripMenuItem.Enabled = true;
+
+                                SFXCombatZoneExportIDs.Add(exportEntry.Index);
+                            }
+
+
+
 
                             //if (VisibleActorCollections.Contains(exportEntry.Index))
                             //{
@@ -466,6 +465,27 @@ namespace ME3Explorer
             return false;
         }
 
+        private void setSFXCombatZoneBGActive(ToolStripMenuItem testItem, IExportEntry exportEntry, bool @checked)
+        {
+            testItem.Checked = !testItem.Checked;
+            if (testItem.Checked)
+            {
+                ActiveCombatZoneExportIndex = exportEntry.Index;
+            }
+            else
+            {
+                ActiveCombatZoneExportIndex = -1;
+            }
+            foreach (ToolStripMenuItem tsmi in sFXCombatZonesToolStripMenuItem.DropDownItems)
+            {
+                if (tsmi.Checked && tsmi != testItem)
+                {
+                    tsmi.Checked = false; //uncheck other combat zones
+                }
+            }
+            RefreshView();
+        }
+
         private void staticMeshCollectionActor_ToggleVisibility(ToolStripMenuItem item, IExportEntry exportEntry, bool @checked)
         {
             item.Checked = !item.Checked;
@@ -548,9 +568,13 @@ namespace ME3Explorer
                 int x = 0, y = 0;
                 //SaveData savedInfo = new SaveData(-1);
                 IExportEntry exporttoLoad = pcc.getExport(index);
-                StructProperty prop = exporttoLoad.GetProperty<StructProperty>("location");
+                //                var props = 
+                var props = exporttoLoad.GetProperties();
+                StructProperty prop = props.GetProp<StructProperty>("location");
                 if (prop != null)
                 {
+
+
                     PropertyCollection nodelocprops = (prop as StructProperty).Properties;
                     //X offset is 0x20
                     //Y offset is 0x24
@@ -568,11 +592,11 @@ namespace ME3Explorer
                         }
                     }
 
-                    IExportEntry export = pcc.getExport(index);
-                    if (pathfindingNodeClasses.Contains(export.ClassName))
+                    //IExportEntry export = pcc.getExport(index);
+                    if (pathfindingNodeClasses.Contains(exporttoLoad.ClassName))
                     {
                         PathfindingNode pathNode = null;
-                        switch (export.ClassName)
+                        switch (exporttoLoad.ClassName)
                         {
                             case "PathNode":
                                 pathNode = new PathfindingNodes.PathNode(index, x, y, pcc, graphEditor);
@@ -596,11 +620,14 @@ namespace ME3Explorer
                             case "WwiseAmbientSound":
                                 pathNode = new PathfindingNodes.WwiseAmbientSound(index, x, y, pcc, graphEditor);
                                 break;
+                            case "CoverSlotMarker":
+                                pathNode = new PathfindingNodes.CoverSlotMarker(index, x, y, pcc, graphEditor);
+                                break;
                             case "SFXOperation_ObjectiveSpawnPoint":
                                 pathNode = new PathfindingNodes.SFXObjectiveSpawnPoint(index, x, y, pcc, graphEditor);
 
                                 //Create annex node if required
-                                var annexZoneLocProp = export.GetProperty<ObjectProperty>("AnnexZoneLocation");
+                                var annexZoneLocProp = props.GetProp<ObjectProperty>("AnnexZoneLocation");
                                 if (annexZoneLocProp != null)
                                 {
                                     int ind = annexZoneLocProp.Value - 1;
@@ -653,14 +680,34 @@ namespace ME3Explorer
                                 pathNode = new PathfindingNodes.PendingNode(index, x, y, pcc, graphEditor);
                                 break;
                         }
+                        if (ActiveCombatZoneExportIndex >= 0)
+                        {
+                            ArrayProperty<StructProperty> volumes = props.GetProp<ArrayProperty<StructProperty>>("Volumes");
+                            if (volumes != null)
+                            {
+                                foreach (StructProperty volume in volumes)
+                                {
+                                    ObjectProperty actorRef = volume.GetProp<ObjectProperty>("Actor");
+                                    if (actorRef != null)
+                                    {
+                                        if (actorRef.Value == ActiveCombatZoneExportIndex + 1)
+                                        {
+                                            Debug.WriteLine("FOUND ACTIVE COMBAT NODE!");
+                                            pathNode.shape.Brush = PathfindingNodeMaster.sfxCombatZoneBrush;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         Objects.Add(pathNode);
                         return new PointF(x, y);
                     } //End if Pathnode Class
 
-                    if (actorNodeClasses.Contains(export.ClassName))
+                    if (actorNodeClasses.Contains(exporttoLoad.ClassName))
                     {
                         ActorNode actorNode = null;
-                        switch (export.ClassName)
+                        switch (exporttoLoad.ClassName)
                         {
                             case "BlockingVolume":
                                 actorNode = new BlockingVolumeNode(index, x, y, pcc, graphEditor);
@@ -677,10 +724,30 @@ namespace ME3Explorer
                             case "SFXAmmoContainer":
                                 actorNode = new ActorNodes.SFXAmmoContainer(index, x, y, pcc, graphEditor);
                                 break;
-                                
+                            case "SFXCombatZone":
+                                actorNode = new ActorNodes.SFXCombatZone(index, x, y, pcc, graphEditor);
+                                break;
+
                             default:
                                 actorNode = new PendingActorNode(index, x, y, pcc, graphEditor);
                                 break;
+                        }
+                        if (ActiveCombatZoneExportIndex >= 0)
+                        {
+                            ArrayProperty<StructProperty> volumes = props.GetProp<ArrayProperty<StructProperty>>("Volumes");
+                            if (volumes != null)
+                            {
+                                foreach (StructProperty volume in volumes)
+                                {
+                                    ObjectProperty actorRef = volume.GetProp<ObjectProperty>("Actor");
+                                    if (actorRef != null && actorRef.Value == ActiveCombatZoneExportIndex - 1)
+                                    {
+                                        Debug.WriteLine("FOUND ACTIVE COMBAT NODE!");
+                                        actorNode.shape.Brush = PathfindingNodeMaster.sfxCombatZoneBrush;
+                                        break;
+                                    }
+                                }
+                            }
                         }
                         Objects.Add(actorNode);
                         return new PointF(x, y);
@@ -712,18 +779,19 @@ namespace ME3Explorer
 
         public void GetProperties(IExportEntry export)
         {
-            List<PropertyReader.Property> p;
-            switch (export.ClassName)
-            {
-                default:
-                    p = PropertyReader.getPropList(export);
-                    break;
-            }
-            pg = new PropGrid();
-            pg1.SelectedObject = pg;
-            for (int l = 0; l < p.Count; l++)
-                pg.Add(PropertyReader.PropertyToGrid(p[l], pcc));
-            pg1.Refresh();
+            //List<PropertyReader.Property> p;
+            //switch (export.ClassName)
+            //{
+            //    default:
+            //        p = PropertyReader.getPropList(export);
+            //        break;
+            //}
+            //pg = new PropGrid();
+            //pg1.SelectedObject = pg;
+            //for (int l = 0; l < p.Count; l++)
+            //    pg.Add(PropertyReader.PropertyToGrid(p[l], pcc));
+            //pg1.Refresh();
+            pathfindingNodeInfoPanel.LoadExport(export);
             if (interpreter1.Pcc != export.FileRef)
             {
                 interpreter1.Pcc = export.FileRef; //allows cross file references to work.
@@ -791,16 +859,20 @@ namespace ME3Explorer
                 return;
             selectedByNode = true;
             listBox1.SelectedIndex = selected;
+            addToSFXCombatZoneToolStripMenuItem.Enabled = false;
             if (e.Button == MouseButtons.Right)
             {
                 breakLinksToolStripMenuItem.DropDownItems.Clear();
-
-
-
                 PathfindingNodeMaster node = (PathfindingNodeMaster)sender;
 
                 if (node is PathfindingNode)
                 {
+                    if (node.export.ClassName == "CoverSlotMarker")
+                    {
+                        addToSFXCombatZoneToolStripMenuItem.Enabled = true;
+
+                    }
+
                     rightMouseButtonMenu.Show(MousePosition);
                     //open in InterpEditor
                     string className = pcc.getExport(((PathfindingNodes.PathfindingNode)sender).Index).ClassName;
@@ -894,6 +966,7 @@ namespace ME3Explorer
 
         public bool AllowRefresh { get; private set; }
         public List<int> VisibleActorCollections { get; private set; }
+        public int ActiveCombatZoneExportIndex { get; set; }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {

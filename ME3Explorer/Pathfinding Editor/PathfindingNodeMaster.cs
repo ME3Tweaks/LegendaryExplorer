@@ -18,7 +18,7 @@ namespace ME3Explorer.Pathfinding_Editor
 {
     public abstract class PathfindingNodeMaster : PNode
     {
-        protected PPath shape;
+        public PPath shape;
         public IMEPackage pcc;
         public PathingGraphEditor g;
         public static ME1Explorer.TalkFiles talkfiles { get; set; }
@@ -28,6 +28,8 @@ namespace ME3Explorer.Pathfinding_Editor
         static Color boolColor = Color.FromArgb(215, 37, 33); //red
         static Color objectColor = Color.FromArgb(219, 39, 217);//purple
         static Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
+        public static Brush sfxCombatZoneBrush = new SolidBrush(Color.FromArgb(255, 0, 0));
+
         protected static Brush mostlyTransparentBrush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
         protected static Brush pathfindingNodeBrush = new SolidBrush(Color.FromArgb(80, 80, 80));
 

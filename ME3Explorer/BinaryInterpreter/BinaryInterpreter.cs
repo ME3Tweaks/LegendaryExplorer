@@ -117,7 +117,7 @@ Floats*/
 
         int? selectedNodePos = null;
 
-        public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "Class", "Material", "StaticMesh", "MaterialInstanceConstant" }; //classes that have binary parse code
+        public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "Class", "Material", "StaticMesh", "MaterialInstanceConstant", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh" }; //classes that have binary parse code
 
 
         public BinaryInterpreter()

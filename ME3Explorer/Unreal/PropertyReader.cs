@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using ME3Explorer.Packages;
 using Gibbed.IO;
 using System.Runtime.CompilerServices;
+using System.Diagnostics;
 
 namespace ME3Explorer.Unreal
 {
@@ -583,12 +584,15 @@ namespace ME3Explorer.Unreal
             int pos = start;
             if(raw.Length - pos < 8)
                 return result;
-            int name = (int)BitConverter.ToInt64(raw, pos);
+            //int name = (int)BitConverter.ToInt64(raw, pos);
+            int name = (int)BitConverter.ToInt32(raw, pos);
+
             if (!pcc.isName(name))
                 return result;
             string t = pcc.getNameEntry(name);
             p = new Property();
             p.Name = name;
+            //Debug.WriteLine(t +" at "+start);
             if (t == "None")
             {
                 p.TypeVal = PropertyType.None;         
@@ -600,7 +604,9 @@ namespace ME3Explorer.Unreal
                 result.Add(p);
                 return result;
             }
-            int type = (int)BitConverter.ToInt64(raw, pos + 8);            
+            //int type = (int)BitConverter.ToInt64(raw, pos + 8);            
+            int type = (int)BitConverter.ToInt32(raw, pos + 8);
+
             p.Size = BitConverter.ToInt32(raw, pos + 16);
             if (!pcc.isName(type) || p.Size < 0 || p.Size >= raw.Length)
                 return result;

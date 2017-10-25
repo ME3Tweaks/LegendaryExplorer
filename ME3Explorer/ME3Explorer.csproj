@@ -356,6 +356,12 @@
     </Compile>
     <Compile Include="Packages\MEPackage.cs" />
     <Compile Include="Pathfinding Editor\ActorNodes.cs" />
+    <Compile Include="Pathfinding Editor\PathfindingNodeInfoPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pathfinding Editor\PathfindingNodeInfoPanel.Designer.cs">
+      <DependentUpon>PathfindingNodeInfoPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Pathfinding Editor\PathfindingNodeMaster.cs" />
     <Compile Include="Pathfinding Editor\ReachSpecCreatorForm.cs">
       <SubType>Form</SubType>
@@ -1093,6 +1099,9 @@
     <EmbeddedResource Include="PackageEditor\PackageEditor.resx">
       <DependentUpon>PackageEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pathfinding Editor\PathfindingNodeInfoPanel.resx">
+      <DependentUpon>PathfindingNodeInfoPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pathfinding Editor\ReachSpecCreatorForm.resx">
       <DependentUpon>ReachSpecCreatorForm.cs</DependentUpon>
