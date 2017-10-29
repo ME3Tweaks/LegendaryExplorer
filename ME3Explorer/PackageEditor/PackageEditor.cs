@@ -535,7 +535,8 @@ namespace ME3Explorer
                 infoExportDataBox.Visible = true;
                 IExportEntry exportEntry = pcc.getExport(n);
                 textBox1.Text = exportEntry.ObjectName;
-                textBox2.Text = exportEntry.ClassName + " (" + exportEntry.PackageFullName + "." + exportEntry.ClassName + ")";
+                IEntry _class = pcc.getEntry(exportEntry.idxClass);
+                classNameBox.Text = _class.GetFullPath;
                 superclassTextBox.Text = exportEntry.ClassParent;
                 textBox3.Text = exportEntry.PackageFullName;
                 textBox4.Text = exportEntry.header.Length + " bytes";
@@ -564,7 +565,7 @@ namespace ME3Explorer
                 infoExportDataBox.Visible = false;
                 ImportEntry importEntry = pcc.getImport(n);
                 textBox1.Text = importEntry.ObjectName;
-                textBox2.Text = importEntry.ClassName;
+                classNameBox.Text = importEntry.ClassName;
                 textBox3.Text = importEntry.PackageFullName;
                 textBox4.Text = ImportEntry.byteSize + " bytes";
             }

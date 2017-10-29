@@ -2512,6 +2512,11 @@ namespace ME3Explorer
         {
             List<string> props = PropertyReader.getPropList(export).Select(x => pcc.getNameEntry(x.Name)).ToList();
             string prop = AddPropertyDialog.GetProperty(className, props, pcc.Game);
+            AddProperty(prop);
+        }
+
+        public void AddProperty(string prop)
+        {
             if (prop != null)
             {
                 PropertyInfo info = GetPropertyInfo(prop, className);

@@ -93,6 +93,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 PathfindingEditorInstance.ActiveCombatZoneExportIndex = combatZones[n];
                 PathfindingEditorInstance.RefreshView();
+                PathfindingEditorInstance.graphEditor.Invalidate(); //force repaint
             }
 
         }

@@ -103,6 +103,21 @@ namespace ME3Explorer.Pathfinding_Editor
 
         }
 
+
+        protected virtual string GetComment()
+        {
+            NameProperty tagProp = export.GetProperty<NameProperty>("Tag");
+            if (tagProp != null)
+            {
+                string name = tagProp.Value;
+                if (name != export.ObjectName)
+                {
+                    return name;
+                }
+            }
+            return "";
+        }
+
         public class SText : PText
         {
             private readonly Brush black = new SolidBrush(Color.Black);

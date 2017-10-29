@@ -247,6 +247,110 @@ namespace ME3Explorer.ActorNodes
         }
     }
 
+    public class BioStartLocation : ActorNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(128, 255, 60);
+
+        public BioStartLocation(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreateEllipse(0, 10, w, h - 10);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = pathfindingNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            this.TranslateBy(x, y);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
+        }
+    }
+
+    public class SFXStuntActor : ActorNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(128, 255, 60);
+        PointF[] sShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 10), new PointF(10, 10), new PointF(10, 20), new PointF(10, 25), new PointF(50, 25), new PointF(50, 50), new PointF(0, 50), new PointF(0, 40), new PointF(40, 40), new PointF(40, 30), new PointF(0, 30) };
+
+        public SFXStuntActor(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            base.shape = PPath.CreatePolygon(sShape);
+            outlinePen = new Pen(color);
+            base.shape.Pen = outlinePen;
+            base.shape.Brush = pathfindingNodeBrush;
+            base.shape.Pickable = false;
+            this.AddChild(base.shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            this.TranslateBy(x, y);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
+        }
+    }
+
+    public class SkeletalMeshActor : ActorNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(200, 200, 200);
+        PointF[] kShape = new PointF[] { new PointF(0, 0), new PointF(5, 0), new PointF(5, 20), new PointF(45, 0), new PointF(50, 0), new PointF(10, 25), new PointF(50, 50), new PointF(45, 50), new PointF(5, 35), new PointF(5, 50), new PointF(0, 50) };
+
+        public SkeletalMeshActor(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreatePolygon(kShape);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = pathfindingNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            this.TranslateBy(x, y);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
+        }
+    }
+
     public class PendingActorNode : ActorNode
     {
         public VarTypes type { get; set; }
@@ -315,7 +419,7 @@ namespace ME3Explorer.ActorNodes
             this.MouseLeave += OnMouseLeave;
         }
 
-        
+
     }
 
     public class SFXAmmoContainer : ActorNode
@@ -487,17 +591,6 @@ namespace ME3Explorer.ActorNodes
             this.TranslateBy(x, y);
             this.MouseEnter += OnMouseEnter;
             this.MouseLeave += OnMouseLeave;
-            if (comment != null)
-            {
-                NameProperty tagProp = export.GetProperty<NameProperty>("Tag");
-                if (tagProp != null)
-                {
-                    string name = tagProp.Value;
-                    comment.Text = name;
-                }
-
-            }
-
         }
     }
 
@@ -539,7 +632,12 @@ namespace ME3Explorer.ActorNodes
             if (sm != null)
             {
                 IEntry meshexp = pcc.getEntry(sm.Value);
-                comment.Text = meshexp.ObjectName;
+                string text = comment.Text;
+                if (text != "")
+                {
+                    text += "\n";
+                }
+                comment.Text = text + meshexp.ObjectName;
             }
         }
     }
@@ -578,6 +676,18 @@ namespace ME3Explorer.ActorNodes
             this.TranslateBy(x, y);
             this.MouseEnter += OnMouseEnter;
             this.MouseLeave += OnMouseLeave;
+            if (comment != null)
+            {
+                NameProperty tagProp = export.GetProperty<NameProperty>("Tag");
+                if (tagProp != null)
+                {
+                    string name = tagProp.Value;
+                    if (name != export.ObjectName)
+                    {
+                        comment.Text = name;
+                    }
+                }
+            }
         }
 
         /// <summary>

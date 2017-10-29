@@ -158,19 +158,6 @@ namespace ME3Explorer.PathfindingNodes
         }
         public virtual void Layout(float x, float y) { }
 
-        protected string GetComment()
-        {
-            string res = "";
-            var comments = export.GetProperty<ArrayProperty<StrProperty>>("m_aObjComment");
-            if (comments != null)
-            {
-                foreach (var s in comments)
-                {
-                    res += s + "\n";
-                }
-            }
-            return res;
-        }
 
         protected Color getColor(VarTypes t)
         {
@@ -271,6 +258,42 @@ namespace ME3Explorer.PathfindingNodes
                 shapetouse = boostbottomshape;
             }
             shape = PPath.CreatePolygon(shapetouse);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = nodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            var props = export.GetProperties();
+            this.TranslateBy(x, y);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
+        }
+    }
+
+    public class SFXNav_LargeBoostNode : PathfindingNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(219, 112, 147);
+        PointF[] doubleboostshape = new PointF[] { new PointF(0, 10), new PointF(10, 0), new PointF(20, 10), new PointF(30, 0), new PointF(40, 10), new PointF(50, 0), new PointF(50, 50), new PointF(40, 40),new PointF(30, 50), new PointF(20, 40), new PointF(10, 50), new PointF(0, 40) };
+
+        public SFXNav_LargeBoostNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreatePolygon(doubleboostshape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
             shape.Brush = nodeBrush;
@@ -447,7 +470,7 @@ namespace ME3Explorer.PathfindingNodes
             : base(idx, p, grapheditor)
         {
             string s = export.ObjectName;
-            string commentText = "";
+            string commentText = comment.Text + "\n";
 
             var spawnTagsProp = export.GetProperty<ArrayProperty<StrProperty>>("SupportedSpawnTags");
             if (spawnTagsProp != null)
@@ -604,7 +627,7 @@ namespace ME3Explorer.PathfindingNodes
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(153, 153, 0);
-        PointF[] shieldshape = new PointF[] { new PointF(0, 15), new PointF(25, 0), new PointF(50, 15), new PointF(25,50) };
+        PointF[] shieldshape = new PointF[] { new PointF(0, 15), new PointF(25, 0), new PointF(50, 15), new PointF(25, 50) };
 
         public CoverSlotMarker(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
