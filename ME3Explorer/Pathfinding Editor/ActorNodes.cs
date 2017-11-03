@@ -38,7 +38,7 @@ namespace ME3Explorer.ActorNodes
             g = grapheditor;
             index = idx;
             export = pcc.getExport(index);
-            comment = new SText("", commentColor, false);
+            comment = new SText(GetComment(), commentColor, false);
             comment.X = 0;
             comment.Y = 52 + comment.Height;
             comment.Pickable = false;
@@ -51,7 +51,7 @@ namespace ME3Explorer.ActorNodes
             pcc = p;
             index = idx;
             export = pcc.getExport(index);
-            comment = new SText("", commentColor, false);
+            comment = new SText(GetComment(), commentColor, false);
             comment.X = 0;
             comment.Y = 0 - comment.Height;
             comment.Pickable = false;
@@ -231,7 +231,7 @@ namespace ME3Explorer.ActorNodes
             shape = PPath.CreateRectangle(0, 0, w, h);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
+            shape.Brush = actorNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -265,7 +265,7 @@ namespace ME3Explorer.ActorNodes
             shape = PPath.CreateEllipse(0, 10, w, h - 10);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
+            shape.Brush = actorNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -300,7 +300,7 @@ namespace ME3Explorer.ActorNodes
             base.shape = PPath.CreatePolygon(sShape);
             outlinePen = new Pen(color);
             base.shape.Pen = outlinePen;
-            base.shape.Brush = pathfindingNodeBrush;
+            base.shape.Brush = actorNodeBrush;
             base.shape.Pickable = false;
             this.AddChild(base.shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -335,7 +335,7 @@ namespace ME3Explorer.ActorNodes
             shape = PPath.CreatePolygon(kShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
+            shape.Brush = actorNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -370,7 +370,7 @@ namespace ME3Explorer.ActorNodes
             shape = PPath.CreatePolygon(aShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
+            shape.Brush = actorNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -404,7 +404,7 @@ namespace ME3Explorer.ActorNodes
             shape = PPath.CreatePolygon(soundShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
+            shape.Brush = actorNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -440,7 +440,7 @@ namespace ME3Explorer.ActorNodes
             shape = PPath.CreatePolygon(ammoShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
+            shape.Brush = actorNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -474,7 +474,7 @@ namespace ME3Explorer.ActorNodes
             shape = PPath.CreatePolygon(grenadeShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
+            shape.Brush = actorNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -508,7 +508,7 @@ namespace ME3Explorer.ActorNodes
             shape = PPath.CreatePolygon(cShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
+            shape.Brush = actorNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -543,7 +543,7 @@ namespace ME3Explorer.ActorNodes
             shape = PPath.CreatePolygon(doorshape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
+            shape.Brush = actorNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -578,7 +578,7 @@ namespace ME3Explorer.ActorNodes
             shape = PPath.CreatePolygon(iShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
+            shape.Brush = actorNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -614,7 +614,7 @@ namespace ME3Explorer.ActorNodes
             shape = PPath.CreatePolygon(SShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
+            shape.Brush = actorNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -662,7 +662,7 @@ namespace ME3Explorer.ActorNodes
             shape = PPath.CreatePolygon(TShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
+            shape.Brush = actorNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -717,7 +717,7 @@ namespace ME3Explorer.ActorNodes
             shape = PPath.CreateRectangle(0, 0, w, h);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
+            shape.Brush = actorNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -753,7 +753,7 @@ namespace ME3Explorer.ActorNodes
             shape = PPath.CreatePolygon(starshape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
+            shape.Brush = actorNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -790,7 +790,7 @@ namespace ME3Explorer.ActorNodes
             shape = nodeShape;
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
+            shape.Brush = actorNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -827,7 +827,7 @@ namespace ME3Explorer.ActorNodes
             shape = nodeShape;
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
+            shape.Brush = actorNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);

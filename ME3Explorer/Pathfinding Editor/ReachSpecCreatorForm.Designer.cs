@@ -79,7 +79,9 @@
             this.reachSpecTypeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.reachSpecTypeComboBox.FormattingEnabled = true;
             this.reachSpecTypeComboBox.Items.AddRange(new object[] {
-            "ReachSpec"});
+            "ReachSpec",
+            "SFXBoostReachSpec",
+            "SFXLargeBoostReachSpec"});
             this.reachSpecTypeComboBox.Location = new System.Drawing.Point(21, 112);
             this.reachSpecTypeComboBox.Name = "reachSpecTypeComboBox";
             this.reachSpecTypeComboBox.Size = new System.Drawing.Size(121, 21);

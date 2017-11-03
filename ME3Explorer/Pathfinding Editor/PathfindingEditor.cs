@@ -55,14 +55,15 @@ namespace ME3Explorer
         private const int NODETYPE_SFXNAV_JUMPNODE = 3;
         private const int NODETYPE_SFXNAV_BOOSTNODE_TOP = 4;
         private const int NODETYPE_SFXNAV_BOOSTNODE_BOTTOM = 5;
+        private const int NODETYPE_SFXNAV_LAREGEBOOSTNODE = 6;
         private static string classDatabasePath = "";
 
         public static Dictionary<string, Dictionary<string, string>> importclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
         public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
 
-        public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_TurretPoint", "CoverLink", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode", "WwiseAmbientSound" };
+        public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "MantleMarker", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode", "WwiseAmbientSound" };
         public string[] actorNodeClasses = { "BlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor" };
-        public string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" };
+        public string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
         public bool ActorNodesActive = false;
         public bool PathfindingNodesActive = true;
         public bool StaticMeshCollectionActorNodesActive = false;
@@ -76,7 +77,8 @@ namespace ME3Explorer
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
             graphEditor.AddInputEventListener(new PathfindingMouseListener(this));
             zoomController = new PathingZoomController(graphEditor);
-
+            CurrentFilterType = HeightFilterForm.FILTER_Z_NONE;
+            CurrentZFilterValue = 0;
             SText.LoadFont();
 
 
@@ -399,15 +401,18 @@ namespace ME3Explorer
                                         //Read exports...
                                         foreach (ObjectProperty obj in smacItems)
                                         {
-                                            CurrentObjects.Add(obj.Value - 1);
-                                            listBox1.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
+                                            if (obj.Value > 0)
+                                            {
+                                                CurrentObjects.Add(obj.Value - 1);
+                                                listBox1.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
 
-                                            //Read location and put in position map
-                                            int offset = binarypos + 12 * 4;
-                                            float x = BitConverter.ToSingle(smacData, offset);
-                                            float y = BitConverter.ToSingle(smacData, offset + 4);
-                                            Debug.WriteLine(offset.ToString("X4") + " " + x + "," + y);
-                                            smacCoordinates[obj.Value - 1] = new PointF(x, y);
+                                                //Read location and put in position map
+                                                int offset = binarypos + 12 * 4;
+                                                float x = BitConverter.ToSingle(smacData, offset);
+                                                float y = BitConverter.ToSingle(smacData, offset + 4);
+                                                Debug.WriteLine(offset.ToString("X4") + " " + x + "," + y);
+                                                smacCoordinates[obj.Value - 1] = new PointF(x, y);
+                                            }
                                             binarypos += 64;
                                         }
                                     }
@@ -526,7 +531,7 @@ namespace ME3Explorer
                 int currentcount = CurrentObjects.Count(); //Some objects load additional objects. We will process them after.
                 for (int i = 0; i < currentcount; i++)
                 {
-                    PointF pos = LoadObject(CurrentObjects[i]);
+                    LoadObject(CurrentObjects[i]);
                     //fullx += pos.X;
                     //fully += pos.Y;
                 }
@@ -548,7 +553,7 @@ namespace ME3Explorer
         public float StartPosVars;
         private Dictionary<int, PointF> smacCoordinates;
 
-        public PointF LoadObject(int index)
+        public void LoadObject(int index)
         {
             PointF smacPos;
             bool found = smacCoordinates.TryGetValue(index, out smacPos);
@@ -556,12 +561,12 @@ namespace ME3Explorer
             {
                 SMAC_ActorNode smac = new SMAC_ActorNode(index, smacPos.X, smacPos.Y, pcc, graphEditor);
                 Objects.Add(smac);
-                return smacPos;
+                return;
             }
             else
             {
                 string s = pcc.getExport(index).ObjectName;
-                int x = 0, y = 0;
+                int x = 0, y = 0, z = int.MinValue;
                 //SaveData savedInfo = new SaveData(-1);
                 IExportEntry exporttoLoad = pcc.getExport(index);
                 //                var props = 
@@ -585,6 +590,21 @@ namespace ME3Explorer
                             case "Y":
                                 y = Convert.ToInt32((locprop as FloatProperty).Value);
                                 break;
+                            case "Z":
+                                z = Convert.ToInt32((locprop as FloatProperty).Value);
+                                break;
+                        }
+                    }
+
+                    if (CurrentFilterType != HeightFilterForm.FILTER_Z_NONE)
+                    {
+                        if (CurrentFilterType == HeightFilterForm.FILTER_Z_BELOW && z < CurrentZFilterValue)
+                        {
+                            return;
+                        }
+                        else if (CurrentFilterType == HeightFilterForm.FILTER_Z_ABOVE && z > CurrentZFilterValue)
+                        {
+                            return;
                         }
                     }
 
@@ -616,11 +636,29 @@ namespace ME3Explorer
                             case "SFXNav_TurretPoint":
                                 pathNode = new PathfindingNodes.SFXNav_TurretPoint(index, x, y, pcc, graphEditor);
                                 break;
+                            case "CoverLink":
+                                pathNode = new PathfindingNodes.CoverLink(index, x, y, pcc, graphEditor);
+                                break;
+                            case "SFXNav_JumpDownNode":
+                                pathNode = new PathfindingNodes.SFXNav_JumpDownNode(index, x, y, pcc, graphEditor);
+                                break;
+                            case "SFXNav_LadderNode":
+                                pathNode = new PathfindingNodes.SFXNav_LadderNode(index, x, y, pcc, graphEditor);
+                                break;
+                            case "SFXDynamicCoverLink":
+                                pathNode = new PathfindingNodes.SFXDynamicCoverLink(index, x, y, pcc, graphEditor);
+                                break;
                             case "WwiseAmbientSound":
                                 pathNode = new PathfindingNodes.WwiseAmbientSound(index, x, y, pcc, graphEditor);
                                 break;
                             case "CoverSlotMarker":
                                 pathNode = new PathfindingNodes.CoverSlotMarker(index, x, y, pcc, graphEditor);
+                                break;
+                            case "SFXDynamicCoverSlotMarker":
+                                pathNode = new PathfindingNodes.SFXDynamicCoverSlotMarker(index, x, y, pcc, graphEditor);
+                                break;
+                            case "MantleMarker":
+                                pathNode = new PathfindingNodes.MantleMarker(index, x, y, pcc, graphEditor);
                                 break;
                             case "SFXOperation_ObjectiveSpawnPoint":
                                 pathNode = new PathfindingNodes.SFXObjectiveSpawnPoint(index, x, y, pcc, graphEditor);
@@ -700,7 +738,7 @@ namespace ME3Explorer
                             }
                         }
                         Objects.Add(pathNode);
-                        return new PointF(x, y);
+                        return;
                     } //End if Pathnode Class
 
                     if (actorNodeClasses.Contains(exporttoLoad.ClassName))
@@ -750,7 +788,7 @@ namespace ME3Explorer
                                     ObjectProperty actorRef = volume.GetProp<ObjectProperty>("Actor");
                                     if (actorRef != null && actorRef.Value == ActiveCombatZoneExportIndex - 1)
                                     {
-                                        Debug.WriteLine("FOUND ACTIVE COMBAT NODE!");
+                                        //Debug.WriteLine("FOUND ACTIVE COMBAT NODE!");
                                         actorNode.shape.Brush = PathfindingNodeMaster.sfxCombatZoneBrush;
                                         break;
                                     }
@@ -758,11 +796,11 @@ namespace ME3Explorer
                             }
                         }
                         Objects.Add(actorNode);
-                        return new PointF(x, y);
+                        return;
                     }
                 }
             }
-            return new PointF(0, 0); //hopefully won't see you
+            return; //hopefully won't see you
         }
 
         public void CreateConnections()
@@ -1078,6 +1116,8 @@ namespace ME3Explorer
         public bool AllowRefresh { get; private set; }
         public List<int> VisibleActorCollections { get; private set; }
         public int ActiveCombatZoneExportIndex { get; set; }
+        public int CurrentFilterType { get; private set; }
+        public int CurrentZFilterValue { get; private set; }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
@@ -1188,7 +1228,7 @@ namespace ME3Explorer
             AllowRefresh = false;
             IExportEntry nodeEntry = pcc.Exports[n];
             ObjectProperty collisionComponentProperty = nodeEntry.GetProperty<ObjectProperty>("CollisionComponent");
-            IExportEntry collisionEntry = pcc.Exports[collisionComponentProperty.Value];
+            IExportEntry collisionEntry = pcc.Exports[collisionComponentProperty.Value - 1];
 
             int newNodeIndex = pcc.Exports.Count;
             int newCollisionIndex = newNodeIndex + 1;
@@ -1211,6 +1251,7 @@ namespace ME3Explorer
             if (collisionComponentProperty != null)
             {
                 collisionComponentProperty.Value = newCollisionEntry.UIndex;
+                newCollisionEntry.idxLink = newNodeEntry.UIndex;
                 newNodeEntry.WriteProperty(collisionComponentProperty);
 
                 collisionComponentProperty = newNodeEntry.GetProperty<ObjectProperty>("CylinderComponent");
@@ -1218,9 +1259,11 @@ namespace ME3Explorer
                 {
                     collisionComponentProperty.Value = newCollisionEntry.UIndex;
                     newNodeEntry.WriteProperty(collisionComponentProperty);
-                    newCollisionEntry.idxLink = newNodeEntry.UIndex;
+
                 }
             }
+
+            generateNewRandomGUID(newNodeEntry);
             //Add cloned node to persistentlevel
             IExportEntry persistentlevel = null;
             foreach (IExportEntry exp in pcc.Exports)
@@ -1333,6 +1376,11 @@ namespace ME3Explorer
                 case NODETYPE_PATHNODE:
                     exportclassdbkey = "PathNode";
                     break;
+                case NODETYPE_SFXNAV_LAREGEBOOSTNODE:
+                    exportclassdbkey = "SFXNav_LargeBoostNode";
+                    propertiesToRemoveIfPresent.Add("bTopNode"); //if coming from boost node
+
+                    break;
                 case NODETYPE_SFXNAV_TURRETPOINT:
                     exportclassdbkey = "SFXNav_TurretPoint";
                     break;
@@ -1397,6 +1445,142 @@ namespace ME3Explorer
                 nodeEntry.WriteProperties(properties);
             }
 
+            //perform special tasks here.
+            switch (newType)
+            {
+                case NODETYPE_SFXNAV_LAREGEBOOSTNODE:
+                    {
+                        //Maximize MaxPathSize
+                        StructProperty maxpathsize = nodeEntry.GetProperty<StructProperty>("MaxPathSize");
+                        if (maxpathsize != null)
+                        {
+                            FloatProperty radius = maxpathsize.GetProp<FloatProperty>("Radius");
+                            FloatProperty height = maxpathsize.GetProp<FloatProperty>("Height");
+
+                            if (radius != null)
+                            {
+                                radius.Value = 140;
+                            }
+                            if (height != null)
+                            {
+                                height.Value = 195;
+                            }
+                            nodeEntry.WriteProperty(maxpathsize);
+                        }
+
+
+                        //If items on the other end of a reachspec are also SFXNav_LargeBoostNode,
+                        //Ensure the reachspec is SFXLargeBoostReachSpec.
+                        //Ensure maxpath sizes are set to max size.
+                        ArrayProperty<ObjectProperty> pathList = nodeEntry.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                        if (pathList != null)
+                        {
+                            for (int i = 0; i < pathList.Count; i++)
+                            {
+                                IExportEntry spec = pcc.Exports[pathList[i].Value - 1];
+                                //Get ending
+                                int othernodeidx = 0;
+                                PropertyCollection specprops = spec.GetProperties();
+                                foreach (var prop in specprops)
+                                {
+                                    if (prop.Name == "End")
+                                    {
+                                        PropertyCollection reachspecprops = (prop as StructProperty).Properties;
+                                        foreach (var rprop in reachspecprops)
+                                        {
+                                            if (rprop.Name == "Actor")
+                                            {
+                                                othernodeidx = (rprop as ObjectProperty).Value;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (othernodeidx != 0)
+                                    {
+                                        break;
+                                    }
+                                }
+
+                                if (othernodeidx != 0)
+                                {
+                                    bool keepParsing = true;
+                                    IExportEntry specDest = pcc.Exports[othernodeidx - 1];
+                                    if (specDest.ClassName == "SFXNav_LargeBoostNode" && spec.ClassName != "SFXLargeBoostReachSpec")
+                                    {
+                                        //Change the reachspec info outgoing to this node...
+                                        ImportEntry newReachSpecClass = getOrAddImport("SFXGame.SFXLargeBoostReachSpec");
+
+                                        if (newReachSpecClass != null)
+                                        {
+                                            spec.idxClass = newReachSpecClass.UIndex;
+                                            spec.idxObjectName = pcc.FindNameOrAdd("SFXLargeBoostReachSpec");
+                                            //widen spec
+                                            widenCollisionToMaxSize(spec);
+                                        }
+
+                                        //Change the reachspec incoming to this node...
+                                        ArrayProperty<ObjectProperty> otherNodePathlist = specDest.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                                        if (otherNodePathlist != null)
+                                        {
+                                            for (int on = 0; on < otherNodePathlist.Count; on++)
+                                            {
+                                                IExportEntry inboundSpec = pcc.Exports[otherNodePathlist[on].Value - 1];
+                                                //Get ending
+                                                //PropertyCollection inboundProps = inboundSpec.GetProperties();
+                                                var prop = inboundSpec.GetProperty<StructProperty>("End");
+                                                if (prop != null)
+                                                {
+                                                    PropertyCollection reachspecprops = (prop as StructProperty).Properties;
+                                                    foreach (var rprop in reachspecprops)
+                                                    {
+                                                        if (rprop.Name == "Actor")
+                                                        {
+                                                            int inboundSpecDest = (rprop as ObjectProperty).Value;
+                                                            if (inboundSpecDest == nodeEntry.UIndex)
+                                                            {
+                                                                //The node is inbound to me.
+                                                                inboundSpec.idxClass = newReachSpecClass.UIndex;
+                                                                inboundSpec.idxObjectName = pcc.FindNameOrAdd("SFXLargeBoostReachSpec");
+                                                                //widen spec
+                                                                widenCollisionToMaxSize(inboundSpec);
+                                                                keepParsing = false; //stop the outer loop
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                if (!keepParsing)
+                                                {
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+
+                        //var outLinksProp = nodeEntry.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                        //if (outLinksProp != null)
+                        //{
+                        //    foreach (var prop in outLinksProp)
+                        //    {
+                        //        int reachspecexport = prop.Value;
+                        //        ReachSpecs.Add(pcc.Exports[reachspecexport - 1]);
+                        //    }
+
+                        //    foreach (IExportEntry spec in ReachSpecs)
+                        //    {
+
+                        //    }
+                        //}
+                    }
+
+                    break;
+
+            }
+
 
 
             string objectname = nodeEntry.ObjectName;
@@ -1406,6 +1590,22 @@ namespace ME3Explorer
             //Could use LINQ... meh.
 
             reindexObjectsWithName(objectname);
+        }
+
+        private void widenCollisionToMaxSize(IExportEntry spec)
+        {
+            PropertyCollection specProperties = spec.GetProperties();
+            IntProperty radius = specProperties.GetProp<IntProperty>("CollisionRadius");
+            IntProperty height = specProperties.GetProp<IntProperty>("CollisionHeight");
+            if (radius != null)
+            {
+                radius.Value = 140;
+            }
+            if (height != null)
+            {
+                height.Value = 195;
+            }
+            spec.WriteProperties(specProperties); //write it back.
         }
 
         /// <summary>
@@ -1972,6 +2172,11 @@ namespace ME3Explorer
                 {
                     PointF pos = e.Position;
                     string fname = Path.GetFileName(pathfinder.CurrentFile);
+                    if (pathfinder.CurrentFilterType != HeightFilterForm.FILTER_Z_NONE)
+                    {
+                        fname += " | Hiding nodes " + (pathfinder.CurrentFilterType == HeightFilterForm.FILTER_Z_ABOVE ? "above" : "below") + " Z = " + pathfinder.CurrentZFilterValue+" | ";
+                    }
+
                     int X = Convert.ToInt32(pos.X);
                     int Y = Convert.ToInt32(pos.Y);
                     pathfinder.filenameLabel.Text = fname + " [" + X + "," + Y + "]";
@@ -2050,6 +2255,52 @@ namespace ME3Explorer
                 }
             }
             return readerpos;
+        }
+
+        private void toSFXNavLargeBoostNodeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listBox1.SelectedIndex >= 0)
+            {
+                int n = CurrentObjects[listBox1.SelectedIndex];
+                if (n == -1)
+                    return;
+                IExportEntry selectednodeexp = pcc.Exports[n];
+                if (selectednodeexp.ClassName != "SFXNav_LargeBoostNode")
+                {
+                    changeNodeType(selectednodeexp, NODETYPE_SFXNAV_LAREGEBOOSTNODE);
+                    RefreshView();
+                }
+            }
+        }
+
+        private void filterByZToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            using (HeightFilterForm hff = new HeightFilterForm(CurrentFilterType, CurrentZFilterValue))
+            {
+                DialogResult dr = hff.ShowDialog();
+                if (dr != DialogResult.Yes)
+                {
+                    return; //user cancel
+                }
+
+                CurrentFilterType = hff.NewFilterType;
+                CurrentZFilterValue = hff.NewFilterZ;
+                if (CurrentFilterType != HeightFilterForm.FILTER_Z_NONE)
+                {
+                    filenameLabel.Text = Path.GetFileName(CurrentFile) + " | Hiding nodes " + (CurrentFilterType == HeightFilterForm.FILTER_Z_ABOVE ? "above" : "below") + " Z = " + CurrentZFilterValue;
+                }
+                else
+                {
+                    filenameLabel.Text = Path.GetFileName(CurrentFile);
+                }
+                RefreshView();
+            }
+        }
+
+        private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RefreshView();
         }
     }
 

@@ -30,7 +30,6 @@ namespace ME3Explorer
         public static readonly string PackageEditorDataFolder = Path.Combine(App.AppDataFolder, @"PackageEditor\");
 
         private string currentFile;
-
         private List<int> ClassNames;
 
         public PackageEditor()
@@ -117,14 +116,25 @@ namespace ME3Explorer
             IReadOnlyList<ImportEntry> imports = pcc.Imports;
             for (int i = imports.Count - 1; i >= 0; i--)
             {
-                Classes.Add(-(i + 1) + " : " + imports[i].ObjectName);
+                string text = -(i + 1) + " : " + imports[i].ObjectName;
+                if (showFullPathsCheckbox.Checked)
+                {
+                    text += " (" + imports[i].GetFullPath + ")";
+                }
+                Classes.Add(text);
             }
             Classes.Add("0 : Class");
             int count = 1;
             IReadOnlyList<IExportEntry> Exports = pcc.Exports;
             foreach (IExportEntry exp in Exports)
             {
-                Classes.Add((count++) + " : " + exp.ObjectName);
+
+                string text = (count++) + " : " + exp.ObjectName;
+                if (showFullPathsCheckbox.Checked)
+                {
+                    text += " (" + exp.GetFullPath + ")";
+                }
+                Classes.Add(text);
             }
             count = 0;
 
@@ -527,47 +537,65 @@ namespace ME3Explorer
         {
             if (n >= 0)
             {
-                infoHeaderBox.Text = "Export Header";
-                superclassTextBox.Visible = superclassLabel.Visible = true;
-                textBox6.Visible = label6.Visible = true;
-                textBox5.Visible = label5.Visible = true;
-                textBox10.Visible = label11.Visible = false;
-                infoExportDataBox.Visible = true;
-                IExportEntry exportEntry = pcc.getExport(n);
-                textBox1.Text = exportEntry.ObjectName;
-                IEntry _class = pcc.getEntry(exportEntry.idxClass);
-                classNameBox.Text = _class.GetFullPath;
-                superclassTextBox.Text = exportEntry.ClassParent;
-                textBox3.Text = exportEntry.PackageFullName;
-                textBox4.Text = exportEntry.header.Length + " bytes";
-                textBox5.Text = exportEntry.indexValue.ToString();
-                textBox6.Text = exportEntry.ArchtypeName;
-
-                if (exportEntry.idxArchtype != 0)
+                try
                 {
-                    IEntry archetype = pcc.getEntry(exportEntry.idxArchtype);
-                    textBox6.Text = archetype.PackageFullName + "." + archetype.ObjectName;
-                    textBox6.Text += " (" + (exportEntry.idxArchtype < 0 ? "imported" : "local") + " class) " + exportEntry.idxArchtype;
+                    infoHeaderBox.Text = "Export Header";
+                    superclassTextBox.Visible = superclassLabel.Visible = true;
+                    archetypeBox.Visible = label6.Visible = true;
+                    indexBox.Visible = label5.Visible = true;
+                    flagsBox.Visible = label11.Visible = false;
+                    infoExportDataBox.Visible = true;
+                    IExportEntry exportEntry = pcc.getExport(n);
+                    objectNameBox.Text = exportEntry.ObjectName;
+                    //IEntry _class = pcc.getEntry(exportEntry.idxClass);
+                    //
+                    if (exportEntry.idxClass != 0)
+                    {
+                        IEntry _class = pcc.getEntry(exportEntry.idxClass);
+                        classNameBox.Text = _class.ClassName;
+
+                    }
+                    else
+                    {
+                        classNameBox.Text = "Class";
+                    }
+                    classNameBox.Text = exportEntry.ClassName;
+                    superclassTextBox.Text = exportEntry.ClassParent;
+                    packageNameBox.Text = exportEntry.PackageFullName;
+                    headerSizeBox.Text = exportEntry.header.Length + " bytes";
+                    indexBox.Text = exportEntry.indexValue.ToString();
+                    archetypeBox.Text = exportEntry.ArchtypeName;
+
+                    if (exportEntry.idxArchtype != 0)
+                    {
+                        IEntry archetype = pcc.getEntry(exportEntry.idxArchtype);
+                        archetypeBox.Text = archetype.PackageFullName + "." + archetype.ObjectName;
+                        archetypeBox.Text += " (" + (exportEntry.idxArchtype < 0 ? "imported" : "local") + " class) " + exportEntry.idxArchtype;
+                    }
+                    flagsBox.Text = "0x" + exportEntry.ObjectFlags.ToString("X16");
+                    textBox7.Text = exportEntry.DataSize + " bytes";
+                    textBox8.Text = "0x" + exportEntry.DataOffset.ToString("X8");
+                    textBox9.Text = exportEntry.DataOffset.ToString();
                 }
-                textBox10.Text = "0x" + exportEntry.ObjectFlags.ToString("X16");
-                textBox7.Text = exportEntry.DataSize + " bytes";
-                textBox8.Text = "0x" + exportEntry.DataOffset.ToString("X8");
-                textBox9.Text = exportEntry.DataOffset.ToString();
+                catch (Exception e)
+                {
+                    MessageBox.Show("An error occured while attempting to read the header for this export. This indicates there is likely something wrong with the header or its parent header.");
+                }
             }
             else
             {
                 n = -n - 1;
                 infoHeaderBox.Text = "Import Header";
                 superclassTextBox.Visible = superclassLabel.Visible = false;
-                textBox6.Visible = label6.Visible = false;
-                textBox5.Visible = label5.Visible = false;
-                textBox10.Visible = label11.Visible = false;
+                archetypeBox.Visible = label6.Visible = false;
+                indexBox.Visible = label5.Visible = false;
+                flagsBox.Visible = label11.Visible = false;
                 infoExportDataBox.Visible = false;
                 ImportEntry importEntry = pcc.getImport(n);
-                textBox1.Text = importEntry.ObjectName;
+                objectNameBox.Text = importEntry.ObjectName;
                 classNameBox.Text = importEntry.ClassName;
-                textBox3.Text = importEntry.PackageFullName;
-                textBox4.Text = ImportEntry.byteSize + " bytes";
+                packageNameBox.Text = importEntry.PackageFullName;
+                headerSizeBox.Text = ImportEntry.byteSize + " bytes";
             }
         }
 
@@ -1629,7 +1657,7 @@ namespace ME3Explorer
             //Debug.WriteLine(import.GetFullPath+" Importing and linking to " + link);
             importImport(importpcc, import.Index, link);
             crossPCCObjectMapping[import.UIndex] = -pcc.ImportCount - 1; //0 based.
-            //Debug.WriteLine("Added import: " + pcc.Imports[pcc.ImportCount - 1].PackageFullName + "." + pcc.Imports[pcc.ImportCount - 1].PackageFullName + " at " + pcc.Imports[pcc.ImportCount - 1]);
+                                                                         //Debug.WriteLine("Added import: " + pcc.Imports[pcc.ImportCount - 1].PackageFullName + "." + pcc.Imports[pcc.ImportCount - 1].PackageFullName + " at " + pcc.Imports[pcc.ImportCount - 1]);
             return pcc.ImportCount - 1;
         }
 
@@ -2004,6 +2032,30 @@ namespace ME3Explorer
             {
                 IExportEntry exportEntry = pcc.getExport(index);
                 exportEntry.indexValue = 0;
+            }
+        }
+
+        private void showFullPaths_CheckChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.UseMetadataFullPaths = showFullPathsCheckbox.Checked;
+            RefreshMetaData();
+        }
+
+        private void findImportexportViaOffsetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string result = Microsoft.VisualBasic.Interaction.InputBox("Enter an offset (in hex, e.g. 2fa360) to find what export or import contains that offset", "Offset finder", "", 0, 0);
+            if (result != "")
+            {
+                int idx = int.Parse(result, System.Globalization.NumberStyles.HexNumber);
+                for (int i = 0; i < pcc.ExportCount; i++)
+                {
+                    IExportEntry exp = pcc.Exports[i];
+                    if (idx > exp.DataOffset && idx < exp.DataOffset + exp.DataSize)
+                    {
+                        goToNumber(exp.Index);
+                        break;
+                    }
+                }
             }
         }
     }

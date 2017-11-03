@@ -46,6 +46,8 @@ namespace ME3Explorer
             this.savePCCAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.filterByZToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.togglePathfindingNodes = new System.Windows.Forms.ToolStripMenuItem();
             this.toggleActorNodes = new System.Windows.Forms.ToolStripMenuItem();
             this.staticMeshCollectionActorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,6 +66,7 @@ namespace ME3Explorer
             this.toSFXNavBoostNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sFXNavBoostNodeTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sFXNavBoostNodeBottomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toSFXNavLargeBoostNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createReachSpecToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setGraphPositionAsNodeLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateNewRandomGUIDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,6 +76,7 @@ namespace ME3Explorer
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -244,6 +248,9 @@ namespace ME3Explorer
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.refreshToolStripMenuItem,
+            this.filterByZToolStripMenuItem,
+            this.toolStripSeparator1,
             this.togglePathfindingNodes,
             this.toggleActorNodes,
             this.staticMeshCollectionActorsToolStripMenuItem,
@@ -251,6 +258,19 @@ namespace ME3Explorer
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(95, 20);
             this.optionsToolStripMenuItem.Text = "Viewing Mode";
+            // 
+            // filterByZToolStripMenuItem
+            // 
+            this.filterByZToolStripMenuItem.Name = "filterByZToolStripMenuItem";
+            this.filterByZToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.filterByZToolStripMenuItem.Text = "Filter by Z";
+            this.filterByZToolStripMenuItem.ToolTipText = "Filters visible nodes above or below a Z value.";
+            this.filterByZToolStripMenuItem.Click += new System.EventHandler(this.filterByZToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(217, 6);
             // 
             // togglePathfindingNodes
             // 
@@ -354,7 +374,8 @@ namespace ME3Explorer
             this.toSFXEnemySpawnPointToolStripMenuItem,
             this.toPathNodeToolStripMenuItem,
             this.toSFXNavTurretPointToolStripMenuItem,
-            this.toSFXNavBoostNodeToolStripMenuItem});
+            this.toSFXNavBoostNodeToolStripMenuItem,
+            this.toSFXNavLargeBoostNodeToolStripMenuItem});
             this.changeNodeTypeToolStripMenuItem.Name = "changeNodeTypeToolStripMenuItem";
             this.changeNodeTypeToolStripMenuItem.Size = new System.Drawing.Size(294, 22);
             this.changeNodeTypeToolStripMenuItem.Text = "Change Node Type";
@@ -362,22 +383,27 @@ namespace ME3Explorer
             // toSFXEnemySpawnPointToolStripMenuItem
             // 
             this.toSFXEnemySpawnPointToolStripMenuItem.Name = "toSFXEnemySpawnPointToolStripMenuItem";
-            this.toSFXEnemySpawnPointToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.toSFXEnemySpawnPointToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
             this.toSFXEnemySpawnPointToolStripMenuItem.Text = "To SFXEnemySpawnPoint";
+            this.toSFXEnemySpawnPointToolStripMenuItem.ToolTipText = "Spawnpoint for an enemy group in MP. Ensure it has enough radial space for a grou" +
+    "p. Use SupportedReachSpec prop to limit what can spawn here.";
             this.toSFXEnemySpawnPointToolStripMenuItem.Click += new System.EventHandler(this.toSFXEnemySpawnPointToolStripMenuItem_Click);
             // 
             // toPathNodeToolStripMenuItem
             // 
             this.toPathNodeToolStripMenuItem.Name = "toPathNodeToolStripMenuItem";
-            this.toPathNodeToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.toPathNodeToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
             this.toPathNodeToolStripMenuItem.Text = "To PathNode";
+            this.toPathNodeToolStripMenuItem.ToolTipText = "Basic pathfinding node.";
             this.toPathNodeToolStripMenuItem.Click += new System.EventHandler(this.toPathNodeToolStripMenuItem_Click);
             // 
             // toSFXNavTurretPointToolStripMenuItem
             // 
             this.toSFXNavTurretPointToolStripMenuItem.Name = "toSFXNavTurretPointToolStripMenuItem";
-            this.toSFXNavTurretPointToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.toSFXNavTurretPointToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
             this.toSFXNavTurretPointToolStripMenuItem.Text = "To SFXNav_TurretPoint";
+            this.toSFXNavTurretPointToolStripMenuItem.ToolTipText = "Use by Engineers, Geth Primes, and Collector Troopers to put down their placeable" +
+    "/pawns.";
             this.toSFXNavTurretPointToolStripMenuItem.Click += new System.EventHandler(this.toSFXNavTurretPointToolStripMenuItem_Click);
             // 
             // toSFXNavBoostNodeToolStripMenuItem
@@ -386,8 +412,9 @@ namespace ME3Explorer
             this.sFXNavBoostNodeTopToolStripMenuItem,
             this.sFXNavBoostNodeBottomToolStripMenuItem});
             this.toSFXNavBoostNodeToolStripMenuItem.Name = "toSFXNavBoostNodeToolStripMenuItem";
-            this.toSFXNavBoostNodeToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.toSFXNavBoostNodeToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
             this.toSFXNavBoostNodeToolStripMenuItem.Text = "To SFXNav_BoostNode";
+            this.toSFXNavBoostNodeToolStripMenuItem.ToolTipText = "Used by mooks to boost up and down vertically.";
             // 
             // sFXNavBoostNodeTopToolStripMenuItem
             // 
@@ -402,6 +429,14 @@ namespace ME3Explorer
             this.sFXNavBoostNodeBottomToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.sFXNavBoostNodeBottomToolStripMenuItem.Text = "SFXNav_BoostNode (Bottom)";
             this.sFXNavBoostNodeBottomToolStripMenuItem.Click += new System.EventHandler(this.sFXNavBoostNodeBottomToolStripMenuItem_Click);
+            // 
+            // toSFXNavLargeBoostNodeToolStripMenuItem
+            // 
+            this.toSFXNavLargeBoostNodeToolStripMenuItem.Name = "toSFXNavLargeBoostNodeToolStripMenuItem";
+            this.toSFXNavLargeBoostNodeToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+            this.toSFXNavLargeBoostNodeToolStripMenuItem.Text = "To SFXNav_LargeBoostNode";
+            this.toSFXNavLargeBoostNodeToolStripMenuItem.ToolTipText = "Used by Banshees to ascend and descend.";
+            this.toSFXNavLargeBoostNodeToolStripMenuItem.Click += new System.EventHandler(this.toSFXNavLargeBoostNodeToolStripMenuItem_Click);
             // 
             // createReachSpecToolStripMenuItem
             // 
@@ -467,6 +502,14 @@ namespace ME3Explorer
             this.addObjectToolStripMenuItem.Name = "addObjectToolStripMenuItem";
             this.addObjectToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.addObjectToolStripMenuItem.Text = "Add Object";
+            // 
+            // refreshToolStripMenuItem
+            // 
+            this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
+            this.refreshToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.refreshToolStripMenuItem.Text = "Refresh";
+            this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
             // PathfindingEditor
             // 
@@ -554,5 +597,9 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripMenuItem staticMeshCollectionActorsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sFXCombatZonesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addToSFXCombatZoneToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toSFXNavLargeBoostNodeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem filterByZToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
     }
 }

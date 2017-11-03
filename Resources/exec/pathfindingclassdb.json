@@ -23,10 +23,20 @@
          "name":"SFXNav_BoostNode",
          "cylindercomponentarchetype":"SFXGame.Default__SFXNav_BoostNode.CollisionCylinder",
          "incomingreachspecclass":"Engine.ReachSpec"
+      },
+      "SFXNav_LargeBoostNode":{
+         "class":"SFXGame.SFXNav_LargeBoostNode",
+         "name":"SFXNav_LargeBoostNode",
+         "cylindercomponentarchetype":"SFXGame.Default__SFXNav_LargeBoostNode.CollisionCylinder",
+         "incomingreachspecclass":"Engine.ReachSpec"
       }
    },
    "importtypes":{
       "Engine.ReachSpec":{
+         "class":"Class",
+         "packagefile":"Core"
+      },
+      "SFXGame.SFXLargeBoostReachSpec":{
          "class":"Class",
          "packagefile":"Core"
       },
@@ -51,6 +61,18 @@
          "packagefile":"SFXGame"
       },
       "SFXGame.Default__SFXNav_TurretPoint.CollisionCylinder":{
+         "class":"Engine.CylinderComponent",
+         "packagefile":"Engine"
+      },
+      "SFXGame.SFXNav_LargeBoostNode":{
+         "class":"Class",
+         "packagefile":"Core"
+      },
+      "SFXGame.Default__SFXNav_LargeBoostNode":{
+         "class":"SFXGame.SFXNav_LargeBoostNode",
+         "packagefile":"SFXGame"
+      },
+      "SFXGame.Default__SFXNav_LargeBoostNode.CollisionCylinder":{
          "class":"Engine.CylinderComponent",
          "packagefile":"Engine"
       },

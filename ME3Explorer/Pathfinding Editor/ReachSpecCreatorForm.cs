@@ -60,6 +60,12 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void destinationNodeTextBox_KeyPressed(object sender, KeyPressEventArgs e)
         {
+            if ((e.KeyChar == Convert.ToChar(Keys.Enter)) && createSpecButton.Enabled)
+            {
+                e.Handled = true;
+                createSpecButton.PerformClick();
+                return;
+            }
             e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar); //prevent non digit entry
 
         }

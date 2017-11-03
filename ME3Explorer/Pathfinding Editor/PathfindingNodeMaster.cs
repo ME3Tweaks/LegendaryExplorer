@@ -31,7 +31,10 @@ namespace ME3Explorer.Pathfinding_Editor
         public static Brush sfxCombatZoneBrush = new SolidBrush(Color.FromArgb(255, 0, 0));
 
         protected static Brush mostlyTransparentBrush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
-        protected static Brush pathfindingNodeBrush = new SolidBrush(Color.FromArgb(80, 80, 80));
+        protected static Brush actorNodeBrush = new SolidBrush(Color.FromArgb(80, 80, 80));
+        protected static Brush pathfindingNodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
+        protected static Brush dynamicPathfindingNodeBrush = new SolidBrush(Color.FromArgb(46, 184, 25));
+
 
         protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
         public static bool draggingOutlink = false;
@@ -48,20 +51,6 @@ namespace ME3Explorer.Pathfinding_Editor
         protected Pen outlinePen;
         public SText comment;
         public List<IExportEntry> ReachSpecs = new List<IExportEntry>();
-
-        void appendToComment(string s)
-        {
-            if (comment.Text.Length > 0)
-            {
-                comment.TranslateBy(0, -1 * comment.Height);
-                comment.Text += s + "\n";
-            }
-            else
-            {
-                comment.Text += s + "\n";
-                comment.TranslateBy(0, -1 * comment.Height);
-            }
-        }
 
         public void Select()
         {

@@ -28,6 +28,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PackageEditor));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.findImportexportViaOffsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,21 +93,22 @@
             this.infoHeaderBox = new System.Windows.Forms.GroupBox();
             this.superclassTextBox = new System.Windows.Forms.TextBox();
             this.superclassLabel = new System.Windows.Forms.Label();
-            this.textBox10 = new System.Windows.Forms.TextBox();
+            this.flagsBox = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.archetypeBox = new System.Windows.Forms.TextBox();
+            this.indexBox = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.headerSizeBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.packageNameBox = new System.Windows.Forms.TextBox();
             this.classNameBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.objectNameBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.metaDataPage = new System.Windows.Forms.TabPage();
+            this.showFullPathsCheckbox = new System.Windows.Forms.CheckBox();
             this.indexTextBox = new System.Windows.Forms.TextBox();
             this.indexLabel = new System.Windows.Forms.Label();
             this.button4 = new System.Windows.Forms.Button();
@@ -169,6 +172,8 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.findImportexportViaOffsetToolStripMenuItem,
+            this.toolStripSeparator5,
             this.loadToolStripMenuItem,
             this.saveToolStripMenuItem,
             this.saveAsMenuItem,
@@ -178,10 +183,23 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
+            // findImportexportViaOffsetToolStripMenuItem
+            // 
+            this.findImportexportViaOffsetToolStripMenuItem.Name = "findImportexportViaOffsetToolStripMenuItem";
+            this.findImportexportViaOffsetToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
+            this.findImportexportViaOffsetToolStripMenuItem.Text = "Find import/export via offset";
+            this.findImportexportViaOffsetToolStripMenuItem.ToolTipText = "Finds an export or import containing the offset you specify.";
+            this.findImportexportViaOffsetToolStripMenuItem.Click += new System.EventHandler(this.findImportexportViaOffsetToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(222, 6);
+            // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.ToolTipText = "Load an uncompressed or compressed PCC file";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
@@ -190,7 +208,7 @@
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.ToolTipText = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
@@ -198,7 +216,7 @@
             // saveAsMenuItem
             // 
             this.saveAsMenuItem.Name = "saveAsMenuItem";
-            this.saveAsMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.saveAsMenuItem.Size = new System.Drawing.Size(225, 22);
             this.saveAsMenuItem.Text = "Save As";
             this.saveAsMenuItem.ToolTipText = "Save As";
             this.saveAsMenuItem.Click += new System.EventHandler(this.appendSaveToolStripMenuItem_Click);
@@ -206,12 +224,12 @@
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(135, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(222, 6);
             // 
             // recentToolStripMenuItem
             // 
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
             this.recentToolStripMenuItem.Text = "Recent";
             this.recentToolStripMenuItem.ToolTipText = "Open recently opened file";
             this.recentToolStripMenuItem.Click += new System.EventHandler(this.recentToolStripMenuItem_Click);
@@ -737,19 +755,19 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.infoHeaderBox.Controls.Add(this.superclassTextBox);
             this.infoHeaderBox.Controls.Add(this.superclassLabel);
-            this.infoHeaderBox.Controls.Add(this.textBox10);
+            this.infoHeaderBox.Controls.Add(this.flagsBox);
             this.infoHeaderBox.Controls.Add(this.label11);
             this.infoHeaderBox.Controls.Add(this.label6);
-            this.infoHeaderBox.Controls.Add(this.textBox6);
-            this.infoHeaderBox.Controls.Add(this.textBox5);
+            this.infoHeaderBox.Controls.Add(this.archetypeBox);
+            this.infoHeaderBox.Controls.Add(this.indexBox);
             this.infoHeaderBox.Controls.Add(this.label5);
-            this.infoHeaderBox.Controls.Add(this.textBox4);
+            this.infoHeaderBox.Controls.Add(this.headerSizeBox);
             this.infoHeaderBox.Controls.Add(this.label4);
             this.infoHeaderBox.Controls.Add(this.label3);
-            this.infoHeaderBox.Controls.Add(this.textBox3);
+            this.infoHeaderBox.Controls.Add(this.packageNameBox);
             this.infoHeaderBox.Controls.Add(this.classNameBox);
             this.infoHeaderBox.Controls.Add(this.label2);
-            this.infoHeaderBox.Controls.Add(this.textBox1);
+            this.infoHeaderBox.Controls.Add(this.objectNameBox);
             this.infoHeaderBox.Controls.Add(this.label1);
             this.infoHeaderBox.Location = new System.Drawing.Point(4, 4);
             this.infoHeaderBox.Name = "infoHeaderBox";
@@ -775,13 +793,13 @@
             this.superclassLabel.TabIndex = 14;
             this.superclassLabel.Text = "Superclass:";
             // 
-            // textBox10
+            // flagsBox
             // 
-            this.textBox10.Location = new System.Drawing.Point(113, 200);
-            this.textBox10.Name = "textBox10";
-            this.textBox10.ReadOnly = true;
-            this.textBox10.Size = new System.Drawing.Size(368, 20);
-            this.textBox10.TabIndex = 13;
+            this.flagsBox.Location = new System.Drawing.Point(113, 200);
+            this.flagsBox.Name = "flagsBox";
+            this.flagsBox.ReadOnly = true;
+            this.flagsBox.Size = new System.Drawing.Size(368, 20);
+            this.flagsBox.TabIndex = 13;
             // 
             // label11
             // 
@@ -801,21 +819,21 @@
             this.label6.TabIndex = 11;
             this.label6.Text = "Archetype name:";
             // 
-            // textBox6
+            // archetypeBox
             // 
-            this.textBox6.Location = new System.Drawing.Point(113, 147);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.ReadOnly = true;
-            this.textBox6.Size = new System.Drawing.Size(368, 20);
-            this.textBox6.TabIndex = 10;
+            this.archetypeBox.Location = new System.Drawing.Point(113, 147);
+            this.archetypeBox.Name = "archetypeBox";
+            this.archetypeBox.ReadOnly = true;
+            this.archetypeBox.Size = new System.Drawing.Size(368, 20);
+            this.archetypeBox.TabIndex = 10;
             // 
-            // textBox5
+            // indexBox
             // 
-            this.textBox5.Location = new System.Drawing.Point(113, 120);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.ReadOnly = true;
-            this.textBox5.Size = new System.Drawing.Size(368, 20);
-            this.textBox5.TabIndex = 9;
+            this.indexBox.Location = new System.Drawing.Point(113, 120);
+            this.indexBox.Name = "indexBox";
+            this.indexBox.ReadOnly = true;
+            this.indexBox.Size = new System.Drawing.Size(368, 20);
+            this.indexBox.TabIndex = 9;
             // 
             // label5
             // 
@@ -826,13 +844,13 @@
             this.label5.TabIndex = 8;
             this.label5.Text = "Index:";
             // 
-            // textBox4
+            // headerSizeBox
             // 
-            this.textBox4.Location = new System.Drawing.Point(113, 173);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.ReadOnly = true;
-            this.textBox4.Size = new System.Drawing.Size(368, 20);
-            this.textBox4.TabIndex = 7;
+            this.headerSizeBox.Location = new System.Drawing.Point(113, 173);
+            this.headerSizeBox.Name = "headerSizeBox";
+            this.headerSizeBox.ReadOnly = true;
+            this.headerSizeBox.Size = new System.Drawing.Size(368, 20);
+            this.headerSizeBox.TabIndex = 7;
             // 
             // label4
             // 
@@ -852,13 +870,13 @@
             this.label3.TabIndex = 5;
             this.label3.Text = "Package name:";
             // 
-            // textBox3
+            // packageNameBox
             // 
-            this.textBox3.Location = new System.Drawing.Point(113, 94);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.ReadOnly = true;
-            this.textBox3.Size = new System.Drawing.Size(368, 20);
-            this.textBox3.TabIndex = 4;
+            this.packageNameBox.Location = new System.Drawing.Point(113, 94);
+            this.packageNameBox.Name = "packageNameBox";
+            this.packageNameBox.ReadOnly = true;
+            this.packageNameBox.Size = new System.Drawing.Size(368, 20);
+            this.packageNameBox.TabIndex = 4;
             // 
             // classNameBox
             // 
@@ -877,13 +895,13 @@
             this.label2.TabIndex = 2;
             this.label2.Text = "Class:";
             // 
-            // textBox1
+            // objectNameBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(113, 17);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(368, 20);
-            this.textBox1.TabIndex = 1;
+            this.objectNameBox.Location = new System.Drawing.Point(113, 17);
+            this.objectNameBox.Name = "objectNameBox";
+            this.objectNameBox.ReadOnly = true;
+            this.objectNameBox.Size = new System.Drawing.Size(368, 20);
+            this.objectNameBox.TabIndex = 1;
             // 
             // label1
             // 
@@ -896,6 +914,7 @@
             // 
             // metaDataPage
             // 
+            this.metaDataPage.Controls.Add(this.showFullPathsCheckbox);
             this.metaDataPage.Controls.Add(this.indexTextBox);
             this.metaDataPage.Controls.Add(this.indexLabel);
             this.metaDataPage.Controls.Add(this.button4);
@@ -915,6 +934,19 @@
             this.metaDataPage.Text = "Meta Data Editor";
             this.metaDataPage.UseVisualStyleBackColor = true;
             // 
+            // showFullPathsCheckbox
+            // 
+            this.showFullPathsCheckbox.AutoSize = true;
+            this.showFullPathsCheckbox.Checked = global::ME3Explorer.Properties.Settings.Default.UseMetadataFullPaths;
+            this.showFullPathsCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showFullPathsCheckbox.Location = new System.Drawing.Point(175, 129);
+            this.showFullPathsCheckbox.Name = "showFullPathsCheckbox";
+            this.showFullPathsCheckbox.Size = new System.Drawing.Size(143, 17);
+            this.showFullPathsCheckbox.TabIndex = 12;
+            this.showFullPathsCheckbox.Text = "Show full package paths";
+            this.showFullPathsCheckbox.UseVisualStyleBackColor = true;
+            this.showFullPathsCheckbox.CheckedChanged += new System.EventHandler(this.showFullPaths_CheckChanged);
+            // 
             // indexTextBox
             // 
             this.indexTextBox.Location = new System.Drawing.Point(82, 126);
@@ -933,7 +965,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(259, 161);
+            this.button4.Location = new System.Drawing.Point(506, 126);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(103, 23);
             this.button4.TabIndex = 6;
@@ -964,7 +996,7 @@
             this.archetypeComboBox.FormattingEnabled = true;
             this.archetypeComboBox.Location = new System.Drawing.Point(82, 96);
             this.archetypeComboBox.Name = "archetypeComboBox";
-            this.archetypeComboBox.Size = new System.Drawing.Size(280, 21);
+            this.archetypeComboBox.Size = new System.Drawing.Size(527, 21);
             this.archetypeComboBox.TabIndex = 4;
             // 
             // linkComboBox
@@ -972,7 +1004,7 @@
             this.linkComboBox.FormattingEnabled = true;
             this.linkComboBox.Location = new System.Drawing.Point(82, 66);
             this.linkComboBox.Name = "linkComboBox";
-            this.linkComboBox.Size = new System.Drawing.Size(280, 21);
+            this.linkComboBox.Size = new System.Drawing.Size(527, 21);
             this.linkComboBox.TabIndex = 4;
             // 
             // classComboBox
@@ -980,7 +1012,7 @@
             this.classComboBox.FormattingEnabled = true;
             this.classComboBox.Location = new System.Drawing.Point(82, 38);
             this.classComboBox.Name = "classComboBox";
-            this.classComboBox.Size = new System.Drawing.Size(280, 21);
+            this.classComboBox.Size = new System.Drawing.Size(527, 21);
             this.classComboBox.TabIndex = 3;
             // 
             // nameComboBox
@@ -988,7 +1020,7 @@
             this.nameComboBox.FormattingEnabled = true;
             this.nameComboBox.Location = new System.Drawing.Point(82, 7);
             this.nameComboBox.Name = "nameComboBox";
-            this.nameComboBox.Size = new System.Drawing.Size(280, 21);
+            this.nameComboBox.Size = new System.Drawing.Size(527, 21);
             this.nameComboBox.TabIndex = 2;
             // 
             // label13
@@ -1228,16 +1260,16 @@
         private System.Windows.Forms.TabPage infoTab;
         private System.Windows.Forms.GroupBox infoHeaderBox;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox packageNameBox;
         private System.Windows.Forms.TextBox classNameBox;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox objectNameBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox textBox6;
-        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox archetypeBox;
+        private System.Windows.Forms.TextBox indexBox;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox headerSizeBox;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.GroupBox infoExportDataBox;
         private System.Windows.Forms.Label label10;
@@ -1247,7 +1279,7 @@
         private System.Windows.Forms.TextBox textBox8;
         private System.Windows.Forms.TextBox textBox7;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox textBox10;
+        private System.Windows.Forms.TextBox flagsBox;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TabPage metaDataPage;
         private System.Windows.Forms.Button button4;
@@ -1293,5 +1325,8 @@
         private System.Windows.Forms.ToolStripMenuItem reindexClassToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setAllIndexesInThisTreeTo0ToolStripMenuItem;
         private System.Windows.Forms.TabPage binaryEditorTab;
+        private System.Windows.Forms.CheckBox showFullPathsCheckbox;
+        private System.Windows.Forms.ToolStripMenuItem findImportexportViaOffsetToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
     }
 }

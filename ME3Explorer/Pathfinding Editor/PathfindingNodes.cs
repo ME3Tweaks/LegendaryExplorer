@@ -31,9 +31,13 @@ namespace ME3Explorer.PathfindingNodes
         static Color boolColor = Color.FromArgb(215, 37, 33); //red
         static Color objectColor = Color.FromArgb(219, 39, 217);//purple
         static Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
-        protected static Brush nodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
         static Pen blackPen = Pens.Black;
         static Pen slotToSlotPen = Pens.DarkOrange;
+        static Pen sfxLadderPen = Pens.Purple;
+        static Pen sfxBoostPen = Pens.Blue;
+        static Pen sfxJumpDownPen = Pens.Maroon;
+        static Pen sfxLargeBoostPen = Pens.DeepPink;
+
         private Pen edgePen = blackPen;
         //protected static Brush mostlyTransparentBrush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
         //protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
@@ -62,7 +66,7 @@ namespace ME3Explorer.PathfindingNodes
             export = pcc.getExport(index);
             comment = new SText(GetComment(), commentColor, false);
             comment.X = 0;
-            comment.Y = 55 - comment.Height;
+            comment.Y = 65 - comment.Height;
             comment.Pickable = false;
             this.AddChild(comment);
             this.Pickable = true;
@@ -105,6 +109,18 @@ namespace ME3Explorer.PathfindingNodes
                         case "SlotToSlotReachSpec":
                             penToUse = slotToSlotPen;
                             break;
+                        case "SFXLadderReachSpec":
+                            penToUse = sfxLadderPen;
+                            break;
+                        case "SFXLargeBoostReachSpec":
+                            penToUse = sfxLargeBoostPen;
+                            break;
+                        case "SFXBoostReachSpec":
+                            penToUse = sfxBoostPen;
+                            break;
+                        case "SFXJumpDownReachSpec":
+                            penToUse = sfxJumpDownPen;
+                            break;
                     }
                     //Get ending
                     PNode othernode = null;
@@ -126,6 +142,24 @@ namespace ME3Explorer.PathfindingNodes
                         }
                         if (othernodeidx != 0)
                         {
+                            IntProperty radius = props.GetProp<IntProperty>("CollisionRadius");
+                            IntProperty height = props.GetProp<IntProperty>("CollisionHeight");
+
+                            if (radius != null && height != null && (radius > 50 || height > 95))
+                            {
+                                penToUse = (Pen)penToUse.Clone();
+                                if (radius > 100 && height > 150)
+                                {
+                                    penToUse.Width = 3;
+                                }
+                                else
+                                {
+                                    penToUse.Width = 2;
+                                }
+                            }
+
+
+
                             break;
                         }
                     }
@@ -217,7 +251,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = PPath.CreateEllipse(0, 0, w, h);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -234,12 +268,68 @@ namespace ME3Explorer.PathfindingNodes
         }
     }
 
+    public class BioPathPoint : PathNode
+    {
+        public BioPathPoint(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, x, y, p, grapheditor)
+        {
+            shape.Brush = dynamicPathfindingNodeBrush;
+        }
+    }         //SFXDynamicCoverLink, SFXDynamicCoverSlotMarker
+
+    public class CoverLink : PathfindingNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(63, 102, 207);
+        PointF[] coverShape = new PointF[] { new PointF(0, 50), new PointF(0, 35), new PointF(15, 35), new PointF(15, 0), new PointF(35, 0), new PointF(35, 35), new PointF(50, 35), new PointF(50, 50) };
+
+        public CoverLink(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreatePolygon(coverShape);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = pathfindingNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            var props = export.GetProperties();
+            this.TranslateBy(x, y);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
+        }
+    }
+
+    public class SFXDynamicCoverLink : CoverLink
+    {
+        public SFXDynamicCoverLink(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, x, y, p, grapheditor)
+        {
+            shape.Brush = dynamicPathfindingNodeBrush;
+        }
+    }
+
+
+
     public class SFXNav_BoostNode : PathfindingNode
     {
         public VarTypes type { get; set; }
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
-        private static Color color = Color.FromArgb(34, 218, 218);
+        private static Color color = Color.FromArgb(17, 189, 146);
         PointF[] boostdownshape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 50), new PointF(40, 40), new PointF(30, 50), new PointF(20, 40), new PointF(10, 50), new PointF(0, 40) };
         PointF[] boostbottomshape = new PointF[] { new PointF(0, 50), new PointF(50, 50), new PointF(50, 0), new PointF(40, 10), new PointF(30, 0), new PointF(20, 10), new PointF(10, 0), new PointF(0, 10) };
 
@@ -260,7 +350,101 @@ namespace ME3Explorer.PathfindingNodes
             shape = PPath.CreatePolygon(shapetouse);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            var props = export.GetProperties();
+            this.TranslateBy(x, y);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
+        }
+    }
+
+    public class SFXNav_JumpDownNode : PathfindingNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(191, 82, 93);
+        //        PointF[] mantleshape = new PointF[] { new PointF(0, 50), new PointF(0, 10), new PointF(35, 10), new PointF(35, 0), new PointF(50, 20), new PointF(35, 35), new PointF(35, 25), new PointF(20, 25), new PointF(20, 50), new PointF(0, 50) };
+
+        PointF[] jumptopshape = new PointF[] { new PointF(0, 0), new PointF(40, 0), new PointF(40, 35), new PointF(50, 35), new PointF(35, 50), new PointF(20, 35), new PointF(30, 35), new PointF(30, 10), new PointF(0, 10) };
+        PointF[] jumplandingshape = new PointF[] { new PointF(15, 0), new PointF(35, 0), new PointF(35, 20), new PointF(50, 20), new PointF(25, 40), new PointF(50, 40), new PointF(50, 50), new PointF(0, 50), new PointF(0, 40), new PointF(25, 40), new PointF(0, 20), new PointF(15, 20) };
+
+        public SFXNav_JumpDownNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            BoolProperty bTopNode = export.GetProperty<BoolProperty>("bTopNode");
+            PointF[] shapetouse = jumptopshape;
+            if (bTopNode == null || bTopNode.Value == false)
+            {
+                shapetouse = jumplandingshape;
+            }
+            shape = PPath.CreatePolygon(shapetouse);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = pathfindingNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            var props = export.GetProperties();
+            this.TranslateBy(x, y);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
+        }
+    }
+
+    public class SFXNav_LadderNode : PathfindingNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(127, 76, 186);
+        //        PointF[] mantleshape = new PointF[] { new PointF(0, 50), new PointF(0, 10), new PointF(35, 10), new PointF(35, 0), new PointF(50, 20), new PointF(35, 35), new PointF(35, 25), new PointF(20, 25), new PointF(20, 50), new PointF(0, 50) };
+
+        PointF[] laddertopshape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 10), new PointF(30, 10), new PointF(30, 20), new PointF(50, 20), new PointF(50, 30), new PointF(30, 30), new PointF(30, 40),
+            new PointF(35, 40), new PointF(25, 50), new PointF(15, 40),
+            new PointF(20, 40), new PointF(20, 30), new PointF(0, 30),new PointF(0, 20), new PointF(20, 20),new PointF(20, 10), new PointF(0, 10) };
+
+        PointF[] ladderbottomshape = new PointF[] { new PointF(15, 10), new PointF(25, 0), new PointF(35, 10), new PointF(30, 10), new PointF(30, 10), new PointF(30, 20), new PointF(50, 20), new PointF(50, 30), new PointF(30, 30), new PointF(30, 40), new PointF(50, 40), new PointF(50, 50),
+            new PointF(0, 50), new PointF(0, 40), new PointF(20, 40), new PointF(20, 30), new PointF(0, 30),new PointF(0, 20), new PointF(20, 20),new PointF(20, 10) };
+
+        public SFXNav_LadderNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            BoolProperty bTopNode = export.GetProperty<BoolProperty>("bTopNode");
+            PointF[] shapetouse = laddertopshape;
+            if (bTopNode == null || bTopNode.Value == false)
+            {
+                shapetouse = ladderbottomshape;
+            }
+            shape = PPath.CreatePolygon(shapetouse);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -283,7 +467,7 @@ namespace ME3Explorer.PathfindingNodes
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(219, 112, 147);
-        PointF[] doubleboostshape = new PointF[] { new PointF(0, 10), new PointF(10, 0), new PointF(20, 10), new PointF(30, 0), new PointF(40, 10), new PointF(50, 0), new PointF(50, 50), new PointF(40, 40),new PointF(30, 50), new PointF(20, 40), new PointF(10, 50), new PointF(0, 40) };
+        PointF[] doubleboostshape = new PointF[] { new PointF(0, 10), new PointF(10, 0), new PointF(20, 10), new PointF(30, 0), new PointF(40, 10), new PointF(50, 0), new PointF(50, 50), new PointF(40, 40), new PointF(30, 50), new PointF(20, 40), new PointF(10, 50), new PointF(0, 40) };
 
         public SFXNav_LargeBoostNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
@@ -296,7 +480,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = PPath.CreatePolygon(doubleboostshape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -331,7 +515,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = PPath.CreatePolygon(soundShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -404,7 +588,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = PPath.CreatePolygon(doorshape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -421,7 +605,7 @@ namespace ME3Explorer.PathfindingNodes
         }
     }
 
-    public class BioPathPoint : PathfindingNode
+    /*public class BioPathPoint : PathfindingNode
     {
         public VarTypes type { get; set; }
         private SText val;
@@ -440,7 +624,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = PPath.CreatePolygon(upleftarrowshape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -455,7 +639,7 @@ namespace ME3Explorer.PathfindingNodes
             this.MouseEnter += OnMouseEnter;
             this.MouseLeave += OnMouseLeave;
         }
-    }
+    }*/
 
     //This is technically not a pathnode...
     public class SFXObjectiveSpawnPoint : PathfindingNode
@@ -486,7 +670,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = PPath.CreatePolygon(triangleshape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -561,7 +745,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = PPath.CreateEllipse(0, 0, w, h);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -604,7 +788,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = PPath.CreateRectangle(0, 0, w, h);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -640,7 +824,52 @@ namespace ME3Explorer.PathfindingNodes
             shape = PPath.CreatePolygon(shieldshape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            var props = export.GetProperties();
+            this.TranslateBy(x, y);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
+        }
+    }
+
+    public class SFXDynamicCoverSlotMarker : CoverSlotMarker
+    {
+        public SFXDynamicCoverSlotMarker(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, x, y, p, grapheditor)
+        {
+            shape.Brush = dynamicPathfindingNodeBrush;
+        }
+    }
+
+    public class MantleMarker : PathfindingNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(85, 59, 255);
+        PointF[] mantleshape = new PointF[] { new PointF(0, 50), new PointF(0, 10), new PointF(35, 10), new PointF(35, 0), new PointF(50, 20), new PointF(35, 35), new PointF(35, 25), new PointF(20, 25), new PointF(20, 50), new PointF(0, 50) };
+
+        public MantleMarker(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreatePolygon(mantleshape);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -676,7 +905,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = PPath.CreatePolygon(starshape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -713,7 +942,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = nodeShape;
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -750,7 +979,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = nodeShape;
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = nodeBrush;
+            shape.Brush = pathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
