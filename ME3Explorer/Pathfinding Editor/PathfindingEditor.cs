@@ -56,13 +56,15 @@ namespace ME3Explorer
         private const int NODETYPE_SFXNAV_BOOSTNODE_TOP = 4;
         private const int NODETYPE_SFXNAV_BOOSTNODE_BOTTOM = 5;
         private const int NODETYPE_SFXNAV_LAREGEBOOSTNODE = 6;
+        private const int NODETYPE_SFXNAV_LARGEMANTLENODE = 7;
+        private const int NODETYPE_SFXNAV_CLIMBWALLNODE = 8;
         private static string classDatabasePath = "";
 
         public static Dictionary<string, Dictionary<string, string>> importclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
         public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
 
-        public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "MantleMarker", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode", "WwiseAmbientSound" };
-        public string[] actorNodeClasses = { "BlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor" };
+        public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "MantleMarker", "SFXNav_InteractionHenchOmniToolCrouch", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode", "WwiseAmbientSound" };
+        public string[] actorNodeClasses = { "BlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume", "SFXBlockingVolume_Ledge", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor" };
         public string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
         public bool ActorNodesActive = false;
         public bool PathfindingNodesActive = true;
@@ -626,7 +628,9 @@ namespace ME3Explorer
                             case "SFXDoorMarker":
                                 pathNode = new PathfindingNodes.SFXDoorMarker(index, x, y, pcc, graphEditor);
                                 break;
-
+                            case "SFXNav_LargeMantleNode":
+                                pathNode = new PathfindingNodes.SFXNav_LargeMantleNode(index, x, y, pcc, graphEditor);
+                                break;
                             case "BioPathPoint":
                                 pathNode = new PathfindingNodes.BioPathPoint(index, x, y, pcc, graphEditor);
                                 break;
@@ -760,6 +764,9 @@ namespace ME3Explorer
                                 break;
                             case "SFXAmmoContainer":
                                 actorNode = new ActorNodes.SFXAmmoContainer(index, x, y, pcc, graphEditor);
+                                break;
+                            case "SFXBlockingVolume_Ledge":
+                                actorNode = new ActorNodes.SFXBlockingVolume_Ledge(index, x, y, pcc, graphEditor);
                                 break;
                             case "SFXCombatZone":
                                 actorNode = new ActorNodes.SFXCombatZone(index, x, y, pcc, graphEditor);
@@ -904,7 +911,6 @@ namespace ME3Explorer
             addToSFXCombatZoneToolStripMenuItem.Enabled = false;
             if (e.Button == MouseButtons.Right)
             {
-
                 addToSFXCombatZoneToolStripMenuItem.DropDownItems.Clear();
                 breakLinksToolStripMenuItem.DropDownItems.Clear();
                 PathfindingNodeMaster node = (PathfindingNodeMaster)sender;
@@ -1126,6 +1132,10 @@ namespace ME3Explorer
 
         private void openInPackageEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (listBox1.SelectedIndex < 0)
+            {
+                return;
+            }
             int l = CurrentObjects[listBox1.SelectedIndex];
             if (l == -1)
                 return;
@@ -1379,7 +1389,6 @@ namespace ME3Explorer
                 case NODETYPE_SFXNAV_LAREGEBOOSTNODE:
                     exportclassdbkey = "SFXNav_LargeBoostNode";
                     propertiesToRemoveIfPresent.Add("bTopNode"); //if coming from boost node
-
                     break;
                 case NODETYPE_SFXNAV_TURRETPOINT:
                     exportclassdbkey = "SFXNav_TurretPoint";
@@ -1392,6 +1401,15 @@ namespace ME3Explorer
                 case NODETYPE_SFXNAV_BOOSTNODE_BOTTOM:
                     exportclassdbkey = "SFXNav_BoostNode";
                     propertiesToRemoveIfPresent.Add("bTopNode");
+                    break;
+                case NODETYPE_SFXNAV_LARGEMANTLENODE:
+                    exportclassdbkey = "SFXNav_LargeMantleNode";
+                    ObjectProperty mantleDest = new ObjectProperty(0, "MantleDest");
+                    propertiesToAdd.Add(mantleDest);
+                    break;
+                case NODETYPE_SFXNAV_CLIMBWALLNODE:
+                    exportclassdbkey = "SFXNav_ClimbWallNode";
+                    //propertiesToRemoveIfPresent.Add("ClimbDest");
                     break;
                 default:
                     return;
@@ -1756,6 +1774,10 @@ namespace ME3Explorer
 
         private void createReachSpecToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (listBox1.SelectedIndex < 0)
+            {
+                return;
+            }
             int sourceExportIndex = CurrentObjects[listBox1.SelectedIndex];
             if (sourceExportIndex == -1)
                 return;
@@ -2174,7 +2196,7 @@ namespace ME3Explorer
                     string fname = Path.GetFileName(pathfinder.CurrentFile);
                     if (pathfinder.CurrentFilterType != HeightFilterForm.FILTER_Z_NONE)
                     {
-                        fname += " | Hiding nodes " + (pathfinder.CurrentFilterType == HeightFilterForm.FILTER_Z_ABOVE ? "above" : "below") + " Z = " + pathfinder.CurrentZFilterValue+" | ";
+                        fname += " | Hiding nodes " + (pathfinder.CurrentFilterType == HeightFilterForm.FILTER_Z_ABOVE ? "above" : "below") + " Z = " + pathfinder.CurrentZFilterValue + " | ";
                     }
 
                     int X = Convert.ToInt32(pos.X);
@@ -2301,6 +2323,44 @@ namespace ME3Explorer
         private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RefreshView();
+        }
+
+        private void recalculateReachspecsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ReachSpecRecalculator rsr = new ReachSpecRecalculator(this);
+            rsr.ShowDialog();
+        }
+
+        private void toSFXNavLargeMantleNodeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listBox1.SelectedIndex >= 0)
+            {
+                int n = CurrentObjects[listBox1.SelectedIndex];
+                if (n == -1)
+                    return;
+                IExportEntry selectednodeexp = pcc.Exports[n];
+                if (selectednodeexp.ClassName != "SFXNav_LargeMantleNode")
+                {
+                    changeNodeType(selectednodeexp, NODETYPE_SFXNAV_LARGEMANTLENODE);
+                    RefreshView();
+                }
+            }
+        }
+
+        private void toSFXNavClimbWallNodeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listBox1.SelectedIndex >= 0)
+            {
+                int n = CurrentObjects[listBox1.SelectedIndex];
+                if (n == -1)
+                    return;
+                IExportEntry selectednodeexp = pcc.Exports[n];
+                if (selectednodeexp.ClassName != "SFXNav_ClimbWallNode")
+                {
+                    changeNodeType(selectednodeexp, NODETYPE_SFXNAV_CLIMBWALLNODE);
+                    RefreshView();
+                }
+            }
         }
     }
 

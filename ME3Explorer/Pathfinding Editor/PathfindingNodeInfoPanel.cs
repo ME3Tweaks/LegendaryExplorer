@@ -21,6 +21,13 @@ namespace ME3Explorer.Pathfinding_Editor
         private bool AllowChanges = true;
         public PathfindingEditor PathfindingEditorInstance { get; private set; }
 
+        public const int MOOK_RADIUS = 40;
+        public const int MOOK_HEIGHT = 95;
+        public const int MINIBOSS_RADIUS = 105;
+        public const int MINIBOSS_HEIGHT = 145;
+        public const int BOSS_RADIUS = 140;
+        public const int BOSS_HEIGHT = 195;
+
         public PathfindingNodeInfoPanel()
         {
             InitializeComponent();
@@ -33,6 +40,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public void LoadExport(IExportEntry export)
         {
+            AllowChanges = false;
             this.export = export;
             reachableNodesList.Items.Clear();
             sfxCombatZoneList.Items.Clear();
@@ -44,8 +52,38 @@ namespace ME3Explorer.Pathfinding_Editor
 
             exportTitleLabel.Text = export.ObjectName + "_" + export.indexValue;
 
+            //Calculate size
+            StructProperty maxPathSize = props.GetProp<StructProperty>("MaxPathSize");
+            if (maxPathSize != null)
+            {
+                float height = maxPathSize.GetProp<FloatProperty>("Height");
+                float radius = maxPathSize.GetProp<FloatProperty>("Radius");
+                exportTitleLabel.Text += " - " + radius + "x" + height;
+
+                if (radius >= 34 && height >= 64)
+                {
+                    pathNodeSizeComboBox.SelectedIndex = 0;
+                }
+
+                if (radius >= 90 && height >= 130)
+                {
+                    pathNodeSizeComboBox.SelectedIndex = 1;
+                }
+
+                if (radius >= 135 && height >= 190)
+                {
+                    pathNodeSizeComboBox.SelectedIndex = 2;
+                }
+                pathNodeSizeComboBox.Enabled = true;
+            }
+            else
+            {
+                pathNodeSizeComboBox.Enabled = false;
+
+            }
+
             //Calculate reachspecs
-            ArrayProperty<ObjectProperty> PathList = export.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+            ArrayProperty<ObjectProperty> PathList = props.GetProp<ArrayProperty<ObjectProperty>>("PathList");
             if (PathList != null)
             {
                 foreach (ObjectProperty prop in PathList)
@@ -86,6 +124,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     }
                 }
             }
+            AllowChanges = true;
         }
 
         private void sfxCombatZoneSelectionChanged(object sender, EventArgs e)
@@ -110,7 +149,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 reachSpecDestLabel.Text = "No ReachSpec selected";
                 reachSpecSizeLabel.Text = "ReachSpec Size";
-
+                connectionToLabel.Text = "Connection to";
                 return;
             }
 
@@ -126,6 +165,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 IExportEntry endNode = export.FileRef.Exports[outgoingSpecEndProp.Value - 1];
                 reachSpecDestLabel.Text = endNode.ObjectName + "_" + endNode.indexValue;
+                connectionToLabel.Text = "Connection to " + endNode.Index;
             }
 
             IntProperty radius = props.GetProp<IntProperty>("CollisionRadius");
@@ -198,6 +238,58 @@ namespace ME3Explorer.Pathfinding_Editor
                     reachSpecSelection_Changed(null, null);
                 }
             }
+        }
+
+        private void pathNodeSize_DropdownChanged(object sender, EventArgs e)
+        {
+            if (AllowChanges)
+            {
+                int selectedIndex = pathNodeSizeComboBox.SelectedIndex;
+
+                Unreal.PropertyCollection props = export.GetProperties();
+                StructProperty maxPathSize = props.GetProp<StructProperty>("MaxPathSize");
+                if (maxPathSize != null)
+                {
+                    FloatProperty height = maxPathSize.GetProp<FloatProperty>("Height");
+                    FloatProperty radius = maxPathSize.GetProp<FloatProperty>("Radius");
+                    if (radius != null && height != null)
+                    {
+                        int radVal = -1;
+                        int heightVal = -1;
+
+                        switch (selectedIndex)
+                        {
+                            case 0:
+                                radVal = MOOK_RADIUS;
+                                heightVal = MOOK_HEIGHT;
+                                break;
+                            case 1:
+                                radVal = MINIBOSS_RADIUS;
+                                heightVal = MINIBOSS_HEIGHT;
+                                break;
+                            case 2:
+                                radVal = BOSS_RADIUS;
+                                heightVal = BOSS_HEIGHT;
+                                break;
+                        }
+
+                        long heightOffset = height.Offset;
+                        long radiusOffset = radius.Offset;
+
+                        //Manually write it to avoid property writing errors with cover stuff
+                        byte[] data = export.Data;
+                        WriteMem((int)heightOffset, data, BitConverter.GetBytes(Convert.ToSingle(heightVal)));
+                        WriteMem((int)radiusOffset, data, BitConverter.GetBytes(Convert.ToSingle(radVal)));
+                        export.Data = data;
+                    }
+                }
+            }
+        }
+
+        private void WriteMem(int pos, byte[] memory, byte[] buff)
+        {
+            for (int i = 0; i < buff.Length; i++)
+                memory[pos + i] = buff[i];
         }
     }
 }

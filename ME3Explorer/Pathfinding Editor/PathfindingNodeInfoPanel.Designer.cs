@@ -37,10 +37,11 @@ namespace ME3Explorer.Pathfinding_Editor
             this.sfxCombatZoneList = new System.Windows.Forms.ListBox();
             this.reachSpecSizeSelector = new System.Windows.Forms.ComboBox();
             this.reachSpecSizeLabel = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.connectionToLabel = new System.Windows.Forms.Label();
             this.reachSpecDestLabel = new System.Windows.Forms.Label();
             this.reachSpecDistanceHeaderLabel = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.pathNodeSizeComboBox = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // exportTitleLabel
@@ -57,7 +58,7 @@ namespace ME3Explorer.Pathfinding_Editor
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(7, 34);
+            this.label1.Location = new System.Drawing.Point(7, 66);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(215, 17);
             this.label1.TabIndex = 1;
@@ -68,7 +69,7 @@ namespace ME3Explorer.Pathfinding_Editor
             this.reachableNodesList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.reachableNodesList.FormattingEnabled = true;
-            this.reachableNodesList.Location = new System.Drawing.Point(10, 54);
+            this.reachableNodesList.Location = new System.Drawing.Point(10, 86);
             this.reachableNodesList.Name = "reachableNodesList";
             this.reachableNodesList.Size = new System.Drawing.Size(453, 56);
             this.reachableNodesList.TabIndex = 2;
@@ -103,7 +104,7 @@ namespace ME3Explorer.Pathfinding_Editor
             "Mooks (45x90)",
             "Minibosses (95x145)",
             "Bosses (140x195)"});
-            this.reachSpecSizeSelector.Location = new System.Drawing.Point(244, 129);
+            this.reachSpecSizeSelector.Location = new System.Drawing.Point(245, 161);
             this.reachSpecSizeSelector.Name = "reachSpecSizeSelector";
             this.reachSpecSizeSelector.Size = new System.Drawing.Size(121, 21);
             this.reachSpecSizeSelector.TabIndex = 5;
@@ -112,25 +113,25 @@ namespace ME3Explorer.Pathfinding_Editor
             // reachSpecSizeLabel
             // 
             this.reachSpecSizeLabel.AutoSize = true;
-            this.reachSpecSizeLabel.Location = new System.Drawing.Point(230, 113);
+            this.reachSpecSizeLabel.Location = new System.Drawing.Point(227, 145);
             this.reachSpecSizeLabel.Name = "reachSpecSizeLabel";
             this.reachSpecSizeLabel.Size = new System.Drawing.Size(87, 13);
             this.reachSpecSizeLabel.TabIndex = 6;
             this.reachSpecSizeLabel.Text = "ReachSpec Size";
             // 
-            // label4
+            // connectionToLabel
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(10, 113);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(73, 13);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "Connection to";
+            this.connectionToLabel.AutoSize = true;
+            this.connectionToLabel.Location = new System.Drawing.Point(7, 145);
+            this.connectionToLabel.Name = "connectionToLabel";
+            this.connectionToLabel.Size = new System.Drawing.Size(73, 13);
+            this.connectionToLabel.TabIndex = 7;
+            this.connectionToLabel.Text = "Connection to";
             // 
             // reachSpecDestLabel
             // 
             this.reachSpecDestLabel.AutoSize = true;
-            this.reachSpecDestLabel.Location = new System.Drawing.Point(22, 132);
+            this.reachSpecDestLabel.Location = new System.Drawing.Point(22, 158);
             this.reachSpecDestLabel.Name = "reachSpecDestLabel";
             this.reachSpecDestLabel.Size = new System.Drawing.Size(124, 13);
             this.reachSpecDestLabel.TabIndex = 8;
@@ -139,7 +140,7 @@ namespace ME3Explorer.Pathfinding_Editor
             // reachSpecDistanceHeaderLabel
             // 
             this.reachSpecDistanceHeaderLabel.AutoSize = true;
-            this.reachSpecDistanceHeaderLabel.Location = new System.Drawing.Point(12, 157);
+            this.reachSpecDistanceHeaderLabel.Location = new System.Drawing.Point(10, 187);
             this.reachSpecDistanceHeaderLabel.Name = "reachSpecDistanceHeaderLabel";
             this.reachSpecDistanceHeaderLabel.Size = new System.Drawing.Size(85, 13);
             this.reachSpecDistanceHeaderLabel.TabIndex = 9;
@@ -148,20 +149,35 @@ namespace ME3Explorer.Pathfinding_Editor
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(28, 179);
+            this.label5.Location = new System.Drawing.Point(22, 200);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(124, 13);
             this.label5.TabIndex = 10;
             this.label5.Text = "No ReachSpec selected";
             // 
+            // pathNodeSizeComboBox
+            // 
+            this.pathNodeSizeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.pathNodeSizeComboBox.FormattingEnabled = true;
+            this.pathNodeSizeComboBox.Items.AddRange(new object[] {
+            "Mooks (45x90)",
+            "Minibosses (95x145)",
+            "Bosses (140x195)"});
+            this.pathNodeSizeComboBox.Location = new System.Drawing.Point(7, 33);
+            this.pathNodeSizeComboBox.Name = "pathNodeSizeComboBox";
+            this.pathNodeSizeComboBox.Size = new System.Drawing.Size(121, 21);
+            this.pathNodeSizeComboBox.TabIndex = 11;
+            this.pathNodeSizeComboBox.SelectedIndexChanged += new System.EventHandler(this.pathNodeSize_DropdownChanged);
+            // 
             // PathfindingNodeInfoPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.pathNodeSizeComboBox);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.reachSpecDistanceHeaderLabel);
             this.Controls.Add(this.reachSpecDestLabel);
-            this.Controls.Add(this.label4);
+            this.Controls.Add(this.connectionToLabel);
             this.Controls.Add(this.reachSpecSizeLabel);
             this.Controls.Add(this.reachSpecSizeSelector);
             this.Controls.Add(this.sfxCombatZoneList);
@@ -187,9 +203,10 @@ namespace ME3Explorer.Pathfinding_Editor
         private System.Windows.Forms.ListBox sfxCombatZoneList;
         private System.Windows.Forms.ComboBox reachSpecSizeSelector;
         private System.Windows.Forms.Label reachSpecSizeLabel;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label connectionToLabel;
         private System.Windows.Forms.Label reachSpecDestLabel;
         private System.Windows.Forms.Label reachSpecDistanceHeaderLabel;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox pathNodeSizeComboBox;
     }
 }

@@ -375,6 +375,12 @@
     <Compile Include="Pathfinding Editor\ReachSpecCreatorForm.Designer.cs">
       <DependentUpon>ReachSpecCreatorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Pathfinding Editor\ReachSpecRecalculator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pathfinding Editor\ReachSpecRecalculator.Designer.cs">
+      <DependentUpon>ReachSpecRecalculator.cs</DependentUpon>
+    </Compile>
     <Compile Include="PeriodicUpdater.cs" />
     <Compile Include="Main Window\SearchPanel.xaml.cs">
       <DependentUpon>SearchPanel.xaml</DependentUpon>
@@ -1114,6 +1120,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Pathfinding Editor\ReachSpecCreatorForm.resx">
       <DependentUpon>ReachSpecCreatorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pathfinding Editor\ReachSpecRecalculator.resx">
+      <DependentUpon>ReachSpecRecalculator.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PCCRepack\PCCRepack.resx">
       <DependentUpon>PCCRepack.cs</DependentUpon>

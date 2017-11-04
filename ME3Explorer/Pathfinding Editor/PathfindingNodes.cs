@@ -886,6 +886,42 @@ namespace ME3Explorer.PathfindingNodes
         }
     }
 
+    public class SFXNav_LargeMantleNode : PathfindingNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(185, 59, 55);
+        PointF[] mantleshape = new PointF[] { new PointF(0, 50), new PointF(0, 10), new PointF(35, 10), new PointF(35, 0), new PointF(50, 20), new PointF(35, 35), new PointF(35, 25), new PointF(20, 25), new PointF(20, 50), new PointF(0, 50) };
+
+        public SFXNav_LargeMantleNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreatePolygon(mantleshape);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = pathfindingNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            var props = export.GetProperties();
+            this.TranslateBy(x, y);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
+        }
+    }
+
     public class SFXEnemySpawnPoint : PathfindingNode
     {
         public VarTypes type { get; set; }

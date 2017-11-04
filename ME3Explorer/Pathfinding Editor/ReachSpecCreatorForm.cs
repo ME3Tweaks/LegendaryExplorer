@@ -67,7 +67,6 @@ namespace ME3Explorer.Pathfinding_Editor
                 return;
             }
             e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar); //prevent non digit entry
-
         }
 
         private void destinationNodeTextBox_TextChanged(object sender, EventArgs e)

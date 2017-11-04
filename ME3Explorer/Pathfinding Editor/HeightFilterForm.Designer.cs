@@ -86,6 +86,7 @@
             this.FilterZValueBox.Name = "FilterZValueBox";
             this.FilterZValueBox.Size = new System.Drawing.Size(100, 20);
             this.FilterZValueBox.TabIndex = 4;
+            this.FilterZValueBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FilterZValueBox_KeyPress);
             // 
             // applyFilterButton
             // 

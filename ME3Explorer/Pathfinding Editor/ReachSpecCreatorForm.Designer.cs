@@ -81,10 +81,11 @@
             this.reachSpecTypeComboBox.Items.AddRange(new object[] {
             "ReachSpec",
             "SFXBoostReachSpec",
-            "SFXLargeBoostReachSpec"});
+            "SFXLargeBoostReachSpec",
+            "SFXLargeMantleReachSpec"});
             this.reachSpecTypeComboBox.Location = new System.Drawing.Point(21, 112);
             this.reachSpecTypeComboBox.Name = "reachSpecTypeComboBox";
-            this.reachSpecTypeComboBox.Size = new System.Drawing.Size(121, 21);
+            this.reachSpecTypeComboBox.Size = new System.Drawing.Size(185, 21);
             this.reachSpecTypeComboBox.TabIndex = 2;
             this.toolTip1.SetToolTip(this.reachSpecTypeComboBox, "Type of ReachSpec. Not all pawns can traverse all ReachSpecs (e.g. climbwall is o" +
         "nly usable by Husks and Abominations).");

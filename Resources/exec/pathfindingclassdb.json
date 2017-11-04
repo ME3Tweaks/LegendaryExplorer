@@ -29,6 +29,18 @@
          "name":"SFXNav_LargeBoostNode",
          "cylindercomponentarchetype":"SFXGame.Default__SFXNav_LargeBoostNode.CollisionCylinder",
          "incomingreachspecclass":"Engine.ReachSpec"
+      },
+      "SFXNav_LargeMantleNode":{
+         "class":"SFXGame.SFXNav_LargeMantleNode",
+         "name":"SFXNav_LargeMantleNode",
+         "cylindercomponentarchetype":"SFXGame.Default__SFXNav_LargeMantleNode.CollisionCylinder",
+         "incomingreachspecclass":"Engine.ReachSpec"
+      },
+      "SFXNav_ClimbWallNode":{
+         "class":"SFXGame.SFXNav_ClimbWallNode",
+         "name":"SFXNav_ClimbWallNode",
+         "cylindercomponentarchetype":"SFXGame.Default__SFXNav_ClimbWallNode.CollisionCylinder",
+         "incomingreachspecclass":"Engine.ReachSpec"
       }
    },
    "importtypes":{
@@ -37,6 +49,14 @@
          "packagefile":"Core"
       },
       "SFXGame.SFXLargeBoostReachSpec":{
+         "class":"Class",
+         "packagefile":"Core"
+      },
+      "SFXGame.SFXLargeMantleReachSpec":{
+         "class":"Class",
+         "packagefile":"Core"
+      },
+      "SFXGame.SFXClimbWallReachSpec":{
          "class":"Class",
          "packagefile":"Core"
       },
@@ -61,6 +81,30 @@
          "packagefile":"SFXGame"
       },
       "SFXGame.Default__SFXNav_TurretPoint.CollisionCylinder":{
+         "class":"Engine.CylinderComponent",
+         "packagefile":"Engine"
+      },
+      "SFXGame.SFXNav_LargeMantleNode":{
+         "class":"Class",
+         "packagefile":"Core"
+      },
+      "SFXGame.Default__SFXNav_LargeMantleNode":{
+         "class":"SFXGame.SFXNav_LargeMantleNode",
+         "packagefile":"SFXGame"
+      },
+      "SFXGame.Default__SFXNav_LargeMantleNode.CollisionCylinder":{
+         "class":"Engine.CylinderComponent",
+         "packagefile":"Engine"
+      },
+      "SFXGame.SFXNav_ClimbWallNode":{
+         "class":"Class",
+         "packagefile":"Core"
+      },
+      "SFXGame.Default__SFXNav_ClimbWallNode":{
+         "class":"SFXGame.Default__SFXNav_ClimbWallNode",
+         "packagefile":"SFXGame"
+      },
+      "SFXGame.Default__SFXNav_ClimbWallNode.CollisionCylinder":{
          "class":"Engine.CylinderComponent",
          "packagefile":"Engine"
       },

@@ -37,9 +37,10 @@ namespace ME3Explorer.Pathfinding_Editor
                     radioButton_FilterBelow.Checked = true;
                 }
                 FilterZValueBox.Text = currentFilterValue.ToString();
-            } else
+            }
+            else
             {
-                if (currentFilter == 1)
+                if (currentFilter == 0)
                 {
                     radioButton_NoFilter.Checked = true;
                 }
@@ -87,6 +88,17 @@ namespace ME3Explorer.Pathfinding_Editor
             }
 
             //}
+        }
+
+        private void FilterZValueBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if ((e.KeyChar == Convert.ToChar(Keys.Enter)) && FilterZValueBox.Enabled)
+            {
+                e.Handled = true;
+                applyFilterButton.PerformClick();
+                return;
+            }
+            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar); //prevent non digit entry
         }
     }
 }
