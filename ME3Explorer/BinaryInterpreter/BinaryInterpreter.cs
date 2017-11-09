@@ -117,7 +117,7 @@ Floats*/
 
         int? selectedNodePos = null;
 
-        public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "Class", "Material", "StaticMesh", "MaterialInstanceConstant", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh","Model","Polys" }; //classes that have binary parse code
+        public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "Class", "Material", "StaticMesh", "MaterialInstanceConstant", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "Model", "Polys" }; //classes that have binary parse code
 
 
         public BinaryInterpreter()
@@ -278,7 +278,7 @@ Floats*/
 
 
 
-            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName +" (Generic Scan)");
+            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName + " (Generic Scan)");
             topLevelTree.Tag = nodeType.Root;
             topLevelTree.Name = "0";
             try
@@ -335,10 +335,11 @@ Floats*/
                                 if (val > 0 && val <= pcc.Names.Count)
                                 {
                                     IExportEntry exp = pcc.Exports[val - 1];
-                                    nodeText += val + " \t"+pcc.getNameEntry(val);
-                                } else
+                                    nodeText += val + " \t" + pcc.getNameEntry(val);
+                                }
+                                else
                                 {
-                                    nodeText += "\t"+val;
+                                    nodeText += "\t" + val;
                                 }
                                 node.Tag = nodeType.StructLeafName;
                                 break;
@@ -658,7 +659,7 @@ Floats*/
                         //Console.WriteLine("0x" + start.ToString("X8") + "\t0x" + itemexportid.ToString("X8") + "\t" + locexp.PackageFullName + "." + locexp.ObjectName + "_" + locexp.indexValue + " [" + (itemexportid - 1) + "]");
                         TreeNode node = new TreeNode();
                         node.Tag = nodeType.ArrayLeafObject;
-                        node.Text = start.ToString("X4") + " " + locexp.PackageFullName + "." + locexp.ObjectName + "_" + locexp.indexValue + " [" + (itemexportid - 1) + "]";
+                        node.Text = start.ToString("X4") + "|" + itemcount + ": " + locexp.PackageFullName + "." + locexp.ObjectName + "_" + locexp.indexValue + " [" + (itemexportid - 1) + "]";
                         node.Name = start.ToString();
                         topLevelTree.Nodes.Add(node);
                         start += 4;

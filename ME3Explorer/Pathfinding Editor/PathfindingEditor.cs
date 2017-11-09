@@ -1004,13 +1004,13 @@ namespace ME3Explorer
             int c = guid.GetProp<IntProperty>("C");
             int d = guid.GetProp<IntProperty>("D");
 
-            actorRef = WriteMem(actorRef, 0, BitConverter.GetBytes(a));
-            actorRef = WriteMem(actorRef, 4, BitConverter.GetBytes(b));
-            actorRef = WriteMem(actorRef, 8, BitConverter.GetBytes(c));
-            actorRef = WriteMem(actorRef, 12, BitConverter.GetBytes(d));
+            actorRef = SharedPathfinding.WriteMem(actorRef, 0, BitConverter.GetBytes(a));
+            actorRef = SharedPathfinding.WriteMem(actorRef, 4, BitConverter.GetBytes(b));
+            actorRef = SharedPathfinding.WriteMem(actorRef, 8, BitConverter.GetBytes(c));
+            actorRef = SharedPathfinding.WriteMem(actorRef, 12, BitConverter.GetBytes(d));
 
             //Combat Zone Ref
-            actorRef = WriteMem(actorRef, 16, BitConverter.GetBytes(combatZoneExp.UIndex));
+            actorRef = SharedPathfinding.WriteMem(actorRef, 16, BitConverter.GetBytes(combatZoneExp.UIndex));
 
         }
 
@@ -1204,24 +1204,6 @@ namespace ME3Explorer
             }
         }
 
-        void generateNewRandomGUID(IExportEntry export)
-        {
-            StructProperty guidProp = export.GetProperty<StructProperty>("NavGuid");
-            if (guidProp != null)
-            {
-                Random rnd = new Random();
-                IntProperty A = guidProp.GetProp<IntProperty>("A");
-                IntProperty B = guidProp.GetProp<IntProperty>("B");
-                IntProperty C = guidProp.GetProp<IntProperty>("C");
-                IntProperty D = guidProp.GetProp<IntProperty>("D");
-                A.Value = rnd.Next();
-                B.Value = rnd.Next();
-                C.Value = rnd.Next();
-                D.Value = rnd.Next();
-                export.WriteProperty(guidProp);
-            }
-        }
-
         void cloneToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int n = CurrentObjects[listBox1.SelectedIndex];
@@ -1266,7 +1248,7 @@ namespace ME3Explorer
                 }
             }
 
-            generateNewRandomGUID(newNodeEntry);
+            SharedPathfinding.GenerateNewRandomGUID(newNodeEntry);
             //Add cloned node to persistentlevel
             IExportEntry persistentlevel = null;
             foreach (IExportEntry exp in pcc.Exports)
@@ -1301,7 +1283,7 @@ namespace ME3Explorer
             start += 4;
             uint numberofitems = BitConverter.ToUInt32(data, start);
             numberofitems++;
-            WriteMem(start, data, BitConverter.GetBytes(numberofitems));
+            SharedPathfinding.WriteMem(data, start, BitConverter.GetBytes(numberofitems));
             int insertoffset = (int)(numberofitems * 4) + start;
             List<byte> memList = data.ToList();
             memList.InsertRange(insertoffset, BitConverter.GetBytes(newNodeEntry.UIndex));
@@ -1350,11 +1332,7 @@ namespace ME3Explorer
             }
         }
 
-        private void WriteMem(int pos, byte[] memory, byte[] buff)
-        {
-            for (int i = 0; i < buff.Length; i++)
-                memory[pos + i] = buff[i];
-        }
+
 
         /// <summary>
         /// This method changes a node's type. It does many steps:
@@ -2070,23 +2048,8 @@ namespace ME3Explorer
             int newSize = oldSize + byteDelta;
             int newCount = oldCount + countDelta;
 
-            memory = WriteMem(memory, startpos + sizeOffset, BitConverter.GetBytes(newSize));
-            memory = WriteMem(memory, startpos + countOffset, BitConverter.GetBytes(newCount));
-
-            return memory;
-        }
-
-        /// <summary>
-        /// Writes the buffer to the memory array starting at position pos
-        /// </summary>
-        /// <param name="memory">Memory array to overwrite onto</param>
-        /// <param name="pos">Position to start writing at</param>
-        /// <param name="buff">byte array to write, in order</param>
-        /// <returns>Modified memory</returns>
-        private byte[] WriteMem(byte[] memory, int pos, byte[] buff)
-        {
-            for (int i = 0; i < buff.Length; i++)
-                memory[pos + i] = buff[i];
+            memory = SharedPathfinding.WriteMem(memory, startpos + sizeOffset, BitConverter.GetBytes(newSize));
+            memory = SharedPathfinding.WriteMem(memory, startpos + countOffset, BitConverter.GetBytes(newCount));
 
             return memory;
         }
@@ -2180,7 +2143,7 @@ namespace ME3Explorer
 
             AllowRefresh = false;
             IExportEntry nodeEntry = pcc.Exports[n];
-            generateNewRandomGUID(nodeEntry);
+            SharedPathfinding.GenerateNewRandomGUID(nodeEntry);
             AllowRefresh = true;
 
 
@@ -2399,8 +2362,17 @@ namespace ME3Explorer
             start += 4;
             uint numberofitems = BitConverter.ToUInt32(data, start);
             int countoffset = start;
-            int itemcount = 0;
+            int itemcount = 2;
+            start += 8;
             int numUpdated = 0;
+
+            Dictionary<int, List<int>> mpIDs = new Dictionary<int, List<int>>();
+            Debug.WriteLine("Start of header fix scan===================");
+            int restart = start;
+
+            //start full scan.
+            start = restart;
+            itemcount = 2;
             while (itemcount < numberofitems)
             {
                 //get header.
@@ -2414,19 +2386,43 @@ namespace ME3Explorer
                         byte[] exportData = exportEntry.Data;
                         int classId1 = BitConverter.ToInt32(exportData, 0);
                         int classId2 = BitConverter.ToInt32(exportData, 4);
+                        //Debug.WriteLine(maybe_MPID);
+                        bool updated = false;
+
+                        int maybe_MPID = BitConverter.ToInt32(exportData, 0x1A);
+                        List<int> idList;
+                        if (exportEntry.Index == 10877)
+                        {
+                            Debug.WriteLine("BREAK");
+                        }
+                        if (mpIDs.TryGetValue(maybe_MPID, out idList))
+                        {
+                            Debug.WriteLine(itemcount);
+                            idList.Add(exportEntry.Index);
+                        }
+                        else
+                        {
+                            mpIDs[maybe_MPID] = new List<int>();
+                            mpIDs[maybe_MPID].Add(exportEntry.Index);
+                        }
 
                         int metadataClass = exportEntry.idxClass;
-
                         if ((classId1 != metadataClass) || (classId2 != metadataClass))
                         {
-                            Debug.WriteLine("Updating unreal data header in export " + exportEntry.Index + " " + exportEntry.ClassName);
+                            Debug.WriteLine("Updating unreal class data header in export " + exportEntry.Index + " " + exportEntry.ClassName);
                             //Update unreal header
-                            WriteMem(0, exportData, BitConverter.GetBytes(metadataClass));
-                            WriteMem(4, exportData, BitConverter.GetBytes(metadataClass));
-                            exportEntry.Data = exportData;
+                            SharedPathfinding.WriteMem(exportData, 0, BitConverter.GetBytes(metadataClass));
+                            SharedPathfinding.WriteMem(exportData, 4, BitConverter.GetBytes(metadataClass));
                             numUpdated++;
+                            updated = true;
+                        }
+                        if (updated)
+                        {
+                            exportEntry.Data = exportData;
                         }
                     }
+
+
                     //}
                     start += 4;
                     itemcount++;
@@ -2438,6 +2434,39 @@ namespace ME3Explorer
                     itemcount++;
                 }
             }
+
+            //Update IDs
+            for (int index = 0; index < mpIDs.Count; index++)
+            {
+                var item = mpIDs.ElementAt(index);
+                List<int> valueList = item.Value;
+                if (valueList.Count > 1)
+                {
+                    for (int i = 1; i < valueList.Count; i++)
+                    // for (int i = valueList.Count - 1; i > 1; i--)
+                    {
+                        int max = mpIDs.Keys.Max();
+                        Debug.WriteLine("New max key size: " + max);
+                        IExportEntry export = pcc.Exports[valueList[i]];
+                        byte[] exportData = export.Data;
+                        int maybe_MPID = BitConverter.ToInt32(exportData, 0x1A);
+
+                        max++;
+                        int origId = maybe_MPID;
+                        SharedPathfinding.WriteMem(exportData, 0x1A, BitConverter.GetBytes(max));
+                        numUpdated++;
+                        maybe_MPID = BitConverter.ToInt32(exportData, 0x1A); //read new fixed id
+                        Debug.WriteLine("Updated MPID " + origId + " -> " + maybe_MPID + " " + export.ObjectName);
+                        export.Data = exportData;
+
+                        //add to new list to prevent rewrite of dupes.
+                        mpIDs[maybe_MPID] = new List<int>();
+                        mpIDs[maybe_MPID].Add(export.Index);
+                    }
+
+                }
+            }
+
 
             MessageBox.Show(this, numUpdated + " export" + (numUpdated != 1 ? "s" : "") + " in PersistentLevel had data headers updated.", "Header Check Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -2492,31 +2521,13 @@ namespace ME3Explorer
             e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar); //prevent non digit entry
         }
 
+        private void removeDuplicateLevelItemsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 
-public class NavGUID
-{
-    public int A, B, C, D;
-    public IExportEntry export;
-    public override bool Equals(Object obj)
-    {
-        if (obj == null || GetType() != obj.GetType())
-            return false;
-        NavGUID other = (NavGUID)obj;
-        return other.A == A && other.B == B && other.C == C && other.D == D;
-    }
-
-    //public override int GetHashCode()
-    //{
-    //    return x ^ y;
-    //}
-
-    public override string ToString()
-    {
-        return A.ToString() + " " + B.ToString() + " " + C.ToString() + " " + D.ToString();
-    }
-}
 
 public class PathingZoomController
 {

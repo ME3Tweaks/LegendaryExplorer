@@ -30,12 +30,13 @@
         {
             this.duplicatesListBox = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.generateButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.aLabel = new System.Windows.Forms.Label();
             this.bLabel = new System.Windows.Forms.Label();
             this.cLabel = new System.Windows.Forms.Label();
             this.dLabel = new System.Windows.Forms.Label();
+            this.crossLevelPathsLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // duplicatesListBox
@@ -45,7 +46,7 @@
             this.duplicatesListBox.FormattingEnabled = true;
             this.duplicatesListBox.Location = new System.Drawing.Point(12, 25);
             this.duplicatesListBox.Name = "duplicatesListBox";
-            this.duplicatesListBox.Size = new System.Drawing.Size(356, 238);
+            this.duplicatesListBox.Size = new System.Drawing.Size(356, 225);
             this.duplicatesListBox.TabIndex = 0;
             this.duplicatesListBox.SelectedIndexChanged += new System.EventHandler(this.duplicateGuidList_SelectionChanged);
             // 
@@ -59,16 +60,17 @@
             this.label1.Text = "Ensure there are no duplicate navigation GUIDs in this file to ensure proper path" +
     "finding. Regenerate ones that don\'t have cross level paths.";
             // 
-            // button1
+            // generateButton
             // 
-            this.button1.Enabled = false;
-            this.button1.Location = new System.Drawing.Point(524, 240);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(149, 23);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Generate new GUID";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.generateButton_Click);
+            this.generateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.generateButton.Enabled = false;
+            this.generateButton.Location = new System.Drawing.Point(613, 237);
+            this.generateButton.Name = "generateButton";
+            this.generateButton.Size = new System.Drawing.Size(149, 23);
+            this.generateButton.TabIndex = 2;
+            this.generateButton.Text = "Generate new GUID";
+            this.generateButton.UseVisualStyleBackColor = true;
+            this.generateButton.Click += new System.EventHandler(this.generateButton_Click);
             // 
             // label2
             // 
@@ -120,17 +122,31 @@
             this.dLabel.TabIndex = 7;
             this.dLabel.Text = "D:";
             // 
+            // crossLevelPathsLabel
+            // 
+            this.crossLevelPathsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.crossLevelPathsLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.crossLevelPathsLabel.Location = new System.Drawing.Point(377, 133);
+            this.crossLevelPathsLabel.Name = "crossLevelPathsLabel";
+            this.crossLevelPathsLabel.Size = new System.Drawing.Size(385, 101);
+            this.crossLevelPathsLabel.TabIndex = 8;
+            this.crossLevelPathsLabel.Text = "This navigation node has cross level paths - you shouldn\'t generate a new GUID fo" +
+    "r this!";
+            // 
             // DuplicateGUIDWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(691, 275);
+            this.ClientSize = new System.Drawing.Size(774, 272);
+            this.Controls.Add(this.crossLevelPathsLabel);
             this.Controls.Add(this.dLabel);
             this.Controls.Add(this.cLabel);
             this.Controls.Add(this.bLabel);
             this.Controls.Add(this.aLabel);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.generateButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.duplicatesListBox);
             this.Name = "DuplicateGUIDWindow";
@@ -144,11 +160,12 @@
 
         private System.Windows.Forms.ListBox duplicatesListBox;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button generateButton;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label aLabel;
         private System.Windows.Forms.Label bLabel;
         private System.Windows.Forms.Label cLabel;
         private System.Windows.Forms.Label dLabel;
+        private System.Windows.Forms.Label crossLevelPathsLabel;
     }
 }

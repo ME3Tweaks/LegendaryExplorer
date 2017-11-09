@@ -387,6 +387,7 @@
     <Compile Include="Pathfinding Editor\ReachSpecRecalculator.Designer.cs">
       <DependentUpon>ReachSpecRecalculator.cs</DependentUpon>
     </Compile>
+    <Compile Include="Pathfinding Editor\SharedPathfinding.cs" />
     <Compile Include="PeriodicUpdater.cs" />
     <Compile Include="Main Window\SearchPanel.xaml.cs">
       <DependentUpon>SearchPanel.xaml</DependentUpon>

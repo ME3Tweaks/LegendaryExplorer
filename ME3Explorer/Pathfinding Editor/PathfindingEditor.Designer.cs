@@ -85,6 +85,7 @@ namespace ME3Explorer
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeDuplicateLevelItemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -335,7 +336,8 @@ namespace ME3Explorer
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.recalculateReachspecsToolStripMenuItem,
             this.fixStackHeadersToolStripMenuItem,
-            this.validateReachToolStripMenuItem});
+            this.validateReachToolStripMenuItem,
+            this.removeDuplicateLevelItemsToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 23);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -343,14 +345,14 @@ namespace ME3Explorer
             // recalculateReachspecsToolStripMenuItem
             // 
             this.recalculateReachspecsToolStripMenuItem.Name = "recalculateReachspecsToolStripMenuItem";
-            this.recalculateReachspecsToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.recalculateReachspecsToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.recalculateReachspecsToolStripMenuItem.Text = "Recalculate Reachspecs";
             this.recalculateReachspecsToolStripMenuItem.Click += new System.EventHandler(this.recalculateReachspecsToolStripMenuItem_Click);
             // 
             // fixStackHeadersToolStripMenuItem
             // 
             this.fixStackHeadersToolStripMenuItem.Name = "fixStackHeadersToolStripMenuItem";
-            this.fixStackHeadersToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.fixStackHeadersToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.fixStackHeadersToolStripMenuItem.Text = "Fix Stack Headers";
             this.fixStackHeadersToolStripMenuItem.ToolTipText = "Exports that exist in the level and have a stack should have their first 8 bytes " +
     "point to their class (2x). This will check all level items for this and set them" +
@@ -360,8 +362,8 @@ namespace ME3Explorer
             // validateReachToolStripMenuItem
             // 
             this.validateReachToolStripMenuItem.Name = "validateReachToolStripMenuItem";
-            this.validateReachToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
-            this.validateReachToolStripMenuItem.Text = "Check Nav GUIDs";
+            this.validateReachToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.validateReachToolStripMenuItem.Text = "Fix Duplicate Nav GUIDs";
             this.validateReachToolStripMenuItem.Click += new System.EventHandler(this.validateReachToolStripMenuItem_Click);
             // 
             // gotoNode_TextBox
@@ -371,9 +373,9 @@ namespace ME3Explorer
             this.gotoNode_TextBox.ToolTipText = "Enter an export # here and press enter to highlight it";
             this.gotoNode_TextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.gotoField_KeyPressed);
             // 
-            // toolStripMenuItem1
+            // gotoNodeButton
             // 
-            this.gotoNodeButton.Name = "toolStripMenuItem1";
+            this.gotoNodeButton.Name = "gotoNodeButton";
             this.gotoNodeButton.Size = new System.Drawing.Size(77, 23);
             this.gotoNodeButton.Text = "Goto Node";
             this.gotoNodeButton.Click += new System.EventHandler(this.gotoButton_Clicked);
@@ -591,6 +593,13 @@ namespace ME3Explorer
             this.addObjectToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.addObjectToolStripMenuItem.Text = "Add Object";
             // 
+            // removeDuplicateLevelItemsToolStripMenuItem
+            // 
+            this.removeDuplicateLevelItemsToolStripMenuItem.Name = "removeDuplicateLevelItemsToolStripMenuItem";
+            this.removeDuplicateLevelItemsToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.removeDuplicateLevelItemsToolStripMenuItem.Text = "Remove Duplicate Level Items";
+            this.removeDuplicateLevelItemsToolStripMenuItem.Click += new System.EventHandler(this.removeDuplicateLevelItemsToolStripMenuItem_Click);
+            // 
             // PathfindingEditor
             // 
             this.AllowDrop = true;
@@ -689,5 +698,6 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripMenuItem validateReachToolStripMenuItem;
         private System.Windows.Forms.ToolStripTextBox gotoNode_TextBox;
         private System.Windows.Forms.ToolStripMenuItem gotoNodeButton;
+        private System.Windows.Forms.ToolStripMenuItem removeDuplicateLevelItemsToolStripMenuItem;
     }
 }

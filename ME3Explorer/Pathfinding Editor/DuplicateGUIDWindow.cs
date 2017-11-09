@@ -16,22 +16,19 @@ namespace ME3Explorer.Pathfinding_Editor
     public partial class DuplicateGUIDWindow : Form
     {
         private IMEPackage pcc;
-        List<NavGUID> navGuids;
-        List<NavGUID> duplicateGuids;
-
+        Dictionary<string, List<UnrealGUID>> navGuidLists = new Dictionary<string, List<UnrealGUID>>();
+        List<UnrealGUID> duplicateGuids = new List<UnrealGUID>();
         public DuplicateGUIDWindow(IMEPackage pcc)
         {
             InitializeComponent();
             this.pcc = pcc;
-            navGuids = new List<NavGUID>();
-            duplicateGuids = new List<NavGUID>();
             populateDuplicateGUIDs();
         }
 
         private void populateDuplicateGUIDs()
         {
-
-
+            navGuidLists = new Dictionary<string, List<UnrealGUID>>();
+            duplicateGuids = new List<UnrealGUID>();
 
             IExportEntry level = null;
             foreach (IExportEntry exp in pcc.Exports)
@@ -54,8 +51,8 @@ namespace ME3Explorer.Pathfinding_Editor
             start += 4;
             uint numberofitems = BitConverter.ToUInt32(data, start);
             int countoffset = start;
-            int itemcount = 0;
-            int numUpdated = 0;
+            int itemcount = 2;
+            start += 8;
             while (itemcount < numberofitems)
             {
                 //get header.
@@ -70,21 +67,24 @@ namespace ME3Explorer.Pathfinding_Editor
                         int b = navguid.GetProp<IntProperty>("B");
                         int c = navguid.GetProp<IntProperty>("C");
                         int d = navguid.GetProp<IntProperty>("D");
-                        NavGUID nav = new NavGUID();
+                        UnrealGUID nav = new UnrealGUID();
                         nav.A = a;
                         nav.B = b;
                         nav.C = c;
                         nav.D = d;
                         nav.export = exportEntry;
+                        nav.levelListIndex = itemcount;
 
-                        if (navGuids.Contains(nav))
+                        List<UnrealGUID> list;
+                        if (navGuidLists.TryGetValue(nav.ToString(), out list))
                         {
-                            //Debug.WriteLine("DUPLICATE FOUDN!");
-                            duplicateGuids.Add(nav);
+                            list.Add(nav);
                         }
                         else
                         {
-                            navGuids.Add(nav);
+                            list = new List<UnrealGUID>();
+                            navGuidLists[nav.ToString()] = list;
+                            list.Add(nav);
                         }
                     }
                     start += 4;
@@ -100,29 +100,61 @@ namespace ME3Explorer.Pathfinding_Editor
 
 
             duplicatesListBox.Items.Clear();
-            foreach (NavGUID guid in duplicateGuids)
+            foreach (List<UnrealGUID> guidList in navGuidLists.Values)
             {
-                duplicatesListBox.Items.Add(guid.export.Index + " " + guid.export.ObjectName + "_" + guid.export.indexValue);
+                if (guidList.Count > 1)
+                {
+                    Debug.WriteLine("Number of duplicates: " + guidList.Count);
+                    //contains duplicates
+                    foreach (UnrealGUID guid in guidList)
+                    {
+                        //Debug.WriteLine(guid.levelListIndex + " Duplicate: " + guid.export.ObjectName);
+                        duplicateGuids.Add(guid);
+                        duplicatesListBox.Items.Add(guid.levelListIndex + " " + guid.export.Index + " " + guid.export.ObjectName + "_" + guid.export.indexValue);
+                    }
+                }
             }
         }
 
         private void generateButton_Click(object sender, EventArgs e)
         {
-
+            if (duplicatesListBox.SelectedIndex >= 0)
+            {
+                UnrealGUID guid = duplicateGuids[duplicatesListBox.SelectedIndex];
+                SharedPathfinding.GenerateNewRandomGUID(guid.export);
+                populateDuplicateGUIDs();
+            }
         }
 
         private void duplicateGuidList_SelectionChanged(object sender, EventArgs e)
         {
-            if (duplicatesListBox.SelectedIndex > 0)
+            if (duplicatesListBox.SelectedIndex >= 0)
             {
-
-
-                NavGUID guid = duplicateGuids[duplicatesListBox.SelectedIndex];
+                UnrealGUID guid = duplicateGuids[duplicatesListBox.SelectedIndex];
                 aLabel.Text = "A: " + guid.A;
                 bLabel.Text = "B: " + guid.B;
                 cLabel.Text = "C: " + guid.C;
                 dLabel.Text = "D: " + guid.D;
+                generateButton.Enabled = true;
 
+                BoolProperty bHasCrossLevelPaths = guid.export.GetProperty<BoolProperty>("bHasCrossLevelPaths");
+                if (bHasCrossLevelPaths != null && bHasCrossLevelPaths == true)
+                {
+                    crossLevelPathsLabel.Visible = true;
+                }
+                else
+                {
+                    crossLevelPathsLabel.Visible = false;
+                }
+            }
+            else
+            {
+                generateButton.Enabled = false;
+                aLabel.Text = "A: ";
+                bLabel.Text = "B: ";
+                cLabel.Text = "C: ";
+                dLabel.Text = "D: ";
+                crossLevelPathsLabel.Visible = false;
             }
         }
     }
