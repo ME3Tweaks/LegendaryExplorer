@@ -24,6 +24,7 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             this.pe = pe;
             InitializeComponent();
+            CenterToParent();
         }
 
         private void recalculateButton_Click(object sender, EventArgs e)

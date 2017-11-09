@@ -178,10 +178,6 @@ namespace ME3Explorer
                             //Debug.WriteLine(rootNode.Tag + " " + n + " " + rootNode.Text);
                             if (n != 0)
                             {
-                                if (n == -388)
-                                {
-                                    Debug.WriteLine("Should miss..");
-                                }
                                 int key;
                                 if (crossPCCReferences.TryGetValue(n, out key))
                                 {
@@ -359,7 +355,7 @@ namespace ME3Explorer
                 int downstreamLinkIdx = upstreamImport.UIndex;
                 Debug.WriteLine(upstreamImport.GetFullPath);
 
-                int downstreamPackageName = destinationPCC.FindNameOrAdd(donorUpstreamImport.PackageName);
+                int downstreamPackageName = destinationPCC.FindNameOrAdd(Path.GetFileNameWithoutExtension(donorUpstreamImport.PackageFile));
                 int downstreamClassName = destinationPCC.FindNameOrAdd(donorUpstreamImport.ClassName);
 
                 //ImportEntry classImport = getOrAddImport();
@@ -1270,6 +1266,15 @@ namespace ME3Explorer
                     continue;
                 }
                 p.name = BitConverter.ToInt32(memory, readerpos);
+
+                if (readerpos == 4 && pcc.isName(p.name) && pcc.getNameEntry(p.name) == export.ObjectName)
+                {
+                    //It's a primitive component header
+                    //Debug.WriteLine("Primitive Header " + pcc.Names[p.name]);
+                    readerpos += 12;
+                    continue;
+                }
+
                 if (!pcc.isName(p.name))
                     run = false;
                 else

@@ -101,12 +101,12 @@ namespace ME3Explorer.Pathfinding_Editor
             this.reachSpecSizeSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.reachSpecSizeSelector.FormattingEnabled = true;
             this.reachSpecSizeSelector.Items.AddRange(new object[] {
-            "Mooks (45x90)",
+            "Mooks (34x90)",
             "Minibosses (95x145)",
             "Bosses (140x195)"});
             this.reachSpecSizeSelector.Location = new System.Drawing.Point(245, 161);
             this.reachSpecSizeSelector.Name = "reachSpecSizeSelector";
-            this.reachSpecSizeSelector.Size = new System.Drawing.Size(121, 21);
+            this.reachSpecSizeSelector.Size = new System.Drawing.Size(218, 21);
             this.reachSpecSizeSelector.TabIndex = 5;
             this.reachSpecSizeSelector.SelectedIndexChanged += new System.EventHandler(this.reachspecSizeBox_Changed);
             // 
@@ -160,12 +160,12 @@ namespace ME3Explorer.Pathfinding_Editor
             this.pathNodeSizeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.pathNodeSizeComboBox.FormattingEnabled = true;
             this.pathNodeSizeComboBox.Items.AddRange(new object[] {
-            "Mooks (45x90)",
-            "Minibosses (95x145)",
-            "Bosses (140x195)"});
+            "Mooks(34x90)",
+            "Minibosses(105x145)",
+            "Bosses(140x195)"});
             this.pathNodeSizeComboBox.Location = new System.Drawing.Point(7, 33);
             this.pathNodeSizeComboBox.Name = "pathNodeSizeComboBox";
-            this.pathNodeSizeComboBox.Size = new System.Drawing.Size(121, 21);
+            this.pathNodeSizeComboBox.Size = new System.Drawing.Size(215, 21);
             this.pathNodeSizeComboBox.TabIndex = 11;
             this.pathNodeSizeComboBox.SelectedIndexChanged += new System.EventHandler(this.pathNodeSize_DropdownChanged);
             // 

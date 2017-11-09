@@ -20,10 +20,13 @@ namespace ME3Explorer.Pathfinding_Editor
         public int DestinationNode = -1;
         public bool CreateTwoWaySpec = true;
         public string SpecClass = "";
+        public int SpecSize;
 
         public ReachSpecCreatorForm(IMEPackage package, int sourceExportIndex)
         {
             InitializeComponent();
+            specSizeCombobox.Items.Clear();
+            specSizeCombobox.Items.AddRange(PathfindingNodeInfoPanel.getDropdownItems().ToArray());
             this.pcc = package;
             this.sourceExport = pcc.Exports[sourceExportIndex];
 
@@ -56,6 +59,8 @@ namespace ME3Explorer.Pathfinding_Editor
 
             sourcePoint = new Point3D(sourceX, sourceY, sourceZ);
             reachSpecTypeComboBox.SelectedIndex = 0;
+            specSizeCombobox.SelectedIndex = 1;
+
         }
 
         private void destinationNodeTextBox_KeyPressed(object sender, KeyPressEventArgs e)
@@ -156,7 +161,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 DestinationNode = destIndex;
                 CreateTwoWaySpec = createReturningSpecCheckbox.Checked;
                 SpecClass = (string)reachSpecTypeComboBox.SelectedItem;
-
+                SpecSize = specSizeCombobox.SelectedIndex;
                 this.DialogResult = System.Windows.Forms.DialogResult.Yes;
                 this.Close();
             }

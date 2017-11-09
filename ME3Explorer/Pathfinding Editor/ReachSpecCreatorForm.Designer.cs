@@ -34,6 +34,7 @@
             this.reachSpecTypeComboBox = new System.Windows.Forms.ComboBox();
             this.createSpecButton = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.specSizeCombobox = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.sourceNodeLabel = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -45,14 +46,15 @@
             this.directionX = new System.Windows.Forms.Label();
             this.directionY = new System.Windows.Forms.Label();
             this.directionZ = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
             // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(9, 96);
+            this.label1.Location = new System.Drawing.Point(9, 126);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(105, 13);
             this.label1.TabIndex = 0;
@@ -60,11 +62,11 @@
             // 
             // createReturningSpecCheckbox
             // 
-            this.createReturningSpecCheckbox.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.createReturningSpecCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.createReturningSpecCheckbox.AutoSize = true;
             this.createReturningSpecCheckbox.Checked = true;
             this.createReturningSpecCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.createReturningSpecCheckbox.Location = new System.Drawing.Point(12, 139);
+            this.createReturningSpecCheckbox.Location = new System.Drawing.Point(12, 169);
             this.createReturningSpecCheckbox.Name = "createReturningSpecCheckbox";
             this.createReturningSpecCheckbox.Size = new System.Drawing.Size(216, 17);
             this.createReturningSpecCheckbox.TabIndex = 1;
@@ -75,7 +77,7 @@
             // 
             // reachSpecTypeComboBox
             // 
-            this.reachSpecTypeComboBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.reachSpecTypeComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.reachSpecTypeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.reachSpecTypeComboBox.FormattingEnabled = true;
             this.reachSpecTypeComboBox.Items.AddRange(new object[] {
@@ -83,7 +85,7 @@
             "SFXBoostReachSpec",
             "SFXLargeBoostReachSpec",
             "SFXLargeMantleReachSpec"});
-            this.reachSpecTypeComboBox.Location = new System.Drawing.Point(21, 112);
+            this.reachSpecTypeComboBox.Location = new System.Drawing.Point(21, 142);
             this.reachSpecTypeComboBox.Name = "reachSpecTypeComboBox";
             this.reachSpecTypeComboBox.Size = new System.Drawing.Size(185, 21);
             this.reachSpecTypeComboBox.TabIndex = 2;
@@ -92,15 +94,30 @@
             // 
             // createSpecButton
             // 
-            this.createSpecButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.createSpecButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.createSpecButton.Enabled = false;
-            this.createSpecButton.Location = new System.Drawing.Point(365, 135);
+            this.createSpecButton.Location = new System.Drawing.Point(360, 163);
             this.createSpecButton.Name = "createSpecButton";
             this.createSpecButton.Size = new System.Drawing.Size(127, 23);
             this.createSpecButton.TabIndex = 3;
             this.createSpecButton.Text = "Create ReachSpec";
             this.createSpecButton.UseVisualStyleBackColor = true;
             this.createSpecButton.Click += new System.EventHandler(this.createSpecButton_Click);
+            // 
+            // specSizeCombobox
+            // 
+            this.specSizeCombobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.specSizeCombobox.FormattingEnabled = true;
+            this.specSizeCombobox.Items.AddRange(new object[] {
+            "Mooks(34x90)",
+            "Minibosses(105x145)",
+            "Bosses(140x195)"});
+            this.specSizeCombobox.Location = new System.Drawing.Point(21, 90);
+            this.specSizeCombobox.Name = "specSizeCombobox";
+            this.specSizeCombobox.Size = new System.Drawing.Size(185, 21);
+            this.specSizeCombobox.TabIndex = 16;
+            this.toolTip1.SetToolTip(this.specSizeCombobox, "Type of ReachSpec. Not all pawns can traverse all ReachSpecs (e.g. climbwall is o" +
+        "nly usable by Husks and Abominations).");
             // 
             // label2
             // 
@@ -204,11 +221,23 @@
             this.directionZ.TabIndex = 14;
             this.directionZ.Text = "Z:";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(12, 74);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(163, 13);
+            this.label3.TabIndex = 15;
+            this.label3.Text = "ReachSpec Size Allowance";
+            // 
             // ReachSpecCreatorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(499, 161);
+            this.ClientSize = new System.Drawing.Size(499, 198);
+            this.Controls.Add(this.specSizeCombobox);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.directionZ);
             this.Controls.Add(this.directionY);
             this.Controls.Add(this.directionX);
@@ -249,5 +278,7 @@
         private System.Windows.Forms.Label directionX;
         private System.Windows.Forms.Label directionY;
         private System.Windows.Forms.Label directionZ;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox specSizeCombobox;
     }
 }

@@ -21,16 +21,24 @@ namespace ME3Explorer.Pathfinding_Editor
         private bool AllowChanges = true;
         public PathfindingEditor PathfindingEditorInstance { get; private set; }
 
-        public const int MOOK_RADIUS = 40;
-        public const int MOOK_HEIGHT = 95;
+        public const int MOOK_RADIUS = 34;
+        public const int MOOK_HEIGHT = 90;
         public const int MINIBOSS_RADIUS = 105;
         public const int MINIBOSS_HEIGHT = 145;
         public const int BOSS_RADIUS = 140;
         public const int BOSS_HEIGHT = 195;
+        public const int BANSHEE_RADIUS = 50;
+        public const int BANSHEE_HEIGHT = 125;
+
+
 
         public PathfindingNodeInfoPanel()
         {
             InitializeComponent();
+            reachSpecSizeSelector.Items.Clear();
+            pathNodeSizeComboBox.Items.Clear();
+            reachSpecSizeSelector.Items.AddRange(getDropdownItems().ToArray());
+            pathNodeSizeComboBox.Items.AddRange(getDropdownItems().ToArray());
         }
 
         public void PassPathfindingNodeEditorIn(PathfindingEditor PathfindingEditorInstance)
@@ -43,6 +51,7 @@ namespace ME3Explorer.Pathfinding_Editor
             AllowChanges = false;
             this.export = export;
             reachableNodesList.Items.Clear();
+            reachSpecSizeSelector.Enabled = false;
             sfxCombatZoneList.Items.Clear();
 
             combatZones = new List<int>();
@@ -59,27 +68,12 @@ namespace ME3Explorer.Pathfinding_Editor
                 float height = maxPathSize.GetProp<FloatProperty>("Height");
                 float radius = maxPathSize.GetProp<FloatProperty>("Radius");
                 exportTitleLabel.Text += " - " + radius + "x" + height;
-
-                if (radius >= 34 && height >= 64)
-                {
-                    pathNodeSizeComboBox.SelectedIndex = 0;
-                }
-
-                if (radius >= 90 && height >= 130)
-                {
-                    pathNodeSizeComboBox.SelectedIndex = 1;
-                }
-
-                if (radius >= 135 && height >= 190)
-                {
-                    pathNodeSizeComboBox.SelectedIndex = 2;
-                }
+                pathNodeSizeComboBox.SelectedIndex = findClosestNextSizeIndex((int)radius, (int)height);
                 pathNodeSizeComboBox.Enabled = true;
             }
             else
             {
                 pathNodeSizeComboBox.Enabled = false;
-
             }
 
             //Calculate reachspecs
@@ -150,10 +144,13 @@ namespace ME3Explorer.Pathfinding_Editor
                 reachSpecDestLabel.Text = "No ReachSpec selected";
                 reachSpecSizeLabel.Text = "ReachSpec Size";
                 connectionToLabel.Text = "Connection to";
+                reachSpecSizeSelector.Enabled = false;
                 return;
             }
 
             AllowChanges = false;
+            reachSpecSizeSelector.Enabled = true;
+
             IExportEntry reachSpec = export.FileRef.Exports[reachSpecs[n]];
             Unreal.PropertyCollection props = reachSpec.GetProperties();
 
@@ -175,20 +172,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 reachSpecSizeLabel.Text = "ReachSpec Size: " + radius.Value + "x" + height.Value;
 
-                if (radius >= 34 && height >= 64)
-                {
-                    reachSpecSizeSelector.SelectedIndex = 0;
-                }
-
-                if (radius >= 90 && height >= 130)
-                {
-                    reachSpecSizeSelector.SelectedIndex = 1;
-                }
-
-                if (radius >= 135 && height >= 190)
-                {
-                    reachSpecSizeSelector.SelectedIndex = 2;
-                }
+                reachSpecSizeSelector.SelectedIndex = findClosestNextSizeIndex(radius, height);
             }
             AllowChanges = true;
         }
@@ -216,21 +200,9 @@ namespace ME3Explorer.Pathfinding_Editor
                     int radVal = -1;
                     int heightVal = -1;
 
-                    switch (selectedIndex)
-                    {
-                        case 0:
-                            radVal = 45;
-                            heightVal = 64;
-                            break;
-                        case 1:
-                            radVal = 105;
-                            heightVal = 140;
-                            break;
-                        case 2:
-                            radVal = 145;
-                            heightVal = 190;
-                            break;
-                    }
+                    Point size = getDropdownSizePair(selectedIndex);
+                    radVal = size.X;
+                    heightVal = size.Y;
 
                     radius.Value = radVal;
                     height.Value = heightVal;
@@ -257,21 +229,9 @@ namespace ME3Explorer.Pathfinding_Editor
                         int radVal = -1;
                         int heightVal = -1;
 
-                        switch (selectedIndex)
-                        {
-                            case 0:
-                                radVal = MOOK_RADIUS;
-                                heightVal = MOOK_HEIGHT;
-                                break;
-                            case 1:
-                                radVal = MINIBOSS_RADIUS;
-                                heightVal = MINIBOSS_HEIGHT;
-                                break;
-                            case 2:
-                                radVal = BOSS_RADIUS;
-                                heightVal = BOSS_HEIGHT;
-                                break;
-                        }
+                        Point size = getDropdownSizePair(selectedIndex);
+                        radVal = size.X;
+                        heightVal = size.Y;
 
                         long heightOffset = height.Offset;
                         long radiusOffset = radius.Offset;
@@ -290,6 +250,58 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             for (int i = 0; i < buff.Length; i++)
                 memory[pos + i] = buff[i];
+        }
+
+        public static List<string> getDropdownItems()
+        {
+            List<string> items = new List<string>();
+            items.Add("Mooks " + MOOK_RADIUS + "x" + MOOK_HEIGHT);
+            items.Add("Minibosses " + MINIBOSS_RADIUS + "x" + MINIBOSS_HEIGHT);
+            items.Add("Boss - Banshee " + BANSHEE_RADIUS + "x" + BANSHEE_HEIGHT);
+            items.Add("Bosses - All " + BOSS_RADIUS + "x" + BOSS_HEIGHT);
+            return items;
+        }
+
+        public static Point getDropdownSizePair(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return new Point(MOOK_RADIUS, MOOK_HEIGHT);
+                case 1:
+                    return new Point(MINIBOSS_RADIUS, MINIBOSS_HEIGHT);
+                case 2:
+                    return new Point(BANSHEE_RADIUS, BANSHEE_HEIGHT);
+                case 3:
+                    return new Point(BOSS_RADIUS, BOSS_HEIGHT);
+                default:
+                    return new Point(MOOK_RADIUS, MOOK_HEIGHT);
+            }
+        }
+
+        private int findClosestNextSizeIndex(int radius, int height)
+        {
+            if (radius == BANSHEE_RADIUS && height == BANSHEE_HEIGHT)
+            {
+                //BANSHEES
+                return 2;
+            }
+
+            if (radius < MINIBOSS_RADIUS || height < MINIBOSS_HEIGHT)
+            {
+                //MOOKS
+                return 0;
+            }
+            else if (radius >= BOSS_RADIUS && height >= BOSS_HEIGHT)
+            {
+                //ALL BOSSES
+                return 3;
+            }
+            else
+            {
+                //MINIBOSSES
+                return 1;
+            }
         }
     }
 }

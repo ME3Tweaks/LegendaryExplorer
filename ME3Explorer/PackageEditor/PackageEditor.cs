@@ -1526,11 +1526,11 @@ namespace ME3Explorer
                     //ImportEntry imp = pcc.Imports[-entry.Value/* + 1*/];
                     debug += "IMP ";
 
-                    ImportEntry imp = importpcc.Imports[-entry.Key];
-                    ImportEntry destimp = pcc.Imports[-entry.Value];
-                    debug += imp.PackageFullName + "." + imp.ObjectName;
-                    debug += " -> ";
-                    debug += destimp.PackageFullName + "." + destimp.ObjectName;
+                    //ImportEntry imp = importpcc.Imports[-entry.Key];
+                    //ImportEntry destimp = pcc.Imports[-entry.Value - 1];
+                    //debug += imp.PackageFullName + "." + imp.ObjectName;
+                    //debug += " -> ";
+                    //debug += destimp.PackageFullName + "." + destimp.ObjectName;
                 }
                 //                Debug.WriteLine(debug);
 
@@ -1668,7 +1668,8 @@ namespace ME3Explorer
             nimp.idxLink = link;
             nimp.idxClassName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxClassName));
             nimp.idxObjectName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxObjectName));
-            nimp.idxPackageName = pcc.FindNameOrAdd(importpcc.getNameEntry(imp.idxPackageName));
+            NameReference name = importpcc.getNameEntry(imp.idxPackageName);
+            nimp.idxPackageName = pcc.FindNameOrAdd(name);
             pcc.addImport(nimp);
             if (crossPCCObjectMapping != null)
             {

@@ -98,7 +98,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 applyFilterButton.PerformClick();
                 return;
             }
-            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar); //prevent non digit entry
+            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && (e.KeyChar != '-'); //prevent non digit entry
         }
     }
 }

@@ -32,7 +32,7 @@ namespace ME3Explorer
 
     public partial class PathfindingEditor : WinFormsBase
     {
-        public string[] Types =
+        public static string[] Types =
         {
             "StructProperty", //0
             "IntProperty",
@@ -103,8 +103,8 @@ namespace ME3Explorer
 
         private void pathfindingEditor_MouseMoveHandler(object sender, MouseEventArgs e)
         {
-            PointF mousePoint = e.Location;
-            Debug.WriteLine(mousePoint);
+            //PointF mousePoint = e.Location;
+            //Debug.WriteLine(mousePoint);
         }
 
         private void PathfindingEditor_Load(object sender, EventArgs e)
@@ -412,7 +412,7 @@ namespace ME3Explorer
                                                 int offset = binarypos + 12 * 4;
                                                 float x = BitConverter.ToSingle(smacData, offset);
                                                 float y = BitConverter.ToSingle(smacData, offset + 4);
-                                                Debug.WriteLine(offset.ToString("X4") + " " + x + "," + y);
+                                                //Debug.WriteLine(offset.ToString("X4") + " " + x + "," + y);
                                                 smacCoordinates[obj.Value - 1] = new PointF(x, y);
                                             }
                                             binarypos += 64;
@@ -446,7 +446,6 @@ namespace ME3Explorer
                     for (int i = 0; i < pcc.ExportCount; i++)
                     {
                         IExportEntry exportEntry = pcc.getExport(i);
-
                     }
 
                     bool oneViewActive = PathfindingNodesActive || ActorNodesActive;
@@ -1161,12 +1160,6 @@ namespace ME3Explorer
 
         }
 
-        private void useGlobalSequenceRefSavesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (CurrentObjects.Count == 0)
-                return;
-        }
-
         private void graphEditor_Click(object sender, EventArgs e)
         {
             graphEditor.Focus();
@@ -1532,8 +1525,8 @@ namespace ME3Explorer
                                         {
                                             spec.idxClass = newReachSpecClass.UIndex;
                                             spec.idxObjectName = pcc.FindNameOrAdd("SFXLargeBoostReachSpec");
-                                            //widen spec
-                                            widenCollisionToMaxSize(spec);
+                                            //set spec to banshee sized
+                                            setReachSpecSize(spec, PathfindingNodeInfoPanel.BANSHEE_RADIUS, PathfindingNodeInfoPanel.BANSHEE_HEIGHT);
                                         }
 
                                         //Change the reachspec incoming to this node...
@@ -1560,7 +1553,7 @@ namespace ME3Explorer
                                                                 inboundSpec.idxClass = newReachSpecClass.UIndex;
                                                                 inboundSpec.idxObjectName = pcc.FindNameOrAdd("SFXLargeBoostReachSpec");
                                                                 //widen spec
-                                                                widenCollisionToMaxSize(inboundSpec);
+                                                                setReachSpecSize(inboundSpec, PathfindingNodeInfoPanel.BANSHEE_RADIUS, PathfindingNodeInfoPanel.BANSHEE_HEIGHT);
                                                                 keepParsing = false; //stop the outer loop
                                                                 break;
                                                             }
@@ -1610,18 +1603,18 @@ namespace ME3Explorer
             reindexObjectsWithName(objectname);
         }
 
-        private void widenCollisionToMaxSize(IExportEntry spec)
+        private void setReachSpecSize(IExportEntry spec, int radius, int height)
         {
             PropertyCollection specProperties = spec.GetProperties();
-            IntProperty radius = specProperties.GetProp<IntProperty>("CollisionRadius");
-            IntProperty height = specProperties.GetProp<IntProperty>("CollisionHeight");
-            if (radius != null)
+            IntProperty radiusProp = specProperties.GetProp<IntProperty>("CollisionRadius");
+            IntProperty heightProp = specProperties.GetProp<IntProperty>("CollisionHeight");
+            if (radiusProp != null)
             {
-                radius.Value = 140;
+                radiusProp.Value = radius;
             }
-            if (height != null)
+            if (heightProp != null)
             {
-                height.Value = 195;
+                heightProp.Value = height;
             }
             spec.WriteProperties(specProperties); //write it back.
         }
@@ -1787,6 +1780,7 @@ namespace ME3Explorer
             string reachSpecClass = "";
             int destinationIndex = -1;
             bool createTwoWay = true;
+            int size = 1; //Minibosses by default
             using (ReachSpecCreatorForm form = new ReachSpecCreatorForm(pcc, sourceExportIndex))
             {
                 DialogResult dr = form.ShowDialog();
@@ -1798,10 +1792,11 @@ namespace ME3Explorer
                 createTwoWay = form.CreateTwoWaySpec;
                 destinationIndex = form.DestinationNode;
                 reachSpecClass = form.SpecClass;
+                size = form.SpecSize;
             }
 
             IExportEntry startNode = pcc.Exports[sourceExportIndex];
-            Debug.WriteLine("Source Node: " + startNode.Index);
+            //Debug.WriteLine("Source Node: " + startNode.Index);
             //Find reachspec to clone
             IExportEntry reachSpectoClone = null;
             foreach (IExportEntry exp in pcc.Exports)
@@ -1813,7 +1808,7 @@ namespace ME3Explorer
                 }
             }
 
-            Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
+            //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
             int outgoingSpec = pcc.ExportCount;
             int incomingSpec = pcc.ExportCount + 1;
 
@@ -1821,25 +1816,25 @@ namespace ME3Explorer
             if (reachSpectoClone != null)
             {
                 IExportEntry destNode = pcc.Exports[destinationIndex];
-                Debug.WriteLine("Destination Node: " + destNode.Index);
+                //Debug.WriteLine("Destination Node: " + destNode.Index);
 
                 //time to clone.
                 pcc.addExport(reachSpectoClone.Clone()); //outgoing
 
                 //Have to do this manually because tools firing the clone seem to bust it.
 
-                Debug.WriteLine("Clone 1 Num Exports: " + pcc.Exports.Count);
-                Debug.WriteLine("Clone 1 UIndex: " + pcc.Exports[outgoingSpec].UIndex);
+                //Debug.WriteLine("Clone 1 Num Exports: " + pcc.Exports.Count);
+                //Debug.WriteLine("Clone 1 UIndex: " + pcc.Exports[outgoingSpec].UIndex);
                 if (createTwoWay)
                 {
                     pcc.addExport(reachSpectoClone.Clone()); //incoming
-                    Debug.WriteLine("Clone 2 Num Exports: " + pcc.Exports.Count);
-                    Debug.WriteLine("Clone 2 UIndex: " + pcc.Exports[incomingSpec].UIndex);
+                    //Debug.WriteLine("Clone 2 Num Exports: " + pcc.Exports.Count);
+                    //Debug.WriteLine("Clone 2 UIndex: " + pcc.Exports[incomingSpec].UIndex);
 
                 }
 
                 IExportEntry outgoingSpecExp = pcc.Exports[outgoingSpec];
-                Debug.WriteLine("Outgoing UIndex: " + outgoingSpecExp.UIndex);
+                //Debug.WriteLine("Outgoing UIndex: " + outgoingSpecExp.UIndex);
 
                 ObjectProperty outgoingSpecStartProp = outgoingSpecExp.GetProperty<ObjectProperty>("Start"); //START
                 StructProperty outgoingEndStructProp = outgoingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
@@ -1855,6 +1850,16 @@ namespace ME3Explorer
                 startNode.Data = memory;
                 outgoingSpecExp.WriteProperty(outgoingSpecStartProp);
                 outgoingSpecExp.WriteProperty(outgoingEndStructProp);
+
+                //Write Spec Size
+                int radVal = -1;
+                int heightVal = -1;
+
+                Point sizePair = PathfindingNodeInfoPanel.getDropdownSizePair(size);
+                radVal = sizePair.X;
+                heightVal = sizePair.Y;
+                setReachSpecSize(outgoingSpecExp, radVal, heightVal);
+
 
                 if (createTwoWay)
                 {
@@ -1875,6 +1880,8 @@ namespace ME3Explorer
                     //destNode.WriteProperty(DestPathList);
                     incomingSpecExp.WriteProperty(incomingSpecStartProp);
                     incomingSpecExp.WriteProperty(incomingEndStructProp);
+                    setReachSpecSize(incomingSpecExp, radVal, heightVal);
+
 
                     //verify
                     destNode.GetProperties();
@@ -2212,7 +2219,7 @@ namespace ME3Explorer
             RefreshView();
         }
 
-        public nodeType getType(string s)
+        public static nodeType getType(string s)
         {
             int ret = -1;
             for (int i = 0; i < Types.Length; i++)
@@ -2221,8 +2228,9 @@ namespace ME3Explorer
             return (nodeType)ret;
         }
 
-        private int findEndOfProps(IExportEntry export)
+        public static int findEndOfProps(IExportEntry export)
         {
+            IMEPackage pcc = export.FileRef;
             byte[] memory = export.Data;
             int readerpos = export.GetPropertyStart();
             bool run = true;
@@ -2328,7 +2336,7 @@ namespace ME3Explorer
         private void recalculateReachspecsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ReachSpecRecalculator rsr = new ReachSpecRecalculator(this);
-            rsr.ShowDialog();
+            rsr.ShowDialog(this);
         }
 
         private void toSFXNavLargeMantleNodeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2362,97 +2370,240 @@ namespace ME3Explorer
                 }
             }
         }
-    }
 
-
-
-    public class PathingZoomController
-    {
-        public static float MIN_SCALE = .005f;
-        public static float MAX_SCALE = 15;
-        PCamera camera;
-
-        public PathingZoomController(PathingGraphEditor graphEditor)
+        private void fixStackHeadersToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.camera = graphEditor.Camera;
-            camera.ViewScale = 0.5f;
-            camera.Canvas.ZoomEventHandler = null;
-            camera.MouseWheel += OnMouseWheel;
-            graphEditor.KeyDown += OnKeyDown;
-        }
-
-        public void OnKeyDown(object o, KeyEventArgs e)
-        {
-            if (e.Control)
+            if (pcc == null)
             {
-                if (e.KeyCode == Keys.OemMinus)
-                {
-                    scaleView(0.8f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
-                }
-                else if (e.KeyCode == Keys.Oemplus)
-                {
-                    scaleView(1.2f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
-                }
-            }
-        }
-
-        public void OnMouseWheel(object o, PInputEventArgs ea)
-        {
-            scaleView(1.0f + (0.001f * ea.WheelDelta), ea.Position);
-        }
-
-        public void scaleView(float scaleDelta, PointF p)
-        {
-            float currentScale = camera.ViewScale;
-            float newScale = currentScale * scaleDelta;
-            if (newScale < MIN_SCALE)
-            {
-                camera.ViewScale = MIN_SCALE;
                 return;
             }
-            if ((MAX_SCALE > 0) && (newScale > MAX_SCALE))
-            {
-                camera.ViewScale = MAX_SCALE;
-                return;
-            }
-            camera.ScaleViewBy(scaleDelta, p.X, p.Y);
-        }
-    }
 
-    public static class ExportInputPrompt
-    {
-        public static IExportEntry ShowDialog(string text, string caption, IMEPackage pcc)
-        {
-            Form prompt = new Form()
-            {
-                Width = 500,
-                Height = 150,
-                FormBorderStyle = FormBorderStyle.FixedDialog,
-                Text = caption,
-                StartPosition = FormStartPosition.CenterScreen
-            };
-            Label textLabel = new Label() { Left = 50, Top = 20, Text = text };
-            //TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 400 };
-            ComboBox items = new ComboBox() { Left = 50, Top = 50, Width = 400 };
-            items.DropDownStyle = ComboBoxStyle.DropDownList;
-            List<IExportEntry> exports = new List<IExportEntry>();
+            IExportEntry level = null;
             foreach (IExportEntry exp in pcc.Exports)
             {
-                if (exp.ObjectName == "StaticMeshCollectionActor")
+                if (exp.ClassName == "Level" && exp.ObjectName == "PersistentLevel")
                 {
-                    items.Items.Add(exp.Index + " " + exp.ObjectName + "_" + exp.indexValue);
-                    exports.Add(exp);
+                    level = exp;
+                    break;
+                }
+            }
+            int start = 0x4;
+            if (level != null)
+            {
+                start = findEndOfProps(level);
+            }
+            //Read persistent level binary
+            byte[] data = level.Data;
+
+            uint exportid = BitConverter.ToUInt32(data, start);
+            start += 4;
+            uint numberofitems = BitConverter.ToUInt32(data, start);
+            int countoffset = start;
+            int itemcount = 0;
+            int numUpdated = 0;
+            while (itemcount < numberofitems)
+            {
+                //get header.
+                uint itemexportid = BitConverter.ToUInt32(data, start);
+                if (itemexportid - 1 < pcc.Exports.Count && itemexportid > 0)
+                {
+                    IExportEntry exportEntry = pcc.Exports[(int)itemexportid - 1];
+
+                    if ((exportEntry.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+                    {
+                        byte[] exportData = exportEntry.Data;
+                        int classId1 = BitConverter.ToInt32(exportData, 0);
+                        int classId2 = BitConverter.ToInt32(exportData, 4);
+
+                        int metadataClass = exportEntry.idxClass;
+
+                        if ((classId1 != metadataClass) || (classId2 != metadataClass))
+                        {
+                            Debug.WriteLine("Updating unreal data header in export " + exportEntry.Index + " " + exportEntry.ClassName);
+                            //Update unreal header
+                            WriteMem(0, exportData, BitConverter.GetBytes(metadataClass));
+                            WriteMem(4, exportData, BitConverter.GetBytes(metadataClass));
+                            exportEntry.Data = exportData;
+                            numUpdated++;
+                        }
+                    }
+                    //}
+                    start += 4;
+                    itemcount++;
+                }
+                else
+                {
+                    //INVALID or empty item encountered. We don't care right now though.
+                    start += 4;
+                    itemcount++;
                 }
             }
 
-            Button confirmation = new Button() { Text = "Ok", Left = 350, Width = 100, Top = 70, DialogResult = DialogResult.OK };
-            confirmation.Click += (sender, e) => { prompt.Close(); };
-            prompt.Controls.Add(items);
-            prompt.Controls.Add(confirmation);
-            prompt.Controls.Add(textLabel);
-            prompt.AcceptButton = confirmation;
-
-            return prompt.ShowDialog() == DialogResult.OK ? exports[items.SelectedIndex] : null;
+            MessageBox.Show(this, numUpdated + " export" + (numUpdated != 1 ? "s" : "") + " in PersistentLevel had data headers updated.", "Header Check Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
+        private void validateReachToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc == null)
+            {
+                return;
+            }
+
+            new DuplicateGUIDWindow(pcc).Show(this);
+        }
+
+        private void gotoButton_Clicked(object sender, EventArgs e)
+        {
+            if (pcc == null)
+            {
+                return;
+            }
+            string searchText = gotoNode_TextBox.Text;
+            int exportNum;
+            if (int.TryParse(searchText, out exportNum))
+            {
+                if (exportNum < pcc.ExportCount && exportNum >= 0)
+                {
+                    int index = 0;
+                    foreach (int item in CurrentObjects)
+                    {
+                        if (item == exportNum)
+                        {
+                            //it exists
+
+                            listBox1.SelectedIndex = index;
+                            break;
+                        }
+                        index++;
+                    }
+                }
+            }
+        }
+
+        private void gotoField_KeyPressed(object sender, KeyPressEventArgs e)
+        {
+
+            if ((e.KeyChar == Convert.ToChar(Keys.Enter)))
+            {
+                e.Handled = true;
+                gotoNodeButton.PerformClick();
+                return;
+            }
+            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar); //prevent non digit entry
+        }
+
+    }
+}
+
+public class NavGUID
+{
+    public int A, B, C, D;
+    public IExportEntry export;
+    public override bool Equals(Object obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+            return false;
+        NavGUID other = (NavGUID)obj;
+        return other.A == A && other.B == B && other.C == C && other.D == D;
+    }
+
+    //public override int GetHashCode()
+    //{
+    //    return x ^ y;
+    //}
+
+    public override string ToString()
+    {
+        return A.ToString() + " " + B.ToString() + " " + C.ToString() + " " + D.ToString();
+    }
+}
+
+public class PathingZoomController
+{
+    public static float MIN_SCALE = .005f;
+    public static float MAX_SCALE = 15;
+    PCamera camera;
+
+    public PathingZoomController(PathingGraphEditor graphEditor)
+    {
+        this.camera = graphEditor.Camera;
+        camera.ViewScale = 0.5f;
+        camera.Canvas.ZoomEventHandler = null;
+        camera.MouseWheel += OnMouseWheel;
+        graphEditor.KeyDown += OnKeyDown;
+    }
+
+    public void OnKeyDown(object o, KeyEventArgs e)
+    {
+        if (e.Control)
+        {
+            if (e.KeyCode == Keys.OemMinus)
+            {
+                scaleView(0.8f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+            }
+            else if (e.KeyCode == Keys.Oemplus)
+            {
+                scaleView(1.2f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+            }
+        }
+    }
+
+    public void OnMouseWheel(object o, PInputEventArgs ea)
+    {
+        scaleView(1.0f + (0.001f * ea.WheelDelta), ea.Position);
+    }
+
+    public void scaleView(float scaleDelta, PointF p)
+    {
+        float currentScale = camera.ViewScale;
+        float newScale = currentScale * scaleDelta;
+        if (newScale < MIN_SCALE)
+        {
+            camera.ViewScale = MIN_SCALE;
+            return;
+        }
+        if ((MAX_SCALE > 0) && (newScale > MAX_SCALE))
+        {
+            camera.ViewScale = MAX_SCALE;
+            return;
+        }
+        camera.ScaleViewBy(scaleDelta, p.X, p.Y);
+    }
+}
+
+public static class ExportInputPrompt
+{
+    public static IExportEntry ShowDialog(string text, string caption, IMEPackage pcc)
+    {
+        Form prompt = new Form()
+        {
+            Width = 500,
+            Height = 150,
+            FormBorderStyle = FormBorderStyle.FixedDialog,
+            Text = caption,
+            StartPosition = FormStartPosition.CenterScreen
+        };
+        Label textLabel = new Label() { Left = 50, Top = 20, Text = text };
+        //TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 400 };
+        ComboBox items = new ComboBox() { Left = 50, Top = 50, Width = 400 };
+        items.DropDownStyle = ComboBoxStyle.DropDownList;
+        List<IExportEntry> exports = new List<IExportEntry>();
+        foreach (IExportEntry exp in pcc.Exports)
+        {
+            if (exp.ObjectName == "StaticMeshCollectionActor")
+            {
+                items.Items.Add(exp.Index + " " + exp.ObjectName + "_" + exp.indexValue);
+                exports.Add(exp);
+            }
+        }
+
+        Button confirmation = new Button() { Text = "Ok", Left = 350, Width = 100, Top = 70, DialogResult = DialogResult.OK };
+        confirmation.Click += (sender, e) => { prompt.Close(); };
+        prompt.Controls.Add(items);
+        prompt.Controls.Add(confirmation);
+        prompt.Controls.Add(textLabel);
+        prompt.AcceptButton = confirmation;
+
+        return prompt.ShowDialog() == DialogResult.OK ? exports[items.SelectedIndex] : null;
     }
 }

@@ -32,6 +32,7 @@ namespace ME3Explorer.PathfindingNodes
         static Color objectColor = Color.FromArgb(219, 39, 217);//purple
         static Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
         static Pen blackPen = Pens.Black;
+        static Pen halfReachSpecPen = Pens.Gray;
         static Pen slotToSlotPen = Pens.DarkOrange;
         static Pen sfxLadderPen = Pens.Purple;
         static Pen sfxBoostPen = Pens.Blue;
@@ -103,7 +104,7 @@ namespace ME3Explorer.PathfindingNodes
 
                 foreach (IExportEntry spec in ReachSpecs)
                 {
-                    Pen penToUse = blackPen;
+                    Pen penToUse = halfReachSpecPen;
                     switch (spec.ObjectName)
                     {
                         case "SlotToSlotReachSpec":
@@ -140,28 +141,6 @@ namespace ME3Explorer.PathfindingNodes
                                 }
                             }
                         }
-                        if (othernodeidx != 0)
-                        {
-                            IntProperty radius = props.GetProp<IntProperty>("CollisionRadius");
-                            IntProperty height = props.GetProp<IntProperty>("CollisionHeight");
-
-                            if (radius != null && height != null && (radius > 50 || height > 95))
-                            {
-                                penToUse = (Pen)penToUse.Clone();
-                                if (radius > 100 && height > 150)
-                                {
-                                    penToUse.Width = 3;
-                                }
-                                else
-                                {
-                                    penToUse.Width = 2;
-                                }
-                            }
-
-
-
-                            break;
-                        }
                     }
 
                     if (othernodeidx != 0)
@@ -171,25 +150,83 @@ namespace ME3Explorer.PathfindingNodes
                             if (node.export.UIndex == othernodeidx)
                             {
                                 othernode = node;
-                                break;
+
+                                //Check for returning reachspec for pen drawing. This is going to incur a significant performance penalty...
+                                IExportEntry otherNode = node.export;
+                                var otherNodePathList = otherNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                                if (otherNodePathList != null)
+                                {
+                                    bool keepParsing = true;
+                                    foreach (var path in otherNodePathList)
+                                    {
+                                        int reachspecexport = path.Value;
+                                        IExportEntry possibleIncomingSpec = pcc.Exports[reachspecexport - 1];
+                                        PropertyCollection otherSpecProperties = possibleIncomingSpec.GetProperties();
+                                        foreach (var otherSpecProp in otherSpecProperties)
+                                        {
+                                            if (otherSpecProp.Name == "End")
+                                            {
+                                                PropertyCollection reachspecprops = (otherSpecProp as StructProperty).Properties;
+                                                foreach (var rprop in reachspecprops)
+                                                {
+                                                    if (rprop.Name == "Actor")
+                                                    {
+                                                        othernodeidx = (rprop as ObjectProperty).Value;
+                                                        if (othernodeidx == export.UIndex)
+                                                        {
+                                                            keepParsing = false;
+                                                            if (penToUse == halfReachSpecPen)
+                                                            {
+                                                                penToUse = blackPen;
+                                                            }
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if (!keepParsing)
+                                        {
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
                             }
                         }
-                    }
-                    if (othernode != null)
-                    {
-                        PPath edge = new PPath();
-                        edge.Pen = penToUse;
-                        ((ArrayList)Tag).Add(edge);
-                        ((ArrayList)othernode.Tag).Add(edge);
-                        edge.Tag = new ArrayList();
-                        ((ArrayList)edge.Tag).Add(this);
-                        ((ArrayList)edge.Tag).Add(othernode);
+                        if (othernode != null)
+                        {
+                            IntProperty radius = props.GetProp<IntProperty>("CollisionRadius");
+                            IntProperty height = props.GetProp<IntProperty>("CollisionHeight");
 
-                        g.edgeLayer.AddChild(edge);
+                            if (radius != null && height != null && (radius >= PathfindingNodeInfoPanel.MINIBOSS_RADIUS || height >= PathfindingNodeInfoPanel.MINIBOSS_HEIGHT))
+                            {
+                                penToUse = (Pen)penToUse.Clone();
+                                if (radius >= PathfindingNodeInfoPanel.BOSS_RADIUS && height >= PathfindingNodeInfoPanel.BOSS_HEIGHT)
+                                {
+                                    penToUse.Width = 3;
+                                }
+                                else
+                                {
+                                    penToUse.Width = 2;
+                                }
+                            }
+
+                            PPath edge = new PPath();
+                            edge.Pen = penToUse;
+                            ((ArrayList)Tag).Add(edge);
+                            ((ArrayList)othernode.Tag).Add(edge);
+                            edge.Tag = new ArrayList();
+                            ((ArrayList)edge.Tag).Add(this);
+                            ((ArrayList)edge.Tag).Add(othernode);
+
+                            g.edgeLayer.AddChild(edge);
+                        }
                     }
                 }
             }
         }
+
         public virtual void Layout(float x, float y) { }
 
 
