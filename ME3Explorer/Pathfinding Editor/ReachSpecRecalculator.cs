@@ -138,7 +138,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        private bool calculateReachSpec(IExportEntry reachSpecExport, bool readOnly)
+        private bool calculateReachSpec(IExportEntry reachSpecExport, bool readOnly, IExportEntry startNodeExport = null)
         {
 
             //Get start and end exports.
@@ -154,6 +154,12 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 IExportEntry startNode = reachSpecExport.FileRef.Exports[start.Value - 1];
                 IExportEntry endNode = reachSpecExport.FileRef.Exports[endActorObj.Value - 1];
+
+                if (startNodeExport != null && startNode.Index != startNodeExport.Index)
+                {
+                    //ERROR!
+                    MessageBox.Show(reachSpecExport.Index + " " + reachSpecExport.ObjectName + " start does not match it's containing pathlist reference (" + startNodeExport.Index + " " + startNodeExport.ObjectName + ")");
+                }
 
                 float startX = 0, startY = 0, startZ = 0;
                 float destX = 0, destY = 0, destZ = 0;

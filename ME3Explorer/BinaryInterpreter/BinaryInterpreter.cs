@@ -238,11 +238,10 @@ Floats*/
             DynamicByteProvider db = new DynamicByteProvider(export.Data);
             hb1.ByteProvider = db;
             className = export.ClassName;
-
             StartScan();
         }
 
-        private void StartScan()
+        private void StartScan(string topNodeName = null, string selectedNodeName = null)
         {
             switch (className)
             {
@@ -261,6 +260,22 @@ Floats*/
                 default:
                     StartGenericScan();
                     break;
+            }
+
+            var nodes = treeView1.Nodes.Find(topNodeName, true);
+            if (nodes.Length > 0)
+            {
+                treeView1.TopNode = nodes[0];
+            }
+
+            nodes = treeView1.Nodes.Find(selectedNodeName, true);
+            if (nodes.Length > 0)
+            {
+                treeView1.SelectedNode = nodes[0];
+            }
+            else
+            {
+                treeView1.SelectedNode = treeView1.Nodes[0];
             }
         }
 
@@ -320,7 +335,7 @@ Floats*/
                                     IExportEntry exp = pcc.Exports[val - 1];
                                     nodeText += name + " " + exp.PackageFullName + "." + exp.ObjectName + " (" + exp.ClassName + ")";
                                 }
-                                else if (val < 0 && Math.Abs(val) <= pcc.Imports.Count)
+                                else if (val < 0 && val != int.MinValue && Math.Abs(val) <= pcc.Imports.Count)
                                 {
                                     int csImportVal = Math.Abs(val) - 1;
                                     ImportEntry imp = pcc.Imports[csImportVal];
@@ -1804,7 +1819,7 @@ Floats*/
 
             try
             {
-                int size; //num bytes to delete at pos
+                //int size; //num bytes to delete at pos
                 switch (className)
                 {
                     case "Level":
@@ -1813,7 +1828,6 @@ Floats*/
                         {
                             return; //not valid element
                         }
-                        size = 4;
                         int start = 0x4;
                         while (start < export.Data.Length)
                         {
@@ -1843,10 +1857,11 @@ Floats*/
                         List<byte> memList = memory.ToList();
                         memList.InsertRange(offset, BitConverter.GetBytes(i));
                         memory = memList.ToArray();
-                        export.Data = memory.TypedClone();
+                        //export.Data = memory.TypedClone();
+                        UpdateMem(offset);
                         break;
                     case "Class":
-                        size = 4;
+                        //size = 4;
                         break;
                 }
                 RefreshMem();
@@ -1933,7 +1948,8 @@ Floats*/
             }
 
             var expandedNodes = allNodes.Where(x => x.IsExpanded).Select(x => x.Name);
-            StartScan();
+            StartScan(treeView1.TopNode?.Name, selectedNodePos?.ToString());
+
         }
 
         private string CheckSeperator(string s)

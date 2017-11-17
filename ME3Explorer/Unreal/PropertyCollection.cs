@@ -89,7 +89,10 @@ namespace ME3Explorer.Unreal
                 stream.Seek(4, SeekOrigin.Current);
                 PropertyType type;
                 string namev = pcc.getNameEntry(typeIdx);
-                if (!Enum.TryParse(namev, out type))
+                if (Enum.IsDefined(typeof(PropertyType), namev))
+                {
+                    Enum.TryParse(namev, out type);
+                } else
                 {
                     type = PropertyType.Unknown;
                 }

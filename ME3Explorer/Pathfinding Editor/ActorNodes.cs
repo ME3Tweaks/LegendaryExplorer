@@ -558,6 +558,41 @@ namespace ME3Explorer.ActorNodes
         }
     }
 
+    public class SFXPlaceable : ActorNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(20, 200, 34);
+        PointF[] pShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 20), new PointF(10, 20), new PointF(10, 50), new PointF(0, 50) };
+
+        public SFXPlaceable(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreatePolygon(pShape);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = actorNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            comment.Text = s;
+            this.AddChild(val);
+            this.TranslateBy(x, y);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
+        }
+    }
+
     public class SFXDoorMarker : ActorNode
     {
         public VarTypes type { get; set; }

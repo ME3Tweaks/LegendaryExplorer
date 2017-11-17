@@ -43,6 +43,7 @@
             this.createBinaryReplaceJobFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createBinaryReplaceJobFromObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.findImportexportViaOffsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getDumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getDumpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -131,7 +132,6 @@
             this.setAllIndexesInThisTreeTo0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.findImportexportViaOffsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -183,7 +183,7 @@
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.ToolTipText = "Load an uncompressed or compressed PCC file";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
@@ -192,7 +192,7 @@
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.ToolTipText = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
@@ -200,7 +200,7 @@
             // saveAsMenuItem
             // 
             this.saveAsMenuItem.Name = "saveAsMenuItem";
-            this.saveAsMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveAsMenuItem.Size = new System.Drawing.Size(138, 22);
             this.saveAsMenuItem.Text = "Save As";
             this.saveAsMenuItem.ToolTipText = "Save As";
             this.saveAsMenuItem.Click += new System.EventHandler(this.appendSaveToolStripMenuItem_Click);
@@ -208,12 +208,12 @@
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(135, 6);
             // 
             // recentToolStripMenuItem
             // 
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.recentToolStripMenuItem.Text = "Recent";
             this.recentToolStripMenuItem.ToolTipText = "Open recently opened file";
             this.recentToolStripMenuItem.Click += new System.EventHandler(this.recentToolStripMenuItem_Click);
@@ -294,12 +294,20 @@
             // debugToolStripMenuItem
             // 
             this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.findImportexportViaOffsetToolStripMenuItem,
             this.getDumpToolStripMenuItem,
-            this.getDumpToolStripMenuItem1});
+            this.getDumpToolStripMenuItem1,
+            this.findImportexportViaOffsetToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.debugToolStripMenuItem.Text = "Debug";
+            // 
+            // findImportexportViaOffsetToolStripMenuItem
+            // 
+            this.findImportexportViaOffsetToolStripMenuItem.Name = "findImportexportViaOffsetToolStripMenuItem";
+            this.findImportexportViaOffsetToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
+            this.findImportexportViaOffsetToolStripMenuItem.Text = "Find import/export via offset";
+            this.findImportexportViaOffsetToolStripMenuItem.ToolTipText = "Finds an export or import containing the offset you specify.";
+            this.findImportexportViaOffsetToolStripMenuItem.Click += new System.EventHandler(this.findImportexportViaOffsetToolStripMenuItem_Click);
             // 
             // getDumpToolStripMenuItem
             // 
@@ -1149,13 +1157,6 @@
             this.cloneToolStripMenuItem1.Size = new System.Drawing.Size(105, 22);
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
-            // 
-            // findImportexportViaOffsetToolStripMenuItem
-            // 
-            this.findImportexportViaOffsetToolStripMenuItem.Name = "findImportexportViaOffsetToolStripMenuItem";
-            this.findImportexportViaOffsetToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
-            this.findImportexportViaOffsetToolStripMenuItem.Text = "Find import/export via offset";
-            this.findImportexportViaOffsetToolStripMenuItem.ToolTipText = "Finds an export or import containing the offset you specify.";
             // 
             // PackageEditor
             // 

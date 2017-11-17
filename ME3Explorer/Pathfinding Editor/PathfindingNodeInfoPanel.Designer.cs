@@ -42,6 +42,9 @@ namespace ME3Explorer.Pathfinding_Editor
             this.reachSpecDistanceHeaderLabel = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.pathNodeSizeComboBox = new System.Windows.Forms.ComboBox();
+            this.zLabel = new System.Windows.Forms.Label();
+            this.yLabel = new System.Windows.Forms.Label();
+            this.xLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // exportTitleLabel
@@ -169,10 +172,40 @@ namespace ME3Explorer.Pathfinding_Editor
             this.pathNodeSizeComboBox.TabIndex = 11;
             this.pathNodeSizeComboBox.SelectedIndexChanged += new System.EventHandler(this.pathNodeSize_DropdownChanged);
             // 
+            // zLabel
+            // 
+            this.zLabel.AutoSize = true;
+            this.zLabel.Location = new System.Drawing.Point(254, 58);
+            this.zLabel.Name = "zLabel";
+            this.zLabel.Size = new System.Drawing.Size(17, 13);
+            this.zLabel.TabIndex = 13;
+            this.zLabel.Text = "Z:";
+            // 
+            // yLabel
+            // 
+            this.yLabel.AutoSize = true;
+            this.yLabel.Location = new System.Drawing.Point(254, 45);
+            this.yLabel.Name = "yLabel";
+            this.yLabel.Size = new System.Drawing.Size(17, 13);
+            this.yLabel.TabIndex = 14;
+            this.yLabel.Text = "Y:";
+            // 
+            // xLabel
+            // 
+            this.xLabel.AutoSize = true;
+            this.xLabel.Location = new System.Drawing.Point(254, 32);
+            this.xLabel.Name = "xLabel";
+            this.xLabel.Size = new System.Drawing.Size(17, 13);
+            this.xLabel.TabIndex = 15;
+            this.xLabel.Text = "X:";
+            // 
             // PathfindingNodeInfoPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.xLabel);
+            this.Controls.Add(this.yLabel);
+            this.Controls.Add(this.zLabel);
             this.Controls.Add(this.pathNodeSizeComboBox);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.reachSpecDistanceHeaderLabel);
@@ -208,5 +241,8 @@ namespace ME3Explorer.Pathfinding_Editor
         private System.Windows.Forms.Label reachSpecDistanceHeaderLabel;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox pathNodeSizeComboBox;
+        private System.Windows.Forms.Label zLabel;
+        private System.Windows.Forms.Label yLabel;
+        private System.Windows.Forms.Label xLabel;
     }
 }

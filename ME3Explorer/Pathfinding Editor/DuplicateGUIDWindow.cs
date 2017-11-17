@@ -112,6 +112,10 @@ namespace ME3Explorer.Pathfinding_Editor
                         duplicateGuids.Add(guid);
                         duplicatesListBox.Items.Add(guid.levelListIndex + " " + guid.export.Index + " " + guid.export.ObjectName + "_" + guid.export.indexValue);
                     }
+                } else
+                {
+                    Debug.WriteLine("Not a duplicate ");
+
                 }
             }
         }

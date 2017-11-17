@@ -139,6 +139,7 @@ namespace ME3Explorer.Meshplorer
             Preview3D.StatMesh = stm;
             //Preview3D.SkelMesh = null;
             Preview3D.CamOffset = new Vector3(0, 0, 0);
+
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
             treeView1.Nodes.Add(stm.ToTree());
@@ -333,7 +334,7 @@ namespace ME3Explorer.Meshplorer
             {
                 return;
             }
-            if (pcc.Exports[n].ClassName == "StaticMesh") 
+            if (pcc.Exports[n].ClassName == "StaticMesh")
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.bin|*.bin";
@@ -378,7 +379,7 @@ namespace ME3Explorer.Meshplorer
             {
                 return;
             }
-            if (pcc.Exports[n].ClassName == "StaticMesh") 
+            if (pcc.Exports[n].ClassName == "StaticMesh")
             {
                 OpenFileDialog d = new OpenFileDialog();
                 d.Filter = "*.psk|*.psk;*.pskx";
@@ -452,7 +453,7 @@ namespace ME3Explorer.Meshplorer
 
         public void DisableLODs()
         {
-            lOD0ToolStripMenuItem.Enabled= false;
+            lOD0ToolStripMenuItem.Enabled = false;
             lOD1ToolStripMenuItem.Enabled = false;
             lOD2ToolStripMenuItem.Enabled = false;
             lOD3ToolStripMenuItem.Enabled = false;
@@ -536,7 +537,7 @@ namespace ME3Explorer.Meshplorer
                 d.Filter = "*.3ds|*.3ds";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
-                    if(File.Exists(d.FileName))
+                    if (File.Exists(d.FileName))
                         File.Delete(d.FileName);
                     PSKFile p = stm.ExportToPsk();
                     Helper3DS.ConvertPSKto3DS(p, d.FileName);
@@ -738,7 +739,7 @@ namespace ME3Explorer.Meshplorer
             }
             int n = toolStripComboBox1.SelectedIndex;
             TreeNode t = treeView1.SelectedNode;
-            if (n == -1 || pcc == null || t == null || t.Parent == null  || t.Parent.Text !="Materials")
+            if (n == -1 || pcc == null || t == null || t.Parent == null || t.Parent.Text != "Materials")
                 return;
             if (pcc.Exports[idx].ClassName == "StaticMesh")
                 return;
@@ -841,7 +842,7 @@ namespace ME3Explorer.Meshplorer
 
         private void pb1_Resize(object sender, EventArgs e)
         {
-            Preview3D.aspect = (float) pb1.Width / pb1.Height;
+            Preview3D.aspect = (float)pb1.Width / pb1.Height;
         }
     }
 }

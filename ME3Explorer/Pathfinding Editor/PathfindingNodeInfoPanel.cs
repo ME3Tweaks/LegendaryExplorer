@@ -61,6 +61,26 @@ namespace ME3Explorer.Pathfinding_Editor
 
             exportTitleLabel.Text = export.ObjectName + "_" + export.indexValue;
 
+            //Get Location
+            StructProperty location = props.GetProp<StructProperty>("location");
+            if (location != null)
+            {
+                float x = location.GetProp<FloatProperty>("X");
+                float y = location.GetProp<FloatProperty>("Y");
+                float z = location.GetProp<FloatProperty>("Z");
+
+                xLabel.Text = "X: " + x;
+                yLabel.Text = "Y: " + y;
+                zLabel.Text = "Z: " + z;
+
+            }
+            else
+            {
+                xLabel.Text = "X: ";
+                yLabel.Text = "Y: ";
+                zLabel.Text = "Z: ";
+            }
+
             //Calculate size
             StructProperty maxPathSize = props.GetProp<StructProperty>("MaxPathSize");
             if (maxPathSize != null)

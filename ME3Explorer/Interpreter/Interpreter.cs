@@ -2850,6 +2850,7 @@ namespace ME3Explorer
             {
                 // Then Do your Thang
                 setPropertyButton.PerformClick();
+                RefreshMem();
             }
         }
     }

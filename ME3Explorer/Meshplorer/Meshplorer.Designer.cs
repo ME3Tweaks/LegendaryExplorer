@@ -261,7 +261,7 @@
             this.rotatingToolStripMenuItem.CheckOnClick = true;
             this.rotatingToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.rotatingToolStripMenuItem.Name = "rotatingToolStripMenuItem";
-            this.rotatingToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.rotatingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rotatingToolStripMenuItem.Text = "Rotating";
             this.rotatingToolStripMenuItem.Click += new System.EventHandler(this.rotatingToolStripMenuItem_Click);
             // 
@@ -277,14 +277,14 @@
             // exportTreeToolStripMenuItem
             // 
             this.exportTreeToolStripMenuItem.Name = "exportTreeToolStripMenuItem";
-            this.exportTreeToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.exportTreeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exportTreeToolStripMenuItem.Text = "Export Tree";
             this.exportTreeToolStripMenuItem.Click += new System.EventHandler(this.exportTreeToolStripMenuItem_Click);
             // 
             // dumpBinaryToolStripMenuItem
             // 
             this.dumpBinaryToolStripMenuItem.Name = "dumpBinaryToolStripMenuItem";
-            this.dumpBinaryToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.dumpBinaryToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.dumpBinaryToolStripMenuItem.Text = "Dump Binary";
             this.dumpBinaryToolStripMenuItem.Click += new System.EventHandler(this.dumpBinaryToolStripMenuItem_Click_1);
             // 

@@ -64,7 +64,7 @@ namespace ME3Explorer
         public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
 
         public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "MantleMarker", "SFXNav_InteractionHenchOmniToolCrouch", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode", "WwiseAmbientSound" };
-        public string[] actorNodeClasses = { "BlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume", "SFXBlockingVolume_Ledge", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor" };
+        public string[] actorNodeClasses = { "BlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor" };
         public string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
         public bool ActorNodesActive = false;
         public bool PathfindingNodesActive = true;
@@ -506,13 +506,30 @@ namespace ME3Explorer
         {
             if (AllowRefresh)
             {
-                //int selectednode = listBox1.SelectedIndex;
+                int selectednodeindex = listBox1.SelectedIndex;
+                PathfindingNodeMaster nodeMaster = null;
+                if (selectednodeindex >= 0 && selectednodeindex < CurrentObjects.Count()) {
+                    nodeMaster = Objects.FirstOrDefault(o => o.Index == CurrentObjects[selectednodeindex]);
+                }
+
+
                 graphEditor.nodeLayer.RemoveAllChildren();
                 graphEditor.edgeLayer.RemoveAllChildren();
                 CurrentObjects.Clear();
                 LoadPathingNodesFromLevel();
                 GenerateGraph();
-                //listBox1.SelectedIndex = selectednode;
+                if (nodeMaster != null)
+                {
+                    int n = nodeMaster.Index;
+                    int selected = CurrentObjects.IndexOf(n);
+                    if (selected == -1)
+                        return;
+                    IsReloadSelecting = true;
+                    listBox1.SelectedIndex = selected;
+                    IsReloadSelecting = false;
+
+                }
+                //
             }
         }
 
@@ -553,6 +570,7 @@ namespace ME3Explorer
         public float StartPosActions;
         public float StartPosVars;
         private Dictionary<int, PointF> smacCoordinates;
+        private bool IsReloadSelecting = false;
 
         public void LoadObject(int index)
         {
@@ -780,6 +798,10 @@ namespace ME3Explorer
                             case "SkeletalMeshActor":
                                 actorNode = new ActorNodes.SkeletalMeshActor(index, x, y, pcc, graphEditor);
                                 break;
+                            case "SFXPlaceable_Generator":
+                            case "SFXPlaceable_ShieldGenerator":
+                                actorNode = new ActorNodes.SFXPlaceable(index, x, y, pcc, graphEditor);
+                                break;
                             default:
                                 actorNode = new PendingActorNode(index, x, y, pcc, graphEditor);
                                 break;
@@ -832,15 +854,17 @@ namespace ME3Explorer
         public void GetProperties(IExportEntry export)
         {
             pathfindingNodeInfoPanel.LoadExport(export);
-            if (interpreter1.Pcc != export.FileRef)
+            if (!IsReloadSelecting)
             {
-                interpreter1.Pcc = export.FileRef; //allows cross file references to work.
+                if (interpreter1.Pcc != export.FileRef)
+                {
+                    interpreter1.Pcc = export.FileRef; //allows cross file references to work.
+                }
+                interpreter1.export = export;
+                interpreter1.InitInterpreter();
             }
-            interpreter1.export = export;
-            interpreter1.InitInterpreter();
-
             ObjectProperty combatZone = export.GetProperty<ObjectProperty>("CombatZone");
-            if (combatZone != null)
+            if (combatZone != null && ActiveCombatZoneExportIndex != combatZone.Value - 1)
             {
                 ActiveCombatZoneExportIndex = combatZone.Value - 1;
                 RefreshView();
@@ -2340,99 +2364,80 @@ namespace ME3Explorer
             {
                 return;
             }
-
-            IExportEntry level = null;
-            foreach (IExportEntry exp in pcc.Exports)
-            {
-                if (exp.ClassName == "Level" && exp.ObjectName == "PersistentLevel")
-                {
-                    level = exp;
-                    break;
-                }
-            }
-            int start = 0x4;
-            if (level != null)
-            {
-                start = findEndOfProps(level);
-            }
+            //int start = 0x4;
+            //if (level != null)
+            //{
+            //    start = findEndOfProps(level);
+            //}
             //Read persistent level binary
-            byte[] data = level.Data;
-
-            uint exportid = BitConverter.ToUInt32(data, start);
-            start += 4;
-            uint numberofitems = BitConverter.ToUInt32(data, start);
-            int countoffset = start;
             int itemcount = 2;
-            start += 8;
             int numUpdated = 0;
 
             Dictionary<int, List<int>> mpIDs = new Dictionary<int, List<int>>();
             Debug.WriteLine("Start of header fix scan===================");
-            int restart = start;
 
             //start full scan.
-            start = restart;
             itemcount = 2;
-            while (itemcount < numberofitems)
+
+            foreach (IExportEntry exportEntry in pcc.Exports)
             {
-                //get header.
-                uint itemexportid = BitConverter.ToUInt32(data, start);
-                if (itemexportid - 1 < pcc.Exports.Count && itemexportid > 0)
+                string path = exportEntry.GetFullPath;
+                string[] pieces = path.Split('.');
+
+                if (pieces.Length < 3 || pieces[0] != "TheWorld" || pieces[1] != "PersistentLevel")
                 {
-                    IExportEntry exportEntry = pcc.Exports[(int)itemexportid - 1];
+                    continue;
+                }
+                //}
 
-                    if ((exportEntry.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+                //while (itemcount < numberofitems)
+                //{
+                //    //get header.
+                //    uint itemexportid = BitConverter.ToUInt32(data, start);
+                //    if (itemexportid - 1 < pcc.Exports.Count && itemexportid > 0)
+                //    {
+                //        IExportEntry exportEntry = pcc.Exports[(int)itemexportid - 1];
+
+                int idOffset = 0;
+                if ((exportEntry.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+                {
+                    byte[] exportData = exportEntry.Data;
+                    int classId1 = BitConverter.ToInt32(exportData, 0);
+                    int classId2 = BitConverter.ToInt32(exportData, 4);
+                    //Debug.WriteLine(maybe_MPID);
+                    bool updated = false;
+
+                    int metadataClass = exportEntry.idxClass;
+                    if ((classId1 != metadataClass) || (classId2 != metadataClass))
                     {
-                        byte[] exportData = exportEntry.Data;
-                        int classId1 = BitConverter.ToInt32(exportData, 0);
-                        int classId2 = BitConverter.ToInt32(exportData, 4);
-                        //Debug.WriteLine(maybe_MPID);
-                        bool updated = false;
-
-                        int maybe_MPID = BitConverter.ToInt32(exportData, 0x1A);
-                        List<int> idList;
-                        if (exportEntry.Index == 10877)
-                        {
-                            Debug.WriteLine("BREAK");
-                        }
-                        if (mpIDs.TryGetValue(maybe_MPID, out idList))
-                        {
-                            Debug.WriteLine(itemcount);
-                            idList.Add(exportEntry.Index);
-                        }
-                        else
-                        {
-                            mpIDs[maybe_MPID] = new List<int>();
-                            mpIDs[maybe_MPID].Add(exportEntry.Index);
-                        }
-
-                        int metadataClass = exportEntry.idxClass;
-                        if ((classId1 != metadataClass) || (classId2 != metadataClass))
-                        {
-                            Debug.WriteLine("Updating unreal class data header in export " + exportEntry.Index + " " + exportEntry.ClassName);
-                            //Update unreal header
-                            SharedPathfinding.WriteMem(exportData, 0, BitConverter.GetBytes(metadataClass));
-                            SharedPathfinding.WriteMem(exportData, 4, BitConverter.GetBytes(metadataClass));
-                            numUpdated++;
-                            updated = true;
-                        }
-                        if (updated)
-                        {
-                            exportEntry.Data = exportData;
-                        }
+                        Debug.WriteLine("Updating unreal class data header in export " + exportEntry.Index + " " + exportEntry.ClassName);
+                        //Update unreal header
+                        SharedPathfinding.WriteMem(exportData, 0, BitConverter.GetBytes(metadataClass));
+                        SharedPathfinding.WriteMem(exportData, 4, BitConverter.GetBytes(metadataClass));
+                        numUpdated++;
+                        updated = true;
                     }
+                    if (updated)
+                    {
+                        exportEntry.Data = exportData;
+                    }
+                    idOffset = 0x1A;
+                }
 
 
-                    //}
-                    start += 4;
-                    itemcount++;
+                int maybe_MPID = BitConverter.ToInt32(exportEntry.Data, idOffset);
+                List<int> idList;
+                if (mpIDs.TryGetValue(maybe_MPID, out idList))
+                {
+                    Debug.WriteLine(itemcount);
+                    idList.Add(exportEntry.Index);
                 }
                 else
                 {
-                    //INVALID or empty item encountered. We don't care right now though.
-                    start += 4;
-                    itemcount++;
+                    mpIDs[maybe_MPID] = new List<int>();
+                    mpIDs[maybe_MPID].Add(exportEntry.Index);
                 }
+                itemcount++;
             }
 
             //Update IDs
@@ -2440,32 +2445,57 @@ namespace ME3Explorer
             {
                 var item = mpIDs.ElementAt(index);
                 List<int> valueList = item.Value;
-                if (valueList.Count > 1)
+                if (valueList.Count > 1 && item.Key != 0 && item.Key != -1)
                 {
+                    string itemlist = pcc.Exports[valueList[0]].ObjectName;
                     for (int i = 1; i < valueList.Count; i++)
                     // for (int i = valueList.Count - 1; i > 1; i--)
                     {
                         int max = mpIDs.Keys.Max();
-                        Debug.WriteLine("New max key size: " + max);
+                        //Debug.WriteLine("New max key size: " + max);
                         IExportEntry export = pcc.Exports[valueList[i]];
-                        byte[] exportData = export.Data;
-                        int maybe_MPID = BitConverter.ToInt32(exportData, 0x1A);
+                        itemlist += " " + export.ObjectName;
+                        string exportname = export.ObjectName;
+                        if (exportname.Contains("SFXOperation") || exportname.Contains("ReachSpec"))
+                        {
 
-                        max++;
-                        int origId = maybe_MPID;
-                        SharedPathfinding.WriteMem(exportData, 0x1A, BitConverter.GetBytes(max));
-                        numUpdated++;
-                        maybe_MPID = BitConverter.ToInt32(exportData, 0x1A); //read new fixed id
-                        Debug.WriteLine("Updated MPID " + origId + " -> " + maybe_MPID + " " + export.ObjectName);
-                        export.Data = exportData;
+                            int idOffset = 0;
+                            if ((export.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+                            {
+                                idOffset = 0x1A;
+                            }
+                            byte[] exportData = export.Data;
 
-                        //add to new list to prevent rewrite of dupes.
-                        mpIDs[maybe_MPID] = new List<int>();
-                        mpIDs[maybe_MPID].Add(export.Index);
+                            int nameId = BitConverter.ToInt32(exportData, 4);
+
+                            if (pcc.isName(nameId) && pcc.getNameEntry(nameId) == export.ObjectName)
+                            {
+                                //It's a primitive component header
+                                idOffset += 8;
+                                continue;
+                            }
+                            int maybe_MPID = BitConverter.ToInt32(exportData, idOffset);
+
+                            max++;
+                            int origId = maybe_MPID;
+                            SharedPathfinding.WriteMem(exportData, idOffset, BitConverter.GetBytes(max));
+                            numUpdated++;
+
+
+                            maybe_MPID = BitConverter.ToInt32(exportData, idOffset); //read new fixed id
+                            Debug.WriteLine("Updated MPID " + origId + " -> " + maybe_MPID + " " + export.ObjectName + " in exp " + export.Index);
+                            export.Data = exportData;
+
+                            //add to new list to prevent rewrite of dupes.
+                            mpIDs[maybe_MPID] = new List<int>();
+                            mpIDs[maybe_MPID].Add(export.Index);
+                        }
+
                     }
-
+                    Debug.WriteLine(itemlist);
                 }
             }
+
 
 
             MessageBox.Show(this, numUpdated + " export" + (numUpdated != 1 ? "s" : "") + " in PersistentLevel had data headers updated.", "Header Check Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -2521,13 +2551,100 @@ namespace ME3Explorer
             e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar); //prevent non digit entry
         }
 
-        private void removeDuplicateLevelItemsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void relinkPathfinding_ButtonClicked(object sender, EventArgs e)
         {
+            List<IExportEntry> pathfindingChain = new List<IExportEntry>();
 
+            //Get list of all pathfinding nodes
+            foreach (IExportEntry exp in pcc.Exports)
+            {
+                if (exp.ClassName == "Level" && exp.ObjectName == "PersistentLevel")
+                {
+                    int start = findEndOfProps(exp) + 4; //itemcount
+                    //Read persistent level binary
+                    byte[] data = exp.Data;
+                    uint numberofitems = BitConverter.ToUInt32(data, start);
+                    int countoffset = start;
+
+                    start += 8;
+                    int itemcount = 2; //Skip bioworldinfo and Class
+
+                    //Get all nav items.
+                    while (itemcount <= numberofitems)
+                    {
+                        //get header.
+                        uint itemexportid = BitConverter.ToUInt32(data, start);
+                        if (itemexportid - 1 < pcc.Exports.Count)
+                        {
+                            IExportEntry exportEntry = pcc.Exports[(int)itemexportid - 1];
+                            StructProperty navGuid = exportEntry.GetProperty<StructProperty>("NavGuid");
+                            if (navGuid != null)
+                            {
+                                pathfindingChain.Add(exportEntry);
+                            }
+
+                            start += 4;
+                            itemcount++;
+                        }
+                        else
+                        {
+                            start += 4;
+                            itemcount++;
+                        }
+                    }
+
+                    //Filter so it only has nextNavigationPoint. This will drop the end node
+                    List<IExportEntry> nextNavigationPointChain = new List<IExportEntry>();
+                    foreach (IExportEntry exportEntry in pathfindingChain)
+                    {
+                        ObjectProperty nextNavigationPointProp = exportEntry.GetProperty<ObjectProperty>("nextNavigationPoint");
+
+                        if (nextNavigationPointProp == null)
+                        {
+                            //don't add this as its not part of this chain
+                            continue;
+                        }
+                        nextNavigationPointChain.Add(exportEntry);
+                    }
+
+                    //Follow chain to end to find end node
+                    IExportEntry nodeEntry = nextNavigationPointChain[0];
+                    ObjectProperty nextNavPoint = nodeEntry.GetProperty<ObjectProperty>("nextNavigationPoint");
+
+                    while (nextNavPoint != null)
+                    {
+                        nodeEntry = pcc.Exports[nextNavPoint.Value - 1];
+                        nextNavPoint = nodeEntry.GetProperty<ObjectProperty>("nextNavigationPoint");
+                    }
+
+                    //rebuild chain
+                    for (int i = 0; i < nextNavigationPointChain.Count; i++)
+                    {
+                        IExportEntry chainItem = nextNavigationPointChain[i];
+                        IExportEntry nextchainItem;
+                        if (i < nextNavigationPointChain.Count - 1)
+                        {
+                            nextchainItem = nextNavigationPointChain[i + 1];
+                        }
+                        else
+                        {
+                            nextchainItem = nodeEntry;
+                        }
+
+                        ObjectProperty nextNav = chainItem.GetProperty<ObjectProperty>("nextNavigationPoint");
+
+                        byte[] expData = chainItem.Data;
+                        SharedPathfinding.WriteMem(expData, (int)nextNav.Offset, BitConverter.GetBytes(nextchainItem.UIndex));
+                        chainItem.Data = expData;
+                        Debug.WriteLine(chainItem.Index + " Chain link -> " + nextchainItem.UIndex);
+                    }
+
+                    MessageBox.Show("NavigationPoint chain has been updated.");
+                }
+            }
         }
     }
 }
-
 
 public class PathingZoomController
 {
