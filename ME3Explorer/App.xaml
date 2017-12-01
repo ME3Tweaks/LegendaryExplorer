@@ -153,6 +153,7 @@
         <BitmapImage x:Key="iconPSKViewer" UriSource="Resources/psk_viewer_64x64.png"/>
         <BitmapImage x:Key="iconSaveGameEditor" UriSource="Resources/save_gameeditor_icon.ico"/>
         <BitmapImage x:Key="iconSaveGameOperator" UriSource="Resources/save_gameoperator_icon.ico"/>
+        <BitmapImage x:Key="iconPathfindingEditor" UriSource="Resources/pathfinding_editor.png"/>
         <BitmapImage x:Key="iconScriptDatabase" UriSource="Resources/script_database_icon.ico"/>
         <BitmapImage x:Key="iconSubtitleScanner" UriSource="Resources/subtitle_scanner_64x64.png"/>
         <BitmapImage x:Key="iconLanguageSelector" UriSource="Icons/lang_select_64x64.png"/>

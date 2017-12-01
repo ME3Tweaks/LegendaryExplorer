@@ -11,18 +11,16 @@
             <Image Width="249" Height="109" Source="../Resources/me3exp_smallbanner_v1.png"/>
             <Grid Width="351" Height="109" Background="#FF1F283C">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock Text="Mass Effect 3 Explorer" Foreground="#FFD8D8D8" FontSize="26" FontFamily="{StaticResource Exo-SemiBold}"/>
+                    <TextBlock Text="ME3Explorer&#10;ME3Tweaks Fork" TextAlignment="Center" Foreground="#FFD8D8D8" FontSize="26" FontFamily="{StaticResource Exo-SemiBold}"/>
                     <TextBlock Text="{Binding Source={x:Static local:App.Version}}" Foreground="White" FontSize="26" 
                                FontFamily="{StaticResource TitilliumWeb-Regular}" HorizontalAlignment="Center" Margin="0,-6,0,0"/>
-                    <TextBlock Text="Copyright (c) 2011-2016 ME3Explorer Team" FontFamily="{StaticResource TitilliumWeb-SemiBold}" Foreground="#FFD8D8D8"
-                               HorizontalAlignment="Center"/>
                 </StackPanel>
             </Grid>
         </StackPanel>
         <Rectangle Height="6" Fill="#FFF3F3F3"/>
         <TextBlock FontFamily="{StaticResource Exo-SemiBold}" Foreground="#FF080808" FontSize="18" HorizontalAlignment="Center" Margin="0,9">
-            <Run Text="Visit our web site hosted by GitHub: "/>
-            <Hyperlink NavigateUri="http://me3explorer.github.io/" Foreground="#FF182574" local:HyperlinkExtensions.IsExternal="True">http://me3explorer.github.io/</Hyperlink>
+            <Run Text="Source Code available at "/>
+            <Hyperlink NavigateUri="http://github.com/Mgamerz/ME3Explorer/" Foreground="#FF182574" local:HyperlinkExtensions.IsExternal="True">https://github.com/Mgamerz/ME3Explorer</Hyperlink>
         </TextBlock>
         <Grid Height="32" Background="#FFBFBFBF">
             <TextBlock Text="Credits" Foreground="#FF080808" FontSize="18" VerticalAlignment="Center" 
@@ -34,7 +32,7 @@
                 <ColumnDefinition Width="385"/>
             </Grid.ColumnDefinitions>
             <StackPanel>
-                <TextBlock Text="Current Staff" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="17"/>
+                <TextBlock Text="Mainline Staff" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="17"/>
                 <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="7,0,0,0">
                     <Run Text="• SirCxyrtyx - Lead Developer"/><LineBreak/>
                     <Run Text="• Kfreon - Programmer"/><LineBreak/>

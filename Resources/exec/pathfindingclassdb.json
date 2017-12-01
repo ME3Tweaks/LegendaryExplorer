@@ -41,7 +41,26 @@
          "name":"SFXNav_ClimbWallNode",
          "cylindercomponentarchetype":"SFXGame.Default__SFXNav_ClimbWallNode.CollisionCylinder",
          "incomingreachspecclass":"Engine.ReachSpec"
+      },
+      "BioPathPoint":{
+         "class":"SFXGame.BioPathPoint",
+         "name":"BioPathPoint",
+         "cylindercomponentarchetype":"SFXGame.Default__BioPathPoint.CollisionCylinder",
+         "incomingreachspecclass":"Engine.ReachSpec"
+      },
+      "SFXDynamicCoverLink":{
+         "class":"Engine.SFXDynamicCoverLink",
+         "name":"SFXDynamicCoverLink",
+         "cylindercomponentarchetype":"Engine.Default__SFXDynamicCoverLink.CollisionCylinder",
+         "incomingreachspecclass":"Engine.ReachSpec"
+      },
+      "SFXDynamicCoverSlotMarker":{
+         "class":"Engine.SFXDynamicCoverSlotMarker",
+         "name":"SFXDynamicCoverSlotMarker",
+         "cylindercomponentarchetype":"Engine.Default__SFXDynamicCoverSlotMarker.CollisionCylinder",
+         "incomingreachspecclass":"Engine.ReachSpec"
       }
+
    },
    "importtypes":{
       "Engine.ReachSpec":{
@@ -141,6 +160,43 @@
          "packagefile":"SFXGame"
       },
       "SFXGame.Default__SFXNav_BoostNode.CollisionCylinder":{
+         "class":"Engine.CylinderComponent",
+         "packagefile":"Engine"
+      },
+
+      "SFXGame.BioPathPoint":{
+         "class":"Class",
+         "packagefile":"Core"
+      },
+      "SFXGame.Default__BioPathPoint":{
+         "class":"SFXGame.BioPathPoint",
+         "packagefile":"SFXGame"
+      },
+      "SFXGame.Default__BioPathPoint.CollisionCylinder":{
+         "class":"Engine.CylinderComponent",
+         "packagefile":"Engine"
+      },
+      "Engine.SFXDynamicCoverLink":{
+         "class":"Class",
+         "packagefile":"Core"
+      },
+      "Engine.Default__SFXDynamicCoverLink":{
+         "class":"Engine.SFXDynamicCoverLink",
+         "packagefile":"Engine"
+      },
+      "Engine.Default__SFXDynamicCoverLink.CollisionCylinder":{
+         "class":"Engine.CylinderComponent",
+         "packagefile":"Engine"
+      },
+      "Engine.SFXDynamicCoverSlotMarker":{
+         "class":"Class",
+         "packagefile":"Core"
+      },
+      "Engine.Default__SFXDynamicCoverSlotMarker":{
+         "class":"Engine.SFXDynamicCoverSlotMarker",
+         "packagefile":"Engine"
+      },
+      "Engine.Default__SFXDynamicCoverSlotMarker.CollisionCylinder":{
          "class":"Engine.CylinderComponent",
          "packagefile":"Engine"
       }

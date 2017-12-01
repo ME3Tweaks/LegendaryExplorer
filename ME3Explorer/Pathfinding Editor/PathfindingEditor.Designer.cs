@@ -68,15 +68,18 @@ namespace ME3Explorer
             this.cloneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.breakLinksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeNodeTypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toSFXEnemySpawnPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toPathNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toBioPathPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toSFXNavTurretPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toSFXEnemySpawnPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toSFXDynamicCoverLinkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toSFXDynamicCoverSlotMarkerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toSFXNavBoostNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sFXNavBoostNodeTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sFXNavBoostNodeBottomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toSFXNavClimbWallNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toPathNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toSFXNavLargeBoostNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toSFXNavLargeMantleNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toSFXNavClimbWallNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createReachSpecToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setGraphPositionAsNodeLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateNewRandomGUIDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -454,42 +457,58 @@ namespace ME3Explorer
             // changeNodeTypeToolStripMenuItem
             // 
             this.changeNodeTypeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toSFXEnemySpawnPointToolStripMenuItem,
-            this.toPathNodeToolStripMenuItem,
+            this.toBioPathPointToolStripMenuItem,
             this.toSFXNavTurretPointToolStripMenuItem,
+            this.toSFXEnemySpawnPointToolStripMenuItem,
+            this.toSFXDynamicCoverLinkToolStripMenuItem,
+            this.toSFXDynamicCoverSlotMarkerToolStripMenuItem,
             this.toSFXNavBoostNodeToolStripMenuItem,
+            this.toSFXNavClimbWallNodeToolStripMenuItem,
+            this.toPathNodeToolStripMenuItem,
             this.toSFXNavLargeBoostNodeToolStripMenuItem,
-            this.toSFXNavLargeMantleNodeToolStripMenuItem,
-            this.toSFXNavClimbWallNodeToolStripMenuItem});
+            this.toSFXNavLargeMantleNodeToolStripMenuItem});
             this.changeNodeTypeToolStripMenuItem.Name = "changeNodeTypeToolStripMenuItem";
             this.changeNodeTypeToolStripMenuItem.Size = new System.Drawing.Size(294, 22);
             this.changeNodeTypeToolStripMenuItem.Text = "Change Node Type";
             // 
+            // toBioPathPointToolStripMenuItem
+            // 
+            this.toBioPathPointToolStripMenuItem.Name = "toBioPathPointToolStripMenuItem";
+            this.toBioPathPointToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.toBioPathPointToolStripMenuItem.Text = "To BioPathPoint";
+            this.toBioPathPointToolStripMenuItem.Click += new System.EventHandler(this.toBioPathPointToolStripMenuItem_Click);
+            // 
+            // toSFXNavTurretPointToolStripMenuItem
+            // 
+            this.toSFXNavTurretPointToolStripMenuItem.Name = "toSFXNavTurretPointToolStripMenuItem";
+            this.toSFXNavTurretPointToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.toSFXNavTurretPointToolStripMenuItem.Text = "To PathNode";
+            this.toSFXNavTurretPointToolStripMenuItem.ToolTipText = "Use by Engineers, Geth Primes, and Collector Troopers to put down their placeable" +
+    "/pawns.";
+            this.toSFXNavTurretPointToolStripMenuItem.Click += new System.EventHandler(this.toSFXNavTurretPointToolStripMenuItem_Click);
+            // 
             // toSFXEnemySpawnPointToolStripMenuItem
             // 
             this.toSFXEnemySpawnPointToolStripMenuItem.Name = "toSFXEnemySpawnPointToolStripMenuItem";
-            this.toSFXEnemySpawnPointToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+            this.toSFXEnemySpawnPointToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.toSFXEnemySpawnPointToolStripMenuItem.Text = "To SFXEnemySpawnPoint";
             this.toSFXEnemySpawnPointToolStripMenuItem.ToolTipText = "Spawnpoint for an enemy group in MP. Ensure it has enough radial space for a grou" +
     "p. Use SupportedReachSpec prop to limit what can spawn here.";
             this.toSFXEnemySpawnPointToolStripMenuItem.Click += new System.EventHandler(this.toSFXEnemySpawnPointToolStripMenuItem_Click);
             // 
-            // toPathNodeToolStripMenuItem
+            // toSFXDynamicCoverLinkToolStripMenuItem
             // 
-            this.toPathNodeToolStripMenuItem.Name = "toPathNodeToolStripMenuItem";
-            this.toPathNodeToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-            this.toPathNodeToolStripMenuItem.Text = "To PathNode";
-            this.toPathNodeToolStripMenuItem.ToolTipText = "Basic pathfinding node.";
-            this.toPathNodeToolStripMenuItem.Click += new System.EventHandler(this.toPathNodeToolStripMenuItem_Click);
+            this.toSFXDynamicCoverLinkToolStripMenuItem.Name = "toSFXDynamicCoverLinkToolStripMenuItem";
+            this.toSFXDynamicCoverLinkToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.toSFXDynamicCoverLinkToolStripMenuItem.Text = "To SFXDynamicCoverLink";
+            this.toSFXDynamicCoverLinkToolStripMenuItem.Click += new System.EventHandler(this.toSFXDynamicCoverLinkToolStripMenuItem_Click);
             // 
-            // toSFXNavTurretPointToolStripMenuItem
+            // toSFXDynamicCoverSlotMarkerToolStripMenuItem
             // 
-            this.toSFXNavTurretPointToolStripMenuItem.Name = "toSFXNavTurretPointToolStripMenuItem";
-            this.toSFXNavTurretPointToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-            this.toSFXNavTurretPointToolStripMenuItem.Text = "To SFXNav_TurretPoint";
-            this.toSFXNavTurretPointToolStripMenuItem.ToolTipText = "Use by Engineers, Geth Primes, and Collector Troopers to put down their placeable" +
-    "/pawns.";
-            this.toSFXNavTurretPointToolStripMenuItem.Click += new System.EventHandler(this.toSFXNavTurretPointToolStripMenuItem_Click);
+            this.toSFXDynamicCoverSlotMarkerToolStripMenuItem.Name = "toSFXDynamicCoverSlotMarkerToolStripMenuItem";
+            this.toSFXDynamicCoverSlotMarkerToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.toSFXDynamicCoverSlotMarkerToolStripMenuItem.Text = "To SFXDynamicCoverSlotMarker";
+            this.toSFXDynamicCoverSlotMarkerToolStripMenuItem.Click += new System.EventHandler(this.toSFXDynamicCoverSlotMarkerToolStripMenuItem_Click);
             // 
             // toSFXNavBoostNodeToolStripMenuItem
             // 
@@ -497,7 +516,7 @@ namespace ME3Explorer
             this.sFXNavBoostNodeTopToolStripMenuItem,
             this.sFXNavBoostNodeBottomToolStripMenuItem});
             this.toSFXNavBoostNodeToolStripMenuItem.Name = "toSFXNavBoostNodeToolStripMenuItem";
-            this.toSFXNavBoostNodeToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+            this.toSFXNavBoostNodeToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.toSFXNavBoostNodeToolStripMenuItem.Text = "To SFXNav_BoostNode";
             this.toSFXNavBoostNodeToolStripMenuItem.ToolTipText = "Used by mooks to boost up and down vertically.";
             // 
@@ -515,10 +534,25 @@ namespace ME3Explorer
             this.sFXNavBoostNodeBottomToolStripMenuItem.Text = "SFXNav_BoostNode (Bottom)";
             this.sFXNavBoostNodeBottomToolStripMenuItem.Click += new System.EventHandler(this.sFXNavBoostNodeBottomToolStripMenuItem_Click);
             // 
+            // toSFXNavClimbWallNodeToolStripMenuItem
+            // 
+            this.toSFXNavClimbWallNodeToolStripMenuItem.Name = "toSFXNavClimbWallNodeToolStripMenuItem";
+            this.toSFXNavClimbWallNodeToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.toSFXNavClimbWallNodeToolStripMenuItem.Text = "To SFXNav_ClimbWallNode";
+            this.toSFXNavClimbWallNodeToolStripMenuItem.Click += new System.EventHandler(this.toSFXNavClimbWallNodeToolStripMenuItem_Click);
+            // 
+            // toPathNodeToolStripMenuItem
+            // 
+            this.toPathNodeToolStripMenuItem.Name = "toPathNodeToolStripMenuItem";
+            this.toPathNodeToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.toPathNodeToolStripMenuItem.Text = "To PathNode";
+            this.toPathNodeToolStripMenuItem.ToolTipText = "Basic pathfinding node.";
+            this.toPathNodeToolStripMenuItem.Click += new System.EventHandler(this.toPathNodeToolStripMenuItem_Click);
+            // 
             // toSFXNavLargeBoostNodeToolStripMenuItem
             // 
             this.toSFXNavLargeBoostNodeToolStripMenuItem.Name = "toSFXNavLargeBoostNodeToolStripMenuItem";
-            this.toSFXNavLargeBoostNodeToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+            this.toSFXNavLargeBoostNodeToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.toSFXNavLargeBoostNodeToolStripMenuItem.Text = "To SFXNav_LargeBoostNode";
             this.toSFXNavLargeBoostNodeToolStripMenuItem.ToolTipText = "Used by Banshees to ascend and descend.";
             this.toSFXNavLargeBoostNodeToolStripMenuItem.Click += new System.EventHandler(this.toSFXNavLargeBoostNodeToolStripMenuItem_Click);
@@ -526,16 +560,9 @@ namespace ME3Explorer
             // toSFXNavLargeMantleNodeToolStripMenuItem
             // 
             this.toSFXNavLargeMantleNodeToolStripMenuItem.Name = "toSFXNavLargeMantleNodeToolStripMenuItem";
-            this.toSFXNavLargeMantleNodeToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+            this.toSFXNavLargeMantleNodeToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.toSFXNavLargeMantleNodeToolStripMenuItem.Text = "To SFXNav_LargeMantleNode";
             this.toSFXNavLargeMantleNodeToolStripMenuItem.Click += new System.EventHandler(this.toSFXNavLargeMantleNodeToolStripMenuItem_Click);
-            // 
-            // toSFXNavClimbWallNodeToolStripMenuItem
-            // 
-            this.toSFXNavClimbWallNodeToolStripMenuItem.Name = "toSFXNavClimbWallNodeToolStripMenuItem";
-            this.toSFXNavClimbWallNodeToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-            this.toSFXNavClimbWallNodeToolStripMenuItem.Text = "To SFXNav_ClimbWallNode";
-            this.toSFXNavClimbWallNodeToolStripMenuItem.Click += new System.EventHandler(this.toSFXNavClimbWallNodeToolStripMenuItem_Click);
             // 
             // createReachSpecToolStripMenuItem
             // 
@@ -701,5 +728,8 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripTextBox gotoNode_TextBox;
         private System.Windows.Forms.ToolStripMenuItem gotoNodeButton;
         private System.Windows.Forms.ToolStripMenuItem relinkingPathfindingChainButton;
+        private System.Windows.Forms.ToolStripMenuItem toBioPathPointToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toSFXDynamicCoverLinkToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toSFXDynamicCoverSlotMarkerToolStripMenuItem;
     }
 }

@@ -58,6 +58,10 @@ namespace ME3Explorer
         private const int NODETYPE_SFXNAV_LAREGEBOOSTNODE = 6;
         private const int NODETYPE_SFXNAV_LARGEMANTLENODE = 7;
         private const int NODETYPE_SFXNAV_CLIMBWALLNODE = 8;
+        private const int NODETYPE_BIOPATHPOINT = 9;
+        private const int NODETYPE_SFXDYNAMICCOVERLINK = 10;
+        private const int NODETYPE_SFXDYNAMICCOVERSLOTMARKER = 11;
+
         private static string classDatabasePath = "";
 
         public static Dictionary<string, Dictionary<string, string>> importclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
@@ -508,7 +512,8 @@ namespace ME3Explorer
             {
                 int selectednodeindex = listBox1.SelectedIndex;
                 PathfindingNodeMaster nodeMaster = null;
-                if (selectednodeindex >= 0 && selectednodeindex < CurrentObjects.Count()) {
+                if (selectednodeindex >= 0 && selectednodeindex < CurrentObjects.Count())
+                {
                     nodeMaster = Objects.FirstOrDefault(o => o.Index == CurrentObjects[selectednodeindex]);
                 }
 
@@ -906,7 +911,7 @@ namespace ME3Explorer
             if (CurrentObjects.Count == 0)
                 return;
             SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "Bmp Files (*.bmp)|*.bmp";
+            d.Filter = "Png Files (*.png)|*.png";
             if (d.ShowDialog() == DialogResult.OK)
             {
                 PNode r = graphEditor.Root;
@@ -917,7 +922,7 @@ namespace ME3Explorer
                 graphEditor.Camera.Visible = false;
                 Image image = graphEditor.Root.ToImage();
                 graphEditor.Camera.Visible = true;
-                image.Save(d.FileName, ImageFormat.Bmp);
+                image.Save(d.FileName, ImageFormat.Png);
                 graphEditor.backLayer.RemoveAllChildren();
                 MessageBox.Show("Done.");
             }
@@ -1406,6 +1411,28 @@ namespace ME3Explorer
                     exportclassdbkey = "SFXNav_ClimbWallNode";
                     //propertiesToRemoveIfPresent.Add("ClimbDest");
                     break;
+                case NODETYPE_BIOPATHPOINT:
+                    {
+                        exportclassdbkey = "BioPathPoint";
+                        BoolProperty bEnabled = new BoolProperty(true, "bEnabled");
+                        propertiesToAdd.Add(bEnabled);
+                        break;
+                    }
+                case NODETYPE_SFXDYNAMICCOVERLINK:
+                    {
+                        exportclassdbkey = "SFXDynamicCoverLink";
+                        //BoolProperty bEnabled = new BoolProperty(true, "bEnabled");
+                        //propertiesToAdd.Add(bEnabled);
+                        break;
+                    }
+                case NODETYPE_SFXDYNAMICCOVERSLOTMARKER:
+                    {
+                        exportclassdbkey = "SFXDynamicCoverSlotMarker";
+                        //coverslot property blows up adding properties
+                        BoolProperty bEnabled = new BoolProperty(true, "bEnabled");
+                        propertiesToAdd.Add(bEnabled);
+                        break;
+                    }
                 default:
                     return;
             }
@@ -1433,29 +1460,32 @@ namespace ME3Explorer
             }
 
             //Write new properties
-            foreach (UProperty prop in propertiesToAdd)
+            if (propertiesToAdd.Count() > 0 || propertiesToRemoveIfPresent.Count() > 0)
             {
-                nodeEntry.WriteProperty(prop);
-            }
-
-            //Remove specific properties
-            if (propertiesToRemoveIfPresent.Count > 0)
-            {
-                PropertyCollection properties = nodeEntry.GetProperties();
-                List<UProperty> propertiesToRemove = new List<UProperty>();
-                foreach (UProperty prop in properties)
+                foreach (UProperty prop in propertiesToAdd)
                 {
-                    if (propertiesToRemoveIfPresent.Contains(prop.Name))
+                    nodeEntry.WriteProperty(prop);
+                }
+
+                //Remove specific properties
+                if (propertiesToRemoveIfPresent.Count > 0)
+                {
+                    PropertyCollection properties = nodeEntry.GetProperties();
+                    List<UProperty> propertiesToRemove = new List<UProperty>();
+                    foreach (UProperty prop in properties)
                     {
-                        propertiesToRemove.Add(prop);
+                        if (propertiesToRemoveIfPresent.Contains(prop.Name))
+                        {
+                            propertiesToRemove.Add(prop);
+                        }
                     }
-                }
 
-                foreach (UProperty prop in propertiesToRemove)
-                {
-                    properties.Remove(prop);
+                    foreach (UProperty prop in propertiesToRemove)
+                    {
+                        properties.Remove(prop);
+                    }
+                    nodeEntry.WriteProperties(properties);
                 }
-                nodeEntry.WriteProperties(properties);
             }
 
             //perform special tasks here.
@@ -1647,7 +1677,7 @@ namespace ME3Explorer
                 if (n == -1)
                     return;
 
-                if (pcc.getEntry(n).ClassName != "SFXEnemySpawnPoint")
+                if (pcc.Exports[n].ClassName != "SFXEnemySpawnPoint")
                 {
                     changeNodeType(pcc.Exports[n], NODETYPE_SFXENEMYSPAWNPOINT);
                     RefreshView();
@@ -2643,59 +2673,107 @@ namespace ME3Explorer
                 }
             }
         }
-    }
-}
 
-public class PathingZoomController
-{
-    public static float MIN_SCALE = .005f;
-    public static float MAX_SCALE = 15;
-    PCamera camera;
-
-    public PathingZoomController(PathingGraphEditor graphEditor)
-    {
-        this.camera = graphEditor.Camera;
-        camera.ViewScale = 0.5f;
-        camera.Canvas.ZoomEventHandler = null;
-        camera.MouseWheel += OnMouseWheel;
-        graphEditor.KeyDown += OnKeyDown;
-    }
-
-    public void OnKeyDown(object o, KeyEventArgs e)
-    {
-        if (e.Control)
+        private void toBioPathPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (e.KeyCode == Keys.OemMinus)
+            if (listBox1.SelectedIndex >= 0)
             {
-                scaleView(0.8f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
-            }
-            else if (e.KeyCode == Keys.Oemplus)
-            {
-                scaleView(1.2f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                int n = CurrentObjects[listBox1.SelectedIndex];
+                if (n == -1)
+                    return;
+
+                if (pcc.Exports[n].ClassName != "BioPathPoint")
+                {
+                    changeNodeType(pcc.Exports[n], NODETYPE_BIOPATHPOINT);
+                    RefreshView();
+                }
             }
         }
+
+        private void toSFXDynamicCoverLinkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listBox1.SelectedIndex >= 0)
+            {
+                int n = CurrentObjects[listBox1.SelectedIndex];
+                if (n == -1)
+                    return;
+
+                if (pcc.Exports[n].ClassName != "SFXDynamicCoverLink")
+                {
+                    changeNodeType(pcc.Exports[n], NODETYPE_SFXDYNAMICCOVERLINK);
+                    RefreshView();
+                }
+            }
+        }
+
+        private void toSFXDynamicCoverSlotMarkerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listBox1.SelectedIndex >= 0)
+            {
+                int n = CurrentObjects[listBox1.SelectedIndex];
+                if (n == -1)
+                    return;
+
+                if (pcc.Exports[n].ClassName != "SFXDynamicCovertSlotMarker")
+                {
+                    changeNodeType(pcc.Exports[n], NODETYPE_SFXDYNAMICCOVERSLOTMARKER);
+                    RefreshView();
+                }
+            }
+        }
     }
 
-    public void OnMouseWheel(object o, PInputEventArgs ea)
+    public class PathingZoomController
     {
-        scaleView(1.0f + (0.001f * ea.WheelDelta), ea.Position);
-    }
+        public static float MIN_SCALE = .005f;
+        public static float MAX_SCALE = 15;
+        PCamera camera;
 
-    public void scaleView(float scaleDelta, PointF p)
-    {
-        float currentScale = camera.ViewScale;
-        float newScale = currentScale * scaleDelta;
-        if (newScale < MIN_SCALE)
+        public PathingZoomController(PathingGraphEditor graphEditor)
         {
-            camera.ViewScale = MIN_SCALE;
-            return;
+            this.camera = graphEditor.Camera;
+            camera.ViewScale = 0.5f;
+            camera.Canvas.ZoomEventHandler = null;
+            camera.MouseWheel += OnMouseWheel;
+            graphEditor.KeyDown += OnKeyDown;
         }
-        if ((MAX_SCALE > 0) && (newScale > MAX_SCALE))
+
+        public void OnKeyDown(object o, KeyEventArgs e)
         {
-            camera.ViewScale = MAX_SCALE;
-            return;
+            if (e.Control)
+            {
+                if (e.KeyCode == Keys.OemMinus)
+                {
+                    scaleView(0.8f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                }
+                else if (e.KeyCode == Keys.Oemplus)
+                {
+                    scaleView(1.2f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                }
+            }
         }
-        camera.ScaleViewBy(scaleDelta, p.X, p.Y);
+
+        public void OnMouseWheel(object o, PInputEventArgs ea)
+        {
+            scaleView(1.0f + (0.001f * ea.WheelDelta), ea.Position);
+        }
+
+        public void scaleView(float scaleDelta, PointF p)
+        {
+            float currentScale = camera.ViewScale;
+            float newScale = currentScale * scaleDelta;
+            if (newScale < MIN_SCALE)
+            {
+                camera.ViewScale = MIN_SCALE;
+                return;
+            }
+            if ((MAX_SCALE > 0) && (newScale > MAX_SCALE))
+            {
+                camera.ViewScale = MAX_SCALE;
+                return;
+            }
+            camera.ScaleViewBy(scaleDelta, p.X, p.Y);
+        }
     }
 }
 

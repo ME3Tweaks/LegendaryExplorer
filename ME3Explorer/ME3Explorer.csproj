@@ -1444,6 +1444,15 @@
   <ItemGroup>
     <Resource Include="Resources\audio_editor_icon.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconPathfindingEditor.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconPathfindingEditor.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\pathfinding_editor.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)"

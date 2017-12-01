@@ -61,15 +61,6 @@ namespace ME3Explorer
             }
             else
             {
-
-                //PackageEditor editor = new PackageEditor();
-                //editor.Show();
-                //editor.LoadFile(@"C:\Users\Michael\Desktop\ME3CMM\mods\Extra MP Enemies\DLC_MOD_MP_Extras\CookedPCConsole\BioD_Cit003_600MechEvent.pcc");
-
-                //PackageEditor editor2 = new PackageEditor();
-                //editor2.Show();
-                //editor2.LoadFile(@"D:\Origin Games\Mass Effect 3\BIOGame\CookedPCConsole\HumanMale_Infiltrator_MP.pcc");
-                //editor2.goToNumber(5978);
                 (new MainWindow()).Show();
             }
         }

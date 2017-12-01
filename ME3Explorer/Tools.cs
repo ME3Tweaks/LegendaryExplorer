@@ -395,7 +395,7 @@ namespace ME3Explorer
             {
                 name = "Pathfinding Editor",
                 type = typeof(PathfindingEditor),
-                icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,
+                icon = Application.Current.FindResource("iconPathfindingEditor") as ImageSource,
                 open = () =>
                 {
                     (new PathfindingEditor()).Show();

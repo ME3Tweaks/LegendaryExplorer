@@ -70,7 +70,7 @@ namespace ME3Explorer
             createModsPanel.setToolList(Tools.Items.Where(x => x.tags.Contains("developer")));
 
             DisableFlyouts = Properties.Settings.Default.DisableToolDescriptions;
-            disableSetupCheckBox.IsChecked = Properties.Settings.Default.DisableDLCCheckOnStart;
+            disableSetupCheckBox.IsChecked = true;
             Topmost = Properties.Settings.Default.AlwaysOnTop;
 
             //PathfindingEditor p = new PathfindingEditor();
@@ -86,7 +86,7 @@ namespace ME3Explorer
             //p.Show();
 
 
-            if (!Properties.Settings.Default.DisableDLCCheckOnStart)
+            /*if (!Properties.Settings.Default.DisableDLCCheckOnStart)
             {
                 if (Properties.Settings.Default.FirstRun == true)
                 {
@@ -103,7 +103,7 @@ namespace ME3Explorer
                         (new InitialSetup()).ShowDialog();
                     } 
                 }
-            }
+            }*/
         }
 
         private void Tools_FavoritesChanged(object sender, EventArgs e)

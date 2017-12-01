@@ -103,9 +103,9 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     string retval = name;
 
-                    if (export.indexValue != 0)
+                    if (tagProp.Value.Number != 0)
                     {
-                        retval += "_" + export.indexValue;
+                        retval += "_" + tagProp.Value.Number;
                     }
                     return retval;
                 }
