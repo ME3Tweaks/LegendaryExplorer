@@ -70,7 +70,6 @@ namespace ME3Explorer
             createModsPanel.setToolList(Tools.Items.Where(x => x.tags.Contains("developer")));
 
             DisableFlyouts = Properties.Settings.Default.DisableToolDescriptions;
-            disableSetupCheckBox.IsChecked = true;
             Topmost = Properties.Settings.Default.AlwaysOnTop;
 
             //PathfindingEditor p = new PathfindingEditor();
@@ -209,31 +208,6 @@ namespace ME3Explorer
             CICPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
         }
 
-        private void LinkLabel_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            Label l = sender as Label;
-            if (l != null)
-            {
-                switch (l.Content as string)
-                {
-                    case "GitHub":
-                        Process.Start("https://github.com/ME3Explorer/ME3Explorer");
-                        break;
-                    case "Nexus":
-                        Process.Start("http://www.nexusmods.com/masseffect3/mods/409/?");
-                        break;
-                    case "Forums":
-                        Process.Start("http://me3explorer.freeforums.org/");
-                        break;
-                    case "Wikia":
-                        Process.Start("http://me3explorer.wikia.com/wiki/ME3Explorer_Wiki");
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!SearchOpen)
@@ -297,7 +271,6 @@ namespace ME3Explorer
             {
                 e.Cancel = true;
             }
-            Properties.Settings.Default.DisableDLCCheckOnStart = disableSetupCheckBox.IsChecked ?? false;
             Properties.Settings.Default.DisableToolDescriptions = DisableFlyouts;
             Properties.Settings.Default.AlwaysOnTop = alwaysOnTopCheckBox.IsChecked ?? false;
         }

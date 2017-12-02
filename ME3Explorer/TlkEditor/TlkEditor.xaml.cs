@@ -250,7 +250,7 @@ namespace ME3Explorer
 
         private void ReportBugs_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://github.com/ME3Explorer/ME3Explorer/issues");
+            Process.Start("https://github.com/Mgamerz/ME3Explorer/issues");
         }
 
         private void HowTo_Click(object sender, RoutedEventArgs e)
@@ -262,7 +262,7 @@ namespace ME3Explorer
 
         private void Forums_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("http://me3explorer.freeforums.org/");
+            Process.Start("https://me3tweaks.com/forums");
         }
     }
 }

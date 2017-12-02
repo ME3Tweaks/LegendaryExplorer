@@ -186,8 +186,6 @@
                                     <Setter Property="FontFamily" Value="{StaticResource TitilliumWeb-Regular}"/>
                                     <Setter Property="FontSize" Value="18"/>
                                     <Setter Property="Foreground" Value="{StaticResource LabelTextBrush}"/>
-                                    <Setter Property="Cursor" Value="Hand"/>
-                                    <EventSetter Event="UIElement.MouseDown" Handler="LinkLabel_MouseDown"/>
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="{x:Type Label}">
@@ -195,11 +193,6 @@
                                                     <ContentPresenter x:Name="cPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                                                     <Rectangle Height="2" Width="{TemplateBinding ActualWidth}" VerticalAlignment="Bottom" Fill="{TemplateBinding BorderBrush}" />
                                                 </Grid>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="BorderBrush" Value="#FF5692A2"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
                                             </ControlTemplate>
                                         </Setter.Value>
                                     </Setter>
@@ -214,11 +207,8 @@
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Rectangle Width="1" Height="36" Grid.RowSpan="2" Grid.Column="1" Fill="{StaticResource LabelTextBrush}"/>
-                            <Label Content="GitHub" HorizontalAlignment="Right" />
-                            <Label Content="Nexus" Grid.Column="2"/>
-                            <Label Content="Forums" Grid.Row="1" HorizontalAlignment="Right" Margin="0,-3,0,0" />
-                            <Label Content="Wikia" Grid.Row="1" Grid.Column="2" Margin="0,-3,0,0" HorizontalAlignment="Left"/>
+                            <Label Content="ME3Tweaks" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalContentAlignment="Center"/>
+                            <Label Content="Fork" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,-3,0,0" HorizontalContentAlignment="Center"/>
                         </Grid>
                     </StackPanel>
                     <local:ToolPanel x:Name="favoritesPanel" Grid.Row="2" Category="Favorites" ItemMargin="0,15,0,0" Rows="2" Columns="7"
@@ -419,13 +409,6 @@
                             <StackPanel>
                                 <TextBlock Text="ME3Explorer Setup" FontSize="20"/>
                                 <Rectangle Height="2" Width="270" Fill="#A3FBFBFB"/>
-                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                                    <CheckBox x:Name="disableSetupCheckBox" VerticalAlignment="Center" Margin="0,1,0,0"/>
-                                    <TextBlock Text="Disable Wizard" FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="18" Foreground="#FFF9F9F9" Margin="6,0,0,0"/>
-                                    <Image Height="16" Width="16" Source="../Resources/About_icon.ico" Cursor="Hand" ToolTipService.ShowDuration="30000"
-                                		ToolTip="Disables the setup wizard to allow bypass of DLC unpacking. Not for typical users. ONLY for those who don't want to mod or browse textures. Untick the box to re-allow the setup wizard." 
-                                        Margin="6,0,0,0"/>
-                                </StackPanel>
                                 <TextBlock Text="InfoPanel Flyouts" FontSize="20" Margin="0,16,0,0"/>
                                 <Rectangle Height="2" Width="270" Fill="#A3FBFBFB"/>
                                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">

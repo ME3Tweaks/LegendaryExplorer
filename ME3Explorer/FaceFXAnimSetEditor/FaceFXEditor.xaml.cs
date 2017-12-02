@@ -300,7 +300,7 @@ namespace ME3Explorer.FaceFX
                 {
                     if (!(line is ME2FaceFXLine))
                     {
-                        MessageBox.Show("Cannot add ME3 FaceFX lines to ME2 FaceFXAnimsets. If you require this feature, plase make an issue on the project's Github page");
+                        MessageBox.Show("Cannot add ME3 FaceFX lines to ME2 FaceFXAnimsets. If you require this feature, please make an issue on the project's Github page");
                         return;
                     }
                     line.animations = line.animations.Select(x => new ME2NameRef
