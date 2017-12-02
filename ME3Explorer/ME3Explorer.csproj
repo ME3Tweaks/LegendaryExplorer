@@ -152,6 +152,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="BinaryInterpreter\BinaryAltPropertyEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="BinaryInterpreter\BinaryPropertyEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="BinaryInterpreter\BinaryPropertyEditorHost.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Interpreter\AltPropertyEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Audio Editor\AudioEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CoalesceTool\Coalesced Editor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -168,6 +188,39 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="BinaryInterpreter\BinaryAddPropertyDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryAddPropertyDialog.Designer.cs">
+      <DependentUpon>BinaryAddPropertyDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryAltPropertyEditor.xaml.cs">
+      <DependentUpon>BinaryAltPropertyEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryInterpreter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryInterpreter.Designer.cs">
+      <DependentUpon>BinaryInterpreter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryInterpreterHost.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryInterpreterHost.Designer.cs">
+      <DependentUpon>BinaryInterpreterHost.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryPropertyEditor.xaml.cs">
+      <DependentUpon>BinaryPropertyEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryPropertyEditorHost.xaml.cs">
+      <DependentUpon>BinaryPropertyEditorHost.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interpreter\AltPropertyEditor.xaml.cs">
+      <DependentUpon>AltPropertyEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Audio Editor\AudioEditor.xaml.cs">
+      <DependentUpon>AudioEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CoalesceTool\CoalesceAsset.cs" />
     <Compile Include="CoalesceTool\CoalesceAssetType.cs" />
     <Compile Include="CoalesceTool\CoalescedType.cs" />
@@ -302,12 +355,40 @@
       <DependentUpon>StateTaskListsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Packages\MEPackage.cs" />
-    <Compile Include="PeriodicUpdater.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+    <Compile Include="Pathfinding Editor\ActorNodes.cs" />
+    <Compile Include="Pathfinding Editor\DuplicateGUIDWindow.cs">
+      <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Pathfinding Editor\DuplicateGUIDWindow.Designer.cs">
+      <DependentUpon>DuplicateGUIDWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pathfinding Editor\HeightFilterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pathfinding Editor\HeightFilterForm.Designer.cs">
+      <DependentUpon>HeightFilterForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pathfinding Editor\PathfindingNodeInfoPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pathfinding Editor\PathfindingNodeInfoPanel.Designer.cs">
+      <DependentUpon>PathfindingNodeInfoPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pathfinding Editor\PathfindingNodeMaster.cs" />
+    <Compile Include="Pathfinding Editor\ReachSpecCreatorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pathfinding Editor\ReachSpecCreatorForm.Designer.cs">
+      <DependentUpon>ReachSpecCreatorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pathfinding Editor\ReachSpecRecalculator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pathfinding Editor\ReachSpecRecalculator.Designer.cs">
+      <DependentUpon>ReachSpecRecalculator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pathfinding Editor\SharedPathfinding.cs" />
+    <Compile Include="PeriodicUpdater.cs" />
     <Compile Include="Main Window\SearchPanel.xaml.cs">
       <DependentUpon>SearchPanel.xaml</DependentUpon>
     </Compile>
@@ -320,6 +401,11 @@
     <Compile Include="Packages\ImportEntry.cs" />
     <Compile Include="Packages\ME1Package.cs" />
     <Compile Include="Packages\ME2Package.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Property Dumper\PropDumper.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -354,6 +440,9 @@
     <Compile Include="Propertydb\PropertyDB.Designer.cs">
       <DependentUpon>PropertyDB.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interpreter\PropertyEditorHost.xaml.cs">
+      <DependentUpon>PropertyEditorHost.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PSAViewer\PSAViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -372,6 +461,13 @@
     <Compile Include="ScriptDB\ScriptDB.Designer.cs">
       <DependentUpon>ScriptDB.cs</DependentUpon>
     </Compile>
+    <Compile Include="Pathfinding Editor\PathfindingEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pathfinding Editor\PathfindingEditor.Designer.cs">
+      <DependentUpon>PathfindingEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pathfinding Editor\PathfindingNodes.cs" />
     <Compile Include="Sequence Editor\SequenceEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -440,9 +536,6 @@
     </Compile>
     <Compile Include="TlkEditor\TlkEditor.xaml.cs">
       <DependentUpon>TlkEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="TlkEditor\TLKEditorAboutWindow.xaml.cs">
-      <DependentUpon>TLKEditorAboutWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="TlkEditor\TLKEditorDebugTools.cs" />
     <Compile Include="TlkEditor\TLKEditorHowToUseWindow.xaml.cs">
@@ -531,6 +624,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="WPFBase.cs" />
+    <Compile Include="WPFConverters.cs" />
     <Compile Include="WwiseBankViewer\WwiseViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -738,6 +832,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Interpreter\PropertyEditorHost.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TlkEditor\TlkEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -745,10 +843,6 @@
     <Page Include="FaceFXAnimSetEditor\FaceFXEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="TlkEditor\TLKEditorAboutWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="TlkEditor\TLKEditorHowToUseWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -949,6 +1043,15 @@
     <EmbeddedResource Include="InterpEditor\Timeline.resx">
       <DependentUpon>Timeline.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="BinaryInterpreter\BinaryAddPropertyDialog.resx">
+      <DependentUpon>BinaryAddPropertyDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BinaryInterpreter\BinaryInterpreter.resx">
+      <DependentUpon>BinaryInterpreter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BinaryInterpreter\BinaryInterpreterHost.resx">
+      <DependentUpon>BinaryInterpreterHost.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interpreter\AddPropertyDialog.resx">
       <DependentUpon>AddPropertyDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -1016,6 +1119,21 @@
       <DependentUpon>PackageEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Pathfinding Editor\DuplicateGUIDWindow.resx">
+      <DependentUpon>DuplicateGUIDWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pathfinding Editor\HeightFilterForm.resx">
+      <DependentUpon>HeightFilterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pathfinding Editor\PathfindingNodeInfoPanel.resx">
+      <DependentUpon>PathfindingNodeInfoPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pathfinding Editor\ReachSpecCreatorForm.resx">
+      <DependentUpon>ReachSpecCreatorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pathfinding Editor\ReachSpecRecalculator.resx">
+      <DependentUpon>ReachSpecRecalculator.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PCCRepack\PCCRepack.resx">
       <DependentUpon>PCCRepack.cs</DependentUpon>
     </EmbeddedResource>
@@ -1044,6 +1162,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ScriptDB\ScriptDB.resx">
       <DependentUpon>ScriptDB.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pathfinding Editor\PathfindingEditor.resx">
+      <DependentUpon>PathfindingEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Sequence Editor\SequenceEditor.resx">
       <DependentUpon>SequenceEditor.cs</DependentUpon>
@@ -1186,11 +1307,8 @@
     <Resource Include="Resources\minimize_icon.ico" />
     <Resource Include="Resources\resize_icon.ico" />
     <Resource Include="Resources\taskbar.ico" />
-    <Resource Include="TlkEditor\icon.png" />
     <Resource Include="Resources\wwisebank_editor_64x64.png" />
     <Resource Include="Resources\TLKManager_icon_64x64.png" />
-    <Resource Include="Resources\TLK_editor_icon.ico" />
-    <Resource Include="Resources\TLK_editor_64x64.png" />
     <Resource Include="Resources\subtitle_scanner_64x64.png" />
     <Resource Include="Resources\soundplorer_64x64.png" />
     <Resource Include="Resources\sfar_editor2_icon_64x64.png" />
@@ -1319,13 +1437,29 @@
   <ItemGroup>
     <Resource Include="Resources\plot_editor_icon.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\TLK_ME1_editor_icon.ico" />
+    <Resource Include="Resources\TLK_ME23_editor_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\audio_editor_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconPathfindingEditor.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconPathfindingEditor.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\pathfinding_editor.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)"
 xcopy /f /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
 xcopy /f /y "$(SolutionDir)Resources\exec" "$(ProjectDir)$(OutDir)exec\"
 xcopy /y "$(SolutionDir)ME3Creator\$(OutDir)ME3Creator.exe.config" "$(ProjectDir)$(OutDir)"
-call "$(DevEnvDir)..\Tools\vsvars32.bat"
+call "$(DevEnvDir)..\Tools\vsdevcmd.bat"
 editbin /largeaddressaware "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

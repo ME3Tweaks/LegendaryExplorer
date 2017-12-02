@@ -393,9 +393,17 @@ namespace ME3Explorer.Unreal
             res.Add(t);
             while (!t.stop)
             {
-                pos += t.raw.Length;                
-                t = ReadToken(pos);
-                res.Add(t);
+                pos += t.raw.Length;
+                try
+                {
+                    t = ReadToken(pos);
+                    res.Add(t);
+                } catch (ArgumentOutOfRangeException)
+                {
+                    break;
+                    //error
+                }
+                
             }
             return res;
         }

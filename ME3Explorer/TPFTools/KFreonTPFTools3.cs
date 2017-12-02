@@ -783,7 +783,6 @@ namespace ME3Explorer
 
             // KFreon: Open TPF and set some properties
             SaltTPF.ZipReader zippy = new SaltTPF.ZipReader(file);
-            zippy.Description = "TPF Details\n\nFilename:  \n" + zippy._filename + "\n\nComment:  \n" + zippy.EOFStrct.Comment + "\nNumber of stored files:  " + zippy.Entries.Count;
             zippy.Scanned = false;
             int zippyInd = zippys.Count;
             zippys.Add(zippy);

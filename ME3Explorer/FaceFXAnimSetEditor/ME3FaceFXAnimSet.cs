@@ -310,6 +310,7 @@ namespace ME3Explorer.FaceFX
             res.Write(export.Data, 0, start);
             res.WriteValueS32((int)m.Length);
             res.WriteStream(m);
+            res.WriteValueS32(0);
             export.Data = res.ToArray();
         }
 

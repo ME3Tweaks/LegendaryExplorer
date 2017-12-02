@@ -98,20 +98,20 @@
             this.exportToWAVToolStripMenuItem,
             this.importFromWAVToolStripMenuItem});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
-            this.transferToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
+            this.transferToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.transferToolStripMenuItem.Text = "Transfer";
             // 
             // exportToWAVToolStripMenuItem
             // 
             this.exportToWAVToolStripMenuItem.Name = "exportToWAVToolStripMenuItem";
-            this.exportToWAVToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.exportToWAVToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.exportToWAVToolStripMenuItem.Text = "Export to WAV";
             this.exportToWAVToolStripMenuItem.Click += new System.EventHandler(this.exportToWAVToolStripMenuItem_Click);
             // 
             // importFromWAVToolStripMenuItem
             // 
             this.importFromWAVToolStripMenuItem.Name = "importFromWAVToolStripMenuItem";
-            this.importFromWAVToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.importFromWAVToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.importFromWAVToolStripMenuItem.Text = "Import from WAV";
             this.importFromWAVToolStripMenuItem.Click += new System.EventHandler(this.importFromWAVToolStripMenuItem_Click);
             // 
@@ -191,6 +191,7 @@
             this.listBox1.Size = new System.Drawing.Size(394, 483);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            this.listBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listBox1_KeyDown);
             // 
             // hb1
             // 

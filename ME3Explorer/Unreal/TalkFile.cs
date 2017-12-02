@@ -206,14 +206,63 @@ namespace ME3Explorer
         /// Writes data stored in memory to an appriopriate text format.
         /// </summary>
         /// <param name="fileName"></param>
-        /// <param name="ff"></param>
         public void DumpToFile(string fileName)
         {
             File.Delete(fileName);
             /* for now, it's better not to sort, to preserve original order */
             // StringRefs.Sort(CompareTlkStringRef);
 
-            SaveToXmlFile(fileName);
+            int totalCount = StringRefs.Count();
+            int count = 0;
+            int lastProgress = -1;
+            XmlTextWriter xr = new XmlTextWriter(fileName, Encoding.UTF8);
+            xr.Formatting = Formatting.Indented;
+            xr.Indentation = 4;
+
+            xr.WriteStartDocument();
+            xr.WriteStartElement("tlkFile");
+            xr.WriteAttributeString("TLKToolVersion", App.GetVersion());
+
+            xr.WriteComment("Male entries section begin");
+
+            foreach (var s in StringRefs)
+            {
+                if (s.position == Header.MaleEntryCount)
+                {
+                    xr.WriteComment("Male entries section end");
+                    xr.WriteComment("Female entries section begin");
+                }
+
+                xr.WriteStartElement("String");
+
+                xr.WriteStartAttribute("id");
+                xr.WriteValue(s.StringID);
+                xr.WriteEndAttribute();
+
+                if (s.BitOffset < 0)
+                {
+                    xr.WriteStartAttribute("calculatedID");
+                    xr.WriteValue(-(Int32.MinValue - s.StringID));
+                    xr.WriteEndAttribute();
+
+                    xr.WriteString("-1");
+                }
+                else
+                    xr.WriteString(s.Data);
+
+                xr.WriteEndElement(); // </string> 
+
+                int progress = (++count * 100) / totalCount;
+                if (progress > lastProgress)
+                {
+                    lastProgress = progress;
+                    OnProgressChanged(lastProgress);
+                }
+            }
+            xr.WriteComment("Female entries section end");
+            xr.WriteEndElement(); // </tlkFile>
+            xr.Flush();
+            xr.Close();
         }
 
         /// <summary>
@@ -269,65 +318,6 @@ namespace ME3Explorer
             }
             bitOffset = i + 1;
             return null;
-        }
-
-        /// <summary>
-        /// Writing data in an XML format.
-        /// </summary>
-        /// <param name="fileName"></param>
-        private void SaveToXmlFile(string fileName)
-        {
-            int totalCount = StringRefs.Count();
-            int count = 0;
-            int lastProgress = -1;
-            XmlTextWriter xr = new XmlTextWriter(fileName, Encoding.UTF8);
-            xr.Formatting = Formatting.Indented; 
-            xr.Indentation = 4;
-
-            xr.WriteStartDocument();
-            xr.WriteStartElement("tlkFile");
-            xr.WriteAttributeString("TLKToolVersion", App.GetVersion());
-
-            xr.WriteComment("Male entries section begin");
-
-            foreach (var s in StringRefs)
-            {
-                if (s.position == Header.MaleEntryCount)
-                {
-                    xr.WriteComment("Male entries section end");
-                    xr.WriteComment("Female entries section begin");
-                }
-                
-                xr.WriteStartElement("String");
-
-                xr.WriteStartAttribute("id");
-                xr.WriteValue(s.StringID);
-                xr.WriteEndAttribute();
-
-                if (s.BitOffset < 0)
-                {
-                    xr.WriteStartAttribute("calculatedID");
-                    xr.WriteValue(-(Int32.MinValue - s.StringID));
-                    xr.WriteEndAttribute();
-
-                    xr.WriteString("-1");
-                }
-                else
-                    xr.WriteString(s.Data);
-
-                xr.WriteEndElement(); // </string> 
-
-                int progress = (++count * 100) / totalCount;
-                if (progress > lastProgress)
-                {
-                    lastProgress = progress;
-                    OnProgressChanged(lastProgress);
-                }
-            }
-            xr.WriteComment("Female entries section end");
-            xr.WriteEndElement(); // </tlkFile>
-            xr.Flush();
-            xr.Close();
         }
 
         /* for sorting */

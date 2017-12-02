@@ -24,7 +24,7 @@ namespace ME3Explorer
     /// </summary>
     public partial class InitialSetup : Window
     {
-        Dictionary<string, string> prettyDLCNames = new Dictionary<string, string>()
+        Dictionary<string, string> prettyDLCNames = new Dictionary<string, string>
         {
             ["DLC_CON_APP01"] = "Alternate Appearance Pack 1",
             ["DLC_EXP_Pack003"] = "Citadel",
@@ -77,7 +77,7 @@ namespace ME3Explorer
                 {
                     requiredSpaceRun.Text = "?";
                 }
-                unpackOutput.AppendLine($"Unpacked DLC detected: {sfarsToUnpack.Count}");
+                unpackOutput.AppendLine($"Packed DLC detected: {sfarsToUnpack.Count}");
                 if (sfarsToUnpack.Count > 0)
                 {
                     if (availableSpace < requiredSpace)
@@ -136,7 +136,7 @@ namespace ME3Explorer
 
                 try
                 {
-                    FileInfo info = new FileInfo(Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).Where(file => file.EndsWith(".sfar", StringComparison.OrdinalIgnoreCase)).First());
+                    FileInfo info = new FileInfo(Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).First(file => file.EndsWith(".sfar", StringComparison.OrdinalIgnoreCase)));
                     compressedSize += info.Length;
 
                     DLCPackage sfar = new DLCPackage(info.FullName);
@@ -297,81 +297,97 @@ namespace ME3Explorer
 
         private async void unpackDLCButton_Click(object sender, RoutedEventArgs e)
         {
-            unpackDLCButton.IsEnabled = false;
-            unpackDLCButton.Content = "Unpacking...";
-            string[] patt = { "pcc", "bik", "tfc", "afc", "cnd", "tlk", "bin", "dlc" };
-            string gamebase = ME3Directory.gamePath;
-            taskBarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
-            unpackProgress.Maximum = totalUncompressedSize;
-            taskBarItemInfo.ProgressValue = 0;
-            timeRemainingTextBlock.Text = "Estimating Time Remaining...";
-
-            unpackOutput.AppendLine("DLC unpacking initiated...");
-            double uncompressedSoFar = 0;
-            DateTime initial = DateTime.Now;
-            foreach (var sfar in sfarsToUnpack)
+            try
             {
-                string dlcName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(sfar.FileName)));
-                if (prettyDLCNames.ContainsKey(dlcName))
+                unpackDLCButton.IsEnabled = false;
+                unpackDLCButton.Content = "Unpacking...";
+                string[] patt = { "pcc", "bik", "tfc", "afc", "cnd", "tlk", "bin", "dlc" };
+                string gamebase = ME3Directory.gamePath;
+                taskBarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
+                unpackProgress.Maximum = totalUncompressedSize;
+                taskBarItemInfo.ProgressValue = 0;
+                timeRemainingTextBlock.Text = "Estimating Time Remaining...";
+
+                unpackOutput.AppendLine("DLC unpacking initiated...");
+                double uncompressedSoFar = 0;
+                DateTime initial = DateTime.Now;
+                foreach (var sfar in sfarsToUnpack)
                 {
-                    dlcName = prettyDLCNames[dlcName];
-                }
-                unpackOutput.AppendLine($"Unpacking {dlcName}...");
-                if (sfar.Files.Length > 1)
-                {
-                    List<int> Indexes = new List<int>();
-                    for (int i = 0; i < sfar.Files.Length; i++)
+                    string dlcName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(sfar.FileName)));
+                    if (prettyDLCNames.ContainsKey(dlcName))
                     {
-                        string DLCpath = sfar.Files[i].FileName;
-                        for (int j = 0; j < patt.Length; j++)
+                        dlcName = prettyDLCNames[dlcName];
+                    }
+                    unpackOutput.AppendLine($"Unpacking {dlcName}...");
+                    if (sfar.Files.Length > 1)
+                    {
+                        List<int> Indexes = new List<int>();
+                        for (int i = 0; i < sfar.Files.Length; i++)
                         {
-                            if (DLCpath.EndsWith(patt[j], StringComparison.OrdinalIgnoreCase))
+                            string DLCpath = sfar.Files[i].FileName;
+                            for (int j = 0; j < patt.Length; j++)
                             {
-                                string outpath = gamebase + DLCpath.Replace("/", "\\");
-                                if (!Directory.Exists(Path.GetDirectoryName(outpath)))
-                                    Directory.CreateDirectory(Path.GetDirectoryName(outpath));
-
-                                if (!File.Exists(outpath))
+                                if (DLCpath.EndsWith(patt[j], StringComparison.OrdinalIgnoreCase))
                                 {
-                                    using (FileStream fs = new FileStream(outpath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
+                                    string outpath = gamebase + DLCpath.Replace("/", "\\");
+                                    if (!Directory.Exists(Path.GetDirectoryName(outpath)))
+                                        Directory.CreateDirectory(Path.GetDirectoryName(outpath));
+
+                                    if (!File.Exists(outpath))
                                     {
-                                        await sfar.DecompressEntryAsync(i, fs);
+                                        using (FileStream fs = new FileStream(outpath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
+                                        {
+                                            await sfar.DecompressEntryAsync(i, fs);
+                                        }
                                     }
-                                }
-                                Indexes.Add(i);
+                                    Indexes.Add(i);
 
-                                uncompressedSoFar += sfar.Files[i].RealUncompressedSize;
-                                unpackProgress.Value = uncompressedSoFar;
-                                TimeSpan elapsed = DateTime.Now - initial;
-                                double percentComplete = uncompressedSoFar / totalUncompressedSize * 100;
-                                taskBarItemInfo.ProgressValue = percentComplete / 100.0;
-                                TimeSpan timeRemaining = TimeSpan.FromSeconds((elapsed.TotalSeconds / percentComplete) * (100 - percentComplete));
-                                if (timeRemaining.TotalMinutes < 1)
-                                {
-                                    timeRemainingTextBlock.Text = $"Estimated Time Remaining: < 1 minute";
+                                    uncompressedSoFar += sfar.Files[i].RealUncompressedSize;
+                                    unpackProgress.Value = uncompressedSoFar;
+                                    TimeSpan elapsed = DateTime.Now - initial;
+                                    double percentComplete = uncompressedSoFar / totalUncompressedSize * 100;
+                                    taskBarItemInfo.ProgressValue = percentComplete / 100.0;
+                                    double temp = elapsed.TotalSeconds / percentComplete;
+                                    TimeSpan timeRemaining = TimeSpan.FromSeconds((double.IsNaN(temp) ? 0 : temp) * (100 - percentComplete));
+                                    if (timeRemaining.TotalMilliseconds < 1)
+                                    {
+                                        timeRemainingTextBlock.Text = $"Estimating Time Remaining...";
+                                    }
+                                    else if (timeRemaining.TotalMinutes < 1)
+                                    {
+                                        timeRemainingTextBlock.Text = $"Estimated Time Remaining: < 1 minute";
+                                    }
+                                    else
+                                    {
+                                        timeRemainingTextBlock.Text = string.Format("Estimated Time Remaining: {0:%h}h {0:%m}m", timeRemaining);
+                                    }
+                                    break;
                                 }
-                                else
-                                {
-                                    timeRemainingTextBlock.Text = string.Format("Estimated Time Remaining: {0:%h}h {0:%m}m", timeRemaining); 
-                                }
-                                break;
                             }
                         }
+                        sfar.DeleteEntries(Indexes);
                     }
-                    sfar.DeleteEntries(Indexes);
+                    unpackOutput.AppendLine($"{dlcName} unpacked");
                 }
-                unpackOutput.AppendLine($"{dlcName} unpacked");
+                unpackOutput.AppendLine("Generating TOCs...");
+                await Task.Run(() =>
+                {
+                    AutoTOC.GenerateAllTOCs();
+                });
+                unpackOutput.AppendLine("ALL TOCs Generated!");
+                unpackOutput.AppendLine($"Elapsed time: {DateTime.Now - initial}");
+                unpackProgress.Value = unpackProgress.Maximum;
+                taskBarItemInfo.ProgressState = TaskbarItemProgressState.None;
+                completeStep2();
             }
-            unpackOutput.AppendLine("Generating TOCs...");
-            await Task.Run(() =>
+            catch (Exception ex)
             {
-                AutoTOC.GenerateAllTOCs();
-            });
-            unpackOutput.AppendLine("ALL TOCs Generated!");
-            unpackOutput.AppendLine($"Elapsed time: {DateTime.Now - initial}");
-            unpackProgress.Value = unpackProgress.Maximum;
-            taskBarItemInfo.ProgressState = TaskbarItemProgressState.None;
-            completeStep2();
+                unpackDLCButton.Content = "Unpack Failed!";
+                failSetup();
+                step2Mask.Visibility = Visibility.Visible;
+                step2TextBlock.Inlines.Add("--FAILED");
+                MessageBox.Show("Unpacking Failed!\n" + ex.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

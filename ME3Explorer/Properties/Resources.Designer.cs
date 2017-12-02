@@ -19,7 +19,7 @@ namespace ME3Explorer.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -57,126 +57,6 @@ namespace ME3Explorer.Properties {
             }
             set {
                 resourceCulture = value;
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Decoding TLK format:.
-        /// </summary>
-        public static string AboutDecodingTlk {
-            get {
-                return ResourceManager.GetString("AboutDecodingTlk", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Writing to TLK, user interface:.
-        /// </summary>
-        public static string AboutRest {
-            get {
-                return ResourceManager.GetString("AboutRest", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to About Mass Effect 2 TLK Tool.
-        /// </summary>
-        public static string AboutTitle {
-            get {
-                return ResourceManager.GetString("AboutTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error encountered. Please report it to the author (Gocek on social.bioware.com)!
-        ///.
-        /// </summary>
-        public static string AlertExceptionGeneric {
-            get {
-                return ResourceManager.GetString("AlertExceptionGeneric", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error description: .
-        /// </summary>
-        public static string AlertExceptionGenericDescription {
-            get {
-                return ResourceManager.GetString("AlertExceptionGenericDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error reading TLK file!
-        ///Please make sure you have chosen a file in a TLK format for Mass Effect 2 game..
-        /// </summary>
-        public static string AlertExceptionTlkFormat {
-            get {
-                return ResourceManager.GetString("AlertExceptionTlkFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Selected TLK file was not found or is corrupted..
-        /// </summary>
-        public static string AlertExceptionTlkNotFound {
-            get {
-                return ResourceManager.GetString("AlertExceptionTlkNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Selected XML file was not found or is corrupted..
-        /// </summary>
-        public static string AlertExceptionXmlNotFound {
-            get {
-                return ResourceManager.GetString("AlertExceptionXmlNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You are trying to read an XML file, which was created in an earlier version of this program! To make it fully compatible with current version, follow instructions in this document: http://goo.gl/8AcR9F.
-        /// </summary>
-        public static string AlertPre103XML {
-            get {
-                return ResourceManager.GetString("AlertPre103XML", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Finished reading TLK file..
-        /// </summary>
-        public static string AlertTlkLoadingFinished {
-            get {
-                return ResourceManager.GetString("AlertTlkLoadingFinished", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Finished creating TLK file..
-        /// </summary>
-        public static string AlertWritingTlkFinished {
-            get {
-                return ResourceManager.GetString("AlertWritingTlkFinished", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap animation_explorer_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("animation_explorer_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Mass Effect 2 TLK Tool.
-        /// </summary>
-        public static string ApplicationName {
-            get {
-                return ResourceManager.GetString("ApplicationName", resourceCulture);
             }
         }
         
@@ -221,24 +101,6 @@ namespace ME3Explorer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change....
-        /// </summary>
-        public static string ChangeButton {
-            get {
-                return ResourceManager.GetString("ChangeButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Test version (displays String ID before every line in-game).
-        /// </summary>
-        public static string CheckboxDebugTlk {
-            get {
-                return ResourceManager.GetString("CheckboxDebugTlk", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap class_viewer_64x64 {
@@ -269,42 +131,6 @@ namespace ME3Explorer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current path to TLK file:.
-        /// </summary>
-        public static string CurrentInputTlkFilePath {
-            get {
-                return ResourceManager.GetString("CurrentInputTlkFilePath", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Current path to XML file:.
-        /// </summary>
-        public static string CurrentInputXmlFilePath {
-            get {
-                return ResourceManager.GetString("CurrentInputXmlFilePath", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Current path to output text file:.
-        /// </summary>
-        public static string CurrentOutputTextFile {
-            get {
-                return ResourceManager.GetString("CurrentOutputTextFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Current path to output TLK file:.
-        /// </summary>
-        public static string CurrentOutputTlkFilePath {
-            get {
-                return ResourceManager.GetString("CurrentOutputTlkFilePath", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap dialogue_editor_64x64 {
@@ -321,24 +147,6 @@ namespace ME3Explorer.Properties {
             get {
                 object obj = ResourceManager.GetObject("document-save", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Done!.
-        /// </summary>
-        public static string Done {
-            get {
-                return ResourceManager.GetString("Done", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error.
-        /// </summary>
-        public static string Error {
-            get {
-                return ResourceManager.GetString("Error", resourceCulture);
             }
         }
         
@@ -393,132 +201,6 @@ namespace ME3Explorer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select &apos;Load TLK&apos; tab..
-        /// </summary>
-        public static string HowTo11 {
-            get {
-                return ResourceManager.GetString("HowTo11", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Make sure &apos;Current path to TLK file&apos; points to a TLK file you wish to read from. If it doesn&apos;t - use the &apos;Change&apos; button below it to select your file..
-        /// </summary>
-        public static string HowTo12 {
-            get {
-                return ResourceManager.GetString("HowTo12", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Repeat step two for &apos;Current path to output text file&apos;. It should point to an XML file you would like to store your text in..
-        /// </summary>
-        public static string HowTo13 {
-            get {
-                return ResourceManager.GetString("HowTo13", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hit &apos;Start!&apos; and wait..
-        /// </summary>
-        public static string HowTo14 {
-            get {
-                return ResourceManager.GetString("HowTo14", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You will see a message saying the work is done and all the data from the TLK file is now in a text file selected before..
-        /// </summary>
-        public static string HowTo15 {
-            get {
-                return ResourceManager.GetString("HowTo15", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select &apos;Create TLK&apos; tab..
-        /// </summary>
-        public static string HowTo21 {
-            get {
-                return ResourceManager.GetString("HowTo21", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;Current path to XML file&apos; should point to the previously created XML file (modified or not). If it doesn&apos;t - use the &apos;Change&apos; button below it to select your file..
-        /// </summary>
-        public static string HowTo22 {
-            get {
-                return ResourceManager.GetString("HowTo22", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;Current path to output TLK file&apos; should point to a new TLK file which will be generated from selected XML file..
-        /// </summary>
-        public static string HowTo23 {
-            get {
-                return ResourceManager.GetString("HowTo23", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hit &apos;Start!&apos; and wait..
-        /// </summary>
-        public static string HowTo24 {
-            get {
-                return ResourceManager.GetString("HowTo24", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You will see a message saying the work is done. Your custom TLK file is ready to be put in an appropriate Mass Effect 2 folder..
-        /// </summary>
-        public static string HowTo25 {
-            get {
-                return ResourceManager.GetString("HowTo25", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Typical usage scenario.
-        /// </summary>
-        public static string HowToHeader {
-            get {
-                return ResourceManager.GetString("HowToHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Getting text from TLK file.
-        /// </summary>
-        public static string HowToSubheader1 {
-            get {
-                return ResourceManager.GetString("HowToSubheader1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Creating a new TLK file.
-        /// </summary>
-        public static string HowToSubheader2 {
-            get {
-                return ResourceManager.GetString("HowToSubheader2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to How to use?.
-        /// </summary>
-        public static string HowToTitle {
-            get {
-                return ResourceManager.GetString("HowToTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap ImageEngine_icon_64x64 {
@@ -569,15 +251,6 @@ namespace ME3Explorer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Load TLK file.
-        /// </summary>
-        public static string LoadTlkTab {
-            get {
-                return ResourceManager.GetString("LoadTlkTab", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap logo_OFF {
@@ -604,42 +277,6 @@ namespace ME3Explorer.Properties {
             get {
                 object obj = ResourceManager.GetObject("me3creator_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to About.
-        /// </summary>
-        public static string MenuAbout {
-            get {
-                return ResourceManager.GetString("MenuAbout", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Exit.
-        /// </summary>
-        public static string MenuExit {
-            get {
-                return ResourceManager.GetString("MenuExit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File.
-        /// </summary>
-        public static string MenuFile {
-            get {
-                return ResourceManager.GetString("MenuFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Help.
-        /// </summary>
-        public static string MenuHelp {
-            get {
-                return ResourceManager.GetString("MenuHelp", resourceCulture);
             }
         }
         
@@ -679,6 +316,16 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap package_editor_64x64 {
             get {
                 object obj = ResourceManager.GetObject("package_editor_64x64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap pathfinding_editor {
+            get {
+                object obj = ResourceManager.GetObject("pathfinding_editor", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -804,44 +451,6 @@ namespace ME3Explorer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to XML Files (*.xml)|*.xml.
-        /// </summary>
-        public static string TextFilesFilter {
-            get {
-                return ResourceManager.GetString("TextFilesFilter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap TLK_editor_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("TLK_editor_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        public static System.Drawing.Icon TLK_editor_icon {
-            get {
-                object obj = ResourceManager.GetObject("TLK_editor_icon", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to TLK Files (*.tlk)|*.tlk.
-        /// </summary>
-        public static string TlkFilesFilter {
-            get {
-                return ResourceManager.GetString("TlkFilesFilter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap TLKManager_icon_64x64 {
@@ -872,39 +481,12 @@ namespace ME3Explorer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Warning!.
-        /// </summary>
-        public static string Warning {
-            get {
-                return ResourceManager.GetString("Warning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Create TLK file.
-        /// </summary>
-        public static string WriteTlkTab {
-            get {
-                return ResourceManager.GetString("WriteTlkTab", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap wwisebank_editor_64x64 {
             get {
                 object obj = ResourceManager.GetObject("wwisebank_editor_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to XML Files (*.xml)|*.xml.
-        /// </summary>
-        public static string XmlFilesFilter {
-            get {
-                return ResourceManager.GetString("XmlFilesFilter", resourceCulture);
             }
         }
     }

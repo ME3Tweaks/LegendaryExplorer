@@ -14,6 +14,17 @@ namespace ME3Explorer
     public abstract class WPFBase : Window, INotifyPropertyChanged
     {
         protected IMEPackage pcc;
+        public IMEPackage Pcc
+        {
+            get
+            {
+                return pcc;
+            }
+            private set
+            {
+                SetProperty(ref pcc, value);
+            }
+        }
 
         protected WPFBase()
         {
@@ -32,13 +43,13 @@ namespace ME3Explorer
         public void LoadMEPackage(string s)
         {
             pcc?.Release(wpfWindow: this);
-            pcc = MEPackageHandler.OpenMEPackage(s, wpfWindow: this);
+            Pcc = MEPackageHandler.OpenMEPackage(s, wpfWindow: this);
         }
 
         public void LoadME3Package(string s)
         {
             pcc?.Release(wpfWindow: this);
-            pcc = MEPackageHandler.OpenME3Package(s, wpfWindow: this);
+            Pcc = MEPackageHandler.OpenME3Package(s, wpfWindow: this);
         }
 
         public abstract void handleUpdate(List<PackageUpdate> updates);

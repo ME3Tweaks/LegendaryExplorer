@@ -55,6 +55,7 @@ namespace ME3Explorer
             this.nodeContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.expandAllChildrenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.collapseAllChildrenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reorderArrayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -116,7 +117,7 @@ namespace ME3Explorer
             this.toggleHexWidthButton.Image = ((System.Drawing.Image)(resources.GetObject("toggleHexWidthButton.Image")));
             this.toggleHexWidthButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toggleHexWidthButton.Name = "toggleHexWidthButton";
-            this.toggleHexWidthButton.Size = new System.Drawing.Size(106, 22);
+            this.toggleHexWidthButton.Size = new System.Drawing.Size(105, 22);
             this.toggleHexWidthButton.Text = "Toggle Hex Width";
             this.toggleHexWidthButton.Click += new System.EventHandler(this.toggleHexWidthButton_Click);
             // 
@@ -133,12 +134,14 @@ namespace ME3Explorer
             this.nameEntry.Name = "nameEntry";
             this.nameEntry.Size = new System.Drawing.Size(200, 25);
             this.nameEntry.Visible = false;
+            this.nameEntry.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.setValueKeyPress);
             // 
             // proptext
             // 
             this.proptext.Name = "proptext";
             this.proptext.Size = new System.Drawing.Size(120, 25);
             this.proptext.Visible = false;
+            this.proptext.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.setValueKeyPress);
             this.proptext.KeyUp += new System.Windows.Forms.KeyEventHandler(this.proptext_KeyUp);
             // 
             // objectNameLabel
@@ -299,7 +302,8 @@ namespace ME3Explorer
             // 
             this.nodeContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.expandAllChildrenToolStripMenuItem,
-            this.collapseAllChildrenToolStripMenuItem});
+            this.collapseAllChildrenToolStripMenuItem,
+            this.reorderArrayToolStripMenuItem});
             this.nodeContextMenuStrip1.Name = "nodeContextMenuStrip1";
             this.nodeContextMenuStrip1.Size = new System.Drawing.Size(185, 70);
             // 
@@ -316,6 +320,13 @@ namespace ME3Explorer
             this.collapseAllChildrenToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.collapseAllChildrenToolStripMenuItem.Text = "Collapse All Children";
             this.collapseAllChildrenToolStripMenuItem.Click += new System.EventHandler(this.collapseAllChildrenToolStripMenuItem_Click);
+            // 
+            // reorderArrayToolStripMenuItem
+            // 
+            this.reorderArrayToolStripMenuItem.Name = "reorderArrayToolStripMenuItem";
+            this.reorderArrayToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.reorderArrayToolStripMenuItem.Text = "Reorder Array";
+            this.reorderArrayToolStripMenuItem.Click += new System.EventHandler(this.reorderArrayToolStripMenuItem_Click);
             // 
             // Interpreter
             // 
@@ -362,5 +373,6 @@ namespace ME3Explorer
         private System.Windows.Forms.ContextMenuStrip nodeContextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem expandAllChildrenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem collapseAllChildrenToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reorderArrayToolStripMenuItem;
     }
 }

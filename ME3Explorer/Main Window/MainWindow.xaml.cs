@@ -70,16 +70,30 @@ namespace ME3Explorer
             createModsPanel.setToolList(Tools.Items.Where(x => x.tags.Contains("developer")));
 
             DisableFlyouts = Properties.Settings.Default.DisableToolDescriptions;
-            disableSetupCheckBox.IsChecked = Properties.Settings.Default.DisableDLCCheckOnStart;
+            disableSetupCheckBox.IsChecked = true;
             Topmost = Properties.Settings.Default.AlwaysOnTop;
-            
-            if (!Properties.Settings.Default.DisableDLCCheckOnStart)
+
+            //PathfindingEditor p = new PathfindingEditor();
+            //p.LoadFile(@"C:\Users\mgame\Desktop\ME3CMM\mods\MP Map Expansion Pack\DLC_MOD_MPMapPack\CookedPCConsole\BioD_OmgJck_400Atrium.pcc");
+            //p.Show();
+
+            //PackageEditor p = new PackageEditor();
+            //p.LoadFile(@"C:\Users\mgame\Desktop\ME3CMM\mods\MP Map Expansion Pack\BioP_Cat004.pcc");
+            //p.Show();
+
+            //p = new PackageEditor();
+            //p.LoadFile(@"C:\Users\mgame\Desktop\ME3CMM\mods\MP Map Expansion Pack\DLC_MOD_MPMapPack\CookedPCConsole\BioP_MPCron.pcc");
+            //p.Show();
+
+
+            /*if (!Properties.Settings.Default.DisableDLCCheckOnStart)
             {
-                if (ME3Directory.gamePath == null)
+                if (Properties.Settings.Default.FirstRun == true)
                 {
                     (new InitialSetup()).ShowDialog();
+                    Properties.Settings.Default.FirstRun = false;
                 }
-                else if (File.Exists(Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "MassEffect3.exe")))
+                else if (ME3Directory.gamePath != null && File.Exists(Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "MassEffect3.exe")))
                 {
                     var folders = Directory.EnumerateDirectories(ME3Directory.DLCPath).Where(x => !x.Contains("__metadata"));
                     var extracted = folders.Where(folder => Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).Any(file => file.EndsWith("pcconsoletoc.bin", StringComparison.OrdinalIgnoreCase)));
@@ -89,11 +103,7 @@ namespace ME3Explorer
                         (new InitialSetup()).ShowDialog();
                     } 
                 }
-                else
-                {
-                    (new InitialSetup()).ShowDialog();
-                }
-            }
+            }*/
         }
 
         private void Tools_FavoritesChanged(object sender, EventArgs e)

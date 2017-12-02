@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Gibbed.IO;
 using ME3Explorer.Unreal;
 using UsefulThings.WPF;
 
@@ -14,14 +16,6 @@ namespace ME3Explorer.Packages
 
         public int Index { get; set; }
         public int UIndex { get { return Index + 1; } }
-
-        protected ExportEntry(IMEPackage file, byte[] headerData, uint exportOffset)
-        {
-            FileRef = file;
-            header = (byte[])headerData.Clone();
-            headerOffset = exportOffset;
-            OriginalDataSize = DataSize;
-        }
 
         protected ExportEntry(IMEPackage file)
         {
@@ -46,15 +40,15 @@ namespace ME3Explorer.Packages
         public int indexValue { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); HeaderChanged = true; } }
         public int idxArchtype { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); HeaderChanged = true; } }
         public ulong ObjectFlags { get { return BitConverter.ToUInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 24, sizeof(long)); HeaderChanged = true; } }
-        public int DataSize { get { return BitConverter.ToInt32(header, 32); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 32, sizeof(int)); } }
-        public int DataOffset { get { return BitConverter.ToInt32(header, 36); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 36, sizeof(int)); } }
+        public int DataSize { get { return BitConverter.ToInt32(header, 32); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 32, sizeof(int)); } }
+        public int DataOffset { get { return BitConverter.ToInt32(header, 36); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 36, sizeof(int)); } }
         //if me1 or me2: int unkcount1
-        //if me1 or me2: unkcount1 * 12 bytes
-        //int unk1 
+        byte[][] unkList1;//if me1 or me2: unkcount1 * 12 bytes
+        int unk1; //int unk1 
         //int unkcount2 
-        //int unk2 
-        //Guid packageGuid 
-        //unkcount2 * 4 bytes 
+        int unk2;//int unk2 
+        public Guid PackageGUID { get; set; } //GUID
+        int[] unkList2;//unkcount2 * 4 bytes 
 
         public string ObjectName { get { return FileRef.Names[idxObjectName]; } }
         public string ClassName { get { int val = idxClass; if (val != 0) return FileRef.Names[FileRef.getEntry(val).idxObjectName]; else return "Class"; } }
@@ -122,7 +116,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public readonly int OriginalDataSize;
+        public int OriginalDataSize { get; protected set; }
 
         bool dataChanged;
         public bool DataChanged
@@ -189,7 +183,10 @@ namespace ME3Explorer.Packages
             
             int propStart = GetPropertyStart();
             int propEnd = propsEnd();
+            //Debug.WriteLine("Datasize before write: " + this.Data.Length);
             this.Data = _data.Take(propStart).Concat(m.ToArray()).Concat(_data.Skip(propEnd)).ToArray();
+            //Debug.WriteLine("Datasize after write: " + this.Data.Length);
+
         }
 
         public void WriteProperty(UProperty prop)
@@ -239,9 +236,22 @@ namespace ME3Explorer.Packages
 
     public class ME3ExportEntry : ExportEntry, IExportEntry
     {
-        public ME3ExportEntry(ME3Package pccFile, byte[] headerData, uint exportOffset) :
-            base(pccFile, headerData, exportOffset)
+        public ME3ExportEntry(ME3Package pccFile, Stream stream) : base(pccFile)
         {
+            headerOffset = (uint)stream.Position;
+            stream.Seek(44, SeekOrigin.Current);
+            int count = stream.ReadValueS32();
+            stream.Seek(-48, SeekOrigin.Current);
+
+            int expInfoSize = 68 + (count * 4);
+            header = stream.ReadBytes(expInfoSize);
+            OriginalDataSize = DataSize;
+
+            long headerEnd = stream.Position;
+
+            stream.Seek(DataOffset, SeekOrigin.Begin);
+            _data = stream.ReadBytes(DataSize);
+            stream.Seek(headerEnd, SeekOrigin.Begin);
         }
 
         public ME3ExportEntry(ME3Package pccFile) : base(pccFile)
@@ -271,9 +281,28 @@ namespace ME3Explorer.Packages
 
     public class ME2ExportEntry : ExportEntry, IExportEntry
     {
-        public ME2ExportEntry(ME2Package pccFile, byte[] headerData, uint exportOffset) :
-            base(pccFile, headerData, exportOffset)
+        public ME2ExportEntry(ME2Package pccFile, Stream stream) : base(pccFile)
         {
+            //determine header length
+            long start = stream.Position;
+            stream.Seek(40, SeekOrigin.Current);
+            int count = stream.ReadValueS32();
+            stream.Seek(4 + count * 12, SeekOrigin.Current);
+            count = stream.ReadValueS32();
+            stream.Seek(16, SeekOrigin.Current);
+            stream.Seek(4 + count * 4, SeekOrigin.Current);
+            long end = stream.Position;
+            stream.Seek(start, SeekOrigin.Begin);
+
+            //read header
+            header = stream.ReadBytes((int)(end - start));
+            headerOffset = (uint)start;
+            OriginalDataSize = DataSize;
+
+            //read data
+            stream.Seek(DataOffset, SeekOrigin.Begin);
+            _data = stream.ReadBytes(DataSize);
+            stream.Seek(end, SeekOrigin.Begin);
         }
 
         public ME2ExportEntry(ME2Package pccFile) : base(pccFile)
@@ -303,9 +332,28 @@ namespace ME3Explorer.Packages
 
     public class ME1ExportEntry : ExportEntry, IExportEntry
     {
-        public ME1ExportEntry(ME1Package pccFile, byte[] headerData, uint exportOffset) :
-            base(pccFile, headerData, exportOffset)
+        public ME1ExportEntry(ME1Package pccFile, Stream stream) : base(pccFile)
         {
+            //determine header length
+            long start = stream.Position;
+            stream.Seek(40, SeekOrigin.Current);
+            int count = stream.ReadValueS32();
+            stream.Seek(4 + count * 12, SeekOrigin.Current);
+            count = stream.ReadValueS32();
+            stream.Seek(16, SeekOrigin.Current);
+            stream.Seek(4 + count * 4, SeekOrigin.Current);
+            long end = stream.Position;
+            stream.Seek(start, SeekOrigin.Begin);
+
+            //read header
+            header = stream.ReadBytes((int)(end - start));
+            headerOffset = (uint)start;
+            OriginalDataSize = DataSize;
+
+            //read data
+            stream.Seek(DataOffset, SeekOrigin.Begin);
+            _data = stream.ReadBytes(DataSize);
+            stream.Seek(end, SeekOrigin.Begin);
         }
 
         public ME1ExportEntry(ME1Package file) : base(file)

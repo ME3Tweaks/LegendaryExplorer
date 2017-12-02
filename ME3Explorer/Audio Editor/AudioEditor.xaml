@@ -1,0 +1,101 @@
+﻿<global:WPFBase x:Class="ME3Explorer.Audio_Editor.AudioEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ME3Explorer.Audio_Editor"
+        xmlns:global="clr-namespace:ME3Explorer"
+        xmlns:packages="clr-namespace:ME3Explorer.Packages"
+        mc:Ignorable="d"
+	    DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="Audio Editor" Height="700" Width="1000">
+    <Window.Resources>
+        <global:PathToFilenameConverter x:Key="pathToFilenameConverter"/>
+        <global:FileSizeToStringConverter x:Key="fileSizeToStringConverter"/>
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>
+        <CommandBinding Command="Open" CanExecute="Open_CanExecute" Executed="Open_Executed"/>
+    </Window.CommandBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Menu x:Name="MainMenu">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open" x:Name="OpenFileMenuItem" Command="Open" />
+                <MenuItem Header="_Save" x:Name="SaveFileMenuItem" Command="Save" />
+            </MenuItem>
+            <MenuItem Header="_Edit">
+            </MenuItem>
+            <MenuItem Header="_View">
+            </MenuItem>
+            <MenuItem Header="_Tools">
+            </MenuItem>
+            <MenuItem Header="_Help">
+            </MenuItem>
+        </Menu>
+        <TabControl Grid.Row="1">
+            <TabItem Header="WwiseStreams">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <ListBox x:Name="exportListBox" ItemsSource="{Binding Pcc.Exports}" Margin="0,0,5,0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type packages:IExportEntry}">
+                                <TextBlock Text="{Binding ObjectName}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <GridSplitter ResizeDirection="Columns" Width="5"/>
+                    <global:BinaryPropertyEditorHost Grid.Column="1" Export="{Binding ElementName=exportListBox, Path=SelectedItem}"/>
+                    <GridSplitter Grid.Row="1" Grid.ColumnSpan="2" ResizeDirection="Rows" ResizeBehavior="PreviousAndNext" Width="982"/>
+                    <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                        
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="WwiseBanks">
+
+            </TabItem>
+        </TabControl>
+        <StatusBar Grid.Row="2">
+            <TextBlock Text="{Binding Pcc.FileName, Converter={StaticResource pathToFilenameConverter}}"/>
+            <Separator/>
+            <TextBlock Text="{Binding Pcc.NameCount, StringFormat='Names: \{0\}'}"/>
+            <Separator/>
+            <TextBlock Text="{Binding Pcc.ExportCount, StringFormat='Exports: \{0\}'}"/>
+            <Separator/>
+            <TextBlock Text="{Binding Pcc.ImportCount, StringFormat='Imports: \{0\}'}"/>
+            <Separator/>
+
+            <StatusBarItem DockPanel.Dock="Right">
+                <TextBlock Text="{Binding Pcc.IsModified, StringFormat='Unsaved Changes? \{0\}'}" DockPanel.Dock="Right"/>
+            </StatusBarItem>
+            <Separator DockPanel.Dock="Right"/>
+            <StatusBarItem DockPanel.Dock="Right">
+                <TextBlock Text="{Binding Pcc.FileSize, Converter={StaticResource fileSizeToStringConverter}, StringFormat='Size: \{0\}'}"/>
+            </StatusBarItem>
+            <Separator DockPanel.Dock="Right"/>
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <DockPanel LastChildFill="False"/>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+        </StatusBar>
+        <StatusBar Grid.Row="3">
+            <ProgressBar x:Name="progressBar" Height="16" Width="100"/>
+            <TextBlock x:Name="statusTextBox"/>
+        </StatusBar>
+    </Grid>
+</global:WPFBase>

@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Packages;
 using Gibbed.IO;
+using System.Runtime.CompilerServices;
+using System.Diagnostics;
 
 namespace ME3Explorer.Unreal
 {
@@ -251,10 +253,10 @@ namespace ME3Explorer.Unreal
     } 
     #endregion
 
-    public struct NameReference
+    public struct NameReference : INotifyPropertyChanged
     {
-        public string Name;
-        public int count;
+        public string Name { get; set; }
+        public int Number { get; set; }
 
         public static implicit operator NameReference(string s)
         {
@@ -280,6 +282,36 @@ namespace ME3Explorer.Unreal
         {
             return s != r.Name;
         }
+
+        #region Property Changed Notification
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Notifies listeners when given property is updated.
+        /// </summary>
+        /// <param name="propertyname">Name of property to give notification for. If called in property, argument can be ignored as it will be default.</param>
+        private void OnPropertyChanged([CallerMemberName] string propertyname = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
+        }
+
+        /// <summary>
+        /// Sets given property and notifies listeners of its change. IGNORES setting the property to same value.
+        /// Should be called in property setters.
+        /// </summary>
+        /// <typeparam name="T">Type of given property.</typeparam>
+        /// <param name="field">Backing field to update.</param>
+        /// <param name="value">New value of property.</param>
+        /// <param name="propertyName">Name of property.</param>
+        /// <returns>True if success, false if backing field and new value aren't compatible.</returns>
+        private bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+        #endregion
     }
 
     public enum PropertyType
@@ -552,12 +584,15 @@ namespace ME3Explorer.Unreal
             int pos = start;
             if(raw.Length - pos < 8)
                 return result;
-            int name = (int)BitConverter.ToInt64(raw, pos);
+            //int name = (int)BitConverter.ToInt64(raw, pos);
+            int name = (int)BitConverter.ToInt32(raw, pos);
+
             if (!pcc.isName(name))
                 return result;
             string t = pcc.getNameEntry(name);
             p = new Property();
             p.Name = name;
+            //Debug.WriteLine(t +" at "+start);
             if (t == "None")
             {
                 p.TypeVal = PropertyType.None;         
@@ -569,7 +604,9 @@ namespace ME3Explorer.Unreal
                 result.Add(p);
                 return result;
             }
-            int type = (int)BitConverter.ToInt64(raw, pos + 8);            
+            //int type = (int)BitConverter.ToInt64(raw, pos + 8);            
+            int type = (int)BitConverter.ToInt32(raw, pos + 8);
+
             p.Size = BitConverter.ToInt32(raw, pos + 16);
             if (!pcc.isName(type) || p.Size < 0 || p.Size >= raw.Length)
                 return result;
@@ -794,9 +831,9 @@ namespace ME3Explorer.Unreal
                     v.IntValue = BitConverter.ToInt32(raw, start);
                     var nameRef = new NameReference();
                     nameRef.Name = pcc.getNameEntry(v.IntValue);
-                    nameRef.count = BitConverter.ToInt32(raw, start + 4);
-                    if (nameRef.count > 0)
-                        nameRef.Name += "_" + (nameRef.count - 1);
+                    nameRef.Number = BitConverter.ToInt32(raw, start + 4);
+                    if (nameRef.Number > 0)
+                        nameRef.Name += "_" + (nameRef.Number - 1);
                     v.NameValue = nameRef;
                     v.StringValue = nameRef.Name;
                     v.len = 8;
@@ -1207,7 +1244,7 @@ namespace ME3Explorer.Unreal
         {
             stream.WritePropHeader(pcc, propName, PropertyType.NameProperty, 8);
             stream.WriteValueS32(pcc.FindNameOrAdd(value.Name));
-            stream.WriteValueS32(value.count);
+            stream.WriteValueS32(value.Number);
         }
 
         public static void WriteBoolProperty(this Stream stream, IMEPackage pcc, string propName, bool value)
@@ -1252,10 +1289,10 @@ namespace ME3Explorer.Unreal
             if (pcc.Game == MEGame.ME3)
             {
                 stream.WriteValueS32(pcc.FindNameOrAdd(enumName.Name));
-                stream.WriteValueS32(enumName.count);
+                stream.WriteValueS32(enumName.Number);
             }
             stream.WriteValueS32(pcc.FindNameOrAdd(enumValue.Name));
-            stream.WriteValueS32(enumValue.count);
+            stream.WriteValueS32(enumValue.Number);
         }
 
         public static void WriteArrayProperty(this Stream stream, IMEPackage pcc, string propName, int count, byte[] value)
@@ -1283,13 +1320,11 @@ namespace ME3Explorer.Unreal
             if (pcc.Game == MEGame.ME3)
             {
                 stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, (strLen * 2) + 4);
-                stream.WriteValueS32(-strLen);
                 stream.WriteStringUnicode(value);
             }
             else
             {
                 stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, strLen + 4);
-                stream.WriteValueS32(strLen);
                 stream.WriteStringASCII(value);
             }
         }
@@ -1305,7 +1340,7 @@ namespace ME3Explorer.Unreal
             stream.WritePropHeader(pcc, propName, PropertyType.DelegateProperty, 12);
             stream.WriteValueS32(unk);
             stream.WriteValueS32(pcc.FindNameOrAdd(value.Name));
-            stream.WriteValueS32(value.count);
+            stream.WriteValueS32(value.Number);
         }
 
         public static void WriteStructPropVector(this Stream stream, IMEPackage pcc, string propName, float x, float y, float z)

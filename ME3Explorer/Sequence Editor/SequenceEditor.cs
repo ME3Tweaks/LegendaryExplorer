@@ -326,6 +326,24 @@ namespace ME3Explorer
             graphEditor.UseWaitCursor = false;
         }
 
+        public void GetObjects(IExportEntry export)
+        {
+            CurrentObjects = new List<int>();
+            listBox1.Items.Clear();
+            var seqObjs = export.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+            if (seqObjs != null)
+            {
+                var objIndices = seqObjs.Select(x => x.Value - 1).ToList();
+                objIndices.Sort();
+                foreach (int seqObj in objIndices)
+                {
+                    CurrentObjects.Add(seqObj);
+                    IExportEntry exportEntry = pcc.getExport(seqObj);
+                    listBox1.Items.Add("#" + seqObj + " :" + exportEntry.ObjectName + " class: " + exportEntry.ClassName);
+                }
+            }
+        }
+
         private void SetupJSON(IExportEntry export)
         {
             string objectName = System.Text.RegularExpressions.Regex.Replace(export.ObjectName, @"[<>:""/\\|?*]", "");
@@ -577,20 +595,6 @@ namespace ME3Explorer
                     GraphEditor.UpdateEdge(edge);
                 }
             }
-        }
-
-        public void GetObjects(IExportEntry export)
-        {
-            CurrentObjects = new List<int>();
-            listBox1.Items.Clear();
-            var seqObjs = export.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-            if (seqObjs != null)
-                foreach (ObjectProperty seqObj in seqObjs)
-                {
-                    int m = seqObj.Value - 1;
-                    CurrentObjects.Add(m);
-                    listBox1.Items.Add("#" + m + " :" + pcc.getExport(m).ObjectName + " class: " + pcc.getExport(m).ClassName);
-                }
         }
 
         public void GetProperties(IExportEntry export)
@@ -1187,7 +1191,7 @@ namespace ME3Explorer
 
                             NameProperty linkAction = inLinkStruct.GetProp<NameProperty>("LinkAction");
                             var nameRef = linkAction.Value;
-                            nameRef.count = pcc.getExport(newObj - 1).indexValue;
+                            nameRef.Number = pcc.getExport(newObj - 1).indexValue;
                             linkAction.Value = nameRef;
                         }
                     }
@@ -1206,7 +1210,7 @@ namespace ME3Explorer
 
                             NameProperty linkAction = outLinkStruct.GetProp<NameProperty>("LinkAction");
                             var nameRef = linkAction.Value;
-                            nameRef.count = pcc.getExport(newObj - 1).indexValue;
+                            nameRef.Number = pcc.getExport(newObj - 1).indexValue;
                             linkAction.Value = nameRef;
                         }
                     }
@@ -1244,7 +1248,7 @@ namespace ME3Explorer
                 {
                     foreach (var inLink in inLinksProp)
                     {
-                        inputIndices.Add(inLink.GetProp<NameProperty>("LinkAction").Value.count);
+                        inputIndices.Add(inLink.GetProp<NameProperty>("LinkAction").Value.Number);
                     }
                 }
                 var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
@@ -1252,7 +1256,7 @@ namespace ME3Explorer
                 {
                     foreach (var outLinks in outLinksProp)
                     {
-                        outputIndices.Add(outLinks.GetProp<NameProperty>("LinkAction").Value.count);
+                        outputIndices.Add(outLinks.GetProp<NameProperty>("LinkAction").Value.Number);
                     }
                 }
 
@@ -1264,7 +1268,7 @@ namespace ME3Explorer
                     {
                         NameProperty linkAction = inLinksProp[i].GetProp<NameProperty>("LinkAction");
                         var nameRef = linkAction.Value;
-                        nameRef.count = inputIndices[i];
+                        nameRef.Number = inputIndices[i];
                         linkAction.Value = nameRef;
                     }
                 }
@@ -1275,7 +1279,7 @@ namespace ME3Explorer
                     {
                         NameProperty linkAction = outLinksProp[i].GetProp<NameProperty>("LinkAction");
                         var nameRef = linkAction.Value;
-                        nameRef.count = outputIndices[i];
+                        nameRef.Number = outputIndices[i];
                         linkAction.Value = nameRef;
                     }
                 }

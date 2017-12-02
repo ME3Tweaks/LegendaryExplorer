@@ -20,7 +20,7 @@ namespace ME3Explorer
 {
     public partial class Interpreter : UserControl
     {
-        public IMEPackage Pcc { get { return pcc; } set {pcc = value; defaultStructValues.Clear(); } }
+        public IMEPackage Pcc { get { return pcc; } set { pcc = value; defaultStructValues.Clear(); } }
         public IExportEntry export;
         public string className;
         public byte[] memory;
@@ -69,7 +69,7 @@ namespace ME3Explorer
             DelegateProperty = 10,
             None,
             BioMask4Property,
-            
+
             ArrayLeafObject,
             ArrayLeafName,
             ArrayLeafEnum,
@@ -95,6 +95,12 @@ namespace ME3Explorer
             Root,
         }
 
+        internal void hideHexBox()
+        {
+            hb1.Visible = false;
+            splitContainer1.Panel1Collapsed = true;
+            splitContainer1.Panel1.Hide();
+        }
 
         private BioTlkFileSet tlkset;
         private int lastSetOffset = -1; //offset set by program, used for checking if user changed since set 
@@ -112,6 +118,264 @@ namespace ME3Explorer
             InitializeComponent();
             SetTopLevel(false);
             defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
+        }
+
+        /// <summary>
+        /// Used for relinking object arrays when dragging trees between files in PackageEditor.
+        /// </summary>
+        /// <param name="export">Export to scan.</param>
+        public Interpreter(IMEPackage importingPCC, IExportEntry importingExport, IMEPackage destPCC, IExportEntry destExport, SortedDictionary<int, int> crossPCCReferences)
+        {
+            //This will make it fairly slow, but will make it so I don't have to change everything.
+            InitializeComponent();
+            SetTopLevel(false);
+            defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
+            this.pcc = importingPCC;
+            this.export = importingExport;
+            memory = export.Data;
+            memsize = memory.Length;
+            className = export.ClassName;
+            StartScan();
+            RelinkObjectProperties(crossPCCReferences, treeView1.SelectedNode, destExport);
+        }
+
+        private void RelinkObjectProperties(SortedDictionary<int, int> crossPCCReferences, TreeNode rootNode, IExportEntry destinationExport)
+        {
+            if (rootNode != null)
+            {
+                if (rootNode.Nodes.Count > 0)
+                {
+                    //container.
+                    foreach (TreeNode node in rootNode.Nodes)
+                    {
+                        RelinkObjectProperties(crossPCCReferences, node, destinationExport);
+                    }
+                }
+                else
+                {
+                    //leaf
+                    if (rootNode.Tag != null)
+                    {
+                        if ((nodeType)rootNode.Tag == nodeType.ObjectProperty || (nodeType)rootNode.Tag == nodeType.StructLeafObject || (nodeType)rootNode.Tag == nodeType.ArrayLeafObject)
+                        {
+
+                            int valueoffset = 0;
+                            if ((nodeType)rootNode.Tag == nodeType.ObjectProperty)
+                            {
+                                valueoffset = 24;
+                            }
+
+                            int off = getPosFromNode(rootNode) + valueoffset;
+                            int n = BitConverter.ToInt32(memory, off);
+                            if (n > 0)
+                            {
+                                n--;
+                            }
+                            //if (n < -1)
+                            //{
+                            //    n++;
+                            //}
+                            //Debug.WriteLine(rootNode.Tag + " " + n + " " + rootNode.Text);
+                            if (n != 0)
+                            {
+                                int key;
+                                if (crossPCCReferences.TryGetValue(n, out key))
+                                {
+                                    byte[] data = destinationExport.Data;
+                                    //we can remap this
+                                    if (key > 0)
+                                    {
+                                        key++; //+1 indexing
+                                    }
+                                    byte[] buff2 = BitConverter.GetBytes(key);
+                                    for (int o = 0; o < 4; o++)
+                                    {
+                                        //Write object property value
+                                        //byte preval = exportdata[o + o];
+                                        data[off + o] = buff2[o];
+                                        //byte postval = exportdata[destprop.offsetval + o];
+
+                                        //Debug.WriteLine("Updating Byte at 0x" + (destprop.offsetval + o).ToString("X4") + " from " + preval + " to " + postval + ". It should have been set to " + buff2[o]);
+                                    }
+                                    destinationExport.Data = data;
+                                }
+                                else
+                                {
+                                    Debug.WriteLine("Relink miss, attempting JIT relink on " + n + " " + rootNode.Text);
+                                    if (n < 0 && Math.Abs(n) - 1 < pcc.ImportCount)
+                                    {
+                                        //Lets add this as an import. Or at least find one
+                                        ImportEntry origImport = pcc.getImport(Math.Abs(n) - 1);
+                                        string origImportFullName = origImport.GetFullPath;
+                                        Debug.WriteLine("We should import " + origImport.GetFullPath);
+
+                                        int newFileObjectValue = n;
+                                        foreach(ImportEntry imp in destinationExport.FileRef.Imports)
+                                        {
+                                            if (imp.GetFullPath == origImportFullName)
+                                            {
+                                                Debug.WriteLine("RELINK " + n + " to " + imp.UIndex);
+                                                newFileObjectValue = imp.UIndex;
+                                                break;
+                                            }
+                                        }
+                                        if (newFileObjectValue == n)
+                                        {
+                                            //it doesn't exist locally so we need to find or add the upstream imports
+                                            ImportEntry newImport = getOrAddCrossImport(origImportFullName, destinationExport.FileRef);
+                                            if (newImport != null)
+                                            {
+                                                newFileObjectValue = newImport.UIndex;
+                                            }
+                                        }
+
+                                        if (newFileObjectValue != n)
+                                        {
+                                            //Write new value
+                                            byte[] data = destinationExport.Data;
+                                            byte[] buff2 = BitConverter.GetBytes(newFileObjectValue);
+                                            for (int o = 0; o < 4; o++)
+                                            {
+                                                data[off + o] = buff2[o];
+                                                //Debug.WriteLine("Updating Byte at 0x" + (destprop.offsetval + o).ToString("X4") + " from " + preval + " to " + postval + ". It should have been set to " + buff2[o]);
+                                            }
+                                            destinationExport.Data = data;
+                                        }
+                                    }
+                                }
+                            }
+
+
+
+                            //if (n > 0)
+                            //{
+                            //    //update export
+                            //    Debug.WriteLine("EX Object Data: " + n + " " + pcc.Exports[n - 1].ObjectName);
+                            //}
+                            //else if (n < 0)
+                            //{
+                            //    //update import ref
+                            //    Debug.WriteLine("IM Object Data: " + n + " " + pcc.Imports[-n - 1].ObjectName);
+
+                            //}
+                        }
+                    }
+                }
+            }
+        }
+
+        private ImportEntry getOrAddCrossImport(string importFullName, IMEPackage destinationPCC)
+        {
+            //see if this import exists locally
+            foreach (ImportEntry imp in destinationPCC.Imports)
+            {
+                if (imp.GetFullPath == importFullName)
+                {
+                    return imp;
+                }
+            }
+
+            //Import doesn't exist, so we're gonna need to add it
+            //But first we need to figure out what needs to be added upstream as links
+            //Search upstream until we find something, or we can't g
+            string[] importParts = importFullName.Split('.');
+            List<int> upstreamLinks = new List<int>(); //0 = top level, 1 = next level... n = what we wanted to import
+            int upstreamCount = 1;
+
+            ImportEntry upstreamImport = null;
+            while (upstreamCount < importParts.Count())
+            {
+                string upstream = String.Join(".", importParts, 0, importParts.Count() - upstreamCount);
+                foreach (ImportEntry imp in destinationPCC.Imports)
+                {
+                    if (imp.GetFullPath == upstream)
+                    {
+                        upstreamImport = imp;
+                        break;
+                    }
+                }
+
+                if (upstreamImport != null)
+                {
+                    break;
+                }
+                upstreamCount++;
+            }
+
+            ImportEntry mostdownstreamimport = null;
+            if (upstreamImport == null)
+            {
+                string fullobjectname = importParts[0];
+
+                ImportEntry donorTopLevelImport = null;
+                foreach (ImportEntry imp in pcc.Imports) //importing side info we will move to our dest pcc
+                {
+                    if (imp.GetFullPath == fullobjectname)
+                    {
+                        donorTopLevelImport = imp;
+                        break;
+                    }
+                }
+
+                //Create new toplevel import and set that as the most downstream one.
+                int downstreamPackageName = destinationPCC.FindNameOrAdd(donorTopLevelImport.PackageFile);
+                int downstreamClassName = destinationPCC.FindNameOrAdd(donorTopLevelImport.ClassName);
+                int downstreamName = destinationPCC.FindNameOrAdd(fullobjectname);
+
+                mostdownstreamimport = new ImportEntry(destinationPCC);
+               // mostdownstreamimport.idxLink = downstreamLinkIdx; ??
+                mostdownstreamimport.idxClassName = downstreamClassName;
+                mostdownstreamimport.idxObjectName = downstreamName;
+                mostdownstreamimport.idxPackageName = downstreamPackageName;
+                destinationPCC.addImport(mostdownstreamimport);
+                upstreamImport = mostdownstreamimport;
+                upstreamCount--;
+                //return null;
+            }
+
+            //Have an upstream import, now we need to add downstream imports.
+
+            while (upstreamCount > 0)
+            {
+                upstreamCount--;
+                string fullobjectname = String.Join(".", importParts, 0, importParts.Count() - upstreamCount);
+                ImportEntry donorUpstreamImport = null;
+                foreach (ImportEntry imp in pcc.Imports) //importing side info we will move to our dest pcc
+                {
+                    if (imp.GetFullPath == fullobjectname)
+                    {
+                        donorUpstreamImport = imp;
+                        break;
+                    }
+                }
+
+
+                int downstreamName = destinationPCC.FindNameOrAdd(importParts[importParts.Count() - upstreamCount - 1]);
+                Debug.WriteLine(destinationPCC.Names[downstreamName]);
+                int downstreamLinkIdx = upstreamImport.UIndex;
+                Debug.WriteLine(upstreamImport.GetFullPath);
+
+                int downstreamPackageName = destinationPCC.FindNameOrAdd(Path.GetFileNameWithoutExtension(donorUpstreamImport.PackageFile));
+                int downstreamClassName = destinationPCC.FindNameOrAdd(donorUpstreamImport.ClassName);
+
+                //ImportEntry classImport = getOrAddImport();
+                //int downstreamClass = 0;
+                //if (classImport != null) {
+                //    downstreamClass = classImport.UIndex; //no recursion pls
+                //} else
+                //{
+                //    throw new Exception("No class was found for importing");
+                //}
+
+                mostdownstreamimport = new ImportEntry(destinationPCC);
+                mostdownstreamimport.idxLink = downstreamLinkIdx;
+                mostdownstreamimport.idxClassName = downstreamClassName;
+                mostdownstreamimport.idxObjectName = downstreamName;
+                mostdownstreamimport.idxPackageName = downstreamPackageName;
+                destinationPCC.addImport(mostdownstreamimport);
+                upstreamImport = mostdownstreamimport;
+            }
+            return mostdownstreamimport;
         }
 
         public void InitInterpreter(BioTlkFileSet editorTlkSet = null)
@@ -142,14 +406,12 @@ namespace ME3Explorer
                     tlkset = editorTlkSet;
                 }
             }
-
             StartScan();
         }
 
         public new void Show()
         {
             base.Show();
-            //StartScan();
         }
 
         private void StartScan(IEnumerable<string> expandedNodes = null, string topNodeName = null, string selectedNodeName = null)
@@ -158,7 +420,7 @@ namespace ME3Explorer
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
             readerpos = export.GetPropertyStart();
-            
+
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
             topLevelTree.Tag = nodeType.Root;
             topLevelTree.Name = "0";
@@ -189,7 +451,7 @@ namespace ME3Explorer
                         curPos += memDiff;
                     }
                     nodes = treeView1.Nodes.Find((item[0] == '-' ? -curPos : curPos).ToString(), true);
-                    if(nodes.Length > 0)
+                    if (nodes.Length > 0)
                     {
                         foreach (var node in nodes)
                         {
@@ -326,6 +588,11 @@ namespace ME3Explorer
                                         {
                                             if (pcc.ImportCount > value)
                                             {
+                                                if (pcc.getNameEntry(header.name) == "m_AutoPersistentObjects")
+                                                {
+                                                    s += pcc.getImport(value).PackageFullName + ".";
+                                                }
+
                                                 s += pcc.getImport(value).ObjectName + " [IMPORT " + value + "]";
                                             }
                                             else
@@ -337,6 +604,17 @@ namespace ME3Explorer
                                         {
                                             if (pcc.ExportCount > value)
                                             {
+                                                if (pcc.getNameEntry(header.name) == "m_AutoPersistentObjects")
+                                                {
+                                                    s += pcc.getExport(value).PackageFullName + ".";
+                                                }
+                                                if (pcc.getNameEntry(header.name) == "StreamingLevels")
+                                                {
+                                                    IExportEntry streamingLevel = pcc.getExport(value);
+                                                    NameProperty prop = streamingLevel.GetProperty<NameProperty>("PackageName");
+
+                                                    s += prop.Value.Name + "_" + prop.Value.Number + " in ";
+                                                }
                                                 s += pcc.getExport(value).ObjectName + " [EXPORT " + value + "]";
                                             }
                                             else
@@ -386,7 +664,7 @@ namespace ME3Explorer
                                     node.Tag = nodeType.ArrayLeafBool;
                                     s += BitConverter.ToBoolean(memory, pos);
                                     i += 1;
-                                } 
+                                }
                                 else if (arrayType == ArrayType.String)
                                 {
                                     node.Tag = nodeType.ArrayLeafString;
@@ -407,7 +685,7 @@ namespace ME3Explorer
                                         for (int j = 1; j < val; j++)
                                         {
                                             s += (char)memory[sPos];
-                                            sPos ++;
+                                            sPos++;
                                         }
                                         i += val + 4;
                                     }
@@ -494,7 +772,7 @@ namespace ME3Explorer
                         string s = readerpos.ToString("X4") + ": " + pcc.getNameEntry(props[i].Name) + " : ";
                         readerpos = GenerateSpecialStructProp(t, s, readerpos, props[i]);
                     }
-                } 
+                }
             }
             else
             {
@@ -876,7 +1154,7 @@ namespace ME3Explorer
                     break;
                 case nodeType.ObjectProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += idx +  " (" + pcc.getObjectName(idx) + ")";
+                    s += idx + " (" + pcc.getObjectName(idx) + ")";
                     break;
                 case nodeType.StrProperty:
                     int count = BitConverter.ToInt32(memory, p.offset + 24);
@@ -884,7 +1162,7 @@ namespace ME3Explorer
                     if (count < 0)
                     {
                         for (int i = 0; i < count * -1 - 1; i++)
-                            s += (char)memory[p.offset + 28 + i * 2]; 
+                            s += (char)memory[p.offset + 28 + i * 2];
                     }
                     else
                     {
@@ -922,7 +1200,7 @@ namespace ME3Explorer
                             idx = BitConverter.ToInt32(memory, p.offset + 24);
                             int idx2 = BitConverter.ToInt32(memory, p.offset + 32);
                             s += "\"" + pcc.getNameEntry(idx) + "\",\"" + pcc.getNameEntry(idx2) + "\"";
-                        } 
+                        }
                     }
                     else
                     {
@@ -947,7 +1225,7 @@ namespace ME3Explorer
                     s += "#" + idx + ": ";
                     if (pcc.Game == MEGame.ME3)
                     {
-                        s += ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(idx); 
+                        s += ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(idx);
                     }
                     else if (pcc.Game == MEGame.ME2)
                     {
@@ -985,9 +1263,18 @@ namespace ME3Explorer
                 {
                     //nothing else to interpret.
                     run = false;
-                    continue; 
+                    continue;
                 }
                 p.name = BitConverter.ToInt32(memory, readerpos);
+
+                if (readerpos == 4 && pcc.isName(p.name) && pcc.getNameEntry(p.name) == export.ObjectName)
+                {
+                    //It's a primitive component header
+                    //Debug.WriteLine("Primitive Header " + pcc.Names[p.name]);
+                    readerpos += 12;
+                    continue;
+                }
+
                 if (!pcc.isName(p.name))
                     run = false;
                 else
@@ -1012,7 +1299,7 @@ namespace ME3Explorer
                                 if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)//Boolbyte
                                     readerpos++;
                                 if (getType(pcc.getNameEntry(p.type)) == nodeType.ByteProperty)//byteprop
-                                    readerpos += 8; 
+                                    readerpos += 8;
                             }
                             else
                             {
@@ -1084,7 +1371,7 @@ namespace ME3Explorer
                 node = node.Parent;
             }
             bool isStruct = false;
-            while(nodeStack.Count > 0)
+            while (nodeStack.Count > 0)
             {
                 node = nodeStack.Pop();
                 if ((nodeType)node.Tag == nodeType.ArrayLeafStruct)
@@ -1136,7 +1423,7 @@ namespace ME3Explorer
                     return;
                 }
                 LAST_SELECTED_PROP_TYPE = (nodeType)e.Node.Tag;
-                if (isArrayLeaf(LAST_SELECTED_PROP_TYPE)|| isStructLeaf(LAST_SELECTED_PROP_TYPE))
+                if (isArrayLeaf(LAST_SELECTED_PROP_TYPE) || isStructLeaf(LAST_SELECTED_PROP_TYPE))
                 {
                     TryParseStructPropertyOrArrayLeaf(e.Node);
                 }
@@ -1214,7 +1501,7 @@ namespace ME3Explorer
         }
         private void resetPropEditingControls()
         {
-            objectNameLabel.Visible = nameEntry.Visible = proptext.Visible = setPropertyButton.Visible = propDropdown.Visible = 
+            objectNameLabel.Visible = nameEntry.Visible = proptext.Visible = setPropertyButton.Visible = propDropdown.Visible =
                 addArrayElementButton.Visible = deleteArrayElementButton.Visible = moveDownButton.Visible =
                 moveUpButton.Visible = addPropButton.Visible = false;
             nameEntry.AutoCompleteCustomSource.Clear();
@@ -1258,7 +1545,7 @@ namespace ME3Explorer
                         propDropdown.Visible = true;
                         break;
                     case "NameProperty":
-                        proptext.Text  = BitConverter.ToInt32(memory, pos + 28).ToString();
+                        proptext.Text = BitConverter.ToInt32(memory, pos + 28).ToString();
                         nameEntry.Text = pcc.getNameEntry(BitConverter.ToInt32(memory, pos + 24));
                         nameEntry.AutoCompleteCustomSource.AddRange(pcc.Names.ToArray());
                         nameEntry.Visible = true;
@@ -1273,7 +1560,7 @@ namespace ME3Explorer
                             for (int i = 0; i < -count; i++)
                             {
                                 s += (char)memory[pos + i * 2];
-                            } 
+                            }
                         }
                         else
                         {
@@ -1395,7 +1682,7 @@ namespace ME3Explorer
                         if (type == nodeType.StructLeafEnum)
                         {
                             int begin = node.Text.LastIndexOf(':') + 3;
-                            enumName = node.Text.Substring(begin, node.Text.IndexOf(',') - 1 - begin); 
+                            enumName = node.Text.Substring(begin, node.Text.IndexOf(',') - 1 - begin);
                         }
                         else
                         {
@@ -1551,7 +1838,7 @@ namespace ME3Explorer
                             {
                                 stringBuff.AddRange(BitConverter.GetBytes(s[j]));
                             }
-                            stringBuff.Add(0); 
+                            stringBuff.Add(0);
                         }
                         else
                         {
@@ -1674,7 +1961,7 @@ namespace ME3Explorer
                             WriteMem(pos + valOffset, BitConverter.GetBytes(i));
                             UpdateMem(pos);
                         }
-                        else if(byte.TryParse(proptext.Text, out b))
+                        else if (byte.TryParse(proptext.Text, out b))
                         {
                             memory[pos + valOffset] = b;
                             UpdateMem(pos);
@@ -1698,7 +1985,7 @@ namespace ME3Explorer
                             {
                                 stringBuff.AddRange(BitConverter.GetBytes(s[j]));
                             }
-                            stringBuff.Add(0); 
+                            stringBuff.Add(0);
                         }
                         else
                         {
@@ -1771,7 +2058,7 @@ namespace ME3Explorer
                 TreeNode parent = LAST_SELECTED_NODE.Parent;
                 int leafOffset = getPosFromNode(LAST_SELECTED_NODE.Name);
                 int parentOffset = getPosFromNode(parent.Name);
-                
+
                 int size;
                 switch (LAST_SELECTED_PROP_TYPE)
                 {
@@ -1970,7 +2257,7 @@ namespace ME3Explorer
                                 if (buff == null)
                                 {
                                     return;
-                                } 
+                                }
                             }
                             else
                             {
@@ -2027,10 +2314,11 @@ namespace ME3Explorer
             while (i < IndicesArray.Length)
             {
                 if (i < RemoveAt || i >= RemoveAt + NumElementsToRemove)
-                {                    
+                {
                     newIndicesArray[j] = IndicesArray[i];
                     j++;
-                } else
+                }
+                else
                 {
                     //Debug.WriteLine("Skipping byte: " + i.ToString("X4"));
                 }
@@ -2065,7 +2353,6 @@ namespace ME3Explorer
 
             WriteMem(startpos + sizeOffset, BitConverter.GetBytes(newSize));
             WriteMem(startpos + countOffset, BitConverter.GetBytes(newCount));
-
         }
 
 
@@ -2088,6 +2375,8 @@ namespace ME3Explorer
 
             var expandedNodes = allNodes.Where(x => x.IsExpanded).Select(x => x.Name);
             StartScan(expandedNodes, treeView1.TopNode?.Name, selectedNodePos?.ToString());
+
+
         }
 
         private string CheckSeperator(string s)
@@ -2126,7 +2415,7 @@ namespace ME3Explorer
 
         private void addArrayElementButton_Click(object sender, EventArgs e)
         {
-             addArrayLeaf();
+            addArrayLeaf();
         }
 
         private void treeView1_AfterExpand(object sender, TreeViewEventArgs e)
@@ -2228,6 +2517,11 @@ namespace ME3Explorer
         {
             List<string> props = PropertyReader.getPropList(export).Select(x => pcc.getNameEntry(x.Name)).ToList();
             string prop = AddPropertyDialog.GetProperty(className, props, pcc.Game);
+            AddProperty(prop);
+        }
+
+        public void AddProperty(string prop)
+        {
             if (prop != null)
             {
                 PropertyInfo info = GetPropertyInfo(prop, className);
@@ -2272,7 +2566,7 @@ namespace ME3Explorer
                         //value
                         if (pcc.Game == MEGame.ME3)
                         {
-                            buff.Add(0); 
+                            buff.Add(0);
                         }
                         else
                         {
@@ -2287,7 +2581,7 @@ namespace ME3Explorer
                         if (pcc.Game == MEGame.ME3)
                         {
                             buff.AddRange(BitConverter.GetBytes(-1));
-                            buff.Add(0); 
+                            buff.Add(0);
                         }
                         else
                         {
@@ -2386,9 +2680,9 @@ namespace ME3Explorer
             int size = (int)hb1.ByteProvider.Length;
             try
             {
-                if (memory != null && start != -1 && start + len <= size)
+                if (memory != null && start != -1 && start + len < size)
                 {
-                    string s = $"Byte: {memory[start]}";
+                    string s = $"Byte: {memory[start]}"; //if selection is same as size this will crash.
                     if (start <= memory.Length - 4)
                     {
                         s += $", Int: {BitConverter.ToInt32(memory, start)}";
@@ -2418,7 +2712,7 @@ namespace ME3Explorer
                 treeView1.SelectedNode = e.Node;
                 if (e.Node.Nodes.Count != 0)
                 {
-                    nodeContextMenuStrip1.Show(MousePosition); 
+                    nodeContextMenuStrip1.Show(MousePosition);
                 }
             }
         }
@@ -2516,7 +2810,48 @@ namespace ME3Explorer
                     return ME3UnrealObjectInfo.getEnumValues(enumName, true);
             }
             return null;
-        } 
+        }
         #endregion
+
+        private void reorderArrayToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            int off = getPosFromNode(treeView1.SelectedNode);
+            int n = BitConverter.ToInt32(memory, off);
+            string name = pcc.getNameEntry(n);
+
+            ArrayProperty<ObjectProperty> prop = export.GetProperty<ArrayProperty<ObjectProperty>>(name);
+            if (prop != null)
+            {
+                List<string> itemsToSort = new List<string>();
+                foreach (ObjectProperty op in prop)
+                {
+                    int value = op.Value;
+                    IEntry entry = pcc.getEntry(value);
+                    itemsToSort.Add(entry.PackageFullName + "." + entry.ObjectName);
+                }
+                itemsToSort.Sort();
+                string str = "";
+                foreach (string item in itemsToSort)
+                {
+                    str += item;
+                    str += "\n";
+                }
+
+
+                Clipboard.SetText(str);
+            }
+        }
+
+        private void setValueKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Return)
+
+            {
+                // Then Do your Thang
+                setPropertyButton.PerformClick();
+                RefreshMem();
+            }
+        }
     }
 }

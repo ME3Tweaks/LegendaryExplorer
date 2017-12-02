@@ -345,7 +345,7 @@ namespace ME3Explorer.Matinee
         public virtual void ToTree()
         {
             propView.Nodes.Clear();
-            AddToTree("Track Title : \"" + TrackTitle + "\" (#" + index + " " + pcc.getClassName(index + 1) + ")");
+            AddToTree("Track Title : \"" + TrackTitle + "\" (#" + index + " " + pcc.getObjectName(index + 1) + ")");
         }
 
         public void AdditionalToTree()

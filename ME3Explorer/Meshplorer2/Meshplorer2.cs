@@ -477,6 +477,7 @@ namespace ME3Explorer.Meshplorer2
         private void Meshplorer2_Load(object sender, EventArgs e)
         {
             this.pb1.MouseWheel += MouseWheelHandler;
+            pb1_Resize(null, null); // set aspect ratio
         }
 
         private void MouseWheelHandler(object sender, MouseEventArgs e)
@@ -795,6 +796,11 @@ namespace ME3Explorer.Meshplorer2
         {
             Renderer.STM?.pcc.Dispose();
             Renderer.SKM?.Owner.Dispose();
+        }
+
+        private void pb1_Resize(object sender, EventArgs e)
+        {
+            Renderer.aspect = (float)pb1.Width / pb1.Height;
         }
     }
 }

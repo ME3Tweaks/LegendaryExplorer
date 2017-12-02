@@ -41,6 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Piccolo\PathingGraphEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Piccolo\GraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -102,6 +102,11 @@ namespace ME3Explorer
             int n = listBox1.SelectedIndex;
             if (n == -1)
                 return;
+            PlaySound(n);
+        }
+
+        private void PlaySound(int n)
+        {
             int index = ObjectIndexes[n];
             IExportEntry ex = pcc.Exports[index];
             if (ex.ClassName == "WwiseStream")
@@ -288,6 +293,17 @@ namespace ME3Explorer
                         break;
                     }
                 }
+            }
+        }
+
+        private void listBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                int n = listBox1.SelectedIndex;
+                if (n == -1)
+                    return;
+                PlaySound(n);
             }
         }
     }

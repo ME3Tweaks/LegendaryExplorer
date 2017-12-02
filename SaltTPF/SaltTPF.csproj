@@ -50,9 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CRC32.cs" />
-    <Compile Include="KFreonZipCrypto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ZipCrypto.cs" />
+    <Compile Include="ZipDecrypto.cs" />
     <Compile Include="ZipReader.cs" />
     <Compile Include="ZipWriter.cs" />
   </ItemGroup>

@@ -398,11 +398,13 @@ namespace ME3Explorer
     {
         public static void WriteStringASCII(this Stream stream, string value)
         {
+            stream.WriteValueS32(value.Length + 1);
             stream.WriteStringZ(value, Encoding.ASCII);
         }
 
         public static void WriteStringUnicode(this Stream stream, string value)
         {
+            stream.WriteValueS32(-(value.Length + 1));
             stream.WriteStringZ(value, Encoding.Unicode);
         }
 

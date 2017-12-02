@@ -21,13 +21,13 @@ namespace ME3Explorer.Packages
 
     public interface IExportEntry : IEntry
     {
-        bool DataChanged { get; }
+        bool DataChanged { get; set; }
         /// <summary>
         /// RETURNS A CLONE
         /// </summary>
         byte[] Data { get; set; }
-        int DataOffset { get; }
-        int DataSize { get; }
+        int DataOffset { get; set; }
+        int DataSize { get; set; }
         int idxArchtype { get; set; }
         int idxClass { get; set; }
         int idxClassParent { get; set; }
@@ -36,6 +36,7 @@ namespace ME3Explorer.Packages
         string ClassParent { get; }
         uint headerOffset { get; set; }
         ulong ObjectFlags { get; set; }
+        int OriginalDataSize { get; }
 
         IExportEntry Clone();
         void setHeader(byte[] v);

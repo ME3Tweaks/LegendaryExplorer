@@ -238,6 +238,8 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "compress", "decompress" },
                 subCategory = "Extractors + Repackers",
+                description = "PCC Repacker allows you to compress and decompress PCC files.",
+
             });
             set.Add(new Tool
             {
@@ -364,6 +366,18 @@ namespace ME3Explorer
             #endregion
 
             #region Create Mods
+            //set.Add(new Tool
+            //{
+            //    name = "Audio Editor",
+            //    type = typeof(Audio_Editor.AudioEditor),
+            //    icon = Application.Current.FindResource("iconAudioEditor") as ImageSource,
+            //    open = () =>
+            //    {
+            //        (new Audio_Editor.AudioEditor()).Show();
+            //    },
+            //    tags = new List<string> { "developer", "afc", "sound", "wwise" },
+            //    subCategory = "Core",
+            //});
             set.Add(new Tool
             {
                 name = "Coalesced Editor",
@@ -373,9 +387,22 @@ namespace ME3Explorer
                 {
                     (new MassEffect3.CoalesceTool.CoalescedEditor()).Show();
                 },
-                tags = new List<string> { "developer", "coalesced", "ini", "bin" },
+                tags = new List<string> { "developer", "coal", "ini", "bin" },
                 subCategory = "Core",
                 description = "Coalesced Editor converts between xml and bin formats for ME3 Coalesced.bin files for the base game and DLC. These are key game files that help control a large amount of content.",
+            });
+            set.Add(new Tool
+            {
+                name = "Pathfinding Editor",
+                type = typeof(PathfindingEditor),
+                icon = Application.Current.FindResource("iconPathfindingEditor") as ImageSource,
+                open = () =>
+                {
+                    (new PathfindingEditor()).Show();
+                },
+                tags = new List<string> { "developer", "path", "mesh", "ai" },
+                subCategory = "Core",
+                description = "Pathfinding Editor allows you to modify pathing nodes so squadmates and enemies can move around a map.",
             });
             set.Add(new Tool
             {
@@ -481,7 +508,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Interpreter",
-                type = typeof(InterpreterHost),
+                type = typeof(BinaryInterpreterHost),
                 icon = Application.Current.FindResource("iconInterpreter") as ImageSource,
                 tags = new List<string>(),
                 subCategory = "Other",
@@ -544,7 +571,6 @@ namespace ME3Explorer
                 {
                     PackageEditor pck = new PackageEditor();
                     pck.Show();
-                    pck.LoadMostRecent();
                 },
                 tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3" },
                 subCategory = "Core",
@@ -632,7 +658,7 @@ namespace ME3Explorer
             {
                 name = "ME3 + ME2 TLK Editor",
                 type = typeof(TLKEditor),
-                icon = Application.Current.FindResource("iconTLKEditor") as ImageSource,
+                icon = Application.Current.FindResource("iconTLKEditorME23") as ImageSource,
                 open = () =>
                 {
                     (new TLKEditor()).Show();
@@ -645,7 +671,7 @@ namespace ME3Explorer
             {
                 name = "ME1 TLK Editor",
                 type = typeof(TlkManager),
-                icon = Application.Current.FindResource("iconTLKEditor") as ImageSource,
+                icon = Application.Current.FindResource("iconTLKEditorME1") as ImageSource,
                 open = () =>
                 {
                     (new ME1Explorer.TlkManager(true)).Show();
