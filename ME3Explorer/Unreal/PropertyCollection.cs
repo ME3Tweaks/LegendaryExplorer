@@ -825,6 +825,12 @@ namespace ME3Explorer.Unreal
             set { SetProperty(ref _value, value); }
         }
 
+        public ByteProperty(byte val, NameReference? name = null) : base(name)
+        {
+            Value = val;
+            PropType = PropertyType.ByteProperty;
+        }
+
         public ByteProperty(MemoryStream stream, NameReference? name = null) : base(name)
         {
             Offset = stream.Position;

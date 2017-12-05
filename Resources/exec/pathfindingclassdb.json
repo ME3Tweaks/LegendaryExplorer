@@ -67,6 +67,18 @@
          "class":"Class",
          "packagefile":"Core"
       },
+      "SFXGame.SFXBoostReachSpec":{
+         "class":"Class",
+         "packagefile":"Core"
+      },
+      "SFXGame.SFXClimbWallReachSpec":{
+         "class":"Class",
+         "packagefile":"Core"
+      },
+      "SFXGame.SFXLadderReachSpec":{
+         "class":"Class",
+         "packagefile":"Core"
+      },
       "SFXGame.SFXLargeBoostReachSpec":{
          "class":"Class",
          "packagefile":"Core"
@@ -75,7 +87,7 @@
          "class":"Class",
          "packagefile":"Core"
       },
-      "SFXGame.SFXClimbWallReachSpec":{
+      "Engine.SlotToSlotReachSpec":{
          "class":"Class",
          "packagefile":"Core"
       },

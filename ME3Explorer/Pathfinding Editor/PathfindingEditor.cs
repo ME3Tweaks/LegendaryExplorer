@@ -1833,12 +1833,13 @@ namespace ME3Explorer
             IExportEntry reachSpectoClone = null;
             foreach (IExportEntry exp in pcc.Exports)
             {
-                if (exp.ClassName == reachSpecClass)
+                if (exp.ClassName == "ReachSpec") //clone basic reachspec, set class later
                 {
                     reachSpectoClone = exp;
                     break;
                 }
             }
+
 
             //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
             int outgoingSpec = pcc.ExportCount;
@@ -1865,7 +1866,19 @@ namespace ME3Explorer
 
                 }
 
-                IExportEntry outgoingSpecExp = pcc.Exports[outgoingSpec];
+                IExportEntry outgoingSpecExp = pcc.Exports[outgoingSpec]; //cloned outgoing
+                ImportEntry reachSpecClassImp = getOrAddImport(reachSpecClass); //new class type.
+
+               outgoingSpecExp.idxClass = reachSpecClassImp.UIndex;
+               outgoingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
+
+                if (reachSpecClass == "Engine.SlotToSlotReachSpec")
+                {
+                    var props = outgoingSpecExp.GetProperties();
+                    props.Add(new ByteProperty(1, "SpecDirection"));
+                    outgoingSpecExp.WriteProperties(props);
+                }
+
                 //Debug.WriteLine("Outgoing UIndex: " + outgoingSpecExp.UIndex);
 
                 ObjectProperty outgoingSpecStartProp = outgoingSpecExp.GetProperty<ObjectProperty>("Start"); //START
@@ -1896,6 +1909,16 @@ namespace ME3Explorer
                 if (createTwoWay)
                 {
                     IExportEntry incomingSpecExp = pcc.Exports[incomingSpec];
+                    incomingSpecExp.idxClass = reachSpecClassImp.UIndex;
+                    incomingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
+
+                    if (reachSpecClass == "Engine.SlotToSlotReachSpec")
+                    {
+                        var props = incomingSpecExp.GetProperties();
+                        props.Add(new ByteProperty(2, "SpecDirection"));
+                        incomingSpecExp.WriteProperties(props);
+                    }
+
                     ObjectProperty incomingSpecStartProp = incomingSpecExp.GetProperty<ObjectProperty>("Start"); //START
                     StructProperty incomingEndStructProp = incomingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
                     ObjectProperty incomingSpecEndProp = incomingEndStructProp.Properties.GetProp<ObjectProperty>("Actor"); //END

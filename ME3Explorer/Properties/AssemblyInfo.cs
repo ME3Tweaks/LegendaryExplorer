@@ -8,7 +8,7 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ME3Explorer")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Modding toolset for the Mass Effect Trilogy")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ME3Explorer")]
 [assembly: AssemblyProduct("ME3Explorer")]
@@ -51,5 +51,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.0.2.0")]
-[assembly: AssemblyFileVersion("3.0.2.0")]
+[assembly: AssemblyVersion("3.0.3.0")]
+[assembly: AssemblyFileVersion("3.0.3.0")]
