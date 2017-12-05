@@ -46,6 +46,13 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void reachSpecCalculatorThread_Done(object sender, RunWorkerCompletedEventArgs e)
         {
+            List<string> badBases = (List<string>)e.Result;
+            if (badBases != null && badBases.Count > 0)
+            {
+                //bad bases were found.
+                ListWindow lw = new ListWindow(badBases, "Bad ReachSpecs were found");
+                lw.ShowDialog(this);
+            }
             //throw new NotImplementedException();
             recalculateButton.Enabled = true;
         }
@@ -57,6 +64,7 @@ namespace ME3Explorer.Pathfinding_Editor
             BGThreadOptions bgo = (BGThreadOptions)e.Argument;
             IMEPackage pcc = bgo.pcc;
             HashSet<int> reachSpecExportIndexes = new HashSet<int>();
+            List<string> badBases = new List<string>();
             foreach (IExportEntry exp in pcc.Exports)
             {
                 ArrayProperty<ObjectProperty> pathList = exp.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
@@ -65,6 +73,12 @@ namespace ME3Explorer.Pathfinding_Editor
                     foreach (ObjectProperty reachSpecObj in pathList)
                     {
                         reachSpecExportIndexes.Add(reachSpecObj.Value - 1);
+                        IExportEntry spec = pcc.Exports[reachSpecObj.Value - 1];
+                        ObjectProperty start = spec.GetProperty<ObjectProperty>("Start");
+                        if (start.Value != exp.UIndex)
+                        {
+                            badBases.Add((reachSpecObj.Value - 1).ToString() + " " + spec.ObjectName + " start value does not match the node that references it (" + exp.Index + ")");
+                        }
                     }
                 }
             }
@@ -110,7 +124,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     worker.ReportProgress(-1, numNeedingRecalc + " reachspec" + ((numNeedingRecalc > 1) ? "s" : "") + " have been updated.");
                 }
             }
-
+            e.Result = badBases;
         }
 
         private void reachSpecCalculatorThread_ProgressChanged(object sender, ProgressChangedEventArgs e)

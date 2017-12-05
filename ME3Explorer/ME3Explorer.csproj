@@ -368,6 +368,12 @@
     <Compile Include="Pathfinding Editor\HeightFilterForm.Designer.cs">
       <DependentUpon>HeightFilterForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Pathfinding Editor\ListWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pathfinding Editor\ListWindow.Designer.cs">
+      <DependentUpon>ListWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Pathfinding Editor\PathfindingNodeInfoPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1124,6 +1130,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Pathfinding Editor\HeightFilterForm.resx">
       <DependentUpon>HeightFilterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pathfinding Editor\ListWindow.resx">
+      <DependentUpon>ListWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pathfinding Editor\PathfindingNodeInfoPanel.resx">
       <DependentUpon>PathfindingNodeInfoPanel.cs</DependentUpon>

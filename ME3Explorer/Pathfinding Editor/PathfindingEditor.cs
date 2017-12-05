@@ -2744,6 +2744,11 @@ namespace ME3Explorer
                 }
             }
         }
+
+        private void checkReachSpecBasesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 
     public class PathingZoomController
