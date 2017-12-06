@@ -82,6 +82,9 @@
             this.reachSpecTypeComboBox.FormattingEnabled = true;
             this.reachSpecTypeComboBox.Items.AddRange(new object[] {
             "Engine.ReachSpec",
+            "Engine.CoverSlipReachSpec",
+            "Engine.CoverTurnReachSpec",
+            "Engine.MantleReachSpec",
             "SFXGame.SFXBoostReachSpec",
             "SFXGame.SFXClimbWallReachSpec",
             "SFXGame.SFXLadderReachSpec",

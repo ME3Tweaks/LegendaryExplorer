@@ -424,16 +424,16 @@ namespace ME3Explorer
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
             topLevelTree.Tag = nodeType.Root;
             topLevelTree.Name = "0";
-            try
-            {
+            //try
+            //{
                 List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
                 GenerateTree(topLevelTree, topLevelHeaders);
-            }
-            catch (Exception ex)
-            {
-                topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
-                addPropButton.Visible = false;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+              //  topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
+                //addPropButton.Visible = false;
+            //}
             treeView1.Nodes.Add(topLevelTree);
             treeView1.CollapseAll();
             treeView1.Nodes[0].Expand();

@@ -67,6 +67,18 @@
          "class":"Class",
          "packagefile":"Core"
       },
+      "Engine.CoverSlipReachSpec":{
+         "class":"Class",
+         "packagefile":"Core"
+      },
+      "Engine.CoverTurnReachSpec":{
+         "class":"Class",
+         "packagefile":"Core"
+      },
+      "Engine.MantleReachSpec":{
+         "class":"Class",
+         "packagefile":"Core"
+      },
       "SFXGame.SFXBoostReachSpec":{
          "class":"Class",
          "packagefile":"Core"

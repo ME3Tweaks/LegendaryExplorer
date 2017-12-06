@@ -1869,8 +1869,8 @@ namespace ME3Explorer
                 IExportEntry outgoingSpecExp = pcc.Exports[outgoingSpec]; //cloned outgoing
                 ImportEntry reachSpecClassImp = getOrAddImport(reachSpecClass); //new class type.
 
-               outgoingSpecExp.idxClass = reachSpecClassImp.UIndex;
-               outgoingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
+                outgoingSpecExp.idxClass = reachSpecClassImp.UIndex;
+                outgoingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
 
                 if (reachSpecClass == "Engine.SlotToSlotReachSpec")
                 {
@@ -2745,9 +2745,122 @@ namespace ME3Explorer
             }
         }
 
-        private void checkReachSpecBasesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void flipLevelUpsidedownEXPERIMENTALToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            foreach (IExportEntry exp in pcc.Exports)
+            {
+                switch (exp.ObjectName)
+                {
+                    case "StaticMeshCollectionActor":
+                        {
+                            //This is going to get ugly.
 
+                            byte[] data = exp.Data;
+                            //get a list of staticmesh stuff from the props.
+                            int listsize = System.BitConverter.ToInt32(data, 28);
+                            List<IExportEntry> smacitems = new List<IExportEntry>();
+                            for (int i = 0; i < listsize; i++)
+                            {
+                                int offset = (32 + i * 4);
+                                //fetch exports
+                                int entryval = BitConverter.ToInt32(data, offset);
+                                if (entryval > 0 && entryval < pcc.ExportCount)
+                                {
+                                    IExportEntry export = (IExportEntry)pcc.getEntry(entryval);
+                                    smacitems.Add(export);
+                                }
+                                else if (entryval == 0)
+                                {
+                                    smacitems.Add(null);
+                                }
+                            }
+
+                            //find start of class binary (end of props)
+                            int start = findEndOfProps(exp);
+
+                            if (data.Length - start < 4)
+                            {
+                                return;
+                            }
+
+                            //Lets make sure this binary is divisible by 64.
+                            if ((data.Length - start) % 64 != 0)
+                            {
+                                return;
+                            }
+
+                            int smcaindex = 0;
+                            while (start < data.Length && smcaindex < listsize - 1)
+                            {
+                                float x = BitConverter.ToSingle(data, start + smcaindex * 64 + (12 * 4));
+                                float y = BitConverter.ToSingle(data, start + smcaindex * 64 + (13 * 4));
+                                float z = BitConverter.ToSingle(data, start + smcaindex * 64 + (14 * 4));
+                                data = SharedPathfinding.WriteMem(data, start + smcaindex * 64 + (12 * 4), BitConverter.GetBytes(x * -1));
+                                data = SharedPathfinding.WriteMem(data, start + smcaindex * 64 + (13 * 4), BitConverter.GetBytes(y * -1));
+                                data = SharedPathfinding.WriteMem(data, start + smcaindex * 64 + (14 * 4), BitConverter.GetBytes(z * -1));
+
+                                InvertScalingOnExport(smacitems[smcaindex], "Scale3D");
+                                smcaindex++;
+                                Debug.WriteLine(exp.Index + " " + smcaindex + " SMAC Flipping " + x + "," + y + "," + z);
+                            }
+                            exp.Data = data;
+                        }
+                        break;
+                    default:
+                        {
+                            var props = exp.GetProperties();
+                            StructProperty locationProp = props.GetProp<StructProperty>("location");
+                            if (locationProp != null)
+                            {
+                                FloatProperty xProp = locationProp.Properties.GetProp<FloatProperty>("X");
+                                FloatProperty yProp = locationProp.Properties.GetProp<FloatProperty>("Y");
+                                FloatProperty zProp = locationProp.Properties.GetProp<FloatProperty>("Z");
+                                Debug.WriteLine(exp.Index + " " + exp.ObjectName + "Flipping " + xProp.Value + "," + yProp.Value + "," + zProp.Value);
+
+                                xProp.Value = xProp.Value * -1;
+                                yProp.Value = yProp.Value * -1;
+                                zProp.Value = zProp.Value * -1;
+
+                                exp.WriteProperty(locationProp);
+                                InvertScalingOnExport(exp, "DrawScale3D");
+                            }
+                            break;
+                        }
+                }
+            }
+            MessageBox.Show("Items flipped.", "Flipping complete");
+        }
+
+        private void InvertScalingOnExport(IExportEntry exp, string propname)
+        {
+            var drawScale3D = exp.GetProperty<StructProperty>(propname);
+            bool hasDrawScale = drawScale3D != null;
+            if (drawScale3D == null)
+            {
+                Interpreter addPropInterp = new Interpreter();
+                addPropInterp.Pcc = exp.FileRef;
+                addPropInterp.export = exp;
+                addPropInterp.InitInterpreter();
+                addPropInterp.AddProperty(propname); //Assuming interpreter shows current item.
+                addPropInterp.Dispose();
+                drawScale3D = exp.GetProperty<StructProperty>(propname);
+            }
+            var drawScaleX = drawScale3D.GetProp<FloatProperty>("X");
+            var drawScaleY = drawScale3D.GetProp<FloatProperty>("Y");
+            var drawScaleZ = drawScale3D.GetProp<FloatProperty>("Z");
+            if (!hasDrawScale)
+            {
+                drawScaleX.Value = -1;
+                drawScaleY.Value = -1;
+                drawScaleZ.Value = -1;
+            }
+            else
+            {
+                drawScaleX.Value = -drawScaleX.Value;
+                drawScaleY.Value = -drawScaleY.Value;
+                drawScaleZ.Value = -drawScaleZ.Value;
+            }
+            exp.WriteProperty(drawScale3D);
         }
     }
 
