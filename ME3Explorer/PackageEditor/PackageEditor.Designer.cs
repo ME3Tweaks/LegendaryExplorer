@@ -43,9 +43,9 @@
             this.createBinaryReplaceJobFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createBinaryReplaceJobFromObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.findImportexportViaOffsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getDumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getDumpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.findImportexportViaOffsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.Button1 = new System.Windows.Forms.ToolStripButton();
             this.Button2 = new System.Windows.Forms.ToolStripButton();
@@ -132,6 +132,7 @@
             this.setAllIndexesInThisTreeTo0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkIndexingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -296,18 +297,11 @@
             this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.getDumpToolStripMenuItem,
             this.getDumpToolStripMenuItem1,
-            this.findImportexportViaOffsetToolStripMenuItem});
+            this.findImportexportViaOffsetToolStripMenuItem,
+            this.checkIndexingToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.debugToolStripMenuItem.Text = "Debug";
-            // 
-            // findImportexportViaOffsetToolStripMenuItem
-            // 
-            this.findImportexportViaOffsetToolStripMenuItem.Name = "findImportexportViaOffsetToolStripMenuItem";
-            this.findImportexportViaOffsetToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
-            this.findImportexportViaOffsetToolStripMenuItem.Text = "Find import/export via offset";
-            this.findImportexportViaOffsetToolStripMenuItem.ToolTipText = "Finds an export or import containing the offset you specify.";
-            this.findImportexportViaOffsetToolStripMenuItem.Click += new System.EventHandler(this.findImportexportViaOffsetToolStripMenuItem_Click);
             // 
             // getDumpToolStripMenuItem
             // 
@@ -322,6 +316,14 @@
             this.getDumpToolStripMenuItem1.Size = new System.Drawing.Size(225, 22);
             this.getDumpToolStripMenuItem1.Text = "Get Binary Dump";
             this.getDumpToolStripMenuItem1.Click += new System.EventHandler(this.getDumpToolStripMenuItem1_Click);
+            // 
+            // findImportexportViaOffsetToolStripMenuItem
+            // 
+            this.findImportexportViaOffsetToolStripMenuItem.Name = "findImportexportViaOffsetToolStripMenuItem";
+            this.findImportexportViaOffsetToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
+            this.findImportexportViaOffsetToolStripMenuItem.Text = "Find import/export via offset";
+            this.findImportexportViaOffsetToolStripMenuItem.ToolTipText = "Finds an export or import containing the offset you specify.";
+            this.findImportexportViaOffsetToolStripMenuItem.Click += new System.EventHandler(this.findImportexportViaOffsetToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -1158,6 +1160,13 @@
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
             // 
+            // checkIndexingToolStripMenuItem
+            // 
+            this.checkIndexingToolStripMenuItem.Name = "checkIndexingToolStripMenuItem";
+            this.checkIndexingToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
+            this.checkIndexingToolStripMenuItem.Text = "Check indexing";
+            this.checkIndexingToolStripMenuItem.Click += new System.EventHandler(this.checkIndexingToolStripMenuItem_Click);
+            // 
             // PackageEditor
             // 
             this.AllowDrop = true;
@@ -1320,5 +1329,6 @@
         private System.Windows.Forms.TabPage binaryEditorTab;
         private System.Windows.Forms.CheckBox showFullPathsCheckbox;
         private System.Windows.Forms.ToolStripMenuItem findImportexportViaOffsetToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem checkIndexingToolStripMenuItem;
     }
 }

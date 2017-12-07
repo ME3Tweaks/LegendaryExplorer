@@ -11,6 +11,7 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using UsefulThings;
 using static ME3Explorer.Unreal.PropertyReader;
+using ME3Explorer.Pathfinding_Editor;
 
 namespace ME3Explorer
 {
@@ -2057,6 +2058,54 @@ namespace ME3Explorer
                         break;
                     }
                 }
+            }
+        }
+
+        private void checkIndexingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc == null)
+            {
+                return;
+            }
+            List<string> duplicates = new List<string>();
+            Dictionary<string, List<int>> nameIndexDictionary = new Dictionary<string, List<int>>();
+            foreach (IExportEntry exp in pcc.Exports)
+            {
+                string key = exp.GetFullPath;
+                List<int> indexList;
+                bool hasExistingList = nameIndexDictionary.TryGetValue(key, out indexList);
+                if (!hasExistingList)
+                {
+                    indexList = new List<int>();
+                    nameIndexDictionary[key] = indexList;
+                }
+                bool isDuplicate = indexList.Contains(exp.indexValue);
+                if (isDuplicate)
+                {
+                    duplicates.Add(exp.Index + " " + exp.GetFullPath + " has duplicate index (index value " + exp.indexValue + ")");
+                }
+                else
+                {
+                    indexList.Add(exp.indexValue);
+                }
+            }
+
+            if (duplicates.Count > 0)
+            {
+                string copy = "";
+                foreach (string str in duplicates)
+                {
+
+                    copy += str + "\n";
+                }
+                Clipboard.SetText(copy);
+                MessageBox.Show(duplicates.Count + " duplicate indexes were found.", "BAD INDEXING");
+                ListWindow lw = new ListWindow(duplicates, "Duplicate indexes");
+                lw.ShowDialog(this);
+            }
+            else
+            {
+                MessageBox.Show("No duplicate indexes were found.", "Indexing OK");
             }
         }
     }

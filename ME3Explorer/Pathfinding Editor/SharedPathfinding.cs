@@ -50,7 +50,7 @@ namespace ME3Explorer.Pathfinding_Editor
         /// </summary>
         /// <param name="export"></param>
         /// <returns></returns>
-        public UnrealGUID GetNavGUID(IExportEntry export)
+        public static UnrealGUID GetNavGUID(IExportEntry export)
         {
             StructProperty navGuid = export.GetProperty<StructProperty>("NavGuid");
             if (navGuid != null)
@@ -70,7 +70,7 @@ namespace ME3Explorer.Pathfinding_Editor
         /// </summary>
         /// <param name="guidStruct"></param>
         /// <returns></returns>
-        public UnrealGUID GetGUIDFromStruct(StructProperty guidStruct)
+        public static UnrealGUID GetGUIDFromStruct(StructProperty guidStruct)
         {
             int a = guidStruct.GetProp<IntProperty>("A");
             int b = guidStruct.GetProp<IntProperty>("B");
