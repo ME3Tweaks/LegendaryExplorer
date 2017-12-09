@@ -24,11 +24,12 @@ namespace ME3Explorer
                 SplashScreen splashScreen = new SplashScreen("resources/toolset_splash.png");
                 if (Environment.GetCommandLineArgs().Length == 1)
                 {
-                    splashScreen.Show(false); 
+                    splashScreen.Show(false);
                 }
                 App app = new App();
                 app.InitializeComponent();
                 splashScreen.Close(TimeSpan.FromMilliseconds(1));
+
                 app.Run();
 
                 // Allow single instance code to perform cleanup operations
@@ -44,12 +45,13 @@ namespace ME3Explorer
         public int SignalExternalCommandLineArgs(string[] args)
         {
             int exitCode = 0;
-            if (!HandleCommandLineArgs(args, out exitCode))
+            int taskListResponse = HandleCommandLineJumplistCall(args, out exitCode);
+            if (taskListResponse == 1)
             {
-                //if not called with command line arguments, bring window to the fore
+                //just a new instance
                 MainWindow.RestoreAndBringToFront();
             }
-            return exitCode;
+            return 0;
         }
     }
 }

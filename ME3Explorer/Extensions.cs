@@ -405,7 +405,10 @@ namespace ME3Explorer
         public static void WriteStringUnicode(this Stream stream, string value)
         {
             stream.WriteValueS32(-(value.Length + 1));
-            stream.WriteStringZ(value, Encoding.Unicode);
+            if (value.Length > 0)
+            {
+                stream.WriteStringZ(value, Encoding.Unicode);
+            }
         }
 
         public static void WriteStream(this Stream stream, MemoryStream value)

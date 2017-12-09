@@ -1753,6 +1753,7 @@ namespace ME3Explorer
             }
             else
             {
+                //Write binary
                 res.Write(idata, end, idata.Length - end);
             }
 
@@ -2098,7 +2099,7 @@ namespace ME3Explorer
 
                     copy += str + "\n";
                 }
-                Clipboard.SetText(copy);
+                //Clipboard.SetText(copy);
                 MessageBox.Show(duplicates.Count + " duplicate indexes were found.", "BAD INDEXING");
                 ListWindow lw = new ListWindow(duplicates, "Duplicate indexes");
                 lw.ShowDialog(this);

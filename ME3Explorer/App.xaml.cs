@@ -55,7 +55,7 @@ namespace ME3Explorer
             MEPackageHandler.Initialize();
 
             int exitCode = 0;
-            if (HandleCommandLineArgs(Environment.GetCommandLineArgs(), out exitCode))
+            if (HandleCommandLineJumplistCall(Environment.GetCommandLineArgs(), out exitCode) != 1)
             {
                 Shutdown(exitCode);
             }
@@ -70,12 +70,22 @@ namespace ME3Explorer
             ME3Explorer.Properties.Settings.Default.Save();
         }
 
-        private bool HandleCommandLineArgs(string[] args, out int exitCode)
+        private int HandleCommandLineJumplistCall(string[] args, out int exitCode)
         {
             if (args.Length < 2)
             {
                 exitCode = 0;
-                return false;
+                return 1;
+            }
+
+            string arg = args[1];
+            if (arg == "JUMPLIST_PACKAGE_EDITOR")
+            {
+                PackageEditor editor = new PackageEditor();
+                editor.BringToFront();
+                editor.Show();
+                exitCode = 0;
+                return 0;
             }
 
             string ending = Path.GetExtension(args[1]).ToLower();
@@ -85,10 +95,11 @@ namespace ME3Explorer
                     PackageEditor editor = new PackageEditor();
                     editor.Show();
                     editor.LoadFile(args[1]);
-                    break;
+                    exitCode = 0;
+                    return 1;
             }
             exitCode = 0;
-            return false;
+            return 1;
         }
     }
 }
