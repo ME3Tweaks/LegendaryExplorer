@@ -210,7 +210,7 @@ namespace ME3Explorer
                                         Debug.WriteLine("We should import " + origImport.GetFullPath);
 
                                         int newFileObjectValue = n;
-                                        foreach(ImportEntry imp in destinationExport.FileRef.Imports)
+                                        foreach (ImportEntry imp in destinationExport.FileRef.Imports)
                                         {
                                             if (imp.GetFullPath == origImportFullName)
                                             {
@@ -323,7 +323,7 @@ namespace ME3Explorer
                 int downstreamName = destinationPCC.FindNameOrAdd(fullobjectname);
 
                 mostdownstreamimport = new ImportEntry(destinationPCC);
-               // mostdownstreamimport.idxLink = downstreamLinkIdx; ??
+                // mostdownstreamimport.idxLink = downstreamLinkIdx; ??
                 mostdownstreamimport.idxClassName = downstreamClassName;
                 mostdownstreamimport.idxObjectName = downstreamName;
                 mostdownstreamimport.idxPackageName = downstreamPackageName;
@@ -426,13 +426,13 @@ namespace ME3Explorer
             topLevelTree.Name = "0";
             //try
             //{
-                List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
-                GenerateTree(topLevelTree, topLevelHeaders);
+            List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
+            GenerateTree(topLevelTree, topLevelHeaders);
             //}
             //catch (Exception ex)
             //{
-              //  topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
-                //addPropButton.Visible = false;
+            //  topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
+            //addPropButton.Visible = false;
             //}
             treeView1.Nodes.Add(topLevelTree);
             treeView1.CollapseAll();
@@ -482,6 +482,7 @@ namespace ME3Explorer
         {
             foreach (PropHeader header in headersList)
             {
+
                 if (readerpos > memory.Length)
                 {
                     throw new IndexOutOfRangeException(": tried to read past bounds of Export Data");
@@ -705,6 +706,10 @@ namespace ME3Explorer
                     }
                     if (type == nodeType.StructProperty)
                     {
+                        if (pcc.getNameEntry(header.name) == "ArriveTangent")
+                        {
+                            Debug.WriteLine("test");
+                        }
                         TreeNode t = GenerateNode(header);
                         readerpos = header.offset + 32;
                         List<PropHeader> ll = ReadHeadersTillNone();
@@ -1245,11 +1250,12 @@ namespace ME3Explorer
 
         public nodeType getType(string s)
         {
-            int ret = -1;
             for (int i = 0; i < Types.Length; i++)
                 if (s == Types[i])
-                    ret = i;
-            return (nodeType)ret;
+                {
+                    return (nodeType)i;
+                }
+            return (nodeType)(-1);
         }
 
         public List<PropHeader> ReadHeadersTillNone()
@@ -1279,9 +1285,15 @@ namespace ME3Explorer
                     run = false;
                 else
                 {
+                    string name = pcc.getNameEntry(p.name);
                     if (pcc.getNameEntry(p.name) != "None")
                     {
                         p.type = BitConverter.ToInt32(memory, readerpos + 8);
+                        if (p.name == 0 && p.type == 0 && pcc.getNameEntry(0) == "ArrayProperty")
+                        {
+                            //This could be a struct that just happens to have arrayproperty at name 0... this might fubar some stuff
+                            return ret;
+                        }
                         if (!pcc.isName(p.type) || getType(pcc.getNameEntry(p.type)) == nodeType.Unknown)
                             run = false;
                         else

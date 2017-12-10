@@ -2109,5 +2109,26 @@ namespace ME3Explorer
                 MessageBox.Show("No duplicate indexes were found.", "Indexing OK");
             }
         }
+
+        private void dEBUGCallReadPropertiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int n;
+            if (!GetSelected(out n))
+            {
+                return;
+            }
+            if (n >= 0)
+            {
+                try
+                {
+                    IExportEntry exp = pcc.Exports[n];
+                    exp.GetProperties();
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+        }
     }
 }
