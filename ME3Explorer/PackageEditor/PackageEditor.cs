@@ -2162,5 +2162,15 @@ namespace ME3Explorer
                 fxeditor.Show();
             }
         }
+
+        private void wWiseBankEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc != null)
+            {
+                WwiseBankEditor.WwiseEditor fxeditor = new WwiseBankEditor.WwiseEditor();
+                fxeditor.LoadFile(pcc.FileName);
+                fxeditor.Show();
+            }
+        }
     }
 }

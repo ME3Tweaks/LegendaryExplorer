@@ -29,7 +29,7 @@ namespace ME3Explorer
                 App app = new App();
                 app.InitializeComponent();
                 splashScreen.Close(TimeSpan.FromMilliseconds(1));
-
+                //will throw exception on some tools when opening over remote desktop.
                 app.Run();
 
                 // Allow single instance code to perform cleanup operations

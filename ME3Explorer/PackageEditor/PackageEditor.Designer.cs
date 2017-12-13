@@ -32,8 +32,10 @@
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.faceFXEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pathfindingEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sequenceEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.wWiseBankEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -137,8 +139,6 @@
             this.setAllIndexesInThisTreeTo0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.wWiseBankEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.faceFXEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -224,6 +224,13 @@
             this.openInToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openInToolStripMenuItem.Text = "Open in...";
             // 
+            // faceFXEditorToolStripMenuItem
+            // 
+            this.faceFXEditorToolStripMenuItem.Name = "faceFXEditorToolStripMenuItem";
+            this.faceFXEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.faceFXEditorToolStripMenuItem.Text = "FaceFX Editor";
+            this.faceFXEditorToolStripMenuItem.Click += new System.EventHandler(this.faceFXEditorToolStripMenuItem_Click);
+            // 
             // pathfindingEditorToolStripMenuItem
             // 
             this.pathfindingEditorToolStripMenuItem.Name = "pathfindingEditorToolStripMenuItem";
@@ -237,6 +244,13 @@
             this.sequenceEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.sequenceEditorToolStripMenuItem.Text = "Sequence Editor";
             this.sequenceEditorToolStripMenuItem.Click += new System.EventHandler(this.sequenceEditorToolStripMenuItem_Click);
+            // 
+            // wWiseBankEditorToolStripMenuItem
+            // 
+            this.wWiseBankEditorToolStripMenuItem.Name = "wWiseBankEditorToolStripMenuItem";
+            this.wWiseBankEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.wWiseBankEditorToolStripMenuItem.Text = "WWiseBank Editor";
+            this.wWiseBankEditorToolStripMenuItem.Click += new System.EventHandler(this.wWiseBankEditorToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
@@ -1206,19 +1220,6 @@
             this.cloneToolStripMenuItem1.Size = new System.Drawing.Size(105, 22);
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
-            // 
-            // wWiseBankEditorToolStripMenuItem
-            // 
-            this.wWiseBankEditorToolStripMenuItem.Name = "wWiseBankEditorToolStripMenuItem";
-            this.wWiseBankEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.wWiseBankEditorToolStripMenuItem.Text = "WWiseBank Editor";
-            // 
-            // faceFXEditorToolStripMenuItem
-            // 
-            this.faceFXEditorToolStripMenuItem.Name = "faceFXEditorToolStripMenuItem";
-            this.faceFXEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.faceFXEditorToolStripMenuItem.Text = "FaceFX Editor";
-            this.faceFXEditorToolStripMenuItem.Click += new System.EventHandler(this.faceFXEditorToolStripMenuItem_Click);
             // 
             // PackageEditor
             // 

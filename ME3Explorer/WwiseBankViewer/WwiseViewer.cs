@@ -31,15 +31,20 @@ namespace ME3Explorer.WwiseBankEditor
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                try
-                {
-                    LoadME3Package(d.FileName);
-                    ListRefresh();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error:\n" + ex.Message);
-                }
+                LoadFile(d.FileName);
+            }
+        }
+
+        public void LoadFile(string fileName)
+        {
+            try
+            {
+                LoadME3Package(fileName);
+                ListRefresh();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
             }
         }
 
