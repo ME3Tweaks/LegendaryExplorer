@@ -37,7 +37,7 @@ namespace ME3Explorer.SequenceObjects
         public static PNode dragTarget;
         public static bool OutputNumbers;
 
-        public int Index { get { return index;} }
+        public int Index { get { return index; } }
         //public float Width { get { return shape.Width; } }
         //public float Height { get { return shape.Height; } }
 
@@ -87,7 +87,7 @@ namespace ME3Explorer.SequenceObjects
                 foreach (var s in comments)
                 {
                     res += s + "\n";
-                } 
+                }
             }
             return res;
         }
@@ -131,10 +131,10 @@ namespace ME3Explorer.SequenceObjects
                 return VarTypes.Extern;
         }
     }
-    
+
     public class SVar : SObj
     {
-        public VarTypes type {get; set;}
+        public VarTypes type { get; set; }
         private SText val;
         protected PPath shape;
         public string Value { get { return val.Text; } set { val.Text = value; } }
@@ -255,6 +255,14 @@ namespace ME3Explorer.SequenceObjects
                         {
                             if (prop.Name == "m_sObjectTagToFind")
                             {
+                                if (prop is NameProperty)
+                                {
+                                    return (prop as NameProperty).Value;
+                                }
+                                if (prop is StrProperty)
+                                {
+                                    return (prop as StrProperty).Value;
+                                }
                                 return (prop as StrProperty).Value;
                             }
                             else if (prop.Name == "ObjValue")
@@ -466,16 +474,16 @@ namespace ME3Explorer.SequenceObjects
         protected SBox(int idx, IMEPackage p, GraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
-            
+
         }
 
         protected SBox(int idx, IMEPackage p)
             : base(idx, p)
         {
-            
+
         }
 
-        public override void CreateConnections(ref List<SObj> objects) 
+        public override void CreateConnections(ref List<SObj> objects)
         {
             for (int i = 0; i < Outlinks.Count; i++)
             {
@@ -536,7 +544,7 @@ namespace ME3Explorer.SequenceObjects
         protected float GetTitleBox(string s, float w)
         {
             s = "#" + index + " : " + s;
-            SText title = new SText(s,titleBrush);
+            SText title = new SText(s, titleBrush);
             title.TextAlignment = StringAlignment.Center;
             title.ConstrainWidthToTextWidth = false;
             if (title.Width + 20 > w)
@@ -584,7 +592,7 @@ namespace ME3Explorer.SequenceObjects
                         l.type = getType(pcc.getObjectName(props.GetProp<ObjectProperty>("ExpectedType").Value));
                         l.writeable = props.GetProp<BoolProperty>("bWriteable").Value;
                         if (l.writeable)
-                        {   
+                        {
                             //downward pointing triangle
                             l.node = PPath.CreatePolygon(new PointF[] { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) });
                             l.node.AddChild(PPath.CreatePolygon(new PointF[] { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) }));
@@ -694,7 +702,7 @@ namespace ME3Explorer.SequenceObjects
             protected override void OnEndDrag(object sender, PInputEventArgs e)
             {
                 PPath edge = (PPath)((ArrayList)((PNode)sender).Tag)[0];
-                ((PNode)sender).SetOffset(0,0);
+                ((PNode)sender).SetOffset(0, 0);
                 ((ArrayList)((PNode)sender).Parent.Tag).Remove(edge);
                 ((SBox)e.PickedNode.Parent.Parent.Parent.Parent).g.edgeLayer.RemoveChild(edge);
                 ((ArrayList)((PNode)sender).Tag).RemoveAt(0);
@@ -823,7 +831,7 @@ namespace ME3Explorer.SequenceObjects
                     break;
                 }
             }
-            if(linkDesc == null)
+            if (linkDesc == null)
                 return;
             var varLinksProp = startExport.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
             if (varLinksProp != null)
@@ -899,7 +907,7 @@ namespace ME3Explorer.SequenceObjects
                 foreach (int l in Varlinks[i].Links)
                     d = d + "#" + l + ",";
                 d = d.Remove(d.Length - 1);
-                SText t2 = new SText( d + "\n" + Varlinks[i].Desc);
+                SText t2 = new SText(d + "\n" + Varlinks[i].Desc);
                 t2.X = w;
                 t2.Y = 0;
                 w += t2.Width + 20;
@@ -908,7 +916,7 @@ namespace ME3Explorer.SequenceObjects
                 t2.AddChild(Varlinks[i].node);
                 varLinkBox.AddChild(t2);
             }
-            if(Varlinks.Count != 0)
+            if (Varlinks.Count != 0)
                 varLinkBox.AddRectangle(0, 0, w, varLinkBox[0].Height);
             varLinkBox.Pickable = false;
             varLinkBox.Pen = outlinePen;
@@ -918,7 +926,7 @@ namespace ME3Explorer.SequenceObjects
             for (int i = 0; i < Outlinks.Count(); i++)
             {
                 SText t2 = new SText(Outlinks[i].Desc);
-                if(t2.Width + 10 > midW) midW = t2.Width + 10;
+                if (t2.Width + 10 > midW) midW = t2.Width + 10;
                 //t2.TextAlignment = StringAlignment.Far;
                 //t2.ConstrainWidthToTextWidth = false;
                 t2.X = 0 - t2.Width;
@@ -929,7 +937,7 @@ namespace ME3Explorer.SequenceObjects
                 t2.AddChild(Outlinks[i].node);
                 outLinkBox.AddChild(t2);
             }
-            outLinkBox.AddPolygon(new PointF[] { new PointF(0, 0), new PointF(0, starty), new PointF(-0.5f*midW, starty+30), new PointF(0 - midW, starty), new PointF(0 - midW, 0), new PointF(midW/-2, -30) });
+            outLinkBox.AddPolygon(new PointF[] { new PointF(0, 0), new PointF(0, starty), new PointF(-0.5f * midW, starty + 30), new PointF(0 - midW, starty), new PointF(0 - midW, 0), new PointF(midW / -2, -30) });
             outLinkBox.Pickable = false;
             outLinkBox.Pen = outlinePen;
             outLinkBox.Brush = nodeBrush;
@@ -956,7 +964,7 @@ namespace ME3Explorer.SequenceObjects
                 varLinkBox.Width = w;
             }
             float h = titleBox.Height + 1;
-            outLinkBox.TranslateBy(titleBox.Width/2 + midW/2, h + 30);
+            outLinkBox.TranslateBy(titleBox.Width / 2 + midW / 2, h + 30);
             h += outLinkBox.Height + 1;
             varLinkBox.TranslateBy(0, h);
             h += varLinkBox.Height;
@@ -1039,13 +1047,13 @@ namespace ME3Explorer.SequenceObjects
                     y = originalY;
             }
             else
-	        {
+            {
                 // ==
                 if (Math.Abs(originalX - -1) > float.Epsilon)
                     x = originalX;
                 // ==
                 if (Math.Abs(originalY - -1) > float.Epsilon)
-                    y = originalY; 
+                    y = originalY;
             }
             outlinePen = new Pen(Color.Black);
             string s = export.ObjectName;
@@ -1138,7 +1146,7 @@ namespace ME3Explorer.SequenceObjects
                     }
                     else
                     {
-                        s += "\n\"" + pcc.getEntry(objectProperty.Value).ObjectName + "\""; 
+                        s += "\n\"" + pcc.getEntry(objectProperty.Value).ObjectName + "\"";
                     }
                 }
                 else if (prop.Name == "EventName" || prop.Name == "StateName")
@@ -1232,11 +1240,11 @@ namespace ME3Explorer.SequenceObjects
                     InLinks.Clear();
                 }
             }
-            if(this.Tag != null)
+            if (this.Tag != null)
             {
                 int numInputs = InLinks.Count;
                 int inputNum;
-                foreach(PPath edge in ((ArrayList)this.Tag))
+                foreach (PPath edge in ((ArrayList)this.Tag))
                 {
                     inputNum = (int)((ArrayList)edge.Tag)[2];
                     //if there are inputs with an index greater than is accounted for by
@@ -1258,7 +1266,7 @@ namespace ME3Explorer.SequenceObjects
                         }
                         numInputs = inputNum + 1;
                     }
-                    if(inputNum >= 0)
+                    if (inputNum >= 0)
                         ((ArrayList)edge.Tag)[1] = InLinks[inputNum].node;
                 }
             }
@@ -1289,7 +1297,7 @@ namespace ME3Explorer.SequenceObjects
 
         public void OnMouseEnter(object sender, PInputEventArgs e)
         {
-            if(draggingOutlink)
+            if (draggingOutlink)
             {
                 ((PPath)sender).Pen = selectedPen;
                 dragTarget = (PPath)sender;
@@ -1330,7 +1338,7 @@ namespace ME3Explorer.SequenceObjects
 
         public static void LoadFont()
         {
-            if(fontcollection == null || fontcollection.Families.Length < 1)
+            if (fontcollection == null || fontcollection.Families.Length < 1)
             {
                 fontcollection = new PrivateFontCollection();
                 fontcollection.AddFontFile(@"exec\KismetFont.ttf");
