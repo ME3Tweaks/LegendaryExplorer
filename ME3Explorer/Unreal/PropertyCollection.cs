@@ -79,7 +79,8 @@ namespace ME3Explorer.Unreal
                     stream.Seek(4, SeekOrigin.Current);
                     break;
                 }
-                Debug.WriteLine("0x" + nameOffset.ToString("X4") + " " + name);
+                //Debug.WriteLine("0x" + nameOffset.ToString("X4") + " " + name);
+
                 NameReference nameRef = new NameReference { Name = name, Number = stream.ReadValueS32() };
                 int typeIdx = stream.ReadValueS32();
                 stream.Seek(4, SeekOrigin.Current);
@@ -1055,6 +1056,13 @@ namespace ME3Explorer.Unreal
             else
             {
                 Value = string.Empty;
+                //ME3Explroer 3.0.2 and below wrote a null terminator character when writing an empty string.
+                //The game however does not write an empty string if the length is 0 - it just happened to still work but not 100% of the time
+                //This is for backwards compatibility with that as it will have a count of 0 instead of -1
+                if (count == -1)
+                {
+                    stream.Position += 2;
+                }
             }
 
             //for when the end of the string has multiple nulls at the end

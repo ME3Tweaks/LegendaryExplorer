@@ -87,6 +87,22 @@ namespace ME3Explorer
                 exitCode = 0;
                 return 0;
             }
+            if (arg == "JUMPLIST_SEQUENCE_EDITOR")
+            {
+                SequenceEditor editor = new SequenceEditor();
+                editor.BringToFront();
+                editor.Show();
+                exitCode = 0;
+                return 0;
+            }
+            if (arg == "JUMPLIST_PATHFINDING_EDITOR")
+            {
+                PathfindingEditor editor = new PathfindingEditor();
+                editor.BringToFront();
+                editor.Show();
+                exitCode = 0;
+                return 0;
+            }
 
             string ending = Path.GetExtension(args[1]).ToLower();
             switch (ending)

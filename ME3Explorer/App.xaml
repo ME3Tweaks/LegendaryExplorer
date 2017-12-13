@@ -193,9 +193,16 @@
     </Application.Resources>
     <JumpList.JumpList>
         <JumpList >
+            
             <JumpTask Title="Package Editor" 
                       Description="Opens a new instance of Package Editor" 
                       Arguments="JUMPLIST_PACKAGE_EDITOR"/>
+            <JumpTask Title="Pathfinding Editor" 
+                      Description="Opens a new instance of Pathfinding Editor" 
+                      Arguments="JUMPLIST_SEQUENCE_EDITOR"/>
+            <JumpTask Title="Sequence Editor" 
+                      Description="Opens a new instance of Sequence Editor" 
+                      Arguments="JUMPLIST_SEQUENCE_EDITOR"/>
         </JumpList>
     </JumpList.JumpList>
 </Application>

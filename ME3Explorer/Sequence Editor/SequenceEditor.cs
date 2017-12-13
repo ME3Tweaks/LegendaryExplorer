@@ -19,7 +19,7 @@ using UMD.HCIL.GraphEditor;
 using Newtonsoft.Json;
 using KFreonLib.MEDirectories;
 using Gibbed.IO;
-
+using System.Diagnostics;
 
 namespace ME3Explorer
 {
@@ -192,7 +192,7 @@ namespace ME3Explorer
             }
         }
 
-        private void LoadFile(string fileName)
+        public void LoadFile(string fileName)
         {
             try
             {
@@ -455,6 +455,10 @@ namespace ME3Explorer
                     savedInfo = SavedPositions.FirstOrDefault(p => CurrentObjects.IndexOf(index) == p.index);
                 else
                     savedInfo = SavedPositions.FirstOrDefault(p => index == p.index); 
+            }
+            if (index == 3131 && Path.GetFileNameWithoutExtension(pcc.FileName) =="SFXPawn_Light_MASTER")
+            {
+                Debug.WriteLine("BREAK");
             }
             PropertyCollection props = pcc.getExport(index).GetProperties();
             foreach (var prop in props)

@@ -2130,5 +2130,37 @@ namespace ME3Explorer
                 }
             }
         }
+
+        private void pathfindingEditorToolstripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc != null)
+            {
+                PathfindingEditor editor = new PathfindingEditor();
+                editor.LoadFile(pcc.FileName);
+                editor.BringToFront();
+                editor.Show();
+            }
+        }
+
+        private void sequenceEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc != null)
+            {
+                SequenceEditor editor = new SequenceEditor();
+                editor.LoadFile(pcc.FileName);
+                editor.BringToFront();
+                editor.Show();
+            }
+        }
+
+        private void faceFXEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc != null)
+            {
+                FaceFX.FaceFXEditor fxeditor = new FaceFX.FaceFXEditor();
+                fxeditor.LoadFile(pcc.FileName);
+                fxeditor.Show();
+            }
+        }
     }
 }
