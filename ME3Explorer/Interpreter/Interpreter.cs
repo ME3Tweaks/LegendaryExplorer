@@ -1981,51 +1981,61 @@ namespace ME3Explorer
                         break;
                     case "StrProperty":
                         string s = proptext.Text;
-                        int offset = pos + 24;
-                        int stringMultiplier = 1;
+                        int offset = pos + 24; //where string data starts
+                        int stringMultiplier = 1; //unicode vs ascii
                         int oldSize = BitConverter.ToInt32(memory, pos + 16);
                         int oldLength = BitConverter.ToInt32(memory, offset);
-                        if (oldLength < 0)
+                        if (oldLength < 0) //ascii or empty unicode string check
                         {
+                            //unicode str of size > 0
                             stringMultiplier = 2;
                             oldLength *= -2;
                         }
-                        List<byte> stringBuff = new List<byte>(s.Length * stringMultiplier);
-                        if (stringMultiplier == 2)
+                        List<byte> stringBuff = new List<byte>(s.Length * stringMultiplier); //byte buffer
+                        if (stringMultiplier == 2) 
                         {
+                            //UNICODE
                             for (int j = 0; j < s.Length; j++)
                             {
                                 stringBuff.AddRange(BitConverter.GetBytes(s[j]));
                             }
-                            stringBuff.Add(0);
+                            stringBuff.Add(0); //byte 2
                         }
                         else
                         {
+                            //ASCII
                             for (int j = 0; j < s.Length; j++)
                             {
-                                stringBuff.Add(BitConverter.GetBytes(s[j])[0]);
+                                stringBuff.Add(BitConverter.GetBytes(s[j])[0]); //get only first byte. This returns unicode byte, so discard byte 2
                             }
                         }
-                        stringBuff.Add(0);
-                        byte[] buff = BitConverter.GetBytes((s.Count() + 1) * stringMultiplier + 4);
+                        if (s.Length > 0)
+                        {
+                            //THIS MIGHT BREAK ME1
+                            stringBuff.Add(0); //terminator char?
+                        }
+
+                        //Write data
+
+                        byte[] buff = BitConverter.GetBytes((s.Count() + (s.Length == 0 ? 0 : 1)) * stringMultiplier + 4); //Write unreal data size of str (4 + length)
                         for (int j = 0; j < 4; j++)
                             memory[offset - 8 + j] = buff[j];
-                        buff = BitConverter.GetBytes((s.Count() + 1) * (stringMultiplier == 1 ? 1 : -1));
-                        for (int j = 0; j < 4; j++)
+                        buff = BitConverter.GetBytes((s.Count() + (s.Length == 0 ? 0 : 1)) * (stringMultiplier == 1 ? 1 : -1));
+                        for (int j = 0; j < 4; j++) //Write string length (string data, not unreal)
                             memory[offset + j] = buff[j];
                         buff = new byte[memory.Length - oldLength + stringBuff.Count];
                         int startLength = offset + 4;
                         int startLength2 = startLength + oldLength;
-                        for (int j = 0; j < startLength; j++)
+                        for (int j = 0; j < startLength; j++) //Write data before strproperty data
                         {
                             buff[j] = memory[j];
                         }
-                        for (int j = 0; j < stringBuff.Count; j++)
+                        for (int j = 0; j < stringBuff.Count; j++) //Write String data
                         {
                             buff[j + startLength] = stringBuff[j];
                         }
-                        startLength += stringBuff.Count;
-                        for (int j = 0; j < memory.Length - startLength2; j++)
+                        startLength += stringBuff.Count; //add string byte data as an offset since the placement of the file will have moved.
+                        for (int j = 0; j < memory.Length - startLength2; j++) //write the rest of the data.
                         {
                             buff[j + startLength] = memory[j + startLength2];
                         }

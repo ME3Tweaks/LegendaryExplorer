@@ -1102,7 +1102,7 @@ namespace ME3Explorer.Unreal
                     }
                     break;
                 case "StrProperty":
-                    name2 = p.Value.StringValue + '\0';
+                    name2 = p.Value.StringValue + '\0'; //[STRINGLENGTH-FIX]
                     m.Write(BitConverter.GetBytes(-name2.Length), 0, 4);
                     foreach (char c in name2)
                     {
