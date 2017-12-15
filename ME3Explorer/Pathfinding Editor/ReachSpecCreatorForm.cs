@@ -60,7 +60,7 @@ namespace ME3Explorer.Pathfinding_Editor
             sourcePoint = new Point3D(sourceX, sourceY, sourceZ);
             reachSpecTypeComboBox.SelectedIndex = 0;
             specSizeCombobox.SelectedIndex = 1;
-
+            StartPosition = FormStartPosition.CenterParent;
         }
 
         private void destinationNodeTextBox_KeyPressed(object sender, KeyPressEventArgs e)

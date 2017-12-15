@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 using KFreonLib.MEDirectories;
 using Gibbed.IO;
 using System.Diagnostics;
+using ME3Explorer.SharedUI;
 
 namespace ME3Explorer
 {
@@ -33,13 +34,13 @@ namespace ME3Explorer
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
             graphEditor.Camera.MouseDown += backMouseDown_Handler;
             zoomController = new ZoomController(graphEditor);
-            
+
             SText.LoadFont();
             if (SObj.talkfiles == null)
             {
                 talkFiles = new ME1Explorer.TalkFiles();
                 talkFiles.LoadGlobalTlk();
-                SObj.talkfiles = talkFiles; 
+                SObj.talkfiles = talkFiles;
             }
             else
             {
@@ -121,7 +122,7 @@ namespace ME3Explorer
                 {
                     MessageBox.Show($"Error migrating old ME1 data.\nPlease manually move all files from  {OldME1SequenceViews} to {ME1ViewsPath}\nThen delete the original SequenceViews directory.");
                 }
-            } 
+            }
             #endregion
 
             if (File.Exists(OptionsPath))
@@ -292,7 +293,7 @@ namespace ME3Explorer
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if(autoSaveViewToolStripMenuItem.Checked)
+            if (autoSaveViewToolStripMenuItem.Checked)
                 saveView();
             SavedPositions = null;
             if (e.Node.Name != "")
@@ -316,7 +317,7 @@ namespace ME3Explorer
             GetProperties(Sequence);
             GetObjects(Sequence);
             SetupJSON(Sequence);
-            if(SavedPositions == null)
+            if (SavedPositions == null)
                 SavedPositions = new List<SaveData>();
             if (fromFile && File.Exists(JSONpath))
                 SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(File.ReadAllText(JSONpath));
@@ -359,7 +360,7 @@ namespace ME3Explorer
             {
                 if (pcc.Game == MEGame.ME3)
                 {
-                    JSONpath = ME3ViewsPath + packageFullName.Substring(packageFullName.LastIndexOf("SequenceReference")) + "." + objectName + ".JSON"; 
+                    JSONpath = ME3ViewsPath + packageFullName.Substring(packageFullName.LastIndexOf("SequenceReference")) + "." + objectName + ".JSON";
                 }
                 else
                 {
@@ -454,9 +455,9 @@ namespace ME3Explorer
                 if (RefOrRefChild)
                     savedInfo = SavedPositions.FirstOrDefault(p => CurrentObjects.IndexOf(index) == p.index);
                 else
-                    savedInfo = SavedPositions.FirstOrDefault(p => index == p.index); 
+                    savedInfo = SavedPositions.FirstOrDefault(p => index == p.index);
             }
-            if (index == 3131 && Path.GetFileNameWithoutExtension(pcc.FileName) =="SFXPawn_Light_MASTER")
+            if (index == 3131 && Path.GetFileNameWithoutExtension(pcc.FileName) == "SFXPawn_Light_MASTER")
             {
                 Debug.WriteLine("BREAK");
             }
@@ -486,11 +487,11 @@ namespace ME3Explorer
                     else
                     {
                         Objects.Add(new SEvent(index, StartPosEvents, 0, pcc, graphEditor));
-                        StartPosEvents += Objects[Objects.Count - 1].Width + 20; 
+                        StartPosEvents += Objects[Objects.Count - 1].Width + 20;
                     }
                 }
             }
-             else if (s.StartsWith("SeqVar_") || s.StartsWith("BioSeqVar_") || s.StartsWith("SFXSeqVar_") || s.StartsWith("InterpData"))
+            else if (s.StartsWith("SeqVar_") || s.StartsWith("BioSeqVar_") || s.StartsWith("SFXSeqVar_") || s.StartsWith("InterpData"))
             {
                 if (savedInfo.index == (RefOrRefChild ? CurrentObjects.IndexOf(index) : index))
                     Objects.Add(new SVar(index, savedInfo.X, savedInfo.Y, pcc, graphEditor));
@@ -503,7 +504,7 @@ namespace ME3Explorer
                     else
                     {
                         Objects.Add(new SVar(index, StartPosVars, 500, pcc, graphEditor));
-                        StartPosVars += Objects[Objects.Count - 1].Width + 20; 
+                        StartPosVars += Objects[Objects.Count - 1].Width + 20;
                     }
                 }
             }
@@ -519,7 +520,7 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    Objects.Add(new SAction(index, -1, -1, pcc, graphEditor)); 
+                    Objects.Add(new SAction(index, -1, -1, pcc, graphEditor));
                 }
             }
         }
@@ -576,7 +577,7 @@ namespace ME3Explorer
                             if (RefOrRefChild)
                                 savedInfo = SavedPositions.FirstOrDefault(p => CurrentObjects.IndexOf(o.Index) == p.index);
                             else
-                                savedInfo = SavedPositions.FirstOrDefault(p => o.Index == p.index); 
+                                savedInfo = SavedPositions.FirstOrDefault(p => o.Index == p.index);
                         }
                         if (savedInfo.index == (RefOrRefChild ? CurrentObjects.IndexOf(o.Index) : o.Index))
                             o.Layout(savedInfo.X, savedInfo.Y);
@@ -589,7 +590,7 @@ namespace ME3Explorer
                             else
                             {
                                 o.Layout(StartPosActions, 250);
-                                StartPosActions += o.Width + 20; 
+                                StartPosActions += o.Width + 20;
                             }
                         }
                     }
@@ -643,7 +644,7 @@ namespace ME3Explorer
 
         private void SequenceEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(autoSaveViewToolStripMenuItem.Checked)
+            if (autoSaveViewToolStripMenuItem.Checked)
                 saveView();
 
             Dictionary<string, object> options = new Dictionary<string, object>();
@@ -715,7 +716,7 @@ namespace ME3Explorer
                 //break links
                 breakLinksToolStripMenuItem.Enabled = false;
                 breakLinksToolStripMenuItem.DropDown = null;
-                if(sender is SAction || sender is SEvent)
+                if (sender is SAction || sender is SEvent)
                 {
                     ToolStripMenuItem temp;
                     ToolStripDropDown submenu = new ToolStripDropDown();
@@ -756,7 +757,7 @@ namespace ME3Explorer
                             }
                         }
                     }
-                    if(varLinkMenu.Items.Count > 0)
+                    if (varLinkMenu.Items.Count > 0)
                     {
                         temp = new ToolStripMenuItem("Variable Links");
                         temp.DropDown = varLinkMenu;
@@ -850,7 +851,7 @@ namespace ME3Explorer
                 File.WriteAllText(JSONpath, outputFile);
                 SavedPositions.Clear();
             }
-            
+
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -868,43 +869,36 @@ namespace ME3Explorer
             p.LoadFile(CurrentFile);
             p.goToNumber(l);
         }
-        
+
         private void addObjectsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (CurrentObjects.Count == 0)
                 return;
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Please enter object index", "ME3Explorer");
-            if (result == "")
-                return;
-            int i;
-            if (int.TryParse(result, out i))
+
+            using (ExportSelectorWinForms form = new ExportSelectorWinForms(pcc, ExportSelectorWinForms.SUPPORTS_EXPORTS_ONLY))
             {
-                if(i < pcc.ExportCount)
+                DialogResult dr = form.ShowDialog(this);
+                if (dr != DialogResult.Yes)
                 {
-                    if (!CurrentObjects.Contains(i))
+                    return; //user cancel
+                }
+
+                int i = form.SelectedItemIndex;
+                if (!CurrentObjects.Contains(i))
+                {
+                    if (pcc.getExport(i).inheritsFrom("SequenceObject"))
                     {
-                        if (pcc.getExport(i).inheritsFrom("SequenceObject"))
-                        {
-                            addObject(i);
-                        }
-                        else
-                        {
-                            MessageBox.Show(i + " is not a sequence object.");
-                        }
+                        addObject(i);
                     }
                     else
                     {
-                        MessageBox.Show(i + " is already in the sequence.");
+                        MessageBox.Show(i + " is not a sequence object.");
                     }
                 }
                 else
                 {
-                    MessageBox.Show(i + " is not in the export list.");
+                    MessageBox.Show(i + " is already in the sequence.");
                 }
-            }
-            else
-            {
-                MessageBox.Show(result + " is not an integer.");
             }
         }
 
@@ -960,7 +954,7 @@ namespace ME3Explorer
         {
 
             int n = listBox1.SelectedIndex;
-            if (n == -1 )
+            if (n == -1)
                 return;
             PropGrid.propGridPropertyValueChanged(e, CurrentObjects[n], pcc);
         }
@@ -968,7 +962,7 @@ namespace ME3Explorer
         private void showOutputNumbersToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SObj.OutputNumbers = showOutputNumbersToolStripMenuItem.Checked;
-            if(CurrentObjects != null)
+            if (CurrentObjects != null)
             {
                 RefreshView();
             }
@@ -1034,7 +1028,7 @@ namespace ME3Explorer
                     ME1Explorer.TlkManager tm = new ME1Explorer.TlkManager();
                     tm.InitTlkManager(talkFiles);
                     tm.Show();
-                } 
+                }
             }
         }
 
@@ -1130,7 +1124,7 @@ namespace ME3Explorer
                 {
                     cloneObject(oldObjects[i] - 1, exp, false);
                 }
-                
+
                 //re-point children's links to new objects
                 seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
                 foreach (var seqObj in seqObjs)
@@ -1319,7 +1313,7 @@ namespace ME3Explorer
                 LoadSequences();
                 return;
             }
-            
+
             if (updatedExports.Intersect(CurrentObjects).Count() > 0)
             {
                 RefreshView();

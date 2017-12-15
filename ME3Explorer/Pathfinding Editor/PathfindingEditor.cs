@@ -1815,7 +1815,7 @@ namespace ME3Explorer
             int size = 1; //Minibosses by default
             using (ReachSpecCreatorForm form = new ReachSpecCreatorForm(pcc, sourceExportIndex))
             {
-                DialogResult dr = form.ShowDialog();
+                DialogResult dr = form.ShowDialog(this);
                 if (dr != DialogResult.Yes)
                 {
                     return; //user cancel
