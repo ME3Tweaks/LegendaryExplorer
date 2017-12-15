@@ -2027,12 +2027,23 @@ namespace ME3Explorer
                         int stringMultiplier = 1; //unicode vs ascii
                         int oldSize = BitConverter.ToInt32(memory, pos + 16);
                         int oldLength = BitConverter.ToInt32(memory, offset);
-                        if (oldLength < 0) //ascii or empty unicode string check
+                        if (pcc.Game != MEGame.ME1)
                         {
-                            //unicode str of size > 0
+                            //Unicode Mode
                             stringMultiplier = 2;
+                            if(oldLength == -1 && oldSize == 4)
+                            {
+                                oldLength = 0; //Corrects a bug in development version of me3explorer
+                            }
                             oldLength *= -2;
                         }
+
+                        //if (oldLength < -1) //ascii or empty unicode string check. -1 means it is empty unicode string from pre 3.0.3 me3explorer
+                        //{
+                        //    //unicode str of size > 0
+                        //    stringMultiplier = 2;
+                        //    oldLength *= -2;
+                        //}
                         List<byte> stringBuff = new List<byte>(s.Length * stringMultiplier); //byte buffer
                         if (stringMultiplier == 2)
                         {
@@ -2040,8 +2051,8 @@ namespace ME3Explorer
                             for (int j = 0; j < s.Length; j++)
                             {
                                 stringBuff.AddRange(BitConverter.GetBytes(s[j]));
+                                stringBuff.Add(0); //byte 2
                             }
-                            stringBuff.Add(0); //byte 2
                         }
                         else
                         {
