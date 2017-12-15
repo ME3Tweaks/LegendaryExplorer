@@ -59,6 +59,12 @@
          "name":"SFXDynamicCoverSlotMarker",
          "cylindercomponentarchetype":"Engine.Default__SFXDynamicCoverSlotMarker.CollisionCylinder",
          "incomingreachspecclass":"Engine.ReachSpec"
+      },
+      "SFXNav_InteractionHenchOmniTool":{
+         "class":"SFXGameContent.SFXNav_InteractionHenchOmniTool",
+         "name":"SFXNav_InteractionHenchOmniTool",
+         "cylindercomponentarchetype":"SFXGameContent.Default__SFXNav_InteractionHenchOmniTool.CollisionCylinder",
+         "incomingreachspecclass":"Engine.ReachSpec"
       }
 
    },
@@ -223,6 +229,18 @@
       "Engine.Default__SFXDynamicCoverSlotMarker.CollisionCylinder":{
          "class":"Engine.CylinderComponent",
          "packagefile":"Engine"
-      }
+      },
+      "SFXGame.SFXNav_InteractionHenchOmniTool":{
+         "class":"Class",
+         "packagefile":"Core"
+      },
+      "SFXGame.Default__SFXNav_InteractionHenchOmniTool":{
+         "class":"Class",
+         "packagefile":"Core"
+      },
+      "SFXGame.Default__SFXNav_InteractionHenchOmniTool.CollisionCylinder":{
+         "class":"Engine.CylinderComponent",
+         "packagefile":"Engine"
+      },
    }
 }
