@@ -62,7 +62,7 @@
       },
       "SFXNav_InteractionHenchOmniTool":{
          "class":"SFXGameContent.SFXNav_InteractionHenchOmniTool",
-         "name":"SFXNav_InteractionHenchOmniToolCrouch",
+         "name":"SFXNav_InteractionHenchOmniTool",
          "cylindercomponentarchetype":"SFXGameContent.Default__SFXNav_InteractionHenchOmniTool.CollisionCylinder",
          "incomingreachspecclass":"Engine.ReachSpec"
       },
