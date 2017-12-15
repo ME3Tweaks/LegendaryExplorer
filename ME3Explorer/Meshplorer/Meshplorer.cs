@@ -246,7 +246,7 @@ namespace ME3Explorer.Meshplorer
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     stm.ExportToPsk(d.FileName);
-                    MessageBox.Show("Done.");
+                    MessageBox.Show("Done.","Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
             if (pcc.Exports[n].ClassName == "SkeletalMesh")
@@ -256,7 +256,7 @@ namespace ME3Explorer.Meshplorer
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     skmold.ExportToPsk(d.FileName, getLOD());
-                    MessageBox.Show("Done.");
+                    MessageBox.Show("Done.","Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
         }
@@ -298,7 +298,7 @@ namespace ME3Explorer.Meshplorer
                     for (int i = start; i < buff.Length; i++)
                         fs.WriteByte(buff[i]);
                     fs.Close();
-                    MessageBox.Show("Done.");
+                    MessageBox.Show("Done.","Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
             if (pcc.Exports[n].ClassName == "SkeletalMesh")
@@ -314,7 +314,7 @@ namespace ME3Explorer.Meshplorer
                     for (int i = start; i < buff.Length; i++)
                         fs.WriteByte(buff[i]);
                     fs.Close();
-                    MessageBox.Show("Done.");
+                    MessageBox.Show("Done.","Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
         }
@@ -342,7 +342,7 @@ namespace ME3Explorer.Meshplorer
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     stm.SerializeToFile(d.FileName);
-                    MessageBox.Show("Done.");
+                    MessageBox.Show("Done.","Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
             if (pcc.Exports[n].ClassName == "SkeletalMesh")
@@ -359,7 +359,7 @@ namespace ME3Explorer.Meshplorer
                     FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
                     fs.Write(c.Memory.ToArray(), 0, (int)c.Memory.Length);
                     fs.Close();
-                    MessageBox.Show("Done.");
+                    MessageBox.Show("Done.","Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
         }
@@ -391,7 +391,7 @@ namespace ME3Explorer.Meshplorer
                     int idx = n;
                     IExportEntry en = pcc.Exports[idx];
                     en.Data = buff;
-                    MessageBox.Show("Done.");
+                    MessageBox.Show("Done.","Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                     timer1.Enabled = true;
                 }
             }
@@ -408,7 +408,7 @@ namespace ME3Explorer.Meshplorer
                     int idx = n;
                     IExportEntry en = pcc.Exports[idx];
                     en.Data = buff;
-                    MessageBox.Show("Done.");
+                    MessageBox.Show("Done.","Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                     rtb1.Visible = false;
                     timer1.Enabled = true;
                 }
@@ -473,7 +473,7 @@ namespace ME3Explorer.Meshplorer
                 FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
                 PrintNodes(treeView1.Nodes, fs, 0);
                 fs.Close();
-                MessageBox.Show("Done.");
+                MessageBox.Show("Done.","Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
             }
         }
 
@@ -541,7 +541,7 @@ namespace ME3Explorer.Meshplorer
                         File.Delete(d.FileName);
                     PSKFile p = stm.ExportToPsk();
                     Helper3DS.ConvertPSKto3DS(p, d.FileName);
-                    MessageBox.Show("Done.");
+                    MessageBox.Show("Done.","Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
         }
@@ -635,7 +635,7 @@ namespace ME3Explorer.Meshplorer
                     for (int i = start; i < buff.Length; i++)
                         fs.WriteByte(buff[i]);
                     fs.Close();
-                    MessageBox.Show("Done.");
+                    MessageBox.Show("Done.","Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
             if (pcc.Exports[n].ClassName == "SkeletalMesh")
@@ -651,7 +651,7 @@ namespace ME3Explorer.Meshplorer
                     for (int i = start; i < buff.Length; i++)
                         fs.WriteByte(buff[i]);
                     fs.Close();
-                    MessageBox.Show("Done.");
+                    MessageBox.Show("Done.","Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
         }
@@ -837,7 +837,7 @@ namespace ME3Explorer.Meshplorer
             if (pcc == null)
                 return;
             pcc.save();
-            MessageBox.Show("Done");
+            MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
         }
 
         private void pb1_Resize(object sender, EventArgs e)
