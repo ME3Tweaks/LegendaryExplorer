@@ -241,6 +241,6 @@
       "SFXGame.Default__SFXNav_InteractionHenchOmniTool.CollisionCylinder":{
          "class":"Engine.CylinderComponent",
          "packagefile":"Engine"
-      },
+      }
    }
 }
