@@ -1406,7 +1406,7 @@ namespace ME3Explorer
                     }
 
                     relinkObjects(importpcc);
-                    relinkBinaryObjects(importpcc);
+                    //relinkBinaryObjects(importpcc);
 
                     crossPCCObjectMapping = null;
 

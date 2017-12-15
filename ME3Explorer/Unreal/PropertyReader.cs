@@ -1199,7 +1199,7 @@ namespace ME3Explorer.Unreal
 
         public static void WriteNoneProperty(this Stream stream, IMEPackage pcc)
         {
-            Debug.WriteLine("Writing none property at 0x" + stream.Position.ToString("X6"));
+            //Debug.WriteLine("Writing none property at 0x" + stream.Position.ToString("X6"));
 
             stream.WriteValueS32(pcc.FindNameOrAdd("None"));
             stream.WriteValueS32(0);
@@ -1207,7 +1207,7 @@ namespace ME3Explorer.Unreal
 
         public static void WriteStructProperty(this Stream stream, IMEPackage pcc, string propName, string structName, byte[] value)
         {
-            Debug.WriteLine("Writing struct property " + propName + ", type: " + structName + " at 0x" + stream.Position.ToString("X6"));
+            //Debug.WriteLine("Writing struct property " + propName + ", type: " + structName + " at 0x" + stream.Position.ToString("X6"));
 
             stream.WritePropHeader(pcc, propName, PropertyType.StructProperty, value.Length);
             stream.WriteValueS32(pcc.FindNameOrAdd(structName));
@@ -1217,7 +1217,7 @@ namespace ME3Explorer.Unreal
 
         public static void WriteStructProperty(this Stream stream, IMEPackage pcc, string propName, string structName, MemoryStream value)
         {
-            Debug.WriteLine("Writing struct property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
+            //Debug.WriteLine("Writing struct property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
             stream.WritePropHeader(pcc, propName, PropertyType.StructProperty, (int)value.Length);
             stream.WriteValueS32(pcc.FindNameOrAdd(structName));
@@ -1232,7 +1232,7 @@ namespace ME3Explorer.Unreal
 
         public static void WriteIntProperty(this Stream stream, IMEPackage pcc, string propName, int value)
         {
-            Debug.WriteLine("Writing int property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
+            //Debug.WriteLine("Writing int property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
             stream.WritePropHeader(pcc, propName, PropertyType.IntProperty, 4);
             stream.WriteValueS32(value);
@@ -1240,7 +1240,7 @@ namespace ME3Explorer.Unreal
 
         public static void WriteFloatProperty(this Stream stream, IMEPackage pcc, string propName, float value)
         {
-            Debug.WriteLine("Writing float property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
+            //Debug.WriteLine("Writing float property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
             stream.WritePropHeader(pcc, propName, PropertyType.FloatProperty, 4);
             stream.WriteValueF32(value);
@@ -1248,7 +1248,7 @@ namespace ME3Explorer.Unreal
 
         public static void WriteObjectProperty(this Stream stream, IMEPackage pcc, string propName, int value)
         {
-            Debug.WriteLine("Writing bool property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
+            //Debug.WriteLine("Writing bool property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
             stream.WritePropHeader(pcc, propName, PropertyType.ObjectProperty, 4);
             stream.WriteValueS32(value);
@@ -1256,7 +1256,7 @@ namespace ME3Explorer.Unreal
 
         public static void WriteNameProperty(this Stream stream, IMEPackage pcc, string propName, NameReference value)
         {
-            Debug.WriteLine("Writing name property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
+            //Debug.WriteLine("Writing name property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
             stream.WritePropHeader(pcc, propName, PropertyType.NameProperty, 8);
             stream.WriteValueS32(pcc.FindNameOrAdd(value.Name));
@@ -1265,7 +1265,7 @@ namespace ME3Explorer.Unreal
 
         public static void WriteBoolProperty(this Stream stream, IMEPackage pcc, string propName, bool value)
         {
-            Debug.WriteLine("Writing bool property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
+            //Debug.WriteLine("Writing bool property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
             stream.WritePropHeader(pcc, propName, PropertyType.BoolProperty, 0);
             if (pcc.Game == MEGame.ME3)
@@ -1354,7 +1354,7 @@ namespace ME3Explorer.Unreal
 
         public static void WriteStringRefProperty(this Stream stream, IMEPackage pcc, string propName, int value)
         {
-            Debug.WriteLine("Writing stringref property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
+            //Debug.WriteLine("Writing stringref property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
 
             stream.WritePropHeader(pcc, propName, PropertyType.StringRefProperty, 4);
             stream.WriteValueS32(value);

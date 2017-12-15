@@ -15,6 +15,7 @@ using System.Diagnostics;
 using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
 using ME1Explorer.Unreal.Classes;
+using System.Collections;
 
 namespace ME3Explorer
 {
@@ -136,10 +137,24 @@ namespace ME3Explorer
             memsize = memory.Length;
             className = export.ClassName;
             StartScan();
-            RelinkObjectProperties(crossPCCReferences, treeView1.SelectedNode, destExport);
+            //we're really gonna hackjob this one
+
+            Interpreter destExportTreeInterpreter = new Interpreter();
+            destExportTreeInterpreter.pcc = destPCC;
+            destExportTreeInterpreter.export = destExport;
+            destExportTreeInterpreter.InitInterpreter();
+            destExportTreeInterpreter.StartScan();
+            TreeNode destPCCPropertyTree = destExportTreeInterpreter.GetPropertyTree();
+            byte[] destData = destExport.Data;
+            byte[] originalData = destExport.Data;
+            RelinkObjectProperties(crossPCCReferences, destPCCPropertyTree, destExport, destData);
+
+            var different = StructuralComparisons.StructuralEqualityComparer.Equals(originalData, destData);
+            Debug.WriteLine("Data has changed: " + different);
+            destExport.Data = destData;
         }
 
-        private void RelinkObjectProperties(SortedDictionary<int, int> crossPCCReferences, TreeNode rootNode, IExportEntry destinationExport)
+        private void RelinkObjectProperties(SortedDictionary<int, int> crossPCCReferences, TreeNode rootNode, IExportEntry destinationExport, byte[] exportMemory)
         {
             if (rootNode != null)
             {
@@ -148,7 +163,7 @@ namespace ME3Explorer
                     //container.
                     foreach (TreeNode node in rootNode.Nodes)
                     {
-                        RelinkObjectProperties(crossPCCReferences, node, destinationExport);
+                        RelinkObjectProperties(crossPCCReferences, node, destinationExport, exportMemory);
                     }
                 }
                 else
@@ -166,7 +181,7 @@ namespace ME3Explorer
                             }
 
                             int off = getPosFromNode(rootNode) + valueoffset;
-                            int n = BitConverter.ToInt32(memory, off);
+                            int n = BitConverter.ToInt32(exportMemory, off);
                             if (n > 0)
                             {
                                 n--;
@@ -188,6 +203,7 @@ namespace ME3Explorer
                                         key++; //+1 indexing
                                     }
                                     byte[] buff2 = BitConverter.GetBytes(key);
+                                    Debug.WriteLine("Writing updated object value at 0x" + off.ToString("X6"));
                                     for (int o = 0; o < 4; o++)
                                     {
                                         //Write object property value
@@ -201,20 +217,20 @@ namespace ME3Explorer
                                 }
                                 else
                                 {
-                                    Debug.WriteLine("Relink miss, attempting JIT relink on " + n + " " + rootNode.Text);
+                                    //Debug.WriteLine("Relink miss, attempting JIT relink on " + n + " " + rootNode.Text);
                                     if (n < 0 && Math.Abs(n) - 1 < pcc.ImportCount)
                                     {
                                         //Lets add this as an import. Or at least find one
                                         ImportEntry origImport = pcc.getImport(Math.Abs(n) - 1);
                                         string origImportFullName = origImport.GetFullPath;
-                                        Debug.WriteLine("We should import " + origImport.GetFullPath);
+                                        //Debug.WriteLine("We should import " + origImport.GetFullPath);
 
                                         int newFileObjectValue = n;
                                         foreach (ImportEntry imp in destinationExport.FileRef.Imports)
                                         {
                                             if (imp.GetFullPath == origImportFullName)
                                             {
-                                                Debug.WriteLine("RELINK " + n + " to " + imp.UIndex);
+                                                Debug.WriteLine("RELINKING " + n + " to " + imp.UIndex + "(" + destinationExport.FileRef.Imports[imp.Index].ObjectName + ") on " + rootNode.Text);
                                                 newFileObjectValue = imp.UIndex;
                                                 break;
                                             }
@@ -226,20 +242,24 @@ namespace ME3Explorer
                                             if (newImport != null)
                                             {
                                                 newFileObjectValue = newImport.UIndex;
+                                                Debug.WriteLine("Added new import: " + newImport.GetFullPath);
+                                            }
+                                            else
+                                            {
+                                                Debug.WriteLine("Failed to add/get new import: " + origImportFullName);
+
                                             }
                                         }
 
                                         if (newFileObjectValue != n)
                                         {
                                             //Write new value
-                                            byte[] data = destinationExport.Data;
                                             byte[] buff2 = BitConverter.GetBytes(newFileObjectValue);
                                             for (int o = 0; o < 4; o++)
                                             {
-                                                data[off + o] = buff2[o];
+                                                exportMemory[off + o] = buff2[o];
                                                 //Debug.WriteLine("Updating Byte at 0x" + (destprop.offsetval + o).ToString("X4") + " from " + preval + " to " + postval + ". It should have been set to " + buff2[o]);
                                             }
-                                            destinationExport.Data = data;
                                         }
                                     }
                                 }
@@ -414,6 +434,24 @@ namespace ME3Explorer
             base.Show();
         }
 
+        private TreeNode GetPropertyTree()
+        {
+            readerpos = export.GetPropertyStart();
+            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
+            topLevelTree.Tag = nodeType.Root;
+            topLevelTree.Name = "0";
+            try
+            {
+                List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
+                GenerateTree(topLevelTree, topLevelHeaders);
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
+            }
+            return topLevelTree;
+        }
+
         private void StartScan(IEnumerable<string> expandedNodes = null, string topNodeName = null, string selectedNodeName = null)
         {
             resetPropEditingControls();
@@ -424,16 +462,16 @@ namespace ME3Explorer
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
             topLevelTree.Tag = nodeType.Root;
             topLevelTree.Name = "0";
-            //try
-            //{
-            List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
-            GenerateTree(topLevelTree, topLevelHeaders);
-            //}
-            //catch (Exception ex)
-            //{
-            //  topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
-            //addPropButton.Visible = false;
-            //}
+            try
+            {
+                List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
+                GenerateTree(topLevelTree, topLevelHeaders);
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
+                addPropButton.Visible = false;
+            }
             treeView1.Nodes.Add(topLevelTree);
             treeView1.CollapseAll();
             treeView1.Nodes[0].Expand();
@@ -482,14 +520,18 @@ namespace ME3Explorer
         {
             foreach (PropHeader header in headersList)
             {
-
                 if (readerpos > memory.Length)
                 {
                     throw new IndexOutOfRangeException(": tried to read past bounds of Export Data");
                 }
                 nodeType type = getType(pcc.getNameEntry(header.type));
+                //Debug.WriteLine("Generating tree item for " + pcc.getNameEntry(header.name) + " at 0x" + header.offset.ToString("X6"));
+
                 if (type != nodeType.ArrayProperty && type != nodeType.StructProperty)
+                {
+
                     localRoot.Nodes.Add(GenerateNode(header));
+                }
                 else
                 {
                     if (type == nodeType.ArrayProperty)
@@ -1992,7 +2034,7 @@ namespace ME3Explorer
                             oldLength *= -2;
                         }
                         List<byte> stringBuff = new List<byte>(s.Length * stringMultiplier); //byte buffer
-                        if (stringMultiplier == 2) 
+                        if (stringMultiplier == 2)
                         {
                             //UNICODE
                             for (int j = 0; j < s.Length; j++)
