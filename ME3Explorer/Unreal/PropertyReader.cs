@@ -951,9 +951,14 @@ namespace ME3Explorer.Unreal
                     }
                     break;
                 case "StrProperty":
-                    name2 = p.Value.StringValue + '\0';
+                    name2 = p.Value.StringValue ;
+                    if (p.Value.StringValue.Length >0)
+                    {
+                        name2 += '\0';
+                    }
                     if (p.Value.len < 0)
                     {
+                        //unicode
                         m.Write(BitConverter.GetBytes(4 + name2.Length * 2), 0, 4);
                         m.Write(new byte[4], 0, 4);
                         m.Write(BitConverter.GetBytes(-name2.Length), 0, 4);
@@ -965,6 +970,7 @@ namespace ME3Explorer.Unreal
                     }
                     else
                     {
+                        //ascii
                         m.Write(BitConverter.GetBytes(4 + name2.Length), 0, 4);
                         m.Write(new byte[4], 0, 4);
                         m.Write(BitConverter.GetBytes(name2.Length), 0, 4);
@@ -1102,7 +1108,11 @@ namespace ME3Explorer.Unreal
                     }
                     break;
                 case "StrProperty":
-                    name2 = p.Value.StringValue + '\0'; //[STRINGLENGTH-FIX]
+                    name2 = p.Value.StringValue;
+                    if (name2.Length > 0)
+                    {
+                        name2 += '\0';
+                    }
                     m.Write(BitConverter.GetBytes(-name2.Length), 0, 4);
                     foreach (char c in name2)
                     {

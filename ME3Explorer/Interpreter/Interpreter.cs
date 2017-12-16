@@ -2051,7 +2051,10 @@ namespace ME3Explorer
                             for (int j = 0; j < s.Length; j++)
                             {
                                 stringBuff.AddRange(BitConverter.GetBytes(s[j]));
-                                stringBuff.Add(0); //byte 2
+                            }
+                            if (s.Length > 0)
+                            {
+                                stringBuff.AddRange(BitConverter.GetBytes('\0')); //terminator char
                             }
                         }
                         else
@@ -2061,12 +2064,13 @@ namespace ME3Explorer
                             {
                                 stringBuff.Add(BitConverter.GetBytes(s[j])[0]); //get only first byte. This returns unicode byte, so discard byte 2
                             }
+                            if (s.Length > 0)
+                            {
+                                //THIS MIGHT BREAK ME1
+                                stringBuff.Add(0); //terminator char?
+                            }
                         }
-                        if (s.Length > 0)
-                        {
-                            //THIS MIGHT BREAK ME1
-                            stringBuff.Add(0); //terminator char?
-                        }
+                        
 
                         //Write data
 
@@ -2650,19 +2654,19 @@ namespace ME3Explorer
                         break;
                     case PropertyType.StrProperty:
                         //size
-                        buff.AddRange(BitConverter.GetBytes(6));
-                        buff.AddRange(new byte[4]);
+                        buff.AddRange(BitConverter.GetBytes(4));
+                        buff.AddRange(new byte[8]);
                         //value
-                        if (pcc.Game == MEGame.ME3)
-                        {
-                            buff.AddRange(BitConverter.GetBytes(-1));
-                            buff.Add(0);
-                        }
-                        else
-                        {
-                            buff.AddRange(BitConverter.GetBytes(1));
-                        }
-                        buff.Add(0);
+                        ////if (pcc.Game != MEGame.ME1) //should be ME2 as well....?
+                        ////{
+                        ////    buff.AddRange(BitConverter.GetBytes(0));
+                        ////    buff.Add(0);
+                        ////}
+                        ////else
+                        ////{
+                        ////    buff.AddRange(BitConverter.GetBytes(1));
+                        ////    buff.Add(0);
+                        ////}
                         break;
                     case PropertyType.DelegateProperty:
                         //size
