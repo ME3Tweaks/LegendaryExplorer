@@ -196,24 +196,22 @@ namespace ME3Explorer
                                 int key;
                                 if (crossPCCReferences.TryGetValue(n, out key))
                                 {
-                                    byte[] data = destinationExport.Data;
                                     //we can remap this
                                     if (key > 0)
                                     {
                                         key++; //+1 indexing
                                     }
                                     byte[] buff2 = BitConverter.GetBytes(key);
-                                    Debug.WriteLine("Writing updated object value at 0x" + off.ToString("X6"));
+                                    Debug.WriteLine("Writing updated object value at 0x" + off.ToString("X6")+" to "+key);
                                     for (int o = 0; o < 4; o++)
                                     {
                                         //Write object property value
                                         //byte preval = exportdata[o + o];
-                                        data[off + o] = buff2[o];
+                                        exportMemory[off + o] = buff2[o];
                                         //byte postval = exportdata[destprop.offsetval + o];
 
                                         //Debug.WriteLine("Updating Byte at 0x" + (destprop.offsetval + o).ToString("X4") + " from " + preval + " to " + postval + ". It should have been set to " + buff2[o]);
                                     }
-                                    destinationExport.Data = data;
                                 }
                                 else
                                 {
@@ -223,6 +221,10 @@ namespace ME3Explorer
                                         //Lets add this as an import. Or at least find one
                                         ImportEntry origImport = pcc.getImport(Math.Abs(n) - 1);
                                         string origImportFullName = origImport.GetFullPath;
+                                        if (origImportFullName.Contains("Wwise_Generic_Foley"))
+                                        {
+                                            Debug.WriteLine("BREAK");
+                                        }
                                         //Debug.WriteLine("We should import " + origImport.GetFullPath);
 
                                         int newFileObjectValue = n;
@@ -335,6 +337,13 @@ namespace ME3Explorer
                         donorTopLevelImport = imp;
                         break;
                     }
+                }
+
+
+                if (donorTopLevelImport == null)
+                {
+                    //ERROR!
+                    Debug.WriteLine("An error has occured. top level donor is missing: "+fullobjectname+" from "+pcc.FileName);
                 }
 
                 //Create new toplevel import and set that as the most downstream one.
