@@ -1972,7 +1972,7 @@ namespace ME3Explorer
                     int index = 1; //we'll start at 1.
                     foreach (IExportEntry export in pcc.Exports)
                     {
-                        if (objectname == export.ObjectName)
+                        if (objectname == export.ObjectName && export.ClassName != "Class")
                         {
                             export.indexValue = index;
                             index++;
