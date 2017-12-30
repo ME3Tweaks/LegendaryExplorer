@@ -46,6 +46,13 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void reachSpecCalculatorThread_Done(object sender, RunWorkerCompletedEventArgs e)
         {
+            List<string> badBases = (List<string>)e.Result;
+            if (badBases != null && badBases.Count > 0)
+            {
+                //bad bases were found.
+                ListWindow lw = new ListWindow(badBases, badBases.Count + " bad ReachSpecs were found");
+                lw.ShowDialog(this);
+            }
             //throw new NotImplementedException();
             recalculateButton.Enabled = true;
         }
@@ -57,6 +64,9 @@ namespace ME3Explorer.Pathfinding_Editor
             BGThreadOptions bgo = (BGThreadOptions)e.Argument;
             IMEPackage pcc = bgo.pcc;
             HashSet<int> reachSpecExportIndexes = new HashSet<int>();
+            List<string> badSpecs = new List<string>();
+            HashSet<string> names = new HashSet<string>();
+
             foreach (IExportEntry exp in pcc.Exports)
             {
                 ArrayProperty<ObjectProperty> pathList = exp.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
@@ -65,8 +75,46 @@ namespace ME3Explorer.Pathfinding_Editor
                     foreach (ObjectProperty reachSpecObj in pathList)
                     {
                         reachSpecExportIndexes.Add(reachSpecObj.Value - 1);
+                        IExportEntry spec = pcc.Exports[reachSpecObj.Value - 1];
+                        var specProps = spec.GetProperties();
+                        ObjectProperty start = specProps.GetProp<ObjectProperty>("Start");
+                        if (start.Value != exp.UIndex)
+                        {
+                            badSpecs.Add((reachSpecObj.Value - 1).ToString() + " " + spec.ObjectName + " start value does not match the node that references it (" + exp.Index + ")");
+                        }
+
+                        //get end
+                        StructProperty end = specProps.GetProp<StructProperty>("End");
+                        ObjectProperty endActorObj = end.GetProp<ObjectProperty>("Actor");
+                        if (endActorObj.Value == start.Value)
+                        {
+                            badSpecs.Add((reachSpecObj.Value - 1).ToString() + " " + spec.ObjectName + " start and end property is the same. This will crash the game.");
+                        }
+
+                        var guid = SharedPathfinding.GetGUIDFromStruct(end.GetProp<StructProperty>("Guid"));
+                        if ((guid.A | guid.B | guid.C | guid.D) == 0 && endActorObj.Value == 0)
+                        {
+                            badSpecs.Add((reachSpecObj.Value - 1).ToString() + " " + spec.ObjectName + " has no guid and has no endactor.");
+                        }
+                        if (endActorObj.Value - 1 > pcc.ExportCount)
+                        {
+                            badSpecs.Add((reachSpecObj.Value - 1).ToString() + " " + spec.ObjectName + " has invalid end property (past end of bounds).");
+                        }
+                        if (endActorObj.Value > 0)
+                        {
+                            IExportEntry expo = pcc.Exports[endActorObj.Value - 1];
+                            names.Add(expo.ClassName);
+                        }
+                        //
                     }
+                    
                 }
+            }
+            int i = 0;
+            foreach (string item in names)
+            {
+                Debug.WriteLine(i + " " + item);
+                i++;
             }
             worker.ReportProgress(-1, "Calculating " + reachSpecExportIndexes.Count + " reachspecs");
 
@@ -110,7 +158,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     worker.ReportProgress(-1, numNeedingRecalc + " reachspec" + ((numNeedingRecalc > 1) ? "s" : "") + " have been updated.");
                 }
             }
-
+            e.Result = badSpecs;
         }
 
         private void reachSpecCalculatorThread_ProgressChanged(object sender, ProgressChangedEventArgs e)

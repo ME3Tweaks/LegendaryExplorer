@@ -67,7 +67,7 @@ namespace ME3Explorer
         public static Dictionary<string, Dictionary<string, string>> importclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
         public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
 
-        public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "MantleMarker", "SFXNav_InteractionHenchOmniToolCrouch", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode", "WwiseAmbientSound" };
+        public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "MantleMarker", "SFXNav_InteractionHenchOmniToolCrouch", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode", "WwiseAmbientSound", "SFXNav_InteractionHenchOmniTool", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionHenchBeckonFront", "SFXNav_InteractionHenchBeckonRear", "SFXNav_InteractionHenchCustom", "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow", "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping", "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard" };
         public string[] actorNodeClasses = { "BlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor" };
         public string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
         public bool ActorNodesActive = false;
@@ -1815,7 +1815,7 @@ namespace ME3Explorer
             int size = 1; //Minibosses by default
             using (ReachSpecCreatorForm form = new ReachSpecCreatorForm(pcc, sourceExportIndex))
             {
-                DialogResult dr = form.ShowDialog();
+                DialogResult dr = form.ShowDialog(this);
                 if (dr != DialogResult.Yes)
                 {
                     return; //user cancel
@@ -1833,12 +1833,13 @@ namespace ME3Explorer
             IExportEntry reachSpectoClone = null;
             foreach (IExportEntry exp in pcc.Exports)
             {
-                if (exp.ClassName == reachSpecClass)
+                if (exp.ClassName == "ReachSpec") //clone basic reachspec, set class later
                 {
                     reachSpectoClone = exp;
                     break;
                 }
             }
+
 
             //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
             int outgoingSpec = pcc.ExportCount;
@@ -1865,7 +1866,19 @@ namespace ME3Explorer
 
                 }
 
-                IExportEntry outgoingSpecExp = pcc.Exports[outgoingSpec];
+                IExportEntry outgoingSpecExp = pcc.Exports[outgoingSpec]; //cloned outgoing
+                ImportEntry reachSpecClassImp = getOrAddImport(reachSpecClass); //new class type.
+
+                outgoingSpecExp.idxClass = reachSpecClassImp.UIndex;
+                outgoingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
+
+                if (reachSpecClass == "Engine.SlotToSlotReachSpec")
+                {
+                    var props = outgoingSpecExp.GetProperties();
+                    props.Add(new ByteProperty(1, "SpecDirection"));
+                    outgoingSpecExp.WriteProperties(props);
+                }
+
                 //Debug.WriteLine("Outgoing UIndex: " + outgoingSpecExp.UIndex);
 
                 ObjectProperty outgoingSpecStartProp = outgoingSpecExp.GetProperty<ObjectProperty>("Start"); //START
@@ -1896,6 +1909,16 @@ namespace ME3Explorer
                 if (createTwoWay)
                 {
                     IExportEntry incomingSpecExp = pcc.Exports[incomingSpec];
+                    incomingSpecExp.idxClass = reachSpecClassImp.UIndex;
+                    incomingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
+
+                    if (reachSpecClass == "Engine.SlotToSlotReachSpec")
+                    {
+                        var props = incomingSpecExp.GetProperties();
+                        props.Add(new ByteProperty(2, "SpecDirection"));
+                        incomingSpecExp.WriteProperties(props);
+                    }
+
                     ObjectProperty incomingSpecStartProp = incomingSpecExp.GetProperty<ObjectProperty>("Start"); //START
                     StructProperty incomingEndStructProp = incomingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
                     ObjectProperty incomingSpecEndProp = incomingEndStructProp.Properties.GetProp<ObjectProperty>("Actor"); //END
@@ -2720,6 +2743,124 @@ namespace ME3Explorer
                     RefreshView();
                 }
             }
+        }
+
+        private void flipLevelUpsidedownEXPERIMENTALToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (IExportEntry exp in pcc.Exports)
+            {
+                switch (exp.ObjectName)
+                {
+                    case "StaticMeshCollectionActor":
+                        {
+                            //This is going to get ugly.
+
+                            byte[] data = exp.Data;
+                            //get a list of staticmesh stuff from the props.
+                            int listsize = System.BitConverter.ToInt32(data, 28);
+                            List<IExportEntry> smacitems = new List<IExportEntry>();
+                            for (int i = 0; i < listsize; i++)
+                            {
+                                int offset = (32 + i * 4);
+                                //fetch exports
+                                int entryval = BitConverter.ToInt32(data, offset);
+                                if (entryval > 0 && entryval < pcc.ExportCount)
+                                {
+                                    IExportEntry export = (IExportEntry)pcc.getEntry(entryval);
+                                    smacitems.Add(export);
+                                }
+                                else if (entryval == 0)
+                                {
+                                    smacitems.Add(null);
+                                }
+                            }
+
+                            //find start of class binary (end of props)
+                            int start = findEndOfProps(exp);
+
+                            if (data.Length - start < 4)
+                            {
+                                return;
+                            }
+
+                            //Lets make sure this binary is divisible by 64.
+                            if ((data.Length - start) % 64 != 0)
+                            {
+                                return;
+                            }
+
+                            int smcaindex = 0;
+                            while (start < data.Length && smcaindex < listsize - 1)
+                            {
+                                float x = BitConverter.ToSingle(data, start + smcaindex * 64 + (12 * 4));
+                                float y = BitConverter.ToSingle(data, start + smcaindex * 64 + (13 * 4));
+                                float z = BitConverter.ToSingle(data, start + smcaindex * 64 + (14 * 4));
+                                data = SharedPathfinding.WriteMem(data, start + smcaindex * 64 + (12 * 4), BitConverter.GetBytes(x * -1));
+                                data = SharedPathfinding.WriteMem(data, start + smcaindex * 64 + (13 * 4), BitConverter.GetBytes(y * -1));
+                                data = SharedPathfinding.WriteMem(data, start + smcaindex * 64 + (14 * 4), BitConverter.GetBytes(z * -1));
+
+                                InvertScalingOnExport(smacitems[smcaindex], "Scale3D");
+                                smcaindex++;
+                                Debug.WriteLine(exp.Index + " " + smcaindex + " SMAC Flipping " + x + "," + y + "," + z);
+                            }
+                            exp.Data = data;
+                        }
+                        break;
+                    default:
+                        {
+                            var props = exp.GetProperties();
+                            StructProperty locationProp = props.GetProp<StructProperty>("location");
+                            if (locationProp != null)
+                            {
+                                FloatProperty xProp = locationProp.Properties.GetProp<FloatProperty>("X");
+                                FloatProperty yProp = locationProp.Properties.GetProp<FloatProperty>("Y");
+                                FloatProperty zProp = locationProp.Properties.GetProp<FloatProperty>("Z");
+                                Debug.WriteLine(exp.Index + " " + exp.ObjectName + "Flipping " + xProp.Value + "," + yProp.Value + "," + zProp.Value);
+
+                                xProp.Value = xProp.Value * -1;
+                                yProp.Value = yProp.Value * -1;
+                                zProp.Value = zProp.Value * -1;
+
+                                exp.WriteProperty(locationProp);
+                                InvertScalingOnExport(exp, "DrawScale3D");
+                            }
+                            break;
+                        }
+                }
+            }
+            MessageBox.Show("Items flipped.", "Flipping complete");
+        }
+
+        private void InvertScalingOnExport(IExportEntry exp, string propname)
+        {
+            var drawScale3D = exp.GetProperty<StructProperty>(propname);
+            bool hasDrawScale = drawScale3D != null;
+            if (drawScale3D == null)
+            {
+                Interpreter addPropInterp = new Interpreter();
+                addPropInterp.Pcc = exp.FileRef;
+                addPropInterp.export = exp;
+                addPropInterp.InitInterpreter();
+                addPropInterp.AddProperty(propname); //Assuming interpreter shows current item.
+                addPropInterp.Dispose();
+                drawScale3D = exp.GetProperty<StructProperty>(propname);
+            }
+            var drawScaleX = drawScale3D.GetProp<FloatProperty>("X");
+            var drawScaleY = drawScale3D.GetProp<FloatProperty>("Y");
+            var drawScaleZ = drawScale3D.GetProp<FloatProperty>("Z");
+            if (!hasDrawScale)
+            {
+                drawScaleX.Value = -1;
+                drawScaleY.Value = -1;
+                drawScaleZ.Value = -1;
+            }
+            else
+            {
+                drawScaleX.Value = -drawScaleX.Value;
+                drawScaleY.Value = -drawScaleY.Value;
+                drawScaleZ.Value = -drawScaleZ.Value;
+            }
+            exp.WriteProperty(drawScale3D);
         }
     }
 

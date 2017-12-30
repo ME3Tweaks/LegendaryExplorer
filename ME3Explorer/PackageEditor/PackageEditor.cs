@@ -11,6 +11,7 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using UsefulThings;
 using static ME3Explorer.Unreal.PropertyReader;
+using ME3Explorer.Pathfinding_Editor;
 
 namespace ME3Explorer
 {
@@ -1405,7 +1406,7 @@ namespace ME3Explorer
                     }
 
                     relinkObjects(importpcc);
-                    relinkBinaryObjects(importpcc);
+                    //relinkBinaryObjects(importpcc);
 
                     crossPCCObjectMapping = null;
 
@@ -1752,6 +1753,7 @@ namespace ME3Explorer
             }
             else
             {
+                //Write binary
                 res.Write(idata, end, idata.Length - end);
             }
 
@@ -1970,7 +1972,7 @@ namespace ME3Explorer
                     int index = 1; //we'll start at 1.
                     foreach (IExportEntry export in pcc.Exports)
                     {
-                        if (objectname == export.ObjectName)
+                        if (objectname == export.ObjectName && export.ClassName != "Class")
                         {
                             export.indexValue = index;
                             index++;
@@ -2057,6 +2059,117 @@ namespace ME3Explorer
                         break;
                     }
                 }
+            }
+        }
+
+        private void checkIndexingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc == null)
+            {
+                return;
+            }
+            List<string> duplicates = new List<string>();
+            Dictionary<string, List<int>> nameIndexDictionary = new Dictionary<string, List<int>>();
+            foreach (IExportEntry exp in pcc.Exports)
+            {
+                string key = exp.GetFullPath;
+                List<int> indexList;
+                bool hasExistingList = nameIndexDictionary.TryGetValue(key, out indexList);
+                if (!hasExistingList)
+                {
+                    indexList = new List<int>();
+                    nameIndexDictionary[key] = indexList;
+                }
+                bool isDuplicate = indexList.Contains(exp.indexValue);
+                if (isDuplicate)
+                {
+                    duplicates.Add(exp.Index + " " + exp.GetFullPath + " has duplicate index (index value " + exp.indexValue + ")");
+                }
+                else
+                {
+                    indexList.Add(exp.indexValue);
+                }
+            }
+
+            if (duplicates.Count > 0)
+            {
+                string copy = "";
+                foreach (string str in duplicates)
+                {
+
+                    copy += str + "\n";
+                }
+                //Clipboard.SetText(copy);
+                MessageBox.Show(duplicates.Count + " duplicate indexes were found.", "BAD INDEXING");
+                ListWindow lw = new ListWindow(duplicates, "Duplicate indexes");
+                lw.ShowDialog(this);
+            }
+            else
+            {
+                MessageBox.Show("No duplicate indexes were found.", "Indexing OK");
+            }
+        }
+
+        private void dEBUGCallReadPropertiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int n;
+            if (!GetSelected(out n))
+            {
+                return;
+            }
+            if (n >= 0)
+            {
+                try
+                {
+                    IExportEntry exp = pcc.Exports[n];
+                    exp.GetProperties();
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+        }
+
+        private void pathfindingEditorToolstripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc != null)
+            {
+                PathfindingEditor editor = new PathfindingEditor();
+                editor.LoadFile(pcc.FileName);
+                editor.BringToFront();
+                editor.Show();
+            }
+        }
+
+        private void sequenceEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc != null)
+            {
+                SequenceEditor editor = new SequenceEditor();
+                editor.LoadFile(pcc.FileName);
+                editor.BringToFront();
+                editor.Show();
+            }
+        }
+
+        private void faceFXEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc != null)
+            {
+                FaceFX.FaceFXEditor fxeditor = new FaceFX.FaceFXEditor();
+                fxeditor.LoadFile(pcc.FileName);
+                fxeditor.Show();
+            }
+        }
+
+        private void wWiseBankEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc != null)
+            {
+                WwiseBankEditor.WwiseEditor fxeditor = new WwiseBankEditor.WwiseEditor();
+                fxeditor.LoadFile(pcc.FileName);
+                fxeditor.Show();
             }
         }
     }

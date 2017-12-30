@@ -368,6 +368,12 @@
     <Compile Include="Pathfinding Editor\HeightFilterForm.Designer.cs">
       <DependentUpon>HeightFilterForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Pathfinding Editor\ListWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pathfinding Editor\ListWindow.Designer.cs">
+      <DependentUpon>ListWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Pathfinding Editor\PathfindingNodeInfoPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -486,6 +492,12 @@
     </Compile>
     <Compile Include="SFAREditor2\SFAREditor2.Designer.cs">
       <DependentUpon>SFAREditor2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SharedUI\ExportSelectorWinForms.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SharedUI\ExportSelectorWinForms.Designer.cs">
+      <DependentUpon>ExportSelectorWinForms.cs</DependentUpon>
     </Compile>
     <Compile Include="SingleInstance.cs" />
     <Compile Include="Soundplorer\DirectReplace.cs">
@@ -1125,6 +1137,9 @@
     <EmbeddedResource Include="Pathfinding Editor\HeightFilterForm.resx">
       <DependentUpon>HeightFilterForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Pathfinding Editor\ListWindow.resx">
+      <DependentUpon>ListWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Pathfinding Editor\PathfindingNodeInfoPanel.resx">
       <DependentUpon>PathfindingNodeInfoPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -1175,6 +1190,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SFAREditor2\SFAREditor2.resx">
       <DependentUpon>SFAREditor2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SharedUI\ExportSelectorWinForms.resx">
+      <DependentUpon>ExportSelectorWinForms.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Soundplorer\DirectReplace.resx">
       <DependentUpon>DirectReplace.cs</DependentUpon>

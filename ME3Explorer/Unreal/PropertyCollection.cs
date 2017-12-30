@@ -10,6 +10,8 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using UsefulThings.WPF;
 using System.Collections;
+using System.Diagnostics;
+using KFreonLib.Debugging;
 
 namespace ME3Explorer.Unreal
 {
@@ -60,10 +62,12 @@ namespace ME3Explorer.Unreal
 
         public static PropertyCollection ReadProps(IMEPackage pcc, MemoryStream stream, string typeName)
         {
+            DebugOutput.StartDebugger("Property Engine ReadProps()");
             PropertyCollection props = new PropertyCollection();
             long startPosition = stream.Position;
             while (stream.Position + 8 <= stream.Length)
             {
+                long nameOffset = stream.Position;
                 int nameIdx = stream.ReadValueS32();
                 if (!pcc.isName(nameIdx))
                 {
@@ -77,6 +81,7 @@ namespace ME3Explorer.Unreal
                     stream.Seek(4, SeekOrigin.Current);
                     break;
                 }
+                DebugOutput.PrintLn("0x" + nameOffset.ToString("X4") + " " + name);
                 NameReference nameRef = new NameReference { Name = name, Number = stream.ReadValueS32() };
                 int typeIdx = stream.ReadValueS32();
                 stream.Seek(4, SeekOrigin.Current);
@@ -92,7 +97,8 @@ namespace ME3Explorer.Unreal
                 if (Enum.IsDefined(typeof(PropertyType), namev))
                 {
                     Enum.TryParse(namev, out type);
-                } else
+                }
+                else
                 {
                     type = PropertyType.Unknown;
                 }
@@ -825,6 +831,12 @@ namespace ME3Explorer.Unreal
             set { SetProperty(ref _value, value); }
         }
 
+        public ByteProperty(byte val, NameReference? name = null) : base(name)
+        {
+            Value = val;
+            PropType = PropertyType.ByteProperty;
+        }
+
         public ByteProperty(MemoryStream stream, NameReference? name = null) : base(name)
         {
             Offset = stream.Position;
@@ -1033,7 +1045,7 @@ namespace ME3Explorer.Unreal
             int count = stream.ReadValueS32();
             var streamPos = stream.Position;
 
-            if (count < 0)
+            if (count < -1) // originally 0
             {
                 count *= -2;
                 Value = stream.ReadString(count, true, Encoding.Unicode);
@@ -1045,6 +1057,13 @@ namespace ME3Explorer.Unreal
             else
             {
                 Value = string.Empty;
+                //ME3Explroer 3.0.2 and below wrote a null terminator character when writing an empty string.
+                //The game however does not write an empty string if the length is 0 - it just happened to still work but not 100% of the time
+                //This is for backwards compatibility with that as it will have a count of 0 instead of -1
+                if (count == -1)
+                {
+                    stream.Position += 2;
+                }
             }
 
             //for when the end of the string has multiple nulls at the end

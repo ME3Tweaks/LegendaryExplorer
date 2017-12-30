@@ -15,7 +15,7 @@
 
         <SolidColorBrush x:Key="HighlightColor" Color="#FF4F9DB1"/>
         <SolidColorBrush x:Key="LabelTextBrush" Color="#FFFDFDFD"/>
-        
+
         <System:Double x:Key="InfoPanelWidth">300</System:Double>
 
         <Style x:Key="BorderlessButton" TargetType="{x:Type Button}">
@@ -130,7 +130,7 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        
+
         <BitmapImage x:Key="iconME1" UriSource="/ME3Explorer;component/Resources/ME1Game.ico"/>
         <BitmapImage x:Key="iconME2" UriSource="/ME3Explorer;component/Resources/ME2Game.ico"/>
         <BitmapImage x:Key="iconME3" UriSource="/ME3Explorer;component/Resources/ME3Game.ico"/>
@@ -191,4 +191,18 @@
         <BitmapImage x:Key="iconTexplorer" UriSource="Icons/texplorer_64x64.png"/>
         <BitmapImage x:Key="iconUDKExplorer" UriSource="Icons/udk_explorer_64x64.png"/>
     </Application.Resources>
+    <JumpList.JumpList>
+        <JumpList >
+            
+            <JumpTask Title="Package Editor" 
+                      Description="Opens a new instance of Package Editor" 
+                      Arguments="JUMPLIST_PACKAGE_EDITOR"/>
+            <JumpTask Title="Pathfinding Editor" 
+                      Description="Opens a new instance of Pathfinding Editor" 
+                      Arguments="JUMPLIST_SEQUENCE_EDITOR"/>
+            <JumpTask Title="Sequence Editor" 
+                      Description="Opens a new instance of Sequence Editor" 
+                      Arguments="JUMPLIST_SEQUENCE_EDITOR"/>
+        </JumpList>
+    </JumpList.JumpList>
 </Application>

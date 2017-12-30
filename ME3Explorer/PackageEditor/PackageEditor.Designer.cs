@@ -31,6 +31,11 @@
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.faceFXEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pathfindingEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sequenceEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.wWiseBankEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -43,9 +48,11 @@
             this.createBinaryReplaceJobFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createBinaryReplaceJobFromObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.findImportexportViaOffsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getDumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getDumpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.findImportexportViaOffsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkIndexingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dEBUGCallReadPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.Button1 = new System.Windows.Forms.ToolStripButton();
             this.Button2 = new System.Windows.Forms.ToolStripButton();
@@ -174,6 +181,7 @@
             this.loadToolStripMenuItem,
             this.saveToolStripMenuItem,
             this.saveAsMenuItem,
+            this.openInToolStripMenuItem,
             this.toolStripMenuItem1,
             this.recentToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -183,7 +191,7 @@
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.ToolTipText = "Load an uncompressed or compressed PCC file";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
@@ -192,7 +200,7 @@
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.ToolTipText = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
@@ -200,20 +208,59 @@
             // saveAsMenuItem
             // 
             this.saveAsMenuItem.Name = "saveAsMenuItem";
-            this.saveAsMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.saveAsMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveAsMenuItem.Text = "Save As";
             this.saveAsMenuItem.ToolTipText = "Save As";
             this.saveAsMenuItem.Click += new System.EventHandler(this.appendSaveToolStripMenuItem_Click);
             // 
+            // openInToolStripMenuItem
+            // 
+            this.openInToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.faceFXEditorToolStripMenuItem,
+            this.pathfindingEditorToolStripMenuItem,
+            this.sequenceEditorToolStripMenuItem,
+            this.wWiseBankEditorToolStripMenuItem});
+            this.openInToolStripMenuItem.Name = "openInToolStripMenuItem";
+            this.openInToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openInToolStripMenuItem.Text = "Open in...";
+            // 
+            // faceFXEditorToolStripMenuItem
+            // 
+            this.faceFXEditorToolStripMenuItem.Name = "faceFXEditorToolStripMenuItem";
+            this.faceFXEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.faceFXEditorToolStripMenuItem.Text = "FaceFX Editor";
+            this.faceFXEditorToolStripMenuItem.Click += new System.EventHandler(this.faceFXEditorToolStripMenuItem_Click);
+            // 
+            // pathfindingEditorToolStripMenuItem
+            // 
+            this.pathfindingEditorToolStripMenuItem.Name = "pathfindingEditorToolStripMenuItem";
+            this.pathfindingEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.pathfindingEditorToolStripMenuItem.Text = "Pathfinding Editor";
+            this.pathfindingEditorToolStripMenuItem.Click += new System.EventHandler(this.pathfindingEditorToolstripMenuItem_Click);
+            // 
+            // sequenceEditorToolStripMenuItem
+            // 
+            this.sequenceEditorToolStripMenuItem.Name = "sequenceEditorToolStripMenuItem";
+            this.sequenceEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.sequenceEditorToolStripMenuItem.Text = "Sequence Editor";
+            this.sequenceEditorToolStripMenuItem.Click += new System.EventHandler(this.sequenceEditorToolStripMenuItem_Click);
+            // 
+            // wWiseBankEditorToolStripMenuItem
+            // 
+            this.wWiseBankEditorToolStripMenuItem.Name = "wWiseBankEditorToolStripMenuItem";
+            this.wWiseBankEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.wWiseBankEditorToolStripMenuItem.Text = "WWiseBank Editor";
+            this.wWiseBankEditorToolStripMenuItem.Click += new System.EventHandler(this.wWiseBankEditorToolStripMenuItem_Click);
+            // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(135, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
             // 
             // recentToolStripMenuItem
             // 
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.recentToolStripMenuItem.Text = "Recent";
             this.recentToolStripMenuItem.ToolTipText = "Open recently opened file";
             this.recentToolStripMenuItem.Click += new System.EventHandler(this.recentToolStripMenuItem_Click);
@@ -296,32 +343,48 @@
             this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.getDumpToolStripMenuItem,
             this.getDumpToolStripMenuItem1,
-            this.findImportexportViaOffsetToolStripMenuItem});
+            this.findImportexportViaOffsetToolStripMenuItem,
+            this.checkIndexingToolStripMenuItem,
+            this.dEBUGCallReadPropertiesToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.debugToolStripMenuItem.Text = "Debug";
             // 
-            // findImportexportViaOffsetToolStripMenuItem
-            // 
-            this.findImportexportViaOffsetToolStripMenuItem.Name = "findImportexportViaOffsetToolStripMenuItem";
-            this.findImportexportViaOffsetToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
-            this.findImportexportViaOffsetToolStripMenuItem.Text = "Find import/export via offset";
-            this.findImportexportViaOffsetToolStripMenuItem.ToolTipText = "Finds an export or import containing the offset you specify.";
-            this.findImportexportViaOffsetToolStripMenuItem.Click += new System.EventHandler(this.findImportexportViaOffsetToolStripMenuItem_Click);
-            // 
             // getDumpToolStripMenuItem
             // 
             this.getDumpToolStripMenuItem.Name = "getDumpToolStripMenuItem";
-            this.getDumpToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
+            this.getDumpToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
             this.getDumpToolStripMenuItem.Text = "Get Complete Dump";
             this.getDumpToolStripMenuItem.Click += new System.EventHandler(this.getDumpToolStripMenuItem_Click_1);
             // 
             // getDumpToolStripMenuItem1
             // 
             this.getDumpToolStripMenuItem1.Name = "getDumpToolStripMenuItem1";
-            this.getDumpToolStripMenuItem1.Size = new System.Drawing.Size(225, 22);
+            this.getDumpToolStripMenuItem1.Size = new System.Drawing.Size(227, 22);
             this.getDumpToolStripMenuItem1.Text = "Get Binary Dump";
             this.getDumpToolStripMenuItem1.Click += new System.EventHandler(this.getDumpToolStripMenuItem1_Click);
+            // 
+            // findImportexportViaOffsetToolStripMenuItem
+            // 
+            this.findImportexportViaOffsetToolStripMenuItem.Name = "findImportexportViaOffsetToolStripMenuItem";
+            this.findImportexportViaOffsetToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.findImportexportViaOffsetToolStripMenuItem.Text = "Find import/export via offset";
+            this.findImportexportViaOffsetToolStripMenuItem.ToolTipText = "Finds an export or import containing the offset you specify.";
+            this.findImportexportViaOffsetToolStripMenuItem.Click += new System.EventHandler(this.findImportexportViaOffsetToolStripMenuItem_Click);
+            // 
+            // checkIndexingToolStripMenuItem
+            // 
+            this.checkIndexingToolStripMenuItem.Name = "checkIndexingToolStripMenuItem";
+            this.checkIndexingToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.checkIndexingToolStripMenuItem.Text = "Check indexing";
+            this.checkIndexingToolStripMenuItem.Click += new System.EventHandler(this.checkIndexingToolStripMenuItem_Click);
+            // 
+            // dEBUGCallReadPropertiesToolStripMenuItem
+            // 
+            this.dEBUGCallReadPropertiesToolStripMenuItem.Name = "dEBUGCallReadPropertiesToolStripMenuItem";
+            this.dEBUGCallReadPropertiesToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.dEBUGCallReadPropertiesToolStripMenuItem.Text = "DEBUG: Call ReadProperties()";
+            this.dEBUGCallReadPropertiesToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCallReadPropertiesToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -1320,5 +1383,12 @@
         private System.Windows.Forms.TabPage binaryEditorTab;
         private System.Windows.Forms.CheckBox showFullPathsCheckbox;
         private System.Windows.Forms.ToolStripMenuItem findImportexportViaOffsetToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem checkIndexingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dEBUGCallReadPropertiesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openInToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pathfindingEditorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sequenceEditorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem faceFXEditorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem wWiseBankEditorToolStripMenuItem;
     }
 }

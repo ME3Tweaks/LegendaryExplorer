@@ -31,16 +31,22 @@ namespace ME3Explorer.Packages
         public static IMEPackage OpenMEPackage(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null)
         {
             IMEPackage package = null;
+            //if (!File.Exists(pathToFile))
+            //{
+            //    return null;
+            //}
             if (!openPackages.ContainsKey(pathToFile))
             {
                 ushort version;
                 ushort licenseVersion;
+
                 using (FileStream fs = new FileStream(pathToFile, FileMode.Open, FileAccess.Read))
                 {
                     fs.Seek(4, SeekOrigin.Begin);
                     version = fs.ReadValueU16();
                     licenseVersion = fs.ReadValueU16();
                 }
+
 
                 if (version == 684 && licenseVersion == 194)
                 {
@@ -102,7 +108,7 @@ namespace ME3Explorer.Packages
             IMEPackage package = sender as IMEPackage;
             packagesInTools.Remove(package);
             package.noLongerOpenInTools -= Package_noLongerOpenInTools;
-            
+
         }
 
         public static ME3Package OpenME3Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null)
