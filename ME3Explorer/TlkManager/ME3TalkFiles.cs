@@ -25,6 +25,14 @@ namespace ME3Explorer
                 tlkList.Add(tlk);
             }
         }
+
+        public static void ReloadTLKData()
+        {
+            tlkList = new List<TalkFile>();
+            LoadSavedTlkList();
+        }
+
+
         public static string findDataById(int strRefID, bool withFileName = false)
         {
             string s = "No Data";

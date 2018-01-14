@@ -139,6 +139,7 @@
             this.setAllIndexesInThisTreeTo0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.reloadTLKsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -272,7 +273,8 @@
             this.addNameToolStripMenuItem,
             this.editInInterpreterToolStripMenuItem,
             this.replaceWithBINToolStripMenuItem,
-            this.editInCurveEditorToolStripMenuItem});
+            this.editInCurveEditorToolStripMenuItem,
+            this.reloadTLKsToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
@@ -1221,6 +1223,14 @@
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
             // 
+            // reloadTLKsToolStripMenuItem
+            // 
+            this.reloadTLKsToolStripMenuItem.Name = "reloadTLKsToolStripMenuItem";
+            this.reloadTLKsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.reloadTLKsToolStripMenuItem.Text = "Reload TLKs";
+            this.reloadTLKsToolStripMenuItem.ToolTipText = "Reloads the TLK files used by ME3Explorer for displaying StringRefProperty.";
+            this.reloadTLKsToolStripMenuItem.Click += new System.EventHandler(this.reloadTLKsToolStripMenuItem_Click);
+            // 
             // PackageEditor
             // 
             this.AllowDrop = true;
@@ -1390,5 +1400,6 @@
         private System.Windows.Forms.ToolStripMenuItem sequenceEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem faceFXEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem wWiseBankEditorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reloadTLKsToolStripMenuItem;
     }
 }
