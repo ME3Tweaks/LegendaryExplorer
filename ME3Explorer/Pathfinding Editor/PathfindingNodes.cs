@@ -314,6 +314,15 @@ namespace ME3Explorer.PathfindingNodes
         }
     }         //SFXDynamicCoverLink, SFXDynamicCoverSlotMarker
 
+    public class PathNode_Dynamic : PathNode
+    {
+        public PathNode_Dynamic(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, x, y, p, grapheditor)
+        {
+            shape.Brush = dynamicPathnodefindingNodeBrush;
+        }
+    }         //SFXDynamicCoverLink, SFXDynamicCoverSlotMarker
+
     public class CoverLink : PathfindingNode
     {
         public VarTypes type { get; set; }
