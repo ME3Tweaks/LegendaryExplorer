@@ -117,7 +117,7 @@ Floats*/
 
         int? selectedNodePos = null;
 
-        public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "Class", "Material", "StaticMesh", "MaterialInstanceConstant", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "Model", "Polys" }; //classes that have binary parse code
+        public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "Class", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant", "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "Model", "Polys" }; //classes that have binary parse code
 
 
         public BinaryInterpreter()
@@ -257,6 +257,12 @@ Floats*/
                 case "Material":
                     StartMaterialScan();
                     break;
+                case "BioDynamicAnimSet":
+                    StartBioDynamicAnimSetScan();
+                    break;
+                case "WwiseEvent":
+                    StartWWiseEventScan();
+                    break;
                 default:
                     StartGenericScan();
                     break;
@@ -277,6 +283,154 @@ Floats*/
             {
                 treeView1.SelectedNode = treeView1.Nodes[0];
             }
+        }
+
+        private void StartWWiseEventScan(string nodeNameToSelect = null)
+        {
+            resetPropEditingControls();
+            treeView1.BeginUpdate();
+            treeView1.Nodes.Clear();
+            addPropButton.Visible = false;
+
+            byte[] data = export.Data;
+
+            int binarystart = findEndOfProps();
+            //find start of class binary (end of props). This should 
+            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
+            topLevelTree.Tag = nodeType.Root;
+            topLevelTree.Name = "0";
+            try
+            {
+                int binarypos = binarystart;
+                List<TreeNode> subnodes = new List<TreeNode>();
+                int count = BitConverter.ToInt32(data, binarypos);
+                TreeNode node = new TreeNode("0x" + binarypos.ToString("X4") + " Count: " + count.ToString());
+                subnodes.Add(node);
+                binarypos += 4; //+ int
+                if (count > 0)
+                {
+                    string nodeText = "0x" + binarypos.ToString("X4") + " ";
+                    int val = BitConverter.ToInt32(data, binarypos);
+                    string name = val.ToString();
+                    if (val > 0 && val <= pcc.Exports.Count)
+                    {
+                        IExportEntry exp = pcc.Exports[val - 1];
+                        nodeText += name + " " + exp.PackageFullName + "." + exp.ObjectName + " (" + exp.ClassName + ")";
+                    }
+                    else if (val < 0 && val != int.MinValue && Math.Abs(val) <= pcc.Imports.Count)
+                    {
+                        int csImportVal = Math.Abs(val) - 1;
+                        ImportEntry imp = pcc.Imports[csImportVal];
+                        nodeText += name + " " + imp.PackageFullName + "." + imp.ObjectName + " (" + imp.ClassName + ")";
+                    }
+
+                    node = new TreeNode(nodeText);
+                    node.Tag = nodeType.StructLeafObject;
+                    node.Name = binarypos.ToString();
+                    subnodes.Add(node);
+                    /*
+
+                                        int objectindex = BitConverter.ToInt32(data, binarypos);
+                                        IEntry obj = pcc.getEntry(objectindex);
+                                        string nodeValue = obj.GetFullPath;
+                                        node.Tag = nodeType.StructLeafObject;
+                                        */
+                }
+                topLevelTree.Nodes.AddRange(subnodes.ToArray());
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Nodes.Add("An error occured parsing the wwiseevent: " + ex.Message);
+            }
+            treeView1.Nodes.Add(topLevelTree);
+            treeView1.CollapseAll();
+            treeView1.Nodes[0].Expand();
+            TreeNode[] nodes;
+            if (nodeNameToSelect != null)
+            {
+                nodes = treeView1.Nodes.Find(nodeNameToSelect, true);
+                if (nodes.Length > 0)
+                {
+                    treeView1.SelectedNode = nodes[0];
+                }
+                else
+                {
+                    treeView1.SelectedNode = treeView1.Nodes[0];
+                }
+            }
+
+            treeView1.EndUpdate();
+            memsize = memory.Length;
+        }
+
+        private void StartBioDynamicAnimSetScan(string nodeNameToSelect = null)
+        {
+            resetPropEditingControls();
+            treeView1.BeginUpdate();
+            treeView1.Nodes.Clear();
+            addPropButton.Visible = false;
+
+            byte[] data = export.Data;
+
+            int binarystart = findEndOfProps();
+            //find start of class binary (end of props). This should 
+
+
+
+            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
+            topLevelTree.Tag = nodeType.Root;
+            topLevelTree.Name = "0";
+            try
+            {
+                int binarypos = binarystart;
+                List<TreeNode> subnodes = new List<TreeNode>();
+                int count = BitConverter.ToInt32(data, binarypos);
+                TreeNode node = new TreeNode("0x" + binarypos.ToString("X4") + " Count: " + count.ToString());
+                subnodes.Add(node);
+                binarypos += 4; //+ int
+                for (int i = 0; i < count; i++)
+                {
+                    int nameIndex = BitConverter.ToInt32(data, binarypos);
+                    int nameIndexNum = BitConverter.ToInt32(data, binarypos + 4);
+                    int shouldBe1 = BitConverter.ToInt32(data, binarypos + 8);
+                    string nodeValue = pcc.Names[nameIndex] + "_" + nameIndexNum;
+                    if (shouldBe1 != 1)
+                    {
+                        //ERROR
+                        nodeValue += " - Not followed by 1 (integer)!";
+                    }
+
+                    node = new TreeNode("0x" + binarypos.ToString("X4") + " Name: " + nodeValue);
+                    node.Tag = nodeType.StructLeafName;
+                    node.Name = binarypos.ToString();
+                    subnodes.Add(node);
+                    binarypos += 12;
+                }
+                topLevelTree.Nodes.AddRange(subnodes.ToArray());
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Nodes.Add("An error occured parsing the biodynamicanimset: " + ex.Message);
+            }
+            treeView1.Nodes.Add(topLevelTree);
+            treeView1.CollapseAll();
+            treeView1.Nodes[0].Expand();
+            TreeNode[] nodes;
+            if (nodeNameToSelect != null)
+            {
+                nodes = treeView1.Nodes.Find(nodeNameToSelect, true);
+                if (nodes.Length > 0)
+                {
+                    treeView1.SelectedNode = nodes[0];
+                }
+                else
+                {
+                    treeView1.SelectedNode = treeView1.Nodes[0];
+                }
+            }
+
+            treeView1.EndUpdate();
+            memsize = memory.Length;
         }
 
         private void StartGenericScan(string nodeNameToSelect = null)
@@ -1328,8 +1482,14 @@ Floats*/
             {
                 nodeType type = (nodeType)node.Tag;
                 int pos = (int)hb1.SelectionStart;
-                if (memory.Length - pos < 8)
+                if (memory.Length - pos < 4 && type == nodeType.StructLeafObject)
+                {
                     return;
+                }
+                else if (memory.Length - pos < 8 && type != nodeType.StructLeafObject)
+                {
+                    return;
+                }
                 switch (type)
                 {
                     case nodeType.ArrayLeafInt:

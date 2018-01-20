@@ -65,6 +65,7 @@
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reloadTLKListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -159,6 +160,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pg1.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.pg1.HelpVisible = false;
+            this.pg1.LineColor = System.Drawing.SystemColors.ControlDark;
             this.pg1.Location = new System.Drawing.Point(0, 0);
             this.pg1.Name = "pg1";
             this.pg1.Size = new System.Drawing.Size(344, 120);
@@ -265,7 +267,8 @@
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addObjectsToolStripMenuItem});
+            this.addObjectsToolStripMenuItem,
+            this.reloadTLKListToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
@@ -273,7 +276,7 @@
             // addObjectsToolStripMenuItem
             // 
             this.addObjectsToolStripMenuItem.Name = "addObjectsToolStripMenuItem";
-            this.addObjectsToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.addObjectsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addObjectsToolStripMenuItem.Text = "Add Object";
             this.addObjectsToolStripMenuItem.Click += new System.EventHandler(this.addObjectsToolStripMenuItem_Click);
             // 
@@ -422,6 +425,13 @@
             this.addObjectToolStripMenuItem.Text = "Add Object";
             this.addObjectToolStripMenuItem.Click += new System.EventHandler(this.addObjectsToolStripMenuItem_Click);
             // 
+            // reloadTLKListToolStripMenuItem
+            // 
+            this.reloadTLKListToolStripMenuItem.Name = "reloadTLKListToolStripMenuItem";
+            this.reloadTLKListToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.reloadTLKListToolStripMenuItem.Text = "Reload TLKs";
+            this.reloadTLKListToolStripMenuItem.Click += new System.EventHandler(this.reloadTLKListToolStripMenuItem_Click);
+            // 
             // SequenceEditor
             // 
             this.AllowDrop = true;
@@ -502,5 +512,6 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private System.Windows.Forms.ToolStripMenuItem addObjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reloadTLKListToolStripMenuItem;
     }
 }
