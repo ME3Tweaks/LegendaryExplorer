@@ -53,7 +53,7 @@ namespace UDKExplorer.UDK.Classes
                 res.Nodes.Add("Chunk Index : " + ChunkIndex);
                 res.Nodes.Add("Base Index : " + BaseIndex);
                 res.Nodes.Add("Num Triangles : " + NumTriangles);
-                res.Nodes.Add("Triangle Sorting : " + TriangleSorting);                
+                res.Nodes.Add("Triangle Sorting : " + TriangleSorting);
                 return res;
             }
         }
@@ -64,7 +64,7 @@ namespace UDKExplorer.UDK.Classes
             public byte DataTypeSize;
             public int IndexSize;
             public int IndexCount;
-            public List<ushort> Indexes;
+            public List<uint> Indexes; // modded
 
             public void Serialize(SerializingContainer Container)
             {
@@ -74,12 +74,25 @@ namespace UDKExplorer.UDK.Classes
                 IndexCount = Container + IndexCount;
                 if (Container.isLoading)
                 {
-                    Indexes = new List<ushort>();
+                    Indexes = new List<uint>();
                     for (int i = 0; i < IndexCount; i++)
                         Indexes.Add(0);
                 }
-                for (int i = 0; i < IndexCount; i++)
-                    Indexes[i] = Container + Indexes[i];
+                if (IndexSize == 1)
+                {
+                    for (int i = 0; i < IndexCount; i++)
+                        Indexes[i] = Container + (byte)Indexes[i];
+                }
+                else if (IndexSize == 2)
+                {
+                    for (int i = 0; i < IndexCount; i++)
+                        Indexes[i] = Container + (ushort)Indexes[i];
+                }
+                else if (IndexSize == 4)
+                {
+                    for (int i = 0; i < IndexCount; i++)
+                        Indexes[i] = Container + (uint)Indexes[i];
+                }
             }
 
             public TreeNode ToTree()
@@ -113,7 +126,7 @@ namespace UDKExplorer.UDK.Classes
                 Position.Z = Container + Position.Z;
                 TangentX = Container + TangentX;
                 TangentY = Container + TangentY;
-                TangentZ = Container + TangentZ;                
+                TangentZ = Container + TangentZ;
                 if (Container.isLoading)
                     UV = new Vector2[4];
                 for (int i = 0; i < 4; i++)
@@ -122,12 +135,12 @@ namespace UDKExplorer.UDK.Classes
                     UV[i].Y = Container + UV[i].Y;
                 }
                 Color = Container + Color;
-                Bone = Container + Bone;  
+                Bone = Container + Bone;
             }
 
             public TreeNode ToTree(int MyIndex)
             {
-                string s = MyIndex + " : Position : X(" ;
+                string s = MyIndex + " : Position : X(";
                 s += Position.X + ") Y(" + Position.Y + ") Z(" + Position.Z + ") ";
                 s += "TangentX(" + TangentX.ToString("X8") + ") TangentY(" + TangentY.ToString("X8") + ") TangentZ(" + TangentZ.ToString("X8") + ") ";
                 for (int i = 0; i < 4; i++)
@@ -377,8 +390,8 @@ namespace UDKExplorer.UDK.Classes
                 {
                     GPUSkinVertexStruct v = Vertices[i];
                     v.Serialize(Container);
-                    
-                    if(VertexDiff > 0)
+
+                    if (VertexDiff > 0)
                     {
                         byte b = 0;
                         for (int j = 0; j < VertexDiff; j++)
@@ -580,7 +593,7 @@ namespace UDKExplorer.UDK.Classes
                 return res;
             }
         }
-       
+
         public BoundingStruct Bounding = new BoundingStruct();
         public List<int> Materials;
         public Vector3 Origin;
@@ -651,7 +664,7 @@ namespace UDKExplorer.UDK.Classes
             Rotation.X = Container + Rotation.X;
             Rotation.Y = Container + Rotation.Y;
             Rotation.Z = Container + Rotation.Z;
-            
+
         }
 
         private void SerializeBones(SerializingContainer Container)
@@ -869,7 +882,7 @@ namespace UDKExplorer.UDK.Classes
         {
             TreeNode res = new TreeNode("Origin/Rotation");
             res.Nodes.Add("Origin : X(" + Origin.X + ") Y(" + Origin.Y + ") Z(" + Origin.Z + ")");
-            res.Nodes.Add("Rotation : X(" + Rotation.X + ") Y(" + Rotation.Y + ") Z(" + Rotation.Z + ")");            
+            res.Nodes.Add("Rotation : X(" + Rotation.X + ") Y(" + Rotation.Y + ") Z(" + Rotation.Z + ")");
             return res;
         }
 
@@ -898,7 +911,7 @@ namespace UDKExplorer.UDK.Classes
             for (int i = 0; i < LODModels.Count; i++)
                 res.Nodes.Add(LODModels[i].ToTree(i));
             return res;
-        }        
+        }
 
     }
 }
