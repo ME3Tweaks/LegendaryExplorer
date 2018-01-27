@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ME3Explorer")]
+[assembly: AssemblyTitle("ME3Explorer - ME3Tweaks Fork")]
 [assembly: AssemblyDescription("Modding toolset for the Mass Effect Trilogy")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("ME3Explorer")]
-[assembly: AssemblyProduct("ME3Explorer")]
+[assembly: AssemblyCompany("ME3Explorer - ME3Tweaks Fork")]
+[assembly: AssemblyProduct("ME3Explorer - ME3Tweaks Fork")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -51,5 +51,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.0.3.0")]
-[assembly: AssemblyFileVersion("3.0.3.0")]
+[assembly: AssemblyVersion("3.0.4.0")]
+[assembly: AssemblyFileVersion("3.0.4.0")]
