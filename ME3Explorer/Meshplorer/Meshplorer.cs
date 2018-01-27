@@ -933,7 +933,7 @@ namespace ME3Explorer.Meshplorer
         {
             if (preview != null)
             {
-                if (solidToolStripMenuItem.Checked)
+                if (solidToolStripMenuItem.Checked && CurrentLOD < preview.LODs.Count)
                 {
                     view.Wireframe = false;
                     preview.Render(view, CurrentLOD, SharpDX.Matrix.Scaling(globalscale) * SharpDX.Matrix.RotationY(PreviewRotation));

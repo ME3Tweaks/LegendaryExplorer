@@ -86,7 +86,11 @@ namespace ME3Explorer.Scene3D
             // Create device and swap chain according to the description above
             SharpDX.Direct3D11.Device d;
             SwapChain sc;
-            SharpDX.Direct3D11.Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.BgraSupport | DeviceCreationFlags.SingleThreaded | DeviceCreationFlags.Debug, scd, out d, out sc);
+            DeviceCreationFlags flags = DeviceCreationFlags.BgraSupport | DeviceCreationFlags.SingleThreaded;
+#if DEBUG
+            flags |= DeviceCreationFlags.Debug;
+#endif
+            SharpDX.Direct3D11.Device.CreateWithSwapChain(DriverType.Hardware, flags, scd, out d, out sc);
             this.SwapChain = sc; // we have to use these temp variables
             this.Device = d; // because properties can't be passed as out parameters. =(
 
