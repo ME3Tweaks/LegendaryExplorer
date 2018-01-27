@@ -64,7 +64,7 @@ namespace UDKExplorer.UDK.Classes
             public byte DataTypeSize;
             public int IndexSize;
             public int IndexCount;
-            public List<ushort> Indexes;
+            public List<uint> Indexes; // modded
 
             public void Serialize(SerializingContainer Container)
             {
@@ -74,12 +74,25 @@ namespace UDKExplorer.UDK.Classes
                 IndexCount = Container + IndexCount;
                 if (Container.isLoading)
                 {
-                    Indexes = new List<ushort>();
+                    Indexes = new List<uint>();
                     for (int i = 0; i < IndexCount; i++)
                         Indexes.Add(0);
                 }
-                for (int i = 0; i < IndexCount; i++)
-                    Indexes[i] = Container + Indexes[i];
+                if (IndexSize == 1)
+                {
+                    for (int i = 0; i < IndexCount; i++)
+                        Indexes[i] = Container + (byte)Indexes[i];
+                }
+                else if (IndexSize == 2)
+                {
+                    for (int i = 0; i < IndexCount; i++)
+                        Indexes[i] = Container + (ushort)Indexes[i];
+                }
+                else if (IndexSize == 4)
+                {
+                    for (int i = 0; i < IndexCount; i++)
+                        Indexes[i] = Container + (uint)Indexes[i];
+                }
             }
 
             public TreeNode ToTree()
