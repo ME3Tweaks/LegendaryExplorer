@@ -77,6 +77,11 @@ namespace KFreonLib.Misc
                     List<Tuple<int, string>> sorted = new List<Tuple<int, string>>();
                     foreach (string s in result)
                     {
+                        string foldername = Path.GetDirectoryName(s);
+                        if (!foldername.StartsWith("DLC_"))
+                        {
+                            continue;
+                        }
                         int prio = GetDLCPriority(s);
                         if (sorted.Count == 0 || prio > sorted[0].Item1)
                             sorted.Insert(0, new Tuple<int, string>(prio, s));
