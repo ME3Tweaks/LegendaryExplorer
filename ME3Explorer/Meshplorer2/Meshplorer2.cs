@@ -13,6 +13,7 @@ using ME3Explorer.Packages;
 using AmaroK86.MassEffect3;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
+using ME3Explorer.Scene3D;
 
 namespace ME3Explorer.Meshplorer2
 {
@@ -32,6 +33,8 @@ namespace ME3Explorer.Meshplorer2
         public int DisplayStyle = 0; //0 = per file, 1 = per path
         public UDKExplorer.UDK.UDKObject udk;
         public List<int> Objects;
+        public ModelPreview preview;
+        public float PreviewRotation = 0;
 
         public Meshplorer2()
         {
@@ -259,16 +262,8 @@ namespace ME3Explorer.Meshplorer2
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            Renderer.Refresh();
-        }
-
-        private void Meshplorer2_Paint(object sender, PaintEventArgs e)
-        {
-            if (!Renderer.init || Renderer.device == null)
-            {
-                Renderer.InitializeGraphics(pb1);
-                timer1.Enabled = true;
-            }
+            view.UpdateScene();
+            view.Invalidate();
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -343,12 +338,8 @@ namespace ME3Explorer.Meshplorer2
             {
                 if (t.Parent == null || t.Name == "")
                     return;
-                Renderer.STM?.pcc.Dispose();
-                Renderer.STM = null;
-                Renderer.SKM?.Owner.Dispose();
-                Renderer.SKM = null;
-                Renderer.CamDistance = 10;
-                Renderer.CamOffset = new Microsoft.DirectX.Vector3(0, 0, 0);
+                preview?.Dispose();
+                preview = null;
                 try
                 {
                     int i = 0;
@@ -360,15 +351,15 @@ namespace ME3Explorer.Meshplorer2
                             ME3Package pcc = MEPackageHandler.OpenME3Package(ME3Directory.cookedPath + en.Filename);
                             if (en.isSkeletal)
                             {
-                                Renderer.SKM = new SkeletalMesh(pcc, en.Index);
-                                Renderer.CamDistance = Renderer.SKM.Bounding.r * 2.0f;
-                                Renderer.CamOffset = Renderer.SKM.Bounding.origin;
+                                SkeletalMesh skmesh = new SkeletalMesh(pcc, en.Index); // TODO: pass device
+                                preview = new ModelPreview(view.Device, skmesh, view.TextureCache);
+                                CenterView();
                                 treeView2.Nodes.Clear();
                                 if (previewWithTreeToolStripMenuItem.Checked)
                                 {
                                     treeView2.Visible = false;
                                     Application.DoEvents();
-                                    treeView2.Nodes.Add(Renderer.SKM.ToTree());
+                                    treeView2.Nodes.Add(skmesh.ToTree());
                                     treeView2.Visible = true;
                                 }
                             }
@@ -401,15 +392,14 @@ namespace ME3Explorer.Meshplorer2
                                                 ME3Package pcc = MEPackageHandler.OpenME3Package(loc + filename);
                                                 if (en.isSkeletal)
                                                 {
-                                                    Renderer.SKM = new SkeletalMesh(pcc, en.Index);
-                                                    Renderer.CamDistance = Renderer.SKM.Bounding.r * 2.0f;
-                                                    Renderer.CamOffset = Renderer.SKM.Bounding.origin;
+                                                    SkeletalMesh skmesh = new SkeletalMesh(pcc, en.Index);
+                                                    CenterView();
                                                     treeView2.Nodes.Clear();
                                                     if (previewWithTreeToolStripMenuItem.Checked)
                                                     {
                                                         treeView2.Visible = false;
                                                         Application.DoEvents();
-                                                        treeView2.Nodes.Add(Renderer.SKM.ToTree());
+                                                        treeView2.Nodes.Add(skmesh.ToTree());
                                                         treeView2.Visible = true;
                                                     }
                                                 }
@@ -476,26 +466,7 @@ namespace ME3Explorer.Meshplorer2
 
         private void Meshplorer2_Load(object sender, EventArgs e)
         {
-            this.pb1.MouseWheel += MouseWheelHandler;
-            pb1_Resize(null, null); // set aspect ratio
-        }
-
-        private void MouseWheelHandler(object sender, MouseEventArgs e)
-        {
-                if (e.Delta > 0)
-                    Renderer.CamDistance /= 1.5f;
-                else
-                    Renderer.CamDistance *= 1.5f;
-        }
-
-        private void pb1_MouseHover(object sender, EventArgs e)
-        {
-            pb1.Focus();
-        }
-
-        private void rotateToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Renderer.rotate = rotateToolStripMenuItem.Checked;
+            view.LoadDirect3D();
         }
 
         private void importFromUDKToolStripMenuItem_Click(object sender, EventArgs e)
@@ -537,7 +508,7 @@ namespace ME3Explorer.Meshplorer2
                         if (en.isSkeletal)
                         {
                             pcc = MEPackageHandler.OpenME3Package(ME3Directory.cookedPath + en.Filename);
-                            skm = new SkeletalMesh(pcc, en.Index);
+                            skm = new SkeletalMesh(pcc, en.Index); // TODO: pass device
                         }
                         else
                         {
@@ -794,8 +765,47 @@ namespace ME3Explorer.Meshplorer2
 
         private void Meshplorer2_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Renderer.STM?.pcc.Dispose();
-            Renderer.SKM?.Owner.Dispose();
+            preview?.Dispose();
+            view.UnloadDirect3D();
+        }
+
+        private void view_Update(object sender, float e)
+        {
+            if (rotateToolStripMenuItem.Checked) PreviewRotation += e * 0.05f;
+
+        }
+
+        private void view_Render(object sender, EventArgs e)
+        {
+            if (preview != null)
+            {
+                view.Wireframe = false;
+                preview.Render(view, 0, SharpDX.Matrix.RotationY(PreviewRotation));
+                view.Wireframe = true;
+                SceneRenderControl.WorldConstants ViewConstants = new SceneRenderControl.WorldConstants(SharpDX.Matrix.Transpose(view.Camera.ProjectionMatrix), SharpDX.Matrix.Transpose(view.Camera.ViewMatrix), SharpDX.Matrix.Transpose(SharpDX.Matrix.RotationY(PreviewRotation)));
+                view.DefaultEffect.PrepDraw(view.ImmediateContext);
+                view.DefaultEffect.RenderObject(view.ImmediateContext, ViewConstants, preview.LODs[0].Mesh, new SharpDX.Direct3D11.ShaderResourceView[] { null });
+            }
+        }
+
+        private void CenterView()
+        {
+            if (preview != null && preview.LODs.Count > 0)
+            {
+                WorldMesh m = preview.LODs[0].Mesh;
+                view.Camera.Position = m.AABBCenter;
+                view.Camera.FocusDepth = Math.Max(m.AABBHalfSize.X * 2.0f, Math.Max(m.AABBHalfSize.Y * 2.0f, m.AABBHalfSize.Z * 2.0f));
+                if (view.Camera.FirstPerson)
+                {
+                    view.Camera.Position -= view.Camera.CameraForward * view.Camera.FocusDepth;
+                }
+            }
+            else
+            {
+                view.Camera.Position = SharpDX.Vector3.Zero;
+                view.Camera.Pitch = -(float)Math.PI / 5.0f;
+                view.Camera.Yaw = (float)Math.PI / 4.0f;
+            }
         }
 
         private void pb1_Resize(object sender, EventArgs e)

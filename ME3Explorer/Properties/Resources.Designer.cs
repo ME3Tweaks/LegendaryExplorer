@@ -431,6 +431,44 @@ namespace ME3Explorer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to // This has to match the data in the vertex buffer.
+        ///struct VS_IN {
+        ///	float3 pos : POSITION;
+        ///	float2 uv : TEXCOORD0;
+        ///};
+        ///
+        ///struct VS_OUT {
+        ///	float4 pos : POSITION;
+        ///	float2 uv : TEXCOORD0;
+        ///};
+        ///
+        ///struct PS_IN {
+        ///	float4 pos : POSITION;
+        ///	float2 uv : TEXCOORD0;
+        ///};
+        ///
+        ///struct PS_OUT {
+        ///	float4 color : SV_TARGET;
+        ///};
+        ///
+        ///cbuffer constants {
+        ///	float4x4 projection;
+        ///	float4x4 view;
+        ///	float4x4 model;
+        ///};
+        ///
+        ///VS_OUT VSMain(VS_IN input) {
+        ///	VS_OUT result = (VS_OUT)0;
+        ///
+        ///	// Transform the input object-space position [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string StandardShader {
+            get {
+                return ResourceManager.GetString("StandardShader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap subtitle_scanner_64x64 {
