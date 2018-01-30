@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using Microsoft.DirectX.Direct3D;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
+using AmaroK86.ImageFormat;
+using System.Drawing;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -23,7 +25,6 @@ namespace ME3Explorer.Unreal.Classes
         {
             public int TexIndex;
             public string Desc;
-            public Texture Texture;
         }
 
         public MaterialInstanceConstant(ME3Package Pcc,int Idx)
@@ -64,33 +65,6 @@ namespace ME3Explorer.Unreal.Classes
                 TextureParam t = new TextureParam();
                 t.Desc = name;
                 t.TexIndex = Idx;
-                if (name.ToLower().Contains("diffuse") && Idx >0)
-                {
-                    Texture2D tex = new Texture2D(pcc, Idx - 1);
-                    string loc = Path.GetDirectoryName(Application.ExecutablePath);
-                    Texture2D.ImageInfo inf = new Texture2D.ImageInfo();
-                    for (int j = 0; j < tex.imgList.Count(); j++)
-                        if (tex.imgList[j].storageType != Texture2D.storage.empty)
-                        {
-                            inf = tex.imgList[j];
-                            break;
-                        }
-                    if (File.Exists(loc + "\\exec\\TempTex.dds"))
-                        File.Delete(loc + "\\exec\\TempTex.dds");
-                    tex.extractImage(inf, ME3Directory.cookedPath, loc + "\\exec\\TempTex.dds");
-                    if (File.Exists(loc + "\\exec\\TempTex.dds"))
-                        try
-                        {
-                            t.Texture = TextureLoader.FromFile(Meshplorer.Preview3D.device, loc + "\\exec\\TempTex.dds");
-                        }
-                        catch (Direct3DXException e)
-                        {
-                        }
-                    else
-                        t.Texture = null;
-                }
-                else
-                    t.Texture = null;
                 Textures.Add(t);
                 pos = tp[tp.Count -1].offend;
             }
@@ -98,13 +72,23 @@ namespace ME3Explorer.Unreal.Classes
 
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode(pcc.Exports[index].ObjectName);
+            TreeNode res = new TreeNode("#" + index + " \"" + pcc.Exports[index].ObjectName + "\"");
             for (int i = 0; i < Textures.Count(); i++)
             {
-                string s = Textures[i].Desc + " :# " + (Textures[i].TexIndex - 1);
-                s += " " + pcc.getObjectName(Textures[i].TexIndex);
+                string s = Textures[i].Desc + " = #" + (Textures[i].TexIndex - 1);
+                s += " \"" + pcc.getObjectName(Textures[i].TexIndex) + "\"";
                 res.Nodes.Add(s);
             }
+            TreeNode propsnode = new TreeNode("Properties");
+            res.Nodes.Add(propsnode);
+            props = PropertyReader.getPropList(pcc.Exports[index]);
+            for (int i = 0; i < props.Count(); i++) // Loop through props of export
+            {
+                string name = pcc.getNameEntry(props[i].Name);
+                TreeNode propnode = new TreeNode(name + " | " + props[i].TypeVal.ToString());
+                propsnode.Nodes.Add(propnode);
+            }
+
             return res;
         }
     }
