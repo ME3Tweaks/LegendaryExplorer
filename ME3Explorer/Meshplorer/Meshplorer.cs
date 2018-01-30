@@ -899,11 +899,6 @@ namespace ME3Explorer.Meshplorer
             MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
         }
 
-        private void pb1_Resize(object sender, EventArgs e)
-        {
-            Preview3D.aspect = (float)pb1.Width / pb1.Height;
-        }
-
         #region 3D Viewport
         //private List<WorldMesh> CurrentMeshLODs = new List<WorldMesh>();
         private int CurrentLOD = 0;

@@ -434,16 +434,19 @@ namespace ME3Explorer.Properties {
         ///   Looks up a localized string similar to // This has to match the data in the vertex buffer.
         ///struct VS_IN {
         ///	float3 pos : POSITION;
+        ///	float3 normal : NORMAL;
         ///	float2 uv : TEXCOORD0;
         ///};
         ///
         ///struct VS_OUT {
-        ///	float4 pos : POSITION;
+        ///	float4 pos : SV_POSITION;
+        ///	float3 normal : NORMAL;
         ///	float2 uv : TEXCOORD0;
         ///};
         ///
         ///struct PS_IN {
-        ///	float4 pos : POSITION;
+        ///	float4 pos : SV_POSITION;
+        ///	float3 normal : NORMAL;
         ///	float2 uv : TEXCOORD0;
         ///};
         ///
@@ -457,10 +460,7 @@ namespace ME3Explorer.Properties {
         ///	float4x4 model;
         ///};
         ///
-        ///VS_OUT VSMain(VS_IN input) {
-        ///	VS_OUT result = (VS_OUT)0;
-        ///
-        ///	// Transform the input object-space position [rest of string was truncated]&quot;;.
+        ///Texture2D tex : regist [rest of string was truncated]&quot;;.
         /// </summary>
         public static string StandardShader {
             get {

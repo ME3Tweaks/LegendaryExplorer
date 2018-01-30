@@ -807,10 +807,5 @@ namespace ME3Explorer.Meshplorer2
                 view.Camera.Yaw = (float)Math.PI / 4.0f;
             }
         }
-
-        private void pb1_Resize(object sender, EventArgs e)
-        {
-            Renderer.aspect = (float)pb1.Width / pb1.Height;
-        }
     }
 }
