@@ -11,8 +11,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -58,7 +57,6 @@ namespace ME3Explorer.Unreal.Classes
 
         public Vector3[] Vertices;
         public int[] Faces;
-        public CustomVertex.PositionColored[] BrushMesh;
         public bool isSelected;
 
         public BrushComponent(ME3Package Pcc, int Index)
@@ -178,12 +176,6 @@ namespace ME3Explorer.Unreal.Classes
                         break;
                 }
             }
-            if (Vertices != null && Faces != null)
-            {
-                BrushMesh = new CustomVertex.PositionColored[Faces.Length];
-                for (int i = 0; i < Faces.Length; i++)
-                    BrushMesh[i] = new CustomVertex.PositionColored(Vertices[Faces[i]], Color.Orange.ToArgb());
-            }
         }
 
         public void ReadVertices(byte[] raw)
@@ -214,17 +206,6 @@ namespace ME3Explorer.Unreal.Classes
         public int GetArrayCount(byte[] raw)
         {
             return BitConverter.ToInt32(raw,24);
-        }
-
-        public void Render(Device device)
-        {
-            device.VertexFormat = CustomVertex.PositionColored.Format;
-            device.RenderState.Lighting = false;
-            if(isSelected)
-                device.RenderState.FillMode = FillMode.Solid;
-            else
-                device.RenderState.FillMode = FillMode.WireFrame;
-            device.DrawUserPrimitives(PrimitiveType.TriangleList, 12, BrushMesh);
         }
 
         public void SetSelection(bool Selected)

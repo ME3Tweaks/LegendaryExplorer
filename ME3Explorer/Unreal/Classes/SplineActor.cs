@@ -11,8 +11,7 @@ using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
 using KFreonLib.Debugging;
 using ME3Explorer.Packages;
 
@@ -46,8 +45,6 @@ namespace ME3Explorer.Unreal.Classes
         public ME3Package pcc;
         public byte[] data;
         public List<PropertyReader.Property> Props;
-        public CustomVertex.PositionColored[] points;
-        public CustomVertex.PositionColored[] points_sel;
         
         public Vector3 to;
         public int toIdx;
@@ -124,7 +121,6 @@ namespace ME3Explorer.Unreal.Classes
 
         public void ProcessConnections()
         {
-            List<CustomVertex.PositionColored> list = new List<CustomVertex.PositionColored>();
             if (Connections.Length == 0)
                 return;
             byte[] buff = GetArrayContent(Connections);
@@ -152,43 +148,6 @@ namespace ME3Explorer.Unreal.Classes
                 fromIdx.Add(Idx);
                 from.Add(SplineActor.GetLocation(pcc, Idx));
             }
-            list.Add(new CustomVertex.PositionColored(location,Color.GreenYellow.ToArgb()));
-            list.Add(new CustomVertex.PositionColored(to, Color.GreenYellow.ToArgb()));
-            foreach (Vector3 v in from)
-            {
-                list.Add(new CustomVertex.PositionColored(location, Color.GreenYellow.ToArgb()));
-                list.Add(new CustomVertex.PositionColored(v, Color.GreenYellow.ToArgb()));
-            }
-
-            float w = 20;
-
-            list.Add(new CustomVertex.PositionColored(location, Color.GreenYellow.ToArgb()));
-            list.Add(new CustomVertex.PositionColored(location + new Vector3(-w, -w, 100), Color.GreenYellow.ToArgb()));
-            
-            list.Add(new CustomVertex.PositionColored(location, Color.GreenYellow.ToArgb()));
-            list.Add(new CustomVertex.PositionColored(location + new Vector3(w, -w, 100), Color.GreenYellow.ToArgb()));
-            
-            list.Add(new CustomVertex.PositionColored(location, Color.GreenYellow.ToArgb()));
-            list.Add(new CustomVertex.PositionColored(location + new Vector3(w, w, 100), Color.GreenYellow.ToArgb()));
-            
-            list.Add(new CustomVertex.PositionColored(location, Color.GreenYellow.ToArgb()));
-            list.Add(new CustomVertex.PositionColored(location + new Vector3(-w, w, 100), Color.GreenYellow.ToArgb()));
-            
-            list.Add(new CustomVertex.PositionColored(location + new Vector3(-w, -w, 100), Color.GreenYellow.ToArgb()));
-            list.Add(new CustomVertex.PositionColored(location + new Vector3(w, -w, 100), Color.GreenYellow.ToArgb()));
-
-            list.Add(new CustomVertex.PositionColored(location + new Vector3(w, -w, 100), Color.GreenYellow.ToArgb()));            
-            list.Add(new CustomVertex.PositionColored(location + new Vector3(w, w, 100), Color.GreenYellow.ToArgb()));
-
-            list.Add(new CustomVertex.PositionColored(location + new Vector3(w, w, 100), Color.GreenYellow.ToArgb()));
-            list.Add(new CustomVertex.PositionColored(location + new Vector3(-w, w, 100), Color.GreenYellow.ToArgb()));
-
-            list.Add(new CustomVertex.PositionColored(location + new Vector3(-w, w, 100), Color.GreenYellow.ToArgb()));
-            list.Add(new CustomVertex.PositionColored(location + new Vector3(-w, -w, 100), Color.GreenYellow.ToArgb()));
-            points = list.ToArray();
-            points_sel = list.ToArray();
-            for (int i = 0; i < points_sel.Length; i++) 
-                points_sel[i].Color = Color.Red.ToArgb();
         }
 
         public void ApplyTransform(Matrix m, List<SplineActor> others)
@@ -197,7 +156,7 @@ namespace ME3Explorer.Unreal.Classes
             {
                 Vector3 NewLoc = location + new Vector3(m.M41, m.M42, m.M43);
                 Vector3 d = new Vector3(m.M41, m.M42, m.M43);
-                for (int i = 0; i < points.Length - 16; i++)
+                /*for (int i = 0; i < points.Length - 16; i++)
                 {
                     if (IsEqual(points[i].Position, location))
                         points[i].Position = NewLoc;
@@ -218,7 +177,7 @@ namespace ME3Explorer.Unreal.Classes
                         if (IsEqual(points_sel[i].Position, location))
                             o.points_sel[i].Position = NewLoc;
                     }
-                }
+                }*/
                 location = NewLoc;
             }
         }
@@ -310,17 +269,6 @@ namespace ME3Explorer.Unreal.Classes
             for (int i = 0; i < raw.Length - 28; i++)
                 buff[i] = raw[i + 28];
             return buff;
-        }
-
-        public void Render(Device device)        
-        {
-            device.RenderState.Lighting = false;
-            device.Transform.World = Matrix.Identity;
-            device.VertexFormat = CustomVertex.PositionColored.Format;
-            if (points != null && points.Length != 0 && !isSelected) 
-                device.DrawUserPrimitives(PrimitiveType.LineList, points.Length / 2, points);
-            if (points_sel != null && points_sel.Length != 0 && isSelected)
-                device.DrawUserPrimitives(PrimitiveType.LineList, points_sel.Length / 2, points_sel);
         }
 
         public void ProcessTreeClick(int[] path, bool AutoFocus)

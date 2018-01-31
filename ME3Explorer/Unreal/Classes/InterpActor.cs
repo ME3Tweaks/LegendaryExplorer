@@ -11,8 +11,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
 using lib3ds.Net;
 using KFreonLib.Debugging;
 
@@ -254,29 +253,10 @@ namespace ME3Explorer.Unreal.Classes
             return r;
         }
 
-        public void Render(Device device)
-        {
-
-            if (STMC != null)
-                STMC.Render(device, MyMatrix);
-        }
-
         public void ProcessTreeClick(int[] path, bool AutoFocus)
         {
             if (STMC != null)
                 STMC.SetSelection(true);
-        }
-
-        public float Process3DClick(Vector3 org, Vector3 dir)
-        {
-            float dist = -1f;
-            if (STMC != null)
-            {
-                float d = STMC.Process3DClick(org, dir, MyMatrix);
-                if ((d < dist && d > 0) || (dist == -1 && d > 0))
-                    dist = d;
-            }
-            return dist;
         }
 
         public void ApplyTransform(Matrix m)

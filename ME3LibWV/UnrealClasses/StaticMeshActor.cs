@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
 
 namespace ME3LibWV.UnrealClasses
 {
@@ -63,12 +62,6 @@ namespace ME3LibWV.UnrealClasses
                 STMC = new StaticMeshComponent(pcc, idxSTM - 1, MyMatrix);
         }
 
-        public override void Render(Device device)
-        {
-            if (STMC != null)
-                STMC.Render(device);
-        }
-
         public override TreeNode ToTree()
         {
             TreeNode t = new TreeNode("E#" + MyIndex.ToString("d6") + " : " + pcc.getObjectName(MyIndex + 1));
@@ -83,13 +76,6 @@ namespace ME3LibWV.UnrealClasses
             Selected = s;
             if (STMC != null)
                 STMC.SetSelection(s);
-        }
-
-        public override float Process3DClick(Vector3 org, Vector3 dir, float max)
-        {
-            if (STMC != null)
-                return STMC.Process3DClick(org, dir, max);
-            return -1;
         }
     }
 }
