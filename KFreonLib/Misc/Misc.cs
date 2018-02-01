@@ -77,7 +77,7 @@ namespace KFreonLib.Misc
                     List<Tuple<int, string>> sorted = new List<Tuple<int, string>>();
                     foreach (string s in result)
                     {
-                        string foldername = Path.GetDirectoryName(s);
+                        string foldername = Path.GetFileName(s);
                         if (!foldername.StartsWith("DLC_"))
                         {
                             continue;
