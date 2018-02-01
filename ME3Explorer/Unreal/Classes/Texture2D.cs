@@ -194,7 +194,7 @@ namespace ME3Explorer.Unreal.Classes
                     break;
                 case storage.arcCpr:
                 case storage.arcUnc:
-                    string archivePath = archiveDir + "\\" + arcName + ".tfc";
+                    string archivePath = archiveDir + arcName + ".tfc";
                     if (!File.Exists(archivePath))
                     {
                         throw new FileNotFoundException("Texture archive not found in " + archivePath);
