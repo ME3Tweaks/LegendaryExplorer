@@ -12,7 +12,7 @@ namespace ME3Explorer.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.5.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -212,6 +212,54 @@ namespace ME3Explorer.Properties {
             }
             set {
                 this["UseMetadataFullPaths"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MeshplorerViewRotating {
+            get {
+                return ((bool)(this["MeshplorerViewRotating"]));
+            }
+            set {
+                this["MeshplorerViewRotating"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool MeshplorerViewWireframeEnabled {
+            get {
+                return ((bool)(this["MeshplorerViewWireframeEnabled"]));
+            }
+            set {
+                this["MeshplorerViewWireframeEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool MeshplorerViewSolidEnabled {
+            get {
+                return ((bool)(this["MeshplorerViewSolidEnabled"]));
+            }
+            set {
+                this["MeshplorerViewSolidEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MeshplorerViewFirstPerson {
+            get {
+                return ((bool)(this["MeshplorerViewFirstPerson"]));
+            }
+            set {
+                this["MeshplorerViewFirstPerson"] = value;
             }
         }
     }

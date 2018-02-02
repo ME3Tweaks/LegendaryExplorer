@@ -67,11 +67,73 @@ namespace KFreonLib.Misc
         }
 
 
-        public static List<string> GetInstalledDLC(string DLCBasePath)
+        public static List<string> GetInstalledDLC(string DLCBasePath, bool SortByPriority = false)
         {
             if (Directory.Exists(DLCBasePath))
-                return Directory.EnumerateDirectories(DLCBasePath).ToList();
+            {
+                List<string> result = Directory.EnumerateDirectories(DLCBasePath).ToList();
+                if (SortByPriority)
+                {
+                    List<Tuple<int, string>> sorted = new List<Tuple<int, string>>();
+                    foreach (string s in result)
+                    {
+                        string foldername = Path.GetFileName(s);
+                        if (!foldername.StartsWith("DLC_"))
+                        {
+                            continue;
+                        }
+                        int prio = GetDLCPriority(s);
+                        if (sorted.Count == 0 || prio > sorted[0].Item1)
+                            sorted.Insert(0, new Tuple<int, string>(prio, s));
+                        bool added = false;
+                        for (int i = 0; i < sorted.Count; i++)
+                        {
+                            if (prio < sorted[i].Item1 && (i == sorted.Count - 1 || prio > sorted[i + 1].Item1))
+                            {
+                                sorted.Insert(i + 1, new Tuple<int, string>(prio, s));
+                                added = true;
+                                break;
+                            }
+                        }
+                        if (!added)
+                            sorted.Add(new Tuple<int, string>(prio, s));
+                    }
+                    result.Clear();
+                    foreach (Tuple<int, string> item in sorted)
+                    {
+                        result.Add(item.Item2);
+                    }
+                    return result; 
+                }
+                else
+                {
+                    return result;
+                }
+            }
             return new List<string>();
+        }
+
+        public static int GetDLCPriority(string DLCBasePath)
+        {
+            try
+            {
+                using (System.IO.FileStream s = new FileStream(DLCBasePath + "\\CookedPCConsole\\Mount.dlc", FileMode.Open))
+                {
+                    byte[] pdata = new byte[2];
+                    s.Seek(16, SeekOrigin.Begin);
+                    s.Read(pdata, 0, 2);
+                    // swap bytes
+                    byte b = pdata[0];
+                    pdata[0] = pdata[1];
+                    pdata[1] = b;
+                    return BitConverter.ToInt16(pdata, 0);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                return -1;
+            }
         }
 
         /// <summary>

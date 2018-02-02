@@ -13,6 +13,7 @@ using lib3ds.Net;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
+using ME3Explorer.Scene3D;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -184,7 +185,6 @@ namespace ME3Explorer.Unreal.Classes
             memsize = memory.Length;
             props = PropertyReader.getPropList(pcc.Exports[index]);
             Deserialize();
-
         }
 
         #region Deserialize Binary
@@ -230,10 +230,6 @@ namespace ME3Explorer.Unreal.Classes
             b.Box.X = BitConverter.ToSingle(memory, readerpos + 12);
             b.Box.Y = BitConverter.ToSingle(memory, readerpos + 16);
             b.Box.Z = BitConverter.ToSingle(memory, readerpos + 20);            
-            Meshplorer.Preview3D.Cubes = new List<Meshplorer.Preview3D.DXCube>();
-            Meshplorer.Preview3D.DXCube c = Meshplorer.Preview3D.NewCubeByOrigSize(b.Origin - b.Box, b.Box * 2.0f, 0);
-            Meshplorer.Preview3D.CamDistance = (float)Math.Sqrt(b.Box.X * b.Box.X + b.Box.Y * b.Box.Y + b.Box.Z * b.Box.Z) * 2;
-            Meshplorer.Preview3D.Cubes.Add(c);
             b.R = BitConverter.ToSingle(memory, readerpos + 24);
             b.unk = new float[7];
             int pos = readerpos + 28;
@@ -288,12 +284,12 @@ namespace ME3Explorer.Unreal.Classes
                 }
                 t.Nodes.Add(new TreeNode("#" + i.ToString("D4") + " : " + s));
             }
-            ReadkdNodes(Meshplorer.Preview3D.Cubes[0], memory);
+            //ReadkdNodes(Meshplorer.Preview3D.Cubes[0], memory);
             res.Nodes.Add(t);
             l.t = res;
             Mesh.kDOPTree = l;
         }
-
+        /*
         public void ReadkdNodes(Meshplorer.Preview3D.DXCube bound, byte[] memory)
         {
             if (kdNodes != null && kdNodes.Count() > 3)
@@ -316,7 +312,7 @@ namespace ME3Explorer.Unreal.Classes
                 Meshplorer.Preview3D.Cubes.Add(c4);
                 #endregion
             }
-        }
+        }*/
 
         public void ReadRawTris(byte[] memory)
         {
@@ -1192,71 +1188,6 @@ namespace ME3Explorer.Unreal.Classes
         #endregion
 
         #region DirectX
-
-        public void DrawMesh(Device device)
-        {
-            device.VertexFormat = CustomVertex.PositionNormalTextured.Format;
-            device.RenderState.Lighting = false;
-            if(DirectXGlobal.DrawWireFrame)
-                device.RenderState.FillMode = FillMode.WireFrame;
-            else
-                device.RenderState.FillMode = FillMode.Solid;
-            if (Mesh.Mat.Lods != null) 
-            for (int i = 0; i < Mesh.Mat.Lods[0].SectionCount; i++)
-            {
-                Section sec = Mesh.Mat.Lods[0].Sections[i];
-                if (sec.RawTriangles == null)
-                {
-                    sec.RawTriangles = new CustomVertex.PositionNormalTextured[sec.NumFaces1 * 3];
-                    if (Mesh.IdxBuf.Indexes.Count() != 0)
-                        for (int j = 0; j < sec.NumFaces1; j++)
-                        {
-                            int Idx = Mesh.IdxBuf.Indexes[sec.FirstIdx1 + j * 3];
-                            Vector3 pos = Mesh.Vertices.Points[Idx];
-                            Vector2 UV = Mesh.Edges.UVSet[Idx].UVs[0];
-                            sec.RawTriangles[j * 3] = new CustomVertex.PositionNormalTextured(pos, new Vector3(0,0,0), UV.X, UV.Y);
-                            Idx = Mesh.IdxBuf.Indexes[sec.FirstIdx1 + j * 3 + 1];
-                            pos = Mesh.Vertices.Points[Idx];
-                            UV = Mesh.Edges.UVSet[Idx].UVs[0];
-                            sec.RawTriangles[j * 3 + 1] = new CustomVertex.PositionNormalTextured(pos, new Vector3(0, 0, 0), UV.X, UV.Y);
-                            Idx = Mesh.IdxBuf.Indexes[sec.FirstIdx1 + j * 3 + 2];
-                            pos = Mesh.Vertices.Points[Idx];
-                            UV = Mesh.Edges.UVSet[Idx].UVs[0];
-                            sec.RawTriangles[j * 3 + 2] = new CustomVertex.PositionNormalTextured(pos, new Vector3(0, 0, 0), UV.X, UV.Y);
-                        }
-                    else
-                        for (int j = 0; j < sec.NumFaces1; j++)
-                        {
-                            int Idx = Mesh.RawTris.RawTriangles[sec.FirstIdx1 / 3 + j].v0;
-                            Vector3 pos = Mesh.Vertices.Points[Idx];
-                            Vector2 UV = Mesh.Edges.UVSet[Idx].UVs[0];
-                            sec.RawTriangles[j * 3] = new CustomVertex.PositionNormalTextured(pos, new Vector3(0, 0, 0), UV.X, UV.Y);
-                            Idx = Mesh.RawTris.RawTriangles[sec.FirstIdx1 / 3 + j].v1;
-                            pos = Mesh.Vertices.Points[Idx];
-                            UV = Mesh.Edges.UVSet[Idx].UVs[0];
-                            sec.RawTriangles[j * 3 + 1] = new CustomVertex.PositionNormalTextured(pos, new Vector3(0, 0, 0), UV.X, UV.Y);
-                            Idx = Mesh.RawTris.RawTriangles[sec.FirstIdx1 / 3 + j].v2;
-                            pos = Mesh.Vertices.Points[Idx];
-                            UV = Mesh.Edges.UVSet[Idx].UVs[0];
-                            sec.RawTriangles[j * 3 + 2] = new CustomVertex.PositionNormalTextured(pos, new Vector3(0, 0, 0), UV.X, UV.Y);
-                        }
-                    for (int j = 0; j < sec.RawTriangles.Length; j+=3)
-                    {
-                        Vector3 p0 = sec.RawTriangles[j].Position - sec.RawTriangles[j + 1].Position;
-                        Vector3 p1 = sec.RawTriangles[j].Position - sec.RawTriangles[j + 2].Position;
-                        p0.Normalize();
-                        p1.Normalize();
-                        Vector3 n = Vector3.Cross(p0, p1);
-                        sec.RawTriangles[j].Normal = n;
-                        sec.RawTriangles[j + 1].Normal = n;
-                        sec.RawTriangles[j + 2].Normal = n;
-                    }
-
-                }
-                device.DrawUserPrimitives(PrimitiveType.TriangleList, sec.NumFaces1, sec.RawTriangles);
-            }
-        }
-
         public void Render(Device device, Matrix m)
         {
             device.VertexFormat = CustomVertex.PositionNormalTextured.Format;
@@ -1416,67 +1347,6 @@ namespace ME3Explorer.Unreal.Classes
             float fInvDet = 1.0f / det;
             pickDistance *= fInvDet;
             return true;
-        }
-
-        public void GenerateMesh()
-        {
-            if (Mesh.IdxBuf.Indexes.Count() != 0)
-            {
-                Meshplorer.Preview3D.RawTriangles = new Microsoft.DirectX.Direct3D.CustomVertex.PositionTextured[Mesh.IdxBuf.Indexes.Count()];
-                for (int i = 0; i < Mesh.IdxBuf.Indexes.Count(); i++)
-                {
-                    int idx = Mesh.IdxBuf.Indexes[i];
-                    Vector3 pos = Mesh.Vertices.Points[idx];
-                    Vector2 UV = Mesh.Edges.UVSet[idx].UVs[0];
-                    Meshplorer.Preview3D.RawTriangles[i] = new Microsoft.DirectX.Direct3D.CustomVertex.PositionTextured(pos, UV.X, UV.Y);
-                }
-            }
-            else
-            {
-                Meshplorer.Preview3D.RawTriangles = new Microsoft.DirectX.Direct3D.CustomVertex.PositionTextured[Mesh.RawTris.RawTriangles.Count() * 3];
-                for (int i = 0; i < Mesh.RawTris.RawTriangles.Count(); i++)
-                {
-                    int idx = Mesh.RawTris.RawTriangles[i].v0;
-                    Vector3 pos = Mesh.Vertices.Points[idx];
-                    Vector2 UV = Mesh.Edges.UVSet[idx].UVs[0];
-                    Meshplorer.Preview3D.RawTriangles[i * 3] = new Microsoft.DirectX.Direct3D.CustomVertex.PositionTextured(pos, UV.X, UV.Y);
-                    idx = Mesh.RawTris.RawTriangles[i].v1;
-                    pos = Mesh.Vertices.Points[idx];
-                    UV = Mesh.Edges.UVSet[idx].UVs[0];
-                    Meshplorer.Preview3D.RawTriangles[i * 3 + 1] = new Microsoft.DirectX.Direct3D.CustomVertex.PositionTextured(pos, UV.X, UV.Y);
-                    idx = Mesh.RawTris.RawTriangles[i].v2;
-                    pos = Mesh.Vertices.Points[idx];
-                    UV = Mesh.Edges.UVSet[idx].UVs[0];
-                    Meshplorer.Preview3D.RawTriangles[i * 3 + 2] = new Microsoft.DirectX.Direct3D.CustomVertex.PositionTextured(pos, UV.X, UV.Y);
-                }
-            }
-            if (Mesh.Mat.MatInst.Count() != 0)
-            {
-                MaterialInstanceConstant m = Mesh.Mat.MatInst[0];
-                Meshplorer.Preview3D.CurrentTex = null;
-                for (int i = 0; i < m.Textures.Count(); i++)
-                    if (m.Textures[i].Desc.ToLower().Contains("diffuse") && Meshplorer.Preview3D.device != null)
-                    {
-                        Texture2D t = new Texture2D(pcc, m.Textures[i].TexIndex - 1);
-                        string loc = Path.GetDirectoryName(Application.ExecutablePath);
-                        Texture2D.ImageInfo inf = new Texture2D.ImageInfo();
-                        for (int j = 0; j < t.imgList.Count(); j++)
-                            if (t.imgList[j].storageType != Texture2D.storage.empty)
-                            {
-                                inf = t.imgList[j];
-                                break;
-                            }
-                        if (File.Exists(loc + "\\exec\\TempTex.dds"))
-                            File.Delete(loc + "\\exec\\TempTex.dds");
-                        t.extractImage(inf, ME3Directory.cookedPath, loc + "\\exec\\TempTex.dds");
-                        if (File.Exists(loc + "\\exec\\TempTex.dds"))
-                        {
-                            Texture t2 = TextureLoader.FromFile(Meshplorer.Preview3D.device, loc + "\\exec\\TempTex.dds");
-                            Meshplorer.Preview3D.CurrentTex = t2;
-                        }
-                        break;
-                    }
-            }
         }
 
         #endregion
@@ -1702,6 +1572,54 @@ namespace ME3Explorer.Unreal.Classes
             return isSelected;
         }
 
+        public int GetSectionMaterialName(int lod, int section)
+        {
+            return Mesh.Mat.Lods[lod].Sections[section].Name;
+        }
+
+        public void SetSectionMaterial(int lod, int section, int materialname)
+        {
+            Section s = Mesh.Mat.Lods[lod].Sections[section];
+            int oldMaterialName = s.Name;
+            s.Name = materialname;
+            Mesh.Mat.Lods[lod].Sections[section] = s;
+            // Load the material if it isn't already loaded
+            bool found = false;
+            for (int i = 0; i < Mesh.Mat.MatInst.Count; i++)
+            {
+                if (Mesh.Mat.MatInst[i].index == materialname - 1)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                // Load the material
+                Mesh.Mat.MatInst.Add(new MaterialInstanceConstant(pcc, materialname - 1));
+            }
+            // Remove the previously assigned MaterialInstanceConstant if is isn't used anymore.
+            found = false;
+            foreach (Section sec in Mesh.Mat.Lods[lod].Sections)
+            {
+                if (sec.Name == oldMaterialName)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                for (int i = 0; i < Mesh.Mat.MatInst.Count; i++)
+                {
+                    if (Mesh.Mat.MatInst[i].index == oldMaterialName - 1)
+                    {
+                        Mesh.Mat.MatInst.RemoveAt(i);
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Export
@@ -1719,8 +1637,8 @@ namespace ME3Explorer.Unreal.Classes
                 res.Nodes.Add(Mesh.Buffers.t);
                 res.Nodes.Add(Mesh.Edges.t);
                 res.Nodes.Add(Mesh.UnknownPart.t);
-                res.Nodes.Add(Mesh.IdxBuf.t);
-                res.Nodes.Add(Mesh.End.t);
+                if (Mesh.IdxBuf.t != null) res.Nodes.Add(Mesh.IdxBuf.t);
+                if (Mesh.End.t != null) res.Nodes.Add(Mesh.End.t);
             }
             return res;
         }
@@ -2001,7 +1919,6 @@ namespace ME3Explorer.Unreal.Classes
             CalcTangentSpace();
 #endregion
             RecalculateBoundings();
-            GenerateMesh();
 
         }
 

@@ -478,18 +478,18 @@ namespace ME3Explorer
                         packageEditorTabPane.TabPages.Remove(scriptTab);
                     }
 
-                    if (!BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) || pcc.Game != MEGame.ME3)
-                    {
-                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
-                        {
-                            packageEditorTabPane.TabPages.Remove(binaryEditorTab);
-                        }
-                    }
-                    else
+                    if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) && pcc.Game == MEGame.ME3)
                     {
                         if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
                         {
                             packageEditorTabPane.TabPages.Add(binaryEditorTab);
+                        }                        
+                    }
+                    else
+                    {
+                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
+                        {
+                            packageEditorTabPane.TabPages.Remove(binaryEditorTab);
                         }
                     }
 
