@@ -1618,7 +1618,7 @@ Floats*/
             try
             {
                 int pos = lastSetOffset;
-                if (memory.Length - pos < 8)
+                if (memory.Length - pos < 4)
                     return;
                 byte b = 0;
                 float f = 0;
