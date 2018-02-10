@@ -29,7 +29,7 @@ namespace ME3Explorer
         public PropGrid pg;
 
         public static readonly string PackageEditorDataFolder = Path.Combine(App.AppDataFolder, @"PackageEditor\");
-
+        private readonly string RECENTFILES_FILE = "RECENTFILES";
         private string currentFile;
         private List<int> ClassNames;
 
@@ -37,7 +37,7 @@ namespace ME3Explorer
         {
             InitializeComponent();
             LoadRecentList();
-            RefreshRecent();
+            RefreshRecent(false);
             packageEditorTabPane.TabPages.Remove(scriptTab);
             packageEditorTabPane.TabPages.Remove(binaryEditorTab);
 
@@ -63,8 +63,9 @@ namespace ME3Explorer
             if (d.ShowDialog() == DialogResult.OK)
             {
                 LoadFile(d.FileName);
-                AddRecent(d.FileName);
+                AddRecent(d.FileName, false);
                 SaveRecentList();
+                RefreshRecent(true, RFiles);
             }
         }
 
@@ -197,14 +198,20 @@ namespace ME3Explorer
             linkComboBox.EndUpdate();
         }
 
-        public void AddRecent(string s)
+        public void AddRecent(string s, bool loadingList)
         {
-            if (RFiles.Count < 10)
-                RFiles.Add(s);
+            RFiles.Remove(s);
+            if (loadingList)
+            {
+                RFiles.Add(s); //in order
+            }
             else
             {
-                RFiles.RemoveAt(0);
-                RFiles.Add(s);
+                RFiles.Insert(0, s); //put at front
+            }
+            if (RFiles.Count > 10)
+            {
+                RFiles.RemoveRange(10, RFiles.Count - 10);
             }
         }
 
@@ -483,7 +490,7 @@ namespace ME3Explorer
                         if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
                         {
                             packageEditorTabPane.TabPages.Add(binaryEditorTab);
-                        }                        
+                        }
                     }
                     else
                     {
@@ -812,24 +819,17 @@ namespace ME3Explorer
         {
             RFiles = new List<string>();
             RFiles.Clear();
-            string path = PackageEditorDataFolder + "recentFiles.log";
+            string path = PackageEditorDataFolder + RECENTFILES_FILE;
             if (File.Exists(path))
             {
-
-                FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-                byte[] buff = new byte[4];
-                fs.Read(buff, 0, 4);
-                int count = BitConverter.ToInt32(buff, 0);
-                for (int i = 0; i < count; i++)
+                string[] recents = File.ReadAllLines(path);
+                foreach (string recent in recents)
                 {
-                    fs.Read(buff, 0, 4);
-                    int len = BitConverter.ToInt32(buff, 0);
-                    string s = "";
-                    for (int j = 0; j < len; j++)
-                        s += (char)fs.ReadByte();
-                    AddRecent(s);
+                    if (File.Exists(recent))
+                    {
+                        AddRecent(recent, true);
+                    }
                 }
-                fs.Close();
             }
         }
 
@@ -839,25 +839,31 @@ namespace ME3Explorer
             {
                 Directory.CreateDirectory(PackageEditorDataFolder);
             }
-            string path = PackageEditorDataFolder + "recentFiles.log";
+            string path = PackageEditorDataFolder + RECENTFILES_FILE;
             if (File.Exists(path))
                 File.Delete(path);
-            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
-
-            byte[] buff = BitConverter.GetBytes(RFiles.Count);
-            fs.Write(buff, 0, 4);
-            for (int i = 0; i < RFiles.Count; i++)
-            {
-                buff = BitConverter.GetBytes(RFiles[i].Length);
-                fs.Write(buff, 0, 4);
-                for (int j = 0; j < RFiles[i].Length; j++)
-                    fs.WriteByte((byte)RFiles[i][j]);
-            }
-            fs.Close();
+            File.WriteAllLines(path, RFiles);
         }
 
-        private void RefreshRecent()
+        private void RefreshRecent(bool propogate, List<string> recents = null)
         {
+            if (propogate && recents != null)
+            {
+                //we are posting an update to other instances of packed
+                var forms = Application.OpenForms;
+                foreach (Form form in forms)
+                {
+                    if (form is PackageEditor && this != form)
+                    {
+                        ((PackageEditor)form).RefreshRecent(false, RFiles);
+                    }
+                }
+            }
+            else if (recents != null)
+            {
+                //we are receiving an update
+                RFiles = new List<string>(recents);
+            }
             recentToolStripMenuItem.DropDownItems.Clear();
             if (RFiles.Count <= 0)
             {
@@ -865,9 +871,9 @@ namespace ME3Explorer
                 return;
             }
 
-            for (int i = 0; i < RFiles.Count; i++)
+            foreach (string filepath in RFiles)
             {
-                ToolStripMenuItem fr = new ToolStripMenuItem(RFiles[RFiles.Count() - i - 1], null, RecentFile_click);
+                ToolStripMenuItem fr = new ToolStripMenuItem(filepath, null, RecentFile_click);
                 recentToolStripMenuItem.DropDownItems.Add(fr);
             }
         }
@@ -877,8 +883,9 @@ namespace ME3Explorer
             string s = sender.ToString();
             LoadFile(s);
             RFiles.Remove(s);
-            AddRecent(s);
+            AddRecent(s, false);
             SaveRecentList();
+            RefreshRecent(true, RFiles);
         }
 
         private void addNameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -899,7 +906,7 @@ namespace ME3Explorer
 
         private void recentToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RefreshRecent();
+            //RefreshRecent();
         }
 
         private void toolStripButton2_Click(object sender, EventArgs e)
@@ -1190,8 +1197,9 @@ namespace ME3Explorer
             if (DroppedFiles.Count > 0)
             {
                 LoadFile(DroppedFiles[0]);
-                AddRecent(DroppedFiles[0]);
+                AddRecent(DroppedFiles[0], false);
                 SaveRecentList();
+                RefreshRecent(true, RFiles);
             }
         }
 

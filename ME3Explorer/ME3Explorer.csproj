@@ -597,7 +597,6 @@
     <Compile Include="TlkManager\TlkManager.Designer.cs">
       <DependentUpon>TlkManager.cs</DependentUpon>
     </Compile>
-    <Compile Include="TOCeditor.cs" />
     <Compile Include="Main Window\ToolInfoPanel.xaml.cs">
       <DependentUpon>ToolInfoPanel.xaml</DependentUpon>
     </Compile>
@@ -769,12 +768,6 @@
     </Compile>
     <Compile Include="InputComboBox.Designer.cs">
       <DependentUpon>InputComboBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DLLInjector\DLLInjector.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DLLInjector\DLLInjector.Designer.cs">
-      <DependentUpon>DLLInjector.cs</DependentUpon>
     </Compile>
     <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.cs">
       <SubType>Form</SubType>
@@ -1074,9 +1067,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InputComboBox.resx">
       <DependentUpon>InputComboBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DLLInjector\DLLInjector.resx">
-      <DependentUpon>DLLInjector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.resx">
       <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
