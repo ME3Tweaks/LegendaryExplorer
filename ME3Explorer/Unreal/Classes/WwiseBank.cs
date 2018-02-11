@@ -176,9 +176,11 @@ namespace ME3Explorer.Unreal.Classes
             HIRCObjects = new List<byte[]>();
             for (int i = 0; i < count; i++)
             {
+                //for each HIRC object
                 res += "......" + i.ToString("D4") + " : @0x" + pos.ToString("X8") + " ";
                 byte type = buff[pos];
                 int size = BitConverter.ToInt32(buff, pos + 1);
+                Console.WriteLine("QSH: " + size.ToString("X4"));
                 int ID = BitConverter.ToInt32(buff, pos + 5);
                 res += "Type = 0x" + type.ToString("X2") + " ID(" + ID.ToString("X8") + ") Size = 0x" + size.ToString("X8") + " " + GetHircObjType(type) + "\n";
                 int cnt, unk1, state, IDaudio, IDsource, stype ;//scope,atype;
@@ -290,11 +292,16 @@ namespace ME3Explorer.Unreal.Classes
             res.Write(buff, 0, 0x8);
             res.Write(BitConverter.GetBytes(HIRCObjects.Count), 0, 4);
             int size = 4;
+            int index = 0;
             foreach (byte[] obj in HIRCObjects)
             {
                 res.Write(obj, 0, obj.Length);
                 size += obj.Length;
+                Console.WriteLine(index + " = "+obj.Length.ToString("X4"));
+                index++;
             }
+            Console.WriteLine(size);
+
             res.Seek(0x4, 0);
             res.Write(BitConverter.GetBytes(size), 0, 4);
             return res.ToArray();

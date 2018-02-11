@@ -55,6 +55,8 @@
             this.hb2 = new Be.Windows.Forms.HexBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.saveHexChangesButton = new System.Windows.Forms.ToolStripButton();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.openFileLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -69,6 +71,7 @@
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             this.toolStrip1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -95,14 +98,14 @@
             // openPccToolStripMenuItem
             // 
             this.openPccToolStripMenuItem.Name = "openPccToolStripMenuItem";
-            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.openPccToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openPccToolStripMenuItem.Text = "Open Pcc";
             this.openPccToolStripMenuItem.Click += new System.EventHandler(this.openPccToolStripMenuItem_Click);
             // 
             // savePccToolStripMenuItem
             // 
             this.savePccToolStripMenuItem.Name = "savePccToolStripMenuItem";
-            this.savePccToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.savePccToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.savePccToolStripMenuItem.Text = "Save Pcc";
             this.savePccToolStripMenuItem.Click += new System.EventHandler(this.savePccToolStripMenuItem_Click);
             // 
@@ -128,21 +131,21 @@
             // cloneObjectToolStripMenuItem
             // 
             this.cloneObjectToolStripMenuItem.Name = "cloneObjectToolStripMenuItem";
-            this.cloneObjectToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.cloneObjectToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
             this.cloneObjectToolStripMenuItem.Text = "Clone Object";
             this.cloneObjectToolStripMenuItem.Click += new System.EventHandler(this.cloneObjectToolStripMenuItem_Click);
             // 
             // saveHexEditsToolStripMenuItem
             // 
             this.saveHexEditsToolStripMenuItem.Name = "saveHexEditsToolStripMenuItem";
-            this.saveHexEditsToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.saveHexEditsToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
             this.saveHexEditsToolStripMenuItem.Text = "Save Hex Edits";
             this.saveHexEditsToolStripMenuItem.Click += new System.EventHandler(this.saveHexEditsToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem1
             // 
             this.editToolStripMenuItem1.Name = "editToolStripMenuItem1";
-            this.editToolStripMenuItem1.Size = new System.Drawing.Size(228, 22);
+            this.editToolStripMenuItem1.Size = new System.Drawing.Size(226, 22);
             this.editToolStripMenuItem1.Text = "Edit Type02 Sound SFX/Voice";
             this.editToolStripMenuItem1.Click += new System.EventHandler(this.editToolStripMenuItem1_Click);
             // 
@@ -159,20 +162,20 @@
             this.exportAllWEMFilesToolStripMenuItem,
             this.recreateBankToolStripMenuItem});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
-            this.transferToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
+            this.transferToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.transferToolStripMenuItem.Text = "Transfer";
             // 
             // exportAllWEMFilesToolStripMenuItem
             // 
             this.exportAllWEMFilesToolStripMenuItem.Name = "exportAllWEMFilesToolStripMenuItem";
-            this.exportAllWEMFilesToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.exportAllWEMFilesToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.exportAllWEMFilesToolStripMenuItem.Text = "Export all WEM files";
             this.exportAllWEMFilesToolStripMenuItem.Click += new System.EventHandler(this.exportAllWEMFilesToolStripMenuItem_Click);
             // 
             // recreateBankToolStripMenuItem
             // 
             this.recreateBankToolStripMenuItem.Name = "recreateBankToolStripMenuItem";
-            this.recreateBankToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.recreateBankToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.recreateBankToolStripMenuItem.Text = "Recreate Bank To File";
             this.recreateBankToolStripMenuItem.Click += new System.EventHandler(this.recreateBankToolStripMenuItem_Click);
             // 
@@ -189,7 +192,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer1.Size = new System.Drawing.Size(863, 505);
+            this.splitContainer1.Size = new System.Drawing.Size(863, 483);
             this.splitContainer1.SplitterDistance = 363;
             this.splitContainer1.TabIndex = 1;
             // 
@@ -202,7 +205,7 @@
             this.listBox1.ItemHeight = 16;
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(363, 505);
+            this.listBox1.Size = new System.Drawing.Size(363, 483);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
@@ -215,7 +218,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(496, 505);
+            this.tabControl1.Size = new System.Drawing.Size(496, 483);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -224,7 +227,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(488, 479);
+            this.tabPage1.Size = new System.Drawing.Size(488, 457);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "RAW";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -239,7 +242,7 @@
             this.hb1.Location = new System.Drawing.Point(3, 3);
             this.hb1.Name = "hb1";
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(482, 473);
+            this.hb1.Size = new System.Drawing.Size(482, 451);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
             this.hb1.UseFixedBytesPerLine = true;
@@ -251,7 +254,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(488, 503);
+            this.tabPage2.Size = new System.Drawing.Size(488, 479);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "First Scan";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -263,7 +266,7 @@
             this.rtb1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtb1.Location = new System.Drawing.Point(3, 3);
             this.rtb1.Name = "rtb1";
-            this.rtb1.Size = new System.Drawing.Size(482, 497);
+            this.rtb1.Size = new System.Drawing.Size(482, 473);
             this.rtb1.TabIndex = 0;
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;
@@ -274,7 +277,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(488, 503);
+            this.tabPage3.Size = new System.Drawing.Size(488, 479);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "HIRC objects";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -294,8 +297,8 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.hb2);
             this.splitContainer2.Panel2.Controls.Add(this.toolStrip1);
-            this.splitContainer2.Size = new System.Drawing.Size(482, 497);
-            this.splitContainer2.SplitterDistance = 180;
+            this.splitContainer2.Size = new System.Drawing.Size(482, 473);
+            this.splitContainer2.SplitterDistance = 171;
             this.splitContainer2.TabIndex = 0;
             // 
             // listBox2
@@ -307,7 +310,7 @@
             this.listBox2.ItemHeight = 16;
             this.listBox2.Location = new System.Drawing.Point(0, 0);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(482, 180);
+            this.listBox2.Size = new System.Drawing.Size(482, 171);
             this.listBox2.TabIndex = 0;
             this.listBox2.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
             // 
@@ -321,7 +324,7 @@
             this.hb2.Location = new System.Drawing.Point(0, 25);
             this.hb2.Name = "hb2";
             this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(482, 288);
+            this.hb2.Size = new System.Drawing.Size(482, 273);
             this.hb2.StringViewVisible = true;
             this.hb2.TabIndex = 0;
             this.hb2.UseFixedBytesPerLine = true;
@@ -347,16 +350,32 @@
             this.saveHexChangesButton.Text = "Save Hex Changes";
             this.saveHexChangesButton.Click += new System.EventHandler(this.saveHexChangesButton_Click);
             // 
-            // WwiseViewer
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openFileLabel});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 507);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(863, 22);
+            this.statusStrip1.TabIndex = 2;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // openFileLabel
+            // 
+            this.openFileLabel.Name = "openFileLabel";
+            this.openFileLabel.Size = new System.Drawing.Size(0, 17);
+            // 
+            // WwiseEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(863, 529);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.statusStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "WwiseViewer";
+            this.Name = "WwiseEditor";
             this.Text = "WwiseBank Editor";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -375,6 +394,8 @@
             this.splitContainer2.ResumeLayout(false);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -408,5 +429,7 @@
         private System.Windows.Forms.ToolStripMenuItem savePccToolStripMenuItem;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton saveHexChangesButton;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel openFileLabel;
     }
 }

@@ -202,7 +202,7 @@ namespace ME3Explorer
                                         key++; //+1 indexing
                                     }
                                     byte[] buff2 = BitConverter.GetBytes(key);
-                                    Debug.WriteLine("Writing updated object value at 0x" + off.ToString("X6")+" to "+key);
+                                    Debug.WriteLine("Writing updated object value at 0x" + off.ToString("X6") + " to " + key);
                                     for (int o = 0; o < 4; o++)
                                     {
                                         //Write object property value
@@ -328,10 +328,17 @@ namespace ME3Explorer
             if (upstreamImport == null)
             {
                 string fullobjectname = importParts[0];
-
+                if (fullobjectname == "BioVFX_Z_GLOBAL")
+                {
+                    Debugger.Break();
+                }
                 ImportEntry donorTopLevelImport = null;
                 foreach (ImportEntry imp in pcc.Imports) //importing side info we will move to our dest pcc
                 {
+                    if (imp.GetFullPath.StartsWith("BioVFX"))
+                    {
+                        Console.WriteLine(imp.GetFullPath);
+                    }
                     if (imp.GetFullPath == fullobjectname)
                     {
                         donorTopLevelImport = imp;
@@ -343,7 +350,7 @@ namespace ME3Explorer
                 if (donorTopLevelImport == null)
                 {
                     //ERROR!
-                    Debug.WriteLine("An error has occured. top level donor is missing: "+fullobjectname+" from "+pcc.FileName);
+                    Debug.WriteLine("An error has occured. top level donor is missing: " + fullobjectname + " from " + pcc.FileName);
                 }
 
                 //Create new toplevel import and set that as the most downstream one.
@@ -2040,7 +2047,7 @@ namespace ME3Explorer
                         {
                             //Unicode Mode
                             stringMultiplier = 2;
-                            if(oldLength == -1 && oldSize == 4)
+                            if (oldLength == -1 && oldSize == 4)
                             {
                                 oldLength = 0; //Corrects a bug in development version of me3explorer
                             }
@@ -2079,7 +2086,7 @@ namespace ME3Explorer
                                 stringBuff.Add(0); //terminator char?
                             }
                         }
-                        
+
 
                         //Write data
 
