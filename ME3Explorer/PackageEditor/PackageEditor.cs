@@ -477,7 +477,14 @@ namespace ME3Explorer
                         else
                         {
                             ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(exportEntry.Data, pcc as ME1Package);
-                            rtb1.Text = func.ToRawText();
+                            try
+                            {
+                                rtb1.Text = func.ToRawText();
+                            }
+                            catch (Exception e)
+                            {
+                                rtb1.Text = "Error parsing function: " + e.Message;
+                            }
                         }
                     }
                     else if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
