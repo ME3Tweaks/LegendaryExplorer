@@ -117,6 +117,7 @@ namespace ME3Explorer.Packages
         }
 
         public int OriginalDataSize { get; protected set; }
+        public bool ReadsFromConfig { get; protected set; }
 
         bool dataChanged;
         public bool DataChanged
@@ -131,7 +132,7 @@ namespace ME3Explorer.Packages
                 dataChanged = value;
                 if (value)
                 {
-                    OnPropertyChanged(); 
+                    OnPropertyChanged();
                 }
             }
         }
@@ -167,7 +168,7 @@ namespace ME3Explorer.Packages
                 int start = GetPropertyStart();
                 MemoryStream stream = new MemoryStream(_data, false);
                 stream.Seek(start, SeekOrigin.Current);
-                return properties = PropertyCollection.ReadProps(FileRef, stream, ClassName); 
+                return properties = PropertyCollection.ReadProps(FileRef, stream, ClassName);
             }
         }
 
@@ -180,7 +181,7 @@ namespace ME3Explorer.Packages
         {
             MemoryStream m = new MemoryStream();
             props.WriteTo(m, FileRef);
-            
+
             int propStart = GetPropertyStart();
             int propEnd = propsEnd();
             //Debug.WriteLine("Datasize before write: " + this.Data.Length);
@@ -246,12 +247,19 @@ namespace ME3Explorer.Packages
             int expInfoSize = 68 + (count * 4);
             header = stream.ReadBytes(expInfoSize);
             OriginalDataSize = DataSize;
-
             long headerEnd = stream.Position;
 
             stream.Seek(DataOffset, SeekOrigin.Begin);
             _data = stream.ReadBytes(DataSize);
             stream.Seek(headerEnd, SeekOrigin.Begin);
+            if ((ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+            {
+                ReadsFromConfig = (Data[25] & 64) != 0;
+            }
+            else
+            {
+                ReadsFromConfig = false;
+            }
         }
 
         public ME3ExportEntry(ME3Package pccFile) : base(pccFile)
@@ -303,6 +311,14 @@ namespace ME3Explorer.Packages
             stream.Seek(DataOffset, SeekOrigin.Begin);
             _data = stream.ReadBytes(DataSize);
             stream.Seek(end, SeekOrigin.Begin);
+            if ((ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+            {
+                ReadsFromConfig = (Data[25] & 64) != 0;
+            }
+            else
+            {
+                ReadsFromConfig = false;
+            }
         }
 
         public ME2ExportEntry(ME2Package pccFile) : base(pccFile)
@@ -354,6 +370,13 @@ namespace ME3Explorer.Packages
             stream.Seek(DataOffset, SeekOrigin.Begin);
             _data = stream.ReadBytes(DataSize);
             stream.Seek(end, SeekOrigin.Begin);
+            if (ClassName.Contains("Property"))
+            {
+                ReadsFromConfig = Data.Length > 25 ? (Data[25] & 64) != 0 : false;
+            } else
+            {
+                ReadsFromConfig = false;
+            }
         }
 
         public ME1ExportEntry(ME1Package file) : base(file)

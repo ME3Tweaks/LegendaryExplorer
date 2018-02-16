@@ -12,6 +12,7 @@ using ME3Explorer.Unreal.Classes;
 using UsefulThings;
 using static ME3Explorer.Unreal.PropertyReader;
 using ME3Explorer.Pathfinding_Editor;
+using System.Text;
 
 namespace ME3Explorer
 {
@@ -492,7 +493,7 @@ namespace ME3Explorer
                         packageEditorTabPane.TabPages.Remove(scriptTab);
                     }
 
-                    if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) && pcc.Game == MEGame.ME3)
+                    if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) && pcc.Game == MEGame.ME1)
                     {
                         if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
                         {
@@ -513,7 +514,7 @@ namespace ME3Explorer
                         interpreterControl.export = exportEntry;
                         interpreterControl.InitInterpreter();
 
-                        if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) && pcc.Game == MEGame.ME3)
+                        if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) && pcc.Game == MEGame.ME1)
                         {
                             binaryInterpreterControl.export = exportEntry;
                             binaryInterpreterControl.InitInterpreter();
@@ -2192,6 +2193,123 @@ namespace ME3Explorer
         {
             ME3TalkFiles.ReloadTLKData();
             MessageBox.Show(this, "TLKs have been reloaded.", "TLK list reloaded");
+        }
+
+        private void dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string fpath = @"C:\Users\Dev\Documents\DataStore\Mass Effect\BIOGame\CookedPC";
+            var ext = new List<string> { "u", "upk", "sfm" };
+            var files = Directory.GetFiles(fpath, "*.*", SearchOption.AllDirectories)
+              .Where(file => new string[] { ".sfm", ".upk", ".u" }
+              .Contains(Path.GetExtension(file).ToLower()))
+              .ToList();
+            StringBuilder sb = new StringBuilder();
+
+            int threads = Environment.ProcessorCount;
+            string[] results = files.AsParallel().WithDegreeOfParallelism(threads).WithExecutionMode(ParallelExecutionMode.ForceParallelism).Select(ScanForConfigValues).ToArray();
+
+
+            foreach (string res in results)
+            {
+                sb.Append(res);
+            }
+            try
+            {
+                Clipboard.SetText(sb.ToString());
+                MessageBox.Show("Finished");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private string ScanForConfigValues(string file)
+        {
+            StringBuilder sb = new StringBuilder();
+            bool fileHasConfig = false;
+            IMEPackage pack = MEPackageHandler.OpenMEPackage(file);
+            foreach (IExportEntry exp in pack.Exports)
+            {
+                if (exp.ReadsFromConfig)
+                {
+                    if (!fileHasConfig)
+                    {
+                        sb.AppendLine();
+                        sb.Append(pack.FileName);
+                        sb.AppendLine();
+                        fileHasConfig = true;
+                    }
+                    sb.Append(exp.ClassName + "\t" + exp.GetFullPath);
+                    sb.AppendLine();
+                }
+            }
+            pack.Release();
+            if (sb.Length == 0)
+            {
+                return "";
+            }
+            else
+            {
+                return sb.ToString();
+            }
+        }
+
+        private void dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string fpath = @"C:\Users\Dev\Documents\DataStore\Mass Effect\DLC";
+            var ext = new List<string> { "u", "upk", "sfm" };
+            var files = Directory.GetFiles(fpath, "*.*", SearchOption.AllDirectories)
+              .Where(file => new string[] { ".sfm", ".upk", ".u" }
+              .Contains(Path.GetExtension(file).ToLower()))
+              .ToList();
+            StringBuilder sb = new StringBuilder();
+
+            int threads = Environment.ProcessorCount;
+            List<string>[] results = files.AsParallel().WithDegreeOfParallelism(threads).WithExecutionMode(ParallelExecutionMode.ForceParallelism).Select(ScanForBioG).ToArray();
+
+            HashSet<string> items = new HashSet<string>();
+            foreach (List<string> res in results)
+            {
+                items.UnionWith(res);
+            }
+
+            foreach (string str in items)
+            {
+                sb.AppendLine(str);
+            }
+            try
+            {
+                Clipboard.SetText(sb.ToString());
+                MessageBox.Show("Finished");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private List<string> ScanForBioG(string file)
+        {
+            //Console.WriteLine(file);
+            try
+            {
+                List<string> biopawnscaled = new List<string>();
+                IMEPackage pack = MEPackageHandler.OpenMEPackage(file);
+                foreach (IExportEntry exp in pack.Exports)
+                {
+                    if (exp.ClassName == "BioPawnChallengeScaledType")
+                    {
+                        biopawnscaled.Add(exp.GetFullPath);
+                    }
+                }
+                pack.Release();
+                return biopawnscaled;
+            } catch (Exception e)
+            {
+                Debugger.Break();
+            }
+            return null;
         }
     }
 }
