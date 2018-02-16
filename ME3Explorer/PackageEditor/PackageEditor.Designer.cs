@@ -44,6 +44,7 @@
             this.editInInterpreterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.replaceWithBINToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editInCurveEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reloadTLKsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modjobsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createBinaryReplaceJobFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createBinaryReplaceJobFromObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,6 +54,7 @@
             this.findImportexportViaOffsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkIndexingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGCallReadPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.Button1 = new System.Windows.Forms.ToolStripButton();
             this.Button2 = new System.Windows.Forms.ToolStripButton();
@@ -139,7 +141,7 @@
             this.setAllIndexesInThisTreeTo0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.reloadTLKsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -192,7 +194,7 @@
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.ToolTipText = "Load an uncompressed or compressed PCC file";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
@@ -201,7 +203,7 @@
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.ToolTipText = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
@@ -209,7 +211,7 @@
             // saveAsMenuItem
             // 
             this.saveAsMenuItem.Name = "saveAsMenuItem";
-            this.saveAsMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveAsMenuItem.Size = new System.Drawing.Size(138, 22);
             this.saveAsMenuItem.Text = "Save As";
             this.saveAsMenuItem.ToolTipText = "Save As";
             this.saveAsMenuItem.Click += new System.EventHandler(this.appendSaveToolStripMenuItem_Click);
@@ -222,7 +224,7 @@
             this.sequenceEditorToolStripMenuItem,
             this.wWiseBankEditorToolStripMenuItem});
             this.openInToolStripMenuItem.Name = "openInToolStripMenuItem";
-            this.openInToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openInToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.openInToolStripMenuItem.Text = "Open in...";
             // 
             // faceFXEditorToolStripMenuItem
@@ -256,12 +258,12 @@
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(135, 6);
             // 
             // recentToolStripMenuItem
             // 
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.recentToolStripMenuItem.Text = "Recent";
             this.recentToolStripMenuItem.ToolTipText = "Open recently opened file";
             this.recentToolStripMenuItem.Click += new System.EventHandler(this.recentToolStripMenuItem_Click);
@@ -317,6 +319,14 @@
             this.editInCurveEditorToolStripMenuItem.Text = "Edit in Curve Editor";
             this.editInCurveEditorToolStripMenuItem.Click += new System.EventHandler(this.editInCurveEditorToolStripMenuItem_Click);
             // 
+            // reloadTLKsToolStripMenuItem
+            // 
+            this.reloadTLKsToolStripMenuItem.Name = "reloadTLKsToolStripMenuItem";
+            this.reloadTLKsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.reloadTLKsToolStripMenuItem.Text = "Reload TLKs";
+            this.reloadTLKsToolStripMenuItem.ToolTipText = "Reloads the TLK files used by ME3Explorer for displaying StringRefProperty.";
+            this.reloadTLKsToolStripMenuItem.Click += new System.EventHandler(this.reloadTLKsToolStripMenuItem_Click);
+            // 
             // modjobsToolStripMenuItem
             // 
             this.modjobsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -347,7 +357,9 @@
             this.getDumpToolStripMenuItem1,
             this.findImportexportViaOffsetToolStripMenuItem,
             this.checkIndexingToolStripMenuItem,
-            this.dEBUGCallReadPropertiesToolStripMenuItem});
+            this.dEBUGCallReadPropertiesToolStripMenuItem,
+            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem,
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.debugToolStripMenuItem.Text = "Debug";
@@ -355,21 +367,21 @@
             // getDumpToolStripMenuItem
             // 
             this.getDumpToolStripMenuItem.Name = "getDumpToolStripMenuItem";
-            this.getDumpToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.getDumpToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
             this.getDumpToolStripMenuItem.Text = "Get Complete Dump";
             this.getDumpToolStripMenuItem.Click += new System.EventHandler(this.getDumpToolStripMenuItem_Click_1);
             // 
             // getDumpToolStripMenuItem1
             // 
             this.getDumpToolStripMenuItem1.Name = "getDumpToolStripMenuItem1";
-            this.getDumpToolStripMenuItem1.Size = new System.Drawing.Size(227, 22);
+            this.getDumpToolStripMenuItem1.Size = new System.Drawing.Size(325, 22);
             this.getDumpToolStripMenuItem1.Text = "Get Binary Dump";
             this.getDumpToolStripMenuItem1.Click += new System.EventHandler(this.getDumpToolStripMenuItem1_Click);
             // 
             // findImportexportViaOffsetToolStripMenuItem
             // 
             this.findImportexportViaOffsetToolStripMenuItem.Name = "findImportexportViaOffsetToolStripMenuItem";
-            this.findImportexportViaOffsetToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.findImportexportViaOffsetToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
             this.findImportexportViaOffsetToolStripMenuItem.Text = "Find import/export via offset";
             this.findImportexportViaOffsetToolStripMenuItem.ToolTipText = "Finds an export or import containing the offset you specify.";
             this.findImportexportViaOffsetToolStripMenuItem.Click += new System.EventHandler(this.findImportexportViaOffsetToolStripMenuItem_Click);
@@ -377,16 +389,23 @@
             // checkIndexingToolStripMenuItem
             // 
             this.checkIndexingToolStripMenuItem.Name = "checkIndexingToolStripMenuItem";
-            this.checkIndexingToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.checkIndexingToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
             this.checkIndexingToolStripMenuItem.Text = "Check indexing";
             this.checkIndexingToolStripMenuItem.Click += new System.EventHandler(this.checkIndexingToolStripMenuItem_Click);
             // 
             // dEBUGCallReadPropertiesToolStripMenuItem
             // 
             this.dEBUGCallReadPropertiesToolStripMenuItem.Name = "dEBUGCallReadPropertiesToolStripMenuItem";
-            this.dEBUGCallReadPropertiesToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.dEBUGCallReadPropertiesToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
             this.dEBUGCallReadPropertiesToolStripMenuItem.Text = "DEBUG: Call ReadProperties()";
             this.dEBUGCallReadPropertiesToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCallReadPropertiesToolStripMenuItem_Click);
+            // 
+            // dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem
+            // 
+            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Name = "dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem";
+            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Text = "DEBUG: Copy config reading props to clipboard";
+            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -1223,13 +1242,12 @@
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
             // 
-            // reloadTLKsToolStripMenuItem
+            // dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem
             // 
-            this.reloadTLKsToolStripMenuItem.Name = "reloadTLKsToolStripMenuItem";
-            this.reloadTLKsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.reloadTLKsToolStripMenuItem.Text = "Reload TLKs";
-            this.reloadTLKsToolStripMenuItem.ToolTipText = "Reloads the TLK files used by ME3Explorer for displaying StringRefProperty.";
-            this.reloadTLKsToolStripMenuItem.Click += new System.EventHandler(this.reloadTLKsToolStripMenuItem_Click);
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Name = "dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem";
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Text = "DEBUG: Copy all BIOG items to clipboard";
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem_Click);
             // 
             // PackageEditor
             // 
@@ -1401,5 +1419,7 @@
         private System.Windows.Forms.ToolStripMenuItem faceFXEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem wWiseBankEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reloadTLKsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem;
     }
 }

@@ -84,7 +84,11 @@ namespace ME1Explorer.Unreal.Classes
         {
             if (talkFiles != null)
             {
-                return talkFiles[selectedTLK].findDataById(strRefID, withFileName);
+                if (talkFiles.Count > selectedTLK)
+                {
+                    return talkFiles[selectedTLK].findDataById(strRefID, withFileName);
+                }
+                return "No Data";
             }
             else
             {

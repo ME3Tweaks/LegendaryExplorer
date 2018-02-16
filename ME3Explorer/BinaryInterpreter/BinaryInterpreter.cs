@@ -117,7 +117,7 @@ Floats*/
 
         int? selectedNodePos = null;
 
-        public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "Class", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant", "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "Model", "Polys" }; //classes that have binary parse code
+        public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "Class", "ObjectRedirector", "Bio2DA", "Bio2DANumberedRows", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant", "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "Model", "Polys" }; //classes that have binary parse code
 
 
         public BinaryInterpreter()
@@ -263,6 +263,13 @@ Floats*/
                 case "WwiseEvent":
                     StartWWiseEventScan();
                     break;
+                case "Bio2DA":
+                case "Bio2DANumberedRows":
+                    StartBio2DAScan();
+                    break;
+                case "ObjectRedirector":
+                    StartObjectRedirectorScan();
+                    break;
                 default:
                     StartGenericScan();
                     break;
@@ -285,6 +292,125 @@ Floats*/
             }
         }
 
+        private void StartObjectRedirectorScan(string nodeNameToSelect = null)
+        {
+            resetPropEditingControls();
+            treeView1.BeginUpdate();
+            treeView1.Nodes.Clear();
+            addPropButton.Visible = false;
+
+            byte[] data = export.Data;
+            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
+            treeView1.Nodes.Add(topLevelTree);
+            treeView1.CollapseAll();
+
+            int binstartoffset = findEndOfProps();
+            int redirnum = BitConverter.ToInt32(data, binstartoffset);
+            TreeNode node = new TreeNode(binstartoffset.ToString("X4") + " Redirect references to this export to: " + redirnum + " " + pcc.getEntry(redirnum).GetFullPath);
+            node.Name = binstartoffset.ToString();
+            topLevelTree.Nodes.Add(node);
+
+            topLevelTree.Expand();
+            treeView1.Nodes[0].Expand();
+            TreeNode[] nodes;
+            if (nodeNameToSelect != null)
+            {
+                nodes = treeView1.Nodes.Find(nodeNameToSelect, true);
+                if (nodes.Length > 0)
+                {
+                    treeView1.SelectedNode = nodes[0];
+                }
+                else
+                {
+                    treeView1.SelectedNode = treeView1.Nodes[0];
+                }
+            }
+
+            //find start of class binary (end of props). This should 
+            topLevelTree.Tag = nodeType.Root;
+            topLevelTree.Name = "0";
+
+            treeView1.EndUpdate();
+            memsize = memory.Length;
+        }
+
+        private void StartBio2DAScan(string nodeNameToSelect = null)
+        {
+            resetPropEditingControls();
+            treeView1.BeginUpdate();
+            treeView1.Nodes.Clear();
+            addPropButton.Visible = false;
+
+            byte[] data = export.Data;
+            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
+            treeView1.Nodes.Add(topLevelTree);
+            treeView1.CollapseAll();
+
+            int count = data[0x1C]; //Count of items in main list (properties)
+            int binstartoffset = findEndOfProps(); //arrayheader + nonenamesize + number of items in this list
+            //int rowcount = data[binstartoffset];
+            TreeNode node = new TreeNode(binstartoffset.ToString("X4") + " Row count: ");
+            //node.Name = binstartoffset.ToString();
+            //topLevelTree.Nodes.Add(node);
+
+            int curroffset = binstartoffset;
+            while (curroffset + 4 < data.Length)
+            {
+                int loopstartoffset = curroffset;
+                int val = BitConverter.ToInt32(data, curroffset);
+                bool parseAsName = false;
+                if (curroffset + 8 < data.Length)
+                {
+                    string namestr = pcc.getNameEntry(val);
+                    int nameindex = BitConverter.ToInt32(data, curroffset + 4);
+                    if (namestr != "" && nameindex == 0 && val != 0)
+                    {
+                        parseAsName = true;
+                        node = new TreeNode(curroffset.ToString("X4") + ": " + namestr + "_" + nameindex);
+                        for (int i = 0; i < 8; i++)
+                        {
+                            TreeNode nameTreeNode = new TreeNode((curroffset + i).ToString("X4") + ": " + data[curroffset + i]);
+                            node.Nodes.Add(nameTreeNode);
+                        }
+                        curroffset += 8;
+                    }
+                }
+
+                if (!parseAsName)
+                {
+                    node = new TreeNode(curroffset.ToString("X4") + ": " + "(1b: " + data[curroffset] + " 4b: " + val + ")");
+                    curroffset += 1;
+                }
+                node.Name = loopstartoffset.ToString();
+                topLevelTree.Nodes.Add(node);
+                if (curroffset - binstartoffset > 1024)
+                {
+                    break;
+                }
+            }
+
+            treeView1.Nodes[0].Expand();
+            TreeNode[] nodes;
+            if (nodeNameToSelect != null)
+            {
+                nodes = treeView1.Nodes.Find(nodeNameToSelect, true);
+                if (nodes.Length > 0)
+                {
+                    treeView1.SelectedNode = nodes[0];
+                }
+                else
+                {
+                    treeView1.SelectedNode = treeView1.Nodes[0];
+                }
+            }
+
+            //find start of class binary (end of props). This should 
+            topLevelTree.Tag = nodeType.Root;
+            topLevelTree.Name = "0";
+
+            treeView1.EndUpdate();
+            memsize = memory.Length;
+        }
         private void StartWWiseEventScan(string nodeNameToSelect = null)
         {
             resetPropEditingControls();
