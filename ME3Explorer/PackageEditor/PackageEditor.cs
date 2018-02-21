@@ -2257,7 +2257,7 @@ namespace ME3Explorer
 
         private void dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string fpath = @"C:\Users\Dev\Documents\DataStore\Mass Effect\DLC";
+            string fpath = @"X:\Mass Effect Games HDD\Mass Effect";
             var ext = new List<string> { "u", "upk", "sfm" };
             var files = Directory.GetFiles(fpath, "*.*", SearchOption.AllDirectories)
               .Where(file => new string[] { ".sfm", ".upk", ".u" }

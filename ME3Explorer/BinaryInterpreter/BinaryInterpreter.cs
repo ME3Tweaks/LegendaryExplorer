@@ -358,6 +358,8 @@ Floats*/
             {
                 int loopstartoffset = curroffset;
                 int val = BitConverter.ToInt32(data, curroffset);
+                float fval = BitConverter.ToSingle(data, curroffset);
+
                 bool parseAsName = false;
                 if (curroffset + 8 < data.Length)
                 {
@@ -378,7 +380,7 @@ Floats*/
 
                 if (!parseAsName)
                 {
-                    node = new TreeNode(curroffset.ToString("X4") + ": " + "(1b: " + data[curroffset] + " 4b: " + val + ")");
+                    node = new TreeNode(curroffset.ToString("X4") + ": " + "(1b: " + data[curroffset] + " float: " + fval + ")");
                     curroffset += 1;
                 }
                 node.Name = loopstartoffset.ToString();
