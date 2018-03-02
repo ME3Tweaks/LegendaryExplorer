@@ -244,6 +244,7 @@
     <Compile Include="BinaryInterpreter\BinaryPropertyEditorHost.xaml.cs">
       <DependentUpon>BinaryPropertyEditorHost.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BinaryInterpreter\Bio2DAProperty.cs" />
     <Compile Include="Interpreter\AltPropertyEditor.xaml.cs">
       <DependentUpon>AltPropertyEditor.xaml</DependentUpon>
     </Compile>
