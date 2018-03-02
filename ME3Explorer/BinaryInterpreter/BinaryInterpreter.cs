@@ -342,55 +342,137 @@ Floats*/
             addPropButton.Visible = false;
 
             byte[] data = export.Data;
+
+            List<string> rowNames = new List<string>();
+            if (export.ClassName == "Bio2DA")
+            {
+                string rowLabelsVar = "m_sRowLabel";
+                var props = export.GetProperty<ArrayProperty<NameProperty>>(rowLabelsVar);
+                foreach (NameProperty n in props)
+                {
+                    rowNames.Add(n.ToString());
+                }
+            }
+            else
+            {
+                string rowLabelsVar = "m_lstRowNumbers"; //Bio2DANumberedRows
+                var props = export.GetProperty<ArrayProperty<IntProperty>>(rowLabelsVar);
+                foreach (IntProperty n in props)
+                {
+                    rowNames.Add(n.Value.ToString());
+                }
+            }
+
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
             treeView1.Nodes.Add(topLevelTree);
             treeView1.CollapseAll();
 
-            int count = data[0x1C]; //Count of items in main list (properties)
-            int binstartoffset = findEndOfProps(); //arrayheader + nonenamesize + number of items in this list
-            //int rowcount = data[binstartoffset];
-            TreeNode node = new TreeNode(binstartoffset.ToString("X4") + " Row count: ");
-            //node.Name = binstartoffset.ToString();
-            //topLevelTree.Nodes.Add(node);
+            //Get Columns
+            List<string> columnNames = new List<string>();
+            int colcount = BitConverter.ToInt32(data, data.Length - 4);
+            int currentcoloffset = 0;
+            Console.WriteLine("Number of columns: " + colcount);
+            TreeNode columnsnode = new TreeNode("Columns");
 
-            int curroffset = binstartoffset;
-            while (curroffset + 4 < data.Length)
+            while (colcount >= 0)
             {
-                int loopstartoffset = curroffset;
-                int val = BitConverter.ToInt32(data, curroffset);
-                float fval = BitConverter.ToSingle(data, curroffset);
+                currentcoloffset += 4;
+                int colindex = BitConverter.ToInt32(data, data.Length - currentcoloffset);
+                currentcoloffset += 8; //names in this case don't use nameindex values.
+                int nameindex = BitConverter.ToInt32(data, data.Length - currentcoloffset);
+                string name = pcc.getNameEntry(nameindex);
+                Console.WriteLine(name + " at col pos " + colindex);
+                TreeNode column = new TreeNode(colindex + ": " + name);
+                column.Name = (data.Length - currentcoloffset).ToString();
+                columnsnode.Nodes.Insert(0, column);
+                columnNames.Insert(0, name);
+                colcount--;
+            }
+            currentcoloffset += 4;  //column count.
+            int infilecolcount = BitConverter.ToInt32(data, data.Length - currentcoloffset);
+            columnsnode.Text = infilecolcount + " columns";
+            columnsnode.Name = (data.Length - currentcoloffset).ToString();
 
-                bool parseAsName = false;
-                if (curroffset + 8 < data.Length)
+            //start of binary data
+            int binstartoffset = findEndOfProps(); //arrayheader + nonenamesize + number of items in this list
+            int curroffset = binstartoffset;
+
+            int cellcount = BitConverter.ToInt32(data, curroffset);
+            if (cellcount == 0)
+            {
+                //curroffset += 4; //theres a 0 here for some reason
+                cellcount = BitConverter.ToInt32(data, curroffset);
+
+            }
+            TreeNode node = new TreeNode(curroffset.ToString("X4") + " # of cells in this Bio2DA?? : " + cellcount);
+            node.Name = curroffset.ToString();
+            topLevelTree.Nodes.Add(node);
+            curroffset += 4;
+
+            for (int i = 0; i < rowNames.Count(); i++)
+            {
+                TreeNode rownode = new TreeNode(curroffset.ToString("X4") + ": " + rowNames[i]);
+                rownode.Name = curroffset.ToString();
+                topLevelTree.Nodes.Add(rownode);
+                for (int colindex = 0; colindex < columnNames.Count() && curroffset < data.Length-currentcoloffset; colindex++)
                 {
-                    string namestr = pcc.getNameEntry(val);
-                    int nameindex = BitConverter.ToInt32(data, curroffset + 4);
-                    if (namestr != "" && nameindex == 0 && val != 0)
+                    byte dataType = 255;
+                    //if (cellcount != 0)
+                    //{
+                        dataType = data[curroffset];
+                        curroffset++;
+                    //}
+                    string valueStr = "";
+                    string nodename = curroffset.ToString();
+                    string offsetstr = curroffset.ToString("X4");
+                    switch (dataType)
                     {
-                        parseAsName = true;
-                        node = new TreeNode(curroffset.ToString("X4") + ": " + namestr + "_" + nameindex);
-                        for (int i = 0; i < 8; i++)
-                        {
-                            TreeNode nameTreeNode = new TreeNode((curroffset + i).ToString("X4") + ": " + data[curroffset + i]);
-                            node.Nodes.Add(nameTreeNode);
-                        }
-                        curroffset += 8;
+
+                        case 0:
+                            //int
+                            int ival = BitConverter.ToInt32(data, curroffset);
+                            valueStr = ival.ToString();
+                            curroffset += 4;
+                            break;
+                        case 1:
+                            //name
+                            int nval = BitConverter.ToInt32(data, curroffset);
+                            valueStr = pcc.getNameEntry(nval);
+                            curroffset += 8;
+                            break;
+                        case 2:
+                            //float
+                            float fval = BitConverter.ToSingle(data, curroffset);
+                            valueStr = fval.ToString();
+                            curroffset += 4;
+                            break;
+                        case 255:
+                            int unval = BitConverter.ToInt32(data, curroffset);
+                            valueStr = unval.ToString();
+                            curroffset += 4;
+                            break;
+                        default:
+                            valueStr = "UNKNOWN DATATYPE " + dataType + " " + BitConverter.ToInt32(data, curroffset);
+                            curroffset += 4;
+                            break;
+
                     }
+
+                    node = new TreeNode(offsetstr + " " + columnNames[colindex] + ": " + valueStr);
+                    node.Name = nodename;
+                    rownode.Nodes.Add(node);
                 }
 
-                if (!parseAsName)
-                {
-                    node = new TreeNode(curroffset.ToString("X4") + ": " + "(1b: " + data[curroffset] + " float: " + fval + ")");
-                    curroffset += 1;
-                }
-                node.Name = loopstartoffset.ToString();
-                topLevelTree.Nodes.Add(node);
-                if (curroffset - binstartoffset > 1024)
-                {
-                    break;
-                }
+                //int loopstartoffset = curroffset;
+
+                //node = new TreeNode(curroffset.ToString("X4") + ": " + "(1b: " + data[curroffset] + " int: " + val + ")");
+                //node.Name = (curroffset).ToString();
+                //curroffset += 1;
+                //node.Name = loopstartoffset.ToString();
+                //topLevelTree.Nodes.Add(node);
             }
 
+            treeView1.Nodes.Add(columnsnode);
             treeView1.Nodes[0].Expand();
             TreeNode[] nodes;
             if (nodeNameToSelect != null)

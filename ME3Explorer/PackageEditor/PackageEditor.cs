@@ -464,15 +464,15 @@ namespace ME3Explorer
                     }
 
                     IExportEntry exportEntry = pcc.getExport(n);
-                    if (exportEntry.ClassName == "Function" && pcc.Game != MEGame.ME2)
+                    if (exportEntry.ClassName == "Function")
                     {
                         if (!packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
                         {
                             packageEditorTabPane.TabPages.Add(scriptTab);
                         }
-                        if (pcc.Game == MEGame.ME3)
+                        if (pcc.Game != MEGame.ME1)
                         {
-                            Function func = new Function(exportEntry.Data, pcc as ME3Package);
+                            Function func = new Function(exportEntry.Data, pcc);
                             rtb1.Text = func.ToRawText();
                         }
                         else
