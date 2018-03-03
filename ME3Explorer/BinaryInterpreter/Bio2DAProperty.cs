@@ -36,7 +36,7 @@ namespace ME3Explorer
             return "Unknown type " + Type;
         }
 
-        int GetIntValue()
+        public int GetIntValue()
         {
             return BitConverter.ToInt32(Data, 0);
         }

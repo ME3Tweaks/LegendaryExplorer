@@ -16,6 +16,7 @@ using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
 using ME1Explorer.Unreal.Classes;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace ME3Explorer
 {
@@ -117,7 +118,7 @@ Floats*/
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
 
         int? selectedNodePos = null;
-
+        private Dictionary<string, string> ME1_TLK_DICT;
         public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "Class", "ObjectRedirector", "Bio2DA", "Bio2DANumberedRows", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant", "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "Model", "Polys" }; //classes that have binary parse code
 
 
@@ -126,6 +127,20 @@ Floats*/
             InitializeComponent();
             SetTopLevel(false);
             defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
+
+            //Load ME1TLK
+            string tlkxmlpath = @"C:\users\mgame\desktop\me1tlk.xml";
+            if (File.Exists(tlkxmlpath))
+            {
+                XDocument xmlDocument = XDocument.Load(tlkxmlpath);
+                ME1_TLK_DICT =
+                    (from strings in xmlDocument.Descendants("string")
+                     select new
+                     {
+                         ID = strings.Element("id").Value,
+                         Data = strings.Element("data").Value,
+                     }).Distinct().ToDictionary(o => o.ID, o => o.Data);
+            }
         }
 
         /// <summary>
@@ -136,19 +151,7 @@ Floats*/
         {
             //This will make it fairly slow, but will make it so I don't have to change everything.
             InitializeComponent();
-            //Load ME1TLK
-            string tlkxmlpath = @"C:\users\dev\desktop\tlk1.xml";
-            if (File.Exists(tlkxmlpath))
-            {
-                XmlDocument xmlDocument = new XmlDocument();
-                xmlDocument.Load(tlkxmlpath);
-                var configDictionary = 
-                    (from configDatum in xmlDocument.Descendents("string")
-                     select new { 
-                         Name= configDatum.attribute("name").Value,
-                         Value = configDatum.Attribute("value").Value,
-                }).ToDictionary(o => o.Name, o => o.Value);
-            }
+
 
             SetTopLevel(false);
             defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
@@ -351,6 +354,9 @@ Floats*/
 
         private void StartBio2DAScan(string nodeNameToSelect = null)
         {
+            Random random = new Random();
+            string[] stringRefColumns = { "StringRef", "SaveGameStringRef", "Title", "LabelRef", "Name", "ActiveWorld", "Description", "ButtonLabel" };
+
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
@@ -363,18 +369,30 @@ Floats*/
             {
                 string rowLabelsVar = "m_sRowLabel";
                 var props = export.GetProperty<ArrayProperty<NameProperty>>(rowLabelsVar);
-                foreach (NameProperty n in props)
+                if (props != null)
                 {
-                    rowNames.Add(n.ToString());
+                    foreach (NameProperty n in props)
+                    {
+                        rowNames.Add(n.ToString());
+                    }
+                } else
+                {
+                    return;
                 }
             }
             else
             {
                 string rowLabelsVar = "m_lstRowNumbers"; //Bio2DANumberedRows
                 var props = export.GetProperty<ArrayProperty<IntProperty>>(rowLabelsVar);
-                foreach (IntProperty n in props)
+                if (props != null)
                 {
-                    rowNames.Add(n.Value.ToString());
+                    foreach (IntProperty n in props)
+                    {
+                        rowNames.Add(n.Value.ToString());
+                    }
+                } else
+                {
+                    return;
                 }
             }
 
@@ -416,7 +434,7 @@ Floats*/
             if (cellcount > 0)
             {
 
-                TreeNode node = new TreeNode(curroffset.ToString("X4") + " # of cells in this Bio2DA?? : " + cellcount);
+                TreeNode node = new TreeNode(curroffset.ToString("X4") + " Number of cells in this Bio2DA : " + cellcount);
                 node.Name = curroffset.ToString();
                 topLevelTree.Nodes.Add(node);
                 curroffset += 4;
@@ -445,6 +463,14 @@ Floats*/
                                 //int
                                 int ival = BitConverter.ToInt32(data, curroffset);
                                 valueStr = ival.ToString();
+                                if (stringRefColumns.Contains(columnNames[colindex]))
+                                {
+                                    string tlkVal;
+                                    if (ME1_TLK_DICT != null && ME1_TLK_DICT.TryGetValue(valueStr, out tlkVal))
+                                    {
+                                        valueStr += " " + tlkVal;
+                                    }
+                                }
                                 curroffset += 4;
                                 tag = nodeType.StructLeafInt;
                                 break;
@@ -457,21 +483,22 @@ Floats*/
                                 break;
                             case 2:
                                 //float
+                                float f = NextFloat(random);
+                                while (f < 0)
+                                {
+                                    f = NextFloat(random);
+                                }
+                                byte[] buff2 = BitConverter.GetBytes(f);
+                                for (int o = 0; o < 4; o++)
+                                {
+                                    data[curroffset + o] = buff2[o];
+                                }
+
                                 float fval = BitConverter.ToSingle(data, curroffset);
                                 valueStr = fval.ToString();
                                 curroffset += 4;
                                 tag = nodeType.StructLeafFloat;
                                 break;
-                            case 255:
-                                int unval = BitConverter.ToInt32(data, curroffset);
-                                valueStr = unval.ToString();
-                                curroffset += 4;
-                                break;
-                            default:
-                                valueStr = "UNKNOWN DATATYPE " + dataType + " " + BitConverter.ToInt32(data, curroffset);
-                                curroffset += 4;
-                                break;
-
                         }
 
                         node = new TreeNode(offsetstr + " " + columnNames[colindex] + ": " + valueStr);
@@ -491,10 +518,9 @@ Floats*/
             }
             else
             {
-                string[] stringRefColumns = { "StringRef" };
                 curroffset += 4; //theres a 0 here for some reason
                 cellcount = BitConverter.ToInt32(data, curroffset);
-                TreeNode node = new TreeNode(curroffset.ToString("X4") + " INDEXED # of cells in this Bio2DA?? : " + cellcount);
+                TreeNode node = new TreeNode(curroffset.ToString("X4") + " Number of indexed cells in this Bio2DA: " + cellcount);
                 node.Name = curroffset.ToString();
                 topLevelTree.Nodes.Add(node);
                 curroffset += 4; //theres a 0 here for some reason
@@ -532,6 +558,14 @@ Floats*/
                         if (cell != null)
                         {
                             columnNode = new TreeNode(columnname + ": " + cell.GetDisplayableValue());
+                            if (stringRefColumns.Contains(columnname))
+                            {
+                                string tlkVal;
+                                if (ME1_TLK_DICT != null && ME1_TLK_DICT.TryGetValue(cell.GetDisplayableValue(), out tlkVal))
+                                {
+                                    columnNode.Text += " " + tlkVal;
+                                }
+                            }
                             switch (cell.Type)
                             {
                                 case Bio2DACell.TYPE_FLOAT:
@@ -541,14 +575,7 @@ Floats*/
                                     columnNode.Tag = nodeType.StructLeafName;
                                     break;
                                 case Bio2DACell.TYPE_INT:
-                                    if (stringRefColumns.Contains(columnname))
-                                    {
-                                        columnNode.Tag = nodeType.StringRefProperty;
-                                    }
-                                    else
-                                    {
-                                        columnNode.Tag = nodeType.StructLeafInt;
-                                    }
+                                    columnNode.Tag = nodeType.StructLeafInt;
                                     break;
                             }
                             columnNode.Name = cell.Offset.ToString();
@@ -560,81 +587,6 @@ Floats*/
                         rownode.Nodes.Add(columnNode);
                     }
                 }
-                //    //TreeNode rownode = new TreeNode(curroffset.ToString("X4") + ": " + rowNames[i]);
-                //    //rownode.Name = curroffset.ToString();
-                //    //topLevelTree.Nodes.Add(rownode);
-                //    curroffset += 4;
-                //{
-                //    int index = BitConverter.ToInt32(data, curroffset);
-                //    Console.WriteLine("Index difference " + (index - currentindex));
-                //    try
-                //    {
-                //        if (index - currentindex != 1 && currentindex != -1)
-                //        {
-                //            //skip some columns
-                //            for (int x = 0; x < index - currentindex && colindex + x < columnNames.Count(); x++)
-                //            {
-                //                node = new TreeNode(columnNames[colindex + x] + ": Skipped by table");
-                //                rownode.Nodes.Add(node);
-                //            }
-                //            colindex += index - currentindex;
-                //            continue;
-                //        }
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        //   Console.WriteLine(e.Message);
-                //    }
-                //    currentindex = index;
-                //    numindexed++;
-                //    curroffset += 4;
-                //    byte dataType = 255;
-                //    //if (cellcount != 0)
-                //    //{
-                //    dataType = data[curroffset];
-                //    curroffset++;
-                //    //}
-                //    string valueStr = "";
-                //    string nodename = curroffset.ToString();
-                //    string offsetstr = curroffset.ToString("X4");
-                //    switch (dataType)
-                //    {
-
-                //        case 0:
-                //            //int
-                //            int ival = BitConverter.ToInt32(data, curroffset);
-                //            valueStr = ival.ToString();
-                //            curroffset += 4;
-                //            break;
-                //        case 1:
-                //            //name
-                //            int nval = BitConverter.ToInt32(data, curroffset);
-                //            valueStr = pcc.getNameEntry(nval);
-                //            curroffset += 8;
-                //            break;
-                //        case 2:
-                //            //float
-                //            float fval = BitConverter.ToSingle(data, curroffset);
-                //            valueStr = fval.ToString();
-                //            curroffset += 4;
-                //            break;
-                //        case 255:
-                //            int unval = BitConverter.ToInt32(data, curroffset);
-                //            valueStr = unval.ToString();
-                //            curroffset += 4;
-                //            break;
-                //        default:
-                //            valueStr = "UNKNOWN DATATYPE " + dataType + " " + BitConverter.ToInt32(data, curroffset);
-                //            curroffset += 4;
-                //            break;
-
-                //    }
-
-                //  node = new TreeNode(offsetstr + " " + columnNames[colindex] + " as index " + index + ": " + valueStr);
-                //   node.Name = nodename;
-                //    rownode.Nodes.Add(node);
-                // }
-                //}
                 TreeNode nodex = new TreeNode("Number of nodes indexed: " + numindexed);
                 treeView1.Nodes.Add(nodex);
             }
@@ -660,7 +612,16 @@ Floats*/
             topLevelTree.Name = "0";
 
             treeView1.EndUpdate();
+            memory = data;
+            export.Data = data;
             memsize = memory.Length;
+        }
+
+        static float NextFloat(Random random)
+        {
+            double mantissa = (random.NextDouble() * 2.0) - 1.0;
+            double exponent = Math.Pow(2.0, random.Next(-3, 20));
+            return (float)(mantissa * exponent);
         }
 
         private void StartWWiseEventScan(string nodeNameToSelect = null)

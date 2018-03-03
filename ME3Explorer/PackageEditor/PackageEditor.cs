@@ -493,7 +493,7 @@ namespace ME3Explorer
                         packageEditorTabPane.TabPages.Remove(scriptTab);
                     }
 
-                    if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) && pcc.Game == MEGame.ME1)
+                    if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName))
                     {
                         if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
                         {
@@ -514,7 +514,7 @@ namespace ME3Explorer
                         interpreterControl.export = exportEntry;
                         interpreterControl.InitInterpreter();
 
-                        if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) && pcc.Game == MEGame.ME1)
+                        if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName))
                         {
                             binaryInterpreterControl.export = exportEntry;
                             binaryInterpreterControl.InitInterpreter();
@@ -2197,7 +2197,7 @@ namespace ME3Explorer
 
         private void dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string fpath = @"C:\Users\Dev\Documents\DataStore\Mass Effect\BIOGame\CookedPC";
+            string fpath = @"X:\Mass Effect Games HDD\Mass Effect";
             var ext = new List<string> { "u", "upk", "sfm" };
             var files = Directory.GetFiles(fpath, "*.*", SearchOption.AllDirectories)
               .Where(file => new string[] { ".sfm", ".upk", ".u" }
@@ -2231,7 +2231,7 @@ namespace ME3Explorer
             IMEPackage pack = MEPackageHandler.OpenMEPackage(file);
             foreach (IExportEntry exp in pack.Exports)
             {
-                if (exp.ReadsFromConfig)
+                if (exp.ClassName == "Bio2DA" || exp.ClassName == "Bio2DANumberedRows")
                 {
                     if (!fileHasConfig)
                     {
