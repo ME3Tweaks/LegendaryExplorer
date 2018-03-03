@@ -12,7 +12,7 @@ namespace ME3Explorer
         byte[] Data { get; set; }
         public int Offset { get; private set; }
         public IMEPackage Pcc { get; private set; }
-        byte Type { get; set; }
+        public byte Type { get; set; }
         public Bio2DACell(IMEPackage pcc, int offset, byte type, byte[] data)
         {
             Offset = offset;

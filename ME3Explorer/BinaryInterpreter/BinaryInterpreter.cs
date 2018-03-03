@@ -15,6 +15,7 @@ using System.Diagnostics;
 using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
 using ME1Explorer.Unreal.Classes;
+using System.Xml;
 
 namespace ME3Explorer
 {
@@ -106,7 +107,7 @@ Floats*/
             Root,
         }
 
-
+        Dictionary<int, string> me1TLK = new Dictionary<int, string>();
         private int lastSetOffset = -1; //offset set by program, used for checking if user changed since set 
         private nodeType LAST_SELECTED_PROP_TYPE = nodeType.Unknown; //last property type user selected. Will use to check the current offset for type
         private TreeNode LAST_SELECTED_NODE = null; //last selected tree node
@@ -135,6 +136,20 @@ Floats*/
         {
             //This will make it fairly slow, but will make it so I don't have to change everything.
             InitializeComponent();
+            //Load ME1TLK
+            string tlkxmlpath = @"C:\users\dev\desktop\tlk1.xml";
+            if (File.Exists(tlkxmlpath))
+            {
+                XmlDocument xmlDocument = new XmlDocument();
+                xmlDocument.Load(tlkxmlpath);
+                var configDictionary = 
+                    (from configDatum in xmlDocument.Descendents("string")
+                     select new { 
+                         Name= configDatum.attribute("name").Value,
+                         Value = configDatum.Attribute("value").Value,
+                }).ToDictionary(o => o.Name, o => o.Value);
+            }
+
             SetTopLevel(false);
             defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
             this.pcc = importingPCC;
@@ -422,6 +437,7 @@ Floats*/
                         string valueStr = "";
                         string nodename = curroffset.ToString();
                         string offsetstr = curroffset.ToString("X4");
+                        nodeType tag = nodeType.Unknown;
                         switch (dataType)
                         {
 
@@ -430,18 +446,21 @@ Floats*/
                                 int ival = BitConverter.ToInt32(data, curroffset);
                                 valueStr = ival.ToString();
                                 curroffset += 4;
+                                tag = nodeType.StructLeafInt;
                                 break;
                             case 1:
                                 //name
                                 int nval = BitConverter.ToInt32(data, curroffset);
                                 valueStr = pcc.getNameEntry(nval);
                                 curroffset += 8;
+                                tag = nodeType.StructLeafName;
                                 break;
                             case 2:
                                 //float
                                 float fval = BitConverter.ToSingle(data, curroffset);
                                 valueStr = fval.ToString();
                                 curroffset += 4;
+                                tag = nodeType.StructLeafFloat;
                                 break;
                             case 255:
                                 int unval = BitConverter.ToInt32(data, curroffset);
@@ -457,6 +476,7 @@ Floats*/
 
                         node = new TreeNode(offsetstr + " " + columnNames[colindex] + ": " + valueStr);
                         node.Name = nodename;
+                        node.Tag = tag;
                         rownode.Nodes.Add(node);
                     }
 
@@ -471,6 +491,7 @@ Floats*/
             }
             else
             {
+                string[] stringRefColumns = { "StringRef" };
                 curroffset += 4; //theres a 0 here for some reason
                 cellcount = BitConverter.ToInt32(data, curroffset);
                 TreeNode node = new TreeNode(curroffset.ToString("X4") + " INDEXED # of cells in this Bio2DA?? : " + cellcount);
@@ -500,7 +521,7 @@ Floats*/
 
                 for (int row = 0; row < bio2da.GetLength(0); row++)
                 {
-                    TreeNode rownode = new TreeNode(curroffset.ToString("X4") + ": " + rowNames[row]);
+                    TreeNode rownode = new TreeNode(rowNames[row]);
                     rownode.Name = curroffset.ToString();
                     topLevelTree.Nodes.Add(rownode);
                     for (int col = 0; col < bio2da.GetLength(1); col++)
@@ -511,6 +532,25 @@ Floats*/
                         if (cell != null)
                         {
                             columnNode = new TreeNode(columnname + ": " + cell.GetDisplayableValue());
+                            switch (cell.Type)
+                            {
+                                case Bio2DACell.TYPE_FLOAT:
+                                    columnNode.Tag = nodeType.StructLeafFloat;
+                                    break;
+                                case Bio2DACell.TYPE_NAME:
+                                    columnNode.Tag = nodeType.StructLeafName;
+                                    break;
+                                case Bio2DACell.TYPE_INT:
+                                    if (stringRefColumns.Contains(columnname))
+                                    {
+                                        columnNode.Tag = nodeType.StringRefProperty;
+                                    }
+                                    else
+                                    {
+                                        columnNode.Tag = nodeType.StructLeafInt;
+                                    }
+                                    break;
+                            }
                             columnNode.Name = cell.Offset.ToString();
                         }
                         else
