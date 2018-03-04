@@ -302,11 +302,17 @@ Floats*/
             nodes = treeView1.Nodes.Find(selectedNodeName, true);
             if (nodes.Length > 0)
             {
-                treeView1.SelectedNode = nodes[0];
+                if (treeView1.Nodes.Count > 0)
+                {
+                    treeView1.SelectedNode = nodes[0];
+                }
             }
             else
             {
-                treeView1.SelectedNode = treeView1.Nodes[0];
+                if (treeView1.Nodes.Count > 0)
+                {
+                    treeView1.SelectedNode = treeView1.Nodes[0];
+                }
             }
         }
 
@@ -355,7 +361,7 @@ Floats*/
         private void StartBio2DAScan(string nodeNameToSelect = null)
         {
             Random random = new Random();
-            string[] stringRefColumns = { "StringRef", "SaveGameStringRef", "Title", "LabelRef", "Name", "ActiveWorld", "Description", "ButtonLabel" };
+            string[] stringRefColumns = { "StringRef", "SaveGameStringRef", "Title", "LabelRef", "Name", "ActiveWorld", "Description", "Description1", "Description1", "Description1", "ButtonLabel", "UnlockName", "UnlockBlurb", "DisplayName", "DisplayDescription", "PriAbiDesc", "SecAbiDesc" };
 
             resetPropEditingControls();
             treeView1.BeginUpdate();
@@ -375,7 +381,8 @@ Floats*/
                     {
                         rowNames.Add(n.ToString());
                     }
-                } else
+                }
+                else
                 {
                     return;
                 }
@@ -390,7 +397,8 @@ Floats*/
                     {
                         rowNames.Add(n.Value.ToString());
                     }
-                } else
+                }
+                else
                 {
                     return;
                 }
@@ -402,7 +410,7 @@ Floats*/
 
             //Get Columns
             List<string> columnNames = new List<string>();
-            int colcount = BitConverter.ToInt32(data, data.Length - 4);
+            int colcount = BitConverter.ToInt32(data, data.Length - 4); //this is actually index of last column, but it works the same
             int currentcoloffset = 0;
             Console.WriteLine("Number of columns: " + colcount);
             TreeNode columnsnode = new TreeNode("Columns");
@@ -421,7 +429,7 @@ Floats*/
                 columnNames.Insert(0, name);
                 colcount--;
             }
-            currentcoloffset += 4;  //column count.
+            currentcoloffset += 4;  //real column count
             int infilecolcount = BitConverter.ToInt32(data, data.Length - currentcoloffset);
             columnsnode.Text = infilecolcount + " columns";
             columnsnode.Name = (data.Length - currentcoloffset).ToString();
@@ -463,7 +471,7 @@ Floats*/
                                 //int
                                 int ival = BitConverter.ToInt32(data, curroffset);
                                 valueStr = ival.ToString();
-                                if (stringRefColumns.Contains(columnNames[colindex]))
+                                //if (stringRefColumns.Contains(columnNames[colindex]))
                                 {
                                     string tlkVal;
                                     if (ME1_TLK_DICT != null && ME1_TLK_DICT.TryGetValue(valueStr, out tlkVal))
@@ -478,22 +486,12 @@ Floats*/
                                 //name
                                 int nval = BitConverter.ToInt32(data, curroffset);
                                 valueStr = pcc.getNameEntry(nval);
+                                valueStr += "_" + BitConverter.ToInt32(data, curroffset + 4);
                                 curroffset += 8;
                                 tag = nodeType.StructLeafName;
                                 break;
                             case 2:
                                 //float
-                                float f = NextFloat(random);
-                                while (f < 0)
-                                {
-                                    f = NextFloat(random);
-                                }
-                                byte[] buff2 = BitConverter.GetBytes(f);
-                                for (int o = 0; o < 4; o++)
-                                {
-                                    data[curroffset + o] = buff2[o];
-                                }
-
                                 float fval = BitConverter.ToSingle(data, curroffset);
                                 valueStr = fval.ToString();
                                 curroffset += 4;
@@ -537,7 +535,8 @@ Floats*/
                     byte dataType = data[curroffset];
                     int dataSize = dataType == Bio2DACell.TYPE_NAME ? 8 : 4;
                     curroffset++;
-                    byte[] celldata = data.Skip(curroffset).Take(dataSize).ToArray();
+                    byte[] celldata = new byte[dataSize];
+                    Buffer.BlockCopy(data, curroffset, celldata, 0, dataSize);
                     Bio2DACell cell = new Bio2DACell(pcc, curroffset, dataType, celldata);
                     //Console.WriteLine(columnNames[col] + ": " + cell.GetDisplayableValue());
                     bio2da[row, col] = cell;
@@ -558,11 +557,12 @@ Floats*/
                         if (cell != null)
                         {
                             columnNode = new TreeNode(columnname + ": " + cell.GetDisplayableValue());
-                            if (stringRefColumns.Contains(columnname))
+                            if (cell.Type == Bio2DACell.TYPE_INT)
                             {
-                                string tlkVal;
-                                if (ME1_TLK_DICT != null && ME1_TLK_DICT.TryGetValue(cell.GetDisplayableValue(), out tlkVal))
+                                string tlkVal = " ";
+                                if (ME1_TLK_DICT != null && ME1_TLK_DICT.TryGetValue(BitConverter.ToInt32(cell.Data, 0).ToString(), out tlkVal))
                                 {
+                                    tlkVal = tlkVal.Replace("\n", "[NL]");
                                     columnNode.Text += " " + tlkVal;
                                 }
                             }
@@ -613,7 +613,7 @@ Floats*/
 
             treeView1.EndUpdate();
             memory = data;
-            export.Data = data;
+            //export.Data = data;
             memsize = memory.Length;
         }
 

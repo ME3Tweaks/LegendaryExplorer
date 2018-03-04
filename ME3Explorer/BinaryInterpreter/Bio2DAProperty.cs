@@ -9,7 +9,7 @@ namespace ME3Explorer
         public const byte TYPE_INT = 0;
         public const byte TYPE_NAME = 1;
         public const byte TYPE_FLOAT = 2;
-        byte[] Data { get; set; }
+        public byte[] Data { get; set; }
         public int Offset { get; private set; }
         public IMEPackage Pcc { get; private set; }
         public byte Type { get; set; }
@@ -29,7 +29,7 @@ namespace ME3Explorer
                     return BitConverter.ToInt32(Data, 0).ToString();
                 case TYPE_NAME:
                     int name = BitConverter.ToInt32(Data, 0);
-                    return Pcc.getNameEntry(name);
+                    return Pcc.getNameEntry(name) + "_"+ BitConverter.ToInt32(Data, 4); ;
                 case TYPE_FLOAT:
                     return BitConverter.ToSingle(Data, 0).ToString();
             }
