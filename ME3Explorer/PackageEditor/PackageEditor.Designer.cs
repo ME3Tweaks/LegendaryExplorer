@@ -55,6 +55,7 @@
             this.checkIndexingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGCallReadPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.Button1 = new System.Windows.Forms.ToolStripButton();
             this.Button2 = new System.Windows.Forms.ToolStripButton();
@@ -141,7 +142,7 @@
             this.setAllIndexesInThisTreeTo0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -359,7 +360,8 @@
             this.checkIndexingToolStripMenuItem,
             this.dEBUGCallReadPropertiesToolStripMenuItem,
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem,
-            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem});
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem,
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.debugToolStripMenuItem.Text = "Debug";
@@ -406,6 +408,13 @@
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Text = "DEBUG: Copy config reading props to clipboard";
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem_Click);
+            // 
+            // dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem
+            // 
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Name = "dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem";
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Text = "DEBUG: Copy all BIOG items to clipboard";
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -1242,12 +1251,12 @@
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
             // 
-            // dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem
+            // dEBUGExport2DAToExcelFileToolStripMenuItem
             // 
-            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Name = "dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem";
-            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
-            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Text = "DEBUG: Copy all BIOG items to clipboard";
-            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem_Click);
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Name = "dEBUGExport2DAToExcelFileToolStripMenuItem";
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Text = "DEBUG: Export 2DA to Excel file";
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Click += new System.EventHandler(this.dEBUGExport2DAToExcelFileToolStripMenuItem_Click);
             // 
             // PackageEditor
             // 
@@ -1421,5 +1430,6 @@
         private System.Windows.Forms.ToolStripMenuItem reloadTLKsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dEBUGExport2DAToExcelFileToolStripMenuItem;
     }
 }
