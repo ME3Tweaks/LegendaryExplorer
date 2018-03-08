@@ -1525,6 +1525,8 @@
     <Resource Include="Resources\pathfinding_editor.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\excel.png" />
+    <None Include="Resources\excel.gif" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

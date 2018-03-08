@@ -52,22 +52,23 @@ namespace ME3Explorer
             this.findBox = new System.Windows.Forms.ToolStripTextBox();
             this.findButton = new System.Windows.Forms.ToolStripButton();
             this.viewModeDropDownList = new System.Windows.Forms.ToolStripComboBox();
+            this.exportToExcelButton = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.hb1 = new Be.Windows.Forms.HexBox();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.selectionStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.nodeContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.expandAllChildrenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.collapseAllChildrenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.nodeContextMenuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -91,13 +92,18 @@ namespace ME3Explorer
             this.addPropButton,
             this.findBox,
             this.findButton,
-            this.viewModeDropDownList});
+            this.viewModeDropDownList,
+            this.exportToExcelButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(992, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(992, 27);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
-
+            // 
+            // exportButton
+            // 
+            this.exportButton.Name = "exportButton";
+            this.exportButton.Size = new System.Drawing.Size(23, 24);
             // 
             // saveHexButton
             // 
@@ -106,7 +112,7 @@ namespace ME3Explorer
             this.saveHexButton.Image = ((System.Drawing.Image)(resources.GetObject("saveHexButton.Image")));
             this.saveHexButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.saveHexButton.Name = "saveHexButton";
-            this.saveHexButton.Size = new System.Drawing.Size(107, 22);
+            this.saveHexButton.Size = new System.Drawing.Size(107, 24);
             this.saveHexButton.Text = "Save Hex Changes";
             this.saveHexButton.ToolTipText = "Saves hex changes in-memory (not to disk)";
             this.saveHexButton.Click += new System.EventHandler(this.saveHexButton_Click);
@@ -117,7 +123,7 @@ namespace ME3Explorer
             this.toggleHexWidthButton.Image = ((System.Drawing.Image)(resources.GetObject("toggleHexWidthButton.Image")));
             this.toggleHexWidthButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toggleHexWidthButton.Name = "toggleHexWidthButton";
-            this.toggleHexWidthButton.Size = new System.Drawing.Size(105, 22);
+            this.toggleHexWidthButton.Size = new System.Drawing.Size(105, 24);
             this.toggleHexWidthButton.Text = "Toggle Hex Width";
             this.toggleHexWidthButton.Click += new System.EventHandler(this.toggleHexWidthButton_Click);
             // 
@@ -176,13 +182,36 @@ namespace ME3Explorer
             this.setPropertyButton.Size = new System.Drawing.Size(75, 22);
             this.setPropertyButton.Text = "Set Value";
             this.setPropertyButton.Visible = false;
-
-
+            // 
+            // addArrayElementButton
+            // 
+            this.addArrayElementButton.Name = "addArrayElementButton";
+            this.addArrayElementButton.Size = new System.Drawing.Size(23, 4);
+            // 
+            // deleteArrayElementButton
+            // 
+            this.deleteArrayElementButton.Name = "deleteArrayElementButton";
+            this.deleteArrayElementButton.Size = new System.Drawing.Size(23, 4);
+            // 
+            // moveUpButton
+            // 
+            this.moveUpButton.Name = "moveUpButton";
+            this.moveUpButton.Size = new System.Drawing.Size(23, 4);
+            // 
+            // moveDownButton
+            // 
+            this.moveDownButton.Name = "moveDownButton";
+            this.moveDownButton.Size = new System.Drawing.Size(23, 4);
+            // 
+            // addPropButton
+            // 
+            this.addPropButton.Name = "addPropButton";
+            this.addPropButton.Size = new System.Drawing.Size(23, 4);
             // 
             // findBox
             // 
             this.findBox.Name = "findBox";
-            this.findBox.Size = new System.Drawing.Size(100, 25);
+            this.findBox.Size = new System.Drawing.Size(100, 23);
             this.findBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.findButton_Pressed);
             // 
             // findButton
@@ -191,16 +220,29 @@ namespace ME3Explorer
             this.findButton.Image = ((System.Drawing.Image)(resources.GetObject("findButton.Image")));
             this.findButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.findButton.Name = "findButton";
-            this.findButton.Size = new System.Drawing.Size(34, 22);
+            this.findButton.Size = new System.Drawing.Size(34, 19);
             this.findButton.Text = "Find";
             this.findButton.Click += new System.EventHandler(this.FindButton_Click);
-
+            // 
+            // viewModeDropDownList
+            // 
+            this.viewModeDropDownList.Name = "viewModeDropDownList";
+            this.viewModeDropDownList.Size = new System.Drawing.Size(121, 23);
+            // 
+            // exportToExcelButton
+            // 
+            this.exportToExcelButton.Image = ((System.Drawing.Image)(resources.GetObject("exportToExcelButton.Image")));
+            this.exportToExcelButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.exportToExcelButton.Name = "exportToExcelButton";
+            this.exportToExcelButton.Size = new System.Drawing.Size(143, 20);
+            this.exportToExcelButton.Text = "Export table to xlsx file";
+            this.exportToExcelButton.Click += new System.EventHandler(this.exportToExcel_Click);
             // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 27);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -211,7 +253,7 @@ namespace ME3Explorer
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
-            this.splitContainer1.Size = new System.Drawing.Size(992, 351);
+            this.splitContainer1.Size = new System.Drawing.Size(992, 349);
             this.splitContainer1.SplitterDistance = 205;
             this.splitContainer1.TabIndex = 3;
             this.splitContainer1.SplitterMoving += new System.Windows.Forms.SplitterCancelEventHandler(this.splitContainer1_SplitterMoving);
@@ -228,12 +270,21 @@ namespace ME3Explorer
             this.hb1.MinBytesPerLine = 4;
             this.hb1.Name = "hb1";
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(205, 351);
+            this.hb1.Size = new System.Drawing.Size(205, 349);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
             this.hb1.VScrollBarVisible = true;
             this.hb1.SelectionStartChanged += new System.EventHandler(this.hb1_SelectionChanged);
             this.hb1.SelectionLengthChanged += new System.EventHandler(this.hb1_SelectionChanged);
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.Size = new System.Drawing.Size(783, 349);
+            this.dataGridView1.TabIndex = 0;
             // 
             // statusStrip1
             // 
@@ -257,17 +308,17 @@ namespace ME3Explorer
             this.expandAllChildrenToolStripMenuItem,
             this.collapseAllChildrenToolStripMenuItem});
             this.nodeContextMenuStrip1.Name = "nodeContextMenuStrip1";
-            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(185, 48);
-
+            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(68, 48);
             // 
-            // dataGridView1
+            // expandAllChildrenToolStripMenuItem
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(783, 351);
-            this.dataGridView1.TabIndex = 0;
+            this.expandAllChildrenToolStripMenuItem.Name = "expandAllChildrenToolStripMenuItem";
+            this.expandAllChildrenToolStripMenuItem.Size = new System.Drawing.Size(67, 22);
+            // 
+            // collapseAllChildrenToolStripMenuItem
+            // 
+            this.collapseAllChildrenToolStripMenuItem.Name = "collapseAllChildrenToolStripMenuItem";
+            this.collapseAllChildrenToolStripMenuItem.Size = new System.Drawing.Size(67, 22);
             // 
             // Bio2DAEditor
             // 
@@ -282,10 +333,10 @@ namespace ME3Explorer
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.nodeContextMenuStrip1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -324,5 +375,6 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripButton findButton;
         private System.Windows.Forms.ToolStripComboBox viewModeDropDownList;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private ToolStripButton exportToExcelButton;
     }
 }
