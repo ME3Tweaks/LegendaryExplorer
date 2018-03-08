@@ -56,6 +56,7 @@
             this.dEBUGCallReadPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.Button1 = new System.Windows.Forms.ToolStripButton();
             this.Button2 = new System.Windows.Forms.ToolStripButton();
@@ -90,6 +91,7 @@
             this.interpreterControl = new ME3Explorer.Interpreter();
             this.binaryEditorTab = new System.Windows.Forms.TabPage();
             this.binaryInterpreterControl = new ME3Explorer.BinaryInterpreter();
+            this.bio2daEditorTab = new System.Windows.Forms.TabPage();
             this.infoTab = new System.Windows.Forms.TabPage();
             this.infoExportDataBox = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -142,7 +144,7 @@
             this.setAllIndexesInThisTreeTo0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.dEBUGExport2DAToExcelFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bio2DAEditor1 = new ME3Explorer.Bio2DAEditor();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -155,6 +157,7 @@
             this.propertiesTab.SuspendLayout();
             this.interpreterTab.SuspendLayout();
             this.binaryEditorTab.SuspendLayout();
+            this.bio2daEditorTab.SuspendLayout();
             this.infoTab.SuspendLayout();
             this.infoExportDataBox.SuspendLayout();
             this.infoHeaderBox.SuspendLayout();
@@ -416,6 +419,13 @@
             this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Text = "DEBUG: Copy all BIOG items to clipboard";
             this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem_Click);
             // 
+            // dEBUGExport2DAToExcelFileToolStripMenuItem
+            // 
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Name = "dEBUGExport2DAToExcelFileToolStripMenuItem";
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Text = "DEBUG: Export 2DA to Excel file";
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Click += new System.EventHandler(this.dEBUGExport2DAToExcelFileToolStripMenuItem_Click);
+            // 
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -671,6 +681,7 @@
             this.packageEditorTabPane.Controls.Add(this.propertiesTab);
             this.packageEditorTabPane.Controls.Add(this.interpreterTab);
             this.packageEditorTabPane.Controls.Add(this.binaryEditorTab);
+            this.packageEditorTabPane.Controls.Add(this.bio2daEditorTab);
             this.packageEditorTabPane.Controls.Add(this.infoTab);
             this.packageEditorTabPane.Controls.Add(this.metaDataPage);
             this.packageEditorTabPane.Controls.Add(this.headerTab);
@@ -692,6 +703,7 @@
             this.propertiesTab.Size = new System.Drawing.Size(670, 419);
             this.propertiesTab.TabIndex = 1;
             this.propertiesTab.Text = "Properties";
+            this.propertiesTab.ToolTipText = "Edit UProperties in a simple interface for this export";
             this.propertiesTab.UseVisualStyleBackColor = true;
             // 
             // propGrid
@@ -714,6 +726,7 @@
             this.interpreterTab.Size = new System.Drawing.Size(670, 419);
             this.interpreterTab.TabIndex = 6;
             this.interpreterTab.Text = "Interpreter / Hex Editor";
+            this.interpreterTab.ToolTipText = "Edit UProperties for this export";
             this.interpreterTab.UseVisualStyleBackColor = true;
             // 
             // interpreterControl
@@ -734,6 +747,7 @@
             this.binaryEditorTab.Size = new System.Drawing.Size(670, 419);
             this.binaryEditorTab.TabIndex = 7;
             this.binaryEditorTab.Text = "Binary Editor";
+            this.binaryEditorTab.ToolTipText = "Edit parsable binary data for this export";
             this.binaryEditorTab.UseVisualStyleBackColor = true;
             // 
             // binaryInterpreterControl
@@ -745,6 +759,18 @@
             this.binaryInterpreterControl.Size = new System.Drawing.Size(664, 413);
             this.binaryInterpreterControl.TabIndex = 0;
             // 
+            // bio2daEditorTab
+            // 
+            this.bio2daEditorTab.Controls.Add(this.bio2DAEditor1);
+            this.bio2daEditorTab.Location = new System.Drawing.Point(4, 22);
+            this.bio2daEditorTab.Name = "bio2daEditorTab";
+            this.bio2daEditorTab.Padding = new System.Windows.Forms.Padding(3);
+            this.bio2daEditorTab.Size = new System.Drawing.Size(670, 419);
+            this.bio2daEditorTab.TabIndex = 8;
+            this.bio2daEditorTab.Text = "Bio2DA Editor";
+            this.bio2daEditorTab.ToolTipText = "Edit the binary Bio2DA data for this export";
+            this.bio2daEditorTab.UseVisualStyleBackColor = true;
+            // 
             // infoTab
             // 
             this.infoTab.Controls.Add(this.infoExportDataBox);
@@ -754,6 +780,7 @@
             this.infoTab.Size = new System.Drawing.Size(670, 419);
             this.infoTab.TabIndex = 3;
             this.infoTab.Text = "Info";
+            this.infoTab.ToolTipText = "View information about this export";
             this.infoTab.UseVisualStyleBackColor = true;
             // 
             // infoExportDataBox
@@ -1018,6 +1045,7 @@
             this.metaDataPage.Size = new System.Drawing.Size(670, 419);
             this.metaDataPage.TabIndex = 4;
             this.metaDataPage.Text = "Meta Data Editor";
+            this.metaDataPage.ToolTipText = "Edit the metadata about this export";
             this.metaDataPage.UseVisualStyleBackColor = true;
             // 
             // showFullPathsCheckbox
@@ -1137,6 +1165,7 @@
             this.headerTab.Size = new System.Drawing.Size(670, 419);
             this.headerTab.TabIndex = 5;
             this.headerTab.Text = "Header Raw";
+            this.headerTab.ToolTipText = "Edit the header hex directly for this export";
             this.headerTab.UseVisualStyleBackColor = true;
             // 
             // hb2
@@ -1184,6 +1213,7 @@
             this.scriptTab.Size = new System.Drawing.Size(670, 419);
             this.scriptTab.TabIndex = 2;
             this.scriptTab.Text = "Script";
+            this.scriptTab.ToolTipText = "View a decompiled UnrealScript that this export represents.";
             this.scriptTab.UseVisualStyleBackColor = true;
             // 
             // rtb1
@@ -1251,12 +1281,14 @@
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
             // 
-            // dEBUGExport2DAToExcelFileToolStripMenuItem
+            // bio2DAEditor1
             // 
-            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Name = "dEBUGExport2DAToExcelFileToolStripMenuItem";
-            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
-            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Text = "DEBUG: Export 2DA to Excel file";
-            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Click += new System.EventHandler(this.dEBUGExport2DAToExcelFileToolStripMenuItem_Click);
+            this.bio2DAEditor1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bio2DAEditor1.Location = new System.Drawing.Point(3, 3);
+            this.bio2DAEditor1.Name = "bio2DAEditor1";
+            this.bio2DAEditor1.Pcc = null;
+            this.bio2DAEditor1.Size = new System.Drawing.Size(664, 413);
+            this.bio2DAEditor1.TabIndex = 0;
             // 
             // PackageEditor
             // 
@@ -1292,6 +1324,7 @@
             this.propertiesTab.ResumeLayout(false);
             this.interpreterTab.ResumeLayout(false);
             this.binaryEditorTab.ResumeLayout(false);
+            this.bio2daEditorTab.ResumeLayout(false);
             this.infoTab.ResumeLayout(false);
             this.infoExportDataBox.ResumeLayout(false);
             this.infoExportDataBox.PerformLayout();
@@ -1431,5 +1464,7 @@
         private System.Windows.Forms.ToolStripMenuItem dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dEBUGExport2DAToExcelFileToolStripMenuItem;
+        private System.Windows.Forms.TabPage bio2daEditorTab;
+        private Bio2DAEditor bio2DAEditor1;
     }
 }

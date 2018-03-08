@@ -261,7 +261,14 @@
     <Compile Include="BinaryInterpreter\BinaryPropertyEditorHost.xaml.cs">
       <DependentUpon>BinaryPropertyEditorHost.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BinaryInterpreter\Bio2DAProperty.cs" />
+    <Compile Include="Bio2DAEditor\Bio2DA.cs" />
+    <Compile Include="Bio2DAEditor\Bio2DACell.cs" />
+    <Compile Include="Bio2DAEditor\Bio2DAEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Bio2DAEditor\Bio2DAEditor.Designer.cs">
+      <DependentUpon>Bio2DAEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interpreter\AltPropertyEditor.xaml.cs">
       <DependentUpon>AltPropertyEditor.xaml</DependentUpon>
     </Compile>
@@ -1066,6 +1073,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="BIKExtract\BIKExtract.resx">
       <DependentUpon>BIKExtract.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Bio2DAEditor\Bio2DAEditor.resx">
+      <DependentUpon>Bio2DAEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ClassViewer\ClassViewer.resx">
       <DependentUpon>ClassViewer.cs</DependentUpon>

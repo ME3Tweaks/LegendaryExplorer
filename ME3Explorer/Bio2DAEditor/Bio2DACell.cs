@@ -1,10 +1,13 @@
 ﻿using ME3Explorer.Packages;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ME3Explorer
 {
-
-    internal class Bio2DACell
+    class Bio2DACell
     {
         public const byte TYPE_INT = 0;
         public const byte TYPE_NAME = 1;
@@ -29,7 +32,7 @@ namespace ME3Explorer
                     return BitConverter.ToInt32(Data, 0).ToString();
                 case TYPE_NAME:
                     int name = BitConverter.ToInt32(Data, 0);
-                    return Pcc.getNameEntry(name) + "_"+ BitConverter.ToInt32(Data, 4); ;
+                    return Pcc.getNameEntry(name);
                 case TYPE_FLOAT:
                     return BitConverter.ToSingle(Data, 0).ToString();
             }
@@ -41,14 +44,9 @@ namespace ME3Explorer
             return BitConverter.ToInt32(Data, 0);
         }
 
-        float GetFloatValue()
+        public float GetFloatValue()
         {
             return BitConverter.ToSingle(Data, 0);
-        }
-
-        int GetNameIndex()
-        {
-            return BitConverter.ToInt32(Data, 0);
         }
     }
 }

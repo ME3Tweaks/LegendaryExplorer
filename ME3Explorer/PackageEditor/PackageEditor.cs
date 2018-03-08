@@ -41,6 +41,7 @@ namespace ME3Explorer
             RefreshRecent(false);
             packageEditorTabPane.TabPages.Remove(scriptTab);
             packageEditorTabPane.TabPages.Remove(binaryEditorTab);
+            packageEditorTabPane.TabPages.Remove(bio2daEditorTab);
 
             SetView(View.Tree);
             interpreterControl.saveHexButton.Click += saveHexChangesButton_Click;
@@ -78,6 +79,7 @@ namespace ME3Explorer
                 LoadMEPackage(s);
                 interpreterControl.Pcc = pcc;
                 binaryInterpreterControl.Pcc = pcc;
+                bio2DAEditor1.Pcc = pcc;
                 treeView1.Tag = pcc;
                 RefreshView();
                 InitStuff();
@@ -508,6 +510,21 @@ namespace ME3Explorer
                         }
                     }
 
+                    if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName))
+                    {
+                        if (!packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
+                        {
+                            packageEditorTabPane.TabPages.Add(bio2daEditorTab);
+                        }
+                    }
+                    else
+                    {
+                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
+                        {
+                            packageEditorTabPane.TabPages.Remove(bio2daEditorTab);
+                        }
+                    }
+
                     hb2.ByteProvider = new DynamicByteProvider(exportEntry.header);
                     if (!isRefresh)
                     {
@@ -518,7 +535,11 @@ namespace ME3Explorer
                         {
                             binaryInterpreterControl.export = exportEntry;
                             binaryInterpreterControl.InitInterpreter();
-
+                        }
+                        if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName))
+                        {
+                            bio2DAEditor1.export = exportEntry;
+                            bio2DAEditor1.InitInterpreter();
                         }
                     }
                     UpdateStatusEx(n);
