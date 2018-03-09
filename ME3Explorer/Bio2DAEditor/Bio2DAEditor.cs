@@ -107,6 +107,7 @@ namespace ME3Explorer
         int? selectedNodePos = null;
         private Dictionary<string, string> ME1_TLK_DICT;
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
+        private Bio2DA table2da;
         public static readonly string[] ParsableBinaryClasses = { "Bio2DA", "Bio2DANumberedRows" };
 
         public Bio2DAEditor()
@@ -146,7 +147,7 @@ namespace ME3Explorer
         {
             dataGridView1.Rows.Clear();
             dataGridView1.Columns.Clear();
-            Bio2DA table2da = new Bio2DA(export);
+            table2da = new Bio2DA(export);
             //Add columns
             for (int j = 0; j < table2da.columnNames.Count(); j++)
             {
@@ -498,6 +499,42 @@ namespace ME3Explorer
         private void saveHexButton_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void Table_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedCells.Count > 0)
+            {
+                var seelctedcell = dataGridView1.SelectedCells[0];
+                
+                Label_CellCoordinate.Text = seelctedcell.RowIndex + ", " + seelctedcell.ColumnIndex;
+                Bio2DACell cell = table2da[seelctedcell.RowIndex, seelctedcell.ColumnIndex];
+                if (cell != null)
+                {
+                    string text = "";
+                    switch (cell.Type)
+                    {
+                        case Bio2DACell.TYPE_FLOAT:
+                            text = "Float";
+                            break;
+                        case Bio2DACell.TYPE_NAME:
+                            text = "Name";
+                            break;
+                        case Bio2DACell.TYPE_INT:
+                            text = "Integer";
+                            break;
+                    }
+                    Label_CellType.Text = text;
+                }
+                else {
+                    Label_CellType.Text = "Null Cell";
+                }
+
+            } else
+            {
+                Label_CellCoordinate.Text = "Select a cell";
+                Label_CellType.Text = "Select a cell";
+            }
         }
     }
 }
