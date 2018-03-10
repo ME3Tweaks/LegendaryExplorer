@@ -392,6 +392,7 @@ namespace ME3Explorer
 
         }
 
+
         private void exportToExcel_Click(object sender, EventArgs e)
         {
             if (pcc == null)
@@ -402,6 +403,44 @@ namespace ME3Explorer
             {
                 table2da.Write2DAToExcel(d.FileName);
                 MessageBox.Show("Done");
+            }
+        }
+
+        private void Table_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedCells.Count > 0)
+            {
+                var seelctedcell = dataGridView1.SelectedCells[0];
+
+                Label_CellCoordinate.Text = seelctedcell.RowIndex + ", " + seelctedcell.ColumnIndex;
+                Bio2DACell cell = table2da[seelctedcell.RowIndex, seelctedcell.ColumnIndex];
+                if (cell != null)
+                {
+                    string text = "";
+                    switch (cell.Type)
+                    {
+                        case Bio2DACell.TYPE_FLOAT:
+                            text = "Float";
+                            break;
+                        case Bio2DACell.TYPE_NAME:
+                            text = "Name";
+                            break;
+                        case Bio2DACell.TYPE_INT:
+                            text = "Integer";
+                            break;
+                    }
+                    Label_CellType.Text = text;
+                }
+                else
+                {
+                    Label_CellType.Text = "Null Cell";
+                }
+
+            }
+            else
+            {
+                Label_CellCoordinate.Text = "Select a cell";
+                Label_CellType.Text = "Select a cell";
             }
         }
     }

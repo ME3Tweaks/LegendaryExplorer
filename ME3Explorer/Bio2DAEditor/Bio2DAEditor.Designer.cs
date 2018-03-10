@@ -33,6 +33,7 @@ namespace ME3Explorer
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Bio2DAEditor));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.exportButton = new System.Windows.Forms.ToolStripButton();
             this.saveHexButton = new System.Windows.Forms.ToolStripButton();
@@ -56,6 +57,13 @@ namespace ME3Explorer
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.hb1 = new Be.Windows.Forms.HexBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.Label_CellCoordinate = new System.Windows.Forms.Label();
+            this.Label_CellType = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.selectionStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.nodeContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -67,6 +75,12 @@ namespace ME3Explorer
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.panel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.nodeContextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -103,7 +117,7 @@ namespace ME3Explorer
             // exportButton
             // 
             this.exportButton.Name = "exportButton";
-            this.exportButton.Size = new System.Drawing.Size(23, 24);
+            this.exportButton.Size = new System.Drawing.Size(23, 22);
             // 
             // saveHexButton
             // 
@@ -159,7 +173,7 @@ namespace ME3Explorer
             this.objectNameLabel.BackColor = System.Drawing.SystemColors.ControlDark;
             this.objectNameLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.objectNameLabel.Name = "objectNameLabel";
-            this.objectNameLabel.Size = new System.Drawing.Size(0, 24);
+            this.objectNameLabel.Size = new System.Drawing.Size(0, 22);
             this.objectNameLabel.Visible = false;
             // 
             // propDropdown
@@ -169,7 +183,7 @@ namespace ME3Explorer
             this.propDropdown.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
             this.propDropdown.MaxDropDownItems = 20;
             this.propDropdown.Name = "propDropdown";
-            this.propDropdown.Size = new System.Drawing.Size(200, 27);
+            this.propDropdown.Size = new System.Drawing.Size(200, 25);
             this.propDropdown.Visible = false;
             // 
             // setPropertyButton
@@ -187,6 +201,7 @@ namespace ME3Explorer
             // 
             this.addArrayElementButton.Name = "addArrayElementButton";
             this.addArrayElementButton.Size = new System.Drawing.Size(23, 4);
+
             // 
             // deleteArrayElementButton
             // 
@@ -196,7 +211,7 @@ namespace ME3Explorer
             // moveUpButton
             // 
             this.moveUpButton.Name = "moveUpButton";
-            this.moveUpButton.Size = new System.Drawing.Size(23, 4);
+            this.moveUpButton.Size = new System.Drawing.Size(23, 22);
             // 
             // moveDownButton
             // 
@@ -252,8 +267,9 @@ namespace ME3Explorer
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
-            this.splitContainer1.Size = new System.Drawing.Size(992, 349);
+            this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
+            this.splitContainer1.Size = new System.Drawing.Size(992, 351);
+
             this.splitContainer1.SplitterDistance = 205;
             this.splitContainer1.TabIndex = 3;
             this.splitContainer1.SplitterMoving += new System.Windows.Forms.SplitterCancelEventHandler(this.splitContainer1_SplitterMoving);
@@ -276,7 +292,7 @@ namespace ME3Explorer
             this.hb1.VScrollBarVisible = true;
             this.hb1.SelectionStartChanged += new System.EventHandler(this.hb1_SelectionChanged);
             this.hb1.SelectionLengthChanged += new System.EventHandler(this.hb1_SelectionChanged);
-            // 
+
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -285,6 +301,91 @@ namespace ME3Explorer
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(783, 349);
             this.dataGridView1.TabIndex = 0;
+
+            // splitContainer2
+            // 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.dataGridView1);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.panel1);
+            this.splitContainer2.Size = new System.Drawing.Size(783, 351);
+            this.splitContainer2.SplitterDistance = 282;
+            this.splitContainer2.TabIndex = 2;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView1.MultiSelect = false;
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dataGridView1.Size = new System.Drawing.Size(783, 282);
+            this.dataGridView1.TabIndex = 0;
+            this.dataGridView1.SelectionChanged += new System.EventHandler(this.Table_SelectionChanged);
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.Label_CellCoordinate);
+            this.panel1.Controls.Add(this.Label_CellType);
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(783, 65);
+            this.panel1.TabIndex = 1;
+            // 
+            // Label_CellCoordinate
+            // 
+            this.Label_CellCoordinate.AutoSize = true;
+            this.Label_CellCoordinate.Location = new System.Drawing.Point(14, 22);
+            this.Label_CellCoordinate.Name = "Label_CellCoordinate";
+            this.Label_CellCoordinate.Size = new System.Drawing.Size(65, 13);
+            this.Label_CellCoordinate.TabIndex = 3;
+            this.Label_CellCoordinate.Text = "Select a cell";
+            // 
+            // Label_CellType
+            // 
+            this.Label_CellType.AutoSize = true;
+            this.Label_CellType.Location = new System.Drawing.Point(129, 22);
+            this.Label_CellType.Name = "Label_CellType";
+            this.Label_CellType.Size = new System.Drawing.Size(65, 13);
+            this.Label_CellType.TabIndex = 2;
+            this.Label_CellType.Text = "Select a cell";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(114, 4);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(64, 18);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Cell type";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(4, 4);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(33, 18);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Cell";
             // 
             // statusStrip1
             // 
@@ -333,7 +434,17 @@ namespace ME3Explorer
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.nodeContextMenuStrip1.ResumeLayout(false);
@@ -376,5 +487,11 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripComboBox viewModeDropDownList;
         private System.Windows.Forms.DataGridView dataGridView1;
         private ToolStripButton exportToExcelButton;
+        private SplitContainer splitContainer2;
+        private Panel panel1;
+        private Label Label_CellCoordinate;
+        private Label Label_CellType;
+        private Label label2;
+        private Label label1;
     }
 }
