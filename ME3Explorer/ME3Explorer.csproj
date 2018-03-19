@@ -409,6 +409,7 @@
       <DependentUpon>StateTaskListsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Packages\MEPackage.cs" />
+    <Compile Include="Pathfinding Editor\SplineNodes.cs" />
     <Compile Include="Pathfinding Editor\ActorNodes.cs" />
     <Compile Include="Pathfinding Editor\DuplicateGUIDWindow.cs">
       <SubType>Form</SubType>
@@ -422,10 +423,10 @@
     <Compile Include="Pathfinding Editor\HeightFilterForm.Designer.cs">
       <DependentUpon>HeightFilterForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Pathfinding Editor\ListWindow.cs">
+    <Compile Include="SharedUI\ListWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Pathfinding Editor\ListWindow.Designer.cs">
+    <Compile Include="SharedUI\ListWindow.Designer.cs">
       <DependentUpon>ListWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Pathfinding Editor\PathfindingNodeInfoPanel.cs">
@@ -1190,7 +1191,7 @@
     <EmbeddedResource Include="Pathfinding Editor\HeightFilterForm.resx">
       <DependentUpon>HeightFilterForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Pathfinding Editor\ListWindow.resx">
+    <EmbeddedResource Include="SharedUI\ListWindow.resx">
       <DependentUpon>ListWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pathfinding Editor\PathfindingNodeInfoPanel.resx">

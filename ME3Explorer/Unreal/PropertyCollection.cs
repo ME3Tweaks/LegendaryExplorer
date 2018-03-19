@@ -62,7 +62,11 @@ namespace ME3Explorer.Unreal
 
         public static PropertyCollection ReadProps(IMEPackage pcc, MemoryStream stream, string typeName)
         {
-            //DebugOutput.StartDebugger("Property Engine ReadProps()");
+            //DebugOutput.StartDebugger("Property Engine ReadProps() for "+typeName);
+            //if (typeName == "Matrix")
+            //{
+            //  Debugger.Break();
+            //}
             PropertyCollection props = new PropertyCollection();
             long startPosition = stream.Position;
             while (stream.Position + 8 <= stream.Length)
@@ -71,6 +75,7 @@ namespace ME3Explorer.Unreal
                 int nameIdx = stream.ReadValueS32();
                 if (!pcc.isName(nameIdx))
                 {
+                    //DebugOutput.PrintLn("Not a name found at 0x" + nameOffset.ToString("X4"));
                     stream.Seek(-4, SeekOrigin.Current);
                     break;
                 }
@@ -298,7 +303,7 @@ namespace ME3Explorer.Unreal
             {
                 string[] labels = { "X Plane", "Y Plane", "Z Plane", "W Plane" };
                 string[] labels2 = { "X", "Y", "Z", "W" };
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 4; i++)
                 {
                     PropertyCollection structProps = new PropertyCollection();
                     for (int j = 0; j < 4; j++)
