@@ -13,6 +13,7 @@ using UsefulThings;
 using static ME3Explorer.Unreal.PropertyReader;
 using ME3Explorer.Pathfinding_Editor;
 using System.Text;
+using ME3Explorer.SharedUI;
 
 namespace ME3Explorer
 {
@@ -1545,8 +1546,7 @@ namespace ME3Explorer
                                     }
                                     else
                                     {
-                                        Debug.WriteLine("Object property not mapped " + sourceObjReference + " " + exp.PackageFullName + "." + exp.ObjectName);
-
+                                        Debug.WriteLine("Object property was not mapped during cross-porting: " + sourceObjReference + " " + exp.PackageFullName + "." + exp.ObjectName);
                                     }
                                     //attempt relinkage
                                 }
@@ -2326,7 +2326,8 @@ namespace ME3Explorer
                 }
                 pack.Release();
                 return biopawnscaled;
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Debugger.Break();
             }
@@ -2338,7 +2339,29 @@ namespace ME3Explorer
 
 
 
-            
+
+        }
+
+        private void findExportsWithSerialSizeMismatchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<string> serialexportsbad = new List<string>();
+            foreach (IExportEntry entry in pcc.Exports)
+            {
+                Console.WriteLine(entry.Index + " " + entry.Data.Length + " " + entry.DataSize);
+                if (entry.Data.Length != entry.DataSize)
+                {
+                    serialexportsbad.Add(entry.GetFullPath + " Header lists: " + entry.DataSize + ", Actual data size: " + entry.Data.Length);
+                }
+            }
+
+            if (serialexportsbad.Count > 0)
+            {
+                ListWindow lw = new ListWindow(serialexportsbad, "The following exports have size mismatches");
+            }
+            else
+            {
+                MessageBox.Show("No exports have serial size mismatches.");
+            }
         }
     }
 }

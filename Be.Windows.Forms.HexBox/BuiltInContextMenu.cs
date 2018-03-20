@@ -44,7 +44,7 @@ namespace Be.Windows.Forms
         internal BuiltInContextMenu(HexBox hexBox)
         {
             _hexBox = hexBox;
-            _hexBox.ByteProviderChanged += HexBox_ByteProviderChanged;
+            _hexBox.ByteProviderChanged += new EventHandler(HexBox_ByteProviderChanged);
         }
         /// <summary>
         /// If ByteProvider
@@ -77,12 +77,12 @@ namespace Be.Windows.Forms
 
                 _selectAllToolStripMenuItem = new ToolStripMenuItem(SelectAllMenuItemTextInternal, SelectAllMenuItemImage, new EventHandler(SelectAllMenuItem_Click));
                 cms.Items.Add(_selectAllToolStripMenuItem);
-                cms.Opening += BuildInContextMenuStrip_Opening;
+                cms.Opening += new CancelEventHandler(BuildInContextMenuStrip_Opening);
 
                 _contextMenuStrip = cms;
             }
 
-            if (this._hexBox.ByteProvider == null && this._hexBox.ContextMenuStrip != null)
+            if (this._hexBox.ByteProvider == null && this._hexBox.ContextMenuStrip == this._contextMenuStrip)
                 this._hexBox.ContextMenuStrip = null;
             else if (this._hexBox.ByteProvider != null && this._hexBox.ContextMenuStrip == null)
                 this._hexBox.ContextMenuStrip = _contextMenuStrip;

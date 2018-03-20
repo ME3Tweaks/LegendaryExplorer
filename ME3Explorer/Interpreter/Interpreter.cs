@@ -107,7 +107,20 @@ namespace ME3Explorer
         private int lastSetOffset = -1; //offset set by program, used for checking if user changed since set 
         private nodeType LAST_SELECTED_PROP_TYPE = nodeType.Unknown; //last property type user selected. Will use to check the current offset for type
         private TreeNode LAST_SELECTED_NODE = null; //last selected tree node
-        private const int HEXBOX_MAX_WIDTH = 650;
+        private int HEXBOX_MAX_WIDTH
+        {
+            get
+            {
+                int defaultvalue = 650;
+                float dpiX;
+                System.Drawing.Graphics graphics = this.CreateGraphics();
+                dpiX = graphics.DpiX;
+                double multiplier = dpiX / 96;
+                multiplier = Math.Max(1, multiplier * 0.95);
+                defaultvalue = (int)(defaultvalue * multiplier);
+                return defaultvalue;
+            }
+        }
 
         private IMEPackage pcc;
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
@@ -488,13 +501,13 @@ namespace ME3Explorer
             topLevelTree.Name = "0";
             //try
             //{
-                List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
-                GenerateTree(topLevelTree, topLevelHeaders);
+            List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
+            GenerateTree(topLevelTree, topLevelHeaders);
             //}
             //catch (Exception ex)
             //{
-              //  topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
-                //addPropButton.Visible = false;
+            //  topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
+            //addPropButton.Visible = false;
             //}
             treeView1.Nodes.Add(topLevelTree);
             treeView1.CollapseAll();

@@ -25,6 +25,7 @@ using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.ActorNodes;
 using static ME3Explorer.Pathfinding_Editor.PathfindingNodeMaster;
 using static ME3Explorer.BinaryInterpreter;
+using ME3Explorer.SplineNodes;
 
 namespace ME3Explorer
 {
@@ -69,6 +70,7 @@ namespace ME3Explorer
 
         public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "MantleMarker", "SFXNav_InteractionHenchOmniToolCrouch", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode", "WwiseAmbientSound", "SFXNav_InteractionHenchOmniTool", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionHenchBeckonFront", "SFXNav_InteractionHenchBeckonRear", "SFXNav_InteractionHenchCustom", "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow", "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping", "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard" };
         public string[] actorNodeClasses = { "BlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor" };
+        public string[] splineNodeClasses = { "SplineActor" };
         public string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
         public bool ActorNodesActive = false;
         public bool PathfindingNodesActive = true;
@@ -365,6 +367,15 @@ namespace ME3Explorer
                                 }
                             }
 
+                            if (SplineNodesActive)
+                            {
+                                if (splineNodeClasses.Contains(exportEntry.ClassName))
+                                {
+                                    CurrentObjects.Add(exportEntry.Index);
+                                    listBox1.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
+                                }
+                            }
+
                             //SFXCombatZone 
                             if (exportEntry.ClassName == "SFXCombatZone")
                             {
@@ -576,6 +587,7 @@ namespace ME3Explorer
         public float StartPosVars;
         private Dictionary<int, PointF> smacCoordinates;
         private bool IsReloadSelecting = false;
+        private bool SplineNodesActive;
 
         public void LoadObject(int index)
         {
@@ -814,6 +826,9 @@ namespace ME3Explorer
                                 actorNode = new PendingActorNode(index, x, y, pcc, graphEditor);
                                 break;
                         }
+
+                        
+
                         if (ActiveCombatZoneExportIndex >= 0)
                         {
                             ArrayProperty<StructProperty> volumes = props.GetProp<ArrayProperty<StructProperty>>("Volumes");
@@ -832,6 +847,22 @@ namespace ME3Explorer
                             }
                         }
                         Objects.Add(actorNode);
+                        return;
+                    }
+
+                    if (splineNodeClasses.Contains(exporttoLoad.ClassName))
+                    {
+                        SplineNode splineNode = null;
+                        switch (exporttoLoad.ClassName)
+                        {
+                            case "SplineActor":
+                                splineNode = new SplineActorNode(index, x, y, pcc, graphEditor);
+                                break;
+                            default:
+                                splineNode = new PendingSplineNode(index, x, y, pcc, graphEditor);
+                                break;
+                        }
+                        Objects.Add(splineNode);
                         return;
                     }
                 }
@@ -2864,6 +2895,12 @@ namespace ME3Explorer
                 drawScaleZ.Value = -drawScaleZ.Value;
             }
             exp.WriteProperty(drawScale3D);
+        }
+
+        private void splinesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SplineNodesActive = splinesToolStripMenuItem.Checked;
+            RefreshView();
         }
     }
 

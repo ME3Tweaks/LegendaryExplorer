@@ -46,7 +46,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>none</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -54,6 +54,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\meexp_favicon.ico</ApplicationIcon>
@@ -409,6 +410,7 @@
       <DependentUpon>StateTaskListsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Packages\MEPackage.cs" />
+    <Compile Include="Pathfinding Editor\SplineNodes.cs" />
     <Compile Include="Pathfinding Editor\ActorNodes.cs" />
     <Compile Include="Pathfinding Editor\DuplicateGUIDWindow.cs">
       <SubType>Form</SubType>
@@ -422,10 +424,10 @@
     <Compile Include="Pathfinding Editor\HeightFilterForm.Designer.cs">
       <DependentUpon>HeightFilterForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Pathfinding Editor\ListWindow.cs">
+    <Compile Include="SharedUI\ListWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Pathfinding Editor\ListWindow.Designer.cs">
+    <Compile Include="SharedUI\ListWindow.Designer.cs">
       <DependentUpon>ListWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Pathfinding Editor\PathfindingNodeInfoPanel.cs">
@@ -1190,7 +1192,7 @@
     <EmbeddedResource Include="Pathfinding Editor\HeightFilterForm.resx">
       <DependentUpon>HeightFilterForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Pathfinding Editor\ListWindow.resx">
+    <EmbeddedResource Include="SharedUI\ListWindow.resx">
       <DependentUpon>ListWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pathfinding Editor\PathfindingNodeInfoPanel.resx">
@@ -1537,7 +1539,10 @@ xcopy /f /y "$(SolutionDir)Resources\exec" "$(ProjectDir)$(OutDir)exec\"
 xcopy /y "$(SolutionDir)ME3Creator\$(OutDir)ME3Creator.exe.config" "$(ProjectDir)$(OutDir)"
 call "$(DevEnvDir)..\Tools\vsdevcmd.bat"
 editbin /largeaddressaware "$(TargetPath)"
-del /s "$(TargetDir)*.xml"</PostBuildEvent>
+del /s "$(TargetDir)*.xml"
+if $(ConfigurationName) == Release (copy "$(SolutionDir)Deployment\ReleaseBuilder.cmd" "$(TargetDir)..\ReleaseBuilder.bat" /y)
+if $(ConfigurationName) == Release (copy "$(SolutionDir)Deployment\ReleaseBuilder.ps1" "$(TargetDir)..\ReleaseBuilder.ps1" /y)
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
