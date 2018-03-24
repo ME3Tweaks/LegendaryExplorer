@@ -911,11 +911,17 @@ namespace ME3Explorer
         private void RecentFile_click(object sender, EventArgs e)
         {
             string s = sender.ToString();
-            LoadFile(s);
-            RFiles.Remove(s);
-            AddRecent(s, false);
-            SaveRecentList();
-            RefreshRecent(true, RFiles);
+            if (File.Exists(s))
+            {
+                LoadFile(s);
+                RFiles.Remove(s);
+                AddRecent(s, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
+            } else
+            {
+                MessageBox.Show("File does not exist: " + s);
+            }
         }
 
         private void addNameToolStripMenuItem_Click(object sender, EventArgs e)
