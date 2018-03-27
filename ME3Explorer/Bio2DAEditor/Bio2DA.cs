@@ -140,7 +140,7 @@ namespace ME3Explorer
             Console.WriteLine("Finished loading " + export.ObjectName);
         }
 
-        public void Write2DAToExcel()
+        public void Write2DAToExcel(string path)
         {
             var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add(export.ObjectName.Truncate(30));
@@ -169,7 +169,7 @@ namespace ME3Explorer
             worksheet.SheetView.FreezeRows(1);
             worksheet.SheetView.FreezeColumns(1);
             worksheet.Columns().AdjustToContents();
-            workbook.SaveAs(@"C:\Users\mgame\desktop\2das\"+ export.ObjectName + ".xlsx");
+            workbook.SaveAs(path);
         }
 
         public void Write2DAToExport()

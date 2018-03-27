@@ -215,115 +215,6 @@ namespace ME3Explorer
             proptext.Clear();
         }
 
-        private void TryParseProperty()
-        {
-            try
-            {
-                int pos = (int)hb1.SelectionStart;
-                if (memory.Length - pos < 16)
-                    return;
-                int type = BitConverter.ToInt32(memory, pos + 8);
-                int test = BitConverter.ToInt32(memory, pos + 12);
-                if (test != 0 || !pcc.isName(type))
-                    return;
-                switch (pcc.getNameEntry(type))
-                {
-                    case "IntProperty":
-                    case "StringRefProperty":
-                        proptext.Text = BitConverter.ToInt32(memory, pos + 24).ToString();
-                        proptext.Visible = true;
-                        break;
-                    case "ObjectProperty":
-                        int n = BitConverter.ToInt32(memory, pos + 24);
-                        objectNameLabel.Text = $"({pcc.getObjectName(n)})";
-                        proptext.Text = n.ToString();
-                        objectNameLabel.Visible = proptext.Visible = true;
-                        break;
-                    case "FloatProperty":
-                        proptext.Text = BitConverter.ToSingle(memory, pos + 24).ToString();
-                        proptext.Visible = true;
-                        break;
-                    case "BoolProperty":
-                        propDropdown.Items.Clear();
-                        propDropdown.Items.Add("False");
-                        propDropdown.Items.Add("True");
-                        propDropdown.SelectedIndex = memory[pos + 24];
-                        propDropdown.Visible = true;
-                        break;
-                    case "NameProperty":
-                        proptext.Text = BitConverter.ToInt32(memory, pos + 28).ToString();
-                        nameEntry.Text = pcc.getNameEntry(BitConverter.ToInt32(memory, pos + 24));
-                        nameEntry.AutoCompleteCustomSource.AddRange(pcc.Names.ToArray());
-                        nameEntry.Visible = true;
-                        proptext.Visible = true;
-                        break;
-                    case "StrProperty":
-                        string s = "";
-                        int count = BitConverter.ToInt32(memory, pos + 24);
-                        pos += 28;
-                        if (count < 0)
-                        {
-                            for (int i = 0; i < -count; i++)
-                            {
-                                s += (char)memory[pos + i * 2];
-                            }
-                        }
-                        else
-                        {
-                            for (int i = 0; i < count; i++)
-                            {
-                                s += (char)memory[pos + i];
-                            }
-                        }
-                        proptext.Text = s;
-                        proptext.Visible = true;
-                        break;
-                    case "ByteProperty":
-                        int size = BitConverter.ToInt32(memory, pos + 16);
-                        string enumName = pcc.getNameEntry(BitConverter.ToInt32(memory, pos + 24));
-                        int valOffset;
-                        if (pcc.Game == MEGame.ME3)
-                        {
-                            valOffset = 32;
-                        }
-                        else
-                        {
-                            valOffset = 24;
-                        }
-                        if (size > 1)
-                        {
-                            try
-                            {
-                                List<string> values = GetEnumValues(enumName, BitConverter.ToInt32(memory, pos));
-                                if (values != null)
-                                {
-                                    propDropdown.Items.Clear();
-                                    propDropdown.Items.AddRange(values.ToArray());
-                                    propDropdown.SelectedItem = pcc.getNameEntry(BitConverter.ToInt32(memory, pos + valOffset));
-                                    propDropdown.Visible = true;
-                                }
-                            }
-                            catch (Exception)
-                            {
-                            }
-                        }
-                        else
-                        {
-                            proptext.Text = memory[pos + valOffset].ToString();
-                            proptext.Visible = true;
-                        }
-                        break;
-                    default:
-                        return;
-                }
-                setPropertyButton.Visible = true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
         private void WriteMem(int pos, byte[] buff)
         {
             for (int i = 0; i < buff.Length; i++)
@@ -501,12 +392,26 @@ namespace ME3Explorer
 
         }
 
+
+        private void exportToExcel_Click(object sender, EventArgs e)
+        {
+            if (pcc == null)
+                return;
+            SaveFileDialog d = new SaveFileDialog();
+            d.Filter = $"Excel file|*.xlsx";
+            if (d.ShowDialog() == DialogResult.OK)
+            {
+                table2da.Write2DAToExcel(d.FileName);
+                MessageBox.Show("Done");
+            }
+        }
+
         private void Table_SelectionChanged(object sender, EventArgs e)
         {
             if (dataGridView1.SelectedCells.Count > 0)
             {
                 var seelctedcell = dataGridView1.SelectedCells[0];
-                
+
                 Label_CellCoordinate.Text = seelctedcell.RowIndex + ", " + seelctedcell.ColumnIndex;
                 Bio2DACell cell = table2da[seelctedcell.RowIndex, seelctedcell.ColumnIndex];
                 if (cell != null)
@@ -526,11 +431,13 @@ namespace ME3Explorer
                     }
                     Label_CellType.Text = text;
                 }
-                else {
+                else
+                {
                     Label_CellType.Text = "Null Cell";
                 }
 
-            } else
+            }
+            else
             {
                 Label_CellCoordinate.Text = "Select a cell";
                 Label_CellType.Text = "Select a cell";

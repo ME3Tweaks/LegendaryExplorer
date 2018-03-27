@@ -112,12 +112,12 @@ namespace ME3Explorer
             get
             {
                 int defaultvalue = 650;
-                float dpiX;
-                System.Drawing.Graphics graphics = this.CreateGraphics();
-                dpiX = graphics.DpiX;
-                double multiplier = dpiX / 96;
-                multiplier = Math.Max(1, multiplier * 0.95);
-                defaultvalue = (int)(defaultvalue * multiplier);
+                //float dpiX;
+                //System.Drawing.Graphics graphics = this.CreateGraphics();
+                //dpiX = graphics.DpiX;
+                //double multiplier = dpiX / 96;
+                //multiplier = Math.Max(1, multiplier * 0.95);
+                //defaultvalue = (int)(defaultvalue * multiplier);
                 return defaultvalue;
             }
         }
