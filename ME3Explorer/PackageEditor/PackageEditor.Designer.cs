@@ -53,6 +53,7 @@
             this.getDumpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.findImportexportViaOffsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkIndexingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.findExportsWithSerialSizeMismatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGCallReadPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -145,7 +146,7 @@
             this.setAllIndexesInThisTreeTo0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.findExportsWithSerialSizeMismatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dEBUGAccessME3AppendsTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -368,7 +369,8 @@
             this.dEBUGCallReadPropertiesToolStripMenuItem,
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem,
             this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem,
-            this.dEBUGExport2DAToExcelFileToolStripMenuItem});
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem,
+            this.dEBUGAccessME3AppendsTableToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(147, 38);
             this.debugToolStripMenuItem.Text = "Debugging";
@@ -401,6 +403,13 @@
             this.checkIndexingToolStripMenuItem.Size = new System.Drawing.Size(620, 38);
             this.checkIndexingToolStripMenuItem.Text = "Check indexing";
             this.checkIndexingToolStripMenuItem.Click += new System.EventHandler(this.checkIndexingToolStripMenuItem_Click);
+            // 
+            // findExportsWithSerialSizeMismatchToolStripMenuItem
+            // 
+            this.findExportsWithSerialSizeMismatchToolStripMenuItem.Name = "findExportsWithSerialSizeMismatchToolStripMenuItem";
+            this.findExportsWithSerialSizeMismatchToolStripMenuItem.Size = new System.Drawing.Size(620, 38);
+            this.findExportsWithSerialSizeMismatchToolStripMenuItem.Text = "Find exports with serial size mismatch";
+            this.findExportsWithSerialSizeMismatchToolStripMenuItem.Click += new System.EventHandler(this.findExportsWithSerialSizeMismatchToolStripMenuItem_Click);
             // 
             // dEBUGCallReadPropertiesToolStripMenuItem
             // 
@@ -637,7 +646,7 @@
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(0, 86);
-            this.splitContainer1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(6);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -660,7 +669,7 @@
             this.treeView1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
-            this.treeView1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.treeView1.Margin = new System.Windows.Forms.Padding(6);
             this.treeView1.Name = "treeView1";
             this.treeView1.Size = new System.Drawing.Size(668, 869);
             this.treeView1.TabIndex = 1;
@@ -681,7 +690,7 @@
             this.listBox1.IntegralHeight = false;
             this.listBox1.ItemHeight = 29;
             this.listBox1.Location = new System.Drawing.Point(0, 0);
-            this.listBox1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.listBox1.Margin = new System.Windows.Forms.Padding(6);
             this.listBox1.Name = "listBox1";
             this.listBox1.ScrollAlwaysVisible = true;
             this.listBox1.Size = new System.Drawing.Size(668, 869);
@@ -701,7 +710,7 @@
             this.packageEditorTabPane.Controls.Add(this.scriptTab);
             this.packageEditorTabPane.Dock = System.Windows.Forms.DockStyle.Fill;
             this.packageEditorTabPane.Location = new System.Drawing.Point(0, 0);
-            this.packageEditorTabPane.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.packageEditorTabPane.Margin = new System.Windows.Forms.Padding(6);
             this.packageEditorTabPane.Name = "packageEditorTabPane";
             this.packageEditorTabPane.SelectedIndex = 0;
             this.packageEditorTabPane.Size = new System.Drawing.Size(1356, 869);
@@ -712,9 +721,9 @@
             // 
             this.propertiesTab.Controls.Add(this.propGrid);
             this.propertiesTab.Location = new System.Drawing.Point(8, 39);
-            this.propertiesTab.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.propertiesTab.Margin = new System.Windows.Forms.Padding(6);
             this.propertiesTab.Name = "propertiesTab";
-            this.propertiesTab.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.propertiesTab.Padding = new System.Windows.Forms.Padding(6);
             this.propertiesTab.Size = new System.Drawing.Size(1340, 822);
             this.propertiesTab.TabIndex = 1;
             this.propertiesTab.Text = "Properties";
@@ -727,7 +736,7 @@
             this.propGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propGrid.LineColor = System.Drawing.SystemColors.ControlDark;
             this.propGrid.Location = new System.Drawing.Point(6, 6);
-            this.propGrid.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.propGrid.Margin = new System.Windows.Forms.Padding(6);
             this.propGrid.Name = "propGrid";
             this.propGrid.Size = new System.Drawing.Size(1328, 810);
             this.propGrid.TabIndex = 0;
@@ -737,10 +746,10 @@
             // 
             this.interpreterTab.Controls.Add(this.interpreterControl);
             this.interpreterTab.Location = new System.Drawing.Point(8, 39);
-            this.interpreterTab.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.interpreterTab.Margin = new System.Windows.Forms.Padding(6);
             this.interpreterTab.Name = "interpreterTab";
-            this.interpreterTab.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.interpreterTab.Size = new System.Drawing.Size(1340, 809);
+            this.interpreterTab.Padding = new System.Windows.Forms.Padding(6);
+            this.interpreterTab.Size = new System.Drawing.Size(1340, 822);
             this.interpreterTab.TabIndex = 6;
             this.interpreterTab.Text = "Interpreter / Hex Editor";
             this.interpreterTab.ToolTipText = "Edit UProperties for this export";
@@ -750,20 +759,20 @@
             // 
             this.interpreterControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.interpreterControl.Location = new System.Drawing.Point(6, 6);
-            this.interpreterControl.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.interpreterControl.Margin = new System.Windows.Forms.Padding(6);
             this.interpreterControl.Name = "interpreterControl";
             this.interpreterControl.Pcc = null;
-            this.interpreterControl.Size = new System.Drawing.Size(1328, 797);
+            this.interpreterControl.Size = new System.Drawing.Size(1328, 810);
             this.interpreterControl.TabIndex = 0;
             // 
             // binaryEditorTab
             // 
             this.binaryEditorTab.Controls.Add(this.binaryInterpreterControl);
             this.binaryEditorTab.Location = new System.Drawing.Point(8, 39);
-            this.binaryEditorTab.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.binaryEditorTab.Margin = new System.Windows.Forms.Padding(6);
             this.binaryEditorTab.Name = "binaryEditorTab";
-            this.binaryEditorTab.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.binaryEditorTab.Size = new System.Drawing.Size(1340, 809);
+            this.binaryEditorTab.Padding = new System.Windows.Forms.Padding(6);
+            this.binaryEditorTab.Size = new System.Drawing.Size(1340, 822);
             this.binaryEditorTab.TabIndex = 7;
             this.binaryEditorTab.Text = "Binary Editor";
             this.binaryEditorTab.ToolTipText = "Edit parsable binary data for this export";
@@ -773,20 +782,20 @@
             // 
             this.binaryInterpreterControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.binaryInterpreterControl.Location = new System.Drawing.Point(6, 6);
-            this.binaryInterpreterControl.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.binaryInterpreterControl.Margin = new System.Windows.Forms.Padding(6);
             this.binaryInterpreterControl.Name = "binaryInterpreterControl";
             this.binaryInterpreterControl.Pcc = null;
-            this.binaryInterpreterControl.Size = new System.Drawing.Size(1328, 797);
+            this.binaryInterpreterControl.Size = new System.Drawing.Size(1328, 810);
             this.binaryInterpreterControl.TabIndex = 0;
             // 
             // bio2daEditorTab
             // 
             this.bio2daEditorTab.Controls.Add(this.bio2DAEditor1);
             this.bio2daEditorTab.Location = new System.Drawing.Point(8, 39);
-            this.bio2daEditorTab.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.bio2daEditorTab.Margin = new System.Windows.Forms.Padding(6);
             this.bio2daEditorTab.Name = "bio2daEditorTab";
-            this.bio2daEditorTab.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.bio2daEditorTab.Size = new System.Drawing.Size(1340, 809);
+            this.bio2daEditorTab.Padding = new System.Windows.Forms.Padding(6);
+            this.bio2daEditorTab.Size = new System.Drawing.Size(1340, 822);
             this.bio2daEditorTab.TabIndex = 8;
             this.bio2daEditorTab.Text = "Bio2DA Editor";
             this.bio2daEditorTab.ToolTipText = "Edit the binary Bio2DA data for this export";
@@ -796,10 +805,10 @@
             // 
             this.bio2DAEditor1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.bio2DAEditor1.Location = new System.Drawing.Point(6, 6);
-            this.bio2DAEditor1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.bio2DAEditor1.Margin = new System.Windows.Forms.Padding(6);
             this.bio2DAEditor1.Name = "bio2DAEditor1";
             this.bio2DAEditor1.Pcc = null;
-            this.bio2DAEditor1.Size = new System.Drawing.Size(1328, 797);
+            this.bio2DAEditor1.Size = new System.Drawing.Size(1328, 810);
             this.bio2DAEditor1.TabIndex = 0;
             // 
             // infoTab
@@ -807,9 +816,9 @@
             this.infoTab.Controls.Add(this.infoExportDataBox);
             this.infoTab.Controls.Add(this.infoHeaderBox);
             this.infoTab.Location = new System.Drawing.Point(8, 39);
-            this.infoTab.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.infoTab.Margin = new System.Windows.Forms.Padding(6);
             this.infoTab.Name = "infoTab";
-            this.infoTab.Size = new System.Drawing.Size(1340, 809);
+            this.infoTab.Size = new System.Drawing.Size(1340, 822);
             this.infoTab.TabIndex = 3;
             this.infoTab.Text = "Info";
             this.infoTab.ToolTipText = "View information about this export";
@@ -828,9 +837,9 @@
             this.infoExportDataBox.Controls.Add(this.textBox7);
             this.infoExportDataBox.Controls.Add(this.label7);
             this.infoExportDataBox.Location = new System.Drawing.Point(8, 462);
-            this.infoExportDataBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.infoExportDataBox.Margin = new System.Windows.Forms.Padding(6);
             this.infoExportDataBox.Name = "infoExportDataBox";
-            this.infoExportDataBox.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.infoExportDataBox.Padding = new System.Windows.Forms.Padding(6);
             this.infoExportDataBox.Size = new System.Drawing.Size(1252, 421);
             this.infoExportDataBox.TabIndex = 1;
             this.infoExportDataBox.TabStop = false;
@@ -859,7 +868,7 @@
             // textBox9
             // 
             this.textBox9.Location = new System.Drawing.Point(636, 90);
-            this.textBox9.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.textBox9.Margin = new System.Windows.Forms.Padding(6);
             this.textBox9.Name = "textBox9";
             this.textBox9.ReadOnly = true;
             this.textBox9.Size = new System.Drawing.Size(322, 31);
@@ -878,7 +887,7 @@
             // textBox8
             // 
             this.textBox8.Location = new System.Drawing.Point(290, 90);
-            this.textBox8.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.textBox8.Margin = new System.Windows.Forms.Padding(6);
             this.textBox8.Name = "textBox8";
             this.textBox8.ReadOnly = true;
             this.textBox8.Size = new System.Drawing.Size(258, 31);
@@ -887,7 +896,7 @@
             // textBox7
             // 
             this.textBox7.Location = new System.Drawing.Point(226, 38);
-            this.textBox7.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.textBox7.Margin = new System.Windows.Forms.Padding(6);
             this.textBox7.Name = "textBox7";
             this.textBox7.ReadOnly = true;
             this.textBox7.Size = new System.Drawing.Size(732, 31);
@@ -924,9 +933,9 @@
             this.infoHeaderBox.Controls.Add(this.objectNameBox);
             this.infoHeaderBox.Controls.Add(this.label1);
             this.infoHeaderBox.Location = new System.Drawing.Point(8, 8);
-            this.infoHeaderBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.infoHeaderBox.Margin = new System.Windows.Forms.Padding(6);
             this.infoHeaderBox.Name = "infoHeaderBox";
-            this.infoHeaderBox.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.infoHeaderBox.Padding = new System.Windows.Forms.Padding(6);
             this.infoHeaderBox.Size = new System.Drawing.Size(1252, 442);
             this.infoHeaderBox.TabIndex = 0;
             this.infoHeaderBox.TabStop = false;
@@ -935,7 +944,7 @@
             // superclassTextBox
             // 
             this.superclassTextBox.Location = new System.Drawing.Point(226, 133);
-            this.superclassTextBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.superclassTextBox.Margin = new System.Windows.Forms.Padding(6);
             this.superclassTextBox.Name = "superclassTextBox";
             this.superclassTextBox.ReadOnly = true;
             this.superclassTextBox.Size = new System.Drawing.Size(732, 31);
@@ -954,7 +963,7 @@
             // flagsBox
             // 
             this.flagsBox.Location = new System.Drawing.Point(226, 385);
-            this.flagsBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.flagsBox.Margin = new System.Windows.Forms.Padding(6);
             this.flagsBox.Name = "flagsBox";
             this.flagsBox.ReadOnly = true;
             this.flagsBox.Size = new System.Drawing.Size(732, 31);
@@ -983,7 +992,7 @@
             // archetypeBox
             // 
             this.archetypeBox.Location = new System.Drawing.Point(226, 283);
-            this.archetypeBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.archetypeBox.Margin = new System.Windows.Forms.Padding(6);
             this.archetypeBox.Name = "archetypeBox";
             this.archetypeBox.ReadOnly = true;
             this.archetypeBox.Size = new System.Drawing.Size(732, 31);
@@ -992,7 +1001,7 @@
             // indexBox
             // 
             this.indexBox.Location = new System.Drawing.Point(226, 231);
-            this.indexBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.indexBox.Margin = new System.Windows.Forms.Padding(6);
             this.indexBox.Name = "indexBox";
             this.indexBox.ReadOnly = true;
             this.indexBox.Size = new System.Drawing.Size(732, 31);
@@ -1011,7 +1020,7 @@
             // headerSizeBox
             // 
             this.headerSizeBox.Location = new System.Drawing.Point(226, 333);
-            this.headerSizeBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.headerSizeBox.Margin = new System.Windows.Forms.Padding(6);
             this.headerSizeBox.Name = "headerSizeBox";
             this.headerSizeBox.ReadOnly = true;
             this.headerSizeBox.Size = new System.Drawing.Size(732, 31);
@@ -1040,7 +1049,7 @@
             // packageNameBox
             // 
             this.packageNameBox.Location = new System.Drawing.Point(226, 181);
-            this.packageNameBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.packageNameBox.Margin = new System.Windows.Forms.Padding(6);
             this.packageNameBox.Name = "packageNameBox";
             this.packageNameBox.ReadOnly = true;
             this.packageNameBox.Size = new System.Drawing.Size(732, 31);
@@ -1049,7 +1058,7 @@
             // classNameBox
             // 
             this.classNameBox.Location = new System.Drawing.Point(226, 83);
-            this.classNameBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.classNameBox.Margin = new System.Windows.Forms.Padding(6);
             this.classNameBox.Name = "classNameBox";
             this.classNameBox.ReadOnly = true;
             this.classNameBox.Size = new System.Drawing.Size(732, 31);
@@ -1068,7 +1077,7 @@
             // objectNameBox
             // 
             this.objectNameBox.Location = new System.Drawing.Point(226, 33);
-            this.objectNameBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.objectNameBox.Margin = new System.Windows.Forms.Padding(6);
             this.objectNameBox.Name = "objectNameBox";
             this.objectNameBox.ReadOnly = true;
             this.objectNameBox.Size = new System.Drawing.Size(732, 31);
@@ -1099,10 +1108,10 @@
             this.metaDataPage.Controls.Add(this.label13);
             this.metaDataPage.Controls.Add(this.label12);
             this.metaDataPage.Location = new System.Drawing.Point(8, 39);
-            this.metaDataPage.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.metaDataPage.Margin = new System.Windows.Forms.Padding(6);
             this.metaDataPage.Name = "metaDataPage";
-            this.metaDataPage.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.metaDataPage.Size = new System.Drawing.Size(1340, 809);
+            this.metaDataPage.Padding = new System.Windows.Forms.Padding(6);
+            this.metaDataPage.Size = new System.Drawing.Size(1340, 822);
             this.metaDataPage.TabIndex = 4;
             this.metaDataPage.Text = "Meta Data Editor";
             this.metaDataPage.ToolTipText = "Edit the metadata about this export";
@@ -1114,7 +1123,7 @@
             this.showFullPathsCheckbox.Checked = global::ME3Explorer.Properties.Settings.Default.UseMetadataFullPaths;
             this.showFullPathsCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showFullPathsCheckbox.Location = new System.Drawing.Point(350, 248);
-            this.showFullPathsCheckbox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.showFullPathsCheckbox.Margin = new System.Windows.Forms.Padding(6);
             this.showFullPathsCheckbox.Name = "showFullPathsCheckbox";
             this.showFullPathsCheckbox.Size = new System.Drawing.Size(278, 29);
             this.showFullPathsCheckbox.TabIndex = 12;
@@ -1125,7 +1134,7 @@
             // indexTextBox
             // 
             this.indexTextBox.Location = new System.Drawing.Point(164, 242);
-            this.indexTextBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.indexTextBox.Margin = new System.Windows.Forms.Padding(6);
             this.indexTextBox.Name = "indexTextBox";
             this.indexTextBox.Size = new System.Drawing.Size(170, 31);
             this.indexTextBox.TabIndex = 11;
@@ -1143,7 +1152,7 @@
             // button4
             // 
             this.button4.Location = new System.Drawing.Point(1012, 242);
-            this.button4.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.button4.Margin = new System.Windows.Forms.Padding(6);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(206, 44);
             this.button4.TabIndex = 6;
@@ -1175,7 +1184,7 @@
             // 
             this.archetypeComboBox.FormattingEnabled = true;
             this.archetypeComboBox.Location = new System.Drawing.Point(164, 185);
-            this.archetypeComboBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.archetypeComboBox.Margin = new System.Windows.Forms.Padding(6);
             this.archetypeComboBox.Name = "archetypeComboBox";
             this.archetypeComboBox.Size = new System.Drawing.Size(1050, 33);
             this.archetypeComboBox.TabIndex = 4;
@@ -1184,7 +1193,7 @@
             // 
             this.linkComboBox.FormattingEnabled = true;
             this.linkComboBox.Location = new System.Drawing.Point(164, 127);
-            this.linkComboBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.linkComboBox.Margin = new System.Windows.Forms.Padding(6);
             this.linkComboBox.Name = "linkComboBox";
             this.linkComboBox.Size = new System.Drawing.Size(1050, 33);
             this.linkComboBox.TabIndex = 4;
@@ -1193,7 +1202,7 @@
             // 
             this.classComboBox.FormattingEnabled = true;
             this.classComboBox.Location = new System.Drawing.Point(164, 73);
-            this.classComboBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.classComboBox.Margin = new System.Windows.Forms.Padding(6);
             this.classComboBox.Name = "classComboBox";
             this.classComboBox.Size = new System.Drawing.Size(1050, 33);
             this.classComboBox.TabIndex = 3;
@@ -1202,7 +1211,7 @@
             // 
             this.nameComboBox.FormattingEnabled = true;
             this.nameComboBox.Location = new System.Drawing.Point(164, 13);
-            this.nameComboBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.nameComboBox.Margin = new System.Windows.Forms.Padding(6);
             this.nameComboBox.Name = "nameComboBox";
             this.nameComboBox.Size = new System.Drawing.Size(1050, 33);
             this.nameComboBox.TabIndex = 2;
@@ -1232,10 +1241,10 @@
             this.headerTab.Controls.Add(this.hb2);
             this.headerTab.Controls.Add(this.toolStrip2);
             this.headerTab.Location = new System.Drawing.Point(8, 39);
-            this.headerTab.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.headerTab.Margin = new System.Windows.Forms.Padding(6);
             this.headerTab.Name = "headerTab";
-            this.headerTab.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.headerTab.Size = new System.Drawing.Size(1340, 809);
+            this.headerTab.Padding = new System.Windows.Forms.Padding(6);
+            this.headerTab.Size = new System.Drawing.Size(1340, 822);
             this.headerTab.TabIndex = 5;
             this.headerTab.Text = "Header Raw";
             this.headerTab.ToolTipText = "Edit the header hex directly for this export";
@@ -1249,11 +1258,11 @@
             this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
             this.hb2.LineInfoVisible = true;
             this.hb2.Location = new System.Drawing.Point(6, 45);
-            this.hb2.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.hb2.Margin = new System.Windows.Forms.Padding(6);
             this.hb2.MinBytesPerLine = 16;
             this.hb2.Name = "hb2";
             this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(1328, 758);
+            this.hb2.Size = new System.Drawing.Size(1328, 771);
             this.hb2.StringViewVisible = true;
             this.hb2.TabIndex = 0;
             this.hb2.UseFixedBytesPerLine = true;
@@ -1285,9 +1294,9 @@
             // 
             this.scriptTab.Controls.Add(this.rtb1);
             this.scriptTab.Location = new System.Drawing.Point(8, 39);
-            this.scriptTab.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.scriptTab.Margin = new System.Windows.Forms.Padding(6);
             this.scriptTab.Name = "scriptTab";
-            this.scriptTab.Size = new System.Drawing.Size(1340, 809);
+            this.scriptTab.Size = new System.Drawing.Size(1340, 822);
             this.scriptTab.TabIndex = 2;
             this.scriptTab.Text = "Script";
             this.scriptTab.ToolTipText = "View a decompiled UnrealScript that this export represents.";
@@ -1299,10 +1308,10 @@
             this.rtb1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtb1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtb1.Location = new System.Drawing.Point(0, 0);
-            this.rtb1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.rtb1.Margin = new System.Windows.Forms.Padding(6);
             this.rtb1.Name = "rtb1";
             this.rtb1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.rtb1.Size = new System.Drawing.Size(1340, 809);
+            this.rtb1.Size = new System.Drawing.Size(1340, 822);
             this.rtb1.TabIndex = 2;
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;
@@ -1361,12 +1370,12 @@
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
             // 
-            // findExportsWithSerialSizeMismatchToolStripMenuItem
+            // dEBUGAccessME3AppendsTableToolStripMenuItem
             // 
-            this.findExportsWithSerialSizeMismatchToolStripMenuItem.Name = "findExportsWithSerialSizeMismatchToolStripMenuItem";
-            this.findExportsWithSerialSizeMismatchToolStripMenuItem.Size = new System.Drawing.Size(620, 38);
-            this.findExportsWithSerialSizeMismatchToolStripMenuItem.Text = "Find exports with serial size mismatch";
-            this.findExportsWithSerialSizeMismatchToolStripMenuItem.Click += new System.EventHandler(this.findExportsWithSerialSizeMismatchToolStripMenuItem_Click);
+            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Name = "dEBUGAccessME3AppendsTableToolStripMenuItem";
+            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Size = new System.Drawing.Size(620, 38);
+            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Text = "DEBUG: Access ME3 AppendsTable";
+            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Click += new System.EventHandler(this.dEBUGAccessME3AppendsTableToolStripMenuItem_Click);
             // 
             // PackageEditor
             // 
@@ -1380,7 +1389,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "PackageEditor";
             this.Text = "Package Editor";
             this.Activated += new System.EventHandler(this.PackageEditor_Activated);
@@ -1546,5 +1555,6 @@
         private System.Windows.Forms.TabPage bio2daEditorTab;
         private Bio2DAEditor bio2DAEditor1;
         private System.Windows.Forms.ToolStripMenuItem findExportsWithSerialSizeMismatchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dEBUGAccessME3AppendsTableToolStripMenuItem;
     }
 }
