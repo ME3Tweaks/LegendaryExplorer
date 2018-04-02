@@ -61,7 +61,10 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public void Deselect()
         {
-            shape.Pen = outlinePen;
+            if (shape.Pen != outlinePen)
+            {
+                shape.Pen = outlinePen;
+            }
         }
 
         public override bool Intersects(RectangleF bounds)

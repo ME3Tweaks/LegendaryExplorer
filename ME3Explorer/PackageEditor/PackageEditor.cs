@@ -900,6 +900,8 @@ namespace ME3Explorer
                 recentToolStripMenuItem.Enabled = false;
                 return;
             }
+            recentToolStripMenuItem.Enabled = true;
+
 
             foreach (string filepath in RFiles)
             {

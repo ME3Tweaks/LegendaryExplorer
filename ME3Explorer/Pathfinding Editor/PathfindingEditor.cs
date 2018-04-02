@@ -62,7 +62,9 @@ namespace ME3Explorer
         private const int NODETYPE_BIOPATHPOINT = 9;
         private const int NODETYPE_SFXDYNAMICCOVERLINK = 10;
         private const int NODETYPE_SFXDYNAMICCOVERSLOTMARKER = 11;
-
+        public List<string> RFiles;
+        public static readonly string PathfindingEditorDataFolder = Path.Combine(App.AppDataFolder, @"PathfindingEditor\");
+        private readonly string RECENTFILES_FILE = "RECENTFILES";
         private static string classDatabasePath = "";
 
         public static Dictionary<string, Dictionary<string, string>> importclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
@@ -81,6 +83,8 @@ namespace ME3Explorer
             AllowRefresh = true;
             classDatabasePath = Application.StartupPath + "//exec//pathfindingclassdb.json";
             InitializeComponent();
+            LoadRecentList();
+            RefreshRecent(false);
             pathfindingNodeInfoPanel.PassPathfindingNodeEditorIn(this);
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
             graphEditor.AddInputEventListener(new PathfindingMouseListener(this));
@@ -105,6 +109,70 @@ namespace ME3Explorer
                 }
 
             }
+        }
+
+        private void RefreshRecent(bool propogate, List<string> recents = null)
+        {
+            if (propogate && recents != null)
+            {
+                //we are posting an update to other instances of packed
+                var forms = Application.OpenForms;
+                foreach (Form form in forms)
+                {
+                    if (form is PathfindingEditor && this != form)
+                    {
+                        ((PathfindingEditor)form).RefreshRecent(false, RFiles);
+                    }
+                }
+            }
+            else if (recents != null)
+            {
+                //we are receiving an update
+                RFiles = new List<string>(recents);
+            }
+            recentToolStripMenuItem.DropDownItems.Clear();
+            if (RFiles.Count <= 0)
+            {
+                recentToolStripMenuItem.Enabled = false;
+                return;
+            }
+            recentToolStripMenuItem.Enabled = true;
+
+            foreach (string filepath in RFiles)
+            {
+                Debug.WriteLine(filepath);
+                ToolStripMenuItem fr = new ToolStripMenuItem(filepath, null, RecentFile_click);
+                recentToolStripMenuItem.DropDownItems.Add(fr);
+            }
+        }
+
+        private void RecentFile_click(object sender, EventArgs e)
+        {
+            string s = sender.ToString();
+            if (File.Exists(s))
+            {
+                LoadFile(s);
+                RFiles.Remove(s);
+                AddRecent(s, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
+            }
+            else
+            {
+                MessageBox.Show("File does not exist: " + s);
+            }
+        }
+
+        private void SaveRecentList()
+        {
+            if (!Directory.Exists(PathfindingEditorDataFolder))
+            {
+                Directory.CreateDirectory(PathfindingEditorDataFolder);
+            }
+            string path = PathfindingEditorDataFolder + RECENTFILES_FILE;
+            if (File.Exists(path))
+                File.Delete(path);
+            File.WriteAllLines(path, RFiles);
         }
 
         private void pathfindingEditor_MouseMoveHandler(object sender, MouseEventArgs e)
@@ -146,6 +214,9 @@ namespace ME3Explorer
             if (d.ShowDialog() == DialogResult.OK)
             {
                 LoadFile(d.FileName);
+                AddRecent(d.FileName, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
             }
         }
 
@@ -168,9 +239,9 @@ namespace ME3Explorer
             if (LoadPathingNodesFromLevel())
             {
                 PointF graphcenter = GenerateGraph();
-                if (isFirstLoad && listBox1.Items.Count > 0)
+                if (isFirstLoad && activeExportsListbox.Items.Count > 0)
                 {
-                    listBox1.SelectedIndex = 0;
+                    activeExportsListbox.SelectedIndex = 0;
                 }
             }
             else
@@ -248,7 +319,7 @@ namespace ME3Explorer
             sFXCombatZonesToolStripMenuItem.Enabled = false;
             sfxCombatZones = new List<int>();
             CurrentObjects = new List<int>();
-            listBox1.Items.Clear();
+            activeExportsListbox.Items.Clear();
 
             foreach (IExportEntry exp in pcc.Exports)
             {
@@ -352,7 +423,7 @@ namespace ME3Explorer
                                 if (pathfindingNodeClasses.Contains(exportEntry.ClassName))
                                 {
                                     CurrentObjects.Add(exportEntry.Index);
-                                    listBox1.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
+                                    activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
                                 }
 
 
@@ -363,7 +434,7 @@ namespace ME3Explorer
                                 if (actorNodeClasses.Contains(exportEntry.ClassName))
                                 {
                                     CurrentObjects.Add(exportEntry.Index);
-                                    listBox1.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
+                                    activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
                                 }
                             }
 
@@ -372,7 +443,7 @@ namespace ME3Explorer
                                 if (splineNodeClasses.Contains(exportEntry.ClassName))
                                 {
                                     CurrentObjects.Add(exportEntry.Index);
-                                    listBox1.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
+                                    activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
                                 }
                             }
 
@@ -421,7 +492,7 @@ namespace ME3Explorer
                                             if (obj.Value > 0)
                                             {
                                                 CurrentObjects.Add(obj.Value - 1);
-                                                listBox1.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
+                                                activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
 
                                                 //Read location and put in position map
                                                 int offset = binarypos + 12 * 4;
@@ -464,7 +535,7 @@ namespace ME3Explorer
                     }
 
                     bool oneViewActive = PathfindingNodesActive || ActorNodesActive;
-                    if (oneViewActive && listBox1.Items.Count == 0)
+                    if (oneViewActive && activeExportsListbox.Items.Count == 0)
                     {
                         MessageBox.Show("No nodes visible with current view options.\nChange view options to see if there are any viewable nodes.");
                         graphEditor.Enabled = true;
@@ -521,7 +592,7 @@ namespace ME3Explorer
         {
             if (AllowRefresh)
             {
-                int selectednodeindex = listBox1.SelectedIndex;
+                int selectednodeindex = activeExportsListbox.SelectedIndex;
                 PathfindingNodeMaster nodeMaster = null;
                 if (selectednodeindex >= 0 && selectednodeindex < CurrentObjects.Count())
                 {
@@ -541,7 +612,7 @@ namespace ME3Explorer
                     if (selected == -1)
                         return;
                     IsReloadSelecting = true;
-                    listBox1.SelectedIndex = selected;
+                    activeExportsListbox.SelectedIndex = selected;
                     IsReloadSelecting = false;
 
                 }
@@ -735,7 +806,7 @@ namespace ME3Explorer
 
                                                 AnnexNode annexNode = new PathfindingNodes.AnnexNode(annexzonelocexp.Index, locx, locy, pcc, graphEditor);
                                                 Objects.Add(annexNode); //this might cause concurrentmodificationexception...
-                                                listBox1.Items.Add("#" + (annexzonelocexp.Index) + " " + annexzonelocexp.ObjectName + " class: " + annexzonelocexp.ClassName);
+                                                activeExportsListbox.Items.Add("#" + (annexzonelocexp.Index) + " " + annexzonelocexp.ObjectName + " class: " + annexzonelocexp.ClassName);
                                                 //annexNode.MouseDown += node_MouseDown;
                                                 CurrentObjects.Add(annexzonelocexp.Index); //this might cause concurrentmodificationexception...
                                                 break;
@@ -947,7 +1018,7 @@ namespace ME3Explorer
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int n = listBox1.SelectedIndex;
+            int n = activeExportsListbox.SelectedIndex;
             if (n == -1 || n < 0 || n >= CurrentObjects.Count())
                 return;
             PathfindingNodeMaster s = Objects.FirstOrDefault(o => o.Index == CurrentObjects[n]);
@@ -997,16 +1068,62 @@ namespace ME3Explorer
             }
         }
 
+        private void LoadRecentList()
+        {
+            RFiles = new List<string>();
+            RFiles.Clear();
+            string path = PathfindingEditorDataFolder + RECENTFILES_FILE;
+            if (File.Exists(path))
+            {
+                string[] recents = File.ReadAllLines(path);
+                foreach (string recent in recents)
+                {
+                    if (File.Exists(recent))
+                    {
+                        AddRecent(recent, true);
+                    }
+                }
+            }
+        }
+
+        public void AddRecent(string s, bool loadingList)
+        {
+            RFiles.Remove(s);
+            if (loadingList)
+            {
+                RFiles.Add(s); //in order
+            }
+            else
+            {
+                RFiles.Insert(0, s); //put at front
+            }
+            if (RFiles.Count > 10)
+            {
+                RFiles.RemoveRange(10, RFiles.Count - 10);
+            }
+        }
+
         protected void node_MouseDown(object sender, PInputEventArgs e)
         {
             PathfindingNodeMaster node = (PathfindingNodeMaster)sender;
             int n = node.Index;
+            foreach (PathfindingNodeMaster pfm in Objects)
+            {
+                pfm.Deselect();
+            }
             if (!(node is SplinePoint0Node) && !(node is SplinePoint1Node))
             {
                 int selected = CurrentObjects.IndexOf(n);
                 if (selected == -1)
                     return;
-                listBox1.SelectedIndex = selected;
+                activeExportsListbox.SelectedIndex = selected;
+            } else
+            {
+                GetProperties(node.export);
+                graphEditor.Refresh();
+                splitContainer2.Panel2Collapsed = false;
+                node.Select();
+                activeExportsListbox.SelectedIndex = -1;
             }
             CurrentlySelectedSplinePoint = null;
             selectedByNode = true;
@@ -1262,11 +1379,11 @@ namespace ME3Explorer
 
         private void openInPackageEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex < 0)
+            if (activeExportsListbox.SelectedIndex < 0)
             {
                 return;
             }
-            int l = CurrentObjects[listBox1.SelectedIndex];
+            int l = CurrentObjects[activeExportsListbox.SelectedIndex];
             if (l == -1)
                 return;
             PackageEditor p = new PackageEditor();
@@ -1278,7 +1395,7 @@ namespace ME3Explorer
         private void pg1_PropertyValueChanged(object o, PropertyValueChangedEventArgs e)
         {
 
-            int n = listBox1.SelectedIndex;
+            int n = activeExportsListbox.SelectedIndex;
             if (n == -1)
                 return;
             PropGrid.propGridPropertyValueChanged(e, CurrentObjects[n], pcc);
@@ -1302,6 +1419,9 @@ namespace ME3Explorer
             if (DroppedFiles.Count > 0)
             {
                 LoadFile(DroppedFiles[0]);
+                AddRecent(DroppedFiles[0], false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
             }
         }
 
@@ -1337,7 +1457,7 @@ namespace ME3Explorer
 
         void cloneToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n = CurrentObjects[listBox1.SelectedIndex];
+            int n = CurrentObjects[activeExportsListbox.SelectedIndex];
             if (n == -1)
                 return;
 
@@ -1773,9 +1893,9 @@ namespace ME3Explorer
 
         private void toSFXEnemySpawnPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
 
@@ -1789,9 +1909,9 @@ namespace ME3Explorer
 
         private void toPathNodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
                 IExportEntry selectednodeexp = pcc.Exports[n];
@@ -1806,9 +1926,9 @@ namespace ME3Explorer
 
         private void toSFXNavTurretPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
                 IExportEntry selectednodeexp = pcc.Exports[n];
@@ -1901,11 +2021,11 @@ namespace ME3Explorer
 
         private void createReachSpecToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex < 0)
+            if (activeExportsListbox.SelectedIndex < 0)
             {
                 return;
             }
-            int sourceExportIndex = CurrentObjects[listBox1.SelectedIndex];
+            int sourceExportIndex = CurrentObjects[activeExportsListbox.SelectedIndex];
             if (sourceExportIndex == -1)
                 return;
 
@@ -2241,7 +2361,7 @@ namespace ME3Explorer
         private void setGraphPositionAsNodeLocationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //Find node
-            int sourceExportIndex = CurrentObjects[listBox1.SelectedIndex];
+            int sourceExportIndex = CurrentObjects[activeExportsListbox.SelectedIndex];
             if (sourceExportIndex == -1)
                 return;
 
@@ -2284,9 +2404,9 @@ namespace ME3Explorer
 
         private void sFXNavBoostNodeTopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
                 IExportEntry selectednodeexp = pcc.Exports[n];
@@ -2300,9 +2420,9 @@ namespace ME3Explorer
 
         private void sFXNavBoostNodeBottomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
                 IExportEntry selectednodeexp = pcc.Exports[n];
@@ -2316,7 +2436,7 @@ namespace ME3Explorer
 
         private void generateNewRandomGUIDToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n = CurrentObjects[listBox1.SelectedIndex];
+            int n = CurrentObjects[activeExportsListbox.SelectedIndex];
             if (n == -1)
                 return;
 
@@ -2431,9 +2551,9 @@ namespace ME3Explorer
 
         private void toSFXNavLargeBoostNodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
                 IExportEntry selectednodeexp = pcc.Exports[n];
@@ -2483,9 +2603,9 @@ namespace ME3Explorer
 
         private void toSFXNavLargeMantleNodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
                 IExportEntry selectednodeexp = pcc.Exports[n];
@@ -2499,9 +2619,9 @@ namespace ME3Explorer
 
         private void toSFXNavClimbWallNodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
                 IExportEntry selectednodeexp = pcc.Exports[n];
@@ -2685,7 +2805,7 @@ namespace ME3Explorer
                         {
                             //it exists
 
-                            listBox1.SelectedIndex = index;
+                            activeExportsListbox.SelectedIndex = index;
                             break;
                         }
                         index++;
@@ -2801,9 +2921,9 @@ namespace ME3Explorer
 
         private void toBioPathPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
 
@@ -2817,9 +2937,9 @@ namespace ME3Explorer
 
         private void toSFXDynamicCoverLinkToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
 
@@ -2833,9 +2953,9 @@ namespace ME3Explorer
 
         private void toSFXDynamicCoverSlotMarkerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
 
