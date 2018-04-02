@@ -588,6 +588,7 @@ namespace ME3Explorer
         private Dictionary<int, PointF> smacCoordinates;
         private bool IsReloadSelecting = false;
         private bool SplineNodesActive;
+        private PathfindingNodeMaster CurrentlySelectedSplinePoint;
 
         public void LoadObject(int index)
         {
@@ -610,8 +611,6 @@ namespace ME3Explorer
                 StructProperty prop = props.GetProp<StructProperty>("location");
                 if (prop != null)
                 {
-
-
                     PropertyCollection nodelocprops = (prop as StructProperty).Properties;
                     //X offset is 0x20
                     //Y offset is 0x24
@@ -827,7 +826,7 @@ namespace ME3Explorer
                                 break;
                         }
 
-                        
+
 
                         if (ActiveCombatZoneExportIndex >= 0)
                         {
@@ -857,6 +856,41 @@ namespace ME3Explorer
                         {
                             case "SplineActor":
                                 splineNode = new SplineActorNode(index, x, y, pcc, graphEditor);
+
+                                ArrayProperty<StructProperty> connectionsProp = exporttoLoad.GetProperty<ArrayProperty<StructProperty>>("Connections");
+                                if (connectionsProp != null)
+                                {
+                                    foreach (StructProperty connectionProp in connectionsProp)
+                                    {
+                                        ObjectProperty splinecomponentprop = connectionProp.GetProp<ObjectProperty>("SplineComponent");
+                                        IExportEntry splineComponentExport = pcc.getExport(splinecomponentprop.Value - 1);
+                                        Debug.WriteLine(splineComponentExport.GetFullPath + " " + splinecomponentprop.Value);
+                                        StructProperty splineInfo = splineComponentExport.GetProperty<StructProperty>("SplineInfo");
+                                        if (splineInfo != null)
+                                        {
+                                            ArrayProperty<StructProperty> pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
+                                            StructProperty point1 = pointsProp[0].GetProp<StructProperty>("OutVal");
+                                            double xf = point1.GetProp<FloatProperty>("X");
+                                            double yf = point1.GetProp<FloatProperty>("Y");
+                                            //double zf = point1.GetProp<FloatProperty>("Z");
+                                            //Point3D point1_3d = new Point3D(xf, yf, zf);
+                                            SplinePoint0Node point0node = new SplinePoint0Node(splinecomponentprop.Value - 1, Convert.ToInt32(xf), Convert.ToInt32(yf), pcc, graphEditor);
+                                            StructProperty point2 = pointsProp[1].GetProp<StructProperty>("OutVal");
+                                            xf = point2.GetProp<FloatProperty>("X");
+                                            yf = point2.GetProp<FloatProperty>("Y");
+                                            //zf = point2.GetProp<FloatProperty>("Z");
+                                            //Point3D point2_3d = new Point3D(xf, yf, zf);
+                                            SplinePoint1Node point1node = new SplinePoint1Node(splinecomponentprop.Value - 1, Convert.ToInt32(xf), Convert.ToInt32(yf), pcc, graphEditor);
+                                            point0node.SetDestinationPoint(point1node);
+
+                                            Objects.Add(point0node);
+                                            Objects.Add(point1node);
+
+                                            StructProperty reparamProp = splineComponentExport.GetProperty<StructProperty>("SplineReparamTable");
+                                            ArrayProperty<StructProperty> reparamPoints = reparamProp.GetProp<ArrayProperty<StructProperty>>("Points");
+                                        }
+                                    }
+                                }
                                 break;
                             default:
                                 splineNode = new PendingSplineNode(index, x, y, pcc, graphEditor);
@@ -933,6 +967,7 @@ namespace ME3Explorer
             selectedIndex = n;
             selectedByNode = false;
             graphEditor.Refresh();
+            splitContainer2.Panel2Collapsed = false;
         }
 
         private void PathfindingEditor_FormClosing(object sender, FormClosingEventArgs e)
@@ -964,20 +999,28 @@ namespace ME3Explorer
 
         protected void node_MouseDown(object sender, PInputEventArgs e)
         {
-            int n = ((PathfindingNodeMaster)sender).Index;
-            int selected = CurrentObjects.IndexOf(n);
-            if (selected == -1)
-                return;
+            PathfindingNodeMaster node = (PathfindingNodeMaster)sender;
+            int n = node.Index;
+            if (!(node is SplinePoint0Node) && !(node is SplinePoint1Node))
+            {
+                int selected = CurrentObjects.IndexOf(n);
+                if (selected == -1)
+                    return;
+                listBox1.SelectedIndex = selected;
+            }
+            CurrentlySelectedSplinePoint = null;
             selectedByNode = true;
-            listBox1.SelectedIndex = selected;
             addToSFXCombatZoneToolStripMenuItem.Enabled = false;
             if (e.Button == MouseButtons.Right)
             {
                 addToSFXCombatZoneToolStripMenuItem.DropDownItems.Clear();
                 breakLinksToolStripMenuItem.DropDownItems.Clear();
-                PathfindingNodeMaster node = (PathfindingNodeMaster)sender;
+                setGraphPositionAsNodeLocationToolStripMenuItem.Visible = true;
+                setGraphPositionAsSplineLocationXYToolStripMenuItem.Visible = false;
+
                 IExportEntry nodeExp = pcc.Exports[n];
                 var properties = nodeExp.GetProperties();
+
                 if (node is PathfindingNode)
                 {
                     changeNodeTypeToolStripMenuItem.Enabled = true;
@@ -1045,6 +1088,31 @@ namespace ME3Explorer
 
                     rightMouseButtonMenu.Show(MousePosition);
 
+                }
+                else if (node is SplinePoint0Node || node is SplinePoint1Node)
+                {
+                    setGraphPositionAsNodeLocationToolStripMenuItem.Visible = false;
+                    setGraphPositionAsSplineLocationXYToolStripMenuItem.Visible = true;
+                    CurrentlySelectedSplinePoint = node;
+                    changeNodeTypeToolStripMenuItem.Enabled = false;
+                    generateNewRandomGUIDToolStripMenuItem.Enabled = false;
+                    createReachSpecToolStripMenuItem.Enabled = false;
+                    addToSFXCombatZoneToolStripMenuItem.Enabled = false;
+                    addToSFXCombatZoneToolStripMenuItem.DropDown = null;
+                    breakLinksToolStripMenuItem.Enabled = false;
+                    breakLinksToolStripMenuItem.DropDown = null;
+                    rightMouseButtonMenu.Show(MousePosition);
+                }
+                else if (node is SplineNode)
+                {
+                    changeNodeTypeToolStripMenuItem.Enabled = false;
+                    generateNewRandomGUIDToolStripMenuItem.Enabled = false;
+                    createReachSpecToolStripMenuItem.Enabled = false;
+                    addToSFXCombatZoneToolStripMenuItem.Enabled = false;
+                    addToSFXCombatZoneToolStripMenuItem.DropDown = null;
+                    breakLinksToolStripMenuItem.Enabled = false;
+                    breakLinksToolStripMenuItem.DropDown = null;
+                    rightMouseButtonMenu.Show(MousePosition);
                 }
             }
         }
@@ -2901,6 +2969,35 @@ namespace ME3Explorer
         {
             SplineNodesActive = splinesToolStripMenuItem.Checked;
             RefreshView();
+        }
+
+        private void setGraphPositionAsSplineLocationXYToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Find node
+            PathfindingNodeMaster splinePoint = CurrentlySelectedSplinePoint;
+            if (splinePoint == null)
+                return;
+            float locX = splinePoint.GlobalBounds.X;
+            float locY = splinePoint.GlobalBounds.Y;
+
+            IExportEntry export = splinePoint.export;
+
+            StructProperty splineInfo = export.GetProperty<StructProperty>("SplineInfo");
+            if (splineInfo != null)
+            {
+                ArrayProperty<StructProperty> pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
+                int splinePointIndex = splinePoint is SplinePoint0Node ? 0 : 1;
+                StructProperty point = pointsProp[splinePointIndex].GetProp<StructProperty>("OutVal");
+                point.GetProp<FloatProperty>("X").Value = locX;
+                point.GetProp<FloatProperty>("Y").Value = locY;
+                export.WriteProperty(splineInfo);
+                MessageBox.Show("Location set to " + locX + "," + locY);
+            }
+            else
+            {
+                MessageBox.Show("No location property on this spline node.");
+            }
+            //Need to update
         }
     }
 

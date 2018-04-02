@@ -14,6 +14,7 @@ using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.PathingGraphEditor;
 using ME3Explorer.Pathfinding_Editor;
+using System.Diagnostics;
 
 namespace ME3Explorer.SplineNodes
 {
@@ -28,8 +29,7 @@ namespace ME3Explorer.SplineNodes
         static Color boolColor = Color.FromArgb(215, 37, 33); //red
         static Color objectColor = Color.FromArgb(219, 39, 217);//purple
         static Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
-
-
+        public static Pen splineconnnectorPen = Pens.DeepPink;
 
         protected SplineNode(int idx, IMEPackage p, PathingGraphEditor grapheditor)
         {
@@ -50,8 +50,12 @@ namespace ME3Explorer.SplineNodes
         {
             pcc = p;
             index = idx;
-            export = pcc.getExport(index);
-            comment = new SText(GetComment(), commentColor, false);
+            if (idx >= 0)
+            {
+                export = pcc.getExport(index);
+                comment = new SText(GetComment(), commentColor, false);
+            }
+
             comment.X = 0;
             comment.Y = 0 - comment.Height;
             comment.Pickable = false;
@@ -110,66 +114,73 @@ namespace ME3Explorer.SplineNodes
         /// <summary>
         /// Creates the reachspec connections from this pathfinding node to others.
         /// </summary>
-        public virtual void CreateConnections(ref List<SplineNode> Objects)
+        public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
         {
-            /*var outLinksProp = export.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+            var outLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("Connections");
             if (outLinksProp != null)
             {
                 foreach (var prop in outLinksProp)
                 {
-                    int reachspecexport = prop.Value;
-                    ReachSpecs.Add(pcc.Exports[reachspecexport - 1]);
+
+
+                    PPath edge = new PPath();
+                    //edge.Add
+                    //((ArrayList)Tag).Add(edge);
+                    //edge.Tag = new ArrayList();
+                    //((ArrayList)edge.Tag).Add(this);
+                    //((ArrayList)edge.Tag).Add(othernode);
+                    //g.edgeLayer.AddChild(edge);
                 }
 
-                foreach (IExportEntry spec in ReachSpecs)
-                {
-                    //Get ending
-                    PNode othernode = null;
-                    int othernodeidx = 0;
-                    PropertyCollection props = spec.GetProperties();
-                    foreach (var prop in props)
-                    {
-                        if (prop.Name == "End")
-                        {
-                            PropertyCollection reachspecprops = (prop as StructProperty).Properties;
-                            foreach (var rprop in reachspecprops)
-                            {
-                                if (rprop.Name == "Actor")
-                                {
-                                    othernodeidx = (rprop as ObjectProperty).Value;
-                                    break;
-                                }
-                            }
-                        }
-                        if (othernodeidx != 0)
-                        {
-                            break;
-                        }
-                    }
+                //foreach (IExportEntry spec in ReachSpecs)
+                //{
+                //    //Get ending
+                //    PNode othernode = null;
+                //    int othernodeidx = 0;
+                //    PropertyCollection props = spec.GetProperties();
+                //    foreach (var prop in props)
+                //    {
+                //        if (prop.Name == "End")
+                //        {
+                //            PropertyCollection reachspecprops = (prop as StructProperty).Properties;
+                //            foreach (var rprop in reachspecprops)
+                //            {
+                //                if (rprop.Name == "Actor")
+                //                {
+                //                    othernodeidx = (rprop as ObjectProperty).Value;
+                //                    break;
+                //                }
+                //            }
+                //        }
+                //        if (othernodeidx != 0)
+                //        {
+                //            break;
+                //        }
+                //    }
 
-                    if (othernodeidx != 0)
-                    {
-                        foreach (SplineNode node in Objects)
-                        {
-                            if (node.export.UIndex == othernodeidx)
-                            {
-                                othernode = node;
-                                break;
-                            }
-                        }
-                    }
-                    if (othernode != null)
-                    {
-                        PPath edge = new PPath();
-                        ((ArrayList)Tag).Add(edge);
-                        ((ArrayList)othernode.Tag).Add(edge);
-                        edge.Tag = new ArrayList();
-                        ((ArrayList)edge.Tag).Add(this);
-                        ((ArrayList)edge.Tag).Add(othernode);
-                        g.edgeLayer.AddChild(edge);
-                    }
-                }
-            }*/
+                //    if (othernodeidx != 0)
+                //    {
+                //        foreach (SplineNode node in Objects)
+                //        {
+                //            if (node.export.UIndex == othernodeidx)
+                //            {
+                //                othernode = node;
+                //                break;
+                //            }
+                //        }
+                //    }
+                //    if (othernode != null)
+                //    {
+                //        PPath edge = new PPath();
+                //        ((ArrayList)Tag).Add(edge);
+                //        ((ArrayList)othernode.Tag).Add(edge);
+                //        edge.Tag = new ArrayList();
+                //        ((ArrayList)edge.Tag).Add(this);
+                //        ((ArrayList)edge.Tag).Add(othernode);
+                //        g.edgeLayer.AddChild(edge);
+                //    }
+                //}
+            }
         }
         public virtual void Layout(float x, float y) { }
 
@@ -278,6 +289,105 @@ namespace ME3Explorer.SplineNodes
             this.TranslateBy(x, y);
             this.MouseEnter += OnMouseEnter;
             this.MouseLeave += OnMouseLeave;
+        }
+    }
+
+    public class SplinePoint0Node : SplineNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(0, 0, 255);
+        private SplinePoint1Node destinationPoint;
+
+        public SplinePoint0Node(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 25;
+            float h = 25;
+            shape = PPath.CreateEllipse(0, 0, w, h);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = pathfindingNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText("Spline Start");
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            var props = export.GetProperties();
+            this.TranslateBy(x, y);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
+        }
+
+        internal void SetDestinationPoint(SplinePoint1Node point1node)
+        {
+            destinationPoint = point1node;
+        }
+
+        /// <summary>
+        /// This has no outbound connections.
+        /// </summary>
+        public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
+        {
+            PPath edge = new PPath();
+            edge.Pen = splineconnnectorPen;
+            ((ArrayList)Tag).Add(edge);
+            ((ArrayList)destinationPoint.Tag).Add(edge);
+            edge.Tag = new ArrayList();
+            ((ArrayList)edge.Tag).Add(this);
+            ((ArrayList)edge.Tag).Add(destinationPoint);
+
+            g.edgeLayer.AddChild(edge);
+        }
+    }
+
+    public class SplinePoint1Node : SplineNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(0, 0, 255);
+        public SplinePoint1Node(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 20;
+            float h = 20;
+            shape = PPath.CreateEllipse(0, 0, w, h);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = pathfindingNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText("Spline End");
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            var props = export.GetProperties();
+            this.TranslateBy(x, y);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
+        }
+
+        /// <summary>
+        /// This has no outbound connections.
+        /// </summary>
+        public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
+        {
+
         }
     }
 }
