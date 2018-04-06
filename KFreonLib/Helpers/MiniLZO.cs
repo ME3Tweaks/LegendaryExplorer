@@ -60,9 +60,11 @@ namespace KFreonLib.Helpers.ManagedLZO
 {
     public static class LZO1X
     {
+        [DefaultDllImportSearchPaths(DllImportSearchPath.AssemblyDirectory)]
         [DllImport("lzo2helper.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern Int32 LZODecompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
+        [DefaultDllImportSearchPaths(DllImportSearchPath.AssemblyDirectory)]
         [DllImport("lzo2helper.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern Int32 LZOCompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 

@@ -1353,14 +1353,17 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)"
+    <PostBuildEvent>xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)lib\"
 
 xcopy /f /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
 
 xcopy /f /y "$(SolutionDir)Resources\exec" "$(ProjectDir)$(OutDir)exec\"
 
 xcopy /y "$(SolutionDir)ME3Creator\$(OutDir)ME3Creator.exe.config" "$(ProjectDir)$(OutDir)"
-</PostBuildEvent>
+
+move /y "$(ProjectDir)$(OutDir)CSharpImageLibrary.exe" "$(ProjectDir)$(OutDir)lib\"
+
+call "$(ProjectDir)$(OutDir)cleanup.bat"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -1370,5 +1373,9 @@ xcopy /y "$(SolutionDir)ME3Creator\$(OutDir)ME3Creator.exe.config" "$(ProjectDir
   </Target>
   -->
   <Target Name="AfterBuild">
+    <ItemGroup>
+      <MoveToLibFolder Include="$(OutputPath)*.dll ; $(OutputPath)*.dll.config ; $(OutputPath)*.pdb ; $(OutputPath)*.xml" />
+    </ItemGroup>
+    <Move SourceFiles="@(MoveToLibFolder)" DestinationFolder="$(OutputPath)lib" OverwriteReadOnlyFiles="true" />
   </Target>
 </Project>

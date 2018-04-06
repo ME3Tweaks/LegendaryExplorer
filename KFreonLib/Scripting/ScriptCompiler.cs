@@ -23,10 +23,10 @@ namespace KFreonLib.Scripting
             options.GenerateInMemory = true;
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             options.ReferencedAssemblies.Add(Assembly.GetExecutingAssembly().Location);
-            options.ReferencedAssemblies.Add(Path.Combine(path, "AmaroK86Lib.dll"));
-            options.ReferencedAssemblies.Add(Path.Combine(path, "Gibbed.IO.dll"));
-            options.ReferencedAssemblies.Add(Path.Combine(path, "Gibbed.MassEffect3.FileFormats.dll"));
-            options.ReferencedAssemblies.Add(Path.Combine(path, "SaltTPF.dll"));
+            options.ReferencedAssemblies.Add(Path.Combine(path, "lib", "AmaroK86Lib.dll"));
+            options.ReferencedAssemblies.Add(Path.Combine(path, "lib", "Gibbed.IO.dll"));
+            options.ReferencedAssemblies.Add(Path.Combine(path, "lib", "Gibbed.MassEffect3.FileFormats.dll"));
+            options.ReferencedAssemblies.Add(Path.Combine(path, "lib", "SaltTPF.dll"));
             options.ReferencedAssemblies.Add(Path.Combine(path, "ME3Explorer.exe"));
             options.ReferencedAssemblies.Add("System.dll");
             options.ReferencedAssemblies.Add("System.Core.dll");
