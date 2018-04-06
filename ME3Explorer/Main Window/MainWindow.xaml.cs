@@ -245,14 +245,18 @@ namespace ME3Explorer
             string[] words = SearchBox.Text.ToLower().Split(' ');
             foreach (Tool tool in Tools.Items)
             {
-                foreach (string word in words)
+                if(tool.open != null)
                 {
-                    if (tool.tags.FuzzyMatch(word) || tool.name.ToLower().Split(' ').FuzzyMatch(word))
+                    foreach (string word in words)
                     {
-                        results.Add(tool);
-                        break;
+                        if (tool.tags.FuzzyMatch(word) || tool.name.ToLower().Split(' ').FuzzyMatch(word))
+                        {
+                            results.Add(tool);
+                            break;
+                        }
                     }
                 }
+                    
             }
             searchPanel.setToolList(results);
         }
