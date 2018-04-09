@@ -3,7 +3,7 @@
 Each coder comes into a project with a different experience set. For that reason, we've laid out some basic expectations for coding style. This document also explains how to handle a variety of issues you may encounter when contributing to the repo.
 
 ### Code Contribution Guide
-Remember to start by reviewing the ME3Explorer Code Contribution Guide. It covers basic details about getting started with the repo, types of code contributions, etc.
+Remember to start by reviewing the [ME3Explorer Code Contribution Guide](https://github.com/ME3Explorer/ME3Explorer/blob/Beta/CodeContributionGuidelines.md). It covers basic details about getting started with the repo, types of code contributions, etc.
 
 ### Branches
 * **Beta Branch**. Always use/fork/commit via this branch. This is especially true if you are working on a new tool or overhauling an existing tool.
@@ -46,7 +46,7 @@ When choosing a new dependency, it's also important to be aware of:
 
 ### UI Code
 Using the conventions below improve the compartmentalization and testability of the program.
-* **WPF.** As explained in the Code Contribution Guidelines, the toolset is being rewritten in WPF. WinForms is has no sensible DPI management,  poor graphics management, poor window management and performance, and lacks the flexibility built into WPF. If you are overhauling an existing tool or writing a new one, it needs to be written in WPF. Don't ask us if you can stick to WinForms. The answer is no.
+* **WPF.** As explained in the [Code Contribution Guidelines](https://github.com/ME3Explorer/ME3Explorer/blob/Beta/CodeContributionGuidelines.md), the toolset is being rewritten in WPF. WinForms is has no sensible DPI management,  poor graphics management, poor window management and performance, and lacks the flexibility built into WPF. If you are overhauling an existing tool or writing a new one, it needs to be written in WPF. Don't ask us if you can stick to WinForms. The answer is no.
 * **Use Commands.** Commands keep the operation in with the class that uses them (e.g., a ListBoxItem with a "Copy" Button). The Copy doesn't belong to the listbox _per se_, but to the item. Instead of a Click handler, use a Command.
 * **Separate View and Code.** Avoid putting UI code directly into operations. For example, progress and status updates should be done through a binding property instead of directly calling up `ProgressBar.Value`. `ProgressBar.Value` should be bound to `ViewModel.Progress` (or something) and that Progress variable is updated in code.
 
