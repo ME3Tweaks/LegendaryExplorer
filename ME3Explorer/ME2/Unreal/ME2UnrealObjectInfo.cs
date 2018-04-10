@@ -42,6 +42,10 @@ namespace ME2Explorer.Unreal
         public static string getEnumTypefromProp(string className, string propName, bool inStruct = false)
         {
             PropertyInfo p = getPropertyInfo(className, propName, inStruct);
+            if (p == null && !inStruct)
+            {
+                p = getPropertyInfo(className, propName, true);
+            }
             return p?.reference;
         }
 
