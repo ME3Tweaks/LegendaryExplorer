@@ -30,7 +30,7 @@ namespace ME3Explorer
                 {
                     splashScreen.Show(false);
                 }
-                SetDllDirectory(Path.Combine(Assembly.GetExecutingAssembly().Location, "lib"));
+                SetDllDirectory(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "lib"));
                 App app = new App();
                 app.InitializeComponent();
                 splashScreen.Close(TimeSpan.FromMilliseconds(1));
