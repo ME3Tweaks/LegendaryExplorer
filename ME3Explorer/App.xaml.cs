@@ -54,8 +54,10 @@ namespace ME3Explorer
             Tools.Initialize();
             MEPackageHandler.Initialize();
 
-            int exitCode = 0;
-            if (HandleCommandLineArgs(Environment.GetCommandLineArgs(), out exitCode))
+            //load kismet font
+            SequenceObjects.SText.LoadFont();
+
+            if (HandleCommandLineArgs(Environment.GetCommandLineArgs(), out int exitCode))
             {
                 Shutdown(exitCode);
             }

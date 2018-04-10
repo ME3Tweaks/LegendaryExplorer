@@ -1130,7 +1130,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\KismetFont.ttf" />
+    <EmbeddedResource Include="Resources\KismetFont.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AmaroK86\AmaroK86Lib.csproj">
