@@ -210,7 +210,7 @@ namespace ME3Explorer
                         Process.Start("http://www.nexusmods.com/masseffect3/mods/409/?");
                         break;
                     case "Forums":
-                        Process.Start("http://me3explorer.freeforums.org/");
+                        Process.Start("http://me3explorer.proboards.com/");
                         break;
                     case "Wikia":
                         Process.Start("http://me3explorer.wikia.com/wiki/ME3Explorer_Wiki");
