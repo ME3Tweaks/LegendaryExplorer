@@ -53,9 +53,9 @@ namespace HexConverter
             return input;
         }
 
-        public string hexchars = "0123456789abcdef";
+        public static string hexchars = "0123456789abcdefABCDEF";
 
-        public bool isHexString(string s)
+        public static bool isHexString(string s)
         {
             for (int i = 0; i < s.Length; i++)
             {
