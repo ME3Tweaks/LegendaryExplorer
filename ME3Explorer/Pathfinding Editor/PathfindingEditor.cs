@@ -25,6 +25,8 @@ using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.ActorNodes;
 using static ME3Explorer.Pathfinding_Editor.PathfindingNodeMaster;
 using static ME3Explorer.BinaryInterpreter;
+using ME3Explorer.SplineNodes;
+using SharpDX;
 
 namespace ME3Explorer
 {
@@ -61,7 +63,9 @@ namespace ME3Explorer
         private const int NODETYPE_BIOPATHPOINT = 9;
         private const int NODETYPE_SFXDYNAMICCOVERLINK = 10;
         private const int NODETYPE_SFXDYNAMICCOVERSLOTMARKER = 11;
-
+        public List<string> RFiles;
+        public static readonly string PathfindingEditorDataFolder = Path.Combine(App.AppDataFolder, @"PathfindingEditor\");
+        private readonly string RECENTFILES_FILE = "RECENTFILES";
         private static string classDatabasePath = "";
 
         public static Dictionary<string, Dictionary<string, string>> importclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
@@ -69,6 +73,7 @@ namespace ME3Explorer
 
         public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "MantleMarker", "SFXNav_InteractionHenchOmniToolCrouch", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode", "WwiseAmbientSound", "SFXNav_InteractionHenchOmniTool", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionHenchBeckonFront", "SFXNav_InteractionHenchBeckonRear", "SFXNav_InteractionHenchCustom", "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow", "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping", "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard" };
         public string[] actorNodeClasses = { "BlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor" };
+        public string[] splineNodeClasses = { "SplineActor" };
         public string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
         public bool ActorNodesActive = false;
         public bool PathfindingNodesActive = true;
@@ -79,8 +84,10 @@ namespace ME3Explorer
             AllowRefresh = true;
             classDatabasePath = Application.StartupPath + "//exec//pathfindingclassdb.json";
             InitializeComponent();
+            LoadRecentList();
+            RefreshRecent(false);
             pathfindingNodeInfoPanel.PassPathfindingNodeEditorIn(this);
-            graphEditor.BackColor = Color.FromArgb(167, 167, 167);
+            graphEditor.BackColor = System.Drawing.Color.FromArgb(167, 167, 167);
             graphEditor.AddInputEventListener(new PathfindingMouseListener(this));
             zoomController = new PathingZoomController(graphEditor);
             CurrentFilterType = HeightFilterForm.FILTER_Z_NONE;
@@ -103,6 +110,70 @@ namespace ME3Explorer
                 }
 
             }
+        }
+
+        private void RefreshRecent(bool propogate, List<string> recents = null)
+        {
+            if (propogate && recents != null)
+            {
+                //we are posting an update to other instances of packed
+                var forms = Application.OpenForms;
+                foreach (Form form in forms)
+                {
+                    if (form is PathfindingEditor && this != form)
+                    {
+                        ((PathfindingEditor)form).RefreshRecent(false, RFiles);
+                    }
+                }
+            }
+            else if (recents != null)
+            {
+                //we are receiving an update
+                RFiles = new List<string>(recents);
+            }
+            recentToolStripMenuItem.DropDownItems.Clear();
+            if (RFiles.Count <= 0)
+            {
+                recentToolStripMenuItem.Enabled = false;
+                return;
+            }
+            recentToolStripMenuItem.Enabled = true;
+
+            foreach (string filepath in RFiles)
+            {
+                Debug.WriteLine(filepath);
+                ToolStripMenuItem fr = new ToolStripMenuItem(filepath, null, RecentFile_click);
+                recentToolStripMenuItem.DropDownItems.Add(fr);
+            }
+        }
+
+        private void RecentFile_click(object sender, EventArgs e)
+        {
+            string s = sender.ToString();
+            if (File.Exists(s))
+            {
+                LoadFile(s);
+                RFiles.Remove(s);
+                AddRecent(s, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
+            }
+            else
+            {
+                MessageBox.Show("File does not exist: " + s);
+            }
+        }
+
+        private void SaveRecentList()
+        {
+            if (!Directory.Exists(PathfindingEditorDataFolder))
+            {
+                Directory.CreateDirectory(PathfindingEditorDataFolder);
+            }
+            string path = PathfindingEditorDataFolder + RECENTFILES_FILE;
+            if (File.Exists(path))
+                File.Delete(path);
+            File.WriteAllLines(path, RFiles);
         }
 
         private void pathfindingEditor_MouseMoveHandler(object sender, MouseEventArgs e)
@@ -144,6 +215,9 @@ namespace ME3Explorer
             if (d.ShowDialog() == DialogResult.OK)
             {
                 LoadFile(d.FileName);
+                AddRecent(d.FileName, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
             }
         }
 
@@ -166,9 +240,9 @@ namespace ME3Explorer
             if (LoadPathingNodesFromLevel())
             {
                 PointF graphcenter = GenerateGraph();
-                if (isFirstLoad && listBox1.Items.Count > 0)
+                if (isFirstLoad && activeExportsListbox.Items.Count > 0)
                 {
-                    listBox1.SelectedIndex = 0;
+                    activeExportsListbox.SelectedIndex = 0;
                 }
             }
             else
@@ -242,11 +316,13 @@ namespace ME3Explorer
 
             staticMeshCollectionActorsToolStripMenuItem.DropDownItems.Clear();
             staticMeshCollectionActorsToolStripMenuItem.Enabled = false;
+            staticMeshCollectionActorsToolStripMenuItem.ToolTipText = "No StaticMeshCollectionActors found in this file";
             sFXCombatZonesToolStripMenuItem.DropDownItems.Clear();
             sFXCombatZonesToolStripMenuItem.Enabled = false;
+            sFXCombatZonesToolStripMenuItem.ToolTipText = "No SFXCombatZones found in this file";
             sfxCombatZones = new List<int>();
             CurrentObjects = new List<int>();
-            listBox1.Items.Clear();
+            activeExportsListbox.Items.Clear();
 
             foreach (IExportEntry exp in pcc.Exports)
             {
@@ -350,7 +426,7 @@ namespace ME3Explorer
                                 if (pathfindingNodeClasses.Contains(exportEntry.ClassName))
                                 {
                                     CurrentObjects.Add(exportEntry.Index);
-                                    listBox1.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
+                                    activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
                                 }
 
 
@@ -361,7 +437,16 @@ namespace ME3Explorer
                                 if (actorNodeClasses.Contains(exportEntry.ClassName))
                                 {
                                     CurrentObjects.Add(exportEntry.Index);
-                                    listBox1.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
+                                    activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
+                                }
+                            }
+
+                            if (SplineNodesActive)
+                            {
+                                if (splineNodeClasses.Contains(exportEntry.ClassName))
+                                {
+                                    CurrentObjects.Add(exportEntry.Index);
+                                    activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
                                 }
                             }
 
@@ -380,6 +465,7 @@ namespace ME3Explorer
                                 };
                                 sFXCombatZonesToolStripMenuItem.DropDown.Items.Add(testItem);
                                 sFXCombatZonesToolStripMenuItem.Enabled = true;
+                                sFXCombatZonesToolStripMenuItem.ToolTipText = "Select a SFXCombatZone to highlight pathnodes that are part of it";
                             }
 
 
@@ -410,7 +496,7 @@ namespace ME3Explorer
                                             if (obj.Value > 0)
                                             {
                                                 CurrentObjects.Add(obj.Value - 1);
-                                                listBox1.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
+                                                activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
 
                                                 //Read location and put in position map
                                                 int offset = binarypos + 12 * 4;
@@ -425,6 +511,8 @@ namespace ME3Explorer
                                 }
                                 staticMeshCollectionActorsToolStripMenuItem.DropDown.Items.Add(testItem);
                                 staticMeshCollectionActorsToolStripMenuItem.Enabled = true;
+                                staticMeshCollectionActorsToolStripMenuItem.ToolTipText = "Select a StaticMeshCollectionActor to add it to the editor";
+
                             }
                             //}
                             start += 4;
@@ -453,7 +541,7 @@ namespace ME3Explorer
                     }
 
                     bool oneViewActive = PathfindingNodesActive || ActorNodesActive;
-                    if (oneViewActive && listBox1.Items.Count == 0)
+                    if (oneViewActive && activeExportsListbox.Items.Count == 0)
                     {
                         MessageBox.Show("No nodes visible with current view options.\nChange view options to see if there are any viewable nodes.");
                         graphEditor.Enabled = true;
@@ -510,7 +598,7 @@ namespace ME3Explorer
         {
             if (AllowRefresh)
             {
-                int selectednodeindex = listBox1.SelectedIndex;
+                int selectednodeindex = activeExportsListbox.SelectedIndex;
                 PathfindingNodeMaster nodeMaster = null;
                 if (selectednodeindex >= 0 && selectednodeindex < CurrentObjects.Count())
                 {
@@ -530,7 +618,7 @@ namespace ME3Explorer
                     if (selected == -1)
                         return;
                     IsReloadSelecting = true;
-                    listBox1.SelectedIndex = selected;
+                    activeExportsListbox.SelectedIndex = selected;
                     IsReloadSelecting = false;
 
                 }
@@ -576,6 +664,8 @@ namespace ME3Explorer
         public float StartPosVars;
         private Dictionary<int, PointF> smacCoordinates;
         private bool IsReloadSelecting = false;
+        private bool SplineNodesActive;
+        private PathfindingNodeMaster CurrentlySelectedSplinePoint;
 
         public void LoadObject(int index)
         {
@@ -598,8 +688,6 @@ namespace ME3Explorer
                 StructProperty prop = props.GetProp<StructProperty>("location");
                 if (prop != null)
                 {
-
-
                     PropertyCollection nodelocprops = (prop as StructProperty).Properties;
                     //X offset is 0x20
                     //Y offset is 0x24
@@ -724,7 +812,7 @@ namespace ME3Explorer
 
                                                 AnnexNode annexNode = new PathfindingNodes.AnnexNode(annexzonelocexp.Index, locx, locy, pcc, graphEditor);
                                                 Objects.Add(annexNode); //this might cause concurrentmodificationexception...
-                                                listBox1.Items.Add("#" + (annexzonelocexp.Index) + " " + annexzonelocexp.ObjectName + " class: " + annexzonelocexp.ClassName);
+                                                activeExportsListbox.Items.Add("#" + (annexzonelocexp.Index) + " " + annexzonelocexp.ObjectName + " class: " + annexzonelocexp.ClassName);
                                                 //annexNode.MouseDown += node_MouseDown;
                                                 CurrentObjects.Add(annexzonelocexp.Index); //this might cause concurrentmodificationexception...
                                                 break;
@@ -734,7 +822,7 @@ namespace ME3Explorer
                                     else
                                     {
                                         pathNode.comment.Text += "\nBAD ANNEXZONELOC!";
-                                        pathNode.comment.TextBrush = new SolidBrush(Color.Red);
+                                        pathNode.comment.TextBrush = new SolidBrush(System.Drawing.Color.Red);
                                     }
                                 }
 
@@ -814,6 +902,9 @@ namespace ME3Explorer
                                 actorNode = new PendingActorNode(index, x, y, pcc, graphEditor);
                                 break;
                         }
+
+
+
                         if (ActiveCombatZoneExportIndex >= 0)
                         {
                             ArrayProperty<StructProperty> volumes = props.GetProp<ArrayProperty<StructProperty>>("Volumes");
@@ -832,6 +923,57 @@ namespace ME3Explorer
                             }
                         }
                         Objects.Add(actorNode);
+                        return;
+                    }
+
+                    if (splineNodeClasses.Contains(exporttoLoad.ClassName))
+                    {
+                        SplineNode splineNode = null;
+                        switch (exporttoLoad.ClassName)
+                        {
+                            case "SplineActor":
+                                splineNode = new SplineActorNode(index, x, y, pcc, graphEditor);
+
+                                ArrayProperty<StructProperty> connectionsProp = exporttoLoad.GetProperty<ArrayProperty<StructProperty>>("Connections");
+                                if (connectionsProp != null)
+                                {
+                                    foreach (StructProperty connectionProp in connectionsProp)
+                                    {
+                                        ObjectProperty splinecomponentprop = connectionProp.GetProp<ObjectProperty>("SplineComponent");
+                                        IExportEntry splineComponentExport = pcc.getExport(splinecomponentprop.Value - 1);
+                                        Debug.WriteLine(splineComponentExport.GetFullPath + " " + splinecomponentprop.Value);
+                                        StructProperty splineInfo = splineComponentExport.GetProperty<StructProperty>("SplineInfo");
+                                        if (splineInfo != null)
+                                        {
+                                            ArrayProperty<StructProperty> pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
+                                            StructProperty point1 = pointsProp[0].GetProp<StructProperty>("OutVal");
+                                            double xf = point1.GetProp<FloatProperty>("X");
+                                            double yf = point1.GetProp<FloatProperty>("Y");
+                                            //double zf = point1.GetProp<FloatProperty>("Z");
+                                            //Point3D point1_3d = new Point3D(xf, yf, zf);
+                                            SplinePoint0Node point0node = new SplinePoint0Node(splinecomponentprop.Value - 1, Convert.ToInt32(xf), Convert.ToInt32(yf), pcc, graphEditor);
+                                            StructProperty point2 = pointsProp[1].GetProp<StructProperty>("OutVal");
+                                            xf = point2.GetProp<FloatProperty>("X");
+                                            yf = point2.GetProp<FloatProperty>("Y");
+                                            //zf = point2.GetProp<FloatProperty>("Z");
+                                            //Point3D point2_3d = new Point3D(xf, yf, zf);
+                                            SplinePoint1Node point1node = new SplinePoint1Node(splinecomponentprop.Value - 1, Convert.ToInt32(xf), Convert.ToInt32(yf), pcc, graphEditor);
+                                            point0node.SetDestinationPoint(point1node);
+
+                                            Objects.Add(point0node);
+                                            Objects.Add(point1node);
+
+                                            StructProperty reparamProp = splineComponentExport.GetProperty<StructProperty>("SplineReparamTable");
+                                            ArrayProperty<StructProperty> reparamPoints = reparamProp.GetProp<ArrayProperty<StructProperty>>("Points");
+                                        }
+                                    }
+                                }
+                                break;
+                            default:
+                                splineNode = new PendingSplineNode(index, x, y, pcc, graphEditor);
+                                break;
+                        }
+                        Objects.Add(splineNode);
                         return;
                     }
                 }
@@ -854,7 +996,15 @@ namespace ME3Explorer
 
                 foreach (PPath edge in graphEditor.edgeLayer)
                 {
-                    PathingGraphEditor.UpdateEdgeStraight(edge);
+                    if (edge.BezierPoints != null)
+                    {
+                        //Currently not implemented, will hopefully come in future update
+                        PathingGraphEditor.UpdateEdgeBezier(edge);
+                    }
+                    else
+                    {
+                        PathingGraphEditor.UpdateEdgeStraight(edge);
+                    }
                 }
             }
         }
@@ -882,7 +1032,7 @@ namespace ME3Explorer
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int n = listBox1.SelectedIndex;
+            int n = activeExportsListbox.SelectedIndex;
             if (n == -1 || n < 0 || n >= CurrentObjects.Count())
                 return;
             PathfindingNodeMaster s = Objects.FirstOrDefault(o => o.Index == CurrentObjects[n]);
@@ -902,6 +1052,7 @@ namespace ME3Explorer
             selectedIndex = n;
             selectedByNode = false;
             graphEditor.Refresh();
+            splitContainer2.Panel2Collapsed = false;
         }
 
         private void PathfindingEditor_FormClosing(object sender, FormClosingEventArgs e)
@@ -918,7 +1069,7 @@ namespace ME3Explorer
             if (d.ShowDialog() == DialogResult.OK)
             {
                 PNode r = graphEditor.Root;
-                RectangleF rr = r.GlobalFullBounds;
+                System.Drawing.RectangleF rr = r.GlobalFullBounds;
                 PNode p = PPath.CreateRectangle(rr.X, rr.Y, rr.Width, rr.Height);
                 p.Brush = Brushes.White;
                 graphEditor.addBack(p);
@@ -931,22 +1082,77 @@ namespace ME3Explorer
             }
         }
 
+        private void LoadRecentList()
+        {
+            RFiles = new List<string>();
+            RFiles.Clear();
+            string path = PathfindingEditorDataFolder + RECENTFILES_FILE;
+            if (File.Exists(path))
+            {
+                string[] recents = File.ReadAllLines(path);
+                foreach (string recent in recents)
+                {
+                    if (File.Exists(recent))
+                    {
+                        AddRecent(recent, true);
+                    }
+                }
+            }
+        }
+
+        public void AddRecent(string s, bool loadingList)
+        {
+            RFiles.Remove(s);
+            if (loadingList)
+            {
+                RFiles.Add(s); //in order
+            }
+            else
+            {
+                RFiles.Insert(0, s); //put at front
+            }
+            if (RFiles.Count > 10)
+            {
+                RFiles.RemoveRange(10, RFiles.Count - 10);
+            }
+        }
+
         protected void node_MouseDown(object sender, PInputEventArgs e)
         {
-            int n = ((PathfindingNodeMaster)sender).Index;
-            int selected = CurrentObjects.IndexOf(n);
-            if (selected == -1)
-                return;
+            PathfindingNodeMaster node = (PathfindingNodeMaster)sender;
+            int n = node.Index;
+            foreach (PathfindingNodeMaster pfm in Objects)
+            {
+                pfm.Deselect();
+            }
+            if (!(node is SplinePoint0Node) && !(node is SplinePoint1Node))
+            {
+                int selected = CurrentObjects.IndexOf(n);
+                if (selected == -1)
+                    return;
+                activeExportsListbox.SelectedIndex = selected;
+            }
+            else
+            {
+                GetProperties(node.export);
+                graphEditor.Refresh();
+                splitContainer2.Panel2Collapsed = false;
+                node.Select();
+                activeExportsListbox.SelectedIndex = -1;
+            }
+            CurrentlySelectedSplinePoint = null;
             selectedByNode = true;
-            listBox1.SelectedIndex = selected;
             addToSFXCombatZoneToolStripMenuItem.Enabled = false;
             if (e.Button == MouseButtons.Right)
             {
                 addToSFXCombatZoneToolStripMenuItem.DropDownItems.Clear();
                 breakLinksToolStripMenuItem.DropDownItems.Clear();
-                PathfindingNodeMaster node = (PathfindingNodeMaster)sender;
+                setGraphPositionAsNodeLocationToolStripMenuItem.Visible = true;
+                setGraphPositionAsSplineLocationXYToolStripMenuItem.Visible = false;
+
                 IExportEntry nodeExp = pcc.Exports[n];
                 var properties = nodeExp.GetProperties();
+
                 if (node is PathfindingNode)
                 {
                     changeNodeTypeToolStripMenuItem.Enabled = true;
@@ -1014,6 +1220,31 @@ namespace ME3Explorer
 
                     rightMouseButtonMenu.Show(MousePosition);
 
+                }
+                else if (node is SplinePoint0Node || node is SplinePoint1Node)
+                {
+                    setGraphPositionAsNodeLocationToolStripMenuItem.Visible = false;
+                    setGraphPositionAsSplineLocationXYToolStripMenuItem.Visible = true;
+                    CurrentlySelectedSplinePoint = node;
+                    changeNodeTypeToolStripMenuItem.Enabled = false;
+                    generateNewRandomGUIDToolStripMenuItem.Enabled = false;
+                    createReachSpecToolStripMenuItem.Enabled = false;
+                    addToSFXCombatZoneToolStripMenuItem.Enabled = false;
+                    addToSFXCombatZoneToolStripMenuItem.DropDown = null;
+                    breakLinksToolStripMenuItem.Enabled = false;
+                    breakLinksToolStripMenuItem.DropDown = null;
+                    rightMouseButtonMenu.Show(MousePosition);
+                }
+                else if (node is SplineNode)
+                {
+                    changeNodeTypeToolStripMenuItem.Enabled = false;
+                    generateNewRandomGUIDToolStripMenuItem.Enabled = false;
+                    createReachSpecToolStripMenuItem.Enabled = false;
+                    addToSFXCombatZoneToolStripMenuItem.Enabled = false;
+                    addToSFXCombatZoneToolStripMenuItem.DropDown = null;
+                    breakLinksToolStripMenuItem.Enabled = false;
+                    breakLinksToolStripMenuItem.DropDown = null;
+                    rightMouseButtonMenu.Show(MousePosition);
                 }
             }
         }
@@ -1163,11 +1394,11 @@ namespace ME3Explorer
 
         private void openInPackageEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex < 0)
+            if (activeExportsListbox.SelectedIndex < 0)
             {
                 return;
             }
-            int l = CurrentObjects[listBox1.SelectedIndex];
+            int l = CurrentObjects[activeExportsListbox.SelectedIndex];
             if (l == -1)
                 return;
             PackageEditor p = new PackageEditor();
@@ -1179,7 +1410,7 @@ namespace ME3Explorer
         private void pg1_PropertyValueChanged(object o, PropertyValueChangedEventArgs e)
         {
 
-            int n = listBox1.SelectedIndex;
+            int n = activeExportsListbox.SelectedIndex;
             if (n == -1)
                 return;
             PropGrid.propGridPropertyValueChanged(e, CurrentObjects[n], pcc);
@@ -1203,6 +1434,9 @@ namespace ME3Explorer
             if (DroppedFiles.Count > 0)
             {
                 LoadFile(DroppedFiles[0]);
+                AddRecent(DroppedFiles[0], false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
             }
         }
 
@@ -1238,7 +1472,7 @@ namespace ME3Explorer
 
         void cloneToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n = CurrentObjects[listBox1.SelectedIndex];
+            int n = CurrentObjects[activeExportsListbox.SelectedIndex];
             if (n == -1)
                 return;
 
@@ -1674,9 +1908,9 @@ namespace ME3Explorer
 
         private void toSFXEnemySpawnPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
 
@@ -1690,9 +1924,9 @@ namespace ME3Explorer
 
         private void toPathNodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
                 IExportEntry selectednodeexp = pcc.Exports[n];
@@ -1707,9 +1941,9 @@ namespace ME3Explorer
 
         private void toSFXNavTurretPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
                 IExportEntry selectednodeexp = pcc.Exports[n];
@@ -1802,11 +2036,11 @@ namespace ME3Explorer
 
         private void createReachSpecToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex < 0)
+            if (activeExportsListbox.SelectedIndex < 0)
             {
                 return;
             }
-            int sourceExportIndex = CurrentObjects[listBox1.SelectedIndex];
+            int sourceExportIndex = CurrentObjects[activeExportsListbox.SelectedIndex];
             if (sourceExportIndex == -1)
                 return;
 
@@ -1903,7 +2137,7 @@ namespace ME3Explorer
                 int radVal = -1;
                 int heightVal = -1;
 
-                Point sizePair = PathfindingNodeInfoPanel.getDropdownSizePair(size);
+                System.Drawing.Point sizePair = PathfindingNodeInfoPanel.getDropdownSizePair(size);
                 radVal = sizePair.X;
                 heightVal = sizePair.Y;
                 setReachSpecSize(outgoingSpecExp, radVal, heightVal);
@@ -2142,7 +2376,7 @@ namespace ME3Explorer
         private void setGraphPositionAsNodeLocationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //Find node
-            int sourceExportIndex = CurrentObjects[listBox1.SelectedIndex];
+            int sourceExportIndex = CurrentObjects[activeExportsListbox.SelectedIndex];
             if (sourceExportIndex == -1)
                 return;
 
@@ -2185,9 +2419,9 @@ namespace ME3Explorer
 
         private void sFXNavBoostNodeTopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
                 IExportEntry selectednodeexp = pcc.Exports[n];
@@ -2201,9 +2435,9 @@ namespace ME3Explorer
 
         private void sFXNavBoostNodeBottomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
                 IExportEntry selectednodeexp = pcc.Exports[n];
@@ -2217,7 +2451,7 @@ namespace ME3Explorer
 
         private void generateNewRandomGUIDToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n = CurrentObjects[listBox1.SelectedIndex];
+            int n = CurrentObjects[activeExportsListbox.SelectedIndex];
             if (n == -1)
                 return;
 
@@ -2332,9 +2566,9 @@ namespace ME3Explorer
 
         private void toSFXNavLargeBoostNodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
                 IExportEntry selectednodeexp = pcc.Exports[n];
@@ -2361,10 +2595,12 @@ namespace ME3Explorer
                 CurrentZFilterValue = hff.NewFilterZ;
                 if (CurrentFilterType != HeightFilterForm.FILTER_Z_NONE)
                 {
+                    filterByZToolStripMenuItem.Checked = true;
                     filenameLabel.Text = Path.GetFileName(CurrentFile) + " | Hiding nodes " + (CurrentFilterType == HeightFilterForm.FILTER_Z_ABOVE ? "above" : "below") + " Z = " + CurrentZFilterValue;
                 }
                 else
                 {
+                    filterByZToolStripMenuItem.Checked = false;
                     filenameLabel.Text = Path.GetFileName(CurrentFile);
                 }
                 RefreshView();
@@ -2384,9 +2620,9 @@ namespace ME3Explorer
 
         private void toSFXNavLargeMantleNodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
                 IExportEntry selectednodeexp = pcc.Exports[n];
@@ -2400,9 +2636,9 @@ namespace ME3Explorer
 
         private void toSFXNavClimbWallNodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
                 IExportEntry selectednodeexp = pcc.Exports[n];
@@ -2586,7 +2822,7 @@ namespace ME3Explorer
                         {
                             //it exists
 
-                            listBox1.SelectedIndex = index;
+                            activeExportsListbox.SelectedIndex = index;
                             break;
                         }
                         index++;
@@ -2702,9 +2938,9 @@ namespace ME3Explorer
 
         private void toBioPathPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
 
@@ -2718,9 +2954,9 @@ namespace ME3Explorer
 
         private void toSFXDynamicCoverLinkToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
 
@@ -2734,9 +2970,9 @@ namespace ME3Explorer
 
         private void toSFXDynamicCoverSlotMarkerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listBox1.SelectedIndex >= 0)
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                int n = CurrentObjects[listBox1.SelectedIndex];
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
 
@@ -2865,6 +3101,137 @@ namespace ME3Explorer
             }
             exp.WriteProperty(drawScale3D);
         }
+
+        private void splinesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SplineNodesActive = splinesToolStripMenuItem.Checked;
+            RefreshView();
+        }
+
+        private void setGraphPositionAsSplineLocationXYToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Find node
+            PathfindingNodeMaster splinePoint = CurrentlySelectedSplinePoint;
+            if (splinePoint == null)
+                return;
+            float locX = splinePoint.GlobalBounds.X;
+            float locY = splinePoint.GlobalBounds.Y;
+
+            IExportEntry export = splinePoint.export;
+
+            StructProperty splineInfo = export.GetProperty<StructProperty>("SplineInfo");
+            if (splineInfo != null)
+            {
+                ArrayProperty<StructProperty> pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
+                StructProperty point0 = pointsProp[0];
+                StructProperty point1 = pointsProp[1];
+
+                StructProperty splinePointToUpdateLoc = splinePoint is SplinePoint0Node ? point0 : point1;
+                StructProperty point = splinePointToUpdateLoc.GetProp<StructProperty>("OutVal");
+                point.GetProp<FloatProperty>("X").Value = locX;
+                point.GetProp<FloatProperty>("Y").Value = locY;
+                export.WriteProperty(splineInfo);
+
+                //Recalculate the param table.
+                Vector3 a = GetVector3(point0.GetProp<StructProperty>("OutVal"));
+                Vector3 t1 = GetVector3(point0.GetProp<StructProperty>("LeaveTangent"));
+                Vector3 t2 = GetVector3(point1.GetProp<StructProperty>("ArriveTangent"));
+                Vector3 d = GetVector3(point1.GetProp<StructProperty>("OutVal"));
+                StructProperty reparam = export.GetProperty<StructProperty>("SplineReparamTable");
+                ArrayProperty<StructProperty> points = reparam.GetProp<ArrayProperty<StructProperty>>("Points");
+                float[] outvals = new float[10];
+                for (int i = 0; i < 10; i++)
+                {
+                    outvals[i] = points[i].GetProp<FloatProperty>("OutVal").Value;
+                }
+                float[] reparamInPoints = getReparamPoints(outvals, a, t1, t2, d);
+                //todo: scale values based on original distances of reparam table.
+                for (int i = 0; i < 9; i++)
+                {
+                    int index = i + 1; //we don't change anything on node 0.
+                    points[index].GetProp<FloatProperty>("InVal").Value = reparamInPoints[i];
+                }
+                export.WriteProperty(reparam);
+                MessageBox.Show("Location set to " + locX + "," + locY + ".\nThe reparam table has been updated for this spline.");
+            }
+            else
+            {
+                MessageBox.Show("No location property on this spline node.");
+            }
+            //Need to update
+        }
+
+        /// <summary>
+        /// Converts struct property to SharpDX Vector 3
+        /// </summary>
+        /// <param name="vectorStruct">Vector Struct to convert</param>
+        /// <returns></returns>
+        public static Vector3 GetVector3(StructProperty vectorStruct)
+        {
+            Vector3 v = new Vector3();
+            v.X = vectorStruct.GetProp<FloatProperty>("X");
+            v.Y = vectorStruct.GetProp<FloatProperty>("Y");
+            v.Z = vectorStruct.GetProp<FloatProperty>("Z");
+            return v;
+        }
+
+        /// <summary>
+        /// Converts struct property to SharpDX Vector 2
+        /// </summary>
+        /// <param name="vectorStruct">Vector Struct to convert</param>
+        /// <returns></returns>
+        public static Vector2 GetVector2(StructProperty vectorStruct)
+        {
+            Vector2 v = new Vector2();
+            v.X = vectorStruct.GetProp<FloatProperty>("X");
+            v.Y = vectorStruct.GetProp<FloatProperty>("Y");
+            return v;
+        }
+
+        #region Benji's Magic Spline Code
+        public static float evaluateBezier(float a, float b, float c, float d, float t)
+        {
+            return (float)(a * Math.Pow(1.0f - t, 3.0f) + 3.0f * b * Math.Pow(1.0f - t, 2.0) * t + 3.0f * c * (1.0f - t) * Math.Pow(t, 2.0f) + d * Math.Pow(t, 3.0f));
+        }
+
+        public static Vector3 evaluateBezier3D(Vector3 a, Vector3 b, Vector3 c, Vector3 d, float t)
+        {
+            return new Vector3(evaluateBezier(a.X, b.X, c.X, d.X, t), evaluateBezier(a.Y, b.Y, c.Y, d.Y, t), evaluateBezier(a.Z, b.Z, c.Z, d.Z, t));
+        }
+
+        // table is a float array of 9 elements
+        //outvals, a, t1, t2, d
+        private float[] getReparamPoints(float[] outvals, Vector3 startPoint, Vector3 outgoingTangent, Vector3 incomingTangent, Vector3 endPoint)
+        {
+            //outvals is the timing on the spline, since it is not always uniform.
+            float[] table = new float[9];
+            // Calculate bezier params
+            Vector3 b = startPoint + outgoingTangent / 3.0f; // Operator overloading is lovely. Java can go die in a hole.
+            Vector3 c = endPoint - incomingTangent / 3.0f;
+
+            // Accumulate length and record
+            float length = 0;
+            for (int i = 0; i < 9; i++)
+            {
+                // Calculate value at this point and the next, and then compute the change
+                // - USED FOR UNIFORM DISTRIBUTION
+                //Vector3 startValue = evaluateBezier3D(startPoint, b, c, endPoint, i / 9.0f);
+                //Vector3 endValue = evaluateBezier3D(startPoint, b, c, endPoint, (i + 1) / 9.0f);
+
+                // Calculate value at this point and the next, and then compute the change
+                // - USED FOR SAME AS SOURCE DISTRIBUTION
+                Vector3 startValue = evaluateBezier3D(startPoint, b, c, endPoint, outvals[i]);
+                Vector3 endValue = evaluateBezier3D(startPoint, b, c, endPoint, outvals[i+1]);
+                Vector3 dValue = endValue - startValue; // Change in value over 1/9th units, more operator overloading! Woo!
+
+                // Calculate, accumulate, and record the distance
+                float distance = dValue.Length(); // Pythagorean theorem, hopefully you use a math library with float Vector3.Length.
+                length += distance;
+                table[i] = length;
+            }
+            return table;
+        }
+        #endregion
     }
 
     public class PathingZoomController

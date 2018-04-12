@@ -41,6 +41,7 @@ namespace ME3Explorer.WwiseBankEditor
             {
                 LoadME3Package(fileName);
                 ListRefresh();
+                openFileLabel.Text = Path.GetFileName(fileName);
             }
             catch (Exception ex)
             {
@@ -151,7 +152,14 @@ namespace ME3Explorer.WwiseBankEditor
             byte[] tmp = new byte[hb2.ByteProvider.Length];
             for (int i = 0; i < hb2.ByteProvider.Length; i++)
                 tmp[i] = hb2.ByteProvider.ReadByte(i);
+
+            //write size of this HIRC
+            int insideLen = (int) hb2.ByteProvider.Length - 5;
+            byte[] b = BitConverter.GetBytes(insideLen);
+            b.CopyTo(tmp, 1);
+
             bank.HIRCObjects[m] = tmp;
+            Console.WriteLine("HIRC hex size: " + bank.HIRCObjects[m].Count().ToString("X4"));
             ListRefresh2();
             listBox2.SelectedIndex = m;
         }

@@ -60,17 +60,22 @@ namespace UMD.HCIL.PathingGraphEditor
             UpdateEdgeStraight(p);
         }
 
+        public void addEdgeBezier(PPath p)
+        {
+            edgeLayer.AddChild(p);
+            UpdateEdgeBezier(p);
+        }
+
         public void addNode(PNode p)
         {
             nodeLayer.AddChild(p);
         }
 
-        public static void UpdateEdge(PPath edge)
+        public static void UpdateEdgeBezier(PPath edge)
         {
             // Note that the node's "FullBounds" must be used (instead of just the "Bound") 
             // because the nodes have non-identity transforms which must be included when
             // determining their position.
-
             ArrayList nodes = (ArrayList)edge.Tag;
             PNode node1 = (PNode)nodes[0];
             PNode node2 = (PNode)nodes[1];
@@ -104,7 +109,6 @@ namespace UMD.HCIL.PathingGraphEditor
             }
 
             edge.Reset();
-            //edge.AddLine(start.X, start.Y, end.X, end.Y);
             edge.AddBezier(start.X, start.Y, start.X + h1x, start.Y + h1y, end.X - h2x, end.Y, end.X, end.Y);
         }
 

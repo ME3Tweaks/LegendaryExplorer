@@ -12,6 +12,8 @@ using ME3Explorer.Unreal.Classes;
 using UsefulThings;
 using static ME3Explorer.Unreal.PropertyReader;
 using ME3Explorer.Pathfinding_Editor;
+using System.Text;
+using ME3Explorer.SharedUI;
 
 namespace ME3Explorer
 {
@@ -29,7 +31,7 @@ namespace ME3Explorer
         public PropGrid pg;
 
         public static readonly string PackageEditorDataFolder = Path.Combine(App.AppDataFolder, @"PackageEditor\");
-
+        private readonly string RECENTFILES_FILE = "RECENTFILES";
         private string currentFile;
         private List<int> ClassNames;
 
@@ -37,9 +39,10 @@ namespace ME3Explorer
         {
             InitializeComponent();
             LoadRecentList();
-            RefreshRecent();
+            RefreshRecent(false);
             packageEditorTabPane.TabPages.Remove(scriptTab);
             packageEditorTabPane.TabPages.Remove(binaryEditorTab);
+            packageEditorTabPane.TabPages.Remove(bio2daEditorTab);
 
             SetView(View.Tree);
             interpreterControl.saveHexButton.Click += saveHexChangesButton_Click;
@@ -63,8 +66,9 @@ namespace ME3Explorer
             if (d.ShowDialog() == DialogResult.OK)
             {
                 LoadFile(d.FileName);
-                AddRecent(d.FileName);
+                AddRecent(d.FileName, false);
                 SaveRecentList();
+                RefreshRecent(true, RFiles);
             }
         }
 
@@ -76,6 +80,7 @@ namespace ME3Explorer
                 LoadMEPackage(s);
                 interpreterControl.Pcc = pcc;
                 binaryInterpreterControl.Pcc = pcc;
+                bio2DAEditor1.Pcc = pcc;
                 treeView1.Tag = pcc;
                 RefreshView();
                 InitStuff();
@@ -197,14 +202,20 @@ namespace ME3Explorer
             linkComboBox.EndUpdate();
         }
 
-        public void AddRecent(string s)
+        public void AddRecent(string s, bool loadingList)
         {
-            if (RFiles.Count < 10)
-                RFiles.Add(s);
+            RFiles.Remove(s);
+            if (loadingList)
+            {
+                RFiles.Add(s); //in order
+            }
             else
             {
-                RFiles.RemoveAt(0);
-                RFiles.Add(s);
+                RFiles.Insert(0, s); //put at front
+            }
+            if (RFiles.Count > 10)
+            {
+                RFiles.RemoveRange(10, RFiles.Count - 10);
             }
         }
 
@@ -456,21 +467,28 @@ namespace ME3Explorer
                     }
 
                     IExportEntry exportEntry = pcc.getExport(n);
-                    if (exportEntry.ClassName == "Function" && pcc.Game != MEGame.ME2)
+                    if (exportEntry.ClassName == "Function")
                     {
                         if (!packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
                         {
                             packageEditorTabPane.TabPages.Add(scriptTab);
                         }
-                        if (pcc.Game == MEGame.ME3)
+                        if (pcc.Game != MEGame.ME1)
                         {
-                            Function func = new Function(exportEntry.Data, pcc as ME3Package);
+                            Function func = new Function(exportEntry.Data, pcc);
                             rtb1.Text = func.ToRawText();
                         }
                         else
                         {
                             ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(exportEntry.Data, pcc as ME1Package);
-                            rtb1.Text = func.ToRawText();
+                            try
+                            {
+                                rtb1.Text = func.ToRawText();
+                            }
+                            catch (Exception e)
+                            {
+                                rtb1.Text = "Error parsing function: " + e.Message;
+                            }
                         }
                     }
                     else if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
@@ -478,12 +496,12 @@ namespace ME3Explorer
                         packageEditorTabPane.TabPages.Remove(scriptTab);
                     }
 
-                    if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) && pcc.Game == MEGame.ME3)
+                    if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName))
                     {
                         if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
                         {
                             packageEditorTabPane.TabPages.Add(binaryEditorTab);
-                        }                        
+                        }
                     }
                     else
                     {
@@ -493,17 +511,36 @@ namespace ME3Explorer
                         }
                     }
 
+                    if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName))
+                    {
+                        if (!packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
+                        {
+                            packageEditorTabPane.TabPages.Add(bio2daEditorTab);
+                        }
+                    }
+                    else
+                    {
+                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
+                        {
+                            packageEditorTabPane.TabPages.Remove(bio2daEditorTab);
+                        }
+                    }
+
                     hb2.ByteProvider = new DynamicByteProvider(exportEntry.header);
                     if (!isRefresh)
                     {
                         interpreterControl.export = exportEntry;
                         interpreterControl.InitInterpreter();
 
-                        if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) && pcc.Game == MEGame.ME3)
+                        if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName))
                         {
                             binaryInterpreterControl.export = exportEntry;
                             binaryInterpreterControl.InitInterpreter();
-
+                        }
+                        if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName))
+                        {
+                            bio2DAEditor1.export = exportEntry;
+                            bio2DAEditor1.InitInterpreter();
                         }
                     }
                     UpdateStatusEx(n);
@@ -812,24 +849,17 @@ namespace ME3Explorer
         {
             RFiles = new List<string>();
             RFiles.Clear();
-            string path = PackageEditorDataFolder + "recentFiles.log";
+            string path = PackageEditorDataFolder + RECENTFILES_FILE;
             if (File.Exists(path))
             {
-
-                FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-                byte[] buff = new byte[4];
-                fs.Read(buff, 0, 4);
-                int count = BitConverter.ToInt32(buff, 0);
-                for (int i = 0; i < count; i++)
+                string[] recents = File.ReadAllLines(path);
+                foreach (string recent in recents)
                 {
-                    fs.Read(buff, 0, 4);
-                    int len = BitConverter.ToInt32(buff, 0);
-                    string s = "";
-                    for (int j = 0; j < len; j++)
-                        s += (char)fs.ReadByte();
-                    AddRecent(s);
+                    if (File.Exists(recent))
+                    {
+                        AddRecent(recent, true);
+                    }
                 }
-                fs.Close();
             }
         }
 
@@ -839,35 +869,43 @@ namespace ME3Explorer
             {
                 Directory.CreateDirectory(PackageEditorDataFolder);
             }
-            string path = PackageEditorDataFolder + "recentFiles.log";
+            string path = PackageEditorDataFolder + RECENTFILES_FILE;
             if (File.Exists(path))
                 File.Delete(path);
-            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
-
-            byte[] buff = BitConverter.GetBytes(RFiles.Count);
-            fs.Write(buff, 0, 4);
-            for (int i = 0; i < RFiles.Count; i++)
-            {
-                buff = BitConverter.GetBytes(RFiles[i].Length);
-                fs.Write(buff, 0, 4);
-                for (int j = 0; j < RFiles[i].Length; j++)
-                    fs.WriteByte((byte)RFiles[i][j]);
-            }
-            fs.Close();
+            File.WriteAllLines(path, RFiles);
         }
 
-        private void RefreshRecent()
+        private void RefreshRecent(bool propogate, List<string> recents = null)
         {
+            if (propogate && recents != null)
+            {
+                //we are posting an update to other instances of packed
+                var forms = Application.OpenForms;
+                foreach (Form form in forms)
+                {
+                    if (form is PackageEditor && this != form)
+                    {
+                        ((PackageEditor)form).RefreshRecent(false, RFiles);
+                    }
+                }
+            }
+            else if (recents != null)
+            {
+                //we are receiving an update
+                RFiles = new List<string>(recents);
+            }
             recentToolStripMenuItem.DropDownItems.Clear();
             if (RFiles.Count <= 0)
             {
                 recentToolStripMenuItem.Enabled = false;
                 return;
             }
+            recentToolStripMenuItem.Enabled = true;
 
-            for (int i = 0; i < RFiles.Count; i++)
+
+            foreach (string filepath in RFiles)
             {
-                ToolStripMenuItem fr = new ToolStripMenuItem(RFiles[RFiles.Count() - i - 1], null, RecentFile_click);
+                ToolStripMenuItem fr = new ToolStripMenuItem(filepath, null, RecentFile_click);
                 recentToolStripMenuItem.DropDownItems.Add(fr);
             }
         }
@@ -875,10 +913,17 @@ namespace ME3Explorer
         private void RecentFile_click(object sender, EventArgs e)
         {
             string s = sender.ToString();
-            LoadFile(s);
-            RFiles.Remove(s);
-            AddRecent(s);
-            SaveRecentList();
+            if (File.Exists(s))
+            {
+                LoadFile(s);
+                RFiles.Remove(s);
+                AddRecent(s, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
+            } else
+            {
+                MessageBox.Show("File does not exist: " + s);
+            }
         }
 
         private void addNameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -899,7 +944,7 @@ namespace ME3Explorer
 
         private void recentToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RefreshRecent();
+            //RefreshRecent();
         }
 
         private void toolStripButton2_Click(object sender, EventArgs e)
@@ -1190,8 +1235,9 @@ namespace ME3Explorer
             if (DroppedFiles.Count > 0)
             {
                 LoadFile(DroppedFiles[0]);
-                AddRecent(DroppedFiles[0]);
+                AddRecent(DroppedFiles[0], false);
                 SaveRecentList();
+                RefreshRecent(true, RFiles);
             }
         }
 
@@ -1508,8 +1554,7 @@ namespace ME3Explorer
                                     }
                                     else
                                     {
-                                        Debug.WriteLine("Object property not mapped " + sourceObjReference + " " + exp.PackageFullName + "." + exp.ObjectName);
-
+                                        Debug.WriteLine("Object property was not mapped during cross-porting: " + sourceObjReference + " " + exp.PackageFullName + "." + exp.ObjectName);
                                     }
                                     //attempt relinkage
                                 }
@@ -2177,6 +2222,160 @@ namespace ME3Explorer
         {
             ME3TalkFiles.ReloadTLKData();
             MessageBox.Show(this, "TLKs have been reloaded.", "TLK list reloaded");
+        }
+
+        private void dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string fpath = @"X:\Mass Effect Games HDD\Mass Effect";
+            var ext = new List<string> { "u", "upk", "sfm" };
+            var files = Directory.GetFiles(fpath, "*.*", SearchOption.AllDirectories)
+              .Where(file => new string[] { ".sfm", ".upk", ".u" }
+              .Contains(Path.GetExtension(file).ToLower()))
+              .ToList();
+            StringBuilder sb = new StringBuilder();
+
+            int threads = Environment.ProcessorCount;
+            string[] results = files.AsParallel().WithDegreeOfParallelism(threads).WithExecutionMode(ParallelExecutionMode.ForceParallelism).Select(ScanForConfigValues).ToArray();
+
+
+            foreach (string res in results)
+            {
+                sb.Append(res);
+            }
+            try
+            {
+                Clipboard.SetText(sb.ToString());
+                MessageBox.Show("Finished");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private string ScanForConfigValues(string file)
+        {
+            StringBuilder sb = new StringBuilder();
+            bool fileHasConfig = false;
+            IMEPackage pack = MEPackageHandler.OpenMEPackage(file);
+            foreach (IExportEntry exp in pack.Exports)
+            {
+                if (exp.ClassName == "Bio2DA" || exp.ClassName == "Bio2DANumberedRows")
+                {
+                    if (!fileHasConfig)
+                    {
+                        sb.AppendLine();
+                        sb.Append(pack.FileName);
+                        sb.AppendLine();
+                        fileHasConfig = true;
+                    }
+                    sb.Append(exp.ClassName + "\t" + exp.GetFullPath);
+                    sb.AppendLine();
+                }
+            }
+            pack.Release();
+            if (sb.Length == 0)
+            {
+                return "";
+            }
+            else
+            {
+                return sb.ToString();
+            }
+        }
+
+        private void dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string fpath = @"X:\Mass Effect Games HDD\Mass Effect";
+            var ext = new List<string> { "u", "upk", "sfm" };
+            var files = Directory.GetFiles(fpath, "*.*", SearchOption.AllDirectories)
+              .Where(file => new string[] { ".sfm", ".upk", ".u" }
+              .Contains(Path.GetExtension(file).ToLower()))
+              .ToList();
+            StringBuilder sb = new StringBuilder();
+
+            int threads = Environment.ProcessorCount;
+            List<string>[] results = files.AsParallel().WithDegreeOfParallelism(threads).WithExecutionMode(ParallelExecutionMode.ForceParallelism).Select(ScanForBioG).ToArray();
+
+            HashSet<string> items = new HashSet<string>();
+            foreach (List<string> res in results)
+            {
+                items.UnionWith(res);
+            }
+
+            foreach (string str in items)
+            {
+                sb.AppendLine(str);
+            }
+            try
+            {
+                Clipboard.SetText(sb.ToString());
+                MessageBox.Show("Finished");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private List<string> ScanForBioG(string file)
+        {
+            //Console.WriteLine(file);
+            try
+            {
+                List<string> biopawnscaled = new List<string>();
+                IMEPackage pack = MEPackageHandler.OpenMEPackage(file);
+                foreach (IExportEntry exp in pack.Exports)
+                {
+                    if (exp.ClassName == "BioPawnChallengeScaledType")
+                    {
+                        biopawnscaled.Add(exp.GetFullPath);
+                    }
+                }
+                pack.Release();
+                return biopawnscaled;
+            }
+            catch (Exception e)
+            {
+                Debugger.Break();
+            }
+            return null;
+        }
+
+        private void dEBUGExport2DAToExcelFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+
+
+
+        }
+
+        private void findExportsWithSerialSizeMismatchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<string> serialexportsbad = new List<string>();
+            foreach (IExportEntry entry in pcc.Exports)
+            {
+                Console.WriteLine(entry.Index + " " + entry.Data.Length + " " + entry.DataSize);
+                if (entry.Data.Length != entry.DataSize)
+                {
+                    serialexportsbad.Add(entry.GetFullPath + " Header lists: " + entry.DataSize + ", Actual data size: " + entry.Data.Length);
+                }
+            }
+
+            if (serialexportsbad.Count > 0)
+            {
+                ListWindow lw = new ListWindow(serialexportsbad, "The following exports have size mismatches");
+            }
+            else
+            {
+                MessageBox.Show("No exports have serial size mismatches.");
+            }
+        }
+
+        private void dEBUGAccessME3AppendsTableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ME3Package me3 = (ME3Package)pcc;
+            var offset = me3.DependsOffset;
         }
     }
 }

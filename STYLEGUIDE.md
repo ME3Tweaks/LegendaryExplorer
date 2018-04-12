@@ -1,5 +1,7 @@
 # ME3EXPLORER STYLE GUIDE
 
+This document is outdated and is subject to removal from ME3Tweaks Fork.
+
 Each coder comes into a project with a different experience set. For that reason, we've laid out some basic expectations for coding style. This document also explains how to handle a variety of issues you may encounter when contributing to the repo.
 
 ### Code Contribution Guide
