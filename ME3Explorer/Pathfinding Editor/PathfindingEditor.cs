@@ -26,6 +26,7 @@ using ME3Explorer.ActorNodes;
 using static ME3Explorer.Pathfinding_Editor.PathfindingNodeMaster;
 using static ME3Explorer.BinaryInterpreter;
 using ME3Explorer.SplineNodes;
+using SharpDX;
 
 namespace ME3Explorer
 {
@@ -86,7 +87,7 @@ namespace ME3Explorer
             LoadRecentList();
             RefreshRecent(false);
             pathfindingNodeInfoPanel.PassPathfindingNodeEditorIn(this);
-            graphEditor.BackColor = Color.FromArgb(167, 167, 167);
+            graphEditor.BackColor = System.Drawing.Color.FromArgb(167, 167, 167);
             graphEditor.AddInputEventListener(new PathfindingMouseListener(this));
             zoomController = new PathingZoomController(graphEditor);
             CurrentFilterType = HeightFilterForm.FILTER_Z_NONE;
@@ -315,8 +316,10 @@ namespace ME3Explorer
 
             staticMeshCollectionActorsToolStripMenuItem.DropDownItems.Clear();
             staticMeshCollectionActorsToolStripMenuItem.Enabled = false;
+            staticMeshCollectionActorsToolStripMenuItem.ToolTipText = "No StaticMeshCollectionActors found in this file";
             sFXCombatZonesToolStripMenuItem.DropDownItems.Clear();
             sFXCombatZonesToolStripMenuItem.Enabled = false;
+            sFXCombatZonesToolStripMenuItem.ToolTipText = "No SFXCombatZones found in this file";
             sfxCombatZones = new List<int>();
             CurrentObjects = new List<int>();
             activeExportsListbox.Items.Clear();
@@ -462,6 +465,7 @@ namespace ME3Explorer
                                 };
                                 sFXCombatZonesToolStripMenuItem.DropDown.Items.Add(testItem);
                                 sFXCombatZonesToolStripMenuItem.Enabled = true;
+                                sFXCombatZonesToolStripMenuItem.ToolTipText = "Select a SFXCombatZone to highlight pathnodes that are part of it";
                             }
 
 
@@ -507,6 +511,8 @@ namespace ME3Explorer
                                 }
                                 staticMeshCollectionActorsToolStripMenuItem.DropDown.Items.Add(testItem);
                                 staticMeshCollectionActorsToolStripMenuItem.Enabled = true;
+                                staticMeshCollectionActorsToolStripMenuItem.ToolTipText = "Select a StaticMeshCollectionActor to add it to the editor";
+
                             }
                             //}
                             start += 4;
@@ -816,7 +822,7 @@ namespace ME3Explorer
                                     else
                                     {
                                         pathNode.comment.Text += "\nBAD ANNEXZONELOC!";
-                                        pathNode.comment.TextBrush = new SolidBrush(Color.Red);
+                                        pathNode.comment.TextBrush = new SolidBrush(System.Drawing.Color.Red);
                                     }
                                 }
 
@@ -990,7 +996,15 @@ namespace ME3Explorer
 
                 foreach (PPath edge in graphEditor.edgeLayer)
                 {
-                    PathingGraphEditor.UpdateEdgeStraight(edge);
+                    if (edge.BezierPoints != null)
+                    {
+                        //Currently not implemented, will hopefully come in future update
+                        PathingGraphEditor.UpdateEdgeBezier(edge);
+                    }
+                    else
+                    {
+                        PathingGraphEditor.UpdateEdgeStraight(edge);
+                    }
                 }
             }
         }
@@ -1055,7 +1069,7 @@ namespace ME3Explorer
             if (d.ShowDialog() == DialogResult.OK)
             {
                 PNode r = graphEditor.Root;
-                RectangleF rr = r.GlobalFullBounds;
+                System.Drawing.RectangleF rr = r.GlobalFullBounds;
                 PNode p = PPath.CreateRectangle(rr.X, rr.Y, rr.Width, rr.Height);
                 p.Brush = Brushes.White;
                 graphEditor.addBack(p);
@@ -1117,7 +1131,8 @@ namespace ME3Explorer
                 if (selected == -1)
                     return;
                 activeExportsListbox.SelectedIndex = selected;
-            } else
+            }
+            else
             {
                 GetProperties(node.export);
                 graphEditor.Refresh();
@@ -2122,7 +2137,7 @@ namespace ME3Explorer
                 int radVal = -1;
                 int heightVal = -1;
 
-                Point sizePair = PathfindingNodeInfoPanel.getDropdownSizePair(size);
+                System.Drawing.Point sizePair = PathfindingNodeInfoPanel.getDropdownSizePair(size);
                 radVal = sizePair.X;
                 heightVal = sizePair.Y;
                 setReachSpecSize(outgoingSpecExp, radVal, heightVal);
@@ -2580,10 +2595,12 @@ namespace ME3Explorer
                 CurrentZFilterValue = hff.NewFilterZ;
                 if (CurrentFilterType != HeightFilterForm.FILTER_Z_NONE)
                 {
+                    filterByZToolStripMenuItem.Checked = true;
                     filenameLabel.Text = Path.GetFileName(CurrentFile) + " | Hiding nodes " + (CurrentFilterType == HeightFilterForm.FILTER_Z_ABOVE ? "above" : "below") + " Z = " + CurrentZFilterValue;
                 }
                 else
                 {
+                    filterByZToolStripMenuItem.Checked = false;
                     filenameLabel.Text = Path.GetFileName(CurrentFile);
                 }
                 RefreshView();
@@ -3106,12 +3123,36 @@ namespace ME3Explorer
             if (splineInfo != null)
             {
                 ArrayProperty<StructProperty> pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
-                int splinePointIndex = splinePoint is SplinePoint0Node ? 0 : 1;
-                StructProperty point = pointsProp[splinePointIndex].GetProp<StructProperty>("OutVal");
+                StructProperty point0 = pointsProp[0];
+                StructProperty point1 = pointsProp[1];
+
+                StructProperty splinePointToUpdateLoc = splinePoint is SplinePoint0Node ? point0 : point1;
+                StructProperty point = splinePointToUpdateLoc.GetProp<StructProperty>("OutVal");
                 point.GetProp<FloatProperty>("X").Value = locX;
                 point.GetProp<FloatProperty>("Y").Value = locY;
                 export.WriteProperty(splineInfo);
-                MessageBox.Show("Location set to " + locX + "," + locY);
+
+                //Recalculate the param table.
+                Vector3 a = GetVector3(point0.GetProp<StructProperty>("OutVal"));
+                Vector3 t1 = GetVector3(point0.GetProp<StructProperty>("LeaveTangent"));
+                Vector3 t2 = GetVector3(point1.GetProp<StructProperty>("ArriveTangent"));
+                Vector3 d = GetVector3(point1.GetProp<StructProperty>("OutVal"));
+                StructProperty reparam = export.GetProperty<StructProperty>("SplineReparamTable");
+                ArrayProperty<StructProperty> points = reparam.GetProp<ArrayProperty<StructProperty>>("Points");
+                float[] outvals = new float[10];
+                for (int i = 0; i < 10; i++)
+                {
+                    outvals[i] = points[i].GetProp<FloatProperty>("OutVal").Value;
+                }
+                float[] reparamInPoints = getReparamPoints(outvals, a, t1, t2, d);
+                //todo: scale values based on original distances of reparam table.
+                for (int i = 0; i < 9; i++)
+                {
+                    int index = i + 1; //we don't change anything on node 0.
+                    points[index].GetProp<FloatProperty>("InVal").Value = reparamInPoints[i];
+                }
+                export.WriteProperty(reparam);
+                MessageBox.Show("Location set to " + locX + "," + locY + ".\nThe reparam table has been updated for this spline.");
             }
             else
             {
@@ -3119,6 +3160,78 @@ namespace ME3Explorer
             }
             //Need to update
         }
+
+        /// <summary>
+        /// Converts struct property to SharpDX Vector 3
+        /// </summary>
+        /// <param name="vectorStruct">Vector Struct to convert</param>
+        /// <returns></returns>
+        public static Vector3 GetVector3(StructProperty vectorStruct)
+        {
+            Vector3 v = new Vector3();
+            v.X = vectorStruct.GetProp<FloatProperty>("X");
+            v.Y = vectorStruct.GetProp<FloatProperty>("Y");
+            v.Z = vectorStruct.GetProp<FloatProperty>("Z");
+            return v;
+        }
+
+        /// <summary>
+        /// Converts struct property to SharpDX Vector 2
+        /// </summary>
+        /// <param name="vectorStruct">Vector Struct to convert</param>
+        /// <returns></returns>
+        public static Vector2 GetVector2(StructProperty vectorStruct)
+        {
+            Vector2 v = new Vector2();
+            v.X = vectorStruct.GetProp<FloatProperty>("X");
+            v.Y = vectorStruct.GetProp<FloatProperty>("Y");
+            return v;
+        }
+
+        #region Benji's Magic Spline Code
+        public static float evaluateBezier(float a, float b, float c, float d, float t)
+        {
+            return (float)(a * Math.Pow(1.0f - t, 3.0f) + 3.0f * b * Math.Pow(1.0f - t, 2.0) * t + 3.0f * c * (1.0f - t) * Math.Pow(t, 2.0f) + d * Math.Pow(t, 3.0f));
+        }
+
+        public static Vector3 evaluateBezier3D(Vector3 a, Vector3 b, Vector3 c, Vector3 d, float t)
+        {
+            return new Vector3(evaluateBezier(a.X, b.X, c.X, d.X, t), evaluateBezier(a.Y, b.Y, c.Y, d.Y, t), evaluateBezier(a.Z, b.Z, c.Z, d.Z, t));
+        }
+
+        // table is a float array of 9 elements
+        //outvals, a, t1, t2, d
+        private float[] getReparamPoints(float[] outvals, Vector3 startPoint, Vector3 outgoingTangent, Vector3 incomingTangent, Vector3 endPoint)
+        {
+            //outvals is the timing on the spline, since it is not always uniform.
+            float[] table = new float[9];
+            // Calculate bezier params
+            Vector3 b = startPoint + outgoingTangent / 3.0f; // Operator overloading is lovely. Java can go die in a hole.
+            Vector3 c = endPoint - incomingTangent / 3.0f;
+
+            // Accumulate length and record
+            float length = 0;
+            for (int i = 0; i < 9; i++)
+            {
+                // Calculate value at this point and the next, and then compute the change
+                // - USED FOR UNIFORM DISTRIBUTION
+                //Vector3 startValue = evaluateBezier3D(startPoint, b, c, endPoint, i / 9.0f);
+                //Vector3 endValue = evaluateBezier3D(startPoint, b, c, endPoint, (i + 1) / 9.0f);
+
+                // Calculate value at this point and the next, and then compute the change
+                // - USED FOR SAME AS SOURCE DISTRIBUTION
+                Vector3 startValue = evaluateBezier3D(startPoint, b, c, endPoint, outvals[i]);
+                Vector3 endValue = evaluateBezier3D(startPoint, b, c, endPoint, outvals[i+1]);
+                Vector3 dValue = endValue - startValue; // Change in value over 1/9th units, more operator overloading! Woo!
+
+                // Calculate, accumulate, and record the distance
+                float distance = dValue.Length(); // Pythagorean theorem, hopefully you use a math library with float Vector3.Length.
+                length += distance;
+                table[i] = length;
+            }
+            return table;
+        }
+        #endregion
     }
 
     public class PathingZoomController

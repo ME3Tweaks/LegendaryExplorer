@@ -15,6 +15,7 @@ using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.PathingGraphEditor;
 using ME3Explorer.Pathfinding_Editor;
 using System.Diagnostics;
+using static SharpDX.Vector3;
 
 namespace ME3Explorer.SplineNodes
 {
@@ -93,24 +94,6 @@ namespace ME3Explorer.SplineNodes
             return ellipseRegion.IsVisible(bounds);
         }
 
-        /*public void OnMouseEnter(object sender, PInputEventArgs e)
-        {
-            if (draggingVarlink)
-            {
-                ((PPath)((BlockingVolumeNode)sender)[1]).Pen = selectedPen;
-                dragTarget = (PNode)sender;
-            }
-        }
-
-        public void OnMouseLeave(object sender, PInputEventArgs e)
-        {
-            if (draggingVarlink)
-            {
-                ((PPath)((BlockingVolumeNode)sender)[1]).Pen = outlinePen;
-                dragTarget = null;
-            }
-        }*/
-
         /// <summary>
         /// Creates the reachspec connections from this pathfinding node to others.
         /// </summary>
@@ -121,9 +104,7 @@ namespace ME3Explorer.SplineNodes
             {
                 foreach (var prop in outLinksProp)
                 {
-
-
-                    PPath edge = new PPath();
+                    //PPath edge = new PPath();
                     //edge.Add
                     //((ArrayList)Tag).Add(edge);
                     //edge.Tag = new ArrayList();
@@ -131,55 +112,6 @@ namespace ME3Explorer.SplineNodes
                     //((ArrayList)edge.Tag).Add(othernode);
                     //g.edgeLayer.AddChild(edge);
                 }
-
-                //foreach (IExportEntry spec in ReachSpecs)
-                //{
-                //    //Get ending
-                //    PNode othernode = null;
-                //    int othernodeidx = 0;
-                //    PropertyCollection props = spec.GetProperties();
-                //    foreach (var prop in props)
-                //    {
-                //        if (prop.Name == "End")
-                //        {
-                //            PropertyCollection reachspecprops = (prop as StructProperty).Properties;
-                //            foreach (var rprop in reachspecprops)
-                //            {
-                //                if (rprop.Name == "Actor")
-                //                {
-                //                    othernodeidx = (rprop as ObjectProperty).Value;
-                //                    break;
-                //                }
-                //            }
-                //        }
-                //        if (othernodeidx != 0)
-                //        {
-                //            break;
-                //        }
-                //    }
-
-                //    if (othernodeidx != 0)
-                //    {
-                //        foreach (SplineNode node in Objects)
-                //        {
-                //            if (node.export.UIndex == othernodeidx)
-                //            {
-                //                othernode = node;
-                //                break;
-                //            }
-                //        }
-                //    }
-                //    if (othernode != null)
-                //    {
-                //        PPath edge = new PPath();
-                //        ((ArrayList)Tag).Add(edge);
-                //        ((ArrayList)othernode.Tag).Add(edge);
-                //        edge.Tag = new ArrayList();
-                //        ((ArrayList)edge.Tag).Add(this);
-                //        ((ArrayList)edge.Tag).Add(othernode);
-                //        g.edgeLayer.AddChild(edge);
-                //    }
-                //}
             }
         }
         public virtual void Layout(float x, float y) { }
@@ -300,31 +232,46 @@ namespace ME3Explorer.SplineNodes
         private static Color color = Color.FromArgb(0, 0, 255);
         private SplinePoint1Node destinationPoint;
 
+        SharpDX.Vector2 a;
+        SharpDX.Vector2 tan1;
+        SharpDX.Vector2 tan2;
+        SharpDX.Vector2 d;
+
         public SplinePoint0Node(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
             string s = export.ObjectName;
-
-            // = getType(s);
-            float w = 25;
-            float h = 25;
-            shape = PPath.CreateEllipse(0, 0, w, h);
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText("Spline Start");
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            var props = export.GetProperties();
-            this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+            StructProperty splineInfo = export.GetProperty<StructProperty>("SplineInfo");
+            if (splineInfo != null)
+            {
+                ArrayProperty<StructProperty> pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
+                StructProperty point0 = pointsProp[0];
+                StructProperty point1 = pointsProp[1];
+                a = PathfindingEditor.GetVector2(point0.GetProp<StructProperty>("OutVal"));
+                tan1 = PathfindingEditor.GetVector2(point0.GetProp<StructProperty>("LeaveTangent"));
+                tan2 = PathfindingEditor.GetVector2(point1.GetProp<StructProperty>("ArriveTangent"));
+                d = PathfindingEditor.GetVector2(point1.GetProp<StructProperty>("OutVal"));
+                // = getType(s);
+                float w = 25;
+                float h = 25;
+                shape = PPath.CreateEllipse(0, 0, w, h);
+                outlinePen = new Pen(color);
+                shape.Pen = outlinePen;
+                shape.Brush = pathfindingNodeBrush;
+                shape.Pickable = false;
+                this.AddChild(shape);
+                this.Bounds = new RectangleF(0, 0, w, h);
+                val = new SText("Spline Start");
+                val.Pickable = false;
+                val.TextAlignment = StringAlignment.Center;
+                val.X = w / 2 - val.Width / 2;
+                val.Y = h / 2 - val.Height / 2;
+                this.AddChild(val);
+                var props = export.GetProperties();
+                this.TranslateBy(x, y);
+                this.MouseEnter += OnMouseEnter;
+                this.MouseLeave += OnMouseLeave;
+            }
         }
 
         internal void SetDestinationPoint(SplinePoint1Node point1node)
@@ -333,18 +280,23 @@ namespace ME3Explorer.SplineNodes
         }
 
         /// <summary>
-        /// This has no outbound connections.
+        /// This beginning node of the spline connects to the destination point over a bezier curve.
         /// </summary>
         public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
         {
             PPath edge = new PPath();
             edge.Pen = splineconnnectorPen;
+
+            //TODO: Calculate where points B and C lie in actual space for calculating the overhead curve
+            //edge.BezierPoints = new float[2];
+            //SharpDX.Vector2 b = a + tan1 / 3.0f; // Operator overloading is lovely. Java can go die in a hole.
+            //SharpDX.Vector2 c = d - tan2 / 3.0f;
+
             ((ArrayList)Tag).Add(edge);
             ((ArrayList)destinationPoint.Tag).Add(edge);
             edge.Tag = new ArrayList();
             ((ArrayList)edge.Tag).Add(this);
             ((ArrayList)edge.Tag).Add(destinationPoint);
-
             g.edgeLayer.AddChild(edge);
         }
     }
