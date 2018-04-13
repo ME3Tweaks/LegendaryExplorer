@@ -1,13 +1,9 @@
 ﻿get-childitem "$($PSScriptRoot)\Release\" -include *.7z -recurse | foreach ($_) {remove-item $_.fullname}
 
 #Remove PDBs
-$Dir = get-childitem "$($PSScriptRoot)\Release\" -recurse 
+$Dir = get-childitem "$($PSScriptRoot)\Release\lib" -recurse 
 $List = $Dir | where {$_.extension -eq ".pdb"} 
 foreach ($item in $List) {
-    if ($item.Name -eq 'ME3Explorer.pdb') {
-        Write-Host "Keeping ME3Explorer.pdb"
-        continue
-    }
     Write-Host "Deleting extra PDB: $($item)"
     Remove-Item "$($PSScriptRoot)\Release\$($item)" -Force
 }
