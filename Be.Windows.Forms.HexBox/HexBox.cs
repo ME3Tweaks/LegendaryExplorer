@@ -159,7 +159,7 @@ namespace Be.Windows.Forms
             #region Mouse selection methods
             void BeginMouseSelection(object sender, MouseEventArgs e)
             {
-                System.Diagnostics.Debug.WriteLine("BeginMouseSelection()", "KeyInterpreter");
+                //System.Diagnostics.Debug.WriteLine("BeginMouseSelection()", "KeyInterpreter");
 
                 if (e.Button != MouseButtons.Left)
                     return;
@@ -219,7 +219,7 @@ namespace Be.Windows.Forms
             #region PrePrcessWmKeyDown methods
             public virtual bool PreProcessWmKeyDown(ref Message m)
             {
-                System.Diagnostics.Debug.WriteLine("PreProcessWmKeyDown(ref Message m)", "KeyInterpreter");
+                //System.Diagnostics.Debug.WriteLine("PreProcessWmKeyDown(ref Message m)", "KeyInterpreter");
 
                 Keys vc = (Keys)m.WParam.ToInt32();
 
@@ -749,7 +749,7 @@ namespace Be.Windows.Forms
             #region PreProcessWmKeyUp methods
             public virtual bool PreProcessWmKeyUp(ref Message m)
             {
-                System.Diagnostics.Debug.WriteLine("PreProcessWmKeyUp(ref Message m)", "KeyInterpreter");
+                //System.Diagnostics.Debug.WriteLine("PreProcessWmKeyUp(ref Message m)", "KeyInterpreter");
 
                 Keys vc = (Keys)m.WParam.ToInt32();
 
@@ -955,7 +955,7 @@ namespace Be.Windows.Forms
 
             public virtual PointF GetCaretPointF(long byteIndex)
             {
-                System.Diagnostics.Debug.WriteLine("GetCaretPointF()", "KeyInterpreter");
+                //System.Diagnostics.Debug.WriteLine("GetCaretPointF()", "KeyInterpreter");
 
                 return _hexBox.GetBytePointF(byteIndex);
             }
@@ -1084,7 +1084,7 @@ namespace Be.Windows.Forms
             #region Misc
             public override PointF GetCaretPointF(long byteIndex)
             {
-                System.Diagnostics.Debug.WriteLine("GetCaretPointF()", "StringKeyInterpreter");
+                //System.Diagnostics.Debug.WriteLine("GetCaretPointF()", "StringKeyInterpreter");
 
                 Point gp = _hexBox.GetGridBytePoint(byteIndex);
                 return _hexBox.GetByteStringPointF(gp);
@@ -1464,7 +1464,7 @@ namespace Be.Windows.Forms
 
         void UpdateScrollSize()
         {
-            System.Diagnostics.Debug.WriteLine("UpdateScrollSize()", "HexBox");
+            //System.Diagnostics.Debug.WriteLine("UpdateScrollSize()", "HexBox");
 
             // calc scroll bar info
             if (VScrollBarVisible && _byteProvider != null && _byteProvider.Length > 0 && _iHexMaxHBytes != 0)
@@ -1502,7 +1502,7 @@ namespace Be.Windows.Forms
 
         void UpdateVScroll()
         {
-            System.Diagnostics.Debug.WriteLine("UpdateVScroll()", "HexBox");
+            //System.Diagnostics.Debug.WriteLine("UpdateVScroll()", "HexBox");
 
             int max = ToScrollMax(_scrollVmax);
 
@@ -1629,7 +1629,7 @@ namespace Be.Windows.Forms
         /// </summary>
         public void ScrollByteIntoView()
         {
-            System.Diagnostics.Debug.WriteLine("ScrollByteIntoView()", "HexBox");
+            //System.Diagnostics.Debug.WriteLine("ScrollByteIntoView()", "HexBox");
 
             ScrollByteIntoView(_bytePos);
         }
@@ -1640,7 +1640,7 @@ namespace Be.Windows.Forms
         /// <param name="index">the index of the byte</param>
         public void ScrollByteIntoView(long index)
         {
-            System.Diagnostics.Debug.WriteLine("ScrollByteIntoView(long index)", "HexBox");
+            //System.Diagnostics.Debug.WriteLine("ScrollByteIntoView(long index)", "HexBox");
 
             if (_byteProvider == null || _keyInterpreter == null)
                 return;
@@ -1662,7 +1662,7 @@ namespace Be.Windows.Forms
         #region Selection methods
         void ReleaseSelection()
         {
-            System.Diagnostics.Debug.WriteLine("ReleaseSelection()", "HexBox");
+            //System.Diagnostics.Debug.WriteLine("ReleaseSelection()", "HexBox");
 
             if (_selectionLength == 0)
                 return;
@@ -1788,7 +1788,7 @@ namespace Be.Windows.Forms
             if (_byteProvider == null || _keyInterpreter == null || _caretVisible || !this.Focused)
                 return;
 
-            System.Diagnostics.Debug.WriteLine("CreateCaret()", "HexBox");
+            //System.Diagnostics.Debug.WriteLine("CreateCaret()", "HexBox");
 
             // define the caret width depending on InsertActive mode
             int caretWidth = (this.InsertActive) ? 1 : (int)_charSize.Width;
@@ -1807,7 +1807,7 @@ namespace Be.Windows.Forms
             if (_byteProvider == null || _keyInterpreter == null)
                 return;
 
-            System.Diagnostics.Debug.WriteLine("UpdateCaret()", "HexBox");
+            //System.Diagnostics.Debug.WriteLine("UpdateCaret()", "HexBox");
 
             long byteIndex = _bytePos - _startByte;
             PointF p = _keyInterpreter.GetCaretPointF(byteIndex);
@@ -1820,7 +1820,7 @@ namespace Be.Windows.Forms
             if (!_caretVisible)
                 return;
 
-            System.Diagnostics.Debug.WriteLine("DestroyCaret()", "HexBox");
+            //System.Diagnostics.Debug.WriteLine("DestroyCaret()", "HexBox");
 
             NativeMethods.DestroyCaret();
             _caretVisible = false;
@@ -1828,7 +1828,7 @@ namespace Be.Windows.Forms
 
         void SetCaretPosition(Point p)
         {
-            System.Diagnostics.Debug.WriteLine("SetCaretPosition()", "HexBox");
+            //System.Diagnostics.Debug.WriteLine("SetCaretPosition()", "HexBox");
 
             if (_byteProvider == null || _keyInterpreter == null)
                 return;
@@ -1864,7 +1864,7 @@ namespace Be.Windows.Forms
 
         BytePositionInfo GetHexBytePositionInfo(Point p)
         {
-            System.Diagnostics.Debug.WriteLine("GetHexBytePositionInfo()", "HexBox");
+            //System.Diagnostics.Debug.WriteLine("GetHexBytePositionInfo()", "HexBox");
 
             long bytePos;
             int byteCharaterPos;
@@ -1892,7 +1892,7 @@ namespace Be.Windows.Forms
 
         BytePositionInfo GetStringBytePositionInfo(Point p)
         {
-            System.Diagnostics.Debug.WriteLine("GetStringBytePositionInfo()", "HexBox");
+            //System.Diagnostics.Debug.WriteLine("GetStringBytePositionInfo()", "HexBox");
 
             long bytePos;
             int byteCharacterPos;
@@ -2379,7 +2379,7 @@ namespace Be.Windows.Forms
             if (_byteProvider == null)
                 return;
 
-            System.Diagnostics.Debug.WriteLine("OnPaint " + DateTime.Now.ToString(), "HexBox");
+            //System.Diagnostics.Debug.WriteLine("OnPaint " + DateTime.Now.ToString(), "HexBox");
 
             // draw only in the content rectangle, so exclude the border and the scrollbar.
             Region r = new Region(ClientRectangle);
@@ -3963,7 +3963,7 @@ namespace Be.Windows.Forms
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("OnMouseDown()", "HexBox");
+            //System.Diagnostics.Debug.WriteLine("OnMouseDown()", "HexBox");
 
             if (!Focused)
                 Focus();
@@ -4003,7 +4003,7 @@ namespace Be.Windows.Forms
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected override void OnGotFocus(EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("OnGotFocus()", "HexBox");
+            //System.Diagnostics.Debug.WriteLine("OnGotFocus()", "HexBox");
 
             base.OnGotFocus(e);
 
@@ -4016,7 +4016,7 @@ namespace Be.Windows.Forms
         /// <param name="e">An EventArgs that contains the event data.</param>
         protected override void OnLostFocus(EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("OnLostFocus()", "HexBox");
+            //System.Diagnostics.Debug.WriteLine("OnLostFocus()", "HexBox");
 
             base.OnLostFocus(e);
 
