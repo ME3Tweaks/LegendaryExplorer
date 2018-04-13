@@ -25,12 +25,14 @@ namespace ME3Explorer
         {
             if (SingleInstance<App>.InitializeAsFirstInstance(Unique, out int exitCode))
             {
+                AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+
                 SplashScreen splashScreen = new SplashScreen("resources/toolset_splash.png");
                 if (Environment.GetCommandLineArgs().Length == 1)
                 {
                     splashScreen.Show(false);
                 }
-                SetDllDirectory(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "lib"));
+                //SetDllDirectory(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "lib"));
                 App app = new App();
                 app.InitializeComponent();
                 splashScreen.Close(TimeSpan.FromMilliseconds(1));
@@ -44,6 +46,30 @@ namespace ME3Explorer
             {
                 Environment.Exit(exitCode);
             }
+        }
+
+        /// <summary>
+        /// Resolves assemblies in lib.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        private static System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            var probingPath = AppDomain.CurrentDomain.BaseDirectory + @"lib";
+            var assyName = new AssemblyName(args.Name);
+
+            var newPath = Path.Combine(probingPath, assyName.Name);
+            if (!newPath.EndsWith(".dll"))
+            {
+                newPath = newPath + ".dll";
+            }
+            if (File.Exists(newPath))
+            {
+                var assy = Assembly.LoadFile(newPath);
+                return assy;
+            }
+            return null;
         }
 
         //
