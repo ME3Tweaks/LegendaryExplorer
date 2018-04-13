@@ -246,7 +246,8 @@ namespace ME3Explorer
             // 
             this.splitContainer1.Panel2.Controls.Add(this.treeView1);
             this.splitContainer1.Size = new System.Drawing.Size(992, 351);
-            this.splitContainer1.SplitterDistance = 205;
+            this.splitContainer1.SplitterDistance = 285;
+            this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 3;
             this.splitContainer1.SplitterMoving += new System.Windows.Forms.SplitterCancelEventHandler(this.splitContainer1_SplitterMoving);
             // 
@@ -262,7 +263,7 @@ namespace ME3Explorer
             this.hb1.MinBytesPerLine = 4;
             this.hb1.Name = "hb1";
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(205, 351);
+            this.hb1.Size = new System.Drawing.Size(285, 351);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
             this.hb1.VScrollBarVisible = true;
@@ -276,7 +277,7 @@ namespace ME3Explorer
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(783, 351);
+            this.treeView1.Size = new System.Drawing.Size(701, 351);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);

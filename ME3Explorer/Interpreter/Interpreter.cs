@@ -2774,7 +2774,12 @@ namespace ME3Explorer
         private void splitContainer1_SplitterMoving(object sender, SplitterCancelEventArgs e)
         {
             //a hack to set max width for SplitContainer1
-            splitContainer1.Panel2MinSize = splitContainer1.Width - HEXBOX_MAX_WIDTH;
+            int width = splitContainer1.Width - HEXBOX_MAX_WIDTH;
+            if (width < 0)
+            {
+                width = 20; //somehow this sometimes is a negative value because the container width is not > 650.
+            }
+            splitContainer1.Panel2MinSize = width;
         }
 
         private void toggleHexWidthButton_Click(object sender, EventArgs e)

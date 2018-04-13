@@ -65,6 +65,9 @@
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ClosedXML, Version=0.91.0.0, Culture=neutral, PublicKeyToken=fd1eb21b62ae805b, processorArchitecture=MSIL">
       <HintPath>..\packages\ClosedXML.0.91.0\lib\net452\ClosedXML.dll</HintPath>
@@ -1371,6 +1374,7 @@
     <EmbeddedResource Include="WwiseBankViewer\WwiseViewer.resx">
       <DependentUpon>WwiseViewer.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.manifest" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -1632,8 +1636,6 @@
 xcopy /f /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
 xcopy /f /y "$(SolutionDir)Resources\exec" "$(ProjectDir)$(OutDir)exec\"
 xcopy /y "$(SolutionDir)ME3Creator\$(OutDir)ME3Creator.exe.config" "$(ProjectDir)$(OutDir)"
-call "$(DevEnvDir)..\Tools\vsdevcmd.bat"
-editbin /largeaddressaware "$(TargetPath)"
 del /s "$(TargetDir)*.xml"
 if $(ConfigurationName) == Release (copy "$(SolutionDir)Deployment\ReleaseBuilder.cmd" "$(TargetDir)..\ReleaseBuilder.bat" /y)
 if $(ConfigurationName) == Release (copy "$(SolutionDir)Deployment\ReleaseBuilder.ps1" "$(TargetDir)..\ReleaseBuilder.ps1" /y)
@@ -1646,4 +1648,10 @@ if $(ConfigurationName) == Release (copy "$(SolutionDir)Deployment\ReleaseBuilde
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="AfterBuild">
+    <ItemGroup>
+      <MoveToLibFolder Include="$(OutputPath)*.dll ; $(OutputPath)*.pdb ; $(OutputPath)*.xml" />
+    </ItemGroup>
+    <Move SourceFiles="@(MoveToLibFolder)" DestinationFolder="$(OutputPath)lib" OverwriteReadOnlyFiles="true" />
+  </Target>
 </Project>

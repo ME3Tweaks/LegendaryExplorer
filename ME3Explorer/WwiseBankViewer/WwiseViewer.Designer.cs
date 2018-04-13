@@ -52,11 +52,16 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.listBox2 = new System.Windows.Forms.ListBox();
+            this.toolStrip2 = new System.Windows.Forms.ToolStrip();
             this.hb2 = new Be.Windows.Forms.HexBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.saveHexChangesButton = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.openFileLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.searchHexTextBox = new System.Windows.Forms.ToolStripTextBox();
+            this.searchHexButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.searchHexStatus = new System.Windows.Forms.ToolStripLabel();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -70,6 +75,7 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            this.toolStrip2.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -292,6 +298,7 @@
             // splitContainer2.Panel1
             // 
             this.splitContainer2.Panel1.Controls.Add(this.listBox2);
+            this.splitContainer2.Panel1.Controls.Add(this.toolStrip2);
             // 
             // splitContainer2.Panel2
             // 
@@ -308,11 +315,24 @@
             this.listBox2.FormattingEnabled = true;
             this.listBox2.IntegralHeight = false;
             this.listBox2.ItemHeight = 16;
-            this.listBox2.Location = new System.Drawing.Point(0, 0);
+            this.listBox2.Location = new System.Drawing.Point(0, 25);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(482, 171);
+            this.listBox2.Size = new System.Drawing.Size(482, 146);
             this.listBox2.TabIndex = 0;
             this.listBox2.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
+            // 
+            // toolStrip2
+            // 
+            this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.searchHexTextBox,
+            this.searchHexButton,
+            this.toolStripSeparator1,
+            this.searchHexStatus});
+            this.toolStrip2.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip2.Name = "toolStrip2";
+            this.toolStrip2.Size = new System.Drawing.Size(482, 25);
+            this.toolStrip2.TabIndex = 1;
+            this.toolStrip2.Text = "toolStrip2";
             // 
             // hb2
             // 
@@ -365,6 +385,31 @@
             this.openFileLabel.Name = "openFileLabel";
             this.openFileLabel.Size = new System.Drawing.Size(0, 17);
             // 
+            // searchHexTextBox
+            // 
+            this.searchHexTextBox.Name = "searchHexTextBox";
+            this.searchHexTextBox.Size = new System.Drawing.Size(100, 25);
+            // 
+            // searchHexButton
+            // 
+            this.searchHexButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.searchHexButton.Image = ((System.Drawing.Image)(resources.GetObject("searchHexButton.Image")));
+            this.searchHexButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.searchHexButton.Name = "searchHexButton";
+            this.searchHexButton.Size = new System.Drawing.Size(69, 22);
+            this.searchHexButton.Text = "Search Hex";
+            this.searchHexButton.Click += new System.EventHandler(this.searchHexButton_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // searchHexStatus
+            // 
+            this.searchHexStatus.Name = "searchHexStatus";
+            this.searchHexStatus.Size = new System.Drawing.Size(0, 22);
+            // 
             // WwiseEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -388,10 +433,13 @@
             this.tabPage2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel1.PerformLayout();
             this.splitContainer2.Panel2.ResumeLayout(false);
             this.splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.toolStrip2.ResumeLayout(false);
+            this.toolStrip2.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
@@ -431,5 +479,10 @@
         private System.Windows.Forms.ToolStripButton saveHexChangesButton;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel openFileLabel;
+        private System.Windows.Forms.ToolStrip toolStrip2;
+        private System.Windows.Forms.ToolStripTextBox searchHexTextBox;
+        private System.Windows.Forms.ToolStripButton searchHexButton;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripLabel searchHexStatus;
     }
 }
