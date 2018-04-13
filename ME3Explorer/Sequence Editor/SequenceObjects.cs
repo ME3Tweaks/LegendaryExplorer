@@ -256,7 +256,7 @@ namespace ME3Explorer.SequenceObjects
                         {
                             if (prop.Name == "m_sObjectTagToFind")
                             {
-                                return (prop as StrProperty).Value;
+                                return (prop as StrProperty)?.Value ?? (prop as NameProperty).Value;
                             }
                             else if (prop.Name == "ObjValue")
                             {
