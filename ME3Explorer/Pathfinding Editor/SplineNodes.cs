@@ -196,7 +196,7 @@ namespace ME3Explorer.SplineNodes
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(255, 30, 30);
-        PointF[] edgeShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(30, 50), new PointF(0, 50) };
+        PointF[] edgeShape = new PointF[] { new PointF(0, 50), new PointF(0, 25), new PointF(10, 15), new PointF(15, 10), new PointF(30, 5), new PointF(40, 0), new PointF(50, 0), new PointF(40,5), new PointF(30, 10), new PointF(15, 15), new PointF(5, 25) };
         public SplineActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
@@ -261,7 +261,7 @@ namespace ME3Explorer.SplineNodes
                 shape.Pickable = false;
                 this.AddChild(shape);
                 this.Bounds = new RectangleF(0, 0, w, h);
-                val = new SText("Spline Start");
+                val = new SText(export.Index+"\nSpline Start");
                 val.Pickable = false;
                 val.TextAlignment = StringAlignment.Center;
                 val.X = w / 2 - val.Width / 2;
@@ -322,7 +322,7 @@ namespace ME3Explorer.SplineNodes
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText("Spline End");
+            val = new SText(export.Index + "\nSpline End");
             val.Pickable = false;
             val.TextAlignment = StringAlignment.Center;
             val.X = w / 2 - val.Width / 2;

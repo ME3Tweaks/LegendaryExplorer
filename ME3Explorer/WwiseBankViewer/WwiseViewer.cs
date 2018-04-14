@@ -274,5 +274,48 @@ namespace ME3Explorer.WwiseBankEditor
                 }
             }
         }
+        private void searchHexButton_Click(object sender, EventArgs e)
+        {
+            if (bank == null)
+                return;
+            int m = listBox2.SelectedIndex;
+            if (m == -1)
+                m = 0;
+            string hexString = searchHexTextBox.Text.Replace(" ", string.Empty);
+            if (hexString.Length == 0)
+                return;
+            if (!HexConverter.Hexconverter.isHexString(hexString))
+            {
+                searchHexStatus.Text = "Illegal characters in Hex String";
+                return;
+            }
+            if (hexString.Length % 2 != 0)
+            {
+                searchHexStatus.Text = "Odd number of characters in Hex String";
+                return;
+            }
+            byte[] buff = new byte[hexString.Length / 2];
+            for (int i = 0; i < hexString.Length / 2; i++)
+            {
+                buff[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
+            }
+            byte[] hirc;
+            int count = bank.HIRCObjects.Count;
+            int hexboxIndex = (int)hb2.SelectionStart + 1;
+            for (int i = 0; i < count; i++)
+            {
+                hirc = bank.HIRCObjects[(i + m) % count]; //search from selected index, and loop back around
+                int indexIn = hirc.IndexOfArray(buff, hexboxIndex);
+                if (indexIn > -1)
+                {
+                    listBox2.SelectedIndex = (i + m) % count;
+                    hb2.Select(indexIn, buff.Length);
+                    searchHexStatus.Text = "";
+                    return;
+                }
+                hexboxIndex = 0;
+            }
+            searchHexStatus.Text = "Hex not found";
+        }
     }
 }

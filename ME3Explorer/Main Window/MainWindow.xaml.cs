@@ -36,7 +36,7 @@ namespace ME3Explorer
         private bool ToolInfoPanelOpen = false;
         private bool PathsPanelOpen = false;
         private bool TaskPaneInfoPanelOpen = false;
-        
+
         Brush HighlightBrush = Application.Current.FindResource("HighlightColor") as Brush;
         Brush LabelTextBrush = Application.Current.FindResource("LabelTextBrush") as Brush;
 
@@ -49,7 +49,7 @@ namespace ME3Explorer
         // Using a DependencyProperty as the backing store for DisableFlyouts.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DisableFlyoutsProperty =
             DependencyProperty.Register("DisableFlyouts", typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
-        
+
 
         public MainWindow()
         {
@@ -153,7 +153,7 @@ namespace ME3Explorer
         {
             KFreonLib.Debugging.DebugOutput.StartDebugger("ME3Explorer Main Window");
         }
-        
+
         private void Logo_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (CICOpen)
@@ -232,18 +232,22 @@ namespace ME3Explorer
             string[] words = SearchBox.Text.ToLower().Split(' ');
             foreach (Tool tool in Tools.Items)
             {
-                foreach (string word in words)
+                if (tool.open != null)
                 {
-                    if (tool.tags.FuzzyMatch(word) || tool.name.ToLower().Split(' ').FuzzyMatch(word))
+                    foreach (string word in words)
                     {
-                        results.Add(tool);
-                        break;
+                        if (tool.tags.FuzzyMatch(word) || tool.name.ToLower().Split(' ').FuzzyMatch(word))
+                        {
+                            results.Add(tool);
+                            break;
+                        }
                     }
                 }
             }
+
             searchPanel.setToolList(results);
         }
-        
+
         private void SearchBox_LostFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             if (SearchOpen && SearchBox.Text.Trim() == string.Empty)
@@ -497,7 +501,7 @@ namespace ME3Explorer
                 if (ofd.ShowDialog() == true)
                 {
                     string result = Path.GetDirectoryName(Path.GetDirectoryName(ofd.FileName));
-                    
+
                     switch (game)
                     {
                         case "MassEffect":

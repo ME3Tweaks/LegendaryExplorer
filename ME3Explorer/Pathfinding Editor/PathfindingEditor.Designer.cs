@@ -93,6 +93,7 @@ namespace ME3Explorer
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openInCurveEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -248,7 +249,7 @@ namespace ME3Explorer
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
             this.loadToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
@@ -256,28 +257,28 @@ namespace ME3Explorer
             // 
             this.savePccToolStripMenuItem.Name = "savePccToolStripMenuItem";
             this.savePccToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.savePccToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.savePccToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.savePccToolStripMenuItem.Text = "Save pcc";
             this.savePccToolStripMenuItem.Click += new System.EventHandler(this.savePccToolStripMenuItem_Click_1);
             // 
             // savePCCAsMenuItem
             // 
             this.savePCCAsMenuItem.Name = "savePCCAsMenuItem";
-            this.savePCCAsMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.savePCCAsMenuItem.Size = new System.Drawing.Size(173, 22);
             this.savePCCAsMenuItem.Text = "Save pcc As";
             this.savePCCAsMenuItem.Click += new System.EventHandler(this.savePCCAsMenuItem_Click);
             // 
             // saveViewToolStripMenuItem
             // 
             this.saveViewToolStripMenuItem.Name = "saveViewToolStripMenuItem";
-            this.saveViewToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveViewToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.saveViewToolStripMenuItem.Text = "Save graph as PNG";
             this.saveViewToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
             // 
             // recentToolStripMenuItem
             // 
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.recentToolStripMenuItem.Text = "Recent";
             // 
             // optionsToolStripMenuItem
@@ -477,6 +478,7 @@ namespace ME3Explorer
             this.rightMouseButtonMenu.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.rightMouseButtonMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openInPackageEditorToolStripMenuItem,
+            this.openInCurveEditorToolStripMenuItem,
             this.cloneToolStripMenuItem,
             this.breakLinksToolStripMenuItem,
             this.changeNodeTypeToolStripMenuItem,
@@ -486,7 +488,7 @@ namespace ME3Explorer
             this.generateNewRandomGUIDToolStripMenuItem,
             this.addToSFXCombatZoneToolStripMenuItem});
             this.rightMouseButtonMenu.Name = "contextMenuStrip1";
-            this.rightMouseButtonMenu.Size = new System.Drawing.Size(298, 202);
+            this.rightMouseButtonMenu.Size = new System.Drawing.Size(298, 246);
             // 
             // openInPackageEditorToolStripMenuItem
             // 
@@ -692,6 +694,13 @@ namespace ME3Explorer
             this.addObjectToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.addObjectToolStripMenuItem.Text = "Add Object";
             // 
+            // openInCurveEditorToolStripMenuItem
+            // 
+            this.openInCurveEditorToolStripMenuItem.Name = "openInCurveEditorToolStripMenuItem";
+            this.openInCurveEditorToolStripMenuItem.Size = new System.Drawing.Size(297, 22);
+            this.openInCurveEditorToolStripMenuItem.Text = "Open in Curve Editor";
+            this.openInCurveEditorToolStripMenuItem.Click += new System.EventHandler(this.openInCurveEditorToolStripMenuItem_Click);
+            // 
             // PathfindingEditor
             // 
             this.AllowDrop = true;
@@ -798,5 +807,6 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripMenuItem splinesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setGraphPositionAsSplineLocationXYToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openInCurveEditorToolStripMenuItem;
     }
 }

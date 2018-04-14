@@ -148,6 +148,29 @@ namespace ME3Explorer
         {
             return (T[])src.Clone();
         }
+
+        //https://stackoverflow.com/a/26880541
+        /// <summary>
+        /// Searches for the specified array and returns the index of its first occurence, or -1 if it is not found
+        /// </summary>
+        /// <param name="haystack">The one-dimensional array to search</param>
+        /// <param name="needle">The object to locate in <paramref name="haystack" /></param>
+        /// <param name="start">The index to start searching at</param>
+        public static int IndexOfArray<T>(this T[] haystack, T[] needle, int start = 0) where T : IEquatable<T>
+        {
+            var len = needle.Length;
+            var limit = haystack.Length - len;
+            for (var i = start; i <= limit; i++)
+            {
+                var k = 0;
+                for (; k < len; k++)
+                {
+                    if (!needle[k].Equals(haystack[i + k])) break;
+                }
+                if (k == len) return i;
+            }
+            return -1;
+        }
     }
 
     public static class StringExtensions
