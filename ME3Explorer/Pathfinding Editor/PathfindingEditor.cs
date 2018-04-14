@@ -447,6 +447,17 @@ namespace ME3Explorer
                                 {
                                     CurrentObjects.Add(exportEntry.Index);
                                     activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
+                                    ArrayProperty<StructProperty> connectionsProp = exportEntry.GetProperty<ArrayProperty<StructProperty>>("Connections");
+                                    if (connectionsProp != null)
+                                    {
+                                        foreach (StructProperty connectionProp in connectionsProp)
+                                        {
+                                            ObjectProperty splinecomponentprop = connectionProp.GetProp<ObjectProperty>("SplineComponent");
+                                            IExportEntry splineComponentExport = pcc.getExport(splinecomponentprop.Value - 1);
+                                            CurrentObjects.Add(splinecomponentprop.Value - 1);
+                                            activeExportsListbox.Items.Add("#" + (splineComponentExport.Index) + " " + splineComponentExport.ObjectName + " - Class: " + splineComponentExport.ClassName);
+                                        }
+                                    }
                                 }
                             }
 
@@ -941,7 +952,7 @@ namespace ME3Explorer
                                     {
                                         ObjectProperty splinecomponentprop = connectionProp.GetProp<ObjectProperty>("SplineComponent");
                                         IExportEntry splineComponentExport = pcc.getExport(splinecomponentprop.Value - 1);
-                                        Debug.WriteLine(splineComponentExport.GetFullPath + " " + splinecomponentprop.Value);
+                                        //Debug.WriteLine(splineComponentExport.GetFullPath + " " + splinecomponentprop.Value);
                                         StructProperty splineInfo = splineComponentExport.GetProperty<StructProperty>("SplineInfo");
                                         if (splineInfo != null)
                                         {
@@ -1125,39 +1136,40 @@ namespace ME3Explorer
             {
                 pfm.Deselect();
             }
-            if (!(node is SplinePoint0Node) && !(node is SplinePoint1Node))
+            int selected = CurrentObjects.IndexOf(n);
+            if (selected == -1)
+                return;
+            activeExportsListbox.SelectedIndex = selected;
+            if ((node is SplinePoint0Node) || (node is SplinePoint1Node))
             {
-                int selected = CurrentObjects.IndexOf(n);
-                if (selected == -1)
-                    return;
-                activeExportsListbox.SelectedIndex = selected;
-            }
-            else
-            {
-                GetProperties(node.export);
-                graphEditor.Refresh();
-                splitContainer2.Panel2Collapsed = false;
                 node.Select();
-                activeExportsListbox.SelectedIndex = -1;
             }
             CurrentlySelectedSplinePoint = null;
             selectedByNode = true;
-            addToSFXCombatZoneToolStripMenuItem.Enabled = false;
             if (e.Button == MouseButtons.Right)
             {
                 addToSFXCombatZoneToolStripMenuItem.DropDownItems.Clear();
                 breakLinksToolStripMenuItem.DropDownItems.Clear();
+                breakLinksToolStripMenuItem.Visible = false;
                 setGraphPositionAsNodeLocationToolStripMenuItem.Visible = true;
                 setGraphPositionAsSplineLocationXYToolStripMenuItem.Visible = false;
-
+                openInCurveEditorToolStripMenuItem.Visible = false;
+                cloneToolStripMenuItem.Visible = false;
+                changeNodeTypeToolStripMenuItem.Visible = false;
+                createReachSpecToolStripMenuItem.Visible = false;
+                generateNewRandomGUIDToolStripMenuItem.Visible = false;
+                addToSFXCombatZoneToolStripMenuItem.Visible = false;
                 IExportEntry nodeExp = pcc.Exports[n];
                 var properties = nodeExp.GetProperties();
 
                 if (node is PathfindingNode)
                 {
-                    changeNodeTypeToolStripMenuItem.Enabled = true;
-                    createReachSpecToolStripMenuItem.Enabled = true;
-                    generateNewRandomGUIDToolStripMenuItem.Enabled = true;
+                    breakLinksToolStripMenuItem.Visible = true;
+
+                    cloneToolStripMenuItem.Visible = true;
+                    changeNodeTypeToolStripMenuItem.Visible = true;
+                    createReachSpecToolStripMenuItem.Visible = true;
+                    generateNewRandomGUIDToolStripMenuItem.Visible = true;
                     if (node.export.ClassName == "CoverSlotMarker")
                     {
                         ToolStripDropDown combatZonesDropdown = new ToolStripDropDown();
@@ -1174,7 +1186,7 @@ namespace ME3Explorer
                             };
                             combatZonesDropdown.Items.Add(combatZoneItem);
                         }
-                        addToSFXCombatZoneToolStripMenuItem.Enabled = true;
+                        addToSFXCombatZoneToolStripMenuItem.Visible = true;
                         addToSFXCombatZoneToolStripMenuItem.DropDown = combatZonesDropdown;
                     }
 
@@ -1182,7 +1194,7 @@ namespace ME3Explorer
                     //open in InterpEditor
                     string className = pcc.getExport(((PathfindingNodes.PathfindingNode)sender).Index).ClassName;
                     //break links
-                    breakLinksToolStripMenuItem.Enabled = false;
+                    breakLinksToolStripMenuItem.Visible = false;
                     breakLinksToolStripMenuItem.DropDown = null;
                     ToolStripMenuItem breaklLinkItem;
                     ToolStripDropDown submenu = new ToolStripDropDown();
@@ -1204,34 +1216,24 @@ namespace ME3Explorer
                             submenu.Items.Add(breaklLinkItem);
                         }
 
-                        breakLinksToolStripMenuItem.Enabled = true;
+                        breakLinksToolStripMenuItem.Visible = true;
                         breakLinksToolStripMenuItem.DropDown = submenu;
                     }
                 }
                 else if (node is ActorNode)
                 {
-                    changeNodeTypeToolStripMenuItem.Enabled = false;
-                    generateNewRandomGUIDToolStripMenuItem.Enabled = false;
-                    createReachSpecToolStripMenuItem.Enabled = false;
-                    addToSFXCombatZoneToolStripMenuItem.Enabled = false;
+                    cloneToolStripMenuItem.Visible = true;
                     addToSFXCombatZoneToolStripMenuItem.DropDown = null;
-                    breakLinksToolStripMenuItem.Enabled = false;
                     breakLinksToolStripMenuItem.DropDown = null;
-
                     rightMouseButtonMenu.Show(MousePosition);
-
                 }
                 else if (node is SplinePoint0Node || node is SplinePoint1Node)
                 {
                     setGraphPositionAsNodeLocationToolStripMenuItem.Visible = false;
                     setGraphPositionAsSplineLocationXYToolStripMenuItem.Visible = true;
+                    openInCurveEditorToolStripMenuItem.Visible = true;
                     CurrentlySelectedSplinePoint = node;
-                    changeNodeTypeToolStripMenuItem.Enabled = false;
-                    generateNewRandomGUIDToolStripMenuItem.Enabled = false;
-                    createReachSpecToolStripMenuItem.Enabled = false;
-                    addToSFXCombatZoneToolStripMenuItem.Enabled = false;
                     addToSFXCombatZoneToolStripMenuItem.DropDown = null;
-                    breakLinksToolStripMenuItem.Enabled = false;
                     breakLinksToolStripMenuItem.DropDown = null;
                     rightMouseButtonMenu.Show(MousePosition);
                 }
@@ -1260,7 +1262,7 @@ namespace ME3Explorer
                 volumes = nodeExp.GetProperty<ArrayProperty<StructProperty>>("Volumes");
             }
             byte[] actorRef = new byte[20]; //5 ints
-            //GUID of combat zone
+                                            //GUID of combat zone
             StructProperty guid = combatZoneExp.GetProperty<StructProperty>("CombatZoneGUID");
             int a = guid.GetProp<IntProperty>("A");
             int b = guid.GetProp<IntProperty>("D");
@@ -3221,7 +3223,7 @@ namespace ME3Explorer
                 // Calculate value at this point and the next, and then compute the change
                 // - USED FOR SAME AS SOURCE DISTRIBUTION
                 Vector3 startValue = evaluateBezier3D(startPoint, b, c, endPoint, outvals[i]);
-                Vector3 endValue = evaluateBezier3D(startPoint, b, c, endPoint, outvals[i+1]);
+                Vector3 endValue = evaluateBezier3D(startPoint, b, c, endPoint, outvals[i + 1]);
                 Vector3 dValue = endValue - startValue; // Change in value over 1/9th units, more operator overloading! Woo!
 
                 // Calculate, accumulate, and record the distance
@@ -3232,6 +3234,19 @@ namespace ME3Explorer
             return table;
         }
         #endregion
+
+        private void openInCurveEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (activeExportsListbox.SelectedIndex < 0)
+            {
+                return;
+            }
+            int l = CurrentObjects[activeExportsListbox.SelectedIndex];
+            if (l == -1)
+                return;
+            CurveEd.CurveEditor c = new CurveEd.CurveEditor(pcc.getExport(l));
+            c.Show();
+        }
     }
 
     public class PathingZoomController
