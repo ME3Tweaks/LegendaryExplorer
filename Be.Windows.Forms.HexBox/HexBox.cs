@@ -3700,7 +3700,14 @@ namespace Be.Windows.Forms
             if (_iHexMaxHBytes == value)
                 return;
 
-            _iHexMaxHBytes = value;
+            if (value > MinBytesPerLine)
+            {
+                _iHexMaxHBytes = value;
+            }
+            else
+            {
+                _iHexMaxHBytes = MinBytesPerLine;
+            }
             OnHorizontalByteCountChanged(EventArgs.Empty);
         }
 
