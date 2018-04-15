@@ -2016,7 +2016,7 @@ Floats*/
                 {
                     return;
                 }
-                else if (memory.Length - pos < 8 && type != nodeType.StructLeafObject)
+                else if (memory.Length - pos < 8 && type == nodeType.StructLeafName)
                 {
                     return;
                 }
