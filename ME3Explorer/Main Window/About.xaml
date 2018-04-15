@@ -19,7 +19,7 @@
         </StackPanel>
         <Rectangle Height="6" Fill="#FFF3F3F3"/>
         <TextBlock FontFamily="{StaticResource Exo-SemiBold}" Foreground="#FF080808" FontSize="18" HorizontalAlignment="Center" Margin="0,9">
-            <Run Text="Source Code available at "/>
+            <Run Text="Source code available at "/>
             <Hyperlink NavigateUri="http://github.com/Mgamerz/ME3Explorer/" Foreground="#FF182574" local:HyperlinkExtensions.IsExternal="True">https://github.com/Mgamerz/ME3Explorer</Hyperlink>
         </TextBlock>
         <Grid Height="32" Background="#FFBFBFBF">
@@ -32,11 +32,15 @@
                 <ColumnDefinition Width="385"/>
             </Grid.ColumnDefinitions>
             <StackPanel>
-                <TextBlock Text="Mainline Staff" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="17"/>
+                <TextBlock Text="Current Developers" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="17"/>
+                <TextBlock Text="ME3Tweaks Fork" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="14"/>
                 <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="7,0,0,0">
-                    <Run Text="• SirCxyrtyx - Lead Developer"/><LineBreak/>
-                    <Run Text="• Kfreon - Programmer"/><LineBreak/>
-                    <Run Text="• Giftfish - Coordinator"/>
+                    <Run Text="• Mgamerz - Developer"/>
+
+                </TextBlock>
+                <TextBlock Text="Upstream" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="14"/>
+                <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="7,0,0,0">
+                    <Run Text="• SirCxyrtyx - Developer"/>
                 </TextBlock>
                 <Label FontFamily="{StaticResource TitilliumWeb-Light}"
                        FontSize="14" Foreground="#FF808080" BorderBrush="#FFA8A8A8" BorderThickness="2" Width="179" HorizontalAlignment="Center"
@@ -88,7 +92,7 @@
                         Ashley66444   <LineBreak/>
                         JohnP         <LineBreak/>
                         SirCxyrtyx    <LineBreak/>
-                        FemShep       <LineBreak/>
+                        ME3Tweaks     <LineBreak/>
                         MrFob         <LineBreak/>
                         Heff          <LineBreak/>
                         </TextBlock>
@@ -153,28 +157,27 @@
         </Grid>
         <StackPanel Margin="10,0">
             <TextBlock TextWrapping="Wrap" FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="16" Margin="0,3,0,0">
-                <Run FontFamily="{StaticResource TitilliumWeb-SemiBold}">ME3Explorer</Run> is free software and may be changed or distributed
-                as specified by the terms of The MIT License. ME3Explorer is supplied without warranty; any problems incurred through use of the
-                software are your responsibility, not ours.
+                <Run FontFamily="{StaticResource TitilliumWeb-SemiBold}">ME3Explorer</Run> is licensed under GPLv3.
             </TextBlock>
             <RichTextBox x:Name="licenseBox" IsReadOnly="True" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto" Height="175" Margin="0,3,0,10">
                 <RichTextBox.Document>
                     <FlowDocument>
                         <Paragraph>
-                            <Run Text="The MIT License" FontWeight="Bold"/>
+                            <Run Text="The GPLv3 License" FontWeight="Bold"/>
                         </Paragraph>
-                        <Paragraph>
-                            Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
-                            to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
-                            and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+                        <Paragraph>This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
                         </Paragraph>
-                        <Paragraph>
-                            The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+                        <Paragraph>This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
                         </Paragraph>
-                        <Paragraph>
-                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-                            FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-                            DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                        <Paragraph>You should have received a copy of the GNU General Public License
+    along with this program.  If not, see
+                        \&lt;http://www.gnu.org/licenses/&gt;
                         </Paragraph>
                     </FlowDocument>
                 </RichTextBox.Document>
