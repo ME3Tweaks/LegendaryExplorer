@@ -204,7 +204,7 @@ namespace ME3Explorer
 
         public void AddRecent(string s, bool loadingList)
         {
-            RFiles.Remove(s);
+            RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
             if (loadingList)
             {
                 RFiles.Add(s); //in order
@@ -217,6 +217,7 @@ namespace ME3Explorer
             {
                 RFiles.RemoveRange(10, RFiles.Count - 10);
             }
+            recentToolStripMenuItem.Enabled = true;
         }
 
         public void InitStuff()
@@ -847,6 +848,7 @@ namespace ME3Explorer
 
         private void LoadRecentList()
         {
+            recentToolStripMenuItem.Enabled = false;
             RFiles = new List<string>();
             RFiles.Clear();
             string path = PackageEditorDataFolder + RECENTFILES_FILE;
@@ -916,7 +918,6 @@ namespace ME3Explorer
             if (File.Exists(s))
             {
                 LoadFile(s);
-                RFiles.Remove(s);
                 AddRecent(s, false);
                 SaveRecentList();
                 RefreshRecent(true, RFiles);
@@ -940,11 +941,6 @@ namespace ME3Explorer
                 }
                 MessageBox.Show("\"" + result + "\" at index " + (idx) + " (" + s + ")");
             }
-        }
-
-        private void recentToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //RefreshRecent();
         }
 
         private void toolStripButton2_Click(object sender, EventArgs e)
