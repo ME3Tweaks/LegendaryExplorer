@@ -13,7 +13,8 @@ namespace ME3Explorer
     public partial class App : ISingleInstanceApp
     {
         const string Unique = "{3BF98E29-9166-43E7-B24C-AA5C57B73BA6}";
-
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        static extern bool SetDllDirectory(string lpPathName);
         /// <summary>
         /// Application Entry Point.
         /// </summary>
@@ -23,7 +24,7 @@ namespace ME3Explorer
             if (SingleInstance<App>.InitializeAsFirstInstance(Unique, out int exitCode))
             {
                 AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-
+                SetDllDirectory(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "lib")); //required for lzo library dllimports
                 SplashScreen splashScreen = new SplashScreen("resources/toolset_splash.png");
                 if (Environment.GetCommandLineArgs().Length == 1)
                 {
