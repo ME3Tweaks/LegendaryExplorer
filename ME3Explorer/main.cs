@@ -25,6 +25,7 @@ namespace ME3Explorer
         {
             if (SingleInstance<App>.InitializeAsFirstInstance(Unique, out int exitCode))
             {
+                AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
                 SplashScreen splashScreen = new SplashScreen("resources/toolset_splash.png");
                 if (Environment.GetCommandLineArgs().Length == 1)
                 {
@@ -44,6 +45,42 @@ namespace ME3Explorer
             {
                 Environment.Exit(exitCode);
             }
+        }
+
+        /// <summary>
+        /// Resolves assemblies in lib.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        private static System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            var probingPath = AppDomain.CurrentDomain.BaseDirectory + @"lib";
+            var assyName = new AssemblyName(args.Name);
+
+            var newPath = Path.Combine(probingPath, assyName.Name);
+            var searchPath = newPath;
+            if (!searchPath.EndsWith(".dll"))
+            {
+                searchPath = searchPath + ".dll";
+            }
+            if (File.Exists(searchPath))
+            {
+                var assy = Assembly.LoadFile(searchPath);
+                return assy;
+            }
+            //look for exe assembly (CSharpImageLibrary)
+            searchPath = newPath;
+            if (!searchPath.EndsWith(".exe"))
+            {
+                searchPath = searchPath + ".exe";
+            }
+            if (File.Exists(searchPath))
+            {
+                var assy = Assembly.LoadFile(searchPath);
+                return assy;
+            }
+            return null;
         }
 
         //
