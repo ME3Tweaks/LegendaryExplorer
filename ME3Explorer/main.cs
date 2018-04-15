@@ -16,8 +16,6 @@ namespace ME3Explorer
         static extern bool SetDllDirectory(string lpPathName);
 
         const string Unique = "{3BF98E29-9166-43E7-B24C-AA5C57B73BA6}";
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        static extern bool SetDllDirectory(string lpPathName);
         /// <summary>
         /// Application Entry Point.
         /// </summary>
@@ -33,7 +31,6 @@ namespace ME3Explorer
                 {
                     splashScreen.Show(false);
                 }
-                SetDllDirectory(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "lib"));
                 App app = new App();
                 app.InitializeComponent();
                 splashScreen.Close(TimeSpan.FromMilliseconds(1));
