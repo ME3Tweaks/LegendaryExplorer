@@ -47,14 +47,18 @@
                 </Grid.RowDefinitions>
                 <ListBox x:Name="linesListBox" SelectionChanged="linesListBox_SelectionChanged"
                  AllowDrop="True" PreviewMouseLeftButtonDown="linesListBox_PreviewMouseLeftButtonDown" MouseMove="linesListBox_MouseMove"
-                 DragEnter="linesListBox_DragEnter" Drop="linesListBox_Drop" HorizontalContentAlignment="Stretch">
+                 DragEnter="linesListBox_DragEnter" Drop="linesListBox_Drop" HorizontalContentAlignment="Stretch" PreviewMouseRightButtonDown="linesListBox_PreviewMouseRightButtonDown">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock>
                                 <Run Text="{Binding NameAsString}"/>
                                 <TextBlock.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Delete" Click="DeleteLine_Click"/>
+                                    <ContextMenu x:Name="lineContextMenu">
+                                        <MenuItem Header="Delete Section of line" Click="DelLineSec_Click"/>
+                                        <MenuItem Header="Import Section of line" Click="ImpLineSec_Click"/>
+                                        <MenuItem Header="Export Section of line" Click="ExpLineSec_Click"/>
+                                        <MenuItem Header="Offset keys after time" Click="OffsetKeysAfterTime_Click" />
+                                        <MenuItem Header="Delete Line" Click="DeleteLine_Click"/>
                                     </ContextMenu>
                                 </TextBlock.ContextMenu>
                             </TextBlock>

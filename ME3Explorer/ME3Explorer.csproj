@@ -228,7 +228,7 @@
     <Compile Include="CoalesceTool\Xml\CoalesceIncludeTarget.cs" />
     <Compile Include="CoalesceTool\Xml\XmlCoalesceAsset.cs" />
     <Compile Include="CoalesceTool\Xml\XmlCoalesceFile.cs" />
-    <Compile Include="FaceFXAnimSetEditor\IME3FaceFXAnimSet.cs" />
+    <Compile Include="FaceFXAnimSetEditor\IFaceFXAnimSet.cs" />
     <Compile Include="GenericWindow.cs" />
     <Compile Include="Interpreter\PropertyEditor.xaml.cs">
       <DependentUpon>PropertyEditor.xaml</DependentUpon>

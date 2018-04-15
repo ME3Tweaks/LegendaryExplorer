@@ -14,8 +14,7 @@ namespace ME3Explorer.FaceFX
     public class ME2FaceFXAnimSet : IFaceFXAnimSet
     {
         IMEPackage pcc;
-        IExportEntry entry;
-        public IExportEntry Export { get { return entry; } }
+        public IExportEntry Export { get; }
         public ME2HeaderStruct header;
         public HeaderStruct Header
         {
@@ -42,10 +41,9 @@ namespace ME3Explorer.FaceFX
         {
             
             pcc = Pcc;
-            entry = Entry;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(entry);
-            int start = props[props.Count - 1].offend + 4;
-            SerializingContainer Container = new SerializingContainer(new MemoryStream(entry.Data.Skip(start).ToArray()));
+            Export = Entry;
+            int start = Export.propsEnd() + 4;
+            SerializingContainer Container = new SerializingContainer(new MemoryStream(Export.Data.Skip(start).ToArray()));
             Container.isLoading = true;
             Serialize(Container);
         }
@@ -295,12 +293,11 @@ namespace ME3Explorer.FaceFX
             Serialize(Container);
             m = Container.Memory;
             MemoryStream res = new MemoryStream();
-            List<PropertyReader.Property> props = PropertyReader.getPropList(entry);
-            int start = props[props.Count - 1].offend;
-            res.Write(entry.Data, 0, start);
+            int start = Export.propsEnd();
+            res.Write(Export.Data, 0, start);
             res.WriteValueS32((int)m.Length);
             res.WriteBytes(m.ToArray());
-            entry.Data = res.ToArray();
+            Export.Data = res.ToArray();
         }
 
         public void CloneEntry(int n)
