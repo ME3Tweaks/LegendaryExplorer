@@ -27,7 +27,7 @@ namespace ME1Explorer.Unreal
                 if (File.Exists(path))
                 {
                     string raw = File.ReadAllText(path);
-                    var blob  = JsonConvert.DeserializeAnonymousType(raw, new { Classes, Structs, Enums });
+                    var blob = JsonConvert.DeserializeAnonymousType(raw, new { Classes, Structs, Enums });
                     Classes = blob.Classes;
                     Structs = blob.Structs;
                     Enums = blob.Enums;
@@ -42,7 +42,7 @@ namespace ME1Explorer.Unreal
         public static string getEnumTypefromProp(string className, string propName, bool inStruct = false)
         {
             PropertyInfo p = getPropertyInfo(className, propName, inStruct);
-            if(p == null && !inStruct)
+            if (p == null && !inStruct)
             {
                 p = getPropertyInfo(className, propName, true);
             }
@@ -72,7 +72,7 @@ namespace ME1Explorer.Unreal
                         if (p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty)
                         {
                             List<string> vals = getEnumfromProp(p.reference, propName, true);
-                            if(vals != null)
+                            if (vals != null)
                             {
                                 return vals;
                             }
@@ -395,7 +395,7 @@ namespace ME1Explorer.Unreal
             }
 
             return p;
-        } 
+        }
         #endregion
     }
 }

@@ -986,6 +986,7 @@ namespace UDKExplorer
             string path = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\UDKhistory.log";
             if (File.Exists(path))
                 File.Delete(path);
+            Directory.CreateDirectory(Directory.GetParent(path).ToString());
             FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
             byte[] buff = BitConverter.GetBytes(RFiles.Count);
             fs.Write(buff, 0, 4);

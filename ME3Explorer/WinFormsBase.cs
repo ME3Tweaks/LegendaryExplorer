@@ -11,7 +11,7 @@ namespace ME3Explorer
 {
     public class WinFormsBase : Form
     {
-        protected IMEPackage pcc;
+        public IMEPackage pcc;
 
         //class really ought to be abstract, but it can't be for the designer to work
         protected WinFormsBase()

@@ -37,6 +37,7 @@ namespace ME3Explorer.Packages
         uint headerOffset { get; set; }
         ulong ObjectFlags { get; set; }
         int OriginalDataSize { get; }
+        bool ReadsFromConfig { get; }
 
         IExportEntry Clone();
         void setHeader(byte[] v);

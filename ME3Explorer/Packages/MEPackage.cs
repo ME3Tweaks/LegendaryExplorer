@@ -32,7 +32,7 @@ namespace ME3Explorer.Packages
         protected const int appendFlag = 0x00100000;
 
         public string FileName { get; protected set; }
-        
+
         public bool IsModified
         {
             get
@@ -261,7 +261,7 @@ namespace ME3Explorer.Packages
             if (-index > 0 && -index <= ImportCount)
                 return imports[-index - 1];
             return null;
-        } 
+        }
         #endregion
 
         private DateTime? lastSaved;
@@ -435,7 +435,7 @@ namespace ME3Explorer.Packages
             {
                 noLongerUsed?.Invoke(this, EventArgs.Empty);
             }
-        } 
+        }
         #endregion
     }
 }

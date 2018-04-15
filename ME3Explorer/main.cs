@@ -34,6 +34,7 @@ namespace ME3Explorer
                 App app = new App();
                 app.InitializeComponent();
                 splashScreen.Close(TimeSpan.FromMilliseconds(1));
+                //will throw exception on some tools when opening over remote desktop.
                 app.Run();
 
                 // Allow single instance code to perform cleanup operations
@@ -48,12 +49,13 @@ namespace ME3Explorer
         //
         public int SignalExternalCommandLineArgs(string[] args)
         {
-            if (!HandleCommandLineArgs(args, out int exitCode))
+            int taskListResponse = HandleCommandLineJumplistCall(args, out int exitCode);
+            if (taskListResponse == 1)
             {
-                //if not called with command line arguments, bring window to the fore
+                //just a new instance
                 MainWindow.RestoreAndBringToFront();
             }
-            return exitCode;
+            return 0;
         }
     }
 }

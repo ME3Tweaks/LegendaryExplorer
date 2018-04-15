@@ -14,6 +14,8 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,15 +28,15 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>embedded</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -42,10 +44,11 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>none</DebugType>
+    <DebugType>embedded</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -53,6 +56,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\meexp_favicon.ico</ApplicationIcon>
@@ -63,12 +67,27 @@
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ClosedXML, Version=0.92.1.0, Culture=neutral, PublicKeyToken=fd1eb21b62ae805b, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClosedXML.0.92.1\lib\net46\ClosedXML.dll</HintPath>
+    </Reference>
     <Reference Include="CSharpImageLibrary, Version=3.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CSharpImageLibrary.3.1.6.0\lib\net45\CSharpImageLibrary.exe</HintPath>
     </Reference>
     <Reference Include="CsvHelper, Version=7.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.7.1.0\lib\net45\CsvHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.8.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.8.1\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelNumberFormat, Version=1.0.3.0, Culture=neutral, PublicKeyToken=23c6f5d73be07eca, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelNumberFormat.1.0.3\lib\net20\ExcelNumberFormat.dll</HintPath>
+    </Reference>
+    <Reference Include="FastMember.Signed, Version=1.3.0.0, Culture=neutral, PublicKeyToken=9e8f22703bef9a29, processorArchitecture=MSIL">
+      <HintPath>..\packages\FastMember.Signed.1.3.0\lib\net45\FastMember.Signed.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -81,17 +100,142 @@
     <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=1.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IO.RecyclableMemoryStream.1.2.2\lib\net45\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Win32.Primitives">
+      <HintPath>..\packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="SharpDX, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.4.0.1\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.D3DCompiler, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.D3DCompiler.4.0.1\lib\net45\SharpDX.D3DCompiler.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Desktop, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Desktop.4.0.1\lib\net45\SharpDX.Desktop.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct2D1, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct2D1.4.0.1\lib\net45\SharpDX.Direct2D1.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct3D11.4.0.1\lib\net45\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.DXGI.4.0.1\lib\net45\SharpDX.DXGI.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Mathematics, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Mathematics.4.0.1\lib\net45\SharpDX.Mathematics.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.AppContext">
+      <HintPath>..\packages\System.AppContext.4.3.0\lib\net463\System.AppContext.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Console">
+      <HintPath>..\packages\System.Console.4.3.0\lib\net46\System.Console.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.2.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.Tracing">
+      <HintPath>..\packages\System.Diagnostics.Tracing.4.3.0\lib\net462\System.Diagnostics.Tracing.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Globalization.Calendars">
+      <HintPath>..\packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO">
+      <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.IO.Compression.ZipFile">
+      <HintPath>..\packages\System.IO.Compression.ZipFile.4.3.0\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem">
+      <HintPath>..\packages\System.IO.FileSystem.4.3.0\lib\net46\System.IO.FileSystem.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.Primitives">
+      <HintPath>..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Packaging, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Packaging.4.4.1\lib\net46\System.IO.Packaging.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq">
+      <HintPath>..\packages\System.Linq.4.3.0\lib\net463\System.Linq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Linq.Expressions">
+      <HintPath>..\packages\System.Linq.Expressions.4.3.0\lib\net463\System.Linq.Expressions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.3.3\lib\net46\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Sockets">
+      <HintPath>..\packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.4.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
+    <Reference Include="System.Reflection">
+      <HintPath>..\packages\System.Reflection.4.3.0\lib\net462\System.Reflection.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime">
+      <HintPath>..\packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Extensions">
+      <HintPath>..\packages\System.Runtime.Extensions.4.3.0\lib\net462\System.Runtime.Extensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices">
+      <HintPath>..\packages\System.Runtime.InteropServices.4.3.0\lib\net463\System.Runtime.InteropServices.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security.Cryptography.Algorithms">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.2\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Text.RegularExpressions">
+      <HintPath>..\packages\System.Text.RegularExpressions.4.3.0\lib\net463\System.Text.RegularExpressions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Threading.Tasks.Dataflow, Version=4.5.24.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Tpl.Dataflow.4.5.24\lib\portable-net45+win8+wpa81\System.Threading.Tasks.Dataflow.dll</HintPath>
       <Private>True</Private>
@@ -101,12 +245,15 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="UsefulThings, Version=1.5.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UsefulCSharpThings.1.5.6.0\lib\net45\UsefulThings.dll</HintPath>
+    <Reference Include="System.Xml.ReaderWriter">
+      <HintPath>..\packages\System.Xml.ReaderWriter.4.3.1\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="UsefulThings, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UsefulCSharpThings.1.7.3\lib\net462\UsefulThings.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -165,6 +312,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="BinaryInterpreter\BinaryAltPropertyEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="BinaryInterpreter\BinaryPropertyEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="BinaryInterpreter\BinaryPropertyEditorHost.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Interpreter\AltPropertyEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -189,6 +348,41 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="BinaryInterpreter\BinaryAddPropertyDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryAddPropertyDialog.Designer.cs">
+      <DependentUpon>BinaryAddPropertyDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryAltPropertyEditor.xaml.cs">
+      <DependentUpon>BinaryAltPropertyEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryInterpreter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryInterpreter.Designer.cs">
+      <DependentUpon>BinaryInterpreter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryInterpreterHost.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryInterpreterHost.Designer.cs">
+      <DependentUpon>BinaryInterpreterHost.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryPropertyEditor.xaml.cs">
+      <DependentUpon>BinaryPropertyEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryPropertyEditorHost.xaml.cs">
+      <DependentUpon>BinaryPropertyEditorHost.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Bio2DAEditor\Bio2DA.cs" />
+    <Compile Include="Bio2DAEditor\Bio2DACell.cs" />
+    <Compile Include="Bio2DAEditor\Bio2DAEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Bio2DAEditor\Bio2DAEditor.Designer.cs">
+      <DependentUpon>Bio2DAEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interpreter\AltPropertyEditor.xaml.cs">
       <DependentUpon>AltPropertyEditor.xaml</DependentUpon>
     </Compile>
@@ -329,6 +523,46 @@
       <DependentUpon>StateTaskListsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Packages\MEPackage.cs" />
+    <Compile Include="Pathfinding Editor\SplineNodes.cs" />
+    <Compile Include="Pathfinding Editor\ActorNodes.cs" />
+    <Compile Include="Pathfinding Editor\DuplicateGUIDWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pathfinding Editor\DuplicateGUIDWindow.Designer.cs">
+      <DependentUpon>DuplicateGUIDWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pathfinding Editor\HeightFilterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pathfinding Editor\HeightFilterForm.Designer.cs">
+      <DependentUpon>HeightFilterForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SharedUI\ListWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SharedUI\ListWindow.Designer.cs">
+      <DependentUpon>ListWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pathfinding Editor\PathfindingNodeInfoPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pathfinding Editor\PathfindingNodeInfoPanel.Designer.cs">
+      <DependentUpon>PathfindingNodeInfoPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pathfinding Editor\PathfindingNodeMaster.cs" />
+    <Compile Include="Pathfinding Editor\ReachSpecCreatorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pathfinding Editor\ReachSpecCreatorForm.Designer.cs">
+      <DependentUpon>ReachSpecCreatorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pathfinding Editor\ReachSpecRecalculator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pathfinding Editor\ReachSpecRecalculator.Designer.cs">
+      <DependentUpon>ReachSpecRecalculator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pathfinding Editor\SharedPathfinding.cs" />
     <Compile Include="PeriodicUpdater.cs" />
     <Compile Include="Main Window\SearchPanel.xaml.cs">
       <DependentUpon>SearchPanel.xaml</DependentUpon>
@@ -396,12 +630,27 @@
     <Compile Include="PSKViewer\PSKViewer.Designer.cs">
       <DependentUpon>PSKViewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Scene3D\Effect.cs" />
+    <Compile Include="Scene3D\Mesh.cs" />
+    <Compile Include="Scene3D\ModelPreview.cs" />
+    <Compile Include="Scene3D\PreviewTextureCache.cs" />
+    <Compile Include="Scene3D\SceneCamera.cs" />
+    <Compile Include="Scene3D\SceneRenderControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="ScriptDB\ScriptDB.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ScriptDB\ScriptDB.Designer.cs">
       <DependentUpon>ScriptDB.cs</DependentUpon>
     </Compile>
+    <Compile Include="Pathfinding Editor\PathfindingEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pathfinding Editor\PathfindingEditor.Designer.cs">
+      <DependentUpon>PathfindingEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pathfinding Editor\PathfindingNodes.cs" />
     <Compile Include="Sequence Editor\SequenceEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -420,6 +669,12 @@
     </Compile>
     <Compile Include="SFAREditor2\SFAREditor2.Designer.cs">
       <DependentUpon>SFAREditor2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SharedUI\ExportSelectorWinForms.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SharedUI\ExportSelectorWinForms.Designer.cs">
+      <DependentUpon>ExportSelectorWinForms.cs</DependentUpon>
     </Compile>
     <Compile Include="SingleInstance.cs" />
     <Compile Include="Soundplorer\DirectReplace.cs">
@@ -482,7 +737,6 @@
     <Compile Include="TlkManager\TlkManager.Designer.cs">
       <DependentUpon>TlkManager.cs</DependentUpon>
     </Compile>
-    <Compile Include="TOCeditor.cs" />
     <Compile Include="Main Window\ToolInfoPanel.xaml.cs">
       <DependentUpon>ToolInfoPanel.xaml</DependentUpon>
     </Compile>
@@ -654,12 +908,6 @@
     </Compile>
     <Compile Include="InputComboBox.Designer.cs">
       <DependentUpon>InputComboBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DLLInjector\DLLInjector.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DLLInjector\DLLInjector.Designer.cs">
-      <DependentUpon>DLLInjector.cs</DependentUpon>
     </Compile>
     <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.cs">
       <SubType>Form</SubType>
@@ -858,7 +1106,6 @@
     <Compile Include="Meshplorer2\Meshplorer2.Designer.cs">
       <DependentUpon>Meshplorer2.cs</DependentUpon>
     </Compile>
-    <Compile Include="Meshplorer2\Renderer.cs" />
     <Compile Include="Meshplorer\ImportOptions.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -878,7 +1125,6 @@
       <DependentUpon>Meshplorer.cs</DependentUpon>
     </Compile>
     <Compile Include="Meshplorer\MeshPlorerOptions.cs" />
-    <Compile Include="Meshplorer\Preview3D.cs" />
     <Compile Include="Meshplorer\Select Material.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -943,6 +1189,9 @@
     <EmbeddedResource Include="BIKExtract\BIKExtract.resx">
       <DependentUpon>BIKExtract.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Bio2DAEditor\Bio2DAEditor.resx">
+      <DependentUpon>Bio2DAEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ClassViewer\ClassViewer.resx">
       <DependentUpon>ClassViewer.cs</DependentUpon>
     </EmbeddedResource>
@@ -962,9 +1211,6 @@
     <EmbeddedResource Include="InputComboBox.resx">
       <DependentUpon>InputComboBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DLLInjector\DLLInjector.resx">
-      <DependentUpon>DLLInjector.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.resx">
       <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -976,6 +1222,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InterpEditor\Timeline.resx">
       <DependentUpon>Timeline.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BinaryInterpreter\BinaryAddPropertyDialog.resx">
+      <DependentUpon>BinaryAddPropertyDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BinaryInterpreter\BinaryInterpreter.resx">
+      <DependentUpon>BinaryInterpreter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BinaryInterpreter\BinaryInterpreterHost.resx">
+      <DependentUpon>BinaryInterpreterHost.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Interpreter\AddPropertyDialog.resx">
       <DependentUpon>AddPropertyDialog.cs</DependentUpon>
@@ -1044,6 +1299,24 @@
       <DependentUpon>PackageEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Pathfinding Editor\DuplicateGUIDWindow.resx">
+      <DependentUpon>DuplicateGUIDWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pathfinding Editor\HeightFilterForm.resx">
+      <DependentUpon>HeightFilterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SharedUI\ListWindow.resx">
+      <DependentUpon>ListWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pathfinding Editor\PathfindingNodeInfoPanel.resx">
+      <DependentUpon>PathfindingNodeInfoPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pathfinding Editor\ReachSpecCreatorForm.resx">
+      <DependentUpon>ReachSpecCreatorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pathfinding Editor\ReachSpecRecalculator.resx">
+      <DependentUpon>ReachSpecRecalculator.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PCCRepack\PCCRepack.resx">
       <DependentUpon>PCCRepack.cs</DependentUpon>
     </EmbeddedResource>
@@ -1073,6 +1346,9 @@
     <EmbeddedResource Include="ScriptDB\ScriptDB.resx">
       <DependentUpon>ScriptDB.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Pathfinding Editor\PathfindingEditor.resx">
+      <DependentUpon>PathfindingEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Sequence Editor\SequenceEditor.resx">
       <DependentUpon>SequenceEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -1082,6 +1358,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SFAREditor2\SFAREditor2.resx">
       <DependentUpon>SFAREditor2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SharedUI\ExportSelectorWinForms.resx">
+      <DependentUpon>ExportSelectorWinForms.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Soundplorer\DirectReplace.resx">
       <DependentUpon>DirectReplace.cs</DependentUpon>
@@ -1110,6 +1389,7 @@
     <EmbeddedResource Include="WwiseBankViewer\WwiseViewer.resx">
       <DependentUpon>WwiseViewer.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.manifest" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -1351,6 +1631,20 @@
   <ItemGroup>
     <Resource Include="Resources\audio_editor_icon.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconPathfindingEditor.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iconPathfindingEditor.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\pathfinding_editor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\excel.png" />
+    <None Include="Resources\excel.gif" />
+    <Content Include="Scene3D\StandardShader.hlsl" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /f /y "$(SolutionDir)Libraries" "$(ProjectDir)$(OutDir)lib\"
@@ -1360,8 +1654,10 @@ xcopy /f /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
 xcopy /f /y "$(SolutionDir)Resources\exec" "$(ProjectDir)$(OutDir)exec\"
 
 xcopy /y "$(SolutionDir)ME3Creator\$(OutDir)ME3Creator.exe.config" "$(ProjectDir)$(OutDir)"
+del /s "$(TargetDir)*.xml"
 
 move /y "$(ProjectDir)$(OutDir)CSharpImageLibrary.exe" "$(ProjectDir)$(OutDir)lib\"
+del "$(ProjectDir)$(OutDir)HexConverter.exe.config"
 
 call "$(ProjectDir)$(OutDir)cleanup.bat"</PostBuildEvent>
   </PropertyGroup>
@@ -1377,5 +1673,12 @@ call "$(ProjectDir)$(OutDir)cleanup.bat"</PostBuildEvent>
       <MoveToLibFolder Include="$(OutputPath)*.dll ; $(OutputPath)*.dll.config ; $(OutputPath)*.pdb ; $(OutputPath)*.xml" />
     </ItemGroup>
     <Move SourceFiles="@(MoveToLibFolder)" DestinationFolder="$(OutputPath)lib" OverwriteReadOnlyFiles="true" />
+  </Target>
+  <Import Project="..\packages\NETStandard.Library.2.0.2\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.2\build\netstandard2.0\NETStandard.Library.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.2\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.2\build\netstandard2.0\NETStandard.Library.targets'))" />
   </Target>
 </Project>

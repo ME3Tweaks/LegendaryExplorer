@@ -8,7 +8,7 @@ namespace ME3Explorer.Unreal.Classes
 {
     public class Function
     {
-        public ME3Package pcc;
+        public IMEPackage pcc;
         public byte[] memory;
         public byte[] script;
         public int memsize;
@@ -31,7 +31,7 @@ namespace ME3Explorer.Unreal.Classes
         {
         }
 
-        public Function(byte[] raw, ME3Package Pcc)
+        public Function(byte[] raw, IMEPackage Pcc)
         {
             pcc = Pcc;
             memory = raw;

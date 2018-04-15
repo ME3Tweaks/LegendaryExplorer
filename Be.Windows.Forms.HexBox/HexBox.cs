@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
@@ -6,8 +6,8 @@ using System.ComponentModel;
 using System.Security.Permissions;
 using System.Windows.Forms.VisualStyles;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Be.Windows.Forms
 {
@@ -143,16 +143,16 @@ namespace Be.Windows.Forms
             #region Activate, Deactive methods
             public virtual void Activate()
             {
-                _hexBox.MouseDown += BeginMouseSelection;
-                _hexBox.MouseMove += UpdateMouseSelection;
-                _hexBox.MouseUp += EndMouseSelection;
+                _hexBox.MouseDown += new MouseEventHandler(BeginMouseSelection);
+                _hexBox.MouseMove += new MouseEventHandler(UpdateMouseSelection);
+                _hexBox.MouseUp += new MouseEventHandler(EndMouseSelection);
             }
 
             public virtual void Deactivate()
             {
-                _hexBox.MouseDown -= BeginMouseSelection;
-                _hexBox.MouseMove -= UpdateMouseSelection;
-                _hexBox.MouseUp -= EndMouseSelection;
+                _hexBox.MouseDown -= new MouseEventHandler(BeginMouseSelection);
+                _hexBox.MouseMove -= new MouseEventHandler(UpdateMouseSelection);
+                _hexBox.MouseUp -= new MouseEventHandler(EndMouseSelection);
             }
             #endregion
 
@@ -975,7 +975,8 @@ namespace Be.Windows.Forms
         class StringKeyInterpreter : KeyInterpreter
         {
             #region Ctors
-            public StringKeyInterpreter(HexBox hexBox) : base(hexBox)
+            public StringKeyInterpreter(HexBox hexBox)
+                : base(hexBox)
             {
                 _hexBox._byteCharacterPos = 0;
             }
@@ -1107,6 +1108,10 @@ namespace Be.Windows.Forms
         /// </summary>
         Rectangle _recLineInfo;
         /// <summary>
+        /// Contains the column info header rectangle bounds
+        /// </summary>
+        Rectangle _recColumnInfo;
+        /// <summary>
         /// Contains the hex data bounds
         /// </summary>
         Rectangle _recHex;
@@ -1119,11 +1124,6 @@ namespace Be.Windows.Forms
         /// Contains string format information for text drawing
         /// </summary>
         StringFormat _stringFormat;
-        /// <summary>
-        /// Contains the width and height of a single char
-        /// </summary>
-        SizeF _charSize;
-
         /// <summary>
         /// Contains the maximum of visible horizontal bytes
         /// </summary>
@@ -1170,15 +1170,15 @@ namespace Be.Windows.Forms
         /// </summary>
         int _lastThumbtrack;
         /// <summary>
-        /// Contains the borderï¿½s left shift
+        /// Contains the border´s left shift
         /// </summary>
         int _recBorderLeft = SystemInformation.Border3DSize.Width;
         /// <summary>
-        /// Contains the borderï¿½s right shift
+        /// Contains the border´s right shift
         /// </summary>
         int _recBorderRight = SystemInformation.Border3DSize.Width;
         /// <summary>
-        /// Contains the borderï¿½s top shift
+        /// Contains the border´s top shift
         /// </summary>
         int _recBorderTop = SystemInformation.Border3DSize.Height;
         /// <summary>
@@ -1284,6 +1284,16 @@ namespace Be.Windows.Forms
         [Description("Occurs, when the value of LineInfoVisible property has changed.")]
         public event EventHandler LineInfoVisibleChanged;
         /// <summary>
+        /// Occurs, when the value of ColumnInfoVisibleChanged property has changed.
+        /// </summary>
+        [Description("Occurs, when the value of ColumnInfoVisibleChanged property has changed.")]
+        public event EventHandler ColumnInfoVisibleChanged;
+        /// <summary>
+        /// Occurs, when the value of GroupSeparatorVisibleChanged property has changed.
+        /// </summary>
+        [Description("Occurs, when the value of GroupSeparatorVisibleChanged property has changed.")]
+        public event EventHandler GroupSeparatorVisibleChanged;
+        /// <summary>
         /// Occurs, when the value of StringViewVisible property has changed.
         /// </summary>
         [Description("Occurs, when the value of StringViewVisible property has changed.")]
@@ -1293,6 +1303,11 @@ namespace Be.Windows.Forms
         /// </summary>
         [Description("Occurs, when the value of BorderStyle property has changed.")]
         public event EventHandler BorderStyleChanged;
+        /// <summary>
+        /// Occurs, when the value of ColumnWidth property has changed.
+        /// </summary>
+        [Description("Occurs, when the value of GroupSize property has changed.")]
+        public event EventHandler GroupSizeChanged;
         /// <summary>
         /// Occurs, when the value of BytesPerLine property has changed.
         /// </summary>
@@ -1343,6 +1358,16 @@ namespace Be.Windows.Forms
         /// </summary>
         [Description("Occurs, when CopyHex method was invoked and ClipBoardData changed.")]
         public event EventHandler CopiedHex;
+        /// <summary>
+        /// Occurs, when the CharSize property has changed
+        /// </summary>
+        [Description("Occurs, when the CharSize property has changed")]
+        public event EventHandler CharSizeChanged;
+        /// <summary>
+        /// Occurs, when the RequiredWidth property changes
+        /// </summary>
+        [Description("Occurs, when the RequiredWidth property changes")]
+        public event EventHandler RequiredWidthChanged;
         #endregion
 
         #region Ctors
@@ -1353,12 +1378,12 @@ namespace Be.Windows.Forms
         public HexBox()
         {
             this._vScrollBar = new VScrollBar();
-            this._vScrollBar.Scroll += _vScrollBar_Scroll;
+            this._vScrollBar.Scroll += new ScrollEventHandler(_vScrollBar_Scroll);
 
             this._builtInContextMenu = new BuiltInContextMenu(this);
 
             BackColor = Color.White;
-            Font = new Font("Courier New", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Font = SystemFonts.MessageBoxFont;
             _stringFormat = new StringFormat(StringFormat.GenericTypographic);
             _stringFormat.FormatFlags = StringFormatFlags.MeasureTrailingSpaces;
 
@@ -1370,7 +1395,7 @@ namespace Be.Windows.Forms
             SetStyle(ControlStyles.ResizeRedraw, true);
 
             _thumbTrackTimer.Interval = 50;
-            _thumbTrackTimer.Tick += PerformScrollThumbTrack;
+            _thumbTrackTimer.Tick += new EventHandler(PerformScrollThumbTrack);
         }
 
         #endregion
@@ -1444,7 +1469,7 @@ namespace Be.Windows.Forms
             // calc scroll bar info
             if (VScrollBarVisible && _byteProvider != null && _byteProvider.Length > 0 && _iHexMaxHBytes != 0)
             {
-                long scrollmax = (long)Math.Ceiling((_byteProvider.Length + 1) / (double)_iHexMaxHBytes - _iHexMaxVBytes);
+                long scrollmax = (long)Math.Ceiling((double)(_byteProvider.Length + 1) / (double)_iHexMaxHBytes - (double)_iHexMaxVBytes);
                 scrollmax = Math.Max(0, scrollmax);
 
                 long scrollpos = _startByte / _iHexMaxHBytes;
@@ -1486,11 +1511,11 @@ namespace Be.Windows.Forms
                 _vScrollBar.Minimum = 0;
                 _vScrollBar.Maximum = max;
                 _vScrollBar.Value = ToScrollPos(_scrollVpos);
-                _vScrollBar.Enabled = true;
+                _vScrollBar.Visible = true;
             }
             else
             {
-                _vScrollBar.Enabled = false;
+                _vScrollBar.Visible = false;
             }
         }
 
@@ -1502,8 +1527,8 @@ namespace Be.Windows.Forms
                 return (int)value;
             else
             {
-                double valperc = value / (double)_scrollVmax * 100;
-                int res = (int)Math.Floor(max / (double)100 * valperc);
+                double valperc = (double)value / (double)_scrollVmax * (double)100;
+                int res = (int)Math.Floor((double)max / (double)100 * valperc);
                 res = (int)Math.Max(_scrollVmin, res);
                 res = (int)Math.Min(_scrollVmax, res);
                 return res;
@@ -1515,12 +1540,12 @@ namespace Be.Windows.Forms
             int max = 65535;
             if (_scrollVmax < max)
             {
-                return value;
+                return (long)value;
             }
             else
             {
-                double valperc = value / (double)max * 100;
-                long res = (int)Math.Floor(_scrollVmax / (double)100 * valperc);
+                double valperc = (double)value / (double)max * (double)100;
+                long res = (int)Math.Floor((double)_scrollVmax / (double)100 * valperc);
                 return res;
             }
         }
@@ -1622,12 +1647,12 @@ namespace Be.Windows.Forms
 
             if (index < _startByte)
             {
-                long line = (long)Math.Floor(index / (double)_iHexMaxHBytes);
+                long line = (long)Math.Floor((double)index / (double)_iHexMaxHBytes);
                 PerformScrollThumpPosition(line);
             }
             else if (index > _endByte)
             {
-                long line = (long)Math.Floor(index / (double)_iHexMaxHBytes);
+                long line = (long)Math.Floor((double)index / (double)_iHexMaxHBytes);
                 line -= _iHexMaxVBytes - 1;
                 PerformScrollThumpPosition(line);
             }
@@ -1844,8 +1869,8 @@ namespace Be.Windows.Forms
             long bytePos;
             int byteCharaterPos;
 
-            float x = (p.X - _recHex.X) / _charSize.Width;
-            float y = (p.Y - _recHex.Y) / _charSize.Height;
+            float x = ((float)(p.X - _recHex.X) / _charSize.Width);
+            float y = ((float)(p.Y - _recHex.Y) / _charSize.Height);
             int iX = (int)x;
             int iY = (int)y;
 
@@ -1872,8 +1897,8 @@ namespace Be.Windows.Forms
             long bytePos;
             int byteCharacterPos;
 
-            float x = (p.X - _recStringView.X) / _charSize.Width;
-            float y = (p.Y - _recStringView.Y) / _charSize.Height;
+            float x = ((float)(p.X - _recStringView.X) / _charSize.Width);
+            float y = ((float)(p.Y - _recStringView.Y) / _charSize.Height);
             int iX = (int)x;
             int iY = (int)y;
 
@@ -1921,15 +1946,43 @@ namespace Be.Windows.Forms
         /// <summary>
         /// Searches the current ByteProvider
         /// </summary>
-        /// <param name="bytes">the array of bytes to find</param>
-        /// <param name="startIndex">the start index</param>
+        /// <param name="options">contains all find options</param>
         /// <returns>the SelectionStart property value if find was successfull or
         /// -1 if there is no match
         /// -2 if Find was aborted.</returns>
-        public long Find(byte[] bytes, long startIndex)
+        public long Find(FindOptions options)
         {
+            var startIndex = this.SelectionStart + this.SelectionLength;
             int match = 0;
-            int bytesLength = bytes.Length;
+
+            byte[] buffer1 = null;
+            byte[] buffer2 = null;
+            if (options.Type == FindType.Text && options.MatchCase)
+            {
+                if (options.FindBuffer == null || options.FindBuffer.Length == 0)
+                    throw new ArgumentException("FindBuffer can not be null when Type: Text and MatchCase: false");
+                buffer1 = options.FindBuffer;
+            }
+            else if (options.Type == FindType.Text && !options.MatchCase)
+            {
+                if (options.FindBufferLowerCase == null || options.FindBufferLowerCase.Length == 0)
+                    throw new ArgumentException("FindBufferLowerCase can not be null when Type is Text and MatchCase is true");
+                if (options.FindBufferUpperCase == null || options.FindBufferUpperCase.Length == 0)
+                    throw new ArgumentException("FindBufferUpperCase can not be null when Type is Text and MatchCase is true");
+                if (options.FindBufferLowerCase.Length != options.FindBufferUpperCase.Length)
+                    throw new ArgumentException("FindBufferUpperCase and FindBufferUpperCase must have the same size when Type is Text and MatchCase is true");
+                buffer1 = options.FindBufferLowerCase;
+                buffer2 = options.FindBufferUpperCase;
+
+            }
+            else if (options.Type == FindType.Hex)
+            {
+                if (options.Hex == null || options.Hex.Length == 0)
+                    throw new ArgumentException("Hex can not be null when Type is Hex");
+                buffer1 = options.Hex;
+            }
+
+            int buffer1Length = buffer1.Length;
 
             _abortFind = false;
 
@@ -1941,7 +1994,12 @@ namespace Be.Windows.Forms
                 if (pos % 1000 == 0) // for performance reasons: DoEvents only 1 times per 1000 loops
                     Application.DoEvents();
 
-                if (_byteProvider.ReadByte(pos) != bytes[match])
+                byte compareByte = _byteProvider.ReadByte(pos);
+                bool buffer1Match = compareByte == buffer1[match];
+                bool hasBuffer2 = buffer2 != null;
+                bool buffer2Match = hasBuffer2 ? compareByte == buffer2[match] : false;
+                bool isMatch = buffer1Match || buffer2Match;
+                if (!isMatch)
                 {
                     pos -= match;
                     match = 0;
@@ -1951,10 +2009,10 @@ namespace Be.Windows.Forms
 
                 match++;
 
-                if (match == bytesLength)
+                if (match == buffer1Length)
                 {
-                    long bytePos = pos - bytesLength + 1;
-                    Select(bytePos, bytesLength);
+                    long bytePos = pos - buffer1Length + 1;
+                    Select(bytePos, buffer1Length);
                     ScrollByteIntoView(_bytePos + _selectionLength);
                     ScrollByteIntoView(_bytePos);
 
@@ -2016,7 +2074,7 @@ namespace Be.Windows.Forms
 
             // set string buffer clipbard data
             string sBuffer = "";
-            if (_keyInterpreter == _ki && buffer.Length < 2000)
+            if (_keyInterpreter == _ki)
             {
                 for (int i = 0; i < buffer.Length; i++)
                 {
@@ -2121,7 +2179,7 @@ namespace Be.Windows.Forms
                         buffer[i / 2] = tmp;
                     }
                 }
-                if(buffer == null)
+                if (buffer == null)
                 {
                     buffer = System.Text.Encoding.ASCII.GetBytes(sBuffer);
                 }
@@ -2330,6 +2388,7 @@ namespace Be.Windows.Forms
 
             UpdateVisibilityBytes();
 
+
             if (_lineInfoVisible)
                 PaintLineInfo(e.Graphics, _startByte, _endByte);
 
@@ -2343,6 +2402,10 @@ namespace Be.Windows.Forms
                 if (_shadowSelectionVisible)
                     PaintCurrentBytesSign(e.Graphics);
             }
+            if (_columnInfoVisible)
+                PaintHeaderRow(e.Graphics);
+            if (_groupSeparatorVisible)
+                PaintColumnSeparator(e.Graphics);
         }
 
 
@@ -2351,7 +2414,7 @@ namespace Be.Windows.Forms
             // Ensure endByte isn't > length of array.
             endByte = Math.Min(_byteProvider.Length - 1, endByte);
 
-            Color lineInfoColor = (this.LineInfoForeColor != Color.Empty) ? this.LineInfoForeColor : this.ForeColor;
+            Color lineInfoColor = (this.InfoForeColor != Color.Empty) ? this.InfoForeColor : this.ForeColor;
             Brush brush = new SolidBrush(lineInfoColor);
 
             int maxLine = GetGridBytePoint(endByte - startByte).Y + 1;
@@ -2374,6 +2437,32 @@ namespace Be.Windows.Forms
                 }
 
                 g.DrawString(formattedInfo, Font, brush, new PointF(_recLineInfo.X, bytePointF.Y), _stringFormat);
+            }
+        }
+
+        void PaintHeaderRow(Graphics g)
+        {
+            Brush brush = new SolidBrush(this.InfoForeColor);
+            for (int col = 0; col < _iHexMaxHBytes; col++)
+            {
+                PaintColumnInfo(g, (byte)col, brush, col);
+            }
+        }
+
+        void PaintColumnSeparator(Graphics g)
+        {
+            for (int col = GroupSize; col < _iHexMaxHBytes; col += GroupSize)
+            {
+                var pen = new Pen(new SolidBrush(this.InfoForeColor), 1);
+                PointF headerPointF = GetColumnInfoPointF(col);
+                headerPointF.X -= _charSize.Width / 2;
+                g.DrawLine(pen, headerPointF, new PointF(headerPointF.X, headerPointF.Y + _recColumnInfo.Height + _recHex.Height));
+                if (StringViewVisible)
+                {
+                    PointF byteStringPointF = GetByteStringPointF(new Point(col, 0));
+                    headerPointF.X -= 2;
+                    g.DrawLine(pen, new PointF(byteStringPointF.X, byteStringPointF.Y), new PointF(byteStringPointF.X, byteStringPointF.Y + _recHex.Height));
+                }
             }
         }
 
@@ -2416,6 +2505,17 @@ namespace Be.Windows.Forms
             g.DrawString(sB.Substring(0, 1), Font, brush, bytePointF, _stringFormat);
             bytePointF.X += _charSize.Width;
             g.DrawString(sB.Substring(1, 1), Font, brush, bytePointF, _stringFormat);
+        }
+
+        void PaintColumnInfo(Graphics g, byte b, Brush brush, int col)
+        {
+            PointF headerPointF = GetColumnInfoPointF(col);
+
+            string sB = ConvertByteToHex(b);
+
+            g.DrawString(sB.Substring(0, 1), Font, brush, headerPointF, _stringFormat);
+            headerPointF.X += _charSize.Width;
+            g.DrawString(sB.Substring(1, 1), Font, brush, headerPointF, _stringFormat);
         }
 
         void PaintHexStringSelected(Graphics g, byte b, Brush brush, Brush brushBack, Point gridPoint)
@@ -2481,7 +2581,7 @@ namespace Be.Windows.Forms
 
         void PaintCurrentBytesSign(Graphics g)
         {
-            if (_keyInterpreter != null && Focused && _bytePos != -1 && Enabled)
+            if (_keyInterpreter != null && _bytePos != -1 && Enabled)
             {
                 if (_keyInterpreter.GetType() == typeof(KeyInterpreter))
                 {
@@ -2510,6 +2610,7 @@ namespace Be.Windows.Forms
                         int multiLine = endSelGridPoint.Y - startSelGridPoint.Y;
                         if (multiLine == 0)
                         {
+
                             Rectangle singleLine = new Rectangle(
                                 (int)startSelPointF.X,
                                 (int)startSelPointF.Y,
@@ -2539,7 +2640,7 @@ namespace Be.Windows.Forms
                                 Rectangle betweenLines = new Rectangle(
                                     _recStringView.X,
                                     (int)(startSelPointF.Y + _charSize.Height),
-                                    _recStringView.Width,
+                                    (int)(_recStringView.Width),
                                     (int)(_charSize.Height * (multiLine - 1)));
                                 if (betweenLines.IntersectsWith(_recStringView))
                                 {
@@ -2672,7 +2773,7 @@ namespace Be.Windows.Forms
                 return;
 
             _startByte = (_scrollVpos + 1) * _iHexMaxHBytes - _iHexMaxHBytes;
-            _endByte = Math.Min(_byteProvider.Length - 1, _startByte + _iHexMaxBytes);
+            _endByte = (long)Math.Min(_byteProvider.Length - 1, _startByte + _iHexMaxBytes);
         }
         #endregion
 
@@ -2680,8 +2781,14 @@ namespace Be.Windows.Forms
         void UpdateRectanglePositioning()
         {
             // calc char size
-            SizeF charSize = this.CreateGraphics().MeasureString("A", Font, 100, _stringFormat);
-            _charSize = new SizeF((float)Math.Ceiling(charSize.Width), (float)Math.Ceiling(charSize.Height));
+            SizeF charSize;
+            using (var graphics = this.CreateGraphics())
+            {
+                charSize = this.CreateGraphics().MeasureString("A", Font, 100, _stringFormat);
+            }
+            CharSize = new SizeF((float)Math.Ceiling(charSize.Width), (float)Math.Ceiling(charSize.Height));
+
+            int requiredWidth = 0;
 
             // calc content bounds
             _recContent = ClientRectangle;
@@ -2696,6 +2803,7 @@ namespace Be.Windows.Forms
                 _vScrollBar.Left = _recContent.X + _recContent.Width;
                 _vScrollBar.Top = _recContent.Y;
                 _vScrollBar.Height = _recContent.Height;
+                requiredWidth += _vScrollBar.Width;
             }
 
             int marginLeft = 4;
@@ -2707,41 +2815,59 @@ namespace Be.Windows.Forms
                     _recContent.Y,
                     (int)(_charSize.Width * 10),
                     _recContent.Height);
+                requiredWidth += _recLineInfo.Width;
             }
             else
             {
                 _recLineInfo = Rectangle.Empty;
                 _recLineInfo.X = marginLeft;
+                requiredWidth += marginLeft;
+            }
+
+            // calc line info bounds
+            _recColumnInfo = new Rectangle(_recLineInfo.X + _recLineInfo.Width, _recContent.Y, _recContent.Width - _recLineInfo.Width, (int)charSize.Height + 4);
+            if (_columnInfoVisible)
+            {
+                _recLineInfo.Y += (int)charSize.Height + 4;
+                _recLineInfo.Height -= (int)charSize.Height + 4;
+            }
+            else
+            {
+                _recColumnInfo.Height = 0;
             }
 
             // calc hex bounds and grid
             _recHex = new Rectangle(_recLineInfo.X + _recLineInfo.Width,
                 _recLineInfo.Y,
                 _recContent.Width - _recLineInfo.Width,
-                _recContent.Height);
+                _recContent.Height - _recColumnInfo.Height);
 
             if (UseFixedBytesPerLine)
             {
                 SetHorizontalByteCount(_bytesPerLine);
                 _recHex.Width = (int)Math.Floor(((double)_iHexMaxHBytes) * _charSize.Width * 3 + (2 * _charSize.Width));
+                requiredWidth += _recHex.Width;
             }
             else
             {
-                int hmax = (int)Math.Floor((_recHex.Width - (_vScrollBarVisible ? _vScrollBar.Width : 0)) / (double)_charSize.Width);
-                if (hmax > 1)
+                int hmax = (int)Math.Floor((double)_recHex.Width / (double)_charSize.Width);
+                if (_stringViewVisible)
                 {
-                    if (_stringViewVisible)
-                    {
-                        SetHorizontalByteCount((int)Math.Floor((double)hmax / 4) );
-                        _recHex.Width = (int)Math.Floor(((double)_iHexMaxHBytes) * _charSize.Width * 3 + (2 * _charSize.Width));
-                    }
+                    hmax -= 2;
+                    if (hmax > 1)
+                        SetHorizontalByteCount((int)Math.Floor((double)hmax / 4));
                     else
-                    {
-                        SetHorizontalByteCount((int)Math.Floor((double)hmax / 3));
-                    }
+                        SetHorizontalByteCount(1);
                 }
                 else
-                    SetHorizontalByteCount(hmax); 
+                {
+                    if (hmax > 1)
+                        SetHorizontalByteCount((int)Math.Floor((double)hmax / 3));
+                    else
+                        SetHorizontalByteCount(1);
+                }
+                _recHex.Width = (int)Math.Floor(((double)_iHexMaxHBytes) * _charSize.Width * 3 + (2 * _charSize.Width));
+                requiredWidth += _recHex.Width;
             }
 
             if (_stringViewVisible)
@@ -2750,13 +2876,16 @@ namespace Be.Windows.Forms
                     _recHex.Y,
                     (int)(_charSize.Width * _iHexMaxHBytes),
                     _recHex.Height);
+                requiredWidth += _recStringView.Width;
             }
             else
             {
                 _recStringView = Rectangle.Empty;
             }
 
-            int vmax = (int)Math.Floor(_recHex.Height / (double)_charSize.Height);
+            RequiredWidth = requiredWidth;
+
+            int vmax = (int)Math.Floor((double)_recHex.Height / (double)_charSize.Height);
             SetVerticalByteCount(vmax);
 
             _iHexMaxBytes = _iHexMaxHBytes * _iHexMaxVBytes;
@@ -2778,6 +2907,14 @@ namespace Be.Windows.Forms
 
             return new PointF(x, y);
         }
+        PointF GetColumnInfoPointF(int col)
+        {
+            Point gp = GetGridBytePoint(col);
+            float x = (3 * _charSize.Width) * gp.X + _recColumnInfo.X;
+            float y = _recColumnInfo.Y;
+
+            return new PointF(x, y);
+        }
 
         PointF GetByteStringPointF(Point gp)
         {
@@ -2789,7 +2926,7 @@ namespace Be.Windows.Forms
 
         Point GetGridBytePoint(long byteIndex)
         {
-            int row = (int)Math.Floor(byteIndex / (double)_iHexMaxHBytes);
+            int row = (int)Math.Floor((double)byteIndex / (double)_iHexMaxHBytes);
             int column = (int)(byteIndex + _iHexMaxHBytes - _iHexMaxHBytes * (row + 1));
 
             Point res = new Point(column, row);
@@ -2825,7 +2962,12 @@ namespace Be.Windows.Forms
             }
             set
             {
+                if (value == null)
+                    return;
+
                 base.Font = value;
+                this.UpdateRectanglePositioning();
+                this.Invalidate();
             }
         }
 
@@ -2906,7 +3048,7 @@ namespace Be.Windows.Forms
         /// Gets or sets the maximum count of bytes in one line.
         /// </summary>
         /// <remarks>
-        /// UsedFixedBytesPerLine property must set to true
+        /// UseFixedBytesPerLine property no longer has to be set to true for this to work
         /// </remarks>
         [DefaultValue(16), Category("Hex"), Description("Gets or sets the maximum count of bytes in one line.")]
         public int BytesPerLine
@@ -2927,26 +3069,28 @@ namespace Be.Windows.Forms
         int _bytesPerLine = 16;
 
         /// <summary>
-        /// Gets or sets the minimum count of bytes in one line.
+        /// Gets or sets the number of bytes in a group. Used to show the group separator line (if GroupSeparatorVisible is true)
         /// </summary>
-        [DefaultValue(0), Category("Hex"), Description("Gets or sets the minimum count of bytes in one line.")]
-        public int MinBytesPerLine
+        /// <remarks>
+        /// GroupSeparatorVisible property must set to true
+        /// </remarks>
+        [DefaultValue(4), Category("Hex"), Description("Gets or sets the byte-count between group separators (if visible).")]
+        public int GroupSize
         {
-            get { return _minBytesPerLine; }
+            get { return _groupSize; }
             set
             {
-                if (_minBytesPerLine == value)
+                if (_groupSize == value)
                     return;
 
-                _minBytesPerLine = value;
-                OnBytesPerLineChanged(EventArgs.Empty);
+                _groupSize = value;
+                OnGroupSizeChanged(EventArgs.Empty);
 
                 UpdateRectanglePositioning();
                 Invalidate();
             }
         }
-        int _minBytesPerLine = 0;
-
+        int _groupSize = 4;
         /// <summary>
         /// Gets or sets if the count of bytes in one line is fix.
         /// </summary>
@@ -3016,11 +3160,11 @@ namespace Be.Windows.Forms
                     ActivateKeyInterpreter();
 
                 if (_byteProvider != null)
-                    _byteProvider.LengthChanged -= _byteProvider_LengthChanged;
+                    _byteProvider.LengthChanged -= new EventHandler(_byteProvider_LengthChanged);
 
                 _byteProvider = value;
                 if (_byteProvider != null)
-                    _byteProvider.LengthChanged += _byteProvider_LengthChanged;
+                    _byteProvider.LengthChanged += new EventHandler(_byteProvider_LengthChanged);
 
                 OnByteProviderChanged(EventArgs.Empty);
 
@@ -3056,6 +3200,47 @@ namespace Be.Windows.Forms
         }
 
         IByteProvider _byteProvider;
+        /// <summary>
+        /// Gets or sets the visibility of the group separator.
+        /// </summary>
+        [DefaultValue(false), Category("Hex"), Description("Gets or sets the visibility of a separator vertical line.")]
+        public bool GroupSeparatorVisible
+        {
+            get { return _groupSeparatorVisible; }
+            set
+            {
+                if (_groupSeparatorVisible == value)
+                    return;
+
+                _groupSeparatorVisible = value;
+                OnGroupSeparatorVisibleChanged(EventArgs.Empty);
+
+                UpdateRectanglePositioning();
+                Invalidate();
+            }
+        }
+        bool _groupSeparatorVisible = false;
+
+        /// <summary>
+        /// Gets or sets the visibility of the column info
+        /// </summary>
+        [DefaultValue(false), Category("Hex"), Description("Gets or sets the visibility of header row.")]
+        public bool ColumnInfoVisible
+        {
+            get { return _columnInfoVisible; }
+            set
+            {
+                if (_columnInfoVisible == value)
+                    return;
+
+                _columnInfoVisible = value;
+                OnColumnInfoVisibleChanged(EventArgs.Empty);
+
+                UpdateRectanglePositioning();
+                Invalidate();
+            }
+        }
+        bool _columnInfoVisible = false;
 
         /// <summary>
         /// Gets or sets the visibility of a line info.
@@ -3076,7 +3261,7 @@ namespace Be.Windows.Forms
                 Invalidate();
             }
         }
-        bool _lineInfoVisible;
+        bool _lineInfoVisible = false;
 
         /// <summary>
         /// Gets or sets the offset of a line info.
@@ -3095,12 +3280,12 @@ namespace Be.Windows.Forms
                 Invalidate();
             }
         }
-        long _lineInfoOffset;
+        long _lineInfoOffset = 0;
 
         /// <summary>
-        /// Gets or sets the hex boxï¿½s border style.
+        /// Gets or sets the hex box´s border style.
         /// </summary>
-        [DefaultValue(typeof(BorderStyle), "Fixed3D"), Category("Hex"), Description("Gets or sets the hex boxï¿½s border style.")]
+        [DefaultValue(typeof(BorderStyle), "Fixed3D"), Category("Hex"), Description("Gets or sets the hex box´s border style.")]
         public BorderStyle BorderStyle
         {
             get { return _borderStyle; }
@@ -3217,15 +3402,15 @@ namespace Be.Windows.Forms
 
 
         /// <summary>
-        /// Gets or sets the line info color. When this property is null, then ForeColor property is used.
+        /// Gets or sets the info color used for column info and line info. When this property is null, then ForeColor property is used.
         /// </summary>
-        [DefaultValue(typeof(Color), "Empty"), Category("Hex"), Description("Gets or sets the line info color. When this property is null, then ForeColor property is used.")]
-        public Color LineInfoForeColor
+        [DefaultValue(typeof(Color), "Gray"), Category("Hex"), Description("Gets or sets the line info color. When this property is null, then ForeColor property is used.")]
+        public Color InfoForeColor
         {
-            get { return _lineInfoForeColor; }
-            set { _lineInfoForeColor = value; Invalidate(); }
+            get { return _infoForeColor; }
+            set { _infoForeColor = value; Invalidate(); }
         }
-        Color _lineInfoForeColor = Color.Empty;
+        Color _infoForeColor = Color.Gray;
 
         /// <summary>
         /// Gets or sets the background color for the selected bytes.
@@ -3280,6 +3465,42 @@ namespace Be.Windows.Forms
             set { _shadowSelectionColor = value; Invalidate(); }
         }
         Color _shadowSelectionColor = Color.FromArgb(100, 60, 188, 255);
+
+        /// <summary>
+        /// Contains the size of a single character in pixel
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public SizeF CharSize
+        {
+            get { return _charSize; }
+            private set
+            {
+                if (_charSize == value)
+                    return;
+                _charSize = value;
+                if (CharSizeChanged != null)
+                    CharSizeChanged(this, EventArgs.Empty);
+            }
+        }
+        SizeF _charSize;
+
+        /// <summary>
+        /// Gets the width required for the content
+        /// </summary>
+        [DefaultValue(0), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int RequiredWidth
+        {
+            get { return _requiredWidth; }
+            private set
+            {
+                if (_requiredWidth == value)
+                    return;
+                _requiredWidth = value;
+                if (RequiredWidthChanged != null)
+                    RequiredWidthChanged(this, EventArgs.Empty);
+            }
+        }
+        int _requiredWidth;
 
         /// <summary>
         /// Gets the number bytes drawn horizontally.
@@ -3479,13 +3700,13 @@ namespace Be.Windows.Forms
             if (_iHexMaxHBytes == value)
                 return;
 
-            if(value > _minBytesPerLine)
+            if (value > MinBytesPerLine)
             {
                 _iHexMaxHBytes = value;
             }
             else
             {
-                _iHexMaxHBytes = _minBytesPerLine;
+                _iHexMaxHBytes = MinBytesPerLine;
             }
             OnHorizontalByteCountChanged(EventArgs.Empty);
         }
@@ -3501,7 +3722,7 @@ namespace Be.Windows.Forms
 
         void CheckCurrentLineChanged()
         {
-            long currentLine = (long)Math.Floor(_bytePos / (double)_iHexMaxHBytes) + 1;
+            long currentLine = (long)Math.Floor((double)_bytePos / (double)_iHexMaxHBytes) + 1;
 
             if (_byteProvider == null && _currentLine != 0)
             {
@@ -3593,6 +3814,26 @@ namespace Be.Windows.Forms
         }
 
         /// <summary>
+        /// Raises the OnColumnInfoVisibleChanged event.
+        /// </summary>
+        /// <param name="e">An EventArgs that contains the event data.</param>
+        protected virtual void OnColumnInfoVisibleChanged(EventArgs e)
+        {
+            if (ColumnInfoVisibleChanged != null)
+                ColumnInfoVisibleChanged(this, e);
+        }
+
+        /// <summary>
+        /// Raises the ColumnSeparatorVisibleChanged event.
+        /// </summary>
+        /// <param name="e">An EventArgs that contains the event data.</param>
+        protected virtual void OnGroupSeparatorVisibleChanged(EventArgs e)
+        {
+            if (GroupSeparatorVisibleChanged != null)
+                GroupSeparatorVisibleChanged(this, e);
+        }
+
+        /// <summary>
         /// Raises the StringViewVisibleChanged event.
         /// </summary>
         /// <param name="e">An EventArgs that contains the event data.</param>
@@ -3620,6 +3861,16 @@ namespace Be.Windows.Forms
         {
             if (UseFixedBytesPerLineChanged != null)
                 UseFixedBytesPerLineChanged(this, e);
+        }
+
+        /// <summary>
+        /// Raises the GroupSizeChanged event.
+        /// </summary>
+        /// <param name="e">An EventArgs that contains the event data.</param>
+        protected virtual void OnGroupSizeChanged(EventArgs e)
+        {
+            if (GroupSizeChanged != null)
+                GroupSizeChanged(this, e);
         }
 
         /// <summary>
@@ -3785,6 +4036,31 @@ namespace Be.Windows.Forms
         }
         #endregion
 
+        #region Scaling Support for High DPI resolution screens
+        /// <summary>
+        /// For high resolution screen support
+        /// </summary>
+        /// <param name="factor">the factor</param>
+        /// <param name="specified">bounds</param>
+        protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
+        {
+            base.ScaleControl(factor, specified);
+
+            this.BeginInvoke(new MethodInvoker(() =>
+                {
+                    this.UpdateRectanglePositioning();
+                    if (_caretVisible)
+                    {
+                        DestroyCaret();
+                        CreateCaret();
+                    }
+                    this.Invalidate();
+                }));
+        }
+        #endregion
+
         public System.Drawing.Font BoldFont { get; set; }
+        public int MinBytesPerLine { get; set; }
+        public Color LineInfoForeColor { get; set; }
     }
 }

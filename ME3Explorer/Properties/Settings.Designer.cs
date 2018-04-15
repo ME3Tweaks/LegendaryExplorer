@@ -202,5 +202,65 @@ namespace ME3Explorer.Properties {
                 this["FirstRun"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UseMetadataFullPaths {
+            get {
+                return ((bool)(this["UseMetadataFullPaths"]));
+            }
+            set {
+                this["UseMetadataFullPaths"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MeshplorerViewRotating {
+            get {
+                return ((bool)(this["MeshplorerViewRotating"]));
+            }
+            set {
+                this["MeshplorerViewRotating"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool MeshplorerViewWireframeEnabled {
+            get {
+                return ((bool)(this["MeshplorerViewWireframeEnabled"]));
+            }
+            set {
+                this["MeshplorerViewWireframeEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool MeshplorerViewSolidEnabled {
+            get {
+                return ((bool)(this["MeshplorerViewSolidEnabled"]));
+            }
+            set {
+                this["MeshplorerViewSolidEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MeshplorerViewFirstPerson {
+            get {
+                return ((bool)(this["MeshplorerViewFirstPerson"]));
+            }
+            set {
+                this["MeshplorerViewFirstPerson"] = value;
+            }
+        }
     }
 }

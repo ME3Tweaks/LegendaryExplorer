@@ -48,29 +48,34 @@ namespace ME3Explorer.FaceFX
             OpenFileDialog d = new OpenFileDialog{ Filter = "*.pcc|*.pcc"};
             if (d.ShowDialog() == true)
             {
-                try
-                {
-                    LoadMEPackage(d.FileName);
-                    if (pcc.Game == MEGame.ME1)
-                    {
-                        pcc?.Release(wpfWindow: this);
-                        pcc = null;
-                        throw new FormatException("FaceFXEditor does not work on ME1 files.");
-                    }
-                    selectedLine = null;
-                    FaceFX = null;
-                    treeView.Nodes.Clear();
-                    linesListBox.ItemsSource = null;
-                    animationListBox.ItemsSource = null;
-                    graph.Clear();
-                    RefreshComboBox();
-                }
-                catch (Exception ex)
+                LoadFile(d.FileName);
+            }
+        }
+
+        public void LoadFile(string fileName)
+        {
+            try
+            {
+                LoadMEPackage(fileName);
+                if (pcc.Game == MEGame.ME1)
                 {
                     pcc?.Release(wpfWindow: this);
                     pcc = null;
-                    MessageBox.Show("Error:\n" + ex.Message);
+                    throw new FormatException("FaceFXEditor does not work on ME1 files.");
                 }
+                selectedLine = null;
+                FaceFX = null;
+                treeView.Nodes.Clear();
+                linesListBox.ItemsSource = null;
+                animationListBox.ItemsSource = null;
+                graph.Clear();
+                RefreshComboBox();
+            }
+            catch (Exception ex)
+            {
+                pcc?.Release(wpfWindow: this);
+                pcc = null;
+                MessageBox.Show("Error:\n" + ex.Message);
             }
         }
 
@@ -308,7 +313,7 @@ namespace ME3Explorer.FaceFX
                 {
                     if (!(line is ME2FaceFXLine))
                     {
-                        MessageBox.Show("Cannot add ME3 FaceFX lines to ME2 FaceFXAnimsets. If you require this feature, plase make an issue on the project's Github page");
+                        MessageBox.Show("Cannot add ME3 FaceFX lines to ME2 FaceFXAnimsets. If you require this feature, please make an issue on the project's Github page");
                         return;
                     }
                     line.animations = line.animations.Select(x => new ME2NameRef

@@ -50,7 +50,7 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.pb1 = new System.Windows.Forms.PictureBox();
+            this.view = new ME3Explorer.Scene3D.SceneRenderControl();
             this.treeView2 = new System.Windows.Forms.TreeView();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pbar1 = new System.Windows.Forms.ToolStripProgressBar();
@@ -68,7 +68,6 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pb1)).BeginInit();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
@@ -148,7 +147,6 @@
             this.rotateToolStripMenuItem.Name = "rotateToolStripMenuItem";
             this.rotateToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.rotateToolStripMenuItem.Text = "Rotate";
-            this.rotateToolStripMenuItem.Click += new System.EventHandler(this.rotateToolStripMenuItem_Click);
             // 
             // importBonesToolStripMenuItem
             // 
@@ -260,7 +258,7 @@
             // 
             // splitContainer2.Panel1
             // 
-            this.splitContainer2.Panel1.Controls.Add(this.pb1);
+            this.splitContainer2.Panel1.Controls.Add(this.view);
             // 
             // splitContainer2.Panel2
             // 
@@ -269,16 +267,17 @@
             this.splitContainer2.SplitterDistance = 199;
             this.splitContainer2.TabIndex = 0;
             // 
-            // pb1
+            // view
             // 
-            this.pb1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pb1.Location = new System.Drawing.Point(0, 0);
-            this.pb1.Name = "pb1";
-            this.pb1.Size = new System.Drawing.Size(432, 199);
-            this.pb1.TabIndex = 0;
-            this.pb1.TabStop = false;
-            this.pb1.MouseHover += new System.EventHandler(this.pb1_MouseHover);
-            this.pb1.Resize += new System.EventHandler(this.pb1_Resize);
+            this.view.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.view.Location = new System.Drawing.Point(0, 0);
+            this.view.Name = "view";
+            this.view.Size = new System.Drawing.Size(432, 199);
+            this.view.TabIndex = 1;
+            this.view.TabStop = false;
+            this.view.Wireframe = false;
+            this.view.Update += new System.EventHandler<float>(this.view_Update);
+            this.view.Render += new System.EventHandler(this.view_Render);
             // 
             // treeView2
             // 
@@ -368,7 +367,6 @@
             this.Text = "Meshplorer2";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Meshplorer2_FormClosing);
             this.Load += new System.EventHandler(this.Meshplorer2_Load);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.Meshplorer2_Paint);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
@@ -381,7 +379,6 @@
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pb1)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.splitContainer3.Panel1.ResumeLayout(false);
@@ -405,7 +402,6 @@
         private System.Windows.Forms.TreeView treeView2;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripProgressBar pbar1;
-        private System.Windows.Forms.PictureBox pb1;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
@@ -423,5 +419,6 @@
         private System.Windows.Forms.ToolStripMenuItem importBonesToolStripMenuItem;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private Scene3D.SceneRenderControl view;
     }
 }

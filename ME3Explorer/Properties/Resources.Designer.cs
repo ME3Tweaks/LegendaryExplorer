@@ -153,6 +153,16 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap excel {
+            get {
+                object obj = ResourceManager.GetObject("excel", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap folder {
             get {
                 object obj = ResourceManager.GetObject("folder", resourceCulture);
@@ -333,6 +343,16 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap pathfinding_editor {
+            get {
+                object obj = ResourceManager.GetObject("pathfinding_editor", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap pcc_repacker_64x64 {
             get {
                 object obj = ResourceManager.GetObject("pcc_repacker_64x64", resourceCulture);
@@ -427,6 +447,44 @@ namespace ME3Explorer.Properties {
             get {
                 object obj = ResourceManager.GetObject("soundplorer_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // This has to match the data in the vertex buffer.
+        ///struct VS_IN {
+        ///	float3 pos : POSITION;
+        ///	float3 normal : NORMAL;
+        ///	float2 uv : TEXCOORD0;
+        ///};
+        ///
+        ///struct VS_OUT {
+        ///	float4 pos : SV_POSITION;
+        ///	float3 normal : NORMAL;
+        ///	float2 uv : TEXCOORD0;
+        ///};
+        ///
+        ///struct PS_IN {
+        ///	float4 pos : SV_POSITION;
+        ///	float3 normal : NORMAL;
+        ///	float2 uv : TEXCOORD0;
+        ///};
+        ///
+        ///struct PS_OUT {
+        ///	float4 color : SV_TARGET;
+        ///};
+        ///
+        ///cbuffer constants {
+        ///	float4x4 projection;
+        ///	float4x4 view;
+        ///	float4x4 model;
+        ///};
+        ///
+        ///Texture2D tex : regist [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string StandardShader {
+            get {
+                return ResourceManager.GetString("StandardShader", resourceCulture);
             }
         }
         

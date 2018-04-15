@@ -18,7 +18,7 @@ namespace ME3Explorer.Unreal
             public bool stop;
         }
 
-        public static ME3Package pcc;
+        public static IMEPackage pcc;
         public static byte[] memory;
         public static int memsize;
         #region NormalToken
@@ -110,7 +110,7 @@ namespace ME3Explorer.Unreal
         private const int EX_Unkn1 = 0x5E;
         private const int EX_Unkn2 = 0x5B;
         private const int EX_Unkn3 = 0x61;
-        private const int EX_Unkn4 = 0x62;        
+        private const int EX_Unkn4 = 0x62;
         private const int EX_Unkn5 = 0x5C;
         private const int EX_Unkn6 = 0x65;
         private const int EX_Unkn7 = 0x64;
@@ -342,28 +342,35 @@ namespace ME3Explorer.Unreal
             NATIVE_UpdateURL = 0x0222
         };
 
-        public static string ToRawText(byte[]raw,ME3Package Pcc,bool debug = false)
+        public static string ToRawText(byte[] raw, IMEPackage Pcc, bool debug = false)
         {
-            
+
             string s = "";
             pcc = Pcc;
             memory = raw;
             memsize = raw.Length;
             DebugCounter = 0;
             _debug = new List<DbgMsg>();
-            List<Token> t = ReadAll(0);
-            int pos = 32;
-            for (int i = 0; i < t.Count; i++)
+            try
             {
-                s += pos.ToString("X2") + " : " + t[i].text + "\n";
-                pos += t[i].raw.Length;
-            }
-            if (debug)
+                List<Token> t = ReadAll(0);
+
+                int pos = 32;
+                for (int i = 0; i < t.Count; i++)
+                {
+                    s += pos.ToString("X2") + " : " + t[i].text + "\n";
+                    pos += t[i].raw.Length;
+                }
+                if (debug)
+                {
+                    s += "\nDebug print:\n\n";
+                    SortDbgMsg();
+                    for (int i = 0; i < _debug.Count(); i++)
+                        s += _debug[i].count + " : " + _debug[i].msg;
+                }
+            } catch (Exception e)
             {
-                s += "\nDebug print:\n\n";
-                SortDbgMsg();
-                for (int i = 0; i < _debug.Count(); i++)
-                    s += _debug[i].count + " : " + _debug[i].msg;
+                return "Unable to parse function: " + e.Message;
             }
             return s;
         }
@@ -375,7 +382,7 @@ namespace ME3Explorer.Unreal
             {
                 done = true;
                 for (int i = 0; i < _debug.Count() - 1; i++)
-                    if(_debug[i].count > _debug[i + 1].count)
+                    if (_debug[i].count > _debug[i + 1].count)
                     {
                         DbgMsg t = _debug[i];
                         _debug[i] = _debug[i + 1];
@@ -393,9 +400,18 @@ namespace ME3Explorer.Unreal
             res.Add(t);
             while (!t.stop)
             {
-                pos += t.raw.Length;                
-                t = ReadToken(pos);
-                res.Add(t);
+                pos += t.raw.Length;
+                try
+                {
+                    t = ReadToken(pos);
+                    res.Add(t);
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    break;
+                    //error
+                }
+
             }
             return res;
         }
@@ -411,7 +427,7 @@ namespace ME3Explorer.Unreal
             Token newTok;
             if (start >= memsize)
                 return res;
-            byte t = memory[start];            
+            byte t = memory[start];
             int end = start;
             if (t <= 0x60)
                 switch (t)
@@ -434,7 +450,7 @@ namespace ME3Explorer.Unreal
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
-                        break;                    
+                        break;
                     case EX_Switch: //0x05
                         newTok = ReadSwitch(start);
                         newTok.stop = false;
@@ -509,13 +525,13 @@ namespace ME3Explorer.Unreal
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
-                        break; 
+                        break;
                     case EX_EndParmValue: // 0x15
                         newTok = ReadEndParmVal(start);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
-                        break; 
+                        break;
                     case EX_EndFunctionParms: // 0x16
                         newTok = ReadEndFuncParm(start);
                         newTok.stop = false;
@@ -637,31 +653,31 @@ namespace ME3Explorer.Unreal
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
-                        break;                    
+                        break;
                     case EX_BoolVariable: // 0x2D
                         newTok = ReadBoolExp(start);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
-                        break;        
+                        break;
                     case EX_DynamicCast: // 0x2E
                         newTok = ReadDynCast(start);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
-                        break;       
+                        break;
                     case EX_Iterator: //0x2F
                         newTok = ReadIterator(start);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
-                        break;  
+                        break;
                     case EX_IteratorPop: // 0x30
                         newTok = ReadIterPop(start);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
-                        break;  
+                        break;
                     case EX_IteratorNext: //0x31
                         newTok = ReadIterNext(start);
                         newTok.stop = false;
@@ -669,7 +685,7 @@ namespace ME3Explorer.Unreal
                         res = newTok;
                         break;
                     case EX_StructCmpEq: // 0x32
-                        newTok = ReadCompareStructs(start,"==");
+                        newTok = ReadCompareStructs(start, "==");
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
@@ -680,7 +696,7 @@ namespace ME3Explorer.Unreal
                         end = start + newTok.raw.Length;
                         res = newTok;
                         break;
-                    case EX_StructMember : //0x35
+                    case EX_StructMember: //0x35
                         newTok = ReadStruct(start);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
@@ -723,7 +739,7 @@ namespace ME3Explorer.Unreal
                         res = newTok;
                         break;
                     case EX_NotEqual_DelDel: // 0x3C
-                        newTok = ReadCompareDel(start,"!=");
+                        newTok = ReadCompareDel(start, "!=");
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
@@ -803,13 +819,13 @@ namespace ME3Explorer.Unreal
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
-                        break; 
+                        break;
                     case EX_InterfaceContext:// 0x51
                         newTok = ReadInterfaceContext(start);
                         newTok.stop = false;
                         end = start + newTok.raw.Length;
                         res = newTok;
-                        break;    
+                        break;
                     case EX_InterfaceCast: // 0x52
                         newTok = ReadUnkn1(start);
                         newTok.stop = false;
@@ -890,7 +906,7 @@ namespace ME3Explorer.Unreal
             else
             {
                 switch (t)
-                {     
+                {
                     case EX_Unkn3: //0x61
                         newTok = ReadUnkn3(start);
                         newTok.stop = false;
@@ -1301,14 +1317,14 @@ namespace ME3Explorer.Unreal
                     c = ReadToken(pos);
                     pos += c.raw.Length;
                     t.text = a.text + " @ " + b.text;
-                    break; 
+                    break;
                 case (int)ENatives.NATIVE_Subtract_PreFloat: // 0x00A9
                     a = ReadToken(pos);
                     pos += a.raw.Length;
                     b = ReadToken(pos);
                     pos += b.raw.Length;
                     t.text = "-" + a.text;
-                    break;                    
+                    break;
                 case (int)ENatives.NATIVE_MultiplyMultiply_FloatFloat: // 0x00AA
                     a = ReadToken(pos);
                     pos += a.raw.Length;
@@ -1317,7 +1333,7 @@ namespace ME3Explorer.Unreal
                     c = ReadToken(pos);
                     pos += c.raw.Length;
                     t.text = "(" + a.text + " ** " + b.text + ")";
-                    break;  
+                    break;
                 case (int)ENatives.NATIVE_Multiply_FloatFloat: // 0x00AB
                     a = ReadToken(pos);
                     pos += a.raw.Length;
@@ -1398,7 +1414,7 @@ namespace ME3Explorer.Unreal
                     c = ReadToken(pos);//EndParam
                     pos += c.raw.Length;
                     t.text = a.text + " == " + b.text;
-                    break;                    
+                    break;
                 case (int)ENatives.NATIVE_NotEqual_FloatFloat: // 0x00B5
                     a = ReadToken(pos);
                     pos += a.raw.Length;
@@ -1555,7 +1571,7 @@ namespace ME3Explorer.Unreal
                     c = ReadToken(pos);
                     pos += c.raw.Length;
                     t.text = a.text + " *= " + b.text;
-                    break;  
+                    break;
                 case 0xC7: //unknown
                     a = ReadToken(pos);
                     pos += a.raw.Length;
@@ -1588,7 +1604,7 @@ namespace ME3Explorer.Unreal
                     c = ReadToken(pos);
                     pos += c.raw.Length;
                     t.text = a.text + " != " + b.text;
-                    break; 
+                    break;
                 case (int)ENatives.NATIVE_ComplementEqual_FloatFloat: // 0x00D2
                     a = ReadToken(pos);
                     pos += a.raw.Length;
@@ -1597,7 +1613,7 @@ namespace ME3Explorer.Unreal
                     c = ReadToken(pos);
                     pos += c.raw.Length;
                     t.text = a.text + " ~= " + b.text;
-                    break;  
+                    break;
                 case (int)ENatives.NATIVE_Subtract_PreVector: // 0x00D3
                     a = ReadToken(pos);
                     pos += a.raw.Length;
@@ -1721,7 +1737,7 @@ namespace ME3Explorer.Unreal
                     b = ReadToken(pos);
                     pos += b.raw.Length;
                     t.text = "VSize(" + a.text + ")";
-                    break;                    
+                    break;
                 case (int)ENatives.NATIVE_Normal: // 0x00E2
                     a = ReadToken(pos);
                     pos += a.raw.Length;
@@ -2756,7 +2772,7 @@ namespace ME3Explorer.Unreal
                             break;
                         if (count != 0 && a.raw[0] != 0x4A)
                             t.text += "," + a.text;
-                        else if(a.raw[0] != 0x4A)
+                        else if (a.raw[0] != 0x4A)
                             t.text += a.text;
                         count++;
                     }
@@ -2773,7 +2789,7 @@ namespace ME3Explorer.Unreal
                             break;
                         if (count != 0 && a.raw[0] != 0x4A)
                             t.text += "," + a.text;
-                        else if(a.raw[0] != 0x4A)
+                        else if (a.raw[0] != 0x4A)
                             t.text += a.text;
                         count++;
                     }
@@ -2790,13 +2806,13 @@ namespace ME3Explorer.Unreal
                             break;
                         if (count != 0 && a.raw[0] != 0x4A)
                             t.text += "," + a.text;
-                        else if(a.raw[0] != 0x4A)
+                        else if (a.raw[0] != 0x4A)
                             t.text += a.text;
                         count++;
                     }
                     t.text += ")";
                     break;
-                case  0x028D: //unkown == (int)ENatives.NATIVE_Mid: // 0x028C
+                case 0x028D: //unkown == (int)ENatives.NATIVE_Mid: // 0x028C
                     t.text = "Left(";
                     count = 0;
                     while (pos < memsize - 6)
@@ -3063,7 +3079,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadCompareDel(int start,string arg)
+        private static Token ReadCompareDel(int start, string arg)
         {
             Token t = new Token();
             int pos = start + 1;
@@ -3100,7 +3116,7 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
             int pos = start + 1;
             Token a = ReadToken(pos);
-            pos += a.raw.Length ;
+            pos += a.raw.Length;
             int index = (Int32)BitConverter.ToInt64(memory, pos);
             pos += 8;
             string s = pcc.getNameEntry(index);
@@ -3155,7 +3171,7 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadCompareStructs(int start,string s)
+        private static Token ReadCompareStructs(int start, string s)
         {
             Token t = new Token();
             int pos = start + 5;
@@ -3223,10 +3239,10 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadArrayArg2(int start, string arg,bool skip2byte)
+        private static Token ReadArrayArg2(int start, string arg, bool skip2byte)
         {
             Token t = new Token();
-            
+
             int pos = start + 1;
             Token a = ReadToken(pos);
             pos += a.raw.Length;
@@ -3244,10 +3260,10 @@ namespace ME3Explorer.Unreal
             return t;
         }
 
-        private static Token ReadArrayArg(int start,string arg)
+        private static Token ReadArrayArg(int start, string arg)
         {
             Token t = new Token();
-            
+
             int pos = start + 1;
             Token a = ReadToken(pos);
             pos += a.raw.Length + 2;
@@ -3255,7 +3271,7 @@ namespace ME3Explorer.Unreal
             pos += b.raw.Length;
             Token c = ReadToken(pos);
             pos += c.raw.Length;
-            t.text = a.text +  "." + arg + "(" + b.text + ")";
+            t.text = a.text + "." + arg + "(" + b.text + ")";
             int len = pos - start;
             t.raw = new byte[len];
             if (start + len <= memsize)
@@ -3267,7 +3283,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadUnkn1b(int start)
         {
             Token t = new Token();
-            
+
             int index = BitConverter.ToInt32(memory, start + 1);
             //string s = "";
             //if (index > 0 && index <= pcc.ExportCount)
@@ -3288,7 +3304,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadCase(int start)
         {
             Token t = new Token();
-            
+
             int pos = start + 1;
             int size = BitConverter.ToInt16(memory, pos);
             pos += 2;
@@ -3306,7 +3322,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadMetacast(int start)
         {
             Token t = new Token();
-            
+
             int pos = start + 1;
             int index = BitConverter.ToInt32(memory, pos);
             string s = "";
@@ -3316,7 +3332,7 @@ namespace ME3Explorer.Unreal
                 s = pcc.Imports[index * -1 - 1].ObjectName;
             pos += 4;
             Token a = ReadToken(pos);
-            pos += a.raw.Length;            
+            pos += a.raw.Length;
             t.text = "Class<" + s + ">(" + a.text + ")";
             int len = pos - start;
             t.raw = new byte[len];
@@ -3329,7 +3345,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadVectorConst(int start)
         {
             Token t = new Token();
-            
+
             int pos = start + 1;
             float f1 = BitConverter.ToSingle(memory, pos);
             float f2 = BitConverter.ToSingle(memory, pos + 4);
@@ -3346,7 +3362,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadRotatorConst(int start)
         {
             Token t = new Token();
-            
+
             int pos = start + 1;
             int i1 = BitConverter.ToInt32(memory, pos);
             int i2 = BitConverter.ToInt32(memory, pos + 4);
@@ -3363,7 +3379,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadConditional(int start)
         {
             Token t = new Token();
-            
+
             int pos = start + 1;
             Token a = ReadToken(pos);
             pos += a.raw.Length;
@@ -3399,7 +3415,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadUnkn8(int start)
         {
             Token t = new Token();
-            
+
             int index = BitConverter.ToInt32(memory, start + 1);
             t.text = "If(" + pcc.getObjectName(index) + "){";
             int pos = start + 8;
@@ -3426,7 +3442,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadUnkn7(int start)
         {
             Token t = new Token();
-            
+
             int index = BitConverter.ToInt32(memory, start + 1);
             t.text = "If(" + pcc.getObjectName(index) + ")\n\t{\n";
             int pos = start + 8;
@@ -3454,7 +3470,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadEmptyDel(int start)
         {
             Token t = new Token();
-            
+
             int pos = start + 1;
             Token a = ReadToken(pos);
             pos += a.raw.Length;
@@ -3470,7 +3486,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadStruct(int start)
         {
             Token t = new Token();
-            
+
             int field = BitConverter.ToInt32(memory, start + 1);
             int type = BitConverter.ToInt32(memory, start + 5);
             int skip = BitConverter.ToInt16(memory, start + 7);
@@ -3490,11 +3506,11 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             Token a = ReadToken(start + 2);
-            t.text =  a.text;
-            int pos =  start + a.raw.Length + 2;
+            t.text = a.text;
+            int pos = start + a.raw.Length + 2;
             int len = pos - start;
             t.raw = new byte[len];
-            if(start + len <= memsize)
+            if (start + len <= memsize)
                 for (int i = 0; i < len; i++)
                     t.raw[i] = memory[start + i];
             return t;
@@ -3526,11 +3542,11 @@ namespace ME3Explorer.Unreal
                 t.raw[i] = memory[start + i];
             return t;
         }
-                
+
         private static Token ReadUnkn6(int start)
         {
             Token t = new Token();
-            
+
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
             t.text = pcc.getNameEntry(index);
             int pos = start + 11;
@@ -3560,7 +3576,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadExtNative(int start)
         {
             Token t = new Token();
-            
+
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
             t.text = pcc.getObjectName(index);
             int pos = start + 11;
@@ -3627,7 +3643,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadIterator(int start)
         {
             Token t = new Token();
-                        
+
             int pos = start + 1;
             Token a = ReadToken(pos);
             pos += a.raw.Length + 2;
@@ -3648,7 +3664,7 @@ namespace ME3Explorer.Unreal
             int pos = start + 1;
             while (memory[pos] != 0)
                 t.text += (char)memory[pos++];
-            int len = pos-start +1;
+            int len = pos - start + 1;
             t.raw = new byte[len];
             if (start + len <= memsize)
                 for (int i = 0; i < len; i++)
@@ -3660,7 +3676,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadDynCast(int start)
         {
             Token t = new Token();
-            int idx = BitConverter.ToInt32(memory,start + 1);
+            int idx = BitConverter.ToInt32(memory, start + 1);
             Token a = ReadToken(start + 5);
             t.text = "(" + pcc.getObjectName(idx) + ")" + a.text;
             int len = a.raw.Length + 5;
@@ -3674,7 +3690,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadUnkn4(int start)
         {
             Token t = new Token();
-            
+
             int index = BitConverter.ToInt32(memory, start + 1);
             t.text = pcc.getObjectName(index);
             t.raw = new byte[5];
@@ -3697,7 +3713,7 @@ namespace ME3Explorer.Unreal
             pos += c.raw.Length;
             pos += 2;
             t.text = "foreach " + c.text + "(" + b.text + " IN " + a.text + ")";
-            int len = pos- start;
+            int len = pos - start;
             t.raw = new byte[len];
             if (start + len <= memsize)
                 for (int i = 0; i < len; i++)
@@ -3721,7 +3737,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadUnkn3(int start)
         {
             Token t = new Token();
-            
+
             int index = BitConverter.ToInt32(memory, start + 1);
             t.text = pcc.getObjectName(index);
             t.raw = new byte[5];
@@ -3734,11 +3750,11 @@ namespace ME3Explorer.Unreal
         private static Token ReadLocOutVar(int start)
         {
             Token t = new Token();
-            
+
             int index = BitConverter.ToInt32(memory, start + 1);
             t.text = pcc.getObjectName(index);
             t.raw = new byte[5];
-            if(start + 5 <= memsize)
+            if (start + 5 <= memsize)
                 for (int i = 0; i < 5; i++)
                     t.raw[i] = memory[start + i];
             return t;
@@ -3760,7 +3776,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadByteConst(int start)
         {
             Token t = new Token();
-            
+
             int n = memory[start + 1];
             t.text = n.ToString();
             t.raw = new byte[2];
@@ -3772,7 +3788,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadIntConst(int start)
         {
             Token t = new Token();
-            
+
             int n = BitConverter.ToInt32(memory, start + 1);
             t.text = n.ToString();
             t.raw = new byte[5];
@@ -3793,7 +3809,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadDelegateProp(int start)
         {
             Token t = new Token();
-            
+
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
             t.text = pcc.getNameEntry(index);
             t.raw = new byte[13];
@@ -3805,7 +3821,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadInstDelegate(int start)
         {
             Token t = new Token();
-            
+
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
             t.text = pcc.getNameEntry(index);
             t.raw = new byte[9];
@@ -3817,7 +3833,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadObjectConst(int start)
         {
             Token t = new Token();
-            
+
             int index = BitConverter.ToInt32(memory, start + 1);
             t.text = " '" + pcc.getObjectName(index) + "'";
             if (index > 0 && index <= pcc.Exports.Count)
@@ -3833,7 +3849,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadFinalFunc(int start)
         {
             Token t = new Token();
-            
+
             int index = BitConverter.ToInt32(memory, start + 1);
             t.text = pcc.getObjectName(index) + "(";
             int pos = start + 5;
@@ -3861,7 +3877,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadUnkn1(int start)
         {
             Token t = new Token();
-            
+
             int index = BitConverter.ToInt32(memory, start + 1);
             t.text = pcc.getObjectName(index);
             t.raw = new byte[5];
@@ -3873,7 +3889,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadNameConst(int start)
         {
             Token t = new Token();
-            
+
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
             t.text = "'" + pcc.getNameEntry(index) + "'";
             t.raw = new byte[9];
@@ -3940,7 +3956,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadByteToInt(int start)
         {
             Token t = new Token();
-            
+
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
             t.text = "ByteToInt(" + pcc.getObjectName(index) + ")";
             t.raw = new byte[5];
@@ -4010,22 +4026,22 @@ namespace ME3Explorer.Unreal
             int len = pos - start;
             t.text = a.text + "." + b.text;
             t.raw = new byte[len];
-            if(start + len <= memsize)
+            if (start + len <= memsize)
                 for (int i = 0; i < len; i++)
                     t.raw[i] = memory[start + i];
             return t;
         }
 
         private static Token ReadDefaultParmVal(int start)
-        {            
+        {
             Token t = new Token();
-            int size = BitConverter.ToInt16(memory,start + 1);
+            int size = BitConverter.ToInt16(memory, start + 1);
             Token a = ReadToken(start + 3);
-            int pos = start +  a.raw.Length + 3;
+            int pos = start + a.raw.Length + 3;
             int len = pos - start;
-            t.text = "DefaultParameterValue(" + a.text + ")";            
+            t.text = "DefaultParameterValue(" + a.text + ")";
             t.raw = new byte[len];
-            if(start + len <= memsize)
+            if (start + len <= memsize)
                 for (int i = 0; i < len; i++)
                     t.raw[i] = memory[start + i];
             return t;
@@ -4034,7 +4050,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadEqual(int start)
         {
             Token t = new Token();
-            Token a = ReadToken(start + 1);            
+            Token a = ReadToken(start + 1);
             int pos = start + a.raw.Length + 1;
             Token b = ReadToken(pos);
             pos += b.raw.Length;
@@ -4063,11 +4079,11 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
             int offset = BitConverter.ToInt16(memory, start + 1);
             Token a = ReadToken(start + 3);
-            t.text = "If (!(" + a.text + ")) Goto(0x" + offset.ToString("X") +");";
+            t.text = "If (!(" + a.text + ")) Goto(0x" + offset.ToString("X") + ");";
             int pos = start + 3 + a.raw.Length;
             int len = pos - start;
             t.raw = new byte[len];
-            if(start + len <= memsize)
+            if (start + len <= memsize)
                 for (int i = 0; i < len; i++)
                     t.raw[i] = memory[start + i];
             return t;
@@ -4080,14 +4096,14 @@ namespace ME3Explorer.Unreal
             int pos = start + 1;
             t.text = a.text;
             pos += a.raw.Length;
-            t.text += " = "; 
+            t.text += " = ";
             Token b = ReadToken(pos);
             t.text += b.text;
             pos += b.raw.Length;
             t.text += ";";
             int len = pos - start;
             t.raw = new byte[len];
-            if(start + len <= memsize)
+            if (start + len <= memsize)
                 for (int i = 0; i < len; i++)
                     t.raw[i] = memory[start + i];
             return t;
@@ -4110,7 +4126,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             t.text = "";
-            
+
             int index = BitConverter.ToInt32(memory, start + 1);
             if (index > 0 && index <= pcc.Exports.Count)
             {
@@ -4125,7 +4141,7 @@ namespace ME3Explorer.Unreal
                 string clas = pcc.Imports[index * -1 - 1].ClassName;
                 clas = clas.Replace("Property", "");
                 t.text += clas + " " + name + ";";
-            }            
+            }
             t.raw = new byte[5];
             for (int i = 0; i < 5; i++)
                 t.raw[i] = memory[start + i];
@@ -4135,7 +4151,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadLocalVar(int start)
         {
             Token t = new Token();
-            
+
             int index = BitConverter.ToInt32(memory, start + 1);
             t.text = pcc.getObjectName(index);
             t.raw = new byte[5];
@@ -4153,7 +4169,7 @@ namespace ME3Explorer.Unreal
             int index = BitConverter.ToInt32(memory, start + 1);
             t.text = pcc.getObjectName(index);
             t.raw = new byte[5];
-            if(start + 5 <= memsize)
+            if (start + 5 <= memsize)
                 for (int i = 0; i < 5; i++)
                     t.raw[i] = memory[start + i];
             return t;
@@ -4163,7 +4179,7 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             t.text = "Goto(0x";
-            
+
             int index = BitConverter.ToInt16(memory, start + 1);
             t.text += index.ToString("X") + ")";
             t.raw = new byte[3];
@@ -4182,7 +4198,7 @@ namespace ME3Explorer.Unreal
             if (index >= 0 && index < pcc.Names.Count)
                 t.text = pcc.getNameEntry(index);
             else
-                t.text = "Label (" + index.ToString("X2") + ");";            
+                t.text = "Label (" + index.ToString("X2") + ");";
             t.raw = new byte[5];
             for (int i = 0; i < 5; i++)
                 t.raw[i] = memory[start + i];
@@ -4215,6 +4231,6 @@ namespace ME3Explorer.Unreal
             t.raw[0] = memory[start];
             return t;
         }
-        
+
     }
 }

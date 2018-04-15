@@ -88,7 +88,7 @@ namespace KFreonLib.Scripting
             Assembly compiledScript = CompileCode(script);
             if (compiledScript != null)
                 res = RunScript(compiledScript);
-            if(res == "Code Finished")
+            if (res == "Code Finished")
             {
                 res = "Success";
             }

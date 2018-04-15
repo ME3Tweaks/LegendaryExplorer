@@ -156,7 +156,7 @@ namespace ME3Explorer
         /// <param name="haystack">The one-dimensional array to search</param>
         /// <param name="needle">The object to locate in <paramref name="haystack" /></param>
         /// <param name="start">The index to start searching at</param>
-        public static int IndexOfArray<T>(this T[] haystack, T[] needle, int start=0) where T : IEquatable<T>
+        public static int IndexOfArray<T>(this T[] haystack, T[] needle, int start = 0) where T : IEquatable<T>
         {
             var len = needle.Length;
             var limit = haystack.Length - len;
@@ -165,7 +165,7 @@ namespace ME3Explorer
                 var k = 0;
                 for (; k < len; k++)
                 {
-                    if (! needle[k].Equals(haystack[i + k])) break;
+                    if (!needle[k].Equals(haystack[i + k])) break;
                 }
                 if (k == len) return i;
             }
@@ -428,8 +428,14 @@ namespace ME3Explorer
 
         public static void WriteStringUnicode(this Stream stream, string value)
         {
-            stream.WriteValueS32(-(value.Length + 1));
-            stream.WriteStringZ(value, Encoding.Unicode);
+            if (value.Length > 0)
+            {
+                stream.WriteValueS32(-(value.Length + 1));
+                stream.WriteStringZ(value, Encoding.Unicode);
+            } else
+            {
+                stream.WriteValueS32(0);
+            }
         }
 
         public static void WriteStream(this Stream stream, MemoryStream value)

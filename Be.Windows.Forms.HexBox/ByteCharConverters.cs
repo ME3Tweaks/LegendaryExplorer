@@ -55,7 +55,7 @@ namespace Be.Windows.Forms
         /// <returns></returns>
         public override string ToString()
         {
-            return "Default";
+            return "ANSI (Default)";
         }
     }
 

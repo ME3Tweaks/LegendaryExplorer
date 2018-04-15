@@ -32,15 +32,21 @@ namespace ME3Explorer.WwiseBankEditor
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                try
-                {
-                    LoadME3Package(d.FileName);
-                    ListRefresh();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error:\n" + ex.Message);
-                }
+                LoadFile(d.FileName);
+            }
+        }
+
+        public void LoadFile(string fileName)
+        {
+            try
+            {
+                LoadME3Package(fileName);
+                ListRefresh();
+                openFileLabel.Text = Path.GetFileName(fileName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
             }
         }
 
@@ -147,7 +153,14 @@ namespace ME3Explorer.WwiseBankEditor
             byte[] tmp = new byte[hb2.ByteProvider.Length];
             for (int i = 0; i < hb2.ByteProvider.Length; i++)
                 tmp[i] = hb2.ByteProvider.ReadByte(i);
+
+            //write size of this HIRC
+            int insideLen = (int) hb2.ByteProvider.Length - 5;
+            byte[] b = BitConverter.GetBytes(insideLen);
+            b.CopyTo(tmp, 1);
+
             bank.HIRCObjects[m] = tmp;
+            Console.WriteLine("HIRC hex size: " + bank.HIRCObjects[m].Count().ToString("X4"));
             ListRefresh2();
             listBox2.SelectedIndex = m;
         }
@@ -262,7 +275,6 @@ namespace ME3Explorer.WwiseBankEditor
                 }
             }
         }
-
         private void searchHexButton_Click(object sender, EventArgs e)
         {
             if (bank == null)
@@ -270,21 +282,21 @@ namespace ME3Explorer.WwiseBankEditor
             int m = listBox2.SelectedIndex;
             if (m == -1)
                 m = 0;
-            string hexString = searchHexTextBox.Text.Replace(" " , string.Empty);
-            if(hexString.Length == 0)
+            string hexString = searchHexTextBox.Text.Replace(" ", string.Empty);
+            if (hexString.Length == 0)
                 return;
             if (!HexConverter.Hexconverter.isHexString(hexString))
             {
                 searchHexStatus.Text = "Illegal characters in Hex String";
                 return;
             }
-            if(hexString.Length % 2 != 0)
+            if (hexString.Length % 2 != 0)
             {
                 searchHexStatus.Text = "Odd number of characters in Hex String";
                 return;
             }
             byte[] buff = new byte[hexString.Length / 2];
-            for(int i = 0; i < hexString.Length / 2; i++)
+            for (int i = 0; i < hexString.Length / 2; i++)
             {
                 buff[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
             }
@@ -295,7 +307,7 @@ namespace ME3Explorer.WwiseBankEditor
             {
                 hirc = bank.HIRCObjects[(i + m) % count]; //search from selected index, and loop back around
                 int indexIn = hirc.IndexOfArray(buff, hexboxIndex);
-                if(indexIn > -1)
+                if (indexIn > -1)
                 {
                     listBox2.SelectedIndex = (i + m) % count;
                     hb2.Select(indexIn, buff.Length);

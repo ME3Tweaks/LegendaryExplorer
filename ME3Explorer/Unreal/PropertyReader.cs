@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using ME3Explorer.Packages;
 using Gibbed.IO;
 using System.Runtime.CompilerServices;
+using System.Diagnostics;
 
 namespace ME3Explorer.Unreal
 {
@@ -249,7 +250,7 @@ namespace ME3Explorer.Unreal
             get { return _nameindex; }
             set { _nameindex = value; }
         }
-    } 
+    }
     #endregion
 
     public struct NameReference : INotifyPropertyChanged
@@ -259,7 +260,7 @@ namespace ME3Explorer.Unreal
 
         public static implicit operator NameReference(string s)
         {
-            return new NameReference { Name = s};
+            return new NameReference { Name = s };
         }
 
         public static implicit operator string(NameReference n)
@@ -343,7 +344,7 @@ namespace ME3Explorer.Unreal
             public int offend;
             public PropertyValue Value;
             public byte[] raw;
-        }        
+        }
 
         public struct PropertyValue
         {
@@ -416,11 +417,11 @@ namespace ME3Explorer.Unreal
             switch (p.TypeVal)
             {
                 case PropertyType.StructProperty:
-                    s += " \"" + pcc.getNameEntry (p.Value.IntValue) + "\" with " + p.Value.Array.Count + " bytes";
+                    s += " \"" + pcc.getNameEntry(p.Value.IntValue) + "\" with " + p.Value.Array.Count + " bytes";
                     break;
-                case PropertyType.IntProperty:                
+                case PropertyType.IntProperty:
                 case PropertyType.ObjectProperty:
-                case PropertyType.StringRefProperty :
+                case PropertyType.StringRefProperty:
                     s += " Value: " + p.Value.IntValue;
                     break;
                 case PropertyType.BoolProperty:
@@ -454,10 +455,10 @@ namespace ME3Explorer.Unreal
             NameProp pp;
             switch (p.TypeVal)
             {
-                case PropertyType.BoolProperty :
+                case PropertyType.BoolProperty:
                     pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, (p.Value.IntValue == 1), typeof(bool), false, true);
                     break;
-                case PropertyType.FloatProperty: 
+                case PropertyType.FloatProperty:
                     pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, p.Value.FloatValue, typeof(float), false, true);
                     break;
                 case PropertyType.ByteProperty:
@@ -490,12 +491,13 @@ namespace ME3Explorer.Unreal
                     pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, p.Value.StringValue, typeof(string), false, true);
                     break;
                 case PropertyType.ArrayProperty:
-                    pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, BitConverter.ToInt32(p.raw,24) + " elements", typeof(string), false, true);
+                    pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, BitConverter.ToInt32(p.raw, 24) + " elements", typeof(string), false, true);
                     break;
                 case PropertyType.StructProperty:
                     string structType = pcc.getNameEntry(p.Value.IntValue);
-                    if(structType == "Color") {
-                        ColorProp  cp = new ColorProp();
+                    if (structType == "Color")
+                    {
+                        ColorProp cp = new ColorProp();
                         cp.name = structType;
                         cp.nameindex = p.Value.IntValue;
                         System.Drawing.Color color = System.Drawing.Color.FromArgb(BitConverter.ToInt32(p.raw, 32));
@@ -536,7 +538,8 @@ namespace ME3Explorer.Unreal
                         lcp.Alpha = BitConverter.ToSingle(p.raw, 44);
                         pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, lcp, typeof(VectorProp), false, true);
                     }
-                    else {
+                    else
+                    {
                         StructProp ppp = new StructProp();
                         ppp.name = structType;
                         ppp.nameindex = p.Value.IntValue;
@@ -545,13 +548,13 @@ namespace ME3Explorer.Unreal
                             buf[i] = (byte)p.Value.Array[i].IntValue;
                         List<int> buf2 = new List<int>();
                         for (int i = 0; i < p.Value.Array.Count() / 4; i++)
-                            buf2.Add(BitConverter.ToInt32(buf ,i * 4));
+                            buf2.Add(BitConverter.ToInt32(buf, i * 4));
                         ppp.data = buf2.ToArray();
                         pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, ppp, typeof(StructProp), false, true);
                     }
-                    break;                    
+                    break;
                 default:
-                    pg = new CustomProperty(pcc.getNameEntry(p.Name),cat,p.Value.IntValue,typeof(int),false,true);
+                    pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, p.Value.IntValue, typeof(int), false, true);
                     break;
             }
             return pg;
@@ -581,17 +584,20 @@ namespace ME3Explorer.Unreal
             int sname;
             List<Property> result = new List<Property>();
             int pos = start;
-            if(raw.Length - pos < 8)
+            if (raw.Length - pos < 8)
                 return result;
-            int name = (int)BitConverter.ToInt64(raw, pos);
+            //int name = (int)BitConverter.ToInt64(raw, pos);
+            int name = (int)BitConverter.ToInt32(raw, pos);
+
             if (!pcc.isName(name))
                 return result;
             string t = pcc.getNameEntry(name);
             p = new Property();
             p.Name = name;
+            //Debug.WriteLine(t +" at "+start);
             if (t == "None")
             {
-                p.TypeVal = PropertyType.None;         
+                p.TypeVal = PropertyType.None;
                 p.offsetval = pos;
                 p.Size = 8;
                 p.Value = new PropertyValue();
@@ -600,7 +606,9 @@ namespace ME3Explorer.Unreal
                 result.Add(p);
                 return result;
             }
-            int type = (int)BitConverter.ToInt64(raw, pos + 8);            
+            //int type = (int)BitConverter.ToInt64(raw, pos + 8);            
+            int type = (int)BitConverter.ToInt32(raw, pos + 8);
+
             p.Size = BitConverter.ToInt32(raw, pos + 16);
             if (!pcc.isName(type) || p.Size < 0 || p.Size >= raw.Length)
                 return result;
@@ -619,7 +627,7 @@ namespace ME3Explorer.Unreal
                     for (int i = 0; i < p.Size; i++)
                     {
                         PropertyValue v2 = new PropertyValue();
-                        if(pos < raw.Length)
+                        if (pos < raw.Length)
                             v2.IntValue = raw[pos];
                         v.Array.Add(v2);
                         pos++;
@@ -639,10 +647,10 @@ namespace ME3Explorer.Unreal
                     for (int i = 0; i < count; i++)
                     {
                         PropertyValue v2 = new PropertyValue();
-                        if(pos < raw.Length)
+                        if (pos < raw.Length)
                             v2.IntValue = raw[pos];
                         v.Array.Add(v2);
-                        pos ++;
+                        pos++;
                     }
                     p.Value = v;
                     break;
@@ -763,7 +771,7 @@ namespace ME3Explorer.Unreal
                     v.IntValue = raw[pos + 24];
                     if (pcc.Game == MEGame.ME3)
                     {
-                        v.len = 1; 
+                        v.len = 1;
                     }
                     else
                     {
@@ -773,7 +781,7 @@ namespace ME3Explorer.Unreal
                     p.Value = v;
                     break;
                 default:
-                    p.TypeVal = getType(pcc,type);
+                    p.TypeVal = getType(pcc, type);
                     p.offsetval = pos + 24;
                     p.Value = ReadValue(pcc, raw, pos + 24, type);
                     pos += p.Value.len + 24;
@@ -781,11 +789,11 @@ namespace ME3Explorer.Unreal
             }
             p.raw = new byte[pos - start];
             p.offend = pos;
-            if(pos < raw.Length)
-                for (int i = 0; i < pos - start; i++) 
+            if (pos < raw.Length)
+                for (int i = 0; i < pos - start; i++)
                     p.raw[i] = raw[start + i];
-            result.Add(p);            
-            if(pos!=start) result.AddRange(ReadProp(pcc, raw, pos));
+            result.Add(p);
+            if (pos != start) result.AddRange(ReadProp(pcc, raw, pos));
             return result;
         }
 
@@ -804,7 +812,7 @@ namespace ME3Explorer.Unreal
                 case "ArrayProperty": return PropertyType.ArrayProperty;
                 case "DelegateProperty": return PropertyType.DelegateProperty;
                 case "StrProperty": return PropertyType.StrProperty;
-                case "StringRefProperty": return PropertyType.StringRefProperty;                    
+                case "StringRefProperty": return PropertyType.StringRefProperty;
                 default:
                     return PropertyType.Unknown;
             }
@@ -835,14 +843,14 @@ namespace ME3Explorer.Unreal
             }
             return v;
         }
-        
+
         public static int detectStart(IMEPackage pcc, byte[] raw, ulong flags)
         {
             if ((flags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
             {
                 if (pcc.Game != MEGame.ME3)
                 {
-                    return 32; 
+                    return 32;
                 }
                 return 30;
             }
@@ -852,10 +860,10 @@ namespace ME3Explorer.Unreal
             if (pcc.isName(test1) && test2 == 0)
                 result = 4;
             if (pcc.isName(test1) && pcc.isName(test2) && test2 != 0)
-                result = 8;    
+                result = 8;
             return result;
         }
-        
+
         public static void ImportProperty(IMEPackage pcc, IMEPackage importpcc, Property p, string className, MemoryStream m, bool inStruct = false)
         {
             string name = importpcc.getNameEntry(p.Name);
@@ -943,9 +951,14 @@ namespace ME3Explorer.Unreal
                     }
                     break;
                 case "StrProperty":
-                    name2 = p.Value.StringValue + '\0';
+                    name2 = p.Value.StringValue ;
+                    if (p.Value.StringValue.Length >0)
+                    {
+                        name2 += '\0';
+                    }
                     if (p.Value.len < 0)
                     {
+                        //unicode
                         m.Write(BitConverter.GetBytes(4 + name2.Length * 2), 0, 4);
                         m.Write(new byte[4], 0, 4);
                         m.Write(BitConverter.GetBytes(-name2.Length), 0, 4);
@@ -953,10 +966,11 @@ namespace ME3Explorer.Unreal
                         {
                             m.WriteByte((byte)c);
                             m.WriteByte(0);
-                        } 
+                        }
                     }
                     else
                     {
+                        //ascii
                         m.Write(BitConverter.GetBytes(4 + name2.Length), 0, 4);
                         m.Write(new byte[4], 0, 4);
                         m.Write(BitConverter.GetBytes(name2.Length), 0, 4);
@@ -1094,7 +1108,11 @@ namespace ME3Explorer.Unreal
                     }
                     break;
                 case "StrProperty":
-                    name2 = p.Value.StringValue + '\0';
+                    name2 = p.Value.StringValue;
+                    if (name2.Length > 0)
+                    {
+                        name2 += '\0';
+                    }
                     m.Write(BitConverter.GetBytes(-name2.Length), 0, 4);
                     foreach (char c in name2)
                     {
@@ -1191,12 +1209,16 @@ namespace ME3Explorer.Unreal
 
         public static void WriteNoneProperty(this Stream stream, IMEPackage pcc)
         {
+            //Debug.WriteLine("Writing none property at 0x" + stream.Position.ToString("X6"));
+
             stream.WriteValueS32(pcc.FindNameOrAdd("None"));
             stream.WriteValueS32(0);
         }
 
         public static void WriteStructProperty(this Stream stream, IMEPackage pcc, string propName, string structName, byte[] value)
         {
+            //Debug.WriteLine("Writing struct property " + propName + ", type: " + structName + " at 0x" + stream.Position.ToString("X6"));
+
             stream.WritePropHeader(pcc, propName, PropertyType.StructProperty, value.Length);
             stream.WriteValueS32(pcc.FindNameOrAdd(structName));
             stream.WriteValueS32(0);
@@ -1205,6 +1227,8 @@ namespace ME3Explorer.Unreal
 
         public static void WriteStructProperty(this Stream stream, IMEPackage pcc, string propName, string structName, MemoryStream value)
         {
+            //Debug.WriteLine("Writing struct property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
+
             stream.WritePropHeader(pcc, propName, PropertyType.StructProperty, (int)value.Length);
             stream.WriteValueS32(pcc.FindNameOrAdd(structName));
             stream.WriteValueS32(0);
@@ -1218,24 +1242,32 @@ namespace ME3Explorer.Unreal
 
         public static void WriteIntProperty(this Stream stream, IMEPackage pcc, string propName, int value)
         {
+            //Debug.WriteLine("Writing int property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
+
             stream.WritePropHeader(pcc, propName, PropertyType.IntProperty, 4);
             stream.WriteValueS32(value);
         }
 
         public static void WriteFloatProperty(this Stream stream, IMEPackage pcc, string propName, float value)
         {
+            //Debug.WriteLine("Writing float property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
+
             stream.WritePropHeader(pcc, propName, PropertyType.FloatProperty, 4);
             stream.WriteValueF32(value);
         }
 
         public static void WriteObjectProperty(this Stream stream, IMEPackage pcc, string propName, int value)
         {
+            //Debug.WriteLine("Writing bool property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
+
             stream.WritePropHeader(pcc, propName, PropertyType.ObjectProperty, 4);
             stream.WriteValueS32(value);
         }
 
         public static void WriteNameProperty(this Stream stream, IMEPackage pcc, string propName, NameReference value)
         {
+            //Debug.WriteLine("Writing name property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
+
             stream.WritePropHeader(pcc, propName, PropertyType.NameProperty, 8);
             stream.WriteValueS32(pcc.FindNameOrAdd(value.Name));
             stream.WriteValueS32(value.Number);
@@ -1243,6 +1275,8 @@ namespace ME3Explorer.Unreal
 
         public static void WriteBoolProperty(this Stream stream, IMEPackage pcc, string propName, bool value)
         {
+            //Debug.WriteLine("Writing bool property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
+
             stream.WritePropHeader(pcc, propName, PropertyType.BoolProperty, 0);
             if (pcc.Game == MEGame.ME3)
             {
@@ -1256,6 +1290,8 @@ namespace ME3Explorer.Unreal
 
         public static void WriteByteProperty(this Stream stream, IMEPackage pcc, string propName, byte value)
         {
+            Debug.WriteLine("Writing byte property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
+
             stream.WritePropHeader(pcc, propName, PropertyType.ByteProperty, 1);
             if (pcc.Game == MEGame.ME3)
             {
@@ -1271,7 +1307,7 @@ namespace ME3Explorer.Unreal
             if (pcc.Game == MEGame.ME3)
             {
                 stream.WriteValueS32(pcc.FindNameOrAdd(enumName));
-                stream.WriteValueS32(0); 
+                stream.WriteValueS32(0);
             }
             stream.WriteValueS32(pcc.FindNameOrAdd(enumValue));
             stream.WriteValueS32(index);
@@ -1298,6 +1334,8 @@ namespace ME3Explorer.Unreal
 
         public static void WriteArrayProperty(this Stream stream, IMEPackage pcc, string propName, int count, MemoryStream value)
         {
+            Debug.WriteLine("Writing array property " + propName + ", count: " + count + " at 0x" + stream.Position.ToString("X6")+", length: "+value.Length);
+
             stream.WritePropHeader(pcc, propName, PropertyType.ArrayProperty, 4 + (int)value.Length);
             stream.WriteValueS32(count);
             stream.WriteStream(value);
@@ -1310,7 +1348,8 @@ namespace ME3Explorer.Unreal
 
         public static void WriteStringProperty(this Stream stream, IMEPackage pcc, string propName, string value)
         {
-            int strLen = value.Length + 1;
+            Debug.WriteLine("Writing string property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
+            int strLen = value.Length == 0 ? 0 : value.Length + 1;
             if (pcc.Game == MEGame.ME3)
             {
                 stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, (strLen * 2) + 4);
@@ -1325,6 +1364,8 @@ namespace ME3Explorer.Unreal
 
         public static void WriteStringRefProperty(this Stream stream, IMEPackage pcc, string propName, int value)
         {
+            //Debug.WriteLine("Writing stringref property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
+
             stream.WritePropHeader(pcc, propName, PropertyType.StringRefProperty, 4);
             stream.WriteValueS32(value);
         }

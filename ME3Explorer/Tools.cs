@@ -238,6 +238,8 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "compress", "decompress" },
                 subCategory = "Extractors + Repackers",
+                description = "PCC Repacker allows you to compress and decompress PCC files.",
+
             });
             set.Add(new Tool
             {
@@ -391,6 +393,19 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "Pathfinding Editor",
+                type = typeof(PathfindingEditor),
+                icon = Application.Current.FindResource("iconPathfindingEditor") as ImageSource,
+                open = () =>
+                {
+                    (new PathfindingEditor()).Show();
+                },
+                tags = new List<string> { "developer", "path", "mesh", "ai" },
+                subCategory = "Core",
+                description = "Pathfinding Editor allows you to modify pathing nodes so squadmates and enemies can move around a map.",
+            });
+            set.Add(new Tool
+            {
                 name = "Conditionals Editor",
                 type = typeof(Conditionals),
                 icon = Application.Current.FindResource("iconConditionalsEditor") as ImageSource,
@@ -493,7 +508,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Interpreter",
-                type = typeof(InterpreterHost),
+                type = typeof(BinaryInterpreterHost),
                 icon = Application.Current.FindResource("iconInterpreter") as ImageSource,
                 tags = new List<string>(),
                 subCategory = "Other",

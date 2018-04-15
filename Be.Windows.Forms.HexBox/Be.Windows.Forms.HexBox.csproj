@@ -142,6 +142,7 @@
     <Compile Include="FileDataBlock.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="FindOptions.cs" />
     <Compile Include="HexBox.cs">
       <SubType>Component</SubType>
     </Compile>

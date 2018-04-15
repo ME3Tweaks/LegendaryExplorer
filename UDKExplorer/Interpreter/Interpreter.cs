@@ -1184,6 +1184,7 @@ namespace UDKExplorer
                         }
                         break;
                     case "StrProperty":
+                        //[STRINGLENGTH-FIX]
                         string s = proptext.Text;
                         int offset = pos + 24;
                         int oldSize = BitConverter.ToInt32(memory, pos + 16);
@@ -1193,8 +1194,13 @@ namespace UDKExplorer
                         {
                             stringBuff.AddRange(BitConverter.GetBytes(s[j]));
                         }
-                        stringBuff.Add(0);
-                        stringBuff.Add(0);
+                        if (s.Length > 0)
+                        {
+                            stringBuff.Add(0);
+                            stringBuff.Add(0);
+                        }
+
+                        //Write Data
                         byte[] buff = BitConverter.GetBytes((s.LongCount() + 1) * 2 + 4);
                         for (int j = 0; j < 4; j++)
                             memory[offset - 8 + j] = buff[j];

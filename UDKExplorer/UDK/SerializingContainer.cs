@@ -34,6 +34,22 @@ namespace UDKExplorer
             return i;
         }
 
+        public static uint operator +(SerializingContainer Container, uint i)
+        {
+            if (Container.isLoading)
+            {
+                byte[] buff = new byte[4];
+                Container.Memory.Read(buff, 0, 4);
+                i = BitConverter.ToUInt32(buff, 0);
+            }
+            else
+            {
+                byte[] buff = BitConverter.GetBytes(i);
+                Container.Memory.Write(buff, 0, 4);
+            }
+            return i;
+        }
+
         public static short operator +(SerializingContainer Container, short i)
         {
             if (Container.isLoading)
