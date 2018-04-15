@@ -45,31 +45,27 @@ namespace ME3Explorer
                 for (int i = 0; i < memsize; i++)
                 {
                     memory[i] = (byte)fileStream.ReadByte();
-                    if(i>3 && memory[i] == 0x46)
-                        if (memory[i - 3] == 0x52
+                    if(i>=3 && memory[i] == 0x46
+                        && memory[i - 1] == 0x46
                         && memory[i - 2] == 0x49
-                        && memory[i - 1] == 0x46)
+                        && memory[i - 3] == 0x52)
+                    {
+                        int n = entr.Count;
+                        Entry temp = new Entry();
+                        if (n == 0)
                         {
-                            int n = entr.Count;
-                            Entry temp = new Entry();
-                            if (n == 0)
-                            {
-                                temp.off = 0;
-                                temp.size = i - 3;
-                                entr.Add(temp);
-                                temp.size = 0;
-                                temp.off = i - 3;
-                                entr.Add(temp);
-                            }
-                            else
-                            {
-                                temp.off = i - 3;
-                                Entry temp2 = entr[n - 1];
-                                temp2.size = temp.off - temp2.off;
-                                entr[n - 1] = temp2;
-                                entr.Add(temp);
-                            }
+                            temp.off = 0;
+                            entr.Add(temp);
                         }
+                        else
+                        {
+                            temp.off = i - 3;
+                            Entry temp2 = entr[n - 1];
+                            temp2.size = temp.off - temp2.off;
+                            entr[n - 1] = temp2;
+                            entr.Add(temp);
+                        }
+                    }
                 }
 
                 if (entr.Count > 0)

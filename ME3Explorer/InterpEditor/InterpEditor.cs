@@ -16,7 +16,6 @@ namespace ME3Explorer.Matinee
 
         public InterpEditor()
         {
-            SText.LoadFont();
             InitializeComponent();
             timeline.Scrollbar = vScrollBar1;
             timeline.GroupList.ScrollbarH = hScrollBar1;

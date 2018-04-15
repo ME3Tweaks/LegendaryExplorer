@@ -177,8 +177,9 @@ namespace ME3Explorer
     {
         public static bool isNumericallyEqual(this string first, string second)
         {
-            double a = 0, b = 0;
-            return double.TryParse(first, out a) && double.TryParse(second, out b) && (Math.Abs(a - b) < double.Epsilon);
+            return double.TryParse(first, out double a)
+                && double.TryParse(second, out double b)
+                && (Math.Abs(a - b) < double.Epsilon);
         }
 
         //based on algorithm described here: http://www.codeproject.com/Articles/13525/Fast-memory-efficient-Levenshtein-algorithm

@@ -7,7 +7,6 @@ using Gibbed.IO;
 using System.Diagnostics;
 using KFreonLib.PCCObjects;
 using KFreonLib.Helpers.ManagedLZO;
-using UsefulThings;
 using System.Windows;
 
 namespace KFreonLib.Helpers
