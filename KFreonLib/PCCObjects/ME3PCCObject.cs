@@ -8,7 +8,6 @@ using AmaroK86.MassEffect3.ZlibBlock;
 using KFreonLib.Textures;
 using BitConverter = KFreonLib.Misc.BitConverter;
 using KFreonLib.Debugging;
-using UsefulThings;
 
 namespace KFreonLib.PCCObjects
 {

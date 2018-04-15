@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -16,6 +17,7 @@ using System.Windows.Shapes;
 using ME3Explorer.CurveEd;
 using ME3Explorer.Packages;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 
 namespace ME3Explorer.FaceFX
 {
@@ -34,6 +36,7 @@ namespace ME3Explorer.FaceFX
         public IFaceFXAnimSet FaceFX;
         public ME3FaceFXLine selectedLine;
         private Point dragStart;
+        private bool dragEnabled;
 
         public FaceFXEditor()
         {
@@ -42,8 +45,7 @@ namespace ME3Explorer.FaceFX
 
         private void Open_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.pcc|*.pcc";
+            OpenFileDialog d = new OpenFileDialog{ Filter = "*.pcc|*.pcc"};
             if (d.ShowDialog() == true)
             {
                 LoadFile(d.FileName);
@@ -143,7 +145,7 @@ namespace ME3Explorer.FaceFX
             Animation a = (Animation)e.AddedItems[0];
 
             Curve curve = new Curve(a.Name, a.points);
-            curve.SaveChanges = () => SaveChanges();
+            curve.SaveChanges = SaveChanges;
             graph.SelectedCurve = curve;
             graph.Paint(true);
         }
@@ -159,12 +161,11 @@ namespace ME3Explorer.FaceFX
             }
             selectedLine = (ME3FaceFXLine)e.AddedItems[0];
             updateAnimListBox();
-            int tlkID = 0;
-            if (int.TryParse(selectedLine.ID, out tlkID))
+            if (int.TryParse(selectedLine.ID, out int tlkID))
             {
                 if (pcc.Game == MEGame.ME3)
                 {
-                    lineText.Text = ME3TalkFiles.findDataById(tlkID); 
+                    lineText.Text = ME3TalkFiles.findDataById(tlkID);
                 }
                 else
                 {
@@ -242,16 +243,23 @@ namespace ME3Explorer.FaceFX
         }
 
         #region Line dragging
+
+        private void linesListBox_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            dragEnabled = false;
+        }
+
         private void linesListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            dragStart = e.GetPosition(null);
+            dragStart = e.GetPosition(linesListBox);
+            dragEnabled = true;
         }
 
         private void linesListBox_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed && !dragStart.Equals(new Point(0, 0)))
+            if (e.LeftButton == MouseButtonState.Pressed && !dragStart.Equals(new Point(0, 0)) && dragEnabled)
             {
-                System.Windows.Vector diff = dragStart - e.GetPosition(null);
+                System.Windows.Vector diff = dragStart - e.GetPosition(linesListBox);
                 if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance || Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance)
                 {
                     try
@@ -518,7 +526,7 @@ namespace ME3Explorer.FaceFX
                 }
                 updatedExports.Remove(index);
             }
-            if (updatedExports.Intersect(animSets.Select(x => x.Index)).Count() > 0)
+            if (updatedExports.Intersect(animSets.Select(x => x.Index)).Any())
             {
                 RefreshComboBox();
             }
@@ -533,6 +541,214 @@ namespace ME3Explorer.FaceFX
                     }
                 }
             }
+        }
+
+        (float start, float end, float span) getTimeRange()
+        {
+            string startS = Microsoft.VisualBasic.Interaction.InputBox("Please enter start time:");
+            string endS = Microsoft.VisualBasic.Interaction.InputBox("Please enter end time:");
+            if (!(float.TryParse(startS, out float start) && float.TryParse(endS, out float end)))
+            {
+                MessageBox.Show("You must enter two valid time values. For example, 3 and a half seconds would be entered as: 3.5");
+                return (0, 0, -1);
+            }
+            float span = end - start;
+            if(span <= 0)
+            {
+                MessageBox.Show("The end time must be after the start time!");
+                return (0, 0, -1);
+            }
+            return (start, end, span);
+        }
+
+        private void DelLineSec_Click(object sender, RoutedEventArgs e)
+        {
+            var (start, end, span) = getTimeRange();
+            if(span < 0)
+            {
+                return;
+            }
+            var newPoints = new List<ControlPoint>();
+            ControlPoint tmp;
+            int keptPoints;
+            for (int i = 0, j = 0; i < selectedLine.numKeys.Length; i++)
+            {
+                keptPoints = 0;
+                for(int k = 0; k < selectedLine.numKeys[i]; k++)
+                {
+                    tmp = selectedLine.points[j + k];
+                    if(tmp.time < start)
+                    {
+                        newPoints.Add(tmp);
+                        keptPoints++;
+                    }
+                    else if (tmp.time > end)
+                    {
+                        tmp.time -= span;
+                        newPoints.Add(tmp);
+                        keptPoints++;
+                    }
+                }
+                j += selectedLine.numKeys[i];
+                selectedLine.numKeys[i] = keptPoints;
+            }
+            selectedLine.points = newPoints.ToArray();
+            FaceFX.Save();
+            updateAnimListBox();
+        }
+
+        private struct LineSection
+        {
+            public float span;
+            public Dictionary<string, List<ControlPoint>> animSecs;
+        }
+
+        private void ImpLineSec_Click(object sender, RoutedEventArgs e)
+        {
+            string startS = Microsoft.VisualBasic.Interaction.InputBox("Please enter the time to insert at");
+            if (!float.TryParse(startS, out float start))
+            {
+                MessageBox.Show("You must enter two valid time values. For example, 3 and a half seconds would be entered as: 3.5");
+                return;
+            }
+            var ofd = new OpenFileDialog();
+            ofd.Filter = $"*.json|*.json|All Files (*.*)|*.*";
+            ofd.CheckFileExists = true;
+            if(ofd.ShowDialog() == true)
+            {
+                var lineSec = JsonConvert.DeserializeObject<LineSection>(File.ReadAllText(ofd.FileName));
+                ControlPoint tmp;
+                var newPoints = new List<ControlPoint>();
+                int newNumPoints;
+                string animName;
+                for (int i = 0, j = 0, k = 0; i < selectedLine.animations.Length; i++)
+                {
+                    k = 0;
+                    newNumPoints = 0;
+                    for (; k < selectedLine.numKeys[i]; k++)
+                    {
+                        tmp = selectedLine.points[j + k];
+                        if (tmp.time >= start)
+                        {
+                            break;
+                        }
+                        newPoints.Add(tmp);
+                        newNumPoints++;
+                    }
+                    animName = FaceFX.Header.Names[selectedLine.animations[i].index];
+                    if (lineSec.animSecs.TryGetValue(animName, out var points))
+                    {
+                        newPoints.AddRange(points.Select(p => { p.time += start; return p; }));
+                        newNumPoints += points.Count;
+                        lineSec.animSecs.Remove(animName);
+                    }
+                    for (; k < selectedLine.numKeys[i]; k++)
+                    {
+                        tmp = selectedLine.points[j + k];
+                        tmp.time += lineSec.span;
+                        newPoints.Add(tmp);
+                        newNumPoints++;
+                    }
+                    j += selectedLine.numKeys[i];
+                    selectedLine.numKeys[i] = newNumPoints;
+                }
+                //if the line we are importing from had more animations than this one, we need to add some animations
+                if(lineSec.animSecs.Count > 0)
+                {
+                    var newNumKeys = selectedLine.numKeys.ToList();
+                    var newAnims = selectedLine.animations.ToList();
+                    List<string> names = FaceFX.Header.Names.ToList();
+                    foreach (var animSec in lineSec.animSecs)
+                    {
+                        if (pcc.Game == MEGame.ME3)
+                        {
+                            newAnims.Add(new ME3NameRef { index = names.FindOrAdd(animSec.Key), unk2 = 0 });
+                        }
+                        else
+                        {
+                            newAnims.Add(new ME2NameRef { index = names.FindOrAdd(animSec.Key), unk1 = 1 });
+                        }
+                        newNumKeys.Add(animSec.Value.Count);
+                        newPoints.AddRange(animSec.Value.Select(p => { p.time += start; return p; }));
+                    }
+                    selectedLine.animations = newAnims.ToArray();
+                    selectedLine.numKeys = newNumKeys.ToArray();
+                    FaceFX.Header.Names = names.ToArray();
+                }
+                selectedLine.points = newPoints.ToArray();
+                FaceFX.Save();
+                updateAnimListBox();
+                return;
+            }
+        }
+
+        private void ExpLineSec_Click(object sender, RoutedEventArgs e)
+        {
+            var (start, end, span) = getTimeRange();
+            if (span < 0)
+            {
+                return;
+            }
+            var animSecs = new Dictionary<string, List<ControlPoint>>();
+            ControlPoint tmp;
+            List<ControlPoint> points;
+            for (int i = 0, j = 0; i < selectedLine.animations.Length; i++)
+            {
+                points = new List<ControlPoint>();
+                for (int k = 0; k < selectedLine.numKeys[i]; k++)
+                {
+                    tmp = selectedLine.points[j + k];
+                    if (tmp.time >= start && tmp.time <= end)
+                    {
+                        tmp.time -= start;
+                        points.Add(tmp);
+                    }
+                }
+                j += selectedLine.numKeys[i];
+                animSecs.Add(FaceFX.Header.Names[selectedLine.animations[i].index], points);
+            }
+            string output = JsonConvert.SerializeObject(new LineSection { span = span + 0.01f, animSecs = animSecs });
+            var sfd = new SaveFileDialog
+            {
+                Filter = $"*.json|*.json",
+                AddExtension = true
+            };
+            if (sfd.ShowDialog() == true)
+            {
+                File.WriteAllText(sfd.FileName, output);
+            }
+        }
+
+        private void OffsetKeysAfterTime_Click(object sender, RoutedEventArgs e)
+        {
+            string startS = Microsoft.VisualBasic.Interaction.InputBox("Please enter the start time (keys at or after this time will be offset):");
+            string offsetS = Microsoft.VisualBasic.Interaction.InputBox("Please enter offset amount:");
+            if (!(float.TryParse(startS, out float start) && float.TryParse(offsetS, out float offset)))
+            {
+                MessageBox.Show("You must enter two valid time values. For example, 3 and a half seconds would be entered as: 3.5");
+                return;
+            }
+            for (int i = 0, j = 0; i < selectedLine.numKeys.Length; i++)
+            {
+                for (int k = 0; k < selectedLine.numKeys[i]; k++)
+                {
+                    if (k > 0 && (selectedLine.points[j + k].time + offset <= selectedLine.points[j + k - 1].time))
+                    {
+                        MessageBox.Show($"Offsetting every key after {start} by {offset} would lead to reordering " +
+                            $"in at least one animation", "Cannot Reorder keys", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                }
+            }
+            for (int i = 0; i < selectedLine.points.Length; i++)
+            {
+                if (selectedLine.points[i].time >= start)
+                {
+                    selectedLine.points[i].time += offset;
+                }
+            }
+            FaceFX.Save();
+            updateAnimListBox();
         }
     }
 }

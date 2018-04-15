@@ -57,7 +57,16 @@ namespace ME3Explorer.CurveEd
 
         // Using a DependencyProperty as the backing store for X.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty XProperty =
-            DependencyProperty.Register("X", typeof(double), typeof(Anchor), new PropertyMetadata(0.0));
+            DependencyProperty.Register("X", typeof(double), typeof(Anchor), new PropertyMetadata(0.0, OnXChanged));
+
+        private static void OnXChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            Anchor a = sender as Anchor;
+            if (a?.graph != null)
+            {
+                a.point.Value.InVal = Convert.ToSingle(a.graph.unrealX((double)e.NewValue));
+            }
+        }
 
         public bool IsSelected
         {
@@ -228,7 +237,6 @@ namespace ME3Explorer.CurveEd
             float result = 0;
             if (float.TryParse(res, out result) && result > prev && result < next)
             {
-                point.Value.InVal = result;
                 X = graph.localX(result);
                 graph.Paint(true);
             }

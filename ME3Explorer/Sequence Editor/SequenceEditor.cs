@@ -34,8 +34,7 @@ namespace ME3Explorer
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
             graphEditor.Camera.MouseDown += backMouseDown_Handler;
             zoomController = new ZoomController(graphEditor);
-
-            SText.LoadFont();
+            
             if (SObj.talkfiles == null)
             {
                 talkFiles = new ME1Explorer.TalkFiles();
