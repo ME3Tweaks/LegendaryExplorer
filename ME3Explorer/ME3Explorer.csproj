@@ -1668,7 +1668,7 @@ move /y "$(ProjectDir)$(OutDir)KFreonLib.dll.config" "$(ProjectDir)$(OutDir)lib\
 move /y "$(ProjectDir)$(OutDir)ME3LibWV.dll.config" "$(ProjectDir)$(OutDir)lib\"
 del "$(ProjectDir)$(OutDir)HexConverter.exe.config"
 del "$(ProjectDir)$(OutDir)UDKExplorer.exe.config"
-del "$(ProjectDir)$(OutDir)ME3Creator.exe.config"
+REM del "$(ProjectDir)$(OutDir)ME3Creator.exe.config"
 if $(ConfigurationName) == Release (copy /Y "$(SolutionDir)Deployment\ReleaseBuilder.cmd" "$(TargetDir)..\ReleaseBuilder.bat" /y)
 
 if $(ConfigurationName) == Release (copy /Y "$(SolutionDir)Deployment\ReleaseBuilder.ps1" "$(TargetDir)..\ReleaseBuilder.ps1" /y)
