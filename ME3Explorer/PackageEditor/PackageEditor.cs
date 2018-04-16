@@ -1901,20 +1901,26 @@ namespace ME3Explorer
 
         private void treeView1_DragOver(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
+            if (e.Data is TreeNode)
             {
-                Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
-                TreeNode DestinationNode = ((TreeView)sender).GetNodeAt(pt);
-                TreeNode NewNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
-                if (DestinationNode != null && DestinationNode.TreeView != NewNode.TreeView)
+                if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
                 {
-                    treeView1.SelectedNode = DestinationNode;
-                    e.Effect = DragDropEffects.Copy;
+                    Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
+                    TreeNode DestinationNode = ((TreeView)sender).GetNodeAt(pt);
+                    TreeNode NewNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
+                    if (DestinationNode != null && DestinationNode.TreeView != NewNode.TreeView)
+                    {
+                        treeView1.SelectedNode = DestinationNode;
+                        e.Effect = DragDropEffects.Copy;
+                    }
+                    else
+                    {
+                        e.Effect = DragDropEffects.None;
+                    }
                 }
-                else
-                {
-                    e.Effect = DragDropEffects.None;
-                }
+            } else
+            {
+                e.Effect = DragDropEffects.None;
             }
         }
 
