@@ -719,7 +719,7 @@ namespace ME3Explorer.Unreal
                     p.TypeVal = PropertyType.ByteProperty;
                     v = new PropertyValue();
                     v.len = p.Size;
-                    if (pcc.Game == MEGame.ME3)
+                    if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
                     {
                         p.offsetval = pos + 32;
                         v.StringValue = pcc.getNameEntry(sname);
