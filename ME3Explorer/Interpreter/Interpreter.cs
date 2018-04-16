@@ -2631,6 +2631,11 @@ namespace ME3Explorer
 
         private void addPropButton_Click(object sender, EventArgs e)
         {
+            if (pcc.Game == MEGame.UDK)
+            {
+                MessageBox.Show(this, "Cannot add properties to UDK UPK files.", "Unsupported operation");
+                return;
+            }
             List<string> props = PropertyReader.getPropList(export).Select(x => pcc.getNameEntry(x.Name)).ToList();
             string prop = AddPropertyDialog.GetProperty(className, props, pcc.Game);
             AddProperty(prop);

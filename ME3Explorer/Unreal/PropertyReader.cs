@@ -769,7 +769,7 @@ namespace ME3Explorer.Unreal
                     p.offsetval = pos + 24;
                     v = new PropertyValue();
                     v.IntValue = raw[pos + 24];
-                    if (pcc.Game == MEGame.ME3)
+                    if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK) //THIS NEEDS TESTED!!! From when merging UDK
                     {
                         v.len = 1;
                     }
