@@ -718,6 +718,11 @@ namespace ME3Explorer
         {
             if (pcc == null)
                 return;
+            if (pcc.Game == MEGame.UDK)
+            {
+                MessageBox.Show(this, "Cannot save UDK UPK files, support for them is read only.", "Unsupported operation");
+                return;
+            }
             SaveFileDialog d = new SaveFileDialog();
             string extension = Path.GetExtension(pcc.FileName);
             d.Filter = $"*{extension}|*{extension}";
@@ -732,6 +737,11 @@ namespace ME3Explorer
         {
             if (pcc == null)
                 return;
+            if (pcc.Game == MEGame.UDK)
+            {
+                MessageBox.Show(this, "Cannot save UDK UPK files, support for them is read only.", "Unsupported operation");
+                return;
+            }
             pcc.save();
             MessageBox.Show("Done");
         }
