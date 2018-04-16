@@ -235,6 +235,58 @@ namespace ME3Explorer.Packages
         }
     }
 
+    public class UDKExportEntry : ExportEntry, IExportEntry
+    {
+        public UDKExportEntry(UDKPackage pccFile, Stream stream) : base(pccFile)
+        {
+            headerOffset = (uint)stream.Position;
+            stream.Seek(44, SeekOrigin.Current);
+            int count = stream.ReadValueS32();
+            stream.Seek(-48, SeekOrigin.Current);
+
+            int expInfoSize = 68 + (count * 4);
+            header = stream.ReadBytes(expInfoSize);
+            OriginalDataSize = DataSize;
+            long headerEnd = stream.Position;
+
+            stream.Seek(DataOffset, SeekOrigin.Begin);
+            _data = stream.ReadBytes(DataSize);
+            stream.Seek(headerEnd, SeekOrigin.Begin);
+            if ((ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+            {
+                ReadsFromConfig = (Data[25] & 64) != 0;
+            }
+            else
+            {
+                ReadsFromConfig = false;
+            }
+        }
+
+        public UDKExportEntry(UDKPackage pccFile) : base(pccFile)
+        {
+        }
+
+        public IExportEntry Clone()
+        {
+            UDKExportEntry newExport = new UDKExportEntry(FileRef as UDKPackage);
+            newExport.header = (byte[])this.header.Clone();
+            newExport.headerOffset = 0;
+            newExport.Data = this.Data;
+            int index = 0;
+            string name = ObjectName;
+            foreach (IExportEntry ent in FileRef.Exports)
+            {
+                if (name == ent.ObjectName && ent.indexValue > index)
+                {
+                    index = ent.indexValue;
+                }
+            }
+            index++;
+            newExport.indexValue = index;
+            return newExport;
+        }
+    }
+
     public class ME3ExportEntry : ExportEntry, IExportEntry
     {
         public ME3ExportEntry(ME3Package pccFile, Stream stream) : base(pccFile)

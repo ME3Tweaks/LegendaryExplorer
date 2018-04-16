@@ -11,7 +11,6 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using UsefulThings;
 using static ME3Explorer.Unreal.PropertyReader;
-using ME3Explorer.Pathfinding_Editor;
 using System.Text;
 using ME3Explorer.SharedUI;
 
@@ -2378,6 +2377,11 @@ namespace ME3Explorer
         {
             ME3Package me3 = (ME3Package)pcc;
             var offset = me3.DependsOffset;
+        }
+
+        private void importFromUDKUPKToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new UDKImporter().ShowDialog();
         }
     }
 }

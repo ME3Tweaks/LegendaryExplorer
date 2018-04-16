@@ -119,6 +119,15 @@ namespace UDKExplorer
             //StartScan();
         }
 
+        public List<KeyValuePair<int,string>> GetPortingNameOffsetsMap()
+        {
+            List<KeyValuePair<int, string>> portingTable = new List<KeyValuePair<int, string>>();
+            //GenerateTree(topLevelTree, topLevelHeaders);
+
+
+            return portingTable;
+        }
+
         private void StartScan(IEnumerable<string> expandedNodes = null, string topNodeName = null, string selectedNodeName = null)
         {
             hidePropEditingControls();
@@ -384,7 +393,6 @@ namespace UDKExplorer
                         }
                         localRoot.Nodes.Add(t);
                     }
-
                 }
             }
         }
