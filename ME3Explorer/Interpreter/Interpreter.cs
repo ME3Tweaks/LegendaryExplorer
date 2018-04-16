@@ -2868,6 +2868,7 @@ namespace ME3Explorer
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.getPropertyInfo(className, pcc.getNameEntry(propName));
                 case MEGame.ME3:
+                case MEGame.UDK:
                     return ME3UnrealObjectInfo.getPropertyInfo(className, pcc.getNameEntry(propName));
             }
             return null;
@@ -2882,6 +2883,7 @@ namespace ME3Explorer
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
                 case MEGame.ME3:
+                case MEGame.UDK:
                     return ME3UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
             }
             return null;
@@ -2896,6 +2898,7 @@ namespace ME3Explorer
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.getArrayType(propInfo);
                 case MEGame.ME3:
+                case MEGame.UDK:
                     return ME3UnrealObjectInfo.getArrayType(propInfo);
             }
             return ArrayType.Int;
@@ -2914,6 +2917,7 @@ namespace ME3Explorer
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName));
                 case MEGame.ME3:
+                case MEGame.UDK:
                     return ME3UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName));
             }
             return ArrayType.Int;
@@ -2928,6 +2932,7 @@ namespace ME3Explorer
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.getEnumfromProp(className, pcc.getNameEntry(propName));
                 case MEGame.ME3:
+                case MEGame.UDK:
                     return ME3UnrealObjectInfo.getEnumValues(enumName, true);
             }
             return null;

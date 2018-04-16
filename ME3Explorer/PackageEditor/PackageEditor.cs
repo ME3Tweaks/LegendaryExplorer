@@ -73,7 +73,7 @@ namespace ME3Explorer
 
         public void LoadFile(string s)
         {
-            //try
+            try
             {
                 currentFile = s;
                 LoadMEPackage(s);
@@ -85,9 +85,10 @@ namespace ME3Explorer
                 InitStuff();
                 status2.Text = "@" + Path.GetFileName(s);
             }
-            //catch (Exception e)
+            catch (Exception e)
             {
-                //MessageBox.Show("Error:\n" + e.Message);
+                Debugger.Break();
+                MessageBox.Show("Error loading file:\n" + e.Message);
             }
         }
 
@@ -1734,6 +1735,9 @@ namespace ME3Explorer
                 case MEGame.ME3:
                     nex = new ME3ExportEntry(pcc as ME3Package);
                     break;
+                case MEGame.UDK:
+                    nex = new UDKExportEntry(pcc as UDKPackage);
+                    break;
             }
             byte[] idata = ex.Data;
             PropertyCollection props = ex.GetProperties();
@@ -1900,7 +1904,7 @@ namespace ME3Explorer
 
         private void treeView1_DragOver(object sender, DragEventArgs e)
         {
-            if (e.Data is TreeNode)
+            if (e.Data is System.Windows.Forms.DataObject)
             {
                 if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
                 {
@@ -2168,7 +2172,7 @@ namespace ME3Explorer
                 try
                 {
                     IExportEntry exp = pcc.Exports[n];
-                    exp.GetProperties();
+                    exp.GetProperties(true); //force properties to reload
                 }
                 catch (Exception ex)
                 {

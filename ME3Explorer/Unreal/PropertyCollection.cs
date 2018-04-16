@@ -62,11 +62,12 @@ namespace ME3Explorer.Unreal
 
         public static PropertyCollection ReadProps(IMEPackage pcc, MemoryStream stream, string typeName)
         {
-            //DebugOutput.StartDebugger("Property Engine ReadProps() for "+typeName);
-            //if (typeName == "Matrix")
-            //{
-            //  Debugger.Break();
-            //}
+            //Uncomment this for debugging property engine
+            /*DebugOutput.StartDebugger("Property Engine ReadProps() for "+typeName);
+            if (pcc.FileName == "C:\\Users\\Dev\\Downloads\\ME2_Placeables.upk")
+            {
+              //Debugger.Break();
+            }*/
             PropertyCollection props = new PropertyCollection();
             long startPosition = stream.Position;
             while (stream.Position + 8 <= stream.Length)
