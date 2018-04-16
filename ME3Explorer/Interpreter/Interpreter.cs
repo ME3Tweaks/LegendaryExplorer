@@ -1272,7 +1272,7 @@ namespace ME3Explorer
                     s += "\"" + pcc.getNameEntry(idx) + "\"";
                     break;
                 case nodeType.ByteProperty:
-                    if (pcc.Game == MEGame.ME3)
+                    if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
                     {
                         if (p.size == 1)
                         {
@@ -1385,7 +1385,7 @@ namespace ME3Explorer
 
                             if (getType(pcc.getNameEntry(p.type)) == nodeType.StructProperty) //StructName
                                 readerpos += 8;
-                            if (pcc.Game == MEGame.ME3)
+                            if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
                             {
                                 if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)//Boolbyte
                                     readerpos++;

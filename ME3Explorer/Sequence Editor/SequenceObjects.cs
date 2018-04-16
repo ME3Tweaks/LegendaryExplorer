@@ -280,6 +280,8 @@ namespace ME3Explorer.SequenceObjects
                                             return ME2Explorer.ME2TalkFiles.findDataById(strRefProp.Value);
                                         case MEGame.ME3:
                                             return ME3TalkFiles.findDataById(strRefProp.Value);
+                                        case MEGame.UDK:
+                                            return "UDK StrRef not supported";
                                         default:
                                             break;
                                     }
