@@ -499,16 +499,17 @@ namespace ME3Explorer
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
             topLevelTree.Tag = nodeType.Root;
             topLevelTree.Name = "0";
-            //try
-            //{
-            List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
-            GenerateTree(topLevelTree, topLevelHeaders);
-            //}
-            //catch (Exception ex)
-            //{
-            //  topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
-            //addPropButton.Visible = false;
-            //}
+            try
+            {
+                List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
+                GenerateTree(topLevelTree, topLevelHeaders);
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
+                addPropButton.Visible = false;
+                removePropertyButton.Visible = false;
+            }
             treeView1.Nodes.Add(topLevelTree);
             treeView1.CollapseAll();
             treeView1.Nodes[0].Expand();
@@ -1572,10 +1573,13 @@ namespace ME3Explorer
                 else if (LAST_SELECTED_PROP_TYPE == nodeType.Root)
                 {
                     addPropButton.Visible = true;
+                    removePropertyButton.Visible = false;
+
                 }
                 else if (LAST_SELECTED_PROP_TYPE == nodeType.None && e.Node.Parent.Tag != null && e.Node.Parent.Tag.Equals(nodeType.Root))
                 {
                     addPropButton.Visible = true;
+                    removePropertyButton.Visible = false;
                 }
                 else
                 {
@@ -1595,6 +1599,7 @@ namespace ME3Explorer
             objectNameLabel.Visible = nameEntry.Visible = proptext.Visible = setPropertyButton.Visible = propDropdown.Visible =
                 addArrayElementButton.Visible = deleteArrayElementButton.Visible = moveDownButton.Visible =
                 moveUpButton.Visible = addPropButton.Visible = false;
+            removePropertyButton.Visible = false;
             nameEntry.AutoCompleteCustomSource.Clear();
             nameEntry.Clear();
             proptext.Clear();
@@ -1701,6 +1706,7 @@ namespace ME3Explorer
                     default:
                         return;
                 }
+                removePropertyButton.Visible = !(isArrayLeaf(LAST_SELECTED_PROP_TYPE) || isStructLeaf(LAST_SELECTED_PROP_TYPE));
                 setPropertyButton.Visible = true;
             }
             catch (Exception ex)
@@ -1772,8 +1778,12 @@ namespace ME3Explorer
                         string enumName;
                         if (type == nodeType.StructLeafEnum)
                         {
-                            int begin = node.Text.LastIndexOf(':') + 3;
-                            enumName = node.Text.Substring(begin, node.Text.IndexOf(',') - 1 - begin);
+                            int begin = node.Text.LastIndexOf(':');
+                            if(begin == -1)
+                            {
+                                return;
+                            }
+                            enumName = node.Text.Substring(begin + 3, node.Text.IndexOf(',') - 1 - begin);
                         }
                         else
                         {
@@ -2983,6 +2993,11 @@ namespace ME3Explorer
                 setPropertyButton.PerformClick();
                 RefreshMem();
             }
+        }
+
+        private void removePropertyButton_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
