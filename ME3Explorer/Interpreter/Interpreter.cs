@@ -508,6 +508,7 @@ namespace ME3Explorer
             {
                 topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
                 addPropButton.Visible = false;
+                removePropertyButton.Visible = false;
             }
             treeView1.Nodes.Add(topLevelTree);
             treeView1.CollapseAll();
@@ -1572,10 +1573,13 @@ namespace ME3Explorer
                 else if (LAST_SELECTED_PROP_TYPE == nodeType.Root)
                 {
                     addPropButton.Visible = true;
+                    removePropertyButton.Visible = false;
+
                 }
                 else if (LAST_SELECTED_PROP_TYPE == nodeType.None && e.Node.Parent.Tag != null && e.Node.Parent.Tag.Equals(nodeType.Root))
                 {
                     addPropButton.Visible = true;
+                    removePropertyButton.Visible = false;
                 }
                 else
                 {
@@ -1595,6 +1599,7 @@ namespace ME3Explorer
             objectNameLabel.Visible = nameEntry.Visible = proptext.Visible = setPropertyButton.Visible = propDropdown.Visible =
                 addArrayElementButton.Visible = deleteArrayElementButton.Visible = moveDownButton.Visible =
                 moveUpButton.Visible = addPropButton.Visible = false;
+            removePropertyButton.Visible = false;
             nameEntry.AutoCompleteCustomSource.Clear();
             nameEntry.Clear();
             proptext.Clear();
@@ -1701,6 +1706,7 @@ namespace ME3Explorer
                     default:
                         return;
                 }
+                removePropertyButton.Visible = !(isArrayLeaf(LAST_SELECTED_PROP_TYPE) || isStructLeaf(LAST_SELECTED_PROP_TYPE));
                 setPropertyButton.Visible = true;
             }
             catch (Exception ex)
@@ -2987,6 +2993,11 @@ namespace ME3Explorer
                 setPropertyButton.PerformClick();
                 RefreshMem();
             }
+        }
+
+        private void removePropertyButton_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
