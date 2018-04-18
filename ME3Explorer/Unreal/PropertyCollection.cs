@@ -391,7 +391,7 @@ namespace ME3Explorer.Unreal
 
         public static UProperty ReadArrayProperty(MemoryStream stream, IMEPackage pcc, string enclosingType, NameReference name, bool IsInImmutable = false)
         {
-            long arrayOffset = stream.Position - 24;
+            long arrayOffset = IsInImmutable ? stream.Position: stream.Position - 24;
             ArrayType arrayType = UnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType);
             int count = stream.ReadValueS32();
             switch (arrayType)
@@ -956,6 +956,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
+                stream.WriteValueS32(Values.Count);
                 foreach (var prop in Values)
                 {
                     prop.WriteTo(stream, pcc, true);
