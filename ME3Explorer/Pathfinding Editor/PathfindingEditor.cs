@@ -92,7 +92,6 @@ namespace ME3Explorer
             zoomController = new PathingZoomController(graphEditor);
             CurrentFilterType = HeightFilterForm.FILTER_Z_NONE;
             CurrentZFilterValue = 0;
-            SText.LoadFont();
 
 
             if (importclassdb.Count() == 0 || exportclassdb.Count() == 0)
