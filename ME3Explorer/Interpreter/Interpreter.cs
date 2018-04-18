@@ -499,16 +499,16 @@ namespace ME3Explorer
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
             topLevelTree.Tag = nodeType.Root;
             topLevelTree.Name = "0";
-            //try
-            //{
-            List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
-            GenerateTree(topLevelTree, topLevelHeaders);
-            //}
-            //catch (Exception ex)
-            //{
-            //  topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
-            //addPropButton.Visible = false;
-            //}
+            try
+            {
+                List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
+                GenerateTree(topLevelTree, topLevelHeaders);
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
+                addPropButton.Visible = false;
+            }
             treeView1.Nodes.Add(topLevelTree);
             treeView1.CollapseAll();
             treeView1.Nodes[0].Expand();
@@ -1772,8 +1772,12 @@ namespace ME3Explorer
                         string enumName;
                         if (type == nodeType.StructLeafEnum)
                         {
-                            int begin = node.Text.LastIndexOf(':') + 3;
-                            enumName = node.Text.Substring(begin, node.Text.IndexOf(',') - 1 - begin);
+                            int begin = node.Text.LastIndexOf(':');
+                            if(begin == -1)
+                            {
+                                return;
+                            }
+                            enumName = node.Text.Substring(begin + 3, node.Text.IndexOf(',') - 1 - begin);
                         }
                         else
                         {
