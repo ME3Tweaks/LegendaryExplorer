@@ -719,7 +719,7 @@ namespace ME3Explorer.Unreal
                     p.TypeVal = PropertyType.ByteProperty;
                     v = new PropertyValue();
                     v.len = p.Size;
-                    if (pcc.Game == MEGame.ME3)
+                    if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
                     {
                         p.offsetval = pos + 32;
                         v.StringValue = pcc.getNameEntry(sname);
@@ -769,7 +769,7 @@ namespace ME3Explorer.Unreal
                     p.offsetval = pos + 24;
                     v = new PropertyValue();
                     v.IntValue = raw[pos + 24];
-                    if (pcc.Game == MEGame.ME3)
+                    if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK) //THIS NEEDS TESTED!!! From when merging UDK
                     {
                         v.len = 1;
                     }

@@ -8,6 +8,7 @@ using AmaroK86.MassEffect3.ZlibBlock;
 using System.Diagnostics;
 using ME3Explorer.Unreal;
 using System.Windows;
+using KFreonLib.Debugging;
 
 namespace ME3Explorer.Packages
 {
@@ -18,13 +19,28 @@ namespace ME3Explorer.Packages
         static int headerSize = 0x8E;
         byte[] extraNamesList = null;
 
-        public bool isModified { get { return Exports.Any(entry => entry.hasChanged == true); } }
+        //public bool isModified { get { return Exports.Any(entry => entry.hasChanged == true); } }
         public bool canReconstruct { get { return !Exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }
         public bool bDLCStored = false;
         public bool bExtraNamesList { get { return extraNamesList != null; } }
         public bool Loaded = false;
 
         int idxOffsets { get { if ((flags & 8) != 0) return 24 + nameSize; else return 20 + nameSize; } } // usually = 34
+
+        static bool isInitialized;
+        internal static Func<string, UDKPackage> Initialize()
+        {
+            if (isInitialized)
+            {
+                throw new Exception(nameof(UDKPackage) + " can only be initialized once");
+            }
+            else
+            {
+                isInitialized = true;
+                return f => new UDKPackage(f);
+            }
+        }
+
         public override int NameCount
         {
             get { return BitConverter.ToInt32(header, idxOffsets); }
@@ -93,7 +109,7 @@ namespace ME3Explorer.Packages
             string PackageName { get; }
         }
 
-        public class ImportEntry : IEntry
+        /*public class ImportEntry : IEntry
         {
             public static int byteSize = 28;
             internal byte[] header = new byte[byteSize];
@@ -169,150 +185,151 @@ namespace ME3Explorer.Packages
                 newImport.header = (byte[])this.header.Clone();
                 return newImport;
             }
-        }
+        } */
 
-        public class ExportEntry : IEntry // class containing info about export entry (header info + data)
+        /*
+    public class ExportEntry : IEntry // class containing info about export entry (header info + data)
+    {
+        internal byte[] header; // holds data about export header, not the export data.
+        public UDKPackage udkRef;
+        public uint offset { get; set; }
+
+        public int idxClass { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); } }
+        public int idxClassParent { get { return BitConverter.ToInt32(header, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 4, sizeof(int)); } }
+        public int idxLink { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); } }
+        public int idxPackageName { get { return BitConverter.ToInt32(header, 8) - 1; } set { Buffer.BlockCopy(BitConverter.GetBytes(value + 1), 0, header, 8, sizeof(int)); } }
+        public int idxObjectName { get { return BitConverter.ToInt32(header, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 12, sizeof(int)); } }
+        public int indexValue { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); } }
+        public int idxArchtype { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); } }
+        public ulong ObjectFlags { get { return BitConverter.ToUInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 24, sizeof(long)); } }
+
+        public string ObjectName { get { return udkRef.getName(idxObjectName); } }
+        public string ClassName { get { int val = idxClass; if (val != 0) return udkRef.getName(udkRef.getEntry(val).idxObjectName); else return "Class"; } }
+        public string ClassParent { get { int val = idxClassParent; if (val != 0) return udkRef.getName(udkRef.getEntry(val).idxObjectName); else return "Class"; } }
+        public string PackageName { get { int val = idxPackageName; if (val >= 0) return udkRef.getName(udkRef.Exports[val].idxObjectName); else return "Package"; } }
+        public string PackageFullName
         {
-            internal byte[] header; // holds data about export header, not the export data.
-            public UDKPackage udkRef;
-            public uint offset { get; set; }
-
-            public int idxClass { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); } }
-            public int idxClassParent { get { return BitConverter.ToInt32(header, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 4, sizeof(int)); } }
-            public int idxLink { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); } }
-            public int idxPackageName { get { return BitConverter.ToInt32(header, 8) - 1; } set { Buffer.BlockCopy(BitConverter.GetBytes(value + 1), 0, header, 8, sizeof(int)); } }
-            public int idxObjectName { get { return BitConverter.ToInt32(header, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 12, sizeof(int)); } }
-            public int indexValue { get { return BitConverter.ToInt32(header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 16, sizeof(int)); } }
-            public int idxArchtype { get { return BitConverter.ToInt32(header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 20, sizeof(int)); } }
-            public ulong ObjectFlags { get { return BitConverter.ToUInt64(header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 24, sizeof(long)); } }
-
-            public string ObjectName { get { return udkRef.getName(idxObjectName); } }
-            public string ClassName { get { int val = idxClass; if (val != 0) return udkRef.getName(udkRef.getEntry(val).idxObjectName); else return "Class"; } }
-            public string ClassParent { get { int val = idxClassParent; if (val != 0) return udkRef.getName(udkRef.getEntry(val).idxObjectName); else return "Class"; } }
-            public string PackageName { get { int val = idxPackageName; if (val >= 0) return udkRef.getName(udkRef.Exports[val].idxObjectName); else return "Package"; } }
-            public string PackageFullName
+            get
             {
-                get
+                string result = PackageName;
+                int idxNewPackName = idxPackageName;
+
+                while (idxNewPackName >= 0)
                 {
-                    string result = PackageName;
-                    int idxNewPackName = idxPackageName;
-
-                    while (idxNewPackName >= 0)
-                    {
-                        string newPackageName = udkRef.Exports[idxNewPackName].PackageName;
-                        if (newPackageName != "Package")
-                            result = newPackageName + "." + result;
-                        idxNewPackName = udkRef.Exports[idxNewPackName].idxPackageName;
-                    }
-                    return result;
+                    string newPackageName = udkRef.Exports[idxNewPackName].PackageName;
+                    if (newPackageName != "Package")
+                        result = newPackageName + "." + result;
+                    idxNewPackName = udkRef.Exports[idxNewPackName].idxPackageName;
                 }
-            }
-
-            public string ContainingPackage
-            {
-                get
-                {
-                    string result = PackageName;
-                    if (result.EndsWith(ObjectName))
-                    {
-                        result = "";
-                    }
-                    int idxNewPackName = idxPackageName;
-
-                    while (idxNewPackName >= 0)
-                    {
-                        string newPackageName = udkRef.Exports[idxNewPackName].PackageName;
-                        if (newPackageName != "Package")
-                        {
-                            if (!result.Equals(""))
-                            {
-                                result = newPackageName + "." + result;
-                            }
-                            else
-                            {
-                                result = newPackageName;
-                            }
-                        }
-                        idxNewPackName = udkRef.Exports[idxNewPackName].idxPackageName;
-                    }
-                    return result;
-                }
-            }
-
-            public string GetFullPath
-            {
-                get
-                {
-                    string s = "";
-                    if (PackageFullName != "Class" && PackageFullName != "Package")
-                        s += PackageFullName + ".";
-                    s += ObjectName;
-                    return s;
-                }
-            }
-            public string ArchtypeName { get { int val = idxArchtype; if (val != 0) return udkRef.(udkRef.getEntry(val).idxObjectName); else return "None"; } }
-
-            public int DataSize { get { return BitConverter.ToInt32(header, 32); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 32, sizeof(int)); } }
-            public int DataOffset { get { return BitConverter.ToInt32(header, 36); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 36, sizeof(int)); } }
-            public int DataOffsetTmp;
-            byte[] _data = null;
-            public byte[] Data // holds data about export data
-            {
-                get
-                {
-                    // if data isn't loaded then fill it from udk file (load-on-demand)
-                    if (_data == null)
-                    {
-                        udkRef.getData(DataOffset, this);
-                    }
-                    return _data;
-                }
-
-                set { _data = value; hasChanged = true; }
-            }
-            public bool likelyCoalescedVal
-            {
-                get
-                {
-                    return (Data.Length < 25) ? false : (Data[25] == 64); //0x40
-                }
-                set { }
-            }
-            public bool hasChanged { get; internal set; }
-
-            public ExportEntry(UDKPackage UDKPackage, byte[] importData, uint exportOffset)
-            {
-                udkRef = UDKPackage;
-                header = (byte[])importData.Clone();
-                offset = exportOffset;
-                hasChanged = false;
-            }
-
-            public ExportEntry()
-            {
-                // TODO: Complete member initialization
-            }
-
-            public ExportEntry Clone()
-            {
-                ExportEntry newExport = (ExportEntry)this.MemberwiseClone(); // copy all reference-types vars
-                                                                             // now creates new copies of referenced objects
-                newExport.header = (byte[])this.header.Clone();
-                newExport.Data = (byte[])this.Data.Clone();
-                int index = 0;
-                string name = ObjectName;
-                foreach (ExportEntry ent in udkRef.Exports)
-                {
-                    if (name == ent.ObjectName && ent.indexValue > index)
-                    {
-                        index = ent.indexValue;
-                    }
-                }
-                index++;
-                newExport.indexValue = index;
-                return newExport;
+                return result;
             }
         }
+
+        public string ContainingPackage
+        {
+            get
+            {
+                string result = PackageName;
+                if (result.EndsWith(ObjectName))
+                {
+                    result = "";
+                }
+                int idxNewPackName = idxPackageName;
+
+                while (idxNewPackName >= 0)
+                {
+                    string newPackageName = udkRef.Exports[idxNewPackName].PackageName;
+                    if (newPackageName != "Package")
+                    {
+                        if (!result.Equals(""))
+                        {
+                            result = newPackageName + "." + result;
+                        }
+                        else
+                        {
+                            result = newPackageName;
+                        }
+                    }
+                    idxNewPackName = udkRef.Exports[idxNewPackName].idxPackageName;
+                }
+                return result;
+            }
+        }
+
+        public string GetFullPath
+        {
+            get
+            {
+                string s = "";
+                if (PackageFullName != "Class" && PackageFullName != "Package")
+                    s += PackageFullName + ".";
+                s += ObjectName;
+                return s;
+            }
+        }
+        public string ArchtypeName { get { int val = idxArchtype; if (val != 0) return udkRef.(udkRef.getEntry(val).idxObjectName); else return "None"; } }
+
+        public int DataSize { get { return BitConverter.ToInt32(header, 32); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 32, sizeof(int)); } }
+        public int DataOffset { get { return BitConverter.ToInt32(header, 36); } internal set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 36, sizeof(int)); } }
+        public int DataOffsetTmp;
+        byte[] _data = null;
+        public byte[] Data // holds data about export data
+        {
+            get
+            {
+                // if data isn't loaded then fill it from udk file (load-on-demand)
+                if (_data == null)
+                {
+                    udkRef.getData(DataOffset, this);
+                }
+                return _data;
+            }
+
+            set { _data = value; hasChanged = true; }
+        }
+        public bool likelyCoalescedVal
+        {
+            get
+            {
+                return (Data.Length < 25) ? false : (Data[25] == 64); //0x40
+            }
+            set { }
+        }
+        public bool hasChanged { get; internal set; }
+
+        public ExportEntry(UDKPackage UDKPackage, byte[] importData, uint exportOffset)
+        {
+            udkRef = UDKPackage;
+            header = (byte[])importData.Clone();
+            offset = exportOffset;
+            hasChanged = false;
+        }
+
+        public ExportEntry()
+        {
+            // TODO: Complete member initialization
+        }
+
+        public ExportEntry Clone()
+        {
+            ExportEntry newExport = (ExportEntry)this.MemberwiseClone(); // copy all reference-types vars
+                                                                         // now creates new copies of referenced objects
+            newExport.header = (byte[])this.header.Clone();
+            newExport.Data = (byte[])this.Data.Clone();
+            int index = 0;
+            string name = ObjectName;
+            foreach (ExportEntry ent in udkRef.Exports)
+            {
+                if (name == ent.ObjectName && ent.indexValue > index)
+                {
+                    index = ent.indexValue;
+                }
+            }
+            index++;
+            newExport.indexValue = index;
+            return newExport;
+        }
+    }*/
 
         /// <summary>
         ///     UDKPackage class constructor. It also load namelist, importlist and exportinfo (not exportdata) from udk file
@@ -320,11 +337,111 @@ namespace ME3Explorer.Packages
         /// <param name="UDKPackagePath">full path + file name of desired udk file.</param>
         public UDKPackage(string UDKPackagePath, bool fullFileInMemory = false)
         {
+            string path = UDKPackagePath;
+            DebugOutput.PrintLn("Load file : " + path);
+            FileName = Path.GetFullPath(path);
+            MemoryStream tempStream = new MemoryStream();
+            if (!File.Exists(FileName))
+                throw new FileNotFoundException("UPK file not found");
+            using (FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read))
+            {
+                FileInfo tempInfo = new FileInfo(FileName);
+                tempStream.WriteFromStream(fs, tempInfo.Length);
+                if (tempStream.Length != tempInfo.Length)
+                {
+                    throw new FileLoadException("File not fully read in. Try again later");
+                }
+            }
+
+            //tempStream.Seek(12, SeekOrigin.Begin);
+            //int tempNameSize = tempStream.ReadValueS32();
+            //tempStream.Seek(64 + tempNameSize, SeekOrigin.Begin);
+            //int tempGenerations = tempStream.ReadValueS32();
+            //tempStream.Seek(36 + tempGenerations * 12, SeekOrigin.Current);
+            //int tempPos = (int)tempStream.Position;
+            tempStream.Seek(0, SeekOrigin.Begin);
+            header = tempStream.ReadBytes(headerSize);
+            tempStream.Seek(0, SeekOrigin.Begin);
+
+            MemoryStream listsStream;
+            if (IsCompressed)
+            {
+                /*DebugOutput.PrintLn("File is compressed");
+                {
+                    listsStream = CompressionHelper.DecompressME1orME2(tempStream);
+
+                    //Correct the header
+                    IsCompressed = false;
+                    listsStream.Seek(0, SeekOrigin.Begin);
+                    listsStream.WriteBytes(header);
+
+                    //Set numblocks to zero
+                    listsStream.WriteValueS32(0);
+                    //Write the magic number
+                    listsStream.WriteValueS32(1026281201);
+                    //Write 8 bytes of 0
+                    listsStream.WriteValueS32(0);
+                    listsStream.WriteValueS32(0);
+                }*/
+                throw new FileLoadException("Compressed UPK packages are not supported.");
+            }
+            else
+            {
+                DebugOutput.PrintLn("File already decompressed. Reading decompressed data.");
+                listsStream = tempStream;
+            }
+
+            names = new List<string>();
+            listsStream.Seek(NameOffset, SeekOrigin.Begin);
+
+            for (int i = 0; i < NameCount; i++)
+            {
+                try
+                {
+                    Debug.WriteLine("Reading string at 0x" + listsStream.Position.ToString("X8"));
+                    int len = listsStream.ReadValueS32();
+                    string s = listsStream.ReadString((uint)(len - 1));
+                    //skipping irrelevant data
+
+                    listsStream.Seek(9, SeekOrigin.Current); // 8 + 1 for terminator character
+                    names.Add(s);
+
+                }
+                catch (Exception e)
+                {
+                    Debugger.Break();
+                    throw e;
+                }
+            }
+
+            imports = new List<ImportEntry>();
+            listsStream.Seek(ImportOffset, SeekOrigin.Begin);
+            for (int i = 0; i < ImportCount; i++)
+            {
+                ImportEntry import = new ImportEntry(this, listsStream);
+                import.Index = i;
+                import.PropertyChanged += importChanged;
+                imports.Add(import);
+            }
+
+            exports = new List<IExportEntry>();
+            listsStream.Seek(ExportOffset, SeekOrigin.Begin);
+            for (int i = 0; i < ExportCount; i++)
+            {
+                UDKExportEntry exp = new UDKExportEntry(this, listsStream);
+                exp.Index = i;
+                exp.PropertyChanged += exportChanged;
+                exports.Add(exp);
+            }
+
+            /*
+
+
             Loaded = true;
             FileName = Path.GetFullPath(UDKPackagePath);
             using (FileStream udkStream = File.OpenRead(FileName))
             {
-                Names = new List<NameEntry>();
+            `                Names = new List<NameEntry>();
                 Imports = new List<ImportEntry>();
                 Exports = new List<ExportEntry>();
 
@@ -400,7 +517,7 @@ namespace ME3Explorer.Packages
                     //Debug.WriteLine("Read export " + i + " " + e.ObjectName + ", offset: " + expInfoOffset+ ", size: "+expInfoSize); 
                     Exports.Add(e);
                 }
-            }
+            }*/
             Debug.WriteLine(getMetadataString());
         }
 
@@ -464,6 +581,9 @@ namespace ME3Explorer.Packages
         /// <param name="path">full path + file name.</param>
         public void saveByReconstructing(string path)
         {
+            //Saving is not supported for UPK files.
+            return;
+            /*
             //load in all data
             byte[] buff;
             foreach (ExportEntry e in Exports)
@@ -536,8 +656,8 @@ namespace ME3Explorer.Packages
             }
             catch (Exception ex)
             {
-                MessageBox.Show("PCC Save error:\n" + ex.Message);
-            }
+                MessageBox.Show("UPK Save error:\n" + ex.Message);
+            }*/
         }
 
         /*
@@ -547,7 +667,7 @@ namespace ME3Explorer.Packages
                 return "";
             return Names[index].name;
         }
-        
+
         public string getObjectName(int index)
         {
             if (index > 0 && index <= ExportCount)
@@ -582,7 +702,7 @@ namespace ME3Explorer.Packages
                 s = "Class";
             }
             return s;
-        }*/
+        }
 
         public void addImport(UDKPackage.ImportEntry importEntry)
         {
@@ -608,7 +728,7 @@ namespace ME3Explorer.Packages
 
             Exports.Add(exportEntry);
             ExportCount = Exports.Count;
-        }
+        }*/
 
         /// <summary>
         /// This method is an alternate way of saving PCCs
@@ -620,7 +740,10 @@ namespace ME3Explorer.Packages
         /// <param name="attemptOverwrite">Do you wish to attempt to overwrite the existing export</param>
         public string appendSave(string newFileName, bool attemptOverwrite, int HeadeNameOffset = 34)
         {
+            //Saving UDK files is not supported.
             string rtValues = "";
+            return rtValues;
+            /*
             string loc = Path.GetDirectoryName(Application.ExecutablePath);
 
             //Get info
@@ -763,7 +886,7 @@ namespace ME3Explorer.Packages
                     }
                 }
             }
-            return rtValues;
+            return rtValues;*/
         }
 
         public string getMetadataString()

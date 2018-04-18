@@ -157,9 +157,14 @@ namespace ME3Explorer.Packages
 
         PropertyCollection properties;
 
-        public PropertyCollection GetProperties()
+        /// <summary>
+        /// Gets properties of an export. You can force it to reload which is useful when debugging the property engine.
+        /// </summary>
+        /// <param name="forceReload"></param>
+        /// <returns></returns>
+        public PropertyCollection GetProperties(bool forceReload = false)
         {
-            if (properties != null)
+            if (properties != null && !forceReload)
             {
                 return properties;
             }

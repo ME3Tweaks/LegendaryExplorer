@@ -26,6 +26,11 @@ namespace ME3Explorer.Packages
 
         public const int byteSize = 28;
         public byte[] header { get; protected set; }
+        public void setHeader(byte[] newHead)
+        {
+            header = newHead;
+            HeaderChanged = true;
+        }
 
         public int idxPackageName { get { return BitConverter.ToInt32(header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 0, sizeof(int)); HeaderChanged = true; } }
         //int PackageNameNumber

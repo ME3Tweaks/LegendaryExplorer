@@ -135,7 +135,7 @@
             this.label13 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.headerTab = new System.Windows.Forms.TabPage();
-            this.hb2 = new Be.Windows.Forms.HexBox();
+            this.headerRawHexBox = new Be.Windows.Forms.HexBox();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
             this.saveHeaderHexChangesBtn = new System.Windows.Forms.ToolStripButton();
             this.scriptTab = new System.Windows.Forms.TabPage();
@@ -1189,7 +1189,7 @@
             // 
             // headerTab
             // 
-            this.headerTab.Controls.Add(this.hb2);
+            this.headerTab.Controls.Add(this.headerRawHexBox);
             this.headerTab.Controls.Add(this.toolStrip2);
             this.headerTab.Location = new System.Drawing.Point(4, 22);
             this.headerTab.Name = "headerTab";
@@ -1202,20 +1202,20 @@
             // 
             // hb2
             // 
-            this.hb2.BoldFont = null;
-            this.hb2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
-            this.hb2.LineInfoVisible = true;
-            this.hb2.Location = new System.Drawing.Point(3, 28);
-            this.hb2.MinBytesPerLine = 16;
-            this.hb2.Name = "hb2";
-            this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(628, 388);
-            this.hb2.StringViewVisible = true;
-            this.hb2.TabIndex = 0;
-            this.hb2.UseFixedBytesPerLine = true;
-            this.hb2.VScrollBarVisible = true;
+            this.headerRawHexBox.BoldFont = null;
+            this.headerRawHexBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.headerRawHexBox.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.headerRawHexBox.LineInfoForeColor = System.Drawing.Color.Empty;
+            this.headerRawHexBox.LineInfoVisible = true;
+            this.headerRawHexBox.Location = new System.Drawing.Point(3, 28);
+            this.headerRawHexBox.MinBytesPerLine = 16;
+            this.headerRawHexBox.Name = "hb2";
+            this.headerRawHexBox.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.headerRawHexBox.Size = new System.Drawing.Size(628, 388);
+            this.headerRawHexBox.StringViewVisible = true;
+            this.headerRawHexBox.TabIndex = 0;
+            this.headerRawHexBox.UseFixedBytesPerLine = true;
+            this.headerRawHexBox.VScrollBarVisible = true;
             // 
             // toolStrip2
             // 
@@ -1453,7 +1453,7 @@
         private System.Windows.Forms.ToolStripButton Button5;
         private System.Windows.Forms.TreeView treeView1;
         public System.Windows.Forms.ListBox listBox1;
-        private Be.Windows.Forms.HexBox hb2;
+        private Be.Windows.Forms.HexBox headerRawHexBox;
         private System.Windows.Forms.TextBox superclassTextBox;
         private System.Windows.Forms.Label superclassLabel;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;

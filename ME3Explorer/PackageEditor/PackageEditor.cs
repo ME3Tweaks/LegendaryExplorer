@@ -73,7 +73,7 @@ namespace ME3Explorer
 
         public void LoadFile(string s)
         {
-            //try
+            try
             {
                 currentFile = s;
                 LoadMEPackage(s);
@@ -85,9 +85,10 @@ namespace ME3Explorer
                 InitStuff();
                 status2.Text = "@" + Path.GetFileName(s);
             }
-            //catch (Exception e)
+            catch (Exception e)
             {
-                //MessageBox.Show("Error:\n" + e.Message);
+                Debugger.Break();
+                MessageBox.Show("Error loading file:\n" + e.Message);
             }
         }
 
@@ -473,12 +474,12 @@ namespace ME3Explorer
                         {
                             packageEditorTabPane.TabPages.Add(scriptTab);
                         }
-                        if (pcc.Game != MEGame.ME1)
+                        if (pcc.Game == MEGame.ME3)
                         {
                             Function func = new Function(exportEntry.Data, pcc);
                             rtb1.Text = func.ToRawText();
                         }
-                        else
+                        else if (pcc.Game == MEGame.ME1)
                         {
                             ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(exportEntry.Data, pcc as ME1Package);
                             try
@@ -489,6 +490,10 @@ namespace ME3Explorer
                             {
                                 rtb1.Text = "Error parsing function: " + e.Message;
                             }
+                        }
+                        else
+                        {
+                            rtb1.Text = "Parsing UnrealScript Functions for this game is not supported.";
                         }
                     }
                     else if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
@@ -526,7 +531,7 @@ namespace ME3Explorer
                         }
                     }
 
-                    hb2.ByteProvider = new DynamicByteProvider(exportEntry.header);
+                    headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.header);
                     if (!isRefresh)
                     {
                         interpreterControl.export = exportEntry;
@@ -549,7 +554,7 @@ namespace ME3Explorer
                 else
                 {
                     n = -n - 1;
-                    hb2.ByteProvider = new DynamicByteProvider(pcc.getImport(n).header);
+                    headerRawHexBox.ByteProvider = new DynamicByteProvider(pcc.getImport(n).header);
                     UpdateStatusIm(n);
                     if (packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
                     {
@@ -717,6 +722,11 @@ namespace ME3Explorer
         {
             if (pcc == null)
                 return;
+            if (pcc.Game == MEGame.UDK)
+            {
+                MessageBox.Show(this, "Cannot save UDK UPK files, support for them is read only.", "Unsupported operation");
+                return;
+            }
             SaveFileDialog d = new SaveFileDialog();
             string extension = Path.GetExtension(pcc.FileName);
             d.Filter = $"*{extension}|*{extension}";
@@ -731,6 +741,11 @@ namespace ME3Explorer
         {
             if (pcc == null)
                 return;
+            if (pcc.Game == MEGame.UDK)
+            {
+                MessageBox.Show(this, "Cannot save UDK UPK files, support for them is read only.", "Unsupported operation");
+                return;
+            }
             pcc.save();
             MessageBox.Show("Done");
         }
@@ -920,7 +935,8 @@ namespace ME3Explorer
                 AddRecent(s, false);
                 SaveRecentList();
                 RefreshRecent(true, RFiles);
-            } else
+            }
+            else
             {
                 MessageBox.Show("File does not exist: " + s);
             }
@@ -1272,20 +1288,28 @@ namespace ME3Explorer
         private void saveHeaderHexChangesBtn_Click(object sender, EventArgs e)
         {
             int n;
-            if (pcc == null || !GetSelected(out n) || n < 0)
+            if (pcc == null || !GetSelected(out n))
             {
                 return;
             }
             MemoryStream m = new MemoryStream();
-            IByteProvider provider = hb2.ByteProvider;
-            if (provider.Length != 0x44)
+            IByteProvider provider = headerRawHexBox.ByteProvider;
+            int requiredheaderlength = n > 0 ? 0x44 : 0x1C; //0x44 for exports, 0x1B for imports
+            if (provider.Length != requiredheaderlength)
             {
                 MessageBox.Show("Invalid hex length");
                 return;
             }
             for (int i = 0; i < provider.Length; i++)
                 m.WriteByte(provider.ReadByte(i));
-            pcc.getExport(n).setHeader(m.ToArray());
+            if (n > 0)
+            {
+                pcc.getExport(n).setHeader(m.ToArray());
+            }
+            else if (n < 0)
+            {
+                pcc.getImport(Math.Abs(n) - 1).setHeader(m.ToArray());
+            }
         }
 
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -1734,6 +1758,9 @@ namespace ME3Explorer
                 case MEGame.ME3:
                     nex = new ME3ExportEntry(pcc as ME3Package);
                     break;
+                case MEGame.UDK:
+                    nex = new UDKExportEntry(pcc as UDKPackage);
+                    break;
             }
             byte[] idata = ex.Data;
             PropertyCollection props = ex.GetProperties();
@@ -1900,7 +1927,7 @@ namespace ME3Explorer
 
         private void treeView1_DragOver(object sender, DragEventArgs e)
         {
-            if (e.Data is TreeNode)
+            if (e.Data is System.Windows.Forms.DataObject)
             {
                 if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
                 {
@@ -1917,7 +1944,8 @@ namespace ME3Explorer
                         e.Effect = DragDropEffects.None;
                     }
                 }
-            } else
+            }
+            else
             {
                 e.Effect = DragDropEffects.None;
             }
@@ -2168,7 +2196,7 @@ namespace ME3Explorer
                 try
                 {
                     IExportEntry exp = pcc.Exports[n];
-                    exp.GetProperties();
+                    exp.GetProperties(true); //force properties to reload
                 }
                 catch (Exception ex)
                 {
