@@ -1603,6 +1603,167 @@ namespace ME3Explorer
             }
         }
 
+        /// <summary>
+        /// Attempts to relink unreal property data using propertycollection when cross porting an export
+        /// </summary>
+        private void relinkObjects2(IMEPackage importpcc)
+        {
+            foreach (KeyValuePair<int, int> entry in crossPCCObjectMapping)
+            {
+                if (entry.Key > 0)
+                {
+                    PropertyCollection transplantProps = importpcc.Exports[entry.Key].GetProperties();
+                    relinkPropertiesRecursive(transplantProps, crossPCCObjectMapping);
+                    //Run an interpreter pass over it - we will find objectleafnodes and attempt to update the same offset in the destination file.
+                    Interpreter relinkInterpreter = new ME3Explorer.Interpreter(importpcc, importpcc.Exports[entry.Key], pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
+                }
+            }
+
+            foreach (KeyValuePair<int, int> entry in crossPCCObjectMapping)
+            {
+                string debug = "Cross mapping: ";
+                if (entry.Value >= 0)
+                {
+
+                    debug += "EXP ";
+                    IExportEntry exp = importpcc.Exports[entry.Key];
+                    IExportEntry destexp = pcc.Exports[entry.Value];
+                    byte[] exportdata = destexp.Data;
+
+                    debug += exp.PackageFullName + "." + exp.ObjectName;
+                    debug += " -> ";
+                    debug += destexp.PackageFullName + "." + destexp.ObjectName;
+
+                    //Relinking objects.
+                    //PropertyCollection sourceprops = exp.GetProperties();
+                    //PropertyCollection destprops = destexp.GetProperties();
+                    List<PropertyReader.Property> sourceprops = PropertyReader.getPropList(exp);
+                    List<PropertyReader.Property> destprops = PropertyReader.getPropList(destexp);
+
+                    for (int i = 0; i < sourceprops.Count; i++)
+                    {
+                        Property prop = sourceprops[i];
+                        switch (prop.TypeVal)
+                        {
+                            case PropertyType.ObjectProperty:
+                                {
+                                    //ObjectProperty oprop = (ObjectProperty)prop;
+                                    int sourceObjReference = BitConverter.ToInt32(exp.Data, prop.offsetval);
+
+                                    if (sourceObjReference > 0)
+                                    {
+                                        sourceObjReference--; //make 0 based for mapping.
+                                    }
+
+                                    if (sourceObjReference < 0)
+                                    {
+                                        sourceObjReference++; //make 0 based for mapping.
+                                    }
+
+                                    int mapped; //may want to change this...
+                                    bool isMapped = crossPCCObjectMapping.TryGetValue(sourceObjReference, out mapped);
+
+                                    if (isMapped)
+                                    {
+                                        Property destprop = destprops[i];
+                                        //ObjectProperty destoprop = (ObjectProperty)destprops[i];
+                                        byte[] buff2 = BitConverter.GetBytes(mapped + 1); //+1 unreal indexing.
+                                        for (int o = 0; o < 4; o++)
+                                        {
+                                            //Write object property value
+                                            byte preval = exportdata[destprop.offsetval + o];
+                                            exportdata[destprop.offsetval + o] = buff2[o];
+                                            byte postval = exportdata[destprop.offsetval + o];
+
+                                            Debug.WriteLine("Updating Byte at 0x" + (destprop.offsetval + o).ToString("X4") + " from " + preval + " to " + postval + ". It should have been set to " + buff2[o]);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Debug.WriteLine("Object property was not mapped during cross-porting: " + sourceObjReference + " " + exp.PackageFullName + "." + exp.ObjectName);
+                                    }
+                                    //attempt relinkage
+                                }
+                                break;
+                            case PropertyType.ArrayProperty:
+                                //Todo: needs implementation (needs object detection code).
+                                //May not be necessary since "arrays" have objectproperties.
+                                break;
+                        }
+                    }
+                    destexp.Data = exportdata;
+                }
+                else
+                {
+                    //ImportEntry imp = pcc.Imports[-entry.Value/* + 1*/];
+                    debug += "IMP ";
+
+                    //ImportEntry imp = importpcc.Imports[-entry.Key];
+                    //ImportEntry destimp = pcc.Imports[-entry.Value - 1];
+                    //debug += imp.PackageFullName + "." + imp.ObjectName;
+                    //debug += " -> ";
+                    //debug += destimp.PackageFullName + "." + destimp.ObjectName;
+                }
+                //                Debug.WriteLine(debug);
+
+                //Read Props.
+            }
+        }
+
+        private void relinkPropertiesRecursive(PropertyCollection transplantProps, SortedDictionary<int, int> crossPCCObjectMapping)
+        {
+            foreach (UProperty prop in transplantProps)
+            {
+                if (prop is StructProperty)
+                {
+                    relinkPropertiesRecursive((prop as StructProperty).Properties, crossPCCObjectMapping);
+                }
+                else if (prop is ArrayProperty<StructProperty>)
+                {
+                    foreach(StructProperty arrayStructProperty in prop as ArrayProperty<StructProperty>)
+                    {
+                        relinkPropertiesRecursive(arrayStructProperty.Properties, crossPCCObjectMapping);
+                    }
+                }
+                else if (prop is ArrayProperty<ObjectProperty>)
+                {
+                    foreach (ObjectProperty objProperty in prop as ArrayProperty<ObjectProperty>)
+                    {
+                        relinkObjectProperty(objProperty, crossPCCObjectMapping);
+                    }
+                }
+                if (prop is ObjectProperty)
+                {
+                    //relink
+                    relinkObjectProperty(prop as ObjectProperty, crossPCCObjectMapping);
+                }
+            }
+        }
+
+        private void relinkObjectProperty(ObjectProperty objProperty, SortedDictionary<int, int> crossPCCObjectMapping)
+        {
+            int sourceObjReference = objProperty.Value;
+
+            if (sourceObjReference > 0)
+            {
+                sourceObjReference--; //make 0 based for mapping.
+            }
+            if (sourceObjReference < 0)
+            {
+                sourceObjReference++; //make 0 based for mapping.
+            }
+
+            int mapped; //may want to change this...
+            bool isMapped = crossPCCObjectMapping.TryGetValue(sourceObjReference, out mapped);
+
+            if (isMapped)
+            {
+                //relink
+                objProperty.Value = mapped;
+                Debug.WriteLine("Relink hit: " + sourceObjReference);
+            }
+        }
+
         private bool importTree(TreeNode sourceNode, IMEPackage importpcc, int n)
         {
             int nextIndex;
@@ -1652,7 +1813,7 @@ namespace ME3Explorer
             if (importingLink == 0)
             {
                 //
-                Debug.WriteLine("TOP LEVEL IMPORT! " + imp.PackageFullName + "." + imp.ObjectName);
+                Debug.WriteLine("ound a top level import: " + imp.PackageFullName + "." + imp.ObjectName);
                 return FindOrAddCrossImport(importpcc, imp, importingLink);
             }
 
