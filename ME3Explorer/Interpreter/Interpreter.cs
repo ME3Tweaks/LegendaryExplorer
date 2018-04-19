@@ -1578,6 +1578,7 @@ namespace ME3Explorer
                 }
                 else if (LAST_SELECTED_PROP_TYPE == nodeType.None && e.Node.Parent.Tag != null && e.Node.Parent.Tag.Equals(nodeType.Root))
                 {
+                    //User has selcted the None at the end of the root
                     addPropButton.Visible = true;
                     removePropertyButton.Visible = false;
                 }
@@ -1614,6 +1615,7 @@ namespace ME3Explorer
                     return;
                 int type = BitConverter.ToInt32(memory, pos + 8);
                 int test = BitConverter.ToInt32(memory, pos + 12);
+                removePropertyButton.Visible = LAST_SELECTED_NODE != null && LAST_SELECTED_NODE.Parent != null && (nodeType)LAST_SELECTED_NODE.Parent.Tag == nodeType.Root && (nodeType)LAST_SELECTED_NODE.Tag != nodeType.None;
                 if (test != 0 || !pcc.isName(type))
                     return;
                 switch (pcc.getNameEntry(type))
@@ -1706,7 +1708,6 @@ namespace ME3Explorer
                     default:
                         return;
                 }
-                removePropertyButton.Visible = !(isArrayLeaf(LAST_SELECTED_PROP_TYPE) || isStructLeaf(LAST_SELECTED_PROP_TYPE));
                 setPropertyButton.Visible = true;
             }
             catch (Exception ex)
@@ -1779,7 +1780,7 @@ namespace ME3Explorer
                         if (type == nodeType.StructLeafEnum)
                         {
                             int begin = node.Text.LastIndexOf(':');
-                            if(begin == -1)
+                            if (begin == -1)
                             {
                                 return;
                             }
@@ -2997,7 +2998,13 @@ namespace ME3Explorer
 
         private void removePropertyButton_Click(object sender, EventArgs e)
         {
-
+            int posStart = getPosFromNode(LAST_SELECTED_NODE);
+            int posEnd = getPosFromNode(LAST_SELECTED_NODE.NextNode);
+            byte[] newdata = new byte[export.Data.Length - (posEnd - posStart)];
+            //Block copy for performance on large exports.
+            Buffer.BlockCopy(export.Data, 0, newdata, 0, posStart);
+            Buffer.BlockCopy(export.Data, posEnd, newdata, posStart, export.Data.Length - posEnd);
+            export.Data = newdata;
         }
     }
 }
