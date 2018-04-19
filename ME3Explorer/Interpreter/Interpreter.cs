@@ -2647,7 +2647,7 @@ namespace ME3Explorer
                 return;
             }
             List<string> props = PropertyReader.getPropList(export).Select(x => pcc.getNameEntry(x.Name)).ToList();
-            string prop = AddPropertyDialog.GetProperty(className, props, pcc.Game);
+            string prop = AddPropertyDialog.GetProperty(export, props, pcc.Game);
             AddProperty(prop);
         }
 

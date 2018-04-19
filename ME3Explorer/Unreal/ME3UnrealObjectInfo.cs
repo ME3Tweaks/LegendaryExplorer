@@ -713,6 +713,11 @@ namespace ME3Explorer.Unreal
 
             return p;
         }
+
+        internal static ClassInfo generateClassInfo(IExportEntry export)
+        {
+            return generateClassInfo(export.Index, export.FileRef as ME3Package);
+        }
         #endregion
     }
 }
