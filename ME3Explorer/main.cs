@@ -15,7 +15,13 @@ namespace ME3Explorer
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         static extern bool SetDllDirectory(string lpPathName);
 
+        [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool DeleteFile(string name);
+
         const string Unique = "{3BF98E29-9166-43E7-B24C-AA5C57B73BA6}";
+
+        static SplashScreen splashScreen;
 
         /// <summary>
         /// Application Entry Point.
@@ -23,10 +29,11 @@ namespace ME3Explorer
         [STAThread]
         public static void Main()
         {
+            UnblockLibFiles();
             if (SingleInstance<App>.InitializeAsFirstInstance(Unique, out int exitCode))
             {
                 AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-                SplashScreen splashScreen = new SplashScreen("resources/toolset_splash.png");
+                splashScreen = new SplashScreen("resources/toolset_splash.png");
                 if (Environment.GetCommandLineArgs().Length == 1)
                 {
                     splashScreen.Show(false);
@@ -34,7 +41,6 @@ namespace ME3Explorer
                 SetDllDirectory(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "lib"));
                 App app = new App();
                 app.InitializeComponent();
-                splashScreen.Close(TimeSpan.FromMilliseconds(1));
                 //will throw exception on some tools when opening over remote desktop.
                 app.Run();
 
@@ -44,6 +50,20 @@ namespace ME3Explorer
             else
             {
                 Environment.Exit(exitCode);
+            }
+        }
+
+
+        /// <summary>
+        /// Removes ADS streams from files in the lib folder. This prevents startup crash caused by inability for dlls to load from "the internet" if extracted via windows explorer.
+        /// </summary>
+        private static void UnblockLibFiles()
+        {
+            var probingPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "lib");
+            var files = Directory.GetFiles(probingPath);
+            foreach (string file in files)
+            {
+                DeleteFile(file + ":Zone.Identifier");
             }
         }
 
