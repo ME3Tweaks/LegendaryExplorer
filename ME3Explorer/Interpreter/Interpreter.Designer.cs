@@ -48,6 +48,7 @@ namespace ME3Explorer
             this.moveDownButton = new System.Windows.Forms.ToolStripButton();
             this.addPropButton = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.hb1 = new Be.Windows.Forms.HexBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.selectionStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -55,7 +56,7 @@ namespace ME3Explorer
             this.expandAllChildrenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.collapseAllChildrenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reorderArrayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.hb1 = new Be.Windows.Forms.HexBox();
+            this.removePropertyButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -82,7 +83,8 @@ namespace ME3Explorer
             this.deleteArrayElementButton,
             this.moveUpButton,
             this.moveDownButton,
-            this.addPropButton});
+            this.addPropButton,
+            this.removePropertyButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(992, 25);
@@ -191,7 +193,7 @@ namespace ME3Explorer
             this.deleteArrayElementButton.Image = ((System.Drawing.Image)(resources.GetObject("deleteArrayElementButton.Image")));
             this.deleteArrayElementButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.deleteArrayElementButton.Name = "deleteArrayElementButton";
-            this.deleteArrayElementButton.Size = new System.Drawing.Size(121, 22);
+            this.deleteArrayElementButton.Size = new System.Drawing.Size(121, 19);
             this.deleteArrayElementButton.Text = "Delete Array Element";
             this.deleteArrayElementButton.Visible = false;
             this.deleteArrayElementButton.Click += new System.EventHandler(this.deleteArrayElement_Click);
@@ -202,7 +204,7 @@ namespace ME3Explorer
             this.moveUpButton.Image = ((System.Drawing.Image)(resources.GetObject("moveUpButton.Image")));
             this.moveUpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.moveUpButton.Name = "moveUpButton";
-            this.moveUpButton.Size = new System.Drawing.Size(23, 22);
+            this.moveUpButton.Size = new System.Drawing.Size(23, 19);
             this.moveUpButton.Text = "▲";
             this.moveUpButton.ToolTipText = "Move element up";
             this.moveUpButton.Visible = false;
@@ -214,7 +216,7 @@ namespace ME3Explorer
             this.moveDownButton.Image = ((System.Drawing.Image)(resources.GetObject("moveDownButton.Image")));
             this.moveDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.moveDownButton.Name = "moveDownButton";
-            this.moveDownButton.Size = new System.Drawing.Size(23, 22);
+            this.moveDownButton.Size = new System.Drawing.Size(23, 19);
             this.moveDownButton.Text = "▼";
             this.moveDownButton.ToolTipText = "Move element down";
             this.moveDownButton.Visible = false;
@@ -226,7 +228,7 @@ namespace ME3Explorer
             this.addPropButton.Image = ((System.Drawing.Image)(resources.GetObject("addPropButton.Image")));
             this.addPropButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.addPropButton.Name = "addPropButton";
-            this.addPropButton.Size = new System.Drawing.Size(81, 22);
+            this.addPropButton.Size = new System.Drawing.Size(81, 19);
             this.addPropButton.Text = "Add Property";
             this.addPropButton.Click += new System.EventHandler(this.addPropButton_Click);
             // 
@@ -250,6 +252,25 @@ namespace ME3Explorer
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 3;
             this.splitContainer1.SplitterMoving += new System.Windows.Forms.SplitterCancelEventHandler(this.splitContainer1_SplitterMoving);
+            // 
+            // hb1
+            // 
+            this.hb1.BoldFont = null;
+            this.hb1.BytesPerLine = 4;
+            this.hb1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hb1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hb1.LineInfoForeColor = System.Drawing.Color.Empty;
+            this.hb1.LineInfoVisible = true;
+            this.hb1.Location = new System.Drawing.Point(0, 0);
+            this.hb1.MinBytesPerLine = 4;
+            this.hb1.Name = "hb1";
+            this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.hb1.Size = new System.Drawing.Size(205, 351);
+            this.hb1.StringViewVisible = true;
+            this.hb1.TabIndex = 0;
+            this.hb1.VScrollBarVisible = true;
+            this.hb1.SelectionStartChanged += new System.EventHandler(this.hb1_SelectionChanged);
+            this.hb1.SelectionLengthChanged += new System.EventHandler(this.hb1_SelectionChanged);
             // 
             // treeView1
             // 
@@ -310,24 +331,15 @@ namespace ME3Explorer
             this.reorderArrayToolStripMenuItem.Text = "Reorder Array";
             this.reorderArrayToolStripMenuItem.Click += new System.EventHandler(this.reorderArrayToolStripMenuItem_Click);
             // 
-            // hb1
+            // removePropertyButton
             // 
-            this.hb1.BoldFont = null;
-            this.hb1.BytesPerLine = 4;
-            this.hb1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hb1.LineInfoForeColor = System.Drawing.Color.Empty;
-            this.hb1.LineInfoVisible = true;
-            this.hb1.Location = new System.Drawing.Point(0, 0);
-            this.hb1.MinBytesPerLine = 4;
-            this.hb1.Name = "hb1";
-            this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(205, 351);
-            this.hb1.StringViewVisible = true;
-            this.hb1.TabIndex = 0;
-            this.hb1.VScrollBarVisible = true;
-            this.hb1.SelectionStartChanged += new System.EventHandler(this.hb1_SelectionChanged);
-            this.hb1.SelectionLengthChanged += new System.EventHandler(this.hb1_SelectionChanged);
+            this.removePropertyButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.removePropertyButton.Image = ((System.Drawing.Image)(resources.GetObject("removePropertyButton.Image")));
+            this.removePropertyButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.removePropertyButton.Name = "removePropertyButton";
+            this.removePropertyButton.Size = new System.Drawing.Size(102, 19);
+            this.removePropertyButton.Text = "Remove Property";
+            this.removePropertyButton.Click += new System.EventHandler(this.removePropertyButton_Click);
             // 
             // Interpreter
             // 
@@ -375,5 +387,6 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripMenuItem expandAllChildrenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem collapseAllChildrenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reorderArrayToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton removePropertyButton;
     }
 }

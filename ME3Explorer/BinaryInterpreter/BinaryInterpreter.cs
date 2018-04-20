@@ -2779,7 +2779,7 @@ Floats*/
         private void addPropButton_Click(object sender, EventArgs e)
         {
             List<string> props = PropertyReader.getPropList(export).Select(x => pcc.getNameEntry(x.Name)).ToList();
-            string prop = AddPropertyDialog.GetProperty(className, props, pcc.Game);
+            string prop = AddPropertyDialog.GetProperty(export, props, pcc.Game);
             if (prop != null)
             {
                 PropertyInfo info = GetPropertyInfo(prop, className);
