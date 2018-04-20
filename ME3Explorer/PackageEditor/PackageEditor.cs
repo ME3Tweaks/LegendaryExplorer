@@ -1514,14 +1514,14 @@ namespace ME3Explorer
                                         if (isMapped)
                                         {
                                             mapped = me3ExpIndexingToUnreal(mapped, originalValue < 0); //if the value is 0, it would have an error anyways.
-                                            Debug.WriteLine("Binary relink hit for WWiseEvent Export " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + originalValue + " -> " + (mapped + 1));
+                                            Debug.WriteLine("Binary relink hit for WwiseEvent Export " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + originalValue + " -> " + (mapped + 1));
                                             WriteMem(4 + (i * 4), binarydata, BitConverter.GetBytes(mapped));
                                             int newValue = BitConverter.ToInt32(binarydata, 4 + (i * 4));
                                             Debug.WriteLine(originalValue + " -> " + newValue);
                                         }
                                         else
                                         {
-                                            Debug.WriteLine("Binary relink missed WWiseEvent Export " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + originalValue);
+                                            Debug.WriteLine("Binary relink missed WwiseEvent Export " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + originalValue);
                                         }
                                     }
                                 }
