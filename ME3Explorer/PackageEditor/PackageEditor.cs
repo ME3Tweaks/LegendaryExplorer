@@ -1473,7 +1473,7 @@ namespace ME3Explorer
 
                     //relinkObjects(importpcc);
                     relinkObjects2(importpcc);
-                    //relinkBinaryObjects(importpcc);
+                    relinkBinaryObjects(importpcc);
 
                     crossPCCObjectMapping = null;
 
@@ -1490,14 +1490,79 @@ namespace ME3Explorer
         /// <param name="importpcc">PCC being imported from</param>
         private void relinkBinaryObjects(IMEPackage importpcc)
         {
-            //foreach (KeyValuePair<int, int> entry in crossPCCObjectMapping)
-            //{
-            //    if (entry.Key > 0)
-            //    {
-            //        //Run an interpreter pass over it - we will find objectleafnodes and attempt to update the same offset in the destination file.
-            //        BinaryInterpreter binaryrelinkInterpreter = new ME3Explorer.BinaryInterpreter(importpcc, importpcc.Exports[entry.Key], pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
-            //    }
-            //}
+            foreach (KeyValuePair<int, int> entry in crossPCCObjectMapping)
+            {
+                if (entry.Key > 0)
+                {
+                    IExportEntry exp = pcc.getExport(entry.Value);
+                    byte[] binarydata = exp.getBinaryData();
+                    if (binarydata.Length > 0)
+                    {
+                        //has binary data
+                        //This is temporary until I find a more permanent style for relinking binary
+                        switch (exp.ClassName)
+                        {
+                            case "WwiseEvent":
+                                {
+                                    int count = BitConverter.ToInt32(binarydata, 0);
+                                    for (int i = 0; i < count; i++)
+                                    {
+                                        int originalValue = BitConverter.ToInt32(binarydata, 4 + (i * 4));
+                                        int currentObjectRef = unrealIndexToME3ExpIndexing(originalValue); //count + i * intsize
+                                        int mapped;
+                                        bool isMapped = crossPCCObjectMapping.TryGetValue(currentObjectRef, out mapped);
+                                        if (isMapped)
+                                        {
+                                            mapped = me3ExpIndexingToUnreal(mapped, originalValue < 0); //if the value is 0, it would have an error anyways.
+                                            Debug.WriteLine("Binary relink hit for WWiseEvent Export " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + originalValue + " -> " + (mapped + 1));
+                                            WriteMem(4 + (i * 4), binarydata, BitConverter.GetBytes(mapped));
+                                            int newValue = BitConverter.ToInt32(binarydata, 4 + (i * 4));
+                                            Debug.WriteLine(originalValue + " -> " + newValue);
+                                        }
+                                        else
+                                        {
+                                            Debug.WriteLine("Binary relink missed WWiseEvent Export " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + originalValue);
+                                        }
+                                    }
+                                }
+                                break;
+                            default:
+                                continue;
+                        }
+                        exp.setBinaryData(binarydata);
+                    }
+                    //Run an interpreter pass over it - we will find objectleafnodes and attempt to update the same offset in the destination file.
+                    BinaryInterpreter binaryrelinkInterpreter = new ME3Explorer.BinaryInterpreter(importpcc, importpcc.Exports[entry.Key], pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
+                }
+            }
+        }
+
+        private int me3ExpIndexingToUnreal(int sourceObjReference, bool isImport = false)
+        {
+            if (sourceObjReference > 0)
+            {
+                sourceObjReference++; //make 1 based for mapping.
+            }
+
+            if (sourceObjReference < 0)
+            {
+                sourceObjReference--; //make 1 based for mapping.
+            }
+
+            //is 0: ???????
+            if (sourceObjReference == 0)
+            {
+                if (isImport)
+                {
+                    sourceObjReference--;
+                }
+                else
+                {
+                    sourceObjReference++;
+                }
+            }
+
+            return sourceObjReference;
         }
 
         /// <summary>
@@ -1543,18 +1608,7 @@ namespace ME3Explorer
                             case PropertyType.ObjectProperty:
                                 {
                                     //ObjectProperty oprop = (ObjectProperty)prop;
-                                    int sourceObjReference = BitConverter.ToInt32(exp.Data, prop.offsetval);
-
-                                    if (sourceObjReference > 0)
-                                    {
-                                        sourceObjReference--; //make 0 based for mapping.
-                                    }
-
-                                    if (sourceObjReference < 0)
-                                    {
-                                        sourceObjReference++; //make 0 based for mapping.
-                                    }
-
+                                    int sourceObjReference = unrealIndexToME3ExpIndexing(BitConverter.ToInt32(exp.Data, prop.offsetval));
                                     int mapped; //may want to change this...
                                     bool isMapped = crossPCCObjectMapping.TryGetValue(sourceObjReference, out mapped);
 
@@ -1605,6 +1659,27 @@ namespace ME3Explorer
             }
         }
 
+        private void WriteMem(int pos, byte[] memory, byte[] dataToWrite)
+        {
+            for (int i = 0; i < dataToWrite.Length; i++)
+                memory[pos + i] = dataToWrite[i];
+        }
+
+        private int unrealIndexToME3ExpIndexing(int sourceObjReference)
+        {
+            if (sourceObjReference > 0)
+            {
+                sourceObjReference--; //make 0 based for mapping.
+            }
+
+            if (sourceObjReference < 0)
+            {
+                sourceObjReference++; //make 0 based for mapping.
+            }
+
+            return sourceObjReference;
+        }
+
         /// <summary>
         /// Attempts to relink unreal property data using propertycollection when cross porting an export
         /// </summary>
@@ -1625,7 +1700,7 @@ namespace ME3Explorer
                 {
                     PropertyCollection transplantProps = importpcc.Exports[entry.Key].GetProperties();
                     relinkPropertiesRecursive(importpcc, pcc, transplantProps, crossMappingList);
-                    pcc.getExport(entry.Key).WriteProperties(transplantProps);
+                    pcc.getExport(entry.Value).WriteProperties(transplantProps);
                     //Run an interpreter pass over it - we will find objectleafnodes and attempt to update the same offset in the destination file.
                     //Interpreter relinkInterpreter = new ME3Explorer.Interpreter(importpcc, importpcc.Exports[entry.Key], pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
                 }
@@ -1771,12 +1846,12 @@ namespace ME3Explorer
             }
 
             KeyValuePair<int, int> mapping = crossPCCObjectMapping.Where(pair => pair.Key == sourceObjReference).FirstOrDefault();
-            var defaultKVP = default(KeyValuePair<int, string>); //struct comparison
+            var defaultKVP = default(KeyValuePair<int, int>); //struct comparison
 
             if (!mapping.Equals(defaultKVP))
             {
                 //relink
-                objProperty.Value = mapping.Value;
+                objProperty.Value = (mapping.Value + 1);
                 Debug.WriteLine("Relink hit: " + sourceObjReference);
             }
             else if (objProperty.Value < 0) //It's an unmapped import
@@ -1859,6 +1934,7 @@ namespace ME3Explorer
                 upstreamCount++;
             }
 
+            IExportEntry donorUpstreamExport = null;
             ImportEntry mostdownstreamimport = null;
             if (upstreamImport == null)
             {
@@ -1882,39 +1958,49 @@ namespace ME3Explorer
                     }
                 }
 
-
                 if (donorTopLevelImport == null)
                 {
                     //This is issue KinkoJiro had. It is aborting relinking at this step. Will need to find a way to
                     //work with exports as parents for imports which i 
-                    Debug.WriteLine("No upstream import was found in the source file. It's probably an export.");
-                    foreach (ExportEntry exp in importingPCC.Exports) //importing side info we will move to our dest pcc
+                    Debug.WriteLine("No upstream import was found in the source file. It's probably an export: " + importFullName);
+                    foreach (IExportEntry exp in destinationPCC.Exports) //importing side info we will move to our dest pcc
                     {
+                        //Console.WriteLine(exp.GetFullPath);
                         if (exp.GetFullPath == fullobjectname)
                         {
                             // = imp;
                             //We will need to find a way to cross map this as this will block cross import mapping unless these exports already exist.
+                            Debug.WriteLine("FOUND UPSTREAM, AS EXPORT!");
+                            donorUpstreamExport = exp;
+                            upstreamCount--; //level 1 now from the top down
+                            //Create new import with this as higher IDK
                             break;
                         }
                     }
-                    Debug.WriteLine("An error has occured. top level donor is missing: " + fullobjectname + " from " + pcc.FileName);
-                    return null;
+                    if (donorUpstreamExport == null)
+                    {
+                        Debug.WriteLine("An error has occured. Could not find an upstream import or export for relinking: " + fullobjectname + " from " + pcc.FileName);
+                        return null;
+                    }
                 }
 
-                //Create new toplevel import and set that as the most downstream one. (top = bottom at this point)
-                int downstreamPackageName = destinationPCC.FindNameOrAdd(donorTopLevelImport.PackageFile);
-                int downstreamClassName = destinationPCC.FindNameOrAdd(donorTopLevelImport.ClassName);
-                int downstreamName = destinationPCC.FindNameOrAdd(fullobjectname);
+                if (donorUpstreamExport == null)
+                {
+                    //Create new toplevel import and set that as the most downstream one. (top = bottom at this point)
+                    int downstreamPackageName = destinationPCC.FindNameOrAdd(donorTopLevelImport.PackageFile);
+                    int downstreamClassName = destinationPCC.FindNameOrAdd(donorTopLevelImport.ClassName);
+                    int downstreamName = destinationPCC.FindNameOrAdd(fullobjectname);
 
-                mostdownstreamimport = new ImportEntry(destinationPCC);
-                // mostdownstreamimport.idxLink = downstreamLinkIdx; ??
-                mostdownstreamimport.idxClassName = downstreamClassName;
-                mostdownstreamimport.idxObjectName = downstreamName;
-                mostdownstreamimport.idxPackageName = downstreamPackageName;
-                destinationPCC.addImport(mostdownstreamimport); //Add new top level downstream import
-                upstreamImport = mostdownstreamimport;
-                upstreamCount--; //level 1 now from the top down
-                                 //return null;
+                    mostdownstreamimport = new ImportEntry(destinationPCC);
+                    // mostdownstreamimport.idxLink = downstreamLinkIdx; ??
+                    mostdownstreamimport.idxClassName = downstreamClassName;
+                    mostdownstreamimport.idxObjectName = downstreamName;
+                    mostdownstreamimport.idxPackageName = downstreamPackageName;
+                    destinationPCC.addImport(mostdownstreamimport); //Add new top level downstream import
+                    upstreamImport = mostdownstreamimport;
+                    upstreamCount--; //level 1 now from the top down
+                                     //return null;
+                }
             }
 
             //Have an upstream import, now we need to add downstream imports.
@@ -1922,36 +2008,23 @@ namespace ME3Explorer
             {
                 upstreamCount--;
                 string fullobjectname = String.Join(".", importParts, 0, importParts.Count() - upstreamCount);
-                ImportEntry donorUpstreamImport = null;
+                ImportEntry donorImport = null;
+
+                //Get or create names for creating import and get upstream linkIdx
+                int downstreamName = destinationPCC.FindNameOrAdd(importParts[importParts.Count() - upstreamCount - 1]);
                 foreach (ImportEntry imp in importingPCC.Imports) //importing side info we will move to our dest pcc
                 {
                     if (imp.GetFullPath == fullobjectname)
                     {
-                        donorUpstreamImport = imp;
+                        donorImport = imp;
                         break;
                     }
                 }
-
-                //Get or create names for creating import and get upstream linkIdx
-                int downstreamName = destinationPCC.FindNameOrAdd(importParts[importParts.Count() - upstreamCount - 1]);
-                //Debug.WriteLine(destinationPCC.Names[downstreamName]);
-                int downstreamLinkIdx = upstreamImport.UIndex;
-                //Debug.WriteLine(upstreamImport.GetFullPath);
-
-                int downstreamPackageName = destinationPCC.FindNameOrAdd(Path.GetFileNameWithoutExtension(donorUpstreamImport.PackageFile));
-                int downstreamClassName = destinationPCC.FindNameOrAdd(donorUpstreamImport.ClassName);
-
-                //ImportEntry classImport = getOrAddImport();
-                //int downstreamClass = 0;
-                //if (classImport != null) {
-                //    downstreamClass = classImport.UIndex; //no recursion pls
-                //} else
-                //{
-                //    throw new Exception("No class was found for importing");
-                //}
+                int downstreamPackageName = destinationPCC.FindNameOrAdd(Path.GetFileNameWithoutExtension(donorImport.PackageFile));
+                int downstreamClassName = destinationPCC.FindNameOrAdd(donorImport.ClassName);
 
                 mostdownstreamimport = new ImportEntry(destinationPCC);
-                mostdownstreamimport.idxLink = downstreamLinkIdx;
+                mostdownstreamimport.idxLink = donorUpstreamExport == null ? upstreamImport.UIndex : donorUpstreamExport.UIndex;
                 mostdownstreamimport.idxClassName = downstreamClassName;
                 mostdownstreamimport.idxObjectName = downstreamName;
                 mostdownstreamimport.idxPackageName = downstreamPackageName;
