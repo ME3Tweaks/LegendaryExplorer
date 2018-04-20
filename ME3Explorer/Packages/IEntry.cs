@@ -44,7 +44,7 @@ namespace ME3Explorer.Packages
 
         event PropertyChangedEventHandler PropertyChanged;
 
-        PropertyCollection GetProperties();
+        PropertyCollection GetProperties(bool forceReload = false);
         void WriteProperties(PropertyCollection props);
         int propsEnd();
         int GetPropertyStart();

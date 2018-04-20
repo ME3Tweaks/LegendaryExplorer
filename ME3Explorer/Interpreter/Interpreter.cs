@@ -234,10 +234,6 @@ namespace ME3Explorer
                                         //Lets add this as an import. Or at least find one
                                         ImportEntry origImport = pcc.getImport(Math.Abs(n) - 1);
                                         string origImportFullName = origImport.GetFullPath;
-                                        if (origImportFullName.Contains("Wwise_Generic_Foley"))
-                                        {
-                                            Debug.WriteLine("BREAK");
-                                        }
                                         //Debug.WriteLine("We should import " + origImport.GetFullPath);
 
                                         int newFileObjectValue = n;
@@ -499,16 +495,17 @@ namespace ME3Explorer
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
             topLevelTree.Tag = nodeType.Root;
             topLevelTree.Name = "0";
-            //try
-            //{
-            List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
-            GenerateTree(topLevelTree, topLevelHeaders);
-            //}
-            //catch (Exception ex)
-            //{
-            //  topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
-            //addPropButton.Visible = false;
-            //}
+            try
+            {
+                List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
+                GenerateTree(topLevelTree, topLevelHeaders);
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
+                addPropButton.Visible = false;
+                removePropertyButton.Visible = false;
+            }
             treeView1.Nodes.Add(topLevelTree);
             treeView1.CollapseAll();
             treeView1.Nodes[0].Expand();
@@ -1272,7 +1269,7 @@ namespace ME3Explorer
                     s += "\"" + pcc.getNameEntry(idx) + "\"";
                     break;
                 case nodeType.ByteProperty:
-                    if (pcc.Game == MEGame.ME3)
+                    if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
                     {
                         if (p.size == 1)
                         {
@@ -1385,7 +1382,7 @@ namespace ME3Explorer
 
                             if (getType(pcc.getNameEntry(p.type)) == nodeType.StructProperty) //StructName
                                 readerpos += 8;
-                            if (pcc.Game == MEGame.ME3)
+                            if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
                             {
                                 if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)//Boolbyte
                                     readerpos++;
@@ -1572,10 +1569,14 @@ namespace ME3Explorer
                 else if (LAST_SELECTED_PROP_TYPE == nodeType.Root)
                 {
                     addPropButton.Visible = true;
+                    removePropertyButton.Visible = false;
+
                 }
                 else if (LAST_SELECTED_PROP_TYPE == nodeType.None && e.Node.Parent.Tag != null && e.Node.Parent.Tag.Equals(nodeType.Root))
                 {
+                    //User has selcted the None at the end of the root
                     addPropButton.Visible = true;
+                    removePropertyButton.Visible = false;
                 }
                 else
                 {
@@ -1595,6 +1596,7 @@ namespace ME3Explorer
             objectNameLabel.Visible = nameEntry.Visible = proptext.Visible = setPropertyButton.Visible = propDropdown.Visible =
                 addArrayElementButton.Visible = deleteArrayElementButton.Visible = moveDownButton.Visible =
                 moveUpButton.Visible = addPropButton.Visible = false;
+            removePropertyButton.Visible = false;
             nameEntry.AutoCompleteCustomSource.Clear();
             nameEntry.Clear();
             proptext.Clear();
@@ -1609,6 +1611,7 @@ namespace ME3Explorer
                     return;
                 int type = BitConverter.ToInt32(memory, pos + 8);
                 int test = BitConverter.ToInt32(memory, pos + 12);
+                removePropertyButton.Visible = LAST_SELECTED_NODE != null && LAST_SELECTED_NODE.Parent != null && (nodeType)LAST_SELECTED_NODE.Parent.Tag == nodeType.Root && (nodeType)LAST_SELECTED_NODE.Tag != nodeType.None;
                 if (test != 0 || !pcc.isName(type))
                     return;
                 switch (pcc.getNameEntry(type))
@@ -1772,8 +1775,12 @@ namespace ME3Explorer
                         string enumName;
                         if (type == nodeType.StructLeafEnum)
                         {
-                            int begin = node.Text.LastIndexOf(':') + 3;
-                            enumName = node.Text.Substring(begin, node.Text.IndexOf(',') - 1 - begin);
+                            int begin = node.Text.LastIndexOf(':');
+                            if (begin == -1)
+                            {
+                                return;
+                            }
+                            enumName = node.Text.Substring(begin + 3, node.Text.IndexOf(',') - 1 - begin);
                         }
                         else
                         {
@@ -2631,8 +2638,13 @@ namespace ME3Explorer
 
         private void addPropButton_Click(object sender, EventArgs e)
         {
+            if (pcc.Game == MEGame.UDK)
+            {
+                MessageBox.Show(this, "Cannot add properties to UDK UPK files.", "Unsupported operation");
+                return;
+            }
             List<string> props = PropertyReader.getPropList(export).Select(x => pcc.getNameEntry(x.Name)).ToList();
-            string prop = AddPropertyDialog.GetProperty(className, props, pcc.Game);
+            string prop = AddPropertyDialog.GetProperty(export, props, pcc.Game);
             AddProperty(prop);
         }
 
@@ -2868,6 +2880,7 @@ namespace ME3Explorer
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.getPropertyInfo(className, pcc.getNameEntry(propName));
                 case MEGame.ME3:
+                case MEGame.UDK:
                     return ME3UnrealObjectInfo.getPropertyInfo(className, pcc.getNameEntry(propName));
             }
             return null;
@@ -2882,6 +2895,7 @@ namespace ME3Explorer
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
                 case MEGame.ME3:
+                case MEGame.UDK:
                     return ME3UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
             }
             return null;
@@ -2896,6 +2910,7 @@ namespace ME3Explorer
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.getArrayType(propInfo);
                 case MEGame.ME3:
+                case MEGame.UDK:
                     return ME3UnrealObjectInfo.getArrayType(propInfo);
             }
             return ArrayType.Int;
@@ -2914,6 +2929,7 @@ namespace ME3Explorer
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName));
                 case MEGame.ME3:
+                case MEGame.UDK:
                     return ME3UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName));
             }
             return ArrayType.Int;
@@ -2928,6 +2944,7 @@ namespace ME3Explorer
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.getEnumfromProp(className, pcc.getNameEntry(propName));
                 case MEGame.ME3:
+                case MEGame.UDK:
                     return ME3UnrealObjectInfo.getEnumValues(enumName, true);
             }
             return null;
@@ -2973,6 +2990,17 @@ namespace ME3Explorer
                 setPropertyButton.PerformClick();
                 RefreshMem();
             }
+        }
+
+        private void removePropertyButton_Click(object sender, EventArgs e)
+        {
+            int posStart = getPosFromNode(LAST_SELECTED_NODE);
+            int posEnd = getPosFromNode(LAST_SELECTED_NODE.NextNode);
+            byte[] newdata = new byte[export.Data.Length - (posEnd - posStart)];
+            //Block copy for performance on large exports.
+            Buffer.BlockCopy(export.Data, 0, newdata, 0, posStart);
+            Buffer.BlockCopy(export.Data, posEnd, newdata, posStart, export.Data.Length - posEnd);
+            export.Data = newdata;
         }
     }
 }

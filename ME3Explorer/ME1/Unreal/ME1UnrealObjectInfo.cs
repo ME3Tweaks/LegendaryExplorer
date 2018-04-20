@@ -267,6 +267,11 @@ namespace ME1Explorer.Unreal
             MessageBox.Show("Done");
         }
 
+        internal static ClassInfo generateClassInfo(IExportEntry export)
+        {
+            return generateClassInfo(export.Index, export.FileRef as ME1Package);
+        }
+
         private static ClassInfo generateClassInfo(int index, ME1Package pcc)
         {
             ClassInfo info = new ClassInfo();

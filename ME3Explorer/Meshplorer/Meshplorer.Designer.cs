@@ -42,7 +42,6 @@
             this.exportToPSKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportTo3DSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.serializeToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importFromPSKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importFromUDKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.importOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -165,7 +164,7 @@
             // 
             this.lOD0ToolStripMenuItem.Name = "lOD0ToolStripMenuItem";
             this.lOD0ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.lOD0ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.lOD0ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.lOD0ToolStripMenuItem.Text = "LOD 0";
             this.lOD0ToolStripMenuItem.Click += new System.EventHandler(this.lOD0ToolStripMenuItem_Click);
             // 
@@ -173,7 +172,7 @@
             // 
             this.lOD1ToolStripMenuItem.Name = "lOD1ToolStripMenuItem";
             this.lOD1ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.lOD1ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.lOD1ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.lOD1ToolStripMenuItem.Text = "LOD 1";
             this.lOD1ToolStripMenuItem.Click += new System.EventHandler(this.lOD1ToolStripMenuItem_Click);
             // 
@@ -181,7 +180,7 @@
             // 
             this.lOD2ToolStripMenuItem.Name = "lOD2ToolStripMenuItem";
             this.lOD2ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
-            this.lOD2ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.lOD2ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.lOD2ToolStripMenuItem.Text = "LOD 2";
             this.lOD2ToolStripMenuItem.Click += new System.EventHandler(this.lOD2ToolStripMenuItem_Click);
             // 
@@ -189,7 +188,7 @@
             // 
             this.lOD3ToolStripMenuItem.Name = "lOD3ToolStripMenuItem";
             this.lOD3ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4;
-            this.lOD3ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.lOD3ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.lOD3ToolStripMenuItem.Text = "LOD 3";
             this.lOD3ToolStripMenuItem.Click += new System.EventHandler(this.lOD3ToolStripMenuItem_Click);
             // 
@@ -199,7 +198,6 @@
             this.exportToPSKToolStripMenuItem,
             this.exportTo3DSToolStripMenuItem,
             this.serializeToFileToolStripMenuItem,
-            this.importFromPSKToolStripMenuItem,
             this.importFromUDKToolStripMenuItem,
             this.toolStripMenuItem1,
             this.importOptionsToolStripMenuItem});
@@ -210,47 +208,40 @@
             // exportToPSKToolStripMenuItem
             // 
             this.exportToPSKToolStripMenuItem.Name = "exportToPSKToolStripMenuItem";
-            this.exportToPSKToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.exportToPSKToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportToPSKToolStripMenuItem.Text = "Export to PSK";
             this.exportToPSKToolStripMenuItem.Click += new System.EventHandler(this.exportToPSKToolStripMenuItem_Click);
             // 
             // exportTo3DSToolStripMenuItem
             // 
             this.exportTo3DSToolStripMenuItem.Name = "exportTo3DSToolStripMenuItem";
-            this.exportTo3DSToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.exportTo3DSToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportTo3DSToolStripMenuItem.Text = "Export to 3DS";
             this.exportTo3DSToolStripMenuItem.Click += new System.EventHandler(this.exportTo3DSToolStripMenuItem_Click);
             // 
             // serializeToFileToolStripMenuItem
             // 
             this.serializeToFileToolStripMenuItem.Name = "serializeToFileToolStripMenuItem";
-            this.serializeToFileToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.serializeToFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.serializeToFileToolStripMenuItem.Text = "Serialize to file";
             this.serializeToFileToolStripMenuItem.Click += new System.EventHandler(this.serializeToFileToolStripMenuItem_Click);
-            // 
-            // importFromPSKToolStripMenuItem
-            // 
-            this.importFromPSKToolStripMenuItem.Name = "importFromPSKToolStripMenuItem";
-            this.importFromPSKToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.importFromPSKToolStripMenuItem.Text = "Import from PSK";
-            this.importFromPSKToolStripMenuItem.Click += new System.EventHandler(this.importFromPSKToolStripMenuItem_Click);
             // 
             // importFromUDKToolStripMenuItem
             // 
             this.importFromUDKToolStripMenuItem.Name = "importFromUDKToolStripMenuItem";
-            this.importFromUDKToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.importFromUDKToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.importFromUDKToolStripMenuItem.Text = "Import from UDK...";
             this.importFromUDKToolStripMenuItem.Click += new System.EventHandler(this.importFromUDKToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(171, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
             // 
             // importOptionsToolStripMenuItem
             // 
             this.importOptionsToolStripMenuItem.Name = "importOptionsToolStripMenuItem";
-            this.importOptionsToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.importOptionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.importOptionsToolStripMenuItem.Text = "Import Options";
             this.importOptionsToolStripMenuItem.Click += new System.EventHandler(this.importOptionsToolStripMenuItem_Click);
             // 
@@ -513,6 +504,7 @@
             this.hb1.LineInfoForeColor = System.Drawing.Color.Empty;
             this.hb1.LineInfoVisible = true;
             this.hb1.Location = new System.Drawing.Point(0, 0);
+            this.hb1.MinBytesPerLine = 0;
             this.hb1.Name = "hb1";
             this.hb1.ReadOnly = true;
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
@@ -574,7 +566,6 @@
         public System.Windows.Forms.ToolStripMenuItem transferToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem exportToPSKToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem serializeToFileToolStripMenuItem;
-        public System.Windows.Forms.ToolStripMenuItem importFromPSKToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem lODToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem lOD0ToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem lOD1ToolStripMenuItem;

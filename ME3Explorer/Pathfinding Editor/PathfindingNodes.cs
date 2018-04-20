@@ -14,6 +14,7 @@ using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.PathingGraphEditor;
 using ME3Explorer.Pathfinding_Editor;
+using ME3Explorer.SequenceObjects;
 
 namespace ME3Explorer.PathfindingNodes
 {

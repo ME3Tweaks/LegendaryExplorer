@@ -92,6 +92,11 @@ namespace ME2Explorer.Unreal
             return null;
         }
 
+        internal static ClassInfo generateClassInfo(IExportEntry export)
+        {
+            return generateClassInfo(export.Index, export.FileRef as ME2Package);
+        }
+
         public static List<string> getEnumValues(string enumName, bool includeNone = false)
         {
             if (Enums.ContainsKey(enumName))

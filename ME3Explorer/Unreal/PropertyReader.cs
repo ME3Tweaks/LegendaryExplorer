@@ -719,7 +719,7 @@ namespace ME3Explorer.Unreal
                     p.TypeVal = PropertyType.ByteProperty;
                     v = new PropertyValue();
                     v.len = p.Size;
-                    if (pcc.Game == MEGame.ME3)
+                    if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
                     {
                         p.offsetval = pos + 32;
                         v.StringValue = pcc.getNameEntry(sname);
@@ -769,7 +769,7 @@ namespace ME3Explorer.Unreal
                     p.offsetval = pos + 24;
                     v = new PropertyValue();
                     v.IntValue = raw[pos + 24];
-                    if (pcc.Game == MEGame.ME3)
+                    if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK) //THIS NEEDS TESTED!!! From when merging UDK
                     {
                         v.len = 1;
                     }
@@ -1334,8 +1334,7 @@ namespace ME3Explorer.Unreal
 
         public static void WriteArrayProperty(this Stream stream, IMEPackage pcc, string propName, int count, MemoryStream value)
         {
-            Debug.WriteLine("Writing array property " + propName + ", count: " + count + " at 0x" + stream.Position.ToString("X6")+", length: "+value.Length);
-
+            //Debug.WriteLine("Writing array property " + propName + ", count: " + count + " at 0x" + stream.Position.ToString("X6")+", length: "+value.Length);
             stream.WritePropHeader(pcc, propName, PropertyType.ArrayProperty, 4 + (int)value.Length);
             stream.WriteValueS32(count);
             stream.WriteStream(value);
