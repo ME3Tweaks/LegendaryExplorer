@@ -45,8 +45,10 @@
             this.saveViewToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.saveViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadAlternateTLKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addObjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reloadTLKListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showOutputNumbersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoSaveViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -65,7 +67,7 @@
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.reloadTLKListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -215,7 +217,9 @@
             this.savePCCAsMenuItem,
             this.saveViewToolStripMenuItem1,
             this.saveViewToolStripMenuItem,
-            this.loadAlternateTLKToolStripMenuItem});
+            this.toolStripSeparator1,
+            this.loadAlternateTLKToolStripMenuItem,
+            this.recentToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -263,6 +267,12 @@
             this.loadAlternateTLKToolStripMenuItem.Text = "Manage Loaded TLKs";
             this.loadAlternateTLKToolStripMenuItem.Click += new System.EventHandler(this.loadAlternateTLKToolStripMenuItem_Click);
             // 
+            // recentToolStripMenuItem
+            // 
+            this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.recentToolStripMenuItem.Text = "Recent";
+            // 
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -275,9 +285,16 @@
             // addObjectsToolStripMenuItem
             // 
             this.addObjectsToolStripMenuItem.Name = "addObjectsToolStripMenuItem";
-            this.addObjectsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addObjectsToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.addObjectsToolStripMenuItem.Text = "Add Object";
             this.addObjectsToolStripMenuItem.Click += new System.EventHandler(this.addObjectsToolStripMenuItem_Click);
+            // 
+            // reloadTLKListToolStripMenuItem
+            // 
+            this.reloadTLKListToolStripMenuItem.Name = "reloadTLKListToolStripMenuItem";
+            this.reloadTLKListToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.reloadTLKListToolStripMenuItem.Text = "Reload TLKs";
+            this.reloadTLKListToolStripMenuItem.Click += new System.EventHandler(this.reloadTLKListToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
@@ -424,12 +441,10 @@
             this.addObjectToolStripMenuItem.Text = "Add Object";
             this.addObjectToolStripMenuItem.Click += new System.EventHandler(this.addObjectsToolStripMenuItem_Click);
             // 
-            // reloadTLKListToolStripMenuItem
+            // toolStripSeparator1
             // 
-            this.reloadTLKListToolStripMenuItem.Name = "reloadTLKListToolStripMenuItem";
-            this.reloadTLKListToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.reloadTLKListToolStripMenuItem.Text = "Reload TLKs";
-            this.reloadTLKListToolStripMenuItem.Click += new System.EventHandler(this.reloadTLKListToolStripMenuItem_Click);
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(184, 6);
             // 
             // SequenceEditor
             // 
@@ -512,5 +527,7 @@
         private System.Windows.Forms.ToolStripMenuItem addObjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reloadTLKListToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }

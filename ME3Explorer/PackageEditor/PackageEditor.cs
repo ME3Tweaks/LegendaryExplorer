@@ -204,7 +204,7 @@ namespace ME3Explorer
 
         public void AddRecent(string s, bool loadingList)
         {
-            RFiles.Remove(s);
+            RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
             if (loadingList)
             {
                 RFiles.Add(s); //in order
@@ -217,6 +217,7 @@ namespace ME3Explorer
             {
                 RFiles.RemoveRange(10, RFiles.Count - 10);
             }
+            recentToolStripMenuItem.Enabled = true;
         }
 
         public void InitStuff()
@@ -847,6 +848,7 @@ namespace ME3Explorer
 
         private void LoadRecentList()
         {
+            recentToolStripMenuItem.Enabled = false;
             RFiles = new List<string>();
             RFiles.Clear();
             string path = PackageEditorDataFolder + RECENTFILES_FILE;
@@ -916,7 +918,6 @@ namespace ME3Explorer
             if (File.Exists(s))
             {
                 LoadFile(s);
-                RFiles.Remove(s);
                 AddRecent(s, false);
                 SaveRecentList();
                 RefreshRecent(true, RFiles);
@@ -940,11 +941,6 @@ namespace ME3Explorer
                 }
                 MessageBox.Show("\"" + result + "\" at index " + (idx) + " (" + s + ")");
             }
-        }
-
-        private void recentToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //RefreshRecent();
         }
 
         private void toolStripButton2_Click(object sender, EventArgs e)
@@ -1905,20 +1901,26 @@ namespace ME3Explorer
 
         private void treeView1_DragOver(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
+            if (e.Data is TreeNode)
             {
-                Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
-                TreeNode DestinationNode = ((TreeView)sender).GetNodeAt(pt);
-                TreeNode NewNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
-                if (DestinationNode != null && DestinationNode.TreeView != NewNode.TreeView)
+                if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
                 {
-                    treeView1.SelectedNode = DestinationNode;
-                    e.Effect = DragDropEffects.Copy;
+                    Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
+                    TreeNode DestinationNode = ((TreeView)sender).GetNodeAt(pt);
+                    TreeNode NewNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
+                    if (DestinationNode != null && DestinationNode.TreeView != NewNode.TreeView)
+                    {
+                        treeView1.SelectedNode = DestinationNode;
+                        e.Effect = DragDropEffects.Copy;
+                    }
+                    else
+                    {
+                        e.Effect = DragDropEffects.None;
+                    }
                 }
-                else
-                {
-                    e.Effect = DragDropEffects.None;
-                }
+            } else
+            {
+                e.Effect = DragDropEffects.None;
             }
         }
 

@@ -271,7 +271,6 @@
             this.recentToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.recentToolStripMenuItem.Text = "Recent";
             this.recentToolStripMenuItem.ToolTipText = "Open recently opened file";
-            this.recentToolStripMenuItem.Click += new System.EventHandler(this.recentToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
             // 
