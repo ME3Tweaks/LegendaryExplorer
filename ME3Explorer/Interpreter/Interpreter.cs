@@ -234,10 +234,6 @@ namespace ME3Explorer
                                         //Lets add this as an import. Or at least find one
                                         ImportEntry origImport = pcc.getImport(Math.Abs(n) - 1);
                                         string origImportFullName = origImport.GetFullPath;
-                                        if (origImportFullName.Contains("Wwise_Generic_Foley"))
-                                        {
-                                            Debug.WriteLine("BREAK");
-                                        }
                                         //Debug.WriteLine("We should import " + origImport.GetFullPath);
 
                                         int newFileObjectValue = n;
