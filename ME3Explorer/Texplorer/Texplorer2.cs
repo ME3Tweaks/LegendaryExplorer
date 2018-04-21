@@ -19,10 +19,11 @@ using KFreonLib.MEDirectories;
 using TreeTexInfo = KFreonLib.Textures.TreeTexInfo;
 using System.Collections.Concurrent;
 using System.Reflection;
-using CSharpImageLibrary.General;
 using System.Text;
 using UsefulThings;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using CSharpImageLibrary;
+using CSharpImageLibrary.General;
 
 namespace ME3Explorer
 {

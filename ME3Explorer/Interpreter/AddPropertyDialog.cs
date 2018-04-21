@@ -36,9 +36,10 @@ namespace ME3Explorer
             addButton.PerformClick();
         }
 
-        public static string GetProperty(string className, List<string> _extantProps, MEGame game)
+        public static string GetProperty(IExportEntry export, List<string> _extantProps, MEGame game)
         {
-            string temp = className;
+            string origname = export.ClassName;
+            string temp = export.ClassName;
             List<string> classes = new List<string>();
             Dictionary<string, ClassInfo> classList;
             switch (game)
@@ -54,6 +55,28 @@ namespace ME3Explorer
                     classList = ME3UnrealObjectInfo.Classes;
                     break;
             }
+            if (!classList.ContainsKey(temp))
+            {
+                export = export.FileRef.Exports[export.idxClass - 1];
+                //current object is not in classes db, temporarily add it to the list
+                ClassInfo currentInfo;
+                switch (game)
+                {
+                    case MEGame.ME1:
+                        currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(export);
+                        break;
+                    case MEGame.ME2:
+                        currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(export);
+                        break;
+                    case MEGame.ME3:
+                    default:
+                        currentInfo = ME3UnrealObjectInfo.generateClassInfo(export);
+                        break;
+                }
+                currentInfo.baseClass = export.ClassParent;
+                classList = classList.ToDictionary(entry => entry.Key, entry => entry.Value);
+                classList[temp] = currentInfo;
+            }
             while (classList.ContainsKey(temp) && temp != "Object")
             {
                 classes.Add(temp);
@@ -64,8 +87,8 @@ namespace ME3Explorer
             prompt.classList = classList;
             prompt.extantProps = _extantProps;
             prompt.classListBox.DataSource = classes;
-            prompt.classListBox.SelectedItem = className;
-            if(prompt.ShowDialog() == DialogResult.OK && prompt.propListBox.SelectedIndex != -1)
+            prompt.classListBox.SelectedItem = origname;
+            if (prompt.ShowDialog() == DialogResult.OK && prompt.propListBox.SelectedIndex != -1)
             {
                 return prompt.propListBox.SelectedItem as string;
             }

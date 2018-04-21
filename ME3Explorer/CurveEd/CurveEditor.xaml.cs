@@ -33,7 +33,7 @@ namespace ME3Explorer.CurveEd
             expEntry = exp;
             LoadMEPackage(expEntry.FileRef.FileName);
             Load();
-            Title = "Curve Editor | " + expEntry.FileRef.FileName + " | " + exp.Index + ": " + exp.ClassName;
+            Title = "Curve Editor | " + System.IO.Path.GetFileName(expEntry.FileRef.FileName) + " | " + exp.Index + ": " + exp.ClassName;
         }
 
         private void Load()

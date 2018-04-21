@@ -121,6 +121,8 @@ namespace ME3Explorer
                         return $"\"{ME2Explorer.ME2TalkFiles.findDataById(strRef)}\"";
                     case MEGame.ME3:
                         return $"\"{ME3TalkFiles.findDataById(strRef)}\"";
+                    case MEGame.UDK:
+                        return "UDK StrRef not supported";
                 }
             }
             return "No Data";

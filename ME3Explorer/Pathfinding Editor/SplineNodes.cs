@@ -16,6 +16,7 @@ using UMD.HCIL.PathingGraphEditor;
 using ME3Explorer.Pathfinding_Editor;
 using System.Diagnostics;
 using static SharpDX.Vector3;
+using ME3Explorer.SequenceObjects;
 
 namespace ME3Explorer.SplineNodes
 {

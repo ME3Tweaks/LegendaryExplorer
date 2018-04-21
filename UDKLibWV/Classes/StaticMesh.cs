@@ -37,8 +37,7 @@ namespace UDKLibWV.Classes
             Owner = udk;
             ReadEnd = GetPropertyEnd(Index);
             byte[] buff = udk.Exports[Index].data;
-            File.WriteAllBytes("C:\\test.bin", buff);
-            MemoryStream m = new MemoryStream(buff);
+            MemoryStream m = new MemoryStream((byte[])buff.Clone());
             Read(m);
         }
 
@@ -68,7 +67,7 @@ namespace UDKLibWV.Classes
             Unk1 = new byte[28];
             m.Read(Unk1, 0, 28);
 
-            count = ReadInt(m);            
+            count = ReadInt(m);
             size = ReadInt(m);
             m.Seek(-8, SeekOrigin.Current);
             Unk2 = new byte[12 + size];
@@ -78,7 +77,7 @@ namespace UDKLibWV.Classes
             Mats = new byte[4 + 0x31 * count];
             m.Seek(-4, SeekOrigin.Current);
             m.Read(Mats, 0, 4 + 0x31 * count);
-            
+
             size = ReadInt(m);
             count = ReadInt(m);
             size = ReadInt(m);

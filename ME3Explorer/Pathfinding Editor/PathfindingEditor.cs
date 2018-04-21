@@ -92,7 +92,6 @@ namespace ME3Explorer
             zoomController = new PathingZoomController(graphEditor);
             CurrentFilterType = HeightFilterForm.FILTER_Z_NONE;
             CurrentZFilterValue = 0;
-            SText.LoadFont();
 
 
             if (importclassdb.Count() == 0 || exportclassdb.Count() == 0)
@@ -141,7 +140,6 @@ namespace ME3Explorer
 
             foreach (string filepath in RFiles)
             {
-                Debug.WriteLine(filepath);
                 ToolStripMenuItem fr = new ToolStripMenuItem(filepath, null, RecentFile_click);
                 recentToolStripMenuItem.DropDownItems.Add(fr);
             }
@@ -153,7 +151,6 @@ namespace ME3Explorer
             if (File.Exists(s))
             {
                 LoadFile(s);
-                RFiles.Remove(s);
                 AddRecent(s, false);
                 SaveRecentList();
                 RefreshRecent(true, RFiles);
@@ -1098,6 +1095,7 @@ namespace ME3Explorer
             RFiles = new List<string>();
             RFiles.Clear();
             string path = PathfindingEditorDataFolder + RECENTFILES_FILE;
+            recentToolStripMenuItem.Enabled = false;
             if (File.Exists(path))
             {
                 string[] recents = File.ReadAllLines(path);
@@ -1105,6 +1103,7 @@ namespace ME3Explorer
                 {
                     if (File.Exists(recent))
                     {
+                        recentToolStripMenuItem.Enabled = true;
                         AddRecent(recent, true);
                     }
                 }
@@ -1113,7 +1112,7 @@ namespace ME3Explorer
 
         public void AddRecent(string s, bool loadingList)
         {
-            RFiles.Remove(s);
+            RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
             if (loadingList)
             {
                 RFiles.Add(s); //in order
@@ -1126,6 +1125,7 @@ namespace ME3Explorer
             {
                 RFiles.RemoveRange(10, RFiles.Count - 10);
             }
+            recentToolStripMenuItem.Enabled = true;
         }
 
         protected void node_MouseDown(object sender, PInputEventArgs e)

@@ -97,7 +97,7 @@ namespace ME3Explorer
                     var folders = Directory.EnumerateDirectories(ME3Directory.DLCPath).Where(x => !x.Contains("__metadata"));
                     var extracted = folders.Where(folder => Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).Any(file => file.EndsWith("pcconsoletoc.bin", StringComparison.OrdinalIgnoreCase)));
                     var unextracted = folders.Except(extracted);
-                    if (unextracted.Count() > 0)
+                    if (unextracted.Any())
                     {
                         (new InitialSetup()).ShowDialog();
                     } 
@@ -109,7 +109,7 @@ namespace ME3Explorer
         {
             IEnumerable<Tool> favs = Tools.Items.Where(x => x.IsFavorited);
             favoritesPanel.setToolList(favs);
-            favoritesWatermark.Visibility = favs.Count() > 0 ? Visibility.Hidden : Visibility.Visible;
+            favoritesWatermark.Visibility = favs.Any()? Visibility.Hidden : Visibility.Visible;
         }
 
         private void Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)

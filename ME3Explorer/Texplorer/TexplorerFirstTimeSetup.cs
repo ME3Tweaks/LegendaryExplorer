@@ -343,5 +343,21 @@ namespace ME3Explorer
             if (!DLCs[e.Index].Use)
                 e.NewValue = CheckState.Unchecked;
         }
+
+        private void deselectAllButton_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < MainListView.Items.Count; i++)
+            {
+                MainListView.SetItemCheckState(i, CheckState.Unchecked);
+            }
+        }
+
+        private void selectAllButton_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < MainListView.Items.Count; i++)
+            {
+                MainListView.SetItemCheckState(i, CheckState.Checked);
+            }
+        }
     }
 }

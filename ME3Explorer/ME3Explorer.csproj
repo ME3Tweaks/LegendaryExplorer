@@ -48,7 +48,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>embedded</DebugType>
+    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -73,6 +73,12 @@
   <ItemGroup>
     <Reference Include="ClosedXML, Version=0.92.1.0, Culture=neutral, PublicKeyToken=fd1eb21b62ae805b, processorArchitecture=MSIL">
       <HintPath>..\packages\ClosedXML.0.92.1\lib\net46\ClosedXML.dll</HintPath>
+    </Reference>
+    <Reference Include="CSharpImageLibrary, Version=3.1.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSharpImageLibrary.3.1.6.0\lib\net45\CSharpImageLibrary.exe</HintPath>
+    </Reference>
+    <Reference Include="CsvHelper, Version=7.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.7.1.0\lib\net45\CsvHelper.dll</HintPath>
     </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=2.8.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
       <HintPath>..\packages\DocumentFormat.OpenXml.2.8.1\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
@@ -123,7 +129,9 @@
     <Reference Include="SharpDX.Mathematics, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.Mathematics.4.0.1\lib\net45\SharpDX.Mathematics.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
+    <Reference Include="System">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.AppContext">
       <HintPath>..\packages\System.AppContext.4.3.0\lib\net463\System.AppContext.dll</HintPath>
       <Private>True</Private>
@@ -185,6 +193,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.4.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
     <Reference Include="System.Reflection">
       <HintPath>..\packages\System.Reflection.4.3.0\lib\net462\System.Reflection.dll</HintPath>
       <Private>True</Private>
@@ -243,17 +254,12 @@
       <HintPath>..\packages\System.Xml.ReaderWriter.4.3.1\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="UsefulThings, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UsefulCSharpThings.1.7.3\lib\net462\UsefulThings.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="CSharpImageLibrary, Version=3.1.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSharpImageLibrary.3.1.6.0\lib\net45\CSharpImageLibrary.exe</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
-      <HintPath>..\packages\CsvHelper.2.14.1\lib\net40\CsvHelper.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="lib3ds.Net">
       <HintPath>..\Libraries\lib3ds.Net.dll</HintPath>
     </Reference>
@@ -286,15 +292,25 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="UIAutomationProvider" />
-    <Reference Include="UsefulThings, Version=1.5.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UsefulCSharpThings.1.5.6.0\lib\net45\UsefulThings.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
-    <Reference Include="Xceed.Wpf.Toolkit, Version=2.9.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.2.9\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.DataGrid, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -408,7 +424,7 @@
     <Compile Include="CoalesceTool\Xml\CoalesceIncludeTarget.cs" />
     <Compile Include="CoalesceTool\Xml\XmlCoalesceAsset.cs" />
     <Compile Include="CoalesceTool\Xml\XmlCoalesceFile.cs" />
-    <Compile Include="FaceFXAnimSetEditor\IME3FaceFXAnimSet.cs" />
+    <Compile Include="FaceFXAnimSetEditor\IFaceFXAnimSet.cs" />
     <Compile Include="GenericWindow.cs" />
     <Compile Include="Interpreter\PropertyEditor.xaml.cs">
       <DependentUpon>PropertyEditor.xaml</DependentUpon>
@@ -508,6 +524,13 @@
     <Compile Include="NativesEditor\Views\StateTaskListsView.xaml.cs">
       <DependentUpon>StateTaskListsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PackageEditor\UDKImporter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PackageEditor\UDKImporter.Designer.cs">
+      <DependentUpon>UDKImporter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Packages\UDKPackage.cs" />
     <Compile Include="Packages\MEPackage.cs" />
     <Compile Include="Pathfinding Editor\SplineNodes.cs" />
     <Compile Include="Pathfinding Editor\ActorNodes.cs" />
@@ -1285,6 +1308,9 @@
       <DependentUpon>PackageEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="PackageEditor\UDKImporter.resx">
+      <DependentUpon>UDKImporter.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Pathfinding Editor\DuplicateGUIDWindow.resx">
       <DependentUpon>DuplicateGUIDWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -1396,7 +1422,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\KismetFont.ttf" />
+    <EmbeddedResource Include="Resources\KismetFont.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AmaroK86\AmaroK86Lib.csproj">
@@ -1637,6 +1663,16 @@
 
 xcopy /f /e /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
 
+rmdir /s /q de
+rmdir /s /q es
+rmdir /s /q fr
+rmdir /s /q hu
+rmdir /s /q it
+rmdir /s /q pt-BR
+rmdir /s /q ro
+rmdir /s /q ru
+rmdir /s /q sv
+rmdir /s /q zh-Hans
 del /s "$(TargetDir)*.xml"
 
 move /y "$(ProjectDir)$(OutDir)CSharpImageLibrary.exe" "$(ProjectDir)$(OutDir)lib\"
@@ -1644,7 +1680,7 @@ move /y "$(ProjectDir)$(OutDir)KFreonLib.dll.config" "$(ProjectDir)$(OutDir)lib\
 move /y "$(ProjectDir)$(OutDir)ME3LibWV.dll.config" "$(ProjectDir)$(OutDir)lib\"
 del "$(ProjectDir)$(OutDir)HexConverter.exe.config"
 del "$(ProjectDir)$(OutDir)UDKExplorer.exe.config"
-del "$(ProjectDir)$(OutDir)ME3Creator.exe.config"
+REM del "$(ProjectDir)$(OutDir)ME3Creator.exe.config"
 if $(ConfigurationName) == Release (copy /Y "$(SolutionDir)Deployment\ReleaseBuilder.cmd" "$(TargetDir)..\ReleaseBuilder.bat" /y)
 
 if $(ConfigurationName) == Release (copy /Y "$(SolutionDir)Deployment\ReleaseBuilder.ps1" "$(TargetDir)..\ReleaseBuilder.ps1" /y)

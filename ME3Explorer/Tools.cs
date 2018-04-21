@@ -325,6 +325,8 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility" },
                 subCategory = "Saved Games",
+                description = "This tool is deprecated and is no longer supported. It may not exist in future versions of the toolset.",
+
             });
             set.Add(new Tool
             {
@@ -337,6 +339,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility" },
                 subCategory = "Saved Games",
+                description = "Allows you to edit very basic properties of Mass Effect game saves. This is not a full save editor. This tool is deprecated and is no longer supported.",
             });
             set.Add(new Tool
             {
@@ -349,6 +352,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility" },
                 subCategory = "Databases",
+                description = "Script Database can be used to quickly find UnrealScript exports across multiple files for Mass Effect 3. This tool is deprecated and is no longer supported.",
             });
             set.Add(new Tool
             {
@@ -402,7 +406,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "path", "mesh", "ai" },
                 subCategory = "Core",
-                description = "Pathfinding Editor allows you to modify pathing nodes so squadmates and enemies can move around a map.",
+                description = "Pathfinding Editor allows you to modify pathing nodes so squadmates and enemies can move around a map. You can also edit placement of several different types of level objects such as StaticMeshes, Splines, and more.",
             });
             set.Add(new Tool
             {
@@ -504,11 +508,20 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer" },
                 subCategory = "Other",
+                description = "Allows you to view and edit the GUID Cache files used by Mass Effect 3 DLC. This tool is deprecated and is no longer supported.",
+            });
+            set.Add(new Tool
+            {
+                name = "Binary Interpreter",
+                type = typeof(BinaryInterpreterHost),
+                icon = Application.Current.FindResource("iconInterpreter") as ImageSource,
+                tags = new List<string>(),
+                subCategory = "Other",
             });
             set.Add(new Tool
             {
                 name = "Interpreter",
-                type = typeof(BinaryInterpreterHost),
+                type = typeof(InterpreterHost),
                 icon = Application.Current.FindResource("iconInterpreter") as ImageSource,
                 tags = new List<string>(),
                 subCategory = "Other",
@@ -532,6 +545,8 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer" },
                 subCategory = "Other",
+                description = "Level Explorer allows you to view the meshes of a level. This tool is deprecated and is no longer supported.",
+
             });
             set.Add(new Tool
             {
@@ -613,7 +628,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "dlc" },
                 subCategory = "SFARS",
-                description = "SFAR Basic Editor loads ME3 DLC SFARs, allowing for exploration and basic edits within a relatively user-friendly GUI.",
+                description = "SFAR Basic Editor loads ME3 DLC SFARs, allowing for exploration and basic edits within a relatively user-friendly GUI. SFAR Basic Editor does not support all DLC and should only be used for viewing.",
             });
             set.Add(new Tool
             {
@@ -708,7 +723,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer" },
                 subCategory = "Other",
-                description = "Edits .udk and .upk files created by the UDK."
+                description = "Edits .udk and .upk files created by the UDK. This tool is deprecated and no longer supported."
             });
             #endregion
 

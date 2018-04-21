@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
+using ME3Explorer;
 using Be.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
 

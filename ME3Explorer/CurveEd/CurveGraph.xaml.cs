@@ -373,13 +373,50 @@ namespace ME3Explorer.CurveEd
             else if (e.OriginalSource == graph && e.ChangedButton == MouseButton.Right)
             {
                 ContextMenu cm = new ContextMenu();
+
                 MenuItem addKey = new MenuItem();
                 addKey.Header = "Add Key";
                 addKey.Click += AddKey_Click;
                 addKey.Tag = e.GetPosition(graph);
                 cm.Items.Add(addKey);
+
+                MenuItem offsetKeys = new MenuItem();
+                offsetKeys.Header = "Offset All Keys After This Point";
+                offsetKeys.Click += OffsetKeys_Click;
+                offsetKeys.Tag = e.GetPosition(graph);
+                cm.Items.Add(offsetKeys);
+
                 cm.PlacementTarget = sender as Canvas;
                 cm.IsOpen = true;
+            }
+        }
+
+        private void OffsetKeys_Click(object sender, RoutedEventArgs e)
+        {
+            Point pos = (Point)(sender as MenuItem).Tag;
+            double inVal = unrealX(pos.X);
+            string res = Microsoft.VisualBasic.Interaction.InputBox("Seconds to offset keys by", DefaultResponse: "0.0");
+            float delta = 0;
+            if (float.TryParse(res, out delta))
+            {
+                LinkedListNode<CurvePoint> node = SelectedCurve.CurvePoints.First;
+                while (node?.Next != null && node.Value.InVal < inVal)
+                {
+                    node = node.Next;
+                }
+                if (node?.Previous?.Value.InVal - node?.Value.InVal >= delta)
+                {
+                    MessageBox.Show("Cannot re-order keys");
+                }
+                else
+                {
+                    while (node != null)
+                    {
+                        node.Value.InVal += delta;
+                        node = node.Next;
+                    }
+                    Paint(true); 
+                }
             }
         }
 
@@ -457,7 +494,6 @@ namespace ME3Explorer.CurveEd
                     float prev = a.point.Previous?.Value.InVal ?? float.MinValue;
                     if (d > prev && d < next)
                     {
-                        a.point.Value.InVal = (float)d;
                         a.X = localX(d);
                         Paint(true);
                     }

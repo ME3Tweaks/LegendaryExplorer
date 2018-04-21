@@ -62,11 +62,12 @@ namespace ME3Explorer.Unreal
 
         public static PropertyCollection ReadProps(IMEPackage pcc, MemoryStream stream, string typeName)
         {
-            //DebugOutput.StartDebugger("Property Engine ReadProps() for "+typeName);
-            //if (typeName == "Matrix")
-            //{
-            //  Debugger.Break();
-            //}
+            //Uncomment this for debugging property engine
+            /*DebugOutput.StartDebugger("Property Engine ReadProps() for "+typeName);
+            if (pcc.FileName == "C:\\Users\\Dev\\Downloads\\ME2_Placeables.upk")
+            {
+              //Debugger.Break();
+            }*/
             PropertyCollection props = new PropertyCollection();
             long startPosition = stream.Position;
             while (stream.Position + 8 <= stream.Length)
@@ -399,7 +400,7 @@ namespace ME3Explorer.Unreal
 
         public static UProperty ReadArrayProperty(MemoryStream stream, IMEPackage pcc, string enclosingType, NameReference name, bool IsInImmutable = false)
         {
-            long arrayOffset = stream.Position - 24;
+            long arrayOffset = IsInImmutable ? stream.Position: stream.Position - 24;
             ArrayType arrayType = UnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType);
             int count = stream.ReadValueS32();
             switch (arrayType)
@@ -964,6 +965,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
+                stream.WriteValueS32(Values.Count);
                 foreach (var prop in Values)
                 {
                     prop.WriteTo(stream, pcc, true);

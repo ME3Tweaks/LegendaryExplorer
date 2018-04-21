@@ -13,6 +13,7 @@ using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.GraphEditor;
+using System.Runtime.InteropServices;
 
 namespace ME3Explorer.SequenceObjects
 {
@@ -255,15 +256,7 @@ namespace ME3Explorer.SequenceObjects
                         {
                             if (prop.Name == "m_sObjectTagToFind")
                             {
-                                if (prop is NameProperty)
-                                {
-                                    return (prop as NameProperty).Value;
-                                }
-                                if (prop is StrProperty)
-                                {
-                                    return (prop as StrProperty).Value;
-                                }
-                                return (prop as StrProperty).Value;
+                                return (prop as StrProperty)?.Value ?? (prop as NameProperty).Value;
                             }
                             else if (prop.Name == "ObjValue")
                             {
@@ -287,6 +280,8 @@ namespace ME3Explorer.SequenceObjects
                                             return ME2Explorer.ME2TalkFiles.findDataById(strRefProp.Value);
                                         case MEGame.ME3:
                                             return ME3TalkFiles.findDataById(strRefProp.Value);
+                                        case MEGame.UDK:
+                                            return "UDK StrRef not supported";
                                         default:
                                             break;
                                     }
@@ -1314,6 +1309,9 @@ namespace ME3Explorer.SequenceObjects
 
     public class SText : PText
     {
+        [DllImport("gdi32.dll")]
+        private static extern IntPtr AddFontMemResourceEx(IntPtr pbFont, uint cbFont, IntPtr pdv, [In] ref uint pcFonts);
+
         private readonly Brush black = new SolidBrush(Color.Black);
         public bool shadowRendering { get; set; }
         private static PrivateFontCollection fontcollection;
@@ -1336,12 +1334,19 @@ namespace ME3Explorer.SequenceObjects
             shadowRendering = shadows;
         }
 
+        //must be called once in the program before SText can be used
         public static void LoadFont()
         {
             if (fontcollection == null || fontcollection.Families.Length < 1)
             {
                 fontcollection = new PrivateFontCollection();
-                fontcollection.AddFontFile(@"exec\KismetFont.ttf");
+                byte[] fontData = Properties.Resources.KismetFont;
+                IntPtr fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
+                Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
+                fontcollection.AddMemoryFont(fontPtr, fontData.Length);
+                uint tmp = 0;
+                AddFontMemResourceEx(fontPtr, (uint)(fontData.Length), IntPtr.Zero, ref tmp);
+                Marshal.FreeCoTaskMem(fontPtr);
                 kismetFont = new Font(fontcollection.Families[0], 6);
             }
         }

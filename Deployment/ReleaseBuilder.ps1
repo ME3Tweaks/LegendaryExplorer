@@ -4,6 +4,11 @@
 $Dir = get-childitem "$($PSScriptRoot)\Release\lib" -recurse 
 $List = $Dir | where {$_.extension -eq ".pdb"} 
 foreach ($item in $List) {
+    if ($item.Name -eq 'ME3Explorer.pdb') {
+        Write-Host "Move ME3Explorer PDB next to executable..."
+        move "$($PSScriptRoot)\Release\lib\ME3Explorer.pdb" "$($PSScriptRoot)\Release\ME3Explorer.pdb"
+        continue
+    }
     Write-Host "Deleting extra PDB: $($item)"
     Remove-Item "$($PSScriptRoot)\Release\lib\$($item)" -Force
 }

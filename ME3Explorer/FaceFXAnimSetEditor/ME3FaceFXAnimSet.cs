@@ -23,15 +23,7 @@ namespace ME3Explorer.FaceFX
                 return header;
             }
         }
-
-        ME3DataAnimSetStruct data;
-        public ME3DataAnimSetStruct Data
-        {
-            get
-            {
-                return data;
-            }
-        }
+        public ME3DataAnimSetStruct Data { get; private set; }
 
         public ME3FaceFXAnimSet()
         {
@@ -41,8 +33,7 @@ namespace ME3Explorer.FaceFX
             
             pcc = Pcc;
             export = Entry;
-            List<PropertyReader.Property> props = PropertyReader.getPropList(export);
-            int start = props[props.Count - 1].offend + 4;
+            int start = export.propsEnd() + 4;
             SerializingContainer Container = new SerializingContainer(new MemoryStream(export.Data.Skip(start).ToArray()));
             Container.isLoading = true;
             Serialize(Container);
@@ -105,22 +96,22 @@ namespace ME3Explorer.FaceFX
         void SerializeData(SerializingContainer Container)
         {
             if (Container.isLoading)
-                data = new ME3DataAnimSetStruct();
-            data.unk1 = Container + data.unk1;
-            data.unk2 = Container + data.unk2;
-            data.unk3 = Container + data.unk3;
-            data.unk4 = Container + data.unk4;
+                Data = new ME3DataAnimSetStruct();
+            Data.unk1 = Container + Data.unk1;
+            Data.unk2 = Container + Data.unk2;
+            Data.unk3 = Container + Data.unk3;
+            Data.unk4 = Container + Data.unk4;
             int count = 0;
             if (!Container.isLoading)
-                count = data.Data.Length;
+                count = Data.Data.Length;
             count = Container + count;
             if (Container.isLoading)
-                data.Data = new ME3FaceFXLine[count];
+                Data.Data = new ME3FaceFXLine[count];
             for (int i = 0; i < count; i++)
             {
                 if (Container.isLoading)
-                    data.Data[i] = new ME3FaceFXLine();
-                ME3FaceFXLine d = data.Data[i];
+                    Data.Data[i] = new ME3FaceFXLine();
+                ME3FaceFXLine d = Data.Data[i];
                 d.Name = Container + d.Name;
                 if (Container.isLoading)
                 {
@@ -179,7 +170,7 @@ namespace ME3Explorer.FaceFX
                 d.path = SerializeString(Container, d.path);
                 d.ID = SerializeString(Container, d.ID);
                 d.index = Container + d.index;
-                data.Data[i] = d;
+                Data.Data[i] = d;
             }
         }
 
@@ -232,15 +223,15 @@ namespace ME3Explorer.FaceFX
         {
             TreeNode res = new TreeNode("Data");
             TreeNode t = new TreeNode("Header");
-            t.Nodes.Add(data.unk1.ToString("X8"));
-            t.Nodes.Add(data.unk2.ToString("X8"));
-            t.Nodes.Add(data.unk3.ToString("X8"));
-            t.Nodes.Add(data.unk4.ToString("X8"));
+            t.Nodes.Add(Data.unk1.ToString("X8"));
+            t.Nodes.Add(Data.unk2.ToString("X8"));
+            t.Nodes.Add(Data.unk3.ToString("X8"));
+            t.Nodes.Add(Data.unk4.ToString("X8"));
             res.Nodes.Add(t);
             TreeNode t2 = new TreeNode("Entries");
             int count = 0;
             int count2 = 0;
-            foreach (ME3FaceFXLine d in data.Data)
+            foreach (ME3FaceFXLine d in Data.Data)
             {
                 TreeNode t3 = new TreeNode((count++) + " : ID(" + d.ID.Trim() + ") Path : " + d.path.Trim());
                 t3.Nodes.Add("Name : 0x" + d.Name.ToString("X8") + " \"" + header.Names[d.Name].Trim() + "\"");
@@ -305,8 +296,7 @@ namespace ME3Explorer.FaceFX
             Serialize(Container);
             m = Container.Memory;
             MemoryStream res = new MemoryStream();
-            List<PropertyReader.Property> props = PropertyReader.getPropList(export);
-            int start = props[props.Count - 1].offend;
+            int start = export.propsEnd();
             res.Write(export.Data, 0, start);
             res.WriteValueS32((int)m.Length);
             res.WriteStream(m);
@@ -316,33 +306,33 @@ namespace ME3Explorer.FaceFX
 
         public void CloneEntry(int n)
         {
-            if (n < 0 || n >= data.Data.Length)
+            if (n < 0 || n >= Data.Data.Length)
                 return;
             List<ME3FaceFXLine> list = new List<ME3FaceFXLine>();
-            list.AddRange(data.Data);
-            list.Add(data.Data[n]);
-            data.Data = list.ToArray();
+            list.AddRange(Data.Data);
+            list.Add(Data.Data[n]);
+            Data.Data = list.ToArray();
         }
         public void RemoveEntry(int n)
         {
-            if (n < 0 || n >= data.Data.Length)
+            if (n < 0 || n >= Data.Data.Length)
                 return;
             List<ME3FaceFXLine> list = new List<ME3FaceFXLine>();
-            list.AddRange(data.Data);
+            list.AddRange(Data.Data);
             list.RemoveAt(n);
-            data.Data = list.ToArray();
+            Data.Data = list.ToArray();
         }
 
         public void MoveEntry(int n, int m)
         {
-            if (n < 0 || n >= data.Data.Length || m < 0 || m >= data.Data.Length)
+            if (n < 0 || n >= Data.Data.Length || m < 0 || m >= Data.Data.Length)
                 return;
             List<ME3FaceFXLine> list = new List<ME3FaceFXLine>();
-            for (int i = 0; i < data.Data.Length; i++)
+            for (int i = 0; i < Data.Data.Length; i++)
                 if (i != n)
-                    list.Add(data.Data[i]);
-            list.Insert(m, data.Data[n]);
-            data.Data = list.ToArray();
+                    list.Add(Data.Data[i]);
+            list.Insert(m, Data.Data[n]);
+            Data.Data = list.ToArray();
         }
 
         public void AddName(string s)
