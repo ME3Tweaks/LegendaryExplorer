@@ -10,7 +10,7 @@ If you'd like to contribute code to my fork, feel free to come to my Discord ser
 I do not allow other developers direct access onto my fork, any contributions must be done through a fork.
 
 ### Contributing other things
-You might not be a coder, but you can still be useful. If you know binary formats or can show me detailed, reproducable steps it goes a long way in helping things get fixed. I am developing this fork for certain developers, and if you're a dev, you can be one of them. Tell me what you need, tell me what sucks to do in the toolset and I'll see what I can do to make your modding life suck less.
+You might not be a coder, but you can still be useful. If you know binary formats for classes and exports (such as *Level*), or can show me detailed, reproducable steps for bugs you encounter, it goes a long way in helping things get fixed. Submit issues to this repository for things that don't take divine intervention to implement and I'll see what I can do. I am developing this fork for certain developers, and if you're a dev, you can be one of them. Tell me what you need, tell me what sucks to do in the toolset and I'll see what I can do to make your modding life suck less.
 
 ### Things I'm not supporting
 Some things in the toolset I have absolutely no plans to support.
