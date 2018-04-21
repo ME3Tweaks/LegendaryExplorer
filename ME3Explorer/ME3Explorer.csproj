@@ -359,6 +359,8 @@
     <Compile Include="BinaryInterpreter\BinaryAltPropertyEditor.xaml.cs">
       <DependentUpon>BinaryAltPropertyEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BinaryInterpreter\BinaryClasses\UDKImportable.cs" />
+    <Compile Include="BinaryInterpreter\BinaryClasses\UDKStaticMesh.cs" />
     <Compile Include="BinaryInterpreter\BinaryInterpreter.cs">
       <SubType>UserControl</SubType>
     </Compile>

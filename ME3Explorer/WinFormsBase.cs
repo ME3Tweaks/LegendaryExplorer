@@ -22,7 +22,7 @@ namespace ME3Explorer
         private void WinFormsBase_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (pcc != null && pcc.IsModified && pcc.Tools.Count == 1 && e.CloseReason == CloseReason.UserClosing &&
-                DialogResult.No == MessageBox.Show($"{Path.GetFileName(pcc.FileName)} has unsaved changes. Do you really want to close {Name}?", "", MessageBoxButtons.YesNo))
+                DialogResult.No == MessageBox.Show($"{Path.GetFileName(pcc.FileName)} has unsaved changes. Do you really want to close {Name}?", "Unsaved changes", MessageBoxButtons.YesNo))
             {
                 e.Cancel = true;
             }

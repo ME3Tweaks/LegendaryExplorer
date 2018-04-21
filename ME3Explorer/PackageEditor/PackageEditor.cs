@@ -2233,28 +2233,63 @@ namespace ME3Explorer
                 MessageBox.Show("Error occured while trying to import " + ex.ObjectName + " : " + exception.Message);
                 return false;
             }
-            if (importpcc.Game == MEGame.ME3 && importpcc.getObjectName(ex.idxClass) == "SkeletalMesh")
+
+            //set header so addresses are set
+            nex.setHeader((byte[])ex.header.Clone());
+            bool dataAlreadySet = false;
+            if (importpcc.Game == MEGame.ME3)
             {
-                SkeletalMesh skl = new SkeletalMesh(importpcc as ME3Package, n);
-                SkeletalMesh.BoneStruct bone;
-                for (int i = 0; i < skl.Bones.Count; i++)
+                switch (importpcc.getObjectName(ex.idxClass))
                 {
-                    bone = skl.Bones[i];
-                    string s = importpcc.getNameEntry(bone.Name);
-                    bone.Name = pcc.FindNameOrAdd(s);
-                    skl.Bones[i] = bone;
+                    case "SkeletalMesh":
+                        {
+                            SkeletalMesh skl = new SkeletalMesh(importpcc as ME3Package, n);
+                            SkeletalMesh.BoneStruct bone;
+                            for (int i = 0; i < skl.Bones.Count; i++)
+                            {
+                                bone = skl.Bones[i];
+                                string s = importpcc.getNameEntry(bone.Name);
+                                bone.Name = pcc.FindNameOrAdd(s);
+                                skl.Bones[i] = bone;
+                            }
+                            SkeletalMesh.TailNamesStruct tailName;
+                            for (int i = 0; i < skl.TailNames.Count; i++)
+                            {
+                                tailName = skl.TailNames[i];
+                                string s = importpcc.getNameEntry(tailName.Name);
+                                tailName.Name = pcc.FindNameOrAdd(s);
+                                skl.TailNames[i] = tailName;
+                            }
+                            SerializingContainer container = new SerializingContainer(res);
+                            container.isLoading = false;
+                            skl.Serialize(container);
+                            break;
+                        }
+                    default:
+                        //Write binary
+                        res.Write(idata, end, idata.Length - end);
+                        break;
                 }
-                SkeletalMesh.TailNamesStruct tailName;
-                for (int i = 0; i < skl.TailNames.Count; i++)
+            }
+            else if (importpcc.Game == MEGame.UDK)
+            {
+                switch (importpcc.getObjectName(ex.idxClass))
                 {
-                    tailName = skl.TailNames[i];
-                    string s = importpcc.getNameEntry(tailName.Name);
-                    tailName.Name = pcc.FindNameOrAdd(s);
-                    skl.TailNames[i] = tailName;
+                    case "StaticMesh":
+                        {
+                            //res.Write(idata, end, idata.Length - end);
+                            //rewrite data
+                            nex.Data = res.ToArray();
+                            UDKStaticMesh usm = new UDKStaticMesh(importpcc as UDKPackage, n);
+                            usm.PortToME3Export(nex);
+                            dataAlreadySet = true;
+                            break;
+                        }
+                    default:
+                        //Write binary
+                        res.Write(idata, end, idata.Length - end);
+                        break;
                 }
-                SerializingContainer container = new SerializingContainer(res);
-                container.isLoading = false;
-                skl.Serialize(container);
             }
             else
             {
@@ -2352,8 +2387,10 @@ namespace ME3Explorer
 
 
 
-            nex.setHeader((byte[])ex.header.Clone());
-            nex.Data = res.ToArray();
+            if (!dataAlreadySet)
+            {
+             nex.Data = res.ToArray();
+            }
             nex.idxClass = classValue;
             nex.idxObjectName = pcc.FindNameOrAdd(importpcc.getNameEntry(ex.idxObjectName));
             nex.idxLink = link;
