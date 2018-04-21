@@ -16,7 +16,7 @@ Some highlights of features that were developed on this fork:
 You can get thse releases in Mass Effect 3 Mod Manager from the tools menu, or you can download from the releases tab above.
 
 ## Contributing
-(You can check out my contributing guidelines and tips document)[https://github.com/Mgamerz/ME3Explorer/blob/Beta/CONTRIBUTING.md], for both developers and end-users who need features.
+[You can check out my contributing guidelines and tips document](https://github.com/Mgamerz/ME3Explorer/blob/Beta/CONTRIBUTING.md), for both developers and end-users who need features.
 
 ## License
 My fork of ME3Explorer is licensed under GPLv3.
