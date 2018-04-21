@@ -47,6 +47,7 @@ namespace ME3Explorer
             this.moveUpButton = new System.Windows.Forms.ToolStripButton();
             this.moveDownButton = new System.Windows.Forms.ToolStripButton();
             this.addPropButton = new System.Windows.Forms.ToolStripButton();
+            this.removePropertyButton = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.hb1 = new Be.Windows.Forms.HexBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -56,7 +57,6 @@ namespace ME3Explorer
             this.expandAllChildrenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.collapseAllChildrenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reorderArrayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.removePropertyButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -193,7 +193,7 @@ namespace ME3Explorer
             this.deleteArrayElementButton.Image = ((System.Drawing.Image)(resources.GetObject("deleteArrayElementButton.Image")));
             this.deleteArrayElementButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.deleteArrayElementButton.Name = "deleteArrayElementButton";
-            this.deleteArrayElementButton.Size = new System.Drawing.Size(121, 19);
+            this.deleteArrayElementButton.Size = new System.Drawing.Size(121, 22);
             this.deleteArrayElementButton.Text = "Delete Array Element";
             this.deleteArrayElementButton.Visible = false;
             this.deleteArrayElementButton.Click += new System.EventHandler(this.deleteArrayElement_Click);
@@ -204,7 +204,7 @@ namespace ME3Explorer
             this.moveUpButton.Image = ((System.Drawing.Image)(resources.GetObject("moveUpButton.Image")));
             this.moveUpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.moveUpButton.Name = "moveUpButton";
-            this.moveUpButton.Size = new System.Drawing.Size(23, 19);
+            this.moveUpButton.Size = new System.Drawing.Size(23, 22);
             this.moveUpButton.Text = "▲";
             this.moveUpButton.ToolTipText = "Move element up";
             this.moveUpButton.Visible = false;
@@ -216,7 +216,7 @@ namespace ME3Explorer
             this.moveDownButton.Image = ((System.Drawing.Image)(resources.GetObject("moveDownButton.Image")));
             this.moveDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.moveDownButton.Name = "moveDownButton";
-            this.moveDownButton.Size = new System.Drawing.Size(23, 19);
+            this.moveDownButton.Size = new System.Drawing.Size(23, 22);
             this.moveDownButton.Text = "▼";
             this.moveDownButton.ToolTipText = "Move element down";
             this.moveDownButton.Visible = false;
@@ -228,9 +228,19 @@ namespace ME3Explorer
             this.addPropButton.Image = ((System.Drawing.Image)(resources.GetObject("addPropButton.Image")));
             this.addPropButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.addPropButton.Name = "addPropButton";
-            this.addPropButton.Size = new System.Drawing.Size(81, 19);
+            this.addPropButton.Size = new System.Drawing.Size(81, 22);
             this.addPropButton.Text = "Add Property";
             this.addPropButton.Click += new System.EventHandler(this.addPropButton_Click);
+            // 
+            // removePropertyButton
+            // 
+            this.removePropertyButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.removePropertyButton.Image = ((System.Drawing.Image)(resources.GetObject("removePropertyButton.Image")));
+            this.removePropertyButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.removePropertyButton.Name = "removePropertyButton";
+            this.removePropertyButton.Size = new System.Drawing.Size(102, 22);
+            this.removePropertyButton.Text = "Remove Property";
+            this.removePropertyButton.Click += new System.EventHandler(this.removePropertyButton_Click);
             // 
             // splitContainer1
             // 
@@ -330,16 +340,6 @@ namespace ME3Explorer
             this.reorderArrayToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.reorderArrayToolStripMenuItem.Text = "Reorder Array";
             this.reorderArrayToolStripMenuItem.Click += new System.EventHandler(this.reorderArrayToolStripMenuItem_Click);
-            // 
-            // removePropertyButton
-            // 
-            this.removePropertyButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.removePropertyButton.Image = ((System.Drawing.Image)(resources.GetObject("removePropertyButton.Image")));
-            this.removePropertyButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.removePropertyButton.Name = "removePropertyButton";
-            this.removePropertyButton.Size = new System.Drawing.Size(102, 19);
-            this.removePropertyButton.Text = "Remove Property";
-            this.removePropertyButton.Click += new System.EventHandler(this.removePropertyButton_Click);
             // 
             // Interpreter
             // 

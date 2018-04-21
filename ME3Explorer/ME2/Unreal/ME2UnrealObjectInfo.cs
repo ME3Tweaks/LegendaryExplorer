@@ -111,12 +111,37 @@ namespace ME2Explorer.Unreal
             return null;
         }
 
-        public static ArrayType getArrayType(string className, string propName, bool inStruct = false)
+        public static ArrayType getArrayType(string className, string propName, bool inStruct = false, IExportEntry export = null)
         {
             PropertyInfo p = getPropertyInfo(className, propName, inStruct);
             if (p == null)
             {
                 p = getPropertyInfo(className, propName, !inStruct);
+            }
+            if (p == null && export != null && export.ClassName != "Class")
+            {
+                export = export.FileRef.Exports[export.idxClass - 1]; //make sure you get actual class
+                ClassInfo currentInfo;
+                switch (export.FileRef.Game)
+                {
+                    case MEGame.ME1:
+                        currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(export);
+                        break;
+                    case MEGame.ME2:
+                        currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(export);
+                        break;
+                    case MEGame.ME3:
+                    default:
+                        currentInfo = ME3UnrealObjectInfo.generateClassInfo(export);
+                        break;
+                }
+                currentInfo.baseClass = export.ClassParent;
+                p = getPropertyInfo(className, propName, inStruct, currentInfo);
+                if (p == null)
+                {
+                    p = getPropertyInfo(className, propName, !inStruct, currentInfo);
+                }
+
             }
             return getArrayType(p);
         }
@@ -168,7 +193,7 @@ namespace ME2Explorer.Unreal
             }
         }
 
-        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false)
+        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
         {
             if (className.StartsWith("Default__"))
             {
