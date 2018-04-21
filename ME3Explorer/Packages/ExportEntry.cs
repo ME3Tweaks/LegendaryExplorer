@@ -99,6 +99,7 @@ namespace ME3Explorer.Packages
             }
         }
 
+        //NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
         protected byte[] _data;
         /// <summary>
         /// RETURNS A CLONE
@@ -113,6 +114,7 @@ namespace ME3Explorer.Packages
                 DataSize = value.Length;
                 DataChanged = true;
                 properties = null;
+                propsEndOffset = null;
             }
         }
 
@@ -223,10 +225,16 @@ namespace ME3Explorer.Packages
             return result;
         }
 
+        private int? propsEndOffset;
         public int propsEnd()
         {
-            var props = GetProperties();
-            return props.endOffset;
+            if (propsEndOffset.HasValue)
+            {
+                return propsEndOffset.Value;
+            }
+            var props = GetProperties(true);
+            propsEndOffset = props.endOffset;
+            return propsEndOffset.Value;
         }
 
         public byte[] getBinaryData()
