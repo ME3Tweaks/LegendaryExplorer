@@ -41,7 +41,7 @@ Our main goal with dependencies is to minimize them. This keeps the toolset slim
 * **NuGent**. Use NuGet whenever possible, as it's almost always the best option. Dependencies can be pulled down as required with NuGet.
 
 When choosing a new dependency, it's also important to be aware of:
-* **Licensing**. Any third-party code used must be legally usable by the toolset and compatible with our MIT License.
+* **Licensing**. Any third-party code used must be legally usable by the toolset and compatible with the GPL License.
 * **Reference**. All third-party code added to the toolset must be cited properly in the toolset's "About" dialog, as well as in our internal spreadsheet on Google Docs. 
 
 ### UI Code
