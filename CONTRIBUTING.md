@@ -32,7 +32,7 @@ __Property Library.__ Our current Unreal Property library has a large number of 
 
 __Awareness of Toolset Idiosyncracies.__ All code contributors should be aware that the toolset is a bit of an unwieldy beast; this is part of what will be addressed by the WPF re-write. This is not a program that can be coded in a vacuum. This is a tool that is meant to mod game files that need to function within the constraint of the Unreal Engine and the Mass Effect series. This sometimes necessitates various hacks or "improper" ways of doing things. In these cases, "correcting" the "bugged" code can break functionality within multiple tools.
 
-__MIT License.__ The toolset is distributed under an [MIT license](https://github.com/ME3Explorer/ME3Explorer/blob/Beta/LICENSE). Code contributions must be compatible with this license type.
+__GPL License.__ The toolset is distributed under a [GPL license](https://github.com/ME3Explorer/ME3Explorer/blob/Beta/LICENSE). Code contributions must be compatible with this license type.
 
 __Reporting Bugs.__ Protocols for reporting bugs can be found on the [ME3Explorer wiki](http://me3explorer.wikia.com/wiki/Reporting_Bugs).
 
