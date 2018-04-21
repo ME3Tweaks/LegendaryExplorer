@@ -2,7 +2,7 @@
 This document outlines the basic details about how you can contribute to this fork of the toolset.
 
 ### Contributing code
-If you'd like to contribute code to my fork, feel free to come to my Discord server and we can work stuff out. Of course, you don't have to, but it will make our lives easier. You can just fork and submit pull requests to this repository.
+If you'd like to contribute code to my fork, feel free to come to my Discord server and we can always have a good chat about what you want to. Of course, you don't have to, but it will make both our lives easier. You can just fork and submit pull requests to this repository. Be aware this project is licensed as GPLv3 - any code you submit for pull's will be licensed under this. If your code is not compatible with GPLv3, it won't be accepted.
 
 - __Fork the Beta branch__ &mdash; New code is pushed into the Beta branch before eventually being merged with the master (stable). Additional branches on this repository are sometimes made and are eventually folded (or abandoned) into the Beta branch. Nothing ever will directly commit to stable.
 - __Examine the existing Issues__ &mdash; This is a great way to become familiar with current tasks and features on the roadmap. You can also look upstream, however the issues there may not apply to this fork.
