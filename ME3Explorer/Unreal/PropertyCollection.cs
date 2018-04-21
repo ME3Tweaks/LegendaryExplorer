@@ -909,6 +909,15 @@ namespace ME3Explorer.Unreal
             PropType = PropertyType.ByteProperty;
         }
 
+        public EnumProperty(NameReference value, NameReference enumType, IMEPackage pcc, NameReference? name = null) : base(name)
+        {
+            EnumType = enumType;
+            NameReference enumVal = value;
+            Value = enumVal;
+            EnumValues = UnrealObjectInfo.GetEnumValues(pcc.Game, enumType, true);
+            PropType = PropertyType.ByteProperty;
+        }
+
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
@@ -941,6 +950,13 @@ namespace ME3Explorer.Unreal
         public ArrayProperty(long startOffset, List<T> values, ArrayType type, NameReference name) : base(name)
         {
             Offset = startOffset;
+            PropType = PropertyType.ArrayProperty;
+            arrayType = type;
+            Values = values;
+        }
+
+        public ArrayProperty(List<T> values, ArrayType type, NameReference name) : base(name)
+        {
             PropType = PropertyType.ArrayProperty;
             arrayType = type;
             Values = values;

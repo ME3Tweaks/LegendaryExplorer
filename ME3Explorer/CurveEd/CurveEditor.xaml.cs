@@ -39,26 +39,24 @@ namespace ME3Explorer.CurveEd
         private void Load()
         {
             InterpCurveTracks = new List<InterpCurve>();
-
-            List<PropertyReader.Property> props = PropertyReader.getPropList(expEntry);
-            CurveType throwaway = CurveType.InterpCurveVector;
-            foreach (var p in props)
+            
+            var props = expEntry.GetProperties();
+            foreach (var prop in props)
             {
-                if (p.TypeVal == PropertyType.StructProperty)
+                if (prop is StructProperty structProp)
                 {
-                    if (Enum.TryParse(pcc.getNameEntry(p.Value.IntValue), out throwaway))
+                    if (Enum.TryParse(structProp.StructType, out CurveType _))
                     {
-                        InterpCurveTracks.Add(new InterpCurve(pcc, p));
+                        InterpCurveTracks.Add(new InterpCurve(pcc, structProp));
                     }
                 }
             }
-
-            Action saveChanges = () => Commit();
+            
             foreach (var interpCurve in InterpCurveTracks)
             {
                 foreach (var curve in interpCurve.Curves)
                 {
-                    curve.SaveChanges = saveChanges;
+                    curve.SaveChanges = Commit;
                 }
             }
 
@@ -143,27 +141,12 @@ namespace ME3Explorer.CurveEd
 
         private void Commit()
         {
-            List<PropertyReader.Property> props = PropertyReader.getPropList(expEntry);
-            int diff = 0;
-            foreach (var p in props)
+            var props = expEntry.GetProperties();
+            foreach (InterpCurve item in InterpCurveTracks)
             {
-                if (p.TypeVal == PropertyType.StructProperty)
-                {
-                    foreach (InterpCurve item in InterpCurveTracks)
-                    {
-                        if (pcc.getNameEntry(p.Name) == item.Name)
-                        {
-                            int offset = p.offsetval - 24 + diff;
-                            List<byte> data = expEntry.Data.ToList();
-                            data.RemoveRange(offset, p.raw.Length);
-                            byte[] newVal = item.Serialize();
-                            data.InsertRange(offset, newVal);
-                            expEntry.Data = data.ToArray();
-                            diff = newVal.Length - p.raw.Length;
-                        }
-                    }
-                }
+                props.AddOrReplaceProp(item.WriteProperties());
             }
+            expEntry.WriteProperties(props);
         }
 
         private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
