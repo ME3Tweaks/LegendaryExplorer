@@ -14,6 +14,8 @@ You might not be a coder, but you can still be useful. If you know binary format
 
 ### Things I'm not supporting
 Some things in the toolset I have absolutely no plans to support.
+ - Mainline ME3Explorer. I do my all my work on my fork, and I will not support mainline ME3Explorer. If the issue is present in both upstream and mine, I will look into fixing it in my repository, but I do not submit pulls upstream. This fork is fully unaffiliated with upstream.
  - Texplorer, or anything really related to textures. If you want to do texture work, use [MassEffectModder](https://github.com/MassEffectModder/MassEffectModder). It's fast and actively maintained. I work with the developer regularly on the ALOT project.
  - Ancient tools such as Save Game Operator, or ones that are clearly experiments and are marked as deprecated.
  - Any platform besides PC. I have another fork of an old ME3Explroer build that can do extremely limited reading of package files from the Xenon (Xbox 360) build of MAss Effect 3 at https://github.com/Mgamerz/ME3Explorer-XENON.
+ - Pirated user issues. If your game is pirated, don't bother asking for support if stuff is broken.
