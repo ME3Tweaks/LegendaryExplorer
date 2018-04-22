@@ -2813,7 +2813,7 @@ namespace ME3Explorer
             int size = (int)hb1.ByteProvider.Length;
             try
             {
-                if (memory != null && start != -1 && start + len < size)
+                if (memory != null && start != -1 && start < size)
                 {
                     string s = $"Byte: {memory[start]}"; //if selection is same as size this will crash.
                     if (start <= memory.Length - 4)
