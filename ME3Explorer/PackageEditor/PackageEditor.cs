@@ -506,6 +506,8 @@ namespace ME3Explorer
                         if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
                         {
                             packageEditorTabPane.TabPages.Add(binaryEditorTab);
+                            //packageEditorTabPane.SelectedTab = binaryEditorTab;
+                            //listBox1.Focus();
                         }
                     }
                     else
@@ -666,15 +668,20 @@ namespace ME3Explorer
 
         public void PreviewProps(int n)
         {
-            List<PropertyReader.Property> p = PropertyReader.getPropList(pcc.getExport(n));
             pg = new PropGrid();
             propGrid.SelectedObject = pg;
             pg.Add(new CustomProperty("Name", "_Meta", pcc.getExport(n).ObjectName, typeof(string), true, true));
             pg.Add(new CustomProperty("Class", "_Meta", pcc.getExport(n).ClassName, typeof(string), true, true));
             pg.Add(new CustomProperty("Data Offset", "_Meta", pcc.getExport(n).DataOffset, typeof(int), true, true));
             pg.Add(new CustomProperty("Data Size", "_Meta", pcc.getExport(n).DataSize, typeof(int), true, true));
-            for (int l = 0; l < p.Count; l++)
-                pg.Add(PropertyReader.PropertyToGrid(p[l], pcc));
+            IExportEntry export = pcc.getExport(n);
+
+            if (export.ClassName != "Class")
+            {
+                List<PropertyReader.Property> p = PropertyReader.getPropList(export);
+                for (int l = 0; l < p.Count; l++)
+                    pg.Add(PropertyReader.PropertyToGrid(p[l], pcc));
+            }
             propGrid.Refresh();
             propGrid.ExpandAllGridItems();
         }
@@ -2597,10 +2604,11 @@ namespace ME3Explorer
 
         private void findImportexportViaOffsetToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string result = Microsoft.VisualBasic.Interaction.InputBox("Enter an offset (in hex, e.g. 2fa360) to find what export or import contains that offset", "Offset finder", "", 0, 0);
-            if (result != "")
+            string input = "Enter an offset (in hex, e.g. 2fa360) to find what export or import contains that offset";
+            DialogResult response = WinFormInputDialog.ShowInputDialog(ref input);
+            if (response == DialogResult.OK)
             {
-                int idx = int.Parse(result, System.Globalization.NumberStyles.HexNumber);
+                int idx = int.Parse(input, System.Globalization.NumberStyles.HexNumber);
                 for (int i = 0; i < pcc.ExportCount; i++)
                 {
                     IExportEntry exp = pcc.Exports[i];
