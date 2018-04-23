@@ -3324,5 +3324,16 @@ namespace ME3Explorer
                 }
             }
         }
+
+        private void dialogueEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc != null)
+            {
+
+                DialogEditor.DialogEditor dialogEditor = new DialogEditor.DialogEditor();
+                dialogEditor.LoadFile(pcc.FileName);
+                dialogEditor.Show();
+            }
+        }
     }
 }

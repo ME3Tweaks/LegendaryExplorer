@@ -27,7 +27,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PackageEditor));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.dEBUGEnumerateAllClassesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -60,6 +59,7 @@
             this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGExport2DAToExcelFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGAccessME3AppendsTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dEBUGEnumerateAllClassesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.Button1 = new System.Windows.Forms.ToolStripButton();
             this.Button2 = new System.Windows.Forms.ToolStripButton();
@@ -148,6 +148,7 @@
             this.setAllIndexesInThisTreeTo0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.dialogueEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -202,7 +203,7 @@
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.ToolTipText = "Load an uncompressed or compressed PCC file";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
@@ -211,7 +212,7 @@
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.ToolTipText = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
@@ -219,7 +220,7 @@
             // saveAsMenuItem
             // 
             this.saveAsMenuItem.Name = "saveAsMenuItem";
-            this.saveAsMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.saveAsMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveAsMenuItem.Text = "Save As";
             this.saveAsMenuItem.ToolTipText = "Save As";
             this.saveAsMenuItem.Click += new System.EventHandler(this.appendSaveToolStripMenuItem_Click);
@@ -227,51 +228,52 @@
             // openInToolStripMenuItem
             // 
             this.openInToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.dialogueEditorToolStripMenuItem,
             this.faceFXEditorToolStripMenuItem,
             this.pathfindingEditorToolStripMenuItem,
             this.sequenceEditorToolStripMenuItem,
             this.wWiseBankEditorToolStripMenuItem});
             this.openInToolStripMenuItem.Name = "openInToolStripMenuItem";
-            this.openInToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.openInToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openInToolStripMenuItem.Text = "Open in...";
             // 
             // faceFXEditorToolStripMenuItem
             // 
             this.faceFXEditorToolStripMenuItem.Name = "faceFXEditorToolStripMenuItem";
-            this.faceFXEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.faceFXEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.faceFXEditorToolStripMenuItem.Text = "FaceFX Editor";
             this.faceFXEditorToolStripMenuItem.Click += new System.EventHandler(this.faceFXEditorToolStripMenuItem_Click);
             // 
             // pathfindingEditorToolStripMenuItem
             // 
             this.pathfindingEditorToolStripMenuItem.Name = "pathfindingEditorToolStripMenuItem";
-            this.pathfindingEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.pathfindingEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.pathfindingEditorToolStripMenuItem.Text = "Pathfinding Editor";
             this.pathfindingEditorToolStripMenuItem.Click += new System.EventHandler(this.pathfindingEditorToolstripMenuItem_Click);
             // 
             // sequenceEditorToolStripMenuItem
             // 
             this.sequenceEditorToolStripMenuItem.Name = "sequenceEditorToolStripMenuItem";
-            this.sequenceEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.sequenceEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.sequenceEditorToolStripMenuItem.Text = "Sequence Editor";
             this.sequenceEditorToolStripMenuItem.Click += new System.EventHandler(this.sequenceEditorToolStripMenuItem_Click);
             // 
             // wWiseBankEditorToolStripMenuItem
             // 
             this.wWiseBankEditorToolStripMenuItem.Name = "wWiseBankEditorToolStripMenuItem";
-            this.wWiseBankEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.wWiseBankEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.wWiseBankEditorToolStripMenuItem.Text = "WWiseBank Editor";
             this.wWiseBankEditorToolStripMenuItem.Click += new System.EventHandler(this.wWiseBankEditorToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(135, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
             // 
             // recentToolStripMenuItem
             // 
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.recentToolStripMenuItem.Text = "Recent";
             this.recentToolStripMenuItem.ToolTipText = "Open recently opened file";
             // 
@@ -292,14 +294,14 @@
             // 
             this.hexConverterToolStripMenuItem.AutoToolTip = true;
             this.hexConverterToolStripMenuItem.Name = "hexConverterToolStripMenuItem";
-            this.hexConverterToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.hexConverterToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.hexConverterToolStripMenuItem.Text = "Hex Converter";
             this.hexConverterToolStripMenuItem.Click += new System.EventHandler(this.hexConverterToolStripMenuItem_Click);
             // 
             // addNameToolStripMenuItem
             // 
             this.addNameToolStripMenuItem.Name = "addNameToolStripMenuItem";
-            this.addNameToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.addNameToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.addNameToolStripMenuItem.Text = "Add Name";
             this.addNameToolStripMenuItem.ToolTipText = "Add a name to the name table";
             this.addNameToolStripMenuItem.Click += new System.EventHandler(this.addNameToolStripMenuItem_Click);
@@ -307,7 +309,7 @@
             // editInInterpreterToolStripMenuItem
             // 
             this.editInInterpreterToolStripMenuItem.Name = "editInInterpreterToolStripMenuItem";
-            this.editInInterpreterToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.editInInterpreterToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.editInInterpreterToolStripMenuItem.Text = "Edit in Interpreter";
             this.editInInterpreterToolStripMenuItem.ToolTipText = "Open this export in the interpreter";
             this.editInInterpreterToolStripMenuItem.Click += new System.EventHandler(this.editInInterpreterToolStripMenuItem_Click);
@@ -315,21 +317,21 @@
             // replaceWithBINToolStripMenuItem
             // 
             this.replaceWithBINToolStripMenuItem.Name = "replaceWithBINToolStripMenuItem";
-            this.replaceWithBINToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.replaceWithBINToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.replaceWithBINToolStripMenuItem.Text = "Replace with BIN";
             this.replaceWithBINToolStripMenuItem.Click += new System.EventHandler(this.replaceWithBINToolStripMenuItem_Click);
             // 
             // editInCurveEditorToolStripMenuItem
             // 
             this.editInCurveEditorToolStripMenuItem.Name = "editInCurveEditorToolStripMenuItem";
-            this.editInCurveEditorToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.editInCurveEditorToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.editInCurveEditorToolStripMenuItem.Text = "Edit in Curve Editor";
             this.editInCurveEditorToolStripMenuItem.Click += new System.EventHandler(this.editInCurveEditorToolStripMenuItem_Click);
             // 
             // reloadTLKsToolStripMenuItem
             // 
             this.reloadTLKsToolStripMenuItem.Name = "reloadTLKsToolStripMenuItem";
-            this.reloadTLKsToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.reloadTLKsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.reloadTLKsToolStripMenuItem.Text = "Reload TLKs";
             this.reloadTLKsToolStripMenuItem.ToolTipText = "Reloads the TLK files used by ME3Explorer for displaying StringRefProperty.";
             this.reloadTLKsToolStripMenuItem.Click += new System.EventHandler(this.reloadTLKsToolStripMenuItem_Click);
@@ -378,21 +380,21 @@
             // getDumpToolStripMenuItem
             // 
             this.getDumpToolStripMenuItem.Name = "getDumpToolStripMenuItem";
-            this.getDumpToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.getDumpToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
             this.getDumpToolStripMenuItem.Text = "Dump Complete Export to binary file";
             this.getDumpToolStripMenuItem.Click += new System.EventHandler(this.getDumpToolStripMenuItem_Click_1);
             // 
             // getDumpToolStripMenuItem1
             // 
             this.getDumpToolStripMenuItem1.Name = "getDumpToolStripMenuItem1";
-            this.getDumpToolStripMenuItem1.Size = new System.Drawing.Size(325, 22);
+            this.getDumpToolStripMenuItem1.Size = new System.Drawing.Size(358, 22);
             this.getDumpToolStripMenuItem1.Text = "Dump Binary Data of Export to binary file";
             this.getDumpToolStripMenuItem1.Click += new System.EventHandler(this.getDumpToolStripMenuItem1_Click);
             // 
             // findImportexportViaOffsetToolStripMenuItem
             // 
             this.findImportexportViaOffsetToolStripMenuItem.Name = "findImportexportViaOffsetToolStripMenuItem";
-            this.findImportexportViaOffsetToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.findImportexportViaOffsetToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
             this.findImportexportViaOffsetToolStripMenuItem.Text = "Find import/export via offset";
             this.findImportexportViaOffsetToolStripMenuItem.ToolTipText = "Finds an export or import containing the offset you specify.";
             this.findImportexportViaOffsetToolStripMenuItem.Click += new System.EventHandler(this.findImportexportViaOffsetToolStripMenuItem_Click);
@@ -400,51 +402,58 @@
             // checkIndexingToolStripMenuItem
             // 
             this.checkIndexingToolStripMenuItem.Name = "checkIndexingToolStripMenuItem";
-            this.checkIndexingToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.checkIndexingToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
             this.checkIndexingToolStripMenuItem.Text = "Check indexing";
             this.checkIndexingToolStripMenuItem.Click += new System.EventHandler(this.checkIndexingToolStripMenuItem_Click);
             // 
             // findExportsWithSerialSizeMismatchToolStripMenuItem
             // 
             this.findExportsWithSerialSizeMismatchToolStripMenuItem.Name = "findExportsWithSerialSizeMismatchToolStripMenuItem";
-            this.findExportsWithSerialSizeMismatchToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.findExportsWithSerialSizeMismatchToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
             this.findExportsWithSerialSizeMismatchToolStripMenuItem.Text = "Find exports with serial size mismatch";
             this.findExportsWithSerialSizeMismatchToolStripMenuItem.Click += new System.EventHandler(this.findExportsWithSerialSizeMismatchToolStripMenuItem_Click);
             // 
             // dEBUGCallReadPropertiesToolStripMenuItem
             // 
             this.dEBUGCallReadPropertiesToolStripMenuItem.Name = "dEBUGCallReadPropertiesToolStripMenuItem";
-            this.dEBUGCallReadPropertiesToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.dEBUGCallReadPropertiesToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
             this.dEBUGCallReadPropertiesToolStripMenuItem.Text = "DEBUG: Call ReadProperties()";
             this.dEBUGCallReadPropertiesToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCallReadPropertiesToolStripMenuItem_Click);
             // 
             // dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem
             // 
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Name = "dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem";
-            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Text = "DEBUG: Copy config reading props to clipboard";
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem_Click);
             // 
             // dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem
             // 
             this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Name = "dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem";
-            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
             this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Text = "DEBUG: Copy all BIOG items to clipboard";
             this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem_Click);
             // 
             // dEBUGExport2DAToExcelFileToolStripMenuItem
             // 
             this.dEBUGExport2DAToExcelFileToolStripMenuItem.Name = "dEBUGExport2DAToExcelFileToolStripMenuItem";
-            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
             this.dEBUGExport2DAToExcelFileToolStripMenuItem.Text = "DEBUG: Export 2DA to Excel file";
             this.dEBUGExport2DAToExcelFileToolStripMenuItem.Click += new System.EventHandler(this.dEBUGExport2DAToExcelFileToolStripMenuItem_Click);
             // 
             // dEBUGAccessME3AppendsTableToolStripMenuItem
             // 
             this.dEBUGAccessME3AppendsTableToolStripMenuItem.Name = "dEBUGAccessME3AppendsTableToolStripMenuItem";
-            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
             this.dEBUGAccessME3AppendsTableToolStripMenuItem.Text = "DEBUG: Access ME3 AppendsTable";
             this.dEBUGAccessME3AppendsTableToolStripMenuItem.Click += new System.EventHandler(this.dEBUGAccessME3AppendsTableToolStripMenuItem_Click);
+            // 
+            // dEBUGEnumerateAllClassesToolStripMenuItem
+            // 
+            this.dEBUGEnumerateAllClassesToolStripMenuItem.Name = "dEBUGEnumerateAllClassesToolStripMenuItem";
+            this.dEBUGEnumerateAllClassesToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
+            this.dEBUGEnumerateAllClassesToolStripMenuItem.Text = "DEBUG: BinaryInterpreter -Enumerate All Class Exports";
+            this.dEBUGEnumerateAllClassesToolStripMenuItem.Click += new System.EventHandler(this.dEBUGEnumerateAllClassesToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -1200,7 +1209,7 @@
             this.headerTab.ToolTipText = "Edit the header hex directly for this export";
             this.headerTab.UseVisualStyleBackColor = true;
             // 
-            // hb2
+            // headerRawHexBox
             // 
             this.headerRawHexBox.BoldFont = null;
             this.headerRawHexBox.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1209,7 +1218,7 @@
             this.headerRawHexBox.LineInfoVisible = true;
             this.headerRawHexBox.Location = new System.Drawing.Point(3, 28);
             this.headerRawHexBox.MinBytesPerLine = 16;
-            this.headerRawHexBox.Name = "hb2";
+            this.headerRawHexBox.Name = "headerRawHexBox";
             this.headerRawHexBox.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
             this.headerRawHexBox.Size = new System.Drawing.Size(628, 388);
             this.headerRawHexBox.StringViewVisible = true;
@@ -1316,12 +1325,12 @@
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
             // 
-            // dEBUGEnumerateAllClassesToolStripMenuItem
+            // dialogueEditorToolStripMenuItem
             // 
-            this.dEBUGEnumerateAllClassesToolStripMenuItem.Name = "dEBUGEnumerateAllClassesToolStripMenuItem";
-            this.dEBUGEnumerateAllClassesToolStripMenuItem.Size = new System.Drawing.Size(620, 22);
-            this.dEBUGEnumerateAllClassesToolStripMenuItem.Text = "DEBUG: BinaryInterpreter -Enumerate All Class Exports";
-            this.dEBUGEnumerateAllClassesToolStripMenuItem.Click += new System.EventHandler(this.dEBUGEnumerateAllClassesToolStripMenuItem_Click);
+            this.dialogueEditorToolStripMenuItem.Name = "dialogueEditorToolStripMenuItem";
+            this.dialogueEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.dialogueEditorToolStripMenuItem.Text = "Dialogue Editor";
+            this.dialogueEditorToolStripMenuItem.Click += new System.EventHandler(this.dialogueEditorToolStripMenuItem_Click);
             // 
             // PackageEditor
             // 
@@ -1338,9 +1347,9 @@
             this.Name = "PackageEditor";
             this.Text = "Package Editor";
             this.Activated += new System.EventHandler(this.PackageEditor_Activated);
-            this.Shown += new System.EventHandler(this.PackageEditor_Shown);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PackageEditor_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.PackageEditor_FormClosed);
+            this.Shown += new System.EventHandler(this.PackageEditor_Shown);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.PackageEditor_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.PackageEditor_DragEnter);
             this.menuStrip1.ResumeLayout(false);
@@ -1503,5 +1512,6 @@
         private System.Windows.Forms.ToolStripMenuItem findExportsWithSerialSizeMismatchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dEBUGAccessME3AppendsTableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dEBUGEnumerateAllClassesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dialogueEditorToolStripMenuItem;
     }
 }
