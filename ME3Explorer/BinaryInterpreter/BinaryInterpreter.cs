@@ -112,7 +112,7 @@ Floats*/
         private int lastSetOffset = -1; //offset set by program, used for checking if user changed since set 
         private nodeType LAST_SELECTED_PROP_TYPE = nodeType.Unknown; //last property type user selected. Will use to check the current offset for type
         private TreeNode LAST_SELECTED_NODE = null; //last selected tree node
-        private const int HEXBOX_MAX_WIDTH = 650;
+        public int HEXBOX_MAX_WIDTH = 650;
 
         private IMEPackage pcc;
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
@@ -124,6 +124,7 @@ Floats*/
 
         public BinaryInterpreter()
         {
+
             InitializeComponent();
             SetTopLevel(false);
             defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
@@ -3248,7 +3249,10 @@ Floats*/
         private void splitContainer1_SplitterMoving(object sender, SplitterCancelEventArgs e)
         {
             //a hack to set max width for SplitContainer1
-            splitContainer1.Panel2MinSize = splitContainer1.Width - HEXBOX_MAX_WIDTH;
+            if (splitContainer1.Width - HEXBOX_MAX_WIDTH > 0)
+            {
+                splitContainer1.Panel2MinSize = splitContainer1.Width - HEXBOX_MAX_WIDTH;
+            }
         }
 
         private void toggleHexWidthButton_Click(object sender, EventArgs e)

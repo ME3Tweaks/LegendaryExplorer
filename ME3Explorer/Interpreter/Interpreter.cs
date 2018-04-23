@@ -107,20 +107,7 @@ namespace ME3Explorer
         private int lastSetOffset = -1; //offset set by program, used for checking if user changed since set 
         private nodeType LAST_SELECTED_PROP_TYPE = nodeType.Unknown; //last property type user selected. Will use to check the current offset for type
         private TreeNode LAST_SELECTED_NODE = null; //last selected tree node
-        private int HEXBOX_MAX_WIDTH
-        {
-            get
-            {
-                int defaultvalue = 650;
-                //float dpiX;
-                //System.Drawing.Graphics graphics = this.CreateGraphics();
-                //dpiX = graphics.DpiX;
-                //double multiplier = dpiX / 96;
-                //multiplier = Math.Max(1, multiplier * 0.95);
-                //defaultvalue = (int)(defaultvalue * multiplier);
-                return defaultvalue;
-            }
-        }
+        public int HEXBOX_MAX_WIDTH = 650;
 
         private IMEPackage pcc;
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
@@ -2785,13 +2772,11 @@ namespace ME3Explorer
 
         private void splitContainer1_SplitterMoving(object sender, SplitterCancelEventArgs e)
         {
-            //a hack to set max width for SplitContainer1
-            int width = splitContainer1.Width - HEXBOX_MAX_WIDTH;
-            if (width < 0)
+            //This prevents some wierd negative exception
+            if (splitContainer1.Width - HEXBOX_MAX_WIDTH > 0)
             {
-                width = 20; //somehow this sometimes is a negative value because the container width is not > 650.
+                splitContainer1.Panel2MinSize = splitContainer1.Width - HEXBOX_MAX_WIDTH;
             }
-            splitContainer1.Panel2MinSize = width;
         }
 
         private void toggleHexWidthButton_Click(object sender, EventArgs e)

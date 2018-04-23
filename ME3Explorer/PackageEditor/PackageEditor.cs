@@ -39,13 +39,70 @@ namespace ME3Explorer
             InitializeComponent();
             LoadRecentList();
             RefreshRecent(false);
-            packageEditorTabPane.TabPages.Remove(scriptTab);
-            packageEditorTabPane.TabPages.Remove(binaryEditorTab);
-            packageEditorTabPane.TabPages.Remove(bio2daEditorTab);
+            //tabs are removed on showing the window so they are part of document tree for dpi scaling.
 
             SetView(View.Tree);
             interpreterControl.saveHexButton.Click += saveHexChangesButton_Click;
             binaryInterpreterControl.saveHexButton.Click += binarySaveHexChangesButton_Click;
+        }
+
+        private SizeF scale;
+        private void PackageEditor_Shown(object sender, EventArgs e)
+        {
+            //This can only be done on shown for some reason. It will not work in load
+            scale = new SizeF((float)MainWindow.dpiScaleX, (float)MainWindow.dpiScaleY);
+            Fix(this);
+
+            interpreterControl.HEXBOX_MAX_WIDTH = (int)Math.Round(interpreterControl.HEXBOX_MAX_WIDTH * MainWindow.dpiScaleX);
+            binaryInterpreterControl.HEXBOX_MAX_WIDTH = (int)Math.Round(binaryInterpreterControl.HEXBOX_MAX_WIDTH * MainWindow.dpiScaleX);
+
+            packageEditorTabPane.TabPages.Remove(scriptTab);
+            packageEditorTabPane.TabPages.Remove(binaryEditorTab);
+            packageEditorTabPane.TabPages.Remove(bio2daEditorTab);
+        }
+
+        // Save the current scale value
+        // ScaleControl() is called during the Form's constructor
+        protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
+        {
+            scale = new SizeF(scale.Width * factor.Width, scale.Height * factor.Height);
+            base.ScaleControl(factor, specified);
+        }
+
+        // Recursively search for SplitContainer controls
+        private void Fix(Control c)
+        {
+            foreach (Control child in c.Controls)
+            {
+                if (child is SplitContainer)
+                {
+                    SplitContainer sp = (SplitContainer)child;
+                    Fix(sp);
+                    Fix(sp.Panel1);
+                    Fix(sp.Panel2);
+                }
+                else
+                {
+                    Fix(child);
+                }
+            }
+        }
+
+        private void Fix(SplitContainer sp)
+        {
+            // Scale factor depends on orientation
+            float sc = (sp.Orientation == Orientation.Vertical) ? scale.Width : scale.Height;
+            if (sp.FixedPanel == FixedPanel.Panel1)
+            {
+                sp.SplitterDistance = (int)Math.Round((float)sp.SplitterDistance * sc);
+                sp.Panel1MinSize = (int)Math.Round((float)sp.Panel1MinSize * sc);
+            }
+            else if (sp.FixedPanel == FixedPanel.Panel2)
+            {
+                int cs = (sp.Orientation == Orientation.Vertical) ? sp.Panel2.ClientSize.Width : sp.Panel2.ClientSize.Height;
+                int newcs = (int)((float)cs * sc);
+                sp.SplitterDistance -= (newcs - cs);
+            }
         }
 
         public void LoadMostRecent()

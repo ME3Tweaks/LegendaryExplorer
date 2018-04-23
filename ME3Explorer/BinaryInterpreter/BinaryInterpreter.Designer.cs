@@ -281,13 +281,13 @@ namespace ME3Explorer
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.hb1);
-            this.splitContainer1.Panel1MinSize = 205;
+            this.splitContainer1.Panel1MinSize = 190;
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.treeView1);
             this.splitContainer1.Size = new System.Drawing.Size(992, 349);
-            this.splitContainer1.SplitterDistance = 205;
+            this.splitContainer1.SplitterDistance = 190;
             this.splitContainer1.TabIndex = 3;
             this.splitContainer1.SplitterMoving += new System.Windows.Forms.SplitterCancelEventHandler(this.splitContainer1_SplitterMoving);
             // 

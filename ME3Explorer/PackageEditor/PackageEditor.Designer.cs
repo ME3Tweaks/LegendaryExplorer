@@ -1338,6 +1338,7 @@
             this.Name = "PackageEditor";
             this.Text = "Package Editor";
             this.Activated += new System.EventHandler(this.PackageEditor_Activated);
+            this.Shown += new System.EventHandler(this.PackageEditor_Shown);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PackageEditor_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.PackageEditor_FormClosed);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.PackageEditor_DragDrop);
