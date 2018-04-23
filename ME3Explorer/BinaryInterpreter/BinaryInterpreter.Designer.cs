@@ -177,7 +177,6 @@ namespace ME3Explorer
             // 
             // setPropertyButton
             // 
-            this.setPropertyButton.AutoSize = false;
             this.setPropertyButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.setPropertyButton.Image = ((System.Drawing.Image)(resources.GetObject("setPropertyButton.Image")));
             this.setPropertyButton.ImageTransparentColor = System.Drawing.Color.Magenta;
