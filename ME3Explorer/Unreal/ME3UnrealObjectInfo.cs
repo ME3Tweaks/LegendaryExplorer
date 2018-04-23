@@ -30,6 +30,10 @@ namespace ME3Explorer.Unreal
             {
                 return ME3UnrealObjectInfo.inheritsFrom(entry as ME3ExportEntry, baseClass);
             }
+            else if (entry.FileRef.Game == MEGame.UDK)
+            {
+                return ME3UnrealObjectInfo.inheritsFrom(entry as UDKExportEntry, baseClass); //use me3?
+            }
             return false;
         }
 
@@ -42,6 +46,8 @@ namespace ME3Explorer.Unreal
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.getEnumTypefromProp(typeName, propName);
                 case MEGame.ME3:
+                    return ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName);
+                case MEGame.UDK:
                     return ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName);
             }
             return null;
@@ -57,6 +63,8 @@ namespace ME3Explorer.Unreal
                     return ME2UnrealObjectInfo.getEnumValues(enumName, includeNone);
                 case MEGame.ME3:
                     return ME3UnrealObjectInfo.getEnumValues(enumName, includeNone);
+                case MEGame.UDK:
+                    return ME3UnrealObjectInfo.getEnumValues(enumName, includeNone);
             }
             return null;
         }
@@ -70,25 +78,27 @@ namespace ME3Explorer.Unreal
                 case MEGame.ME2:
                     return ME2UnrealObjectInfo.getArrayType(typeName, propName);
                 case MEGame.ME3:
+                case MEGame.UDK:
                     return ME3UnrealObjectInfo.getArrayType(typeName, propName);
             }
             return ArrayType.Int;
         }
 
-        public static PropertyInfo GetPropertyInfo(MEGame game, string propname, string typeName)
+        public static PropertyInfo GetPropertyInfo(MEGame game, string propname, string typeName, ClassInfo nonVanillaClassInfo = null)
         {
             bool inStruct = false;
             PropertyInfo p = null;
             switch (game)
             {
                 case MEGame.ME1:
-                    p = ME1UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                    p = ME1UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
                     break;
                 case MEGame.ME2:
-                    p = ME2UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                    p = ME2UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
                     break;
                 case MEGame.ME3:
-                    p = ME3UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                case MEGame.UDK:
+                    p = ME3UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
                     break;
             }
             if (p == null)
@@ -103,6 +113,9 @@ namespace ME3Explorer.Unreal
                         p = ME2UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
                         break;
                     case MEGame.ME3:
+                        p = ME3UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                        break;
+                    case MEGame.UDK:
                         p = ME3UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
                         break;
                 }
@@ -161,7 +174,7 @@ namespace ME3Explorer.Unreal
             //W
             0x04, 0x03, 0, 0, 0, 0, 0, 0, 0x15, 0x01, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             //None
-            0xF0, 0x01, 0, 0, 0, 0, 0, 0 }; 
+            0xF0, 0x01, 0, 0, 0, 0, 0, 0 };
         #endregion
 
         public static void loadfromJSON()
@@ -173,7 +186,7 @@ namespace ME3Explorer.Unreal
                 if (File.Exists(path))
                 {
                     string raw = File.ReadAllText(path);
-                    var blob  = JsonConvert.DeserializeAnonymousType(raw, new { SequenceObjects, Classes, Structs, Enums });
+                    var blob = JsonConvert.DeserializeAnonymousType(raw, new { SequenceObjects, Classes, Structs, Enums });
                     SequenceObjects = blob.SequenceObjects;
                     Classes = blob.Classes;
                     Structs = blob.Structs;
@@ -196,7 +209,7 @@ namespace ME3Explorer.Unreal
             {
                 if (SequenceObjects[objectName].inputLinks != null && SequenceObjects[objectName].inputLinks.Count > 0)
                 {
-                    return SequenceObjects[objectName]; 
+                    return SequenceObjects[objectName];
                 }
                 else
                 {
@@ -229,13 +242,38 @@ namespace ME3Explorer.Unreal
             }
             return null;
         }
-        
-        public static ArrayType getArrayType(string className, string propName, bool inStruct = false)
+
+        public static ArrayType getArrayType(string className, string propName, bool inStruct = false, IExportEntry export = null)
         {
             PropertyInfo p = getPropertyInfo(className, propName, inStruct);
             if (p == null)
             {
                 p = getPropertyInfo(className, propName, !inStruct);
+            }
+            if (p == null && export != null && export.ClassName != "Class")
+            {
+                export = export.FileRef.Exports[export.idxClass - 1]; //make sure you get actual class
+                ClassInfo currentInfo;
+                switch (export.FileRef.Game)
+                {
+                    case MEGame.ME1:
+                        currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(export);
+                        break;
+                    case MEGame.ME2:
+                        currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(export);
+                        break;
+                    case MEGame.ME3:
+                    default:
+                        currentInfo = ME3UnrealObjectInfo.generateClassInfo(export);
+                        break;
+                }
+                currentInfo.baseClass = export.ClassParent;
+                p = getPropertyInfo(className, propName, inStruct, currentInfo);
+                if (p == null)
+                {
+                    p = getPropertyInfo(className, propName, !inStruct, currentInfo);
+                }
+
             }
             return getArrayType(p);
         }
@@ -279,7 +317,7 @@ namespace ME3Explorer.Unreal
                 else
                 {
                     return ArrayType.Object;
-                } 
+                }
             }
             else
             {
@@ -287,16 +325,22 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false)
+        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
         {
             if (className.StartsWith("Default__"))
             {
                 className = className.Substring(9);
             }
             Dictionary<string, ClassInfo> temp = inStruct ? Structs : Classes;
-            if (temp.ContainsKey(className)) //|| (temp = !inStruct ? Structs : Classes).ContainsKey(className))
+            ClassInfo info;
+            bool infoExists = temp.TryGetValue(className, out info);
+            if (!infoExists && nonVanillaClassInfo != null)
             {
-                ClassInfo info = temp[className];
+                info = nonVanillaClassInfo;
+                infoExists = true;
+            }
+            if (infoExists) //|| (temp = !inStruct ? Structs : Classes).ContainsKey(className))
+            {
                 //look in class properties
                 if (info.properties.ContainsKey(propName))
                 {
@@ -309,7 +353,7 @@ namespace ME3Explorer.Unreal
                     {
                         if (p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty)
                         {
-                            PropertyInfo val = getPropertyInfo(p.reference, propName, true);
+                            PropertyInfo val = getPropertyInfo(p.reference, propName, true, nonVanillaClassInfo);
                             if (val != null)
                             {
                                 return val;
@@ -320,7 +364,7 @@ namespace ME3Explorer.Unreal
                 //look in base class
                 if (temp.ContainsKey(info.baseClass))
                 {
-                    PropertyInfo val = getPropertyInfo(info.baseClass, propName, inStruct);
+                    PropertyInfo val = getPropertyInfo(info.baseClass, propName, inStruct, nonVanillaClassInfo);
                     if (val != null)
                     {
                         return val;
@@ -329,7 +373,7 @@ namespace ME3Explorer.Unreal
             }
             return null;
         }
-        
+
         public static byte[] getDefaultClassValue(ME3Package pcc, string className, bool fullProps = false)
         {
             if (Structs.ContainsKey(className))
@@ -373,7 +417,7 @@ namespace ME3Explorer.Unreal
                                 }
                             }
                         }
-                        return m.ToArray(); 
+                        return m.ToArray();
                     }
                 }
                 catch (Exception)
@@ -400,14 +444,14 @@ namespace ME3Explorer.Unreal
                             }
                             PropertyReader.ImportProperty(pcc, importPCC, p, className, m);
                         }
-                        return m.ToArray(); 
+                        return m.ToArray();
                     }
                 }
                 catch (Exception)
                 {
                     return null;
                 }
-                
+
             }
             return null;
         }
@@ -442,7 +486,7 @@ namespace ME3Explorer.Unreal
                         foreach (var prop in props)
                         {
                             //remove transient props
-                            if (!info.properties.ContainsKey(prop.Name) && info.baseClass == "Class" )
+                            if (!info.properties.ContainsKey(prop.Name) && info.baseClass == "Class")
                             {
                                 toRemove.Add(prop);
                             }
@@ -463,6 +507,20 @@ namespace ME3Explorer.Unreal
         }
 
         public static bool inheritsFrom(ME3ExportEntry entry, string baseClass)
+        {
+            string className = entry.ClassName;
+            while (Classes.ContainsKey(className))
+            {
+                if (className == baseClass)
+                {
+                    return true;
+                }
+                className = Classes[className].baseClass;
+            }
+            return false;
+        }
+
+        public static bool inheritsFrom(UDKExportEntry entry, string baseClass)
         {
             string className = entry.ClassName;
             while (Classes.ContainsKey(className))
@@ -521,7 +579,7 @@ namespace ME3Explorer.Unreal
                                     Structs.Add(objectName, generateClassInfo(j, pcc));
                                 }
                             }
-                        } 
+                        }
                     }
                 }
                 System.Diagnostics.Debug.WriteLine($"{i} of {length} processed");
@@ -682,6 +740,11 @@ namespace ME3Explorer.Unreal
             }
 
             return p;
+        }
+
+        internal static ClassInfo generateClassInfo(IExportEntry export)
+        {
+            return generateClassInfo(export.Index, export.FileRef as ME3Package);
         }
         #endregion
     }

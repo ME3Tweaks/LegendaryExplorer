@@ -8,7 +8,7 @@
         xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
         mc:Ignorable="d" DataContext="{Binding Mode=OneWay, RelativeSource={RelativeSource Self}}" 
         Title="ME3Explorer" Height="450" WindowStyle="None" Icon="../Resources/meexp_favicon.ico" ResizeMode="CanMinimize" Background="#D8232E43" 
-        Foreground="{x:Null}" AllowsTransparency="True" SizeToContent="Width" Closing="Window_Closing" WindowStartupLocation="CenterScreen" Opacity="0">
+        Foreground="{x:Null}" AllowsTransparency="True" SizeToContent="Width" Closing="Window_Closing" WindowStartupLocation="CenterScreen" Opacity="0" Loaded="MainWindow_Loaded">
     <Window.Triggers>
         <EventTrigger RoutedEvent="Window.Loaded">
             <BeginStoryboard>

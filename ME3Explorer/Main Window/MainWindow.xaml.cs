@@ -36,9 +36,11 @@ namespace ME3Explorer
         private bool ToolInfoPanelOpen = false;
         private bool PathsPanelOpen = false;
         private bool TaskPaneInfoPanelOpen = false;
-        
+
         Brush HighlightBrush = Application.Current.FindResource("HighlightColor") as Brush;
         Brush LabelTextBrush = Application.Current.FindResource("LabelTextBrush") as Brush;
+        public static double dpiScaleX = 1;
+        public static double dpiScaleY = 1;
 
         public bool DisableFlyouts
         {
@@ -49,7 +51,7 @@ namespace ME3Explorer
         // Using a DependencyProperty as the backing store for DisableFlyouts.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DisableFlyoutsProperty =
             DependencyProperty.Register("DisableFlyouts", typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
-        
+
 
         public MainWindow()
         {
@@ -97,7 +99,7 @@ namespace ME3Explorer
                     var folders = Directory.EnumerateDirectories(ME3Directory.DLCPath).Where(x => !x.Contains("__metadata"));
                     var extracted = folders.Where(folder => Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).Any(file => file.EndsWith("pcconsoletoc.bin", StringComparison.OrdinalIgnoreCase)));
                     var unextracted = folders.Except(extracted);
-                    if (unextracted.Count() > 0)
+                    if (unextracted.Any())
                     {
                         (new InitialSetup()).ShowDialog();
                     } 
@@ -109,7 +111,7 @@ namespace ME3Explorer
         {
             IEnumerable<Tool> favs = Tools.Items.Where(x => x.IsFavorited);
             favoritesPanel.setToolList(favs);
-            favoritesWatermark.Visibility = favs.Count() > 0 ? Visibility.Hidden : Visibility.Visible;
+            favoritesWatermark.Visibility = favs.Any()? Visibility.Hidden : Visibility.Visible;
         }
 
         private void Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -153,7 +155,7 @@ namespace ME3Explorer
         {
             KFreonLib.Debugging.DebugOutput.StartDebugger("ME3Explorer Main Window");
         }
-        
+
         private void Logo_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (CICOpen)
@@ -232,18 +234,22 @@ namespace ME3Explorer
             string[] words = SearchBox.Text.ToLower().Split(' ');
             foreach (Tool tool in Tools.Items)
             {
-                foreach (string word in words)
+                if (tool.open != null)
                 {
-                    if (tool.tags.FuzzyMatch(word) || tool.name.ToLower().Split(' ').FuzzyMatch(word))
+                    foreach (string word in words)
                     {
-                        results.Add(tool);
-                        break;
+                        if (tool.tags.FuzzyMatch(word) || tool.name.ToLower().Split(' ').FuzzyMatch(word))
+                        {
+                            results.Add(tool);
+                            break;
+                        }
                     }
                 }
             }
+
             searchPanel.setToolList(results);
         }
-        
+
         private void SearchBox_LostFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             if (SearchOpen && SearchBox.Text.Trim() == string.Empty)
@@ -497,7 +503,7 @@ namespace ME3Explorer
                 if (ofd.ShowDialog() == true)
                 {
                     string result = Path.GetDirectoryName(Path.GetDirectoryName(ofd.FileName));
-                    
+
                     switch (game)
                     {
                         case "MassEffect":
@@ -622,6 +628,17 @@ namespace ME3Explorer
         private void taskPaneInfoPanel_Close(object sender, EventArgs e)
         {
             closeTaskPaneInfoPanel();
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            PresentationSource source = PresentationSource.FromVisual(this);
+
+            if (source != null)
+            {
+                dpiScaleX = source.CompositionTarget.TransformToDevice.M11;
+                dpiScaleY = source.CompositionTarget.TransformToDevice.M22;
+            }
         }
     }
 }

@@ -15,6 +15,8 @@ using System.Diagnostics;
 using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
 using ME1Explorer.Unreal.Classes;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace ME3Explorer
 {
@@ -106,25 +108,40 @@ Floats*/
             Root,
         }
 
-
+        Dictionary<int, string> me1TLK = new Dictionary<int, string>();
         private int lastSetOffset = -1; //offset set by program, used for checking if user changed since set 
         private nodeType LAST_SELECTED_PROP_TYPE = nodeType.Unknown; //last property type user selected. Will use to check the current offset for type
         private TreeNode LAST_SELECTED_NODE = null; //last selected tree node
-        private const int HEXBOX_MAX_WIDTH = 650;
+        public int HEXBOX_MAX_WIDTH = 650;
 
         private IMEPackage pcc;
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
 
         int? selectedNodePos = null;
-
-        public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "Class", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant", "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "Model", "Polys" }; //classes that have binary parse code
+        private Dictionary<string, string> ME1_TLK_DICT;
+        public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "Class", "BioStage", "ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant", "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "Model", "Polys" }; //classes that have binary parse code
 
 
         public BinaryInterpreter()
         {
+
             InitializeComponent();
             SetTopLevel(false);
             defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
+
+            //Load ME1TLK
+            string tlkxmlpath = @"C:\users\mgame\desktop\me1tlk.xml";
+            if (File.Exists(tlkxmlpath))
+            {
+                XDocument xmlDocument = XDocument.Load(tlkxmlpath);
+                ME1_TLK_DICT =
+                    (from strings in xmlDocument.Descendants("string")
+                     select new
+                     {
+                         ID = strings.Element("id").Value,
+                         Data = strings.Element("data").Value,
+                     }).Distinct().ToDictionary(o => o.ID, o => o.Data);
+            }
         }
 
         /// <summary>
@@ -135,6 +152,8 @@ Floats*/
         {
             //This will make it fairly slow, but will make it so I don't have to change everything.
             InitializeComponent();
+
+
             SetTopLevel(false);
             defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
             this.pcc = importingPCC;
@@ -243,10 +262,11 @@ Floats*/
 
         private void StartScan(string topNodeName = null, string selectedNodeName = null)
         {
+            viewModeDropDownList.Visible = false;
             switch (className)
             {
                 case "Class":
-                    StartClassScan();
+                    StartClassScan2();
                     break;
                 case "Level":
                     StartLevelScan();
@@ -263,6 +283,16 @@ Floats*/
                 case "WwiseEvent":
                     StartWWiseEventScan();
                     break;
+                case "Bio2DA":
+                case "Bio2DANumberedRows":
+                    StartBio2DAScan();
+                    break;
+                case "ObjectRedirector":
+                    StartObjectRedirectorScan();
+                    break;
+                case "BioStage":
+                    StartBioStageScan();
+                    break;
                 default:
                     StartGenericScan();
                     break;
@@ -277,12 +307,516 @@ Floats*/
             nodes = treeView1.Nodes.Find(selectedNodeName, true);
             if (nodes.Length > 0)
             {
-                treeView1.SelectedNode = nodes[0];
+                if (treeView1.Nodes.Count > 0)
+                {
+                    treeView1.SelectedNode = nodes[0];
+                }
             }
             else
             {
-                treeView1.SelectedNode = treeView1.Nodes[0];
+                if (treeView1.Nodes.Count > 0)
+                {
+                    treeView1.SelectedNode = treeView1.Nodes[0];
+                }
             }
+        }
+
+        private void StartBioStageScan(string nodeNameToSelect = null)
+        {
+            /*
+             * Length (int)
+                Name: m_aCameraList
+                int unknown 0
+                Count + int unknown
+                [Camera name
+                property name + floatproperty + length +float value (repeated like:
+                fPitchDelta name + floatproperty + length +float value
+                fYawDelta name + floatproperty + length +float value)
+                None]*/
+            resetPropEditingControls();
+            treeView1.BeginUpdate();
+            treeView1.Nodes.Clear();
+            addPropButton.Visible = false;
+
+            if ((export.header[0x1f] & 0x2) != 0)
+            {
+                byte[] data = export.Data;
+                TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
+                treeView1.Nodes.Add(topLevelTree);
+                treeView1.CollapseAll();
+
+                int binstartoffset = findEndOfProps();
+                int pos = binstartoffset;
+                int length = BitConverter.ToInt32(data, binstartoffset);
+                TreeNode node = new TreeNode(binstartoffset.ToString("X4") + " Length: " + length);
+                node.Name = binstartoffset.ToString();
+                topLevelTree.Nodes.Add(node);
+                pos += 4;
+
+                int nameindex = BitConverter.ToInt32(data, pos);
+                int nameindexunreal = BitConverter.ToInt32(data, pos + 4);
+
+                string name = pcc.getNameEntry(nameindex);
+                node = new TreeNode(pos.ToString("X4") + " Camera: " + name + "_" + nameindexunreal);
+                node.Name = pos.ToString();
+                node.Tag = nodeType.StructLeafName;
+                topLevelTree.Nodes.Add(node);
+
+                pos += 8;
+                int shouldbezero = BitConverter.ToInt32(data, pos);
+                if (shouldbezero != 0)
+                {
+                    Debug.WriteLine("NOT ZERO FOUND: " + pos);
+                }
+                pos += 4;
+
+                int count = BitConverter.ToInt32(data, pos);
+                node = new TreeNode(pos.ToString("X4") + " Count: " + count);
+                node.Name = pos.ToString();
+                topLevelTree.Nodes.Add(node);
+                pos += 4;
+
+                shouldbezero = BitConverter.ToInt32(data, pos);
+                if (shouldbezero != 0)
+                {
+                    Debug.WriteLine("NOT ZERO FOUND: " + pos);
+                }
+                pos += 4;
+                try
+                {
+                    for (int i = 0; i < count; i++)
+                    {
+                        nameindex = BitConverter.ToInt32(data, pos);
+                        nameindexunreal = BitConverter.ToInt32(data, pos + 4);
+                        TreeNode parentnode = new TreeNode(pos.ToString("X4") + " Camera " + (i + 1) + ": " + pcc.getNameEntry(nameindex) + "_" + nameindexunreal);
+                        topLevelTree.Nodes.Add(parentnode);
+                        parentnode.Tag = nodeType.StructLeafName;
+                        parentnode.Name = pos.ToString();
+                        pos += 8;
+
+                        while (pos < data.Length)
+                        {
+                            nameindex = BitConverter.ToInt32(data, pos);
+                            nameindexunreal = BitConverter.ToInt32(data, pos + 4);
+                            if (pcc.getNameEntry(nameindex) == "None")
+                            {
+                                node = new TreeNode(pos.ToString("X4") + " None");
+                                parentnode.Nodes.Add(node);
+                                node.Tag = nodeType.None;
+                                node.Name = pos.ToString();
+                                pos += 8;
+                                break;
+                            }
+
+                            //propertyname
+                            TreeNode propertyNode = new TreeNode(pos.ToString("X4") + " PropertyName: " + pcc.getNameEntry(nameindex));
+                            propertyNode.Tag = nodeType.StructLeafName;
+                            propertyNode.Name = pos.ToString();
+                            parentnode.Nodes.Add(propertyNode);
+                            pos += 8;
+
+                            //FloatProperty
+                            nameindex = BitConverter.ToInt32(data, pos);
+                            nameindexunreal = BitConverter.ToInt32(data, pos + 4);
+                            if (pcc.getNameEntry(nameindex) != "FloatProperty")
+                            {
+                                Debug.WriteLine("NOT FLOATPROPERTY");
+                            }
+                            pos += 8;
+
+                            long len = BitConverter.ToInt64(data, pos);
+                            pos += 8;
+
+                            float value = BitConverter.ToSingle(data, pos);
+                            TreeNode valueNode = new TreeNode(pos.ToString("X4") + " Value: " + value);
+                            valueNode.Tag = nodeType.StructLeafFloat;
+                            valueNode.Name = pos.ToString();
+                            propertyNode.Nodes.Add(valueNode);
+                            pos += (int)len;
+                            #region debugway
+                            /*nameindex = BitConverter.ToInt32(data, pos);
+                            nameindexunreal = BitConverter.ToInt32(data, pos + 4);
+                            if (pcc.getNameEntry(nameindex) == "None")
+                            {
+                                node = new TreeNode(pos.ToString("X4") + " None");
+                                parentnode.Nodes.Add(node);
+                                node.Tag = nodeType.None;
+                                node.Name = pos.ToString();
+                                pos += 8;
+                                break;
+                            }
+
+                            //propertyname
+                            node = new TreeNode(pos.ToString("X4") + " PropertyName: " + pcc.getNameEntry(nameindex));
+                            node.Tag = nodeType.StructLeafName;
+                            node.Name = pos.ToString();
+                            parentnode.Nodes.Add(node);
+                            pos += 8;
+
+                            //FloatProperty
+                            nameindex = BitConverter.ToInt32(data, pos);
+                            nameindexunreal = BitConverter.ToInt32(data, pos + 4);
+                            if (pcc.getNameEntry(nameindex) != "FloatProperty")
+                            {
+                                Debug.WriteLine("NOT FLOATPROPERTY");
+                            }
+                            node = new TreeNode(pos.ToString("X4") + " FloatProperty: " + pcc.getNameEntry(nameindex));
+                            node.Tag = nodeType.StructLeafName;
+                            node.Name = pos.ToString();
+                            parentnode.Nodes.Add(node);
+                            pos += 8;
+
+                            long len = BitConverter.ToInt64(data, pos);
+                            node = new TreeNode(pos.ToString("X4") + " Length: " + len);
+                            node.Tag = nodeType.StructLeafInt;
+                            node.Name = pos.ToString();
+                            parentnode.Nodes.Add(node);
+                            pos += 8;
+
+                            float value = BitConverter.ToSingle(data, pos);
+                            node = new TreeNode(pos.ToString("X4") + " Value: " + value);
+                            node.Tag = nodeType.StructLeafInt;
+                            node.Name = pos.ToString();
+                            parentnode.Nodes.Add(node);
+                            pos += 4;*/
+                            #endregion
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    topLevelTree.Nodes.Add(new TreeNode("Error reading binary data: " + ex.ToString()));
+                }
+                topLevelTree.Expand();
+                treeView1.Nodes[0].Expand();
+                TreeNode[] nodes;
+                if (nodeNameToSelect != null)
+                {
+                    nodes = treeView1.Nodes.Find(nodeNameToSelect, true);
+                    if (nodes.Length > 0)
+                    {
+                        treeView1.SelectedNode = nodes[0];
+                    }
+                    else
+                    {
+                        treeView1.SelectedNode = treeView1.Nodes[0];
+                    }
+                }
+
+                //find start of class binary (end of props). This should 
+                topLevelTree.Tag = nodeType.Root;
+                topLevelTree.Name = "0";
+            }
+            treeView1.EndUpdate();
+            memsize = memory.Length;
+        }
+
+        private void StartObjectRedirectorScan(string nodeNameToSelect = null)
+        {
+            resetPropEditingControls();
+            treeView1.BeginUpdate();
+            treeView1.Nodes.Clear();
+            addPropButton.Visible = false;
+
+            byte[] data = export.Data;
+            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
+            treeView1.Nodes.Add(topLevelTree);
+            treeView1.CollapseAll();
+
+            int binstartoffset = findEndOfProps();
+            int redirnum = BitConverter.ToInt32(data, binstartoffset);
+            TreeNode node = new TreeNode(binstartoffset.ToString("X4") + " Redirect references to this export to: " + redirnum + " " + pcc.getEntry(redirnum).GetFullPath);
+            node.Name = binstartoffset.ToString();
+            topLevelTree.Nodes.Add(node);
+
+            topLevelTree.Expand();
+            treeView1.Nodes[0].Expand();
+            TreeNode[] nodes;
+            if (nodeNameToSelect != null)
+            {
+                nodes = treeView1.Nodes.Find(nodeNameToSelect, true);
+                if (nodes.Length > 0)
+                {
+                    treeView1.SelectedNode = nodes[0];
+                }
+                else
+                {
+                    treeView1.SelectedNode = treeView1.Nodes[0];
+                }
+            }
+
+            //find start of class binary (end of props). This should 
+            topLevelTree.Tag = nodeType.Root;
+            topLevelTree.Name = "0";
+
+            treeView1.EndUpdate();
+            memsize = memory.Length;
+        }
+
+        private void StartBio2DAScan(string nodeNameToSelect = null)
+        {
+            Random random = new Random();
+            string[] stringRefColumns = { "StringRef", "SaveGameStringRef", "Title", "LabelRef", "Name", "ActiveWorld", "Description", "Description1", "Description1", "Description1", "ButtonLabel", "UnlockName", "UnlockBlurb", "DisplayName", "DisplayDescription", "PriAbiDesc", "SecAbiDesc" };
+
+            resetPropEditingControls();
+            treeView1.BeginUpdate();
+            treeView1.Nodes.Clear();
+            addPropButton.Visible = false;
+
+            byte[] data = export.Data;
+
+            List<string> rowNames = new List<string>();
+            if (export.ClassName == "Bio2DA")
+            {
+                string rowLabelsVar = "m_sRowLabel";
+                var props = export.GetProperty<ArrayProperty<NameProperty>>(rowLabelsVar);
+                if (props != null)
+                {
+                    foreach (NameProperty n in props)
+                    {
+                        rowNames.Add(n.ToString());
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                string rowLabelsVar = "m_lstRowNumbers"; //Bio2DANumberedRows
+                var props = export.GetProperty<ArrayProperty<IntProperty>>(rowLabelsVar);
+                if (props != null)
+                {
+                    foreach (IntProperty n in props)
+                    {
+                        rowNames.Add(n.Value.ToString());
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
+            treeView1.Nodes.Add(topLevelTree);
+            treeView1.CollapseAll();
+
+            //Get Columns
+            List<string> columnNames = new List<string>();
+            int colcount = BitConverter.ToInt32(data, data.Length - 4); //this is actually index of last column, but it works the same
+            int currentcoloffset = 0;
+            Console.WriteLine("Number of columns: " + colcount);
+            TreeNode columnsnode = new TreeNode("Columns");
+
+            while (colcount >= 0)
+            {
+                currentcoloffset += 4;
+                int colindex = BitConverter.ToInt32(data, data.Length - currentcoloffset);
+                currentcoloffset += 8; //names in this case don't use nameindex values.
+                int nameindex = BitConverter.ToInt32(data, data.Length - currentcoloffset);
+                string name = pcc.getNameEntry(nameindex);
+                //Console.WriteLine(name + " at col pos " + colindex);
+                TreeNode column = new TreeNode(colindex + ": " + name);
+                column.Name = (data.Length - currentcoloffset).ToString();
+                columnsnode.Nodes.Insert(0, column);
+                columnNames.Insert(0, name);
+                colcount--;
+            }
+            currentcoloffset += 4;  //real column count
+            int infilecolcount = BitConverter.ToInt32(data, data.Length - currentcoloffset);
+            columnsnode.Text = infilecolcount + " columns";
+            columnsnode.Name = (data.Length - currentcoloffset).ToString();
+
+            //start of binary data
+            int binstartoffset = findEndOfProps(); //arrayheader + nonenamesize + number of items in this list
+            int curroffset = binstartoffset;
+
+            int cellcount = BitConverter.ToInt32(data, curroffset);
+            if (cellcount > 0)
+            {
+
+                TreeNode node = new TreeNode(curroffset.ToString("X4") + " Number of cells in this Bio2DA : " + cellcount);
+                node.Name = curroffset.ToString();
+                topLevelTree.Nodes.Add(node);
+                curroffset += 4;
+
+                for (int i = 0; i < rowNames.Count(); i++)
+                {
+                    TreeNode rownode = new TreeNode(curroffset.ToString("X4") + ": " + rowNames[i]);
+                    rownode.Name = curroffset.ToString();
+                    topLevelTree.Nodes.Add(rownode);
+                    for (int colindex = 0; colindex < columnNames.Count() && curroffset < data.Length - currentcoloffset; colindex++)
+                    {
+                        byte dataType = 255;
+                        //if (cellcount != 0)
+                        //{
+                        dataType = data[curroffset];
+                        curroffset++;
+                        //}
+                        string valueStr = "";
+                        string nodename = curroffset.ToString();
+                        string offsetstr = curroffset.ToString("X4");
+                        nodeType tag = nodeType.Unknown;
+                        switch (dataType)
+                        {
+
+                            case 0:
+                                //int
+                                int ival = BitConverter.ToInt32(data, curroffset);
+                                valueStr = ival.ToString();
+                                //if (stringRefColumns.Contains(columnNames[colindex]))
+                                {
+                                    string tlkVal;
+                                    if (ME1_TLK_DICT != null && ME1_TLK_DICT.TryGetValue(valueStr, out tlkVal))
+                                    {
+                                        valueStr += " " + tlkVal;
+                                    }
+                                }
+                                curroffset += 4;
+                                tag = nodeType.StructLeafInt;
+                                break;
+                            case 1:
+                                //name
+                                int nval = BitConverter.ToInt32(data, curroffset);
+                                valueStr = pcc.getNameEntry(nval);
+                                valueStr += "_" + BitConverter.ToInt32(data, curroffset + 4);
+                                curroffset += 8;
+                                tag = nodeType.StructLeafName;
+                                break;
+                            case 2:
+                                //float
+                                float fval = BitConverter.ToSingle(data, curroffset);
+                                valueStr = fval.ToString();
+                                curroffset += 4;
+                                tag = nodeType.StructLeafFloat;
+                                break;
+                        }
+
+                        node = new TreeNode(offsetstr + " " + columnNames[colindex] + ": " + valueStr);
+                        node.Name = nodename;
+                        node.Tag = tag;
+                        rownode.Nodes.Add(node);
+                    }
+
+                    //int loopstartoffset = curroffset;
+
+                    //node = new TreeNode(curroffset.ToString("X4") + ": " + "(1b: " + data[curroffset] + " int: " + val + ")");
+                    //node.Name = (curroffset).ToString();
+                    //curroffset += 1;
+                    //node.Name = loopstartoffset.ToString();
+                    //topLevelTree.Nodes.Add(node);
+                }
+            }
+            else
+            {
+                curroffset += 4; //theres a 0 here for some reason
+                cellcount = BitConverter.ToInt32(data, curroffset);
+                TreeNode node = new TreeNode(curroffset.ToString("X4") + " Number of indexed cells in this Bio2DA: " + cellcount);
+                node.Name = curroffset.ToString();
+                topLevelTree.Nodes.Add(node);
+                curroffset += 4; //theres a 0 here for some reason
+
+                Bio2DACell[,] bio2da = new Bio2DACell[rowNames.Count(), columnNames.Count()];
+                //curroffset += 4;
+                int numindexed = 0;
+                while (numindexed < cellcount)
+                {
+                    int index = BitConverter.ToInt32(data, curroffset);
+                    int row = index / columnNames.Count();
+                    int col = index % columnNames.Count();
+                    curroffset += 4;
+                    byte dataType = data[curroffset];
+                    int dataSize = dataType == Bio2DACell.TYPE_NAME ? 8 : 4;
+                    curroffset++;
+                    byte[] celldata = new byte[dataSize];
+                    Buffer.BlockCopy(data, curroffset, celldata, 0, dataSize);
+                    Bio2DACell cell = new Bio2DACell(pcc, curroffset, dataType, celldata);
+                    //Console.WriteLine(columnNames[col] + ": " + cell.GetDisplayableValue());
+                    bio2da[row, col] = cell;
+                    numindexed++;
+                    curroffset += dataSize;
+                }
+
+                for (int row = 0; row < bio2da.GetLength(0); row++)
+                {
+                    TreeNode rownode = new TreeNode(rowNames[row]);
+                    rownode.Name = curroffset.ToString();
+                    topLevelTree.Nodes.Add(rownode);
+                    for (int col = 0; col < bio2da.GetLength(1); col++)
+                    {
+                        Bio2DACell cell = bio2da[row, col];
+                        string columnname = columnNames[col];
+                        TreeNode columnNode;
+                        if (cell != null)
+                        {
+                            columnNode = new TreeNode(columnname + ": " + cell.GetDisplayableValue());
+                            if (cell.Type == Bio2DACell.TYPE_INT)
+                            {
+                                string tlkVal = " ";
+                                if (ME1_TLK_DICT != null && ME1_TLK_DICT.TryGetValue(BitConverter.ToInt32(cell.Data, 0).ToString(), out tlkVal))
+                                {
+                                    tlkVal = tlkVal.Replace("\n", "[NL]");
+                                    columnNode.Text += " " + tlkVal;
+                                }
+                            }
+                            switch (cell.Type)
+                            {
+                                case Bio2DACell.TYPE_FLOAT:
+                                    columnNode.Tag = nodeType.StructLeafFloat;
+                                    break;
+                                case Bio2DACell.TYPE_NAME:
+                                    columnNode.Tag = nodeType.StructLeafName;
+                                    break;
+                                case Bio2DACell.TYPE_INT:
+                                    columnNode.Tag = nodeType.StructLeafInt;
+                                    break;
+                            }
+                            columnNode.Name = cell.Offset.ToString();
+                        }
+                        else
+                        {
+                            columnNode = new TreeNode(columnname + ": Skipped by table");
+                        }
+                        rownode.Nodes.Add(columnNode);
+                    }
+                }
+                TreeNode nodex = new TreeNode("Number of nodes indexed: " + numindexed);
+                treeView1.Nodes.Add(nodex);
+            }
+
+            treeView1.Nodes.Add(columnsnode);
+            treeView1.Nodes[0].Expand();
+            TreeNode[] nodes;
+            if (nodeNameToSelect != null)
+            {
+                nodes = treeView1.Nodes.Find(nodeNameToSelect, true);
+                if (nodes.Length > 0)
+                {
+                    treeView1.SelectedNode = nodes[0];
+                }
+                else
+                {
+                    treeView1.SelectedNode = treeView1.Nodes[0];
+                }
+            }
+
+            //find start of class binary (end of props). This should 
+            topLevelTree.Tag = nodeType.Root;
+            topLevelTree.Name = "0";
+
+            treeView1.EndUpdate();
+            memory = data;
+            //export.Data = data;
+            memsize = memory.Length;
+        }
+
+        static float NextFloat(Random random)
+        {
+            double mantissa = (random.NextDouble() * 2.0) - 1.0;
+            double exponent = Math.Pow(2.0, random.Next(-3, 20));
+            return (float)(mantissa * exponent);
         }
 
         private void StartWWiseEventScan(string nodeNameToSelect = null)
@@ -444,9 +978,7 @@ Floats*/
 
             int binarystart = findEndOfProps();
             //find start of class binary (end of props). This should 
-
-
-
+            viewModeDropDownList.Visible = true;
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName + " (Generic Scan)");
             topLevelTree.Tag = nodeType.Root;
             topLevelTree.Name = "0";
@@ -809,7 +1341,7 @@ Floats*/
                 {
                     TreeNode node = new TreeNode();
                     node.Tag = nodeType.Unknown;
-                    node.Text = start.ToString("X4") + " Export may have extra parameters not accounted for yet (did not find 0 at 0x" + start.ToString("X8") + ")";
+                    node.Text = start.ToString("X4") + " Export may have extra parameters not accounted for yet (did not find 0 at 0x" + start.ToString("X5") + " )";
                     node.Name = start.ToString();
                     topLevelTree.Nodes.Add(node);
                     treeView1.Nodes.Add(topLevelTree);
@@ -825,7 +1357,7 @@ Floats*/
                     if (itemexportid - 1 < pcc.Exports.Count)
                     {
                         IExportEntry locexp = pcc.Exports[(int)itemexportid - 1];
-                        //Console.WriteLine("0x" + start.ToString("X8") + "\t0x" + itemexportid.ToString("X8") + "\t" + locexp.PackageFullName + "." + locexp.ObjectName + "_" + locexp.indexValue + " [" + (itemexportid - 1) + "]");
+                        //Console.WriteLine("0x" + start.ToString("X5") + " \t0x" + itemexportid.ToString("X5") + " \t" + locexp.PackageFullName + "." + locexp.ObjectName + "_" + locexp.indexValue + " [" + (itemexportid - 1) + "]");
                         TreeNode node = new TreeNode();
                         node.Tag = nodeType.ArrayLeafObject;
                         node.Text = start.ToString("X4") + "|" + itemcount + ": " + locexp.PackageFullName + "." + locexp.ObjectName + "_" + locexp.indexValue + " [" + (itemexportid - 1) + "]";
@@ -836,7 +1368,7 @@ Floats*/
                     }
                     else
                     {
-                        Console.WriteLine("0x" + start.ToString("X8") + "\t0x" + itemexportid.ToString("X8") + "\tInvalid item. Ensure the list is the correct length. (Export " + itemexportid + ")");
+                        Console.WriteLine("0x" + start.ToString("X5") + " \t0x" + itemexportid.ToString("X5") + " \tInvalid item. Ensure the list is the correct length. (Export " + itemexportid + ")");
                         TreeNode node = new TreeNode();
                         node.Tag = nodeType.ArrayLeafObject;
                         node.Text = start.ToString("X4") + " Invalid item.Ensure the list is the correct length. (Export " + itemexportid + ")";
@@ -948,6 +1480,336 @@ Floats*/
             memsize = memory.Length;
         }
 
+        private void StartClassScan2(string nodeNameToSelect = null)
+        {
+            //const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
+            resetPropEditingControls();
+            treeView1.BeginUpdate();
+            treeView1.Nodes.Clear();
+            addPropButton.Visible = false;
+
+            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
+            topLevelTree.Tag = nodeType.Root;
+            topLevelTree.Name = "0";
+            try
+            {
+                TreeNode node;
+
+                byte[] data = export.Data;
+                int offset = 0;
+
+                int unrealExportIndex = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " Unreal Unique Index: " + unrealExportIndex);
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafInt;
+                topLevelTree.Nodes.Add(node);
+                offset += 4;
+
+
+                int superclassIndex = BitConverter.ToInt32(data, offset);
+                string superclassStr = getEntryFullPath(superclassIndex);
+
+                node = new TreeNode("0x" + offset.ToString("X5") + " Superclass Index: " + superclassIndex + "(" + superclassStr + ")");
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafObject;
+
+                topLevelTree.Nodes.Add(node);
+                offset += 4;
+
+                int unknown1 = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " Unknown 1: " + unknown1);
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafInt;
+                topLevelTree.Nodes.Add(node);
+                offset += 4;
+
+                int classObjTree = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " ProbeMask/Class Object Tree Final Pointer Index: " + classObjTree);
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafInt;
+                topLevelTree.Nodes.Add(node);
+                offset += 4;
+
+
+                //I am not sure what these mean. However if Pt1&2 are 33/25, the following bytes that follow are extended.
+                int headerUnknown1 = BitConverter.ToInt32(data, offset);
+                Int64 ignoreMask = BitConverter.ToInt64(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " IgnoreMask: 0x" + ignoreMask.ToString("X16"));
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafInt;
+                topLevelTree.Nodes.Add(node);
+
+                node = new TreeNode("0x" + offset.ToString("X5") + " ClassTypeHeaderPart1: " + headerUnknown1);
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafInt;
+                //topLevelTree.Nodes.Add(node);
+                offset += 4;
+
+                int headerUnknown2 = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " ClassTypeHeaderPart2: " + headerUnknown2);
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafInt;
+                //topLevelTree.Nodes.Add(node);
+                offset += 4;
+
+                Int16 labelOffset = BitConverter.ToInt16(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " LabelOffset: 0x" + labelOffset.ToString("X4"));
+                node.Name = offset.ToString();
+                topLevelTree.Nodes.Add(node);
+                offset += 2;
+
+                bool extendedHeader = headerUnknown1 == 33 && headerUnknown2 == 25;
+                int skipAmount = 0x6; 
+                //Find end of script block. Seems to be 10 FF's.
+                while (offset + skipAmount + 10 < data.Length)
+                {
+                    Debug.WriteLine("Cheecking at 0x"+(offset + skipAmount + 10).ToString("X4"));
+                    bool isEnd = true;
+                    for (int i= 0; i< 10; i++)
+                    {
+                        byte b = data[offset + skipAmount + i];
+                        if (b != 0xFF)
+                        {
+                            isEnd = false;
+                            break;
+                        }
+                    }
+                    if (isEnd)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        skipAmount++;
+                    }
+                }
+                //if (headerUnknown1 == 33 && headerUnknown2 == 25)
+                //{
+                //    skipAmount = 0x2F;
+                //}
+                //else if (headerUnknown1 == 34 && headerUnknown2 == 26)
+                //{
+                //    skipAmount = 0x30;
+                //}
+                //else if (headerUnknown1 == 728 && headerUnknown2 == 532)
+                //{
+                //    skipAmount = 0x22A;
+                //}
+                int offsetEnd = offset + skipAmount + 10;
+                node = new TreeNode("0x" + offset.ToString("X5") + " State/Script Block: 0x" + offset.ToString("X4")+" - 0x"+ offsetEnd.ToString("X4"));
+                node.Name = offset.ToString();
+                topLevelTree.Nodes.Add(node);
+                offset += skipAmount + 10; //heuristic to find end of script
+                //for (int i = 0; i < 5; i++)
+                //{
+                int stateMask = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " Statemask: " + stateMask);
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafInt;
+                topLevelTree.Nodes.Add(node);
+                offset += 4;
+                //}
+                //offset += 2; //oher unknown
+                int localFunctionsTableCount = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " Local Functions Count: " + localFunctionsTableCount);
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafInt;
+                topLevelTree.Nodes.Add(node);
+                offset += 4;
+                for (int i = 0; i < localFunctionsTableCount; i++)
+                {
+                    int nameTableIndex = BitConverter.ToInt32(data, offset);
+                    int nameIndex = BitConverter.ToInt32(data, offset + 4);
+                    offset += 8;
+                    int functionObjectIndex = BitConverter.ToInt32(data, offset);
+                    offset += 4;
+                    TreeNode subnode = new TreeNode("0x" + (offset - 12).ToString("X5") + "  " + export.FileRef.getNameEntry(nameTableIndex) + "() = " + functionObjectIndex + "(" + export.FileRef.Exports[functionObjectIndex - 1].GetFullPath + ")");
+                    subnode.Name = (offset - 12).ToString();
+                    subnode.Tag = nodeType.StructLeafName; //might need to add a subnode for the 3rd int
+                    node.Nodes.Add(subnode);
+                }
+
+                int classMask = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " Class Mask: " + classMask.ToString("X8"));
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafInt;
+                topLevelTree.Nodes.Add(node);
+                offset += 4;
+
+                int coreReference = BitConverter.ToInt32(data, offset);
+                string coreRefFullPath = getEntryFullPath(coreReference);
+
+                node = new TreeNode("0x" + offset.ToString("X5") + " Core reference: " + coreReference + " (" + coreRefFullPath + ")");
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafObject;
+                topLevelTree.Nodes.Add(node);
+                offset += 4;
+
+                int componentTableNameIndex = BitConverter.ToInt32(data, offset);
+                int componentTableIndex = BitConverter.ToInt32(data, offset + 4);
+                offset += 8;
+
+                node = new TreeNode("0x" + (offset - 8).ToString("X5") + " Components Table (" + export.FileRef.getNameEntry(componentTableNameIndex) + ")");
+                node.Name = (offset - 8).ToString();
+                node.Tag = nodeType.StructLeafName;
+                topLevelTree.Nodes.Add(node);
+                int componentTableCount = BitConverter.ToInt32(data, offset);
+                offset += 4;
+
+                for (int i = 0; i < componentTableCount; i++)
+                {
+                    int nameTableIndex = BitConverter.ToInt32(data, offset);
+                    int nameIndex = BitConverter.ToInt32(data, offset + 4);
+                    offset += 8;
+                    int componentObjectIndex = BitConverter.ToInt32(data, offset);
+                    offset += 4;
+
+                    string objectName = getEntryFullPath(componentObjectIndex);
+                    TreeNode subnode = new TreeNode("0x" + (offset - 12).ToString("X5") + "  " + export.FileRef.getNameEntry(nameTableIndex) + "(" + objectName + ")");
+                    subnode.Name = (offset - 12).ToString();
+                    subnode.Tag = nodeType.StructLeafName;
+                    node.Nodes.Add(subnode);
+                }
+
+                int interfaceCount = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " Implemented Interfaces Table Count: " + interfaceCount);
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafInt;
+                topLevelTree.Nodes.Add(node);
+                offset += 4;
+                for (int i = 0; i < interfaceCount; i++)
+                {
+                    int interfaceIndex = BitConverter.ToInt32(data, offset);
+                    offset += 4;
+
+                    string objectName = getEntryFullPath(interfaceIndex);
+                    TreeNode subnode = new TreeNode("0x" + (offset - 12).ToString("X5") + "  " + interfaceIndex +" " + objectName);
+                    subnode.Name = (offset - 4).ToString();
+                    subnode.Tag = nodeType.StructLeafName;
+                    node.Nodes.Add(subnode);
+
+                    //propertypointer
+                    interfaceIndex = BitConverter.ToInt32(data, offset);
+                    offset += 4;
+
+                    objectName = getEntryFullPath(interfaceIndex);
+                    TreeNode subsubnode = new TreeNode("0x" + (offset - 12).ToString("X5") + "  Interface Property Link: " + interfaceIndex + " " + objectName);
+                    subsubnode.Name = (offset - 4).ToString();
+                    subsubnode.Tag = nodeType.StructLeafName;
+                    subnode.Nodes.Add(subsubnode);
+                }
+
+                int postComponentsNoneNameIndex = BitConverter.ToInt32(data, offset);
+                int postComponentNoneIndex = BitConverter.ToInt32(data, offset + 4);
+                node = new TreeNode("0x" + offset.ToString("X5") + " Post-Components Blank (" + export.FileRef.getNameEntry(postComponentsNoneNameIndex) + ")");
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafName;
+                topLevelTree.Nodes.Add(node);
+                offset += 8;
+
+                int unknown4 = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " Unknown 4: " + unknown4);
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafInt;
+                topLevelTree.Nodes.Add(node);
+                offset += 4;
+
+                int defaultsClassLink = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " Class Defaults: " + defaultsClassLink + " (" + export.FileRef.Exports[defaultsClassLink - 1].GetFullPath + ")");
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafObject;
+
+                topLevelTree.Nodes.Add(node);
+                offset += 4;
+
+                int functionsTableCount = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " Full Functions Table Count: " + functionsTableCount);
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafInt;
+
+                topLevelTree.Nodes.Add(node);
+                offset += 4;
+
+                for (int i = 0; i < functionsTableCount; i++)
+                {
+                    if ((data.Length - (offset + 4)) < 0)
+                    {
+                        TreeNode badnode = new TreeNode("Error: cannot read any farther");
+                        badnode.Name = (offset).ToString();
+                        node.Nodes.Add(badnode);
+                        break;
+                    }
+                    int functionsTableIndex = BitConverter.ToInt32(data, offset);
+                    offset += 4;
+
+                    string impexpName = getEntryFullPath(functionsTableIndex);
+                    TreeNode subnode = new TreeNode("0x" + (offset - 12).ToString("X5") + " " + impexpName);
+                    subnode.Tag = nodeType.StructLeafObject;
+                    subnode.Name = (offset - 12).ToString();
+                    node.Nodes.Add(subnode);
+                }
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Nodes.Add("An error occured parsing the class: " + ex.Message);
+            }
+            treeView1.Nodes.Add(topLevelTree);
+            treeView1.CollapseAll();
+            treeView1.Nodes[0].Expand();
+            TreeNode[] nodes;
+
+            if (nodeNameToSelect != null)
+            {
+                nodes = treeView1.Nodes.Find(nodeNameToSelect, true);
+                if (nodes.Length > 0)
+                {
+                    treeView1.SelectedNode = nodes[0];
+                }
+                else
+                {
+                    treeView1.SelectedNode = treeView1.Nodes[0];
+                }
+            }
+
+            treeView1.EndUpdate();
+            memsize = memory.Length;
+        }
+
+        private string getEntryFullPath(int coreReference)
+        {
+            string retStr = "Entry not found";
+            IEntry coreRefEntry = getUnrealEntry(coreReference);
+            if (coreRefEntry != null)
+            {
+                if (coreRefEntry is ImportEntry)
+                {
+                    retStr = "[I] ";
+                }
+                else
+                {
+                    retStr = "[E] ";
+                }
+                retStr += coreRefEntry.GetFullPath;
+            }
+            return retStr;
+        }
+
+        private IEntry getUnrealEntry(int entryIndex)
+        {
+            if (entryIndex < 0 && -entryIndex - 1 < export.FileRef.Imports.Count)
+            {
+                //import
+                int localindex = Math.Abs(entryIndex) - 1;
+                return export.FileRef.Imports[localindex];
+            }
+            else if (entryIndex > 0 && entryIndex < export.FileRef.Exports.Count)
+            {
+                //import
+                int localindex = entryIndex - 1;
+                return export.FileRef.Exports[localindex];
+            }
+            return null;
+        }
 
         private void StartMaterialScan(string nodeNameToSelect = null)
         {
@@ -1035,59 +1897,60 @@ Floats*/
 
         private int findEndOfProps()
         {
-            int readerpos = export.GetPropertyStart();
-            bool run = true;
-            while (run)
-            {
-                PropHeader p = new PropHeader();
-                if (readerpos > memory.Length || readerpos < 0)
-                {
-                    //nothing else to interpret.
-                    run = false;
-                    readerpos = -1;
-                    continue;
-                }
-                p.name = BitConverter.ToInt32(memory, readerpos);
-                if (!pcc.isName(p.name))
-                    run = false;
-                else
-                {
-                    if (pcc.getNameEntry(p.name) != "None")
-                    {
-                        p.type = BitConverter.ToInt32(memory, readerpos + 8);
-                        nodeType type = getType(pcc.getNameEntry(p.type));
-                        bool isUnknownType = type == nodeType.Unknown;
-                        if (!pcc.isName(p.type) || isUnknownType)
-                            run = false;
-                        else
-                        {
-                            p.size = BitConverter.ToInt32(memory, readerpos + 16);
-                            readerpos += p.size + 24;
+            return export.propsEnd();
+            //int readerpos = export.GetPropertyStart();
+            //bool run = true;
+            //while (run)
+            //{
+            //    PropHeader p = new PropHeader();
+            //    if (readerpos > memory.Length || readerpos < 0)
+            //    {
+            //        //nothing else to interpret.
+            //        run = false;
+            //        readerpos = -1;
+            //        continue;
+            //    }
+            //    p.name = BitConverter.ToInt32(memory, readerpos);
+            //    if (!pcc.isName(p.name))
+            //        run = false;
+            //    else
+            //    {
+            //        if (pcc.getNameEntry(p.name) != "None")
+            //        {
+            //            p.type = BitConverter.ToInt32(memory, readerpos + 8);
+            //            nodeType type = getType(pcc.getNameEntry(p.type));
+            //            bool isUnknownType = type == nodeType.Unknown;
+            //            if (!pcc.isName(p.type) || isUnknownType)
+            //                run = false;
+            //            else
+            //            {
+            //                p.size = BitConverter.ToInt32(memory, readerpos + 16);
+            //                readerpos += p.size + 24;
 
-                            if (getType(pcc.getNameEntry(p.type)) == nodeType.StructProperty) //StructName
-                                readerpos += 8;
-                            if (pcc.Game == MEGame.ME3)
-                            {
-                                if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)//Boolbyte
-                                    readerpos++;
-                                if (getType(pcc.getNameEntry(p.type)) == nodeType.ByteProperty)//byteprop
-                                    readerpos += 8;
-                            }
-                            else
-                            {
-                                if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)
-                                    readerpos += 4;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        readerpos += 8;
-                        run = false;
-                    }
-                }
-            }
-            return readerpos;
+            //                if (getType(pcc.getNameEntry(p.type)) == nodeType.StructProperty) //StructName
+            //                    readerpos += 8;
+            //                if (pcc.Game == MEGame.ME3)
+            //                {
+            //                    if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)//Boolbyte
+            //                        readerpos++;
+            //                    if (getType(pcc.getNameEntry(p.type)) == nodeType.ByteProperty)//byteprop
+            //                        readerpos += 8;
+            //                }
+            //                else
+            //                {
+            //                    if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)
+            //                        readerpos += 4;
+            //                }
+            //            }
+            //        }
+            //        else
+            //        {
+            //            readerpos += 8;
+            //            run = false;
+            //        }
+            //    }
+            //}
+            //return readerpos;
         }
 
         private List<TreeNode> ReadTableBackwards(IExportEntry export)
@@ -1155,7 +2018,7 @@ Floats*/
                         node.Text = endOffset.ToString("X4") + " Class Defaults | " + defaults;
                         tableItems.Add(node);
                     }
-                    //Console.WriteLine("FOUND START OF LIST AT 0x" + endOffset.ToString("X8") + ", items: " + index);
+                    //Console.WriteLine("FOUND START OF LIST AT 0x" + endOffset.ToString("X5") + " , items: " + index);
                     break;
                 }
                 endOffset -= 4;
@@ -1486,7 +2349,7 @@ Floats*/
                 {
                     return;
                 }
-                else if (memory.Length - pos < 8 && type != nodeType.StructLeafObject)
+                else if (memory.Length - pos < 8 && type == nodeType.StructLeafName)
                 {
                     return;
                 }
@@ -1618,7 +2481,7 @@ Floats*/
             try
             {
                 int pos = lastSetOffset;
-                if (memory.Length - pos < 8)
+                if (memory.Length - pos < 4)
                     return;
                 byte b = 0;
                 float f = 0;
@@ -2249,7 +3112,7 @@ Floats*/
         private void addPropButton_Click(object sender, EventArgs e)
         {
             List<string> props = PropertyReader.getPropList(export).Select(x => pcc.getNameEntry(x.Name)).ToList();
-            string prop = AddPropertyDialog.GetProperty(className, props, pcc.Game);
+            string prop = AddPropertyDialog.GetProperty(export, props, pcc.Game);
             if (prop != null)
             {
                 PropertyInfo info = GetPropertyInfo(prop, className);
@@ -2386,7 +3249,10 @@ Floats*/
         private void splitContainer1_SplitterMoving(object sender, SplitterCancelEventArgs e)
         {
             //a hack to set max width for SplitContainer1
-            splitContainer1.Panel2MinSize = splitContainer1.Width - HEXBOX_MAX_WIDTH;
+            if (splitContainer1.Width - HEXBOX_MAX_WIDTH > 0)
+            {
+                splitContainer1.Panel2MinSize = splitContainer1.Width - HEXBOX_MAX_WIDTH;
+            }
         }
 
         private void toggleHexWidthButton_Click(object sender, EventArgs e)

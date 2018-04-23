@@ -62,7 +62,12 @@ namespace ME3Explorer.Unreal
 
         public static PropertyCollection ReadProps(IMEPackage pcc, MemoryStream stream, string typeName)
         {
-            DebugOutput.StartDebugger("Property Engine ReadProps()");
+            //Uncomment this for debugging property engine
+            /*DebugOutput.StartDebugger("Property Engine ReadProps() for "+typeName);
+            if (pcc.FileName == "C:\\Users\\Dev\\Downloads\\ME2_Placeables.upk")
+            {
+              //Debugger.Break();
+            }*/
             PropertyCollection props = new PropertyCollection();
             long startPosition = stream.Position;
             while (stream.Position + 8 <= stream.Length)
@@ -71,6 +76,7 @@ namespace ME3Explorer.Unreal
                 int nameIdx = stream.ReadValueS32();
                 if (!pcc.isName(nameIdx))
                 {
+                    //DebugOutput.PrintLn("Not a name found at 0x" + nameOffset.ToString("X4"));
                     stream.Seek(-4, SeekOrigin.Current);
                     break;
                 }
@@ -81,7 +87,7 @@ namespace ME3Explorer.Unreal
                     stream.Seek(4, SeekOrigin.Current);
                     break;
                 }
-                DebugOutput.PrintLn("0x" + nameOffset.ToString("X4") + " " + name);
+                //DebugOutput.PrintLn("0x" + nameOffset.ToString("X4") + " " + name);
                 NameReference nameRef = new NameReference { Name = name, Number = stream.ReadValueS32() };
                 int typeIdx = stream.ReadValueS32();
                 stream.Seek(4, SeekOrigin.Current);
@@ -298,7 +304,7 @@ namespace ME3Explorer.Unreal
             {
                 string[] labels = { "X Plane", "Y Plane", "Z Plane", "W Plane" };
                 string[] labels2 = { "X", "Y", "Z", "W" };
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 4; i++)
                 {
                     PropertyCollection structProps = new PropertyCollection();
                     for (int j = 0; j < 4; j++)
@@ -394,7 +400,7 @@ namespace ME3Explorer.Unreal
 
         public static UProperty ReadArrayProperty(MemoryStream stream, IMEPackage pcc, string enclosingType, NameReference name, bool IsInImmutable = false)
         {
-            long arrayOffset = stream.Position - 24;
+            long arrayOffset = IsInImmutable ? stream.Position: stream.Position - 24;
             ArrayType arrayType = UnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType);
             int count = stream.ReadValueS32();
             switch (arrayType)
@@ -906,6 +912,15 @@ namespace ME3Explorer.Unreal
             PropType = PropertyType.ByteProperty;
         }
 
+        public EnumProperty(NameReference value, NameReference enumType, IMEPackage pcc, NameReference? name = null) : base(name)
+        {
+            EnumType = enumType;
+            NameReference enumVal = value;
+            Value = enumVal;
+            EnumValues = UnrealObjectInfo.GetEnumValues(pcc.Game, enumType, true);
+            PropType = PropertyType.ByteProperty;
+        }
+
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
@@ -943,6 +958,13 @@ namespace ME3Explorer.Unreal
             Values = values;
         }
 
+        public ArrayProperty(List<T> values, ArrayType type, NameReference name) : base(name)
+        {
+            PropType = PropertyType.ArrayProperty;
+            arrayType = type;
+            Values = values;
+        }
+
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
@@ -959,6 +981,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
+                stream.WriteValueS32(Values.Count);
                 foreach (var prop in Values)
                 {
                     prop.WriteTo(stream, pcc, true);

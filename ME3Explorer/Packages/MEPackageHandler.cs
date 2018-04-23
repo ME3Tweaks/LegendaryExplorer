@@ -9,20 +9,23 @@ using System.Collections.Concurrent;
 using System.Windows;
 using System.Windows.Forms;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace ME3Explorer.Packages
 {
     public static class MEPackageHandler
     {
-        static Dictionary<string, IMEPackage> openPackages = new Dictionary<string, IMEPackage>();
+        static ConcurrentDictionary<string, IMEPackage> openPackages = new ConcurrentDictionary<string, IMEPackage>();
         public static ObservableCollection<IMEPackage> packagesInTools = new ObservableCollection<IMEPackage>();
 
+        static Func<string, UDKPackage> UDKConstructorDelegate;
         static Func<string, ME1Package> ME1ConstructorDelegate;
         static Func<string, ME2Package> ME2ConstructorDelegate;
         static Func<string, ME3Package> ME3ConstructorDelegate;
 
         public static void Initialize()
         {
+            UDKConstructorDelegate = UDKPackage.Initialize();
             ME1ConstructorDelegate = ME1Package.Initialize();
             ME2ConstructorDelegate = ME2Package.Initialize();
             ME3ConstructorDelegate = ME3Package.Initialize();
@@ -60,12 +63,18 @@ namespace ME3Explorer.Packages
                 {
                     package = ME1ConstructorDelegate(pathToFile);
                 }
+                else if (version == 868 && licenseVersion == 0)
+                {
+                    //UDK
+                    Debug.WriteLine("UDK FILE!");
+                    package = UDKConstructorDelegate(pathToFile);
+                }
                 else
                 {
-                    throw new FormatException("Not an ME1, ME2, or ME3 package file.");
+                    throw new FormatException("Not an ME1, ME2, ME3, or UDK package file.");
                 }
                 package.noLongerUsed += Package_noLongerUsed;
-                openPackages.Add(pathToFile, package);
+                openPackages.TryAdd(pathToFile, package);
             }
             else
             {
@@ -91,7 +100,8 @@ namespace ME3Explorer.Packages
 
         private static void Package_noLongerUsed(object sender, EventArgs e)
         {
-            openPackages.Remove((sender as IMEPackage).FileName);
+            IMEPackage ime;
+            openPackages.TryRemove((sender as IMEPackage).FileName, out ime);
         }
 
         private static void addToPackagesInTools(IMEPackage package)

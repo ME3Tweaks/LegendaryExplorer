@@ -106,10 +106,16 @@ namespace ME3Explorer.Scene3D
                 PreviewTextureEntry entry = new PreviewTextureEntry(pcc, exportid);
                 Unreal.Classes.Texture2D metex = new Unreal.Classes.Texture2D(texpcc, exportid);
                 Texture2DDescription desc = new Texture2DDescription();
-                entry.Texture = metex.generatePreviewTexture(Device, out desc);
-                entry.TextureView = new ShaderResourceView(Device, entry.Texture);
-                cache.Add(entry);
-                return entry;
+                try
+                {
+                    entry.Texture = metex.generatePreviewTexture(Device, out desc);
+                    entry.TextureView = new ShaderResourceView(Device, entry.Texture);
+                    cache.Add(entry);
+                    return entry;
+                } catch
+                {
+                    return null;
+                }
             }
         }
     }

@@ -37,13 +37,14 @@ namespace ME3Explorer.Packages
         uint headerOffset { get; set; }
         ulong ObjectFlags { get; set; }
         int OriginalDataSize { get; }
+        bool ReadsFromConfig { get; }
 
         IExportEntry Clone();
         void setHeader(byte[] v);
 
         event PropertyChangedEventHandler PropertyChanged;
 
-        PropertyCollection GetProperties();
+        PropertyCollection GetProperties(bool forceReload = false);
         void WriteProperties(PropertyCollection props);
         int propsEnd();
         int GetPropertyStart();

@@ -27,7 +27,7 @@ namespace ME1Explorer.Unreal
                 if (File.Exists(path))
                 {
                     string raw = File.ReadAllText(path);
-                    var blob  = JsonConvert.DeserializeAnonymousType(raw, new { Classes, Structs, Enums });
+                    var blob = JsonConvert.DeserializeAnonymousType(raw, new { Classes, Structs, Enums });
                     Classes = blob.Classes;
                     Structs = blob.Structs;
                     Enums = blob.Enums;
@@ -42,6 +42,10 @@ namespace ME1Explorer.Unreal
         public static string getEnumTypefromProp(string className, string propName, bool inStruct = false)
         {
             PropertyInfo p = getPropertyInfo(className, propName, inStruct);
+            if (p == null && !inStruct)
+            {
+                p = getPropertyInfo(className, propName, true);
+            }
             return p?.reference;
         }
 
@@ -68,7 +72,7 @@ namespace ME1Explorer.Unreal
                         if (p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty)
                         {
                             List<string> vals = getEnumfromProp(p.reference, propName, true);
-                            if(vals != null)
+                            if (vals != null)
                             {
                                 return vals;
                             }
@@ -102,12 +106,37 @@ namespace ME1Explorer.Unreal
             return null;
         }
 
-        public static ArrayType getArrayType(string className, string propName, bool inStruct = false)
+        public static ArrayType getArrayType(string className, string propName, bool inStruct = false, IExportEntry export = null)
         {
             PropertyInfo p = getPropertyInfo(className, propName, inStruct);
             if (p == null)
             {
                 p = getPropertyInfo(className, propName, !inStruct);
+            }
+            if (p == null && export != null && export.ClassName != "Class")
+            {
+                export = export.FileRef.Exports[export.idxClass - 1]; //make sure you get actual class
+                ClassInfo currentInfo;
+                switch (export.FileRef.Game)
+                {
+                    case MEGame.ME1:
+                        currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(export);
+                        break;
+                    case MEGame.ME2:
+                        currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(export);
+                        break;
+                    case MEGame.ME3:
+                    default:
+                        currentInfo = ME3UnrealObjectInfo.generateClassInfo(export);
+                        break;
+                }
+                currentInfo.baseClass = export.ClassParent;
+                p = getPropertyInfo(className, propName, inStruct, currentInfo);
+                if (p == null)
+                {
+                    p = getPropertyInfo(className, propName, !inStruct, currentInfo);
+                }
+
             }
             return getArrayType(p);
         }
@@ -159,7 +188,7 @@ namespace ME1Explorer.Unreal
             }
         }
 
-        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false)
+        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
         {
             if (className.StartsWith("Default__"))
             {
@@ -261,6 +290,11 @@ namespace ME1Explorer.Unreal
             }
             File.WriteAllText(Application.StartupPath + "//exec//ME1ObjectInfo.json", JsonConvert.SerializeObject(new { Classes = Classes, Structs = Structs, Enums = Enums }));
             MessageBox.Show("Done");
+        }
+
+        internal static ClassInfo generateClassInfo(IExportEntry export)
+        {
+            return generateClassInfo(export.Index, export.FileRef as ME1Package);
         }
 
         private static ClassInfo generateClassInfo(int index, ME1Package pcc)
@@ -391,7 +425,7 @@ namespace ME1Explorer.Unreal
             }
 
             return p;
-        } 
+        }
         #endregion
     }
 }

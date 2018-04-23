@@ -118,8 +118,7 @@ namespace ME3LibWV
 
         public static void loadfromJSON()
         {
-            string path = Application.StartupPath + "//exec//ME3ObjectInfo.json";
-
+            string path = Path.Combine(Application.StartupPath, "exec", "ME3ObjectInfo.json");
             try
             {
                 if (File.Exists(path))

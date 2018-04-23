@@ -47,6 +47,7 @@ namespace ME3Explorer
             this.moveUpButton = new System.Windows.Forms.ToolStripButton();
             this.moveDownButton = new System.Windows.Forms.ToolStripButton();
             this.addPropButton = new System.Windows.Forms.ToolStripButton();
+            this.removePropertyButton = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.hb1 = new Be.Windows.Forms.HexBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -82,7 +83,8 @@ namespace ME3Explorer
             this.deleteArrayElementButton,
             this.moveUpButton,
             this.moveDownButton,
-            this.addPropButton});
+            this.addPropButton,
+            this.removePropertyButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(992, 25);
@@ -230,6 +232,16 @@ namespace ME3Explorer
             this.addPropButton.Text = "Add Property";
             this.addPropButton.Click += new System.EventHandler(this.addPropButton_Click);
             // 
+            // removePropertyButton
+            // 
+            this.removePropertyButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.removePropertyButton.Image = ((System.Drawing.Image)(resources.GetObject("removePropertyButton.Image")));
+            this.removePropertyButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.removePropertyButton.Name = "removePropertyButton";
+            this.removePropertyButton.Size = new System.Drawing.Size(102, 22);
+            this.removePropertyButton.Text = "Remove Property";
+            this.removePropertyButton.Click += new System.EventHandler(this.removePropertyButton_Click);
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -240,13 +252,14 @@ namespace ME3Explorer
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.hb1);
-            this.splitContainer1.Panel1MinSize = 205;
+            this.splitContainer1.Panel1MinSize = 195;
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.treeView1);
             this.splitContainer1.Size = new System.Drawing.Size(992, 351);
-            this.splitContainer1.SplitterDistance = 205;
+            this.splitContainer1.SplitterDistance = 195;
+            this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 3;
             this.splitContainer1.SplitterMoving += new System.Windows.Forms.SplitterCancelEventHandler(this.splitContainer1_SplitterMoving);
             // 
@@ -276,7 +289,7 @@ namespace ME3Explorer
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(783, 351);
+            this.treeView1.Size = new System.Drawing.Size(781, 351);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -374,5 +387,6 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripMenuItem expandAllChildrenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem collapseAllChildrenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reorderArrayToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton removePropertyButton;
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ME3Explorer.Pathfinding_Editor
+﻿namespace ME3Explorer.SharedUI
 {
     partial class ListWindow
     {
@@ -29,27 +29,42 @@
         private void InitializeComponent()
         {
             this.listBox = new System.Windows.Forms.ListBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // listBox
             // 
-            this.listBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listBox.FormattingEnabled = true;
-            this.listBox.Location = new System.Drawing.Point(12, 12);
+            this.listBox.ItemHeight = 25;
+            this.listBox.Location = new System.Drawing.Point(10, 10);
+            this.listBox.Margin = new System.Windows.Forms.Padding(20);
             this.listBox.Name = "listBox";
-            this.listBox.Size = new System.Drawing.Size(383, 194);
+            this.listBox.Size = new System.Drawing.Size(780, 354);
             this.listBox.TabIndex = 0;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.listBox);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Margin = new System.Windows.Forms.Padding(10);
+            this.panel1.Name = "panel1";
+            this.panel1.Padding = new System.Windows.Forms.Padding(10);
+            this.panel1.Size = new System.Drawing.Size(800, 374);
+            this.panel1.TabIndex = 1;
             // 
             // ListWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(407, 219);
-            this.Controls.Add(this.listBox);
+            this.ClientSize = new System.Drawing.Size(800, 374);
+            this.Controls.Add(this.panel1);
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Name = "ListWindow";
             this.Text = "ListWindow";
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -57,5 +72,6 @@
         #endregion
 
         private System.Windows.Forms.ListBox listBox;
+        private System.Windows.Forms.Panel panel1;
     }
 }

@@ -13,6 +13,7 @@ using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.PathingGraphEditor;
+using ME3Explorer.SequenceObjects;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -32,6 +33,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         protected static Brush mostlyTransparentBrush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
         protected static Brush actorNodeBrush = new SolidBrush(Color.FromArgb(80, 80, 80));
+        protected static Brush splineNodeBrush = new SolidBrush(Color.FromArgb(255, 60, 200));
         protected static Brush pathfindingNodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
         protected static Brush dynamicPathfindingNodeBrush = new SolidBrush(Color.FromArgb(46, 184, 25));
         protected static Brush dynamicPathnodefindingNodeBrush = new SolidBrush(Color.FromArgb(80, 184, 25));
@@ -60,7 +62,10 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public void Deselect()
         {
-            shape.Pen = outlinePen;
+            if (shape.Pen != outlinePen)
+            {
+                shape.Pen = outlinePen;
+            }
         }
 
         public override bool Intersects(RectangleF bounds)
@@ -114,60 +119,5 @@ namespace ME3Explorer.Pathfinding_Editor
             return "";
         }
 
-        public class SText : PText
-        {
-            private readonly Brush black = new SolidBrush(Color.Black);
-            public bool shadowRendering { get; set; }
-            private static PrivateFontCollection fontcollection;
-            private static Font kismetFont;
-
-            public SText(string s, bool shadows = true)
-                : base(s)
-            {
-                base.TextBrush = new SolidBrush(Color.FromArgb(255, 255, 255));
-                base.Font = kismetFont;
-
-                shadowRendering = shadows;
-            }
-
-            public SText(string s, Color c, bool shadows = true)
-                : base(s)
-            {
-                base.TextBrush = new SolidBrush(c);
-                base.Font = kismetFont;
-                shadowRendering = shadows;
-            }
-
-            public static void LoadFont()
-            {
-                if (fontcollection == null || fontcollection.Families.Length < 1)
-                {
-                    fontcollection = new PrivateFontCollection();
-                    fontcollection.AddFontFile(@"exec\KismetFont.ttf");
-                    kismetFont = new Font(fontcollection.Families[0], 6);
-                }
-            }
-
-            protected override void Paint(PPaintContext paintContext)
-            {
-                paintContext.Graphics.TextRenderingHint = TextRenderingHint.SingleBitPerPixel;
-                //paints dropshadow
-                if (shadowRendering && paintContext.Scale >= 1 && base.Text != null && base.TextBrush != null && base.Font != null)
-                {
-                    Graphics g = paintContext.Graphics;
-                    float renderedFontSize = base.Font.SizeInPoints * paintContext.Scale;
-                    if (renderedFontSize >= PUtil.GreekThreshold && renderedFontSize < PUtil.MaxFontSize)
-                    {
-                        RectangleF shadowbounds = new RectangleF();
-                        shadowbounds = Bounds;
-                        shadowbounds.Offset(1, 1);
-                        StringFormat stringformat = new StringFormat();
-                        stringformat.Alignment = base.TextAlignment;
-                        g.DrawString(base.Text, base.Font, black, shadowbounds, stringformat);
-                    }
-                }
-                base.Paint(paintContext);
-            }
-        }
     }
 }

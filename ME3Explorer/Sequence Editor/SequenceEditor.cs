@@ -26,16 +26,18 @@ namespace ME3Explorer
 {
     public partial class SequenceEditor : WinFormsBase
     {
+        public List<string> RFiles;
+        private readonly string RECENTFILES_FILE = "RECENTFILES";
 
         public SequenceEditor()
         {
             InitializeComponent();
-
+            LoadRecentList();
+            RefreshRecent(false);
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
             graphEditor.Camera.MouseDown += backMouseDown_Handler;
             zoomController = new ZoomController(graphEditor);
-
-            SText.LoadFont();
+            
             if (SObj.talkfiles == null)
             {
                 talkFiles = new ME1Explorer.TalkFiles();
@@ -141,6 +143,105 @@ namespace ME3Explorer
             }
         }
 
+        private void LoadRecentList()
+        {
+            recentToolStripMenuItem.Enabled = false;
+            RFiles = new List<string>();
+            RFiles.Clear();
+            string path = SequenceEditorDataFolder + RECENTFILES_FILE;
+            if (File.Exists(path))
+            {
+                string[] recents = File.ReadAllLines(path);
+                foreach (string recent in recents)
+                {
+                    if (File.Exists(recent))
+                    {
+                        AddRecent(recent, true);
+                    }
+                }
+            }
+        }
+
+        public void AddRecent(string s, bool loadingList)
+        {
+            RFiles = RFiles.Where(x => !x.Equals(s,StringComparison.InvariantCultureIgnoreCase)).ToList();
+            if (loadingList)
+            {
+                RFiles.Add(s); //in order
+            }
+            else
+            {
+                RFiles.Insert(0, s); //put at front
+            }
+            if (RFiles.Count > 10)
+            {
+                RFiles.RemoveRange(10, RFiles.Count - 10);
+            }
+            recentToolStripMenuItem.Enabled = true;
+        }
+
+        private void SaveRecentList()
+        {
+            if (!Directory.Exists(SequenceEditorDataFolder))
+            {
+                Directory.CreateDirectory(SequenceEditorDataFolder);
+            }
+            string path = SequenceEditorDataFolder + RECENTFILES_FILE;
+            if (File.Exists(path))
+                File.Delete(path);
+            File.WriteAllLines(path, RFiles);
+        }
+
+        private void RefreshRecent(bool propogate, List<string> recents = null)
+        {
+            if (propogate && recents != null)
+            {
+                //we are posting an update to other instances of packed
+                var forms = Application.OpenForms;
+                foreach (Form form in forms)
+                {
+                    if (form is SequenceEditor && this != form)
+                    {
+                        ((SequenceEditor)form).RefreshRecent(false, RFiles);
+                    }
+                }
+            }
+            else if (recents != null)
+            {
+                //we are receiving an update
+                RFiles = new List<string>(recents);
+            }
+            recentToolStripMenuItem.DropDownItems.Clear();
+            if (RFiles.Count <= 0)
+            {
+                recentToolStripMenuItem.Enabled = false;
+                return;
+            }
+            recentToolStripMenuItem.Enabled = true;
+
+            foreach (string filepath in RFiles)
+            {
+                ToolStripMenuItem fr = new ToolStripMenuItem(filepath, null, RecentFile_click);
+                recentToolStripMenuItem.DropDownItems.Add(fr);
+            }
+        }
+
+        private void RecentFile_click(object sender, EventArgs e)
+        {
+            string s = sender.ToString();
+            if (File.Exists(s))
+            {
+                LoadFile(s);
+                AddRecent(s, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
+            }
+            else
+            {
+                MessageBox.Show("File does not exist: " + s);
+            }
+        }
+
         private struct SaveData
         {
             public bool absoluteIndex;
@@ -190,6 +291,7 @@ namespace ME3Explorer
             if (d.ShowDialog() == DialogResult.OK)
             {
                 LoadFile(d.FileName);
+
             }
         }
 
@@ -204,6 +306,10 @@ namespace ME3Explorer
                 graphEditor.nodeLayer.RemoveAllChildren();
                 graphEditor.edgeLayer.RemoveAllChildren();
                 CurrentObjects.Clear();
+
+                AddRecent(fileName, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
             }
             catch (Exception ex)
             {

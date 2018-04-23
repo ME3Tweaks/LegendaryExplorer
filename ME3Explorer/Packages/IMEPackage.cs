@@ -9,6 +9,7 @@ namespace ME3Explorer.Packages
         ME1 = 1,
         ME2,
         ME3,
+        UDK
     }
 
     public enum ArrayType

@@ -44,6 +44,7 @@
             this.editInInterpreterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.replaceWithBINToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editInCurveEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reloadTLKsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modjobsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createBinaryReplaceJobFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createBinaryReplaceJobFromObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,7 +53,12 @@
             this.getDumpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.findImportexportViaOffsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkIndexingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.findExportsWithSerialSizeMismatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGCallReadPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dEBUGAccessME3AppendsTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.Button1 = new System.Windows.Forms.ToolStripButton();
             this.Button2 = new System.Windows.Forms.ToolStripButton();
@@ -87,6 +93,8 @@
             this.interpreterControl = new ME3Explorer.Interpreter();
             this.binaryEditorTab = new System.Windows.Forms.TabPage();
             this.binaryInterpreterControl = new ME3Explorer.BinaryInterpreter();
+            this.bio2daEditorTab = new System.Windows.Forms.TabPage();
+            this.bio2DAEditor1 = new ME3Explorer.Bio2DAEditor();
             this.infoTab = new System.Windows.Forms.TabPage();
             this.infoExportDataBox = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -127,7 +135,7 @@
             this.label13 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.headerTab = new System.Windows.Forms.TabPage();
-            this.hb2 = new Be.Windows.Forms.HexBox();
+            this.headerRawHexBox = new Be.Windows.Forms.HexBox();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
             this.saveHeaderHexChangesBtn = new System.Windows.Forms.ToolStripButton();
             this.scriptTab = new System.Windows.Forms.TabPage();
@@ -139,7 +147,7 @@
             this.setAllIndexesInThisTreeTo0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.reloadTLKsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importFromUDKUPKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -152,6 +160,7 @@
             this.propertiesTab.SuspendLayout();
             this.interpreterTab.SuspendLayout();
             this.binaryEditorTab.SuspendLayout();
+            this.bio2daEditorTab.SuspendLayout();
             this.infoTab.SuspendLayout();
             this.infoExportDataBox.SuspendLayout();
             this.infoHeaderBox.SuspendLayout();
@@ -165,6 +174,7 @@
             // 
             // menuStrip1
             // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
@@ -172,7 +182,7 @@
             this.debugToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1016, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(962, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -192,7 +202,7 @@
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.ToolTipText = "Load an uncompressed or compressed PCC file";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
@@ -201,7 +211,7 @@
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.ToolTipText = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
@@ -209,7 +219,7 @@
             // saveAsMenuItem
             // 
             this.saveAsMenuItem.Name = "saveAsMenuItem";
-            this.saveAsMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveAsMenuItem.Size = new System.Drawing.Size(138, 22);
             this.saveAsMenuItem.Text = "Save As";
             this.saveAsMenuItem.ToolTipText = "Save As";
             this.saveAsMenuItem.Click += new System.EventHandler(this.appendSaveToolStripMenuItem_Click);
@@ -222,7 +232,7 @@
             this.sequenceEditorToolStripMenuItem,
             this.wWiseBankEditorToolStripMenuItem});
             this.openInToolStripMenuItem.Name = "openInToolStripMenuItem";
-            this.openInToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openInToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.openInToolStripMenuItem.Text = "Open in...";
             // 
             // faceFXEditorToolStripMenuItem
@@ -256,15 +266,14 @@
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(135, 6);
             // 
             // recentToolStripMenuItem
             // 
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.recentToolStripMenuItem.Text = "Recent";
             this.recentToolStripMenuItem.ToolTipText = "Open recently opened file";
-            this.recentToolStripMenuItem.Click += new System.EventHandler(this.recentToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
             // 
@@ -274,7 +283,8 @@
             this.editInInterpreterToolStripMenuItem,
             this.replaceWithBINToolStripMenuItem,
             this.editInCurveEditorToolStripMenuItem,
-            this.reloadTLKsToolStripMenuItem});
+            this.reloadTLKsToolStripMenuItem,
+            this.importFromUDKUPKToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
@@ -283,14 +293,14 @@
             // 
             this.hexConverterToolStripMenuItem.AutoToolTip = true;
             this.hexConverterToolStripMenuItem.Name = "hexConverterToolStripMenuItem";
-            this.hexConverterToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.hexConverterToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.hexConverterToolStripMenuItem.Text = "Hex Converter";
             this.hexConverterToolStripMenuItem.Click += new System.EventHandler(this.hexConverterToolStripMenuItem_Click);
             // 
             // addNameToolStripMenuItem
             // 
             this.addNameToolStripMenuItem.Name = "addNameToolStripMenuItem";
-            this.addNameToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.addNameToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.addNameToolStripMenuItem.Text = "Add Name";
             this.addNameToolStripMenuItem.ToolTipText = "Add a name to the name table";
             this.addNameToolStripMenuItem.Click += new System.EventHandler(this.addNameToolStripMenuItem_Click);
@@ -298,7 +308,7 @@
             // editInInterpreterToolStripMenuItem
             // 
             this.editInInterpreterToolStripMenuItem.Name = "editInInterpreterToolStripMenuItem";
-            this.editInInterpreterToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.editInInterpreterToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.editInInterpreterToolStripMenuItem.Text = "Edit in Interpreter";
             this.editInInterpreterToolStripMenuItem.ToolTipText = "Open this export in the interpreter";
             this.editInInterpreterToolStripMenuItem.Click += new System.EventHandler(this.editInInterpreterToolStripMenuItem_Click);
@@ -306,16 +316,24 @@
             // replaceWithBINToolStripMenuItem
             // 
             this.replaceWithBINToolStripMenuItem.Name = "replaceWithBINToolStripMenuItem";
-            this.replaceWithBINToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.replaceWithBINToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.replaceWithBINToolStripMenuItem.Text = "Replace with BIN";
             this.replaceWithBINToolStripMenuItem.Click += new System.EventHandler(this.replaceWithBINToolStripMenuItem_Click);
             // 
             // editInCurveEditorToolStripMenuItem
             // 
             this.editInCurveEditorToolStripMenuItem.Name = "editInCurveEditorToolStripMenuItem";
-            this.editInCurveEditorToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.editInCurveEditorToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.editInCurveEditorToolStripMenuItem.Text = "Edit in Curve Editor";
             this.editInCurveEditorToolStripMenuItem.Click += new System.EventHandler(this.editInCurveEditorToolStripMenuItem_Click);
+            // 
+            // reloadTLKsToolStripMenuItem
+            // 
+            this.reloadTLKsToolStripMenuItem.Name = "reloadTLKsToolStripMenuItem";
+            this.reloadTLKsToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.reloadTLKsToolStripMenuItem.Text = "Reload TLKs";
+            this.reloadTLKsToolStripMenuItem.ToolTipText = "Reloads the TLK files used by ME3Explorer for displaying StringRefProperty.";
+            this.reloadTLKsToolStripMenuItem.Click += new System.EventHandler(this.reloadTLKsToolStripMenuItem_Click);
             // 
             // modjobsToolStripMenuItem
             // 
@@ -347,29 +365,34 @@
             this.getDumpToolStripMenuItem1,
             this.findImportexportViaOffsetToolStripMenuItem,
             this.checkIndexingToolStripMenuItem,
-            this.dEBUGCallReadPropertiesToolStripMenuItem});
+            this.findExportsWithSerialSizeMismatchToolStripMenuItem,
+            this.dEBUGCallReadPropertiesToolStripMenuItem,
+            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem,
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem,
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem,
+            this.dEBUGAccessME3AppendsTableToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
-            this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
-            this.debugToolStripMenuItem.Text = "Debug";
+            this.debugToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
+            this.debugToolStripMenuItem.Text = "Debugging";
             // 
             // getDumpToolStripMenuItem
             // 
             this.getDumpToolStripMenuItem.Name = "getDumpToolStripMenuItem";
-            this.getDumpToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
-            this.getDumpToolStripMenuItem.Text = "Get Complete Dump";
+            this.getDumpToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.getDumpToolStripMenuItem.Text = "Dump Complete Export to binary file";
             this.getDumpToolStripMenuItem.Click += new System.EventHandler(this.getDumpToolStripMenuItem_Click_1);
             // 
             // getDumpToolStripMenuItem1
             // 
             this.getDumpToolStripMenuItem1.Name = "getDumpToolStripMenuItem1";
-            this.getDumpToolStripMenuItem1.Size = new System.Drawing.Size(227, 22);
-            this.getDumpToolStripMenuItem1.Text = "Get Binary Dump";
+            this.getDumpToolStripMenuItem1.Size = new System.Drawing.Size(325, 22);
+            this.getDumpToolStripMenuItem1.Text = "Dump Binary Data of Export to binary file";
             this.getDumpToolStripMenuItem1.Click += new System.EventHandler(this.getDumpToolStripMenuItem1_Click);
             // 
             // findImportexportViaOffsetToolStripMenuItem
             // 
             this.findImportexportViaOffsetToolStripMenuItem.Name = "findImportexportViaOffsetToolStripMenuItem";
-            this.findImportexportViaOffsetToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.findImportexportViaOffsetToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
             this.findImportexportViaOffsetToolStripMenuItem.Text = "Find import/export via offset";
             this.findImportexportViaOffsetToolStripMenuItem.ToolTipText = "Finds an export or import containing the offset you specify.";
             this.findImportexportViaOffsetToolStripMenuItem.Click += new System.EventHandler(this.findImportexportViaOffsetToolStripMenuItem_Click);
@@ -377,19 +400,55 @@
             // checkIndexingToolStripMenuItem
             // 
             this.checkIndexingToolStripMenuItem.Name = "checkIndexingToolStripMenuItem";
-            this.checkIndexingToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.checkIndexingToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
             this.checkIndexingToolStripMenuItem.Text = "Check indexing";
             this.checkIndexingToolStripMenuItem.Click += new System.EventHandler(this.checkIndexingToolStripMenuItem_Click);
+            // 
+            // findExportsWithSerialSizeMismatchToolStripMenuItem
+            // 
+            this.findExportsWithSerialSizeMismatchToolStripMenuItem.Name = "findExportsWithSerialSizeMismatchToolStripMenuItem";
+            this.findExportsWithSerialSizeMismatchToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.findExportsWithSerialSizeMismatchToolStripMenuItem.Text = "Find exports with serial size mismatch";
+            this.findExportsWithSerialSizeMismatchToolStripMenuItem.Click += new System.EventHandler(this.findExportsWithSerialSizeMismatchToolStripMenuItem_Click);
             // 
             // dEBUGCallReadPropertiesToolStripMenuItem
             // 
             this.dEBUGCallReadPropertiesToolStripMenuItem.Name = "dEBUGCallReadPropertiesToolStripMenuItem";
-            this.dEBUGCallReadPropertiesToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.dEBUGCallReadPropertiesToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
             this.dEBUGCallReadPropertiesToolStripMenuItem.Text = "DEBUG: Call ReadProperties()";
             this.dEBUGCallReadPropertiesToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCallReadPropertiesToolStripMenuItem_Click);
             // 
+            // dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem
+            // 
+            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Name = "dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem";
+            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Text = "DEBUG: Copy config reading props to clipboard";
+            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem_Click);
+            // 
+            // dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem
+            // 
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Name = "dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem";
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Text = "DEBUG: Copy all BIOG items to clipboard";
+            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem_Click);
+            // 
+            // dEBUGExport2DAToExcelFileToolStripMenuItem
+            // 
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Name = "dEBUGExport2DAToExcelFileToolStripMenuItem";
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Text = "DEBUG: Export 2DA to Excel file";
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Click += new System.EventHandler(this.dEBUGExport2DAToExcelFileToolStripMenuItem_Click);
+            // 
+            // dEBUGAccessME3AppendsTableToolStripMenuItem
+            // 
+            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Name = "dEBUGAccessME3AppendsTableToolStripMenuItem";
+            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Size = new System.Drawing.Size(325, 22);
+            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Text = "DEBUG: Access ME3 AppendsTable";
+            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Click += new System.EventHandler(this.dEBUGAccessME3AppendsTableToolStripMenuItem_Click);
+            // 
             // toolStrip1
             // 
+            this.toolStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.Button1,
             this.Button2,
@@ -408,7 +467,7 @@
             this.toolStripButton4});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1016, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(962, 25);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -520,7 +579,7 @@
             // gotonumber
             // 
             this.gotonumber.Name = "gotonumber";
-            this.gotonumber.Size = new System.Drawing.Size(100, 25);
+            this.gotonumber.Size = new System.Drawing.Size(52, 25);
             this.gotonumber.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.gotonumber_KeyPress);
             // 
             // toolStripButton4
@@ -535,13 +594,14 @@
             // 
             // statusStrip1
             // 
+            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pb1,
             this.toolStripStatusLabel1,
             this.status2});
             this.statusStrip1.Location = new System.Drawing.Point(0, 494);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1016, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(962, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -566,6 +626,7 @@
             // 
             // nameContextMenuStrip1
             // 
+            this.nameContextMenuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.nameContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyToolStripMenuItem,
             this.editToolStripMenuItem1});
@@ -600,8 +661,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.packageEditorTabPane);
-            this.splitContainer1.Size = new System.Drawing.Size(1016, 445);
-            this.splitContainer1.SplitterDistance = 334;
+            this.splitContainer1.Size = new System.Drawing.Size(962, 445);
+            this.splitContainer1.SplitterDistance = 316;
             this.splitContainer1.TabIndex = 3;
             // 
             // treeView1
@@ -612,7 +673,7 @@
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(334, 445);
+            this.treeView1.Size = new System.Drawing.Size(316, 445);
             this.treeView1.TabIndex = 1;
             this.treeView1.Visible = false;
             this.treeView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeView1_ItemDrag);
@@ -633,7 +694,7 @@
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
             this.listBox1.ScrollAlwaysVisible = true;
-            this.listBox1.Size = new System.Drawing.Size(334, 445);
+            this.listBox1.Size = new System.Drawing.Size(316, 445);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged_1);
             this.listBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listBox1_MouseDown);
@@ -643,6 +704,7 @@
             this.packageEditorTabPane.Controls.Add(this.propertiesTab);
             this.packageEditorTabPane.Controls.Add(this.interpreterTab);
             this.packageEditorTabPane.Controls.Add(this.binaryEditorTab);
+            this.packageEditorTabPane.Controls.Add(this.bio2daEditorTab);
             this.packageEditorTabPane.Controls.Add(this.infoTab);
             this.packageEditorTabPane.Controls.Add(this.metaDataPage);
             this.packageEditorTabPane.Controls.Add(this.headerTab);
@@ -651,7 +713,7 @@
             this.packageEditorTabPane.Location = new System.Drawing.Point(0, 0);
             this.packageEditorTabPane.Name = "packageEditorTabPane";
             this.packageEditorTabPane.SelectedIndex = 0;
-            this.packageEditorTabPane.Size = new System.Drawing.Size(678, 445);
+            this.packageEditorTabPane.Size = new System.Drawing.Size(642, 445);
             this.packageEditorTabPane.TabIndex = 4;
             this.packageEditorTabPane.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -661,9 +723,10 @@
             this.propertiesTab.Location = new System.Drawing.Point(4, 22);
             this.propertiesTab.Name = "propertiesTab";
             this.propertiesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.propertiesTab.Size = new System.Drawing.Size(670, 419);
+            this.propertiesTab.Size = new System.Drawing.Size(634, 419);
             this.propertiesTab.TabIndex = 1;
             this.propertiesTab.Text = "Properties";
+            this.propertiesTab.ToolTipText = "Edit UProperties in a simple interface for this export";
             this.propertiesTab.UseVisualStyleBackColor = true;
             // 
             // propGrid
@@ -673,7 +736,7 @@
             this.propGrid.LineColor = System.Drawing.SystemColors.ControlDark;
             this.propGrid.Location = new System.Drawing.Point(3, 3);
             this.propGrid.Name = "propGrid";
-            this.propGrid.Size = new System.Drawing.Size(664, 413);
+            this.propGrid.Size = new System.Drawing.Size(628, 413);
             this.propGrid.TabIndex = 0;
             this.propGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propGrid_PropertyValueChanged);
             // 
@@ -683,9 +746,10 @@
             this.interpreterTab.Location = new System.Drawing.Point(4, 22);
             this.interpreterTab.Name = "interpreterTab";
             this.interpreterTab.Padding = new System.Windows.Forms.Padding(3);
-            this.interpreterTab.Size = new System.Drawing.Size(670, 419);
+            this.interpreterTab.Size = new System.Drawing.Size(634, 419);
             this.interpreterTab.TabIndex = 6;
             this.interpreterTab.Text = "Interpreter / Hex Editor";
+            this.interpreterTab.ToolTipText = "Edit UProperties for this export";
             this.interpreterTab.UseVisualStyleBackColor = true;
             // 
             // interpreterControl
@@ -694,7 +758,7 @@
             this.interpreterControl.Location = new System.Drawing.Point(3, 3);
             this.interpreterControl.Name = "interpreterControl";
             this.interpreterControl.Pcc = null;
-            this.interpreterControl.Size = new System.Drawing.Size(664, 413);
+            this.interpreterControl.Size = new System.Drawing.Size(628, 413);
             this.interpreterControl.TabIndex = 0;
             // 
             // binaryEditorTab
@@ -703,9 +767,10 @@
             this.binaryEditorTab.Location = new System.Drawing.Point(4, 22);
             this.binaryEditorTab.Name = "binaryEditorTab";
             this.binaryEditorTab.Padding = new System.Windows.Forms.Padding(3);
-            this.binaryEditorTab.Size = new System.Drawing.Size(670, 419);
+            this.binaryEditorTab.Size = new System.Drawing.Size(634, 419);
             this.binaryEditorTab.TabIndex = 7;
             this.binaryEditorTab.Text = "Binary Editor";
+            this.binaryEditorTab.ToolTipText = "Edit parsable binary data for this export";
             this.binaryEditorTab.UseVisualStyleBackColor = true;
             // 
             // binaryInterpreterControl
@@ -714,8 +779,29 @@
             this.binaryInterpreterControl.Location = new System.Drawing.Point(3, 3);
             this.binaryInterpreterControl.Name = "binaryInterpreterControl";
             this.binaryInterpreterControl.Pcc = null;
-            this.binaryInterpreterControl.Size = new System.Drawing.Size(664, 413);
+            this.binaryInterpreterControl.Size = new System.Drawing.Size(628, 413);
             this.binaryInterpreterControl.TabIndex = 0;
+            // 
+            // bio2daEditorTab
+            // 
+            this.bio2daEditorTab.Controls.Add(this.bio2DAEditor1);
+            this.bio2daEditorTab.Location = new System.Drawing.Point(4, 22);
+            this.bio2daEditorTab.Name = "bio2daEditorTab";
+            this.bio2daEditorTab.Padding = new System.Windows.Forms.Padding(3);
+            this.bio2daEditorTab.Size = new System.Drawing.Size(634, 419);
+            this.bio2daEditorTab.TabIndex = 8;
+            this.bio2daEditorTab.Text = "Bio2DA Editor";
+            this.bio2daEditorTab.ToolTipText = "Edit the binary Bio2DA data for this export";
+            this.bio2daEditorTab.UseVisualStyleBackColor = true;
+            // 
+            // bio2DAEditor1
+            // 
+            this.bio2DAEditor1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bio2DAEditor1.Location = new System.Drawing.Point(3, 3);
+            this.bio2DAEditor1.Name = "bio2DAEditor1";
+            this.bio2DAEditor1.Pcc = null;
+            this.bio2DAEditor1.Size = new System.Drawing.Size(628, 413);
+            this.bio2DAEditor1.TabIndex = 0;
             // 
             // infoTab
             // 
@@ -723,9 +809,10 @@
             this.infoTab.Controls.Add(this.infoHeaderBox);
             this.infoTab.Location = new System.Drawing.Point(4, 22);
             this.infoTab.Name = "infoTab";
-            this.infoTab.Size = new System.Drawing.Size(670, 419);
+            this.infoTab.Size = new System.Drawing.Size(634, 419);
             this.infoTab.TabIndex = 3;
             this.infoTab.Text = "Info";
+            this.infoTab.ToolTipText = "View information about this export";
             this.infoTab.UseVisualStyleBackColor = true;
             // 
             // infoExportDataBox
@@ -987,9 +1074,10 @@
             this.metaDataPage.Location = new System.Drawing.Point(4, 22);
             this.metaDataPage.Name = "metaDataPage";
             this.metaDataPage.Padding = new System.Windows.Forms.Padding(3);
-            this.metaDataPage.Size = new System.Drawing.Size(670, 419);
+            this.metaDataPage.Size = new System.Drawing.Size(634, 419);
             this.metaDataPage.TabIndex = 4;
             this.metaDataPage.Text = "Meta Data Editor";
+            this.metaDataPage.ToolTipText = "Edit the metadata about this export";
             this.metaDataPage.UseVisualStyleBackColor = true;
             // 
             // showFullPathsCheckbox
@@ -1101,40 +1189,42 @@
             // 
             // headerTab
             // 
-            this.headerTab.Controls.Add(this.hb2);
+            this.headerTab.Controls.Add(this.headerRawHexBox);
             this.headerTab.Controls.Add(this.toolStrip2);
             this.headerTab.Location = new System.Drawing.Point(4, 22);
             this.headerTab.Name = "headerTab";
             this.headerTab.Padding = new System.Windows.Forms.Padding(3);
-            this.headerTab.Size = new System.Drawing.Size(670, 419);
+            this.headerTab.Size = new System.Drawing.Size(634, 419);
             this.headerTab.TabIndex = 5;
             this.headerTab.Text = "Header Raw";
+            this.headerTab.ToolTipText = "Edit the header hex directly for this export";
             this.headerTab.UseVisualStyleBackColor = true;
             // 
             // hb2
             // 
-            this.hb2.BoldFont = null;
-            this.hb2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
-            this.hb2.LineInfoVisible = true;
-            this.hb2.Location = new System.Drawing.Point(3, 28);
-            this.hb2.MinBytesPerLine = 16;
-            this.hb2.Name = "hb2";
-            this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(664, 388);
-            this.hb2.StringViewVisible = true;
-            this.hb2.TabIndex = 0;
-            this.hb2.UseFixedBytesPerLine = true;
-            this.hb2.VScrollBarVisible = true;
+            this.headerRawHexBox.BoldFont = null;
+            this.headerRawHexBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.headerRawHexBox.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.headerRawHexBox.LineInfoForeColor = System.Drawing.Color.Empty;
+            this.headerRawHexBox.LineInfoVisible = true;
+            this.headerRawHexBox.Location = new System.Drawing.Point(3, 28);
+            this.headerRawHexBox.MinBytesPerLine = 16;
+            this.headerRawHexBox.Name = "hb2";
+            this.headerRawHexBox.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.headerRawHexBox.Size = new System.Drawing.Size(628, 388);
+            this.headerRawHexBox.StringViewVisible = true;
+            this.headerRawHexBox.TabIndex = 0;
+            this.headerRawHexBox.UseFixedBytesPerLine = true;
+            this.headerRawHexBox.VScrollBarVisible = true;
             // 
             // toolStrip2
             // 
+            this.toolStrip2.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveHeaderHexChangesBtn});
             this.toolStrip2.Location = new System.Drawing.Point(3, 3);
             this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(664, 25);
+            this.toolStrip2.Size = new System.Drawing.Size(628, 25);
             this.toolStrip2.TabIndex = 1;
             this.toolStrip2.Text = "toolStrip2";
             // 
@@ -1153,9 +1243,10 @@
             this.scriptTab.Controls.Add(this.rtb1);
             this.scriptTab.Location = new System.Drawing.Point(4, 22);
             this.scriptTab.Name = "scriptTab";
-            this.scriptTab.Size = new System.Drawing.Size(670, 419);
+            this.scriptTab.Size = new System.Drawing.Size(634, 419);
             this.scriptTab.TabIndex = 2;
             this.scriptTab.Text = "Script";
+            this.scriptTab.ToolTipText = "View a decompiled UnrealScript that this export represents.";
             this.scriptTab.UseVisualStyleBackColor = true;
             // 
             // rtb1
@@ -1166,13 +1257,14 @@
             this.rtb1.Location = new System.Drawing.Point(0, 0);
             this.rtb1.Name = "rtb1";
             this.rtb1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.rtb1.Size = new System.Drawing.Size(670, 419);
+            this.rtb1.Size = new System.Drawing.Size(634, 419);
             this.rtb1.TabIndex = 2;
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;
             // 
             // nodeContextMenuStrip1
             // 
+            this.nodeContextMenuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.nodeContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cloneToolStripMenuItem,
             this.cloneTreeToolStripMenuItem,
@@ -1211,6 +1303,7 @@
             // 
             // contextMenuStrip1
             // 
+            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cloneToolStripMenuItem1});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
@@ -1223,20 +1316,19 @@
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
             // 
-            // reloadTLKsToolStripMenuItem
+            // importFromUDKUPKToolStripMenuItem
             // 
-            this.reloadTLKsToolStripMenuItem.Name = "reloadTLKsToolStripMenuItem";
-            this.reloadTLKsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.reloadTLKsToolStripMenuItem.Text = "Reload TLKs";
-            this.reloadTLKsToolStripMenuItem.ToolTipText = "Reloads the TLK files used by ME3Explorer for displaying StringRefProperty.";
-            this.reloadTLKsToolStripMenuItem.Click += new System.EventHandler(this.reloadTLKsToolStripMenuItem_Click);
+            this.importFromUDKUPKToolStripMenuItem.Name = "importFromUDKUPKToolStripMenuItem";
+            this.importFromUDKUPKToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.importFromUDKUPKToolStripMenuItem.Text = "Import from UDK UPK";
+            this.importFromUDKUPKToolStripMenuItem.Click += new System.EventHandler(this.importFromUDKUPKToolStripMenuItem_Click);
             // 
             // PackageEditor
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1016, 516);
+            this.ClientSize = new System.Drawing.Size(962, 516);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.toolStrip1);
@@ -1246,6 +1338,7 @@
             this.Name = "PackageEditor";
             this.Text = "Package Editor";
             this.Activated += new System.EventHandler(this.PackageEditor_Activated);
+            this.Shown += new System.EventHandler(this.PackageEditor_Shown);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PackageEditor_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.PackageEditor_FormClosed);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.PackageEditor_DragDrop);
@@ -1265,6 +1358,7 @@
             this.propertiesTab.ResumeLayout(false);
             this.interpreterTab.ResumeLayout(false);
             this.binaryEditorTab.ResumeLayout(false);
+            this.bio2daEditorTab.ResumeLayout(false);
             this.infoTab.ResumeLayout(false);
             this.infoExportDataBox.ResumeLayout(false);
             this.infoExportDataBox.PerformLayout();
@@ -1360,7 +1454,7 @@
         private System.Windows.Forms.ToolStripButton Button5;
         private System.Windows.Forms.TreeView treeView1;
         public System.Windows.Forms.ListBox listBox1;
-        private Be.Windows.Forms.HexBox hb2;
+        private Be.Windows.Forms.HexBox headerRawHexBox;
         private System.Windows.Forms.TextBox superclassTextBox;
         private System.Windows.Forms.Label superclassLabel;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
@@ -1401,5 +1495,13 @@
         private System.Windows.Forms.ToolStripMenuItem faceFXEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem wWiseBankEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reloadTLKsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dEBUGExport2DAToExcelFileToolStripMenuItem;
+        private System.Windows.Forms.TabPage bio2daEditorTab;
+        private Bio2DAEditor bio2DAEditor1;
+        private System.Windows.Forms.ToolStripMenuItem findExportsWithSerialSizeMismatchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dEBUGAccessME3AppendsTableToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importFromUDKUPKToolStripMenuItem;
     }
 }

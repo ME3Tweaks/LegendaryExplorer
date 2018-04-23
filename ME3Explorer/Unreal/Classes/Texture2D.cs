@@ -231,26 +231,34 @@ namespace ME3Explorer.Unreal.Classes
                 case storage.arcCpr:
                 case storage.arcUnc:
                     string archivePath = GetTFC(arcName);
-                    Console.WriteLine("Loaded texture from tfc '" + archivePath + "'.");
-
-                    using (FileStream archiveStream = File.OpenRead(archivePath))
+                    if (archivePath != null && File.Exists(archivePath))
                     {
-                        archiveStream.Seek(imgInfo.offset, SeekOrigin.Begin);
-                        if (imgInfo.storageType == storage.arcCpr)
+                        Console.WriteLine("Loaded texture from tfc '" + archivePath + "'.");
+
+                        using (FileStream archiveStream = File.OpenRead(archivePath))
                         {
-                            imgBuffer = ZBlock.Decompress(archiveStream, imgInfo.cprSize);
+                            archiveStream.Seek(imgInfo.offset, SeekOrigin.Begin);
+                            if (imgInfo.storageType == storage.arcCpr)
+                            {
+                                imgBuffer = ZBlock.Decompress(archiveStream, imgInfo.cprSize);
+                            }
+                            else
+                            {
+                                imgBuffer = new byte[imgInfo.uncSize];
+                                archiveStream.Read(imgBuffer, 0, imgBuffer.Length);
+                            }
                         }
-                        else
-                        {
-                            imgBuffer = new byte[imgInfo.uncSize];
-                            archiveStream.Read(imgBuffer, 0, imgBuffer.Length);
-                        }
+                    } else
+                    {
+                        //how do i put default unreal texture
+                        imgBuffer = null; //this will cause exception that will bubble up.
                     }
+                    
                     break;
                 default:
                     throw new FormatException("Unsupported texture storage type");
             }
-            return imgBuffer;
+            return imgBuffer; //cannot be uninitialized.
         }
 
         public void extractMaxImage(string archiveDir = null, string fileName = null)

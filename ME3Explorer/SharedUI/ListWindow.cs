@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ME3Explorer.Pathfinding_Editor
+namespace ME3Explorer.SharedUI
 {
     public partial class ListWindow : Form
     {

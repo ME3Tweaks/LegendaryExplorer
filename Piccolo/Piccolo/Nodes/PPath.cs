@@ -118,7 +118,10 @@ namespace UMD.HCIL.Piccolo.Nodes
         private static PMatrix TEMP_MATRIX = new PMatrix();
         private static Pen DEFAULT_PEN = Pens.Black;
         private const FillMode DEFAULT_FILLMODE = FillMode.Alternate;
-
+        /// <summary>
+        /// BezierPoints is used to create a Bezier edge. This must be evaluated to determine calling UpdateEdge or UpdateEdgeBezier in your PCanvas. This is used to store the Y values at 0.33 and 0.66 of control points B and C on a cubic 1D bezier.
+        /// </summary>
+        public float[] BezierPoints;
         private GraphicsPath path;
         [NonSerialized] private GraphicsPath resizePath;
         [NonSerialized] private Pen pen;

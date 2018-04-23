@@ -1,4 +1,5 @@
 ﻿using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using System;
 using System.Collections.Generic;
