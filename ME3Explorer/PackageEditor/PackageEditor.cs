@@ -121,10 +121,16 @@ namespace ME3Explorer
             d.Filter = App.FileFilter;
             if (d.ShowDialog() == DialogResult.OK)
             {
-                LoadFile(d.FileName);
-                AddRecent(d.FileName, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
+                try
+                {
+                    LoadFile(d.FileName);
+                    AddRecent(d.FileName, false);
+                    SaveRecentList();
+                    RefreshRecent(true, RFiles);
+                } catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to open file:\n" + ex.Message);
+                }
             }
         }
 
@@ -2453,7 +2459,7 @@ namespace ME3Explorer
 
             if (!dataAlreadySet)
             {
-             nex.Data = res.ToArray();
+                nex.Data = res.ToArray();
             }
             nex.idxClass = classValue;
             nex.idxObjectName = pcc.FindNameOrAdd(importpcc.getNameEntry(ex.idxObjectName));
@@ -2949,9 +2955,20 @@ namespace ME3Explorer
             var offset = me3.DependsOffset;
         }
 
-        private void importFromUDKUPKToolStripMenuItem_Click(object sender, EventArgs e)
+        private void dEBUGEnumerateAllClassesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new UDKImporter().ShowDialog();
+            if (pcc != null)
+            {
+                foreach (IExportEntry exp in pcc.Exports)
+                {
+                    if (exp.ClassName == "Class")
+                    {
+                        Debug.WriteLine("Testing " + exp.Index + " " + exp.GetFullPath);
+                        binaryInterpreterControl.export = exp;
+                        binaryInterpreterControl.InitInterpreter();
+                    }
+                }
+            }
         }
     }
 }

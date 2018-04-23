@@ -27,6 +27,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PackageEditor));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.dEBUGEnumerateAllClassesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -147,7 +148,6 @@
             this.setAllIndexesInThisTreeTo0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.importFromUDKUPKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -283,8 +283,7 @@
             this.editInInterpreterToolStripMenuItem,
             this.replaceWithBINToolStripMenuItem,
             this.editInCurveEditorToolStripMenuItem,
-            this.reloadTLKsToolStripMenuItem,
-            this.importFromUDKUPKToolStripMenuItem});
+            this.reloadTLKsToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
@@ -370,7 +369,8 @@
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem,
             this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem,
             this.dEBUGExport2DAToExcelFileToolStripMenuItem,
-            this.dEBUGAccessME3AppendsTableToolStripMenuItem});
+            this.dEBUGAccessME3AppendsTableToolStripMenuItem,
+            this.dEBUGEnumerateAllClassesToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
             this.debugToolStripMenuItem.Text = "Debugging";
@@ -1316,12 +1316,12 @@
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
             // 
-            // importFromUDKUPKToolStripMenuItem
+            // dEBUGEnumerateAllClassesToolStripMenuItem
             // 
-            this.importFromUDKUPKToolStripMenuItem.Name = "importFromUDKUPKToolStripMenuItem";
-            this.importFromUDKUPKToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.importFromUDKUPKToolStripMenuItem.Text = "Import from UDK UPK";
-            this.importFromUDKUPKToolStripMenuItem.Click += new System.EventHandler(this.importFromUDKUPKToolStripMenuItem_Click);
+            this.dEBUGEnumerateAllClassesToolStripMenuItem.Name = "dEBUGEnumerateAllClassesToolStripMenuItem";
+            this.dEBUGEnumerateAllClassesToolStripMenuItem.Size = new System.Drawing.Size(620, 22);
+            this.dEBUGEnumerateAllClassesToolStripMenuItem.Text = "DEBUG: BinaryInterpreter -Enumerate All Class Exports";
+            this.dEBUGEnumerateAllClassesToolStripMenuItem.Click += new System.EventHandler(this.dEBUGEnumerateAllClassesToolStripMenuItem_Click);
             // 
             // PackageEditor
             // 
@@ -1502,6 +1502,6 @@
         private Bio2DAEditor bio2DAEditor1;
         private System.Windows.Forms.ToolStripMenuItem findExportsWithSerialSizeMismatchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dEBUGAccessME3AppendsTableToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importFromUDKUPKToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dEBUGEnumerateAllClassesToolStripMenuItem;
     }
 }
