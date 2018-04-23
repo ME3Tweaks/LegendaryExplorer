@@ -1808,7 +1808,7 @@ namespace ME3Explorer
                         }
                     }
                     //Run an interpreter pass over it - we will find objectleafnodes and attempt to update the same offset in the destination file.
-                    BinaryInterpreter binaryrelinkInterpreter = new ME3Explorer.BinaryInterpreter(importpcc, importpcc.Exports[entry.Key], pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
+                    //BinaryInterpreter binaryrelinkInterpreter = new ME3Explorer.BinaryInterpreter(importpcc, importpcc.Exports[entry.Key], pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
                 }
             }
         }
