@@ -581,7 +581,7 @@ namespace ME3Explorer
                         }
                     }
 
-                    if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName))
+                    if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
                     {
                         if (!packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
                         {
@@ -607,7 +607,7 @@ namespace ME3Explorer
                             binaryInterpreterControl.export = exportEntry;
                             binaryInterpreterControl.InitInterpreter();
                         }
-                        if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName))
+                        if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
                         {
                             bio2DAEditor1.export = exportEntry;
                             bio2DAEditor1.InitInterpreter();

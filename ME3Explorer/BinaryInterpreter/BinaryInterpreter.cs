@@ -1657,11 +1657,11 @@ Floats*/
                     offset = ClassParser_ReadImplementsTable(topLevelTree, data, offset);
                     int postComponentsNoneNameIndex = BitConverter.ToInt32(data, offset);
                     int postComponentNoneIndex = BitConverter.ToInt32(data, offset + 4);
-                    string postCompName = export.FileRef.getNameEntry(postComponentsNoneNameIndex);
-                    if (postCompName != "None")
+                    string postCompName = export.FileRef.getNameEntry(postComponentsNoneNameIndex); //This appears to be unused in ME#, it is always None it seems.
+                    /*if (postCompName != "None")
                     {
                         Debugger.Break();
-                    }
+                    }*/
                     node = new TreeNode("0x" + offset.ToString("X5") + " Post-Components Blank (" + postCompName + ")");
                     node.Name = offset.ToString();
                     node.Tag = nodeType.StructLeafName;
@@ -1669,10 +1669,11 @@ Floats*/
                     offset += 8;
 
                     int unknown4 = BitConverter.ToInt32(data, offset);
-                    if (unknown4 != 0)
+                    /*if (unknown4 != 0)
                     {
-                        Debugger.Break();
-                    }
+                        Debug.WriteLine("Unknown 4 is not 0: " + unknown4);
+                       // Debugger.Break();
+                    }*/
                     node = new TreeNode("0x" + offset.ToString("X5") + " Unknown 4: " + unknown4);
                     node.Name = offset.ToString();
                     node.Tag = nodeType.StructLeafInt;
@@ -1836,7 +1837,7 @@ Floats*/
             {
                 int interfaceCount = BitConverter.ToInt32(data, offset);
 
-                TreeNode node = new TreeNode("0x" + offset.ToString("X5") + " Implemented Interfaces Table Count: " + interfaceCount + ", " + pcc.getNameEntry(interfaceCount));
+                TreeNode node = new TreeNode("0x" + offset.ToString("X5") + " Implemented Interfaces Table Count: " + interfaceCount);
                 node.Name = offset.ToString();
                 node.Tag = nodeType.StructLeafInt;
                 topLevelTree.Nodes.Add(node);
