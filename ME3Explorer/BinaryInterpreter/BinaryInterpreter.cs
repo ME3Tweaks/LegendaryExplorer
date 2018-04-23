@@ -130,7 +130,7 @@ Floats*/
             defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
 
             //Load ME1TLK
-            string tlkxmlpath = @"C:\users\mgame\desktop\me1tlk.xml";
+            /*string tlkxmlpath = @"C:\users\mgame\desktop\me1tlk.xml";
             if (File.Exists(tlkxmlpath))
             {
                 XDocument xmlDocument = XDocument.Load(tlkxmlpath);
@@ -141,7 +141,7 @@ Floats*/
                          ID = strings.Element("id").Value,
                          Data = strings.Element("data").Value,
                      }).Distinct().ToDictionary(o => o.ID, o => o.Data);
-            }
+            }*/
         }
 
         /// <summary>
@@ -1930,10 +1930,14 @@ Floats*/
             return str;
         }
 
-        private string getEntryFullPath(int coreReference)
+        private string getEntryFullPath(int index)
         {
+            if (index == 0)
+            {
+                return "Null";
+            }
             string retStr = "Entry not found";
-            IEntry coreRefEntry = getUnrealEntry(coreReference);
+            IEntry coreRefEntry = getUnrealEntry(index);
             if (coreRefEntry != null)
             {
                 if (coreRefEntry is ImportEntry)
