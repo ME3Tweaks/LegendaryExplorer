@@ -2509,61 +2509,62 @@ namespace ME3Explorer
 
         public static int findEndOfProps(IExportEntry export)
         {
-            IMEPackage pcc = export.FileRef;
-            byte[] memory = export.Data;
-            int readerpos = export.GetPropertyStart();
-            bool run = true;
-            while (run)
-            {
-                PropHeader p = new PropHeader();
-                if (readerpos > memory.Length || readerpos < 0)
-                {
-                    //nothing else to interpret.
-                    run = false;
-                    readerpos = -1;
-                    continue;
-                }
-                p.name = BitConverter.ToInt32(memory, readerpos);
-                if (!pcc.isName(p.name))
-                    run = false;
-                else
-                {
-                    if (pcc.getNameEntry(p.name) != "None")
-                    {
-                        p.type = BitConverter.ToInt32(memory, readerpos + 8);
-                        nodeType type = getType(pcc.getNameEntry(p.type));
-                        bool isUnknownType = type == nodeType.Unknown;
-                        if (!pcc.isName(p.type) || isUnknownType)
-                            run = false;
-                        else
-                        {
-                            p.size = BitConverter.ToInt32(memory, readerpos + 16);
-                            readerpos += p.size + 24;
+            return export.propsEnd();
+            //IMEPackage pcc = export.FileRef;
+            //byte[] memory = export.Data;
+            //int readerpos = export.GetPropertyStart();
+            //bool run = true;
+            //while (run)
+            //{
+            //    PropHeader p = new PropHeader();
+            //    if (readerpos > memory.Length || readerpos < 0)
+            //    {
+            //        //nothing else to interpret.
+            //        run = false;
+            //        readerpos = -1;
+            //        continue;
+            //    }
+            //    p.name = BitConverter.ToInt32(memory, readerpos);
+            //    if (!pcc.isName(p.name))
+            //        run = false;
+            //    else
+            //    {
+            //        if (pcc.getNameEntry(p.name) != "None")
+            //        {
+            //            p.type = BitConverter.ToInt32(memory, readerpos + 8);
+            //            nodeType type = getType(pcc.getNameEntry(p.type));
+            //            bool isUnknownType = type == nodeType.Unknown;
+            //            if (!pcc.isName(p.type) || isUnknownType)
+            //                run = false;
+            //            else
+            //            {
+            //                p.size = BitConverter.ToInt32(memory, readerpos + 16);
+            //                readerpos += p.size + 24;
 
-                            if (getType(pcc.getNameEntry(p.type)) == nodeType.StructProperty) //StructName
-                                readerpos += 8;
-                            if (pcc.Game == MEGame.ME3)
-                            {
-                                if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)//Boolbyte
-                                    readerpos++;
-                                if (getType(pcc.getNameEntry(p.type)) == nodeType.ByteProperty)//byteprop
-                                    readerpos += 8;
-                            }
-                            else
-                            {
-                                if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)
-                                    readerpos += 4;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        readerpos += 8;
-                        run = false;
-                    }
-                }
-            }
-            return readerpos;
+            //                if (getType(pcc.getNameEntry(p.type)) == nodeType.StructProperty) //StructName
+            //                    readerpos += 8;
+            //                if (pcc.Game == MEGame.ME3)
+            //                {
+            //                    if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)//Boolbyte
+            //                        readerpos++;
+            //                    if (getType(pcc.getNameEntry(p.type)) == nodeType.ByteProperty)//byteprop
+            //                        readerpos += 8;
+            //                }
+            //                else
+            //                {
+            //                    if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)
+            //                        readerpos += 4;
+            //                }
+            //            }
+            //        }
+            //        else
+            //        {
+            //            readerpos += 8;
+            //            run = false;
+            //        }
+            //    }
+            //}
+            //return readerpos;
         }
 
         private void toSFXNavLargeBoostNodeToolStripMenuItem_Click(object sender, EventArgs e)

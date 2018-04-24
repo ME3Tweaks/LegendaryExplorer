@@ -608,10 +608,14 @@ namespace ME3Explorer.Unreal
             }
             //int type = (int)BitConverter.ToInt64(raw, pos + 8);            
             int type = (int)BitConverter.ToInt32(raw, pos + 8);
-
-            p.Size = BitConverter.ToInt32(raw, pos + 16);
-            if (!pcc.isName(type) || p.Size < 0 || p.Size >= raw.Length)
+            if (!pcc.isName(type)){
                 return result;
+            }
+            p.Size = BitConverter.ToInt32(raw, pos + 16);
+            if (p.Size < 0 || p.Size >= raw.Length)
+            {
+                return result;
+            }
             string tp = pcc.getNameEntry(type);
             switch (tp)
             {

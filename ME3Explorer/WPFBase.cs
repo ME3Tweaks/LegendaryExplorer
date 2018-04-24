@@ -34,7 +34,7 @@ namespace ME3Explorer
         private void WPFBase_Closing(object sender, CancelEventArgs e)
         {
             if (pcc != null && pcc.IsModified && pcc.Tools.Count == 1 &&
-                MessageBoxResult.No == MessageBox.Show($"{Path.GetFileName(pcc.FileName)} has unsaved changes. Do you really want to close {Title}?", "", MessageBoxButton.YesNo))
+                MessageBoxResult.No == MessageBox.Show($"{Path.GetFileName(pcc.FileName)} has unsaved changes. Do you really want to close {Title}?", "Unsaved changes", MessageBoxButton.YesNo))
             {
                 e.Cancel = true;
             }

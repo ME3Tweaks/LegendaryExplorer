@@ -39,6 +39,8 @@ namespace ME3Explorer
 
         Brush HighlightBrush = Application.Current.FindResource("HighlightColor") as Brush;
         Brush LabelTextBrush = Application.Current.FindResource("LabelTextBrush") as Brush;
+        public static double dpiScaleX = 1;
+        public static double dpiScaleY = 1;
 
         public bool DisableFlyouts
         {
@@ -639,6 +641,17 @@ namespace ME3Explorer
         private void taskPaneInfoPanel_Close(object sender, EventArgs e)
         {
             closeTaskPaneInfoPanel();
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            PresentationSource source = PresentationSource.FromVisual(this);
+
+            if (source != null)
+            {
+                dpiScaleX = source.CompositionTarget.TransformToDevice.M11;
+                dpiScaleY = source.CompositionTarget.TransformToDevice.M22;
+            }
         }
     }
 }

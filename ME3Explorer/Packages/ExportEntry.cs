@@ -250,7 +250,7 @@ namespace ME3Explorer.Packages
 
     public class UDKExportEntry : ExportEntry, IExportEntry
     {
-        public UDKExportEntry(UDKPackage pccFile, Stream stream) : base(pccFile)
+        public UDKExportEntry(UDKPackage udkFile, Stream stream) : base(udkFile)
         {
             headerOffset = (uint)stream.Position;
             stream.Seek(44, SeekOrigin.Current);

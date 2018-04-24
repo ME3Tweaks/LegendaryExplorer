@@ -33,7 +33,7 @@ namespace ME3Explorer.DialogEditor
             }
         }
 
-        private void LoadFile(string fileName)
+        public void LoadFile(string fileName)
         {
             try
             {

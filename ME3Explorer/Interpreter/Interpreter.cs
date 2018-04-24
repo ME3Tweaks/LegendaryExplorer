@@ -107,20 +107,7 @@ namespace ME3Explorer
         private int lastSetOffset = -1; //offset set by program, used for checking if user changed since set 
         private nodeType LAST_SELECTED_PROP_TYPE = nodeType.Unknown; //last property type user selected. Will use to check the current offset for type
         private TreeNode LAST_SELECTED_NODE = null; //last selected tree node
-        private int HEXBOX_MAX_WIDTH
-        {
-            get
-            {
-                int defaultvalue = 650;
-                //float dpiX;
-                //System.Drawing.Graphics graphics = this.CreateGraphics();
-                //dpiX = graphics.DpiX;
-                //double multiplier = dpiX / 96;
-                //multiplier = Math.Max(1, multiplier * 0.95);
-                //defaultvalue = (int)(defaultvalue * multiplier);
-                return defaultvalue;
-            }
-        }
+        public int HEXBOX_MAX_WIDTH = 650;
 
         private IMEPackage pcc;
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
@@ -1505,6 +1492,9 @@ namespace ME3Explorer
                     LAST_SELECTED_PROP_TYPE = nodeType.Unknown;
                     return;
                 }
+
+                removePropertyButton.Visible = LAST_SELECTED_NODE != null && LAST_SELECTED_NODE.Parent != null && (nodeType)LAST_SELECTED_NODE.Parent.Tag == nodeType.Root && (nodeType)LAST_SELECTED_NODE.Tag != nodeType.None;
+
                 LAST_SELECTED_PROP_TYPE = (nodeType)e.Node.Tag;
                 if (isArrayLeaf(LAST_SELECTED_PROP_TYPE) || isStructLeaf(LAST_SELECTED_PROP_TYPE))
                 {
@@ -1514,6 +1504,7 @@ namespace ME3Explorer
                 {
                     addArrayElementButton.Visible = true;
                     proptext.Clear();
+
                     ArrayType arrayType = GetArrayType(BitConverter.ToInt32(memory, off), getEnclosingType(e.Node.Parent));
                     switch (arrayType)
                     {
@@ -1564,14 +1555,12 @@ namespace ME3Explorer
                 else if (LAST_SELECTED_PROP_TYPE == nodeType.Root)
                 {
                     addPropButton.Visible = true;
-                    removePropertyButton.Visible = false;
 
                 }
                 else if (LAST_SELECTED_PROP_TYPE == nodeType.None && e.Node.Parent.Tag != null && e.Node.Parent.Tag.Equals(nodeType.Root))
                 {
                     //User has selcted the None at the end of the root
                     addPropButton.Visible = true;
-                    removePropertyButton.Visible = false;
                 }
                 else
                 {
@@ -1606,7 +1595,6 @@ namespace ME3Explorer
                     return;
                 int type = BitConverter.ToInt32(memory, pos + 8);
                 int test = BitConverter.ToInt32(memory, pos + 12);
-                removePropertyButton.Visible = LAST_SELECTED_NODE != null && LAST_SELECTED_NODE.Parent != null && (nodeType)LAST_SELECTED_NODE.Parent.Tag == nodeType.Root && (nodeType)LAST_SELECTED_NODE.Tag != nodeType.None;
                 if (test != 0 || !pcc.isName(type))
                     return;
                 switch (pcc.getNameEntry(type))
@@ -2640,14 +2628,58 @@ namespace ME3Explorer
             }
             List<string> props = PropertyReader.getPropList(export).Select(x => pcc.getNameEntry(x.Name)).ToList();
             string prop = AddPropertyDialog.GetProperty(export, props, pcc.Game);
-            AddProperty(prop);
+
+            string origname = export.ClassName;
+            string temp = export.ClassName;
+            List<string> classes = new List<string>();
+            Dictionary<string, ClassInfo> classList;
+            switch (pcc.Game)
+            {
+                case MEGame.ME1:
+                    classList = ME1Explorer.Unreal.ME1UnrealObjectInfo.Classes;
+                    break;
+                case MEGame.ME2:
+                    classList = ME2Explorer.Unreal.ME2UnrealObjectInfo.Classes;
+                    break;
+                case MEGame.ME3:
+                default:
+                    classList = ME3UnrealObjectInfo.Classes;
+                    break;
+            }
+            ClassInfo currentInfo = null;
+            if (!classList.ContainsKey(temp))
+            {
+                IExportEntry exportTemp = export.FileRef.Exports[export.idxClass - 1];
+                //current object is not in classes db, temporarily add it to the list
+                switch (pcc.Game)
+                {
+                    case MEGame.ME1:
+                        currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(exportTemp);
+                        break;
+                    case MEGame.ME2:
+                        currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(exportTemp);
+                        break;
+                    case MEGame.ME3:
+                    default:
+                        currentInfo = ME3UnrealObjectInfo.generateClassInfo(exportTemp);
+                        break;
+                }
+                currentInfo.baseClass = exportTemp.ClassParent;
+            }
+
+            AddProperty(prop, currentInfo);
         }
 
-        public void AddProperty(string prop)
+        public void AddProperty(string prop, ClassInfo nonVanillaClassInfo = null)
         {
             if (prop != null)
             {
-                PropertyInfo info = GetPropertyInfo(prop, className);
+                PropertyInfo info = GetPropertyInfo(prop, className, nonVanillaClassInfo: nonVanillaClassInfo);
+                if (info == null)
+                {
+                    MessageBox.Show("Error reading property.", "Error");
+                    return;
+                }
                 if (info.type == PropertyType.StructProperty && pcc.Game != MEGame.ME3)
                 {
                     MessageBox.Show("Cannot add StructProperties when editing ME1 or ME2 files.", "Sorry :(");
@@ -2780,13 +2812,11 @@ namespace ME3Explorer
 
         private void splitContainer1_SplitterMoving(object sender, SplitterCancelEventArgs e)
         {
-            //a hack to set max width for SplitContainer1
-            int width = splitContainer1.Width - HEXBOX_MAX_WIDTH;
-            if (width < 0)
+            //This prevents some wierd negative exception
+            if (splitContainer1.Width - HEXBOX_MAX_WIDTH > 0)
             {
-                width = 20; //somehow this sometimes is a negative value because the container width is not > 650.
+                splitContainer1.Panel2MinSize = splitContainer1.Width - HEXBOX_MAX_WIDTH;
             }
-            splitContainer1.Panel2MinSize = width;
         }
 
         private void toggleHexWidthButton_Click(object sender, EventArgs e)
@@ -2881,17 +2911,17 @@ namespace ME3Explorer
             return null;
         }
 
-        private PropertyInfo GetPropertyInfo(string propname, string typeName, bool inStruct = false)
+        private PropertyInfo GetPropertyInfo(string propname, string typeName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
         {
             switch (pcc.Game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                    return ME1UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                    return ME2UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                    return ME3UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
             }
             return null;
         }
@@ -2920,12 +2950,12 @@ namespace ME3Explorer
             switch (pcc.Game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName));
+                    return ME1UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName), export: export);
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName));
+                    return ME2UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName), export: export);
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName));
+                    return ME3UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName), export: export);
             }
             return ArrayType.Int;
         }
