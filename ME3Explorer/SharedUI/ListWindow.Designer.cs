@@ -44,7 +44,7 @@
             this.listBox.Location = new System.Drawing.Point(10, 60);
             this.listBox.Margin = new System.Windows.Forms.Padding(20);
             this.listBox.Name = "listBox";
-            this.listBox.Size = new System.Drawing.Size(1104, 529);
+            this.listBox.Size = new System.Drawing.Size(1617, 529);
             this.listBox.TabIndex = 0;
             // 
             // panel1
@@ -56,7 +56,7 @@
             this.panel1.Margin = new System.Windows.Forms.Padding(10);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(10);
-            this.panel1.Size = new System.Drawing.Size(1127, 607);
+            this.panel1.Size = new System.Drawing.Size(1640, 607);
             this.panel1.TabIndex = 1;
             // 
             // messageLabel
@@ -65,7 +65,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.messageLabel.Location = new System.Drawing.Point(13, 9);
             this.messageLabel.Name = "messageLabel";
-            this.messageLabel.Size = new System.Drawing.Size(1101, 52);
+            this.messageLabel.Size = new System.Drawing.Size(1614, 52);
             this.messageLabel.TabIndex = 2;
             this.messageLabel.Text = "Listbox Window Message";
             // 
@@ -73,7 +73,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(192F, 192F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(1127, 607);
+            this.ClientSize = new System.Drawing.Size(1640, 607);
             this.Controls.Add(this.panel1);
             this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "ListWindow";
