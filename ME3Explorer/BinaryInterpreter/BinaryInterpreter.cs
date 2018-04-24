@@ -1217,8 +1217,7 @@ Floats*/
                     int entryval = BitConverter.ToInt32(data, offset);
                     if (entryval > 0 && entryval < pcc.ExportCount)
                     {
-                        IExportEntry export = (IExportEntry)pcc.getEntry(entryval);
-                        smacitems.Add(export);
+                        smacitems.Add(pcc.getEntry(entryval) as IExportEntry);
                     }
                     else if (entryval == 0)
                     {

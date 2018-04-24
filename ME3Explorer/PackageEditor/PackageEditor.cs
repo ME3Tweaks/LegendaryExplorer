@@ -9,10 +9,10 @@ using Be.Windows.Forms;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
-using UsefulThings;
 using static ME3Explorer.Unreal.PropertyReader;
 using System.Text;
 using ME3Explorer.SharedUI;
+using Gibbed.IO;
 
 namespace ME3Explorer
 {
@@ -74,9 +74,8 @@ namespace ME3Explorer
         {
             foreach (Control child in c.Controls)
             {
-                if (child is SplitContainer)
+                if (child is SplitContainer sp)
                 {
-                    SplitContainer sp = (SplitContainer)child;
                     Fix(sp);
                     Fix(sp.Panel1);
                     Fix(sp.Panel2);
@@ -117,8 +116,7 @@ namespace ME3Explorer
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog();
-            d.Filter = App.FileFilter;
+            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
             if (d.ShowDialog() == DialogResult.OK)
             {
                 try
@@ -169,8 +167,7 @@ namespace ME3Explorer
                 pendingMetaDataUpdate = true;
                 return;
             }
-            int n;
-            if (!GetSelected(out n))
+            if (!GetSelected(out int n))
             {
                 return;
             }
@@ -294,7 +291,7 @@ namespace ME3Explorer
             {
                 ClassNames.Add(Exports[i].idxClass);
             }
-            List<string> names = ClassNames.Distinct().Select(x => pcc.getObjectName(x)).ToList();
+            List<string> names = ClassNames.Distinct().Select(pcc.getObjectName).ToList();
             names.Sort();
             combo1.BeginUpdate();
             combo1.Items.Clear();
@@ -414,22 +411,25 @@ namespace ME3Explorer
                 treeView1.Nodes.Clear();
                 int importsOffset = Exports.Count;
                 int link;
-                List<TreeNode> nodeList = new List<TreeNode>(Exports.Count + imports.Count + 1);
-                TreeNode node = new TreeNode(pcc.FileName);
-                node.Tag = true;
-                nodeList.Add(node);
+                List<TreeNode> nodeList = new List<TreeNode>(Exports.Count + imports.Count + 1)
+                {
+                    new TreeNode(pcc.FileName) { Tag = true }
+                };
                 for (int i = 0; i < Exports.Count; i++)
                 {
-                    node = new TreeNode($"(Exp){i} : {Exports[i].ObjectName}({Exports[i].ClassName})");
-                    node.Name = i.ToString();
-                    nodeList.Add(node);
+                    nodeList.Add(new TreeNode($"(Exp){i} : {Exports[i].ObjectName}({Exports[i].ClassName})")
+                    {
+                        Name = i.ToString()
+                    });
                 }
                 for (int i = 0; i < imports.Count; i++)
                 {
-                    node = new TreeNode($"(Imp){i} : {imports[i].ObjectName}({imports[i].ClassName})");
-                    node.Name = (-i - 1).ToString();
-                    nodeList.Add(node);
+                    nodeList.Add(new TreeNode($"(Imp){i} : {imports[i].ObjectName}({imports[i].ClassName})")
+                    {
+                        Name = (-i - 1).ToString()
+                    });
                 }
+                TreeNode node;
                 int curIndex;
                 for (int i = 1; i <= Exports.Count; i++)
                 {
@@ -491,8 +491,7 @@ namespace ME3Explorer
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             // keep disabled unless we're on the hex tab:
-            int n;
-            if (packageEditorTabPane.SelectedTab == interpreterTab && GetSelected(out n) && n >= 0)
+            if (packageEditorTabPane.SelectedTab == interpreterTab && GetSelected(out int n) && n >= 0)
             {
                 if (interpreterControl.treeView1.Nodes.Count > 0)
                 {
@@ -508,8 +507,7 @@ namespace ME3Explorer
 
         public void Preview(bool isRefresh = false)
         {
-            int n;
-            if (!GetSelected(out n))
+            if (!GetSelected(out int n))
             {
                 return;
             }
@@ -792,8 +790,7 @@ namespace ME3Explorer
 
         private void propGrid_PropertyValueChanged(object o, PropertyValueChangedEventArgs e)
         {
-            int n;
-            if (!GetSelected(out n) || n < 0)
+            if (!GetSelected(out int n) || n < 0)
             {
                 return;
             }
@@ -834,8 +831,7 @@ namespace ME3Explorer
 
         private void saveHexChangesButton_Click(object sender, EventArgs e)
         {
-            int n;
-            if (pcc == null || !GetSelected(out n) || n < 0)
+            if (pcc == null || !GetSelected(out int n) || n < 0)
             {
                 return;
             }
@@ -847,8 +843,7 @@ namespace ME3Explorer
         }
         private void binarySaveHexChangesButton_Click(object sender, EventArgs e)
         {
-            int n;
-            if (pcc == null || !GetSelected(out n) || n < 0)
+            if (pcc == null || !GetSelected(out int n) || n < 0)
             {
                 return;
             }
@@ -906,23 +901,14 @@ namespace ME3Explorer
             }
             if (CurrentView == View.Tree)
             {
-                List<TreeNode> flattenedTree = treeView1.FlattenTree().ToList();
-                int pos = treeView1.SelectedNode == null ? -1 : flattenedTree.IndexOf(treeView1.SelectedNode);
+                List<TreeNode> flattenedTree = treeView1.FlattenTreeView().ToList();
+                int pos = treeView1.SelectedNode == null ? 0 : flattenedTree.IndexOf(treeView1.SelectedNode);
                 pos++; //search only 1 forward
                 for (int i = pos; i < flattenedTree.Count; i++)
                 {
                     TreeNode node = flattenedTree[i];
                     int index = Convert.ToInt32(node.Name);
-                    IEntry entry;
-                    if (index < 0)
-                    {
-                        entry = pcc.Imports[Math.Abs(index) - 1];
-                    }
-                    else
-                    {
-                        entry = pcc.Exports[index];
-                    }
-                    if (entry.ObjectName.ToLower().Contains(searchTerm))
+                    if (pcc.getObjectName(index.ToUnrealIdx()).ToLower().Contains(searchTerm))
                     {
                         treeView1.SelectedNode = node;
                         break;
@@ -937,24 +923,42 @@ namespace ME3Explorer
         {
             if (pcc == null)
                 return;
-            int n = listBox1.SelectedIndex;
-            if (CurrentView != View.Exports)
-                return;
             if (combo1.SelectedIndex == -1)
                 return;
+            int n = listBox1.SelectedIndex;
             string cls = combo1.SelectedItem as string;
-            int start;
-            if (n == -1)
-                start = 0;
-            else
-                start = n + 1;
-            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-            for (int i = start; i < Exports.Count; i++)
-                if (Exports[i].ClassName == cls)
+            if (CurrentView == View.Exports)
+            {
+                int start;
+                if (n == -1)
+                    start = 0;
+                else
+                    start = n + 1;
+                IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                for (int i = start; i < Exports.Count; i++)
+                    if (Exports[i].ClassName == cls)
+                    {
+                        listBox1.SelectedIndex = i;
+                        break;
+                    }
+            }
+            else if (CurrentView == View.Tree)
+            {
+                List<TreeNode> flattenedTree = treeView1.FlattenTreeView().ToList();
+                int pos = treeView1.SelectedNode == null ? 0 : flattenedTree.IndexOf(treeView1.SelectedNode);
+                pos++; //search only 1 forward
+                for (int i = pos; i < flattenedTree.Count; i++)
                 {
-                    listBox1.SelectedIndex = i;
-                    break;
+                    TreeNode node = flattenedTree[i];
+                    int index = Convert.ToInt32(node.Name);
+                    if (pcc.getObjectClass(index.ToUnrealIdx()) == cls)
+                    {
+                        treeView1.SelectedNode = node;
+                        break;
+                    }
                 }
+            }
+            
         }
 
         private void combo1_KeyPress(object sender, KeyPressEventArgs e)
@@ -1087,58 +1091,62 @@ namespace ME3Explorer
 
         public void DumpBin()
         {
-            int n;
-            if (pcc == null || !GetSelected(out n) || n < 0)
+            if (pcc == null || !GetSelected(out int n) || n < 0)
             {
                 return;
             }
-            List<PropertyReader.Property> prop = PropertyReader.getPropList(pcc.getExport(n));
-            SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "*.bin|*.bin";
-            d.FileName = pcc.getExport(n).ObjectName + ".bin";
+            IExportEntry export = pcc.getExport(n);
+            SaveFileDialog d = new SaveFileDialog
+            {
+                Filter = "*.bin|*.bin",
+                FileName = export.ObjectName + ".bin"
+            };
             if (d.ShowDialog() == DialogResult.OK)
             {
-                FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                byte[] buff = pcc.getExport(n).Data;
-                int start = 0;
-                if (prop.Count > 0)
-                    start = prop[prop.Count - 1].offend;
-                for (int i = start; i < buff.Length; i++)
-                    fs.WriteByte(buff[i]);
-                fs.Close();
+                using (FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write))
+                {
+                    if (export.GetProperties().Any())
+                    {
+                        fs.WriteBytes(export.getBinaryData());
+                    }
+                    else
+                    {
+                        fs.WriteBytes(export.Data);
+                    }
+                }
                 MessageBox.Show("Done.");
             }
         }
 
         private void editInInterpreterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Interpreter();
+            OpenInterpreter();
         }
 
-        public void Interpreter()
+        public void OpenInterpreter()
         {
-            int n;
-            if (pcc == null || !GetSelected(out n) || n < 0)
+            if (pcc == null || !GetSelected(out int n) || n < 0)
             {
                 return;
             }
-            InterpreterHost ip = new InterpreterHost(pcc.FileName, n);
-            ip.Text = "Interpreter (Package Editor)";
-            ip.MdiParent = this.MdiParent;
+            InterpreterHost ip = new InterpreterHost(pcc.FileName, n)
+            {
+                Text = "Interpreter (Package Editor)",
+                MdiParent = this.MdiParent
+            };
             ip.Show();
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)
         {
-            Interpreter();
+            OpenInterpreter();
         }
 
         private void toolStripButton4_Click(object sender, EventArgs e)
         {
             if (gotonumber.Text == "")
                 return;
-            int n = 0;
-            if (int.TryParse(gotonumber.Text, out n))
+            if (int.TryParse(gotonumber.Text, out int n))
             {
                 goToNumber(n);
             }
@@ -1150,8 +1158,7 @@ namespace ME3Explorer
             {
                 if (gotonumber.Text == "")
                     return;
-                int n = 0;
-                if (int.TryParse(gotonumber.Text, out n))
+                if (int.TryParse(gotonumber.Text, out int n))
                 {
                     goToNumber(n);
                 }
@@ -1191,52 +1198,45 @@ namespace ME3Explorer
 
         private void getDumpToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            int n;
-            if (pcc == null || !GetSelected(out n) || n < 0)
+            if (pcc == null || !GetSelected(out int n) || n < 0)
             {
                 return;
             }
-            SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "*.BIN|*.BIN";
+            SaveFileDialog d = new SaveFileDialog { Filter = "*.BIN|*.BIN" };
             if (d.ShowDialog() == DialogResult.OK)
             {
-                FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                fs.Write(pcc.getExport(n).Data, 0, pcc.getExport(n).Data.Length);
-                fs.Close();
+                using (FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write))
+                {
+                    fs.WriteBytes(pcc.getExport(n).Data);
+                }
                 MessageBox.Show("Done.");
             }
         }
 
         private void replaceWithBINToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n;
-            if (pcc == null || !GetSelected(out n) || n < 0)
+            if (pcc == null || !GetSelected(out int n) || n < 0)
             {
                 return;
             }
-            OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.BIN|*.BIN";
+            OpenFileDialog d = new OpenFileDialog { Filter = "*.BIN|*.BIN" };
             if (d.ShowDialog() == DialogResult.OK)
             {
-                FileStream fs = new FileStream(d.FileName, FileMode.Open, FileAccess.Read);
-                byte[] buff = new byte[fs.Length];
-                for (int i = 0; i < fs.Length; i++)
-                    buff[i] = (byte)fs.ReadByte();
-                fs.Close();
-                pcc.getExport(n).Data = buff;
+                using (FileStream fs = new FileStream(d.FileName, FileMode.Open, FileAccess.Read))
+                {
+                    pcc.getExport(n).Data = fs.ReadBytes((int)fs.Length);
+                }
                 MessageBox.Show("Done.");
             }
         }
 
         private void createBinaryReplaceJobFromFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n;
-            if (pcc == null || !GetSelected(out n) || n < 0)
+            if (pcc == null || !GetSelected(out int n) || n < 0)
             {
                 return;
             }
-            OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.bin|*.bin";
+            OpenFileDialog d = new OpenFileDialog { Filter = "*.bin|*.bin" };
             if (d.ShowDialog() == DialogResult.OK)
             {
                 FileStream fs = new FileStream(d.FileName, FileMode.Open, FileAccess.Read);
@@ -1261,8 +1261,7 @@ namespace ME3Explorer
 
         private void createBinaryReplaceJobFromObjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n;
-            if (pcc == null || !GetSelected(out n) || n < 0)
+            if (pcc == null || !GetSelected(out int n) || n < 0)
             {
                 return;
             }
@@ -1282,8 +1281,7 @@ namespace ME3Explorer
             int NameIdx, ClassIdx, LinkIdx, IndexIdx, ArchetypeIdx;
             int off = pcc.ImportCount;
 
-            int n;
-            if (pcc == null || !GetSelected(out n) ||
+            if (pcc == null || !GetSelected(out int n) ||
                 nameComboBox.SelectedIndex == -1 ||
                 classComboBox.SelectedIndex == -1 ||
                 linkComboBox.SelectedIndex == -1 ||
@@ -1398,8 +1396,7 @@ namespace ME3Explorer
 
         private void saveHeaderHexChangesBtn_Click(object sender, EventArgs e)
         {
-            int n;
-            if (pcc == null || !GetSelected(out n))
+            if (pcc == null || !GetSelected(out int n))
             {
                 return;
             }
@@ -1440,8 +1437,7 @@ namespace ME3Explorer
 
         private void cloneToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n = 0;
-            if (GetSelected(out n))
+            if (GetSelected(out int n))
             {
                 if (n >= 0)
                 {
@@ -1462,8 +1458,7 @@ namespace ME3Explorer
 
         private void cloneTreeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int n = 0;
-            if (GetSelected(out n))
+            if (GetSelected(out int n))
             {
                 int nextIndex;
 

@@ -124,7 +124,6 @@ namespace ME3Explorer
         /// <summary>
         /// Used for relinking object arrays when dragging trees between files in PackageEditor.
         /// </summary>
-        /// <param name="export">Export to scan.</param>
         public Interpreter(IMEPackage importingPCC, IExportEntry importingExport, IMEPackage destPCC, IExportEntry destExport, SortedDictionary<int, int> crossPCCReferences)
         {
             //This will make it fairly slow, but will make it so I don't have to change everything.

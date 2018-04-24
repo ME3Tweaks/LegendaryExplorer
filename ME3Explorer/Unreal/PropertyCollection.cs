@@ -747,9 +747,11 @@ namespace ME3Explorer.Unreal
         public NameProperty(MemoryStream stream, IMEPackage pcc, NameReference? name = null) : base(name)
         {
             Offset = stream.Position;
-            NameReference nameRef = new NameReference();
-            nameRef.Name = pcc.getNameEntry(stream.ReadValueS32());
-            nameRef.Number = stream.ReadValueS32();
+            NameReference nameRef = new NameReference
+            {
+                Name = pcc.getNameEntry(stream.ReadValueS32()),
+                Number = stream.ReadValueS32()
+            };
             Value = nameRef;
             PropType = PropertyType.NameProperty;
         }
@@ -901,9 +903,11 @@ namespace ME3Explorer.Unreal
         {
             Offset = stream.Position;
             EnumType = enumType;
-            NameReference enumVal = new NameReference();
-            enumVal.Name = pcc.getNameEntry(stream.ReadValueS32());
-            enumVal.Number = stream.ReadValueS32();
+            NameReference enumVal = new NameReference
+            {
+                Name = pcc.getNameEntry(stream.ReadValueS32()),
+                Number = stream.ReadValueS32()
+            };
             Value = enumVal;
             EnumValues = UnrealObjectInfo.GetEnumValues(pcc.Game, enumType, true);
             PropType = PropertyType.ByteProperty;
@@ -1173,9 +1177,11 @@ namespace ME3Explorer.Unreal
         public DelegateProperty(MemoryStream stream, IMEPackage pcc, NameReference? name = null) : base(name)
         {
             unk = stream.ReadValueS32();
-            NameReference val = new NameReference();
-            val.Name = pcc.getNameEntry(stream.ReadValueS32());
-            val.Number = stream.ReadValueS32();
+            NameReference val = new NameReference
+            {
+                Name = pcc.getNameEntry(stream.ReadValueS32()),
+                Number = stream.ReadValueS32()
+            };
             Value = val;
             PropType = PropertyType.DelegateProperty;
         }

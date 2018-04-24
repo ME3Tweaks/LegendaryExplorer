@@ -281,10 +281,12 @@ namespace ME3Explorer.Packages
 
         public IExportEntry Clone()
         {
-            UDKExportEntry newExport = new UDKExportEntry(FileRef as UDKPackage);
-            newExport.header = (byte[])this.header.Clone();
-            newExport.headerOffset = 0;
-            newExport.Data = this.Data;
+            UDKExportEntry newExport = new UDKExportEntry(FileRef as UDKPackage)
+            {
+                header = this.header.TypedClone(),
+                headerOffset = 0,
+                Data = this.Data
+            };
             int index = 0;
             string name = ObjectName;
             foreach (IExportEntry ent in FileRef.Exports)
@@ -333,10 +335,12 @@ namespace ME3Explorer.Packages
 
         public IExportEntry Clone()
         {
-            ME3ExportEntry newExport = new ME3ExportEntry(FileRef as ME3Package);
-            newExport.header = (byte[])this.header.Clone();
-            newExport.headerOffset = 0;
-            newExport.Data = this.Data;
+            ME3ExportEntry newExport = new ME3ExportEntry(FileRef as ME3Package)
+            {
+                header = this.header.TypedClone(),
+                headerOffset = 0,
+                Data = this.Data
+            };
             int index = 0;
             string name = ObjectName;
             foreach (IExportEntry ent in FileRef.Exports)
@@ -392,10 +396,12 @@ namespace ME3Explorer.Packages
 
         public IExportEntry Clone()
         {
-            ME2ExportEntry newExport = new ME2ExportEntry(FileRef as ME2Package);
-            newExport.header = (byte[])this.header.Clone();
-            newExport.headerOffset = 0;
-            newExport.Data = this.Data;
+            ME2ExportEntry newExport = new ME2ExportEntry(FileRef as ME2Package)
+            {
+                header = this.header.TypedClone(),
+                headerOffset = 0,
+                Data = this.Data
+            };
             int index = 0;
             string name = ObjectName;
             foreach (IExportEntry ent in FileRef.Exports)
@@ -437,7 +443,7 @@ namespace ME3Explorer.Packages
             stream.Seek(end, SeekOrigin.Begin);
             if (ClassName.Contains("Property"))
             {
-                ReadsFromConfig = Data.Length > 25 ? (Data[25] & 64) != 0 : false;
+                ReadsFromConfig = Data.Length > 25 && (Data[25] & 64) != 0;
             } else
             {
                 ReadsFromConfig = false;
@@ -450,10 +456,12 @@ namespace ME3Explorer.Packages
 
         public IExportEntry Clone()
         {
-            ME1ExportEntry newExport = new ME1ExportEntry(FileRef as ME1Package);
-            newExport.header = this.header.TypedClone();
-            newExport.headerOffset = 0;
-            newExport.Data = this.Data;
+            ME1ExportEntry newExport = new ME1ExportEntry(FileRef as ME1Package)
+            {
+                header = this.header.TypedClone(),
+                headerOffset = 0,
+                Data = this.Data
+            };
             int index = 0;
             string name = ObjectName;
             foreach (IExportEntry ent in FileRef.Exports)
