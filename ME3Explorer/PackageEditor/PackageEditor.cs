@@ -912,6 +912,10 @@ namespace ME3Explorer
                 for (int i = pos; i < flattenedTree.Count; i++)
                 {
                     TreeNode node = flattenedTree[i];
+                    if (node.Name == "")
+                    {
+                        continue;
+                    }
                     int index = Convert.ToInt32(node.Name);
                     IEntry entry;
                     if (index < 0)
@@ -3205,31 +3209,31 @@ namespace ME3Explorer
 
         private void dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string fpath = @"X:\Mass Effect Games HDD\Mass Effect";
-            var ext = new List<string> { "u", "upk", "sfm" };
-            var files = Directory.GetFiles(fpath, "*.*", SearchOption.AllDirectories)
-              .Where(file => new string[] { ".sfm", ".upk", ".u" }
-              .Contains(Path.GetExtension(file).ToLower()))
-              .ToList();
+            List<string> consts = new List<string>();
             StringBuilder sb = new StringBuilder();
 
-            int threads = Environment.ProcessorCount;
-            List<string>[] results = files.AsParallel().WithDegreeOfParallelism(threads).WithExecutionMode(ParallelExecutionMode.ForceParallelism).Select(ScanForBioG).ToArray();
-
-            HashSet<string> items = new HashSet<string>();
-            foreach (List<string> res in results)
+            foreach (IExportEntry exp in pcc.Exports)
             {
-                items.UnionWith(res);
+                if (exp.ClassName == "Const")
+                {
+                    consts.Add(exp.Index + " " + exp.GetFullPath);
+                }
             }
-
-            foreach (string str in items)
+            foreach (string str in consts)
             {
                 sb.AppendLine(str);
             }
             try
             {
-                Clipboard.SetText(sb.ToString());
-                MessageBox.Show("Finished");
+                string value = sb.ToString();
+                if (value != null && value != "")
+                {
+                    Clipboard.SetText(value);
+                    MessageBox.Show("Finished");
+                } else
+                {
+                    MessageBox.Show("No results.");
+                }
             }
             catch (Exception ex)
             {
