@@ -16,6 +16,20 @@ namespace ME3Explorer.Unreal.Classes
             public Vector3 origin;
             public Vector3 size;
             public float r;
+
+            public BoundingStruct(Vector3 origin, Vector3 size, float radius)
+            {
+                this.origin = origin;
+                this.size = size;
+                this.r = radius;
+            }
+
+            public BoundingStruct(UDKExplorer.UDK.Classes.SkeletalMesh.BoundingStruct udkBounds)
+            {
+                this.origin = udkBounds.origin;
+                this.size = udkBounds.size;
+                this.r = udkBounds.r;
+            }
         }
 
         public struct BoneStruct
@@ -28,6 +42,27 @@ namespace ME3Explorer.Unreal.Classes
             public int NumChildren;
             public int Parent;
             public int BoneColor;
+
+            public BoneStruct(int name, int flags, int unk1, Vector4 orientation, Vector3 position,
+                int numChildren, int parent, int boneColor)
+            {
+                Name = name;
+                Flags = flags;
+                Unk1 = unk1;
+                Orientation = orientation;
+                Position = position;
+                NumChildren = numChildren;
+                Parent = parent;
+                BoneColor = boneColor;
+            }
+
+            public static BoneStruct ImportFromUDK(UDKExplorer.UDK.Classes.SkeletalMesh.BoneStruct udkBone, UDKExplorer.UDK.UDKObject udkPackage, ME3Explorer.Packages.MEPackage mePackage)
+            {
+                BoneStruct result = new BoneStruct(0, udkBone.Flags, udkBone.Unk1, udkBone.Orientation, udkBone.Position, udkBone.NumChildren, udkBone.Parent, udkBone.BoneColor);
+                string name = udkPackage.GetName(udkBone.Name);
+                result.Name = mePackage.FindNameOrAdd(name);
+                return result;
+            }
         }
 
         public struct SectionStruct
@@ -572,6 +607,13 @@ namespace ME3Explorer.Unreal.Classes
             public int Name;
             public int Unk1;
             public int Unk2;
+
+            public TailNamesStruct(int nameIndex, int boneIndex)
+            {
+                Name = nameIndex;
+                Unk1 = 0;
+                Unk2 = boneIndex;
+            }
 
             public void Serialize(SerializingContainer Container)
             {
