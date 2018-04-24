@@ -119,7 +119,7 @@ Floats*/
 
         int? selectedNodePos = null;
         private Dictionary<string, string> ME1_TLK_DICT;
-        public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "Class", "BioStage", "ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant", "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "Model", "Polys" }; //classes that have binary parse code
+        public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "Class", "BioStage", "ObjectProperty", "ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant", "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "Model", "Polys" }; //classes that have binary parse code
 
 
         public BinaryInterpreter()
@@ -268,6 +268,9 @@ Floats*/
                 case "Class":
                     StartClassScan2();
                     break;
+                case "ObjectProperty":
+                    StartObjectScan();
+                    break;
                 case "Level":
                     StartLevelScan();
                     break;
@@ -319,6 +322,98 @@ Floats*/
                     treeView1.SelectedNode = treeView1.Nodes[0];
                 }
             }
+        }
+
+        private void StartObjectScan(string nodeNameToSelect = null)
+        {
+            //const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
+            resetPropEditingControls();
+            treeView1.BeginUpdate();
+            treeView1.Nodes.Clear();
+            addPropButton.Visible = false;
+
+            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
+            topLevelTree.Tag = nodeType.Root;
+            topLevelTree.Name = "0";
+            try
+            {
+                TreeNode node;
+
+                byte[] data = export.Data;
+                int offset = 0;
+                int unrealExportIndex = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " Unreal Unique Index: " + unrealExportIndex);
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafInt;
+                topLevelTree.Nodes.Add(node);
+
+                offset = export.propsEnd();
+
+                int superclassIndex = BitConverter.ToInt32(data, offset);
+                string superclassStr = getEntryFullPath(superclassIndex);
+
+                node = new TreeNode("0x" + offset.ToString("X5") + " Superclass Index: " + superclassIndex + "(" + superclassStr + ")");
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafObject;
+
+                topLevelTree.Nodes.Add(node);
+                offset += 4;
+
+                //int unknown1 = BitConverter.ToInt32(data, offset);
+                //node = new TreeNode("0x" + offset.ToString("X5") + " Unknown 1: " + unknown1);
+                //node.Name = offset.ToString();
+                //node.Tag = nodeType.StructLeafInt;
+                //topLevelTree.Nodes.Add(node);
+                //offset += 4;
+
+                int classObjTree = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " NextItemCompilingChain: " + classObjTree + " "+getEntryFullPath(classObjTree));
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafInt;
+                topLevelTree.Nodes.Add(node);
+                offset += 4;
+
+                offset = data.Length - 4;
+                int finalItem = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " FinalItem: " + getEntryFullPath(finalItem));
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafInt;
+                topLevelTree.Nodes.Add(node);
+
+                //I am not sure what these mean. However if Pt1&2 are 33/25, the following bytes that follow are extended.
+                //int headerUnknown1 = BitConverter.ToInt32(data, offset);
+                //Int64 ignoreMask = BitConverter.ToInt64(data, offset);
+                //node = new TreeNode("0x" + offset.ToString("X5") + " IgnoreMask: 0x" + ignoreMask.ToString("X16"));
+                //node.Name = offset.ToString();
+                //node.Tag = nodeType.StructLeafInt;
+                //topLevelTree.Nodes.Add(node);
+                //offset += 8;
+                
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Nodes.Add("An error occured parsing the object binary: " + ex.Message);
+            }
+            treeView1.Nodes.Add(topLevelTree);
+            treeView1.CollapseAll();
+            treeView1.Nodes[0].Expand();
+            TreeNode[] nodes;
+
+            if (nodeNameToSelect != null)
+            {
+                nodes = treeView1.Nodes.Find(nodeNameToSelect, true);
+                if (nodes.Length > 0)
+                {
+                    treeView1.SelectedNode = nodes[0];
+                }
+                else
+                {
+                    treeView1.SelectedNode = treeView1.Nodes[0];
+                }
+            }
+
+            treeView1.EndUpdate();
+            memsize = memory.Length;
         }
 
         private void StartBioStageScan(string nodeNameToSelect = null)
@@ -3412,7 +3507,7 @@ Floats*/
             int size = (int)hb1.ByteProvider.Length;
             try
             {
-                if (memory != null && start != -1 && start + len <= size)
+                if (memory != null && start != -1 && start + len < size)
                 {
                     string s = $"Byte: {memory[start]}";
                     if (start <= memory.Length - 4)
