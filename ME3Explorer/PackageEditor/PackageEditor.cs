@@ -862,10 +862,12 @@ namespace ME3Explorer
             else
                 start = n + 1;
 
+
+            string searchTerm = searchBox.Text.ToLower();
             if (CurrentView == View.Names)
             {
                 for (int i = start; i < pcc.Names.Count; i++)
-                    if (pcc.getNameEntry(i).ToLower().Contains(searchBox.Text.ToLower()))
+                    if (pcc.getNameEntry(i).ToLower().Contains(searchTerm))
                     {
                         listBox1.SelectedIndex = i;
                         break;
@@ -875,7 +877,7 @@ namespace ME3Explorer
             {
                 IReadOnlyList<ImportEntry> imports = pcc.Imports;
                 for (int i = start; i < imports.Count; i++)
-                    if (imports[i].ObjectName.ToLower().Contains(searchBox.Text.ToLower()))
+                    if (imports[i].ObjectName.ToLower().Contains(searchTerm))
                     {
                         listBox1.SelectedIndex = i;
                         break;
@@ -885,13 +887,40 @@ namespace ME3Explorer
             {
                 IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                 for (int i = start; i < Exports.Count; i++)
-                    if (Exports[i].ObjectName.ToLower().Contains(searchBox.Text.ToLower()))
+                    if (Exports[i].ObjectName.ToLower().Contains(searchTerm))
                     {
                         listBox1.SelectedIndex = i;
                         break;
                     }
             }
+            if (CurrentView == View.Tree)
+            {
+                List<TreeNode> flattenedTree = treeView1.FlattenTree().ToList();
+                int pos = treeView1.SelectedNode == null ? -1 : flattenedTree.IndexOf(treeView1.SelectedNode);
+                pos++; //search only 1 forward
+                for (int i = pos; i < flattenedTree.Count; i++)
+                {
+                    TreeNode node = flattenedTree[i];
+                    int index = Convert.ToInt32(node.Name);
+                    IEntry entry;
+                    if (index < 0)
+                    {
+                        entry = pcc.Imports[Math.Abs(index) - 1];
+                    }
+                    else
+                    {
+                        entry = pcc.Exports[index];
+                    }
+                    if (entry.ObjectName.ToLower().Contains(searchTerm))
+                    {
+                        treeView1.SelectedNode = node;
+                        break;
+                    }
+                }
+            }
         }
+
+
 
         private void Find()
         {
@@ -1029,12 +1058,12 @@ namespace ME3Explorer
             }
         }
 
-        private void toolStripButton2_Click(object sender, EventArgs e)
+        private void searchButton_Clicked(object sender, EventArgs e)
         {
             Search();
         }
 
-        private void toolStripTextBox1_KeyPress(object sender, KeyPressEventArgs e)
+        private void searchBar_KeyPressed(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)13)
                 Search();

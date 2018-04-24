@@ -21,6 +21,39 @@ using ME3Explorer.Unreal;
 
 namespace ME3Explorer
 {
+    public static class TreeViewExtension
+    {
+        public static IEnumerable<System.Windows.Forms.TreeNode> FlattenTree(this System.Windows.Forms.TreeView tv)
+        {
+            List<System.Windows.Forms.TreeNode> nodes = new List<System.Windows.Forms.TreeNode>();
+            foreach(System.Windows.Forms.TreeNode node in tv.Nodes)
+            {
+                nodes.AddRange(BuildSubnodes(node));
+            }
+
+            return nodes;
+        }
+
+        private static List<System.Windows.Forms.TreeNode> BuildSubnodes(System.Windows.Forms.TreeNode rootNode)
+        {
+            List<System.Windows.Forms.TreeNode> nodes = new List<System.Windows.Forms.TreeNode>();
+            nodes.Add(rootNode);
+            foreach (System.Windows.Forms.TreeNode node in rootNode.Nodes)
+            {
+                nodes.AddRange(BuildSubnodes(node));
+            }
+            return nodes;
+        }
+
+
+        //public static IEnumerable<System.Windows.Forms.TreeNode> FlattenTree(this System.Windows.Forms.TreeNodeCollection coll)
+        //{
+        //    return coll.Cast<System.Windows.Forms.TreeNode>()
+        //                            .SelectMany(x => FlattenTree(x.Nodes))
+        //                            .Concat(coll.Cast<System.Windows.Forms.TreeNode>());
+        //}
+    }
+
     public static class EnumerableExtensions
     {
         public static int FindOrAdd<T>(this List<T> list, T element)

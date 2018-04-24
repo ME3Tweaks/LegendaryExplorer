@@ -1538,19 +1538,7 @@ Floats*/
                 node.Name = offset.ToString();
                 node.Tag = nodeType.StructLeafInt;
                 topLevelTree.Nodes.Add(node);
-
-                node = new TreeNode("0x" + offset.ToString("X5") + " ClassTypeHeaderPart1: " + headerUnknown1);
-                node.Name = offset.ToString();
-                node.Tag = nodeType.StructLeafInt;
-                //topLevelTree.Nodes.Add(node);
-                offset += 4;
-
-                int headerUnknown2 = BitConverter.ToInt32(data, offset);
-                node = new TreeNode("0x" + offset.ToString("X5") + " ClassTypeHeaderPart2: " + headerUnknown2);
-                node.Name = offset.ToString();
-                node.Tag = nodeType.StructLeafInt;
-                //topLevelTree.Nodes.Add(node);
-                offset += 4;
+                offset += 8;
 
                 Int16 labelOffset = BitConverter.ToInt16(data, offset);
                 node = new TreeNode("0x" + offset.ToString("X5") + " LabelOffset: 0x" + labelOffset.ToString("X4"));
@@ -1558,7 +1546,6 @@ Floats*/
                 topLevelTree.Nodes.Add(node);
                 offset += 2;
 
-                bool extendedHeader = headerUnknown1 == 33 && headerUnknown2 == 25;
                 int skipAmount = 0x6;
                 //Find end of script block. Seems to be 10 FF's.
                 while (offset + skipAmount + 10 < data.Length)
@@ -1727,21 +1714,13 @@ Floats*/
 
                     for (int i = 0; i < functionsTableCount; i++)
                     {
-                        if ((data.Length - (offset + 4)) < 0)
-                        {
-                            TreeNode badnode = new TreeNode("Error: cannot read any farther");
-                            badnode.Name = (offset).ToString();
-                            node.Nodes.Add(badnode);
-                            break;
-                        }
                         int functionsTableIndex = BitConverter.ToInt32(data, offset);
-                        offset += 4;
-
                         string impexpName = getEntryFullPath(functionsTableIndex);
-                        TreeNode subnode = new TreeNode("0x" + (offset - 12).ToString("X5") + " " + impexpName);
+                        TreeNode subnode = new TreeNode("0x" + offset.ToString("X5") + " " + impexpName);
                         subnode.Tag = nodeType.StructLeafObject;
-                        subnode.Name = (offset - 12).ToString();
+                        subnode.Name = offset.ToString();
                         node.Nodes.Add(subnode);
+                        offset += 4;
                     }
                 }
             }

@@ -2632,14 +2632,58 @@ namespace ME3Explorer
             }
             List<string> props = PropertyReader.getPropList(export).Select(x => pcc.getNameEntry(x.Name)).ToList();
             string prop = AddPropertyDialog.GetProperty(export, props, pcc.Game);
-            AddProperty(prop);
+
+            string origname = export.ClassName;
+            string temp = export.ClassName;
+            List<string> classes = new List<string>();
+            Dictionary<string, ClassInfo> classList;
+            switch (pcc.Game)
+            {
+                case MEGame.ME1:
+                    classList = ME1Explorer.Unreal.ME1UnrealObjectInfo.Classes;
+                    break;
+                case MEGame.ME2:
+                    classList = ME2Explorer.Unreal.ME2UnrealObjectInfo.Classes;
+                    break;
+                case MEGame.ME3:
+                default:
+                    classList = ME3UnrealObjectInfo.Classes;
+                    break;
+            }
+            ClassInfo currentInfo = null;
+            if (!classList.ContainsKey(temp))
+            {
+                IExportEntry exportTemp = export.FileRef.Exports[export.idxClass - 1];
+                //current object is not in classes db, temporarily add it to the list
+                switch (pcc.Game)
+                {
+                    case MEGame.ME1:
+                        currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(exportTemp);
+                        break;
+                    case MEGame.ME2:
+                        currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(exportTemp);
+                        break;
+                    case MEGame.ME3:
+                    default:
+                        currentInfo = ME3UnrealObjectInfo.generateClassInfo(exportTemp);
+                        break;
+                }
+                currentInfo.baseClass = exportTemp.ClassParent;
+            }
+
+            AddProperty(prop, currentInfo);
         }
 
-        public void AddProperty(string prop)
+        public void AddProperty(string prop, ClassInfo nonVanillaClassInfo = null)
         {
             if (prop != null)
             {
-                PropertyInfo info = GetPropertyInfo(prop, className);
+                PropertyInfo info = GetPropertyInfo(prop, className, nonVanillaClassInfo: nonVanillaClassInfo);
+                if (info == null)
+                {
+                    MessageBox.Show("Error reading property.", "Error");
+                    return;
+                }
                 if (info.type == PropertyType.StructProperty && pcc.Game != MEGame.ME3)
                 {
                     MessageBox.Show("Cannot add StructProperties when editing ME1 or ME2 files.", "Sorry :(");
@@ -2871,17 +2915,17 @@ namespace ME3Explorer
             return null;
         }
 
-        private PropertyInfo GetPropertyInfo(string propname, string typeName, bool inStruct = false)
+        private PropertyInfo GetPropertyInfo(string propname, string typeName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
         {
             switch (pcc.Game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                    return ME1UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                    return ME2UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                    return ME3UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
             }
             return null;
         }
