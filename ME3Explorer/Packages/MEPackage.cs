@@ -357,8 +357,7 @@ namespace ME3Explorer.Packages
 
         protected void exportChanged(object sender, PropertyChangedEventArgs e)
         {
-            IExportEntry exp = sender as IExportEntry;
-            if (exp != null)
+            if (sender is IExportEntry exp)
             {
                 if (e.PropertyName == nameof(ExportEntry.DataChanged))
                 {
@@ -373,8 +372,7 @@ namespace ME3Explorer.Packages
 
         protected void importChanged(object sender, PropertyChangedEventArgs e)
         {
-            ImportEntry imp = sender as ImportEntry;
-            if (imp != null)
+            if (sender is ImportEntry imp)
             {
                 if (e.PropertyName == nameof(ImportEntry.HeaderChanged))
                 {

@@ -316,33 +316,6 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "ME1 Save Editor",
-                type = typeof(ME1Explorer.SaveGameEditor.SaveEditor),
-                icon = Application.Current.FindResource("iconSaveGameEditor") as ImageSource,
-                open = () =>
-                {
-                    (new ME1Explorer.SaveGameEditor.SaveEditor()).Show();
-                },
-                tags = new List<string> { "utility" },
-                subCategory = "Saved Games",
-                description = "This tool is deprecated and is no longer supported. It may not exist in future versions of the toolset.",
-
-            });
-            set.Add(new Tool
-            {
-                name = "ME1 Save Operator",
-                type = typeof(ME1Explorer.SaveGameOperator.SaveGameOperator),
-                icon = Application.Current.FindResource("iconSaveGameOperator") as ImageSource,
-                open = () =>
-                {
-                    (new ME1Explorer.SaveGameOperator.SaveGameOperator()).Show();
-                },
-                tags = new List<string> { "utility" },
-                subCategory = "Saved Games",
-                description = "Allows you to edit very basic properties of Mass Effect game saves. This is not a full save editor. This tool is deprecated and is no longer supported.",
-            });
-            set.Add(new Tool
-            {
                 name = "Script Database",
                 type = typeof(ScriptDB.ScriptDB),
                 icon = Application.Current.FindResource("iconScriptDatabase") as ImageSource,
