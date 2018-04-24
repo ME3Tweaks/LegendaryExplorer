@@ -1560,14 +1560,12 @@ namespace ME3Explorer
                 else if (LAST_SELECTED_PROP_TYPE == nodeType.Root)
                 {
                     addPropButton.Visible = true;
-                    //removePropertyButton.Visible = false;
 
                 }
                 else if (LAST_SELECTED_PROP_TYPE == nodeType.None && e.Node.Parent.Tag != null && e.Node.Parent.Tag.Equals(nodeType.Root))
                 {
                     //User has selcted the None at the end of the root
                     addPropButton.Visible = true;
-                   // removePropertyButton.Visible = false;
                 }
                 else
                 {
@@ -1602,7 +1600,6 @@ namespace ME3Explorer
                     return;
                 int type = BitConverter.ToInt32(memory, pos + 8);
                 int test = BitConverter.ToInt32(memory, pos + 12);
-                //removePropertyButton.Visible = LAST_SELECTED_NODE != null && LAST_SELECTED_NODE.Parent != null && (nodeType)LAST_SELECTED_NODE.Parent.Tag == nodeType.Root && (nodeType)LAST_SELECTED_NODE.Tag != nodeType.None;
                 if (test != 0 || !pcc.isName(type))
                     return;
                 switch (pcc.getNameEntry(type))
