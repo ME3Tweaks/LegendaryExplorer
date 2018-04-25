@@ -1603,7 +1603,7 @@ namespace ME3Explorer
                     if (relinkResults.Count > 0)
                     {
                         ListWindow lw = new ListWindow(relinkResults, "Relink report", "The following items failed to relink.", 800, 600);
-                        lw.ShowDialog(this);
+                        lw.Show(this);
                     }
                     else
                     {
