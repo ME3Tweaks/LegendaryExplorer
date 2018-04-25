@@ -346,7 +346,7 @@ Floats*/
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            addPropButton.Visible = false;
+
 
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName + "(" + export.ClassName + ")");
             topLevelTree.Tag = nodeType.Root;
@@ -465,7 +465,7 @@ Floats*/
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            addPropButton.Visible = false;
+
 
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName + "("+export.ClassName+")");
             topLevelTree.Tag = nodeType.Root;
@@ -599,7 +599,6 @@ Floats*/
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            addPropButton.Visible = false;
 
             if ((export.header[0x1f] & 0x2) != 0)
             {
@@ -779,7 +778,7 @@ Floats*/
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            addPropButton.Visible = false;
+
 
             byte[] data = export.Data;
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
@@ -823,7 +822,7 @@ Floats*/
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            addPropButton.Visible = false;
+
 
             byte[] data = export.Data;
 
@@ -1086,7 +1085,7 @@ Floats*/
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            addPropButton.Visible = false;
+
 
             byte[] data = export.Data;
 
@@ -1164,7 +1163,7 @@ Floats*/
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            addPropButton.Visible = false;
+
 
             byte[] data = export.Data;
 
@@ -1234,7 +1233,7 @@ Floats*/
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            addPropButton.Visible = false;
+
 
             byte[] data = export.Data;
 
@@ -1359,7 +1358,7 @@ Floats*/
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            addPropButton.Visible = false;
+
             addArrayElementButton.Visible = false;
             moveUpButton.Visible = false;
             moveDownButton.Visible = false;
@@ -1529,7 +1528,7 @@ Floats*/
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            addPropButton.Visible = false;
+
 
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName + " Binary");
             topLevelTree.Tag = nodeType.Root;
@@ -1677,7 +1676,7 @@ Floats*/
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            addPropButton.Visible = false;
+
 
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
             topLevelTree.Tag = nodeType.Root;
@@ -1747,7 +1746,7 @@ Floats*/
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            addPropButton.Visible = false;
+
 
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
             topLevelTree.Tag = nodeType.Root;
@@ -2217,7 +2216,7 @@ Floats*/
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            addPropButton.Visible = false;
+
 
             byte[] data = export.Data;
 
@@ -2599,14 +2598,6 @@ Floats*/
                             break;
                     }
                 }
-                else if (LAST_SELECTED_PROP_TYPE == nodeType.Root)
-                {
-                    addPropButton.Visible = true;
-                }
-                else if (LAST_SELECTED_PROP_TYPE == nodeType.None && e.Node.Parent.Tag != null && e.Node.Parent.Tag.Equals(nodeType.Root))
-                {
-                    addPropButton.Visible = true;
-                }
                 else
                 {
                     TryParseProperty();
@@ -2624,7 +2615,7 @@ Floats*/
         {
             objectNameLabel.Visible = nameEntry.Visible = proptext.Visible = setPropertyButton.Visible = propDropdown.Visible =
                 addArrayElementButton.Visible = deleteArrayElementButton.Visible = moveDownButton.Visible =
-                moveUpButton.Visible = addPropButton.Visible = false;
+                moveUpButton.Visible = false;
             nameEntry.AutoCompleteCustomSource.Clear();
             nameEntry.Clear();
             proptext.Clear();
