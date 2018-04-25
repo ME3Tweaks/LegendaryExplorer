@@ -17,6 +17,7 @@ using ME2Explorer.Unreal;
 using ME1Explorer.Unreal.Classes;
 using System.Xml;
 using System.Xml.Linq;
+using Gibbed.IO;
 
 namespace ME3Explorer
 {
@@ -118,8 +119,10 @@ Floats*/
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
 
         int? selectedNodePos = null;
-        private Dictionary<string, string> ME1_TLK_DICT;
-        public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "Class", "BioStage", "ObjectProperty", "ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant", "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "Model", "Polys" }; //classes that have binary parse code
+        private Dictionary<string, string> ME1_TLK_DICT; //TODO: Read TLK for ME1 for Bio2DA
+        public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "Class", "BioStage", "ObjectProperty", "Const",
+               "Enum", "ArrayProperty","FloatProperty", "IntProperty", "BoolProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
+            "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "Model", "Polys" }; //classes that have binary parse code or shoudl show up in generic scan
 
 
         public BinaryInterpreter()
@@ -268,6 +271,14 @@ Floats*/
                 case "Class":
                     StartClassScan2();
                     break;
+                case "Enum":
+                case "Const":
+                    StartEnumScan();
+                    break;
+                case "IntProperty":
+                case "BoolProperty":
+                case "ArrayProperty":
+                case "FloatProperty":
                 case "ObjectProperty":
                     StartObjectScan();
                     break;
@@ -322,17 +333,22 @@ Floats*/
                     treeView1.SelectedNode = treeView1.Nodes[0];
                 }
             }
+
+            if (treeView1.SelectedNode != null)
+            {
+                treeView1.SelectedNode.Expand();
+            }
+
         }
 
-        private void StartObjectScan(string nodeNameToSelect = null)
+        private void StartEnumScan(string nodeNameToSelect = null)
         {
-            //const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
             resetPropEditingControls();
             treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
             addPropButton.Visible = false;
 
-            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
+            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName + "(" + export.ClassName + ")");
             topLevelTree.Tag = nodeType.Root;
             topLevelTree.Name = "0";
             try
@@ -346,53 +362,205 @@ Floats*/
                 node.Name = offset.ToString();
                 node.Tag = nodeType.StructLeafInt;
                 topLevelTree.Nodes.Add(node);
+                offset += 4;
 
-                offset = export.propsEnd();
+                int noneUnrealProperty = BitConverter.ToInt32(data, offset);
+                int noneUnrealPropertyIndex = BitConverter.ToInt32(data, offset + 4);
+                node = new TreeNode("0x" + offset.ToString("X5") + " Unreal property None Name: " + pcc.getNameEntry(noneUnrealProperty));
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafName;
+                topLevelTree.Nodes.Add(node);
+                offset += 8;
 
                 int superclassIndex = BitConverter.ToInt32(data, offset);
                 string superclassStr = getEntryFullPath(superclassIndex);
 
-                node = new TreeNode("0x" + offset.ToString("X5") + " Superclass Index: " + superclassIndex + "(" + superclassStr + ")");
+                node = new TreeNode("0x" + offset.ToString("X5") + " Superclass: " + superclassIndex + "(" + superclassStr + ")");
                 node.Name = offset.ToString();
                 node.Tag = nodeType.StructLeafObject;
 
                 topLevelTree.Nodes.Add(node);
                 offset += 4;
 
-                //int unknown1 = BitConverter.ToInt32(data, offset);
-                //node = new TreeNode("0x" + offset.ToString("X5") + " Unknown 1: " + unknown1);
-                //node.Name = offset.ToString();
-                //node.Tag = nodeType.StructLeafInt;
-                //topLevelTree.Nodes.Add(node);
-                //offset += 4;
-
                 int classObjTree = BitConverter.ToInt32(data, offset);
-                node = new TreeNode("0x" + offset.ToString("X5") + " NextItemCompilingChain: " + classObjTree + " "+getEntryFullPath(classObjTree));
+                node = new TreeNode("0x" + offset.ToString("X5") + " NextItemCompilingChain: " + classObjTree + " " + getEntryFullPath(classObjTree));
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafObject;
+                topLevelTree.Nodes.Add(node);
+                offset += 4;
+
+                if (export.ClassName == "Enum")
+                {
+
+                    int enumSize = BitConverter.ToInt32(data, offset);
+                    node = new TreeNode("0x" + offset.ToString("X5") + " Enum Size: " + enumSize);
+                    node.Name = offset.ToString();
+                    node.Tag = nodeType.StructLeafInt;
+                    topLevelTree.Nodes.Add(node);
+                    offset += 4;
+
+                    for (int i = 0; i < enumSize; i++)
+                    {
+                        int enumName = BitConverter.ToInt32(data, offset);
+                        int enumNameIndex = BitConverter.ToInt32(data, offset + 4);
+                        node = new TreeNode("0x" + offset.ToString("X5") + " EnumName[" + i + "]: " + pcc.getNameEntry(enumName));
+                        node.Name = offset.ToString();
+                        node.Tag = nodeType.StructLeafName;
+                        topLevelTree.Nodes.Add(node);
+                        offset += 8;
+                    }
+                }
+
+                if (export.ClassName == "Const")
+                {
+                    int literalStringLength = BitConverter.ToInt32(data, offset);
+                    node = new TreeNode("0x" + offset.ToString("X5") + " Const Literal Length: " + literalStringLength);
+                    node.Name = offset.ToString();
+                    node.Tag = nodeType.IntProperty;
+                    topLevelTree.Nodes.Add(node);
+                    offset += 4;
+
+                    //value is stored as a literal string in binary.
+                    MemoryStream stream = new MemoryStream(data);
+                    stream.Position = offset;
+                    if (literalStringLength < 0)
+                    {
+                        string str = stream.ReadString((literalStringLength * -2), true, Encoding.Unicode);
+                        node = new TreeNode("0x" + offset.ToString("X5") + " Const Literal Value: " + str);
+                        node.Name = offset.ToString();
+                        node.Tag = nodeType.StrProperty;
+                        topLevelTree.Nodes.Add(node);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Nodes.Add("An error occured parsing the " + export.ClassName + " binary: " + ex.Message);
+            }
+            treeView1.Nodes.Add(topLevelTree);
+            treeView1.CollapseAll();
+            treeView1.Nodes[0].Expand();
+            TreeNode[] nodes;
+
+            if (nodeNameToSelect != null)
+            {
+                nodes = treeView1.Nodes.Find(nodeNameToSelect, true);
+                if (nodes.Length > 0)
+                {
+                    treeView1.SelectedNode = nodes[0];
+                }
+                else
+                {
+                    treeView1.SelectedNode = treeView1.Nodes[0];
+                }
+            }
+
+            treeView1.EndUpdate();
+            memsize = memory.Length;
+        }
+
+        private void StartObjectScan(string nodeNameToSelect = null)
+        {
+            //const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
+            resetPropEditingControls();
+            treeView1.BeginUpdate();
+            treeView1.Nodes.Clear();
+            addPropButton.Visible = false;
+
+            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName + "("+export.ClassName+")");
+            topLevelTree.Tag = nodeType.Root;
+            topLevelTree.Name = "0";
+            try
+            {
+                TreeNode node;
+
+                byte[] data = export.Data;
+                int offset = 0;
+                int unrealExportIndex = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " Unreal Unique Index: " + unrealExportIndex);
                 node.Name = offset.ToString();
                 node.Tag = nodeType.StructLeafInt;
                 topLevelTree.Nodes.Add(node);
                 offset += 4;
 
-                offset = data.Length - 4;
-                int finalItem = BitConverter.ToInt32(data, offset);
-                node = new TreeNode("0x" + offset.ToString("X5") + " FinalItem: " + getEntryFullPath(finalItem));
+                int noneUnrealProperty = BitConverter.ToInt32(data, offset);
+                int noneUnrealPropertyIndex = BitConverter.ToInt32(data, offset + 4);
+                node = new TreeNode("0x" + offset.ToString("X5") + " Unreal property None Name: " + pcc.getNameEntry(noneUnrealProperty));
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafName;
+                topLevelTree.Nodes.Add(node);
+                offset += 8;
+
+                int superclassIndex = BitConverter.ToInt32(data, offset);
+                string superclassStr = getEntryFullPath(superclassIndex);
+
+                node = new TreeNode("0x" + offset.ToString("X5") + " Superclass: " + superclassIndex + "(" + superclassStr + ")");
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafObject;
+
+                topLevelTree.Nodes.Add(node);
+                offset += 4;
+
+                int classObjTree = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " NextItemCompilingChain: " + classObjTree + " " + getEntryFullPath(classObjTree));
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafObject;
+                topLevelTree.Nodes.Add(node);
+                offset += 4;
+
+                UInt64 IgnoreMask = BitConverter.ToUInt64(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " IgnoreMask?: 0x" + IgnoreMask.ToString("X16"));
                 node.Name = offset.ToString();
                 node.Tag = nodeType.StructLeafInt;
                 topLevelTree.Nodes.Add(node);
+                offset += 8;
 
-                //I am not sure what these mean. However if Pt1&2 are 33/25, the following bytes that follow are extended.
-                //int headerUnknown1 = BitConverter.ToInt32(data, offset);
-                //Int64 ignoreMask = BitConverter.ToInt64(data, offset);
-                //node = new TreeNode("0x" + offset.ToString("X5") + " IgnoreMask: 0x" + ignoreMask.ToString("X16"));
-                //node.Name = offset.ToString();
-                //node.Tag = nodeType.StructLeafInt;
-                //topLevelTree.Nodes.Add(node);
-                //offset += 8;
-                
+                int unk1 = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " Unknown1 " + unk1);
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafInt;
+                topLevelTree.Nodes.Add(node);
+                offset += 4;
+
+                //has listed outerclass
+                int none = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " None: " + pcc.getNameEntry(none));
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafInt;
+                topLevelTree.Nodes.Add(node);
+                offset += 8;
+
+                int unk2 = BitConverter.ToInt32(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " Unknown2: " + unk2);
+                node.Name = offset.ToString();
+                node.Tag = nodeType.StructLeafInt;
+                topLevelTree.Nodes.Add(node);
+                offset += 4; //
+
+                if (export.ClassName == "ObjectProperty")
+                {
+                    //has listed outerclass
+                    int outer = BitConverter.ToInt32(data, offset);
+                    node = new TreeNode("0x" + offset.ToString("X5") + " OuterClass: " + outer + " " + getEntryFullPath(outer));
+                    node.Name = offset.ToString();
+                    node.Tag = nodeType.StructLeafInt;
+                    topLevelTree.Nodes.Add(node);
+                    offset += 4;
+                }
+                else if (export.ClassName == "ArrayProperty")
+                {
+                    //has listed outerclass
+                    int outer = BitConverter.ToInt32(data, offset);
+                    node = new TreeNode("0x" + offset.ToString("X5") + " Array can hold objects of type: " + outer + " " + getEntryFullPath(outer));
+                    node.Name = offset.ToString();
+                    node.Tag = nodeType.StructLeafInt;
+                    topLevelTree.Nodes.Add(node);
+                    offset += 4;
+                }
             }
             catch (Exception ex)
             {
-                topLevelTree.Nodes.Add("An error occured parsing the object binary: " + ex.Message);
+                topLevelTree.Nodes.Add("An error occured parsing the " + export.ClassName + " binary: " + ex.Message);
             }
             treeView1.Nodes.Add(topLevelTree);
             treeView1.CollapseAll();
@@ -623,7 +791,6 @@ Floats*/
             TreeNode node = new TreeNode(binstartoffset.ToString("X4") + " Redirect references to this export to: " + redirnum + " " + pcc.getEntry(redirnum).GetFullPath);
             node.Name = binstartoffset.ToString();
             topLevelTree.Nodes.Add(node);
-
             topLevelTree.Expand();
             treeView1.Nodes[0].Expand();
             TreeNode[] nodes;
@@ -1217,8 +1384,7 @@ Floats*/
                     int entryval = BitConverter.ToInt32(data, offset);
                     if (entryval > 0 && entryval < pcc.ExportCount)
                     {
-                        IExportEntry export = (IExportEntry)pcc.getEntry(entryval);
-                        smacitems.Add(export);
+                        smacitems.Add(pcc.getEntry(entryval) as IExportEntry);
                     }
                     else if (entryval == 0)
                     {
