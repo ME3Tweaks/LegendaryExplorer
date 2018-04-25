@@ -1889,7 +1889,6 @@ Floats*/
                     int nameIndex = BitConverter.ToInt32(data, offset + 4);
                     offset += 8;
                     int componentObjectIndex = BitConverter.ToInt32(data, offset);
-                    offset += 4;
 
                     string objName = "Null";
                     if (componentObjectIndex != 0)
@@ -1900,6 +1899,8 @@ Floats*/
                     subnode.Name = (offset - 8).ToString();
                     subnode.Tag = nodeType.StructLeafName;
                     node.Nodes.Add(subnode);
+                    offset += 4;
+
                 }
             }
             return offset;

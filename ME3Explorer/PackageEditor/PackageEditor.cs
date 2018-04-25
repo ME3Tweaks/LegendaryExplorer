@@ -13,6 +13,7 @@ using UsefulThings;
 using static ME3Explorer.Unreal.PropertyReader;
 using System.Text;
 using ME3Explorer.SharedUI;
+using System.Threading.Tasks;
 
 namespace ME3Explorer
 {
@@ -140,6 +141,9 @@ namespace ME3Explorer
             try
             {
                 currentFile = s;
+                filenameLabel.Text = "Loading " + Path.GetFileName(s);
+                statusLabel.Text = "";
+                Application.DoEvents();
                 LoadMEPackage(s);
                 interpreterControl.Pcc = pcc;
                 binaryInterpreterControl.Pcc = pcc;
@@ -147,12 +151,12 @@ namespace ME3Explorer
                 treeView1.Tag = pcc;
                 RefreshView();
                 InitStuff();
-                status2.Text = "@" + Path.GetFileName(s);
+                filenameLabel.Text = Path.GetFileName(s);
             }
             catch (Exception e)
             {
-                Debugger.Break();
-                MessageBox.Show("Error loading file:\n" + e.Message);
+                filenameLabel.Text = "Failed to load " + Path.GetFileName(s);
+                MessageBox.Show("Error loading " + Path.GetFileName(s) + ":\n" + e.Message);
             }
         }
 
@@ -721,24 +725,25 @@ namespace ME3Explorer
 
         public void UpdateStatusEx(int n)
         {
-            toolStripStatusLabel1.Text = $"Class:{pcc.getExport(n).ClassName} Flags: 0x{pcc.getExport(n).ObjectFlags.ToString("X16")}";
-            toolStripStatusLabel1.ToolTipText = "";
-            foreach (string row in UnrealFlags.flagdesc)
+            statusLabel.Text = $"Class: {pcc.getExport(n).ClassName}";
+            //$"Flags: 0x{pcc.getExport(n).ObjectFlags.ToString("X16")}";
+            statusLabel.ToolTipText = "";
+            /*foreach (string row in UnrealFlags.flagdesc)
             {
                 string[] t = row.Split(',');
                 ulong l = ulong.Parse(t[1].Trim(), System.Globalization.NumberStyles.HexNumber);
                 if ((l & pcc.getExport(n).ObjectFlags) != 0)
                 {
-                    toolStripStatusLabel1.Text += "[" + t[0].Trim() + "] ";
-                    toolStripStatusLabel1.ToolTipText += "[" + t[0].Trim() + "] : " + t[2].Trim() + "\n";
+                    statusLabel.Text += "[" + t[0].Trim() + "] ";
+                    statusLabel.ToolTipText += "[" + t[0].Trim() + "] : " + t[2].Trim() + "\n";
                 }
-            }
+            }*/
         }
 
         public void UpdateStatusIm(int n)
         {
-            toolStripStatusLabel1.Text = $"Class:{pcc.getImport(n).ClassName} Link: {pcc.getImport(n).idxLink} ";
-            toolStripStatusLabel1.ToolTipText = "";
+            statusLabel.Text = $"Class:{pcc.getImport(n).ClassName} Link: {pcc.getImport(n).idxLink} ";
+            statusLabel.ToolTipText = "";
         }
 
         public void PreviewProps(int n)
@@ -1273,8 +1278,8 @@ namespace ME3Explorer
 
         private void toolStripStatusLabel1_Click(object sender, EventArgs e)
         {
-            if (toolStripStatusLabel1.ToolTipText != "")
-                MessageBox.Show(toolStripStatusLabel1.ToolTipText);
+            if (statusLabel.ToolTipText != "")
+                MessageBox.Show(statusLabel.ToolTipText);
         }
 
         private void button4_Click(object sender, EventArgs e)
