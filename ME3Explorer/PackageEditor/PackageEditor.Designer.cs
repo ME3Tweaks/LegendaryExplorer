@@ -495,7 +495,7 @@
             this.Button1.Name = "Button1";
             this.Button1.Size = new System.Drawing.Size(93, 37);
             this.Button1.Text = "Names";
-            this.Button1.Click += new System.EventHandler(this.Button1_Click);
+            this.Button1.Click += new System.EventHandler(this.NamesViewButton_Clicked);
             // 
             // Button2
             // 
@@ -505,7 +505,7 @@
             this.Button2.Name = "Button2";
             this.Button2.Size = new System.Drawing.Size(100, 37);
             this.Button2.Text = "Imports";
-            this.Button2.Click += new System.EventHandler(this.Button2_Click);
+            this.Button2.Click += new System.EventHandler(this.ImportsViewButton_Clicked);
             // 
             // Button3
             // 
@@ -517,7 +517,7 @@
             this.Button3.Name = "Button3";
             this.Button3.Size = new System.Drawing.Size(96, 37);
             this.Button3.Text = "Exports";
-            this.Button3.Click += new System.EventHandler(this.Button3_Click);
+            this.Button3.Click += new System.EventHandler(this.ExportsViewButton_Clicked);
             // 
             // Button5
             // 
@@ -527,7 +527,7 @@
             this.Button5.Name = "Button5";
             this.Button5.Size = new System.Drawing.Size(122, 37);
             this.Button5.Text = "Tree View";
-            this.Button5.Click += new System.EventHandler(this.Button5_Click);
+            this.Button5.Click += new System.EventHandler(this.TreeView_Button_Click);
             // 
             // toolStripSeparator1
             // 
@@ -538,7 +538,7 @@
             // 
             this.combo1.Name = "combo1";
             this.combo1.Size = new System.Drawing.Size(238, 40);
-            this.combo1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.combo1_KeyPress);
+            this.combo1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.findClassComboBox_KeyPress);
             // 
             // findClassButton
             // 
@@ -586,7 +586,7 @@
             this.toolStripButton3.Name = "toolStripButton3";
             this.toolStripButton3.Size = new System.Drawing.Size(111, 37);
             this.toolStripButton3.Text = "Interpret";
-            this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
+            this.toolStripButton3.Click += new System.EventHandler(this.interpretButton_Clicked);
             // 
             // toolStripSeparator3
             // 
@@ -607,7 +607,7 @@
             this.toolStripButton4.Name = "toolStripButton4";
             this.toolStripButton4.Size = new System.Drawing.Size(92, 37);
             this.toolStripButton4.Text = "Goto #";
-            this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
+            this.toolStripButton4.Click += new System.EventHandler(this.gotoNumberButton_Clicked);
             // 
             // statusStrip1
             // 

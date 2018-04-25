@@ -248,6 +248,7 @@ namespace ME3Explorer.Packages
         }
     }
 
+    [DebuggerDisplay("UDKExportEntry | {UIndex} = {GetFullPath}")]
     public class UDKExportEntry : ExportEntry, IExportEntry
     {
         public UDKExportEntry(UDKPackage udkFile, Stream stream) : base(udkFile)
@@ -302,6 +303,7 @@ namespace ME3Explorer.Packages
         }
     }
 
+    [DebuggerDisplay("ME3ExportEntry | {UIndex} = {GetFullPath}")]
     public class ME3ExportEntry : ExportEntry, IExportEntry
     {
         public ME3ExportEntry(ME3Package pccFile, Stream stream) : base(pccFile)
@@ -356,6 +358,7 @@ namespace ME3Explorer.Packages
         }
     }
 
+    [DebuggerDisplay("ME2ExportEntry | {UIndex} = {GetFullPath}")]
     public class ME2ExportEntry : ExportEntry, IExportEntry
     {
         public ME2ExportEntry(ME2Package pccFile, Stream stream) : base(pccFile)
@@ -417,6 +420,7 @@ namespace ME3Explorer.Packages
         }
     }
 
+    [DebuggerDisplay("ME1ExportEntry | {UIndex} = {GetFullPath}")]
     public class ME1ExportEntry : ExportEntry, IExportEntry
     {
         public ME1ExportEntry(ME1Package pccFile, Stream stream) : base(pccFile)
