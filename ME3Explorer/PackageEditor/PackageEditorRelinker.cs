@@ -157,8 +157,9 @@ namespace ME3Explorer
             }
             else
             {
-                Debug.WriteLine("Relink failed: " + objProperty.Name + " " + objProperty.Value + " " + importingPCC.getEntry(objProperty.Value).GetFullPath);
-                return "Relink failed: " + objProperty.Name + " " + objProperty.Value + " " + importingPCC.getEntry(objProperty.Value).GetFullPath;
+                string path = importingPCC.getEntry(objProperty.Value) != null ? importingPCC.getEntry(objProperty.Value).GetFullPath : "Entry not found: " + objProperty.Value;
+                Debug.WriteLine("Relink failed: " + objProperty.Name + " " + objProperty.Value + " " + path);
+                return "Relink failed: " + objProperty.Name + " " + objProperty.Value + " " + path;
             }
             return null;
         }
@@ -205,6 +206,7 @@ namespace ME3Explorer
                                             else
                                             {
                                                 Debug.WriteLine("Binary relink missed WwiseEvent Export " + exp.UIndex + " 0x" + (4 + (i * 4)).ToString("X6") + " " + originalValue);
+                                                relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relink error: WwiseEvent referenced WwiseStream " + originalValue + " is not in the mapping tree and could not be relinked");
                                             }
                                         }
                                         exp.setBinaryData(binarydata);
@@ -427,7 +429,7 @@ namespace ME3Explorer
                         }
                         catch (Exception e)
                         {
-                            relinkFailedReport.Add("Binary relinking failed for " + exp.Index + " " + exp.GetFullPath + ":" + e.Message);
+                            relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relinking failed: "+e.Message);
                         }
                         //Run an interpreter pass over it - we will find objectleafnodes and attempt to update the same offset in the destination file.
                         //BinaryInterpreter binaryrelinkInterpreter = new ME3Explorer.BinaryInterpreter(importpcc, importpcc.Exports[entry.Key], pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
@@ -476,9 +478,9 @@ namespace ME3Explorer
                             ImportEntry newComponentObjectImport = getOrAddCrossImport(componentObjectImport.GetFullPath, importpcc, exp.FileRef);
                             WriteMem(offset, data, BitConverter.GetBytes(newComponentObjectImport.UIndex));
                         }
-                        else
+                        else if (componentObjectIndex > 0) //we do not remap on 0 here in binary land
                         {
-                            relinkFailedReport.Add("Binary Class Component[" + i + "] could not be remapped during porting: " + componentObjectIndex + " is not in the mapping tree");
+                            relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relink error: Component[" + i + "] could not be remapped during porting: " + componentObjectIndex + " is not in the mapping tree");
                         }
                     }
                     offset += 4;

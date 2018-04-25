@@ -402,8 +402,8 @@
             // 
             this.findImportexportViaOffsetToolStripMenuItem.Name = "findImportexportViaOffsetToolStripMenuItem";
             this.findImportexportViaOffsetToolStripMenuItem.Size = new System.Drawing.Size(690, 38);
-            this.findImportexportViaOffsetToolStripMenuItem.Text = "Find import/export via offset";
-            this.findImportexportViaOffsetToolStripMenuItem.ToolTipText = "Finds an export or import containing the offset you specify.";
+            this.findImportexportViaOffsetToolStripMenuItem.Text = "Find export via file offset";
+            this.findImportexportViaOffsetToolStripMenuItem.ToolTipText = "Finds an export containing the offset you specify.";
             this.findImportexportViaOffsetToolStripMenuItem.Click += new System.EventHandler(this.findImportexportViaOffsetToolStripMenuItem_Click);
             // 
             // checkIndexingToolStripMenuItem

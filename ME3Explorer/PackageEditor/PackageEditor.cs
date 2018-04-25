@@ -9,10 +9,8 @@ using Be.Windows.Forms;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
-using static ME3Explorer.Unreal.PropertyReader;
 using System.Text;
 using ME3Explorer.SharedUI;
-using System.Threading.Tasks;
 using Gibbed.IO;
 
 namespace ME3Explorer
@@ -1602,8 +1600,8 @@ namespace ME3Explorer
                     goToNumber(n >= 0 ? pcc.ExportCount - 1 : -pcc.ImportCount);
                     if (relinkResults.Count > 0)
                     {
-                        ListWindow lw = new ListWindow(relinkResults, "Relink report", "The following items failed to relink.", 800, 600);
-                        lw.Show(this);
+                        ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.");
+                        ld.Show();
                     }
                     else
                     {
@@ -1613,7 +1611,7 @@ namespace ME3Explorer
             }
         }
 
-        
+
 
         private int me3ExpIndexingToUnreal(int sourceObjReference, bool isImport = false)
         {
@@ -1664,7 +1662,7 @@ namespace ME3Explorer
             return sourceObjReference;
         }
 
-        
+
 
         private bool importTree(TreeNode sourceNode, IMEPackage importpcc, int n)
         {
@@ -2043,19 +2041,30 @@ namespace ME3Explorer
 
         private void findImportexportViaOffsetToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string input = "Enter an offset (in hex, e.g. 2fa360) to find what export or import contains that offset";
-            DialogResult response = WinFormInputDialog.ShowInputDialog(ref input);
-            if (response == DialogResult.OK)
+            if (pcc == null)
             {
-                int idx = int.Parse(input, System.Globalization.NumberStyles.HexNumber);
-                for (int i = 0; i < pcc.ExportCount; i++)
+                return;
+            }
+            string input = "Enter an offset (in hex, e.g. 2fa360) to find what export contains that offset.";
+            string result = PromptDialog.Prompt(input, "Enter offset");
+            if (result != null)
+            {
+                try
                 {
-                    IExportEntry exp = pcc.Exports[i];
-                    if (idx > exp.DataOffset && idx < exp.DataOffset + exp.DataSize)
+                    int idx = int.Parse(result, System.Globalization.NumberStyles.HexNumber);
+                    for (int i = 0; i < pcc.ExportCount; i++)
                     {
-                        goToNumber(exp.Index);
-                        break;
+                        IExportEntry exp = pcc.Exports[i];
+                        if (idx > exp.DataOffset && idx < exp.DataOffset + exp.DataSize)
+                        {
+                            goToNumber(exp.Index);
+                            return;
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message);
                 }
             }
         }
@@ -2099,8 +2108,8 @@ namespace ME3Explorer
                 }
                 //Clipboard.SetText(copy);
                 MessageBox.Show(duplicates.Count + " duplicate indexes were found.", "BAD INDEXING");
-                ListWindow lw = new ListWindow(duplicates, "Duplicate indexes", "The following items have duplicate indexes.");
-                lw.ShowDialog(this);
+                ListDialog lw = new ListDialog(duplicates, "Duplicate indexes", "The following items have duplicate indexes.");
+                lw.Show();
             }
             else
             {
@@ -2157,7 +2166,7 @@ namespace ME3Explorer
             MessageBox.Show(this, "TLKs have been reloaded.", "TLK list reloaded");
         }
 
-        
+
 
         private string ScanForConfigValues(string file)
         {
@@ -2190,7 +2199,7 @@ namespace ME3Explorer
             }
         }
 
-        
+
 
         private void dialogueEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {

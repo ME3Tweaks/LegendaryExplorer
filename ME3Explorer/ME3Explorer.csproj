@@ -436,6 +436,9 @@
     <Compile Include="Pathfinding Editor\HeightFilterForm.Designer.cs">
       <DependentUpon>HeightFilterForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\ListDialog.xaml.cs">
+      <DependentUpon>ListDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SharedUI\ListWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -574,6 +577,9 @@
     </Compile>
     <Compile Include="SharedUI\ExportSelectorWinForms.Designer.cs">
       <DependentUpon>ExportSelectorWinForms.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SharedUI\PromptDialog.xaml.cs">
+      <DependentUpon>PromptDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\WinFormInputDialog.cs" />
     <Compile Include="SingleInstance.cs" />
@@ -915,6 +921,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Interpreter\PropertyEditorHost.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedUI\ListDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedUI\PromptDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
