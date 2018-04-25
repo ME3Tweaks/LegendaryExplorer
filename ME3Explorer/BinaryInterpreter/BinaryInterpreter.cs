@@ -467,7 +467,7 @@ Floats*/
             treeView1.Nodes.Clear();
 
 
-            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName + "("+export.ClassName+")");
+            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName + "(" + export.ClassName + ")");
             topLevelTree.Tag = nodeType.Root;
             topLevelTree.Name = "0";
             try
@@ -508,11 +508,26 @@ Floats*/
                 topLevelTree.Nodes.Add(node);
                 offset += 4;
 
-                UInt64 IgnoreMask = BitConverter.ToUInt64(data, offset);
-                node = new TreeNode("0x" + offset.ToString("X5") + " IgnoreMask?: 0x" + IgnoreMask.ToString("X16"));
+                UInt64 ObjectFlagsMask = BitConverter.ToUInt64(data, offset);
+                node = new TreeNode("0x" + offset.ToString("X5") + " ObjectFlags: 0x" + ObjectFlagsMask.ToString("X16"));
                 node.Name = offset.ToString();
                 node.Tag = nodeType.StructLeafInt;
                 topLevelTree.Nodes.Add(node);
+
+                //Create objectflags tree
+                //This is such a hack job but I can't figure out how to do enums :(
+                foreach (string row in UnrealFlags.propertyflags)
+                {
+                    string[] t = row.Split(',');
+                    ulong l = ulong.Parse(t[1].Trim(), System.Globalization.NumberStyles.HexNumber);
+                    if ((l & ObjectFlagsMask) != 0)
+                    {
+                        string reason = t.Length == 3 ? t[2] : "";
+                        TreeNode flagnode = new TreeNode(t[0] + " " + t[1]+ " " +reason);
+                        flagnode.Name = offset.ToString();
+                        node.Nodes.Add(flagnode);
+                    }
+                }
                 offset += 8;
 
                 int unk1 = BitConverter.ToInt32(data, offset);
