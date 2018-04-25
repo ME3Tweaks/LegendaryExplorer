@@ -76,9 +76,8 @@
             this.gotonumber = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.pb1 = new System.Windows.Forms.ToolStripProgressBar();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.status2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.filenameLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.nameContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -202,7 +201,7 @@
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(324, 38);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(245, 38);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.ToolTipText = "Load an uncompressed or compressed PCC file";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
@@ -211,7 +210,7 @@
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(324, 38);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(245, 38);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.ToolTipText = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
@@ -219,7 +218,7 @@
             // saveAsMenuItem
             // 
             this.saveAsMenuItem.Name = "saveAsMenuItem";
-            this.saveAsMenuItem.Size = new System.Drawing.Size(324, 38);
+            this.saveAsMenuItem.Size = new System.Drawing.Size(245, 38);
             this.saveAsMenuItem.Text = "Save As";
             this.saveAsMenuItem.ToolTipText = "Save As";
             this.saveAsMenuItem.Click += new System.EventHandler(this.appendSaveToolStripMenuItem_Click);
@@ -233,53 +232,53 @@
             this.sequenceEditorToolStripMenuItem,
             this.wWiseBankEditorToolStripMenuItem});
             this.openInToolStripMenuItem.Name = "openInToolStripMenuItem";
-            this.openInToolStripMenuItem.Size = new System.Drawing.Size(324, 38);
+            this.openInToolStripMenuItem.Size = new System.Drawing.Size(245, 38);
             this.openInToolStripMenuItem.Text = "Open in...";
             // 
             // dialogueEditorToolStripMenuItem
             // 
             this.dialogueEditorToolStripMenuItem.Name = "dialogueEditorToolStripMenuItem";
-            this.dialogueEditorToolStripMenuItem.Size = new System.Drawing.Size(324, 38);
+            this.dialogueEditorToolStripMenuItem.Size = new System.Drawing.Size(308, 38);
             this.dialogueEditorToolStripMenuItem.Text = "Dialogue Editor";
             this.dialogueEditorToolStripMenuItem.Click += new System.EventHandler(this.dialogueEditorToolStripMenuItem_Click);
             // 
             // faceFXEditorToolStripMenuItem
             // 
             this.faceFXEditorToolStripMenuItem.Name = "faceFXEditorToolStripMenuItem";
-            this.faceFXEditorToolStripMenuItem.Size = new System.Drawing.Size(324, 38);
+            this.faceFXEditorToolStripMenuItem.Size = new System.Drawing.Size(308, 38);
             this.faceFXEditorToolStripMenuItem.Text = "FaceFX Editor";
             this.faceFXEditorToolStripMenuItem.Click += new System.EventHandler(this.faceFXEditorToolStripMenuItem_Click);
             // 
             // pathfindingEditorToolStripMenuItem
             // 
             this.pathfindingEditorToolStripMenuItem.Name = "pathfindingEditorToolStripMenuItem";
-            this.pathfindingEditorToolStripMenuItem.Size = new System.Drawing.Size(324, 38);
+            this.pathfindingEditorToolStripMenuItem.Size = new System.Drawing.Size(308, 38);
             this.pathfindingEditorToolStripMenuItem.Text = "Pathfinding Editor";
             this.pathfindingEditorToolStripMenuItem.Click += new System.EventHandler(this.pathfindingEditorToolstripMenuItem_Click);
             // 
             // sequenceEditorToolStripMenuItem
             // 
             this.sequenceEditorToolStripMenuItem.Name = "sequenceEditorToolStripMenuItem";
-            this.sequenceEditorToolStripMenuItem.Size = new System.Drawing.Size(324, 38);
+            this.sequenceEditorToolStripMenuItem.Size = new System.Drawing.Size(308, 38);
             this.sequenceEditorToolStripMenuItem.Text = "Sequence Editor";
             this.sequenceEditorToolStripMenuItem.Click += new System.EventHandler(this.sequenceEditorToolStripMenuItem_Click);
             // 
             // wWiseBankEditorToolStripMenuItem
             // 
             this.wWiseBankEditorToolStripMenuItem.Name = "wWiseBankEditorToolStripMenuItem";
-            this.wWiseBankEditorToolStripMenuItem.Size = new System.Drawing.Size(324, 38);
+            this.wWiseBankEditorToolStripMenuItem.Size = new System.Drawing.Size(308, 38);
             this.wWiseBankEditorToolStripMenuItem.Text = "WWiseBank Editor";
             this.wWiseBankEditorToolStripMenuItem.Click += new System.EventHandler(this.wWiseBankEditorToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(321, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(242, 6);
             // 
             // recentToolStripMenuItem
             // 
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(324, 38);
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(245, 38);
             this.recentToolStripMenuItem.Text = "Recent";
             this.recentToolStripMenuItem.ToolTipText = "Open recently opened file";
             // 
@@ -596,34 +595,29 @@
             // 
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.pb1,
-            this.toolStripStatusLabel1,
-            this.status2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 955);
+                this.filenameLabel,
+                this.statusLabel
+            });
+            this.statusStrip1.Location = new System.Drawing.Point(0, 954);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 28, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1924, 37);
+            this.statusStrip1.Size = new System.Drawing.Size(1924, 38);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // pb1
+            // statusLabel
             // 
-            this.pb1.Name = "pb1";
-            this.pb1.Size = new System.Drawing.Size(200, 31);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(22, 33);
+            this.statusLabel.Text = " ";
+            this.statusLabel.Click += new System.EventHandler(this.toolStripStatusLabel1_Click);
             // 
-            // toolStripStatusLabel1
+            // filenameLabel
             // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(22, 32);
-            this.toolStripStatusLabel1.Text = " ";
-            this.toolStripStatusLabel1.Click += new System.EventHandler(this.toolStripStatusLabel1_Click);
-            // 
-            // status2
-            // 
-            this.status2.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.status2.ForeColor = System.Drawing.Color.Blue;
-            this.status2.Name = "status2";
-            this.status2.Size = new System.Drawing.Size(0, 32);
+            this.filenameLabel.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.filenameLabel.ForeColor = System.Drawing.Color.Blue;
+            this.filenameLabel.Name = "filenameLabel";
+            this.filenameLabel.Size = new System.Drawing.Size(0, 33);
             // 
             // nameContextMenuStrip1
             // 
@@ -652,7 +646,7 @@
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(0, 84);
-            this.splitContainer1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(6);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -663,7 +657,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.packageEditorTabPane);
-            this.splitContainer1.Size = new System.Drawing.Size(1924, 871);
+            this.splitContainer1.Size = new System.Drawing.Size(1924, 870);
             this.splitContainer1.SplitterDistance = 632;
             this.splitContainer1.SplitterWidth = 8;
             this.splitContainer1.TabIndex = 3;
@@ -675,9 +669,9 @@
             this.treeView1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
-            this.treeView1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.treeView1.Margin = new System.Windows.Forms.Padding(6);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(632, 871);
+            this.treeView1.Size = new System.Drawing.Size(632, 870);
             this.treeView1.TabIndex = 1;
             this.treeView1.Visible = false;
             this.treeView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeView1_ItemDrag);
@@ -696,10 +690,10 @@
             this.listBox1.IntegralHeight = false;
             this.listBox1.ItemHeight = 29;
             this.listBox1.Location = new System.Drawing.Point(0, 0);
-            this.listBox1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.listBox1.Margin = new System.Windows.Forms.Padding(6);
             this.listBox1.Name = "listBox1";
             this.listBox1.ScrollAlwaysVisible = true;
-            this.listBox1.Size = new System.Drawing.Size(632, 871);
+            this.listBox1.Size = new System.Drawing.Size(632, 870);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged_1);
             this.listBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listBox1_MouseDown);
@@ -716,10 +710,10 @@
             this.packageEditorTabPane.Controls.Add(this.scriptTab);
             this.packageEditorTabPane.Dock = System.Windows.Forms.DockStyle.Fill;
             this.packageEditorTabPane.Location = new System.Drawing.Point(0, 0);
-            this.packageEditorTabPane.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.packageEditorTabPane.Margin = new System.Windows.Forms.Padding(6);
             this.packageEditorTabPane.Name = "packageEditorTabPane";
             this.packageEditorTabPane.SelectedIndex = 0;
-            this.packageEditorTabPane.Size = new System.Drawing.Size(1284, 871);
+            this.packageEditorTabPane.Size = new System.Drawing.Size(1284, 870);
             this.packageEditorTabPane.TabIndex = 4;
             this.packageEditorTabPane.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -727,10 +721,10 @@
             // 
             this.propertiesTab.Controls.Add(this.propGrid);
             this.propertiesTab.Location = new System.Drawing.Point(8, 39);
-            this.propertiesTab.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.propertiesTab.Margin = new System.Windows.Forms.Padding(6);
             this.propertiesTab.Name = "propertiesTab";
-            this.propertiesTab.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.propertiesTab.Size = new System.Drawing.Size(1268, 824);
+            this.propertiesTab.Padding = new System.Windows.Forms.Padding(6);
+            this.propertiesTab.Size = new System.Drawing.Size(1268, 823);
             this.propertiesTab.TabIndex = 1;
             this.propertiesTab.Text = "Properties";
             this.propertiesTab.ToolTipText = "Edit UProperties in a simple interface for this export";
@@ -742,9 +736,9 @@
             this.propGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propGrid.LineColor = System.Drawing.SystemColors.ControlDark;
             this.propGrid.Location = new System.Drawing.Point(6, 6);
-            this.propGrid.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.propGrid.Margin = new System.Windows.Forms.Padding(6);
             this.propGrid.Name = "propGrid";
-            this.propGrid.Size = new System.Drawing.Size(1256, 812);
+            this.propGrid.Size = new System.Drawing.Size(1256, 811);
             this.propGrid.TabIndex = 0;
             this.propGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propGrid_PropertyValueChanged);
             // 
@@ -752,10 +746,10 @@
             // 
             this.interpreterTab.Controls.Add(this.interpreterControl);
             this.interpreterTab.Location = new System.Drawing.Point(8, 39);
-            this.interpreterTab.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.interpreterTab.Margin = new System.Windows.Forms.Padding(6);
             this.interpreterTab.Name = "interpreterTab";
-            this.interpreterTab.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.interpreterTab.Size = new System.Drawing.Size(1268, 809);
+            this.interpreterTab.Padding = new System.Windows.Forms.Padding(6);
+            this.interpreterTab.Size = new System.Drawing.Size(1268, 823);
             this.interpreterTab.TabIndex = 6;
             this.interpreterTab.Text = "Interpreter / Hex Editor";
             this.interpreterTab.ToolTipText = "Edit UProperties for this export";
@@ -765,20 +759,20 @@
             // 
             this.interpreterControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.interpreterControl.Location = new System.Drawing.Point(6, 6);
-            this.interpreterControl.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.interpreterControl.Margin = new System.Windows.Forms.Padding(6);
             this.interpreterControl.Name = "interpreterControl";
             this.interpreterControl.Pcc = null;
-            this.interpreterControl.Size = new System.Drawing.Size(1256, 797);
+            this.interpreterControl.Size = new System.Drawing.Size(1256, 811);
             this.interpreterControl.TabIndex = 0;
             // 
             // binaryEditorTab
             // 
             this.binaryEditorTab.Controls.Add(this.binaryInterpreterControl);
             this.binaryEditorTab.Location = new System.Drawing.Point(8, 39);
-            this.binaryEditorTab.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.binaryEditorTab.Margin = new System.Windows.Forms.Padding(6);
             this.binaryEditorTab.Name = "binaryEditorTab";
-            this.binaryEditorTab.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.binaryEditorTab.Size = new System.Drawing.Size(1268, 809);
+            this.binaryEditorTab.Padding = new System.Windows.Forms.Padding(6);
+            this.binaryEditorTab.Size = new System.Drawing.Size(1268, 823);
             this.binaryEditorTab.TabIndex = 7;
             this.binaryEditorTab.Text = "Binary Editor";
             this.binaryEditorTab.ToolTipText = "Edit parsable binary data for this export";
@@ -788,20 +782,20 @@
             // 
             this.binaryInterpreterControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.binaryInterpreterControl.Location = new System.Drawing.Point(6, 6);
-            this.binaryInterpreterControl.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.binaryInterpreterControl.Margin = new System.Windows.Forms.Padding(6);
             this.binaryInterpreterControl.Name = "binaryInterpreterControl";
             this.binaryInterpreterControl.Pcc = null;
-            this.binaryInterpreterControl.Size = new System.Drawing.Size(1256, 797);
+            this.binaryInterpreterControl.Size = new System.Drawing.Size(1256, 811);
             this.binaryInterpreterControl.TabIndex = 0;
             // 
             // bio2daEditorTab
             // 
             this.bio2daEditorTab.Controls.Add(this.bio2DAEditor1);
             this.bio2daEditorTab.Location = new System.Drawing.Point(8, 39);
-            this.bio2daEditorTab.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.bio2daEditorTab.Margin = new System.Windows.Forms.Padding(6);
             this.bio2daEditorTab.Name = "bio2daEditorTab";
-            this.bio2daEditorTab.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.bio2daEditorTab.Size = new System.Drawing.Size(1268, 809);
+            this.bio2daEditorTab.Padding = new System.Windows.Forms.Padding(6);
+            this.bio2daEditorTab.Size = new System.Drawing.Size(1268, 823);
             this.bio2daEditorTab.TabIndex = 8;
             this.bio2daEditorTab.Text = "Bio2DA Editor";
             this.bio2daEditorTab.ToolTipText = "Edit the binary Bio2DA data for this export";
@@ -811,10 +805,10 @@
             // 
             this.bio2DAEditor1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.bio2DAEditor1.Location = new System.Drawing.Point(6, 6);
-            this.bio2DAEditor1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.bio2DAEditor1.Margin = new System.Windows.Forms.Padding(6);
             this.bio2DAEditor1.Name = "bio2DAEditor1";
             this.bio2DAEditor1.Pcc = null;
-            this.bio2DAEditor1.Size = new System.Drawing.Size(1256, 797);
+            this.bio2DAEditor1.Size = new System.Drawing.Size(1256, 811);
             this.bio2DAEditor1.TabIndex = 0;
             // 
             // infoTab
@@ -822,9 +816,9 @@
             this.infoTab.Controls.Add(this.infoExportDataBox);
             this.infoTab.Controls.Add(this.infoHeaderBox);
             this.infoTab.Location = new System.Drawing.Point(8, 39);
-            this.infoTab.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.infoTab.Margin = new System.Windows.Forms.Padding(6);
             this.infoTab.Name = "infoTab";
-            this.infoTab.Size = new System.Drawing.Size(1268, 809);
+            this.infoTab.Size = new System.Drawing.Size(1268, 823);
             this.infoTab.TabIndex = 3;
             this.infoTab.Text = "Info";
             this.infoTab.ToolTipText = "View information about this export";
@@ -832,8 +826,8 @@
             // 
             // infoExportDataBox
             // 
-            this.infoExportDataBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.infoExportDataBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.infoExportDataBox.Controls.Add(this.label10);
             this.infoExportDataBox.Controls.Add(this.label9);
@@ -843,9 +837,9 @@
             this.infoExportDataBox.Controls.Add(this.textBox7);
             this.infoExportDataBox.Controls.Add(this.label7);
             this.infoExportDataBox.Location = new System.Drawing.Point(8, 462);
-            this.infoExportDataBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.infoExportDataBox.Margin = new System.Windows.Forms.Padding(6);
             this.infoExportDataBox.Name = "infoExportDataBox";
-            this.infoExportDataBox.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.infoExportDataBox.Padding = new System.Windows.Forms.Padding(6);
             this.infoExportDataBox.Size = new System.Drawing.Size(1252, 421);
             this.infoExportDataBox.TabIndex = 1;
             this.infoExportDataBox.TabStop = false;
@@ -874,7 +868,7 @@
             // textBox9
             // 
             this.textBox9.Location = new System.Drawing.Point(636, 90);
-            this.textBox9.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.textBox9.Margin = new System.Windows.Forms.Padding(6);
             this.textBox9.Name = "textBox9";
             this.textBox9.ReadOnly = true;
             this.textBox9.Size = new System.Drawing.Size(322, 31);
@@ -893,7 +887,7 @@
             // textBox8
             // 
             this.textBox8.Location = new System.Drawing.Point(290, 90);
-            this.textBox8.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.textBox8.Margin = new System.Windows.Forms.Padding(6);
             this.textBox8.Name = "textBox8";
             this.textBox8.ReadOnly = true;
             this.textBox8.Size = new System.Drawing.Size(258, 31);
@@ -902,7 +896,7 @@
             // textBox7
             // 
             this.textBox7.Location = new System.Drawing.Point(226, 38);
-            this.textBox7.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.textBox7.Margin = new System.Windows.Forms.Padding(6);
             this.textBox7.Name = "textBox7";
             this.textBox7.ReadOnly = true;
             this.textBox7.Size = new System.Drawing.Size(732, 31);
@@ -920,7 +914,7 @@
             // 
             // infoHeaderBox
             // 
-            this.infoHeaderBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.infoHeaderBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.infoHeaderBox.Controls.Add(this.superclassTextBox);
             this.infoHeaderBox.Controls.Add(this.superclassLabel);
@@ -939,9 +933,9 @@
             this.infoHeaderBox.Controls.Add(this.objectNameBox);
             this.infoHeaderBox.Controls.Add(this.label1);
             this.infoHeaderBox.Location = new System.Drawing.Point(8, 8);
-            this.infoHeaderBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.infoHeaderBox.Margin = new System.Windows.Forms.Padding(6);
             this.infoHeaderBox.Name = "infoHeaderBox";
-            this.infoHeaderBox.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.infoHeaderBox.Padding = new System.Windows.Forms.Padding(6);
             this.infoHeaderBox.Size = new System.Drawing.Size(1252, 442);
             this.infoHeaderBox.TabIndex = 0;
             this.infoHeaderBox.TabStop = false;
@@ -950,7 +944,7 @@
             // superclassTextBox
             // 
             this.superclassTextBox.Location = new System.Drawing.Point(226, 133);
-            this.superclassTextBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.superclassTextBox.Margin = new System.Windows.Forms.Padding(6);
             this.superclassTextBox.Name = "superclassTextBox";
             this.superclassTextBox.ReadOnly = true;
             this.superclassTextBox.Size = new System.Drawing.Size(732, 31);
@@ -969,7 +963,7 @@
             // flagsBox
             // 
             this.flagsBox.Location = new System.Drawing.Point(226, 385);
-            this.flagsBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.flagsBox.Margin = new System.Windows.Forms.Padding(6);
             this.flagsBox.Name = "flagsBox";
             this.flagsBox.ReadOnly = true;
             this.flagsBox.Size = new System.Drawing.Size(732, 31);
@@ -998,7 +992,7 @@
             // archetypeBox
             // 
             this.archetypeBox.Location = new System.Drawing.Point(226, 283);
-            this.archetypeBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.archetypeBox.Margin = new System.Windows.Forms.Padding(6);
             this.archetypeBox.Name = "archetypeBox";
             this.archetypeBox.ReadOnly = true;
             this.archetypeBox.Size = new System.Drawing.Size(732, 31);
@@ -1007,7 +1001,7 @@
             // indexBox
             // 
             this.indexBox.Location = new System.Drawing.Point(226, 231);
-            this.indexBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.indexBox.Margin = new System.Windows.Forms.Padding(6);
             this.indexBox.Name = "indexBox";
             this.indexBox.ReadOnly = true;
             this.indexBox.Size = new System.Drawing.Size(732, 31);
@@ -1026,7 +1020,7 @@
             // headerSizeBox
             // 
             this.headerSizeBox.Location = new System.Drawing.Point(226, 333);
-            this.headerSizeBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.headerSizeBox.Margin = new System.Windows.Forms.Padding(6);
             this.headerSizeBox.Name = "headerSizeBox";
             this.headerSizeBox.ReadOnly = true;
             this.headerSizeBox.Size = new System.Drawing.Size(732, 31);
@@ -1055,7 +1049,7 @@
             // packageNameBox
             // 
             this.packageNameBox.Location = new System.Drawing.Point(226, 181);
-            this.packageNameBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.packageNameBox.Margin = new System.Windows.Forms.Padding(6);
             this.packageNameBox.Name = "packageNameBox";
             this.packageNameBox.ReadOnly = true;
             this.packageNameBox.Size = new System.Drawing.Size(732, 31);
@@ -1064,7 +1058,7 @@
             // classNameBox
             // 
             this.classNameBox.Location = new System.Drawing.Point(226, 83);
-            this.classNameBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.classNameBox.Margin = new System.Windows.Forms.Padding(6);
             this.classNameBox.Name = "classNameBox";
             this.classNameBox.ReadOnly = true;
             this.classNameBox.Size = new System.Drawing.Size(732, 31);
@@ -1083,7 +1077,7 @@
             // objectNameBox
             // 
             this.objectNameBox.Location = new System.Drawing.Point(226, 33);
-            this.objectNameBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.objectNameBox.Margin = new System.Windows.Forms.Padding(6);
             this.objectNameBox.Name = "objectNameBox";
             this.objectNameBox.ReadOnly = true;
             this.objectNameBox.Size = new System.Drawing.Size(732, 31);
@@ -1114,10 +1108,10 @@
             this.metaDataPage.Controls.Add(this.label13);
             this.metaDataPage.Controls.Add(this.label12);
             this.metaDataPage.Location = new System.Drawing.Point(8, 39);
-            this.metaDataPage.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.metaDataPage.Margin = new System.Windows.Forms.Padding(6);
             this.metaDataPage.Name = "metaDataPage";
-            this.metaDataPage.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.metaDataPage.Size = new System.Drawing.Size(1268, 809);
+            this.metaDataPage.Padding = new System.Windows.Forms.Padding(6);
+            this.metaDataPage.Size = new System.Drawing.Size(1268, 823);
             this.metaDataPage.TabIndex = 4;
             this.metaDataPage.Text = "Meta Data Editor";
             this.metaDataPage.ToolTipText = "Edit the metadata about this export";
@@ -1129,7 +1123,7 @@
             this.showFullPathsCheckbox.Checked = global::ME3Explorer.Properties.Settings.Default.UseMetadataFullPaths;
             this.showFullPathsCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showFullPathsCheckbox.Location = new System.Drawing.Point(350, 248);
-            this.showFullPathsCheckbox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.showFullPathsCheckbox.Margin = new System.Windows.Forms.Padding(6);
             this.showFullPathsCheckbox.Name = "showFullPathsCheckbox";
             this.showFullPathsCheckbox.Size = new System.Drawing.Size(278, 29);
             this.showFullPathsCheckbox.TabIndex = 12;
@@ -1140,7 +1134,7 @@
             // indexTextBox
             // 
             this.indexTextBox.Location = new System.Drawing.Point(164, 242);
-            this.indexTextBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.indexTextBox.Margin = new System.Windows.Forms.Padding(6);
             this.indexTextBox.Name = "indexTextBox";
             this.indexTextBox.Size = new System.Drawing.Size(170, 31);
             this.indexTextBox.TabIndex = 11;
@@ -1158,7 +1152,7 @@
             // button4
             // 
             this.button4.Location = new System.Drawing.Point(1012, 242);
-            this.button4.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.button4.Margin = new System.Windows.Forms.Padding(6);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(206, 44);
             this.button4.TabIndex = 6;
@@ -1190,7 +1184,7 @@
             // 
             this.archetypeComboBox.FormattingEnabled = true;
             this.archetypeComboBox.Location = new System.Drawing.Point(164, 185);
-            this.archetypeComboBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.archetypeComboBox.Margin = new System.Windows.Forms.Padding(6);
             this.archetypeComboBox.Name = "archetypeComboBox";
             this.archetypeComboBox.Size = new System.Drawing.Size(1050, 33);
             this.archetypeComboBox.TabIndex = 4;
@@ -1199,7 +1193,7 @@
             // 
             this.linkComboBox.FormattingEnabled = true;
             this.linkComboBox.Location = new System.Drawing.Point(164, 127);
-            this.linkComboBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.linkComboBox.Margin = new System.Windows.Forms.Padding(6);
             this.linkComboBox.Name = "linkComboBox";
             this.linkComboBox.Size = new System.Drawing.Size(1050, 33);
             this.linkComboBox.TabIndex = 4;
@@ -1208,7 +1202,7 @@
             // 
             this.classComboBox.FormattingEnabled = true;
             this.classComboBox.Location = new System.Drawing.Point(164, 73);
-            this.classComboBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.classComboBox.Margin = new System.Windows.Forms.Padding(6);
             this.classComboBox.Name = "classComboBox";
             this.classComboBox.Size = new System.Drawing.Size(1050, 33);
             this.classComboBox.TabIndex = 3;
@@ -1217,7 +1211,7 @@
             // 
             this.nameComboBox.FormattingEnabled = true;
             this.nameComboBox.Location = new System.Drawing.Point(164, 13);
-            this.nameComboBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.nameComboBox.Margin = new System.Windows.Forms.Padding(6);
             this.nameComboBox.Name = "nameComboBox";
             this.nameComboBox.Size = new System.Drawing.Size(1050, 33);
             this.nameComboBox.TabIndex = 2;
@@ -1247,10 +1241,10 @@
             this.headerTab.Controls.Add(this.headerRawHexBox);
             this.headerTab.Controls.Add(this.toolStrip2);
             this.headerTab.Location = new System.Drawing.Point(8, 39);
-            this.headerTab.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.headerTab.Margin = new System.Windows.Forms.Padding(6);
             this.headerTab.Name = "headerTab";
-            this.headerTab.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.headerTab.Size = new System.Drawing.Size(1268, 809);
+            this.headerTab.Padding = new System.Windows.Forms.Padding(6);
+            this.headerTab.Size = new System.Drawing.Size(1268, 823);
             this.headerTab.TabIndex = 5;
             this.headerTab.Text = "Header Raw";
             this.headerTab.ToolTipText = "Edit the header hex directly for this export";
@@ -1264,11 +1258,11 @@
             this.headerRawHexBox.LineInfoForeColor = System.Drawing.Color.Empty;
             this.headerRawHexBox.LineInfoVisible = true;
             this.headerRawHexBox.Location = new System.Drawing.Point(6, 45);
-            this.headerRawHexBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.headerRawHexBox.Margin = new System.Windows.Forms.Padding(6);
             this.headerRawHexBox.MinBytesPerLine = 16;
             this.headerRawHexBox.Name = "headerRawHexBox";
             this.headerRawHexBox.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.headerRawHexBox.Size = new System.Drawing.Size(1256, 758);
+            this.headerRawHexBox.Size = new System.Drawing.Size(1256, 772);
             this.headerRawHexBox.StringViewVisible = true;
             this.headerRawHexBox.TabIndex = 0;
             this.headerRawHexBox.UseFixedBytesPerLine = true;
@@ -1300,9 +1294,9 @@
             // 
             this.scriptTab.Controls.Add(this.rtb1);
             this.scriptTab.Location = new System.Drawing.Point(8, 39);
-            this.scriptTab.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.scriptTab.Margin = new System.Windows.Forms.Padding(6);
             this.scriptTab.Name = "scriptTab";
-            this.scriptTab.Size = new System.Drawing.Size(1268, 809);
+            this.scriptTab.Size = new System.Drawing.Size(1268, 823);
             this.scriptTab.TabIndex = 2;
             this.scriptTab.Text = "Script";
             this.scriptTab.ToolTipText = "View a decompiled UnrealScript that this export represents.";
@@ -1314,10 +1308,10 @@
             this.rtb1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtb1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtb1.Location = new System.Drawing.Point(0, 0);
-            this.rtb1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.rtb1.Margin = new System.Windows.Forms.Padding(6);
             this.rtb1.Name = "rtb1";
             this.rtb1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.rtb1.Size = new System.Drawing.Size(1268, 809);
+            this.rtb1.Size = new System.Drawing.Size(1268, 823);
             this.rtb1.TabIndex = 2;
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;
@@ -1388,7 +1382,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "PackageEditor";
             this.Text = "Package Editor";
             this.Activated += new System.EventHandler(this.PackageEditor_Activated);
@@ -1442,13 +1436,12 @@
         public System.Windows.Forms.ToolStripButton Button3;
         public System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
         public System.Windows.Forms.StatusStrip statusStrip1;
-        public System.Windows.Forms.ToolStripProgressBar pb1;
         public System.Windows.Forms.SplitContainer splitContainer1;
         public System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem hexConverterToolStripMenuItem;
         public System.Windows.Forms.OpenFileDialog openFileDialog;
-        public System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        public System.Windows.Forms.ToolStripStatusLabel statusLabel;
         public System.Windows.Forms.ToolStripComboBox combo1;
         public System.Windows.Forms.ToolStripButton findClassButton;
         public System.Windows.Forms.ToolStripMenuItem addNameToolStripMenuItem;
@@ -1503,7 +1496,7 @@
         private System.Windows.Forms.ComboBox nameComboBox;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.ToolStripStatusLabel status2;
+        private System.Windows.Forms.ToolStripStatusLabel filenameLabel;
         private System.Windows.Forms.TabPage headerTab;
         private System.Windows.Forms.ToolStripButton Button5;
         private System.Windows.Forms.TreeView treeView1;

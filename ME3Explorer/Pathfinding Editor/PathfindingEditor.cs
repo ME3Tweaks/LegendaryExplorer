@@ -3248,6 +3248,11 @@ namespace ME3Explorer
             CurveEd.CurveEditor c = new CurveEd.CurveEditor(pcc.getExport(l));
             c.Show();
         }
+
+        private void nodesPropertiesPanelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            splitContainer2.Panel2Collapsed = !splitContainer2.Panel2Collapsed;
+        }
     }
 
     public class PathingZoomController

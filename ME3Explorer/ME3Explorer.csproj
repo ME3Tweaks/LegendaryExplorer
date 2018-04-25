@@ -223,18 +223,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="BinaryInterpreter\BinaryAltPropertyEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="BinaryInterpreter\BinaryPropertyEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="BinaryInterpreter\BinaryPropertyEditorHost.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Interpreter\AltPropertyEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -265,9 +253,6 @@
     <Compile Include="BinaryInterpreter\BinaryAddPropertyDialog.Designer.cs">
       <DependentUpon>BinaryAddPropertyDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="BinaryInterpreter\BinaryAltPropertyEditor.xaml.cs">
-      <DependentUpon>BinaryAltPropertyEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="BinaryInterpreter\BinaryClasses\UDKImportable.cs" />
     <Compile Include="BinaryInterpreter\BinaryClasses\UDKStaticMesh.cs" />
     <Compile Include="BinaryInterpreter\BinaryInterpreter.cs">
@@ -281,12 +266,6 @@
     </Compile>
     <Compile Include="BinaryInterpreter\BinaryInterpreterHost.Designer.cs">
       <DependentUpon>BinaryInterpreterHost.cs</DependentUpon>
-    </Compile>
-    <Compile Include="BinaryInterpreter\BinaryPropertyEditor.xaml.cs">
-      <DependentUpon>BinaryPropertyEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="BinaryInterpreter\BinaryPropertyEditorHost.xaml.cs">
-      <DependentUpon>BinaryPropertyEditorHost.xaml</DependentUpon>
     </Compile>
     <Compile Include="Bio2DAEditor\Bio2DA.cs" />
     <Compile Include="Bio2DAEditor\Bio2DACell.cs" />
