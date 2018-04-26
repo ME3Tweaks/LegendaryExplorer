@@ -14,73 +14,6 @@ namespace ME3Explorer
 {
     public partial class PackageEditor
     {
-        private void dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            List<string> consts = new List<string>();
-            StringBuilder sb = new StringBuilder();
-
-            foreach (IExportEntry exp in pcc.Exports)
-            {
-                if (exp.ClassName == "Const")
-                {
-                    consts.Add(exp.Index + " " + exp.GetFullPath);
-                }
-            }
-            foreach (string str in consts)
-            {
-                sb.AppendLine(str);
-            }
-            try
-            {
-                string value = sb.ToString();
-                if (value != null && value != "")
-                {
-                    Clipboard.SetText(value);
-                    MessageBox.Show("Finished");
-                }
-                else
-                {
-                    MessageBox.Show("No results.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private List<string> ScanForBioG(string file)
-        {
-            //Console.WriteLine(file);
-            try
-            {
-                List<string> biopawnscaled = new List<string>();
-                IMEPackage pack = MEPackageHandler.OpenMEPackage(file);
-                foreach (IExportEntry exp in pack.Exports)
-                {
-                    if (exp.ClassName == "BioPawnChallengeScaledType")
-                    {
-                        biopawnscaled.Add(exp.GetFullPath);
-                    }
-                }
-                pack.Release();
-                return biopawnscaled;
-            }
-            catch (Exception e)
-            {
-                Debugger.Break();
-            }
-            return null;
-        }
-
-        private void dEBUGExport2DAToExcelFileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-
-
-
-        }
-
         private void findExportsWithSerialSizeMismatchToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<string> serialexportsbad = new List<string>();
@@ -102,12 +35,6 @@ namespace ME3Explorer
             {
                 MessageBox.Show("No exports have serial size mismatches.");
             }
-        }
-
-        private void dEBUGAccessME3AppendsTableToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ME3Package me3 = (ME3Package)pcc;
-            var offset = me3.DependsOffset;
         }
 
         private void dEBUGEnumerateAllClassesToolStripMenuItem_Click(object sender, EventArgs e)

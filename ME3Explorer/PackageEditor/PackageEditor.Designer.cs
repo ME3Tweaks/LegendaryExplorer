@@ -58,7 +58,6 @@
             this.dEBUGCallReadPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dEBUGExport2DAToExcelFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGAccessME3AppendsTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGEnumerateAllClassesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -377,7 +376,6 @@
             this.dEBUGCallReadPropertiesToolStripMenuItem,
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem,
             this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem,
-            this.dEBUGExport2DAToExcelFileToolStripMenuItem,
             this.dEBUGAccessME3AppendsTableToolStripMenuItem,
             this.dEBUGEnumerateAllClassesToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
@@ -440,13 +438,6 @@
             this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Size = new System.Drawing.Size(690, 38);
             this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Text = "DEBUG: Copy all BIOG items to clipboard";
             this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem_Click);
-            // 
-            // dEBUGExport2DAToExcelFileToolStripMenuItem
-            // 
-            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Name = "dEBUGExport2DAToExcelFileToolStripMenuItem";
-            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Size = new System.Drawing.Size(690, 38);
-            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Text = "DEBUG: Export 2DA to Excel file";
-            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Click += new System.EventHandler(this.dEBUGExport2DAToExcelFileToolStripMenuItem_Click);
             // 
             // dEBUGAccessME3AppendsTableToolStripMenuItem
             // 
@@ -1562,7 +1553,6 @@
         private System.Windows.Forms.ToolStripMenuItem reloadTLKsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem dEBUGExport2DAToExcelFileToolStripMenuItem;
         private System.Windows.Forms.TabPage bio2daEditorTab;
         private Bio2DAEditor bio2DAEditor1;
         private System.Windows.Forms.ToolStripMenuItem findExportsWithSerialSizeMismatchToolStripMenuItem;
