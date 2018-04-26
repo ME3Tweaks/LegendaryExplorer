@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 namespace ME3Explorer
 {
-    public interface UDKImportable
+    public interface IUDKImportable
     {
         void PortToME3Export(IExportEntry export);
         void PortToME2Export(IExportEntry export);

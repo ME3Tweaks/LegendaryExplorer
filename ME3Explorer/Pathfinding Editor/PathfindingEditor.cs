@@ -2498,13 +2498,13 @@ namespace ME3Explorer
             RefreshView();
         }
 
-        public static nodeType getType(string s)
+        public static NodeType getType(string s)
         {
             int ret = -1;
             for (int i = 0; i < Types.Length; i++)
                 if (s == Types[i])
                     ret = i;
-            return (nodeType)ret;
+            return (NodeType)ret;
         }
 
         public static int findEndOfProps(IExportEntry export)

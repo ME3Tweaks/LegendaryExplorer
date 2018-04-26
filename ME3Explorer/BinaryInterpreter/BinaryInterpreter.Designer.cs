@@ -116,7 +116,6 @@ namespace ME3Explorer
             this.saveHexButton.Size = new System.Drawing.Size(216, 41);
             this.saveHexButton.Text = "Save Hex Changes";
             this.saveHexButton.ToolTipText = "Saves hex changes in-memory (not to disk)";
-            this.saveHexButton.Click += new System.EventHandler(this.saveHexButton_Click);
             // 
             // toggleHexWidthButton
             // 
