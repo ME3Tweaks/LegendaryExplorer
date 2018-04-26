@@ -253,7 +253,7 @@
     <Compile Include="BinaryInterpreter\BinaryAddPropertyDialog.Designer.cs">
       <DependentUpon>BinaryAddPropertyDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="BinaryInterpreter\BinaryClasses\UDKImportable.cs" />
+    <Compile Include="BinaryInterpreter\BinaryClasses\IUDKImportable.cs" />
     <Compile Include="BinaryInterpreter\BinaryClasses\UDKStaticMesh.cs" />
     <Compile Include="BinaryInterpreter\BinaryInterpreter.cs">
       <SubType>UserControl</SubType>

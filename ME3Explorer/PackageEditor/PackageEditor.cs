@@ -1922,6 +1922,8 @@ namespace ME3Explorer
             {
                 interpreterControl.memory = pcc.getExport(n).Data;
                 interpreterControl.RefreshMem();
+                binaryInterpreterControl.memory = pcc.getExport(n).Data;
+                binaryInterpreterControl.RefreshMem();
                 Preview(true);
             }
         }

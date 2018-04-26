@@ -4,7 +4,7 @@ using ME3Explorer.Packages;
 
 namespace ME3Explorer
 {
-    public class UDKStaticMesh : UDKImportable
+    public class UDKStaticMesh : IUDKImportable
     {
         public UDKPackage Owner;
         public int MyIndex;
