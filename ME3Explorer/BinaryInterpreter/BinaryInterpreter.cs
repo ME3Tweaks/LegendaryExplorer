@@ -496,8 +496,7 @@ Floats*/
                 });
 
                 //Create objectflags tree
-                //This is such a hack job but I can't figure out how to do enums :(
-                foreach (string row in UnrealFlags.propertyflags)
+                foreach (UnrealFlags.EPropertyFlags flag in Enum.GetValues(typeof(UnrealFlags.EPropertyFlags)))
                 {
                     if ((ObjectFlagsMask & flag) != UnrealFlags.EPropertyFlags.None)
                     {

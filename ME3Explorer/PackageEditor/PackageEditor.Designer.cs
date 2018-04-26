@@ -57,8 +57,6 @@
             this.findExportsWithSerialSizeMismatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGCallReadPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dEBUGAccessME3AppendsTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGEnumerateAllClassesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.Button1 = new System.Windows.Forms.ToolStripButton();
@@ -375,8 +373,6 @@
             this.findExportsWithSerialSizeMismatchToolStripMenuItem,
             this.dEBUGCallReadPropertiesToolStripMenuItem,
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem,
-            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem,
-            this.dEBUGAccessME3AppendsTableToolStripMenuItem,
             this.dEBUGEnumerateAllClassesToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(147, 36);
@@ -431,20 +427,6 @@
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Size = new System.Drawing.Size(690, 38);
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Text = "DEBUG: Copy config reading props to clipboard";
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem_Click);
-            // 
-            // dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem
-            // 
-            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Name = "dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem";
-            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Size = new System.Drawing.Size(690, 38);
-            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Text = "DEBUG: Copy all BIOG items to clipboard";
-            this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem_Click);
-            // 
-            // dEBUGAccessME3AppendsTableToolStripMenuItem
-            // 
-            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Name = "dEBUGAccessME3AppendsTableToolStripMenuItem";
-            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Size = new System.Drawing.Size(690, 38);
-            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Text = "DEBUG: Access ME3 AppendsTable";
-            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Click += new System.EventHandler(this.dEBUGAccessME3AppendsTableToolStripMenuItem_Click);
             // 
             // dEBUGEnumerateAllClassesToolStripMenuItem
             // 
@@ -1552,11 +1534,9 @@
         private System.Windows.Forms.ToolStripMenuItem wWiseBankEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reloadTLKsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem dEBUGCopyAllBIOGItemsToClipboardToolStripMenuItem;
         private System.Windows.Forms.TabPage bio2daEditorTab;
         private Bio2DAEditor bio2DAEditor1;
         private System.Windows.Forms.ToolStripMenuItem findExportsWithSerialSizeMismatchToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem dEBUGAccessME3AppendsTableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dEBUGEnumerateAllClassesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dialogueEditorToolStripMenuItem;
     }
