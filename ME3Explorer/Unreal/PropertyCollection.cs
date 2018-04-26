@@ -530,6 +530,7 @@ namespace ME3Explorer.Unreal
         public abstract void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false);
     }
 
+    [DebuggerDisplay("NoneProperty")]
     public class NoneProperty : UProperty
     {
         public NoneProperty(NameReference? name = null) : base(name)
@@ -546,6 +547,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("StructProperty | {Name}")]
     public class StructProperty : UProperty
     {
         public readonly bool IsImmutable;
@@ -610,6 +612,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("IntProperty | {Name} = {Value}")]
     public class IntProperty : UProperty
     {
         int _value;
@@ -655,6 +658,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("FloatProperty | {Name} = {Value}")]
     public class FloatProperty : UProperty
     {
         float _value;
@@ -700,6 +704,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("ObjectProperty | {Name} = {Value}")]
     public class ObjectProperty : UProperty
     {
         int _value;
@@ -735,6 +740,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("ObjectProperty | {Name} = {Value}")]
     public class NameProperty : UProperty
     {
         NameReference _value;
@@ -775,6 +781,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("BoolProperty | {Name} = {Value}")]
     public class BoolProperty : UProperty
     {
         bool _value;
@@ -827,6 +834,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("ByteProperty | {Name} = {Value}")]
     public class ByteProperty : UProperty
     {
         byte _value;
@@ -945,6 +953,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("ArrayProperty<{arrayType}> | {Name}, Length = {Values.Count}")]
     public class ArrayProperty<T> : ArrayPropertyBase, IEnumerable<T>, IList<T> where T : UProperty
     {
         public List<T> Values { get; private set; }
@@ -1054,6 +1063,7 @@ namespace ME3Explorer.Unreal
         #endregion
     }
 
+    [DebuggerDisplay("StrProperty | {Name} = {Value}")]
     public class StrProperty : UProperty
     {
         string _value;
@@ -1140,6 +1150,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("StringRefProperty | {Name} = {Value}")]
     public class StringRefProperty : UProperty
     {
         int _value;
