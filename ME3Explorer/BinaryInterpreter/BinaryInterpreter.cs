@@ -614,96 +614,107 @@ Floats*/
                     Name = binstartoffset.ToString()
                 });
                 pos += 4;
-
-                int nameindex = BitConverter.ToInt32(data, pos);
-                int nameindexunreal = BitConverter.ToInt32(data, pos + 4);
-
-                string name = pcc.getNameEntry(nameindex);
-                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Camera: {name}_{nameindexunreal}")
+                if (length != 0)
                 {
-                    Name = pos.ToString(),
-                    Tag = NodeType.StructLeafName
-                });
+                    int nameindex = BitConverter.ToInt32(data, pos);
+                    int nameindexunreal = BitConverter.ToInt32(data, pos + 4);
 
-                pos += 8;
-                int shouldbezero = BitConverter.ToInt32(data, pos);
-                if (shouldbezero != 0)
-                {
-                    Debug.WriteLine($"NOT ZERO FOUND: {pos}");
-                }
-                pos += 4;
-
-                int count = BitConverter.ToInt32(data, pos);
-                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Count: {count}")
-                {
-                    Name = pos.ToString()
-                });
-                pos += 4;
-
-                shouldbezero = BitConverter.ToInt32(data, pos);
-                if (shouldbezero != 0)
-                {
-                    Debug.WriteLine($"NOT ZERO FOUND: {pos}");
-                }
-                pos += 4;
-                try
-                {
-                    for (int i = 0; i < count; i++)
+                    string name = pcc.getNameEntry(nameindex);
+                    topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Camera: {name}_{nameindexunreal}")
                     {
-                        nameindex = BitConverter.ToInt32(data, pos);
-                        nameindexunreal = BitConverter.ToInt32(data, pos + 4);
-                        TreeNode parentnode = new TreeNode($"{pos:X4} Camera {i + 1}: {pcc.getNameEntry(nameindex)}_{nameindexunreal}")
-                        {
-                            Tag = NodeType.StructLeafName,
-                            Name = pos.ToString()
-                        };
-                        topLevelTree.Nodes.Add(parentnode);
-                        pos += 8;
+                        Name = pos.ToString(),
+                        Tag = NodeType.StructLeafName
+                    });
 
-                        while (pos < data.Length)
+                    pos += 8;
+                    int shouldbezero = BitConverter.ToInt32(data, pos);
+                    if (shouldbezero != 0)
+                    {
+                        Debug.WriteLine($"NOT ZERO FOUND: {pos}");
+                    }
+                    pos += 4;
+
+                    int count = BitConverter.ToInt32(data, pos);
+                    topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Count: {count}")
+                    {
+                        Name = pos.ToString()
+                    });
+                    pos += 4;
+
+                    shouldbezero = BitConverter.ToInt32(data, pos);
+                    if (shouldbezero != 0)
+                    {
+                        Debug.WriteLine($"NOT ZERO FOUND: {pos}");
+                    }
+                    pos += 4;
+                    try
+                    {
+                        for (int i = 0; i < count; i++)
                         {
                             nameindex = BitConverter.ToInt32(data, pos);
                             nameindexunreal = BitConverter.ToInt32(data, pos + 4);
-                            if (pcc.getNameEntry(nameindex) == "None")
-                            {
-                                parentnode.Nodes.Add(new TreeNode($"{pos:X4} None")
-                                {
-                                    Tag = NodeType.None,
-                                    Name = pos.ToString()
-                                });
-                                pos += 8;
-                                break;
-                            }
-
-                            //propertyname
-                            TreeNode propertyNode = new TreeNode($"{pos:X4} PropertyName: {pcc.getNameEntry(nameindex)}")
+                            TreeNode parentnode = new TreeNode($"{pos:X4} Camera {i + 1}: {pcc.getNameEntry(nameindex)}_{nameindexunreal}")
                             {
                                 Tag = NodeType.StructLeafName,
                                 Name = pos.ToString()
                             };
-                            parentnode.Nodes.Add(propertyNode);
+                            topLevelTree.Nodes.Add(parentnode);
                             pos += 8;
 
-                            //FloatProperty
-                            nameindex = BitConverter.ToInt32(data, pos);
-                            nameindexunreal = BitConverter.ToInt32(data, pos + 4);
-                            if (pcc.getNameEntry(nameindex) != "FloatProperty")
-                            {
-                                Debug.WriteLine("NOT FLOATPROPERTY");
-                            }
-                            pos += 8;
+                            pos = Interpreter.GetPropSection(parentnode, export, pos);
 
-                            long len = BitConverter.ToInt64(data, pos);
-                            pos += 8;
+                            //while (pos < data.Length)
+                            //{
+                            //    nameindex = BitConverter.ToInt32(data, pos);
+                            //    nameindexunreal = BitConverter.ToInt32(data, pos + 4);
+                            //    if (pcc.getNameEntry(nameindex) == "None")
+                            //    {
+                            //        parentnode.Nodes.Add(new TreeNode($"{pos:X4} None")
+                            //        {
+                            //            Tag = NodeType.None,
+                            //            Name = pos.ToString()
+                            //        });
+                            //        pos += 8;
+                            //        break;
+                            //    }
 
-                            float value = BitConverter.ToSingle(data, pos);
-                            TreeNode valueNode = new TreeNode($"{pos:X4} Value: {value}")
-                            {
-                                Tag = NodeType.StructLeafFloat,
-                                Name = pos.ToString()
-                            };
-                            propertyNode.Nodes.Add(valueNode);
-                            pos += (int)len;
+                            //    //propertyname
+                            //    TreeNode propertyNode = new TreeNode($"{pos:X4} PropertyName: {pcc.getNameEntry(nameindex)}")
+                            //    {
+                            //        Tag = NodeType.StructLeafName,
+                            //        Name = pos.ToString()
+                            //    };
+                            //    parentnode.Nodes.Add(propertyNode);
+                            //    pos += 8;
+
+                            //    //FloatProperty
+                            //    nameindex = BitConverter.ToInt32(data, pos);
+                            //    nameindexunreal = BitConverter.ToInt32(data, pos + 4);
+                            //    string propType = pcc.getNameEntry(nameindex);
+                            //    switch (propType)
+                            //    {
+                            //        case "FloatProperty":
+                            //            pos += 8;
+
+                            //            long len = BitConverter.ToInt64(data, pos);
+                            //            pos += 8;
+
+                            //            float value = BitConverter.ToSingle(data, pos);
+                            //            TreeNode valueNode = new TreeNode($"{pos:X4} Value: {value}")
+                            //            {
+                            //                Tag = NodeType.StructLeafFloat,
+                            //                Name = pos.ToString()
+                            //            };
+                            //            propertyNode.Nodes.Add(valueNode);
+                            //            pos += (int)len;
+                            //            break;
+                            //        default:
+                            //            Debug.WriteLine("NOT a recognized property!");
+                            //            Debugger.Break();
+                            //            break;
+                            //    }
+                            //}
+
                             #region debugway
                             /*nameindex = BitConverter.ToInt32(data, pos);
                             nameindexunreal = BitConverter.ToInt32(data, pos + 4);
@@ -739,14 +750,14 @@ Floats*/
                                 Name = pos.ToString()
                             });
                             pos += 8;
-                            
+
                             parentnode.Nodes.Add(new TreeNode($"{pos:X4} Length: {BitConverter.ToInt64(data, pos)}")
                             {
                                 Tag = NodeType.StructLeafInt,
                                 Name = pos.ToString()
                             });
                             pos += 8;
-                            
+
                             parentnode.Nodes.Add(new TreeNode($"{pos:X4} Value: {BitConverter.ToSingle(data, pos)}")
                             {
                                 Tag = NodeType.StructLeafInt,
@@ -756,11 +767,12 @@ Floats*/
                             #endregion
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        topLevelTree.Nodes.Add(new TreeNode($"Error reading binary data: {ex}"));
+                    }
                 }
-                catch (Exception ex)
-                {
-                    topLevelTree.Nodes.Add(new TreeNode($"Error reading binary data: {ex}"));
-                }
+                
                 topLevelTree.Expand();
                 treeView1.Nodes[0].Expand();
                 if (nodeNameToSelect != null)
@@ -3352,7 +3364,20 @@ Floats*/
                     string s = $"Byte: {memory[start]}";
                     if (start <= memory.Length - 4)
                     {
-                        s += $", Int: {BitConverter.ToInt32(memory, start)}";
+                        int val = BitConverter.ToInt32(memory, start);
+                        s += $", Int: {val}";
+                        if (pcc.isName(val))
+                        {
+                            s += $", Name: {pcc.getNameEntry(val)}";
+                        }
+                        if (pcc.getEntry(val) is IExportEntry exp)
+                        {
+                            s += $", Export: {exp.ObjectName}";
+                        }
+                        else if (pcc.getEntry(val) is ImportEntry imp)
+                        {
+                            s += $", Import: {imp.ObjectName}";
+                        }
                     }
                     s += $" | Start=0x{start:X8} ";
                     if (len > 0)

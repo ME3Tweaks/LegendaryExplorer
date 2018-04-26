@@ -37,7 +37,7 @@ namespace ME3Explorer
             public int offset;
         }
 
-        public string[] Types =
+        public static string[] Types =
         {
             "StructProperty", //0
             "IntProperty",
@@ -54,7 +54,7 @@ namespace ME3Explorer
             "BioMask4Property",
         };
 
-        public enum nodeType
+        public enum NodeType
         {
             Unknown = -1,
             StructProperty = 0,
@@ -105,8 +105,8 @@ namespace ME3Explorer
 
         private BioTlkFileSet tlkset;
         private int lastSetOffset = -1; //offset set by program, used for checking if user changed since set 
-        private nodeType LAST_SELECTED_PROP_TYPE = nodeType.Unknown; //last property type user selected. Will use to check the current offset for type
-        private TreeNode LAST_SELECTED_NODE = null; //last selected tree node
+        private NodeType LAST_SELECTED_PROP_TYPE = NodeType.Unknown; //last property type user selected. Will use to check the current offset for type
+        private TreeNode LAST_SELECTED_NODE; //last selected tree node
         public int HEXBOX_MAX_WIDTH = 650;
 
         private IMEPackage pcc;
@@ -170,11 +170,11 @@ namespace ME3Explorer
                     //leaf
                     if (rootNode.Tag != null)
                     {
-                        if ((nodeType)rootNode.Tag == nodeType.ObjectProperty || (nodeType)rootNode.Tag == nodeType.StructLeafObject || (nodeType)rootNode.Tag == nodeType.ArrayLeafObject)
+                        if ((NodeType)rootNode.Tag == NodeType.ObjectProperty || (NodeType)rootNode.Tag == NodeType.StructLeafObject || (NodeType)rootNode.Tag == NodeType.ArrayLeafObject)
                         {
 
                             int valueoffset = 0;
-                            if ((nodeType)rootNode.Tag == nodeType.ObjectProperty)
+                            if ((NodeType)rootNode.Tag == NodeType.ObjectProperty)
                             {
                                 valueoffset = 24;
                             }
@@ -453,12 +453,37 @@ namespace ME3Explorer
             base.Show();
         }
 
+        public static int GetPropSection(TreeNode root, IExportEntry exp, int pos)
+        {
+            var interpreter = new Interpreter(exp, pos);
+            List<PropHeader> headersList = interpreter.ReadHeadersTillNone();
+            interpreter.GenerateTree(root, headersList);
+            return headersList.Last().offset + 8;
+        }
+
+        /// <summary>
+        /// Does not initialize components.
+        /// </summary>
+        /// <param name="exp"></param>
+        private Interpreter(IExportEntry exp, int pos)
+        {
+            defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
+            export = exp;
+            pcc = exp.FileRef;
+            memory = export.Data;
+            memsize = memory.Length;
+            className = export.ClassName;
+            readerpos = pos;
+        }
+
         private TreeNode GetPropertyTree()
         {
             readerpos = export.GetPropertyStart();
-            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
-            topLevelTree.Tag = nodeType.Root;
-            topLevelTree.Name = "0";
+            TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName)
+            {
+                Tag = NodeType.Root,
+                Name = "0"
+            };
             try
             {
                 List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
@@ -479,7 +504,7 @@ namespace ME3Explorer
             readerpos = export.GetPropertyStart();
 
             TreeNode topLevelTree = new TreeNode("0000 : " + export.ObjectName);
-            topLevelTree.Tag = nodeType.Root;
+            topLevelTree.Tag = NodeType.Root;
             topLevelTree.Name = "0";
             try
             {
@@ -544,16 +569,16 @@ namespace ME3Explorer
                 {
                     throw new IndexOutOfRangeException(": tried to read past bounds of Export Data");
                 }
-                nodeType type = getType(pcc.getNameEntry(header.type));
+                NodeType type = getType(pcc.getNameEntry(header.type));
                 //Debug.WriteLine("Generating tree item for " + pcc.getNameEntry(header.name) + " at 0x" + header.offset.ToString("X6"));
 
-                if (type != nodeType.ArrayProperty && type != nodeType.StructProperty)
+                if (type != NodeType.ArrayProperty && type != NodeType.StructProperty)
                 {
                     localRoot.Nodes.Add(GenerateNode(header));
                 }
                 else
                 {
-                    if (type == nodeType.ArrayProperty)
+                    if (type == NodeType.ArrayProperty)
                     {
                         TreeNode t = GenerateNode(header);
                         int arrayLength = BitConverter.ToInt32(memory, header.offset + 24);
@@ -579,7 +604,7 @@ namespace ME3Explorer
                                 List<PropHeader> arrayListPropHeaders = ReadHeadersTillNone();
                                 tmp = readerpos;
                                 TreeNode n = new TreeNode(i.ToString());
-                                n.Tag = nodeType.ArrayLeafStruct;
+                                n.Tag = NodeType.ArrayLeafStruct;
                                 n.Name = (-pos).ToString();
                                 t.Nodes.Add(n);
                                 n = t.LastNode;
@@ -611,7 +636,7 @@ namespace ME3Explorer
                             {
                                 TreeNode node = new TreeNode();
                                 node.Name = (header.offset + 28).ToString();
-                                node.Tag = nodeType.Unknown;
+                                node.Tag = NodeType.Unknown;
                                 node.Text = "Large binary data array. Skipping Parsing";
                                 t.Nodes.Add(node);
                                 localRoot.Nodes.Add(t);
@@ -630,7 +655,7 @@ namespace ME3Explorer
                                 node.Name = pos.ToString();
                                 if (arrayType == ArrayType.Object)
                                 {
-                                    node.Tag = nodeType.ArrayLeafObject;
+                                    node.Tag = NodeType.ArrayLeafObject;
                                     int value = val;
                                     if (value == 0)
                                     {
@@ -690,7 +715,7 @@ namespace ME3Explorer
                                 else if (arrayType == ArrayType.Name || arrayType == ArrayType.Enum)
                                 {
 
-                                    node.Tag = arrayType == ArrayType.Name ? nodeType.ArrayLeafName : nodeType.ArrayLeafEnum;
+                                    node.Tag = arrayType == ArrayType.Name ? NodeType.ArrayLeafName : NodeType.ArrayLeafEnum;
                                     int value = val;
                                     if (value < 0)
                                     {
@@ -711,25 +736,25 @@ namespace ME3Explorer
                                 }
                                 else if (arrayType == ArrayType.Float)
                                 {
-                                    node.Tag = nodeType.ArrayLeafFloat;
+                                    node.Tag = NodeType.ArrayLeafFloat;
                                     s += BitConverter.ToSingle(memory, pos).ToString("0.0######");
                                     i += 4;
                                 }
                                 else if (arrayType == ArrayType.Byte)
                                 {
-                                    node.Tag = nodeType.ArrayLeafByte;
+                                    node.Tag = NodeType.ArrayLeafByte;
                                     s += "(byte)" + memory[pos];
                                     i += 1;
                                 }
                                 else if (arrayType == ArrayType.Bool)
                                 {
-                                    node.Tag = nodeType.ArrayLeafBool;
+                                    node.Tag = NodeType.ArrayLeafBool;
                                     s += BitConverter.ToBoolean(memory, pos);
                                     i += 1;
                                 }
                                 else if (arrayType == ArrayType.String)
                                 {
-                                    node.Tag = nodeType.ArrayLeafString;
+                                    node.Tag = NodeType.ArrayLeafString;
                                     int sPos = pos + 4;
                                     s += "\"";
                                     if (val < 0)
@@ -755,7 +780,7 @@ namespace ME3Explorer
                                 }
                                 else
                                 {
-                                    node.Tag = nodeType.ArrayLeafInt;
+                                    node.Tag = NodeType.ArrayLeafInt;
                                     s += val.ToString();
                                     i += 4;
                                 }
@@ -765,7 +790,7 @@ namespace ME3Explorer
                             localRoot.Nodes.Add(t);
                         }
                     }
-                    if (type == nodeType.StructProperty)
+                    if (type == NodeType.StructProperty)
                     {
                         TreeNode t = GenerateNode(header);
                         readerpos = header.offset + 32;
@@ -799,7 +824,7 @@ namespace ME3Explorer
                     val = BitConverter.ToInt32(memory, readerpos);
                     node = new TreeNode(readerpos.ToString("X4") + ": " + labels[i] + " : " + val + " (" + (val * 360f / 65536f).ToString("0.0######") + " degrees)");
                     node.Name = readerpos.ToString();
-                    node.Tag = nodeType.StructLeafDeg;
+                    node.Tag = NodeType.StructLeafDeg;
                     t.Nodes.Add(node);
                     readerpos += 4;
                 }
@@ -821,7 +846,7 @@ namespace ME3Explorer
                         {
                             //just prints the raw hex since there's no telling what it actually is
                             node = new TreeNode(readerpos.ToString("X4") + ": " + memory.Skip(readerpos).Take(size).Aggregate("", (b, s) => b + " " + s.ToString("X2")));
-                            node.Tag = nodeType.Unknown;
+                            node.Tag = NodeType.Unknown;
                             t.Nodes.Add(node);
                             readerpos += size;
                             return;
@@ -847,7 +872,7 @@ namespace ME3Explorer
                     {
                         node = new TreeNode(pos.ToString("X4") + ": " + labels[i] + " : " + BitConverter.ToSingle(memory, pos).ToString("0.0######"));
                         node.Name = pos.ToString();
-                        node.Tag = nodeType.StructLeafFloat;
+                        node.Tag = NodeType.StructLeafFloat;
                         t.Nodes.Add(node);
                         pos += 4;
                     }
@@ -859,7 +884,7 @@ namespace ME3Explorer
                     {
                         node = new TreeNode(pos.ToString("X4") + ": " + labels[i] + " : " + BitConverter.ToSingle(memory, pos).ToString("0.0######"));
                         node.Name = pos.ToString();
-                        node.Tag = nodeType.StructLeafFloat;
+                        node.Tag = NodeType.StructLeafFloat;
                         t.Nodes.Add(node);
                         pos += 4;
                     }
@@ -871,7 +896,7 @@ namespace ME3Explorer
                     {
                         node = new TreeNode(pos.ToString("X4") + ": " + labels[i] + " : " + memory[pos]);
                         node.Name = pos.ToString();
-                        node.Tag = nodeType.StructLeafByte;
+                        node.Tag = NodeType.StructLeafByte;
                         t.Nodes.Add(node);
                         pos += 1;
                     }
@@ -883,7 +908,7 @@ namespace ME3Explorer
                     {
                         node = new TreeNode(pos.ToString("X4") + ": " + labels[i] + " : " + BitConverter.ToSingle(memory, pos).ToString("0.0######"));
                         node.Name = pos.ToString();
-                        node.Tag = nodeType.StructLeafFloat;
+                        node.Tag = NodeType.StructLeafFloat;
                         t.Nodes.Add(node);
                         pos += 4;
                     }
@@ -896,7 +921,7 @@ namespace ME3Explorer
                     {
                         node = new TreeNode(pos.ToString("X4") + ": " + labels[i] + " : " + BitConverter.ToSingle(memory, pos).ToString("0.0######"));
                         node.Name = pos.ToString();
-                        node.Tag = nodeType.StructLeafFloat;
+                        node.Tag = NodeType.StructLeafFloat;
                         t.Nodes.Add(node);
                         pos += 4;
                     }
@@ -908,7 +933,7 @@ namespace ME3Explorer
                     {
                         node = new TreeNode(pos.ToString("X4") + ": " + labels[i] + " : " + BitConverter.ToSingle(memory, pos).ToString("0.0######"));
                         node.Name = pos.ToString();
-                        node.Tag = nodeType.StructLeafFloat;
+                        node.Tag = NodeType.StructLeafFloat;
                         t.Nodes.Add(node);
                         pos += 4;
                     }
@@ -926,7 +951,7 @@ namespace ME3Explorer
                         {
                             node = new TreeNode(pos.ToString("X4") + ": " + labels2[j] + " : " + BitConverter.ToSingle(memory, pos).ToString("0.0######"));
                             node.Name = pos.ToString();
-                            node.Tag = nodeType.StructLeafFloat;
+                            node.Tag = NodeType.StructLeafFloat;
                             node2.Nodes.Add(node);
                             pos += 4;
                         }
@@ -940,7 +965,7 @@ namespace ME3Explorer
                     {
                         node = new TreeNode(pos.ToString("X4") + ": " + labels[i] + " : " + BitConverter.ToInt32(memory, pos));
                         node.Name = pos.ToString();
-                        node.Tag = nodeType.StructLeafInt;
+                        node.Tag = NodeType.StructLeafInt;
                         t.Nodes.Add(node);
                         pos += 4;
                     }
@@ -952,7 +977,7 @@ namespace ME3Explorer
                     {
                         node = new TreeNode(pos.ToString("X4") + ": " + labels[i] + " : " + BitConverter.ToInt32(memory, pos));
                         node.Name = pos.ToString();
-                        node.Tag = nodeType.StructLeafInt;
+                        node.Tag = NodeType.StructLeafInt;
                         t.Nodes.Add(node);
                         pos += 4;
                     }
@@ -970,7 +995,7 @@ namespace ME3Explorer
                         {
                             node = new TreeNode(pos.ToString("X4") + ": " + labels2[j] + " : " + BitConverter.ToSingle(memory, pos).ToString("0.0######"));
                             node.Name = pos.ToString();
-                            node.Tag = nodeType.StructLeafFloat;
+                            node.Tag = NodeType.StructLeafFloat;
                             node2.Nodes.Add(node);
                             pos += 4;
                         }
@@ -978,7 +1003,7 @@ namespace ME3Explorer
                     }
                     node = new TreeNode(pos.ToString("X4") + ": IsValid : " + memory[pos]);
                     node.Name = pos.ToString();
-                    node.Tag = nodeType.StructLeafByte;
+                    node.Tag = NodeType.StructLeafByte;
                     t.Nodes.Add(node);
                     pos += 1;
                 }
@@ -986,7 +1011,7 @@ namespace ME3Explorer
                 {
                     //just prints the raw hex since there's no telling what it actually is
                     node = new TreeNode(pos.ToString("X4") + ": " + memory.Skip(pos).Take(size).Aggregate("", (b, s) => b + " " + s.ToString("X2")));
-                    node.Tag = nodeType.Unknown;
+                    node.Tag = NodeType.Unknown;
                     t.Nodes.Add(node);
                     pos += size;
                 }
@@ -1009,7 +1034,7 @@ namespace ME3Explorer
                     s += BitConverter.ToSingle(memory, pos).ToString("0.0######");
                     node = new TreeNode(s);
                     node.Name = pos.ToString();
-                    node.Tag = nodeType.StructLeafFloat;
+                    node.Tag = NodeType.StructLeafFloat;
                     t.Nodes.Add(node);
                     pos += 4;
                     break;
@@ -1017,7 +1042,7 @@ namespace ME3Explorer
                     s += BitConverter.ToInt32(memory, pos).ToString();
                     node = new TreeNode(s);
                     node.Name = pos.ToString();
-                    node.Tag = nodeType.StructLeafInt;
+                    node.Tag = NodeType.StructLeafInt;
                     t.Nodes.Add(node);
                     pos += 4;
                     break;
@@ -1026,7 +1051,7 @@ namespace ME3Explorer
                     s += n + " (" + pcc.getObjectName(n) + ")";
                     node = new TreeNode(s);
                     node.Name = pos.ToString();
-                    node.Tag = nodeType.StructLeafObject;
+                    node.Tag = NodeType.StructLeafObject;
                     t.Nodes.Add(node);
                     pos += 4;
                     break;
@@ -1036,7 +1061,7 @@ namespace ME3Explorer
                     s += ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(n);
                     node = new TreeNode(s);
                     node.Name = pos.ToString();
-                    node.Tag = nodeType.StructLeafInt;
+                    node.Tag = NodeType.StructLeafInt;
                     t.Nodes.Add(node);
                     pos += 4;
                     break;
@@ -1046,7 +1071,7 @@ namespace ME3Explorer
                     s += "\"" + pcc.getNameEntry(n) + "\"_" + BitConverter.ToInt32(memory, pos);
                     node = new TreeNode(s);
                     node.Name = pos.ToString();
-                    node.Tag = nodeType.StructLeafName;
+                    node.Tag = NodeType.StructLeafName;
                     t.Nodes.Add(node);
                     pos += 4;
                     break;
@@ -1054,7 +1079,7 @@ namespace ME3Explorer
                     s += (memory[pos] > 0).ToString();
                     node = new TreeNode(s);
                     node.Name = pos.ToString();
-                    node.Tag = nodeType.StructLeafBool;
+                    node.Tag = NodeType.StructLeafBool;
                     t.Nodes.Add(node);
                     pos += 1;
                     break;
@@ -1069,7 +1094,7 @@ namespace ME3Explorer
                         s += "\"" + pcc.getNameEntry(BitConverter.ToInt32(memory, pos)) + "\"";
                         node = new TreeNode(s);
                         node.Name = pos.ToString();
-                        node.Tag = nodeType.StructLeafEnum;
+                        node.Tag = NodeType.StructLeafEnum;
                         t.Nodes.Add(node);
                         pos += 8;
                     }
@@ -1078,7 +1103,7 @@ namespace ME3Explorer
                         s += "(byte)" + memory[pos];
                         node = new TreeNode(s);
                         node.Name = pos.ToString();
-                        node.Tag = nodeType.StructLeafByte;
+                        node.Tag = NodeType.StructLeafByte;
                         t.Nodes.Add(node);
                         pos += 1;
                     }
@@ -1092,7 +1117,7 @@ namespace ME3Explorer
                     s += "\"";
                     node = new TreeNode(s);
                     node.Name = pos.ToString();
-                    node.Tag = nodeType.StructLeafStr;
+                    node.Tag = NodeType.StructLeafStr;
                     t.Nodes.Add(node);
                     pos += n * 2;
                     break;
@@ -1101,7 +1126,7 @@ namespace ME3Explorer
                     s += n + " elements";
                     node = new TreeNode(s);
                     node.Name = pos.ToString();
-                    node.Tag = nodeType.StructLeafArray;
+                    node.Tag = NodeType.StructLeafArray;
                     pos += 4;
                     propInfo = GetPropertyInfo(prop.Name);
                     ArrayType arrayType = GetArrayType(propInfo);
@@ -1114,7 +1139,7 @@ namespace ME3Explorer
                             readerpos = pos;
                             node2 = new TreeNode(i + ": (" + propInfo.reference + ")");
                             node2.Name = (-pos).ToString();
-                            node2.Tag = nodeType.StructLeafStruct;
+                            node2.Tag = NodeType.StructLeafStruct;
                             GenerateSpecialStruct(node2, propInfo.reference, 0);
                             node.Nodes.Add(node2);
                             pos = readerpos;
@@ -1162,7 +1187,7 @@ namespace ME3Explorer
                     s += propInfo.reference;
                     node = new TreeNode(s);
                     node.Name = (-pos).ToString();
-                    node.Tag = nodeType.StructLeafStruct;
+                    node.Tag = NodeType.StructLeafStruct;
                     readerpos = pos;
                     GenerateSpecialStruct(node, propInfo.reference, 0);
                     pos = readerpos;
@@ -1186,27 +1211,27 @@ namespace ME3Explorer
             s += "Name: \"" + pcc.getNameEntry(p.name) + "\" ";
             s += "Type: \"" + pcc.getNameEntry(p.type) + "\" ";
             s += "Size: " + p.size + " Value: ";
-            nodeType propertyType = getType(pcc.getNameEntry(p.type));
+            NodeType propertyType = getType(pcc.getNameEntry(p.type));
             int idx;
             byte val;
             switch (propertyType)
             {
-                case nodeType.IntProperty:
+                case NodeType.IntProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
                     if (pcc.getNameEntry(p.name) == "m_nStrRefID")
                     {
                         s += "#" + idx + ": ";
-                        if (pcc.Game == MEGame.ME3)
+                        switch (pcc.Game)
                         {
-                            s += ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(idx);
-                        }
-                        else if (pcc.Game == MEGame.ME2)
-                        {
-                            s += ME2Explorer.ME2TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME2Explorer.ME2TalkFiles.findDataById(idx);
-                        }
-                        else if (pcc.Game == MEGame.ME1)
-                        {
-                            s += tlkset == null ? "(.tlk not loaded)" : tlkset.findDataById(idx);
+                            case MEGame.ME3:
+                                s += ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(idx);
+                                break;
+                            case MEGame.ME2:
+                                s += ME2Explorer.ME2TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME2Explorer.ME2TalkFiles.findDataById(idx);
+                                break;
+                            case MEGame.ME1:
+                                s += tlkset == null ? "(.tlk not loaded)" : tlkset.findDataById(idx);
+                                break;
                         }
                     }
                     else
@@ -1214,11 +1239,11 @@ namespace ME3Explorer
                         s += idx.ToString();
                     }
                     break;
-                case nodeType.ObjectProperty:
+                case NodeType.ObjectProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
                     s += idx + " (" + pcc.getObjectName(idx) + ")";
                     break;
-                case nodeType.StrProperty:
+                case NodeType.StrProperty:
                     int count = BitConverter.ToInt32(memory, p.offset + 24);
                     s += "\"";
                     if (count < 0)
@@ -1233,23 +1258,23 @@ namespace ME3Explorer
                     }
                     s += "\"";
                     break;
-                case nodeType.BoolProperty:
+                case NodeType.BoolProperty:
                     val = memory[p.offset + 24];
                     s += (val == 1).ToString();
                     break;
-                case nodeType.FloatProperty:
+                case NodeType.FloatProperty:
                     float f = BitConverter.ToSingle(memory, p.offset + 24);
                     s += f.ToString("0.0######");
                     break;
-                case nodeType.NameProperty:
+                case NodeType.NameProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
                     s += "\"" + pcc.getNameEntry(idx) + "\"_" + BitConverter.ToInt32(memory, p.offset + 28);
                     break;
-                case nodeType.StructProperty:
+                case NodeType.StructProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
                     s += "\"" + pcc.getNameEntry(idx) + "\"";
                     break;
-                case nodeType.ByteProperty:
+                case NodeType.ByteProperty:
                     if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
                     {
                         if (p.size == 1)
@@ -1278,11 +1303,11 @@ namespace ME3Explorer
                         }
                     }
                     break;
-                case nodeType.ArrayProperty:
+                case NodeType.ArrayProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
                     s += idx + "(count)";
                     break;
-                case nodeType.StringRefProperty:
+                case NodeType.StringRefProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
                     s += "#" + idx + ": ";
                     if (pcc.Game == MEGame.ME3)
@@ -1305,14 +1330,14 @@ namespace ME3Explorer
             return ret;
         }
 
-        public nodeType getType(string s)
+        public static NodeType getType(string s)
         {
             for (int i = 0; i < Types.Length; i++)
                 if (s == Types[i])
                 {
-                    return (nodeType)i;
+                    return (NodeType)i;
                 }
-            return (nodeType)(-1);
+            return (NodeType)(-1);
         }
 
         public List<PropHeader> ReadHeadersTillNone()
@@ -1351,7 +1376,7 @@ namespace ME3Explorer
                             //This could be a struct that just happens to have arrayproperty at name 0... this might fubar some stuff
                             return ret;
                         }
-                        if (!pcc.isName(p.type) || getType(pcc.getNameEntry(p.type)) == nodeType.Unknown)
+                        if (!pcc.isName(p.type) || getType(pcc.getNameEntry(p.type)) == NodeType.Unknown)
                             run = false;
                         else
                         {
@@ -1361,18 +1386,18 @@ namespace ME3Explorer
                             ret.Add(p);
                             readerpos += p.size + 24;
 
-                            if (getType(pcc.getNameEntry(p.type)) == nodeType.StructProperty) //StructName
+                            if (getType(pcc.getNameEntry(p.type)) == NodeType.StructProperty) //StructName
                                 readerpos += 8;
                             if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
                             {
-                                if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)//Boolbyte
+                                if (getType(pcc.getNameEntry(p.type)) == NodeType.BoolProperty)//Boolbyte
                                     readerpos++;
-                                if (getType(pcc.getNameEntry(p.type)) == nodeType.ByteProperty)//byteprop
+                                if (getType(pcc.getNameEntry(p.type)) == NodeType.ByteProperty)//byteprop
                                     readerpos += 8;
                             }
                             else
                             {
-                                if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)
+                                if (getType(pcc.getNameEntry(p.type)) == NodeType.BoolProperty)
                                     readerpos += 4;
                             }
                         }
@@ -1434,7 +1459,7 @@ namespace ME3Explorer
             string typeName = className;
             string propname;
             PropertyInfo p;
-            while (node != null && !node.Tag.Equals(nodeType.Root))
+            while (node != null && !node.Tag.Equals(NodeType.Root))
             {
                 nodeStack.Push(node);
                 node = node.Parent;
@@ -1443,7 +1468,7 @@ namespace ME3Explorer
             while (nodeStack.Count > 0)
             {
                 node = nodeStack.Pop();
-                if ((nodeType)node.Tag == nodeType.ArrayLeafStruct)
+                if ((NodeType)node.Tag == NodeType.ArrayLeafStruct)
                 {
                     continue;
                 }
@@ -1454,19 +1479,19 @@ namespace ME3Explorer
             }
             return typeName;
         }
-        private bool isArrayLeaf(nodeType type)
+        private bool isArrayLeaf(NodeType type)
         {
-            return (type == nodeType.ArrayLeafBool || type == nodeType.ArrayLeafEnum || type == nodeType.ArrayLeafFloat ||
-                type == nodeType.ArrayLeafInt || type == nodeType.ArrayLeafName || type == nodeType.ArrayLeafObject ||
-                type == nodeType.ArrayLeafString || type == nodeType.ArrayLeafStruct || type == nodeType.ArrayLeafByte);
+            return (type == NodeType.ArrayLeafBool || type == NodeType.ArrayLeafEnum || type == NodeType.ArrayLeafFloat ||
+                type == NodeType.ArrayLeafInt || type == NodeType.ArrayLeafName || type == NodeType.ArrayLeafObject ||
+                type == NodeType.ArrayLeafString || type == NodeType.ArrayLeafStruct || type == NodeType.ArrayLeafByte);
         }
 
-        private bool isStructLeaf(nodeType type)
+        private bool isStructLeaf(NodeType type)
         {
-            return (type == nodeType.StructLeafByte || type == nodeType.StructLeafDeg || type == nodeType.StructLeafFloat ||
-                type == nodeType.StructLeafBool || type == nodeType.StructLeafInt || type == nodeType.StructLeafName ||
-                type == nodeType.StructLeafStr || type == nodeType.StructLeafEnum || type == nodeType.StructLeafArray ||
-                type == nodeType.StructLeafStruct || type == nodeType.StructLeafObject);
+            return (type == NodeType.StructLeafByte || type == NodeType.StructLeafDeg || type == NodeType.StructLeafFloat ||
+                type == NodeType.StructLeafBool || type == NodeType.StructLeafInt || type == NodeType.StructLeafName ||
+                type == NodeType.StructLeafStr || type == NodeType.StructLeafEnum || type == NodeType.StructLeafArray ||
+                type == NodeType.StructLeafStruct || type == NodeType.StructLeafObject);
         }
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
@@ -1477,7 +1502,7 @@ namespace ME3Explorer
             {
                 Debug.WriteLine("This node is not parsable.");
                 //can't attempt to parse this.
-                LAST_SELECTED_PROP_TYPE = nodeType.Unknown;
+                LAST_SELECTED_PROP_TYPE = NodeType.Unknown;
                 return;
             }
             try
@@ -1488,18 +1513,18 @@ namespace ME3Explorer
                 hb1.SelectionLength = 1;
                 if (e.Node.Tag == null)
                 {
-                    LAST_SELECTED_PROP_TYPE = nodeType.Unknown;
+                    LAST_SELECTED_PROP_TYPE = NodeType.Unknown;
                     return;
                 }
 
-                removePropertyButton.Visible = LAST_SELECTED_NODE != null && LAST_SELECTED_NODE.Parent != null && (nodeType)LAST_SELECTED_NODE.Parent.Tag == nodeType.Root && (nodeType)LAST_SELECTED_NODE.Tag != nodeType.None;
+                removePropertyButton.Visible = LAST_SELECTED_NODE != null && LAST_SELECTED_NODE.Parent != null && (NodeType)LAST_SELECTED_NODE.Parent.Tag == NodeType.Root && (NodeType)LAST_SELECTED_NODE.Tag != NodeType.None;
 
-                LAST_SELECTED_PROP_TYPE = (nodeType)e.Node.Tag;
+                LAST_SELECTED_PROP_TYPE = (NodeType)e.Node.Tag;
                 if (isArrayLeaf(LAST_SELECTED_PROP_TYPE) || isStructLeaf(LAST_SELECTED_PROP_TYPE))
                 {
                     TryParseStructPropertyOrArrayLeaf(e.Node);
                 }
-                else if (LAST_SELECTED_PROP_TYPE == nodeType.ArrayProperty)
+                else if (LAST_SELECTED_PROP_TYPE == NodeType.ArrayProperty)
                 {
                     addArrayElementButton.Visible = true;
                     proptext.Clear();
@@ -1551,12 +1576,12 @@ namespace ME3Explorer
                             break;
                     }
                 }
-                else if (LAST_SELECTED_PROP_TYPE == nodeType.Root)
+                else if (LAST_SELECTED_PROP_TYPE == NodeType.Root)
                 {
                     addPropButton.Visible = true;
 
                 }
-                else if (LAST_SELECTED_PROP_TYPE == nodeType.None && e.Node.Parent.Tag != null && e.Node.Parent.Tag.Equals(nodeType.Root))
+                else if (LAST_SELECTED_PROP_TYPE == NodeType.None && e.Node.Parent.Tag != null && e.Node.Parent.Tag.Equals(NodeType.Root))
                 {
                     //User has selcted the None at the end of the root
                     addPropButton.Visible = true;
@@ -1570,7 +1595,7 @@ namespace ME3Explorer
             {
                 Debug.WriteLine("Node name is not in correct format.");
                 //name is wrong, don't attempt to continue parsing.
-                LAST_SELECTED_PROP_TYPE = nodeType.Unknown;
+                LAST_SELECTED_PROP_TYPE = NodeType.Unknown;
                 return;
             }
         }
@@ -1698,51 +1723,51 @@ namespace ME3Explorer
         {
             try
             {
-                nodeType type = (nodeType)node.Tag;
+                NodeType type = (NodeType)node.Tag;
                 int pos = (int)hb1.SelectionStart;
                 if (memory.Length - pos < 8)
                     return;
                 switch (type)
                 {
-                    case nodeType.ArrayLeafInt:
-                    case nodeType.StructLeafInt:
+                    case NodeType.ArrayLeafInt:
+                    case NodeType.StructLeafInt:
                         proptext.Text = BitConverter.ToInt32(memory, pos).ToString();
                         proptext.Visible = true;
                         break;
-                    case nodeType.ArrayLeafObject:
-                    case nodeType.StructLeafObject:
+                    case NodeType.ArrayLeafObject:
+                    case NodeType.StructLeafObject:
                         int n = BitConverter.ToInt32(memory, pos);
                         objectNameLabel.Text = $"({pcc.getObjectName(n)})";
                         proptext.Text = n.ToString();
                         proptext.Visible = objectNameLabel.Visible = true;
                         break;
-                    case nodeType.ArrayLeafFloat:
-                    case nodeType.StructLeafFloat:
+                    case NodeType.ArrayLeafFloat:
+                    case NodeType.StructLeafFloat:
                         proptext.Text = BitConverter.ToSingle(memory, pos).ToString();
                         proptext.Visible = true;
                         break;
-                    case nodeType.ArrayLeafBool:
-                    case nodeType.StructLeafBool:
+                    case NodeType.ArrayLeafBool:
+                    case NodeType.StructLeafBool:
                         propDropdown.Items.Clear();
                         propDropdown.Items.Add("False");
                         propDropdown.Items.Add("True");
                         propDropdown.SelectedIndex = memory[pos];
                         propDropdown.Visible = true;
                         break;
-                    case nodeType.ArrayLeafByte:
-                    case nodeType.StructLeafByte:
+                    case NodeType.ArrayLeafByte:
+                    case NodeType.StructLeafByte:
                         proptext.Text = memory[pos].ToString();
                         proptext.Visible = true;
                         break;
-                    case nodeType.ArrayLeafName:
-                    case nodeType.StructLeafName:
+                    case NodeType.ArrayLeafName:
+                    case NodeType.StructLeafName:
                         proptext.Text = BitConverter.ToInt32(memory, pos + 4).ToString();
                         nameEntry.Text = pcc.getNameEntry(BitConverter.ToInt32(memory, pos));
                         nameEntry.AutoCompleteCustomSource.AddRange(pcc.Names.ToArray());
                         nameEntry.Visible = proptext.Visible = true;
                         break;
-                    case nodeType.ArrayLeafString:
-                    case nodeType.StructLeafStr:
+                    case NodeType.ArrayLeafString:
+                    case NodeType.StructLeafStr:
                         string s = "";
                         int count = -BitConverter.ToInt32(memory, pos);
                         for (int i = 0; i < count - 1; i++)
@@ -1752,10 +1777,10 @@ namespace ME3Explorer
                         proptext.Text = s;
                         proptext.Visible = true;
                         break;
-                    case nodeType.ArrayLeafEnum:
-                    case nodeType.StructLeafEnum:
+                    case NodeType.ArrayLeafEnum:
+                    case NodeType.StructLeafEnum:
                         string enumName;
-                        if (type == nodeType.StructLeafEnum)
+                        if (type == NodeType.StructLeafEnum)
                         {
                             int begin = node.Text.LastIndexOf(':');
                             if(begin == -1)
@@ -1778,11 +1803,11 @@ namespace ME3Explorer
                         setPropertyButton.Visible = propDropdown.Visible = true;
                         propDropdown.SelectedItem = pcc.getNameEntry(BitConverter.ToInt32(memory, pos));
                         break;
-                    case nodeType.StructLeafDeg:
+                    case NodeType.StructLeafDeg:
                         proptext.Text = (BitConverter.ToInt32(memory, pos) * 360f / 65536f).ToString();
                         proptext.Visible = true;
                         break;
-                    case nodeType.ArrayLeafStruct:
+                    case NodeType.ArrayLeafStruct:
                         break;
                     default:
                         return;
@@ -1791,7 +1816,7 @@ namespace ME3Explorer
                 if (isArrayLeaf(type))
                 {
                     deleteArrayElementButton.Visible = addArrayElementButton.Visible = true;
-                    if (type == nodeType.ArrayLeafStruct)
+                    if (type == NodeType.ArrayLeafStruct)
                     {
                         setPropertyButton.Visible = false;
                     }
@@ -1839,21 +1864,21 @@ namespace ME3Explorer
                 int i = 0;
                 switch (LAST_SELECTED_PROP_TYPE)
                 {
-                    case nodeType.ArrayLeafByte:
-                    case nodeType.StructLeafByte:
+                    case NodeType.ArrayLeafByte:
+                    case NodeType.StructLeafByte:
                         if (byte.TryParse(proptext.Text, out b))
                         {
                             memory[pos] = b;
                             UpdateMem(pos);
                         }
                         break;
-                    case nodeType.ArrayLeafBool:
-                    case nodeType.StructLeafBool:
+                    case NodeType.ArrayLeafBool:
+                    case NodeType.StructLeafBool:
                         memory[pos] = (byte)propDropdown.SelectedIndex;
                         UpdateMem(pos);
                         break;
-                    case nodeType.ArrayLeafFloat:
-                    case nodeType.StructLeafFloat:
+                    case NodeType.ArrayLeafFloat:
+                    case NodeType.StructLeafFloat:
                         proptext.Text = CheckSeperator(proptext.Text);
                         if (float.TryParse(proptext.Text, out f))
                         {
@@ -1861,17 +1886,17 @@ namespace ME3Explorer
                             UpdateMem(pos);
                         }
                         break;
-                    case nodeType.StructLeafDeg:
+                    case NodeType.StructLeafDeg:
                         if (float.TryParse(proptext.Text, out f))
                         {
                             WriteMem(pos, BitConverter.GetBytes(Convert.ToInt32(f * 65536f / 360f)));
                             UpdateMem(pos);
                         }
                         break;
-                    case nodeType.ArrayLeafInt:
-                    case nodeType.ArrayLeafObject:
-                    case nodeType.StructLeafObject:
-                    case nodeType.StructLeafInt:
+                    case NodeType.ArrayLeafInt:
+                    case NodeType.ArrayLeafObject:
+                    case NodeType.StructLeafObject:
+                    case NodeType.StructLeafInt:
                         proptext.Text = CheckSeperator(proptext.Text);
                         if (int.TryParse(proptext.Text, out i))
                         {
@@ -1879,14 +1904,14 @@ namespace ME3Explorer
                             UpdateMem(pos);
                         }
                         break;
-                    case nodeType.ArrayLeafEnum:
-                    case nodeType.StructLeafEnum:
+                    case NodeType.ArrayLeafEnum:
+                    case NodeType.StructLeafEnum:
                         i = pcc.FindNameOrAdd(propDropdown.SelectedItem as string);
                         WriteMem(pos, BitConverter.GetBytes(i));
                         UpdateMem(pos);
                         break;
-                    case nodeType.ArrayLeafName:
-                    case nodeType.StructLeafName:
+                    case NodeType.ArrayLeafName:
+                    case NodeType.StructLeafName:
                         if (int.TryParse(proptext.Text, out i))
                         {
                             if (!pcc.Names.Contains(nameEntry.Text) &&
@@ -1899,8 +1924,8 @@ namespace ME3Explorer
                             UpdateMem(pos);
                         }
                         break;
-                    case nodeType.ArrayLeafString:
-                    case nodeType.StructLeafStr:
+                    case NodeType.ArrayLeafString:
+                    case NodeType.StructLeafStr:
                         string s = proptext.Text;
                         int offset = pos;
                         int stringMultiplier = 1;
@@ -1954,10 +1979,10 @@ namespace ME3Explorer
 
                         //bubble up size
                         TreeNode parent = LAST_SELECTED_NODE.Parent;
-                        while (parent != null && (parent.Tag.Equals(nodeType.StructProperty) || parent.Tag.Equals(nodeType.ArrayProperty) ||
-                            parent.Tag.Equals(nodeType.ArrayLeafStruct) || isStructLeaf((nodeType)parent.Tag)))
+                        while (parent != null && (parent.Tag.Equals(NodeType.StructProperty) || parent.Tag.Equals(NodeType.ArrayProperty) ||
+                            parent.Tag.Equals(NodeType.ArrayLeafStruct) || isStructLeaf((NodeType)parent.Tag)))
                         {
-                            if ((nodeType)parent.Tag == nodeType.ArrayLeafStruct || isStructLeaf((nodeType)parent.Tag))
+                            if ((NodeType)parent.Tag == NodeType.ArrayLeafStruct || isStructLeaf((NodeType)parent.Tag))
                             {
                                 parent = parent.Parent;
                                 continue;
@@ -2126,9 +2151,9 @@ namespace ME3Explorer
 
                         //bubble up size
                         TreeNode parent = LAST_SELECTED_NODE.Parent;
-                        while (parent != null && (parent.Tag.Equals(nodeType.StructProperty) || parent.Tag.Equals(nodeType.ArrayProperty) || parent.Tag.Equals(nodeType.ArrayLeafStruct)))
+                        while (parent != null && (parent.Tag.Equals(NodeType.StructProperty) || parent.Tag.Equals(NodeType.ArrayProperty) || parent.Tag.Equals(NodeType.ArrayLeafStruct)))
                         {
-                            if ((nodeType)parent.Tag == nodeType.ArrayLeafStruct)
+                            if ((NodeType)parent.Tag == NodeType.ArrayLeafStruct)
                             {
                                 parent = parent.Parent;
                                 continue;
@@ -2167,20 +2192,20 @@ namespace ME3Explorer
                 int size;
                 switch (LAST_SELECTED_PROP_TYPE)
                 {
-                    case nodeType.ArrayLeafInt:
-                    case nodeType.ArrayLeafFloat:
-                    case nodeType.ArrayLeafObject:
+                    case NodeType.ArrayLeafInt:
+                    case NodeType.ArrayLeafFloat:
+                    case NodeType.ArrayLeafObject:
                         size = 4;
                         break;
-                    case nodeType.ArrayLeafName:
-                    case nodeType.ArrayLeafEnum:
+                    case NodeType.ArrayLeafName:
+                    case NodeType.ArrayLeafEnum:
                         size = 8;
                         break;
-                    case nodeType.ArrayLeafBool:
-                    case nodeType.ArrayLeafByte:
+                    case NodeType.ArrayLeafBool:
+                    case NodeType.ArrayLeafByte:
                         size = 1;
                         break;
-                    case nodeType.ArrayLeafString:
+                    case NodeType.ArrayLeafString:
                         size = BitConverter.ToInt32(memory, leafOffset);
                         if (size < 0)
                         {
@@ -2188,7 +2213,7 @@ namespace ME3Explorer
                         }
                         size += 4;
                         break;
-                    case nodeType.ArrayLeafStruct:
+                    case NodeType.ArrayLeafStruct:
                         int tmp = readerpos = leafOffset;
                         ReadHeadersTillNone();
                         size = readerpos - tmp;
@@ -2199,9 +2224,9 @@ namespace ME3Explorer
                 removedBytes = memory.Skip(leafOffset).Take(size).ToArray();
                 //bubble up size
                 bool firstbubble = true;
-                while (parent != null && (parent.Tag.Equals(nodeType.StructProperty) || parent.Tag.Equals(nodeType.ArrayProperty) || parent.Tag.Equals(nodeType.ArrayLeafStruct)))
+                while (parent != null && (parent.Tag.Equals(NodeType.StructProperty) || parent.Tag.Equals(NodeType.ArrayProperty) || parent.Tag.Equals(NodeType.ArrayLeafStruct)))
                 {
-                    if ((nodeType)parent.Tag == nodeType.ArrayLeafStruct)
+                    if ((NodeType)parent.Tag == NodeType.ArrayLeafStruct)
                     {
                         parent = parent.Parent;
                         continue;
@@ -2219,7 +2244,7 @@ namespace ME3Explorer
                     }
                     parent = parent.Parent;
                 }
-                if (LAST_SELECTED_PROP_TYPE == nodeType.ArrayLeafStruct)
+                if (LAST_SELECTED_PROP_TYPE == NodeType.ArrayLeafStruct)
                 {
                     UpdateMem(-pos);
                 }
@@ -2388,9 +2413,9 @@ namespace ME3Explorer
 
                 //bubble up size
                 TreeNode parent = LAST_SELECTED_NODE.Parent;
-                while (parent != null && (parent.Tag.Equals(nodeType.StructProperty) || parent.Tag.Equals(nodeType.ArrayProperty) || parent.Tag.Equals(nodeType.ArrayLeafStruct)))
+                while (parent != null && (parent.Tag.Equals(NodeType.StructProperty) || parent.Tag.Equals(NodeType.ArrayProperty) || parent.Tag.Equals(NodeType.ArrayLeafStruct)))
                 {
-                    if ((nodeType)parent.Tag == nodeType.ArrayLeafStruct)
+                    if ((NodeType)parent.Tag == NodeType.ArrayLeafStruct)
                     {
                         parent = parent.Parent;
                         continue;
@@ -2525,7 +2550,7 @@ namespace ME3Explorer
 
         private void treeView1_AfterExpand(object sender, TreeViewEventArgs e)
         {
-            if (e.Node.Tag != null && e.Node.Tag.Equals(nodeType.ArrayProperty) && e.Node.Nodes.Count == 1)
+            if (e.Node.Tag != null && e.Node.Tag.Equals(NodeType.ArrayProperty) && e.Node.Nodes.Count == 1)
             {
                 e.Node.Nodes[0].Expand();
             }
@@ -2589,9 +2614,9 @@ namespace ME3Explorer
             //bubble up size
             bool firstbubble = true;
             int parentOffset;
-            while (parent != null && (parent.Tag.Equals(nodeType.StructProperty) || parent.Tag.Equals(nodeType.ArrayProperty) || parent.Tag.Equals(nodeType.ArrayLeafStruct)))
+            while (parent != null && (parent.Tag.Equals(NodeType.StructProperty) || parent.Tag.Equals(NodeType.ArrayProperty) || parent.Tag.Equals(NodeType.ArrayLeafStruct)))
             {
-                if ((nodeType)parent.Tag == nodeType.ArrayLeafStruct)
+                if ((NodeType)parent.Tag == NodeType.ArrayLeafStruct)
                 {
                     parent = parent.Parent;
                     continue;
