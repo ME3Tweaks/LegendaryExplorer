@@ -283,6 +283,9 @@ Floats*/
                 case "PrefabInstance":
                     StartPrefabInstanceScan();
                     break;
+                case "StaticMesh":
+                    StartStaticMeshScan();
+                    break;
                 default:
                     StartGenericScan();
                     break;
@@ -781,6 +784,92 @@ Floats*/
                 topLevelTree.Expand();
                 treeView1.Nodes[0].Expand();
             }
+        }
+
+        private void StartStaticMeshScan()
+        {
+            /*
+             *  
+             *  Bounding +28
+             *  RB_BodySetup <----------------------------
+             *  more bounding +28 
+             *  size +4 bytes
+             *  count +4 bytes
+             *  kDOPTree +(size*count)
+             *  size +4 bytes
+             *  count +4 bytes
+             *  RawTris +(size*count)
+             *  meshversion +4
+             *  lodcount +4
+	         *      guid +16
+	         *      sectioncount +4
+		     *          MATERIAL <------------------------
+		     *          +36
+		     *          unk5
+		     *          +13
+	         *      section[0].unk5 == 1 ? +12 : +4
+             */
+
+            byte[] data = export.Data;
+            TreeNode topLevelTree = new TreeNode($"0000 : {export.ObjectName}    (Open in Meshplorer for a full look at the data)")
+            {
+                Tag = NodeType.Root,
+                Name = "0"
+            };
+            treeView1.Nodes.Add(topLevelTree);
+
+            try
+            {
+                int pos = findEndOfProps();
+                pos += 28;
+                int rbRef = BitConverter.ToInt32(data, pos);
+                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} RB_BodySetup: ({rbRef}) {pcc.getEntry(rbRef)?.GetFullPath ?? ""}")
+                {
+                    Name = pos.ToString(),
+                    Tag = NodeType.StructLeafObject
+
+                });
+                pos += 28; //bounding
+                int size = BitConverter.ToInt32(data, pos);
+                int count = BitConverter.ToInt32(data, pos + 4);
+                pos += 8 + (size * count); //kDOPTree
+                size = BitConverter.ToInt32(data, pos);
+                count = BitConverter.ToInt32(data, pos + 4);
+                pos += 8 + (size * count); //RawTris
+                pos += 4; //meshversion
+                int lodCount = BitConverter.ToInt32(data, pos);
+                pos += 4;
+                int unk5 = 0;
+                for (int i = 0; i < lodCount; i++)
+                {
+                    pos += 16; //guid
+                    int sectionCount = BitConverter.ToInt32(data, pos);
+                    pos += 4;
+                    for (int j = 0; j < sectionCount; j++)
+                    {
+                        int material = BitConverter.ToInt32(data, pos);
+                        topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Material: ({material}) {pcc.getEntry(material)?.GetFullPath ?? ""}")
+                        {
+                            Name = pos.ToString(),
+                            Tag = NodeType.StructLeafObject
+                        });
+                        pos += 36;
+                        if (i == 0)
+                        {
+                            unk5 = BitConverter.ToInt32(data, pos);
+                        }
+                        pos += 13;
+                    }
+                    pos += unk5 == 1 ? 12 : 4;
+                }
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Nodes.Add(new TreeNode($"Error reading binary data: {ex}"));
+            }
+
+            topLevelTree.Expand();
+            treeView1.Nodes[0].Expand();
         }
 
         private void StartBioStageScan(string nodeNameToSelect = null)
