@@ -854,7 +854,7 @@ Floats*/
                             Tag = NodeType.StructLeafObject
                         });
                         pos += 36;
-                        if (i == 0)
+                        if (j == 0)
                         {
                             unk5 = BitConverter.ToInt32(data, pos);
                         }
