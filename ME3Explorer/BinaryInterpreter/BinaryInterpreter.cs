@@ -712,6 +712,77 @@ Floats*/
             }
         }
 
+        private void StartPrefabInstanceScan()
+        {
+            /*
+             *  count: 4 bytes 
+             *      Prefab ref : 4 bytes
+             *      Level Object : 4 bytes
+             *  0: 4 bytes
+             *  
+             */
+
+            if ((export.header[0x1f] & 0x2) != 0)
+            {
+                byte[] data = export.Data;
+                TreeNode topLevelTree = new TreeNode($"0000 : {export.ObjectName}")
+                {
+                    Tag = NodeType.Root,
+                    Name = "0"
+                };
+                treeView1.Nodes.Add(topLevelTree);
+
+                try
+                {
+                    int pos = findEndOfProps();
+                    int count = BitConverter.ToInt32(data, pos);
+                    topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Count: {count}")
+                    {
+                        Name = pos.ToString()
+                    });
+                    pos += 4;
+                    int exportRef;
+                    while (pos + 8 <= data.Length && count > 0)
+                    {
+                        exportRef = BitConverter.ToInt32(data, pos);
+                        topLevelTree.Nodes.Add(new TreeNode($"{pos:X4}: {exportRef} Prefab: {pcc.getEntry(exportRef).GetFullPath}")
+                        {
+                            Name = pos.ToString(),
+                            Tag = NodeType.StructLeafObject
+                        });
+                        pos += 4;
+                        exportRef = BitConverter.ToInt32(data, pos);
+                        if (exportRef == 0)
+                        {
+                            topLevelTree.LastNode.Nodes.Add(new TreeNode($"{pos:X4}: {exportRef} Level Object: Null")
+                            {
+                                Name = pos.ToString(),
+                                Tag = NodeType.StructLeafObject
+                            });
+                        }
+                        else
+                        {
+                            topLevelTree.LastNode.Nodes.Add(new TreeNode($"{pos:X4}: {exportRef} Level Object: {pcc.getEntry(exportRef).GetFullPath}")
+                            {
+                                Name = pos.ToString(),
+                                Tag = NodeType.StructLeafObject
+                            });
+                        }
+                        
+                        pos += 4;
+                        count--;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    topLevelTree.Nodes.Add(new TreeNode($"Error reading binary data: {ex}"));
+                }
+
+                topLevelTree.Expand();
+                treeView1.Nodes[0].Expand();
+            }
+        }
+
         private void StartBioStageScan(string nodeNameToSelect = null)
         {
             /*
