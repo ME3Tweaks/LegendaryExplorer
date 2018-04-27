@@ -420,6 +420,9 @@
     <Compile Include="PackageEditor\PackageEditorRelinker.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="PackageEditor\PackageEditorWPF.xaml.cs">
+      <DependentUpon>PackageEditorWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Packages\UDKPackage.cs" />
     <Compile Include="Packages\MEPackage.cs" />
     <Compile Include="Pathfinding Editor\SplineNodes.cs" />
@@ -924,6 +927,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Interpreter\PropertyEditorHost.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PackageEditor\PackageEditorWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -104,6 +104,9 @@ namespace ME3Explorer
             }
         }
 
-        
+        private void dEBUGOpenPackageEditorWPFToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new PackageEditorWPF().Show();
+        }
     }
 }
