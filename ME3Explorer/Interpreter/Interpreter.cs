@@ -2867,7 +2867,20 @@ namespace ME3Explorer
                     string s = $"Byte: {memory[start]}"; //if selection is same as size this will crash.
                     if (start <= memory.Length - 4)
                     {
-                        s += $", Int: {BitConverter.ToInt32(memory, start)}";
+                        int val = BitConverter.ToInt32(memory, start);
+                        s += $", Int: {val}";
+                        if (pcc.isName(val))
+                        {
+                            s += $", Name: {pcc.getNameEntry(val)}";
+                        }
+                        if (pcc.getEntry(val) is IExportEntry exp)
+                        {
+                            s += $", Export: {exp.ObjectName}";
+                        }
+                        else if (pcc.getEntry(val) is ImportEntry imp)
+                        {
+                            s += $", Import: {imp.ObjectName}";
+                        }
                     }
                     s += $" | Start=0x{start.ToString("X8")} ";
                     if (len > 0)

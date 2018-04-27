@@ -73,8 +73,17 @@ namespace ME3Explorer.Packages
         IExportEntry getExport(int index);
         ImportEntry getImport(int index);
         int findName(string nameToFind);
+        /// <summary>
+        ///     gets Export or Import name, from unreal index
+        /// </summary>
+        /// <param name="index">unreal index</param>
         string getObjectName(int index);
         string getNameEntry(int index);
+
+        /// <summary>
+        ///     gets Export or Import class, from unreal index
+        /// </summary>
+        /// <param name="index">unreal index</param>
         string getObjectClass(int index);
 
         //editing

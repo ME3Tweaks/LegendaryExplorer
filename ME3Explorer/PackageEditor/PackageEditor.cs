@@ -569,7 +569,8 @@ namespace ME3Explorer
                         packageEditorTabPane.TabPages.Remove(scriptTab);
                     }
 
-                    if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName))
+                    if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) ||
+                            (exportEntry.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
                     {
                         if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
                         {
@@ -602,7 +603,8 @@ namespace ME3Explorer
                         interpreterControl.export = exportEntry;
                         interpreterControl.InitInterpreter();
 
-                        if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName))
+                        if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) ||
+                            (exportEntry.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
                         {
                             if (exportEntry.ClassName == "Class" && exportEntry.ObjectName.StartsWith("Default__"))
                             {
