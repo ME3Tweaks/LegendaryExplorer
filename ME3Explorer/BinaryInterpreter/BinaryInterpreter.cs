@@ -1712,75 +1712,36 @@ Floats*/
             memsize = memory.Length;
         }
 
-        private void StartStaticMeshCollectionActorScan(string nodeNameToSelect = null)
+        private void StartStaticMeshCollectionActorScan()
         {
-            resetPropEditingControls();
-            treeView1.BeginUpdate();
-            treeView1.Nodes.Clear();
-
-            addArrayElementButton.Visible = false;
-            moveUpButton.Visible = false;
-            moveDownButton.Visible = false;
-
             TreeNode topLevelTree = new TreeNode($"0000 : {export.ObjectName} Binary")
             {
                 Tag = NodeType.Root,
                 Name = "0"
             };
 
-            //try
+            try
             {
                 byte[] data = export.Data;
                 //get a list of staticmesh stuff from the props.
-                int propstart = 0x4; //we're assuming as any collection build by the engine should have started with this and i doubt any users will be making their own SMAC
-                int listsize = System.BitConverter.ToInt32(data, 28);
-
                 List<IExportEntry> smacitems = new List<IExportEntry>();
+                var props = export.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
 
-                for (int i = 0; i < listsize; i++)
+                foreach (var prop in props)
                 {
-                    int offset = (32 + i * 4);
-                    //fetch exports
-                    int entryval = BitConverter.ToInt32(data, offset);
-                    if (entryval > 0 && entryval < pcc.ExportCount)
+                    if (prop.Value > 0)
                     {
-                        smacitems.Add(pcc.getEntry(entryval) as IExportEntry);
+                        smacitems.Add(pcc.getEntry(prop.Value) as IExportEntry);
                     }
-                    else if (entryval == 0)
+                    else
                     {
                         smacitems.Add(null);
                     }
                 }
 
                 //find start of class binary (end of props)
-                int start = 0x4;
-                while (start < data.Length && data.Length - 8 >= start)
-                {
-                    ulong nameindex = BitConverter.ToUInt64(data, start);
-                    if (nameindex < (ulong)pcc.Names.Count && pcc.Names[(int)nameindex] == "None")
-                    {
-                        //found it
-                        start += 8;
-                        break;
-                    }
-                    else
-                    {
-                        start += 1;
-                    }
-                }
-
-                if (data.Length - start < 4)
-                {
-                    topLevelTree.Nodes.Add(new TreeNode
-                    {
-                        Tag = NodeType.Unknown,
-                        Text = $"{start:X4} Could not find end of properties (looking for none)",
-                        Name = start.ToString()
-                    });
-                    treeView1.Nodes.Add(topLevelTree);
-                    return;
-                }
-
+                int start = findEndOfProps();
+                
                 //Lets make sure this binary is divisible by 64.
                 if ((data.Length - start) % 64 != 0)
                 {
@@ -1795,7 +1756,7 @@ Floats*/
                 }
 
                 int smcaindex = 0;
-                while (start < data.Length && smcaindex < smacitems.Count - 1)
+                while (start < data.Length && smcaindex < smacitems.Count)
                 {
                     TreeNode smcanode = new TreeNode
                     {
@@ -1883,11 +1844,15 @@ Floats*/
 
                     smcaindex++;
                 }
-                treeView1.Nodes.Add(topLevelTree);
-                treeView1.CollapseAll();
-                topLevelTree.Expand();
-                treeView1.EndUpdate();
+                
             }
+            catch (Exception ex)
+            {
+                topLevelTree.Nodes.Add($"An error occured parsing the staticmesh: {ex.Message}");
+            }
+            treeView1.Nodes.Add(topLevelTree);
+            treeView1.CollapseAll();
+            topLevelTree.Expand();
         }
 
         private void StartLevelScan(string nodeNameToSelect = null)
