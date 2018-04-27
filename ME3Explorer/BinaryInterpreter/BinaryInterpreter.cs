@@ -286,6 +286,9 @@ Floats*/
                 case "StaticMesh":
                     StartStaticMeshScan();
                     break;
+                case "SkeletalMesh":
+                    StartSkeletalMeshScan();
+                    break;
                 default:
                     StartGenericScan();
                     break;
@@ -861,6 +864,54 @@ Floats*/
                         pos += 13;
                     }
                     pos += unk5 == 1 ? 12 : 4;
+                }
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Nodes.Add(new TreeNode($"Error reading binary data: {ex}"));
+            }
+
+            topLevelTree.Expand();
+            treeView1.Nodes[0].Expand();
+        }
+
+        private void StartSkeletalMeshScan()
+        {
+            /*
+             *  
+             *  Bounding +28
+             *  count +4
+             *      materials
+             *  
+             */
+
+            byte[] data = export.Data;
+            TreeNode topLevelTree = new TreeNode($"0000 : {export.ObjectName}    (Open in Meshplorer for a full look at the data)")
+            {
+                Tag = NodeType.Root,
+                Name = "0"
+            };
+            treeView1.Nodes.Add(topLevelTree);
+
+            try
+            {
+                int pos = findEndOfProps();
+                pos += 28; //bounding
+                int count = BitConverter.ToInt32(data, pos);
+                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Material Count: {count}")
+                {
+                    Name = pos.ToString(),
+                });
+                pos += 4;
+                for (int i = 0; i < count; i++)
+                {
+                    int material = BitConverter.ToInt32(data, pos);
+                    topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Material: ({material}) {pcc.getEntry(material)?.GetFullPath ?? ""}")
+                    {
+                        Name = pos.ToString(),
+                        Tag = NodeType.StructLeafObject
+                    });
+                    pos += 4;
                 }
             }
             catch (Exception ex)
