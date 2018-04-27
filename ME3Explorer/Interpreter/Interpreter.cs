@@ -16,6 +16,7 @@ using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
 using ME1Explorer.Unreal.Classes;
 using System.Collections;
+using ME3Explorer.SharedUI;
 
 namespace ME3Explorer
 {
@@ -2631,7 +2632,7 @@ namespace ME3Explorer
                 return;
             }
             List<string> props = PropertyReader.getPropList(export).Select(x => pcc.getNameEntry(x.Name)).ToList();
-            string prop = AddPropertyDialog.GetProperty(export, props, pcc.Game);
+            string prop = AddPropertyDialogWPF.GetProperty(export, props, pcc.Game);
 
             string origname = export.ClassName;
             string temp = export.ClassName;

@@ -697,7 +697,7 @@ Floats*/
                                 Tag = NodeType.StructLeafObject
                             });
                         }
-                        
+
                         pos += 4;
                         count--;
                     }
@@ -1263,7 +1263,7 @@ Floats*/
                         ImportEntry imp = pcc.Imports[csImportVal];
                         nodeText += $"{name} {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
                     }
-                    
+
                     subnodes.Add(new TreeNode(nodeText)
                     {
                         Tag = NodeType.StructLeafObject,
@@ -1340,7 +1340,7 @@ Floats*/
                         //ERROR
                         nodeValue += " - Not followed by 1 (integer)!";
                     }
-                    
+
                     subnodes.Add(new TreeNode($"0x{binarypos:X4} Name: {nodeValue}")
                     {
                         Tag = NodeType.StructLeafName,
@@ -2063,7 +2063,7 @@ Floats*/
 
                 int coreReference = BitConverter.ToInt32(data, offset);
                 string coreRefFullPath = getEntryFullPath(coreReference);
-                
+
                 topLevelTree.Nodes.Add(new TreeNode($"0x{offset:X5} Outer Class: {coreReference} ({coreRefFullPath})")
                 {
                     Name = offset.ToString(),
@@ -2195,7 +2195,7 @@ Floats*/
                 int componentTableNameIndex = BitConverter.ToInt32(data, offset);
                 int componentTableIndex = BitConverter.ToInt32(data, offset + 4);
                 offset += 8;
-                
+
                 topLevelTree.Nodes.Add(new TreeNode($"0x{offset - 8:X5} Components Table ({export.FileRef.getNameEntry(componentTableNameIndex)})")
                 {
                     Name = (offset - 8).ToString(),
@@ -2258,7 +2258,7 @@ Floats*/
             if (export.FileRef.Game == MEGame.ME3)
             {
                 int interfaceCount = BitConverter.ToInt32(data, offset);
-                
+
                 topLevelTree.Nodes.Add(new TreeNode($"0x{offset:X5} Implemented Interfaces Table Count: {interfaceCount}")
                 {
                     Name = offset.ToString(),
@@ -3301,17 +3301,20 @@ Floats*/
 
         public void RefreshMem()
         {
-            hb1.ByteProvider = new DynamicByteProvider(memory);
-            //adds rootnode to list
-            List<TreeNode> allNodes = treeView1.Nodes.Cast<TreeNode>().ToList();
-            //flatten tree of nodes into list.
-            for (int i = 0; i < allNodes.Count(); i++)
+            if (export != null && ParsableBinaryClasses.Contains(export.ClassName))
             {
-                allNodes.AddRange(allNodes[i].Nodes.Cast<TreeNode>());
-            }
+                hb1.ByteProvider = new DynamicByteProvider(memory);
+                //adds rootnode to list
+                List<TreeNode> allNodes = treeView1.Nodes.Cast<TreeNode>().ToList();
+                //flatten tree of nodes into list.
+                for (int i = 0; i < allNodes.Count(); i++)
+                {
+                    allNodes.AddRange(allNodes[i].Nodes.Cast<TreeNode>());
+                }
 
-            var expandedNodes = allNodes.Where(x => x.IsExpanded).Select(x => x.Name);
-            StartScan(treeView1.TopNode?.Name, selectedNodePos?.ToString());
+                var expandedNodes = allNodes.Where(x => x.IsExpanded).Select(x => x.Name);
+                StartScan(treeView1.TopNode?.Name, selectedNodePos?.ToString());
+            }
 
         }
 

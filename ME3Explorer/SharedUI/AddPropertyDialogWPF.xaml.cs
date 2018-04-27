@@ -1,38 +1,38 @@
-﻿using System;
+﻿using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using ME3Explorer.Packages;
-using ME3Explorer.Unreal;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
-namespace ME3Explorer
+namespace ME3Explorer.SharedUI
 {
-    public partial class AddPropertyDialog : Form
+    /// <summary>
+    /// Interaction logic for AddPropertyDialogWPF.xaml
+    /// </summary>
+    public partial class AddPropertyDialogWPF : Window
     {
         public List<string> extantProps;
         Dictionary<string, ClassInfo> classList;
 
-        public AddPropertyDialog()
+        public AddPropertyDialogWPF()
         {
             InitializeComponent();
         }
 
-        private void classListBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string className = classListBox.SelectedItem as string;
-            List<string> props = classList[className].properties.Keys.Except(extantProps).ToList();
-            props.Sort();
-            propListBox.DataSource = props;
-        }
-
         private void propListBox_DoubleClick(object sender, EventArgs e)
         {
-            addButton.PerformClick();
+            DialogResult = true;
+            Close();
         }
 
         public static string GetProperty(IExportEntry export, List<string> _extantProps, MEGame game)
@@ -82,19 +82,38 @@ namespace ME3Explorer
                 temp = classList[temp].baseClass;
             }
             classes.Reverse();
-            AddPropertyDialog prompt = new AddPropertyDialog();
+            AddPropertyDialogWPF prompt = new AddPropertyDialogWPF();
             prompt.classList = classList;
             prompt.extantProps = _extantProps;
-            prompt.classListBox.DataSource = classes;
-            prompt.classListBox.SelectedItem = origname;
-            if (prompt.ShowDialog() == DialogResult.OK && prompt.propListBox.SelectedIndex != -1)
+            prompt.ClassesListView.ItemsSource = classes;
+            prompt.ClassesListView.SelectedItem = origname;
+            prompt.ShowDialog();
+            if (prompt.DialogResult.HasValue && prompt.DialogResult.Value && prompt.PropertiesListView.SelectedIndex != -1)
             {
-                return prompt.propListBox.SelectedItem as string;
+                return prompt.PropertiesListView.SelectedItem as string;
             }
             else
             {
                 return null;
             }
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ClassesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string className = ClassesListView.SelectedItem as string;
+            List<string> props = classList[className].properties.Keys.Except(extantProps).ToList();
+            props.Sort();
+            PropertiesListView.ItemsSource = props;
         }
     }
 }

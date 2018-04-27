@@ -436,6 +436,9 @@
     <Compile Include="Pathfinding Editor\HeightFilterForm.Designer.cs">
       <DependentUpon>HeightFilterForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\AddPropertyDialogWPF.xaml.cs">
+      <DependentUpon>AddPropertyDialogWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SharedUI\ListDialog.xaml.cs">
       <DependentUpon>ListDialog.xaml</DependentUpon>
     </Compile>
@@ -921,6 +924,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Interpreter\PropertyEditorHost.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedUI\AddPropertyDialogWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
