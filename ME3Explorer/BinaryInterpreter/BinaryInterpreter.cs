@@ -97,9 +97,11 @@ Floats*/
 
         int? selectedNodePos;
         private Dictionary<string, string> ME1_TLK_DICT; //TODO: Read TLK for ME1 for Bio2DA
+        //classes that have binary parse code or should show up in generic scan
         public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "Class", "BioStage", "ObjectProperty", "Const",
-               "Enum", "ArrayProperty","FloatProperty", "IntProperty", "BoolProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
-            "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "Model", "Polys", "PrefabInstance" }; //classes that have binary parse code or should show up in generic scan
+            "Enum", "ArrayProperty","FloatProperty", "IntProperty", "BoolProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
+            "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "Model", "Polys", "PrefabInstance",
+            "WwiseStream", "TextureMovie"}; 
 
 
         public BinaryInterpreter()
@@ -288,6 +290,12 @@ Floats*/
                     break;
                 case "SkeletalMesh":
                     StartSkeletalMeshScan();
+                    break;
+                case "WwiseStream":
+                    StartWwiseStreamScan();
+                    break;
+                case "TextureMovie":
+                    StartTextureMovieScan();
                     break;
                 default:
                     StartGenericScan();
@@ -912,6 +920,140 @@ Floats*/
                         Tag = NodeType.StructLeafObject
                     });
                     pos += 4;
+                }
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Nodes.Add(new TreeNode($"Error reading binary data: {ex}"));
+            }
+
+            topLevelTree.Expand();
+            treeView1.Nodes[0].Expand();
+        }
+
+        private void StartTextureMovieScan()
+        {
+            /*
+             *  
+             *  count +4
+             *      stream length in TFC +4
+             *      stream length in TFC +4 (repeat)
+             *      stream offset in TFC +4
+             *  
+             */
+
+            byte[] data = export.Data;
+            TreeNode topLevelTree = new TreeNode($"0000 : {export.ObjectName}")
+            {
+                Tag = NodeType.Root,
+                Name = "0"
+            };
+            treeView1.Nodes.Add(topLevelTree);
+
+            try
+            {
+                int pos = findEndOfProps();
+                int unk1 = BitConverter.ToInt32(data, pos);
+                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Unknown: {unk1}")
+                {
+                    Name = pos.ToString(),
+                });
+                pos += 4;
+                int length = BitConverter.ToInt32(data, pos);
+                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} bik length: {length} (0x{length:X})")
+                {
+                    Name = pos.ToString(),
+                    Tag = NodeType.StructLeafInt
+                });
+                pos += 4;
+                length = BitConverter.ToInt32(data, pos);
+                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} bik length: {length} (0x{length:X})")
+                {
+                    Name = pos.ToString(),
+                    Tag = NodeType.StructLeafInt
+                });
+                pos += 4;
+                int offset = BitConverter.ToInt32(data, pos);
+                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} bik offset in file: {offset} (0x{offset:X})")
+                {
+                    Name = pos.ToString(),
+                    Tag = NodeType.StructLeafInt
+                });
+                pos += 4;
+                if (pos < data.Length && export.GetProperty<NameProperty>("Filename") == null)
+                {
+                    topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} The rest of the binary is the bik.")
+                    {
+                        Name = pos.ToString(),
+                        Tag = NodeType.Unknown
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Nodes.Add(new TreeNode($"Error reading binary data: {ex}"));
+            }
+
+            topLevelTree.Expand();
+            treeView1.Nodes[0].Expand();
+        }
+
+        private void StartWwiseStreamScan()
+        {
+            /*
+             *  
+             *  count +4
+             *      stream length in AFC +4
+             *      stream length in AFC +4 (repeat)
+             *      stream offset in AFC +4
+             *  
+             */
+
+            byte[] data = export.Data;
+            TreeNode topLevelTree = new TreeNode($"0000 : {export.ObjectName}")
+            {
+                Tag = NodeType.Root,
+                Name = "0"
+            };
+            treeView1.Nodes.Add(topLevelTree);
+
+            try
+            {
+                int pos = findEndOfProps();
+                int unk1 = BitConverter.ToInt32(data, pos);
+                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Unknown: {unk1}")
+                {
+                    Name = pos.ToString(),
+                });
+                pos += 4;
+                int length = BitConverter.ToInt32(data, pos);
+                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} stream length: {length} (0x{length:X})")
+                {
+                    Name = pos.ToString(),
+                    Tag = NodeType.StructLeafInt
+                });
+                pos += 4;
+                length = BitConverter.ToInt32(data, pos);
+                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} stream length: {length} (0x{length:X})")
+                {
+                    Name = pos.ToString(),
+                    Tag = NodeType.StructLeafInt
+                });
+                pos += 4;
+                int offset = BitConverter.ToInt32(data, pos);
+                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} stream offset in file: {offset} (0x{offset:X})")
+                {
+                    Name = pos.ToString(),
+                    Tag = NodeType.StructLeafInt
+                });
+                pos += 4;
+                if (pos < data.Length && export.GetProperty<NameProperty>("Filename") == null)
+                {
+                    topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Embedded sound data. Can be extracted with Soundplorer")
+                    {
+                        Name = pos.ToString(),
+                        Tag = NodeType.Unknown
+                    });
                 }
             }
             catch (Exception ex)
