@@ -1,5 +1,6 @@
 ﻿using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
+using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -163,30 +164,38 @@ namespace ME3Explorer
             }
             if (CurrentView == View.Tree)
             {
-                /*listBox1.Visible = false;
-                treeView1.Visible = true;
-                treeView1.Nodes.Clear();
+                LeftSide_ListView.Visibility = Visibility.Collapsed;
+                LeftSide_TreeView.Visibility = Visibility.Visible;
+                LeftSide_TreeView.ItemsSource = null;
+                LeftSide_TreeView.Items.Clear();
+
                 int importsOffset = Exports.Count;
                 int link;
-                List<TreeNode> nodeList = new List<TreeNode>(Exports.Count + imports.Count + 1)
+                List<TreeViewItem> nodeList = new List<TreeViewItem>(Exports.Count + imports.Count + 1)
                 {
-                    new TreeNode(pcc.FileName) { Tag = true }
+                    new TreeViewItem() { Header = pcc.FileName, Tag = true }
                 };
+
+
                 for (int i = 0; i < Exports.Count; i++)
                 {
-                    nodeList.Add(new TreeNode($"(Exp){i} : {Exports[i].ObjectName}({Exports[i].ClassName})")
+                    nodeList.Add(new TreeViewItem()
                     {
-                        Name = i.ToString()
+                        Header = $"(Exp) {i} : {Exports[i].ObjectName}({Exports[i].ClassName})",
+                        Name = $"_{i}" //must start letter or _
                     });
                 }
+
                 for (int i = 0; i < imports.Count; i++)
                 {
-                    nodeList.Add(new TreeNode($"(Imp){i} : {imports[i].ObjectName}({imports[i].ClassName})")
+                    nodeList.Add(new TreeViewItem()
                     {
-                        Name = (-i - 1).ToString()
+                        Header = $"(Imp) {i} : {imports[i].ObjectName}({imports[i].ClassName})",
+                        Name = $"_n{i + 1}" //must start letter or _
                     });
                 }
-                TreeNode node;
+
+                TreeViewItem node;
                 int curIndex;
                 for (int i = 1; i <= Exports.Count; i++)
                 {
@@ -198,10 +207,11 @@ namespace ME3Explorer
                         //Debug.WriteLine(curIndex);
                         curIndex = pcc.getEntry(curIndex).idxLink;
                         link = curIndex >= 0 ? curIndex : (-curIndex + importsOffset);
-                        nodeList[link].Nodes.Add(node);
+                        nodeList[link].Items.Add(node);
                         node = nodeList[link];
                     }
                 }
+
                 for (int i = 1; i <= imports.Count; i++)
                 {
                     node = nodeList[i + importsOffset];
@@ -211,20 +221,19 @@ namespace ME3Explorer
                         node.Tag = true;
                         curIndex = pcc.getEntry(curIndex).idxLink;
                         link = curIndex >= 0 ? curIndex : (-curIndex + importsOffset);
-                        nodeList[link].Nodes.Add(node);
+                        nodeList[link].Items.Add(node);
                         node = nodeList[link];
                     }
                 }
-                treeView1.Nodes.Add(nodeList[0]);
-                treeView1.Nodes[0].Expand();
+                LeftSide_TreeView.Items.Add(nodeList[0]);
+                nodeList[0].IsExpanded = true;
+                /*LeftSide_TreeView.Items[0].Expand();
+                */
             }
             else
             {
-                treeView1.Visible = false;
-                listBox1.Visible = true;
-            }
-            treeView1.EndUpdate();
-            listBox1.EndUpdate();*/
+                LeftSide_ListView.Visibility = Visibility.Visible;
+                LeftSide_TreeView.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -252,17 +261,17 @@ namespace ME3Explorer
         }
         private void NamesView_Click(object sender, RoutedEventArgs e)
         {
-            SetView(View.Tree);
+            SetView(View.Names);
             RefreshView();
         }
         private void ImportsView_Click(object sender, RoutedEventArgs e)
         {
-            SetView(View.Tree);
+            SetView(View.Imports);
             RefreshView();
         }
         private void ExportsView_Click(object sender, RoutedEventArgs e)
         {
-            SetView(View.Tree);
+            SetView(View.Exports);
             RefreshView();
         }
 
@@ -299,9 +308,270 @@ namespace ME3Explorer
             }*/
         }
 
+        public void PreviewInfo(int n)
+        {
+            if (n >= 0)
+            {
+                try
+                {
+                    /*infoHeaderBox.Text = "Export Header";
+                    superclassTextBox.Visible = superclassLabel.Visible = true;
+                    archetypeBox.Visible = label6.Visible = true;
+                    indexBox.Visible = label5.Visible = true;
+                    flagsBox.Visible = label11.Visible = false;
+                    infoExportDataBox.Visible = true;*/
+                    IExportEntry exportEntry = pcc.getExport(n);
+                    InfoTab_Objectname_TextBox.Text = exportEntry.ObjectName;
+                    //IEntry _class = pcc.getEntry(exportEntry.idxClass);
+                    //
+                    if (exportEntry.idxClass != 0)
+                    {
+                        IEntry _class = pcc.getEntry(exportEntry.idxClass);
+                        InfoTab_Class_TextBox.Text = _class.ClassName;
+                    }
+                    else
+                    {
+                        InfoTab_Class_TextBox.Text = "Class";
+                    }
+                    //classNameBox.Text = exportEntry.ClassName; //this seems to override the code directly above?
+                    InfoTab_Superclass_TextBox.Text = exportEntry.ClassParent;
+                    InfoTab_Packagename_TextBox.Text = exportEntry.PackageFullName;
+                    InfoTab_Headersize_TextBox.Text = exportEntry.header.Length + " bytes";
+                    InfoTab_Index_TextBox.Text = exportEntry.indexValue.ToString();
+                    InfoTab_Archetypename_TextBox.Text = exportEntry.ArchtypeName;
+
+                    if (exportEntry.idxArchtype != 0)
+                    {
+                        IEntry archetype = pcc.getEntry(exportEntry.idxArchtype);
+                        InfoTab_Archetypename_TextBox.Text = archetype.PackageFullName + "." + archetype.ObjectName;
+                        InfoTab_Archetypename_TextBox.Text += " (" + (exportEntry.idxArchtype < 0 ? "imported" : "local") + " class) " + exportEntry.idxArchtype;
+                    }
+                    InfoTab_Flags_TextBox.Text = "0x" + exportEntry.ObjectFlags.ToString("X16");
+                    //textBox7.Text = exportEntry.DataSize + " bytes";
+                    //textBox8.Text = "0x" + exportEntry.DataOffset.ToString("X8");
+                    //textBox9.Text = exportEntry.DataOffset.ToString();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("An error occured while attempting to read the header for this export. This indicates there is likely something wrong with the header or its parent header.");
+                }
+            }
+            else
+            {
+                /* n = -n - 1;
+                 infoHeaderBox.Text = "Import Header";
+                 superclassTextBox.Visible = superclassLabel.Visible = false;
+                 archetypeBox.Visible = label6.Visible = false;
+                 indexBox.Visible = label5.Visible = false;
+                 flagsBox.Visible = label11.Visible = false;
+                 infoExportDataBox.Visible = false;
+                 ImportEntry importEntry = pcc.getImport(n);
+                 objectNameBox.Text = importEntry.ObjectName;
+                 classNameBox.Text = importEntry.ClassName;
+                 packageNameBox.Text = importEntry.PackageFullName;
+                 headerSizeBox.Text = ImportEntry.byteSize + " bytes";*/
+            }
+        }
+
+        private bool GetSelected(out int n)
+        {
+            if (CurrentView == View.Tree && LeftSide_TreeView.SelectedItem != null && ((TreeViewItem)LeftSide_TreeView.SelectedItem).Name.StartsWith("_"))
+            {
+                string name = ((TreeViewItem)LeftSide_TreeView.SelectedItem).Name.Substring(1); //get rid of _
+                if (name.StartsWith("n"))
+                {
+                    //its negative
+                    name = $"-{name.Substring(1)}";
+                }
+                n = Convert.ToInt32(name);
+                return true;
+            }
+            else if (CurrentView == View.Exports && LeftSide_ListView.SelectedItem != null)
+            {
+                n = LeftSide_ListView.SelectedIndex;
+                return true;
+            }
+            else if (CurrentView == View.Imports && LeftSide_ListView.SelectedItem != null)
+            {
+                n = -LeftSide_ListView.SelectedIndex - 1;
+                return true;
+            }
+            else
+            {
+                n = 0;
+                return false;
+            }
+        }
+
         public override void handleUpdate(List<PackageUpdate> updates)
         {
             //throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Tree view selected item changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LeftSide_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            Preview();
+        }
+
+        /// <summary>
+        /// Listbox selected item changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LeftSide_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Preview();
+        }
+
+        private void Preview()
+        {
+            if (!GetSelected(out int n))
+            {
+                return;
+            }
+
+            if (CurrentView == View.Imports || CurrentView == View.Exports || CurrentView == View.Tree)
+            {
+                //tabControl1_SelectedIndexChanged(null, null);
+                PreviewInfo(n);
+                Info_HeaderRaw_Hexbox.Stream = new System.IO.MemoryStream(pcc.getEntry(n.ToUnrealIdx()).header);
+                //RefreshMetaData();
+                //export
+                if (n >= 0)
+                {
+                    /*PreviewProps(n);
+                     if (!packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
+                     {
+                         packageEditorTabPane.TabPages.Insert(0, propertiesTab);
+                     }
+                     if (!packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
+                     {
+                         packageEditorTabPane.TabPages.Insert(1, interpreterTab);
+                     }*/
+
+                    IExportEntry exportEntry = pcc.getExport(n);
+                    Script_Tab.Visibility = exportEntry.ClassName == "Function" ? Visibility.Visible : Visibility.Collapsed;
+                    if (exportEntry.ClassName == "Function")
+                    {
+                        /*
+                                                if (!Script_Tab.TabPages.ContainsKey(nameof(scriptTab)))
+                                                {
+                                                    packageEditorTabPane.TabPages.Add(scriptTab);
+                                                }*/
+                        if (pcc.Game == MEGame.ME3)
+                        {
+                            Function func = new Function(exportEntry.Data, pcc);
+                            Script_TextBox.Text = func.ToRawText();
+                        }
+                        else if (pcc.Game == MEGame.ME1)
+                        {
+                            ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(exportEntry.Data, pcc as ME1Package);
+                            try
+                            {
+                                Script_TextBox.Text = func.ToRawText();
+                            }
+                            catch (Exception e)
+                            {
+                                Script_TextBox.Text = "Error parsing function: " + e.Message;
+                            }
+                        }
+                        else
+                        {
+                            Script_TextBox.Text = "Parsing UnrealScript Functions for this game is not supported.";
+                        }
+                    }
+                }
+                /*
+                else if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
+                {
+                    packageEditorTabPane.TabPages.Remove(scriptTab);
+                }
+
+                if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName))
+                {
+                    if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
+                    {
+                        packageEditorTabPane.TabPages.Add(binaryEditorTab);
+                    }
+                }
+                else
+                {
+                    removeBinaryTabPane();
+                }
+
+                if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
+                {
+                    if (!packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
+                    {
+                        packageEditorTabPane.TabPages.Add(bio2daEditorTab);
+                    }
+                }
+                else
+                {
+                    if (packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
+                    {
+                        packageEditorTabPane.TabPages.Remove(bio2daEditorTab);
+                    }
+                }
+
+                //headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.header);
+                if (!isRefresh)
+                {
+                    interpreterControl.export = exportEntry;
+                    interpreterControl.InitInterpreter();
+
+                    if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName))
+                    {
+                        if (exportEntry.ClassName == "Class" && exportEntry.ObjectName.StartsWith("Default__"))
+                        {
+                            //do nothing, this class is not actually a class.
+                            removeBinaryTabPane();
+                        }
+                        else
+                        {
+                            binaryInterpreterControl.export = exportEntry;
+                            binaryInterpreterControl.InitInterpreter();
+                        }
+                    }
+                    if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
+                    {
+                        bio2DAEditor1.export = exportEntry;
+                        bio2DAEditor1.InitInterpreter();
+                    }
+                }
+                UpdateStatusEx(n);
+            }
+            //import
+            else
+            {
+                n = -n - 1;
+                headerRawHexBox.ByteProvider = new DynamicByteProvider(pcc.getImport(n).header);
+                UpdateStatusIm(n);
+                if (packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
+                {
+                    packageEditorTabPane.TabPages.Remove(interpreterTab);
+                }
+                if (packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
+                {
+                    packageEditorTabPane.TabPages.Remove(propertiesTab);
+                }
+                if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
+                {
+                    packageEditorTabPane.TabPages.Remove(scriptTab);
+                }
+                if (packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
+                {
+                    packageEditorTabPane.TabPages.Remove(binaryEditorTab);
+                }
+            }*/
+            }
+        }
+
+
     }
 }

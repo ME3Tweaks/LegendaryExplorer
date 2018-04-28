@@ -5,12 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:global="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
-        Title="Package Editor" Height="450" Width="800">
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+                xmlns:control="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
+                Title="Package Editor" Height="450" Width="800">
     <DockPanel>
         <Menu Height="20" DockPanel.Dock="Top">
             <MenuItem Header="_File   ">
                 <MenuItem Header="_Open" Click="OpenFile_Clicked"/>
                 <MenuItem Header="_Save"/>
+                <MenuItem Header="Save as"/>
+                <MenuItem Header="Open in..."/>
+                <Separator />
+                <MenuItem Header="Recent" IsEnabled="false"/>
             </MenuItem>
             <MenuItem Header="_Edit   ">
                 <MenuItem Header="_Open"/>
@@ -52,17 +58,76 @@
                 <TextBox Name="Goto_TextBox" Width="70"/>
                 <Button Content="Goto #"/>
             </ToolBar>
-            <ListView Name="LeftSide_ListView" Grid.Column="0" Grid.Row="1"/>
+            <ListView Name="LeftSide_ListView" Grid.Column="0" Grid.Row="1"  SelectionChanged="LeftSide_SelectedItemChanged"/>
+            <TreeView Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" SelectedItemChanged="LeftSide_SelectedItemChanged" FontFamily="Consolas"/>
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Grid.Row="1"/>
             <TabControl Grid.Column="2" Grid.Row="1">
-                <TabItem Header="Properties"/>
-                <TabItem Header="Interpreter"/>
-                <TabItem Header="Info"/>
-                <TabItem Header="Metadata Editor"/>
-                <TabItem Header="Header (Raw)"/>
-                <TabItem Header="Bio2DA Viewer"/>
-                <TabItem Header="Binary Interpreter"/>
-                <TabItem Header="Script"/>
+
+                <TabItem Name="Properties_Tab" Header="Properties"/>
+                <TabItem Name="Interpreter_Tab" Header="Interpreter"/>
+                <TabItem Name="Info_Tab"  Header="Info">
+                    <TabItem.Resources>
+                        <System:Int32 x:Key="InfoTab_TopMargins">25</System:Int32>
+                        <System:Int32 x:Key="InfoTab_MaxWidth">600</System:Int32>
+
+                    </TabItem.Resources>
+                    <Grid Margin="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                            <RowDefinition Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                            <RowDefinition Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                            <RowDefinition Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                            <RowDefinition Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                            <RowDefinition Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                            <RowDefinition Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                            <RowDefinition Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="130"/>
+                            <ColumnDefinition Width="1*" MaxWidth="650"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.Resources>
+                            <Style TargetType="{x:Type TextBox}">
+                                <Setter Property="Background" Value="LightSkyBlue" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsReadOnly" Value="True">
+                                        <Setter Property="Background" Value="LightGray" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Resources>
+                        <TextBlock VerticalAlignment="Center" Text="Object Name:" Grid.Row="0" Grid.Column="0"/>
+                        <TextBlock VerticalAlignment="Center" Text="Class:" Grid.Row="1" Grid.Column="0"/>
+                        <TextBlock VerticalAlignment="Center" Text="Superclass:" Grid.Row="2" Grid.Column="0"/>
+                        <TextBlock VerticalAlignment="Center" Text="Package name:" Grid.Row="3" Grid.Column="0"/>
+                        <TextBlock VerticalAlignment="Center" Text="Index:" Grid.Row="4" Grid.Column="0"/>
+                        <TextBlock VerticalAlignment="Center" Text="Archetype name:" Grid.Row="5" Grid.Column="0"/>
+                        <TextBlock VerticalAlignment="Center" Text="Header size:" Grid.Row="6" Grid.Column="0"/>
+                        <TextBlock VerticalAlignment="Center" Text="Flags:" Grid.Row="7" Grid.Column="0"/>
+                        <TextBox Name="InfoTab_Objectname_TextBox" VerticalAlignment="Center" IsEnabled="False" Grid.Row="0" Grid.Column="1" IsReadOnly="true"/>
+                        <TextBox Name="InfoTab_Class_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="1" Grid.Column="1" IsReadOnly="true"/>
+                        <TextBox Name="InfoTab_Superclass_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="2" Grid.Column="1" IsReadOnly="true"/>
+                        <TextBox Name="InfoTab_Packagename_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="3" Grid.Column="1" IsReadOnly="true"/>
+                        <TextBox Name="InfoTab_Index_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="4" Grid.Column="1" IsReadOnly="true"/>
+                        <TextBox Name="InfoTab_Archetypename_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="5" Grid.Column="1" IsReadOnly="true"/>
+                        <TextBox Name="InfoTab_Headersize_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="6" Grid.Column="1" IsReadOnly="true"/>
+                        <TextBox Name="InfoTab_Flags_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="7" Grid.Column="1" IsReadOnly="true"/>
+                    </Grid>
+                </TabItem>
+                <TabItem Name="MetadataEditor_Tab" Header="Metadata Editor"/>
+                <TabItem Name="HeaderRaw_Tab" Header="Header (Raw)">
+                    <DockPanel LastChildFill="True">
+                        <ToolBar DockPanel.Dock="Top">
+                            <Button Content="Save Hex Changes"/>
+                        </ToolBar>
+                        <control:HexEditor Name="Info_HeaderRaw_Hexbox" Width="Auto" Height="Auto"/>
+                    </DockPanel>
+                </TabItem>
+                <TabItem Name="Bio2DAViewer_Tab" Header="Bio2DA Viewer"/>
+                <TabItem Name="BinaryInterpreter_Tab" Header="Binary Interpreter"/>
+                <TabItem Name="Script_Tab" Header="Script">
+                    <TextBox Name="Script_TextBox" TextWrapping="Wrap" Text="if(visible) ShowThis()" IsReadOnly="True" FontFamily="Consolas" Padding="5"/>
+                </TabItem>
 
             </TabControl>
         </Grid>
