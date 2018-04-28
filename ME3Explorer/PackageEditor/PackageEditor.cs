@@ -2060,6 +2060,8 @@ namespace ME3Explorer
                         if (idx > exp.DataOffset && idx < exp.DataOffset + exp.DataSize)
                         {
                             goToNumber(exp.Index);
+                            packageEditorTabPane.SelectedTab = interpreterTab;
+                            interpreterControl.hb1.Select(idx - exp.DataOffset, 1);
                             return;
                         }
                     }
