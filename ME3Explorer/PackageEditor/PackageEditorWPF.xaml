@@ -7,10 +7,15 @@
         mc:Ignorable="d"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
                 xmlns:control="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
-                Title="Package Editor" Height="450" Width="800">
+                Title="Package Editor" Height="530" Width="970">
+    <Window.Resources>
+        <ItemsPanelTemplate x:Key="VSP">
+            <VirtualizingStackPanel/>
+        </ItemsPanelTemplate>
+    </Window.Resources>
     <DockPanel>
         <Menu Height="20" DockPanel.Dock="Top">
-            <MenuItem Header="_File   ">
+            <MenuItem Header="File">
                 <MenuItem Header="_Open" Click="OpenFile_Clicked"/>
                 <MenuItem Header="_Save"/>
                 <MenuItem Header="Save as"/>
@@ -18,17 +23,17 @@
                 <Separator />
                 <MenuItem Header="Recent" IsEnabled="false"/>
             </MenuItem>
-            <MenuItem Header="_Edit   ">
-                <MenuItem Header="_Open"/>
-                <MenuItem Header="_Save"/>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Open"/>
+                <MenuItem Header="Save"/>
             </MenuItem>
-            <MenuItem Header="_Modmaker   ">
-                <MenuItem Header="_Open"/>
-                <MenuItem Header="_Save"/>
+            <MenuItem Header="Modmaker">
+                <MenuItem Header="Open"/>
+                <MenuItem Header="Save"/>
             </MenuItem>
-            <MenuItem Header="_Testing &amp; Debugging">
-                <MenuItem Header="_Open"/>
-                <MenuItem Header="_Save"/>
+            <MenuItem Header="Testing &amp; Debugging">
+                <MenuItem Header="Open"/>
+                <MenuItem Header="Save"/>
             </MenuItem>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
@@ -51,7 +56,7 @@
                 <Button Content="Imports" Height="22" Click="ImportsView_Click"/>
                 <Button Content="Exports" Height="22" Margin="3" Click="ExportsView_Click"/>
                 <Button Content="Tree View"  Height="22" Click="TreeView_Click"/>
-                <ComboBox Name="ClassDropdown_Combobox" Width="70"/>
+                <ComboBox Name="ClassDropdown_Combobox" Width="70" ItemsPanel="{StaticResource VSP}"/>
                 <Button Content="Find"/>
                 <TextBox Name="Search_TextBox" Width="70"/>
                 <Button Content="Search"/>
@@ -65,11 +70,10 @@
 
                 <TabItem Name="Properties_Tab" Header="Properties"/>
                 <TabItem Name="Interpreter_Tab" Header="Interpreter"/>
-                <TabItem Name="Info_Tab"  Header="Info">
+                <TabItem Name="Info_Tab"  Header="Metadata">
                     <TabItem.Resources>
                         <System:Int32 x:Key="InfoTab_TopMargins">25</System:Int32>
                         <System:Int32 x:Key="InfoTab_MaxWidth">600</System:Int32>
-
                     </TabItem.Resources>
                     <Grid Margin="5">
                         <Grid.RowDefinitions>
@@ -88,7 +92,6 @@
                         </Grid.ColumnDefinitions>
                         <Grid.Resources>
                             <Style TargetType="{x:Type TextBox}">
-                                <Setter Property="Background" Value="LightSkyBlue" />
                                 <Style.Triggers>
                                     <Trigger Property="IsReadOnly" Value="True">
                                         <Setter Property="Background" Value="LightGray" />
@@ -104,17 +107,23 @@
                         <TextBlock VerticalAlignment="Center" Text="Archetype name:" Grid.Row="5" Grid.Column="0"/>
                         <TextBlock VerticalAlignment="Center" Text="Header size:" Grid.Row="6" Grid.Column="0"/>
                         <TextBlock VerticalAlignment="Center" Text="Flags:" Grid.Row="7" Grid.Column="0"/>
-                        <TextBox Name="InfoTab_Objectname_TextBox" VerticalAlignment="Center" IsEnabled="False" Grid.Row="0" Grid.Column="1" IsReadOnly="true"/>
-                        <TextBox Name="InfoTab_Class_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="1" Grid.Column="1" IsReadOnly="true"/>
-                        <TextBox Name="InfoTab_Superclass_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="2" Grid.Column="1" IsReadOnly="true"/>
-                        <TextBox Name="InfoTab_Packagename_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="3" Grid.Column="1" IsReadOnly="true"/>
-                        <TextBox Name="InfoTab_Index_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="4" Grid.Column="1" IsReadOnly="true"/>
-                        <TextBox Name="InfoTab_Archetypename_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="5" Grid.Column="1" IsReadOnly="true"/>
+                        <ComboBox Name="InfoTab_Objectname_ComboBox" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" ItemsPanel="{StaticResource VSP}"/>
+                        <ComboBox Name="InfoTab_Class_ComboBox" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" ItemsPanel="{StaticResource VSP}"/>
+                        <!--<TextBox Name="InfoTab_Objectname_TextBox" VerticalAlignment="Center" IsEnabled="False" Grid.Row="0" Grid.Column="1" IsReadOnly="true"/>-->
+                        <!--<TextBox Name="InfoTab_Class_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="1" Grid.Column="1" IsReadOnly="true"/>-->
+                        <!--<TextBox Name="InfoTab_Superclass_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="2" Grid.Column="1" IsReadOnly="true"/>-->
+                        <ComboBox Name="InfoTab_Superclass_ComboBox" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" ItemsPanel="{StaticResource VSP}"/>
+                        <ComboBox Name="InfoTab_PackageLink_ComboBox" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" ItemsPanel="{StaticResource VSP}"/>
+
+                        <!--<TextBox Name="InfoTab_Packagename_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="3" Grid.Column="1" IsReadOnly="true"/>-->
+                        <TextBox Name="InfoTab_Index_TextBox"  VerticalAlignment="Center" Grid.Row="4" Grid.Column="1"/>
+                        <ComboBox Name="InfoTab_Archetype_ComboBox" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" ItemsPanel="{StaticResource VSP}"/>
+
+                        <!--<TextBox Name="InfoTab_Archetypename_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="5" Grid.Column="1" IsReadOnly="true"/>-->
                         <TextBox Name="InfoTab_Headersize_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="6" Grid.Column="1" IsReadOnly="true"/>
                         <TextBox Name="InfoTab_Flags_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="7" Grid.Column="1" IsReadOnly="true"/>
                     </Grid>
                 </TabItem>
-                <TabItem Name="MetadataEditor_Tab" Header="Metadata Editor"/>
                 <TabItem Name="HeaderRaw_Tab" Header="Header (Raw)">
                     <DockPanel LastChildFill="True">
                         <ToolBar DockPanel.Dock="Top">
@@ -128,7 +137,6 @@
                 <TabItem Name="Script_Tab" Header="Script">
                     <TextBox Name="Script_TextBox" TextWrapping="Wrap" Text="if(visible) ShowThis()" IsReadOnly="True" FontFamily="Consolas" Padding="5"/>
                 </TabItem>
-
             </TabControl>
         </Grid>
     </DockPanel>

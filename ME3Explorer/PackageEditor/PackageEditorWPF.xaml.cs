@@ -108,25 +108,29 @@ namespace ME3Explorer
             if (CurrentView == View.Imports)
             {
                 List<string> importsList = new List<string>();
+                int padding = imports.Count.ToString().Length;
+
                 for (int i = 0; i < imports.Count; i++)
                 {
-                    string importStr = i + " (0x" + (pcc.ImportOffset + (i * ImportEntry.byteSize)).ToString("X4") + "): (" + imports[i].PackageFile + ") ";
-                    if (imports[i].PackageFullName != "Class" && imports[i].PackageFullName != "Package")
+                    //" (0x" + (pcc.ImportOffset + (i * ImportEntry.byteSize)).ToString("X4") + ")\
+                    string importStr = $"{ i.ToString().PadLeft(padding, '0')}: {imports[i].GetFullPath}";
+                    /*if (imports[i].PackageFullName != "Class" && imports[i].PackageFullName != "Package")
                     {
                         importStr += imports[i].PackageFullName + ".";
                     }
-                    importStr += imports[i].ObjectName;
+                    importStr += imports[i].ObjectName;*/
                     importsList.Add(importStr);
                 }
-                LeftSide_ListView.Items.Add(importsList);
+                LeftSide_ListView.ItemsSource = importsList;
             }
 
             if (CurrentView == View.Exports)
             {
                 List<string> exps = new List<string>(Exports.Count);
+                int padding = Exports.Count.ToString().Length;
                 for (int i = 0; i < Exports.Count; i++)
                 {
-                    string s = $"{i}:";
+                    string s = $"{i.ToString().PadLeft(padding, '0')}: ";
                     IExportEntry exp = pcc.getExport(i);
                     string PackageFullName = exp.PackageFullName;
                     if (PackageFullName != "Class" && PackageFullName != "Package")
@@ -160,7 +164,7 @@ namespace ME3Explorer
                     }
                     exps.Add(s);
                 }
-                LeftSide_ListView.ItemsSource = exps.ToArray();
+                LeftSide_ListView.ItemsSource = exps;
             }
             if (CurrentView == View.Tree)
             {
@@ -251,6 +255,7 @@ namespace ME3Explorer
             names.Sort();
             ClassDropdown_Combobox.Items.Clear();
             ClassDropdown_Combobox.ItemsSource = names.ToArray();
+            InfoTab_Objectname_ComboBox.ItemsSource = pcc.Names;
         }
 
 
@@ -321,30 +326,78 @@ namespace ME3Explorer
                     flagsBox.Visible = label11.Visible = false;
                     infoExportDataBox.Visible = true;*/
                     IExportEntry exportEntry = pcc.getExport(n);
-                    InfoTab_Objectname_TextBox.Text = exportEntry.ObjectName;
+                    //InfoTab_Objectname_TextBox.Text = exportEntry.ObjectName;
+                    InfoTab_Objectname_ComboBox.SelectedItem = exportEntry.ObjectName;
                     //IEntry _class = pcc.getEntry(exportEntry.idxClass);
                     //
+                    IReadOnlyList<ImportEntry> imports = pcc.Imports;
+
+                    List<string> Classes = new List<string>();
+                    for (int i = imports.Count - 1; i >= 0; i--)
+                    {
+                        Classes.Add($"{-i + 1}: {imports[i].GetFullPath}");
+                    }
+                    Classes.Add("0 : Class");
+                    int count = 1;
+                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                    foreach (IExportEntry exp in Exports)
+                    {
+
+                        Classes.Add($"{count++}: {exp.GetFullPath}");
+                    }
+
                     if (exportEntry.idxClass != 0)
                     {
-                        IEntry _class = pcc.getEntry(exportEntry.idxClass);
-                        InfoTab_Class_TextBox.Text = _class.ClassName;
+                        //IEntry _class = pcc.getEntry(exportEntry.idxClass);
+                        InfoTab_Class_ComboBox.ItemsSource = Classes;
+                        InfoTab_Class_ComboBox.SelectedIndex = exportEntry.idxClass + imports.Count; //make positive
                     }
                     else
                     {
-                        InfoTab_Class_TextBox.Text = "Class";
+                        InfoTab_Class_ComboBox.SelectedIndex = imports.Count; //Class, 0
                     }
                     //classNameBox.Text = exportEntry.ClassName; //this seems to override the code directly above?
-                    InfoTab_Superclass_TextBox.Text = exportEntry.ClassParent;
-                    InfoTab_Packagename_TextBox.Text = exportEntry.PackageFullName;
+                    //InfoTab_Superclass_TextBox.Text = exportEntry.ClassParent;
+                    //InfoTab_Packagename_TextBox.Text = exportEntry.PackageFullName;
+                    InfoTab_Superclass_ComboBox.ItemsSource = Classes;
+                    if (exportEntry.idxClassParent != 0)
+                    {
+                        //IEntry _class = pcc.getEntry(exportEntry.idxClass);
+                        InfoTab_Superclass_ComboBox.SelectedIndex = exportEntry.idxClassParent + imports.Count; //make positive
+                    }
+                    else
+                    {
+                        InfoTab_Superclass_ComboBox.SelectedIndex = imports.Count; //Class, 0
+                    }
+
+                    InfoTab_PackageLink_ComboBox.ItemsSource = Classes;
+                    if (exportEntry.idxLink != 0)
+                    {
+                        //IEntry _class = pcc.getEntry(exportEntry.idxClass);
+                        InfoTab_PackageLink_ComboBox.SelectedIndex = exportEntry.idxLink + imports.Count; //make positive
+                    }
+                    else
+                    {
+                        InfoTab_PackageLink_ComboBox.SelectedIndex = imports.Count; //Class, 0
+                    }
+
                     InfoTab_Headersize_TextBox.Text = exportEntry.header.Length + " bytes";
                     InfoTab_Index_TextBox.Text = exportEntry.indexValue.ToString();
-                    InfoTab_Archetypename_TextBox.Text = exportEntry.ArchtypeName;
+                    //InfoTab_Archetypename_TextBox.Text = exportEntry.ArchtypeName;
 
+                    //if (exportEntry.idxArchtype != 0)
+                    //{
+                    //    InfoTab_Archetypename_TextBox.Text = archetype.PackageFullName + "." + archetype.ObjectName;
+                    //    InfoTab_Archetypename_TextBox.Text += " (" + (exportEntry.idxArchtype < 0 ? "imported" : "local") + " class) " + exportEntry.idxArchtype;
+                    //}
+                    InfoTab_Archetype_ComboBox.ItemsSource = Classes;
                     if (exportEntry.idxArchtype != 0)
                     {
-                        IEntry archetype = pcc.getEntry(exportEntry.idxArchtype);
-                        InfoTab_Archetypename_TextBox.Text = archetype.PackageFullName + "." + archetype.ObjectName;
-                        InfoTab_Archetypename_TextBox.Text += " (" + (exportEntry.idxArchtype < 0 ? "imported" : "local") + " class) " + exportEntry.idxArchtype;
+                        InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.idxArchtype + imports.Count; //make positive
+                    }
+                    else
+                    {
+                        InfoTab_Archetype_ComboBox.SelectedIndex = imports.Count; //Class, 0
                     }
                     InfoTab_Flags_TextBox.Text = "0x" + exportEntry.ObjectFlags.ToString("X16");
                     //textBox7.Text = exportEntry.DataSize + " bytes";

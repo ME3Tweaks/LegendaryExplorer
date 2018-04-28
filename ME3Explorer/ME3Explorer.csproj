@@ -456,14 +456,11 @@
     <Compile Include="SharedUI\AddPropertyDialogWPF.xaml.cs">
       <DependentUpon>AddPropertyDialogWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\ExceptionHandlerDialogWPF.xaml.cs">
+      <DependentUpon>ExceptionHandlerDialogWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SharedUI\ListDialog.xaml.cs">
       <DependentUpon>ListDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="SharedUI\ListWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SharedUI\ListWindow.Designer.cs">
-      <DependentUpon>ListWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Pathfinding Editor\PathfindingNodeInfoPanel.cs">
       <SubType>UserControl</SubType>
@@ -601,7 +598,6 @@
     <Compile Include="SharedUI\PromptDialog.xaml.cs">
       <DependentUpon>PromptDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SharedUI\WinFormInputDialog.cs" />
     <Compile Include="SingleInstance.cs" />
     <Compile Include="Soundplorer\DirectReplace.cs">
       <SubType>Form</SubType>
@@ -952,6 +948,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="SharedUI\ExceptionHandlerDialogWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SharedUI\ListDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1227,9 +1227,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Pathfinding Editor\HeightFilterForm.resx">
       <DependentUpon>HeightFilterForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SharedUI\ListWindow.resx">
-      <DependentUpon>ListWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pathfinding Editor\PathfindingNodeInfoPanel.resx">
       <DependentUpon>PathfindingNodeInfoPanel.cs</DependentUpon>
@@ -1566,6 +1563,7 @@
   <ItemGroup>
     <None Include="Resources\excel.png" />
     <None Include="Resources\excel.gif" />
+    <Resource Include="Resources\error_x.png" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
