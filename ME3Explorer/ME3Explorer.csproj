@@ -832,12 +832,6 @@
     <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.Designer.cs">
       <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUIDCacheEditor\GUIDCacheEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUIDCacheEditor\GUIDCacheEditor.Designer.cs">
-      <DependentUpon>GUIDCacheEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="InterpEditor\InterpEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1138,9 +1132,6 @@
     <EmbeddedResource Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.resx">
       <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUIDCacheEditor\GUIDCacheEditor.resx">
-      <DependentUpon>GUIDCacheEditor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="InterpEditor\InterpEditor.resx">
       <DependentUpon>InterpEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -1431,7 +1422,6 @@
     <Resource Include="Resources\info.ico" />
     <Resource Include="Resources\ImageEngine_icon_64x64.png" />
     <Resource Include="Resources\help-browser.png" />
-    <Resource Include="Resources\GUIDcache_editor_64x64.png" />
     <Resource Include="Resources\fxa_editor_64x64.png" />
     <Resource Include="Resources\folder.png" />
     <Resource Include="Resources\document-save.png" />

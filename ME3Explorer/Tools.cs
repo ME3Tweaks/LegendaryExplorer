@@ -472,19 +472,6 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "GUID Cache Editor",
-                type = typeof(GUIDCacheEditor.GUIDCacheEditor),
-                icon = Application.Current.FindResource("iconGUIDCacheEditor") as ImageSource,
-                open = () =>
-                {
-                    (new GUIDCacheEditor.GUIDCacheEditor()).Show();
-                },
-                tags = new List<string> { "developer" },
-                subCategory = "Other",
-                description = "Allows you to view and edit the GUID Cache files used by Mass Effect 3 DLC. This tool is deprecated and is no longer supported.",
-            });
-            set.Add(new Tool
-            {
                 name = "Binary Interpreter",
                 type = typeof(BinaryInterpreterHost),
                 icon = Application.Current.FindResource("iconInterpreter") as ImageSource,

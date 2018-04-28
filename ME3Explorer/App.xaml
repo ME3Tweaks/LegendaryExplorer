@@ -174,7 +174,6 @@
         <BitmapImage x:Key="iconDialogueEditor" UriSource="Resources/dialogue_editor_64x64.png"/>
         <BitmapImage x:Key="iconFaceFXAnimSetEditor" UriSource="Resources/fxa_editor_64x64.png"/>
         <BitmapImage x:Key="iconFaceFXEditor" UriSource="Resources/facefx_editor_icon.ico"/>
-        <BitmapImage x:Key="iconGUIDCacheEditor" UriSource="Resources/GUIDcache_editor_64x64.png"/>
         <BitmapImage x:Key="iconInterpreter" UriSource="Icons/interpreter_icon.ico"/>
         <BitmapImage x:Key="iconPlaceholder" UriSource="Icons/placeholder_64x64.png"/>
         <BitmapImage x:Key="iconLevelEditor" UriSource="Resources/level_explorer_64x64.png"/>

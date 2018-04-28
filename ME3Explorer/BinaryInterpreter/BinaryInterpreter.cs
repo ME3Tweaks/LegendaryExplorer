@@ -101,7 +101,7 @@ Floats*/
         public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "Class", "BioStage", "ObjectProperty", "Const",
             "Enum", "ArrayProperty","FloatProperty", "IntProperty", "BoolProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
             "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "Model", "Polys", "PrefabInstance",
-            "WwiseStream", "TextureMovie"}; 
+            "WwiseStream", "TextureMovie", "GuidCache"}; 
 
 
         public BinaryInterpreter()
@@ -296,6 +296,9 @@ Floats*/
                     break;
                 case "TextureMovie":
                     StartTextureMovieScan();
+                    break;
+                case "GuidCache":
+                    StartGuidCacheScan();
                     break;
                 default:
                     StartGenericScan();
@@ -987,6 +990,55 @@ Floats*/
                         Name = pos.ToString(),
                         Tag = NodeType.Unknown
                     });
+                }
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Nodes.Add(new TreeNode($"Error reading binary data: {ex}"));
+            }
+
+            topLevelTree.Expand();
+            treeView1.Nodes[0].Expand();
+        }
+
+        private void StartGuidCacheScan()
+        {
+            /*
+             *  
+             *  count +4
+             *      nameentry +8
+             *      guid +16
+             *      
+             */
+
+            byte[] data = export.Data;
+            TreeNode topLevelTree = new TreeNode($"0000 : {export.ObjectName}")
+            {
+                Tag = NodeType.Root,
+                Name = "0"
+            };
+            treeView1.Nodes.Add(topLevelTree);
+
+            try
+            {
+                int pos = findEndOfProps();
+                int count = BitConverter.ToInt32(data, pos);
+                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} count: {count}")
+                {
+                    Name = pos.ToString(),
+                });
+                pos += 4;
+                for (int i = 0; i < count && pos < data.Length; i++)
+                {
+                    int nameRef = BitConverter.ToInt32(data, pos);
+                    int nameIdx = BitConverter.ToInt32(data, pos + 4);
+                    Guid guid = new Guid(data.Skip(pos + 8).Take(16).ToArray());
+                    topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} {pcc.getNameEntry(nameRef)}_{nameIdx}: {{{guid}}}")
+                    {
+                        Name = pos.ToString(),
+                        Tag = NodeType.StructLeafName
+                    });
+                    pos += 24;
                 }
             }
             catch (Exception ex)
