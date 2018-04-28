@@ -113,16 +113,6 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap coalesced_editor_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("coalesced_editor_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap conditionals_editor_64x64 {
             get {
                 object obj = ResourceManager.GetObject("conditionals_editor_64x64", resourceCulture);
@@ -343,16 +333,6 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap pathfinding_editor {
-            get {
-                object obj = ResourceManager.GetObject("pathfinding_editor", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap pcc_repacker_64x64 {
             get {
                 object obj = ResourceManager.GetObject("pcc_repacker_64x64", resourceCulture);
@@ -480,7 +460,8 @@ namespace ME3Explorer.Properties {
         ///	float4x4 model;
         ///};
         ///
-        ///Texture2D tex : regist [rest of string was truncated]&quot;;.
+        ///Texture2D tex : register(t0);
+        ///SamplerState samstate [rest of string was truncated]&quot;;.
         /// </summary>
         public static string StandardShader {
             get {

@@ -495,11 +495,6 @@
     <Compile Include="Packages\ImportEntry.cs" />
     <Compile Include="Packages\ME1Package.cs" />
     <Compile Include="Packages\ME2Package.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Property Dumper\PropDumper.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1442,7 +1437,6 @@
     <Resource Include="Resources\document-save.png" />
     <Resource Include="Resources\dialogue_editor_64x64.png" />
     <Resource Include="Resources\conditionals_editor_64x64.png" />
-    <Resource Include="Resources\coalesced_editor_64x64.png" />
     <Resource Include="Resources\class_viewer_64x64.png" />
     <Resource Include="Resources\camera_tool_64x64.png" />
     <Resource Include="Resources\asset_explorer_64x64.png" />
@@ -1552,18 +1546,15 @@
     <Resource Include="Resources\audio_editor_icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\iconPathfindingEditor.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\iconPathfindingEditor.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\pathfinding_editor.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\excel.png" />
     <None Include="Resources\excel.gif" />
     <Resource Include="Resources\error_x.png" />
+    <Resource Include="Resources\bik_tool.ico" />
+    <Resource Include="Resources\bik_tool_64.png" />
+    <Resource Include="Resources\coalesced_editor_64.png" />
+    <Resource Include="Resources\coalesced_editor_newB.ico" />
+    <Resource Include="Resources\path_editor.ico" />
+    <Resource Include="Resources\path_editor_64.png" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

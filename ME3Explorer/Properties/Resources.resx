@@ -199,9 +199,6 @@
   <data name="autotoc_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\autotoc_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="coalesced_editor_64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\coalesced_editor_64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="info" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\info.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -243,9 +240,6 @@
   </data>
   <data name="hexconverter_icon64x64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\hexconverter_icon64x64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="pathfinding_editor" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\pathfinding_editor.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="StandardShader" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Scene3D\StandardShader.hlsl;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
