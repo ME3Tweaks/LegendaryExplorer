@@ -1019,7 +1019,7 @@ namespace ME3Explorer
             File.WriteAllLines(path, RFiles);
         }
 
-        private void RefreshRecent(bool propogate, List<string> recents = null)
+        public void RefreshRecent(bool propogate, List<string> recents = null)
         {
             if (propogate && recents != null)
             {

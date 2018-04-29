@@ -7,21 +7,37 @@
         mc:Ignorable="d"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
                 xmlns:control="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
+                xmlns:sharedui="clr-namespace:ME3Explorer.SharedUI"
                 Title="Package Editor" Height="530" Width="970">
     <Window.Resources>
         <ItemsPanelTemplate x:Key="VSP">
             <VirtualizingStackPanel/>
         </ItemsPanelTemplate>
     </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"></CommandBinding>
+        <CommandBinding Command="Save" Executed="SaveCommandBinding_Executed"></CommandBinding>
+        <CommandBinding Command="SaveAs" Executed="SaveAsCommandBinding_Executed"></CommandBinding>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="O" Modifiers="Control" Command="Open"></KeyBinding>
+        <KeyBinding Key="S" Modifiers="Control" Command="Save"></KeyBinding>
+        <KeyBinding Key="S" Modifiers="Control+Shift" Command="SaveAs"></KeyBinding>
+    </Window.InputBindings>
     <DockPanel>
-        <Menu Height="20" DockPanel.Dock="Top">
+        <Menu Padding="4" DockPanel.Dock="Top">
             <MenuItem Header="File">
-                <MenuItem Header="_Open" Click="OpenFile_Clicked"/>
-                <MenuItem Header="_Save"/>
-                <MenuItem Header="Save as"/>
-                <MenuItem Header="Open in..."/>
+                <MenuItem Header="_Open" Command="Open" InputGestureText="Ctrl+O"/>
+                <MenuItem Header="_Save"  Command="Save" InputGestureText="Ctrl+S"/>
+                <MenuItem Header="Save as" Command="SaveAs" InputGestureText="Ctrl+Shift+S"/>
+                <MenuItem Header="Open in...">
+                    <MenuItem Header="Dialogue Editor"/>
+                    <MenuItem Header="FaceFX Editor"/>
+                    <MenuItem Header="Pathfinding Editor"/>
+                    <MenuItem Header="Sequence Editor"/>
+                </MenuItem>
                 <Separator />
-                <MenuItem Header="Recent" IsEnabled="false"/>
+                <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
             </MenuItem>
             <MenuItem Header="Edit">
                 <MenuItem Header="Open"/>
@@ -64,12 +80,14 @@
                 <Button Content="Goto #"/>
             </ToolBar>
             <ListView Name="LeftSide_ListView" Grid.Column="0" Grid.Row="1"  SelectionChanged="LeftSide_SelectedItemChanged"/>
-            <TreeView Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" SelectedItemChanged="LeftSide_SelectedItemChanged" FontFamily="Consolas"/>
+            <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" TreeViewItem.Selected="LeftSide_SelectedItemChanged" FontFamily="Consolas"/>
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Grid.Row="1"/>
             <TabControl Grid.Column="2" Grid.Row="1">
 
                 <TabItem Name="Properties_Tab" Header="Properties"/>
-                <TabItem Name="Interpreter_Tab" Header="Interpreter"/>
+                <TabItem Name="Interpreter_Tab" Header="Interpreter">
+                    <global:InterpreterWPF x:Name="InterpreterTab_Interpreter"/>
+                </TabItem>
                 <TabItem Name="Info_Tab"  Header="Metadata">
                     <TabItem.Resources>
                         <System:Int32 x:Key="InfoTab_TopMargins">25</System:Int32>
@@ -126,7 +144,7 @@
                 </TabItem>
                 <TabItem Name="HeaderRaw_Tab" Header="Header (Raw)">
                     <DockPanel LastChildFill="True">
-                        <ToolBar DockPanel.Dock="Top">
+                        <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True" >
                             <Button Content="Save Hex Changes"/>
                         </ToolBar>
                         <control:HexEditor Name="Info_HeaderRaw_Hexbox" Width="Auto" Height="Auto"/>

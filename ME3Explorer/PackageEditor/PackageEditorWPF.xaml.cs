@@ -1,9 +1,12 @@
 ﻿using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,33 +39,27 @@ namespace ME3Explorer
 
         public static readonly string PackageEditorDataFolder = System.IO.Path.Combine(App.AppDataFolder, @"PackageEditor\");
         private readonly string RECENTFILES_FILE = "RECENTFILES";
+        public List<string> RFiles;
         private string currentFile;
         private List<int> ClassNames;
 
         public PackageEditorWPF()
         {
-            CurrentView = View.Exports;
+            CurrentView = View.Tree;
             InitializeComponent();
+
+            LoadRecentList();
+            RefreshRecent(false);
         }
 
         private void OpenFile_Clicked(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
-            bool? result = d.ShowDialog();
-            if (result.HasValue && result.Value)
-            {
-                try
-                {
-                    LoadFile(d.FileName);
-                    //AddRecent(d.FileName, false);
-                    //SaveRecentList();
-                    //RefreshRecent(true, RFiles);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Unable to open file:\n" + ex.Message);
-                }
-            }
+            OpenFile();
+        }
+
+        private void OpenFile()
+        {
+
         }
 
         private void LoadFile(string s)
@@ -88,6 +85,120 @@ namespace ME3Explorer
             }
         }
 
+        private void LoadRecentList()
+        {
+            Recents_MenuItem.IsEnabled = false;
+            RFiles = new List<string>();
+            RFiles.Clear();
+            string path = PackageEditorDataFolder + RECENTFILES_FILE;
+            if (File.Exists(path))
+            {
+                string[] recents = File.ReadAllLines(path);
+                foreach (string recent in recents)
+                {
+                    if (File.Exists(recent))
+                    {
+                        AddRecent(recent, true);
+                    }
+                }
+            }
+        }
+
+        private void SaveRecentList()
+        {
+            if (!Directory.Exists(PackageEditorDataFolder))
+            {
+                Directory.CreateDirectory(PackageEditorDataFolder);
+            }
+            string path = PackageEditorDataFolder + RECENTFILES_FILE;
+            if (File.Exists(path))
+                File.Delete(path);
+            File.WriteAllLines(path, RFiles);
+        }
+
+        private void RefreshRecent(bool propogate, List<string> recents = null)
+        {
+            if (propogate && recents != null)
+            {
+                //we are posting an update to other instances of packed
+
+                //This code can be removed when non-WPF package editor is removed.
+                var forms = System.Windows.Forms.Application.OpenForms;
+                foreach (System.Windows.Forms.Form form in forms)
+                {
+                    if (form is PackageEditor) //it will never be "this"
+                    {
+                        ((PackageEditor)form).RefreshRecent(false, RFiles);
+                    }
+                }
+                foreach (var form in App.Current.Windows)
+                {
+                    if (form is PackageEditorWPF && this != form)
+                    {
+                        ((PackageEditorWPF)form).RefreshRecent(false, RFiles);
+                    }
+                }
+            }
+            else if (recents != null)
+            {
+                //we are receiving an update
+                RFiles = new List<string>(recents);
+            }
+            Recents_MenuItem.Items.Clear();
+            if (RFiles.Count <= 0)
+            {
+                Recents_MenuItem.IsEnabled = false;
+                return;
+            }
+            Recents_MenuItem.IsEnabled = true;
+
+
+            foreach (string filepath in RFiles)
+            {
+                MenuItem fr = new MenuItem()
+                {
+                    Header = filepath,
+                    Tag = filepath
+                };
+                fr.Click += RecentFile_click;
+                Recents_MenuItem.Items.Add(fr);
+            }
+        }
+
+        private void RecentFile_click(object sender, EventArgs e)
+        {
+            string s = ((MenuItem)sender).Tag.ToString();
+            if (File.Exists(s))
+            {
+                LoadFile(s);
+                AddRecent(s, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
+            }
+            else
+            {
+                MessageBox.Show("File does not exist: " + s);
+            }
+        }
+
+        public void AddRecent(string s, bool loadingList)
+        {
+            RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            if (loadingList)
+            {
+                RFiles.Add(s); //in order
+            }
+            else
+            {
+                RFiles.Insert(0, s); //put at front
+            }
+            if (RFiles.Count > 10)
+            {
+                RFiles.RemoveRange(10, RFiles.Count - 10);
+            }
+            Recents_MenuItem.IsEnabled = true;
+        }
+
         private void RefreshView()
         {
             if (pcc == null)
@@ -96,8 +207,7 @@ namespace ME3Explorer
             }
             //listBox1.BeginUpdate();
             //treeView1.BeginUpdate();
-            LeftSide_ListView.ItemsSource = null;
-            LeftSide_ListView.Items.Clear();
+            ClearList(LeftSide_ListView);
             IReadOnlyList<ImportEntry> imports = pcc.Imports;
             IReadOnlyList<IExportEntry> Exports = pcc.Exports;
             if (CurrentView == View.Names)
@@ -170,8 +280,7 @@ namespace ME3Explorer
             {
                 LeftSide_ListView.Visibility = Visibility.Collapsed;
                 LeftSide_TreeView.Visibility = Visibility.Visible;
-                LeftSide_TreeView.ItemsSource = null;
-                LeftSide_TreeView.Items.Clear();
+                ClearList(LeftSide_TreeView);
 
                 int importsOffset = Exports.Count;
                 int link;
@@ -195,7 +304,7 @@ namespace ME3Explorer
                     nodeList.Add(new TreeViewItem()
                     {
                         Header = $"(Imp) {i} : {imports[i].ObjectName}({imports[i].ClassName})",
-                        Name = $"_n{i + 1}" //must start letter or _
+                        Name = $"_n{i + 1}" //must start letter or _,
                     });
                 }
 
@@ -239,6 +348,7 @@ namespace ME3Explorer
                 LeftSide_ListView.Visibility = Visibility.Visible;
                 LeftSide_TreeView.Visibility = Visibility.Collapsed;
             }
+
         }
 
         public void InitStuff()
@@ -249,15 +359,30 @@ namespace ME3Explorer
             IReadOnlyList<IExportEntry> Exports = pcc.Exports;
             for (int i = 0; i < Exports.Count; i++)
             {
-                ClassNames.Add(Exports[i].idxClass);
+                ClassNames.Add(Exports[i].idxClass); //This can probably be linq'd
             }
             List<string> names = ClassNames.Distinct().Select(pcc.getObjectName).ToList();
             names.Sort();
-            ClassDropdown_Combobox.Items.Clear();
+            ClearList(ClassDropdown_Combobox);
             ClassDropdown_Combobox.ItemsSource = names.ToArray();
             InfoTab_Objectname_ComboBox.ItemsSource = pcc.Names;
         }
 
+        /// <summary>
+        /// Clears the itemsource or items property of the passed in control.
+        /// </summary>
+        /// <param name="control">ItemsControl to clear all entries from.</param>
+        private void ClearList(ItemsControl control)
+        {
+            if (control.ItemsSource != null)
+            {
+                control.ItemsSource = null;
+            }
+            else
+            {
+                control.Items.Clear();
+            }
+        }
 
         private void TreeView_Click(object sender, RoutedEventArgs e)
         {
@@ -466,7 +591,7 @@ namespace ME3Explorer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void LeftSide_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void LeftSide_SelectedItemChanged(object sender, RoutedEventArgs e)
         {
             Preview();
         }
@@ -479,14 +604,16 @@ namespace ME3Explorer
         private void LeftSide_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
             Preview();
+            e.Handled = true;
         }
 
-        private void Preview()
+        private void Preview(bool isRefresh = false)
         {
             if (!GetSelected(out int n))
             {
                 return;
             }
+            Debug.WriteLine("New selection: " + n);
 
             if (CurrentView == View.Imports || CurrentView == View.Exports || CurrentView == View.Tree)
             {
@@ -538,93 +665,130 @@ namespace ME3Explorer
                             Script_TextBox.Text = "Parsing UnrealScript Functions for this game is not supported.";
                         }
                     }
-                }
-                /*
-                else if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
-                {
-                    packageEditorTabPane.TabPages.Remove(scriptTab);
-                }
 
-                if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName))
-                {
-                    if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
+                    /*
+                    else if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
                     {
-                        packageEditorTabPane.TabPages.Add(binaryEditorTab);
+                        packageEditorTabPane.TabPages.Remove(scriptTab);
                     }
-                }
-                else
-                {
-                    removeBinaryTabPane();
-                }
-
-                if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
-                {
-                    if (!packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
-                    {
-                        packageEditorTabPane.TabPages.Add(bio2daEditorTab);
-                    }
-                }
-                else
-                {
-                    if (packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
-                    {
-                        packageEditorTabPane.TabPages.Remove(bio2daEditorTab);
-                    }
-                }
-
-                //headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.header);
-                if (!isRefresh)
-                {
-                    interpreterControl.export = exportEntry;
-                    interpreterControl.InitInterpreter();
 
                     if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName))
                     {
-                        if (exportEntry.ClassName == "Class" && exportEntry.ObjectName.StartsWith("Default__"))
+                        if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
                         {
-                            //do nothing, this class is not actually a class.
-                            removeBinaryTabPane();
+                            packageEditorTabPane.TabPages.Add(binaryEditorTab);
+                        }
+                    }
+                    else
+                    {
+                        removeBinaryTabPane();
+                    }
+
+                    if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
+                    {
+                        if (!packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
+                        {
+                            packageEditorTabPane.TabPages.Add(bio2daEditorTab);
+                        }
+                    }
+                    else
+                    {
+                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
+                        {
+                            packageEditorTabPane.TabPages.Remove(bio2daEditorTab);
+                        }
+                    }
+
+                    //headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.header);*/
+                    if (!isRefresh)
+                    {
+                        InterpreterTab_Interpreter.loadNewExport(exportEntry);
+                        //interpreterControl.export = exportEntry;
+                        //interpreterControl.InitInterpreter();
+
+                        if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName))
+                        {
+                            if (exportEntry.ClassName == "Class" && exportEntry.ObjectName.StartsWith("Default__"))
+                            {
+                                //do nothing, this class is not actually a class.
+                                BinaryInterpreter_Tab.Visibility = Visibility.Visible;
+                            }
+                            else
+                            {
+                                //binaryInterpreterControl.export = exportEntry;
+                                //binaryInterpreterControl.InitInterpreter();
+                                BinaryInterpreter_Tab.Visibility = Visibility.Collapsed;
+
+                            }
+                        }
+                        if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
+                        {
+                            Bio2DAViewer_Tab.Visibility = Visibility.Visible;
+                            //bio2DAEditor1.export = exportEntry;
+                            //bio2DAEditor1.InitInterpreter();
                         }
                         else
                         {
-                            binaryInterpreterControl.export = exportEntry;
-                            binaryInterpreterControl.InitInterpreter();
+                            Bio2DAViewer_Tab.Visibility = Visibility.Collapsed;
                         }
                     }
-                    if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
-                    {
-                        bio2DAEditor1.export = exportEntry;
-                        bio2DAEditor1.InitInterpreter();
-                    }
                 }
-                UpdateStatusEx(n);
-            }
-            //import
-            else
-            {
-                n = -n - 1;
-                headerRawHexBox.ByteProvider = new DynamicByteProvider(pcc.getImport(n).header);
-                UpdateStatusIm(n);
-                if (packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
+                //import
+                else
                 {
-                    packageEditorTabPane.TabPages.Remove(interpreterTab);
+                    /*   n = -n - 1;
+                       headerRawHexBox.ByteProvider = new DynamicByteProvider(pcc.getImport(n).header);
+                       UpdateStatusIm(n);
+                       if (packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
+                       {
+                           packageEditorTabPane.TabPages.Remove(interpreterTab);
+                       }
+                       if (packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
+                       {
+                           packageEditorTabPane.TabPages.Remove(propertiesTab);
+                       }
+                       if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
+                       {
+                           packageEditorTabPane.TabPages.Remove(scriptTab);
+                       }
+                       if (packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
+                       {
+                           packageEditorTabPane.TabPages.Remove(binaryEditorTab);
+                       }
+                   }
+                   */
                 }
-                if (packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
-                {
-                    packageEditorTabPane.TabPages.Remove(propertiesTab);
-                }
-                if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
-                {
-                    packageEditorTabPane.TabPages.Remove(scriptTab);
-                }
-                if (packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
-                {
-                    packageEditorTabPane.TabPages.Remove(binaryEditorTab);
-                }
-            }*/
             }
         }
 
+        private void OpenCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
+            bool? result = d.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                try
+                {
+                    LoadFile(d.FileName);
+                    AddRecent(d.FileName, false);
+                    SaveRecentList();
+                    RefreshRecent(true, RFiles);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to open file:\n" + ex.Message);
+                }
+            }
+        }
 
+        private void SaveCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            //save();
+        }
+
+        private void SaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            //saveAs();
+        }
     }
 }
