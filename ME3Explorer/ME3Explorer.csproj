@@ -854,12 +854,6 @@
     <Compile Include="Interpreter\InterpreterHost.Designer.cs">
       <DependentUpon>InterpreterHost.cs</DependentUpon>
     </Compile>
-    <Compile Include="LevelExplorer\Levelbase.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LevelExplorer\Levelbase.Designer.cs">
-      <DependentUpon>Levelbase.cs</DependentUpon>
-    </Compile>
     <Compile Include="LevelExplorer\LevelEditor\Leveleditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1149,9 +1143,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Interpreter\InterpreterHost.resx">
       <DependentUpon>InterpreterHost.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LevelExplorer\Levelbase.resx">
-      <DependentUpon>Levelbase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LevelExplorer\LevelEditor\Leveleditor.resx">
       <DependentUpon>Leveleditor.cs</DependentUpon>

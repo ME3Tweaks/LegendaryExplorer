@@ -220,18 +220,6 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Level Database",
-                type = typeof(LevelExplorer.Levelbase),
-                icon = Application.Current.FindResource("iconLevelDatabase") as ImageSource,
-                open = () =>
-                {
-                    (new LevelExplorer.Levelbase()).Show();
-                },
-                tags = new List<string> { "utility" },
-                subCategory = "Databases",
-            });
-            set.Add(new Tool
-            {
                 name = "Meshplorer",
                 type = typeof(Meshplorer.Meshplorer),
                 icon = Application.Current.FindResource("iconMeshplorer") as ImageSource,
