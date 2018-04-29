@@ -1433,12 +1433,6 @@ namespace ME3Explorer
                 }
             }
         }
-
-        private void reloadTLKListToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ME3TalkFiles.ReloadTLKData();
-            MessageBox.Show(this, "TLKs have been reloaded.", "TLK list reloaded");
-        }
     }
 
     public class ZoomController
