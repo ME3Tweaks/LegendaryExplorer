@@ -37,6 +37,8 @@ namespace ME3Explorer
 
     public static class Tools
     {
+        //has an invisible no width space at the beginning so it will sort last
+        private const string other = "⁣Other";
         private static HashSet<Tool> items;
 
         private static readonly string FavoritesPath = Path.Combine(App.AppDataFolder, "Favorites.JSON");
@@ -79,7 +81,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "user", "utility", ".mod", "mod", "mesh" },
                 subCategory = "Mod Packagers",
-                description = "ModMaker is a tool used to create and install files with the \".mod\" extension. MOD files are compatible with ME3 and may be packaged with meshes and other game resources.\n\nAttention: Installation of textures via MOD files is deprecated. Use MM to extract any textures, then install them with TPF Tools, instead."
+                description = "ModMaker is used to create and install files with the \".mod\" extension. MOD files are compatible with ME3 and may be packaged with meshes and other game resources.\n\nAttention: Installation of textures via MOD files is deprecated. Use MM to extract any textures, then install them with TPF Tools, instead."
             });
             set.Add(new Tool
             {
@@ -106,7 +108,7 @@ namespace ME3Explorer
                 {
                     (new AnimationExplorer.AnimationExplorer()).Show();
                 },
-                tags = new List<string> { "utility", "animation", "gesture", "bones" },
+                tags = new List<string> { "utility", "animation", "gesture", "bone" },
                 subCategory = "Explorers",
             });
             set.Add(new Tool
@@ -120,7 +122,7 @@ namespace ME3Explorer
                     assExp.Show();
                     assExp.LoadMe();
                 },
-                tags = new List<string> { "utility", "novice", "friendly", "user-friendly" },
+                tags = new List<string> { "utility", "novice", "friendly", "user-friendly", "new", "help" },
                 subCategory = "Explorers",
                 description = "Asset Explorer is a useful utility for newcomers to modding Mass Effect. It allows for the browsing of ME3 PCC files via a somewhat user-friendly GUI.\n\nAttention: this tool is in archival state and may contain features that no longer function.",
             });
@@ -135,7 +137,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "afc", "music", "ogg", "wav", "sound", "dialogue" },
                 subCategory = "Extractors + Repackers",
-                description = "Audio Extractor is a utility that extracts sound data from ME3 AFC files."
+                description = "Audio Extractor extracts sound data from ME3 AFC files."
             });
             set.Add(new Tool
             {
@@ -164,6 +166,19 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "Coalesced Editor",
+                type = typeof(MassEffect3.CoalesceTool.CoalescedEditor),
+                icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,
+                open = () =>
+                {
+                    (new MassEffect3.CoalesceTool.CoalescedEditor()).Show();
+                },
+                tags = new List<string> { "utility", "coal", "ini", "bin" },
+                subCategory = "Extractors + Repackers",
+                description = "Coalesced Editor converts between XML and BIN formats for ME3's coalesced files. These are key game files that help control a large amount of content.",
+            });
+            set.Add(new Tool
+            {
                 name = "Hex Converter",
                 type = typeof(HexConverter.Hexconverter),
                 icon = Application.Current.FindResource("iconHexConverter") as ImageSource,
@@ -173,7 +188,7 @@ namespace ME3Explorer
                     if (File.Exists(loc + "\\HexConverter.exe"))
                         Process.Start(loc + "\\HexConverter.exe");
                 },
-                tags = new List<string> { "utility", "code", "endian" },
+                tags = new List<string> { "utility", "code", "endian", "convert", "integer", "float" },
                 subCategory = "Converters",
                 description = "Hex Converter is a utility that converts among floats, signed/unsigned integers, and hex code in big/little endian.",
             });
@@ -199,7 +214,7 @@ namespace ME3Explorer
                 {
                     (new Matinee.InterpEditor()).Show();
                 },
-                tags = new List<string> { "utility", "dialogue", "matinee", "cutscene", "animcutscene" },
+                tags = new List<string> { "utility", "dialogue", "matinee", "cutscene", "animcutscene", "interpdata" },
                 subCategory = "Explorers",
                 description = "Interp Viewer is a simplified version of UDK’s Matinee Editor. It loads interpdata objects and displays their children as tracks on a timeline, allowing the user to visualize the game content associated with a specific scene.\n\nAttention: This tool is a utility; editing is not yet supported."
             });
@@ -226,6 +241,33 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "mesh" },
                 subCategory = "Meshes + Textures",
+                description = "Meshplorer loads and displays all meshes within a database or level. The tool skins most meshes with its associated texture. A variety of view options including solid and wireframe are available.",
+            });
+            set.Add(new Tool
+            {
+                name = "ME3 + ME2 TLK Editor",
+                type = typeof(TLKEditor),
+                icon = Application.Current.FindResource("iconTLKEditorME23") as ImageSource,
+                open = () =>
+                {
+                    (new TLKEditor()).Show();
+                },
+                tags = new List<string> { "utility", "dialogue", "subtitle", "text" },
+                subCategory = "Extractors + Repackers",
+                description = "TLK Editor converts between XML and TLK formats, allowing users to edit the display of all game text in ME2 and ME3. Edits to XML files must be done in an external editor, such as Notepad++.",
+            });
+            set.Add(new Tool
+            {
+                name = "ME1 TLK Editor",
+                type = typeof(TlkManager),
+                icon = Application.Current.FindResource("iconTLKEditorME1") as ImageSource,
+                open = () =>
+                {
+                    (new ME1Explorer.TlkManager(true)).Show();
+                },
+                tags = new List<string> { "utility", "dialogue", "subtitle", "text" },
+                subCategory = "Extractors + Repackers",
+                description = "ME1 TLK Editor extracts and repackages TLK data, allowing users to edit the display of all game text in ME1. Extracted data is stored in XML format and must be edited with an external program, such as Notepad++.",
             });
             set.Add(new Tool
             {
@@ -236,7 +278,7 @@ namespace ME3Explorer
                 {
                     (new PCCRepack()).Show();
                 },
-                tags = new List<string> { "utility", "compress", "decompress" },
+                tags = new List<string> { "utility", "compress", "decompress", "pack", "unpack" },
                 subCategory = "Extractors + Repackers",
                 description = "PCC Repacker allows you to compress and decompress PCC files.",
 
@@ -250,9 +292,9 @@ namespace ME3Explorer
                 {
                     (new PlotVarDB.PlotVarDB()).Show();
                 },
-                tags = new List<string> { "utility", "bool", "boolean", "flag", "int", "integer" },
+                tags = new List<string> { "utility", "bool", "boolean", "flag", "int", "integer", "id" },
                 subCategory = "Databases",
-                description = "Plot Database is a cross-game utility used to store story data associated with plot IDs. The tool comes pre-loaded with a default .db file that can be customized by the user. Never look up a plot bool or integer again!",
+                description = "Plot Database is a cross-game utility used to store plot IDs for reference. The tool comes pre-loaded with a default .db file that can be customized by the user. Never look up a plot bool or integer again!",
             });
             set.Add(new Tool
             {
@@ -323,9 +365,9 @@ namespace ME3Explorer
                 {
                     (new ScriptDB.ScriptDB()).Show();
                 },
-                tags = new List<string> { "utility" },
+                tags = new List<string> { "utility", "unreal" },
                 subCategory = "Databases",
-                description = "Script Database can be used to quickly find UnrealScript exports across multiple files for Mass Effect 3. This tool is deprecated and is no longer supported.",
+                description = "Script Database is used to locate UnrealScript exports across multiple files for ME3. This tool is deprecated and is no longer supported.",
             });
             set.Add(new Tool
             {
@@ -357,29 +399,11 @@ namespace ME3Explorer
             //});
             set.Add(new Tool
             {
-                name = "Coalesced Editor",
-                type = typeof(MassEffect3.CoalesceTool.CoalescedEditor),
-                icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,
-                open = () =>
-                {
-                    (new MassEffect3.CoalesceTool.CoalescedEditor()).Show();
-                },
-                tags = new List<string> { "developer", "coal", "ini", "bin" },
-                subCategory = "Core",
-                description = "Coalesced Editor converts between xml and bin formats for ME3 Coalesced.bin files for the base game and DLC. These are key game files that help control a large amount of content.",
-            });
-            set.Add(new Tool
-            {
-                name = "Pathfinding Editor",
-                type = typeof(PathfindingEditor),
-                icon = Application.Current.FindResource("iconPathfindingEditor") as ImageSource,
-                open = () =>
-                {
-                    (new PathfindingEditor()).Show();
-                },
-                tags = new List<string> { "developer", "path", "mesh", "ai" },
-                subCategory = "Core",
-                description = "Pathfinding Editor allows you to modify pathing nodes so squadmates and enemies can move around a map. You can also edit placement of several different types of level objects such as StaticMeshes, Splines, and more.",
+                name = "Binary Interpreter",
+                type = typeof(BinaryInterpreterHost),
+                icon = Application.Current.FindResource("iconInterpreter") as ImageSource,
+                tags = new List<string>(),
+                subCategory = other,
             });
             set.Add(new Tool
             {
@@ -393,6 +417,14 @@ namespace ME3Explorer
                 tags = new List<string> { "developer", "conditional", "plot", "boolean", "flag", "int", "integer", "cnd" },
                 subCategory = "Core",
                 description = "Conditionals Editor is used to create and edit ME3 files with the .cnd extension. CND files control game story by checking for specific combinations of plot events.",
+            });
+            set.Add(new Tool
+            {
+                name = "Curve Editor",
+                type = typeof(CurveEd.CurveEditor),
+                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+                tags = new List<string>(),
+                subCategory = other,
             });
             set.Add(new Tool
             {
@@ -472,27 +504,11 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Binary Interpreter",
-                type = typeof(BinaryInterpreterHost),
-                icon = Application.Current.FindResource("iconInterpreter") as ImageSource,
-                tags = new List<string>(),
-                subCategory = "Other",
-            });
-            set.Add(new Tool
-            {
                 name = "Interpreter",
                 type = typeof(InterpreterHost),
                 icon = Application.Current.FindResource("iconInterpreter") as ImageSource,
                 tags = new List<string>(),
-                subCategory = "Other",
-            });
-            set.Add(new Tool
-            {
-                name = "Curve Editor",
-                type = typeof(CurveEd.CurveEditor),
-                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
-                tags = new List<string>(),
-                subCategory = "Other",
+                subCategory = other,
             });
             set.Add(new Tool
             {
@@ -504,8 +520,8 @@ namespace ME3Explorer
                     (new LevelExplorer.LevelEditor.Leveleditor()).Show();
                 },
                 tags = new List<string> { "developer" },
-                subCategory = "Other",
-                description = "Level Explorer allows you to view the meshes of a level. This tool is deprecated and is no longer supported.",
+                subCategory = other,
+                description = "Level Explorer allows you to view the meshes of a level. This tool is deprecated, no longer supported, and will be replaced in the future.\n\nFor those who have trouble with this tool, level objects can also be visualized with ME3Creator.",
 
             });
             set.Add(new Tool
@@ -521,9 +537,9 @@ namespace ME3Explorer
                         Process.Start(loc + "\\ME3Creator.exe");
                     }
                 },
-                tags = new List<string> { "developer", "advanced", "cloning", "import", "export" },
+                tags = new List<string> { "developer", "level" },
                 subCategory = "Core",
-                description = "ME3Creator is the toolset’s most advanced modding tool for ME3. It allows for level viewing, intrafile and interfile import and export cloning, re-linking of game objects, and much more.",
+                description = "ME3Creator is deprecated. All functionalities save the level viewer and file header viewer are now incorporated into Package Editor. It will be removed from the toolset in the near future.",
             });
             set.Add(new Tool
             {
@@ -547,9 +563,22 @@ namespace ME3Explorer
                     PackageEditor pck = new PackageEditor();
                     pck.Show();
                 },
-                tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3" },
+                tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
                 subCategory = "Core",
-                description = "Package Editor is the toolset’s main tool for editing trilogy package files in various formats (PCC, UPK, SFM). Properties, arrays, names, curve data, and more can all be easily added and edited."
+                description = "Package Editor is the toolset's main tool for editing trilogy package files in various formats (PCC, SFM, UPK). Properties, arrays, names, curve data, and more can all be easily added and edited."
+            });
+            set.Add(new Tool
+            {
+                name = "Pathfinding Editor",
+                type = typeof(PathfindingEditor),
+                icon = Application.Current.FindResource("iconPathfindingEditor") as ImageSource,
+                open = () =>
+                {
+                    (new PathfindingEditor()).Show();
+                },
+                tags = new List<string> { "developer", "path", "ai", "combat", "spline", "spawn", "map", "path", "node", "cover", "level"},
+                subCategory = "Core",
+                description = "Pathfinding Editor allows you to modify pathing nodes so squadmates and enemies can move around a map. You can also edit placement of several different types of level objects such as StaticMeshes, Splines, CoverSlots, and more.",
             });
             set.Add(new Tool
             {
@@ -563,6 +592,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "codex", "state transition", "quest", "natives" },
                 subCategory = "Core",
+                description = "Plot Editor is used to examine, edit, and search ME3's plot maps for quests, state events, and codices.\n\nSupport for ME1 and ME2 is planned for the future."
             });
             set.Add(new Tool
             {
@@ -587,8 +617,8 @@ namespace ME3Explorer
                     (new SFAREditor2()).Show();
                 },
                 tags = new List<string> { "developer", "dlc" },
-                subCategory = "SFARS",
-                description = "SFAR Editor 2 is an advanced SFAR exploration and editing tool for ME3. It displays technical data absent from the Basic Editor and contains searching and unpack features.",
+                subCategory = other,
+                description = "SFAR Editor 2 is an advanced SFAR exploration and editing tool for ME3. With DLC unpacking now the norm and the advent of DLC mods, this tool will be used by few modders.",
             });
             set.Add(new Tool
             {
@@ -618,32 +648,6 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "ME3 + ME2 TLK Editor",
-                type = typeof(TLKEditor),
-                icon = Application.Current.FindResource("iconTLKEditorME23") as ImageSource,
-                open = () =>
-                {
-                    (new TLKEditor()).Show();
-                },
-                tags = new List<string> { "developer", "dialogue", "subtitle", "text" },
-                subCategory = "Scene Shop",
-                description = "TLK Editor converts between XML and TLK formats, allowing users to edit the display of all game text in ME2 and ME3. Edits to the XML files themselves must be done in an external editor, such as Notepad++.",
-            });
-            set.Add(new Tool
-            {
-                name = "ME1 TLK Editor",
-                type = typeof(TlkManager),
-                icon = Application.Current.FindResource("iconTLKEditorME1") as ImageSource,
-                open = () =>
-                {
-                    (new ME1Explorer.TlkManager(true)).Show();
-                },
-                tags = new List<string> { "developer", "dialogue", "subtitle", "text" },
-                subCategory = "Scene Shop",
-                description = "ME1 TLK Editor extracts tlk files from ME1 packages and converts them into xml, allowing users to edit the display of all game text. Edits to the XML files themselves must be done in an external editor, such as Notepad++.",
-            });
-            set.Add(new Tool
-            {
                 name = "WwiseBank Editor",
                 type = typeof(WwiseBankEditor.WwiseEditor),
                 icon = Application.Current.FindResource("iconWwiseBankEditor") as ImageSource,
@@ -669,7 +673,7 @@ namespace ME3Explorer
                     }
                 },
                 tags = new List<string> { "developer" },
-                subCategory = "Other",
+                subCategory = other,
                 description = "Edits .udk and .upk files created by the UDK. This tool is deprecated and no longer supported."
             });
             #endregion
