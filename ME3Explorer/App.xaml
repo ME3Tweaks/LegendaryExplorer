@@ -183,7 +183,6 @@
         <BitmapImage x:Key="iconPackageEditor" UriSource="Resources/package_editor_64x64.png"/>
         <BitmapImage x:Key="iconPlotEditor" UriSource="Resources/plot_editor_icon.ico"/>
         <BitmapImage x:Key="iconSequenceEditor" UriSource="Resources/sequence_editor_64x64.png"/>
-        <BitmapImage x:Key="iconSFARBasicEditor" UriSource="Resources/sfar_basiceditor_icon.ico"/>
         <BitmapImage x:Key="iconSFAREditor2" UriSource="Resources/sfar_editor2_icon_64x64.png"/>
         <BitmapImage x:Key="iconSoundplorer" UriSource="Resources/soundplorer_64x64.png"/>
         <BitmapImage x:Key="iconTLKEditorME1" UriSource="Resources/TLK_ME1_editor_icon.ico"/>

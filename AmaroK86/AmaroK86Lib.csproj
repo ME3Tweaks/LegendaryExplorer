@@ -52,7 +52,6 @@
   <ItemGroup>
     <Compile Include="DLCBase\DLCBase.cs" />
     <Compile Include="DLCBase\SortedKeyedCollection.cs" />
-    <Compile Include="DLCEditor\DLCEditor.cs" />
     <Compile Include="ImageFormat\DDSImage.cs" />
     <Compile Include="ImageFormat\ImageFormat.cs" />
     <Compile Include="ImageMipMapHandler\ImageMipMapHandler.cs" />

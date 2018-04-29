@@ -579,19 +579,6 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "SFAR Basic Editor",
-                type = typeof(SFARBasicEditor),
-                icon = Application.Current.FindResource("iconSFARBasicEditor") as ImageSource,
-                open = () =>
-                {
-                    (new SFARBasicEditor()).Show();
-                },
-                tags = new List<string> { "developer", "dlc" },
-                subCategory = "SFARS",
-                description = "SFAR Basic Editor loads ME3 DLC SFARs, allowing for exploration and basic edits within a relatively user-friendly GUI. SFAR Basic Editor does not support all DLC and should only be used for viewing.",
-            });
-            set.Add(new Tool
-            {
                 name = "SFAR Editor 2",
                 type = typeof(SFAREditor2),
                 icon = Application.Current.FindResource("iconSFAREditor2") as ImageSource,
