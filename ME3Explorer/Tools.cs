@@ -154,18 +154,6 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Class Viewer",
-                type = typeof(ClassViewer.ClassViewer),
-                icon = Application.Current.FindResource("iconClassViewer") as ImageSource,
-                open = () =>
-                {
-                    (new ClassViewer.ClassViewer()).Show();
-                },
-                tags = new List<string> { "utility", "import" },
-                subCategory = "Explorers",
-            });
-            set.Add(new Tool
-            {
                 name = "Coalesced Editor",
                 type = typeof(MassEffect3.CoalesceTool.CoalescedEditor),
                 icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,

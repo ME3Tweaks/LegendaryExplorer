@@ -785,12 +785,6 @@
     <Compile Include="BIKExtract\BIKExtract.Designer.cs">
       <DependentUpon>BIKExtract.cs</DependentUpon>
     </Compile>
-    <Compile Include="ClassViewer\ClassViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ClassViewer\ClassViewer.Designer.cs">
-      <DependentUpon>ClassViewer.cs</DependentUpon>
-    </Compile>
     <Compile Include="Conditionals\CondEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1102,9 +1096,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Bio2DAEditor\Bio2DAEditor.resx">
       <DependentUpon>Bio2DAEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ClassViewer\ClassViewer.resx">
-      <DependentUpon>ClassViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Conditionals\CondEditor.resx">
       <DependentUpon>CondEditor.cs</DependentUpon>
