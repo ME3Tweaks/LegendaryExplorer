@@ -80,7 +80,7 @@
             <Label Grid.Row="4" Content="5."/>
             <TextBox Grid.Row="4" Grid.Column="1" VerticalContentAlignment="Center"
                      TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0"
-                     Text="You will see a message saying the work is done. Your custom TLK file is ready to be put in an appropriate Mass Effect 2 folder."/>
+                     Text="You will see a message saying the work is done. Your custom TLK file is ready to be put in an appropriate Mass Effect folder."/>
         </Grid>
     </StackPanel>
 </Window>
