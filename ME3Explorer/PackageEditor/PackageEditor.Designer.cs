@@ -70,8 +70,6 @@
             this.searchBox = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.gotonumber = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -180,7 +178,7 @@
             this.debugToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(962, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(958, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -424,10 +422,17 @@
             // 
             // dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem
             // 
-            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Name = "dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem";
-            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
-            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Text = "DEBUG: Copy config reading props to clipboard";
-            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem_Click);
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Name = "dEBUGExport2DAToExcelFileToolStripMenuItem";
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Text = "DEBUG: Export 2DA to Excel file";
+            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Click += new System.EventHandler(this.dEBUGExport2DAToExcelFileToolStripMenuItem_Click);
+            // 
+            // dEBUGAccessME3AppendsTableToolStripMenuItem
+            // 
+            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Name = "dEBUGAccessME3AppendsTableToolStripMenuItem";
+            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
+            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Text = "DEBUG: Access ME3 AppendsTable";
+            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Click += new System.EventHandler(this.dEBUGAccessME3AppendsTableToolStripMenuItem_Click);
             // 
             // dEBUGEnumerateAllClassesToolStripMenuItem
             // 
@@ -451,13 +456,11 @@
             this.searchBox,
             this.toolStripButton2,
             this.toolStripSeparator4,
-            this.toolStripButton3,
-            this.toolStripSeparator3,
             this.gotonumber,
             this.toolStripButton4});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(962, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(958, 25);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -498,7 +501,7 @@
             this.Button5.Image = ((System.Drawing.Image)(resources.GetObject("Button5.Image")));
             this.Button5.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.Button5.Name = "Button5";
-            this.Button5.Size = new System.Drawing.Size(61, 22);
+            this.Button5.Size = new System.Drawing.Size(62, 22);
             this.Button5.Text = "Tree View";
             this.Button5.Click += new System.EventHandler(this.TreeView_Button_Click);
             // 
@@ -510,7 +513,7 @@
             // combo1
             // 
             this.combo1.Name = "combo1";
-            this.combo1.Size = new System.Drawing.Size(121, 25);
+            this.combo1.Size = new System.Drawing.Size(170, 25);
             this.combo1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.findClassComboBox_KeyPress);
             // 
             // findClassButton
@@ -551,25 +554,10 @@
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripButton3
-            // 
-            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
-            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(56, 22);
-            this.toolStripButton3.Text = "Interpret";
-            this.toolStripButton3.Click += new System.EventHandler(this.interpretButton_Clicked);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
-            // 
             // gotonumber
             // 
             this.gotonumber.Name = "gotonumber";
-            this.gotonumber.Size = new System.Drawing.Size(28, 25);
+            this.gotonumber.Size = new System.Drawing.Size(60, 25);
             this.gotonumber.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.gotonumber_KeyPress);
             // 
             // toolStripButton4
@@ -590,7 +578,7 @@
             this.statusLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 494);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(962, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(958, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -645,8 +633,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.packageEditorTabPane);
-            this.splitContainer1.Size = new System.Drawing.Size(962, 445);
-            this.splitContainer1.SplitterDistance = 316;
+            this.splitContainer1.Size = new System.Drawing.Size(958, 445);
+            this.splitContainer1.SplitterDistance = 314;
             this.splitContainer1.TabIndex = 3;
             // 
             // treeView1
@@ -657,7 +645,7 @@
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(316, 445);
+            this.treeView1.Size = new System.Drawing.Size(314, 445);
             this.treeView1.TabIndex = 1;
             this.treeView1.Visible = false;
             this.treeView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeView1_ItemDrag);
@@ -678,7 +666,7 @@
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
             this.listBox1.ScrollAlwaysVisible = true;
-            this.listBox1.Size = new System.Drawing.Size(316, 445);
+            this.listBox1.Size = new System.Drawing.Size(314, 445);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged_1);
             this.listBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listBox1_MouseDown);
@@ -697,7 +685,7 @@
             this.packageEditorTabPane.Location = new System.Drawing.Point(0, 0);
             this.packageEditorTabPane.Name = "packageEditorTabPane";
             this.packageEditorTabPane.SelectedIndex = 0;
-            this.packageEditorTabPane.Size = new System.Drawing.Size(642, 445);
+            this.packageEditorTabPane.Size = new System.Drawing.Size(640, 445);
             this.packageEditorTabPane.TabIndex = 4;
             this.packageEditorTabPane.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -706,8 +694,8 @@
             this.propertiesTab.Controls.Add(this.propGrid);
             this.propertiesTab.Location = new System.Drawing.Point(4, 22);
             this.propertiesTab.Name = "propertiesTab";
-            this.propertiesTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.propertiesTab.Size = new System.Drawing.Size(634, 419);
+            this.propertiesTab.Padding = new System.Windows.Forms.Padding(3);
+            this.propertiesTab.Size = new System.Drawing.Size(632, 419);
             this.propertiesTab.TabIndex = 1;
             this.propertiesTab.Text = "Properties";
             this.propertiesTab.ToolTipText = "Edit UProperties in a simple interface for this export";
@@ -720,7 +708,7 @@
             this.propGrid.LineColor = System.Drawing.SystemColors.ControlDark;
             this.propGrid.Location = new System.Drawing.Point(3, 3);
             this.propGrid.Name = "propGrid";
-            this.propGrid.Size = new System.Drawing.Size(628, 413);
+            this.propGrid.Size = new System.Drawing.Size(626, 413);
             this.propGrid.TabIndex = 0;
             this.propGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propGrid_PropertyValueChanged);
             // 
@@ -729,8 +717,8 @@
             this.interpreterTab.Controls.Add(this.interpreterControl);
             this.interpreterTab.Location = new System.Drawing.Point(4, 22);
             this.interpreterTab.Name = "interpreterTab";
-            this.interpreterTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.interpreterTab.Size = new System.Drawing.Size(634, 426);
+            this.interpreterTab.Padding = new System.Windows.Forms.Padding(3);
+            this.interpreterTab.Size = new System.Drawing.Size(632, 419);
             this.interpreterTab.TabIndex = 6;
             this.interpreterTab.Text = "Interpreter / Hex Editor";
             this.interpreterTab.ToolTipText = "Edit UProperties for this export";
@@ -742,7 +730,7 @@
             this.interpreterControl.Location = new System.Drawing.Point(3, 3);
             this.interpreterControl.Name = "interpreterControl";
             this.interpreterControl.Pcc = null;
-            this.interpreterControl.Size = new System.Drawing.Size(628, 420);
+            this.interpreterControl.Size = new System.Drawing.Size(626, 413);
             this.interpreterControl.TabIndex = 0;
             // 
             // binaryEditorTab
@@ -750,8 +738,8 @@
             this.binaryEditorTab.Controls.Add(this.binaryInterpreterControl);
             this.binaryEditorTab.Location = new System.Drawing.Point(4, 22);
             this.binaryEditorTab.Name = "binaryEditorTab";
-            this.binaryEditorTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.binaryEditorTab.Size = new System.Drawing.Size(634, 426);
+            this.binaryEditorTab.Padding = new System.Windows.Forms.Padding(3);
+            this.binaryEditorTab.Size = new System.Drawing.Size(632, 419);
             this.binaryEditorTab.TabIndex = 7;
             this.binaryEditorTab.Text = "Binary Editor";
             this.binaryEditorTab.ToolTipText = "Edit parsable binary data for this export";
@@ -763,7 +751,7 @@
             this.binaryInterpreterControl.Location = new System.Drawing.Point(3, 3);
             this.binaryInterpreterControl.Name = "binaryInterpreterControl";
             this.binaryInterpreterControl.Pcc = null;
-            this.binaryInterpreterControl.Size = new System.Drawing.Size(628, 420);
+            this.binaryInterpreterControl.Size = new System.Drawing.Size(626, 413);
             this.binaryInterpreterControl.TabIndex = 0;
             // 
             // bio2daEditorTab
@@ -771,8 +759,8 @@
             this.bio2daEditorTab.Controls.Add(this.bio2DAEditor1);
             this.bio2daEditorTab.Location = new System.Drawing.Point(4, 22);
             this.bio2daEditorTab.Name = "bio2daEditorTab";
-            this.bio2daEditorTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.bio2daEditorTab.Size = new System.Drawing.Size(634, 426);
+            this.bio2daEditorTab.Padding = new System.Windows.Forms.Padding(3);
+            this.bio2daEditorTab.Size = new System.Drawing.Size(632, 419);
             this.bio2daEditorTab.TabIndex = 8;
             this.bio2daEditorTab.Text = "Bio2DA Editor";
             this.bio2daEditorTab.ToolTipText = "Edit the binary Bio2DA data for this export";
@@ -784,7 +772,7 @@
             this.bio2DAEditor1.Location = new System.Drawing.Point(3, 3);
             this.bio2DAEditor1.Name = "bio2DAEditor1";
             this.bio2DAEditor1.Pcc = null;
-            this.bio2DAEditor1.Size = new System.Drawing.Size(628, 420);
+            this.bio2DAEditor1.Size = new System.Drawing.Size(626, 413);
             this.bio2DAEditor1.TabIndex = 0;
             // 
             // infoTab
@@ -793,7 +781,7 @@
             this.infoTab.Controls.Add(this.infoHeaderBox);
             this.infoTab.Location = new System.Drawing.Point(4, 22);
             this.infoTab.Name = "infoTab";
-            this.infoTab.Size = new System.Drawing.Size(634, 426);
+            this.infoTab.Size = new System.Drawing.Size(632, 419);
             this.infoTab.TabIndex = 3;
             this.infoTab.Text = "Info";
             this.infoTab.ToolTipText = "View information about this export";
@@ -1057,8 +1045,8 @@
             this.metaDataPage.Controls.Add(this.label12);
             this.metaDataPage.Location = new System.Drawing.Point(4, 22);
             this.metaDataPage.Name = "metaDataPage";
-            this.metaDataPage.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.metaDataPage.Size = new System.Drawing.Size(634, 426);
+            this.metaDataPage.Padding = new System.Windows.Forms.Padding(3);
+            this.metaDataPage.Size = new System.Drawing.Size(632, 419);
             this.metaDataPage.TabIndex = 4;
             this.metaDataPage.Text = "Meta Data Editor";
             this.metaDataPage.ToolTipText = "Edit the metadata about this export";
@@ -1177,8 +1165,8 @@
             this.headerTab.Controls.Add(this.toolStrip2);
             this.headerTab.Location = new System.Drawing.Point(4, 22);
             this.headerTab.Name = "headerTab";
-            this.headerTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.headerTab.Size = new System.Drawing.Size(634, 426);
+            this.headerTab.Padding = new System.Windows.Forms.Padding(3);
+            this.headerTab.Size = new System.Drawing.Size(632, 419);
             this.headerTab.TabIndex = 5;
             this.headerTab.Text = "Header Raw";
             this.headerTab.ToolTipText = "Edit the header hex directly for this export";
@@ -1195,7 +1183,7 @@
             this.headerRawHexBox.MinBytesPerLine = 16;
             this.headerRawHexBox.Name = "headerRawHexBox";
             this.headerRawHexBox.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.headerRawHexBox.Size = new System.Drawing.Size(628, 395);
+            this.headerRawHexBox.Size = new System.Drawing.Size(626, 388);
             this.headerRawHexBox.StringViewVisible = true;
             this.headerRawHexBox.TabIndex = 0;
             this.headerRawHexBox.UseFixedBytesPerLine = true;
@@ -1208,7 +1196,7 @@
             this.saveHeaderHexChangesBtn});
             this.toolStrip2.Location = new System.Drawing.Point(3, 3);
             this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(628, 25);
+            this.toolStrip2.Size = new System.Drawing.Size(626, 25);
             this.toolStrip2.TabIndex = 1;
             this.toolStrip2.Text = "toolStrip2";
             // 
@@ -1227,7 +1215,7 @@
             this.scriptTab.Controls.Add(this.rtb1);
             this.scriptTab.Location = new System.Drawing.Point(4, 22);
             this.scriptTab.Name = "scriptTab";
-            this.scriptTab.Size = new System.Drawing.Size(634, 426);
+            this.scriptTab.Size = new System.Drawing.Size(632, 419);
             this.scriptTab.TabIndex = 2;
             this.scriptTab.Text = "Script";
             this.scriptTab.ToolTipText = "View a decompiled UnrealScript that this export represents.";
@@ -1241,7 +1229,7 @@
             this.rtb1.Location = new System.Drawing.Point(0, 0);
             this.rtb1.Name = "rtb1";
             this.rtb1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.rtb1.Size = new System.Drawing.Size(634, 426);
+            this.rtb1.Size = new System.Drawing.Size(632, 419);
             this.rtb1.TabIndex = 2;
             this.rtb1.Text = "";
             this.rtb1.WordWrap = false;
@@ -1312,7 +1300,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(962, 516);
+            this.ClientSize = new System.Drawing.Size(958, 516);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.toolStrip1);
@@ -1387,7 +1375,6 @@
         private System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem getDumpToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem editInInterpreterToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton toolStripButton3;
         private System.Windows.Forms.ToolStripTextBox gotonumber;
         private System.Windows.Forms.ToolStripButton toolStripButton4;
         public System.Windows.Forms.ToolStripMenuItem getDumpToolStripMenuItem;
@@ -1443,7 +1430,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.TextBox indexTextBox;
         private System.Windows.Forms.Label indexLabel;
