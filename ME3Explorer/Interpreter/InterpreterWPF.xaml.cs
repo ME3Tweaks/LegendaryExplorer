@@ -108,7 +108,9 @@ namespace ME3Explorer
             this.export = export;
             memory = export.Data;
             memsize = memory.Length;
-            MemoryStream ms = new MemoryStream(export.Data);
+            List<byte> bytes = export.Data.ToList();
+            MemoryStream ms = new MemoryStream(); //initializing memorystream directly with byte[] does not allow it to expand.
+            ms.Write(export.Data, 0, export.Data.Length); //write the data into the memorystream.
             Interpreter_HexBox.Stream = ms;
             className = export.ClassName;
 
@@ -144,7 +146,8 @@ namespace ME3Explorer
 
             TreeViewItem topLevelTree = new TreeViewItem()
             {
-                Header = "0000 : " + export.ObjectName
+                Header = "0000 : " + export.ObjectName,
+                IsExpanded = true
             };
             topLevelTree.Tag = nodeType.Root;
             topLevelTree.Name = "_" +"0";
@@ -1176,5 +1179,10 @@ namespace ME3Explorer
             return null;
         }
         #endregion
+
+        private void Interpreter_ToggleHexboxWidth_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
     }
 }

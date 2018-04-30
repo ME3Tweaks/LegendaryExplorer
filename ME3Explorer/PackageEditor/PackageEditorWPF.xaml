@@ -59,7 +59,7 @@
         </StatusBar>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="26"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -103,6 +103,10 @@
                             <RowDefinition Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
                             <RowDefinition Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
                             <RowDefinition Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="130"/>
@@ -140,15 +144,23 @@
                         <!--<TextBox Name="InfoTab_Archetypename_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="5" Grid.Column="1" IsReadOnly="true"/>-->
                         <TextBox Name="InfoTab_Headersize_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="6" Grid.Column="1" IsReadOnly="true"/>
                         <TextBox Name="InfoTab_Flags_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="7" Grid.Column="1" IsReadOnly="true"/>
-                    </Grid>
-                </TabItem>
-                <TabItem Name="HeaderRaw_Tab" Header="Header (Raw)">
-                    <DockPanel LastChildFill="True">
+                        <Separator Grid.ColumnSpan="2" Grid.Row="8"/>
+                        <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Grid.Row="9">
+                            <Button Name="Info_HeaderHexSaveChanges" Content="Save hex changes"/>
+                            <TextBlock Text="Export data size:" Margin="0,0,3,0"/>
+                            <TextBox Name="InfoTab_ExportDataSize_TextBox" Width="100" IsReadOnly="true" IsEnabled="False"/>
+                            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="3,0,0,0"/>
+                            <TextBlock Text="Data offset (hex):"  Margin="3,0,3,0"/>
+                            <TextBox Name="InfoTab_ExportOffsetHex_TextBox" Width="80" IsReadOnly ="true" IsEnabled="False"/>
+                            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="3,0,0,0"/>
+                            <TextBlock Text="Data offset (dec):" Margin="3,0,3,0"/>
+                            <TextBox Name="InfoTab_ExportOffsetDec_TextBox" Width="80" IsReadOnly="True" IsEnabled="False"/>
+                        </StackPanel>
                         <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True" >
                             <Button Content="Save Hex Changes"/>
                         </ToolBar>
-                        <control:HexEditor Name="Info_HeaderRaw_Hexbox" Width="Auto" Height="Auto"/>
-                    </DockPanel>
+                        <control:HexEditor Name="Info_HeaderRaw_Hexbox" Width="Auto" Height="Auto" Margin="0,5,0,0" Grid.Row="10" Grid.ColumnSpan="2"/>
+                    </Grid>
                 </TabItem>
                 <TabItem Name="Bio2DAViewer_Tab" Header="Bio2DA Viewer"/>
                 <TabItem Name="BinaryInterpreter_Tab" Header="Binary Interpreter"/>

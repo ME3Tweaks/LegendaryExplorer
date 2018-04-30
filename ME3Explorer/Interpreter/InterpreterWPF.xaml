@@ -9,17 +9,19 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Margin="0,1,0,-1">
         <Grid.RowDefinitions>
-            <RowDefinition Height="25"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="100" />
+            <ColumnDefinition MinWidth="100" Width="240" />
             <ColumnDefinition Width="5" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <ToolBar Grid.Row="0" Grid.ColumnSpan="3" ToolBarTray.IsLocked="True"/>
-        <control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed"/>
+        <ToolBar Grid.Row="0" Grid.ColumnSpan="3" ToolBarTray.IsLocked="True">
+            <Button Content="Toggle Hexbox Width" Click="Interpreter_ToggleHexboxWidth_Click"/>
+        </ToolBar>
+        <control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />
         <GridSplitter Grid.Column="1" Width="5" MaxWidth="5" Grid.Row="1" HorizontalAlignment="Stretch"/>
-        <TreeView Name="Interpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto"/>
+        <TreeView Name="Interpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" FontFamily="Consolas"/>
     </Grid>
 </UserControl>

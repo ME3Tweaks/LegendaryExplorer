@@ -18,6 +18,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace ME3Explorer
 {
@@ -525,13 +526,13 @@ namespace ME3Explorer
                         InfoTab_Archetype_ComboBox.SelectedIndex = imports.Count; //Class, 0
                     }
                     InfoTab_Flags_TextBox.Text = "0x" + exportEntry.ObjectFlags.ToString("X16");
-                    //textBox7.Text = exportEntry.DataSize + " bytes";
-                    //textBox8.Text = "0x" + exportEntry.DataOffset.ToString("X8");
-                    //textBox9.Text = exportEntry.DataOffset.ToString();
+                    InfoTab_ExportDataSize_TextBox.Text = exportEntry.DataSize + " bytes";
+                    InfoTab_ExportOffsetHex_TextBox.Text = "0x" + exportEntry.DataOffset.ToString("X8");
+                    InfoTab_ExportOffsetDec_TextBox.Text = exportEntry.DataOffset.ToString();
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show("An error occured while attempting to read the header for this export. This indicates there is likely something wrong with the header or its parent header.");
+                    MessageBox.Show("An error occured while attempting to read the header for this export. This indicates there is likely something wrong with the header or its parent header.\n\n" + e.Message);
                 }
             }
             else
@@ -586,14 +587,19 @@ namespace ME3Explorer
             //throw new NotImplementedException();
         }
 
+
+        private delegate void NoArgDelegate();
         /// <summary>
-        /// Tree view selected item changed
+        /// Tree view selected item changed. This runs in a delegate due to how multithread bubble-up items work with treeview.
+        /// Without this delegate, the item selected will randomly be a parent item instead.
+        /// From https://www.codeproject.com/Tips/208896/WPF-TreeView-SelectedItemChanged-called-twice
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void LeftSide_SelectedItemChanged(object sender, RoutedEventArgs e)
         {
-            Preview();
+            Dispatcher.BeginInvoke(DispatcherPriority.Background,
+        (NoArgDelegate)delegate { Preview(); });
         }
 
         /// <summary>
