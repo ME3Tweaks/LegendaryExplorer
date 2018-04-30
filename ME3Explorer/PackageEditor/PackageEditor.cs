@@ -1469,14 +1469,14 @@ namespace ME3Explorer
             if (GetSelected(out int n))
             {
                 int nextIndex;
-
+                crossPCCObjectMap = new SortedDictionary<int, int>();
                 TreeNode rootNode = treeView1.SelectedNode;
                 if (n >= 0)
                 {
                     nextIndex = pcc.ExportCount;
                     IExportEntry exp = pcc.getExport(n).Clone();
                     pcc.addExport(exp);
-
+                    crossPCCObjectMap[n] = pcc.ExportCount - 1; //0 based.
                     n = nextIndex + 1;
                 }
                 else
@@ -1484,10 +1484,12 @@ namespace ME3Explorer
                     nextIndex = -pcc.ImportCount - 1;
                     ImportEntry imp = pcc.getImport(-n - 1).Clone();
                     pcc.addImport(imp);
-
                     n = nextIndex;
+                    //We do not relink imports in same-pcc.
                 }
                 cloneTree(n, rootNode);
+                relinkObjects2(pcc);
+                relinkBinaryObjects(pcc);
 
                 RefreshView();
                 goToNumber(nextIndex);
@@ -1507,6 +1509,7 @@ namespace ME3Explorer
                     {
                         nextIndex = pcc.ExportCount + 1;
                         IExportEntry exp = pcc.getExport(index).Clone();
+                        crossPCCObjectMap[index] = pcc.ExportCount - 1; //0 based.
                         exp.idxLink = n;
                         pcc.addExport(exp);
                     }
@@ -1516,6 +1519,7 @@ namespace ME3Explorer
                         ImportEntry imp = pcc.getImport(-index - 1).Clone();
                         imp.idxLink = n;
                         pcc.addImport(imp);
+                        //we do not relink imports in same-pcc
                     }
                     if (node.Nodes.Count > 0)
                     {

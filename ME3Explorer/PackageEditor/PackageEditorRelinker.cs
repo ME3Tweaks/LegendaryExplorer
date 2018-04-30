@@ -86,6 +86,10 @@ namespace ME3Explorer
             {
                 return null; //do not relink 0
             }
+            if (importingPCC == destinationPCC && objProperty.Value < 0)
+            {
+                return null; //do not relink same-pcc imports.
+            }
             int sourceObjReference = objProperty.Value;
 
             if (sourceObjReference > 0)
@@ -96,10 +100,10 @@ namespace ME3Explorer
             {
                 sourceObjReference++; //make 0 based for mapping.
             }
-            if (objProperty.Name != null)
-            {
-                Debug.WriteLine(objProperty.Name);
-            }
+            //if (objProperty.Name != null)
+            //{
+            //    Debug.WriteLine(objProperty.Name);
+            //}
             KeyValuePair<int, int> mapping = crossPCCObjectMappingList.Where(pair => pair.Key == sourceObjReference).FirstOrDefault();
             var defaultKVP = default(KeyValuePair<int, int>); //struct comparison
 
@@ -429,7 +433,7 @@ namespace ME3Explorer
                         }
                         catch (Exception e)
                         {
-                            relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relinking failed: "+e.Message);
+                            relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relinking failed: " + e.Message);
                         }
                         //Run an interpreter pass over it - we will find objectleafnodes and attempt to update the same offset in the destination file.
                         //BinaryInterpreter binaryrelinkInterpreter = new ME3Explorer.BinaryInterpreter(importpcc, importpcc.Exports[entry.Key], pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
