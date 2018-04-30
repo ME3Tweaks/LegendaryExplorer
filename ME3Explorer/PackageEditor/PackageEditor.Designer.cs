@@ -381,21 +381,21 @@
             // 
             this.getDumpToolStripMenuItem.Name = "getDumpToolStripMenuItem";
             this.getDumpToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
-            this.getDumpToolStripMenuItem.Text = "Dump Complete Export to binary file";
+            this.getDumpToolStripMenuItem.Text = "Dump Complete Export to Binary File";
             this.getDumpToolStripMenuItem.Click += new System.EventHandler(this.getDumpToolStripMenuItem_Click_1);
             // 
             // getDumpToolStripMenuItem1
             // 
             this.getDumpToolStripMenuItem1.Name = "getDumpToolStripMenuItem1";
             this.getDumpToolStripMenuItem1.Size = new System.Drawing.Size(358, 22);
-            this.getDumpToolStripMenuItem1.Text = "Dump Binary Data of Export to binary file";
+            this.getDumpToolStripMenuItem1.Text = "Dump Binary Data of Export to Binary File";
             this.getDumpToolStripMenuItem1.Click += new System.EventHandler(this.getDumpToolStripMenuItem1_Click);
             // 
             // findImportexportViaOffsetToolStripMenuItem
             // 
             this.findImportexportViaOffsetToolStripMenuItem.Name = "findImportexportViaOffsetToolStripMenuItem";
             this.findImportexportViaOffsetToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
-            this.findImportexportViaOffsetToolStripMenuItem.Text = "Find export via file offset";
+            this.findImportexportViaOffsetToolStripMenuItem.Text = "Find Export via File Offset";
             this.findImportexportViaOffsetToolStripMenuItem.ToolTipText = "Finds an export containing the offset you specify.";
             this.findImportexportViaOffsetToolStripMenuItem.Click += new System.EventHandler(this.findImportexportViaOffsetToolStripMenuItem_Click);
             // 
@@ -403,14 +403,14 @@
             // 
             this.checkIndexingToolStripMenuItem.Name = "checkIndexingToolStripMenuItem";
             this.checkIndexingToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
-            this.checkIndexingToolStripMenuItem.Text = "Check indexing";
+            this.checkIndexingToolStripMenuItem.Text = "Verify Indexing";
             this.checkIndexingToolStripMenuItem.Click += new System.EventHandler(this.checkIndexingToolStripMenuItem_Click);
             // 
             // findExportsWithSerialSizeMismatchToolStripMenuItem
             // 
             this.findExportsWithSerialSizeMismatchToolStripMenuItem.Name = "findExportsWithSerialSizeMismatchToolStripMenuItem";
             this.findExportsWithSerialSizeMismatchToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
-            this.findExportsWithSerialSizeMismatchToolStripMenuItem.Text = "Find exports with serial size mismatch";
+            this.findExportsWithSerialSizeMismatchToolStripMenuItem.Text = "Find Exports with Serial Size Mismatch";
             this.findExportsWithSerialSizeMismatchToolStripMenuItem.Click += new System.EventHandler(this.findExportsWithSerialSizeMismatchToolStripMenuItem_Click);
             // 
             // dEBUGCallReadPropertiesToolStripMenuItem
@@ -418,13 +418,15 @@
             this.dEBUGCallReadPropertiesToolStripMenuItem.Name = "dEBUGCallReadPropertiesToolStripMenuItem";
             this.dEBUGCallReadPropertiesToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
             this.dEBUGCallReadPropertiesToolStripMenuItem.Text = "DEBUG: Call ReadProperties()";
+            this.dEBUGCallReadPropertiesToolStripMenuItem.Visible = false;
             this.dEBUGCallReadPropertiesToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCallReadPropertiesToolStripMenuItem_Click);
-           // 
+            // 
             // dEBUGEnumerateAllClassesToolStripMenuItem
             // 
             this.dEBUGEnumerateAllClassesToolStripMenuItem.Name = "dEBUGEnumerateAllClassesToolStripMenuItem";
             this.dEBUGEnumerateAllClassesToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
             this.dEBUGEnumerateAllClassesToolStripMenuItem.Text = "DEBUG: BinaryInterpreter -Enumerate All Class Exports";
+            this.dEBUGEnumerateAllClassesToolStripMenuItem.Visible = false;
             this.dEBUGEnumerateAllClassesToolStripMenuItem.Click += new System.EventHandler(this.dEBUGEnumerateAllClassesToolStripMenuItem_Click);
             // 
             // toolStrip1
