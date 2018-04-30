@@ -519,15 +519,16 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Meshplorer 2",
-                type = typeof(Meshplorer2.Meshplorer2),
+                name = "Mesh Database",
+                type = typeof(Meshplorer2.MeshDatabase),
                 icon = Application.Current.FindResource("iconMeshplorer2") as ImageSource,
                 open = () =>
                 {
-                    (new Meshplorer2.Meshplorer2()).Show();
+                    (new Meshplorer2.MeshDatabase()).Show();
                 },
                 tags = new List<string> { "utility", "mesh" },
-                subCategory = "Explorers",
+                subCategory = "Databases",
+                description = "Scans ME3 (no DLC) for meshes and makes a database. This tool is deprecated and no longer supported."
             });
             set.Add(new Tool
             {

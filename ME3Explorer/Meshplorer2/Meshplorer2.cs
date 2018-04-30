@@ -17,7 +17,7 @@ using ME3Explorer.Scene3D;
 
 namespace ME3Explorer.Meshplorer2
 {
-    public partial class Meshplorer2 : Form
+    public partial class MeshDatabase : Form
     {
         public struct EntryStruct
         {
@@ -36,7 +36,7 @@ namespace ME3Explorer.Meshplorer2
         public ModelPreview preview;
         public float PreviewRotation = 0;
 
-        public Meshplorer2()
+        public MeshDatabase()
         {
             InitializeComponent();
         }
