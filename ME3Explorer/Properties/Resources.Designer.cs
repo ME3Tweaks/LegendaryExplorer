@@ -450,8 +450,7 @@ namespace ME3Explorer.Properties {
         ///	float4x4 model;
         ///};
         ///
-        ///Texture2D tex : register(t0);
-        ///SamplerState samstate [rest of string was truncated]&quot;;.
+        ///Texture2D tex : regist [rest of string was truncated]&quot;;.
         /// </summary>
         public static string StandardShader {
             get {

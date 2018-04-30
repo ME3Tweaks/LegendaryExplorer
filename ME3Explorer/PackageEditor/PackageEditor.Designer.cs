@@ -419,21 +419,7 @@
             this.dEBUGCallReadPropertiesToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
             this.dEBUGCallReadPropertiesToolStripMenuItem.Text = "DEBUG: Call ReadProperties()";
             this.dEBUGCallReadPropertiesToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCallReadPropertiesToolStripMenuItem_Click);
-            // 
-            // dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem
-            // 
-            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Name = "dEBUGExport2DAToExcelFileToolStripMenuItem";
-            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
-            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Text = "DEBUG: Export 2DA to Excel file";
-            this.dEBUGExport2DAToExcelFileToolStripMenuItem.Click += new System.EventHandler(this.dEBUGExport2DAToExcelFileToolStripMenuItem_Click);
-            // 
-            // dEBUGAccessME3AppendsTableToolStripMenuItem
-            // 
-            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Name = "dEBUGAccessME3AppendsTableToolStripMenuItem";
-            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
-            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Text = "DEBUG: Access ME3 AppendsTable";
-            this.dEBUGAccessME3AppendsTableToolStripMenuItem.Click += new System.EventHandler(this.dEBUGAccessME3AppendsTableToolStripMenuItem_Click);
-            // 
+           // 
             // dEBUGEnumerateAllClassesToolStripMenuItem
             // 
             this.dEBUGEnumerateAllClassesToolStripMenuItem.Name = "dEBUGEnumerateAllClassesToolStripMenuItem";
