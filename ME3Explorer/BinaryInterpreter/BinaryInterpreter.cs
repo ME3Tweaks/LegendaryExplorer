@@ -264,6 +264,7 @@ Floats*/
                     StartStaticMeshCollectionActorScan();
                     break;
                 case "Material":
+                case "MaterialInstanceConstant":
                     StartMaterialScan();
                     break;
                 case "BioDynamicAnimSet":
@@ -2704,19 +2705,16 @@ Floats*/
             try
             {
                 int binarypos = binarystart;
-                List<TreeNode> subnodes = new List<TreeNode>();
 
-                binarypos += 0x1C; //Skip ??? and GUID
-                                   //int guid = BitConverter.ToInt32(data, binarypos);
-                int num1 = BitConverter.ToInt32(data, binarypos);
-                TreeNode node;
-                subnodes.Add(new TreeNode($"0x{binarypos:X4} ???: {num1}"));
-                binarypos += 4;
-                int num2 = BitConverter.ToInt32(data, binarypos);
-                subnodes.Add(new TreeNode($"0x{binarypos:X4} Count: {num2}"));
+                binarypos += 0x20; //Skip ??? and GUID
+                
+                int count = BitConverter.ToInt32(data, binarypos);
+                topLevelTree.Nodes.Add(new TreeNode($"0x{binarypos:X4} Count: {count}") {
+                    Name = binarypos.ToString()
+                });
                 binarypos += 4;
 
-                while (binarypos <= data.Length - 4)
+                while (binarypos <= data.Length - 4 && count > 0)
                 {
                     int val = BitConverter.ToInt32(data, binarypos);
                     string name = val.ToString();
@@ -2732,14 +2730,17 @@ Floats*/
                         name += $" {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
 
                     }
-                    subnodes.Add(new TreeNode($"0x{binarypos:X4} {name}")
+                    topLevelTree.Nodes.Add(new TreeNode($"0x{binarypos:X4} {name}")
                     {
                         Tag = NodeType.StructLeafObject,
                         Name = binarypos.ToString()
                     });
                     binarypos += 4;
+                    count--;
                 }
-                topLevelTree.Nodes.AddRange(subnodes.ToArray());
+                topLevelTree.Nodes.Add(new TreeNode("There's a bunch more binary in this object, guids and name refs and object refs."));
+                topLevelTree.Nodes.Add(new TreeNode("Unfortunately this tool is not smart enough to understand them, but you might be able to."));
+                topLevelTree.Nodes.Add(new TreeNode("This is your chance to prove that humans are still better than machines."));
             }
             catch (Exception ex)
             {
