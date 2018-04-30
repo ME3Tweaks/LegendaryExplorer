@@ -96,7 +96,7 @@ namespace ME3Explorer
                 }
                 else if (ME3Directory.gamePath != null && File.Exists(Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "MassEffect3.exe")))
                 {
-                    var folders = Directory.EnumerateDirectories(ME3Directory.DLCPath).Where(x => !x.Contains("__metadata"));
+                    var folders = Directory.EnumerateDirectories(ME3Directory.DLCPath).Where(x => !x.Contains("__metadata") && x.Contains("DLC_"));
                     var extracted = folders.Where(folder => Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).Any(file => file.EndsWith("pcconsoletoc.bin", StringComparison.OrdinalIgnoreCase)));
                     var unextracted = folders.Except(extracted);
                     if (unextracted.Any())
