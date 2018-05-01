@@ -1490,7 +1490,7 @@ namespace ME3Explorer
                 cloneTree(n, rootNode);
                 relinkObjects2(pcc);
                 relinkBinaryObjects(pcc);
-
+                crossPCCObjectMap = null;
                 RefreshView();
                 goToNumber(nextIndex);
             }
@@ -1509,9 +1509,9 @@ namespace ME3Explorer
                     {
                         nextIndex = pcc.ExportCount + 1;
                         IExportEntry exp = pcc.getExport(index).Clone();
-                        crossPCCObjectMap[index] = pcc.ExportCount - 1; //0 based.
                         exp.idxLink = n;
                         pcc.addExport(exp);
+                        crossPCCObjectMap[index] = pcc.ExportCount - 1; //0 based.
                     }
                     else
                     {
