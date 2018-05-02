@@ -1529,16 +1529,19 @@
 
 xcopy /f /e /y "$(SolutionDir)Resources" "$(ProjectDir)$(OutDir)"
 
-rmdir /s /q de
-rmdir /s /q es
-rmdir /s /q fr
-rmdir /s /q hu
-rmdir /s /q it
-rmdir /s /q pt-BR
-rmdir /s /q ro
-rmdir /s /q ru
-rmdir /s /q sv
-rmdir /s /q zh-Hans
+rmdir /s /q "$(ProjectDir)$(OutDir)fr-CA"
+rmdir /s /q "$(ProjectDir)$(OutDir)zh-CN"
+rmdir /s /q "$(ProjectDir)$(OutDir)es"
+rmdir /s /q "$(ProjectDir)$(OutDir)de"
+rmdir /s /q "$(ProjectDir)$(OutDir)ru-RU"
+rmdir /s /q "$(ProjectDir)$(OutDir)fr"
+rmdir /s /q "$(ProjectDir)$(OutDir)hu"
+rmdir /s /q "$(ProjectDir)$(OutDir)it"
+rmdir /s /q "$(ProjectDir)$(OutDir)pt-BR"
+rmdir /s /q "$(ProjectDir)$(OutDir)ro"
+rmdir /s /q "$(ProjectDir)$(OutDir)ru"
+rmdir /s /q "$(ProjectDir)$(OutDir)sv"
+rmdir /s /q "$(ProjectDir)$(OutDir)zh-Hans"
 del /s "$(TargetDir)*.xml"
 
 move /y "$(ProjectDir)$(OutDir)CSharpImageLibrary.exe" "$(ProjectDir)$(OutDir)lib\"
