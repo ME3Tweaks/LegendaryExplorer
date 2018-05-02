@@ -569,7 +569,8 @@ namespace ME3Explorer
                         packageEditorTabPane.TabPages.Remove(scriptTab);
                     }
 
-                    if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName))
+                    if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) ||
+                            (exportEntry.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
                     {
                         if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
                         {
@@ -602,7 +603,8 @@ namespace ME3Explorer
                         interpreterControl.export = exportEntry;
                         interpreterControl.InitInterpreter();
 
-                        if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName))
+                        if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) ||
+                            (exportEntry.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
                         {
                             if (exportEntry.ClassName == "Class" && exportEntry.ObjectName.StartsWith("Default__"))
                             {
@@ -2169,8 +2171,6 @@ namespace ME3Explorer
             MessageBox.Show(this, "TLKs have been reloaded.", "TLK list reloaded");
         }
 
-
-
         private string ScanForConfigValues(string file)
         {
             StringBuilder sb = new StringBuilder();
@@ -2201,8 +2201,6 @@ namespace ME3Explorer
                 return sb.ToString();
             }
         }
-
-
 
         private void dialogueEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
