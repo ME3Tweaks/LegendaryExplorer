@@ -23,12 +23,12 @@ namespace ME3Explorer
 
         public static readonly string FileFilter = "*.pcc;*.u;*.upk;*sfm|*.pcc;*.u;*.upk;*sfm|All Files (*.*)|*.*";
 
-        public static string Version { get { return "v" + GetVersion(); } }
+        public static string Version { get { return GetVersion(); } }
 
         public static string GetVersion()
         {
             Version ver = Assembly.GetExecutingAssembly().GetName().Version;
-            return ver.Major + "." + ver.Minor + "." + ver.Build;
+            return "v"+ver.Major + "." + ver.Minor + "." + ver.Build + "." +ver.Revision;
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)
