@@ -72,21 +72,9 @@ namespace ME3Explorer
             createModsPanel.setToolList(Tools.Items.Where(x => x.tags.Contains("developer")));
 
             DisableFlyouts = Properties.Settings.Default.DisableToolDescriptions;
+            disableSetupCheckBox.IsChecked = true; // Properties.Settings.Default.DisableDLCCheckOnStart;
             Topmost = Properties.Settings.Default.AlwaysOnTop;
-
-            //PathfindingEditor p = new PathfindingEditor();
-            //p.LoadFile(@"C:\Users\mgame\Desktop\ME3CMM\mods\MP Map Expansion Pack\DLC_MOD_MPMapPack\CookedPCConsole\BioD_OmgJck_400Atrium.pcc");
-            //p.Show();
-
-            //PackageEditor p = new PackageEditor();
-            //p.LoadFile(@"C:\Users\mgame\Desktop\ME3CMM\mods\MP Map Expansion Pack\BioP_Cat004.pcc");
-            //p.Show();
-
-            //p = new PackageEditor();
-            //p.LoadFile(@"C:\Users\mgame\Desktop\ME3CMM\mods\MP Map Expansion Pack\DLC_MOD_MPMapPack\CookedPCConsole\BioP_MPCron.pcc");
-            //p.Show();
-
-
+            
             /*if (!Properties.Settings.Default.DisableDLCCheckOnStart)
             {
                 if (Properties.Settings.Default.FirstRun == true)
@@ -277,6 +265,7 @@ namespace ME3Explorer
             {
                 e.Cancel = true;
             }
+            Properties.Settings.Default.DisableDLCCheckOnStart = true;// disableSetupCheckBox.IsChecked ?? false;
             Properties.Settings.Default.DisableToolDescriptions = DisableFlyouts;
             Properties.Settings.Default.AlwaysOnTop = alwaysOnTopCheckBox.IsChecked ?? false;
         }

@@ -161,7 +161,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pg1.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.pg1.HelpVisible = false;
-            this.pg1.LineColor = System.Drawing.SystemColors.ControlDark;
             this.pg1.Location = new System.Drawing.Point(0, 0);
             this.pg1.Name = "pg1";
             this.pg1.Size = new System.Drawing.Size(344, 120);

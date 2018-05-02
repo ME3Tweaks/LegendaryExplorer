@@ -561,11 +561,7 @@ namespace ME3Explorer
                 if (RefOrRefChild)
                     savedInfo = SavedPositions.FirstOrDefault(p => CurrentObjects.IndexOf(index) == p.index);
                 else
-                    savedInfo = SavedPositions.FirstOrDefault(p => index == p.index);
-            }
-            if (index == 3131 && Path.GetFileNameWithoutExtension(pcc.FileName) == "SFXPawn_Light_MASTER")
-            {
-                Debug.WriteLine("BREAK");
+                    savedInfo = SavedPositions.FirstOrDefault(p => index == p.index); 
             }
             PropertyCollection props = pcc.getExport(index).GetProperties();
             foreach (var prop in props)

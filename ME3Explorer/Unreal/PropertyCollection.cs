@@ -72,11 +72,9 @@ namespace ME3Explorer.Unreal
             long startPosition = stream.Position;
             while (stream.Position + 8 <= stream.Length)
             {
-                long nameOffset = stream.Position;
                 int nameIdx = stream.ReadValueS32();
                 if (!pcc.isName(nameIdx))
                 {
-                    //DebugOutput.PrintLn("Not a name found at 0x" + nameOffset.ToString("X4"));
                     stream.Seek(-4, SeekOrigin.Current);
                     break;
                 }
@@ -87,7 +85,6 @@ namespace ME3Explorer.Unreal
                     stream.Seek(4, SeekOrigin.Current);
                     break;
                 }
-                //DebugOutput.PrintLn("0x" + nameOffset.ToString("X4") + " " + name);
                 NameReference nameRef = new NameReference { Name = name, Number = stream.ReadValueS32() };
                 int typeIdx = stream.ReadValueS32();
                 stream.Seek(4, SeekOrigin.Current);

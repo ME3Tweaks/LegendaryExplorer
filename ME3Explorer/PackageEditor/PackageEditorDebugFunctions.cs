@@ -53,34 +53,6 @@ namespace ME3Explorer
             }
         }
 
-        private void dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string fpath = @"X:\Mass Effect Games HDD\Mass Effect";
-            var ext = new List<string> { "u", "upk", "sfm" };
-            var files = Directory.GetFiles(fpath, "*.*", SearchOption.AllDirectories)
-              .Where(file => new string[] { ".sfm", ".upk", ".u" }
-              .Contains(Path.GetExtension(file).ToLower()))
-              .ToList();
-            StringBuilder sb = new StringBuilder();
-
-            int threads = Environment.ProcessorCount;
-            string[] results = files.AsParallel().WithDegreeOfParallelism(threads).WithExecutionMode(ParallelExecutionMode.ForceParallelism).Select(ScanForConfigValues).ToArray();
-
-
-            foreach (string res in results)
-            {
-                sb.Append(res);
-            }
-            try
-            {
-                Clipboard.SetText(sb.ToString());
-                MessageBox.Show("Finished");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
 
 
         private void dEBUGCallReadPropertiesToolStripMenuItem_Click(object sender, EventArgs e)
