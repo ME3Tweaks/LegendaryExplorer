@@ -72,7 +72,6 @@ namespace ME3Explorer
             createModsPanel.setToolList(Tools.Items.Where(x => x.tags.Contains("developer")));
 
             DisableFlyouts = Properties.Settings.Default.DisableToolDescriptions;
-            disableSetupCheckBox.IsChecked = true; // Properties.Settings.Default.DisableDLCCheckOnStart;
             Topmost = Properties.Settings.Default.AlwaysOnTop;
             
             /*if (!Properties.Settings.Default.DisableDLCCheckOnStart)
