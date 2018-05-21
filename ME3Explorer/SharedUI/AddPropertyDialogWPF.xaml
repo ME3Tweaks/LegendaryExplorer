@@ -20,10 +20,10 @@
         <TextBlock Text="Classes" FontWeight="Bold"/>
         <TextBlock Text="Properties" Grid.Row="0" Grid.Column="2" FontWeight="Bold"/>
         <ListView Name="ClassesListView" Grid.Column="0" Grid.Row="1" SelectionChanged="ClassesListView_SelectionChanged"/>
-        <ListView Name="PropertiesListView" Grid.Column="2" Grid.Row="1"/>
+        <ListView Name="PropertiesListView" Grid.Column="2" Grid.Row="1" MouseDoubleClick="PropertiesListView_MouseDoubleClick"/>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Grid.Row="2" Grid.ColumnSpan="3" FlowDirection="RightToLeft">
             <Button Name="AddButton" Content="Add Property" Width="90" Height="27" Margin="0,0,5,0" IsDefault="True" Click="AddButton_Click"/>
-            <Button Name="CancelButton" Content="Cancel"  Width="70" Height="27" IsCancel="True" Click="CancelButton_Click"/>
+            <Button Name="CancelButton" Content="Cancel"  Width="70" Height="27" IsCancel="True"/>
         </StackPanel>
     </Grid>
 

@@ -103,17 +103,21 @@ namespace ME3Explorer.SharedUI
             DialogResult = true;
         }
 
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void ClassesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string className = ClassesListView.SelectedItem as string;
             List<string> props = classList[className].properties.Keys.Except(extantProps).ToList();
             props.Sort();
             PropertiesListView.ItemsSource = props;
+        }
+
+        private void PropertiesListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (PropertiesListView.SelectedIndex >= 0)
+            {
+                DialogResult = true;
+                Close();
+            }
         }
     }
 }
