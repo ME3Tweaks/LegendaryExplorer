@@ -3609,6 +3609,10 @@ Floats*/
 
         public void RefreshMem()
         {
+            if (export == null)
+            {
+                return; //We have nothing loaded and should not attempt an update.
+            }
             hb1.ByteProvider = new DynamicByteProvider(memory);
             //adds rootnode to list
             List<TreeNode> allNodes = treeView1.Nodes.Cast<TreeNode>().ToList();

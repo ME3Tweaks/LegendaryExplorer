@@ -975,6 +975,13 @@ namespace ME3Explorer.Unreal
             Values = values;
         }
 
+        public ArrayProperty(ArrayType type, NameReference name) : base(name)
+        {
+            PropType = PropertyType.ArrayProperty;
+            arrayType = type;
+            Values = new List<T>();
+        }
+
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)

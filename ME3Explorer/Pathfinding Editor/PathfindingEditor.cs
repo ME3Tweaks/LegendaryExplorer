@@ -1254,16 +1254,20 @@ namespace ME3Explorer
         private void addCombatZoneRef(IExportEntry nodeExp, IExportEntry combatZoneExp)
         {
             //Adds a combat zone to the list of Volumes. Creates Volumes if it doesnt exist yet.
-            ArrayProperty<StructProperty> volumes = nodeExp.GetProperty<ArrayProperty<StructProperty>>("Volumes");
+            PropertyCollection props = nodeExp.GetProperties();
+            ArrayProperty<StructProperty> volumes = props.GetProp<ArrayProperty<StructProperty>>("Volumes");
             if (volumes == null)
             {
                 //we need to add it as a property
-                interpreter1.AddProperty("Volumes"); //Assuming interpreter shows current item.
-                volumes = nodeExp.GetProperty<ArrayProperty<StructProperty>>("Volumes");
+                volumes = new ArrayProperty<StructProperty>(ArrayType.Struct, "Volumes");
+                props.Add(volumes);
             }
+
+            return;
+            //StructProperty actorRef = new StructProperty("")
             byte[] actorRef = new byte[20]; //5 ints
                                             //GUID of combat zone
-            StructProperty guid = combatZoneExp.GetProperty<StructProperty>("CombatZoneGUID");
+            StructProperty guid = combatZoneExp.GetProperty<StructProperty>("CombatZoneGuid");
             int a = guid.GetProp<IntProperty>("A");
             int b = guid.GetProp<IntProperty>("D");
             int c = guid.GetProp<IntProperty>("C");

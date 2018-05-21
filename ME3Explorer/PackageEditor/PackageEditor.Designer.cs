@@ -58,6 +58,7 @@
             this.dEBUGCallReadPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGEnumerateAllClassesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dEBUGOpenPackageEditorWPFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.Button1 = new System.Windows.Forms.ToolStripButton();
             this.Button2 = new System.Windows.Forms.ToolStripButton();
@@ -141,9 +142,11 @@
             this.cloneTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reindexClassToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setAllIndexesInThisTreeTo0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.scaleformSWFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.extractSWFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.replaceSWFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.dEBUGOpenPackageEditorWPFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -421,6 +424,11 @@
             this.dEBUGCallReadPropertiesToolStripMenuItem.Visible = false;
             this.dEBUGCallReadPropertiesToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCallReadPropertiesToolStripMenuItem_Click);
             // 
+            // dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem
+            // 
+            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Name = "dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem";
+            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
+            // 
             // dEBUGEnumerateAllClassesToolStripMenuItem
             // 
             this.dEBUGEnumerateAllClassesToolStripMenuItem.Name = "dEBUGEnumerateAllClassesToolStripMenuItem";
@@ -428,6 +436,13 @@
             this.dEBUGEnumerateAllClassesToolStripMenuItem.Text = "DEBUG: BinaryInterpreter -Enumerate All Class Exports";
             this.dEBUGEnumerateAllClassesToolStripMenuItem.Visible = false;
             this.dEBUGEnumerateAllClassesToolStripMenuItem.Click += new System.EventHandler(this.dEBUGEnumerateAllClassesToolStripMenuItem_Click);
+            // 
+            // dEBUGOpenPackageEditorWPFToolStripMenuItem
+            // 
+            this.dEBUGOpenPackageEditorWPFToolStripMenuItem.Name = "dEBUGOpenPackageEditorWPFToolStripMenuItem";
+            this.dEBUGOpenPackageEditorWPFToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
+            this.dEBUGOpenPackageEditorWPFToolStripMenuItem.Text = "DEBUG: Open Package Editor (WPF)";
+            this.dEBUGOpenPackageEditorWPFToolStripMenuItem.Click += new System.EventHandler(this.dEBUGOpenPackageEditorWPFToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -489,7 +504,7 @@
             this.Button5.Image = ((System.Drawing.Image)(resources.GetObject("Button5.Image")));
             this.Button5.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.Button5.Name = "Button5";
-            this.Button5.Size = new System.Drawing.Size(62, 22);
+            this.Button5.Size = new System.Drawing.Size(61, 22);
             this.Button5.Text = "Tree View";
             this.Button5.Click += new System.EventHandler(this.TreeView_Button_Click);
             // 
@@ -1229,9 +1244,10 @@
             this.cloneToolStripMenuItem,
             this.cloneTreeToolStripMenuItem,
             this.reindexClassToolStripMenuItem,
-            this.setAllIndexesInThisTreeTo0ToolStripMenuItem});
+            this.setAllIndexesInThisTreeTo0ToolStripMenuItem,
+            this.scaleformSWFToolStripMenuItem});
             this.nodeContextMenuStrip1.Name = "nodeContextMenuStrip1";
-            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(238, 92);
+            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(238, 136);
             // 
             // cloneToolStripMenuItem
             // 
@@ -1261,6 +1277,29 @@
             this.setAllIndexesInThisTreeTo0ToolStripMenuItem.Text = "Set all indexes in this tree to 0";
             this.setAllIndexesInThisTreeTo0ToolStripMenuItem.Click += new System.EventHandler(this.setAllIndexesInThisTreeTo0ToolStripMenuItem_Click);
             // 
+            // scaleformSWFToolStripMenuItem
+            // 
+            this.scaleformSWFToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.extractSWFToolStripMenuItem,
+            this.replaceSWFToolStripMenuItem});
+            this.scaleformSWFToolStripMenuItem.Name = "scaleformSWFToolStripMenuItem";
+            this.scaleformSWFToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
+            this.scaleformSWFToolStripMenuItem.Text = "Scaleform SWF";
+            // 
+            // extractSWFToolStripMenuItem
+            // 
+            this.extractSWFToolStripMenuItem.Name = "extractSWFToolStripMenuItem";
+            this.extractSWFToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.extractSWFToolStripMenuItem.Text = "Extract SWF";
+            this.extractSWFToolStripMenuItem.Click += new System.EventHandler(this.extractSWFToolStripMenuItem_Click);
+            // 
+            // replaceSWFToolStripMenuItem
+            // 
+            this.replaceSWFToolStripMenuItem.Name = "replaceSWFToolStripMenuItem";
+            this.replaceSWFToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.replaceSWFToolStripMenuItem.Text = "Replace SWF";
+            this.replaceSWFToolStripMenuItem.Click += new System.EventHandler(this.replaceSWFToolStripMenuItem_Click);
+            // 
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
@@ -1275,13 +1314,6 @@
             this.cloneToolStripMenuItem1.Size = new System.Drawing.Size(105, 22);
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
-            // 
-            // dEBUGOpenPackageEditorWPFToolStripMenuItem
-            // 
-            this.dEBUGOpenPackageEditorWPFToolStripMenuItem.Name = "dEBUGOpenPackageEditorWPFToolStripMenuItem";
-            this.dEBUGOpenPackageEditorWPFToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
-            this.dEBUGOpenPackageEditorWPFToolStripMenuItem.Text = "DEBUG: Open Package Editor (WPF)";
-            this.dEBUGOpenPackageEditorWPFToolStripMenuItem.Click += new System.EventHandler(this.dEBUGOpenPackageEditorWPFToolStripMenuItem_Click);
             // 
             // PackageEditor
             // 
@@ -1459,5 +1491,8 @@
         private System.Windows.Forms.ToolStripMenuItem dEBUGEnumerateAllClassesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dialogueEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dEBUGOpenPackageEditorWPFToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem scaleformSWFToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem extractSWFToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem replaceSWFToolStripMenuItem;
     }
 }

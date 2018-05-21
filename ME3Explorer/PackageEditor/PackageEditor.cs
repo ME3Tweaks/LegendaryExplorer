@@ -12,6 +12,7 @@ using ME3Explorer.Unreal.Classes;
 using System.Text;
 using ME3Explorer.SharedUI;
 using Gibbed.IO;
+using System.Globalization;
 
 namespace ME3Explorer
 {
@@ -1440,6 +1441,12 @@ namespace ME3Explorer
                 {
                     //disable clone tree on nodes with no children
                     cloneTreeToolStripMenuItem.Enabled = e.Node.Nodes.Count != 0;
+                    if (GetSelected(out int n) && n >= 0)
+                    {
+                        IExportEntry ent = pcc.getExport(n);
+                        //SWF menu
+                        scaleformSWFToolStripMenuItem.Visible = ent.ClassName == "BioSWF" || ent.ClassName == "GFxMovieInfo";
+                    }
                     nodeContextMenuStrip1.Show(MousePosition);
                 }
             }
@@ -2210,6 +2217,99 @@ namespace ME3Explorer
                 DialogEditor.DialogEditor dialogEditor = new DialogEditor.DialogEditor();
                 dialogEditor.LoadFile(pcc.FileName);
                 dialogEditor.Show();
+            }
+        }
+
+        private void extractSWFToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (GetSelected(out int n) && n >= 0)
+            {
+                try
+                {
+                    IExportEntry swfExport = pcc.getExport(n);
+                    var props = swfExport.GetProperties();
+                    string dataPropName = pcc.Game != MEGame.ME1 ? "RawData" : "Data";
+                    ArrayProperty<ByteProperty> rawData = props.GetProp<ArrayProperty<ByteProperty>>(dataPropName);
+                    byte[] data = new byte[rawData.Count];
+                    for (int i = 0; i < rawData.Count; i++)
+                    {
+                        data[i] = rawData[i].Value;
+                    }
+                    SaveFileDialog d = new SaveFileDialog();
+                    d.Title = "Save SWF";
+                    d.FileName = swfExport.GetFullPath + ".swf";
+                    string extension = Path.GetExtension(".swf");
+                    d.Filter = $"*{extension}|*{extension}";
+                    if (d.ShowDialog() == DialogResult.OK)
+                    {
+                        File.WriteAllBytes(d.FileName, data);
+                        MessageBox.Show("Done");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error reading SWF data:\n\n" + ExceptionHandlerDialogWPF.FlattenException(ex));
+                }
+            }
+        }
+
+        private void replaceSWFToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (GetSelected(out int n) && n >= 0)
+            {
+                try
+                {
+                    IExportEntry swfExport = pcc.getExport(n);
+
+                    OpenFileDialog d = new OpenFileDialog();
+                    d.Title = "Replace SWF";
+                    d.FileName = swfExport.GetFullPath + ".swf";
+                    string extension = Path.GetExtension(".swf");
+                    d.Filter = $"*{extension}|*{extension}";
+                    if (d.ShowDialog() == DialogResult.OK)
+                    {
+                        var bytes = File.ReadAllBytes(d.FileName);
+                        var props = swfExport.GetProperties();
+
+                        string dataPropName = pcc.Game != MEGame.ME1 ? "RawData" : "Data";
+                        ArrayProperty<ByteProperty> rawData = props.GetProp<ArrayProperty<ByteProperty>>(dataPropName);
+                        rawData.Clear();
+
+                        //Write SWF data
+                        for (int i = 0; i < bytes.Count(); i++)
+                        {
+                            rawData.Add(new ByteProperty(bytes[i]));
+                        }
+
+                        //Write SWF metadata
+                        if (pcc.Game == MEGame.ME1 || pcc.Game == MEGame.ME2)
+                        {
+                            string sourceFilePropName = pcc.Game != MEGame.ME1 ? "SourceFile" : "SourceFilePath";
+                            StrProperty sourceFilePath = props.GetProp<StrProperty>(sourceFilePropName);
+                            if (sourceFilePath == null)
+                            {
+                                sourceFilePath = new StrProperty(d.FileName, sourceFilePropName);
+                                props.Add(sourceFilePath);
+                            }
+                            sourceFilePath.Value = d.FileName;
+                        }
+
+                        if (pcc.Game == MEGame.ME1)
+                        {
+                            StrProperty sourceFileTimestamp = props.GetProp<StrProperty>("SourceFileTimestamp");
+                            sourceFileTimestamp = File.GetLastWriteTime(d.FileName).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                        }
+                        swfExport.WriteProperties(props);
+                        MessageBox.Show("Done");
+                    }
+
+                    
+                    
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error reading SWF data:\n\n" + ExceptionHandlerDialogWPF.FlattenException(ex));
+                }
             }
         }
     }
