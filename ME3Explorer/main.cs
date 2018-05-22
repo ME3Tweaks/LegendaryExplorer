@@ -38,7 +38,7 @@ namespace ME3Explorer
                 {
                     splashScreen.Show(false);
                 }
-                SetDllDirectory(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "lib")); //required for lzo library dllimports
+                SetDllDirectory(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "lib"));
                 App app = new App();
                 app.InitializeComponent();
                 //will throw exception on some tools when opening over remote desktop.

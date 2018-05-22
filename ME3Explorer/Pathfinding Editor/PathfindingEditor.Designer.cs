@@ -45,10 +45,12 @@ namespace ME3Explorer
             this.savePccToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.savePCCAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.filterByZToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nodesPropertiesPanelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.togglePathfindingNodes = new System.Windows.Forms.ToolStripMenuItem();
             this.toggleActorNodes = new System.Windows.Forms.ToolStripMenuItem();
@@ -94,7 +96,7 @@ namespace ME3Explorer
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.removeFromLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -251,7 +253,7 @@ namespace ME3Explorer
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
             this.loadToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
@@ -259,28 +261,33 @@ namespace ME3Explorer
             // 
             this.savePccToolStripMenuItem.Name = "savePccToolStripMenuItem";
             this.savePccToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.savePccToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.savePccToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.savePccToolStripMenuItem.Text = "Save pcc";
             this.savePccToolStripMenuItem.Click += new System.EventHandler(this.savePccToolStripMenuItem_Click_1);
             // 
             // savePCCAsMenuItem
             // 
             this.savePCCAsMenuItem.Name = "savePCCAsMenuItem";
-            this.savePCCAsMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.savePCCAsMenuItem.Size = new System.Drawing.Size(173, 22);
             this.savePCCAsMenuItem.Text = "Save pcc As";
             this.savePCCAsMenuItem.Click += new System.EventHandler(this.savePCCAsMenuItem_Click);
             // 
             // saveViewToolStripMenuItem
             // 
             this.saveViewToolStripMenuItem.Name = "saveViewToolStripMenuItem";
-            this.saveViewToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveViewToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.saveViewToolStripMenuItem.Text = "Save graph as PNG";
             this.saveViewToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(170, 6);
             // 
             // recentToolStripMenuItem
             // 
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.recentToolStripMenuItem.Text = "Recent";
             // 
             // optionsToolStripMenuItem
@@ -288,6 +295,7 @@ namespace ME3Explorer
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.refreshToolStripMenuItem,
             this.filterByZToolStripMenuItem,
+            this.nodesPropertiesPanelToolStripMenuItem,
             this.toolStripSeparator1,
             this.togglePathfindingNodes,
             this.toggleActorNodes,
@@ -302,7 +310,7 @@ namespace ME3Explorer
             // 
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
             this.refreshToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
             this.refreshToolStripMenuItem.Text = "Refresh";
             this.refreshToolStripMenuItem.ToolTipText = "Reloads the visible layers and resets objects to their listed position.";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
@@ -311,15 +319,23 @@ namespace ME3Explorer
             // 
             this.filterByZToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.filterByZToolStripMenuItem.Name = "filterByZToolStripMenuItem";
-            this.filterByZToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.filterByZToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
             this.filterByZToolStripMenuItem.Text = "Filter by Z";
             this.filterByZToolStripMenuItem.ToolTipText = "Filters visible nodes above or below a Z value.";
             this.filterByZToolStripMenuItem.Click += new System.EventHandler(this.filterByZToolStripMenuItem_Click);
             // 
+            // nodesPropertiesPanelToolStripMenuItem
+            // 
+            this.nodesPropertiesPanelToolStripMenuItem.Name = "nodesPropertiesPanelToolStripMenuItem";
+            this.nodesPropertiesPanelToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.nodesPropertiesPanelToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
+            this.nodesPropertiesPanelToolStripMenuItem.Text = "Toggle Nodes/Properties Panel";
+            this.nodesPropertiesPanelToolStripMenuItem.Click += new System.EventHandler(this.nodesPropertiesPanelToolStripMenuItem_Click);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(217, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(275, 6);
             // 
             // togglePathfindingNodes
             // 
@@ -329,7 +345,7 @@ namespace ME3Explorer
             this.togglePathfindingNodes.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.togglePathfindingNodes.Name = "togglePathfindingNodes";
             this.togglePathfindingNodes.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.togglePathfindingNodes.Size = new System.Drawing.Size(220, 22);
+            this.togglePathfindingNodes.Size = new System.Drawing.Size(278, 22);
             this.togglePathfindingNodes.Text = "Pathfinding Nodes";
             this.togglePathfindingNodes.ToolTipText = "Toggle pathfinding nodes and reachspecs";
             this.togglePathfindingNodes.Click += new System.EventHandler(this.togglePathfindingNodes_Click);
@@ -340,7 +356,7 @@ namespace ME3Explorer
             this.toggleActorNodes.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toggleActorNodes.Name = "toggleActorNodes";
             this.toggleActorNodes.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.toggleActorNodes.Size = new System.Drawing.Size(220, 22);
+            this.toggleActorNodes.Size = new System.Drawing.Size(278, 22);
             this.toggleActorNodes.Text = "Actor Nodes";
             this.toggleActorNodes.ToolTipText = "Toggle showing actors such as static meshes and blocking volumes.";
             this.toggleActorNodes.Click += new System.EventHandler(this.toggleActorNodes_Click);
@@ -351,7 +367,7 @@ namespace ME3Explorer
             this.splinesToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.splinesToolStripMenuItem.Name = "splinesToolStripMenuItem";
             this.splinesToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
-            this.splinesToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.splinesToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
             this.splinesToolStripMenuItem.Text = "Splines";
             this.splinesToolStripMenuItem.ToolTipText = "Toggle showing spline actors and their splinecomponents";
             this.splinesToolStripMenuItem.Click += new System.EventHandler(this.splinesToolStripMenuItem_Click);
@@ -360,7 +376,7 @@ namespace ME3Explorer
             // 
             this.staticMeshCollectionActorsToolStripMenuItem.Enabled = false;
             this.staticMeshCollectionActorsToolStripMenuItem.Name = "staticMeshCollectionActorsToolStripMenuItem";
-            this.staticMeshCollectionActorsToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.staticMeshCollectionActorsToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
             this.staticMeshCollectionActorsToolStripMenuItem.Text = "StaticMeshCollectionActors";
             this.staticMeshCollectionActorsToolStripMenuItem.ToolTipText = "Locations of items in StaticMeshActorCollections. Enabling these options can lead" +
     " to a significant decrease in editor performance.";
@@ -370,7 +386,7 @@ namespace ME3Explorer
             this.sFXCombatZonesToolStripMenuItem.Enabled = false;
             this.sFXCombatZonesToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.sFXCombatZonesToolStripMenuItem.Name = "sFXCombatZonesToolStripMenuItem";
-            this.sFXCombatZonesToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.sFXCombatZonesToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
             this.sFXCombatZonesToolStripMenuItem.Text = "SFXCombatZones";
             // 
             // toolsToolStripMenuItem
@@ -483,6 +499,7 @@ namespace ME3Explorer
             this.openInCurveEditorToolStripMenuItem,
             this.cloneToolStripMenuItem,
             this.breakLinksToolStripMenuItem,
+            this.removeFromLevelToolStripMenuItem,
             this.changeNodeTypeToolStripMenuItem,
             this.createReachSpecToolStripMenuItem,
             this.setGraphPositionAsNodeLocationToolStripMenuItem,
@@ -490,7 +507,7 @@ namespace ME3Explorer
             this.generateNewRandomGUIDToolStripMenuItem,
             this.addToSFXCombatZoneToolStripMenuItem});
             this.rightMouseButtonMenu.Name = "contextMenuStrip1";
-            this.rightMouseButtonMenu.Size = new System.Drawing.Size(298, 224);
+            this.rightMouseButtonMenu.Size = new System.Drawing.Size(298, 268);
             // 
             // openInPackageEditorToolStripMenuItem
             // 
@@ -703,10 +720,13 @@ namespace ME3Explorer
             this.addObjectToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.addObjectToolStripMenuItem.Text = "Add Object";
             // 
-            // toolStripSeparator2
+            // removeFromLevelToolStripMenuItem
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.removeFromLevelToolStripMenuItem.Name = "removeFromLevelToolStripMenuItem";
+            this.removeFromLevelToolStripMenuItem.Size = new System.Drawing.Size(297, 22);
+            this.removeFromLevelToolStripMenuItem.Text = "Remove from level";
+            this.removeFromLevelToolStripMenuItem.ToolTipText = "Removes this export from the TheWorld.Level binary data.";
+            this.removeFromLevelToolStripMenuItem.Click += new System.EventHandler(this.removeFromLevelToolStripMenuItem_Click);
             // 
             // PathfindingEditor
             // 
@@ -816,5 +836,7 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openInCurveEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem nodesPropertiesPanelToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removeFromLevelToolStripMenuItem;
     }
 }

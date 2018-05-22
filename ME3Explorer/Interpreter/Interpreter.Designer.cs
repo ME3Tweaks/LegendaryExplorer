@@ -166,12 +166,11 @@ namespace ME3Explorer
             // 
             // setPropertyButton
             // 
-            this.setPropertyButton.AutoSize = false;
             this.setPropertyButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.setPropertyButton.Image = ((System.Drawing.Image)(resources.GetObject("setPropertyButton.Image")));
             this.setPropertyButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.setPropertyButton.Name = "setPropertyButton";
-            this.setPropertyButton.Size = new System.Drawing.Size(75, 22);
+            this.setPropertyButton.Size = new System.Drawing.Size(58, 22);
             this.setPropertyButton.Text = "Set Value";
             this.setPropertyButton.Visible = false;
             this.setPropertyButton.Click += new System.EventHandler(this.setProperty_Click);
@@ -252,13 +251,13 @@ namespace ME3Explorer
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.hb1);
-            this.splitContainer1.Panel1MinSize = 205;
+            this.splitContainer1.Panel1MinSize = 195;
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.treeView1);
             this.splitContainer1.Size = new System.Drawing.Size(992, 351);
-            this.splitContainer1.SplitterDistance = 205;
+            this.splitContainer1.SplitterDistance = 195;
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 3;
             this.splitContainer1.SplitterMoving += new System.Windows.Forms.SplitterCancelEventHandler(this.splitContainer1_SplitterMoving);
@@ -275,7 +274,7 @@ namespace ME3Explorer
             this.hb1.MinBytesPerLine = 4;
             this.hb1.Name = "hb1";
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(205, 351);
+            this.hb1.Size = new System.Drawing.Size(195, 351);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
             this.hb1.VScrollBarVisible = true;
@@ -289,7 +288,7 @@ namespace ME3Explorer
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(781, 351);
+            this.treeView1.Size = new System.Drawing.Size(791, 351);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);

@@ -130,6 +130,7 @@ namespace ME3Explorer.Unreal.Classes
             public Vector3 Origin;
             public Vector3 Box;
             public float R;
+            public int RB_BodySetup;
             public float[] unk;
             public byte[] raw;
             public TreeNode t;
@@ -229,12 +230,13 @@ namespace ME3Explorer.Unreal.Classes
             b.Origin.Z = BitConverter.ToSingle(memory, readerpos + 8);
             b.Box.X = BitConverter.ToSingle(memory, readerpos + 12);
             b.Box.Y = BitConverter.ToSingle(memory, readerpos + 16);
-            b.Box.Z = BitConverter.ToSingle(memory, readerpos + 20);            
+            b.Box.Z = BitConverter.ToSingle(memory, readerpos + 20);
             b.R = BitConverter.ToSingle(memory, readerpos + 24);
-            b.unk = new float[7];
-            int pos = readerpos + 28;
+            b.RB_BodySetup = BitConverter.ToInt32(memory, readerpos + 28);
+            b.unk = new float[6];
+            int pos = readerpos + 32;
             string unk = "Unknown{";
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 6; i++)
             {
                 b.unk[i] = BitConverter.ToSingle(memory, pos);
                 unk += b.unk[i] + " ";
@@ -250,6 +252,7 @@ namespace ME3Explorer.Unreal.Classes
             res.Nodes.Add(new TreeNode("Origin: {" + b.Origin.X + " ; " + b.Origin.Y + " ; " + b.Origin.Z + "}"));
             res.Nodes.Add(new TreeNode("Box: {" + b.Box.X + " ; " + b.Box.Y + " ; " + b.Box.Z + "}"));
             res.Nodes.Add(new TreeNode("Radius: {" + b.R + "}"));
+            res.Nodes.Add(new TreeNode("RB_BodySetup: {" + (pcc.getEntry(b.RB_BodySetup)?.GetFullPath ?? "None") + "}"));
             res.Nodes.Add(unk);
             b.t = res;
             Mesh.Bounds = b;

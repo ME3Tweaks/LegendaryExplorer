@@ -30,11 +30,12 @@ namespace ME3Explorer.Pathfinding_Editor
         static Color objectColor = Color.FromArgb(219, 39, 217);//purple
         static Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
         public static Brush sfxCombatZoneBrush = new SolidBrush(Color.FromArgb(255, 0, 0));
+        public static Brush highlightedCoverSlotBrush = new SolidBrush(Color.FromArgb(219, 137,6));
 
         protected static Brush mostlyTransparentBrush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
         protected static Brush actorNodeBrush = new SolidBrush(Color.FromArgb(80, 80, 80));
         protected static Brush splineNodeBrush = new SolidBrush(Color.FromArgb(255, 60, 200));
-        protected static Brush pathfindingNodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
+        public static Brush pathfindingNodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
         protected static Brush dynamicPathfindingNodeBrush = new SolidBrush(Color.FromArgb(46, 184, 25));
         protected static Brush dynamicPathnodefindingNodeBrush = new SolidBrush(Color.FromArgb(80, 184, 25));
 

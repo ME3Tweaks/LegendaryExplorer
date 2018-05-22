@@ -184,8 +184,6 @@ namespace ME3Explorer
             interpreter1.hideHexBox();
         }
 
-        //public static readonly string OptionsPath = Path.Combine(PathfindingEditorDataFolder, "PathfindingEditorOptions.JSON");
-
         private bool selectedByNode;
         private int selectedIndex;
         private PathingZoomController zoomController;
@@ -253,57 +251,6 @@ namespace ME3Explorer
             //}
         }
 
-        /* private void LoadSequences()
-         {
-             treeView1.Nodes.Clear();
-             Dictionary<string, TreeNode> prefabs = new Dictionary<string, TreeNode>();
-             for (int i = 0; i < pcc.ExportCount; i++)
-             {
-                 IExportEntry exportEntry = pcc.getExport(i);
-                 if (exportEntry.ClassName == "Sequence" && !pcc.getObjectClass(exportEntry.idxLink).Contains("Sequence"))
-                 {
-                     treeView1.Nodes.Add(FindSequences(pcc, i, !(exportEntry.ObjectName == "Main_Sequence")));
-                 }
-                 if (exportEntry.ClassName == "Prefab")
-                 {
-                     prefabs.Add(exportEntry.ObjectName, new TreeNode(exportEntry.GetFullPath));
-                 }
-             }
-             if (prefabs.Count > 0)
-             {
-                 for (int i = 0; i < pcc.ExportCount; i++)
-                 {
-                     IExportEntry exportEntry = pcc.getExport(i);
-                     if (exportEntry.ClassName == "PrefabSequence" && pcc.getObjectClass(exportEntry.idxLink) == "Prefab")
-                     {
-                         string parentName = pcc.getObjectName(exportEntry.idxLink);
-                         if (prefabs.ContainsKey(parentName))
-                         {
-                             prefabs[parentName].Nodes.Add(FindSequences(pcc, i, false));
-                         }
-                     }
-                 }
-                 foreach (var item in prefabs.Values)
-                 {
-                     if (item.Nodes.Count > 0)
-                     {
-                         treeView1.Nodes.Add(item);
-                     }
-                 }
-             }
-             if (treeView1.Nodes.Count == 0)
-             {
-                 MessageBox.Show("No Sequences found!");
-                 return;
-             }
-
-             treeView1.ExpandAll();
-             if (treeView1.Nodes.Count > 0)
-             {
-                 treeView1.TopNode = treeView1.Nodes[0];
-             }
-         }*/
-
         private bool LoadPathingNodesFromLevel()
         {
             if (pcc == null)
@@ -329,21 +276,7 @@ namespace ME3Explorer
                     byte[] data = exp.Data;
 
                     //find start of class binary (end of props)
-                    int start = 0x4;
-                    while (start < data.Length)
-                    {
-                        uint nameindex = BitConverter.ToUInt32(data, start);
-                        if (nameindex < pcc.Names.Count && pcc.Names[(int)nameindex] == "None")
-                        {
-                            //found it
-                            start += 8;
-                            break;
-                        }
-                        else
-                        {
-                            start += 4;
-                        }
-                    }
+                    int start = exp.propsEnd();
 
                     //Console.WriteLine("Found start of binary at " + start.ToString("X8"));
 
@@ -674,6 +607,7 @@ namespace ME3Explorer
         private bool IsReloadSelecting = false;
         private bool SplineNodesActive;
         private PathfindingNodeMaster CurrentlySelectedSplinePoint;
+        private List<int> CurrentlyHighlightedCoverlinkNodes = new List<int>();
 
         public void LoadObject(int index)
         {
@@ -989,6 +923,38 @@ namespace ME3Explorer
             return; //hopefully won't see you
         }
 
+        private void HighlightCoverlinkSlots(IExportEntry coverlink)
+        {
+
+            ArrayProperty<StructProperty> props = coverlink.GetProperty<ArrayProperty<StructProperty>>("Slots");
+            if (props != null)
+            {
+                CurrentlyHighlightedCoverlinkNodes = new List<int>();
+                CurrentlyHighlightedCoverlinkNodes.Add(coverlink.Index);
+
+                foreach (StructProperty slot in props)
+                {
+                    ObjectProperty coverslot = slot.GetProp<ObjectProperty>("SlotMarker");
+                    if (coverslot != null)
+                    {
+                        CurrentlyHighlightedCoverlinkNodes.Add(coverslot.Value - 1);
+                    }
+                }
+                foreach (PathfindingNodeMaster pnm in Objects)
+                {
+                    if (pnm.export == coverlink)
+                    {
+                        pnm.shape.Brush = PathfindingNodeMaster.sfxCombatZoneBrush;
+                        continue;
+                    }
+                    if (CurrentlyHighlightedCoverlinkNodes.Contains(pnm.export.Index))
+                    {
+                        pnm.shape.Brush = PathfindingNodeMaster.highlightedCoverSlotBrush;
+                    }
+                }
+            }
+        }
+
         public void CreateConnections()
         {
             if (Objects != null && Objects.Count != 0)
@@ -1043,6 +1009,15 @@ namespace ME3Explorer
             int n = activeExportsListbox.SelectedIndex;
             if (n == -1 || n < 0 || n >= CurrentObjects.Count())
                 return;
+
+            //Clear coverlinknode highlighting.
+            foreach (PathfindingNodeMaster pnm in Objects)
+            {
+                if (CurrentlyHighlightedCoverlinkNodes.Contains(pnm.export.Index))
+                {
+                    pnm.shape.Brush = pathfindingNodeBrush;
+                }
+            }
             PathfindingNodeMaster s = Objects.FirstOrDefault(o => o.Index == CurrentObjects[n]);
             if (s != null)
             {
@@ -1055,7 +1030,26 @@ namespace ME3Explorer
                 s.Select();
                 if (!selectedByNode)
                     graphEditor.Camera.AnimateViewToPanToBounds(s.GlobalFullBounds, 0);
+
+                switch (s.export.ClassName)
+                {
+                    case "CoverLink":
+                        HighlightCoverlinkSlots(s.export);
+                        break;
+                    case "CoverSlotMarker":
+                        StructProperty sp = s.export.GetProperty<StructProperty>("OwningSlot");
+                        if (sp != null)
+                        {
+                            ObjectProperty op = sp.GetProp<ObjectProperty>("Link");
+                            if (op != null && op.Value - 1 < pcc.ExportCount)
+                            {
+                                HighlightCoverlinkSlots(pcc.Exports[op.Value - 1]);
+                            }
+                        }
+                        break;
+                }
             }
+
             GetProperties(pcc.getExport(CurrentObjects[n]));
             selectedIndex = n;
             selectedByNode = false;
@@ -1254,16 +1248,20 @@ namespace ME3Explorer
         private void addCombatZoneRef(IExportEntry nodeExp, IExportEntry combatZoneExp)
         {
             //Adds a combat zone to the list of Volumes. Creates Volumes if it doesnt exist yet.
-            ArrayProperty<StructProperty> volumes = nodeExp.GetProperty<ArrayProperty<StructProperty>>("Volumes");
+            PropertyCollection props = nodeExp.GetProperties();
+            ArrayProperty<StructProperty> volumes = props.GetProp<ArrayProperty<StructProperty>>("Volumes");
             if (volumes == null)
             {
                 //we need to add it as a property
-                interpreter1.AddProperty("Volumes"); //Assuming interpreter shows current item.
-                volumes = nodeExp.GetProperty<ArrayProperty<StructProperty>>("Volumes");
+                volumes = new ArrayProperty<StructProperty>(ArrayType.Struct, "Volumes");
+                props.Add(volumes);
             }
+
+            return;
+            //StructProperty actorRef = new StructProperty("")
             byte[] actorRef = new byte[20]; //5 ints
                                             //GUID of combat zone
-            StructProperty guid = combatZoneExp.GetProperty<StructProperty>("CombatZoneGUID");
+            StructProperty guid = combatZoneExp.GetProperty<StructProperty>("CombatZoneGuid");
             int a = guid.GetProp<IntProperty>("A");
             int b = guid.GetProp<IntProperty>("D");
             int c = guid.GetProp<IntProperty>("C");
@@ -1531,21 +1529,7 @@ namespace ME3Explorer
             byte[] data = persistentlevel.Data;
 
             //find start of class binary (end of props)
-            int start = 0x4;
-            while (start < data.Length)
-            {
-                uint nameindex = BitConverter.ToUInt32(data, start);
-                if (nameindex < pcc.Names.Count && pcc.Names[(int)nameindex] == "None")
-                {
-                    //found it
-                    start += 8;
-                    break;
-                }
-                else
-                {
-                    start += 4;
-                }
-            }
+            int start = persistentlevel.propsEnd();
 
             uint exportid = BitConverter.ToUInt32(data, start);
             start += 4;
@@ -2498,72 +2482,73 @@ namespace ME3Explorer
             RefreshView();
         }
 
-        public static nodeType getType(string s)
+        public static NodeType getType(string s)
         {
             int ret = -1;
             for (int i = 0; i < Types.Length; i++)
                 if (s == Types[i])
                     ret = i;
-            return (nodeType)ret;
+            return (NodeType)ret;
         }
 
         public static int findEndOfProps(IExportEntry export)
         {
-            IMEPackage pcc = export.FileRef;
-            byte[] memory = export.Data;
-            int readerpos = export.GetPropertyStart();
-            bool run = true;
-            while (run)
-            {
-                PropHeader p = new PropHeader();
-                if (readerpos > memory.Length || readerpos < 0)
-                {
-                    //nothing else to interpret.
-                    run = false;
-                    readerpos = -1;
-                    continue;
-                }
-                p.name = BitConverter.ToInt32(memory, readerpos);
-                if (!pcc.isName(p.name))
-                    run = false;
-                else
-                {
-                    if (pcc.getNameEntry(p.name) != "None")
-                    {
-                        p.type = BitConverter.ToInt32(memory, readerpos + 8);
-                        nodeType type = getType(pcc.getNameEntry(p.type));
-                        bool isUnknownType = type == nodeType.Unknown;
-                        if (!pcc.isName(p.type) || isUnknownType)
-                            run = false;
-                        else
-                        {
-                            p.size = BitConverter.ToInt32(memory, readerpos + 16);
-                            readerpos += p.size + 24;
+            return export.propsEnd();
+            //IMEPackage pcc = export.FileRef;
+            //byte[] memory = export.Data;
+            //int readerpos = export.GetPropertyStart();
+            //bool run = true;
+            //while (run)
+            //{
+            //    PropHeader p = new PropHeader();
+            //    if (readerpos > memory.Length || readerpos < 0)
+            //    {
+            //        //nothing else to interpret.
+            //        run = false;
+            //        readerpos = -1;
+            //        continue;
+            //    }
+            //    p.name = BitConverter.ToInt32(memory, readerpos);
+            //    if (!pcc.isName(p.name))
+            //        run = false;
+            //    else
+            //    {
+            //        if (pcc.getNameEntry(p.name) != "None")
+            //        {
+            //            p.type = BitConverter.ToInt32(memory, readerpos + 8);
+            //            nodeType type = getType(pcc.getNameEntry(p.type));
+            //            bool isUnknownType = type == nodeType.Unknown;
+            //            if (!pcc.isName(p.type) || isUnknownType)
+            //                run = false;
+            //            else
+            //            {
+            //                p.size = BitConverter.ToInt32(memory, readerpos + 16);
+            //                readerpos += p.size + 24;
 
-                            if (getType(pcc.getNameEntry(p.type)) == nodeType.StructProperty) //StructName
-                                readerpos += 8;
-                            if (pcc.Game == MEGame.ME3)
-                            {
-                                if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)//Boolbyte
-                                    readerpos++;
-                                if (getType(pcc.getNameEntry(p.type)) == nodeType.ByteProperty)//byteprop
-                                    readerpos += 8;
-                            }
-                            else
-                            {
-                                if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)
-                                    readerpos += 4;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        readerpos += 8;
-                        run = false;
-                    }
-                }
-            }
-            return readerpos;
+            //                if (getType(pcc.getNameEntry(p.type)) == nodeType.StructProperty) //StructName
+            //                    readerpos += 8;
+            //                if (pcc.Game == MEGame.ME3)
+            //                {
+            //                    if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)//Boolbyte
+            //                        readerpos++;
+            //                    if (getType(pcc.getNameEntry(p.type)) == nodeType.ByteProperty)//byteprop
+            //                        readerpos += 8;
+            //                }
+            //                else
+            //                {
+            //                    if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)
+            //                        readerpos += 4;
+            //                }
+            //            }
+            //        }
+            //        else
+            //        {
+            //            readerpos += 8;
+            //            run = false;
+            //        }
+            //    }
+            //}
+            //return readerpos;
         }
 
         private void toSFXNavLargeBoostNodeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3247,95 +3232,165 @@ namespace ME3Explorer
             CurveEd.CurveEditor c = new CurveEd.CurveEditor(pcc.getExport(l));
             c.Show();
         }
-    }
 
-    public class PathingZoomController
-    {
-        public static float MIN_SCALE = .005f;
-        public static float MAX_SCALE = 15;
-        PCamera camera;
-
-        public PathingZoomController(PathingGraphEditor graphEditor)
+        private void nodesPropertiesPanelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.camera = graphEditor.Camera;
-            camera.ViewScale = 0.5f;
-            camera.Canvas.ZoomEventHandler = null;
-            camera.MouseWheel += OnMouseWheel;
-            graphEditor.KeyDown += OnKeyDown;
+            splitContainer2.Panel2Collapsed = !splitContainer2.Panel2Collapsed;
         }
 
-        public void OnKeyDown(object o, KeyEventArgs e)
+        private void removeFromLevelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (e.Control)
+            if (pcc == null)
             {
-                if (e.KeyCode == Keys.OemMinus)
-                {
-                    scaleView(0.8f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
-                }
-                else if (e.KeyCode == Keys.Oemplus)
-                {
-                    scaleView(1.2f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
-                }
-            }
-        }
-
-        public void OnMouseWheel(object o, PInputEventArgs ea)
-        {
-            scaleView(1.0f + (0.001f * ea.WheelDelta), ea.Position);
-        }
-
-        public void scaleView(float scaleDelta, PointF p)
-        {
-            float currentScale = camera.ViewScale;
-            float newScale = currentScale * scaleDelta;
-            if (newScale < MIN_SCALE)
-            {
-                camera.ViewScale = MIN_SCALE;
                 return;
             }
-            if ((MAX_SCALE > 0) && (newScale > MAX_SCALE))
-            {
-                camera.ViewScale = MAX_SCALE;
+
+            int n = CurrentObjects[activeExportsListbox.SelectedIndex];
+            if (n == -1)
                 return;
+
+            AllowRefresh = false;
+            IExportEntry nodeEntry = pcc.Exports[n];
+
+            //This can probably be optimized if we make class that reads this and stores data for us rather than having
+            //to reread everything.
+            foreach (IExportEntry exp in pcc.Exports)
+            {
+                if (exp.ClassName == "Level" && exp.ObjectName == "PersistentLevel")
+                {
+                    //Read persistent level binary
+                    byte[] data = exp.Data;
+
+                    //find start of class binary (end of props)
+                    int start = exp.propsEnd();
+
+                    //Console.WriteLine("Found start of binary at " + start.ToString("X8"));
+
+                    //uint exportid = BitConverter.ToUInt32(data, start);
+                    start += 4; //skip export id
+                    uint numberofitems = BitConverter.ToUInt32(data, start);
+                    int countoffset = start;
+
+                    start += 12; //skip bioworldinfo, 0;
+
+                    int itemcount = 2; //Skip bioworldinfo and class (0) objects
+
+                    while (itemcount < numberofitems)
+                    {
+                        //get header.
+                        uint itemexportid = BitConverter.ToUInt32(data, start);
+                        if (itemexportid == nodeEntry.UIndex)
+                        {
+                            SharedPathfinding.WriteMem(data, countoffset, BitConverter.GetBytes(numberofitems - 1));
+                            byte[] destarray = new byte[data.Length - 4];
+                            Buffer.BlockCopy(data, 0, destarray, 0, start);
+                            Buffer.BlockCopy(data, start + 4, destarray, start, data.Length - (start + 4));
+                            Debug.WriteLine(data.Length);
+                            Debug.WriteLine("DA " + destarray.Length);
+                            exp.Data = destarray;
+                            AllowRefresh = true;
+                            RefreshView();
+                            Application.DoEvents();
+                            MessageBox.Show("Removed item from level.");
+                            return;
+                        }
+                        itemcount++;
+                        start += 4;
+                    }
+                    MessageBox.Show("Could not find item in level.");
+                }
             }
-            camera.ScaleViewBy(scaleDelta, p.X, p.Y);
+            //No level was found.
+        }
+
+        public class PathingZoomController
+        {
+            public static float MIN_SCALE = .005f;
+            public static float MAX_SCALE = 15;
+            PCamera camera;
+
+            public PathingZoomController(PathingGraphEditor graphEditor)
+            {
+                this.camera = graphEditor.Camera;
+                camera.ViewScale = 0.5f;
+                camera.Canvas.ZoomEventHandler = null;
+                camera.MouseWheel += OnMouseWheel;
+                graphEditor.KeyDown += OnKeyDown;
+            }
+
+            public void OnKeyDown(object o, KeyEventArgs e)
+            {
+                if (e.Control)
+                {
+                    if (e.KeyCode == Keys.OemMinus)
+                    {
+                        scaleView(0.8f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                    }
+                    else if (e.KeyCode == Keys.Oemplus)
+                    {
+                        scaleView(1.2f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                    }
+                }
+            }
+
+            public void OnMouseWheel(object o, PInputEventArgs ea)
+            {
+                scaleView(1.0f + (0.001f * ea.WheelDelta), ea.Position);
+            }
+
+            public void scaleView(float scaleDelta, PointF p)
+            {
+                float currentScale = camera.ViewScale;
+                float newScale = currentScale * scaleDelta;
+                if (newScale < MIN_SCALE)
+                {
+                    camera.ViewScale = MIN_SCALE;
+                    return;
+                }
+                if ((MAX_SCALE > 0) && (newScale > MAX_SCALE))
+                {
+                    camera.ViewScale = MAX_SCALE;
+                    return;
+                }
+                camera.ScaleViewBy(scaleDelta, p.X, p.Y);
+            }
         }
     }
-}
 
-public static class ExportInputPrompt
-{
-    public static IExportEntry ShowDialog(string text, string caption, IMEPackage pcc)
+    public static class ExportInputPrompt
     {
-        Form prompt = new Form()
+        public static IExportEntry ShowDialog(string text, string caption, IMEPackage pcc)
         {
-            Width = 500,
-            Height = 150,
-            FormBorderStyle = FormBorderStyle.FixedDialog,
-            Text = caption,
-            StartPosition = FormStartPosition.CenterScreen
-        };
-        Label textLabel = new Label() { Left = 50, Top = 20, Text = text };
-        //TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 400 };
-        ComboBox items = new ComboBox() { Left = 50, Top = 50, Width = 400 };
-        items.DropDownStyle = ComboBoxStyle.DropDownList;
-        List<IExportEntry> exports = new List<IExportEntry>();
-        foreach (IExportEntry exp in pcc.Exports)
-        {
-            if (exp.ObjectName == "StaticMeshCollectionActor")
+            Form prompt = new Form()
             {
-                items.Items.Add(exp.Index + " " + exp.ObjectName + "_" + exp.indexValue);
-                exports.Add(exp);
+                Width = 500,
+                Height = 150,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                Text = caption,
+                StartPosition = FormStartPosition.CenterScreen
+            };
+            Label textLabel = new Label() { Left = 50, Top = 20, Text = text };
+            //TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 400 };
+            ComboBox items = new ComboBox() { Left = 50, Top = 50, Width = 400 };
+            items.DropDownStyle = ComboBoxStyle.DropDownList;
+            List<IExportEntry> exports = new List<IExportEntry>();
+            foreach (IExportEntry exp in pcc.Exports)
+            {
+                if (exp.ObjectName == "StaticMeshCollectionActor")
+                {
+                    items.Items.Add(exp.Index + " " + exp.ObjectName + "_" + exp.indexValue);
+                    exports.Add(exp);
+                }
             }
+
+            Button confirmation = new Button() { Text = "Ok", Left = 350, Width = 100, Top = 70, DialogResult = DialogResult.OK };
+            confirmation.Click += (sender, e) => { prompt.Close(); };
+            prompt.Controls.Add(items);
+            prompt.Controls.Add(confirmation);
+            prompt.Controls.Add(textLabel);
+            prompt.AcceptButton = confirmation;
+
+            return prompt.ShowDialog() == DialogResult.OK ? exports[items.SelectedIndex] : null;
         }
-
-        Button confirmation = new Button() { Text = "Ok", Left = 350, Width = 100, Top = 70, DialogResult = DialogResult.OK };
-        confirmation.Click += (sender, e) => { prompt.Close(); };
-        prompt.Controls.Add(items);
-        prompt.Controls.Add(confirmation);
-        prompt.Controls.Add(textLabel);
-        prompt.AcceptButton = confirmation;
-
-        return prompt.ShowDialog() == DialogResult.OK ? exports[items.SelectedIndex] : null;
     }
 }

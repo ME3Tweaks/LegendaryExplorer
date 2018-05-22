@@ -113,16 +113,6 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap coalesced_editor_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("coalesced_editor_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap conditionals_editor_64x64 {
             get {
                 object obj = ResourceManager.GetObject("conditionals_editor_64x64", resourceCulture);
@@ -176,16 +166,6 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap fxa_editor_64x64 {
             get {
                 object obj = ResourceManager.GetObject("fxa_editor_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap GUIDcache_editor_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("GUIDcache_editor_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -336,16 +316,6 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap package_editor_64x64 {
             get {
                 object obj = ResourceManager.GetObject("package_editor_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap pathfinding_editor {
-            get {
-                object obj = ResourceManager.GetObject("pathfinding_editor", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

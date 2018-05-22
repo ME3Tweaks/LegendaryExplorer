@@ -47,7 +47,6 @@ namespace ME3Explorer
             this.deleteArrayElementButton = new System.Windows.Forms.ToolStripButton();
             this.moveUpButton = new System.Windows.Forms.ToolStripButton();
             this.moveDownButton = new System.Windows.Forms.ToolStripButton();
-            this.addPropButton = new System.Windows.Forms.ToolStripButton();
             this.findBox = new System.Windows.Forms.ToolStripTextBox();
             this.findButton = new System.Windows.Forms.ToolStripButton();
             this.viewModeDropDownList = new System.Windows.Forms.ToolStripComboBox();
@@ -87,13 +86,12 @@ namespace ME3Explorer
             this.deleteArrayElementButton,
             this.moveUpButton,
             this.moveDownButton,
-            this.addPropButton,
             this.findBox,
             this.findButton,
             this.viewModeDropDownList});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(992, 40);
+            this.toolStrip1.Size = new System.Drawing.Size(992, 44);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -115,10 +113,9 @@ namespace ME3Explorer
             this.saveHexButton.Image = ((System.Drawing.Image)(resources.GetObject("saveHexButton.Image")));
             this.saveHexButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.saveHexButton.Name = "saveHexButton";
-            this.saveHexButton.Size = new System.Drawing.Size(216, 37);
+            this.saveHexButton.Size = new System.Drawing.Size(216, 41);
             this.saveHexButton.Text = "Save Hex Changes";
             this.saveHexButton.ToolTipText = "Saves hex changes in-memory (not to disk)";
-            this.saveHexButton.Click += new System.EventHandler(this.saveHexButton_Click);
             // 
             // toggleHexWidthButton
             // 
@@ -126,7 +123,7 @@ namespace ME3Explorer
             this.toggleHexWidthButton.Image = ((System.Drawing.Image)(resources.GetObject("toggleHexWidthButton.Image")));
             this.toggleHexWidthButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toggleHexWidthButton.Name = "toggleHexWidthButton";
-            this.toggleHexWidthButton.Size = new System.Drawing.Size(210, 37);
+            this.toggleHexWidthButton.Size = new System.Drawing.Size(210, 41);
             this.toggleHexWidthButton.Text = "Toggle Hex Width";
             this.toggleHexWidthButton.Click += new System.EventHandler(this.toggleHexWidthButton_Click);
             // 
@@ -153,7 +150,7 @@ namespace ME3Explorer
             // proptext
             // 
             this.proptext.Name = "proptext";
-            this.proptext.Size = new System.Drawing.Size(120, 44);
+            this.proptext.Size = new System.Drawing.Size(120, 39);
             this.proptext.Visible = false;
             this.proptext.KeyUp += new System.Windows.Forms.KeyEventHandler(this.proptext_KeyUp);
             // 
@@ -162,7 +159,7 @@ namespace ME3Explorer
             this.objectNameLabel.BackColor = System.Drawing.SystemColors.ControlDark;
             this.objectNameLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.objectNameLabel.Name = "objectNameLabel";
-            this.objectNameLabel.Size = new System.Drawing.Size(0, 41);
+            this.objectNameLabel.Size = new System.Drawing.Size(0, 0);
             this.objectNameLabel.Visible = false;
             // 
             // propDropdown
@@ -172,17 +169,16 @@ namespace ME3Explorer
             this.propDropdown.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
             this.propDropdown.MaxDropDownItems = 20;
             this.propDropdown.Name = "propDropdown";
-            this.propDropdown.Size = new System.Drawing.Size(200, 44);
+            this.propDropdown.Size = new System.Drawing.Size(200, 40);
             this.propDropdown.Visible = false;
             // 
             // setPropertyButton
             // 
-            this.setPropertyButton.AutoSize = false;
             this.setPropertyButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.setPropertyButton.Image = ((System.Drawing.Image)(resources.GetObject("setPropertyButton.Image")));
             this.setPropertyButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.setPropertyButton.Name = "setPropertyButton";
-            this.setPropertyButton.Size = new System.Drawing.Size(130, 36);
+            this.setPropertyButton.Size = new System.Drawing.Size(118, 36);
             this.setPropertyButton.Text = "Set Value";
             this.setPropertyButton.Visible = false;
             this.setPropertyButton.Click += new System.EventHandler(this.setProperty_Click);
@@ -193,7 +189,7 @@ namespace ME3Explorer
             this.addArrayElementButton.Image = ((System.Drawing.Image)(resources.GetObject("addArrayElementButton.Image")));
             this.addArrayElementButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.addArrayElementButton.Name = "addArrayElementButton";
-            this.addArrayElementButton.Size = new System.Drawing.Size(218, 41);
+            this.addArrayElementButton.Size = new System.Drawing.Size(218, 36);
             this.addArrayElementButton.Text = "Add Array Element";
             this.addArrayElementButton.Visible = false;
             this.addArrayElementButton.Click += new System.EventHandler(this.addArrayElementButton_Click);
@@ -204,7 +200,7 @@ namespace ME3Explorer
             this.deleteArrayElementButton.Image = ((System.Drawing.Image)(resources.GetObject("deleteArrayElementButton.Image")));
             this.deleteArrayElementButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.deleteArrayElementButton.Name = "deleteArrayElementButton";
-            this.deleteArrayElementButton.Size = new System.Drawing.Size(245, 41);
+            this.deleteArrayElementButton.Size = new System.Drawing.Size(245, 36);
             this.deleteArrayElementButton.Text = "Delete Array Element";
             this.deleteArrayElementButton.Visible = false;
             this.deleteArrayElementButton.Click += new System.EventHandler(this.deleteElement_Click);
@@ -215,7 +211,7 @@ namespace ME3Explorer
             this.moveUpButton.Image = ((System.Drawing.Image)(resources.GetObject("moveUpButton.Image")));
             this.moveUpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.moveUpButton.Name = "moveUpButton";
-            this.moveUpButton.Size = new System.Drawing.Size(40, 37);
+            this.moveUpButton.Size = new System.Drawing.Size(40, 36);
             this.moveUpButton.Text = "▲";
             this.moveUpButton.ToolTipText = "Move element up";
             this.moveUpButton.Visible = false;
@@ -227,26 +223,16 @@ namespace ME3Explorer
             this.moveDownButton.Image = ((System.Drawing.Image)(resources.GetObject("moveDownButton.Image")));
             this.moveDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.moveDownButton.Name = "moveDownButton";
-            this.moveDownButton.Size = new System.Drawing.Size(40, 37);
+            this.moveDownButton.Size = new System.Drawing.Size(40, 36);
             this.moveDownButton.Text = "▼";
             this.moveDownButton.ToolTipText = "Move element down";
             this.moveDownButton.Visible = false;
             this.moveDownButton.Click += new System.EventHandler(this.moveDownButton_Click);
             // 
-            // addPropButton
-            // 
-            this.addPropButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.addPropButton.Image = ((System.Drawing.Image)(resources.GetObject("addPropButton.Image")));
-            this.addPropButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.addPropButton.Name = "addPropButton";
-            this.addPropButton.Size = new System.Drawing.Size(159, 37);
-            this.addPropButton.Text = "Add Property";
-            this.addPropButton.Click += new System.EventHandler(this.addPropButton_Click);
-            // 
             // findBox
             // 
             this.findBox.Name = "findBox";
-            this.findBox.Size = new System.Drawing.Size(80, 40);
+            this.findBox.Size = new System.Drawing.Size(80, 39);
             this.findBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.findButton_Pressed);
             // 
             // findButton
@@ -255,7 +241,7 @@ namespace ME3Explorer
             this.findButton.Image = ((System.Drawing.Image)(resources.GetObject("findButton.Image")));
             this.findButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.findButton.Name = "findButton";
-            this.findButton.Size = new System.Drawing.Size(65, 37);
+            this.findButton.Size = new System.Drawing.Size(65, 36);
             this.findButton.Text = "Find";
             this.findButton.Click += new System.EventHandler(this.FindButton_Click);
             // 
@@ -276,19 +262,19 @@ namespace ME3Explorer
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 40);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 44);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.hb1);
-            this.splitContainer1.Panel1MinSize = 205;
+            this.splitContainer1.Panel1MinSize = 195;
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.treeView1);
-            this.splitContainer1.Size = new System.Drawing.Size(992, 321);
-            this.splitContainer1.SplitterDistance = 205;
+            this.splitContainer1.Size = new System.Drawing.Size(992, 317);
+            this.splitContainer1.SplitterDistance = 195;
             this.splitContainer1.TabIndex = 3;
             this.splitContainer1.SplitterMoving += new System.Windows.Forms.SplitterCancelEventHandler(this.splitContainer1_SplitterMoving);
             // 
@@ -304,7 +290,7 @@ namespace ME3Explorer
             this.hb1.MinBytesPerLine = 4;
             this.hb1.Name = "hb1";
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(205, 321);
+            this.hb1.Size = new System.Drawing.Size(195, 317);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
             this.hb1.VScrollBarVisible = true;
@@ -318,7 +304,7 @@ namespace ME3Explorer
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(783, 321);
+            this.treeView1.Size = new System.Drawing.Size(793, 317);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterExpand);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -400,7 +386,6 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripLabel objectNameLabel;
         private System.Windows.Forms.ToolStripButton moveUpButton;
         private System.Windows.Forms.ToolStripButton moveDownButton;
-        private System.Windows.Forms.ToolStripButton addPropButton;
         private System.Windows.Forms.ToolStripButton toggleHexWidthButton;
         public System.Windows.Forms.ToolStripButton saveHexButton;
         public System.Windows.Forms.ToolStripButton exportButton;

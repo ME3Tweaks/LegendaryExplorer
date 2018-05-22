@@ -30,7 +30,7 @@ namespace ME3Explorer
         public override void setToolList(IEnumerable<Tool> enumerable)
         {
             base.setToolList(enumerable);
-            SortedDictionary<string, List<Tool>> subCats = new SortedDictionary<string, List<Tool>>();
+            SortedDictionary<string, List<Tool>> subCats = new SortedDictionary<string, List<Tool>>(new ToolCategoryComparer());
             foreach (var tool in tools)
             {
                 if (!subCats.ContainsKey(tool.subCategory))
@@ -52,6 +52,29 @@ namespace ME3Explorer
         protected override void Button_MouseLeave(object sender, MouseEventArgs e)
         {
             base.Button_MouseLeave(sender, e);
+        }
+
+        /// <summary>
+        /// Compares unicode string by bytes
+        /// </summary>
+        class ToolCategoryComparer : Comparer<string>
+        {
+            public override int Compare(string x, string y)
+            {
+                var a = Encoding.Unicode.GetBytes(x);
+                var b = Encoding.Unicode.GetBytes(y);
+                var len = Math.Min((int)a.Length, (int)b.Length);
+                for (var i = 0; i < len; i++)
+                {
+                    var c = a[i].CompareTo(b[i]);
+                    if (c != 0)
+                    {
+                        return c;
+                    }
+                }
+
+                return a.Length.CompareTo(b.Length);
+            }
         }
     }
 }

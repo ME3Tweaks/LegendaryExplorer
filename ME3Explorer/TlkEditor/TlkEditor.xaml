@@ -10,8 +10,6 @@
         <Menu Name="mainMenu" >
             <MenuItem Header="_Help">
                 <MenuItem Name="HowTo" Header="How To Use?" Click="HowTo_Click" />
-                <MenuItem Header="Report Bugs"  Click="ReportBugs_Click" />
-                <MenuItem Header="Forums" Click="Forums_Click"/>
             </MenuItem>
         </Menu>
 

@@ -612,10 +612,12 @@ namespace ME3Explorer.Unreal
 
         private static ClassInfo generateClassInfo(int index, ME3Package pcc)
         {
-            ClassInfo info = new ClassInfo();
-            info.baseClass = pcc.Exports[index].ClassParent;
-            info.exportIndex = index;
-            info.pccPath = new string(pcc.FileName.Skip(pcc.FileName.LastIndexOf("BIOGame") + 8).ToArray());
+            ClassInfo info = new ClassInfo
+            {
+                baseClass = pcc.Exports[index].ClassParent,
+                exportIndex = index,
+                pccPath = new string(pcc.FileName.Skip(pcc.FileName.LastIndexOf("BIOGame") + 8).ToArray())
+            };
             foreach (ME3ExportEntry entry in pcc.Exports)
             {
                 if (entry.idxLink - 1 == index && entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"

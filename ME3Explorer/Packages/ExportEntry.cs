@@ -99,6 +99,7 @@ namespace ME3Explorer.Packages
             }
         }
 
+        //NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
         protected byte[] _data;
         /// <summary>
         /// RETURNS A CLONE
@@ -113,6 +114,7 @@ namespace ME3Explorer.Packages
                 DataSize = value.Length;
                 DataChanged = true;
                 properties = null;
+                propsEndOffset = null;
             }
         }
 
@@ -223,10 +225,16 @@ namespace ME3Explorer.Packages
             return result;
         }
 
+        private int? propsEndOffset;
         public int propsEnd()
         {
-            var props = GetProperties();
-            return props.endOffset;
+            if (propsEndOffset.HasValue)
+            {
+                return propsEndOffset.Value;
+            }
+            var props = GetProperties(true);
+            propsEndOffset = props.endOffset;
+            return propsEndOffset.Value;
         }
 
         public byte[] getBinaryData()
@@ -240,9 +248,10 @@ namespace ME3Explorer.Packages
         }
     }
 
+    [DebuggerDisplay("UDKExportEntry | {UIndex} = {GetFullPath}")]
     public class UDKExportEntry : ExportEntry, IExportEntry
     {
-        public UDKExportEntry(UDKPackage pccFile, Stream stream) : base(pccFile)
+        public UDKExportEntry(UDKPackage udkFile, Stream stream) : base(udkFile)
         {
             headerOffset = (uint)stream.Position;
             stream.Seek(44, SeekOrigin.Current);
@@ -273,10 +282,12 @@ namespace ME3Explorer.Packages
 
         public IExportEntry Clone()
         {
-            UDKExportEntry newExport = new UDKExportEntry(FileRef as UDKPackage);
-            newExport.header = (byte[])this.header.Clone();
-            newExport.headerOffset = 0;
-            newExport.Data = this.Data;
+            UDKExportEntry newExport = new UDKExportEntry(FileRef as UDKPackage)
+            {
+                header = this.header.TypedClone(),
+                headerOffset = 0,
+                Data = this.Data
+            };
             int index = 0;
             string name = ObjectName;
             foreach (IExportEntry ent in FileRef.Exports)
@@ -292,6 +303,7 @@ namespace ME3Explorer.Packages
         }
     }
 
+    [DebuggerDisplay("ME3ExportEntry | {UIndex} = {GetFullPath}")]
     public class ME3ExportEntry : ExportEntry, IExportEntry
     {
         public ME3ExportEntry(ME3Package pccFile, Stream stream) : base(pccFile)
@@ -325,10 +337,12 @@ namespace ME3Explorer.Packages
 
         public IExportEntry Clone()
         {
-            ME3ExportEntry newExport = new ME3ExportEntry(FileRef as ME3Package);
-            newExport.header = (byte[])this.header.Clone();
-            newExport.headerOffset = 0;
-            newExport.Data = this.Data;
+            ME3ExportEntry newExport = new ME3ExportEntry(FileRef as ME3Package)
+            {
+                header = this.header.TypedClone(),
+                headerOffset = 0,
+                Data = this.Data
+            };
             int index = 0;
             string name = ObjectName;
             foreach (IExportEntry ent in FileRef.Exports)
@@ -344,6 +358,7 @@ namespace ME3Explorer.Packages
         }
     }
 
+    [DebuggerDisplay("ME2ExportEntry | {UIndex} = {GetFullPath}")]
     public class ME2ExportEntry : ExportEntry, IExportEntry
     {
         public ME2ExportEntry(ME2Package pccFile, Stream stream) : base(pccFile)
@@ -384,10 +399,12 @@ namespace ME3Explorer.Packages
 
         public IExportEntry Clone()
         {
-            ME2ExportEntry newExport = new ME2ExportEntry(FileRef as ME2Package);
-            newExport.header = (byte[])this.header.Clone();
-            newExport.headerOffset = 0;
-            newExport.Data = this.Data;
+            ME2ExportEntry newExport = new ME2ExportEntry(FileRef as ME2Package)
+            {
+                header = this.header.TypedClone(),
+                headerOffset = 0,
+                Data = this.Data
+            };
             int index = 0;
             string name = ObjectName;
             foreach (IExportEntry ent in FileRef.Exports)
@@ -403,6 +420,7 @@ namespace ME3Explorer.Packages
         }
     }
 
+    [DebuggerDisplay("ME1ExportEntry | {UIndex} = {GetFullPath}")]
     public class ME1ExportEntry : ExportEntry, IExportEntry
     {
         public ME1ExportEntry(ME1Package pccFile, Stream stream) : base(pccFile)
@@ -429,7 +447,7 @@ namespace ME3Explorer.Packages
             stream.Seek(end, SeekOrigin.Begin);
             if (ClassName.Contains("Property"))
             {
-                ReadsFromConfig = Data.Length > 25 ? (Data[25] & 64) != 0 : false;
+                ReadsFromConfig = Data.Length > 25 && (Data[25] & 64) != 0;
             } else
             {
                 ReadsFromConfig = false;
@@ -442,10 +460,12 @@ namespace ME3Explorer.Packages
 
         public IExportEntry Clone()
         {
-            ME1ExportEntry newExport = new ME1ExportEntry(FileRef as ME1Package);
-            newExport.header = this.header.TypedClone();
-            newExport.headerOffset = 0;
-            newExport.Data = this.Data;
+            ME1ExportEntry newExport = new ME1ExportEntry(FileRef as ME1Package)
+            {
+                header = this.header.TypedClone(),
+                headerOffset = 0,
+                Data = this.Data
+            };
             int index = 0;
             string name = ObjectName;
             foreach (IExportEntry ent in FileRef.Exports)

@@ -495,63 +495,72 @@ namespace ME3Explorer.Unreal
                     break;
                 case PropertyType.StructProperty:
                     string structType = pcc.getNameEntry(p.Value.IntValue);
-                    if (structType == "Color")
+                    switch (structType)
                     {
-                        ColorProp cp = new ColorProp();
-                        cp.name = structType;
-                        cp.nameindex = p.Value.IntValue;
-                        System.Drawing.Color color = System.Drawing.Color.FromArgb(BitConverter.ToInt32(p.raw, 32));
-                        cp.Alpha = color.A;
-                        cp.Red = color.R;
-                        cp.Green = color.G;
-                        cp.Blue = color.B;
-                        pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, cp, typeof(ColorProp), false, true);
+                        case "Color":
+                            System.Drawing.Color color = System.Drawing.Color.FromArgb(BitConverter.ToInt32(p.raw, 32));
+                            ColorProp cp = new ColorProp
+                            {
+                                name = structType,
+                                nameindex = p.Value.IntValue,
+                                Alpha = color.A,
+                                Red = color.R,
+                                Green = color.G,
+                                Blue = color.B
+                            };
+                            pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, cp, typeof(ColorProp), false, true);
+                            break;
+                        case "Vector":
+                            VectorProp vp = new VectorProp
+                            {
+                                name = structType,
+                                nameindex = p.Value.IntValue,
+                                X = BitConverter.ToSingle(p.raw, 32),
+                                Y = BitConverter.ToSingle(p.raw, 36),
+                                Z = BitConverter.ToSingle(p.raw, 40)
+                            };
+                            pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, vp, typeof(VectorProp), false, true);
+                            break;
+                        case "Rotator":
+                            RotatorProp rp = new RotatorProp
+                            {
+                                name = structType,
+                                nameindex = p.Value.IntValue,
+                                Pitch = BitConverter.ToInt32(p.raw, 32) * 360f / 65536f,
+                                Yaw = BitConverter.ToInt32(p.raw, 36) * 360f / 65536f,
+                                Roll = BitConverter.ToInt32(p.raw, 40) * 360f / 65536f
+                            };
+                            pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, rp, typeof(RotatorProp), false, true);
+                            break;
+                        case "LinearColor":
+                            LinearColorProp lcp = new LinearColorProp
+                            {
+                                name = structType,
+                                nameindex = p.Value.IntValue,
+                                Red = BitConverter.ToSingle(p.raw, 32),
+                                Green = BitConverter.ToSingle(p.raw, 36),
+                                Blue = BitConverter.ToSingle(p.raw, 40),
+                                Alpha = BitConverter.ToSingle(p.raw, 44)
+                            };
+                            pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, lcp, typeof(VectorProp), false, true);
+                            break;
+                        default:
+                            byte[] buf = new byte[p.Value.Array.Count()];
+                            for (int i = 0; i < p.Value.Array.Count(); i++)
+                                buf[i] = (byte)p.Value.Array[i].IntValue;
+                            List<int> buf2 = new List<int>();
+                            for (int i = 0; i < p.Value.Array.Count() / 4; i++)
+                                buf2.Add(BitConverter.ToInt32(buf, i * 4));
+                            StructProp ppp = new StructProp
+                            {
+                                name = structType,
+                                nameindex = p.Value.IntValue,
+                                data = buf2.ToArray()
+                            };
+                            pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, ppp, typeof(StructProp), false, true);
+                            break;
                     }
-                    else if (structType == "Vector")
-                    {
-                        VectorProp vp = new VectorProp();
-                        vp.name = structType;
-                        vp.nameindex = p.Value.IntValue;
-                        vp.X = BitConverter.ToSingle(p.raw, 32);
-                        vp.Y = BitConverter.ToSingle(p.raw, 36);
-                        vp.Z = BitConverter.ToSingle(p.raw, 40);
-                        pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, vp, typeof(VectorProp), false, true);
-                    }
-                    else if (structType == "Rotator")
-                    {
-                        RotatorProp rp = new RotatorProp();
-                        rp.name = structType;
-                        rp.nameindex = p.Value.IntValue;
-                        rp.Pitch = BitConverter.ToInt32(p.raw, 32) * 360f / 65536f;
-                        rp.Yaw = BitConverter.ToInt32(p.raw, 36) * 360f / 65536f;
-                        rp.Roll = BitConverter.ToInt32(p.raw, 40) * 360f / 65536f;
-                        pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, rp, typeof(RotatorProp), false, true);
-                    }
-                    else if (structType == "LinearColor")
-                    {
-                        LinearColorProp lcp = new LinearColorProp();
-                        lcp.name = structType;
-                        lcp.nameindex = p.Value.IntValue;
-                        lcp.Red = BitConverter.ToSingle(p.raw, 32);
-                        lcp.Green = BitConverter.ToSingle(p.raw, 36);
-                        lcp.Blue = BitConverter.ToSingle(p.raw, 40);
-                        lcp.Alpha = BitConverter.ToSingle(p.raw, 44);
-                        pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, lcp, typeof(VectorProp), false, true);
-                    }
-                    else
-                    {
-                        StructProp ppp = new StructProp();
-                        ppp.name = structType;
-                        ppp.nameindex = p.Value.IntValue;
-                        byte[] buf = new byte[p.Value.Array.Count()];
-                        for (int i = 0; i < p.Value.Array.Count(); i++)
-                            buf[i] = (byte)p.Value.Array[i].IntValue;
-                        List<int> buf2 = new List<int>();
-                        for (int i = 0; i < p.Value.Array.Count() / 4; i++)
-                            buf2.Add(BitConverter.ToInt32(buf, i * 4));
-                        ppp.data = buf2.ToArray();
-                        pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, ppp, typeof(StructProp), false, true);
-                    }
+
                     break;
                 default:
                     pg = new CustomProperty(pcc.getNameEntry(p.Name), cat, p.Value.IntValue, typeof(int), false, true);
@@ -608,10 +617,14 @@ namespace ME3Explorer.Unreal
             }
             //int type = (int)BitConverter.ToInt64(raw, pos + 8);            
             int type = (int)BitConverter.ToInt32(raw, pos + 8);
-
-            p.Size = BitConverter.ToInt32(raw, pos + 16);
-            if (!pcc.isName(type) || p.Size < 0 || p.Size >= raw.Length)
+            if (!pcc.isName(type)){
                 return result;
+            }
+            p.Size = BitConverter.ToInt32(raw, pos + 16);
+            if (p.Size < 0 || p.Size >= raw.Length)
+            {
+                return result;
+            }
             string tp = pcc.getNameEntry(type);
             switch (tp)
             {

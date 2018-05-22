@@ -44,17 +44,17 @@ namespace ME3Explorer.CurveEd
         public string Name { get; set; }
         public ObservableCollection<Curve> Curves { get; set; }
 
-        public InterpCurve(IMEPackage _pcc, PropertyReader.Property p)
+        public InterpCurve(IMEPackage _pcc, StructProperty prop)
         {
             pcc = _pcc;
 
             Curves = new ObservableCollection<Curve>();
-            Name = pcc.getNameEntry(p.Name);
-            curveType = (CurveType)Enum.Parse(typeof(CurveType), pcc.getNameEntry(p.Value.IntValue));
+            Name = prop.Name;
+            curveType = (CurveType)Enum.Parse(typeof(CurveType), prop.StructType);
 
             float InVal = 0f;
             CurveMode InterpMode = CurveMode.CIM_Linear;
-            var points = PropertyReader.ReadStructArrayProp(pcc, PropertyReader.getPropOrNull(pcc, p.raw, 32, "Points"));
+            var points = prop.Properties.GetProp<ArrayProperty<StructProperty>>("Points");
             switch (curveType)
             {
                 case CurveType.InterpCurveQuat:
@@ -66,26 +66,24 @@ namespace ME3Explorer.CurveEd
                     LinkedList<CurvePoint> vals = new LinkedList<CurvePoint>();
                     foreach (var point in points)
                     {
-                        foreach (var prop in point)
+                        foreach (var p in point.Properties)
                         {
-                            switch (pcc.getNameEntry(prop.Name))
+                            switch (p.Name)
                             {
                                 case "InVal":
-                                    InVal = BitConverter.ToSingle(prop.raw, 24);
+                                    InVal = (p as FloatProperty).Value;
                                     break;
                                 case "OutVal":
-                                    OutVal = BitConverter.ToSingle(prop.raw, 24);
+                                    OutVal = (p as FloatProperty).Value;
                                     break;
                                 case "ArriveTangent":
-                                    ArriveTangent = BitConverter.ToSingle(prop.raw, 24);
+                                    ArriveTangent = (p as FloatProperty).Value;
                                     break;
                                 case "LeaveTangent":
-                                    LeaveTangent = BitConverter.ToSingle(prop.raw, 24);
+                                    LeaveTangent = (p as FloatProperty).Value;
                                     break;
                                 case "InterpMode":
-                                    InterpMode = (CurveMode)Enum.Parse(typeof(CurveMode), pcc.getNameEntry(prop.Value.IntValue));
-                                    break;
-                                default:
+                                    InterpMode = (CurveMode)Enum.Parse(typeof(CurveMode), (p as EnumProperty).Value);
                                     break;
                             }
                         }
@@ -102,26 +100,24 @@ namespace ME3Explorer.CurveEd
                     LinkedList<CurvePoint> z = new LinkedList<CurvePoint>();
                     foreach (var point in points)
                     {
-                        foreach (var prop in point)
+                        foreach (var p in point.Properties)
                         {
-                            switch (pcc.getNameEntry(prop.Name))
+                            switch (p.Name)
                             {
                                 case "InVal":
-                                    InVal = BitConverter.ToSingle(prop.raw, 24);
+                                    InVal = (p as FloatProperty).Value;
                                     break;
                                 case "OutVal":
-                                    OutValVec = GetVector(prop);
+                                    OutValVec = GetVector(p as StructProperty);
                                     break;
                                 case "ArriveTangent":
-                                    ArriveTangentVec = GetVector(prop);
+                                    ArriveTangentVec = GetVector(p as StructProperty);
                                     break;
                                 case "LeaveTangent":
-                                    LeaveTangentVec = GetVector(prop);
+                                    LeaveTangentVec = GetVector(p as StructProperty);
                                     break;
                                 case "InterpMode":
-                                    InterpMode = (CurveMode)Enum.Parse(typeof(CurveMode), pcc.getNameEntry(prop.Value.IntValue));
-                                    break;
-                                default:
+                                    InterpMode = (CurveMode)Enum.Parse(typeof(CurveMode), (p as EnumProperty).Value);
                                     break;
                             }
                         }
@@ -230,79 +226,95 @@ namespace ME3Explorer.CurveEd
             updatingCurves = false;
         }
 
-        public byte[] Serialize()
+        public StructProperty WriteProperties()
         {
-            MemoryStream m = new MemoryStream();
-            MemoryStream temp = new MemoryStream();
-
-            int count = Curves[0].CurvePoints.Count;
-
             switch (curveType)
             {
                 case CurveType.InterpCurveQuat:
                     break;
                 case CurveType.InterpCurveFloat:
-                    m.WriteStructProperty(pcc, Name, "InterpCurveFloat", () =>
+                    return new StructProperty("InterpCurveFloat", new PropertyCollection
                     {
-                        MemoryStream tmp1 = new MemoryStream();
-                        tmp1.WriteArrayProperty(pcc, "Points", count, () =>
+                        new ArrayProperty<StructProperty>(Curves[0].CurvePoints.Select(point => 
                         {
-                            MemoryStream tmp2 = new MemoryStream();
-                            for (int i = 0; i < count; i++)
+                            return new StructProperty("InterpCurvePointFloat", new PropertyCollection
                             {
-                                tmp2.WriteFloatProperty(pcc, "InVal", Curves[0].CurvePoints.ElementAt(i).InVal);
-                                tmp2.WriteFloatProperty(pcc, "OutVal", Curves[0].CurvePoints.ElementAt(i).OutVal);
-                                tmp2.WriteFloatProperty(pcc, "ArriveTangent", Curves[0].CurvePoints.ElementAt(i).ArriveTangent);
-                                tmp2.WriteFloatProperty(pcc, "LeaveTangent", Curves[0].CurvePoints.ElementAt(i).LeaveTangent);
-                                tmp2.WriteEnumProperty(pcc, "InterpMode", "EInterpCurveMode", Curves[0].CurvePoints.ElementAt(i).InterpMode.ToString());
-                                tmp2.WriteNoneProperty(pcc);
-                            }
-                            return tmp2;
-                        });
-                        tmp1.WriteNoneProperty(pcc);
-                        return tmp1;
-                    });
-                    break;
+                                new FloatProperty(point.InVal, "InVal"),
+                                new FloatProperty(point.OutVal, "OutVal"),
+                                new FloatProperty(point.ArriveTangent, "ArriveTangent"),
+                                new FloatProperty(point.LeaveTangent, "LeaveTangent"),
+                                new EnumProperty(point.InterpMode.ToString(), "EInterpCurveMode", pcc, "InterpMode")
+                            });
+                        }).ToList(), ArrayType.Struct, "Points"),
+                        new NoneProperty()
+                    }, Name);
                 case CurveType.InterpCurveVector:
-                    for (int i = 0; i < count; i++)
+                    var points = new List<StructProperty>();
+                    LinkedListNode<CurvePoint> xNode = Curves[0].CurvePoints.First;
+                    LinkedListNode<CurvePoint> yNode = Curves[1].CurvePoints.First;
+                    LinkedListNode<CurvePoint> zNode = Curves[2].CurvePoints.First;
+                    while (xNode != null)
                     {
-                        m.WriteFloatProperty(pcc, "InVal", Curves[0].CurvePoints.ElementAt(i).InVal);
-                        m.WriteStructPropVector(pcc, "OutVal", Curves[0].CurvePoints.ElementAt(i).OutVal,
-                                                               Curves[1].CurvePoints.ElementAt(i).OutVal,
-                                                               Curves[2].CurvePoints.ElementAt(i).OutVal);
-                        m.WriteStructPropVector(pcc, "ArriveTangent", Curves[0].CurvePoints.ElementAt(i).ArriveTangent,
-                                                                      Curves[1].CurvePoints.ElementAt(i).ArriveTangent,
-                                                                      Curves[2].CurvePoints.ElementAt(i).ArriveTangent);
-                        m.WriteStructPropVector(pcc, "LeaveTangent", Curves[0].CurvePoints.ElementAt(i).LeaveTangent,
-                                                                     Curves[1].CurvePoints.ElementAt(i).LeaveTangent,
-                                                                     Curves[2].CurvePoints.ElementAt(i).LeaveTangent);
-                        m.WriteEnumProperty(pcc, "InterpMode", "EInterpCurveMode", Curves[0].CurvePoints.ElementAt(i).InterpMode.ToString());
-                        m.WriteNoneProperty(pcc);
+                        points.Add(new StructProperty("InterpCurvePointVector", new PropertyCollection
+                        {
+                            new FloatProperty(xNode.Value.InVal, "InVal"),
+                            new StructProperty("Vector", new PropertyCollection
+                            {
+                                new FloatProperty(xNode.Value.OutVal),
+                                new FloatProperty(yNode.Value.OutVal),
+                                new FloatProperty(zNode.Value.OutVal)
+                            }, "OutVal", true),
+                            new StructProperty("Vector", new PropertyCollection
+                            {
+                                new FloatProperty(xNode.Value.ArriveTangent),
+                                new FloatProperty(yNode.Value.ArriveTangent),
+                                new FloatProperty(zNode.Value.ArriveTangent)
+                            }, "ArriveTangent", true),
+                            new StructProperty("Vector", new PropertyCollection
+                            {
+                                new FloatProperty(xNode.Value.LeaveTangent),
+                                new FloatProperty(yNode.Value.LeaveTangent),
+                                new FloatProperty(zNode.Value.LeaveTangent)
+                            }, "LeaveTangent", true),
+                            new EnumProperty(xNode.Value.InterpMode.ToString(), "EInterpCurveMode", pcc, "InterpMode")
+                        }));
+                        xNode = xNode.Next;
+                        yNode = yNode.Next;
+                        zNode = zNode.Next;
                     }
-                    temp.WriteArrayProperty(pcc, "Points", count, m);
-                    temp.WriteNoneProperty(pcc);
-                    m = new MemoryStream();
-                    m.WriteStructProperty(pcc, Name, "InterpCurveVector", temp);
-                    break;
+                    return new StructProperty("InterpCurveVector", new PropertyCollection
+                    {
+                        new ArrayProperty<StructProperty>(points, ArrayType.Struct, "Points")
+                    }, Name);
                 case CurveType.InterpCurveVector2D:
                     break;
                 case CurveType.InterpCurveTwoVectors:
                     break;
                 case CurveType.InterpCurveLinearColor:
                     break;
-                default:
-                    break;
             }
 
-            return m.ToArray();
+            return null;
         }
 
-        private static Vector GetVector(PropertyReader.Property prop)
+        private static Vector GetVector(StructProperty props)
         {
-            Vector vec;
-            vec.X = BitConverter.ToSingle(prop.raw, 32);
-            vec.Y = BitConverter.ToSingle(prop.raw, 36);
-            vec.Z = BitConverter.ToSingle(prop.raw, 40);
+            Vector vec = new Vector();
+            foreach (var prop in props.Properties)
+            {
+                switch (prop.Name)
+                {
+                    case "X":
+                        vec.X = (prop as FloatProperty).Value;
+                        break;
+                    case "Y":
+                        vec.Y = (prop as FloatProperty).Value;
+                        break;
+                    case "Z":
+                        vec.Z = (prop as FloatProperty).Value;
+                        break;
+                }
+            }
             return vec;
         }
 

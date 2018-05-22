@@ -51,8 +51,8 @@ namespace ME3Explorer.Pathfinding_Editor
             if (badBases != null && badBases.Count > 0)
             {
                 //bad bases were found.
-                ListWindow lw = new ListWindow(badBases, badBases.Count + " bad ReachSpecs were found");
-                lw.ShowDialog(this);
+                ListDialog lw = new ListDialog(badBases, "Bad reachspecs found", badBases.Count + " bad ReachSpecs were found.");
+                lw.ShowDialog();
             }
             //throw new NotImplementedException();
             recalculateButton.Enabled = true;
@@ -108,7 +108,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         }
                         //
                     }
-                    
+
                 }
             }
             int i = 0;

@@ -21,6 +21,24 @@ using ME3Explorer.Unreal;
 
 namespace ME3Explorer
 {
+    public static class TreeViewExtension
+    {
+        public static IEnumerable<System.Windows.Forms.TreeNode> FlattenTreeView(this System.Windows.Forms.TreeView tv)
+        {
+            return tv.Nodes.Cast<System.Windows.Forms.TreeNode>().SelectMany(x => FlattenTree(x));
+            
+            List<System.Windows.Forms.TreeNode> FlattenTree(System.Windows.Forms.TreeNode rootNode)
+            {
+                var nodes = new List<System.Windows.Forms.TreeNode> { rootNode };
+                foreach (System.Windows.Forms.TreeNode node in rootNode.Nodes)
+                {
+                    nodes.AddRange(FlattenTree(node));
+                }
+                return nodes;
+            }
+        }
+    }
+
     public static class EnumerableExtensions
     {
         public static int FindOrAdd<T>(this List<T> list, T element)
@@ -147,6 +165,14 @@ namespace ME3Explorer
         public static T[] TypedClone<T>(this T[] src)
         {
             return (T[])src.Clone();
+        }
+
+        /// <summary>
+        /// Creates a shallow copy
+        /// </summary>
+        public static List<T> Clone<T>(this IEnumerable<T> src)
+        {
+            return new List<T>(src);
         }
 
         //https://stackoverflow.com/a/26880541
@@ -441,6 +467,30 @@ namespace ME3Explorer
         public static void WriteStream(this Stream stream, MemoryStream value)
         {
             value.WriteTo(stream);
+        }
+    }
+
+    public static class UnrealExtensions
+    {
+        /// <summary>
+        /// Converts an ME3Explorer index to an unreal index. (0 and up get incremented, less than zero stays the same)
+        /// </summary>
+        public static int ToUnrealIdx(this int i)
+        {
+            return i >= 0 ? i + 1 : i;
+        }
+
+        /// <summary>
+        /// Converts an unreal index to an ME3Explorer index. (greater than zero gets decremented, less than zero stays the same,
+        /// and 0 returns null)
+        /// </summary>
+        public static int? FromUnrealIdx(this int i)
+        {
+            if(i == 0)
+            {
+                return null;
+            }
+            return i > 0 ? i - 1 : i;
         }
     }
 }

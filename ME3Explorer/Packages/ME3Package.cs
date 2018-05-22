@@ -361,6 +361,13 @@ namespace ME3Explorer.Packages
                 binData.OverwriteRange(12, BitConverter.GetBytes(export.DataOffset + export.propsEnd() + 16));
                 export.setBinaryData(binData);
             }
+            //update offsets for pcc-stored movies in texturemovies
+            if (export.ClassName == "TextureMovie" && export.GetProperty<NameProperty>("TextureFileCacheName") == null)
+            {
+                byte[] binData = export.getBinaryData();
+                binData.OverwriteRange(12, BitConverter.GetBytes(export.DataOffset + export.propsEnd() + 16));
+                export.setBinaryData(binData);
+            }
             //update offsets for pcc-stored mips in Textures
             else if (export.ClassName == "Texture2D" || export.ClassName == "LightMapTexture2D" || export.ClassName == "TextureFlipBook")
             {

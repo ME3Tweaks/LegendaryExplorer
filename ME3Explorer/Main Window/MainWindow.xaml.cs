@@ -39,6 +39,8 @@ namespace ME3Explorer
 
         Brush HighlightBrush = Application.Current.FindResource("HighlightColor") as Brush;
         Brush LabelTextBrush = Application.Current.FindResource("LabelTextBrush") as Brush;
+        public static double dpiScaleX = 1;
+        public static double dpiScaleY = 1;
 
         public bool DisableFlyouts
         {
@@ -71,20 +73,7 @@ namespace ME3Explorer
 
             DisableFlyouts = Properties.Settings.Default.DisableToolDescriptions;
             Topmost = Properties.Settings.Default.AlwaysOnTop;
-
-            //PathfindingEditor p = new PathfindingEditor();
-            //p.LoadFile(@"C:\Users\mgame\Desktop\ME3CMM\mods\MP Map Expansion Pack\DLC_MOD_MPMapPack\CookedPCConsole\BioD_OmgJck_400Atrium.pcc");
-            //p.Show();
-
-            //PackageEditor p = new PackageEditor();
-            //p.LoadFile(@"C:\Users\mgame\Desktop\ME3CMM\mods\MP Map Expansion Pack\BioP_Cat004.pcc");
-            //p.Show();
-
-            //p = new PackageEditor();
-            //p.LoadFile(@"C:\Users\mgame\Desktop\ME3CMM\mods\MP Map Expansion Pack\DLC_MOD_MPMapPack\CookedPCConsole\BioP_MPCron.pcc");
-            //p.Show();
-
-
+            
             /*if (!Properties.Settings.Default.DisableDLCCheckOnStart)
             {
                 if (Properties.Settings.Default.FirstRun == true)
@@ -94,7 +83,7 @@ namespace ME3Explorer
                 }
                 else if (ME3Directory.gamePath != null && File.Exists(Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "MassEffect3.exe")))
                 {
-                    var folders = Directory.EnumerateDirectories(ME3Directory.DLCPath).Where(x => !x.Contains("__metadata"));
+                    var folders = Directory.EnumerateDirectories(ME3Directory.DLCPath).Where(x => !x.Contains("__metadata") && x.Contains("DLC_"));
                     var extracted = folders.Where(folder => Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).Any(file => file.EndsWith("pcconsoletoc.bin", StringComparison.OrdinalIgnoreCase)));
                     var unextracted = folders.Except(extracted);
                     if (unextracted.Any())
@@ -275,6 +264,7 @@ namespace ME3Explorer
             {
                 e.Cancel = true;
             }
+            Properties.Settings.Default.DisableDLCCheckOnStart = true;// disableSetupCheckBox.IsChecked ?? false;
             Properties.Settings.Default.DisableToolDescriptions = DisableFlyouts;
             Properties.Settings.Default.AlwaysOnTop = alwaysOnTopCheckBox.IsChecked ?? false;
         }
@@ -626,6 +616,17 @@ namespace ME3Explorer
         private void taskPaneInfoPanel_Close(object sender, EventArgs e)
         {
             closeTaskPaneInfoPanel();
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            PresentationSource source = PresentationSource.FromVisual(this);
+
+            if (source != null)
+            {
+                dpiScaleX = source.CompositionTarget.TransformToDevice.M11;
+                dpiScaleY = source.CompositionTarget.TransformToDevice.M22;
+            }
         }
     }
 }

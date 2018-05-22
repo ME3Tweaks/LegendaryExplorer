@@ -4,6 +4,8 @@ ME3Explorer is a fan-made modding toolkit for _Mass Effect 3_ on the PC. It has 
 This fork is updated by Mgamerz and contains bleeding edge features for developers. Development is done on the [beta branch](https://github.com/Mgamerz/ME3Explorer/tree/Beta), and releases are merged into the [master](https://github.com/Mgamerz/ME3Explorer/tree/master) branch. This fork is not affiliated with the upstream main version of ME3Explorer, however my changes are pulled upstream by some of the developers so you will see features developed here on the main branch. I track changes from mainline and will cherry-pick pull them into this fork at regular intervals.
 
 ## Features
+All releases starting with 3.0.7.0 on this fork are signed with my code signing certificate.
+
 Some highlights of features that were developed on this fork:
  - No more setup menu. Program will boot directly into the toolset.
  - Jumplists in the taskbar allow you to right click to open tools
