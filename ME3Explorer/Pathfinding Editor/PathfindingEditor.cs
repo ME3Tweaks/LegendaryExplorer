@@ -1142,6 +1142,7 @@ namespace ME3Explorer
             selectedByNode = true;
             if (e.Button == MouseButtons.Right)
             {
+                node.Select();
                 addToSFXCombatZoneToolStripMenuItem.DropDownItems.Clear();
                 breakLinksToolStripMenuItem.DropDownItems.Clear();
                 breakLinksToolStripMenuItem.Visible = false;
@@ -1153,6 +1154,8 @@ namespace ME3Explorer
                 createReachSpecToolStripMenuItem.Visible = false;
                 generateNewRandomGUIDToolStripMenuItem.Visible = false;
                 addToSFXCombatZoneToolStripMenuItem.Visible = false;
+                exportsReferencingThisNodeToolStripMenuItem.DropDownItems.Clear();
+                exportsReferencingThisNodeToolStripMenuItem.Visible = false;
                 IExportEntry nodeExp = pcc.Exports[n];
                 var properties = nodeExp.GetProperties();
 
@@ -1220,27 +1223,71 @@ namespace ME3Explorer
                     addToSFXCombatZoneToolStripMenuItem.DropDown = null;
                     breakLinksToolStripMenuItem.DropDown = null;
                     rightMouseButtonMenu.Show(MousePosition);
-                }
-                else if (node is SplinePoint0Node || node is SplinePoint1Node)
-                {
-                    setGraphPositionAsNodeLocationToolStripMenuItem.Visible = false;
-                    setGraphPositionAsSplineLocationXYToolStripMenuItem.Visible = true;
-                    openInCurveEditorToolStripMenuItem.Visible = true;
-                    CurrentlySelectedSplinePoint = node;
-                    addToSFXCombatZoneToolStripMenuItem.DropDown = null;
-                    breakLinksToolStripMenuItem.DropDown = null;
-                    rightMouseButtonMenu.Show(MousePosition);
-                }
-                else if (node is SplineNode)
-                {
-                    changeNodeTypeToolStripMenuItem.Enabled = false;
-                    generateNewRandomGUIDToolStripMenuItem.Enabled = false;
-                    createReachSpecToolStripMenuItem.Enabled = false;
-                    addToSFXCombatZoneToolStripMenuItem.Enabled = false;
-                    addToSFXCombatZoneToolStripMenuItem.DropDown = null;
-                    breakLinksToolStripMenuItem.Enabled = false;
-                    breakLinksToolStripMenuItem.DropDown = null;
-                    rightMouseButtonMenu.Show(MousePosition);
+
+                    if (node is ActorNodes.BioTriggerVolume)
+                    {
+                        List<IExportEntry> sequenceObjectsReferencingThisItem = new List<IExportEntry>();
+                        foreach (IExportEntry export in pcc.Exports)
+                        {
+                            if (export.ClassName == "SFXSeqEvt_Touch" || export.ClassName.StartsWith("SeqVar"))
+                            {
+                                var props = export.GetProperties();
+                                var originator = props.GetProp<ObjectProperty>("Originator");
+                                var objvalue = props.GetProp<ObjectProperty>("ObjValue");
+
+                                if (originator != null && originator.Value == node.export.UIndex)
+                                {
+                                    sequenceObjectsReferencingThisItem.Add(export);
+                                }
+                                if (objvalue != null && objvalue.Value == node.export.UIndex)
+                                {
+                                    sequenceObjectsReferencingThisItem.Add(export);
+                                }
+                            }
+                        }
+
+                        if (sequenceObjectsReferencingThisItem.Count > 0)
+                        {
+                            ToolStripDropDown submenu = new ToolStripDropDown();
+                            foreach (IExportEntry referencing in sequenceObjectsReferencingThisItem)
+                            {
+
+                                ToolStripMenuItem breaklLinkItem = new ToolStripMenuItem(referencing.UIndex + " " + referencing.GetFullPath);
+                                breaklLinkItem.Click += (object o, EventArgs args) =>
+                                {
+                                    //sequence editor load
+                                    var editor = new SequenceEditor(referencing);
+                                    editor.BringToFront();
+                                    editor.Show();
+                                };
+                                submenu.Items.Add(breaklLinkItem);
+                            }
+
+                            exportsReferencingThisNodeToolStripMenuItem.Visible = true;
+                            exportsReferencingThisNodeToolStripMenuItem.DropDown = submenu;
+                        }
+                    }
+                    else if (node is SplinePoint0Node || node is SplinePoint1Node)
+                    {
+                        setGraphPositionAsNodeLocationToolStripMenuItem.Visible = false;
+                        setGraphPositionAsSplineLocationXYToolStripMenuItem.Visible = true;
+                        openInCurveEditorToolStripMenuItem.Visible = true;
+                        CurrentlySelectedSplinePoint = node;
+                        addToSFXCombatZoneToolStripMenuItem.DropDown = null;
+                        breakLinksToolStripMenuItem.DropDown = null;
+                        rightMouseButtonMenu.Show(MousePosition);
+                    }
+                    else if (node is SplineNode)
+                    {
+                        changeNodeTypeToolStripMenuItem.Enabled = false;
+                        generateNewRandomGUIDToolStripMenuItem.Enabled = false;
+                        createReachSpecToolStripMenuItem.Enabled = false;
+                        addToSFXCombatZoneToolStripMenuItem.Enabled = false;
+                        addToSFXCombatZoneToolStripMenuItem.DropDown = null;
+                        breakLinksToolStripMenuItem.Enabled = false;
+                        breakLinksToolStripMenuItem.DropDown = null;
+                        rightMouseButtonMenu.Show(MousePosition);
+                    }
                 }
             }
         }
