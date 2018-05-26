@@ -73,6 +73,7 @@ namespace ME3Explorer
             this.openInCurveEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cloneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.breakLinksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeFromLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeNodeTypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toBioPathPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toSFXNavTurretPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,7 +97,7 @@ namespace ME3Explorer
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.removeFromLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportsReferencingThisNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -505,9 +506,10 @@ namespace ME3Explorer
             this.setGraphPositionAsNodeLocationToolStripMenuItem,
             this.setGraphPositionAsSplineLocationXYToolStripMenuItem,
             this.generateNewRandomGUIDToolStripMenuItem,
-            this.addToSFXCombatZoneToolStripMenuItem});
+            this.addToSFXCombatZoneToolStripMenuItem,
+            this.exportsReferencingThisNodeToolStripMenuItem});
             this.rightMouseButtonMenu.Name = "contextMenuStrip1";
-            this.rightMouseButtonMenu.Size = new System.Drawing.Size(298, 268);
+            this.rightMouseButtonMenu.Size = new System.Drawing.Size(298, 290);
             // 
             // openInPackageEditorToolStripMenuItem
             // 
@@ -535,6 +537,14 @@ namespace ME3Explorer
             this.breakLinksToolStripMenuItem.Name = "breakLinksToolStripMenuItem";
             this.breakLinksToolStripMenuItem.Size = new System.Drawing.Size(297, 22);
             this.breakLinksToolStripMenuItem.Text = "Remove ReachSpecs";
+            // 
+            // removeFromLevelToolStripMenuItem
+            // 
+            this.removeFromLevelToolStripMenuItem.Name = "removeFromLevelToolStripMenuItem";
+            this.removeFromLevelToolStripMenuItem.Size = new System.Drawing.Size(297, 22);
+            this.removeFromLevelToolStripMenuItem.Text = "Remove from level";
+            this.removeFromLevelToolStripMenuItem.ToolTipText = "Removes this export from the TheWorld.Level binary data.";
+            this.removeFromLevelToolStripMenuItem.Click += new System.EventHandler(this.removeFromLevelToolStripMenuItem_Click);
             // 
             // changeNodeTypeToolStripMenuItem
             // 
@@ -720,13 +730,12 @@ namespace ME3Explorer
             this.addObjectToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.addObjectToolStripMenuItem.Text = "Add Object";
             // 
-            // removeFromLevelToolStripMenuItem
+            // exportsReferencingThisNodeToolStripMenuItem
             // 
-            this.removeFromLevelToolStripMenuItem.Name = "removeFromLevelToolStripMenuItem";
-            this.removeFromLevelToolStripMenuItem.Size = new System.Drawing.Size(297, 22);
-            this.removeFromLevelToolStripMenuItem.Text = "Remove from level";
-            this.removeFromLevelToolStripMenuItem.ToolTipText = "Removes this export from the TheWorld.Level binary data.";
-            this.removeFromLevelToolStripMenuItem.Click += new System.EventHandler(this.removeFromLevelToolStripMenuItem_Click);
+            this.exportsReferencingThisNodeToolStripMenuItem.Name = "exportsReferencingThisNodeToolStripMenuItem";
+            this.exportsReferencingThisNodeToolStripMenuItem.Size = new System.Drawing.Size(297, 22);
+            this.exportsReferencingThisNodeToolStripMenuItem.Text = "Exports referencing this node";
+            this.exportsReferencingThisNodeToolStripMenuItem.Visible = false;
             // 
             // PathfindingEditor
             // 
@@ -838,5 +847,6 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem nodesPropertiesPanelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeFromLevelToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportsReferencingThisNodeToolStripMenuItem;
     }
 }
