@@ -2278,7 +2278,7 @@ namespace ME3Explorer
                         //Write SWF data
                         for (int i = 0; i < bytes.Count(); i++)
                         {
-                            rawData.Add(new ByteProperty(bytes[i]));
+                            rawData.Add(new ByteProperty(bytes[i])); //wonder if there is a faster way to do this - it seems kind of slow.
                         }
 
                         //Write SWF metadata
