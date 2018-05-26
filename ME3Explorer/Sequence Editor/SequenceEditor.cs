@@ -370,7 +370,14 @@ namespace ME3Explorer
                 }
                 if (exportEntry.ClassName == "Prefab")
                 {
-                    prefabs.Add(exportEntry.ObjectName, new TreeNode(exportEntry.GetFullPath));
+                    try
+                    {
+                        prefabs.Add(exportEntry.ObjectName, new TreeNode(exportEntry.GetFullPath));
+                    }
+                    catch (Exception)
+                    {
+
+                    }
                 }
             }
             if (prefabs.Count > 0)
@@ -1440,6 +1447,10 @@ namespace ME3Explorer
 
         public override void handleUpdate(List<PackageUpdate> updates)
         {
+            if (Sequence == null)
+            {
+                return; //nothing is loaded
+            }
             IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
                                                                             x.change != PackageChange.ImportAdd &&
                                                                             x.change != PackageChange.Names);

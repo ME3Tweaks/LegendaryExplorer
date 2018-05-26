@@ -558,8 +558,15 @@ namespace ME3Explorer
             {
                 treeView1.SelectedNode = treeView1.Nodes[0];
             }
-            treeView1.EndUpdate();
             memsize = memory.Length;
+
+            //BioTriggerSTream - expand everything as it is awful to have to always expand the tree
+            if (export.ObjectName == "BioTriggerStream")
+            {
+                treeView1.ExpandAll();
+            }
+            treeView1.EndUpdate();
+
         }
 
         public void GenerateTree(TreeNode localRoot, List<PropHeader> headersList)
