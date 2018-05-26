@@ -56,7 +56,6 @@
             this.checkIndexingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.findExportsWithSerialSizeMismatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGCallReadPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGEnumerateAllClassesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGOpenPackageEditorWPFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -147,6 +146,7 @@
             this.replaceSWFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -373,9 +373,9 @@
             this.checkIndexingToolStripMenuItem,
             this.findExportsWithSerialSizeMismatchToolStripMenuItem,
             this.dEBUGCallReadPropertiesToolStripMenuItem,
-            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem,
             this.dEBUGEnumerateAllClassesToolStripMenuItem,
-            this.dEBUGOpenPackageEditorWPFToolStripMenuItem});
+            this.dEBUGOpenPackageEditorWPFToolStripMenuItem,
+            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
             this.debugToolStripMenuItem.Text = "Debugging";
@@ -423,11 +423,6 @@
             this.dEBUGCallReadPropertiesToolStripMenuItem.Text = "DEBUG: Call ReadProperties()";
             this.dEBUGCallReadPropertiesToolStripMenuItem.Visible = false;
             this.dEBUGCallReadPropertiesToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCallReadPropertiesToolStripMenuItem_Click);
-            // 
-            // dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem
-            // 
-            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Name = "dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem";
-            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
             // 
             // dEBUGEnumerateAllClassesToolStripMenuItem
             // 
@@ -1247,7 +1242,7 @@
             this.setAllIndexesInThisTreeTo0ToolStripMenuItem,
             this.scaleformSWFToolStripMenuItem});
             this.nodeContextMenuStrip1.Name = "nodeContextMenuStrip1";
-            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(238, 136);
+            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(238, 114);
             // 
             // cloneToolStripMenuItem
             // 
@@ -1289,14 +1284,14 @@
             // extractSWFToolStripMenuItem
             // 
             this.extractSWFToolStripMenuItem.Name = "extractSWFToolStripMenuItem";
-            this.extractSWFToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.extractSWFToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.extractSWFToolStripMenuItem.Text = "Extract SWF";
             this.extractSWFToolStripMenuItem.Click += new System.EventHandler(this.extractSWFToolStripMenuItem_Click);
             // 
             // replaceSWFToolStripMenuItem
             // 
             this.replaceSWFToolStripMenuItem.Name = "replaceSWFToolStripMenuItem";
-            this.replaceSWFToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.replaceSWFToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.replaceSWFToolStripMenuItem.Text = "Replace SWF";
             this.replaceSWFToolStripMenuItem.Click += new System.EventHandler(this.replaceSWFToolStripMenuItem_Click);
             // 
@@ -1314,6 +1309,13 @@
             this.cloneToolStripMenuItem1.Size = new System.Drawing.Size(105, 22);
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
+            // 
+            // dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem
+            // 
+            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Name = "dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem";
+            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
+            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Text = "DEBUG: Ensure folder of package files has a name";
+            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Click += new System.EventHandler(this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem_Click);
             // 
             // PackageEditor
             // 
@@ -1484,7 +1486,6 @@
         private System.Windows.Forms.ToolStripMenuItem faceFXEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem wWiseBankEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reloadTLKsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem;
         private System.Windows.Forms.TabPage bio2daEditorTab;
         private Bio2DAEditor bio2DAEditor1;
         private System.Windows.Forms.ToolStripMenuItem findExportsWithSerialSizeMismatchToolStripMenuItem;
@@ -1494,5 +1495,6 @@
         private System.Windows.Forms.ToolStripMenuItem scaleformSWFToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem extractSWFToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem replaceSWFToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem;
     }
 }
