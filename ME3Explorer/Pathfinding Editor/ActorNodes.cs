@@ -729,7 +729,6 @@ namespace ME3Explorer.ActorNodes
         }
     }
 
-    //This is technically not a BlockingVolumeNode...
     public class BioTriggerVolume : ActorNode
     {
         public VarTypes type { get; set; }
@@ -774,6 +773,101 @@ namespace ME3Explorer.ActorNodes
                         comment.Text = name;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// This has no outbound connections.
+        /// </summary>
+        public override void CreateConnections(ref List<ActorNode> Objects)
+        {
+
+        }
+    }
+
+    public class BioTriggerStream : ActorNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(0, 0, 255);
+        PointF[] TShape = new PointF[] {
+            new PointF(15, 0), //top left of S, top left of T column
+            new PointF(50, 0),//top right of S
+            new PointF(50, 10), //going down
+            new PointF(25, 10), //going left
+            new PointF(25, 20), //top right of T center
+            new PointF(50, 20), //top right of middle S
+            new PointF(50, 50), //bottom right of S
+
+            new PointF(25, 50),//bottom left of S
+            new PointF(25, 40),
+
+            new PointF(40, 40),
+            new PointF(40, 30),
+            new PointF(25, 30),
+            new PointF(25, 50),//bottom right of center T column
+            new PointF(15, 50),
+            new PointF(15, 30),
+            new PointF(0, 30),
+            new PointF(0, 20),
+            new PointF(15, 20)
+        };
+
+        public BioTriggerStream(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreatePolygon(TShape);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = actorNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            var props = export.GetProperties();
+            this.TranslateBy(x, y);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
+            var exportProps = export.GetProperties();
+            var streamingStates = exportProps.GetProp<ArrayProperty<StructProperty>>("StreamingStates");
+            if (streamingStates != null)
+            {
+                string commentText = "";
+                var tierName = exportProps.GetProp<NameProperty>("TierName");
+                commentText += "Tier: " + tierName + "\n";
+                foreach (StructProperty state in streamingStates)
+                {
+                    //List<string> visibleItems = 
+                    var stateName = state.GetProp<NameProperty>("StateName");
+                    var items = new List<string>();
+                    commentText += "State: " + stateName + "\n";
+                    var visibleChunkNames = state.GetProp<ArrayProperty<NameProperty>>("VisibleChunkNames");
+                    if (visibleChunkNames != null)
+                    {
+                        foreach (NameProperty name in visibleChunkNames)
+                        {
+                            items.Add(name.Value);
+                        }
+                        items.Sort();
+                        foreach (string item in items)
+                        {
+                            commentText += "   " + item + "\n";
+
+                        }
+                    }
+                }
+                comment.Text = commentText;
             }
         }
 

@@ -72,7 +72,7 @@ namespace ME3Explorer
         public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
 
         public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "MantleMarker", "SFXNav_InteractionHenchOmniToolCrouch", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode", "WwiseAmbientSound", "SFXNav_InteractionHenchOmniTool", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionHenchBeckonFront", "SFXNav_InteractionHenchBeckonRear", "SFXNav_InteractionHenchCustom", "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow", "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping", "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard" };
-        public string[] actorNodeClasses = { "BlockingVolume", "DynamicBlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor" };
+        public string[] actorNodeClasses = { "BlockingVolume", "DynamicBlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume", "BioTriggerStream", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor" };
         public string[] splineNodeClasses = { "SplineActor" };
         public string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
         public bool ActorNodesActive = false;
@@ -817,6 +817,9 @@ namespace ME3Explorer
                             case "BioTriggerVolume":
                                 actorNode = new ActorNodes.BioTriggerVolume(index, x, y, pcc, graphEditor);
                                 break;
+                            case "BioTriggerStream":
+                                actorNode = new ActorNodes.BioTriggerStream(index, x, y, pcc, graphEditor);
+                                break;
                             case "SFXGrenadeContainer":
                                 actorNode = new ActorNodes.SFXGrenadeContainer(index, x, y, pcc, graphEditor);
                                 break;
@@ -1227,8 +1230,8 @@ namespace ME3Explorer
                     breakLinksToolStripMenuItem.DropDown = null;
                     rightMouseButtonMenu.Show(MousePosition);
 
-                    if (node is ActorNodes.BioTriggerVolume)
-                    {
+                    //if (node is ActorNodes.BioTriggerVolume)
+                    //{
                         List<IExportEntry> sequenceObjectsReferencingThisItem = new List<IExportEntry>();
                         foreach (IExportEntry export in pcc.Exports)
                         {
@@ -1269,8 +1272,9 @@ namespace ME3Explorer
                             exportsReferencingThisNodeToolStripMenuItem.Visible = true;
                             exportsReferencingThisNodeToolStripMenuItem.DropDown = submenu;
                         }
-                    }
-                    else if (node is SplinePoint0Node || node is SplinePoint1Node)
+                    //}
+
+                    if (node is SplinePoint0Node || node is SplinePoint1Node)
                     {
                         setGraphPositionAsNodeLocationToolStripMenuItem.Visible = false;
                         setGraphPositionAsSplineLocationXYToolStripMenuItem.Visible = true;

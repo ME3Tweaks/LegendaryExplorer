@@ -1858,6 +1858,7 @@ namespace ME3Explorer
             {
                 setNonArrayProperty();
             }
+            RefreshMem();
         }
 
         private void setStructOrArrayProperty()
