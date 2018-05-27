@@ -73,6 +73,7 @@ namespace ME3Explorer.ActorNodes
                 comment.TranslateBy(0, -1 * comment.Height);
             }
         }
+        /*
 
         public void Select()
         {
@@ -88,25 +89,7 @@ namespace ME3Explorer.ActorNodes
         {
             Region ellipseRegion = new Region(shape.PathReference);
             return ellipseRegion.IsVisible(bounds);
-        }
-
-        public void OnMouseEnter(object sender, PInputEventArgs e)
-        {
-            if (draggingVarlink)
-            {
-                ((PPath)((BlockingVolumeNode)sender)[1]).Pen = selectedPen;
-                dragTarget = (PNode)sender;
-            }
-        }
-
-        public void OnMouseLeave(object sender, PInputEventArgs e)
-        {
-            if (draggingVarlink)
-            {
-                ((PPath)((BlockingVolumeNode)sender)[1]).Pen = outlinePen;
-                dragTarget = null;
-            }
-        }
+        }*/
 
         /// <summary>
         /// Creates the reachspec connections from this pathfinding node to others.
@@ -233,6 +216,40 @@ namespace ME3Explorer.ActorNodes
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
             shape.Brush = actorNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            this.TranslateBy(x, y);
+            this.MouseEnter += OnMouseEnter;
+            this.MouseLeave += OnMouseLeave;
+        }
+    }
+
+    public class DynamicBlockingVolume : ActorNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(255, 0, 0);
+
+        public DynamicBlockingVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreateRectangle(0, 0, w, h);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = dynamicPathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
