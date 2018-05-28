@@ -71,7 +71,8 @@ namespace ME3Explorer
         public static Dictionary<string, Dictionary<string, string>> importclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
         public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
 
-        public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "MantleMarker", "SFXNav_InteractionHenchOmniToolCrouch", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode", "WwiseAmbientSound", "SFXNav_InteractionHenchOmniTool", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionHenchBeckonFront", "SFXNav_InteractionHenchBeckonRear", "SFXNav_InteractionHenchCustom", "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow", "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping", "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard" };
+        public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "MantleMarker", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode", "WwiseAmbientSound",
+                "SFXNav_InteractionHenchOmniTool", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionHenchBeckonFront", "SFXNav_InteractionHenchBeckonRear", "SFXNav_InteractionHenchCustom", "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow", "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping", "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionInspectWeapon", "SFXNav_InteractionOmniToolScan" };
         public string[] actorNodeClasses = { "BlockingVolume", "DynamicBlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume", "BioTriggerStream", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor" };
         public string[] splineNodeClasses = { "SplineActor" };
         public string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
@@ -1164,6 +1165,48 @@ namespace ME3Explorer
                 exportsReferencingThisNodeToolStripMenuItem.Visible = false;
                 IExportEntry nodeExp = pcc.Exports[n];
                 var properties = nodeExp.GetProperties();
+                List<IExportEntry> sequenceObjectsReferencingThisItem = new List<IExportEntry>();
+
+                #region SequenceEditorReferences
+                foreach (IExportEntry export in pcc.Exports)
+                {
+                    if (export.ClassName == "SFXSeqEvt_Touch" || export.ClassName.StartsWith("SeqVar") || export.ClassName.StartsWith("SFXSeq"))
+                    {
+                        var props = export.GetProperties();
+                        var originator = props.GetProp<ObjectProperty>("Originator");
+                        var objvalue = props.GetProp<ObjectProperty>("ObjValue");
+
+                        if (originator != null && originator.Value == node.export.UIndex)
+                        {
+                            sequenceObjectsReferencingThisItem.Add(export);
+                        }
+                        if (objvalue != null && objvalue.Value == node.export.UIndex)
+                        {
+                            sequenceObjectsReferencingThisItem.Add(export);
+                        }
+                    }
+                }
+                if (sequenceObjectsReferencingThisItem.Count > 0)
+                {
+                    ToolStripDropDown submenu = new ToolStripDropDown();
+                    foreach (IExportEntry referencing in sequenceObjectsReferencingThisItem)
+                    {
+
+                        ToolStripMenuItem breaklLinkItem = new ToolStripMenuItem(referencing.UIndex + " " + referencing.GetFullPath);
+                        breaklLinkItem.Click += (object o, EventArgs args) =>
+                        {
+                            //sequence editor load
+                            var editor = new SequenceEditor(referencing);
+                            editor.BringToFront();
+                            editor.Show();
+                        };
+                        submenu.Items.Add(breaklLinkItem);
+                    }
+
+                    exportsReferencingThisNodeToolStripMenuItem.Visible = true;
+                    exportsReferencingThisNodeToolStripMenuItem.DropDown = submenu;
+                }
+                #endregion
 
                 if (node is PathfindingNode)
                 {
@@ -1232,46 +1275,9 @@ namespace ME3Explorer
 
                     //if (node is ActorNodes.BioTriggerVolume)
                     //{
-                        List<IExportEntry> sequenceObjectsReferencingThisItem = new List<IExportEntry>();
-                        foreach (IExportEntry export in pcc.Exports)
-                        {
-                            if (export.ClassName == "SFXSeqEvt_Touch" || export.ClassName.StartsWith("SeqVar"))
-                            {
-                                var props = export.GetProperties();
-                                var originator = props.GetProp<ObjectProperty>("Originator");
-                                var objvalue = props.GetProp<ObjectProperty>("ObjValue");
+                        
 
-                                if (originator != null && originator.Value == node.export.UIndex)
-                                {
-                                    sequenceObjectsReferencingThisItem.Add(export);
-                                }
-                                if (objvalue != null && objvalue.Value == node.export.UIndex)
-                                {
-                                    sequenceObjectsReferencingThisItem.Add(export);
-                                }
-                            }
-                        }
-
-                        if (sequenceObjectsReferencingThisItem.Count > 0)
-                        {
-                            ToolStripDropDown submenu = new ToolStripDropDown();
-                            foreach (IExportEntry referencing in sequenceObjectsReferencingThisItem)
-                            {
-
-                                ToolStripMenuItem breaklLinkItem = new ToolStripMenuItem(referencing.UIndex + " " + referencing.GetFullPath);
-                                breaklLinkItem.Click += (object o, EventArgs args) =>
-                                {
-                                    //sequence editor load
-                                    var editor = new SequenceEditor(referencing);
-                                    editor.BringToFront();
-                                    editor.Show();
-                                };
-                                submenu.Items.Add(breaklLinkItem);
-                            }
-
-                            exportsReferencingThisNodeToolStripMenuItem.Visible = true;
-                            exportsReferencingThisNodeToolStripMenuItem.DropDown = submenu;
-                        }
+                        
                     //}
 
                     if (node is SplinePoint0Node || node is SplinePoint1Node)
@@ -1517,6 +1523,7 @@ namespace ME3Explorer
             SaveFileDialog d = new SaveFileDialog();
             string extension = Path.GetExtension(pcc.FileName);
             d.Filter = $"*{extension}|*{extension}";
+            d.FileName = Path.GetFileName(pcc.FileName);
             if (d.ShowDialog() == DialogResult.OK)
             {
                 pcc.save(d.FileName);

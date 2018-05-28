@@ -2550,11 +2550,13 @@ namespace ME3Explorer
         private void deleteArrayElement_Click(object sender, EventArgs e)
         {
             deleteArrayLeaf();
+            RefreshMem();
         }
 
         private void addArrayElementButton_Click(object sender, EventArgs e)
         {
             addArrayLeaf();
+            RefreshMem();
         }
 
         private void treeView1_AfterExpand(object sender, TreeViewEventArgs e)
@@ -2701,6 +2703,7 @@ namespace ME3Explorer
             }
 
             AddProperty(prop, currentInfo);
+            RefreshMem();
         }
 
         public void AddProperty(string prop, ClassInfo nonVanillaClassInfo = null)
@@ -3055,11 +3058,9 @@ namespace ME3Explorer
         private void setValueKeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Return)
-
             {
                 // Then Do your Thang
                 setPropertyButton.PerformClick();
-                RefreshMem();
             }
         }
 
@@ -3072,6 +3073,7 @@ namespace ME3Explorer
             Buffer.BlockCopy(export.Data, 0, newdata, 0, posStart);
             Buffer.BlockCopy(export.Data, posEnd, newdata, posStart, export.Data.Length - posEnd);
             export.Data = newdata;
+            RefreshMem();
         }
     }
 }
