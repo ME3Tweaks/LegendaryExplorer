@@ -73,87 +73,10 @@ namespace ME3Explorer.ActorNodes
                 comment.TranslateBy(0, -1 * comment.Height);
             }
         }
-        /*
 
-        public void Select()
-        {
-            shape.Pen = selectedPen;
-        }
-
-        public void Deselect()
-        {
-            shape.Pen = outlinePen;
-        }
-
-        public override bool Intersects(RectangleF bounds)
-        {
-            Region ellipseRegion = new Region(shape.PathReference);
-            return ellipseRegion.IsVisible(bounds);
-        }*/
-
-        /// <summary>
-        /// Creates the reachspec connections from this pathfinding node to others.
-        /// </summary>
         public virtual void CreateConnections(ref List<ActorNode> Objects)
         {
-            /*var outLinksProp = export.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-            if (outLinksProp != null)
-            {
-                foreach (var prop in outLinksProp)
-                {
-                    int reachspecexport = prop.Value;
-                    ReachSpecs.Add(pcc.Exports[reachspecexport - 1]);
-                }
 
-                foreach (IExportEntry spec in ReachSpecs)
-                {
-                    //Get ending
-                    PNode othernode = null;
-                    int othernodeidx = 0;
-                    PropertyCollection props = spec.GetProperties();
-                    foreach (var prop in props)
-                    {
-                        if (prop.Name == "End")
-                        {
-                            PropertyCollection reachspecprops = (prop as StructProperty).Properties;
-                            foreach (var rprop in reachspecprops)
-                            {
-                                if (rprop.Name == "Actor")
-                                {
-                                    othernodeidx = (rprop as ObjectProperty).Value;
-                                    break;
-                                }
-                            }
-                        }
-                        if (othernodeidx != 0)
-                        {
-                            break;
-                        }
-                    }
-
-                    if (othernodeidx != 0)
-                    {
-                        foreach (ActorNode node in Objects)
-                        {
-                            if (node.export.UIndex == othernodeidx)
-                            {
-                                othernode = node;
-                                break;
-                            }
-                        }
-                    }
-                    if (othernode != null)
-                    {
-                        PPath edge = new PPath();
-                        ((ArrayList)Tag).Add(edge);
-                        ((ArrayList)othernode.Tag).Add(edge);
-                        edge.Tag = new ArrayList();
-                        ((ArrayList)edge.Tag).Add(this);
-                        ((ArrayList)edge.Tag).Add(othernode);
-                        g.edgeLayer.AddChild(edge);
-                    }
-                }
-            }*/
         }
         public virtual void Layout(float x, float y) { }
 
@@ -209,25 +132,35 @@ namespace ME3Explorer.ActorNodes
         {
             string s = export.ObjectName;
 
-            // = getType(s);
-            float w = 50;
-            float h = 50;
-            shape = PPath.CreateRectangle(0, 0, w, h);
+            if (grapheditor.showVolumeBrushes && grapheditor.showVolume_BlockingVolume)
+            {
+                var TShape = get3DBrushShape();
+                if (TShape != null)
+                {
+                    shape = PPath.CreatePolygon(TShape);
+                }
+                else
+                {
+                    shape = PPath.CreateRectangle(0, 0, 50, 50);
+                }
+            }
+            else
+            {
+                shape = PPath.CreateRectangle(0, 0, 50, 50);
+            }
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
             shape.Brush = actorNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
+            this.Bounds = new RectangleF(0, 0, 50, 50);
             val = new SText(idx.ToString());
             val.Pickable = false;
             val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
+            val.X = 50 / 2 - val.Width / 2;
+            val.Y = 50 / 2 - val.Height / 2;
             this.AddChild(val);
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
         }
     }
 
@@ -237,7 +170,6 @@ namespace ME3Explorer.ActorNodes
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(255, 0, 0);
-
         public DynamicBlockingVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
@@ -246,7 +178,22 @@ namespace ME3Explorer.ActorNodes
             // = getType(s);
             float w = 50;
             float h = 50;
-            shape = PPath.CreateRectangle(0, 0, w, h);
+            if (grapheditor.showVolumeBrushes && grapheditor.showVolume_DynamicBlockingVolume)
+            {
+                var TShape = get3DBrushShape();
+                if (TShape != null)
+                {
+                    shape = PPath.CreatePolygon(TShape);
+                }
+                else
+                {
+                    shape = PPath.CreateRectangle(0, 0, 50, 50);
+                }
+            }
+            else
+            {
+                shape = PPath.CreateRectangle(0, 0, 50, 50);
+            }
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
             shape.Brush = dynamicPathfindingNodeBrush;
@@ -260,8 +207,8 @@ namespace ME3Explorer.ActorNodes
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
         }
     }
 
@@ -294,8 +241,8 @@ namespace ME3Explorer.ActorNodes
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
         }
     }
 
@@ -328,8 +275,8 @@ namespace ME3Explorer.ActorNodes
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
         }
     }
 
@@ -363,8 +310,8 @@ namespace ME3Explorer.ActorNodes
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
         }
     }
 
@@ -398,8 +345,8 @@ namespace ME3Explorer.ActorNodes
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
         }
     }
 
@@ -433,8 +380,8 @@ namespace ME3Explorer.ActorNodes
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
         }
     }
 
@@ -467,8 +414,59 @@ namespace ME3Explorer.ActorNodes
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
+        }
+
+
+    }
+
+    public class WwiseAudioVolume : ActorNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(0, 255, 0);
+        PointF[] soundShape = new PointF[] { new PointF(10, 10), new PointF(40, 10), new PointF(40, 0), new PointF(50, 0), new PointF(50, 10), new PointF(40, 10), new PointF(25, 50), new PointF(10, 10), new PointF(0, 10), new PointF(0, 0), new PointF(10, 0) };
+
+        public WwiseAudioVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            if (grapheditor.showVolumeBrushes && grapheditor.showVolume_WwiseAudioVolume)
+            {
+                var volumeShape = get3DBrushShape();
+                if (volumeShape != null)
+                {
+                    shape = PPath.CreatePolygon(volumeShape);
+                }
+                else
+                {
+                    shape = PPath.CreatePolygon(soundShape);
+                }
+            }
+            else
+            {
+                shape = PPath.CreatePolygon(soundShape);
+            }
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = actorNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            this.TranslateBy(x, y);
+
+
         }
 
 
@@ -503,8 +501,8 @@ namespace ME3Explorer.ActorNodes
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
         }
     }
 
@@ -537,8 +535,8 @@ namespace ME3Explorer.ActorNodes
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
         }
     }
 
@@ -571,8 +569,8 @@ namespace ME3Explorer.ActorNodes
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
         }
     }
 
@@ -606,8 +604,8 @@ namespace ME3Explorer.ActorNodes
             comment.Text = s;
             this.AddChild(val);
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
         }
     }
 
@@ -641,8 +639,8 @@ namespace ME3Explorer.ActorNodes
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
         }
     }
 
@@ -676,8 +674,8 @@ namespace ME3Explorer.ActorNodes
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
         }
     }
 
@@ -713,8 +711,8 @@ namespace ME3Explorer.ActorNodes
             this.AddChild(val);
             var props = export.GetProperties();
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
             ObjectProperty sm = export.GetProperty<ObjectProperty>("StaticMesh");
             if (sm != null)
             {
@@ -735,17 +733,33 @@ namespace ME3Explorer.ActorNodes
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(0, 0, 255);
-        PointF[] TShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 15), new PointF(35, 15), new PointF(35, 50), new PointF(15, 50), new PointF(15, 15), new PointF(0, 15) };
+        //private static PointF[] TShape = ;
+        private readonly static PointF[] TShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 15), new PointF(35, 15), new PointF(35, 50), new PointF(15, 50), new PointF(15, 15), new PointF(0, 15) };
 
         public BioTriggerVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, p, grapheditor)
+        : base(idx, p, grapheditor)
         {
             string s = export.ObjectName;
-
-            // = getType(s);
             float w = 50;
             float h = 50;
-            shape = PPath.CreatePolygon(TShape);
+
+            if (grapheditor.showVolumeBrushes && grapheditor.showVolume_BioTriggerVolume)
+            {
+                var brushShape = get3DBrushShape();
+                if (brushShape != null)
+                {
+                    shape = PPath.CreatePolygon(brushShape);
+                }
+                else
+                {
+                    shape = PPath.CreatePolygon(TShape);
+                }
+            }
+            else
+            {
+                shape = PPath.CreatePolygon(TShape);
+            }
+
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
             shape.Brush = actorNodeBrush;
@@ -760,8 +774,8 @@ namespace ME3Explorer.ActorNodes
             this.AddChild(val);
             var props = export.GetProperties();
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
             if (comment != null)
             {
                 NameProperty tagProp = export.GetProperty<NameProperty>("Tag");
@@ -791,7 +805,7 @@ namespace ME3Explorer.ActorNodes
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(0, 0, 255);
-        PointF[] TShape = new PointF[] {
+        private readonly static PointF[] TShape = new PointF[] {
             new PointF(15, 0), //top left of S, top left of T column
             new PointF(50, 0),//top right of S
             new PointF(50, 10), //going down
@@ -822,12 +836,29 @@ namespace ME3Explorer.ActorNodes
             // = getType(s);
             float w = 50;
             float h = 50;
-            shape = PPath.CreatePolygon(TShape);
             outlinePen = new Pen(color);
+            if (grapheditor.showVolumeBrushes && grapheditor.showVolume_BioTriggerStream)
+            {
+                var brushShape = get3DBrushShape();
+                if (brushShape != null)
+                {
+                    shape = PPath.CreatePolygon(brushShape);
+                }
+                else
+                {
+                    shape = PPath.CreatePolygon(TShape);
+                }
+            }
+            else
+            {
+                shape = PPath.CreatePolygon(TShape);
+            }
+
             shape.Pen = outlinePen;
             shape.Brush = actorNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
+
             this.Bounds = new RectangleF(0, 0, w, h);
             val = new SText(idx.ToString());
             val.Pickable = false;
@@ -837,9 +868,11 @@ namespace ME3Explorer.ActorNodes
             this.AddChild(val);
             var props = export.GetProperties();
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
             var exportProps = export.GetProperties();
+
+
             var streamingStates = exportProps.GetProp<ArrayProperty<StructProperty>>("StreamingStates");
             if (streamingStates != null)
             {
@@ -852,6 +885,8 @@ namespace ME3Explorer.ActorNodes
                     var stateName = state.GetProp<NameProperty>("StateName");
                     var items = new List<string>();
                     commentText += "State: " + stateName + "\n";
+                    var inChunkName = state.GetProp<NameProperty>("InChunkName");
+                    commentText += "InChunkName: " + inChunkName + "\n";
                     var visibleChunkNames = state.GetProp<ArrayProperty<NameProperty>>("VisibleChunkNames");
                     if (visibleChunkNames != null)
                     {
@@ -870,6 +905,7 @@ namespace ME3Explorer.ActorNodes
                 comment.Text = commentText;
             }
         }
+
 
         /// <summary>
         /// This has no outbound connections.
@@ -910,8 +946,8 @@ namespace ME3Explorer.ActorNodes
             this.AddChild(val);
             var props = export.GetProperties();
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
         }
     }
 
@@ -946,8 +982,8 @@ namespace ME3Explorer.ActorNodes
             this.AddChild(val);
             var props = export.GetProperties();
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
         }
     }
 
@@ -983,8 +1019,8 @@ namespace ME3Explorer.ActorNodes
             this.AddChild(val);
             var props = export.GetProperties();
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
         }
     }
 
@@ -1020,8 +1056,8 @@ namespace ME3Explorer.ActorNodes
             this.AddChild(val);
             var props = export.GetProperties();
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
+
+
         }
     }
 }

@@ -2652,6 +2652,7 @@ namespace ME3Explorer
             {
                 UpdateMem(pos);
             }
+            RefreshMem();
         }
 
         private void addPropButton_Click(object sender, EventArgs e)

@@ -71,9 +71,9 @@ namespace ME3Explorer
         public static Dictionary<string, Dictionary<string, string>> importclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
         public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
 
-        public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "MantleMarker", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode", "WwiseAmbientSound",
+        public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "MantleMarker", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode",
                 "SFXNav_InteractionHenchOmniTool", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionHenchBeckonFront", "SFXNav_InteractionHenchBeckonRear", "SFXNav_InteractionHenchCustom", "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow", "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping", "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionInspectWeapon", "SFXNav_InteractionOmniToolScan" };
-        public string[] actorNodeClasses = { "BlockingVolume", "DynamicBlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume", "BioTriggerStream", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor" };
+        public string[] actorNodeClasses = { "BlockingVolume", "DynamicBlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume", "BioTriggerStream", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume" };
         public string[] splineNodeClasses = { "SplineActor" };
         public string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
         public bool ActorNodesActive = false;
@@ -85,10 +85,17 @@ namespace ME3Explorer
             AllowRefresh = true;
             classDatabasePath = Application.StartupPath + "//exec//pathfindingclassdb.json";
             InitializeComponent();
+
+            //Stuff that can't be done in designer view easily
+            showVolumesInsteadOfNodesToolStripMenuItem.DropDown.Closing += new ToolStripDropDownClosingEventHandler(DropDown_Closing);
+            ViewingModesMenuItem.DropDown.Closing += new ToolStripDropDownClosingEventHandler(DropDown_Closing);
+
+            //
+
             LoadRecentList();
             RefreshRecent(false);
             pathfindingNodeInfoPanel.PassPathfindingNodeEditorIn(this);
-            graphEditor.BackColor = System.Drawing.Color.FromArgb(167, 167, 167);
+            graphEditor.BackColor = System.Drawing.Color.FromArgb(130, 130, 130);
             graphEditor.AddInputEventListener(new PathfindingMouseListener(this));
             zoomController = new PathingZoomController(graphEditor);
             CurrentFilterType = HeightFilterForm.FILTER_Z_NONE;
@@ -109,6 +116,19 @@ namespace ME3Explorer
                     importclassdb = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(importjson.ToString());
                 }
 
+            }
+        }
+
+        /// <summary>
+        /// This method prevents checking a box in menu system from closing the menu, which can be annoying and tedious
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void DropDown_Closing(object sender, ToolStripDropDownClosingEventArgs e)
+        {
+            if (e.CloseReason == ToolStripDropDownCloseReason.ItemClicked)
+            {
+                e.Cancel = true;
             }
         }
 
@@ -285,40 +305,14 @@ namespace ME3Explorer
                     start += 4;
                     uint numberofitems = BitConverter.ToUInt32(data, start);
                     int countoffset = start;
-                    /*TreeNode countnode = new TreeNode();
-                    countnode.Tag = nodeType.Unknown;
-                    countnode.Text = start.ToString("X4") + " Level Items List Length: " + numberofitems;
-                    countnode.Name = start.ToString();
-                    topLevelTree.Nodes.Add(countnode);*/
-
-
+                    
                     start += 4;
                     uint bioworldinfoexportid = BitConverter.ToUInt32(data, start);
-                    /*TreeNode bionode = new TreeNode();
-                    bionode.Tag = nodeType.StructLeafObject;
-                    bionode.Text = start.ToString("X4") + " BioWorldInfo Export: " + bioworldinfoexportid;
-                    if (bioworldinfoexportid < pcc.ExportCount && bioworldinfoexportid > 0)
-                    {
-                        int me3expindex = (int)bioworldinfoexportid;
-                        IEntry exp = pcc.getEntry(me3expindex);
-                        bionode.Text += " (" + exp.PackageFullName + "." + exp.ObjectName + ")";
-                    }
-
-
-                    bionode.Name = start.ToString();
-                    topLevelTree.Nodes.Add(bionode);*/
 
                     IExportEntry bioworldinfo = pcc.Exports[(int)bioworldinfoexportid - 1];
                     if (bioworldinfo.ObjectName != "BioWorldInfo")
                     {
                         //INVALID!!
-                        /*
-                        TreeNode node = new TreeNode();
-                        node.Tag = nodeType.Unknown;
-                        node.Text = start.ToString("X4") + " Export pointer to bioworldinfo resolves to wrong export Resolved to " + bioworldinfo.ObjectName + " as export " + bioworldinfoexportid;
-                        node.Name = start.ToString();
-                        topLevelTree.Nodes.Add(node);
-                        treeView1.Nodes.Add(topLevelTree);*/
                         return false;
                     }
 
@@ -327,12 +321,6 @@ namespace ME3Explorer
                     if (shouldbezero != 0)
                     {
                         //INVALID!!!
-                        //TreeNode node = new TreeNode();
-                        //node.Tag = nodeType.Unknown;
-                        //node.Text = start.ToString("X4") + " Export may have extra parameters not accounted for yet (did not find 0 at 0x" + start.ToString("X8") + ")";
-                        //node.Name = start.ToString();
-                        //topLevelTree.Nodes.Add(node);
-                        //treeView1.Nodes.Add(topLevelTree);
                         return false;
                     }
                     start += 4;
@@ -359,8 +347,6 @@ namespace ME3Explorer
                                     CurrentObjects.Add(exportEntry.Index);
                                     activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
                                 }
-
-
                             }
 
                             if (ActorNodesActive)
@@ -520,6 +506,7 @@ namespace ME3Explorer
                 }
             }
             RefreshView();
+            graphEditor.Invalidate();
         }
 
         private void staticMeshCollectionActor_ToggleVisibility(ToolStripMenuItem item, IExportEntry exportEntry, bool @checked)
@@ -534,6 +521,7 @@ namespace ME3Explorer
                 VisibleActorCollections.Remove(exportEntry.Index);
             }
             RefreshView();
+            graphEditor.Invalidate();
         }
 
         public void RefreshView()
@@ -546,8 +534,6 @@ namespace ME3Explorer
                 {
                     nodeMaster = Objects.FirstOrDefault(o => o.Index == CurrentObjects[selectednodeindex]);
                 }
-
-
                 graphEditor.nodeLayer.RemoveAllChildren();
                 graphEditor.edgeLayer.RemoveAllChildren();
                 CurrentObjects.Clear();
@@ -595,10 +581,6 @@ namespace ME3Explorer
                 o.MouseDown += node_MouseDown;
             }
             return centerpoint;
-            /*if (SavedPositions.Count == 0 && CurrentFile.Contains("_LOC_INT") && pcc.Game != MEGame.ME1)
-            {
-                LoadDialogueObjects();
-            }*/
         }
 
         public float StartPosEvents;
@@ -708,9 +690,7 @@ namespace ME3Explorer
                             case "SFXDynamicCoverLink":
                                 pathNode = new PathfindingNodes.SFXDynamicCoverLink(index, x, y, pcc, graphEditor);
                                 break;
-                            case "WwiseAmbientSound":
-                                pathNode = new PathfindingNodes.WwiseAmbientSound(index, x, y, pcc, graphEditor);
-                                break;
+                            
                             case "CoverSlotMarker":
                                 pathNode = new PathfindingNodes.CoverSlotMarker(index, x, y, pcc, graphEditor);
                                 break;
@@ -846,6 +826,12 @@ namespace ME3Explorer
                             case "SFXPlaceable_Generator":
                             case "SFXPlaceable_ShieldGenerator":
                                 actorNode = new ActorNodes.SFXPlaceable(index, x, y, pcc, graphEditor);
+                                break;
+                            case "WwiseAmbientSound":
+                                actorNode = new ActorNodes.WwiseAmbientSound(index, x, y, pcc, graphEditor);
+                                break;
+                            case "WwiseAudioVolume":
+                                actorNode = new ActorNodes.WwiseAudioVolume(index, x, y, pcc, graphEditor);
                                 break;
                             default:
                                 actorNode = new PendingActorNode(index, x, y, pcc, graphEditor);
@@ -1478,9 +1464,14 @@ namespace ME3Explorer
 
         private void togglePathfindingNodes_Click(object sender, EventArgs e)
         {
+            int preCount = CurrentObjects.Count;
             PathfindingNodesActive = togglePathfindingNodes.Checked;
             RefreshView();
-
+            int postCount = CurrentObjects.Count;
+            if (preCount == 0 && postCount != 0)
+            {
+                splitContainer2.Panel2Collapsed = false;
+            }
         }
 
         private void graphEditor_Click(object sender, EventArgs e)
@@ -2539,8 +2530,14 @@ namespace ME3Explorer
 
         private void toggleActorNodes_Click(object sender, EventArgs e)
         {
+            int preCount = CurrentObjects.Count;
             ActorNodesActive = toggleActorNodes.Checked;
             RefreshView();
+            int postCount = CurrentObjects.Count;
+            if (preCount == 0 && postCount != 0)
+            {
+                splitContainer2.Panel2Collapsed = false;
+            }
         }
 
         public static NodeType getType(string s)
@@ -3415,6 +3412,53 @@ namespace ME3Explorer
                 }
                 camera.ScaleViewBy(scaleDelta, p.X, p.Y);
             }
+        }
+
+        private void bioTriggerVolumeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            graphEditor.showVolume_BioTriggerVolume = !graphEditor.showVolume_BioTriggerVolume;
+            bioTriggerVolumeToolStripMenuItem.Checked = graphEditor.showVolume_BioTriggerVolume;
+            RefreshView();
+            graphEditor.Invalidate();
+        }
+
+        private void bioTriggerStreamToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            graphEditor.showVolume_BioTriggerStream = !graphEditor.showVolume_BioTriggerStream;
+            bioTriggerStreamToolStripMenuItem.Checked = graphEditor.showVolume_BioTriggerStream;
+            RefreshView();
+            graphEditor.Invalidate();
+        }
+
+        private void blockingVolumeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            graphEditor.showVolume_BlockingVolume= !graphEditor.showVolume_BlockingVolume;
+            blockingVolumeToolStripMenuItem.Checked = graphEditor.showVolume_BlockingVolume;
+            RefreshView();
+            graphEditor.Invalidate();
+        }
+
+        private void dynamicBlockingVolumeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            graphEditor.showVolume_DynamicBlockingVolume = !graphEditor.showVolume_DynamicBlockingVolume;
+            dynamicBlockingVolumeToolStripMenuItem.Checked = graphEditor.showVolume_DynamicBlockingVolume;
+            RefreshView();
+            graphEditor.Invalidate();
+        }
+
+        private void wwiseAudioVolumeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            graphEditor.showVolume_WwiseAudioVolume = !graphEditor.showVolume_WwiseAudioVolume;
+            wwiseAudioVolumeToolStripMenuItem.Checked = graphEditor.showVolume_WwiseAudioVolume;
+            RefreshView();
+        }
+
+        private void enableDisableVolumesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            graphEditor.showVolumeBrushes = !graphEditor.showVolumeBrushes;
+            enableDisableVolumesToolStripMenuItem.Checked = graphEditor.showVolumeBrushes;
+            RefreshView();
+            graphEditor.Invalidate();
         }
     }
 
