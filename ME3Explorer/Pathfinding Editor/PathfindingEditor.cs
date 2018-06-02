@@ -71,7 +71,7 @@ namespace ME3Explorer
         public static Dictionary<string, Dictionary<string, string>> importclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
         public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
 
-        public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "MantleMarker", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode",
+        public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "SFXNav_HarvesterMoveNode", "MantleMarker", "TargetPoint", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode",
                 "SFXNav_InteractionHenchOmniTool", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionHenchBeckonFront", "SFXNav_InteractionHenchBeckonRear", "SFXNav_InteractionHenchCustom", "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow", "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping", "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionInspectWeapon", "SFXNav_InteractionOmniToolScan" };
         public string[] actorNodeClasses = { "BlockingVolume", "DynamicBlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume", "BioTriggerStream", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume" };
         public string[] splineNodeClasses = { "SplineActor" };
@@ -305,7 +305,7 @@ namespace ME3Explorer
                     start += 4;
                     uint numberofitems = BitConverter.ToUInt32(data, start);
                     int countoffset = start;
-                    
+
                     start += 4;
                     uint bioworldinfoexportid = BitConverter.ToUInt32(data, start);
 
@@ -690,7 +690,7 @@ namespace ME3Explorer
                             case "SFXDynamicCoverLink":
                                 pathNode = new PathfindingNodes.SFXDynamicCoverLink(index, x, y, pcc, graphEditor);
                                 break;
-                            
+
                             case "CoverSlotMarker":
                                 pathNode = new PathfindingNodes.CoverSlotMarker(index, x, y, pcc, graphEditor);
                                 break;
@@ -699,6 +699,12 @@ namespace ME3Explorer
                                 break;
                             case "MantleMarker":
                                 pathNode = new PathfindingNodes.MantleMarker(index, x, y, pcc, graphEditor);
+                                break;
+                            case "TargetPoint":
+                                pathNode = new PathfindingNodes.TargetPoint(index, x, y, pcc, graphEditor);
+                                break;
+                            case "SFXNav_HarvesterMoveNode":
+                                pathNode = new PathfindingNodes.SFXNav_HarvesterMoveNode(index, x, y, pcc, graphEditor);
                                 break;
                             case "SFXOperation_ObjectiveSpawnPoint":
                                 pathNode = new PathfindingNodes.SFXObjectiveSpawnPoint(index, x, y, pcc, graphEditor);
@@ -1261,9 +1267,9 @@ namespace ME3Explorer
 
                     //if (node is ActorNodes.BioTriggerVolume)
                     //{
-                        
 
-                        
+
+
                     //}
 
                     if (node is SplinePoint0Node || node is SplinePoint1Node)
@@ -3432,7 +3438,7 @@ namespace ME3Explorer
 
         private void blockingVolumeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            graphEditor.showVolume_BlockingVolume= !graphEditor.showVolume_BlockingVolume;
+            graphEditor.showVolume_BlockingVolume = !graphEditor.showVolume_BlockingVolume;
             blockingVolumeToolStripMenuItem.Checked = graphEditor.showVolume_BlockingVolume;
             RefreshView();
             graphEditor.Invalidate();

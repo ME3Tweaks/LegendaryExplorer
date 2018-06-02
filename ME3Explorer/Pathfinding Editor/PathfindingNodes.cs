@@ -532,15 +532,94 @@ namespace ME3Explorer.PathfindingNodes
         }
     }
 
-    public class WwiseAmbientSound : PathfindingNode
+    //public class WwiseAmbientSound : PathfindingNode
+    //{
+    //    public VarTypes type { get; set; }
+    //    private SText val;
+    //    public string Value { get { return val.Text; } set { val.Text = value; } }
+    //    private static Color color = Color.FromArgb(0, 255, 0);
+    //    PointF[] soundShape = new PointF[] { new PointF(10, 10), new PointF(40, 10), new PointF(40, 0), new PointF(50, 0), new PointF(50, 10), new PointF(40, 10), new PointF(25, 50), new PointF(10, 10), new PointF(0, 10), new PointF(0, 0), new PointF(10, 0) };
+
+    //    public WwiseAmbientSound(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
+    //    {
+    //        string s = export.ObjectName;
+
+    //        // = getType(s);
+    //        float w = 50;
+    //        float h = 50;
+    //        shape = PPath.CreatePolygon(soundShape);
+    //        outlinePen = new Pen(color);
+    //        shape.Pen = outlinePen;
+    //        shape.Brush = pathfindingNodeBrush;
+    //        shape.Pickable = false;
+    //        this.AddChild(shape);
+    //        this.Bounds = new RectangleF(0, 0, w, h);
+    //        val = new SText(idx.ToString());
+    //        val.Pickable = false;
+    //        val.TextAlignment = StringAlignment.Center;
+    //        val.X = w / 2 - val.Width / 2;
+    //        val.Y = h / 2 - val.Height / 2;
+    //        this.AddChild(val);
+    //        var props = export.GetProperties();
+    //        this.TranslateBy(x, y);
+    //    }
+
+    //    /// <summary>
+    //    /// Creates the connection to the annex node.
+    //    /// </summary>
+    //    public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
+    //    {
+    //        var annexZoneLocProp = export.GetProperty<ObjectProperty>("AnnexZoneLocation");
+    //        if (annexZoneLocProp != null)
+    //        {
+    //            //IExportEntry annexzonelocexp = pcc.Exports[annexZoneLocProp.Value - 1];
+
+    //            PathfindingNode othernode = null;
+    //            int othernodeidx = annexZoneLocProp.Value - 1;
+    //            if (othernodeidx != 0)
+    //            {
+    //                foreach (PathfindingNode node in Objects)
+    //                {
+    //                    if (node.export.Index == othernodeidx)
+    //                    {
+    //                        othernode = node;
+    //                        break;
+    //                    }
+    //                }
+    //            }
+
+    //            if (othernode != null)
+    //            {
+    //                PPath edge = new PPath();
+    //                ((ArrayList)Tag).Add(edge);
+    //                ((ArrayList)othernode.Tag).Add(edge);
+    //                edge.Tag = new ArrayList();
+    //                ((ArrayList)edge.Tag).Add(this);
+    //                ((ArrayList)edge.Tag).Add(othernode);
+    //                g.edgeLayer.AddChild(edge);
+    //            }
+    //        }
+    //    }
+    //}
+
+
+    public class TargetPoint : PathfindingNode
     {
         public VarTypes type { get; set; }
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
-        private static Color color = Color.FromArgb(0, 255, 0);
-        PointF[] soundShape = new PointF[] { new PointF(10, 10), new PointF(40, 10), new PointF(40, 0), new PointF(50, 0), new PointF(50, 10), new PointF(40, 10), new PointF(25, 50), new PointF(10, 10), new PointF(0, 10), new PointF(0, 0), new PointF(10, 0) };
+        private static Color color = Color.FromArgb(30, 255, 30);
+        PointF[] soundShape = new PointF[] { new PointF(20, 0), new PointF(30, 0), //top side
+            new PointF(30, 15),new PointF(35, 15),new PointF(35, 20), //top right
+            new PointF(50, 20), new PointF(50, 30), //right side
+            new PointF(35, 30),new PointF(35, 35),new PointF(30, 35), //bottom right
 
-        public WwiseAmbientSound(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
+            new PointF(30, 50), new PointF(20, 50), //bottom
+            new PointF(20, 35),new PointF(15, 35),new PointF(15, 30), //bottom left
+            new PointF(0, 30), new PointF(0, 20), //left
+            new PointF(15, 20),new PointF(15, 15), new PointF(20, 15) };
+
+        public TargetPoint(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
         {
             string s = export.ObjectName;
 
@@ -550,7 +629,7 @@ namespace ME3Explorer.PathfindingNodes
             shape = PPath.CreatePolygon(soundShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = pathfindingNodeBrush;
+            shape.Brush = dynamicPathfindingNodeBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -565,40 +644,11 @@ namespace ME3Explorer.PathfindingNodes
         }
 
         /// <summary>
-        /// Creates the connection to the annex node.
+        /// This has no outbound connections.
         /// </summary>
         public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
         {
-            var annexZoneLocProp = export.GetProperty<ObjectProperty>("AnnexZoneLocation");
-            if (annexZoneLocProp != null)
-            {
-                //IExportEntry annexzonelocexp = pcc.Exports[annexZoneLocProp.Value - 1];
 
-                PathfindingNode othernode = null;
-                int othernodeidx = annexZoneLocProp.Value - 1;
-                if (othernodeidx != 0)
-                {
-                    foreach (PathfindingNode node in Objects)
-                    {
-                        if (node.export.Index == othernodeidx)
-                        {
-                            othernode = node;
-                            break;
-                        }
-                    }
-                }
-
-                if (othernode != null)
-                {
-                    PPath edge = new PPath();
-                    ((ArrayList)Tag).Add(edge);
-                    ((ArrayList)othernode.Tag).Add(edge);
-                    edge.Tag = new ArrayList();
-                    ((ArrayList)edge.Tag).Add(this);
-                    ((ArrayList)edge.Tag).Add(othernode);
-                    g.edgeLayer.AddChild(edge);
-                }
-            }
         }
     }
 
@@ -633,8 +683,8 @@ namespace ME3Explorer.PathfindingNodes
             this.AddChild(val);
             var props = export.GetProperties();
             this.TranslateBy(x, y);
-            
-            
+
+
         }
     }
 
@@ -680,8 +730,8 @@ namespace ME3Explorer.PathfindingNodes
 
             this.AddChild(val);
             this.TranslateBy(x, y);
-            
-            
+
+
         }
 
         /// <summary>
@@ -849,6 +899,40 @@ namespace ME3Explorer.PathfindingNodes
         PointF[] mantleshape = new PointF[] { new PointF(0, 50), new PointF(0, 10), new PointF(35, 10), new PointF(35, 0), new PointF(50, 20), new PointF(35, 35), new PointF(35, 25), new PointF(20, 25), new PointF(20, 50), new PointF(0, 50) };
 
         public MantleMarker(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreatePolygon(mantleshape);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = pathfindingNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            var props = export.GetProperties();
+            this.TranslateBy(x, y);
+        }
+    }
+
+    public class SFXNav_HarvesterMoveNode : PathfindingNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(85, 59, 255);
+        PointF[] mantleshape = new PointF[] { new PointF(0, 50), new PointF(0, 10), new PointF(35, 10), new PointF(35, 0), new PointF(50, 20), new PointF(35, 35), new PointF(35, 25), new PointF(20, 25), new PointF(20, 50), new PointF(0, 50) };
+
+        public SFXNav_HarvesterMoveNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
             string s = export.ObjectName;

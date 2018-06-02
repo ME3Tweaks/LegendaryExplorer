@@ -2313,5 +2313,42 @@ namespace ME3Explorer
                 }
             }
         }
+
+        private void rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                List<IExportEntry> levelStreamingKismets = new List<IExportEntry>();
+                IExportEntry bioworldinfo = null;
+                foreach (IExportEntry exp in pcc.Exports)
+                {
+                    if (exp.ClassName == "BioWorldInfo" && exp.ObjectName == "BioWorldInfo")
+                    {
+                        bioworldinfo = exp;
+                        continue;
+                    }
+                    if (exp.ClassName == "LevelStreamingKismet" && exp.ObjectName == "LevelStreamingKismet")
+                    {
+                        levelStreamingKismets.Add(exp);
+                        continue;
+                    }
+                }
+                levelStreamingKismets = levelStreamingKismets.OrderBy(o => o.GetProperty<NameProperty>("PackageName").ToString()).ToList();
+                if (bioworldinfo != null)
+                {
+                    var streamingLevelsProp = bioworldinfo.GetProperty<ArrayProperty<ObjectProperty>>("StreamingLevels");
+                    streamingLevelsProp.Clear();
+                    foreach (IExportEntry exp in levelStreamingKismets)
+                    {
+                        streamingLevelsProp.Add(new ObjectProperty(exp.UIndex));
+                    }
+                    bioworldinfo.WriteProperty(streamingLevelsProp);
+                    MessageBox.Show("Done.");
+                }
+            } catch (Exception ex)
+            {
+                MessageBox.Show("Error setting streaming levels:\n" + ex.Message);
+            }
+        }
     }
 }

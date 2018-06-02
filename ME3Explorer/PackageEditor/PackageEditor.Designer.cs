@@ -58,6 +58,7 @@
             this.dEBUGCallReadPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGEnumerateAllClassesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGOpenPackageEditorWPFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.Button1 = new System.Windows.Forms.ToolStripButton();
             this.Button2 = new System.Windows.Forms.ToolStripButton();
@@ -146,7 +147,7 @@
             this.replaceSWFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -375,7 +376,8 @@
             this.dEBUGCallReadPropertiesToolStripMenuItem,
             this.dEBUGEnumerateAllClassesToolStripMenuItem,
             this.dEBUGOpenPackageEditorWPFToolStripMenuItem,
-            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem});
+            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem,
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
             this.debugToolStripMenuItem.Text = "Debugging";
@@ -438,6 +440,13 @@
             this.dEBUGOpenPackageEditorWPFToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
             this.dEBUGOpenPackageEditorWPFToolStripMenuItem.Text = "DEBUG: Open Package Editor (WPF)";
             this.dEBUGOpenPackageEditorWPFToolStripMenuItem.Click += new System.EventHandler(this.dEBUGOpenPackageEditorWPFToolStripMenuItem_Click);
+            // 
+            // dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem
+            // 
+            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Name = "dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem";
+            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
+            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Text = "DEBUG: Ensure folder of package files has a name";
+            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Click += new System.EventHandler(this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -1310,12 +1319,12 @@
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
             // 
-            // dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem
+            // rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem
             // 
-            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Name = "dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem";
-            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
-            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Text = "DEBUG: Ensure folder of package files has a name";
-            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Click += new System.EventHandler(this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem_Click);
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Name = "rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem";
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Text = "Rebuild StreamingLevels list for BioWorldInfo";
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Click += new System.EventHandler(this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem_Click);
             // 
             // PackageEditor
             // 
@@ -1496,5 +1505,6 @@
         private System.Windows.Forms.ToolStripMenuItem extractSWFToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem replaceSWFToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem;
     }
 }
