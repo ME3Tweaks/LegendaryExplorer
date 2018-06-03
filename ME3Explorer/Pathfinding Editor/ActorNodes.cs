@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections;
-using System.Drawing;
-using System.Drawing.Text;
-using System.Linq;
-using System.Windows.Forms;
-using ME3Explorer.Unreal;
-using ME3Explorer.Packages;
-
-using UMD.HCIL.Piccolo;
-using UMD.HCIL.Piccolo.Nodes;
-using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Util;
-using UMD.HCIL.PathingGraphEditor;
+﻿using ME3Explorer.Packages;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SequenceObjects;
+using ME3Explorer.Unreal;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using UMD.HCIL.PathingGraphEditor;
+using UMD.HCIL.Piccolo.Nodes;
 
 namespace ME3Explorer.ActorNodes
 {
@@ -382,6 +374,47 @@ namespace ME3Explorer.ActorNodes
             this.TranslateBy(x, y);
 
 
+        }
+    }
+
+    /// <summary>
+    /// This node is used on the Everything Else option. Technically not an actor, but I don't want to make a new class file for a single node type.
+    /// </summary>
+    public class EverythingElseNode : ActorNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(34, 218, 218);
+        protected Brush backgroundBrush = new SolidBrush(Color.FromArgb(160, 120, 0));
+
+        public EverythingElseNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreateRectangle(0, 0, w, h);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = backgroundBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            this.TranslateBy(x, y);
+            if (comment.Text != "")
+            {
+                s += "\n";
+            }
+            comment.Text = s + comment.Text;
         }
     }
 
@@ -878,7 +911,7 @@ namespace ME3Explorer.ActorNodes
             this.TranslateBy(x, y);
 
 
-            if (comment != null)
+            /*if (comment != null)
             {
                 NameProperty tagProp = export.GetProperty<NameProperty>("Tag");
                 if (tagProp != null)
@@ -889,7 +922,7 @@ namespace ME3Explorer.ActorNodes
                         comment.Text = name;
                     }
                 }
-            }
+            }*/
         }
 
         /// <summary>

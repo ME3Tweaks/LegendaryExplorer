@@ -63,6 +63,7 @@ namespace ME3Explorer
             this.togglePathfindingNodes = new System.Windows.Forms.ToolStripMenuItem();
             this.toggleActorNodes = new System.Windows.Forms.ToolStripMenuItem();
             this.splinesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.everythingElseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.staticMeshCollectionActorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sFXCombatZonesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,7 +85,6 @@ namespace ME3Explorer
             this.removeFromLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeNodeTypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toBioPathPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toSFXNavTurretPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toSFXEnemySpawnPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toSFXDynamicCoverLinkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toSFXDynamicCoverSlotMarkerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -92,6 +92,7 @@ namespace ME3Explorer
             this.sFXNavBoostNodeTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sFXNavBoostNodeBottomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toSFXNavClimbWallNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toSFXNavTurretPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toPathNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toSFXNavLargeBoostNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toSFXNavLargeMantleNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -310,6 +311,7 @@ namespace ME3Explorer
             this.togglePathfindingNodes,
             this.toggleActorNodes,
             this.splinesToolStripMenuItem,
+            this.everythingElseToolStripMenuItem,
             this.staticMeshCollectionActorsToolStripMenuItem,
             this.sFXCombatZonesToolStripMenuItem});
             this.ViewingModesMenuItem.Name = "ViewingModesMenuItem";
@@ -458,6 +460,17 @@ namespace ME3Explorer
             this.splinesToolStripMenuItem.ToolTipText = "Toggle showing spline actors and their splinecomponents";
             this.splinesToolStripMenuItem.Click += new System.EventHandler(this.splinesToolStripMenuItem_Click);
             // 
+            // everythingElseToolStripMenuItem
+            // 
+            this.everythingElseToolStripMenuItem.CheckOnClick = true;
+            this.everythingElseToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.everythingElseToolStripMenuItem.Name = "everythingElseToolStripMenuItem";
+            this.everythingElseToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4;
+            this.everythingElseToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
+            this.everythingElseToolStripMenuItem.Text = "Everything else";
+            this.everythingElseToolStripMenuItem.ToolTipText = "Show everything else currently not parsed by existing layers";
+            this.everythingElseToolStripMenuItem.Click += new System.EventHandler(this.everythingElseToolStripMenuItem_Click);
+            // 
             // staticMeshCollectionActorsToolStripMenuItem
             // 
             this.staticMeshCollectionActorsToolStripMenuItem.Enabled = false;
@@ -594,7 +607,7 @@ namespace ME3Explorer
             this.addToSFXCombatZoneToolStripMenuItem,
             this.exportsReferencingThisNodeToolStripMenuItem});
             this.rightMouseButtonMenu.Name = "contextMenuStrip1";
-            this.rightMouseButtonMenu.Size = new System.Drawing.Size(298, 290);
+            this.rightMouseButtonMenu.Size = new System.Drawing.Size(298, 268);
             // 
             // openInPackageEditorToolStripMenuItem
             // 
@@ -655,15 +668,6 @@ namespace ME3Explorer
             this.toBioPathPointToolStripMenuItem.Text = "To BioPathPoint";
             this.toBioPathPointToolStripMenuItem.Click += new System.EventHandler(this.toBioPathPointToolStripMenuItem_Click);
             // 
-            // toSFXNavTurretPointToolStripMenuItem
-            // 
-            this.toSFXNavTurretPointToolStripMenuItem.Name = "toSFXNavTurretPointToolStripMenuItem";
-            this.toSFXNavTurretPointToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.toSFXNavTurretPointToolStripMenuItem.Text = "To SFXNav_TurretPoint";
-            this.toSFXNavTurretPointToolStripMenuItem.ToolTipText = "Use by Engineers, Geth Primes, and Collector Troopers to put down their placeable" +
-    "/pawns.";
-            this.toSFXNavTurretPointToolStripMenuItem.Click += new System.EventHandler(this.toSFXNavTurretPointToolStripMenuItem_Click);
-            // 
             // toSFXEnemySpawnPointToolStripMenuItem
             // 
             this.toSFXEnemySpawnPointToolStripMenuItem.Name = "toSFXEnemySpawnPointToolStripMenuItem";
@@ -717,6 +721,15 @@ namespace ME3Explorer
             this.toSFXNavClimbWallNodeToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.toSFXNavClimbWallNodeToolStripMenuItem.Text = "To SFXNav_ClimbWallNode";
             this.toSFXNavClimbWallNodeToolStripMenuItem.Click += new System.EventHandler(this.toSFXNavClimbWallNodeToolStripMenuItem_Click);
+            // 
+            // toSFXNavTurretPointToolStripMenuItem
+            // 
+            this.toSFXNavTurretPointToolStripMenuItem.Name = "toSFXNavTurretPointToolStripMenuItem";
+            this.toSFXNavTurretPointToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.toSFXNavTurretPointToolStripMenuItem.Text = "To SFXNav_TurretPoint";
+            this.toSFXNavTurretPointToolStripMenuItem.ToolTipText = "Use by Engineers, Geth Primes, and Collector Troopers to put down their placeable" +
+    "/pawns.";
+            this.toSFXNavTurretPointToolStripMenuItem.Click += new System.EventHandler(this.toSFXNavTurretPointToolStripMenuItem_Click);
             // 
             // toPathNodeToolStripMenuItem
             // 
@@ -941,5 +954,6 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripMenuItem wwiseAudioVolumeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enableDisableVolumesToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem everythingElseToolStripMenuItem;
     }
 }

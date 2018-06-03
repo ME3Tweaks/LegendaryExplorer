@@ -340,27 +340,33 @@ namespace ME3Explorer
                                 continue;
                             }
 
-                            if (PathfindingNodesActive)
+                            bool isParsedByExistingLayer = false;
+
+                            if (pathfindingNodeClasses.Contains(exportEntry.ClassName))
                             {
-                                if (pathfindingNodeClasses.Contains(exportEntry.ClassName))
+                                isParsedByExistingLayer = true;
+                                if (PathfindingNodesActive)
                                 {
                                     CurrentObjects.Add(exportEntry.Index);
                                     activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
                                 }
                             }
 
-                            if (ActorNodesActive)
+                            if (actorNodeClasses.Contains(exportEntry.ClassName))
                             {
-                                if (actorNodeClasses.Contains(exportEntry.ClassName))
+                                isParsedByExistingLayer = true;
+                                if (ActorNodesActive)
                                 {
                                     CurrentObjects.Add(exportEntry.Index);
                                     activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
                                 }
                             }
 
-                            if (SplineNodesActive)
+                            if (splineNodeClasses.Contains(exportEntry.ClassName))
                             {
-                                if (splineNodeClasses.Contains(exportEntry.ClassName))
+                                isParsedByExistingLayer = true;
+
+                                if (SplineNodesActive)
                                 {
                                     CurrentObjects.Add(exportEntry.Index);
                                     activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
@@ -381,17 +387,19 @@ namespace ME3Explorer
                             //SFXCombatZone 
                             if (exportEntry.ClassName == "SFXCombatZone")
                             {
+                                isParsedByExistingLayer = true;
                                 sfxCombatZones.Add(exportEntry.Index);
-                                ToolStripMenuItem testItem = new ToolStripMenuItem(exportEntry.Index + " " + exportEntry.ObjectName + "_" + exportEntry.indexValue);
+                                ToolStripMenuItem combatZoneItem = new ToolStripMenuItem(exportEntry.Index + " " + exportEntry.ObjectName + "_" + exportEntry.indexValue);
+                                combatZoneItem.ImageScaling = ToolStripItemImageScaling.None;
                                 if (exportEntry.Index == ActiveCombatZoneExportIndex)
                                 {
-                                    testItem.Checked = true;
+                                    combatZoneItem.Checked = true;
                                 }
-                                testItem.Click += (object o, EventArgs args) =>
+                                combatZoneItem.Click += (object o, EventArgs args) =>
                                 {
-                                    setSFXCombatZoneBGActive(testItem, exportEntry, testItem.Checked);
+                                    setSFXCombatZoneBGActive(combatZoneItem, exportEntry, combatZoneItem.Checked);
                                 };
-                                sFXCombatZonesToolStripMenuItem.DropDown.Items.Add(testItem);
+                                sFXCombatZonesToolStripMenuItem.DropDown.Items.Add(combatZoneItem);
                                 sFXCombatZonesToolStripMenuItem.Enabled = true;
                                 sFXCombatZonesToolStripMenuItem.ToolTipText = "Select a SFXCombatZone to highlight pathnodes that are part of it";
                             }
@@ -403,15 +411,17 @@ namespace ME3Explorer
                             //{
                             if (exportEntry.ObjectName == "StaticMeshCollectionActor")
                             {
-                                ToolStripMenuItem testItem = new ToolStripMenuItem(exportEntry.Index + " " + exportEntry.ObjectName + "_" + exportEntry.indexValue);
-                                testItem.Click += (object o, EventArgs args) =>
+                                isParsedByExistingLayer = true;
+                                ToolStripMenuItem collectionItem = new ToolStripMenuItem(exportEntry.Index + " " + exportEntry.ObjectName + "_" + exportEntry.indexValue);
+                                collectionItem.ImageScaling = ToolStripItemImageScaling.None;
+                                collectionItem.Click += (object o, EventArgs args) =>
                                 {
-                                    staticMeshCollectionActor_ToggleVisibility(testItem, exportEntry, testItem.Checked);
+                                    staticMeshCollectionActor_ToggleVisibility(collectionItem, exportEntry, collectionItem.Checked);
                                 };
                                 if (VisibleActorCollections.Contains(exportEntry.Index))
                                 {
                                     byte[] smacData = exportEntry.Data;
-                                    testItem.Checked = true;
+                                    collectionItem.Checked = true;
                                     //Make new nodes for each item...
                                     ArrayProperty<ObjectProperty> smacItems = exportEntry.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
                                     if (smacItems != null)
@@ -437,10 +447,16 @@ namespace ME3Explorer
                                         }
                                     }
                                 }
-                                staticMeshCollectionActorsToolStripMenuItem.DropDown.Items.Add(testItem);
+                                staticMeshCollectionActorsToolStripMenuItem.DropDown.Items.Add(collectionItem);
                                 staticMeshCollectionActorsToolStripMenuItem.Enabled = true;
                                 staticMeshCollectionActorsToolStripMenuItem.ToolTipText = "Select a StaticMeshCollectionActor to add it to the editor";
 
+                            }
+
+                            if (EverythingElseActive && !isParsedByExistingLayer)
+                            {
+                                CurrentObjects.Add(exportEntry.Index);
+                                activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
                             }
                             //}
                             start += 4;
@@ -468,7 +484,7 @@ namespace ME3Explorer
                         IExportEntry exportEntry = pcc.getExport(i);
                     }
 
-                    bool oneViewActive = PathfindingNodesActive || ActorNodesActive;
+                    bool oneViewActive = PathfindingNodesActive || ActorNodesActive || EverythingElseActive;
                     if (oneViewActive && activeExportsListbox.Items.Count == 0)
                     {
                         MessageBox.Show("No nodes visible with current view options.\nChange view options to see if there are any viewable nodes.");
@@ -591,6 +607,7 @@ namespace ME3Explorer
         private bool SplineNodesActive;
         private PathfindingNodeMaster CurrentlySelectedSplinePoint;
         private List<int> CurrentlyHighlightedCoverlinkNodes = new List<int>();
+        private bool EverythingElseActive;
 
         public void LoadObject(int index)
         {
@@ -703,7 +720,7 @@ namespace ME3Explorer
                             case "TargetPoint":
                                 pathNode = new PathfindingNodes.TargetPoint(index, x, y, pcc, graphEditor);
                                 break;
-                            
+
                             case "SFXNav_HarvesterMoveNode":
                                 pathNode = new PathfindingNodes.SFXNav_HarvesterMoveNode(index, x, y, pcc, graphEditor);
                                 break;
@@ -786,9 +803,9 @@ namespace ME3Explorer
                         }
                         Objects.Add(pathNode);
                         return;
-                    } //End if Pathnode Class
+                    } //End if Pathnode Class 
 
-                    if (actorNodeClasses.Contains(exporttoLoad.ClassName))
+                    else if (actorNodeClasses.Contains(exporttoLoad.ClassName))
                     {
                         ActorNode actorNode = null;
                         switch (exporttoLoad.ClassName)
@@ -857,7 +874,7 @@ namespace ME3Explorer
 
 
 
-                        if (ActiveCombatZoneExportIndex >= 0)
+                       /* if (ActiveCombatZoneExportIndex >= 0)
                         {
                             ArrayProperty<StructProperty> volumes = props.GetProp<ArrayProperty<StructProperty>>("Volumes");
                             if (volumes != null)
@@ -873,12 +890,12 @@ namespace ME3Explorer
                                     }
                                 }
                             }
-                        }
+                        }*/
                         Objects.Add(actorNode);
                         return;
                     }
 
-                    if (splineNodeClasses.Contains(exporttoLoad.ClassName))
+                    else if (splineNodeClasses.Contains(exporttoLoad.ClassName))
                     {
                         SplineNode splineNode = null;
                         switch (exporttoLoad.ClassName)
@@ -926,6 +943,13 @@ namespace ME3Explorer
                                 break;
                         }
                         Objects.Add(splineNode);
+                        return;
+                    }
+                    
+                    else
+                    {
+                        //everything else
+                        Objects.Add(new EverythingElseNode(index, x, y, pcc, graphEditor));
                         return;
                     }
                 }
@@ -3496,6 +3520,18 @@ namespace ME3Explorer
             enableDisableVolumesToolStripMenuItem.Checked = graphEditor.showVolumeBrushes;
             RefreshView();
             graphEditor.Invalidate();
+        }
+
+        private void everythingElseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int preCount = CurrentObjects.Count;
+            EverythingElseActive = everythingElseToolStripMenuItem.Checked;
+            RefreshView();
+            int postCount = CurrentObjects.Count;
+            if (preCount == 0 && postCount != 0)
+            {
+                splitContainer2.Panel2Collapsed = false;
+            }
         }
     }
 
