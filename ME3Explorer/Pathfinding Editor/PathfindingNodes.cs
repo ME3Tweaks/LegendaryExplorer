@@ -701,8 +701,17 @@ namespace ME3Explorer.PathfindingNodes
             : base(idx, p, grapheditor)
         {
             string s = export.ObjectName;
-            string commentText = comment.Text + "\n";
+            string commentText = comment.Text + "\nSpawnLocation: ";
 
+            var spawnLocation = export.GetProperty<EnumProperty>("SpawnLocation");
+            if (spawnLocation == null)
+            {
+                commentText += "Table";
+            } else
+            {
+                commentText += spawnLocation.Value;
+            }
+            commentText += "\n";
             var spawnTagsProp = export.GetProperty<ArrayProperty<StrProperty>>("SupportedSpawnTags");
             if (spawnTagsProp != null)
             {

@@ -385,6 +385,52 @@ namespace ME3Explorer.ActorNodes
         }
     }
 
+    public class StaticMeshActorNode : ActorNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(34, 218, 218);
+        PointF[] aShape = new PointF[] { new PointF(0, 50), new PointF(25, 0), new PointF(50, 50), new PointF(25, 30) };
+
+        public StaticMeshActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreatePolygon(aShape);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = actorNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            this.TranslateBy(x, y);
+
+            ObjectProperty smc = export.GetProperty<ObjectProperty>("StaticMeshComponent");
+            if (smc != null)
+            {
+                IExportEntry smce = pcc.Exports[smc.Value - 1];
+                //smce.GetProperty<ObjectProperty>("St")
+                var meshObj = smce.GetProperty<ObjectProperty>("StaticMesh");
+                if (meshObj != null)
+                {
+                    IExportEntry sme = pcc.Exports[meshObj.Value - 1];
+                    comment.Text = sme.ObjectName;
+                }
+            }
+        }
+    }
+
     public class WwiseAmbientSound : ActorNode
     {
         public VarTypes type { get; set; }
@@ -465,11 +511,42 @@ namespace ME3Explorer.ActorNodes
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
             this.TranslateBy(x, y);
-
-
         }
+    }
 
+    public class SFXTreasureNode : ActorNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(100, 155, 0);
+        protected static Brush backgroundBrush = new SolidBrush(Color.FromArgb(160, 120, 0));
 
+        PointF[] soundShape = new PointF[] { new PointF(0, 50), new PointF(0, 15), new PointF(15, 0), new PointF(35, 0), new PointF(50, 15), new PointF(50, 50) };
+
+        public SFXTreasureNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreatePolygon(soundShape);
+
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = backgroundBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            this.TranslateBy(x, y);
+        }
     }
 
     public class SFXAmmoContainer : ActorNode
@@ -502,7 +579,20 @@ namespace ME3Explorer.ActorNodes
             this.AddChild(val);
             this.TranslateBy(x, y);
 
+            var bRespawns = export.GetProperty<BoolProperty>("bRespawns");
+            var respawnTime = export.GetProperty<IntProperty>("RespawnTime");
+            string commentText = "Respawns: ";
+            commentText += bRespawns != null ? bRespawns.Value.ToString() : "False";
+            if (respawnTime != null)
+            {
+                commentText += "\nRespawn time: " + respawnTime.Value + "s";
+            }
+            else if (bRespawns != null && bRespawns.Value == true)
+            {
+                commentText += "\nRespawn time: 20s";
+            }
 
+            comment.Text = commentText;
         }
     }
 
@@ -536,7 +626,19 @@ namespace ME3Explorer.ActorNodes
             this.AddChild(val);
             this.TranslateBy(x, y);
 
-
+            var bRespawns = export.GetProperty<BoolProperty>("bRespawns");
+            var respawnTime = export.GetProperty<IntProperty>("RespawnTime");
+            string commentText = "Respawns: ";
+            commentText += bRespawns != null ? bRespawns.Value.ToString() : "False";
+            if (respawnTime != null)
+            {
+                commentText += "\nRespawn time: " + respawnTime.Value + "s";
+            }
+            else if (bRespawns != null && bRespawns.Value == true)
+            {
+                commentText += "\nRespawn time: 20s";
+            }
+            comment.Text = commentText;
         }
     }
 
@@ -951,15 +1053,21 @@ namespace ME3Explorer.ActorNodes
         }
     }
 
-    public class SFXEnemySpawnPoint : ActorNode
+    public class SFXMedStation : ActorNode
     {
         public VarTypes type { get; set; }
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(255, 0, 0);
-        PointF[] starshape = new PointF[] { new PointF(0, 0), new PointF(25, 12), new PointF(50, 0), new PointF(37, 25), new PointF(50, 50), new PointF(25, 37), new PointF(0, 50), new PointF(12, 25) };
+        protected static Brush backgroundBrush = new SolidBrush(Color.FromArgb(128, 0, 0));
+        protected static PointF[] medShape = new PointF[] { new PointF(17, 0), new PointF(33, 0), //top side
+            new PointF(33, 17),new PointF(50, 17),new PointF(50, 33), //right side
+            
+            new PointF(33, 33),new PointF(33, 50),new PointF(17, 50), //bottom side
+            new PointF(17, 33),new PointF(0, 33),new PointF(0, 17), new PointF(17,17) //left side
+            };
 
-        public SFXEnemySpawnPoint(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+        public SFXMedStation(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
             string s = export.ObjectName;
@@ -967,10 +1075,10 @@ namespace ME3Explorer.ActorNodes
             // = getType(s);
             float w = 50;
             float h = 50;
-            shape = PPath.CreatePolygon(starshape);
+            shape = PPath.CreatePolygon(medShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
-            shape.Brush = actorNodeBrush;
+            shape.Brush = backgroundBrush;
             shape.Pickable = false;
             this.AddChild(shape);
             this.Bounds = new RectangleF(0, 0, w, h);
@@ -986,6 +1094,8 @@ namespace ME3Explorer.ActorNodes
 
         }
     }
+
+
 
     public class SFXNav_JumpNode : ActorNode
     {

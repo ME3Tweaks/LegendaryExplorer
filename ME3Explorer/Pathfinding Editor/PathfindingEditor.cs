@@ -73,7 +73,7 @@ namespace ME3Explorer
 
         public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "SFXNav_HarvesterMoveNode", "MantleMarker", "TargetPoint", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode",
                 "SFXNav_InteractionHenchOmniTool", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionHenchBeckonFront", "SFXNav_InteractionHenchBeckonRear", "SFXNav_InteractionHenchCustom", "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow", "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping", "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionInspectWeapon", "SFXNav_InteractionOmniToolScan" };
-        public string[] actorNodeClasses = { "BlockingVolume", "DynamicBlockingVolume", "StaticMeshActor", "InterpActor", "SFXDoor", "BioTriggerVolume", "BioTriggerStream", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume" };
+        public string[] actorNodeClasses = { "BlockingVolume", "DynamicBlockingVolume", "StaticMeshActor", "SFXMedStation", "InterpActor", "SFXDoor", "BioTriggerVolume", "SFXArmorNode", "BioTriggerStream", "SFXTreasureNode", "SFXPointOfInterest", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume" };
         public string[] splineNodeClasses = { "SplineActor" };
         public string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
         public bool ActorNodesActive = false;
@@ -703,6 +703,7 @@ namespace ME3Explorer
                             case "TargetPoint":
                                 pathNode = new PathfindingNodes.TargetPoint(index, x, y, pcc, graphEditor);
                                 break;
+                            
                             case "SFXNav_HarvesterMoveNode":
                                 pathNode = new PathfindingNodes.SFXNav_HarvesterMoveNode(index, x, y, pcc, graphEditor);
                                 break;
@@ -823,6 +824,9 @@ namespace ME3Explorer
                             case "BioStartLocationMP":
                                 actorNode = new ActorNodes.BioStartLocation(index, x, y, pcc, graphEditor);
                                 break;
+                            case "StaticMeshActor":
+                                actorNode = new ActorNodes.StaticMeshActorNode(index, x, y, pcc, graphEditor);
+                                break;
                             case "SFXStuntActor":
                                 actorNode = new ActorNodes.SFXStuntActor(index, x, y, pcc, graphEditor);
                                 break;
@@ -838,6 +842,13 @@ namespace ME3Explorer
                                 break;
                             case "WwiseAudioVolume":
                                 actorNode = new ActorNodes.WwiseAudioVolume(index, x, y, pcc, graphEditor);
+                                break;
+                            case "SFXArmorNode":
+                            case "SFXTreasureNode":
+                                actorNode = new ActorNodes.SFXTreasureNode(index, x, y, pcc, graphEditor);
+                                break;
+                            case "SFXMedStation":
+                                actorNode = new ActorNodes.SFXMedStation(index, x, y, pcc, graphEditor);
                                 break;
                             default:
                                 actorNode = new PendingActorNode(index, x, y, pcc, graphEditor);
@@ -1547,6 +1558,7 @@ namespace ME3Explorer
 
             IExportEntry newNodeEntry = pcc.Exports[newNodeIndex];
             IExportEntry newCollisionEntry = pcc.Exports[newCollisionIndex];
+            newCollisionEntry.idxLink = newNodeEntry.UIndex;
 
             //empty the pathlist
             ArrayProperty<ObjectProperty> PathList = newNodeEntry.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
@@ -1555,22 +1567,42 @@ namespace ME3Explorer
                 PathList.Clear();
                 newNodeEntry.WriteProperty(PathList);
             }
+
             //reuse
+            PropertyCollection newExportProps = newNodeEntry.GetProperties();
+            bool changed = false;
+            foreach (UProperty prop in newExportProps)
+            {
+                if (prop is ObjectProperty)
+                {
+                    var objProp = prop as ObjectProperty;
+                    if (objProp.Value == collisionEntry.UIndex)
+                    {
+                        objProp.Value = newCollisionEntry.UIndex;
+                        changed = true;
+                    }
+                }
+            }
+
+            if (changed)
+            {
+                newNodeEntry.WriteProperties(newExportProps);
+            }
+            /*
             collisionComponentProperty = newNodeEntry.GetProperty<ObjectProperty>("CollisionComponent");
             if (collisionComponentProperty != null)
             {
                 collisionComponentProperty.Value = newCollisionEntry.UIndex;
-                newCollisionEntry.idxLink = newNodeEntry.UIndex;
+                newNodeEntry.WriteProperty(collisionComponentProperty);
+            }
+
+            collisionComponentProperty = newNodeEntry.GetProperty<ObjectProperty>("CylinderComponent");
+            if (collisionComponentProperty != null)
+            {
+                collisionComponentProperty.Value = newCollisionEntry.UIndex;
                 newNodeEntry.WriteProperty(collisionComponentProperty);
 
-                collisionComponentProperty = newNodeEntry.GetProperty<ObjectProperty>("CylinderComponent");
-                if (collisionComponentProperty != null)
-                {
-                    collisionComponentProperty.Value = newCollisionEntry.UIndex;
-                    newNodeEntry.WriteProperty(collisionComponentProperty);
-
-                }
-            }
+            }*/
 
             SharedPathfinding.GenerateNewRandomGUID(newNodeEntry);
             //Add cloned node to persistentlevel
@@ -1966,6 +1998,22 @@ namespace ME3Explorer
             }
         }
 
+        private void toSFXNavTurretPointToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (activeExportsListbox.SelectedIndex >= 0)
+            {
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
+                if (n == -1)
+                    return;
+
+                if (pcc.Exports[n].ClassName != "SFXNav_TurretPoint")
+                {
+                    changeNodeType(pcc.Exports[n], NODETYPE_SFXNAV_TURRETPOINT);
+                    RefreshView();
+                }
+            }
+        }
+
         private void toPathNodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (activeExportsListbox.SelectedIndex >= 0)
@@ -1977,23 +2025,6 @@ namespace ME3Explorer
                 if (selectednodeexp.ClassName != "PathNode")
                 {
                     changeNodeType(selectednodeexp, NODETYPE_PATHNODE);
-                    RefreshView();
-                }
-            }
-        }
-
-
-        private void toSFXNavTurretPointToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (activeExportsListbox.SelectedIndex >= 0)
-            {
-                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
-                if (n == -1)
-                    return;
-                IExportEntry selectednodeexp = pcc.Exports[n];
-                if (selectednodeexp.ClassName != "SFXNav_TurretPoint")
-                {
-                    changeNodeType(selectednodeexp, NODETYPE_SFXNAV_TURRETPOINT);
                     RefreshView();
                 }
             }
