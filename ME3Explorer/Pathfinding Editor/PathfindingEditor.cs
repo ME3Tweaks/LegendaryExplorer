@@ -737,7 +737,7 @@ namespace ME3Explorer
                                             if (annexprop.Name == "location")
                                             {
                                                 PropertyCollection sublocprops = (annexprop as StructProperty).Properties;
-                                                int locx = 0;`
+                                                int locx = 0;
                                                 int locy = 0;
                                                 foreach (var locprop in sublocprops)
                                                 {
