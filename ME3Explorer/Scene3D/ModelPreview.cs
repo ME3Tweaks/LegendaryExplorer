@@ -146,15 +146,19 @@ namespace ME3Explorer.Scene3D
                 // Maybe go for the one with one less segment? ex. for input BioA_Nor_201CIC.pcc, look in BioA_Nor.pcc
                 if (parts.Length == 3)
                 {
-                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(importfiledir + "\\" + parts[0] + "_" + parts[1] + ".pcc"))
+                    string filename = importfiledir + "\\" + parts[0] + "_" + parts[1] + ".pcc";
+                    if (System.IO.File.Exists(filename))
                     {
-                        foreach (IExportEntry exp in pcc.Exports)
+                        using (ME3Package pcc = MEPackageHandler.OpenME3Package(filename))
                         {
-                            if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
+                            foreach (IExportEntry exp in pcc.Exports)
                             {
-                                pccpath = importfiledir + "\\" + parts[0] + "_" + parts[1] + ".pcc";
-                                id = exp.Index;
-                                break;
+                                if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
+                                {
+                                    pccpath = importfiledir + "\\" + parts[0] + "_" + parts[1] + ".pcc";
+                                    id = exp.Index;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -162,15 +166,19 @@ namespace ME3Explorer.Scene3D
                 // Now go for the BioP one.
                 if (pccpath == "" && parts.Length >= 2)
                 {
-                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc"))
+                    string filename = importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc";
+                    if (System.IO.File.Exists(filename))
                     {
-                        foreach (IExportEntry exp in pcc.Exports)
+                        using (ME3Package pcc = MEPackageHandler.OpenME3Package(filename))
                         {
-                            if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
+                            foreach (IExportEntry exp in pcc.Exports)
                             {
-                                pccpath = importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc";
-                                id = exp.Index;
-                                break;
+                                if (exp.GetFullPath == FullTextureName && exp.ClassName == "Texture2D")
+                                {
+                                    pccpath = importfiledir + "\\" + "BioP" + "_" + parts[1] + ".pcc";
+                                    id = exp.Index;
+                                    break;
+                                }
                             }
                         }
                     }
