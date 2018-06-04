@@ -153,6 +153,7 @@ namespace ME3Explorer
                 RefreshView();
                 InitStuff();
                 filenameLabel.Text = Path.GetFileName(s);
+                meshplorerToolStripMenuItem.Enabled = pcc.Game == MEGame.ME3;
             }
             catch (Exception e)
             {
@@ -2348,6 +2349,16 @@ namespace ME3Explorer
             } catch (Exception ex)
             {
                 MessageBox.Show("Error setting streaming levels:\n" + ex.Message);
+            }
+        }
+
+        private void meshplorerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc != null)
+            {
+                Meshplorer.Meshplorer editor = new Meshplorer.Meshplorer(pcc.FileName);
+                editor.BringToFront();
+                editor.Show();
             }
         }
     }

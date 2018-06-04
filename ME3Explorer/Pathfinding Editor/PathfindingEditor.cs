@@ -194,12 +194,6 @@ namespace ME3Explorer
             File.WriteAllLines(path, RFiles);
         }
 
-        private void pathfindingEditor_MouseMoveHandler(object sender, MouseEventArgs e)
-        {
-            //PointF mousePoint = e.Location;
-            //Debug.WriteLine(mousePoint);
-        }
-
         private void PathfindingEditor_Load(object sender, EventArgs e)
         {
             interpreter1.hideHexBox();

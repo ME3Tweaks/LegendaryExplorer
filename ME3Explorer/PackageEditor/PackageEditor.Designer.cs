@@ -59,6 +59,7 @@
             this.dEBUGEnumerateAllClassesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGOpenPackageEditorWPFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.Button1 = new System.Windows.Forms.ToolStripButton();
             this.Button2 = new System.Windows.Forms.ToolStripButton();
@@ -147,7 +148,7 @@
             this.replaceSWFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.meshplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -202,7 +203,7 @@
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.ToolTipText = "Load an uncompressed or compressed PCC file";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
@@ -211,7 +212,7 @@
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.ToolTipText = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
@@ -219,7 +220,7 @@
             // saveAsMenuItem
             // 
             this.saveAsMenuItem.Name = "saveAsMenuItem";
-            this.saveAsMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.saveAsMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveAsMenuItem.Text = "Save As";
             this.saveAsMenuItem.ToolTipText = "Save As";
             this.saveAsMenuItem.Click += new System.EventHandler(this.appendSaveToolStripMenuItem_Click);
@@ -229,57 +230,58 @@
             this.openInToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.dialogueEditorToolStripMenuItem,
             this.faceFXEditorToolStripMenuItem,
+            this.meshplorerToolStripMenuItem,
             this.pathfindingEditorToolStripMenuItem,
             this.sequenceEditorToolStripMenuItem,
             this.wWiseBankEditorToolStripMenuItem});
             this.openInToolStripMenuItem.Name = "openInToolStripMenuItem";
-            this.openInToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.openInToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openInToolStripMenuItem.Text = "Open in...";
             // 
             // dialogueEditorToolStripMenuItem
             // 
             this.dialogueEditorToolStripMenuItem.Name = "dialogueEditorToolStripMenuItem";
-            this.dialogueEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.dialogueEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.dialogueEditorToolStripMenuItem.Text = "Dialogue Editor";
             this.dialogueEditorToolStripMenuItem.Click += new System.EventHandler(this.dialogueEditorToolStripMenuItem_Click);
             // 
             // faceFXEditorToolStripMenuItem
             // 
             this.faceFXEditorToolStripMenuItem.Name = "faceFXEditorToolStripMenuItem";
-            this.faceFXEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.faceFXEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.faceFXEditorToolStripMenuItem.Text = "FaceFX Editor";
             this.faceFXEditorToolStripMenuItem.Click += new System.EventHandler(this.faceFXEditorToolStripMenuItem_Click);
             // 
             // pathfindingEditorToolStripMenuItem
             // 
             this.pathfindingEditorToolStripMenuItem.Name = "pathfindingEditorToolStripMenuItem";
-            this.pathfindingEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.pathfindingEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.pathfindingEditorToolStripMenuItem.Text = "Pathfinding Editor";
             this.pathfindingEditorToolStripMenuItem.Click += new System.EventHandler(this.pathfindingEditorToolstripMenuItem_Click);
             // 
             // sequenceEditorToolStripMenuItem
             // 
             this.sequenceEditorToolStripMenuItem.Name = "sequenceEditorToolStripMenuItem";
-            this.sequenceEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.sequenceEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.sequenceEditorToolStripMenuItem.Text = "Sequence Editor";
             this.sequenceEditorToolStripMenuItem.Click += new System.EventHandler(this.sequenceEditorToolStripMenuItem_Click);
             // 
             // wWiseBankEditorToolStripMenuItem
             // 
             this.wWiseBankEditorToolStripMenuItem.Name = "wWiseBankEditorToolStripMenuItem";
-            this.wWiseBankEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.wWiseBankEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.wWiseBankEditorToolStripMenuItem.Text = "WWiseBank Editor";
             this.wWiseBankEditorToolStripMenuItem.Click += new System.EventHandler(this.wWiseBankEditorToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(135, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
             // 
             // recentToolStripMenuItem
             // 
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.recentToolStripMenuItem.Text = "Recent";
             this.recentToolStripMenuItem.ToolTipText = "Open recently opened file";
             // 
@@ -447,6 +449,13 @@
             this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
             this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Text = "DEBUG: Ensure folder of package files has a name";
             this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Click += new System.EventHandler(this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem_Click);
+            // 
+            // rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem
+            // 
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Name = "rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem";
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Text = "Rebuild StreamingLevels list for BioWorldInfo";
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Click += new System.EventHandler(this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -1319,12 +1328,12 @@
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
             // 
-            // rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem
+            // meshplorerToolStripMenuItem
             // 
-            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Name = "rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem";
-            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
-            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Text = "Rebuild StreamingLevels list for BioWorldInfo";
-            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Click += new System.EventHandler(this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem_Click);
+            this.meshplorerToolStripMenuItem.Name = "meshplorerToolStripMenuItem";
+            this.meshplorerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.meshplorerToolStripMenuItem.Text = "Meshplorer";
+            this.meshplorerToolStripMenuItem.Click += new System.EventHandler(this.meshplorerToolStripMenuItem_Click);
             // 
             // PackageEditor
             // 
@@ -1506,5 +1515,6 @@
         private System.Windows.Forms.ToolStripMenuItem replaceSWFToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem meshplorerToolStripMenuItem;
     }
 }
