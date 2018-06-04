@@ -3533,6 +3533,13 @@ namespace ME3Explorer
                 splitContainer2.Panel2Collapsed = false;
             }
         }
+
+        private void sFXCombatZoneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            graphEditor.showVolume_SFXCombatZones = !graphEditor.showVolume_SFXCombatZones;
+            sFXCombatZoneToolStripMenuItem.Checked = graphEditor.showVolume_SFXCombatZones;
+            RefreshView();
+        }
     }
 
     public static class ExportInputPrompt

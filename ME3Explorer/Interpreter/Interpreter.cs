@@ -114,6 +114,7 @@ namespace ME3Explorer
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
 
         int? selectedNodePos = null;
+        private readonly string[] AutoExpandObjectClasses = { "BioTriggerStream", "SFXOperation_ObjectiveSpawnPoint" };
 
         public Interpreter()
         {
@@ -561,7 +562,7 @@ namespace ME3Explorer
             memsize = memory.Length;
 
             //BioTriggerSTream - expand everything as it is awful to have to always expand the tree
-            if (export.ObjectName == "BioTriggerStream")
+            if (AutoExpandObjectClasses.Contains(export.ObjectName))
             {
                 treeView1.ExpandAll();
             }
@@ -1791,7 +1792,7 @@ namespace ME3Explorer
                         if (type == NodeType.StructLeafEnum)
                         {
                             int begin = node.Text.LastIndexOf(':');
-                            if(begin == -1)
+                            if (begin == -1)
                             {
                                 return;
                             }

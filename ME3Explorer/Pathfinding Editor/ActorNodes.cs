@@ -690,7 +690,23 @@ namespace ME3Explorer.ActorNodes
             // = getType(s);
             float w = 50;
             float h = 50;
-            shape = PPath.CreatePolygon(cShape);
+            if (grapheditor.showVolumeBrushes && grapheditor.showVolume_SFXCombatZones)
+            {
+                var brushShape = get3DBrushShape();
+                if (brushShape != null)
+                {
+                    shape = PPath.CreatePolygon(brushShape);
+                }
+                else
+                {
+                    shape = PPath.CreatePolygon(cShape);
+                }
+            }
+            else
+            {
+                shape = PPath.CreatePolygon(cShape);
+            }
+
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
             shape.Brush = actorNodeBrush;

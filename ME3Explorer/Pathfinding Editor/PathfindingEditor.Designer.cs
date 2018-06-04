@@ -58,6 +58,7 @@ namespace ME3Explorer
             this.bioTriggerStreamToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blockingVolumeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dynamicBlockingVolumeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sFXCombatZoneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.wwiseAudioVolumeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.togglePathfindingNodes = new System.Windows.Forms.ToolStripMenuItem();
@@ -353,6 +354,7 @@ namespace ME3Explorer
             this.bioTriggerStreamToolStripMenuItem,
             this.blockingVolumeToolStripMenuItem,
             this.dynamicBlockingVolumeToolStripMenuItem,
+            this.sFXCombatZoneToolStripMenuItem,
             this.wwiseAudioVolumeToolStripMenuItem});
             this.showVolumesInsteadOfNodesToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.showVolumesInsteadOfNodesToolStripMenuItem.Name = "showVolumesInsteadOfNodesToolStripMenuItem";
@@ -411,6 +413,15 @@ namespace ME3Explorer
             this.dynamicBlockingVolumeToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.dynamicBlockingVolumeToolStripMenuItem.Text = "DynamicBlockingVolume";
             this.dynamicBlockingVolumeToolStripMenuItem.Click += new System.EventHandler(this.dynamicBlockingVolumeToolStripMenuItem_Click);
+            // 
+            // sFXCombatZoneToolStripMenuItem
+            // 
+            this.sFXCombatZoneToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.sFXCombatZoneToolStripMenuItem.Name = "sFXCombatZoneToolStripMenuItem";
+            this.sFXCombatZoneToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+            this.sFXCombatZoneToolStripMenuItem.Text = "SFXCombatZone";
+            this.sFXCombatZoneToolStripMenuItem.ToolTipText = "Turn on/off combat zone volumes";
+            this.sFXCombatZoneToolStripMenuItem.Click += new System.EventHandler(this.sFXCombatZoneToolStripMenuItem_Click);
             // 
             // wwiseAudioVolumeToolStripMenuItem
             // 
@@ -955,5 +966,6 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripMenuItem enableDisableVolumesToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem everythingElseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sFXCombatZoneToolStripMenuItem;
     }
 }
