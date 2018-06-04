@@ -547,7 +547,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
-    [DebuggerDisplay("StructProperty | {Name}")]
+    [DebuggerDisplay("StructProperty | {Name ?? StructType}")]
     public class StructProperty : UProperty
     {
         public readonly bool IsImmutable;

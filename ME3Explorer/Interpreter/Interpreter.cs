@@ -3029,7 +3029,6 @@ namespace ME3Explorer
 
         private void reorderArrayToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             int off = getPosFromNode(treeView1.SelectedNode);
             int n = BitConverter.ToInt32(memory, off);
             string name = pcc.getNameEntry(n);
