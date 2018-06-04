@@ -154,8 +154,14 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        Debug.WriteLine("Relink failed: CrossImport porting failed for " + objProperty.Name + " " + objProperty.Value + ": " + importingPCC.getEntry(origvalue).GetFullPath);
-                        return "Relink failed: CrossImport porting failed for " + objProperty.Name + " " + objProperty.Value + " " + destinationPCC.getEntry(objProperty.Value).GetFullPath;
+                        if (destinationPCC.getEntry(objProperty.Value) != null)
+                        {
+                            Debug.WriteLine("Relink failed: CrossImport porting failed for " + objProperty.Name + " " + objProperty.Value + ": " + importingPCC.getEntry(origvalue).GetFullPath);
+                            return "Relink failed: CrossImport porting failed for " + objProperty.Name + " " + objProperty.Value + " " + destinationPCC.getEntry(objProperty.Value).GetFullPath;
+                        } else
+                        {
+                            return "Relink failed: New export does not exist - this is probably a bug in cross import code for " + objProperty.Name + " " + objProperty.Value;
+                        }
                     }
                 }
             }

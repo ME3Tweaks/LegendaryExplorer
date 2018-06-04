@@ -1730,6 +1730,7 @@ namespace ME3Explorer
             MemoryStream res = new MemoryStream();
             if ((importpcc.getExport(n).ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
             {
+                //ME1, ME2 stack
                 byte[] stackdummy =        { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //Lets hope for the best :D
                                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
 
@@ -1759,7 +1760,17 @@ namespace ME3Explorer
             }
 
             //set header so addresses are set
-            nex.setHeader((byte[])ex.header.Clone());
+            var header = (byte[])ex.header.Clone();
+            if ((importpcc.Game == MEGame.ME1 || importpcc.Game == MEGame.ME2) && pcc.Game == MEGame.ME3)
+            {
+                //we need to clip some bytes out of the header
+                byte[] clippedHeader = new byte[header.Length - 4];
+                Buffer.BlockCopy(header, 0, clippedHeader, 0, 0x27);
+                Buffer.BlockCopy(header, 0x2B, clippedHeader, 0x27, header.Length - 0x2B);
+
+                header = clippedHeader;
+            }
+            nex.setHeader(header);
             bool dataAlreadySet = false;
             if (importpcc.Game == MEGame.ME3)
             {
