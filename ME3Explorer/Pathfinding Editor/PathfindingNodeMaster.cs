@@ -14,6 +14,8 @@ using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.PathingGraphEditor;
 using ME3Explorer.SequenceObjects;
+using System.Numerics;
+using System.Diagnostics;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -30,11 +32,12 @@ namespace ME3Explorer.Pathfinding_Editor
         static Color objectColor = Color.FromArgb(219, 39, 217);//purple
         static Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
         public static Brush sfxCombatZoneBrush = new SolidBrush(Color.FromArgb(255, 0, 0));
+        public static Brush highlightedCoverSlotBrush = new SolidBrush(Color.FromArgb(219, 137, 6));
 
         protected static Brush mostlyTransparentBrush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
         protected static Brush actorNodeBrush = new SolidBrush(Color.FromArgb(80, 80, 80));
         protected static Brush splineNodeBrush = new SolidBrush(Color.FromArgb(255, 60, 200));
-        protected static Brush pathfindingNodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
+        public static Brush pathfindingNodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
         protected static Brush dynamicPathfindingNodeBrush = new SolidBrush(Color.FromArgb(46, 184, 25));
         protected static Brush dynamicPathnodefindingNodeBrush = new SolidBrush(Color.FromArgb(80, 184, 25));
 
@@ -74,30 +77,71 @@ namespace ME3Explorer.Pathfinding_Editor
             return ellipseRegion.IsVisible(bounds);
         }
 
-        public void OnMouseEnter(object sender, PInputEventArgs e)
-        {
-            if (draggingVarlink)
-            {
-                ((PPath)((PathfindingNodeMaster)sender)[1]).Pen = selectedPen;
-                dragTarget = (PNode)sender;
-            }
-        }
-
-        public void OnMouseLeave(object sender, PInputEventArgs e)
-        {
-            if (draggingVarlink)
-            {
-                ((PPath)((PathfindingNodeMaster)sender)[1]).Pen = outlinePen;
-                dragTarget = null;
-            }
-        }
-
         //Empty implementation
         public virtual void CreateConnections(ref List<PathfindingNodeMaster> Objects)
         {
 
         }
 
+        protected PointF[] get3DBrushShape()
+        {
+            try
+            {
+                PropertyCollection props = export.GetProperties();
+                var brushComponent = props.GetProp<ObjectProperty>("BrushComponent");
+                if (brushComponent == null)
+                {
+                    return null;
+                }
+                IExportEntry brush = export.FileRef.getExport(brushComponent.Value - 1);
+                List<PointF> graphVertices = new List<PointF>();
+                List<Vector3> brushVertices = new List<Vector3>();
+                PropertyCollection brushProps = brush.GetProperties();
+                var brushAggGeom = brushProps.GetProp<StructProperty>("BrushAggGeom");
+                if (brushAggGeom == null)
+                {
+                    return null;
+                }
+                var convexList = brushAggGeom.GetProp<ArrayProperty<StructProperty>>("ConvexElems");
+
+                //Vertices
+                var verticiesList = convexList[0].Properties.GetProp<ArrayProperty<StructProperty>>("VertexData");
+                foreach (StructProperty vertex in verticiesList)
+                {
+                    Vector3 point = new Vector3();
+                    point.X = vertex.GetProp<FloatProperty>("X");
+                    point.Y = vertex.GetProp<FloatProperty>("Y");
+                    point.Z = vertex.GetProp<FloatProperty>("Z");
+                    brushVertices.Add(point);
+                }
+
+                //FaceTris
+                var faceTriData = convexList[0].Properties.GetProp<ArrayProperty<IntProperty>>("FaceTriData");
+                Vector3 previousVertex = new Vector3();
+                float prevX = float.MinValue;
+                float prevY = float.MinValue;
+                foreach (IntProperty triPoint in faceTriData)
+                {
+                    Vector3 vertex = brushVertices[triPoint];
+                    if (vertex.X == prevX && vertex.Y == prevY)
+                    {
+                        continue; //Z is on the difference
+                    }
+
+                    float x = vertex.X;
+                    float y = vertex.Y;
+
+                    prevX = x;
+                    prevY = y;
+                    PointF graphPoint = new PointF(x, y);
+                    graphVertices.Add(graphPoint);
+                }
+                return graphVertices.ToArray();
+            } catch (Exception)
+            {
+                return null;
+            }
+        }
 
         protected virtual string GetComment()
         {

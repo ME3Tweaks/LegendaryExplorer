@@ -12,7 +12,7 @@ namespace ME3Explorer.Unreal.Classes
 {
     public class ME3BioConversation
     {
-        ME3Package pcc;
+        readonly ME3Package pcc;
         public ME3ExportEntry export;
         int Unk1;
         List<PropertyReader.Property> Props;
@@ -456,9 +456,11 @@ namespace ME3Explorer.Unreal.Classes
             for (int i = 0; i < count; i++)
             {
                 List<PropertyReader.Property> p = PropertyReader.ReadProp(pcc, buff, pos);
-                StageDirectionStruct sd = new StageDirectionStruct();
-                sd.Text = p[0].Value.StringValue;
-                sd.StringRef = p[1].Value.IntValue;
+                StageDirectionStruct sd = new StageDirectionStruct
+                {
+                    Text = p[0].Value.StringValue,
+                    StringRef = p[1].Value.IntValue
+                };
                 StageDirections.Add(sd);
                 pos = p[p.Count - 1].offend;
             }

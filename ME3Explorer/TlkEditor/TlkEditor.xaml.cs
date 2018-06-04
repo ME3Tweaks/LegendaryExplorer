@@ -13,34 +13,19 @@ namespace ME3Explorer
     /// </summary>
     public partial class TLKEditor : Window
     {
-        private string _inputTlkFilePath = ConfigurationManager.AppSettings["InputTlkFilePath"];
-        private string _outputXmlFilePath = ConfigurationManager.AppSettings["OutputTextFilePath"];
         private string _inputXmlFilePath = ConfigurationManager.AppSettings["InputXmlFilePath"];
-        private string _outputTlkFilePath = ConfigurationManager.AppSettings["OutputTlkFilePath"];
 
-        public string InputTlkFilePath
-        {
-            get { return _inputTlkFilePath; }
-            set { _inputTlkFilePath = value; }
-        }
+        public string InputTlkFilePath { get; set; } = ConfigurationManager.AppSettings["InputTlkFilePath"];
 
-        public string OutputTextFilePath
-        {
-            get { return _outputXmlFilePath; }
-            set { _outputXmlFilePath = value; }
-        }
+        public string OutputTextFilePath { get; set; } = ConfigurationManager.AppSettings["OutputTextFilePath"];
 
         public string InputXmlFilePath
         {
             get { return _inputXmlFilePath; }
-            set { _inputTlkFilePath = value; }
+            set { InputTlkFilePath = value; }
         }
 
-        public string OutputTlkFilePath
-        {
-            get { return _outputTlkFilePath; }
-            set { _outputTlkFilePath = value; }
-        }
+        public string OutputTlkFilePath { get; set; } = ConfigurationManager.AppSettings["OutputTlkFilePath"];
 
         public TLKEditor()
         {
@@ -49,32 +34,38 @@ namespace ME3Explorer
 
         private void InputTlkFilePathButton_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Multiselect = false;
-            openFileDialog.Filter = "TLK Files (*.tlk)|*.tlk";
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Multiselect = false,
+                Filter = "TLK Files (*.tlk)|*.tlk"
+            };
             if (openFileDialog.ShowDialog() == true)
             {
-                _inputTlkFilePath = openFileDialog.FileName;
-                TextInputTlkFilePath.Text = _inputTlkFilePath;
+                InputTlkFilePath = openFileDialog.FileName;
+                TextInputTlkFilePath.Text = InputTlkFilePath;
             }
         }
 
         private void OutputXmlFilePathButton_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "XML Files (*.xml)|*.xml";
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "XML Files (*.xml)|*.xml"
+            };
             if (saveFileDialog.ShowDialog() == true)
             {
-                _outputXmlFilePath = saveFileDialog.FileName;
-                TextOutputXmlFilePath.Text = _outputXmlFilePath;
+                OutputTextFilePath = saveFileDialog.FileName;
+                TextOutputXmlFilePath.Text = OutputTextFilePath;
             }
         }
 
         private void InputXmlFilePathButton_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Multiselect = false;
-            openFileDialog.Filter = "XML Files (*.xml)|*.xml";
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Multiselect = false,
+                Filter = "XML Files (*.xml)|*.xml"
+            };
             if (openFileDialog.ShowDialog() == true)
             {
                 _inputXmlFilePath = openFileDialog.FileName;
@@ -84,12 +75,14 @@ namespace ME3Explorer
 
         private void OutputTlkFilePathButton_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "TLK Files (*.tlk)|*.tlk";
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "TLK Files (*.tlk)|*.tlk"
+            };
             if (saveFileDialog.ShowDialog() == true)
             {
-                _outputTlkFilePath = saveFileDialog.FileName;
-                TextOutputTlkFilePath.Text = _outputTlkFilePath;
+                OutputTlkFilePath = saveFileDialog.FileName;
+                TextOutputTlkFilePath.Text = OutputTlkFilePath;
             }
         }
 
@@ -102,8 +95,10 @@ namespace ME3Explorer
         {
             BusyReading(true);
 
-            var loadingWorker = new BackgroundWorker();
-            loadingWorker.WorkerReportsProgress = true;
+            var loadingWorker = new BackgroundWorker
+            {
+                WorkerReportsProgress = true
+            };
 
             loadingWorker.ProgressChanged += delegate(object sender2, ProgressChangedEventArgs e2)
             {
@@ -115,10 +110,10 @@ namespace ME3Explorer
                 try
                 {
                     TalkFile tf = new TalkFile();
-                    tf.LoadTlkData(_inputTlkFilePath);
+                    tf.LoadTlkData(InputTlkFilePath);
 
                     tf.ProgressChanged += loadingWorker.ReportProgress;
-                    tf.DumpToFile(_outputXmlFilePath);
+                    tf.DumpToFile(OutputTextFilePath);
                     // debug
                     // tf.PrintHuffmanTree();
                     tf.ProgressChanged -= loadingWorker.ReportProgress;
@@ -165,7 +160,7 @@ namespace ME3Explorer
                     HuffmanCompression hc = new HuffmanCompression();
                     hc.LoadInputData(_inputXmlFilePath, debugVersion);
 
-                    hc.SaveToTlkFile(_outputTlkFilePath);
+                    hc.SaveToTlkFile(OutputTlkFilePath);
                     MessageBox.Show("Finished creating TLK file.", "Done!",
                                 MessageBoxButton.OK, MessageBoxImage.Information);
                 }
@@ -255,8 +250,10 @@ namespace ME3Explorer
 
         private void HowTo_Click(object sender, RoutedEventArgs e)
         {
-            TLKEditorHowToUseWindow howToWindow = new TLKEditorHowToUseWindow();
-            howToWindow.Owner = this;
+            TLKEditorHowToUseWindow howToWindow = new TLKEditorHowToUseWindow
+            {
+                Owner = this
+            };
             howToWindow.Show();
         }
 

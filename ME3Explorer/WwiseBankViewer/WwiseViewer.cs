@@ -28,8 +28,7 @@ namespace ME3Explorer.WwiseBankEditor
 
         private void openPccToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "*.pcc|*.pcc";
+            OpenFileDialog d = new OpenFileDialog { Filter = "*.pcc|*.pcc" };
             if (d.ShowDialog() == DialogResult.OK)
             {
                 LoadFile(d.FileName);
@@ -83,19 +82,26 @@ namespace ME3Explorer.WwiseBankEditor
 
         public void ListRefresh2()
         {
+            int selected = listBox2.SelectedIndex;
             listBox2.Items.Clear();
             for (int i = 0; i < bank.HIRCObjects.Count; i++)
                 listBox2.Items.Add(i.ToString("D4") + " : " + bank.GetHircDesc(bank.HIRCObjects[i]));
+            if (selected < listBox2.Items.Count)
+            {
+                listBox2.SelectedIndex = selected;
+            }
         }
 
         private void exportAllWEMFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (bank == null || bank.didx_data == null || bank.didx_data.Length == 0)
                 return;
-            CommonOpenFileDialog m = new CommonOpenFileDialog();
-            m.IsFolderPicker = true;
-            m.EnsurePathExists = true;
-            m.Title = "Select Folder to Output to";
+            CommonOpenFileDialog m = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                EnsurePathExists = true,
+                Title = "Select Folder to Output to"
+            };
             if (m.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 if (bank.ExportAllWEMFiles(m.FileName))
@@ -117,8 +123,7 @@ namespace ME3Explorer.WwiseBankEditor
         {
             if (bank == null)
                 return;
-            SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "*.bin|*.bin";
+            SaveFileDialog d = new SaveFileDialog { Filter = "*.bin|*.bin" };
             if (d.ShowDialog() == DialogResult.OK)
             {
                 File.WriteAllBytes(d.FileName, bank.RecreateBinary());
@@ -134,13 +139,7 @@ namespace ME3Explorer.WwiseBankEditor
             if (m == -1)
                 return;
             bank.CloneHIRCObject(m);
-            ListRefresh2();
-            listBox2.SelectedIndex = listBox2.Items.Count - 1;
-        }
-
-        private void saveHexEditsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            saveHIRCHexEdits();
+            saveBank();
         }
 
         private void saveHIRCHexEdits()
@@ -161,11 +160,10 @@ namespace ME3Explorer.WwiseBankEditor
 
             bank.HIRCObjects[m] = tmp;
             Console.WriteLine("HIRC hex size: " + bank.HIRCObjects[m].Count().ToString("X4"));
-            ListRefresh2();
-            listBox2.SelectedIndex = m;
+            saveBank();
         }
 
-        private void editToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void editSoundSFXVoiceToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             if (bank == null)
                 return;
@@ -210,25 +208,22 @@ namespace ME3Explorer.WwiseBankEditor
                 res.Write(BitConverter.GetBytes(ID3), 0, 4);
                 res.WriteByte((byte)tp);
                 bank.HIRCObjects[m] = res.ToArray();
-                ListRefresh2();
-                listBox2.SelectedIndex = m;
+                saveBank();
             }
         }
 
-        private void saveBankToPccToolStripMenuItem_Click(object sender, EventArgs e)
+        private void saveBank()
         {
             if (bank == null)
                 return;
             int n = bank.MyIndex;
             byte[] tmp = bank.RecreateBinary();
             pcc.Exports[n].Data = tmp;
-            MessageBox.Show("Done.");
         }
 
         private void savePccToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "*.pcc|*.pcc";
+            SaveFileDialog d = new SaveFileDialog { Filter = "*.pcc|*.pcc" };
             if (d.ShowDialog() == DialogResult.OK)
             {
                 pcc.save(d.FileName);
@@ -241,40 +236,6 @@ namespace ME3Explorer.WwiseBankEditor
             saveHIRCHexEdits();
         }
 
-        public override void handleUpdate(List<PackageUpdate> updates)
-        {
-            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
-                                                                            x.change != PackageChange.ImportAdd &&
-                                                                            x.change != PackageChange.Names);
-            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
-            if (updatedExports.Contains(bank.MyIndex))
-            {
-                int index = bank.MyIndex;
-                //loaded sequence is no longer a sequence
-                if (pcc.getExport(index).ClassName != "WwiseBank")
-                {
-                    bank = null;
-                    listBox2.Items.Clear();
-                    rtb1.Text = "";
-                    hb1.ByteProvider = new DynamicByteProvider(new List<byte>());
-                    hb2.ByteProvider = new DynamicByteProvider(new List<byte>());
-                }
-                RefreshSelected();
-                updatedExports.Remove(index);
-            }
-            if (updatedExports.Intersect(objects).Count() > 0)
-            {
-                ListRefresh();
-            }
-            foreach (var i in updatedExports)
-            {
-                if (pcc.getExport(i).ClassName.Contains("WwiseBank"))
-                {
-                    ListRefresh();
-                    break;
-                }
-            }
-        }
         private void searchHexButton_Click(object sender, EventArgs e)
         {
             if (bank == null)
@@ -317,6 +278,41 @@ namespace ME3Explorer.WwiseBankEditor
                 hexboxIndex = 0;
             }
             searchHexStatus.Text = "Hex not found";
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
+                                                                            x.change != PackageChange.ImportAdd &&
+                                                                            x.change != PackageChange.Names);
+            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
+            if (updatedExports.Contains(bank.MyIndex))
+            {
+                int index = bank.MyIndex;
+                //loaded sequence is no longer a sequence
+                if (pcc.getExport(index).ClassName != "WwiseBank")
+                {
+                    bank = null;
+                    listBox2.Items.Clear();
+                    rtb1.Text = "";
+                    hb1.ByteProvider = new DynamicByteProvider(new List<byte>());
+                    hb2.ByteProvider = new DynamicByteProvider(new List<byte>());
+                }
+                RefreshSelected();
+                updatedExports.Remove(index);
+            }
+            if (updatedExports.Intersect(objects).Any())
+            {
+                ListRefresh();
+            }
+            foreach (var i in updatedExports)
+            {
+                if (pcc.getExport(i).ClassName.Contains("WwiseBank"))
+                {
+                    ListRefresh();
+                    break;
+                }
+            }
         }
     }
 }

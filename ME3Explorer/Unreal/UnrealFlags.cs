@@ -7,6 +7,109 @@ namespace ME3Explorer.Unreal
 {
     public static class UnrealFlags
     {
+
+        [Flags]
+        public enum EPropertyFlags : ulong
+        {
+            None = 0,
+            Editable = 0x0000000000000001U,
+            Const = 0x0000000000000002U,
+            Input = 0x0000000000000004U,
+            ExportObject = 0x0000000000000008U,
+            OptionalParm = 0x0000000000000010U,
+            Net = 0x0000000000000020U,
+            EditFixedSize = 0x0000000000000040U, // also EditConstArray
+            Parm = 0x0000000000000080U,
+            OutParm = 0x0000000000000100U,
+            SkipParm = 0x0000000000000200U,
+            ReturnParm = 0x0000000000000400U,
+            CoerceParm = 0x0000000000000800U,
+            Native = 0x0000000000001000U,
+            Transient = 0x0000000000002000U,
+            Config = 0x0000000000004000U,
+            Localized = 0x0000000000008000U,
+            Travel = 0x0000000000010000U,
+            EditConst = 0x0000000000020000U,
+            GlobalConfig = 0x0000000000040000U,
+            Component = 0x0000000000080000U,
+            Init = 0x0000000000100000U,
+            DuplicateTransient = 0x0000000000200000U,
+            NeedCtorLink = 0x0000000000400000U,
+            NoExport = 0x0000000000800000U,
+            NoImport = 0x0000000001000000U,
+            NoClear = 0x0000000002000000U,
+            EditInline = 0x0000000004000000U,
+            EdFindable = 0x0000000008000000U,
+            EditInlineUse = 0x0000000010000000U,
+            Deprecated = 0x0000000020000000U,
+            DataBinding = 0x0000000040000000U, // also EditInlineNotify
+            SerializeText = 0x0000000080000000U,
+            RepNotify = 0x0000000100000000U,
+            Interp = 0x0000000200000000U,
+            NonTransactional = 0x0000000400000000U,
+            EditorOnly = 0x0000000800000000U,
+            NotForConsole = 0x0000001000000000U,
+            RepRetry = 0x0000002000000000U,
+            PrivateWrite = 0x0000004000000000U,
+            ProtectedWrite = 0x0000008000000000U,
+            Archetype = 0x0000010000000000U,
+            EditHide = 0x0000020000000000U,
+            EditTextBox = 0x0000040000000000U,
+            CrossLevelPassive = 0x0000100000000000U,
+            CrossLevelActive = 0x0000200000000000U
+        }
+
+        public static Dictionary<EPropertyFlags, string> propertyflagsdesc = new Dictionary<EPropertyFlags, string>
+        {
+            [EPropertyFlags.None] = "",
+            [EPropertyFlags.Editable] = "",
+            [EPropertyFlags.Const] = "Constant",
+            [EPropertyFlags.Input] = "",
+            [EPropertyFlags.ExportObject] = "",
+            [EPropertyFlags.OptionalParm] = "",
+            [EPropertyFlags.Net] = "",
+            [EPropertyFlags.EditFixedSize] = "also EditConstArray",
+            [EPropertyFlags.Parm] = "",
+            [EPropertyFlags.OutParm] = "",
+            [EPropertyFlags.SkipParm] = "",
+            [EPropertyFlags.ReturnParm] = "",
+            [EPropertyFlags.CoerceParm] = "",
+            [EPropertyFlags.Native] = "",
+            [EPropertyFlags.Transient] = "",
+            [EPropertyFlags.Config] = "",
+            [EPropertyFlags.Localized] = "",
+            [EPropertyFlags.Travel] = "",
+            [EPropertyFlags.EditConst] = "",
+            [EPropertyFlags.GlobalConfig] = "",
+            [EPropertyFlags.Component] = "",
+            [EPropertyFlags.Init] = "",
+            [EPropertyFlags.DuplicateTransient] = "",
+            [EPropertyFlags.NeedCtorLink] = "",
+            [EPropertyFlags.NoExport] = "",
+            [EPropertyFlags.NoImport] = "",
+            [EPropertyFlags.NoClear] = "",
+            [EPropertyFlags.EditInline] = "",
+            [EPropertyFlags.EdFindable] = "",
+            [EPropertyFlags.EditInlineUse] = "",
+            [EPropertyFlags.Deprecated] = "",
+            [EPropertyFlags.DataBinding] = "also EditInlineNotify",
+            [EPropertyFlags.SerializeText] = "",
+            [EPropertyFlags.RepNotify] = "",
+            [EPropertyFlags.Interp] = "",
+            [EPropertyFlags.NonTransactional] = "",
+            [EPropertyFlags.EditorOnly] = "",
+            [EPropertyFlags.NotForConsole] = "",
+            [EPropertyFlags.RepRetry] = "Retries replication if replication fails",
+            [EPropertyFlags.PrivateWrite] = "",
+            [EPropertyFlags.ProtectedWrite] = "",
+            [EPropertyFlags.Archetype] = "",
+            [EPropertyFlags.EditHide] = "",
+            [EPropertyFlags.EditTextBox] = "",
+            [EPropertyFlags.CrossLevelPassive] = "",
+            [EPropertyFlags.CrossLevelActive] = "",
+        };
+        
+
         public enum EObjectFlags : ulong
         {
             Transactional = 0x0000000100000000,   // Object is transactional.
@@ -46,41 +149,43 @@ namespace ME3Explorer.Unreal
             DebugDestroy = 0x8000000000000000,   // For debugging Destroy calls.
         }
 
-        public static string flagdescraw = @"Transactional , 0000000100000000,    Object is transactional.
-Unreachable , 0000000200000000,	 Object is not reachable on the object graph.
-Public , 0000000400000000,	 Object is visible outside its package.
-TagImp , 0000000800000000,	 Temporary import tag in loadsave.
-TagExp , 0000001000000000,	 Temporary export tag in loadsave.
-Obsolete , 0000002000000000,    Object marked as obsolete and should be replaced.
-TagGarbage , 0000004000000000,	 Check during garbage collection.
-Final , 0000008000000000,	 Object is not visible outside of class.
-PerObjectLocalized , 0000010000000000,	 Object is localized by instance name00000000, not by class.
-NeedLoad , 0000020000000000,    During load00000000, indicates object needs loading.
-HighlightedName , 0000040000000000,	 A hardcoded name which should be syntax-highlighted.
-EliminateObject , 0000040000000000,    NULL out references to this during garbage collecion.
-InSingularFunc , 0000080000000000,	 In a singular function.
-RemappedName , 0000080000000000,    Name is remapped.
-Suppress , 0000100000000000,	warning: Mirrored in UnName.h. Suppressed log name.
-StateChanged , 0000100000000000,    Object did a state change.
-InEndState , 0000200000000000,    Within an EndState call.
-Transient , 0000400000000000,	 Don't save object.
-Preloading , 0000800000000000,    Data is being preloaded from file.
-LoadForClient , 0001000000000000,	 In-file load for client.
-LoadForServer , 0002000000000000,	 In-file load for client.
-LoadForEdit , 0004000000000000,	 In-file load for client.
-Standalone , 0008000000000000,    Keep object around for editing even if unreferenced.
-NotForClient , 0010000000000000,	 Don't load this object for the game client.
-NotForServer , 0020000000000000,	 Don't load this object for the game server.
-NotForEdit , 0040000000000000,	 Don't load this object for the editor.
-Destroyed , 0080000000000000,	 Object Destroy has already been called.
-NeedPostLoad , 0100000000000000,    Object needs to be postloaded.
-HasStack , 0200000000000000,	 Has execution stack.
-Native , 0400000000000000,    Native (UClass only).
-Marked , 0800000000000000,    Marked (for debugging).
-ErrorShutdown , 1000000000000000,	 ShutdownAfterError called.
-DebugPostLoad , 2000000000000000,    For debugging Serialize calls.
-DebugSerialize , 4000000000000000,    For debugging Serialize calls.
-DebugDestroy , 8000000000000000,    For debugging Destroy calls.";
-        public static string[] flagdesc = flagdescraw.Split('\n');
+        public static string[] flagdesc =  
+        {
+            "Transactional , 0000000100000000,    Object is transactional.",
+            "Unreachable , 0000000200000000,	 Object is not reachable on the object graph.",
+            "Public , 0000000400000000,	 Object is visible outside its package.",
+            "TagImp , 0000000800000000,	 Temporary import tag in loadsave.",
+            "TagExp , 0000001000000000,	 Temporary export tag in loadsave.",
+            "Obsolete , 0000002000000000,    Object marked as obsolete and should be replaced.",
+            "TagGarbage , 0000004000000000,	 Check during garbage collection.",
+            "Final , 0000008000000000,	 Object is not visible outside of class.",
+            "PerObjectLocalized , 0000010000000000,	 Object is localized by instance name00000000, not by class.",
+            "NeedLoad , 0000020000000000,    During load00000000, indicates object needs loading.",
+            "HighlightedName , 0000040000000000,	 A hardcoded name which should be syntax-highlighted.",
+            "EliminateObject , 0000040000000000,    NULL out references to this during garbage collecion.",
+            "InSingularFunc , 0000080000000000,	 In a singular function.",
+            "RemappedName , 0000080000000000,    Name is remapped.",
+            "Suppress , 0000100000000000,	warning: Mirrored in UnName.h. Suppressed log name.",
+            "StateChanged , 0000100000000000,    Object did a state change.",
+            "InEndState , 0000200000000000,    Within an EndState call.",
+            "Transient , 0000400000000000,	 Don't save object.",
+            "Preloading , 0000800000000000,    Data is being preloaded from file.",
+            "LoadForClient , 0001000000000000,	 In-file load for client.",
+            "LoadForServer , 0002000000000000,	 In-file load for client.",
+            "LoadForEdit , 0004000000000000,	 In-file load for client.",
+            "Standalone , 0008000000000000,    Keep object around for editing even if unreferenced.",
+            "NotForClient , 0010000000000000,	 Don't load this object for the game client.",
+            "NotForServer , 0020000000000000,	 Don't load this object for the game server.",
+            "NotForEdit , 0040000000000000,	 Don't load this object for the editor.",
+            "Destroyed , 0080000000000000,	 Object Destroy has already been called.",
+            "NeedPostLoad , 0100000000000000,    Object needs to be postloaded.",
+            "HasStack , 0200000000000000,	 Has execution stack.",
+            "Native , 0400000000000000,    Native (UClass only).",
+            "Marked , 0800000000000000,    Marked (for debugging).",
+            "ErrorShutdown , 1000000000000000,	 ShutdownAfterError called.",
+            "DebugPostLoad , 2000000000000000,    For debugging Serialize calls.",
+            "DebugSerialize , 4000000000000000,    For debugging Serialize calls.",
+            "DebugDestroy , 8000000000000000,    For debugging Destroy calls."
+        };
     }
 }

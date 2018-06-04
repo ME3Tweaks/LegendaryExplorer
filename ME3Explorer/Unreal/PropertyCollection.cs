@@ -72,11 +72,9 @@ namespace ME3Explorer.Unreal
             long startPosition = stream.Position;
             while (stream.Position + 8 <= stream.Length)
             {
-                long nameOffset = stream.Position;
                 int nameIdx = stream.ReadValueS32();
                 if (!pcc.isName(nameIdx))
                 {
-                    //DebugOutput.PrintLn("Not a name found at 0x" + nameOffset.ToString("X4"));
                     stream.Seek(-4, SeekOrigin.Current);
                     break;
                 }
@@ -87,7 +85,6 @@ namespace ME3Explorer.Unreal
                     stream.Seek(4, SeekOrigin.Current);
                     break;
                 }
-                //DebugOutput.PrintLn("0x" + nameOffset.ToString("X4") + " " + name);
                 NameReference nameRef = new NameReference { Name = name, Number = stream.ReadValueS32() };
                 int typeIdx = stream.ReadValueS32();
                 stream.Seek(4, SeekOrigin.Current);
@@ -533,6 +530,7 @@ namespace ME3Explorer.Unreal
         public abstract void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false);
     }
 
+    [DebuggerDisplay("NoneProperty")]
     public class NoneProperty : UProperty
     {
         public NoneProperty(NameReference? name = null) : base(name)
@@ -549,6 +547,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("StructProperty | {Name}")]
     public class StructProperty : UProperty
     {
         public readonly bool IsImmutable;
@@ -613,6 +612,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("IntProperty | {Name} = {Value}")]
     public class IntProperty : UProperty
     {
         int _value;
@@ -658,6 +658,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("FloatProperty | {Name} = {Value}")]
     public class FloatProperty : UProperty
     {
         float _value;
@@ -703,6 +704,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("ObjectProperty | {Name} = {Value}")]
     public class ObjectProperty : UProperty
     {
         int _value;
@@ -738,6 +740,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("ObjectProperty | {Name} = {Value}")]
     public class NameProperty : UProperty
     {
         NameReference _value;
@@ -750,9 +753,11 @@ namespace ME3Explorer.Unreal
         public NameProperty(MemoryStream stream, IMEPackage pcc, NameReference? name = null) : base(name)
         {
             Offset = stream.Position;
-            NameReference nameRef = new NameReference();
-            nameRef.Name = pcc.getNameEntry(stream.ReadValueS32());
-            nameRef.Number = stream.ReadValueS32();
+            NameReference nameRef = new NameReference
+            {
+                Name = pcc.getNameEntry(stream.ReadValueS32()),
+                Number = stream.ReadValueS32()
+            };
             Value = nameRef;
             PropType = PropertyType.NameProperty;
         }
@@ -776,6 +781,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("BoolProperty | {Name} = {Value}")]
     public class BoolProperty : UProperty
     {
         bool _value;
@@ -828,6 +834,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("ByteProperty | {Name} = {Value}")]
     public class ByteProperty : UProperty
     {
         byte _value;
@@ -904,9 +911,11 @@ namespace ME3Explorer.Unreal
         {
             Offset = stream.Position;
             EnumType = enumType;
-            NameReference enumVal = new NameReference();
-            enumVal.Name = pcc.getNameEntry(stream.ReadValueS32());
-            enumVal.Number = stream.ReadValueS32();
+            NameReference enumVal = new NameReference
+            {
+                Name = pcc.getNameEntry(stream.ReadValueS32()),
+                Number = stream.ReadValueS32()
+            };
             Value = enumVal;
             EnumValues = UnrealObjectInfo.GetEnumValues(pcc.Game, enumType, true);
             PropType = PropertyType.ByteProperty;
@@ -944,6 +953,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("ArrayProperty<{arrayType}> | {Name}, Length = {Values.Count}")]
     public class ArrayProperty<T> : ArrayPropertyBase, IEnumerable<T>, IList<T> where T : UProperty
     {
         public List<T> Values { get; private set; }
@@ -963,6 +973,13 @@ namespace ME3Explorer.Unreal
             PropType = PropertyType.ArrayProperty;
             arrayType = type;
             Values = values;
+        }
+
+        public ArrayProperty(ArrayType type, NameReference name) : base(name)
+        {
+            PropType = PropertyType.ArrayProperty;
+            arrayType = type;
+            Values = new List<T>();
         }
 
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
@@ -1053,6 +1070,7 @@ namespace ME3Explorer.Unreal
         #endregion
     }
 
+    [DebuggerDisplay("StrProperty | {Name} = {Value}")]
     public class StrProperty : UProperty
     {
         string _value;
@@ -1139,6 +1157,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("StringRefProperty | {Name} = {Value}")]
     public class StringRefProperty : UProperty
     {
         int _value;
@@ -1176,9 +1195,11 @@ namespace ME3Explorer.Unreal
         public DelegateProperty(MemoryStream stream, IMEPackage pcc, NameReference? name = null) : base(name)
         {
             unk = stream.ReadValueS32();
-            NameReference val = new NameReference();
-            val.Name = pcc.getNameEntry(stream.ReadValueS32());
-            val.Number = stream.ReadValueS32();
+            NameReference val = new NameReference
+            {
+                Name = pcc.getNameEntry(stream.ReadValueS32()),
+                Number = stream.ReadValueS32()
+            };
             Value = val;
             PropType = PropertyType.DelegateProperty;
         }

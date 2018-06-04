@@ -263,7 +263,15 @@ namespace ME3Explorer.Packages
             {
                 replaceExports = exports.Where(export => export.DataChanged && export.DataOffset < NameOffset && export.DataSize <= export.OriginalDataSize);
                 appendExports = exports.Where(export => export.DataOffset > NameOffset || (export.DataChanged && export.DataSize > export.OriginalDataSize));
-                max = exports.Where(exp => exp.DataOffset < NameOffset).Max(e => e.DataOffset);
+                var exportsBeforeNameTable = exports.Where(exp => exp.DataOffset < NameOffset);
+                if (exportsBeforeNameTable.Count() > 0)
+                {
+                    max = exportsBeforeNameTable.Max(e => e.DataOffset);
+                } else
+                {
+                    //doesn't seem to be actual append... seems to be some sort of bug with mem/me3explorer mixing, or maybe just me3exp, where sequence = 0 lenght
+                    max = exports.Max(maxExport => maxExport.DataOffset);
+                }
             }
             else
             {
@@ -356,6 +364,13 @@ namespace ME3Explorer.Packages
         {
             //update offsets for pcc-stored audio in wwisestreams
             if (export.ClassName == "WwiseStream" && export.GetProperty<NameProperty>("Filename") == null)
+            {
+                byte[] binData = export.getBinaryData();
+                binData.OverwriteRange(12, BitConverter.GetBytes(export.DataOffset + export.propsEnd() + 16));
+                export.setBinaryData(binData);
+            }
+            //update offsets for pcc-stored movies in texturemovies
+            if (export.ClassName == "TextureMovie" && export.GetProperty<NameProperty>("TextureFileCacheName") == null)
             {
                 byte[] binData = export.getBinaryData();
                 binData.OverwriteRange(12, BitConverter.GetBytes(export.DataOffset + export.propsEnd() + 16));

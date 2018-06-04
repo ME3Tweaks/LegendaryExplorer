@@ -23,12 +23,12 @@ namespace ME3Explorer
 
         public static readonly string FileFilter = "*.pcc;*.u;*.upk;*sfm|*.pcc;*.u;*.upk;*sfm|All Files (*.*)|*.*";
 
-        public static string Version { get { return "v" + GetVersion(); } }
+        public static string Version { get { return GetVersion(); } }
 
         public static string GetVersion()
         {
             Version ver = Assembly.GetExecutingAssembly().GetName().Version;
-            return ver.Major + "." + ver.Minor + "." + ver.Build;
+            return "v"+ver.Major + "." + ver.Minor + "." + ver.Build + "." +ver.Revision;
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)
@@ -65,6 +65,7 @@ namespace ME3Explorer
             }
             else
             {
+                this.Dispatcher.UnhandledException += OnDispatcherUnhandledException; //only start handling them after bootup
                 (new MainWindow()).Show();
             }
         }
@@ -120,6 +121,18 @@ namespace ME3Explorer
             }
             exitCode = 0;
             return 1;
+        }
+
+        /// <summary>
+        /// Called when an unhandled exception occurs. This method can only be invoked after startup has completed. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">Exception to process</param>
+        void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            SharedUI.ExceptionHandlerDialogWPF eh = new SharedUI.ExceptionHandlerDialogWPF(e.Exception);
+            eh.ShowDialog();
+            e.Handled = eh.Handled;
         }
     }
 }

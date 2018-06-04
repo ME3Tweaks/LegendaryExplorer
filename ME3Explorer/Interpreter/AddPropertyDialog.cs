@@ -15,7 +15,6 @@ namespace ME3Explorer
     public partial class AddPropertyDialog : Form
     {
         public List<string> extantProps;
-
         Dictionary<string, ClassInfo> classList;
 
         public AddPropertyDialog()

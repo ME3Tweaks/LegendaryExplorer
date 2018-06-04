@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using UsefulThings.WPF;
 
 namespace ME3Explorer.Packages
 {
+    [DebuggerDisplay("ImportEntry | {UIndex} = {GetFullPath}")]
     public class ImportEntry : ViewModelBase, IEntry
     {
         public ImportEntry(IMEPackage pccFile, Stream importData)

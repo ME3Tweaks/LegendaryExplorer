@@ -34,10 +34,6 @@ namespace ME3Explorer.Packages
         public static IMEPackage OpenMEPackage(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null)
         {
             IMEPackage package = null;
-            //if (!File.Exists(pathToFile))
-            //{
-            //    return null;
-            //}
             if (!openPackages.ContainsKey(pathToFile))
             {
                 ushort version;

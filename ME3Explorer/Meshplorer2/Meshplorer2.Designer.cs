@@ -1,6 +1,6 @@
 ﻿namespace ME3Explorer.Meshplorer2
 {
-    partial class Meshplorer2
+    partial class MeshDatabase
     {
         /// <summary>
         /// Erforderliche Designervariable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Meshplorer2));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MeshDatabase));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.globalTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,7 +96,7 @@
             this.scanToolStripMenuItem,
             this.saveToolStripMenuItem});
             this.globalTreeToolStripMenuItem.Name = "globalTreeToolStripMenuItem";
-            this.globalTreeToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
+            this.globalTreeToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
             this.globalTreeToolStripMenuItem.Text = "Global Tree";
             // 
             // loadToolStripMenuItem
@@ -136,7 +136,7 @@
             this.previewWithTreeToolStripMenuItem.CheckOnClick = true;
             this.previewWithTreeToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.previewWithTreeToolStripMenuItem.Name = "previewWithTreeToolStripMenuItem";
-            this.previewWithTreeToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.previewWithTreeToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.previewWithTreeToolStripMenuItem.Text = "Preview with Tree";
             // 
             // rotateToolStripMenuItem
@@ -145,13 +145,13 @@
             this.rotateToolStripMenuItem.CheckOnClick = true;
             this.rotateToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.rotateToolStripMenuItem.Name = "rotateToolStripMenuItem";
-            this.rotateToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.rotateToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.rotateToolStripMenuItem.Text = "Rotate";
             // 
             // importBonesToolStripMenuItem
             // 
             this.importBonesToolStripMenuItem.Name = "importBonesToolStripMenuItem";
-            this.importBonesToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.importBonesToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.importBonesToolStripMenuItem.Text = "Import Bones";
             this.importBonesToolStripMenuItem.Click += new System.EventHandler(this.importBonesToolStripMenuItem_Click);
             // 
@@ -160,7 +160,7 @@
             this.transferToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importFromUDKToolStripMenuItem});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
-            this.transferToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.transferToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
             this.transferToolStripMenuItem.Text = "Transfer";
             // 
             // importFromUDKToolStripMenuItem
@@ -364,7 +364,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Meshplorer2";
-            this.Text = "Meshplorer2";
+            this.Text = "Mesh Database";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Meshplorer2_FormClosing);
             this.Load += new System.EventHandler(this.Meshplorer2_Load);
             this.menuStrip1.ResumeLayout(false);
