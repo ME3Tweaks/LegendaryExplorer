@@ -314,8 +314,7 @@ namespace ME3Explorer
             // 
             this.nodeContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.expandAllChildrenToolStripMenuItem,
-            this.collapseAllChildrenToolStripMenuItem,
-            this.reorderArrayToolStripMenuItem});
+            this.collapseAllChildrenToolStripMenuItem });
             this.nodeContextMenuStrip1.Name = "nodeContextMenuStrip1";
             this.nodeContextMenuStrip1.Size = new System.Drawing.Size(185, 70);
             // 

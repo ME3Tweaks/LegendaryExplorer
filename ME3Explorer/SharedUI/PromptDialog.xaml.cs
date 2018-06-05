@@ -35,18 +35,11 @@ namespace ME3Explorer.SharedUI
             Title = title;
             txtResponse.Text = defaultValue;
             _inputType = inputType;
-            if (_inputType == InputType.Password)
-                txtResponse.Visibility = Visibility.Collapsed;
-            else
-                txtPasswordResponse.Visibility = Visibility.Collapsed;
         }
 
         void PromptDialog_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_inputType == InputType.Password)
-                txtPasswordResponse.Focus();
-            else
-                txtResponse.Focus();
+            txtResponse.Focus();
         }
 
         public static string Prompt(string question, string title, string defaultValue = "", InputType inputType = InputType.Text)
@@ -62,10 +55,7 @@ namespace ME3Explorer.SharedUI
         {
             get
             {
-                if (_inputType == InputType.Password)
-                    return txtPasswordResponse.Password;
-                else
-                    return txtResponse.Text;
+                return txtResponse.Text;
             }
         }
 

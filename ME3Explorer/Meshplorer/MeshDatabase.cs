@@ -253,7 +253,7 @@ namespace ME3Explorer.Meshplorer
             if (n == -1)
                 return;
             DBEntry en = database[n];
-            MyParent.LoadPCC(ME3Directory.cookedPath + en.filename);
+            MyParent.LoadFile(ME3Directory.cookedPath + en.filename);
             MyParent.BringToFront();
         }
 
@@ -266,7 +266,7 @@ namespace ME3Explorer.Meshplorer
             if (m == -1)
                 return;
             DBEntry en = database[n];
-            MyParent.LoadPCC(ME3Directory.cookedPath + en.filename);
+            MyParent.LoadFile(ME3Directory.cookedPath + en.filename);
             if (MyParent.listBox1.Items.Count < m)
                 MyParent.listBox1.SelectedIndex = m;
             MyParent.BringToFront();

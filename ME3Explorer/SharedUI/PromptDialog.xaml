@@ -10,7 +10,6 @@
     <StackPanel Margin="5" MaxWidth="350">
         <TextBlock Name="txtQuestion" Margin="5" TextWrapping="Wrap"/>
         <TextBox Name="txtResponse" Margin="5"/>
-        <PasswordBox Name="txtPasswordResponse" />
         <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Right">
             <Button Content="_OK" IsDefault="True" Margin="5" Width="40" Height="25" Name="btnOk" Click="btnOk_Click" />
             <Button Content="_Cancel" IsCancel="True" Margin="5" Width="50" Height="25" Name="btnCancel" Click="btnCancel_Click" />

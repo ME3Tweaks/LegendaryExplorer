@@ -114,6 +114,7 @@ namespace ME3Explorer
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
 
         int? selectedNodePos = null;
+        private readonly string[] AutoExpandObjectClasses = { "BioTriggerStream", "SFXOperation_ObjectiveSpawnPoint" };
 
         public Interpreter()
         {
@@ -558,8 +559,15 @@ namespace ME3Explorer
             {
                 treeView1.SelectedNode = treeView1.Nodes[0];
             }
-            treeView1.EndUpdate();
             memsize = memory.Length;
+
+            //BioTriggerSTream - expand everything as it is awful to have to always expand the tree
+            if (AutoExpandObjectClasses.Contains(export.ObjectName))
+            {
+                treeView1.ExpandAll();
+            }
+            treeView1.EndUpdate();
+
         }
 
         public void GenerateTree(TreeNode localRoot, List<PropHeader> headersList)
@@ -1784,7 +1792,7 @@ namespace ME3Explorer
                         if (type == NodeType.StructLeafEnum)
                         {
                             int begin = node.Text.LastIndexOf(':');
-                            if(begin == -1)
+                            if (begin == -1)
                             {
                                 return;
                             }
@@ -1851,6 +1859,7 @@ namespace ME3Explorer
             {
                 setNonArrayProperty();
             }
+            RefreshMem();
         }
 
         private void setStructOrArrayProperty()
@@ -2542,11 +2551,13 @@ namespace ME3Explorer
         private void deleteArrayElement_Click(object sender, EventArgs e)
         {
             deleteArrayLeaf();
+            RefreshMem();
         }
 
         private void addArrayElementButton_Click(object sender, EventArgs e)
         {
             addArrayLeaf();
+            RefreshMem();
         }
 
         private void treeView1_AfterExpand(object sender, TreeViewEventArgs e)
@@ -2642,6 +2653,7 @@ namespace ME3Explorer
             {
                 UpdateMem(pos);
             }
+            RefreshMem();
         }
 
         private void addPropButton_Click(object sender, EventArgs e)
@@ -2693,6 +2705,7 @@ namespace ME3Explorer
             }
 
             AddProperty(prop, currentInfo);
+            RefreshMem();
         }
 
         public void AddProperty(string prop, ClassInfo nonVanillaClassInfo = null)
@@ -3016,7 +3029,6 @@ namespace ME3Explorer
 
         private void reorderArrayToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             int off = getPosFromNode(treeView1.SelectedNode);
             int n = BitConverter.ToInt32(memory, off);
             string name = pcc.getNameEntry(n);
@@ -3047,11 +3059,9 @@ namespace ME3Explorer
         private void setValueKeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Return)
-
             {
                 // Then Do your Thang
                 setPropertyButton.PerformClick();
-                RefreshMem();
             }
         }
 
@@ -3064,6 +3074,7 @@ namespace ME3Explorer
             Buffer.BlockCopy(export.Data, 0, newdata, 0, posStart);
             Buffer.BlockCopy(export.Data, posEnd, newdata, posStart, export.Data.Length - posEnd);
             export.Data = newdata;
+            RefreshMem();
         }
     }
 }

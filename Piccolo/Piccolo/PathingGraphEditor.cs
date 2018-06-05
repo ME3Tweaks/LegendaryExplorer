@@ -24,6 +24,7 @@ namespace UMD.HCIL.PathingGraphEditor
         private System.ComponentModel.Container components = null;
         private static int DEFAULT_WIDTH = 1;
         private static int DEFAULT_HEIGHT = 1;
+        public bool showVolumeBrushes = true;
 
         public bool updating = false;
 
@@ -229,6 +230,13 @@ namespace UMD.HCIL.PathingGraphEditor
         #endregion
 
         private int updatingCount = 0;
+        public bool showVolume_BioTriggerVolume = false;
+        public bool showVolume_BioTriggerStream = false;
+        public bool showVolume_DynamicBlockingVolume = false;
+        public bool showVolume_WwiseAudioVolume = false;
+        public bool showVolume_BlockingVolume = false;
+        public bool showVolume_SFXCombatZones = false;
+
         protected override void OnPaint(PaintEventArgs e)
         {
             if (!updating)

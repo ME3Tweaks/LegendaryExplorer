@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 
 namespace ME3Explorer
 {
@@ -33,7 +34,7 @@ namespace ME3Explorer
             }
             else
             {
-                MessageBox.Show("No exports have serial size mismatches.");
+                System.Windows.MessageBox.Show("No exports have serial size mismatches.");
             }
         }
 
@@ -79,6 +80,64 @@ namespace ME3Explorer
         private void dEBUGOpenPackageEditorWPFToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new PackageEditorWPF().Show();
+        }
+
+        /// <summary>
+        /// Do not remove this method - it is used by ME3Tweaks Rebuilding TFC Guide
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog d = new OpenFileDialog { Filter = "ME2/ME3 Package files|*.pcc" };
+            if (d.ShowDialog() == DialogResult.OK)
+            {
+                var pccs = Directory.GetFiles(Path.GetDirectoryName(d.FileName), "*pcc");
+                if (pccs.Count() > 0)
+                {
+                    string input = "Enter a name. This name will be added to every PCC in this folder if it does not already exist.";
+                    string name = PromptDialog.Prompt(input, "Enter name");
+                    if (name != null)
+                    {
+                        foreach (string pccPath in pccs)
+                        {
+                            LoadMEPackage(pccPath);
+                            int numNames = pcc.Names.Count;
+                            pcc.FindNameOrAdd(name);
+                            int afternumNames = pcc.Names.Count;
+                            if (numNames != afternumNames)
+                            {
+                                pcc.save();
+                                Debug.WriteLine("Added " + name + " to " + pccPath);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc != null)
+            {
+                int count = 0;
+                foreach (IExportEntry exp in pcc.Exports)
+                {
+                    if (exp.ObjectName == "StaticMeshCollectionActor")
+                    {
+                        var smas = exp.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
+                        foreach (ObjectProperty item in smas)
+                        {
+                            var export = pcc.getExport(item.Value - 1);
+                            var props = export.GetProperties();
+                            props.AddOrReplaceProp(new BoolProperty(false, "bUsePrecomputedShadows"));
+                            export.WriteProperties(props);
+                            count++;
+                        }
+                    }
+                }
+                System.Windows.MessageBox.Show($"Done. Updated {count} exports.");
+            }
         }
     }
 }

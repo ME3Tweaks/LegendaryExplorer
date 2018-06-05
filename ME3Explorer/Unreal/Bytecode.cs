@@ -6,6 +6,7 @@ using System.Text;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
+using System.Diagnostics;
 
 namespace ME3Explorer.Unreal
 {
@@ -3547,9 +3548,12 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
 
-            int index = (Int32)BitConverter.ToInt64(memory, start + 1);
+            int index = (Int32)BitConverter.ToInt64(memory, start + 1); //name
             t.text = pcc.getNameEntry(index);
-            int pos = start + 11;
+            int pos = start + 9;
+            UInt16 postUnk6 = BitConverter.ToUInt16(memory, pos);
+            Debug.WriteLine("Unk6 post-name 2 bytes "+t.text+": " + postUnk6 + " 0x" + postUnk6.ToString("X4"));
+            pos += 2;
             t.text += "(";
             int count = 0;
             while (pos < memsize - 6)

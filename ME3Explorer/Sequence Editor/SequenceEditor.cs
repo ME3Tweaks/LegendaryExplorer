@@ -28,8 +28,46 @@ namespace ME3Explorer
     {
         public List<string> RFiles;
         private readonly string RECENTFILES_FILE = "RECENTFILES";
-
+        private List<IExportEntry> SequenceExports = new List<IExportEntry>();
         public SequenceEditor()
+        {
+            initialize();
+        }
+
+        public SequenceEditor(IExportEntry export)
+        {
+            initialize();
+            LoadFile(export.FileRef.FileName);
+            foreach (IExportEntry exp in SequenceExports)
+            {
+                bool loaded = false;
+                var seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                if (seqObjs != null)
+                {
+                    foreach (ObjectProperty seqObj in seqObjs)
+                    {
+                        if (export.UIndex == seqObj.Value)
+                        {
+                            //This is our sequence
+                            LoadSequence(exp);
+                            int selectIndex = CurrentObjects.IndexOf(export.Index);
+                            if (selectIndex >= 0)
+                            {
+                                listBox1.SelectedIndex = selectIndex;
+                            }
+                            loaded = true;
+                            break;
+                        }
+                    }
+                }
+                if (loaded)
+                {
+                    break;
+                }
+            }
+        }
+
+        private void initialize()
         {
             InitializeComponent();
             LoadRecentList();
@@ -37,7 +75,7 @@ namespace ME3Explorer
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
             graphEditor.Camera.MouseDown += backMouseDown_Handler;
             zoomController = new ZoomController(graphEditor);
-            
+
             if (SObj.talkfiles == null)
             {
                 talkFiles = new ME1Explorer.TalkFiles();
@@ -164,7 +202,7 @@ namespace ME3Explorer
 
         public void AddRecent(string s, bool loadingList)
         {
-            RFiles = RFiles.Where(x => !x.Equals(s,StringComparison.InvariantCultureIgnoreCase)).ToList();
+            RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
             if (loadingList)
             {
                 RFiles.Add(s); //in order
@@ -297,6 +335,7 @@ namespace ME3Explorer
 
         public void LoadFile(string fileName)
         {
+            SequenceExports = new List<IExportEntry>();
             try
             {
                 LoadMEPackage(fileName);
@@ -327,10 +366,18 @@ namespace ME3Explorer
                 if (exportEntry.ClassName == "Sequence" && !pcc.getObjectClass(exportEntry.idxLink).Contains("Sequence"))
                 {
                     treeView1.Nodes.Add(FindSequences(pcc, i, !(exportEntry.ObjectName == "Main_Sequence")));
+                    SequenceExports.Add(exportEntry);
                 }
                 if (exportEntry.ClassName == "Prefab")
                 {
-                    prefabs.Add(exportEntry.ObjectName, new TreeNode(exportEntry.GetFullPath));
+                    try
+                    {
+                        prefabs.Add(exportEntry.ObjectName, new TreeNode(exportEntry.GetFullPath));
+                    }
+                    catch (Exception)
+                    {
+
+                    }
                 }
             }
             if (prefabs.Count > 0)
@@ -367,6 +414,7 @@ namespace ME3Explorer
                 treeView1.TopNode = treeView1.Nodes[0];
             }
         }
+
         public TreeNode FindSequences(IMEPackage pcc, int index, bool wantFullName = false)
         {
             TreeNode ret = new TreeNode("#" + index + ": " + (wantFullName ? pcc.getExport(index).GetFullPath : pcc.getExport(index).ObjectName));
@@ -381,6 +429,7 @@ namespace ME3Explorer
                     if (exportEntry.ClassName == "Sequence" || exportEntry.ClassName.StartsWith("PrefabSequence"))
                     {
                         TreeNode t = FindSequences(pcc, seqObj.Value - 1, false);
+                        SequenceExports.Add(pcc.getExport(seqObj.Value - 1));
                         ret.Nodes.Add(t);
                     }
                     else if (exportEntry.ClassName == "SequenceReference")
@@ -389,6 +438,7 @@ namespace ME3Explorer
                         if (propSequenceReference != null)
                         {
                             TreeNode t = FindSequences(pcc, propSequenceReference.Value - 1, false);
+                            SequenceExports.Add(pcc.getExport(seqObj.Value - 1));
                             ret.Nodes.Add(t);
                         }
                     }
@@ -561,7 +611,7 @@ namespace ME3Explorer
                 if (RefOrRefChild)
                     savedInfo = SavedPositions.FirstOrDefault(p => CurrentObjects.IndexOf(index) == p.index);
                 else
-                    savedInfo = SavedPositions.FirstOrDefault(p => index == p.index); 
+                    savedInfo = SavedPositions.FirstOrDefault(p => index == p.index);
             }
             PropertyCollection props = pcc.getExport(index).GetProperties();
             foreach (var prop in props)
@@ -1397,6 +1447,10 @@ namespace ME3Explorer
 
         public override void handleUpdate(List<PackageUpdate> updates)
         {
+            if (Sequence == null)
+            {
+                return; //nothing is loaded
+            }
             IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change != PackageChange.Import &&
                                                                             x.change != PackageChange.ImportAdd &&
                                                                             x.change != PackageChange.Names);

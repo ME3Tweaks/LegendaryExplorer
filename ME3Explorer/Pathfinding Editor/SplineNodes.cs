@@ -186,8 +186,6 @@ namespace ME3Explorer.SplineNodes
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
         }
     }
 
@@ -220,8 +218,6 @@ namespace ME3Explorer.SplineNodes
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
         }
     }
 
@@ -262,7 +258,7 @@ namespace ME3Explorer.SplineNodes
                 shape.Pickable = false;
                 this.AddChild(shape);
                 this.Bounds = new RectangleF(0, 0, w, h);
-                val = new SText(export.Index+"\nSpline Start");
+                val = new SText(export.Index + "\nSpline Start");
                 val.Pickable = false;
                 val.TextAlignment = StringAlignment.Center;
                 val.X = w / 2 - val.Width / 2;
@@ -270,8 +266,6 @@ namespace ME3Explorer.SplineNodes
                 this.AddChild(val);
                 var props = export.GetProperties();
                 this.TranslateBy(x, y);
-                this.MouseEnter += OnMouseEnter;
-                this.MouseLeave += OnMouseLeave;
             }
         }
 
@@ -331,8 +325,6 @@ namespace ME3Explorer.SplineNodes
             this.AddChild(val);
             var props = export.GetProperties();
             this.TranslateBy(x, y);
-            this.MouseEnter += OnMouseEnter;
-            this.MouseLeave += OnMouseLeave;
         }
 
         /// <summary>

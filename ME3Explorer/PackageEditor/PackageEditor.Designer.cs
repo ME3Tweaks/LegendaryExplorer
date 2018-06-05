@@ -34,6 +34,7 @@
             this.openInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dialogueEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.faceFXEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.meshplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pathfindingEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sequenceEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.wWiseBankEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,9 +57,11 @@
             this.checkIndexingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.findExportsWithSerialSizeMismatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGCallReadPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGEnumerateAllClassesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGOpenPackageEditorWPFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.Button1 = new System.Windows.Forms.ToolStripButton();
             this.Button2 = new System.Windows.Forms.ToolStripButton();
@@ -228,6 +231,7 @@
             this.openInToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.dialogueEditorToolStripMenuItem,
             this.faceFXEditorToolStripMenuItem,
+            this.meshplorerToolStripMenuItem,
             this.pathfindingEditorToolStripMenuItem,
             this.sequenceEditorToolStripMenuItem,
             this.wWiseBankEditorToolStripMenuItem});
@@ -248,6 +252,13 @@
             this.faceFXEditorToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.faceFXEditorToolStripMenuItem.Text = "FaceFX Editor";
             this.faceFXEditorToolStripMenuItem.Click += new System.EventHandler(this.faceFXEditorToolStripMenuItem_Click);
+            // 
+            // meshplorerToolStripMenuItem
+            // 
+            this.meshplorerToolStripMenuItem.Name = "meshplorerToolStripMenuItem";
+            this.meshplorerToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.meshplorerToolStripMenuItem.Text = "Meshplorer";
+            this.meshplorerToolStripMenuItem.Click += new System.EventHandler(this.meshplorerToolStripMenuItem_Click);
             // 
             // pathfindingEditorToolStripMenuItem
             // 
@@ -290,6 +301,7 @@
             this.editInInterpreterToolStripMenuItem,
             this.replaceWithBINToolStripMenuItem,
             this.editInCurveEditorToolStripMenuItem,
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem,
             this.reloadTLKsToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
@@ -373,9 +385,10 @@
             this.checkIndexingToolStripMenuItem,
             this.findExportsWithSerialSizeMismatchToolStripMenuItem,
             this.dEBUGCallReadPropertiesToolStripMenuItem,
-            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem,
             this.dEBUGEnumerateAllClassesToolStripMenuItem,
-            this.dEBUGOpenPackageEditorWPFToolStripMenuItem});
+            this.dEBUGOpenPackageEditorWPFToolStripMenuItem,
+            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem,
+            this.dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
             this.debugToolStripMenuItem.Text = "Debugging";
@@ -424,11 +437,6 @@
             this.dEBUGCallReadPropertiesToolStripMenuItem.Visible = false;
             this.dEBUGCallReadPropertiesToolStripMenuItem.Click += new System.EventHandler(this.dEBUGCallReadPropertiesToolStripMenuItem_Click);
             // 
-            // dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem
-            // 
-            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Name = "dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem";
-            this.dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
-            // 
             // dEBUGEnumerateAllClassesToolStripMenuItem
             // 
             this.dEBUGEnumerateAllClassesToolStripMenuItem.Name = "dEBUGEnumerateAllClassesToolStripMenuItem";
@@ -443,6 +451,27 @@
             this.dEBUGOpenPackageEditorWPFToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
             this.dEBUGOpenPackageEditorWPFToolStripMenuItem.Text = "DEBUG: Open Package Editor (WPF)";
             this.dEBUGOpenPackageEditorWPFToolStripMenuItem.Click += new System.EventHandler(this.dEBUGOpenPackageEditorWPFToolStripMenuItem_Click);
+            // 
+            // dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem
+            // 
+            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Name = "dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem";
+            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
+            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Text = "DEBUG: Ensure folder of package files has a name";
+            this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Click += new System.EventHandler(this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem_Click);
+            // 
+            // rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem
+            // 
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Name = "rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem";
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Text = "Rebuild StreamingLevels list for BioWorldInfo";
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Click += new System.EventHandler(this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem_Click);
+            // 
+            // dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem
+            // 
+            this.dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem.Name = "dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem";
+            this.dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
+            this.dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem.Text = "DEBUG: Add a property to exports matching criteria";
+            this.dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem.Click += new System.EventHandler(this.dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -1247,7 +1276,7 @@
             this.setAllIndexesInThisTreeTo0ToolStripMenuItem,
             this.scaleformSWFToolStripMenuItem});
             this.nodeContextMenuStrip1.Name = "nodeContextMenuStrip1";
-            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(238, 136);
+            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(238, 114);
             // 
             // cloneToolStripMenuItem
             // 
@@ -1289,14 +1318,14 @@
             // extractSWFToolStripMenuItem
             // 
             this.extractSWFToolStripMenuItem.Name = "extractSWFToolStripMenuItem";
-            this.extractSWFToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.extractSWFToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.extractSWFToolStripMenuItem.Text = "Extract SWF";
             this.extractSWFToolStripMenuItem.Click += new System.EventHandler(this.extractSWFToolStripMenuItem_Click);
             // 
             // replaceSWFToolStripMenuItem
             // 
             this.replaceSWFToolStripMenuItem.Name = "replaceSWFToolStripMenuItem";
-            this.replaceSWFToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.replaceSWFToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.replaceSWFToolStripMenuItem.Text = "Replace SWF";
             this.replaceSWFToolStripMenuItem.Click += new System.EventHandler(this.replaceSWFToolStripMenuItem_Click);
             // 
@@ -1484,7 +1513,6 @@
         private System.Windows.Forms.ToolStripMenuItem faceFXEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem wWiseBankEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reloadTLKsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem dEBUGCopyConfigurablePropsToClipboardToolStripMenuItem;
         private System.Windows.Forms.TabPage bio2daEditorTab;
         private Bio2DAEditor bio2DAEditor1;
         private System.Windows.Forms.ToolStripMenuItem findExportsWithSerialSizeMismatchToolStripMenuItem;
@@ -1494,5 +1522,9 @@
         private System.Windows.Forms.ToolStripMenuItem scaleformSWFToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem extractSWFToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem replaceSWFToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem meshplorerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem;
     }
 }
