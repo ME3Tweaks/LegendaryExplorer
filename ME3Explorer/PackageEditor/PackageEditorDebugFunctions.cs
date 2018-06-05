@@ -115,5 +115,29 @@ namespace ME3Explorer
                 }
             }
         }
+
+        private void dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc != null)
+            {
+                int count = 0;
+                foreach (IExportEntry exp in pcc.Exports)
+                {
+                    if (exp.ObjectName == "StaticMeshCollectionActor")
+                    {
+                        var smas = exp.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
+                        foreach (ObjectProperty item in smas)
+                        {
+                            var export = pcc.getExport(item.Value - 1);
+                            var props = export.GetProperties();
+                            props.AddOrReplaceProp(new BoolProperty(false, "bUsePrecomputedShadows"));
+                            export.WriteProperties(props);
+                            count++;
+                        }
+                    }
+                }
+                System.Windows.MessageBox.Show($"Done. Updated {count} exports.");
+            }
+        }
     }
 }

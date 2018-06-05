@@ -108,6 +108,8 @@ namespace ME3Explorer
             }
         }
 
+        
+
         public void LoadMostRecent()
         {
             if (RFiles != null && RFiles.Count != 0)
@@ -2357,7 +2359,8 @@ namespace ME3Explorer
                     bioworldinfo.WriteProperty(streamingLevelsProp);
                     MessageBox.Show("Done.");
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show("Error setting streaming levels:\n" + ex.Message);
             }
@@ -2372,5 +2375,7 @@ namespace ME3Explorer
                 editor.Show();
             }
         }
+
+
     }
 }

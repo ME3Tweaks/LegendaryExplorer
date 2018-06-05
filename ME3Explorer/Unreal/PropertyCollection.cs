@@ -113,12 +113,16 @@ namespace ME3Explorer.Unreal
                         if (ME3UnrealObjectInfo.isImmutable(structType))
                         {
                             PropertyCollection structProps = ReadSpecialStruct(pcc, stream, structType, size);
-                            props.Add(new StructProperty(structType, structProps, nameRef, true));
+                            var structprop = new StructProperty(structType, structProps, nameRef, true);
+                            structprop.Offset = stream.Position - 4;
+                            props.Add(structprop);
                         }
                         else
                         {
                             PropertyCollection structProps = ReadProps(pcc, stream, structType);
-                            props.Add(new StructProperty(structType, structProps, nameRef));
+                            var structprop = new StructProperty(structType, structProps, nameRef);
+                            structprop.Offset = stream.Position - 4;
+                            props.Add(structprop);
                         }
                         break;
                     case PropertyType.IntProperty:
