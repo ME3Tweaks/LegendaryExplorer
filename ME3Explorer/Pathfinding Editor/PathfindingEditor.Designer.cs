@@ -108,6 +108,7 @@ namespace ME3Explorer
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sFXBlockingVolumeLedgeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -354,6 +355,7 @@ namespace ME3Explorer
             this.bioTriggerStreamToolStripMenuItem,
             this.blockingVolumeToolStripMenuItem,
             this.dynamicBlockingVolumeToolStripMenuItem,
+            this.sFXBlockingVolumeLedgeToolStripMenuItem,
             this.sFXCombatZoneToolStripMenuItem,
             this.wwiseAudioVolumeToolStripMenuItem});
             this.showVolumesInsteadOfNodesToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
@@ -846,6 +848,13 @@ namespace ME3Explorer
             this.addObjectToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.addObjectToolStripMenuItem.Text = "Add Object";
             // 
+            // sFXBlockingVolumeLedgeToolStripMenuItem
+            // 
+            this.sFXBlockingVolumeLedgeToolStripMenuItem.Name = "sFXBlockingVolumeLedgeToolStripMenuItem";
+            this.sFXBlockingVolumeLedgeToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+            this.sFXBlockingVolumeLedgeToolStripMenuItem.Text = "SFXBlockingVolume_Ledge";
+            this.sFXBlockingVolumeLedgeToolStripMenuItem.Click += new System.EventHandler(this.sFXBlockingVolumeLedgeToolStripMenuItem_Click);
+            // 
             // PathfindingEditor
             // 
             this.AllowDrop = true;
@@ -967,5 +976,6 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem everythingElseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sFXCombatZoneToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sFXBlockingVolumeLedgeToolStripMenuItem;
     }
 }

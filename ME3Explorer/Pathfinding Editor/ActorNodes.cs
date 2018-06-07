@@ -184,7 +184,7 @@ namespace ME3Explorer.ActorNodes
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(255, 30, 30);
-        PointF[] edgeShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(30, 50), new PointF(0, 50) };
+        private static PointF[] edgeShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(30, 50), new PointF(0, 50) };
         public SFXBlockingVolume_Ledge(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
@@ -193,7 +193,23 @@ namespace ME3Explorer.ActorNodes
             // = getType(s);
             float w = 50;
             float h = 50;
-            shape = PPath.CreatePolygon(edgeShape);
+            if (grapheditor.showVolumeBrushes && grapheditor.showVolume_SFXBlockingVolume_Ledge)
+            {
+                var TShape = get3DBrushShape();
+                if (TShape != null)
+                {
+                    shape = PPath.CreatePolygon(TShape);
+                }
+                else
+                {
+                    shape = PPath.CreatePolygon(edgeShape);
+                }
+            }
+            else
+            {
+                shape = PPath.CreatePolygon(edgeShape);
+            }
+
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
             shape.Brush = actorNodeBrush;

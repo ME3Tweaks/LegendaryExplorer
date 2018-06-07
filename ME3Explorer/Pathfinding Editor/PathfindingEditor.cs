@@ -3468,6 +3468,13 @@ namespace ME3Explorer
             sFXCombatZoneToolStripMenuItem.Checked = graphEditor.showVolume_SFXCombatZones;
             RefreshView();
         }
+
+        private void sFXBlockingVolumeLedgeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            graphEditor.showVolume_SFXBlockingVolume_Ledge = !graphEditor.showVolume_SFXBlockingVolume_Ledge;
+            sFXBlockingVolumeLedgeToolStripMenuItem.Checked = graphEditor.showVolume_SFXBlockingVolume_Ledge;
+            RefreshView();
+        }
     }
 
     public static class ExportInputPrompt
