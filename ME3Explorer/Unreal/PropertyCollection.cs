@@ -60,7 +60,7 @@ namespace ME3Explorer.Unreal
             stream.WriteNoneProperty(pcc);
         }
 
-        public static PropertyCollection ReadProps(IMEPackage pcc, MemoryStream stream, string typeName)
+        public static PropertyCollection ReadProps(IMEPackage pcc, MemoryStream stream, string typeName, bool includeNoneProperty = false)
         {
             //Uncomment this for debugging property engine
             /*DebugOutput.StartDebugger("Property Engine ReadProps() for "+typeName);
@@ -81,7 +81,7 @@ namespace ME3Explorer.Unreal
                 string name = pcc.getNameEntry(nameIdx);
                 if (name == "None")
                 {
-                    props.Add(new NoneProperty { PropType = PropertyType.None });
+                    props.Add(new NoneProperty(stream, "None"));
                     stream.Seek(4, SeekOrigin.Current);
                     break;
                 }
@@ -119,7 +119,7 @@ namespace ME3Explorer.Unreal
                         }
                         else
                         {
-                            PropertyCollection structProps = ReadProps(pcc, stream, structType);
+                            PropertyCollection structProps = ReadProps(pcc, stream, structType, includeNoneProperty);
                             var structprop = new StructProperty(structType, structProps, nameRef);
                             structprop.Offset = stream.Position - 4;
                             props.Add(structprop);
@@ -191,19 +191,28 @@ namespace ME3Explorer.Unreal
                         }
                         break;
                     case PropertyType.None:
+                        if (includeNoneProperty)
+                        {
+                            props.Add(new NoneProperty(stream, "None"));
+                        }
+                        break;
                     default:
                         break;
                 }
             }
             if (props.Count > 0)
             {
+                //error reading props.
                 if (props[props.Count - 1].PropType != PropertyType.None)
                 {
                     stream.Seek(startPosition, SeekOrigin.Begin);
                     return new PropertyCollection { endOffset = (int)stream.Position };
                 }
                 //remove None Property
-                props.RemoveAt(props.Count - 1);
+                if (!includeNoneProperty)
+                {
+                    props.RemoveAt(props.Count - 1);
+                }
             }
             props.endOffset = (int)stream.Position;
             return props;
@@ -401,7 +410,7 @@ namespace ME3Explorer.Unreal
 
         public static UProperty ReadArrayProperty(MemoryStream stream, IMEPackage pcc, string enclosingType, NameReference name, bool IsInImmutable = false)
         {
-            long arrayOffset = IsInImmutable ? stream.Position: stream.Position - 24;
+            long arrayOffset = IsInImmutable ? stream.Position : stream.Position - 24;
             ArrayType arrayType = UnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType);
             int count = stream.ReadValueS32();
             switch (arrayType)
@@ -449,16 +458,22 @@ namespace ME3Explorer.Unreal
                             }
                             for (int i = 0; i < count; i++)
                             {
+                                long offset = stream.Position;
                                 PropertyCollection structProps = ReadSpecialStruct(pcc, stream, arrayStructType, arraySize / count);
-                                props.Add(new StructProperty(arrayStructType, structProps, isImmutable: true));
+                                StructProperty structP = new StructProperty(arrayStructType, structProps, isImmutable: true);
+                                structP.Offset = offset;
+                                props.Add(structP);
                             }
                         }
                         else
                         {
                             for (int i = 0; i < count; i++)
                             {
+                                long structOffset = stream.Position;
                                 PropertyCollection structProps = ReadProps(pcc, stream, arrayStructType);
-                                props.Add(new StructProperty(arrayStructType, structProps));
+                                StructProperty structP = new StructProperty(arrayStructType, structProps);
+                                structP.Offset = structOffset;
+                                props.Add(structP);
                             }
                         }
                         return new ArrayProperty<StructProperty>(arrayOffset, props, arrayType, name);
@@ -539,6 +554,12 @@ namespace ME3Explorer.Unreal
     {
         public NoneProperty(NameReference? name = null) : base(name)
         {
+            PropType = PropertyType.None;
+        }
+
+        public NoneProperty(MemoryStream stream, NameReference? name = null) : base(name)
+        {
+            Offset = stream.Position;
             PropType = PropertyType.None;
         }
 

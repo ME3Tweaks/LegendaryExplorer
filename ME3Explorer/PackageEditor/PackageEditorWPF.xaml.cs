@@ -158,7 +158,7 @@ namespace ME3Explorer
             {
                 MenuItem fr = new MenuItem()
                 {
-                    Header = filepath,
+                    Header = filepath.Replace("_","__"),
                     Tag = filepath
                 };
                 fr.Click += RecentFile_click;
@@ -296,7 +296,8 @@ namespace ME3Explorer
                     nodeList.Add(new TreeViewItem()
                     {
                         Header = $"(Exp) {i} : {Exports[i].ObjectName}({Exports[i].ClassName})",
-                        Name = $"_{i}" //must start letter or _
+                        Name = $"_{i}", //must start letter or _
+                        Foreground = Brushes.Black
                     });
                 }
 
@@ -305,7 +306,8 @@ namespace ME3Explorer
                     nodeList.Add(new TreeViewItem()
                     {
                         Header = $"(Imp) {i} : {imports[i].ObjectName}({imports[i].ClassName})",
-                        Name = $"_n{i + 1}" //must start letter or _,
+                        Name = $"_n{i + 1}", //must start letter or _,
+                        Foreground = Brushes.Gray
                     });
                 }
 

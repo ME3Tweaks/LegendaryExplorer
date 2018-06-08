@@ -6,9 +6,12 @@ using ME3Explorer.Unreal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Windows.Media;
 using System.IO;
 using System.Linq;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Threading;
 
 namespace ME3Explorer
 {
@@ -154,11 +157,10 @@ namespace ME3Explorer
 
             try
             {
-                PropertyCollection props = export.GetProperties();
+                PropertyCollection props = export.GetProperties(includeNoneProperties: true);
                 foreach (UProperty prop in props)
                 {
                     GenerateTreeForProperty(prop, topLevelTree);
-
                 }
                 //GenerateTreeFromProperties(topLevelTree, props);
             }
@@ -233,14 +235,65 @@ namespace ME3Explorer
         private void GenerateTreeForProperty(UProperty prop, TreeViewItem parent)
         {
             string s = prop.Offset.ToString("X4") + ": ";
-            s += "Name: \"" + prop.Name + "\" ";
-            s += "Type: \"" + prop.PropType + "\" ";
+            s += "\"" + prop.Name + "\" ";
+            s += "Type: \"" + prop.PropType + "\"";
             //s += "Size: " + prop.
-            s += " Value: ";
+            var nodeColor = Brushes.Black;
 
+            if (prop.PropType != PropertyType.None)
+            {
+                switch (prop.PropType)
+                {
+                    case PropertyType.ObjectProperty:
+                        {
+                            s += " Value: ";
+                            int index = (prop as ObjectProperty).Value;
+                            var entry = pcc.getEntry(index);
+                            if (entry != null)
+                            {
+                                s += index + " " + entry.GetFullPath;
+                            }
+                            else
+                            {
+                                s += index + " Index out of bounds of " + (index < 0 ? "Import" : "Export") + " list";
+                            }
+                            nodeColor = Brushes.Blue;
+                        }
+                        break;
+                    case PropertyType.IntProperty:
+                        {
+                            s += " Value: ";
+                            s += (prop as IntProperty).Value;
+                            nodeColor = Brushes.Green;
+                        }
+                        break;
+                    case PropertyType.FloatProperty:
+                        {
+                            s += " Value: ";
+                            s += (prop as FloatProperty).Value;
+                            nodeColor = Brushes.Red;
+                        }
+                        break;
+                    case PropertyType.BoolProperty:
+                        {
+                            s += " Value: ";
+                            s += (prop as BoolProperty).Value;
+                            nodeColor = Brushes.Orange;
+                        }
+                        break;
+                    case PropertyType.ArrayProperty:
+                        {
+                            s += " Array Size: " + (prop as ArrayPropertyBase).ValuesAsProperties.Count();
+                        }
+                        break;
+                }
+            }
+            Debug.WriteLine(s);
             TreeViewItem item = new TreeViewItem()
             {
-                Header = s
+                Header = s,
+                Name = "_" + prop.Offset.ToString(),
+                Foreground = nodeColor
             };
             parent.Items.Add(item);
             if (prop.PropType == PropertyType.ArrayProperty)
@@ -263,19 +316,27 @@ namespace ME3Explorer
 
         private void GenerateTreeForArrayProperty(UProperty prop, TreeViewItem parent, int index)
         {
-            string s = prop.Offset.ToString("X4") + ": ";
+            string s = prop.Offset.ToString("X4") + " Item " + index + "";
 
             switch (prop.PropType)
             {
                 case PropertyType.ObjectProperty:
-                    s += pcc.getEntry((prop as ObjectProperty).Value).GetFullPath;
+                    int oIndex = (prop as ObjectProperty).Value;
+                    s += ": " + ((oIndex > 0) ? pcc.getEntry(oIndex).GetFullPath : "[0] Null");
+                    break;
+                case PropertyType.StructProperty:
+
+                    break;
+                case PropertyType.BoolProperty:
+                    s += ": " + (prop as BoolProperty).Value;
                     break;
             }
 
 
             TreeViewItem item = new TreeViewItem()
             {
-                Header = s
+                Header = s,
+                Name = "_" + prop.Offset
             };
             parent.Items.Add(item);
             if (prop.PropType == PropertyType.ArrayProperty)
@@ -296,6 +357,7 @@ namespace ME3Explorer
             }
         }
 
+        /*
         public List<PropHeader> ReadHeadersTillNone()
         {
             List<PropHeader> ret = new List<PropHeader>();
@@ -1040,6 +1102,12 @@ namespace ME3Explorer
                 case PropertyType.Unknown:
                     throw new NotImplementedException($"at position {pos.ToString("X4")}: cannot read Unknown property of Immutable struct");
                 case PropertyType.None:
+                    node = new TreeViewItem() { Header = s };
+                    node.Name = "_" + pos.ToString();
+                    node.Tag = nodeType.StructLeafObject;
+                    t.Items.Add(node);
+                    pos += 8;
+                    break;
                 default:
                     break;
             }
@@ -1183,7 +1251,7 @@ namespace ME3Explorer
                     return (nodeType)i;
                 }
             return (nodeType)(-1);
-        }
+        }*/
 
         #region UnrealObjectInfo
         private PropertyInfo GetPropertyInfo(int propName)
@@ -1268,6 +1336,33 @@ namespace ME3Explorer
 
         private void Interpreter_ToggleHexboxWidth_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+
+        }
+
+        private void Interpreter_TreeViewSelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Background,
+(NoArgDelegate)delegate { UpdateHexboxPosition(e.NewValue); });
+        }
+
+        private delegate void NoArgDelegate();
+        /// <summary>
+        /// Tree view selected item changed. This runs in a delegate due to how multithread bubble-up items work with treeview.
+        /// Without this delegate, the item selected will randomly be a parent item instead.
+        /// From https://www.codeproject.com/Tips/208896/WPF-TreeView-SelectedItemChanged-called-twice
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UpdateHexboxPosition(object tvi)
+        {
+            TreeViewItem newSelectedItem = (TreeViewItem)tvi;
+            if (newSelectedItem != null)
+            {
+                var hexPosStr = newSelectedItem.Name.Substring(1); //remove _
+                int hexPos = Convert.ToInt32(hexPosStr);
+                Interpreter_HexBox.SetPosition(hexPos);
+                //                Debug.WriteLine(newSelectedItem.Name);
+            }
 
         }
     }

@@ -6,9 +6,10 @@
         xmlns:global="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
-                xmlns:control="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
-                xmlns:sharedui="clr-namespace:ME3Explorer.SharedUI"
-                Title="Package Editor" Height="530" Width="970">
+        xmlns:local="using ME3Explorer.PackageEditorWPF"
+        xmlns:control="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
+        xmlns:sharedui="clr-namespace:ME3Explorer.SharedUI"
+        Title="Package Editor" Height="530" Width="970">
     <Window.Resources>
         <ItemsPanelTemplate x:Key="VSP">
             <VirtualizingStackPanel/>

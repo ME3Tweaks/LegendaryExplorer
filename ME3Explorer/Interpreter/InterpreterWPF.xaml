@@ -22,6 +22,6 @@
         </ToolBar>
         <control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />
         <GridSplitter Grid.Column="1" Width="5" MaxWidth="5" Grid.Row="1" HorizontalAlignment="Stretch"/>
-        <TreeView Name="Interpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" FontFamily="Consolas"/>
+        <TreeView Name="Interpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="Interpreter_TreeViewSelectedItemChanged"/>
     </Grid>
 </UserControl>

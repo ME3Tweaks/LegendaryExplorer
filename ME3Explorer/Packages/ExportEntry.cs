@@ -162,9 +162,10 @@ namespace ME3Explorer.Packages
         /// <summary>
         /// Gets properties of an export. You can force it to reload which is useful when debugging the property engine.
         /// </summary>
-        /// <param name="forceReload"></param>
+        /// <param name="forceReload">Forces full property release rather than using the property collection cache</param>
+        /// <param name="includeNoneProeprty">Include NoneProperties in the resulting property collection</param>
         /// <returns></returns>
-        public PropertyCollection GetProperties(bool forceReload = false)
+        public PropertyCollection GetProperties(bool forceReload = false, bool includeNoneProperties = false)
         {
             if (properties != null && !forceReload)
             {
@@ -175,7 +176,7 @@ namespace ME3Explorer.Packages
                 int start = GetPropertyStart();
                 MemoryStream stream = new MemoryStream(_data, false);
                 stream.Seek(start, SeekOrigin.Current);
-                return properties = PropertyCollection.ReadProps(FileRef, stream, ClassName);
+                return properties = PropertyCollection.ReadProps(FileRef, stream, ClassName, includeNoneProperties);
             }
         }
 
