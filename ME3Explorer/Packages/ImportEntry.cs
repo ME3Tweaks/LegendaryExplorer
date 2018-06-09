@@ -34,8 +34,12 @@ namespace ME3Explorer.Packages
             get { return _header; }
             set
             {
+                bool isFirstLoad = _header == null;
                 _header = value;
-                HeaderChanged = true;
+                if (!isFirstLoad)
+                {
+                    HeaderChanged = true;
+                }
             }
         }
         
@@ -45,6 +49,8 @@ namespace ME3Explorer.Packages
         //int ClassNameNumber
         public int idxLink { get { return BitConverter.ToInt32(Header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 16, sizeof(int)); HeaderChanged = true; } }
         public int idxObjectName { get { return BitConverter.ToInt32(Header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 20, sizeof(int)); HeaderChanged = true; } }
+        public int indexValue { get { return BitConverter.ToInt32(Header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 24, sizeof(int)); HeaderChanged = true; } }
+
         //int ObjectNameNumber
 
         public string ClassName { get { return FileRef.Names[idxClassName]; } }

@@ -39,6 +39,36 @@ namespace ME3Explorer
         }
     }
 
+    public static class TreeViewItemExtension
+    {
+        public static IEnumerable<System.Windows.Controls.TreeViewItem> FlattenTreeView(this System.Windows.Controls.TreeViewItem tv)
+        {
+            return tv.Items.Cast<System.Windows.Controls.TreeViewItem>().SelectMany(x => FlattenTree(x));
+
+            List<System.Windows.Controls.TreeViewItem> FlattenTree(System.Windows.Controls.TreeViewItem rootNode)
+            {
+                var nodes = new List<System.Windows.Controls.TreeViewItem> { rootNode };
+                foreach (System.Windows.Controls.TreeViewItem node in rootNode.Items)
+                {
+                    nodes.AddRange(FlattenTree(node));
+                }
+                return nodes;
+            }
+        }
+
+        /// <summary>
+        /// Select specified item in a TreeView
+        /// </summary>
+        public static void SelectItem(this System.Windows.Controls.TreeViewItem treeView, object item)
+        {
+            var tvItem = treeView.ItemContainerGenerator.ContainerFromItem(item) as System.Windows.Controls.TreeViewItem;
+            if (tvItem != null)
+            {
+                tvItem.IsSelected = true;
+            }
+        }
+    }
+
     public static class EnumerableExtensions
     {
         public static int FindOrAdd<T>(this List<T> list, T element)

@@ -37,7 +37,7 @@ namespace ME3Explorer.Packages
         {
             get
             {
-                return exports.Any(entry => entry.DataChanged == true) || imports.Any(entry => entry.HeaderChanged == true) || namesAdded > 0;
+                return exports.Any(entry => entry.DataChanged == true || entry.HeaderChanged == true) || imports.Any(entry => entry.HeaderChanged == true) || namesAdded > 0;
             }
         }
         public bool CanReconstruct { get { return !exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }

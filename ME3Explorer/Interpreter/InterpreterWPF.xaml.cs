@@ -30,7 +30,7 @@ namespace ME3Explorer
         private BioTlkFileSet tlkset;
         private BioTlkFileSet editorTlkSet;
         int readerpos;
-        IExportEntry export;
+        public IExportEntry CurrentLoadedExport;
 
         public struct PropHeader
         {
@@ -110,7 +110,7 @@ namespace ME3Explorer
         public void loadNewExport(IExportEntry export)
         {
             pcc = export.FileRef;
-            this.export = export;
+            CurrentLoadedExport = export;
             memory = export.Data;
             memsize = memory.Length;
             //List<byte> bytes = export.Data.ToList();
@@ -147,11 +147,11 @@ namespace ME3Explorer
             //resetPropEditingControls();
             //Interpreter_TreeView.BeginUpdate();
             Interpreter_TreeView.Items.Clear();
-            readerpos = export.GetPropertyStart();
+            readerpos = CurrentLoadedExport.GetPropertyStart();
 
             TreeViewItem topLevelTree = new TreeViewItem()
             {
-                Header = "0000 : " + export.ObjectName,
+                Header = "0000 : " + CurrentLoadedExport.ObjectName,
                 IsExpanded = true
             };
             topLevelTree.Tag = nodeType.Root;
@@ -159,7 +159,7 @@ namespace ME3Explorer
 
             try
             {
-                PropertyCollection props = export.GetProperties(includeNoneProperties: true);
+                PropertyCollection props = CurrentLoadedExport.GetProperties(includeNoneProperties: true);
                 foreach (UProperty prop in props)
                 {
                     GenerateTreeForProperty(prop, topLevelTree);
@@ -238,7 +238,7 @@ namespace ME3Explorer
         {
             string s = prop.Offset.ToString("X4") + ": ";
             s += "\"" + prop.Name + "\" ";
-            s += "Type: \"" + prop.PropType + "\"";
+            s += "Type: " + prop.PropType;
             //s += "Size: " + prop.
             var nodeColor = Brushes.Black;
 
@@ -285,8 +285,16 @@ namespace ME3Explorer
                         break;
                     case PropertyType.ArrayProperty:
                         {
-                            s += " Array Size: " + (prop as ArrayPropertyBase).ValuesAsProperties.Count();
+                            s += ", Array Size: " + (prop as ArrayPropertyBase).ValuesAsProperties.Count();
                         }
+                        break;
+                    case PropertyType.NameProperty:
+                        s += " Value: ";
+                        s += (prop as NameProperty).NameTableIndex + " " + (prop as NameProperty).Value;
+                        break;
+                    case PropertyType.StructProperty:
+                        s += ", ";
+                        s += (prop as StructProperty).StructType;
                         break;
                 }
             }
@@ -1314,12 +1322,12 @@ namespace ME3Explorer
             switch (pcc.Game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName), export: export);
+                    return ME1UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName), export: CurrentLoadedExport);
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName), export: export);
+                    return ME2UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName), export: CurrentLoadedExport);
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName), export: export);
+                    return ME3UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName), export: CurrentLoadedExport);
             }
             return ArrayType.Int;
         }
@@ -1366,6 +1374,8 @@ namespace ME3Explorer
             {
                 var hexPosStr = newSelectedItem.Name.Substring(1); //remove _
                 int hexPos = Convert.ToInt32(hexPosStr);
+                Interpreter_Hexbox.SelectionStart = hexPos;
+                Interpreter_Hexbox.SelectionLength = 1;
                 //Interpreter_HexBox.SetPosition(hexPos);
                 //                Debug.WriteLine(newSelectedItem.Name);
             }
@@ -1385,7 +1395,7 @@ namespace ME3Explorer
                 MemoryStream m = new MemoryStream();
                 for (int i = 0; i < provider.Length; i++)
                     m.WriteByte(provider.ReadByte(i));
-                export.Data = m.ToArray();
+                CurrentLoadedExport.Data = m.ToArray();
             }
         }
     }

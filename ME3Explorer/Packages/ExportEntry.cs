@@ -29,8 +29,12 @@ namespace ME3Explorer.Packages
             get { return _header; }
             set
             {
+                bool isFirstLoad = _header == null;
                 _header = value;
-                HeaderChanged = true;
+                if (!isFirstLoad)
+                {
+                    HeaderChanged = true;
+                }
             }
         }
 
