@@ -869,7 +869,7 @@ Floats*/
              *  
              */
 
-            if ((export.header[0x1f] & 0x2) != 0)
+            if ((export.Header[0x1f] & 0x2) != 0)
             {
                 byte[] data = export.Data;
                 TreeNode topLevelTree = new TreeNode($"0000 : {export.ObjectName}")
@@ -1265,7 +1265,7 @@ Floats*/
                 [Camera name
                     unreal property data]*/
 
-            if ((export.header[0x1f] & 0x2) != 0)
+            if ((export.Header[0x1f] & 0x2) != 0)
             {
                 byte[] data = export.Data;
                 TreeNode topLevelTree = new TreeNode($"0000 : {export.ObjectName}");

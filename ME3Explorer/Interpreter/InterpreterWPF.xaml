@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ME3Explorer"
-             xmlns:control="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
+             xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
              mc:Ignorable="d" 
+             Loaded="Interpreter_Loaded"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Margin="0,1,0,-1">
         <Grid.RowDefinitions>
@@ -18,9 +19,15 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <ToolBar Grid.Row="0" Grid.ColumnSpan="3" ToolBarTray.IsLocked="True">
+            <Button Content="Save Hex Changes" Click="Interpreter_SaveHexChanged_Click"/>
+            <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
             <Button Content="Toggle Hexbox Width" Click="Interpreter_ToggleHexboxWidth_Click"/>
         </ToolBar>
-        <control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />
+        <!--<control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />-->
+        <WindowsFormsHost Name="Interpreter_Hexbox_Host" Background="Yellow" Grid.Row="10" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">
+            <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True">
+        </hb1:HexBox>
+        </WindowsFormsHost>
         <GridSplitter Grid.Column="1" Width="5" MaxWidth="5" Grid.Row="1" HorizontalAlignment="Stretch"/>
         <TreeView Name="Interpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="Interpreter_TreeViewSelectedItemChanged"/>
     </Grid>

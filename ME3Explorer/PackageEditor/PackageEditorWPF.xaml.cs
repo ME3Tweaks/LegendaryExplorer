@@ -1,4 +1,5 @@
-﻿using ME3Explorer.Packages;
+﻿using Be.Windows.Forms;
+using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
@@ -6,6 +7,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -19,6 +21,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer
 {
@@ -43,6 +46,19 @@ namespace ME3Explorer
         public List<string> RFiles;
         private string currentFile;
         private List<int> ClassNames;
+        //private HexBox Header_Hexbox;
+        private bool loadingNewData = false;
+        private HexBox Header_Hexbox;
+        private IEntry CurrentlyLoadedEntry;
+
+        private const int HEADER_OFFSET_IDXCLASS = 0;
+        private const int HEADER_OFFSET_IDXCLASSPARENT = 4;
+        private const int HEADER_OFFSET_IDXCLASSLINK = 8;
+        private const int HEADER_OFFSET_IDXOBJECTNAME = 12;
+        private const int HEADER_OFFSET_INDEXVALUE = 16;
+        private const int HEADER_OFFSET_IDXARCHETYPE = 20;
+
+        private bool Visible_ObjectNameRow { get; set; }
 
         public PackageEditorWPF()
         {
@@ -158,7 +174,7 @@ namespace ME3Explorer
             {
                 MenuItem fr = new MenuItem()
                 {
-                    Header = filepath.Replace("_","__"),
+                    Header = filepath.Replace("_", "__"),
                     Tag = filepath
                 };
                 fr.Click += RecentFile_click;
@@ -297,7 +313,8 @@ namespace ME3Explorer
                     {
                         Header = $"(Exp) {i} : {Exports[i].ObjectName}({Exports[i].ClassName})",
                         Name = $"_{i}", //must start letter or _
-                        Foreground = Brushes.Black
+                        Foreground = Brushes.Black,
+                        Background = (Exports[i].DataChanged) ? Brushes.Yellow : null
                     });
                 }
 
@@ -443,36 +460,27 @@ namespace ME3Explorer
 
         public void PreviewInfo(int n)
         {
+            IReadOnlyList<ImportEntry> imports = pcc.Imports;
+            List<string> Classes = new List<string>();
+            for (int i = imports.Count - 1; i >= 0; i--)
+            {
+                Classes.Add($"{-i + 1}: {imports[i].GetFullPath}");
+            }
+            Classes.Add("0 : Class");
+            int count = 1;
+            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            foreach (IExportEntry exp in Exports)
+            {
+                Classes.Add($"{count++}: {exp.GetFullPath}");
+            }
+
             if (n >= 0)
             {
                 try
                 {
-                    /*infoHeaderBox.Text = "Export Header";
-                    superclassTextBox.Visible = superclassLabel.Visible = true;
-                    archetypeBox.Visible = label6.Visible = true;
-                    indexBox.Visible = label5.Visible = true;
-                    flagsBox.Visible = label11.Visible = false;
-                    infoExportDataBox.Visible = true;*/
+
                     IExportEntry exportEntry = pcc.getExport(n);
-                    //InfoTab_Objectname_TextBox.Text = exportEntry.ObjectName;
                     InfoTab_Objectname_ComboBox.SelectedItem = exportEntry.ObjectName;
-                    //IEntry _class = pcc.getEntry(exportEntry.idxClass);
-                    //
-                    IReadOnlyList<ImportEntry> imports = pcc.Imports;
-
-                    List<string> Classes = new List<string>();
-                    for (int i = imports.Count - 1; i >= 0; i--)
-                    {
-                        Classes.Add($"{-i + 1}: {imports[i].GetFullPath}");
-                    }
-                    Classes.Add("0 : Class");
-                    int count = 1;
-                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                    foreach (IExportEntry exp in Exports)
-                    {
-
-                        Classes.Add($"{count++}: {exp.GetFullPath}");
-                    }
 
                     if (exportEntry.idxClass != 0)
                     {
@@ -484,13 +492,9 @@ namespace ME3Explorer
                     {
                         InfoTab_Class_ComboBox.SelectedIndex = imports.Count; //Class, 0
                     }
-                    //classNameBox.Text = exportEntry.ClassName; //this seems to override the code directly above?
-                    //InfoTab_Superclass_TextBox.Text = exportEntry.ClassParent;
-                    //InfoTab_Packagename_TextBox.Text = exportEntry.PackageFullName;
                     InfoTab_Superclass_ComboBox.ItemsSource = Classes;
                     if (exportEntry.idxClassParent != 0)
                     {
-                        //IEntry _class = pcc.getEntry(exportEntry.idxClass);
                         InfoTab_Superclass_ComboBox.SelectedIndex = exportEntry.idxClassParent + imports.Count; //make positive
                     }
                     else
@@ -501,7 +505,6 @@ namespace ME3Explorer
                     InfoTab_PackageLink_ComboBox.ItemsSource = Classes;
                     if (exportEntry.idxLink != 0)
                     {
-                        //IEntry _class = pcc.getEntry(exportEntry.idxClass);
                         InfoTab_PackageLink_ComboBox.SelectedIndex = exportEntry.idxLink + imports.Count; //make positive
                     }
                     else
@@ -509,15 +512,8 @@ namespace ME3Explorer
                         InfoTab_PackageLink_ComboBox.SelectedIndex = imports.Count; //Class, 0
                     }
 
-                    InfoTab_Headersize_TextBox.Text = exportEntry.header.Length + " bytes";
+                    InfoTab_Headersize_TextBox.Text = exportEntry.Header.Length + " bytes";
                     InfoTab_Index_TextBox.Text = exportEntry.indexValue.ToString();
-                    //InfoTab_Archetypename_TextBox.Text = exportEntry.ArchtypeName;
-
-                    //if (exportEntry.idxArchtype != 0)
-                    //{
-                    //    InfoTab_Archetypename_TextBox.Text = archetype.PackageFullName + "." + archetype.ObjectName;
-                    //    InfoTab_Archetypename_TextBox.Text += " (" + (exportEntry.idxArchtype < 0 ? "imported" : "local") + " class) " + exportEntry.idxArchtype;
-                    //}
                     InfoTab_Archetype_ComboBox.ItemsSource = Classes;
                     if (exportEntry.idxArchtype != 0)
                     {
@@ -527,7 +523,25 @@ namespace ME3Explorer
                     {
                         InfoTab_Archetype_ComboBox.SelectedIndex = imports.Count; //Class, 0
                     }
-                    InfoTab_Flags_TextBox.Text = "0x" + exportEntry.ObjectFlags.ToString("X16");
+                    var flagsList = Enum.GetValues(typeof(EObjectFlags)).Cast<EObjectFlags>().ToList();
+                    //Don't even get me started on how dumb it is that SelectedItems is read only...
+                    string selectedFlags = "";
+                    foreach (EObjectFlags flag in flagsList)
+                    {
+                        bool selected = (exportEntry.ObjectFlags & (ulong)flag) != 0;
+                        if (selected)
+                        {
+                            if (selectedFlags != "")
+                            {
+                                selectedFlags += " ";
+                            }
+                            selectedFlags += flag;
+                        }
+                    }
+
+                    InfoTab_Flags_ComboBox.ItemsSource = flagsList;
+                    InfoTab_Flags_ComboBox.SelectedValue = selectedFlags;
+
                     InfoTab_ExportDataSize_TextBox.Text = exportEntry.DataSize + " bytes";
                     InfoTab_ExportOffsetHex_TextBox.Text = "0x" + exportEntry.DataOffset.ToString("X8");
                     InfoTab_ExportOffsetDec_TextBox.Text = exportEntry.DataOffset.ToString();
@@ -539,8 +553,12 @@ namespace ME3Explorer
             }
             else
             {
-                /* n = -n - 1;
-                 infoHeaderBox.Text = "Import Header";
+                n = -n - 1;
+                ImportEntry importEntry = pcc.getImport(n);
+                InfoTab_Headersize_TextBox.Text = importEntry.Header.Length + " bytes";
+
+
+                /*infoHeaderBox.Text = "Import Header";
                  superclassTextBox.Visible = superclassLabel.Visible = false;
                  archetypeBox.Visible = label6.Visible = false;
                  indexBox.Visible = label5.Visible = false;
@@ -601,7 +619,13 @@ namespace ME3Explorer
         private void LeftSide_SelectedItemChanged(object sender, RoutedEventArgs e)
         {
             Dispatcher.BeginInvoke(DispatcherPriority.Background,
-        (NoArgDelegate)delegate { Preview(); });
+        (NoArgDelegate)delegate
+        {
+            loadingNewData = true;
+
+            Preview();
+            loadingNewData = false;
+        });
         }
 
         /// <summary>
@@ -611,8 +635,10 @@ namespace ME3Explorer
         /// <param name="e"></param>
         private void LeftSide_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
+            loadingNewData = true;
             Preview();
             e.Handled = true;
+            loadingNewData = false;
         }
 
         private void Preview(bool isRefresh = false)
@@ -627,7 +653,7 @@ namespace ME3Explorer
             {
                 //tabControl1_SelectedIndexChanged(null, null);
                 PreviewInfo(n);
-                Info_HeaderRaw_Hexbox.Stream = new System.IO.MemoryStream(pcc.getEntry(n.ToUnrealIdx()).header);
+                //Info_HeaderRaw_Hexbox.Stream = new System.IO.MemoryStream(pcc.getEntry(n.ToUnrealIdx()).header);
                 //RefreshMetaData();
                 //export
                 if (n >= 0)
@@ -643,6 +669,10 @@ namespace ME3Explorer
                      }*/
 
                     IExportEntry exportEntry = pcc.getExport(n);
+                    CurrentlyLoadedEntry = exportEntry;
+                    Header_Hexbox.ByteProvider = new DynamicByteProvider(CurrentlyLoadedEntry.Header);
+                    Header_Hexbox.ByteProvider.Changed += InfoTab_Header_ByteProvider_InternalChanged;
+                    Info_Header_UnsavedChanges.Visibility = Visibility.Hidden;
                     Script_Tab.Visibility = exportEntry.ClassName == "Function" ? Visibility.Visible : Visibility.Collapsed;
                     if (exportEntry.ClassName == "Function")
                     {
@@ -707,7 +737,7 @@ namespace ME3Explorer
                         }
                     }
 
-                    //headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.header);*/
+                    headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.header);*/
                     if (!isRefresh)
                     {
                         InterpreterTab_Interpreter.loadNewExport(exportEntry);
@@ -744,6 +774,13 @@ namespace ME3Explorer
                 //import
                 else
                 {
+                    Visible_ObjectNameRow = false;
+                    ImportEntry importEntry = pcc.getImport(-n - 1);
+                    CurrentlyLoadedEntry = importEntry;
+                    Header_Hexbox.ByteProvider = new DynamicByteProvider(CurrentlyLoadedEntry.Header);
+                    Header_Hexbox.ByteProvider.Changed += InfoTab_Header_ByteProvider_InternalChanged;
+                    Script_Tab.Visibility = BinaryInterpreter_Tab.Visibility = Interpreter_Tab.Visibility = Bio2DAViewer_Tab.Visibility = Visibility.Collapsed;
+                    PreviewInfo(n);
                     /*   n = -n - 1;
                        headerRawHexBox.ByteProvider = new DynamicByteProvider(pcc.getImport(n).header);
                        UpdateStatusIm(n);
@@ -797,6 +834,122 @@ namespace ME3Explorer
         private void SaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             //saveAs();
+        }
+
+        private void PackageEditorWPF_Loaded(object sender, RoutedEventArgs e)
+        {
+            Header_Hexbox = (HexBox)Header_Hexbox_Host.Child;
+            //            // Create the interop host control.
+            //            System.Windows.Forms.Integration.WindowsFormsHost host =
+            //                new System.Windows.Forms.Integration.WindowsFormsHost();
+
+            //            // Create the MaskedTextBox control.
+            //            Header_Hexbox = new Be.Windows.Forms.HexBox();
+            //            this.Header_Hexbox.BoldFont = null;
+            //            this.Header_Hexbox.BytesPerLine = 16;
+            ////            this.Header_Hexbox.Dock = System.Windows.Forms.DockStyle.Fill;
+            //            this.Header_Hexbox.Dock = System.Windows.Forms.DockStyle.Left;
+
+            //            this.Header_Hexbox.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            //            this.Header_Hexbox.LineInfoForeColor = System.Drawing.Color.Empty;
+            //            this.Header_Hexbox.LineInfoVisible = true;
+            //            this.Header_Hexbox.ColumnInfoVisible = true;
+            //            this.Header_Hexbox.Location = new System.Drawing.Point(0, 0);
+            //            this.Header_Hexbox.MinBytesPerLine = 4;
+            //            this.Header_Hexbox.Name = "Header_Hexbox";
+            //            this.Header_Hexbox.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            //            this.Header_Hexbox.StringViewVisible = true;
+            //            this.Header_Hexbox.TabIndex = 0;
+            //            this.Header_Hexbox.VScrollBarVisible = true;
+            //            //this.Header_Hexbox.SelectionStartChanged += new System.EventHandler(this.Header_Hexbox_SelectionChanged);
+            //            //this.Header_Hexbox.SelectionLengthChanged += new System.EventHandler(this.Header_Hexbox_SelectionChanged);
+
+            //            host.Child = Header_Hexbox;
+
+            //            // Add the interop host control to the Grid
+            //            // control's collection of child controls.
+            //            WpfHosted_BeHexbox.Children.Add(host);
+        }
+
+        private void Info_ClassComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!loadingNewData)
+            {
+                var selectedClassIndex = InfoTab_Class_ComboBox.SelectedIndex;
+                var unrealIndex = selectedClassIndex - pcc.ImportCount;
+                Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_IDXCLASS, BitConverter.GetBytes(unrealIndex));
+            }
+        }
+
+        private void InfoTab_Header_ByteProvider_InternalChanged(object sender, EventArgs e)
+        {
+            Info_Header_UnsavedChanges.Visibility = Header_Hexbox.ByteProvider.HasChanges() ? Visibility.Visible : Visibility.Hidden;
+            Header_Hexbox.Refresh();
+        }
+
+        private void Info_HeaderHexSaveChanges_Click(object sender, RoutedEventArgs e)
+        {
+            MemoryStream m = new MemoryStream();
+            IByteProvider provider = Header_Hexbox.ByteProvider;
+            for (int i = 0; i < provider.Length; i++)
+                m.WriteByte(provider.ReadByte(i));
+            CurrentlyLoadedEntry.Header = m.ToArray();
+            if (Header_Hexbox.ByteProvider != null)
+            {
+                Header_Hexbox.ByteProvider.ApplyChanges();
+            }
+            Info_Header_UnsavedChanges.Visibility = Header_Hexbox.ByteProvider.HasChanges() ? Visibility.Visible : Visibility.Hidden;
+        }
+
+        private void Info_PackageLinkClassComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!loadingNewData)
+            {
+                var selectedImpExp = InfoTab_PackageLink_ComboBox.SelectedIndex;
+                var unrealIndex = selectedImpExp - pcc.ImportCount;
+                Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_IDXCLASSLINK, BitConverter.GetBytes(unrealIndex));
+            }
+        }
+
+        private void Info_SuperClassComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!loadingNewData)
+            {
+                var selectedClassIndex = InfoTab_Superclass_ComboBox.SelectedIndex;
+                var unrealIndex = selectedClassIndex - pcc.ImportCount;
+                Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_IDXCLASSPARENT, BitConverter.GetBytes(unrealIndex));
+            }
+        }
+
+        private void Info_ObjectNameComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!loadingNewData)
+            {
+                var selectedNameIndex = InfoTab_Objectname_ComboBox.SelectedIndex;
+                Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_IDXOBJECTNAME, BitConverter.GetBytes(selectedNameIndex));
+            }
+        }
+
+        private void Info_IndexTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!loadingNewData)
+            {
+                int x;
+                if (int.TryParse(InfoTab_Index_TextBox.Text, out x))
+                {
+                    Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_INDEXVALUE, BitConverter.GetBytes(x));
+                }
+            }
+        }
+
+        private void Info_ArchetypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!loadingNewData)
+            {
+                var selectedArchetTypeIndex = InfoTab_Archetype_ComboBox.SelectedIndex;
+                var unrealIndex = selectedArchetTypeIndex - pcc.ImportCount;
+                Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_IDXARCHETYPE, BitConverter.GetBytes(selectedArchetTypeIndex));
+            }
         }
     }
 }

@@ -188,7 +188,7 @@ namespace ME3Explorer.Packages
                 ImportCount = imports.Count;
                 foreach (ImportEntry e in imports)
                 {
-                    m.WriteBytes(e.header);
+                    m.WriteBytes(e.Header);
                 }
                 //export table
                 ExportOffset = (int)m.Position;
@@ -197,7 +197,7 @@ namespace ME3Explorer.Packages
                 {
                     IExportEntry e = exports[i];
                     e.headerOffset = (uint)m.Position;
-                    m.WriteBytes(e.header);
+                    m.WriteBytes(e.Header);
                 }
                 //freezone
                 int FreeZoneSize = expDataBegOffset - FreeZoneStart;
@@ -311,7 +311,7 @@ namespace ME3Explorer.Packages
                 ImportCount = imports.Count;
                 foreach (ImportEntry import in imports)
                 {
-                    newPCCStream.WriteBytes(import.header);
+                    newPCCStream.WriteBytes(import.Header);
                 }
 
                 //append the new data
@@ -327,7 +327,7 @@ namespace ME3Explorer.Packages
                 ExportCount = exports.Count;
                 foreach (ME2ExportEntry export in exports)
                 {
-                    newPCCStream.WriteBytes(export.header);
+                    newPCCStream.WriteBytes(export.Header);
                 }
 
                 IsAppend = true;

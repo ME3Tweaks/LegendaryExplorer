@@ -212,7 +212,7 @@ namespace ME3Explorer.Packages
                 ImportCount = imports.Count;
                 foreach (ImportEntry e in imports)
                 {
-                    m.WriteBytes(e.header);
+                    m.WriteBytes(e.Header);
                 }
                 //export table
                 ExportOffset = (int)m.Position;
@@ -221,7 +221,7 @@ namespace ME3Explorer.Packages
                 {
                     IExportEntry e = exports[i];
                     e.headerOffset = (uint)m.Position;
-                    m.WriteBytes(e.header);
+                    m.WriteBytes(e.Header);
                 }
                 //freezone
                 int FreeZoneSize = expDataBegOffset - FreeZoneStart;

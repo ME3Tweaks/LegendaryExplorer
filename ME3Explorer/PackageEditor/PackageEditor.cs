@@ -601,7 +601,7 @@ namespace ME3Explorer
                         }
                     }
 
-                    headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.header);
+                    headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.Header);
                     if (!isRefresh)
                     {
                         interpreterControl.export = exportEntry;
@@ -633,7 +633,7 @@ namespace ME3Explorer
                 else
                 {
                     n = -n - 1;
-                    headerRawHexBox.ByteProvider = new DynamicByteProvider(pcc.getImport(n).header);
+                    headerRawHexBox.ByteProvider = new DynamicByteProvider(pcc.getImport(n).Header);
                     UpdateStatusIm(n);
                     if (packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
                     {
@@ -692,7 +692,7 @@ namespace ME3Explorer
                     classNameBox.Text = exportEntry.ClassName;
                     superclassTextBox.Text = exportEntry.ClassParent;
                     packageNameBox.Text = exportEntry.PackageFullName;
-                    headerSizeBox.Text = exportEntry.header.Length + " bytes";
+                    headerSizeBox.Text = exportEntry.Header.Length + " bytes";
                     indexBox.Text = exportEntry.indexValue.ToString();
                     archetypeBox.Text = exportEntry.ArchtypeName;
 
@@ -1426,11 +1426,11 @@ namespace ME3Explorer
                 m.WriteByte(provider.ReadByte(i));
             if (n > 0)
             {
-                pcc.getExport(n).setHeader(m.ToArray());
+                pcc.getExport(n).Header = m.ToArray();
             }
             else if (n < 0)
             {
-                pcc.getImport(Math.Abs(n) - 1).setHeader(m.ToArray());
+                pcc.getImport(Math.Abs(n) - 1).Header = m.ToArray();
             }
         }
 
@@ -1762,7 +1762,7 @@ namespace ME3Explorer
             }
 
             //set header so addresses are set
-            var header = (byte[])ex.header.Clone();
+            var header = (byte[])ex.Header.Clone();
             if ((importpcc.Game == MEGame.ME1 || importpcc.Game == MEGame.ME2) && pcc.Game == MEGame.ME3)
             {
                 //we need to clip some bytes out of the header
@@ -1772,7 +1772,7 @@ namespace ME3Explorer
 
                 header = clippedHeader;
             }
-            nex.setHeader(header);
+            nex.Header = header;
             bool dataAlreadySet = false;
             if (importpcc.Game == MEGame.ME3)
             {

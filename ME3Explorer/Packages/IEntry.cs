@@ -9,7 +9,7 @@ namespace ME3Explorer.Packages
         bool HeaderChanged { get; }
         int Index { get; set; }
         int UIndex { get; }
-        byte[] header { get; }
+        byte[] Header { get; set; }
         IMEPackage FileRef { get; }
         int idxLink { get; set; }
         int idxObjectName { get; set; }
@@ -41,7 +41,6 @@ namespace ME3Explorer.Packages
         bool ReadsFromConfig { get; }
 
         IExportEntry Clone();
-        void setHeader(byte[] v);
 
         event PropertyChangedEventHandler PropertyChanged;
 

@@ -12,6 +12,7 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
+using Be.Windows.Forms;
 
 namespace ME3Explorer
 {
@@ -56,6 +57,7 @@ namespace ME3Explorer
             "None",
             "BioMask4Property",
         };
+        private HexBox Interpreter_Hexbox;
 
         public enum nodeType
         {
@@ -111,10 +113,10 @@ namespace ME3Explorer
             this.export = export;
             memory = export.Data;
             memsize = memory.Length;
-            List<byte> bytes = export.Data.ToList();
-            MemoryStream ms = new MemoryStream(); //initializing memorystream directly with byte[] does not allow it to expand.
-            ms.Write(export.Data, 0, export.Data.Length); //write the data into the memorystream.
-            Interpreter_HexBox.Stream = ms;
+            //List<byte> bytes = export.Data.ToList();
+            //MemoryStream ms = new MemoryStream(); //initializing memorystream directly with byte[] does not allow it to expand.
+            //ms.Write(export.Data, 0, export.Data.Length); //write the data into the memorystream.
+            Interpreter_Hexbox.ByteProvider = new DynamicByteProvider(export.Data);
             className = export.ClassName;
 
             if (pcc.Game == MEGame.ME1)
@@ -329,6 +331,10 @@ namespace ME3Explorer
                     break;
                 case PropertyType.BoolProperty:
                     s += ": " + (prop as BoolProperty).Value;
+                    break;
+                case PropertyType.NameProperty:
+                    s += ": " + (prop as NameProperty).NameTableIndex + " " + (prop as NameProperty).Value;
+
                     break;
             }
 
@@ -1360,10 +1366,27 @@ namespace ME3Explorer
             {
                 var hexPosStr = newSelectedItem.Name.Substring(1); //remove _
                 int hexPos = Convert.ToInt32(hexPosStr);
-                Interpreter_HexBox.SetPosition(hexPos);
+                //Interpreter_HexBox.SetPosition(hexPos);
                 //                Debug.WriteLine(newSelectedItem.Name);
             }
 
+        }
+
+        private void Interpreter_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            Interpreter_Hexbox = (HexBox)Interpreter_Hexbox_Host.Child;
+        }
+
+        private void Interpreter_SaveHexChanged_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            IByteProvider provider = Interpreter_Hexbox.ByteProvider;
+            if (provider != null)
+            {
+                MemoryStream m = new MemoryStream();
+                for (int i = 0; i < provider.Length; i++)
+                    m.WriteByte(provider.ReadByte(i));
+                export.Data = m.ToArray();
+            }
         }
     }
 }

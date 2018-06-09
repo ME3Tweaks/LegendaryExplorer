@@ -19,13 +19,21 @@ namespace Be.Windows.Forms
 		/// <param name="index">the index of the byte to write</param>
 		/// <param name="value">the byte to write</param>
 		void WriteByte(long index, byte value);
-		/// <summary>
-		/// Inserts bytes into the provider
-		/// </summary>
-		/// <param name="index"></param>
-		/// <param name="bs"></param>
-		/// <remarks>This method must raise the LengthChanged event.</remarks>
-		void InsertBytes(long index, byte[] bs);
+
+        /// <summary>
+        /// Writes an array of bytes into the provider
+        /// </summary>
+        /// <param name="index">the index of the byte to start writing at</param>
+        /// <param name="values">the bytes to write</param>
+        void WriteBytes(long index, byte[] values);
+
+        /// <summary>
+        /// Inserts bytes into the provider
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="bs"></param>
+        /// <remarks>This method must raise the LengthChanged event.</remarks>
+        void InsertBytes(long index, byte[] bs);
 		/// <summary>
 		/// Deletes bytes from the provider
 		/// </summary>
