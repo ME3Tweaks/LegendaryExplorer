@@ -34,6 +34,23 @@
                       BorderThickness="5,0"
                       BorderBrush="Transparent"
                       Panel.ZIndex="60"/>
-        <TreeView Name="Interpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="Interpreter_TreeViewSelectedItemChanged"/>
+        <TreeView Name="Interpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="Interpreter_TreeViewSelectedItemChanged" PreviewMouseRightButtonDown="Interpreter_TreeView_PreviewMouseRightButtonDown">
+            <TreeView.Resources>
+                <ContextMenu x:Key ="ArrayPropertyContext"  StaysOpen="true">
+                    <MenuItem Header="Order by"/>
+                    <MenuItem Header="Remove property"/>
+                </ContextMenu>
+                <ContextMenu x:Key="FolderContext"  StaysOpen="true">
+                    <MenuItem Header="Add..."/>
+                    <MenuItem Header="Rename"/>
+                    <MenuItem Header="Remove"/>
+                    <Separator/>
+                    <MenuItem Header="Copy"/>
+                    <MenuItem Header="Cut"/>
+                    <MenuItem Header="Paste"/>
+                    <MenuItem Header="Move"/>
+                </ContextMenu>
+            </TreeView.Resources>
+        </TreeView>
     </Grid>
 </UserControl>
