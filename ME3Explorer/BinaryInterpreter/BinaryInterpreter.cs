@@ -98,10 +98,10 @@ Floats*/
         int? selectedNodePos;
         private Dictionary<string, string> ME1_TLK_DICT; //TODO: Read TLK for ME1 for Bio2DA
         //classes that have binary parse code or should show up in generic scan
-        public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "Class", "BioStage", "ObjectProperty", "Const",
+        public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "SeekFreeShaderCache", "Class", "BioStage", "ObjectProperty", "Const",
             "Enum", "ArrayProperty","FloatProperty", "IntProperty", "BoolProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
             "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "PrefabInstance",
-            "WwiseStream", "TextureMovie", "GuidCache"};
+            "WwiseStream", "TextureMovie", "GuidCache", "World"};
 
 
         public BinaryInterpreter()
@@ -132,7 +132,7 @@ Floats*/
         {
             //This will make it fairly slow, but will make it so I don't have to change everything.
             InitializeComponent();
-
+            viewModeDropDownList.SelectedIndex = 0;
 
             SetTopLevel(false);
             this.pcc = importingPCC;
@@ -1588,8 +1588,6 @@ Floats*/
             {
                 return;
             }
-            treeView1.BeginUpdate();
-            treeView1.Nodes.Clear();
 
             //find start of class binary (end of props). This should 
             viewModeDropDownList.Visible = true;

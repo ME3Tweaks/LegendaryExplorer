@@ -26,10 +26,24 @@ namespace ME3Explorer.Meshplorer
         public SkeletalMesh skm;
         public SkeletalMeshOld skmold;
         public float PreviewRotation = 0;
+        public List<string> RFiles;
+        public static readonly string MeshplorerDataFolder = Path.Combine(App.AppDataFolder, @"Meshplorer\");
+        private readonly string RECENTFILES_FILE = "RECENTFILES";
+        private string pendingFileToLoad = null;
 
         public Meshplorer()
         {
             InitializeComponent();
+            LoadRecentList();
+            RefreshRecent(false);
+        }
+
+        public Meshplorer(string filepath)
+        {
+            pendingFileToLoad = filepath;
+            InitializeComponent();
+            LoadRecentList();
+            RefreshRecent(false);
         }
 
         private void Meshplorer_Load(object sender, EventArgs e)
@@ -40,6 +54,15 @@ namespace ME3Explorer.Meshplorer
             solidToolStripMenuItem.Checked = Properties.Settings.Default.MeshplorerViewSolidEnabled;
             firstPersonToolStripMenuItem.Checked = Properties.Settings.Default.MeshplorerViewFirstPerson;
             firstPersonToolStripMenuItem_Click(null, null); // Force first/third person setting to take effect
+
+            if (pendingFileToLoad != null)
+            {
+                LoadFile(pendingFileToLoad);
+                AddRecent(pendingFileToLoad, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
+                pendingFileToLoad = null;
+            }
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -53,10 +76,10 @@ namespace ME3Explorer.Meshplorer
             OpenFileDialog d = new OpenFileDialog();
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == DialogResult.OK)
-                LoadPCC(d.FileName);
+                LoadFile(d.FileName);
         }
 
-        public void LoadPCC(string path)
+        public void LoadFile(string path)
         {
             try
             {
@@ -64,6 +87,7 @@ namespace ME3Explorer.Meshplorer
                 MeshplorerMode = 0;
                 RefreshMaterialList();
                 RefreshMeshList();
+                lblStatus.Text = Path.GetFileName(path);
             }
             catch (Exception ex)
             {
@@ -969,5 +993,125 @@ namespace ME3Explorer.Meshplorer
             }
         }
         #endregion
+
+        private void meshplorer_DragDrop(object sender, DragEventArgs e)
+        {
+            List<string> DroppedFiles = ((string[])e.Data.GetData(DataFormats.FileDrop)).ToList();
+            if (DroppedFiles.Count > 0)
+            {
+                LoadFile(DroppedFiles[0]);
+                AddRecent(DroppedFiles[0], false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
+            }
+        }
+
+        private void meshplorer_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        public void AddRecent(string s, bool loadingList)
+        {
+            RFiles = RFiles.Where(x => !x.Equals(s, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            if (loadingList)
+            {
+                RFiles.Add(s); //in order
+            }
+            else
+            {
+                RFiles.Insert(0, s); //put at front
+            }
+            if (RFiles.Count > 10)
+            {
+                RFiles.RemoveRange(10, RFiles.Count - 10);
+            }
+            recentToolStripMenuItem.Enabled = true;
+        }
+
+        private void SaveRecentList()
+        {
+            if (!Directory.Exists(MeshplorerDataFolder))
+            {
+                Directory.CreateDirectory(MeshplorerDataFolder);
+            }
+            string path = MeshplorerDataFolder + RECENTFILES_FILE;
+            if (File.Exists(path))
+                File.Delete(path);
+            File.WriteAllLines(path, RFiles);
+        }
+
+        private void RefreshRecent(bool propogate, List<string> recents = null)
+        {
+            if (propogate && recents != null)
+            {
+                //we are posting an update to other instances of packed
+                var forms = Application.OpenForms;
+                foreach (Form form in forms)
+                {
+                    if (form is Meshplorer && this != form)
+                    {
+                        ((Meshplorer)form).RefreshRecent(false, RFiles);
+                    }
+                }
+            }
+            else if (recents != null)
+            {
+                //we are receiving an update
+                RFiles = new List<string>(recents);
+            }
+            recentToolStripMenuItem.DropDownItems.Clear();
+            if (RFiles.Count <= 0)
+            {
+                recentToolStripMenuItem.Enabled = false;
+                return;
+            }
+            recentToolStripMenuItem.Enabled = true;
+
+            foreach (string filepath in RFiles)
+            {
+                ToolStripMenuItem fr = new ToolStripMenuItem(filepath, null, RecentFile_click);
+                recentToolStripMenuItem.DropDownItems.Add(fr);
+            }
+        }
+
+        private void RecentFile_click(object sender, EventArgs e)
+        {
+            string s = sender.ToString();
+            if (File.Exists(s))
+            {
+                LoadFile(s);
+                AddRecent(s, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
+            }
+            else
+            {
+                MessageBox.Show("File does not exist: " + s);
+            }
+        }
+
+        private void LoadRecentList()
+        {
+            RFiles = new List<string>();
+            RFiles.Clear();
+            string path = MeshplorerDataFolder + RECENTFILES_FILE;
+            recentToolStripMenuItem.Enabled = false;
+            if (File.Exists(path))
+            {
+                string[] recents = File.ReadAllLines(path);
+                foreach (string recent in recents)
+                {
+                    if (File.Exists(recent))
+                    {
+                        recentToolStripMenuItem.Enabled = true;
+                        AddRecent(recent, true);
+                    }
+                }
+            }
+        }
     }
 }

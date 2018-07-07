@@ -89,6 +89,8 @@ namespace ME3Explorer
             //Stuff that can't be done in designer view easily
             showVolumesInsteadOfNodesToolStripMenuItem.DropDown.Closing += new ToolStripDropDownClosingEventHandler(DropDown_Closing);
             ViewingModesMenuItem.DropDown.Closing += new ToolStripDropDownClosingEventHandler(DropDown_Closing);
+            sFXCombatZonesToolStripMenuItem.DropDown.Closing += new ToolStripDropDownClosingEventHandler(DropDown_Closing);
+            staticMeshCollectionActorsToolStripMenuItem.DropDown.Closing += new ToolStripDropDownClosingEventHandler(DropDown_Closing);
 
             //
 
@@ -192,12 +194,6 @@ namespace ME3Explorer
             if (File.Exists(path))
                 File.Delete(path);
             File.WriteAllLines(path, RFiles);
-        }
-
-        private void pathfindingEditor_MouseMoveHandler(object sender, MouseEventArgs e)
-        {
-            //PointF mousePoint = e.Location;
-            //Debug.WriteLine(mousePoint);
         }
 
         private void PathfindingEditor_Load(object sender, EventArgs e)
@@ -401,7 +397,7 @@ namespace ME3Explorer
                                 };
                                 sFXCombatZonesToolStripMenuItem.DropDown.Items.Add(combatZoneItem);
                                 sFXCombatZonesToolStripMenuItem.Enabled = true;
-                                sFXCombatZonesToolStripMenuItem.ToolTipText = "Select a SFXCombatZone to highlight pathnodes that are part of it";
+                                sFXCombatZonesToolStripMenuItem.ToolTipText = "Select a SFXCombatZone to highlight coverslots that are part of it";
                             }
 
 
@@ -503,10 +499,10 @@ namespace ME3Explorer
             return false;
         }
 
-        private void setSFXCombatZoneBGActive(ToolStripMenuItem testItem, IExportEntry exportEntry, bool @checked)
+        private void setSFXCombatZoneBGActive(ToolStripMenuItem combatZoneMenuItem, IExportEntry exportEntry, bool @checked)
         {
-            testItem.Checked = !testItem.Checked;
-            if (testItem.Checked)
+            combatZoneMenuItem.Checked = !combatZoneMenuItem.Checked;
+            if (combatZoneMenuItem.Checked)
             {
                 ActiveCombatZoneExportIndex = exportEntry.Index;
             }
@@ -516,7 +512,7 @@ namespace ME3Explorer
             }
             foreach (ToolStripMenuItem tsmi in sFXCombatZonesToolStripMenuItem.DropDownItems)
             {
-                if (tsmi.Checked && tsmi != testItem)
+                if (tsmi.Checked && tsmi != combatZoneMenuItem)
                 {
                     tsmi.Checked = false; //uncheck other combat zones
                 }
@@ -781,7 +777,7 @@ namespace ME3Explorer
                                 pathNode = new PathfindingNodes.PendingNode(index, x, y, pcc, graphEditor);
                                 break;
                         }
-                        if (ActiveCombatZoneExportIndex >= 0)
+                        if (ActiveCombatZoneExportIndex >= 0 && exporttoLoad.ClassName == "CoverSlotMarker")
                         {
                             ArrayProperty<StructProperty> volumes = props.GetProp<ArrayProperty<StructProperty>>("Volumes");
                             if (volumes != null)
@@ -874,23 +870,23 @@ namespace ME3Explorer
 
 
 
-                       /* if (ActiveCombatZoneExportIndex >= 0)
-                        {
-                            ArrayProperty<StructProperty> volumes = props.GetProp<ArrayProperty<StructProperty>>("Volumes");
-                            if (volumes != null)
-                            {
-                                foreach (StructProperty volume in volumes)
-                                {
-                                    ObjectProperty actorRef = volume.GetProp<ObjectProperty>("Actor");
-                                    if (actorRef != null && actorRef.Value == ActiveCombatZoneExportIndex - 1)
-                                    {
-                                        //Debug.WriteLine("FOUND ACTIVE COMBAT NODE!");
-                                        actorNode.shape.Brush = PathfindingNodeMaster.sfxCombatZoneBrush;
-                                        break;
-                                    }
-                                }
-                            }
-                        }*/
+                        /* if (ActiveCombatZoneExportIndex >= 0)
+                         {
+                             ArrayProperty<StructProperty> volumes = props.GetProp<ArrayProperty<StructProperty>>("Volumes");
+                             if (volumes != null)
+                             {
+                                 foreach (StructProperty volume in volumes)
+                                 {
+                                     ObjectProperty actorRef = volume.GetProp<ObjectProperty>("Actor");
+                                     if (actorRef != null && actorRef.Value == ActiveCombatZoneExportIndex - 1)
+                                     {
+                                         //Debug.WriteLine("FOUND ACTIVE COMBAT NODE!");
+                                         actorNode.shape.Brush = PathfindingNodeMaster.sfxCombatZoneBrush;
+                                         break;
+                                     }
+                                 }
+                             }
+                         }*/
                         Objects.Add(actorNode);
                         return;
                     }
@@ -945,7 +941,7 @@ namespace ME3Explorer
                         Objects.Add(splineNode);
                         return;
                     }
-                    
+
                     else
                     {
                         //everything else
@@ -1245,11 +1241,33 @@ namespace ME3Explorer
                     generateNewRandomGUIDToolStripMenuItem.Visible = true;
                     if (node.export.ClassName == "CoverSlotMarker")
                     {
+                        addToSFXCombatZoneToolStripMenuItem.Enabled = sfxCombatZones.Count > 0;
                         ToolStripDropDown combatZonesDropdown = new ToolStripDropDown();
                         ToolStripMenuItem combatZoneItem;
+                        ArrayProperty<StructProperty> volumes = node.export.GetProperty<ArrayProperty<StructProperty>>("Volumes");
 
                         foreach (int expid in sfxCombatZones)
                         {
+                            bool isAlreadyPartOfCombatZone = false;
+                            if (volumes != null)
+                            {
+                                foreach (StructProperty actorRef in volumes)
+                                {
+                                    var actor = actorRef.GetProp<ObjectProperty>("Actor");
+                                    if (actor.Value == expid + 1)
+                                    {
+                                        Debug.WriteLine("part of combat zone already: " + actor.Value);
+                                        isAlreadyPartOfCombatZone = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (isAlreadyPartOfCombatZone)
+                            {
+                                continue; //go to next entry
+                            }
+                            Debug.WriteLine("not part of combat zone already: " + expid);
+
                             IExportEntry combatZoneExp = pcc.Exports[expid];
                             combatZoneItem = new ToolStripMenuItem(combatZoneExp.Index + " " + combatZoneExp.ObjectName + "_" + combatZoneExp.indexValue);
                             combatZoneItem.Click += (object o, EventArgs args) =>
@@ -1334,7 +1352,7 @@ namespace ME3Explorer
 
         private void addCombatZoneRef(IExportEntry nodeExp, IExportEntry combatZoneExp)
         {
-            //Adds a combat zone to the list of Volumes. Creates Volumes if it doesnt exist yet.
+            //Adds a combat zone to the list of Volumes. Creates Volumes if it doesnt exist yet. Currently does not check if the item already exists as part of that combat zone.
             PropertyCollection props = nodeExp.GetProperties();
             ArrayProperty<StructProperty> volumes = props.GetProp<ArrayProperty<StructProperty>>("Volumes");
             if (volumes == null)
@@ -1344,112 +1362,22 @@ namespace ME3Explorer
                 props.Add(volumes);
             }
 
-            return;
-            //StructProperty actorRef = new StructProperty("")
-            byte[] actorRef = new byte[20]; //5 ints
-                                            //GUID of combat zone
+            StructProperty newVolumeProperty = new StructProperty("ActorReference", true);
+            StructProperty newGUIDProperty = new StructProperty("ActorReference", true);
+            newGUIDProperty.Name = "Guid";
+
             StructProperty guid = combatZoneExp.GetProperty<StructProperty>("CombatZoneGuid");
-            int a = guid.GetProp<IntProperty>("A");
-            int b = guid.GetProp<IntProperty>("D");
-            int c = guid.GetProp<IntProperty>("C");
-            int d = guid.GetProp<IntProperty>("D");
-
-            actorRef = SharedPathfinding.WriteMem(actorRef, 0, BitConverter.GetBytes(a));
-            actorRef = SharedPathfinding.WriteMem(actorRef, 4, BitConverter.GetBytes(b));
-            actorRef = SharedPathfinding.WriteMem(actorRef, 8, BitConverter.GetBytes(c));
-            actorRef = SharedPathfinding.WriteMem(actorRef, 12, BitConverter.GetBytes(d));
-
-            //Combat Zone Ref
-            actorRef = SharedPathfinding.WriteMem(actorRef, 16, BitConverter.GetBytes(combatZoneExp.UIndex));
-
+            newGUIDProperty.Properties.Add(new IntProperty(guid.GetProp<IntProperty>("A"), "A"));
+            newGUIDProperty.Properties.Add(new IntProperty(guid.GetProp<IntProperty>("B"), "B"));
+            newGUIDProperty.Properties.Add(new IntProperty(guid.GetProp<IntProperty>("C"), "C"));
+            newGUIDProperty.Properties.Add(new IntProperty(guid.GetProp<IntProperty>("D"), "D"));
+            newVolumeProperty.Properties.Add(newGUIDProperty);
+            var newActorProperty = new ObjectProperty(combatZoneExp.UIndex, "Actor");
+            newVolumeProperty.Properties.Add(newActorProperty);
+            volumes.Add(newVolumeProperty);
+            nodeExp.WriteProperty(volumes);
+            return;
         }
-
-        /*private void addArrayLeaf()
-        {
-            try
-            {
-                int pos = (int)hb1.SelectionStart;
-                if (hb1.SelectionStart != lastSetOffset)
-                {
-                    return; //user manually moved cursor
-                }
-                bool isLeaf = false;
-                int leafOffset = 0;
-                //is a leaf
-                if (deleteArrayElementButton.Visible == true)
-                {
-                    isLeaf = true;
-                    leafOffset = pos;
-                    pos = getPosFromNode(LAST_SELECTED_NODE.Parent.Name);
-                    LAST_SELECTED_NODE = LAST_SELECTED_NODE.Parent;
-                }
-                int size = BitConverter.ToInt32(memory, pos + 16);
-                int count = BitConverter.ToInt32(memory, pos + 24);
-                int leafSize = 0;
-                ArrayType arrayType = GetArrayType(BitConverter.ToInt32(memory, pos), getEnclosingType(LAST_SELECTED_NODE.Parent));
-                List<byte> memList = memory.ToList();
-                int i;
-                float f;
-                byte b = 0;
-                int offset;
-                if (isLeaf)
-                {
-                    offset = leafOffset;
-                }
-                else
-                {
-                    offset = pos + 24 + size;
-                }
-
-                byte[] buff;
-                if (LAST_SELECTED_NODE.Nodes.Count == 0)
-                {
-                    if (pcc.Game == MEGame.ME3)
-                    {
-                        buff = ME3UnrealObjectInfo.getDefaultClassValue(pcc as ME3Package, getEnclosingType(LAST_SELECTED_NODE));
-                        if (buff == null)
-                        {
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Cannot add new struct values to an array that does not already have them when editing ME1 or ME2 files.", "Sorry :(");
-                        return;
-                    }
-                }
-                //clone struct if existing
-                else
-                {
-                    int startOff = getPosFromNode(LAST_SELECTED_NODE.LastNode);
-                    int length = getPosFromNode(LAST_SELECTED_NODE.NextNode) - startOff;
-                    buff = memory.Skip(startOff).Take(length).ToArray();
-                }
-                memList.InsertRange(offset, buff);
-                leafSize = buff.Length;
-
-                memory = memList.ToArray();
-                updateArrayLength(pos, 1, leafSize);
-
-                //bubble up size
-                TreeNode parent = LAST_SELECTED_NODE.Parent;
-                while (parent != null && (parent.Tag.Equals(nodeType.StructProperty) || parent.Tag.Equals(nodeType.ArrayProperty) || parent.Tag.Equals(nodeType.ArrayLeafStruct)))
-                {
-                    if ((nodeType)parent.Tag == nodeType.ArrayLeafStruct)
-                    {
-                        parent = parent.Parent;
-                        continue;
-                    }
-                    updateArrayLength(getPosFromNode(parent.Name), 0, leafSize);
-                    parent = parent.Parent;
-                }
-                UpdateMem(arrayType == ArrayType.Struct ? -offset : offset);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }*/
 
         private IExportEntry removeReachSpec(IExportEntry nodeExport, IExportEntry outgoingSpec)
         {
@@ -3532,6 +3460,13 @@ namespace ME3Explorer
             {
                 splitContainer2.Panel2Collapsed = false;
             }
+        }
+
+        private void sFXCombatZoneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            graphEditor.showVolume_SFXCombatZones = !graphEditor.showVolume_SFXCombatZones;
+            sFXCombatZoneToolStripMenuItem.Checked = graphEditor.showVolume_SFXCombatZones;
+            RefreshView();
         }
     }
 

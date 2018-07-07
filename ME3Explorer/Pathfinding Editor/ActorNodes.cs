@@ -16,13 +16,6 @@ namespace ME3Explorer.ActorNodes
     {
         public PathingGraphEditor g;
         static Color commentColor = Color.FromArgb(74, 63, 190);
-        static Color intColor = Color.FromArgb(34, 218, 218);//cyan
-        static Color floatColor = Color.FromArgb(23, 23, 213);//blue
-        static Color boolColor = Color.FromArgb(215, 37, 33); //red
-        static Color objectColor = Color.FromArgb(219, 39, 217);//purple
-        static Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
-
-
 
         protected ActorNode(int idx, IMEPackage p, PathingGraphEditor grapheditor)
         {
@@ -71,25 +64,6 @@ namespace ME3Explorer.ActorNodes
 
         }
         public virtual void Layout(float x, float y) { }
-
-        protected Color getColor(VarTypes t)
-        {
-            switch (t)
-            {
-                case VarTypes.Int:
-                    return intColor;
-                case VarTypes.Float:
-                    return floatColor;
-                case VarTypes.Bool:
-                    return boolColor;
-                case VarTypes.Object:
-                    return objectColor;
-                case VarTypes.MatineeData:
-                    return interpDataColor;
-                default:
-                    return Color.Black;
-            }
-        }
 
         protected VarTypes getType(string s)
         {
@@ -690,7 +664,23 @@ namespace ME3Explorer.ActorNodes
             // = getType(s);
             float w = 50;
             float h = 50;
-            shape = PPath.CreatePolygon(cShape);
+            if (grapheditor.showVolumeBrushes && grapheditor.showVolume_SFXCombatZones)
+            {
+                var brushShape = get3DBrushShape();
+                if (brushShape != null)
+                {
+                    shape = PPath.CreatePolygon(brushShape);
+                }
+                else
+                {
+                    shape = PPath.CreatePolygon(cShape);
+                }
+            }
+            else
+            {
+                shape = PPath.CreatePolygon(cShape);
+            }
+
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
             shape.Brush = actorNodeBrush;

@@ -150,8 +150,28 @@ namespace ME3Explorer
                 IsExpanded = true
             };
             topLevelTree.Tag = nodeType.Root;
-            topLevelTree.Name = "_" +"0";
+            topLevelTree.Name = "_" + "0";
+
             try
+            {
+                PropertyCollection props = export.GetProperties();
+                foreach (UProperty prop in props)
+                {
+                    GenerateTreeForProperty(prop, topLevelTree);
+
+                }
+                //GenerateTreeFromProperties(topLevelTree, props);
+            }
+            catch (Exception ex)
+            {
+                TreeViewItem errorNode = new TreeViewItem()
+                {
+                    Header = $"PARSE ERROR {ex.Message}"
+                };
+                topLevelTree.Items.Add(errorNode);
+                //addPropButton.Visible = false;
+            }
+            /*try
             {
                 List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
                 GenerateTree(topLevelTree, topLevelHeaders);
@@ -165,7 +185,7 @@ namespace ME3Explorer
                 topLevelTree.Items.Add(errorNode);
                 //addPropButton.Visible = false;
                 //removePropertyButton.Visible = false;
-            }
+            }*/
             Interpreter_TreeView.Items.Add(topLevelTree);
             //Interpreter_TreeView.CollapseAll();
             //Interpreter_TreeView.Items[0].Expand();
@@ -208,6 +228,72 @@ namespace ME3Explorer
                 Interpreter_TreeView.S = Interpreter_TreeView.Items[0];
             }*/
             memsize = memory.Length;
+        }
+
+        private void GenerateTreeForProperty(UProperty prop, TreeViewItem parent)
+        {
+            string s = prop.Offset.ToString("X4") + ": ";
+            s += "Name: \"" + prop.Name + "\" ";
+            s += "Type: \"" + prop.PropType + "\" ";
+            //s += "Size: " + prop.
+            s += " Value: ";
+
+            TreeViewItem item = new TreeViewItem()
+            {
+                Header = s
+            };
+            parent.Items.Add(item);
+            if (prop.PropType == PropertyType.ArrayProperty)
+            {
+                int i = 0;
+                foreach (UProperty listProp in (prop as ArrayPropertyBase).ValuesAsProperties)
+                {
+                    GenerateTreeForArrayProperty(listProp, item, i++);
+                }
+            }
+            if (prop.PropType == PropertyType.StructProperty)
+            {
+                var sProp = prop as StructProperty;
+                foreach (var subProp in sProp.Properties)
+                {
+                    GenerateTreeForProperty(subProp, item);
+                }
+            }
+        }
+
+        private void GenerateTreeForArrayProperty(UProperty prop, TreeViewItem parent, int index)
+        {
+            string s = prop.Offset.ToString("X4") + ": ";
+
+            switch (prop.PropType)
+            {
+                case PropertyType.ObjectProperty:
+                    s += pcc.getEntry((prop as ObjectProperty).Value).GetFullPath;
+                    break;
+            }
+
+
+            TreeViewItem item = new TreeViewItem()
+            {
+                Header = s
+            };
+            parent.Items.Add(item);
+            if (prop.PropType == PropertyType.ArrayProperty)
+            {
+                int i = 0;
+                foreach (UProperty listProp in (prop as ArrayPropertyBase).ValuesAsProperties)
+                {
+                    GenerateTreeForArrayProperty(listProp, item, i++);
+                }
+            }
+            if (prop.PropType == PropertyType.StructProperty)
+            {
+                var sProp = prop as StructProperty;
+                foreach (var subProp in sProp.Properties)
+                {
+                    GenerateTreeForProperty(subProp, item);
+                }
+            }
         }
 
         public List<PropHeader> ReadHeadersTillNone()
@@ -783,7 +869,7 @@ namespace ME3Explorer
                 case PropertyType.FloatProperty:
                     s += BitConverter.ToSingle(memory, pos).ToString("0.0######");
                     node = new TreeViewItem() { Header = s };
-                    node.Name = "_" +pos.ToString();
+                    node.Name = "_" + pos.ToString();
                     node.Tag = nodeType.StructLeafFloat;
                     t.Items.Add(node);
                     pos += 4;
@@ -791,7 +877,7 @@ namespace ME3Explorer
                 case PropertyType.IntProperty:
                     s += BitConverter.ToInt32(memory, pos).ToString();
                     node = new TreeViewItem() { Header = s };
-                    node.Name = "_" +pos.ToString();
+                    node.Name = "_" + pos.ToString();
                     node.Tag = nodeType.StructLeafInt;
                     t.Items.Add(node);
                     pos += 4;
@@ -800,7 +886,7 @@ namespace ME3Explorer
                     n = BitConverter.ToInt32(memory, pos);
                     s += n + " (" + pcc.getObjectName(n) + ")";
                     node = new TreeViewItem() { Header = s };
-                    node.Name = "_" +pos.ToString();
+                    node.Name = "_" + pos.ToString();
                     node.Tag = nodeType.StructLeafObject;
                     t.Items.Add(node);
                     pos += 4;
@@ -810,7 +896,7 @@ namespace ME3Explorer
                     s += "#" + n + ": ";
                     s += ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(n);
                     node = new TreeViewItem() { Header = s };
-                    node.Name = "_" +pos.ToString();
+                    node.Name = "_" + pos.ToString();
                     node.Tag = nodeType.StructLeafInt;
                     t.Items.Add(node);
                     pos += 4;
@@ -820,7 +906,7 @@ namespace ME3Explorer
                     pos += 4;
                     s += "\"" + pcc.getNameEntry(n) + "\"_" + BitConverter.ToInt32(memory, pos);
                     node = new TreeViewItem() { Header = s };
-                    node.Name = "_" +pos.ToString();
+                    node.Name = "_" + pos.ToString();
                     node.Tag = nodeType.StructLeafName;
                     t.Items.Add(node);
                     pos += 4;
@@ -828,7 +914,7 @@ namespace ME3Explorer
                 case PropertyType.BoolProperty:
                     s += (memory[pos] > 0).ToString();
                     node = new TreeViewItem() { Header = s };
-                    node.Name = "_" +pos.ToString();
+                    node.Name = "_" + pos.ToString();
                     node.Tag = nodeType.StructLeafBool;
                     t.Items.Add(node);
                     pos += 1;
@@ -843,7 +929,7 @@ namespace ME3Explorer
                         }
                         s += "\"" + pcc.getNameEntry(BitConverter.ToInt32(memory, pos)) + "\"";
                         node = new TreeViewItem() { Header = s };
-                        node.Name = "_" +pos.ToString();
+                        node.Name = "_" + pos.ToString();
                         node.Tag = nodeType.StructLeafEnum;
                         t.Items.Add(node);
                         pos += 8;
@@ -852,7 +938,7 @@ namespace ME3Explorer
                     {
                         s += "(byte)" + memory[pos];
                         node = new TreeViewItem() { Header = s };
-                        node.Name = "_" +pos.ToString();
+                        node.Name = "_" + pos.ToString();
                         node.Tag = nodeType.StructLeafByte;
                         t.Items.Add(node);
                         pos += 1;
@@ -866,7 +952,7 @@ namespace ME3Explorer
                         s += (char)memory[pos + i * 2];
                     s += "\"";
                     node = new TreeViewItem() { Header = s };
-                    node.Name = "_" +pos.ToString();
+                    node.Name = "_" + pos.ToString();
                     node.Tag = nodeType.StructLeafStr;
                     t.Items.Add(node);
                     pos += n * 2;
@@ -875,7 +961,7 @@ namespace ME3Explorer
                     n = BitConverter.ToInt32(memory, pos);
                     s += n + " elements";
                     node = new TreeViewItem() { Header = s };
-                    node.Name = "_" +pos.ToString();
+                    node.Name = "_" + pos.ToString();
                     node.Tag = nodeType.StructLeafArray;
                     pos += 4;
                     propInfo = GetPropertyInfo(prop.Name);
@@ -891,7 +977,7 @@ namespace ME3Explorer
                             {
                                 Header = i + ": (" + propInfo.reference + ")"
                             };
-                            node2.Name = "_" +(-pos).ToString();
+                            node2.Name = "_" + (-pos).ToString();
                             node2.Tag = nodeType.StructLeafStruct;
                             GenerateSpecialStruct(node2, propInfo.reference, 0);
                             node.Items.Add(node2);
@@ -942,7 +1028,7 @@ namespace ME3Explorer
                     {
                         Header = s
                     };
-                    node.Name = "_" +(-pos).ToString();
+                    node.Name = "_" + (-pos).ToString();
                     node.Tag = nodeType.StructLeafStruct;
                     readerpos = pos;
                     GenerateSpecialStruct(node, propInfo.reference, 0);
@@ -1085,7 +1171,7 @@ namespace ME3Explorer
                 Header = s
             };
             ret.Tag = propertyType;
-            ret.Name = "_" +p.offset.ToString();
+            ret.Name = "_" + p.offset.ToString();
             return ret;
         }
 
