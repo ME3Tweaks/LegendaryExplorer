@@ -1171,7 +1171,7 @@ namespace ME3Explorer.Meshplorer
                     for (int i = 0; i < points.Count; i++)
                     {
                         Vector3 v = points[i];
-                        writer.WriteLine("v " + (-v.X).ToString(CultureInfo.InvariantCulture) + " " + v.Z.ToString(CultureInfo.InvariantCulture) + " " + v.Y.ToString(CultureInfo.InvariantCulture));
+                        writer.WriteLine("v " + v.X.ToString(CultureInfo.InvariantCulture) + " " + v.Z.ToString(CultureInfo.InvariantCulture) + " " + v.Y.ToString(CultureInfo.InvariantCulture));
                         writer.WriteLine("vt " + uvs[i].X.ToString(CultureInfo.InvariantCulture) + " " + uvs[i].Y.ToString(CultureInfo.InvariantCulture));
                     }
 
