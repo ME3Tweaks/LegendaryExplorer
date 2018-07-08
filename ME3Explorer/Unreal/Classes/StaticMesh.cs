@@ -233,10 +233,10 @@ namespace ME3Explorer.Unreal.Classes
             b.Box.Z = BitConverter.ToSingle(memory, readerpos + 20);
             b.R = BitConverter.ToSingle(memory, readerpos + 24);
             b.RB_BodySetup = BitConverter.ToInt32(memory, readerpos + 28);
-            b.unk = new float[6];
+            b.unk = new float[7];
             int pos = readerpos + 32;
             string unk = "Unknown{";
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 7; i++)
             {
                 b.unk[i] = BitConverter.ToSingle(memory, pos);
                 unk += b.unk[i] + " ";

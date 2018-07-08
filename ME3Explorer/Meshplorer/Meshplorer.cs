@@ -798,8 +798,8 @@ namespace ME3Explorer.Meshplorer
                 // Update treeview
 
                 // Update preview
-                //preview.Dispose();
-                //preview = new ModelPreview(view.Device, stm, view.TextureCache);
+                preview.Dispose();
+                preview = new ModelPreview(view.Device, stm, view.TextureCache);
             }
             else if (skm != null && t.Parent.Text == "Materials")
             {
@@ -956,7 +956,7 @@ namespace ME3Explorer.Meshplorer
 
         private void view_Render(object sender, EventArgs e)
         {
-            if (preview != null)
+            if (preview != null && preview.LODs.Count > 0) // For some reason, reading props calls DoEvents which means that this might be called *in the middle of* loading a preview
             {
                 if (solidToolStripMenuItem.Checked && CurrentLOD < preview.LODs.Count)
                 {
