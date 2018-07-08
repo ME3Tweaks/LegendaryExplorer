@@ -13,6 +13,7 @@ using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
 using Be.Windows.Forms;
 using ME3Explorer.Scene3D;
+using System.Globalization;
 
 namespace ME3Explorer.Meshplorer
 {
@@ -1113,5 +1114,145 @@ namespace ME3Explorer.Meshplorer
                 }
             }
         }
+
+        private void exportToOBJToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "Wavefront OBJ File (*.obj)|*.obj";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                using (StreamWriter writer = new StreamWriter(dialog.FileName))
+                using (StreamWriter mtlWriter = new StreamWriter(Path.ChangeExtension(dialog.FileName, ".mtl")))
+                {
+                    writer.WriteLine("mtllib " + Path.GetFileNameWithoutExtension(dialog.FileName) + ".mtl");
+                    // Vertices
+                    List<Vector3> points = null;
+                    List<Vector2> uvs = null;
+                    Dictionary<int, int> LODVertexOffsets = new Dictionary<int, int>(); // offset into the OBJ vertices that each buffer starts at
+                    if (stm != null)
+                    {
+                        points = stm.Mesh.Vertices.Points;
+                        uvs = new List<Vector2>();
+                        for (int i = 0; i < points.Count; i++)
+                        {
+                            uvs.Add(stm.Mesh.Edges.UVSet[i].UVs[0]);
+                        }
+                        foreach (var mat in stm.Mesh.Mat.MatInst)
+                        {
+                            mtlWriter.WriteLine("newmtl " + pcc.getObjectName(mat.index));
+                        }
+                    }
+                    else if (skm != null)
+                    {
+                        points = new List<Vector3>();
+                        uvs = new List<Vector2>();
+                        int index = 0;
+                        int lodIndex = 0;
+                        foreach (var lod in skm.LODModels)
+                        {
+                            LODVertexOffsets.Add(lodIndex, index);
+                            foreach (var gpuVertex in lod.VertexBufferGPUSkin.Vertices)
+                            {
+                                points.Add(gpuVertex.Position);
+                                uvs.Add(new Vector2(HalfToFloat(gpuVertex.U), HalfToFloat(gpuVertex.V)));
+                            }
+
+                            foreach (var mat in skm.MatInsts)
+                            {
+                                mtlWriter.WriteLine("newmtl " + pcc.getObjectName(mat.index));
+                            }
+
+                            lodIndex++;
+                            index += lod.NumVertices;
+                        }
+                    }
+
+                    for (int i = 0; i < points.Count; i++)
+                    {
+                        Vector3 v = points[i];
+                        writer.WriteLine("v " + (-v.X).ToString(CultureInfo.InvariantCulture) + " " + v.Z.ToString(CultureInfo.InvariantCulture) + " " + v.Y.ToString(CultureInfo.InvariantCulture));
+                        writer.WriteLine("vt " + uvs[i].X.ToString(CultureInfo.InvariantCulture) + " " + uvs[i].Y.ToString(CultureInfo.InvariantCulture));
+                    }
+
+                    // Triangles
+                    if (stm != null)
+                    {
+                        foreach (var lod in stm.Mesh.Mat.Lods)
+                        {
+                            foreach (var section in lod.Sections)
+                            {
+                                writer.WriteLine("usemtl " + pcc.getObjectName(section.Name));
+                                writer.WriteLine("g " + pcc.getObjectName(section.Name));
+                                if (stm.Mesh.IdxBuf.Indexes != null && stm.Mesh.IdxBuf.count > 0)
+                                {
+                                    // Use the index buffer
+                                    for (int i = section.FirstIdx1; i < section.FirstIdx1 + section.NumFaces1 * 3; i += 3)
+                                    {
+                                        writer.WriteLine("f " + (stm.Mesh.IdxBuf.Indexes[i] + 1).ToString(CultureInfo.InvariantCulture) + "/" + (stm.Mesh.IdxBuf.Indexes[i] + 1).ToString(CultureInfo.InvariantCulture) + " " 
+                                            + (stm.Mesh.IdxBuf.Indexes[i + 1] + 1).ToString(CultureInfo.InvariantCulture) + "/" + (stm.Mesh.IdxBuf.Indexes[i + 1] + 1).ToString(CultureInfo.InvariantCulture) + " " 
+                                            + (stm.Mesh.IdxBuf.Indexes[i + 2] + 1).ToString(CultureInfo.InvariantCulture) + "/" + (stm.Mesh.IdxBuf.Indexes[i + 2] + 1).ToString(CultureInfo.InvariantCulture));
+                                    }
+                                }
+                                else
+                                {
+                                    // Ad-lib our own indices by assuming that every triangle is used exactly once in order
+                                    for (int i = section.FirstIdx1; i < section.FirstIdx1 + section.NumFaces1 * 3; i += 3)
+                                    {
+                                        writer.WriteLine("f " + (i + 1).ToString(CultureInfo.InvariantCulture) + "/" + (i + 1) + " "
+                                            + (i + 2).ToString(CultureInfo.InvariantCulture) + "/" + (i + 2).ToString(CultureInfo.InvariantCulture) + " "
+                                            + (i + 3).ToString(CultureInfo.InvariantCulture) + "/" + (i + 3).ToString(CultureInfo.InvariantCulture));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (skm != null)
+                    {
+                        int lodIndex = 0;
+                        foreach (var lod in skm.LODModels)
+                        {
+                            int lodStart = LODVertexOffsets[lodIndex];
+                            foreach (var section in lod.Sections)
+                            {
+                                writer.WriteLine("usemtl " + pcc.getObjectName(skm.MatInsts[section.MaterialIndex].index));
+                                writer.WriteLine("g LOD" + lodIndex + "-" + pcc.getObjectName(skm.MatInsts[section.MaterialIndex].index));
+                                
+                                for (int i = section.BaseIndex; i < section.BaseIndex + section.NumTriangles * 3; i += 3)
+                                {
+                                    writer.WriteLine("f " + (lodStart + lod.IndexBuffer.Indexes[i] + 1).ToString(CultureInfo.InvariantCulture) + "/" + (lodStart + lod.IndexBuffer.Indexes[i] + 1).ToString(CultureInfo.InvariantCulture) + " "
+                                        + (lodStart + lod.IndexBuffer.Indexes[i + 1] + 1).ToString(CultureInfo.InvariantCulture) + "/" + (lodStart + lod.IndexBuffer.Indexes[i + 1] + 1).ToString(CultureInfo.InvariantCulture) + " "
+                                        + (lodStart + lod.IndexBuffer.Indexes[i + 2] + 1).ToString(CultureInfo.InvariantCulture) + "/" + (lodStart + lod.IndexBuffer.Indexes[i + 2] + 1).ToString(CultureInfo.InvariantCulture));
+                                }
+                            }
+                            lodIndex++;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("No mesh selected!");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Internal method for decoding UV values.
+        /// </summary>
+        /// <param name="val">The <see cref="Single"/> encoded as a <see cref="UInt16"/>.</param>
+        /// <returns>The decoded <see cref="Single"/>.</returns>
+        private float HalfToFloat(ushort val)
+        {
+
+            UInt16 u = val;
+            int sign = (u >> 15) & 0x00000001;
+            int exp = (u >> 10) & 0x0000001F;
+            int mant = u & 0x000003FF;
+            exp = exp + (127 - 15);
+            int i = (sign << 31) | (exp << 23) | (mant << 13);
+            byte[] buff = BitConverter.GetBytes(i);
+            return BitConverter.ToSingle(buff, 0);
+        }
+
     }
 }

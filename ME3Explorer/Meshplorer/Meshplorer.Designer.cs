@@ -43,6 +43,7 @@
             this.transferToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToPSKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportTo3DSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportToOBJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.serializeToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importFromUDKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
@@ -211,6 +212,7 @@
             this.transferToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exportToPSKToolStripMenuItem,
             this.exportTo3DSToolStripMenuItem,
+            this.exportToOBJToolStripMenuItem,
             this.serializeToFileToolStripMenuItem,
             this.importFromUDKToolStripMenuItem,
             this.toolStripMenuItem1,
@@ -222,40 +224,47 @@
             // exportToPSKToolStripMenuItem
             // 
             this.exportToPSKToolStripMenuItem.Name = "exportToPSKToolStripMenuItem";
-            this.exportToPSKToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.exportToPSKToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportToPSKToolStripMenuItem.Text = "Export to PSK";
             this.exportToPSKToolStripMenuItem.Click += new System.EventHandler(this.exportToPSKToolStripMenuItem_Click);
             // 
             // exportTo3DSToolStripMenuItem
             // 
             this.exportTo3DSToolStripMenuItem.Name = "exportTo3DSToolStripMenuItem";
-            this.exportTo3DSToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.exportTo3DSToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportTo3DSToolStripMenuItem.Text = "Export to 3DS";
             this.exportTo3DSToolStripMenuItem.Click += new System.EventHandler(this.exportTo3DSToolStripMenuItem_Click);
+            // 
+            // exportToOBJToolStripMenuItem
+            // 
+            this.exportToOBJToolStripMenuItem.Name = "exportToOBJToolStripMenuItem";
+            this.exportToOBJToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportToOBJToolStripMenuItem.Text = "Export to OBJ";
+            this.exportToOBJToolStripMenuItem.Click += new System.EventHandler(this.exportToOBJToolStripMenuItem_Click);
             // 
             // serializeToFileToolStripMenuItem
             // 
             this.serializeToFileToolStripMenuItem.Name = "serializeToFileToolStripMenuItem";
-            this.serializeToFileToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.serializeToFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.serializeToFileToolStripMenuItem.Text = "Serialize to file";
             this.serializeToFileToolStripMenuItem.Click += new System.EventHandler(this.serializeToFileToolStripMenuItem_Click);
             // 
             // importFromUDKToolStripMenuItem
             // 
             this.importFromUDKToolStripMenuItem.Name = "importFromUDKToolStripMenuItem";
-            this.importFromUDKToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.importFromUDKToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.importFromUDKToolStripMenuItem.Text = "Import from UDK...";
             this.importFromUDKToolStripMenuItem.Click += new System.EventHandler(this.importFromUDKToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(171, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
             // 
             // importOptionsToolStripMenuItem
             // 
             this.importOptionsToolStripMenuItem.Name = "importOptionsToolStripMenuItem";
-            this.importOptionsToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.importOptionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.importOptionsToolStripMenuItem.Text = "Import Options";
             this.importOptionsToolStripMenuItem.Click += new System.EventHandler(this.importOptionsToolStripMenuItem_Click);
             // 
@@ -349,7 +358,7 @@
             this.MaterialIndexApplyButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(686, 27);
+            this.toolStrip1.Size = new System.Drawing.Size(686, 25);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -367,7 +376,7 @@
             this.MaterialApplyButton.Image = ((System.Drawing.Image)(resources.GetObject("MaterialApplyButton.Image")));
             this.MaterialApplyButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.MaterialApplyButton.Name = "MaterialApplyButton";
-            this.MaterialApplyButton.Size = new System.Drawing.Size(87, 24);
+            this.MaterialApplyButton.Size = new System.Drawing.Size(87, 22);
             this.MaterialApplyButton.Text = "Set as material";
             this.MaterialApplyButton.Visible = false;
             this.MaterialApplyButton.Click += new System.EventHandler(this.toolStripButton1_Click);
@@ -400,7 +409,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 51);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 49);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -411,8 +420,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.hb1);
-            this.splitContainer1.Size = new System.Drawing.Size(686, 427);
-            this.splitContainer1.SplitterDistance = 318;
+            this.splitContainer1.Size = new System.Drawing.Size(686, 429);
+            this.splitContainer1.SplitterDistance = 319;
             this.splitContainer1.TabIndex = 3;
             // 
             // splitContainer2
@@ -429,7 +438,7 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.view);
             this.splitContainer2.Panel2.Controls.Add(this.rtb1);
-            this.splitContainer2.Size = new System.Drawing.Size(686, 318);
+            this.splitContainer2.Size = new System.Drawing.Size(686, 319);
             this.splitContainer2.SplitterDistance = 359;
             this.splitContainer2.TabIndex = 4;
             // 
@@ -446,7 +455,7 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.treeView1);
-            this.splitContainer3.Size = new System.Drawing.Size(359, 318);
+            this.splitContainer3.Size = new System.Drawing.Size(359, 319);
             this.splitContainer3.SplitterDistance = 81;
             this.splitContainer3.TabIndex = 0;
             // 
@@ -461,7 +470,7 @@
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
             this.listBox1.ScrollAlwaysVisible = true;
-            this.listBox1.Size = new System.Drawing.Size(81, 318);
+            this.listBox1.Size = new System.Drawing.Size(81, 319);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged_1);
             // 
@@ -472,7 +481,7 @@
             this.treeView1.HideSelection = false;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(274, 318);
+            this.treeView1.Size = new System.Drawing.Size(274, 319);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
@@ -481,7 +490,7 @@
             this.view.Dock = System.Windows.Forms.DockStyle.Fill;
             this.view.Location = new System.Drawing.Point(0, 0);
             this.view.Name = "view";
-            this.view.Size = new System.Drawing.Size(323, 318);
+            this.view.Size = new System.Drawing.Size(323, 319);
             this.view.TabIndex = 1;
             this.view.TabStop = false;
             this.view.Wireframe = false;
@@ -495,7 +504,7 @@
             this.rtb1.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtb1.Location = new System.Drawing.Point(0, 0);
             this.rtb1.Name = "rtb1";
-            this.rtb1.Size = new System.Drawing.Size(323, 318);
+            this.rtb1.Size = new System.Drawing.Size(323, 319);
             this.rtb1.TabIndex = 1;
             this.rtb1.Text = "";
             this.rtb1.Visible = false;
@@ -513,7 +522,7 @@
             this.hb1.Name = "hb1";
             this.hb1.ReadOnly = true;
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(686, 105);
+            this.hb1.Size = new System.Drawing.Size(686, 106);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
             this.hb1.UseFixedBytesPerLine = true;
@@ -611,5 +620,6 @@
         private System.Windows.Forms.ToolStripButton MaterialIndexApplyButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportToOBJToolStripMenuItem;
     }
 }
