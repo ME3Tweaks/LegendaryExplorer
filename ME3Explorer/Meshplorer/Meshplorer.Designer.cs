@@ -72,6 +72,7 @@
             this.view = new ME3Explorer.Scene3D.SceneRenderControl();
             this.rtb1 = new System.Windows.Forms.RichTextBox();
             this.hb1 = new Be.Windows.Forms.HexBox();
+            this.importFromOBJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -215,6 +216,7 @@
             this.exportToOBJToolStripMenuItem,
             this.serializeToFileToolStripMenuItem,
             this.importFromUDKToolStripMenuItem,
+            this.importFromOBJToolStripMenuItem,
             this.toolStripMenuItem1,
             this.importOptionsToolStripMenuItem});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
@@ -528,6 +530,13 @@
             this.hb1.UseFixedBytesPerLine = true;
             this.hb1.VScrollBarVisible = true;
             // 
+            // importFromOBJToolStripMenuItem
+            // 
+            this.importFromOBJToolStripMenuItem.Name = "importFromOBJToolStripMenuItem";
+            this.importFromOBJToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importFromOBJToolStripMenuItem.Text = "Import from OBJ";
+            this.importFromOBJToolStripMenuItem.Click += new System.EventHandler(this.importFromOBJToolStripMenuItem_Click);
+            // 
             // Meshplorer
             // 
             this.AllowDrop = true;
@@ -621,5 +630,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportToOBJToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importFromOBJToolStripMenuItem;
     }
 }

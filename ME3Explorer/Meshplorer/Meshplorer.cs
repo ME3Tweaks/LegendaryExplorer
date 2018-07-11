@@ -1236,6 +1236,29 @@ namespace ME3Explorer.Meshplorer
             }
         }
 
+        private void importFromOBJToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (stm == null)
+            {
+                MessageBox.Show("Only static meshes can be imported from OBJ files.");
+                return;
+            }
+
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "Wavefront OBJ File (*.obj)|*.obj";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                timer1.Enabled = false;
+                stm.ImportFromOBJ(dialog.FileName);
+                byte[] buff = stm.SerializeToBuffer();
+                IExportEntry en = pcc.Exports[stm.index];
+                en.Data = buff;
+                MessageBox.Show("OBJ import complete.");
+                timer1.Enabled = true;
+            }
+        }
+
         /// <summary>
         /// Internal method for decoding UV values.
         /// </summary>
@@ -1253,6 +1276,5 @@ namespace ME3Explorer.Meshplorer
             byte[] buff = BitConverter.GetBytes(i);
             return BitConverter.ToSingle(buff, 0);
         }
-
     }
 }
