@@ -1676,13 +1676,13 @@ namespace ME3Explorer.Unreal.Classes
             return b;
         }
 
-        public void ExportToPsk(string path)
+        public void ExportPSK(string path)
         {
-            PSKFile p = ExportToPsk();
+            PSKFile p = BuildPSK();
             p.Export(path);
         }
 
-        public PSKFile ExportToPsk()
+        private PSKFile BuildPSK()
         {
             PSKFile psk = new PSKFile();
             PSKFile.PSKContainer pskc = new PSKFile.PSKContainer();
@@ -1748,7 +1748,7 @@ namespace ME3Explorer.Unreal.Classes
         {
             try
             {
-                PSKFile p = ExportToPsk();
+                PSKFile p = BuildPSK();
                 Helper3DS.AddMeshTo3DS(f, p, m);
             }
             catch (Exception e)
@@ -1757,11 +1757,71 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
+        public void ExportOBJ(string path)
+        {
+            using (StreamWriter writer = new StreamWriter(path))
+            using (StreamWriter mtlWriter = new StreamWriter(Path.ChangeExtension(path, ".mtl")))
+            {
+                writer.WriteLine("mtllib " + Path.GetFileNameWithoutExtension(path) + ".mtl");
+                // Vertices
+                List<Vector3> points = null;
+                List<Vector2> uvs = null;
+                Dictionary<int, int> LODVertexOffsets = new Dictionary<int, int>(); // offset into the OBJ vertices that each buffer starts at
+                points = Mesh.Vertices.Points;
+                uvs = new List<Vector2>();
+                for (int i = 0; i < points.Count; i++)
+                {
+                    uvs.Add(Mesh.Edges.UVSet[i].UVs[0]);
+                }
+                foreach (var mat in Mesh.Mat.MatInst)
+                {
+                    mtlWriter.WriteLine("newmtl " + pcc.getObjectName(mat.index));
+                }
+
+                for (int i = 0; i < points.Count; i++)
+                {
+                    Vector3 v = points[i];
+                    writer.WriteLine("v " + v.X.ToString(CultureInfo.InvariantCulture) + " " + v.Z.ToString(CultureInfo.InvariantCulture) + " " + v.Y.ToString(CultureInfo.InvariantCulture));
+                    writer.WriteLine("vt " + uvs[i].X.ToString(CultureInfo.InvariantCulture) + " " + uvs[i].Y.ToString(CultureInfo.InvariantCulture));
+                }
+
+                // Triangles
+                foreach (var lod in Mesh.Mat.Lods)
+                {
+                    foreach (var section in lod.Sections)
+                    {
+                        writer.WriteLine("usemtl " + pcc.getObjectName(section.Name));
+                        writer.WriteLine("g " + pcc.getObjectName(section.Name));
+                        if (Mesh.IdxBuf.Indexes != null && Mesh.IdxBuf.count > 0)
+                        {
+                            // Use the index buffer
+                            for (int i = section.FirstIdx1; i < section.FirstIdx1 + section.NumFaces1 * 3; i += 3)
+                            {
+                                writer.WriteLine("f " + (Mesh.IdxBuf.Indexes[i] + 1).ToString(CultureInfo.InvariantCulture) + "/" + (Mesh.IdxBuf.Indexes[i] + 1).ToString(CultureInfo.InvariantCulture) + " "
+                                    + (Mesh.IdxBuf.Indexes[i + 1] + 1).ToString(CultureInfo.InvariantCulture) + "/" + (Mesh.IdxBuf.Indexes[i + 1] + 1).ToString(CultureInfo.InvariantCulture) + " "
+                                    + (Mesh.IdxBuf.Indexes[i + 2] + 1).ToString(CultureInfo.InvariantCulture) + "/" + (Mesh.IdxBuf.Indexes[i + 2] + 1).ToString(CultureInfo.InvariantCulture));
+                            }
+                        }
+                        else
+                        {
+                            // Ad-lib our own indices by assuming that every triangle is used exactly once in order
+                            for (int i = section.FirstIdx1; i < section.FirstIdx1 + section.NumFaces1 * 3; i += 3)
+                            {
+                                writer.WriteLine("f " + (i + 1).ToString(CultureInfo.InvariantCulture) + "/" + (i + 1) + " "
+                                    + (i + 2).ToString(CultureInfo.InvariantCulture) + "/" + (i + 2).ToString(CultureInfo.InvariantCulture) + " "
+                                    + (i + 3).ToString(CultureInfo.InvariantCulture) + "/" + (i + 3).ToString(CultureInfo.InvariantCulture));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Import
 
-        public void ImportFromPsk(string path)
+        public void ImportPSK(string path)
         {
             psk = new PSKFile();
             psk.ImportPSK(path);
@@ -1942,7 +2002,7 @@ namespace ME3Explorer.Unreal.Classes
             public int MaterialIndex;
         }
 
-        public void ImportFromOBJ(string path)
+        public void ImportOBJ(string path)
         {
             // Read OBJ data
             List<Vector3> positions = new List<Vector3>();
