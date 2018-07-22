@@ -486,8 +486,9 @@ namespace ME3Explorer
             }
             InfoTab_PackageLink_ComboBox.ItemsSource = Classes;
 
-            if (n >= 0)
+            if (n > 0)
             {
+                n--; //convert to 0 based indexing
                 try
                 {
                     Row_Archetype.Height = new GridLength(24);
@@ -575,7 +576,7 @@ namespace ME3Explorer
             }
             else
             {
-                n = -n - 1;
+                n = -n - 1; //convert to 0 based indexing (imports list)
                 ImportEntry importEntry = pcc.getImport(n);
                 InfoTab_Headersize_TextBox.Text = importEntry.Header.Length + " bytes";
                 Row_Archetype.Height = new GridLength(0);

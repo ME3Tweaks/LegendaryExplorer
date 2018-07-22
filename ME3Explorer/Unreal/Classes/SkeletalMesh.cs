@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using Microsoft.DirectX;
 using ME3Explorer.Packages;
+using System.Globalization;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -16,6 +17,20 @@ namespace ME3Explorer.Unreal.Classes
             public Vector3 origin;
             public Vector3 size;
             public float r;
+
+            public BoundingStruct(Vector3 origin, Vector3 size, float radius)
+            {
+                this.origin = origin;
+                this.size = size;
+                this.r = radius;
+            }
+
+            public BoundingStruct(UDKExplorer.UDK.Classes.SkeletalMesh.BoundingStruct udkBounds)
+            {
+                this.origin = udkBounds.origin;
+                this.size = udkBounds.size;
+                this.r = udkBounds.r;
+            }
         }
 
         public struct BoneStruct
@@ -28,6 +43,27 @@ namespace ME3Explorer.Unreal.Classes
             public int NumChildren;
             public int Parent;
             public int BoneColor;
+
+            public BoneStruct(int name, int flags, int unk1, Vector4 orientation, Vector3 position,
+                int numChildren, int parent, int boneColor)
+            {
+                Name = name;
+                Flags = flags;
+                Unk1 = unk1;
+                Orientation = orientation;
+                Position = position;
+                NumChildren = numChildren;
+                Parent = parent;
+                BoneColor = boneColor;
+            }
+
+            public static BoneStruct ImportFromUDK(UDKExplorer.UDK.Classes.SkeletalMesh.BoneStruct udkBone, UDKExplorer.UDK.UDKObject udkPackage, ME3Explorer.Packages.MEPackage mePackage)
+            {
+                BoneStruct result = new BoneStruct(0, udkBone.Flags, udkBone.Unk1, udkBone.Orientation, udkBone.Position, udkBone.NumChildren, udkBone.Parent, udkBone.BoneColor);
+                string name = udkPackage.GetName(udkBone.Name);
+                result.Name = mePackage.FindNameOrAdd(name);
+                return result;
+            }
         }
 
         public struct SectionStruct
@@ -573,6 +609,13 @@ namespace ME3Explorer.Unreal.Classes
             public int Unk1;
             public int Unk2;
 
+            public TailNamesStruct(int nameIndex, int boneIndex)
+            {
+                Name = nameIndex;
+                Unk1 = 0;
+                Unk2 = boneIndex;
+            }
+
             public void Serialize(SerializingContainer Container)
             {
                 Name = Container + Name;
@@ -995,6 +1038,66 @@ namespace ME3Explorer.Unreal.Classes
             int i = (sign << 31) | (exp << 23) | (mant << 13);
             byte[] buff = BitConverter.GetBytes(i);
             return BitConverter.ToSingle(buff, 0);
+        }
+
+        public void ExportOBJ(string path)
+        {
+            using (StreamWriter writer = new StreamWriter(path))
+            using (StreamWriter mtlWriter = new StreamWriter(Path.ChangeExtension(path, ".mtl")))
+            {
+                writer.WriteLine("mtllib " + Path.GetFileNameWithoutExtension(path) + ".mtl");
+                // Vertices
+                List<Vector3> points = null;
+                List<Vector2> uvs = null;
+                Dictionary<int, int> LODVertexOffsets = new Dictionary<int, int>(); // offset into the OBJ vertices that each buffer starts at
+                points = new List<Vector3>();
+                uvs = new List<Vector2>();
+                int index = 0;
+                int lodIndex = 0;
+                foreach (var lod in LODModels)
+                {
+                    LODVertexOffsets.Add(lodIndex, index);
+                    foreach (var gpuVertex in lod.VertexBufferGPUSkin.Vertices)
+                    {
+                        points.Add(gpuVertex.Position);
+                        uvs.Add(new Vector2(HalfToFloat(gpuVertex.U), HalfToFloat(gpuVertex.V)));
+                    }
+
+                    foreach (var mat in MatInsts)
+                    {
+                        mtlWriter.WriteLine("newmtl " + Owner.getObjectName(mat.index));
+                    }
+
+                    lodIndex++;
+                    index += lod.NumVertices;
+                }
+
+                for (int i = 0; i < points.Count; i++)
+                {
+                    Vector3 v = points[i];
+                    writer.WriteLine("v " + v.X.ToString(CultureInfo.InvariantCulture) + " " + v.Z.ToString(CultureInfo.InvariantCulture) + " " + v.Y.ToString(CultureInfo.InvariantCulture));
+                    writer.WriteLine("vt " + uvs[i].X.ToString(CultureInfo.InvariantCulture) + " " + uvs[i].Y.ToString(CultureInfo.InvariantCulture));
+                }
+
+                // Triangles
+                foreach (var lod in LODModels)
+                {
+                    int lodStart = LODVertexOffsets[lodIndex];
+                    foreach (var section in lod.Sections)
+                    {
+                        writer.WriteLine("usemtl " + Owner.getObjectName(MatInsts[section.MaterialIndex].index));
+                        writer.WriteLine("g LOD" + lodIndex + "-" + Owner.getObjectName(MatInsts[section.MaterialIndex].index));
+
+                        for (int i = section.BaseIndex; i < section.BaseIndex + section.NumTriangles * 3; i += 3)
+                        {
+                            writer.WriteLine("f " + (lodStart + lod.IndexBuffer.Indexes[i] + 1).ToString(CultureInfo.InvariantCulture) + "/" + (lodStart + lod.IndexBuffer.Indexes[i] + 1).ToString(CultureInfo.InvariantCulture) + " "
+                                + (lodStart + lod.IndexBuffer.Indexes[i + 1] + 1).ToString(CultureInfo.InvariantCulture) + "/" + (lodStart + lod.IndexBuffer.Indexes[i + 1] + 1).ToString(CultureInfo.InvariantCulture) + " "
+                                + (lodStart + lod.IndexBuffer.Indexes[i + 2] + 1).ToString(CultureInfo.InvariantCulture) + "/" + (lodStart + lod.IndexBuffer.Indexes[i + 2] + 1).ToString(CultureInfo.InvariantCulture));
+                        }
+                    }
+                    lodIndex++;
+                }
+            }
         }
     }
 }

@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
 using Be.Windows.Forms;
+using System.Windows;
 
 namespace ME3Explorer
 {
@@ -303,7 +304,8 @@ namespace ME3Explorer
             {
                 Header = s,
                 Name = "_" + prop.Offset.ToString(),
-                Foreground = nodeColor
+                Foreground = nodeColor,
+                Tag = prop
             };
             parent.Items.Add(item);
             if (prop.PropType == PropertyType.ArrayProperty)
@@ -350,7 +352,8 @@ namespace ME3Explorer
             TreeViewItem item = new TreeViewItem()
             {
                 Header = s,
-                Name = "_" + prop.Offset
+                Name = "_" + prop.Offset,
+                Tag = prop
             };
             parent.Items.Add(item);
             if (prop.PropType == PropertyType.ArrayProperty)
@@ -1397,6 +1400,36 @@ namespace ME3Explorer
                     m.WriteByte(provider.ReadByte(i));
                 CurrentLoadedExport.Data = m.ToArray();
             }
+        }
+
+        private void Interpreter_TreeView_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            TreeViewItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
+
+            if (treeViewItem != null)
+            {
+                treeViewItem.Focus();
+                e.Handled = true;
+
+                if (treeViewItem.Tag != null)
+                {
+                    if (treeViewItem.Tag is ArrayPropertyBase)
+                    {
+                        Interpreter_TreeView.ContextMenu = Interpreter_TreeView.Resources["ArrayPropertyContext"] as System.Windows.Controls.ContextMenu;
+                    } else
+                    {
+                        Interpreter_TreeView.ContextMenu = Interpreter_TreeView.Resources["FolderContext"] as System.Windows.Controls.ContextMenu;
+                    }
+                }
+            }
+        }
+
+        static TreeViewItem VisualUpwardSearch(DependencyObject source)
+        {
+            while (source != null && !(source is TreeViewItem))
+                source = VisualTreeHelper.GetParent(source);
+
+            return source as TreeViewItem;
         }
     }
 }

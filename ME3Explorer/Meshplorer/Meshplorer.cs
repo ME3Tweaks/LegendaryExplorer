@@ -13,6 +13,7 @@ using ME3Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
 using Be.Windows.Forms;
 using ME3Explorer.Scene3D;
+using System.Globalization;
 
 namespace ME3Explorer.Meshplorer
 {
@@ -271,7 +272,7 @@ namespace ME3Explorer.Meshplorer
                 d.Filter = "*.psk|*.psk";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
-                    stm.ExportToPsk(d.FileName);
+                    stm.ExportPSK(d.FileName);
                     MessageBox.Show("Done.","Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
@@ -412,7 +413,7 @@ namespace ME3Explorer.Meshplorer
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     timer1.Enabled = false;
-                    stm.ImportFromPsk(d.FileName);
+                    stm.ImportPSK(d.FileName);
                     byte[] buff = stm.SerializeToBuffer();
                     int idx = n;
                     IExportEntry en = pcc.Exports[idx];
@@ -560,8 +561,7 @@ namespace ME3Explorer.Meshplorer
                 {
                     if (File.Exists(d.FileName))
                         File.Delete(d.FileName);
-                    PSKFile p = stm.ExportToPsk();
-                    Helper3DS.ConvertPSKto3DS(p, d.FileName);
+                    stm.ExportPSK(d.FileName);
                     MessageBox.Show("Done.","Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
@@ -797,8 +797,8 @@ namespace ME3Explorer.Meshplorer
                 // Update treeview
 
                 // Update preview
-                //preview.Dispose();
-                //preview = new ModelPreview(view.Device, stm, view.TextureCache);
+                preview.Dispose();
+                preview = new ModelPreview(view.Device, stm, view.TextureCache);
             }
             else if (skm != null && t.Parent.Text == "Materials")
             {
@@ -955,7 +955,7 @@ namespace ME3Explorer.Meshplorer
 
         private void view_Render(object sender, EventArgs e)
         {
-            if (preview != null)
+            if (preview != null && preview.LODs.Count > 0) // For some reason, reading props calls DoEvents which means that this might be called *in the middle of* loading a preview
             {
                 if (solidToolStripMenuItem.Checked && CurrentLOD < preview.LODs.Count)
                 {
@@ -1112,6 +1112,65 @@ namespace ME3Explorer.Meshplorer
                     }
                 }
             }
+        }
+
+        private void exportToOBJToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "Wavefront OBJ File (*.obj)|*.obj";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                if (stm != null)
+                {
+                    stm.ExportOBJ(dialog.FileName);
+                }
+                else if (skm != null)
+                {
+                    skm.ExportOBJ(dialog.FileName);
+                }
+            }
+        }
+
+        private void importFromOBJToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (stm == null)
+            {
+                MessageBox.Show("Only static meshes can be imported from OBJ files.");
+                return;
+            }
+
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "Wavefront OBJ File (*.obj)|*.obj";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                timer1.Enabled = false;
+                stm.ImportOBJ(dialog.FileName);
+                byte[] buff = stm.SerializeToBuffer();
+                IExportEntry en = pcc.Exports[stm.index];
+                en.Data = buff;
+                MessageBox.Show("OBJ import complete.");
+                timer1.Enabled = true;
+            }
+        }
+
+        /// <summary>
+        /// Internal method for decoding UV values.
+        /// </summary>
+        /// <param name="val">The <see cref="Single"/> encoded as a <see cref="UInt16"/>.</param>
+        /// <returns>The decoded <see cref="Single"/>.</returns>
+        private float HalfToFloat(ushort val)
+        {
+
+            UInt16 u = val;
+            int sign = (u >> 15) & 0x00000001;
+            int exp = (u >> 10) & 0x0000001F;
+            int mant = u & 0x000003FF;
+            exp = exp + (127 - 15);
+            int i = (sign << 31) | (exp << 23) | (mant << 13);
+            byte[] buff = BitConverter.GetBytes(i);
+            return BitConverter.ToSingle(buff, 0);
         }
     }
 }

@@ -32,9 +32,10 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openUDKPackageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importLODToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importMeshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.listBox1 = new System.Windows.Forms.ListBox();
-            this.listBox2 = new System.Windows.Forms.ListBox();
+            this.MeshListBox = new System.Windows.Forms.ListBox();
+            this.LODListBox = new System.Windows.Forms.ListBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -46,7 +47,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.importLODToolStripMenuItem});
+            this.importLODToolStripMenuItem,
+            this.importMeshToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(292, 24);
@@ -74,6 +76,12 @@
             this.importLODToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
             this.importLODToolStripMenuItem.Text = "Import LOD";
             this.importLODToolStripMenuItem.Click += new System.EventHandler(this.importLODToolStripMenuItem_Click);
+            //
+            // importMeshToolStripItem
+            //
+            this.importMeshToolStripMenuItem.Name = "importMeshToolStripItem";
+            this.importMeshToolStripMenuItem.Text = "Import Complete Mesh";
+            this.importMeshToolStripMenuItem.Click += new System.EventHandler(this.ImportMeshToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -83,41 +91,41 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.listBox1);
+            this.splitContainer1.Panel1.Controls.Add(this.MeshListBox);
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.listBox2);
+            this.splitContainer1.Panel2.Controls.Add(this.LODListBox);
             this.splitContainer1.Size = new System.Drawing.Size(292, 249);
             this.splitContainer1.SplitterDistance = 140;
             this.splitContainer1.TabIndex = 1;
             // 
             // listBox1
             // 
-            this.listBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBox1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.IntegralHeight = false;
-            this.listBox1.ItemHeight = 16;
-            this.listBox1.Location = new System.Drawing.Point(0, 0);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.ScrollAlwaysVisible = true;
-            this.listBox1.Size = new System.Drawing.Size(140, 249);
-            this.listBox1.TabIndex = 0;
-            this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            this.MeshListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MeshListBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MeshListBox.FormattingEnabled = true;
+            this.MeshListBox.IntegralHeight = false;
+            this.MeshListBox.ItemHeight = 16;
+            this.MeshListBox.Location = new System.Drawing.Point(0, 0);
+            this.MeshListBox.Name = "listBox1";
+            this.MeshListBox.ScrollAlwaysVisible = true;
+            this.MeshListBox.Size = new System.Drawing.Size(140, 249);
+            this.MeshListBox.TabIndex = 0;
+            this.MeshListBox.SelectedIndexChanged += new System.EventHandler(this.MeshListBox_SelectedIndexChanged);
             // 
             // listBox2
             // 
-            this.listBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBox2.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.listBox2.FormattingEnabled = true;
-            this.listBox2.IntegralHeight = false;
-            this.listBox2.ItemHeight = 16;
-            this.listBox2.Location = new System.Drawing.Point(0, 0);
-            this.listBox2.Name = "listBox2";
-            this.listBox2.ScrollAlwaysVisible = true;
-            this.listBox2.Size = new System.Drawing.Size(148, 249);
-            this.listBox2.TabIndex = 0;
+            this.LODListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LODListBox.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LODListBox.FormattingEnabled = true;
+            this.LODListBox.IntegralHeight = false;
+            this.LODListBox.ItemHeight = 16;
+            this.LODListBox.Location = new System.Drawing.Point(0, 0);
+            this.LODListBox.Name = "listBox2";
+            this.LODListBox.ScrollAlwaysVisible = true;
+            this.LODListBox.Size = new System.Drawing.Size(148, 249);
+            this.LODListBox.TabIndex = 0;
             // 
             // UDKCopy
             // 
@@ -146,8 +154,9 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openUDKPackageToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importLODToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importMeshToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.ListBox listBox1;
-        private System.Windows.Forms.ListBox listBox2;
+        private System.Windows.Forms.ListBox MeshListBox;
+        private System.Windows.Forms.ListBox LODListBox;
     }
 }
