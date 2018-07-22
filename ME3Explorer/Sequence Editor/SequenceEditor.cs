@@ -477,7 +477,16 @@ namespace ME3Explorer
                 SavedPositions = new List<SaveData>();
             if (fromFile && File.Exists(JSONpath))
                 SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(File.ReadAllText(JSONpath));
-            GenerateGraph();
+            try
+            {
+                GenerateGraph();
+            } catch (Exception e)
+            {
+                MessageBox.Show("Error loading sequences from file:\n" + e.Message);
+#if DEBUG
+                //throw e;
+#endif
+            }
             selectedIndex = -1;
             graphEditor.Enabled = true;
             graphEditor.UseWaitCursor = false;
