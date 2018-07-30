@@ -387,50 +387,50 @@ namespace ME3Explorer.Unreal.Classes
                 for (int j = 0; j < l.SectionCount; j++)
                 {
                     Section s = new Section();
-                    string q = "Section [" + j + "] : {(Name)";
+                    string q = "Section [" + j + "] : {Name = ";
                     s.Name = BitConverter.ToInt32(memory, readerpos);
+                    q += s.Name;
                     if (s.Name > 0)
                     {
                         m.MatInst.Add(new MaterialInstanceConstant(pcc, s.Name - 1));
-                        q += pcc.getObjectName(s.Name) + " ; ";
+                        q += "('" + pcc.getObjectName(s.Name) + "'), ";
                     }
 
-                    q += s.Name + " ; ";
                     s.Unk1 = BitConverter.ToInt32(memory, readerpos + 4);
-                    q += s.Unk1 + " ; ";
+                    q += "Unk1 = " + s.Unk1 + ", ";
                     s.Unk2 = BitConverter.ToInt32(memory, readerpos + 8);
-                    q += s.Unk2 + " ; ";
+                    q += "Unk2 = " + s.Unk2 + ", ";
                     s.Unk3 = BitConverter.ToInt32(memory, readerpos + 12);
-                    q += s.Unk3 + " ; (FirstIdx)";
+                    q += "Unk3 = " + s.Unk3 + ", ";
                     s.FirstIdx1 = BitConverter.ToInt32(memory, readerpos + 16);
-                    q += s.FirstIdx1 + " ; (NumFaces)";
+                    q += "FirstIdx1 = " + s.FirstIdx1 + ", ";
                     s.NumFaces1 = BitConverter.ToInt32(memory, readerpos + 20);
-                    q += s.NumFaces1 + " ; (VertexMin)";
+                    q += "NumFaces1 = " + s.NumFaces1 + ", ";
                     s.MatEff1 = BitConverter.ToInt32(memory, readerpos + 24);
-                    q += s.MatEff1 + " ; (VertexMax)";
+                    q += "MatEff1 = " + s.MatEff1 + ", ";
                     s.MatEff2 = BitConverter.ToInt32(memory, readerpos + 28);
-                    q += s.MatEff2 + " ; ";
+                    q += "MatEff2 = " + s.MatEff2 + ", ";
                     s.Unk4 = BitConverter.ToInt32(memory, readerpos + 32);
-                    q += s.Unk4 + " ; ";
+                    q += "Unk4 = " + s.Unk4 + ", ";
                     s.Unk5 = BitConverter.ToInt32(memory, readerpos + 36);
-                    q += s.Unk5 + " ; (FirstIdx)";
+                    q += "Unk5 = " + s.Unk5 + ", ";
                     if (s.Unk5 == 1)
                     {
                         s.FirstIdx2 = BitConverter.ToInt32(memory, readerpos + 40);
-                        q += s.FirstIdx2 + " ; (NumFaces)";
+                        q += "FirstIdx2 = " + s.FirstIdx2 + ", ";
                         s.NumFaces2 = BitConverter.ToInt32(memory, readerpos + 44);
-                        q += s.NumFaces2 + " ; ";
+                        q += "NumFaces2 = " + s.NumFaces2 + ", ";
                         s.Unk6 = memory[readerpos + 48];
-                        q += s.Unk6 + "}";
+                        q += "Unk6 = " + s.Unk6 + "}";
                     }
                     else
                     {
                         s.Unk6 = memory[readerpos + 40];
                         s.FirstIdx2 = BitConverter.ToInt32(memory, readerpos + 41);
-                        q += s.FirstIdx2 + " ; (NumFaces)";
+                        q += "FirstIdx2 = " + s.FirstIdx2 + ", ";
                         s.NumFaces2 = BitConverter.ToInt32(memory, readerpos + 45);
-                        q += s.NumFaces2 + " ; ";                        
-                        q += s.Unk6 + "}";
+                        q += "NumFaces2 = " + s.NumFaces2 + ", ";                        
+                        q += "Unk6 = " + s.Unk6 + "}";
                     }
                     t2.Nodes.Add(q);
                     readerpos += 49;
@@ -2013,10 +2013,10 @@ namespace ME3Explorer.Unreal.Classes
 
             using (StreamReader reader = new StreamReader(path))
             {
+                int currentMaterialIndex = 0;
                 while (!reader.EndOfStream)
                 {
                     string line = reader.ReadLine().Trim();
-                    int currentMaterialIndex = 0;
 
                     if (String.IsNullOrEmpty(line) || line.StartsWith("#"))
                         continue;
@@ -2140,7 +2140,7 @@ namespace ME3Explorer.Unreal.Classes
                 newSection.Unk1 = 1;
                 newSection.Unk2 = 1;
                 newSection.Unk3 = 1;
-                newSection.Unk4 = 0;
+                newSection.Unk4 = weldedSections.IndexOf(section);
                 newSection.Unk5 = 1;
                 newSection.Unk6 = 0;
                 newSection.FirstIdx1 = newSection.FirstIdx2 = indexCount;
