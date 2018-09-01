@@ -629,7 +629,7 @@ namespace ME3Explorer
         /// <param name="importingPCC">PCC to import imports from</param>
         /// <param name="destinationPCC">PCC to add imports to</param>
         /// <returns></returns>
-        private ImportEntry getOrAddCrossImport(string importFullName, IMEPackage importingPCC, IMEPackage destinationPCC)
+        private ImportEntry getOrAddCrossImport(string importFullName, IMEPackage importingPCC, IMEPackage destinationPCC, int? forcedLinkIdx = null)
         {
             //This code is kind of ugly, sorry.
 
@@ -645,100 +645,105 @@ namespace ME3Explorer
             //Import doesn't exist, so we're gonna need to add it
             //But first we need to figure out what needs to be added upstream as links
             //Search upstream until we find something, or we can't get any more upstreams
-            string[] importParts = importFullName.Split('.');
-            List<int> upstreamLinks = new List<int>(); //0 = top level, 1 = next level... n = what we wanted to import
-            int upstreamCount = 1;
-
-            ImportEntry upstreamImport = null;
-            //get number of required upstream imports that do not yet exist
-            while (upstreamCount < importParts.Count())
-            {
-                string upstream = String.Join(".", importParts, 0, importParts.Count() - upstreamCount);
-                foreach (ImportEntry imp in destinationPCC.Imports)
-                {
-                    if (imp.GetFullPath == upstream)
-                    {
-                        upstreamImport = imp;
-                        break;
-                    }
-                }
-
-                if (upstreamImport != null)
-                {
-                    //We found an upsteam import that already exists
-                    break;
-                }
-                upstreamCount++;
-            }
-
-            IExportEntry donorUpstreamExport = null;
             ImportEntry mostdownstreamimport = null;
-            if (upstreamImport == null)
-            {
-                //We have to import the entire upstream chain
-                string fullobjectname = importParts[0];
-                ImportEntry donorTopLevelImport = null;
-                foreach (ImportEntry imp in importingPCC.Imports) //importing side info we will move to our dest pcc
-                {
-                    if (imp.GetFullPath == fullobjectname)
-                    {
-                        donorTopLevelImport = imp;
-                        break;
-                    }
-                }
+            string[] importParts = importFullName.Split('.');
 
-                if (donorTopLevelImport == null)
+            if (!forcedLinkIdx.HasValue)
+            {
+                List<int> upstreamLinks = new List<int>(); //0 = top level, 1 = next level... n = what we wanted to import
+                int upstreamCount = 1;
+
+                ImportEntry upstreamImport = null;
+                //get number of required upstream imports that do not yet exist
+                while (upstreamCount < importParts.Count())
                 {
-                    //This is issue KinkoJiro had. It is aborting relinking at this step. Will need to find a way to
-                    //work with exports as parents for imports which will block it.
-                    //Update: This has been partially implemented.
-                    Debug.WriteLine("No upstream import was found in the source file. It's probably an export: " + importFullName);
-                    foreach (IExportEntry exp in destinationPCC.Exports) //importing side info we will move to our dest pcc
+                    string upstream = String.Join(".", importParts, 0, importParts.Count() - upstreamCount);
+                    foreach (ImportEntry imp in destinationPCC.Imports)
                     {
-                        //Console.WriteLine(exp.GetFullPath);
-                        if (exp.GetFullPath == fullobjectname)
+                        if (imp.GetFullPath == upstream)
                         {
-                            // = imp;
-                            //We will need to find a way to cross map this as this will block cross import mapping unless these exports already exist.
-                            Debug.WriteLine("FOUND UPSTREAM, AS EXPORT!");
-                            donorUpstreamExport = exp;
-                            upstreamCount--; //level 1 now from the top down
-                                             //Create new import with this as higher IDK
+                            upstreamImport = imp;
                             break;
                         }
                     }
+
+                    if (upstreamImport != null)
+                    {
+                        //We found an upsteam import that already exists
+                        break;
+                    }
+                    upstreamCount++;
+                }
+
+                IExportEntry donorUpstreamExport = null;
+                if (upstreamImport == null)
+                {
+                    //We have to import the entire upstream chain
+                    string fullobjectname = importParts[0];
+                    ImportEntry donorTopLevelImport = null;
+                    foreach (ImportEntry imp in importingPCC.Imports) //importing side info we will move to our dest pcc
+                    {
+                        if (imp.GetFullPath == fullobjectname)
+                        {
+                            donorTopLevelImport = imp;
+                            break;
+                        }
+                    }
+
+                    if (donorTopLevelImport == null)
+                    {
+                        //This is issue KinkoJiro had. It is aborting relinking at this step. Will need to find a way to
+                        //work with exports as parents for imports which will block it.
+                        //Update: This has been partially implemented.
+                        Debug.WriteLine("No upstream import was found in the source file. It's probably an export: " + importFullName);
+                        foreach (IExportEntry exp in destinationPCC.Exports) //importing side info we will move to our dest pcc
+                        {
+                            //Console.WriteLine(exp.GetFullPath);
+                            if (exp.GetFullPath == fullobjectname)
+                            {
+                                // = imp;
+                                //We will need to find a way to cross map this as this will block cross import mapping unless these exports already exist.
+                                Debug.WriteLine("FOUND UPSTREAM, AS EXPORT!");
+                                KFreonLib.Debugging.DebugOutput.StartDebugger("Package Editor Relinker");
+                                KFreonLib.Debugging.DebugOutput.PrintLn("Error: Upstream item that is required is an export in the pcc to import from: " + fullobjectname);
+                                donorUpstreamExport = exp;
+                                upstreamCount--; //level 1 now from the top down
+                                                 //Create new import with this as higher IDK
+                                break;
+                            }
+                        }
+                        if (donorUpstreamExport == null)
+                        {
+                            Debug.WriteLine("An error has occured. Could not find an upstream import or export for relinking: " + fullobjectname + " from " + pcc.FileName);
+                            return null;
+                        }
+                    }
+
                     if (donorUpstreamExport == null)
                     {
-                        Debug.WriteLine("An error has occured. Could not find an upstream import or export for relinking: " + fullobjectname + " from " + pcc.FileName);
-                        return null;
+                        //Create new toplevel import and set that as the most downstream one. (top = bottom at this point)
+                        int downstreamPackageName = destinationPCC.FindNameOrAdd(donorTopLevelImport.PackageFile);
+                        int downstreamClassName = destinationPCC.FindNameOrAdd(donorTopLevelImport.ClassName);
+                        int downstreamName = destinationPCC.FindNameOrAdd(fullobjectname);
+
+                        mostdownstreamimport = new ImportEntry(destinationPCC);
+                        // mostdownstreamimport.idxLink = downstreamLinkIdx; ??
+                        mostdownstreamimport.idxClassName = downstreamClassName;
+                        mostdownstreamimport.idxObjectName = downstreamName;
+                        mostdownstreamimport.idxPackageName = downstreamPackageName;
+                        destinationPCC.addImport(mostdownstreamimport); //Add new top level downstream import
+                        upstreamImport = mostdownstreamimport;
+                        upstreamCount--; //level 1 now from the top down
+                                         //return null;
                     }
                 }
 
-                if (donorUpstreamExport == null)
+                //Have an upstream import, now we need to add downstream imports.
+                while (upstreamCount > 0)
                 {
-                    //Create new toplevel import and set that as the most downstream one. (top = bottom at this point)
-                    int downstreamPackageName = destinationPCC.FindNameOrAdd(donorTopLevelImport.PackageFile);
-                    int downstreamClassName = destinationPCC.FindNameOrAdd(donorTopLevelImport.ClassName);
-                    int downstreamName = destinationPCC.FindNameOrAdd(fullobjectname);
-
-                    mostdownstreamimport = new ImportEntry(destinationPCC);
-                    // mostdownstreamimport.idxLink = downstreamLinkIdx; ??
-                    mostdownstreamimport.idxClassName = downstreamClassName;
-                    mostdownstreamimport.idxObjectName = downstreamName;
-                    mostdownstreamimport.idxPackageName = downstreamPackageName;
-                    destinationPCC.addImport(mostdownstreamimport); //Add new top level downstream import
-                    upstreamImport = mostdownstreamimport;
-                    upstreamCount--; //level 1 now from the top down
-                                     //return null;
-                }
-            }
-
-            //Have an upstream import, now we need to add downstream imports.
-            while (upstreamCount > 0)
-            {
-                upstreamCount--;
-                string fullobjectname = String.Join(".", importParts, 0, importParts.Count() - upstreamCount);
-                ImportEntry donorImport = null;
+                    upstreamCount--;
+                    string fullobjectname = String.Join(".", importParts, 0, importParts.Count() - upstreamCount);
+                    ImportEntry donorImport = null;
 
                 //Get or create names for creating import and get upstream linkIdx
                 int downstreamName = destinationPCC.FindNameOrAdd(importParts[importParts.Count() - upstreamCount - 1]);
@@ -757,13 +762,25 @@ namespace ME3Explorer
                 int downstreamPackageName = destinationPCC.FindNameOrAdd(Path.GetFileNameWithoutExtension(donorImport.PackageFile));
                 int downstreamClassName = destinationPCC.FindNameOrAdd(donorImport.ClassName);
 
+                    mostdownstreamimport = new ImportEntry(destinationPCC);
+                    mostdownstreamimport.idxLink = donorUpstreamExport == null ? upstreamImport.UIndex : donorUpstreamExport.UIndex;
+                    mostdownstreamimport.idxClassName = downstreamClassName;
+                    mostdownstreamimport.idxObjectName = downstreamName;
+                    mostdownstreamimport.idxPackageName = downstreamPackageName;
+                    destinationPCC.addImport(mostdownstreamimport);
+                    upstreamImport = mostdownstreamimport;
+                }
+            }
+            else
+            {
+                //get importing import
+                ImportEntry importingImport = importingPCC.Imports.FirstOrDefault(x => x.GetFullPath == importFullName); //this shouldn't be null
                 mostdownstreamimport = new ImportEntry(destinationPCC);
-                mostdownstreamimport.idxLink = donorUpstreamExport == null ? upstreamImport.UIndex : donorUpstreamExport.UIndex;
-                mostdownstreamimport.idxClassName = downstreamClassName;
-                mostdownstreamimport.idxObjectName = downstreamName;
-                mostdownstreamimport.idxPackageName = downstreamPackageName;
+                mostdownstreamimport.idxLink = forcedLinkIdx.Value;
+                mostdownstreamimport.idxClassName = destinationPCC.FindNameOrAdd(importingImport.ClassName);
+                mostdownstreamimport.idxObjectName = destinationPCC.FindNameOrAdd(importingImport.ObjectName);
+                mostdownstreamimport.idxPackageName = destinationPCC.FindNameOrAdd(importingImport.PackageName);
                 destinationPCC.addImport(mostdownstreamimport);
-                upstreamImport = mostdownstreamimport;
             }
             return mostdownstreamimport;
         }

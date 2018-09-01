@@ -493,7 +493,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
+                topLevelTree.Nodes.Add("PARSE ERROR: " + ex.Message);
             }
             return topLevelTree;
         }
@@ -515,7 +515,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
+                topLevelTree.Nodes.Add("PARSE ERROR: " + ex.Message);
                 addPropButton.Visible = false;
                 removePropertyButton.Visible = false;
             }
@@ -576,7 +576,7 @@ namespace ME3Explorer
             {
                 if (readerpos > memory.Length)
                 {
-                    throw new IndexOutOfRangeException(": tried to read past bounds of Export Data");
+                    throw new IndexOutOfRangeException("tried to read past bounds of Export Data");
                 }
                 NodeType type = getType(pcc.getNameEntry(header.type));
                 //Debug.WriteLine("Generating tree item for " + pcc.getNameEntry(header.name) + " at 0x" + header.offset.ToString("X6"));

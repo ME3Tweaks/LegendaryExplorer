@@ -108,7 +108,7 @@ namespace ME3Explorer
             }
         }
 
-        
+
 
         public void LoadMostRecent()
         {
@@ -523,134 +523,142 @@ namespace ME3Explorer
             }
             if (CurrentView == View.Imports || CurrentView == View.Exports || CurrentView == View.Tree)
             {
-                tabControl1_SelectedIndexChanged(null, null);
-                PreviewInfo(n);
-                RefreshMetaData();
-                //export
-                if (n >= 0)
+                try
                 {
-                    PreviewProps(n);
-                    if (!packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
-                    {
-                        packageEditorTabPane.TabPages.Insert(0, propertiesTab);
-                    }
-                    if (!packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
-                    {
-                        packageEditorTabPane.TabPages.Insert(1, interpreterTab);
-                    }
+                    tabControl1_SelectedIndexChanged(null, null);
 
-                    IExportEntry exportEntry = pcc.getExport(n);
-                    if (exportEntry.ClassName == "Function")
+                    PreviewInfo(n);
+                    RefreshMetaData();
+                    //export
+                    if (n >= 0)
                     {
-                        if (!packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
+                        //PreviewProps(n);
+                        if (!packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
                         {
-                            packageEditorTabPane.TabPages.Add(scriptTab);
+                            packageEditorTabPane.TabPages.Insert(0, propertiesTab);
                         }
-                        if (pcc.Game == MEGame.ME3)
+                        if (!packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
                         {
-                            Function func = new Function(exportEntry.Data, pcc);
-                            rtb1.Text = func.ToRawText();
+                            packageEditorTabPane.TabPages.Insert(1, interpreterTab);
                         }
-                        else if (pcc.Game == MEGame.ME1)
+
+                        IExportEntry exportEntry = pcc.getExport(n);
+                        if (exportEntry.ClassName == "Function")
                         {
-                            ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(exportEntry.Data, pcc as ME1Package);
-                            try
+                            if (!packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
                             {
+                                packageEditorTabPane.TabPages.Add(scriptTab);
+                            }
+                            if (pcc.Game == MEGame.ME3)
+                            {
+                                Function func = new Function(exportEntry.Data, pcc);
                                 rtb1.Text = func.ToRawText();
                             }
-                            catch (Exception e)
+                            else if (pcc.Game == MEGame.ME1)
                             {
-                                rtb1.Text = "Error parsing function: " + e.Message;
+                                ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(exportEntry.Data, pcc as ME1Package);
+                                try
+                                {
+                                    rtb1.Text = func.ToRawText();
+                                }
+                                catch (Exception e)
+                                {
+                                    rtb1.Text = "Error parsing function: " + e.Message;
+                                }
+                            }
+                            else
+                            {
+                                rtb1.Text = "Parsing UnrealScript Functions for this game is not supported.";
+                            }
+                        }
+                        else if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
+                        {
+                            packageEditorTabPane.TabPages.Remove(scriptTab);
+                        }
+
+                        if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) ||
+                                (exportEntry.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+                        {
+                            if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
+                            {
+                                packageEditorTabPane.TabPages.Add(binaryEditorTab);
                             }
                         }
                         else
                         {
-                            rtb1.Text = "Parsing UnrealScript Functions for this game is not supported.";
+                            removeBinaryTabPane();
                         }
-                    }
-                    else if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
-                    {
-                        packageEditorTabPane.TabPages.Remove(scriptTab);
-                    }
 
-                    if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) ||
-                            (exportEntry.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
-                    {
-                        if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
-                        {
-                            packageEditorTabPane.TabPages.Add(binaryEditorTab);
-                        }
-                    }
-                    else
-                    {
-                        removeBinaryTabPane();
-                    }
-
-                    if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
-                    {
-                        if (!packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
-                        {
-                            packageEditorTabPane.TabPages.Add(bio2daEditorTab);
-                        }
-                    }
-                    else
-                    {
-                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
-                        {
-                            packageEditorTabPane.TabPages.Remove(bio2daEditorTab);
-                        }
-                    }
-
-                    headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.Header);
-                    if (!isRefresh)
-                    {
-                        interpreterControl.export = exportEntry;
-                        interpreterControl.InitInterpreter();
-
-                        if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) ||
-                            (exportEntry.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
-                        {
-                            if (exportEntry.ClassName == "Class" && exportEntry.ObjectName.StartsWith("Default__"))
-                            {
-                                //do nothing, this class is not actually a class.
-                                removeBinaryTabPane();
-                            }
-                            else
-                            {
-                                binaryInterpreterControl.export = exportEntry;
-                                binaryInterpreterControl.InitInterpreter();
-                            }
-                        }
                         if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
                         {
-                            bio2DAEditor1.export = exportEntry;
-                            bio2DAEditor1.InitInterpreter();
+                            if (!packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
+                            {
+                                packageEditorTabPane.TabPages.Add(bio2daEditorTab);
+                            }
+                        }
+                        else
+                        {
+                            if (packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
+                            {
+                                packageEditorTabPane.TabPages.Remove(bio2daEditorTab);
+                            }
+                        }
+
+                        headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.Header);
+                        if (!isRefresh)
+                        {
+                            interpreterControl.export = exportEntry;
+                            interpreterControl.InitInterpreter();
+
+                            if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) ||
+                                (exportEntry.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+                            {
+                                if (exportEntry.ClassName == "Class" && exportEntry.ObjectName.StartsWith("Default__"))
+                                {
+                                    //do nothing, this class is not actually a class.
+                                    removeBinaryTabPane();
+                                }
+                                else
+                                {
+                                    binaryInterpreterControl.export = exportEntry;
+                                    binaryInterpreterControl.InitInterpreter();
+                                }
+                            }
+                            if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
+                            {
+                                bio2DAEditor1.export = exportEntry;
+                                bio2DAEditor1.InitInterpreter();
+                            }
+                        }
+                        UpdateStatusEx(n);
+                    }
+                    //import
+                    else
+                    {
+                        n = -n - 1;
+                        headerRawHexBox.ByteProvider = new DynamicByteProvider(pcc.getImport(n).Header);
+                        UpdateStatusIm(n);
+                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
+                        {
+                            packageEditorTabPane.TabPages.Remove(interpreterTab);
+                        }
+                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
+                        {
+                            packageEditorTabPane.TabPages.Remove(propertiesTab);
+                        }
+                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
+                        {
+                            packageEditorTabPane.TabPages.Remove(scriptTab);
+                        }
+                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
+                        {
+                            packageEditorTabPane.TabPages.Remove(binaryEditorTab);
                         }
                     }
-                    UpdateStatusEx(n);
                 }
-                //import
-                else
+                catch (Exception e)
                 {
-                    n = -n - 1;
-                    headerRawHexBox.ByteProvider = new DynamicByteProvider(pcc.getImport(n).Header);
-                    UpdateStatusIm(n);
-                    if (packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
-                    {
-                        packageEditorTabPane.TabPages.Remove(interpreterTab);
-                    }
-                    if (packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
-                    {
-                        packageEditorTabPane.TabPages.Remove(propertiesTab);
-                    }
-                    if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
-                    {
-                        packageEditorTabPane.TabPages.Remove(scriptTab);
-                    }
-                    if (packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
-                    {
-                        packageEditorTabPane.TabPages.Remove(binaryEditorTab);
-                    }
+                    MessageBox.Show("Error previewing this export:\n" + ExceptionHandlerDialogWPF.FlattenException(e));
                 }
             }
         }
@@ -1590,7 +1598,7 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        getOrAddCrossImport(importpcc.getImport(Math.Abs(n) - 1).GetFullPath, importpcc, pcc);
+                        getOrAddCrossImport(importpcc.getImport(Math.Abs(n) - 1).GetFullPath, importpcc, pcc, sourceNode.Nodes.Count == 0 ? link : (int?)null);
                         //importImport(importpcc, -n - 1, link);
                         nextIndex = -pcc.ImportCount;
                     }
