@@ -257,7 +257,7 @@ namespace ME3Explorer
                 NameIdx = imports[n].idxObjectName;
                 ClassIdx = imports[n].idxClassName;
                 LinkIdx = imports[n].idxLink;
-                ArchetypeIdx = imports[n].idxPackageName;
+                ArchetypeIdx = imports[n].idxPackageFile;
 
                 archetypeLabel.Text = "Package File";
                 indexTextBox.Visible = indexLabel.Visible = false;
@@ -532,7 +532,7 @@ namespace ME3Explorer
                     //export
                     if (n >= 0)
                     {
-                        //PreviewProps(n);
+                        PreviewProps(n);
                         if (!packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
                         {
                             packageEditorTabPane.TabPages.Insert(0, propertiesTab);
@@ -1347,7 +1347,7 @@ namespace ME3Explorer
                 importEntry.idxObjectName = NameIdx;
                 importEntry.idxClassName = ClassIdx;
                 importEntry.idxLink = LinkIdx;
-                importEntry.idxPackageName = ArchetypeIdx;
+                importEntry.idxPackageFile = ArchetypeIdx;
                 n = -n - 1;
             }
         }

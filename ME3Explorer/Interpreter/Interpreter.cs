@@ -367,7 +367,7 @@ namespace ME3Explorer
                 // mostdownstreamimport.idxLink = downstreamLinkIdx; ??
                 mostdownstreamimport.idxClassName = downstreamClassName;
                 mostdownstreamimport.idxObjectName = downstreamName;
-                mostdownstreamimport.idxPackageName = downstreamPackageName;
+                mostdownstreamimport.idxPackageFile = downstreamPackageName;
                 destinationPCC.addImport(mostdownstreamimport);
                 upstreamImport = mostdownstreamimport;
                 upstreamCount--;
@@ -412,7 +412,7 @@ namespace ME3Explorer
                 mostdownstreamimport.idxLink = downstreamLinkIdx;
                 mostdownstreamimport.idxClassName = downstreamClassName;
                 mostdownstreamimport.idxObjectName = downstreamName;
-                mostdownstreamimport.idxPackageName = downstreamPackageName;
+                mostdownstreamimport.idxPackageFile = downstreamPackageName;
                 destinationPCC.addImport(mostdownstreamimport);
                 upstreamImport = mostdownstreamimport;
             }
@@ -605,6 +605,7 @@ namespace ME3Explorer
                         if (arrayType == ArrayType.Struct)
                         {
                             PropertyInfo info = GetPropertyInfo(header.name);
+                            
                             t.Text = t.Text.Insert(t.Text.IndexOf("Size: ") - 2, $"({info.reference})");
                             for (int i = 0; i < arrayLength; i++)
                             {

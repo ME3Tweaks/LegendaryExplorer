@@ -43,7 +43,7 @@ namespace ME3Explorer.Packages
             }
         }
         
-        public int idxPackageName { get { return BitConverter.ToInt32(Header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 0, sizeof(int)); HeaderChanged = true; } }
+        public int idxPackageFile { get { return BitConverter.ToInt32(Header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 0, sizeof(int)); HeaderChanged = true; } }
         //int PackageNameNumber
         public int idxClassName { get { return BitConverter.ToInt32(Header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 8, sizeof(int)); HeaderChanged = true; } }
         //int ClassNameNumber
@@ -54,7 +54,7 @@ namespace ME3Explorer.Packages
         //int ObjectNameNumber
 
         public string ClassName { get { return FileRef.Names[idxClassName]; } }
-        public string PackageFile { get { return FileRef.Names[idxPackageName] + ".pcc"; } }
+        public string PackageFile { get { return FileRef.Names[idxPackageFile] + ".pcc"; } }
         public string ObjectName { get { return FileRef.Names[idxObjectName]; } }
 
         public string PackageName

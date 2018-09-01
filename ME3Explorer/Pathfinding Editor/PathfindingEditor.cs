@@ -2054,7 +2054,7 @@ namespace ME3Explorer
                 mostdownstreamimport.idxLink = downstreamLinkIdx;
                 mostdownstreamimport.idxClassName = downstreamClassName;
                 mostdownstreamimport.idxObjectName = downstreamName;
-                mostdownstreamimport.idxPackageName = downstreamPackageName;
+                mostdownstreamimport.idxPackageFile = downstreamPackageName;
                 pcc.addImport(mostdownstreamimport);
                 upstreamImport = mostdownstreamimport;
             }

@@ -701,7 +701,7 @@ namespace ME3Explorer
                     if (donorUpstreamExport == null)
                     {
                         //Create new toplevel import and set that as the most downstream one. (top = bottom at this point)
-                        int downstreamPackageName = destinationPCC.FindNameOrAdd(donorTopLevelImport.PackageFile);
+                        int downstreamPackageFile = destinationPCC.FindNameOrAdd(Path.GetFileNameWithoutExtension(donorTopLevelImport.PackageFile));
                         int downstreamClassName = destinationPCC.FindNameOrAdd(donorTopLevelImport.ClassName);
                         int downstreamName = destinationPCC.FindNameOrAdd(fullobjectname);
 
@@ -709,7 +709,7 @@ namespace ME3Explorer
                         // mostdownstreamimport.idxLink = downstreamLinkIdx; ??
                         mostdownstreamimport.idxClassName = downstreamClassName;
                         mostdownstreamimport.idxObjectName = downstreamName;
-                        mostdownstreamimport.idxPackageName = downstreamPackageName;
+                        mostdownstreamimport.idxPackageFile = downstreamPackageFile;
                         destinationPCC.addImport(mostdownstreamimport); //Add new top level downstream import
                         upstreamImport = mostdownstreamimport;
                         upstreamCount--; //level 1 now from the top down
@@ -741,14 +741,14 @@ namespace ME3Explorer
                         KFreonLib.Debugging.DebugOutput.PrintLn("Error: DonorImport was null while porting all required upstream imports. Could not find import in donor file: " + fullobjectname);
                         KFreonLib.Debugging.DebugOutput.PrintLn("Upstreamcount remaining: " + upstreamCount);
                     }
-                    int downstreamPackageName = destinationPCC.FindNameOrAdd(Path.GetFileNameWithoutExtension(donorImport.PackageFile));
+                    int downstreamPackageFile = destinationPCC.FindNameOrAdd(Path.GetFileNameWithoutExtension(donorImport.PackageFile));
                     int downstreamClassName = destinationPCC.FindNameOrAdd(donorImport.ClassName);
 
                     mostdownstreamimport = new ImportEntry(destinationPCC);
                     mostdownstreamimport.idxLink = donorUpstreamExport == null ? upstreamImport.UIndex : donorUpstreamExport.UIndex;
                     mostdownstreamimport.idxClassName = downstreamClassName;
                     mostdownstreamimport.idxObjectName = downstreamName;
-                    mostdownstreamimport.idxPackageName = downstreamPackageName;
+                    mostdownstreamimport.idxPackageFile = downstreamPackageFile;
                     destinationPCC.addImport(mostdownstreamimport);
                     upstreamImport = mostdownstreamimport;
                 }
@@ -761,7 +761,7 @@ namespace ME3Explorer
                 mostdownstreamimport.idxLink = forcedLinkIdx.Value;
                 mostdownstreamimport.idxClassName = destinationPCC.FindNameOrAdd(importingImport.ClassName);
                 mostdownstreamimport.idxObjectName = destinationPCC.FindNameOrAdd(importingImport.ObjectName);
-                mostdownstreamimport.idxPackageName = destinationPCC.FindNameOrAdd(importingImport.PackageName);
+                mostdownstreamimport.idxPackageFile = destinationPCC.FindNameOrAdd(Path.GetFileNameWithoutExtension(importingImport.PackageFile));
                 destinationPCC.addImport(mostdownstreamimport);
             }
             return mostdownstreamimport;
