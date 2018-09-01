@@ -745,22 +745,23 @@ namespace ME3Explorer
                     string fullobjectname = String.Join(".", importParts, 0, importParts.Count() - upstreamCount);
                     ImportEntry donorImport = null;
 
-                //Get or create names for creating import and get upstream linkIdx
-                int downstreamName = destinationPCC.FindNameOrAdd(importParts[importParts.Count() - upstreamCount - 1]);
-                foreach (ImportEntry imp in importingPCC.Imports) //importing side info we will move to our dest pcc
-                {
-                    if (imp.GetFullPath == fullobjectname)
+                    //Get or create names for creating import and get upstream linkIdx
+                    int downstreamName = destinationPCC.FindNameOrAdd(importParts[importParts.Count() - upstreamCount - 1]);
+                    foreach (ImportEntry imp in importingPCC.Imports) //importing side info we will move to our dest pcc
                     {
-                        donorImport = imp;
-                        break;
+                        if (imp.GetFullPath == fullobjectname)
+                        {
+                            donorImport = imp;
+                            break;
+                        }
                     }
-                }
-                if (donorImport == null)
-                {
-                    throw new Exception("No suitable upstream import was found for porting - this may be an export in the source file that is referenced as a parent or dependency. You should import this object and its parents first. " + fullobjectname + "(as part of " + importFullName + ")");
-                }
-                int downstreamPackageName = destinationPCC.FindNameOrAdd(Path.GetFileNameWithoutExtension(donorImport.PackageFile));
-                int downstreamClassName = destinationPCC.FindNameOrAdd(donorImport.ClassName);
+                    if (donorImport == null)
+                    {
+                        throw new Exception("No suitable upstream import was found for porting - this may be an export in the source file that is referenced as a parent or dependency. You should import this object and its parents first. " + fullobjectname + "(as part of " + importFullName + ")");
+                    }
+
+                    int downstreamPackageFile = destinationPCC.FindNameOrAdd(Path.GetFileNameWithoutExtension(donorImport.PackageFile));
+                    int downstreamClassName = destinationPCC.FindNameOrAdd(donorImport.ClassName);
 
                     mostdownstreamimport = new ImportEntry(destinationPCC);
                     mostdownstreamimport.idxLink = donorUpstreamExport == null ? upstreamImport.UIndex : donorUpstreamExport.UIndex;
