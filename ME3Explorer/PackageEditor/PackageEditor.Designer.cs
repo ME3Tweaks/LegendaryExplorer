@@ -46,6 +46,7 @@
             this.editInInterpreterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.replaceWithBINToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editInCurveEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reloadTLKsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modjobsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createBinaryReplaceJobFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -60,8 +61,8 @@
             this.dEBUGEnumerateAllClassesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGOpenPackageEditorWPFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dEBUGFindMateriaInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.Button1 = new System.Windows.Forms.ToolStripButton();
             this.Button2 = new System.Windows.Forms.ToolStripButton();
@@ -150,6 +151,7 @@
             this.replaceSWFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.compareWithAnotherVersionOfThisPccToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -311,14 +313,14 @@
             // 
             this.hexConverterToolStripMenuItem.AutoToolTip = true;
             this.hexConverterToolStripMenuItem.Name = "hexConverterToolStripMenuItem";
-            this.hexConverterToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.hexConverterToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
             this.hexConverterToolStripMenuItem.Text = "Hex Converter";
             this.hexConverterToolStripMenuItem.Click += new System.EventHandler(this.hexConverterToolStripMenuItem_Click);
             // 
             // addNameToolStripMenuItem
             // 
             this.addNameToolStripMenuItem.Name = "addNameToolStripMenuItem";
-            this.addNameToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.addNameToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
             this.addNameToolStripMenuItem.Text = "Add Name";
             this.addNameToolStripMenuItem.ToolTipText = "Add a name to the name table";
             this.addNameToolStripMenuItem.Click += new System.EventHandler(this.addNameToolStripMenuItem_Click);
@@ -326,7 +328,7 @@
             // editInInterpreterToolStripMenuItem
             // 
             this.editInInterpreterToolStripMenuItem.Name = "editInInterpreterToolStripMenuItem";
-            this.editInInterpreterToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.editInInterpreterToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
             this.editInInterpreterToolStripMenuItem.Text = "Edit in Interpreter";
             this.editInInterpreterToolStripMenuItem.ToolTipText = "Open this export in the interpreter";
             this.editInInterpreterToolStripMenuItem.Click += new System.EventHandler(this.editInInterpreterToolStripMenuItem_Click);
@@ -334,21 +336,28 @@
             // replaceWithBINToolStripMenuItem
             // 
             this.replaceWithBINToolStripMenuItem.Name = "replaceWithBINToolStripMenuItem";
-            this.replaceWithBINToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.replaceWithBINToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
             this.replaceWithBINToolStripMenuItem.Text = "Replace with BIN";
             this.replaceWithBINToolStripMenuItem.Click += new System.EventHandler(this.replaceWithBINToolStripMenuItem_Click);
             // 
             // editInCurveEditorToolStripMenuItem
             // 
             this.editInCurveEditorToolStripMenuItem.Name = "editInCurveEditorToolStripMenuItem";
-            this.editInCurveEditorToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.editInCurveEditorToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
             this.editInCurveEditorToolStripMenuItem.Text = "Edit in Curve Editor";
             this.editInCurveEditorToolStripMenuItem.Click += new System.EventHandler(this.editInCurveEditorToolStripMenuItem_Click);
+            // 
+            // rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem
+            // 
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Name = "rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem";
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Text = "Rebuild StreamingLevels list for BioWorldInfo";
+            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Click += new System.EventHandler(this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem_Click);
             // 
             // reloadTLKsToolStripMenuItem
             // 
             this.reloadTLKsToolStripMenuItem.Name = "reloadTLKsToolStripMenuItem";
-            this.reloadTLKsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.reloadTLKsToolStripMenuItem.Size = new System.Drawing.Size(312, 22);
             this.reloadTLKsToolStripMenuItem.Text = "Reload TLKs";
             this.reloadTLKsToolStripMenuItem.ToolTipText = "Reloads the TLK files used by ME3Explorer for displaying StringRefProperty.";
             this.reloadTLKsToolStripMenuItem.Click += new System.EventHandler(this.reloadTLKsToolStripMenuItem_Click);
@@ -357,7 +366,8 @@
             // 
             this.modjobsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.createBinaryReplaceJobFromFileToolStripMenuItem,
-            this.createBinaryReplaceJobFromObjectToolStripMenuItem});
+            this.createBinaryReplaceJobFromObjectToolStripMenuItem,
+            this.compareWithAnotherVersionOfThisPccToolStripMenuItem});
             this.modjobsToolStripMenuItem.Name = "modjobsToolStripMenuItem";
             this.modjobsToolStripMenuItem.Size = new System.Drawing.Size(84, 20);
             this.modjobsToolStripMenuItem.Text = "Modmaking";
@@ -365,14 +375,14 @@
             // createBinaryReplaceJobFromFileToolStripMenuItem
             // 
             this.createBinaryReplaceJobFromFileToolStripMenuItem.Name = "createBinaryReplaceJobFromFileToolStripMenuItem";
-            this.createBinaryReplaceJobFromFileToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
+            this.createBinaryReplaceJobFromFileToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.createBinaryReplaceJobFromFileToolStripMenuItem.Text = "Create Binary Replace Job from File";
             this.createBinaryReplaceJobFromFileToolStripMenuItem.Click += new System.EventHandler(this.createBinaryReplaceJobFromFileToolStripMenuItem_Click);
             // 
             // createBinaryReplaceJobFromObjectToolStripMenuItem
             // 
             this.createBinaryReplaceJobFromObjectToolStripMenuItem.Name = "createBinaryReplaceJobFromObjectToolStripMenuItem";
-            this.createBinaryReplaceJobFromObjectToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
+            this.createBinaryReplaceJobFromObjectToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.createBinaryReplaceJobFromObjectToolStripMenuItem.Text = "Create Binary Replace Job from Object";
             this.createBinaryReplaceJobFromObjectToolStripMenuItem.Click += new System.EventHandler(this.createBinaryReplaceJobFromObjectToolStripMenuItem_Click);
             // 
@@ -388,7 +398,8 @@
             this.dEBUGEnumerateAllClassesToolStripMenuItem,
             this.dEBUGOpenPackageEditorWPFToolStripMenuItem,
             this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem,
-            this.dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem});
+            this.dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem,
+            this.dEBUGFindMateriaInstancesToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
             this.debugToolStripMenuItem.Text = "Debugging";
@@ -459,19 +470,19 @@
             this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Text = "DEBUG: Ensure folder of package files has a name";
             this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem.Click += new System.EventHandler(this.dEBUGEnsureFolderOfPackageFilesHasANameToolStripMenuItem_Click);
             // 
-            // rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem
-            // 
-            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Name = "rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem";
-            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
-            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Text = "Rebuild StreamingLevels list for BioWorldInfo";
-            this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem.Click += new System.EventHandler(this.rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem_Click);
-            // 
             // dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem
             // 
             this.dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem.Name = "dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem";
             this.dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
             this.dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem.Text = "DEBUG: Add a property to exports matching criteria";
             this.dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem.Click += new System.EventHandler(this.dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem_Click);
+            // 
+            // dEBUGFindMateriaInstancesToolStripMenuItem
+            // 
+            this.dEBUGFindMateriaInstancesToolStripMenuItem.Name = "dEBUGFindMateriaInstancesToolStripMenuItem";
+            this.dEBUGFindMateriaInstancesToolStripMenuItem.Size = new System.Drawing.Size(358, 22);
+            this.dEBUGFindMateriaInstancesToolStripMenuItem.Text = "DEBUG: FindMateriaInstances";
+            this.dEBUGFindMateriaInstancesToolStripMenuItem.Click += new System.EventHandler(this.dEBUGFindMateriaInstancesToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -1212,6 +1223,7 @@
             this.headerRawHexBox.LineInfoForeColor = System.Drawing.Color.Empty;
             this.headerRawHexBox.LineInfoVisible = true;
             this.headerRawHexBox.Location = new System.Drawing.Point(3, 28);
+            this.headerRawHexBox.MaxBytesPerLine = 100;
             this.headerRawHexBox.MinBytesPerLine = 16;
             this.headerRawHexBox.Name = "headerRawHexBox";
             this.headerRawHexBox.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
@@ -1343,6 +1355,13 @@
             this.cloneToolStripMenuItem1.Size = new System.Drawing.Size(105, 22);
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
+            // 
+            // compareWithAnotherVersionOfThisPccToolStripMenuItem
+            // 
+            this.compareWithAnotherVersionOfThisPccToolStripMenuItem.Name = "compareWithAnotherVersionOfThisPccToolStripMenuItem";
+            this.compareWithAnotherVersionOfThisPccToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.compareWithAnotherVersionOfThisPccToolStripMenuItem.Text = "Compare with another version of this pcc";
+            this.compareWithAnotherVersionOfThisPccToolStripMenuItem.Click += new System.EventHandler(this.compareWithAnotherVersionOfThisPccToolStripMenuItem_Click);
             // 
             // PackageEditor
             // 
@@ -1526,5 +1545,7 @@
         private System.Windows.Forms.ToolStripMenuItem rebuildStreamingLevelsListForBioWorldInfoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem meshplorerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dEBUGFindMateriaInstancesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem compareWithAnotherVersionOfThisPccToolStripMenuItem;
     }
 }

@@ -13,6 +13,7 @@ using System.Text;
 using ME3Explorer.SharedUI;
 using Gibbed.IO;
 using System.Globalization;
+using System.Collections;
 
 namespace ME3Explorer
 {
@@ -1425,6 +1426,7 @@ namespace ME3Explorer
             MemoryStream m = new MemoryStream();
             IByteProvider provider = headerRawHexBox.ByteProvider;
             int requiredheaderlength = n > 0 ? 0x44 : 0x1C; //0x44 for exports, 0x1B for imports
+            if (pcc.Game == MEGame.ME1) { requiredheaderlength = n > 0 ? 0x48 : 0x1C; }
             if (provider.Length != requiredheaderlength)
             {
                 MessageBox.Show("Invalid hex length");
@@ -2384,6 +2386,65 @@ namespace ME3Explorer
             }
         }
 
+        private void dEBUGFindMateriaInstancesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string[] files = System.IO.Directory.GetFiles(@"X:\ME3-MMTesting\BioGame\CookedPCConsole", "*.pcc", SearchOption.AllDirectories);
+            foreach (string file in files)
+            {
+                // Debug.WriteLine(file);
+                ME3Package pack = MEPackageHandler.OpenME3Package(file);
+                foreach (IExportEntry name in pack.Exports)
+                {
+                    if (name.ClassName == "MaterialInstance")
+                    {
+                        Debug.WriteLine("Found material instance in " + file);
+                        pack.Release();
+                        continue;
+                    }
+                }
+                pack.Release();
+            }
+            MessageBox.Show("Done");
+        }
 
+        private void compareWithAnotherVersionOfThisPccToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc != null)
+            {
+                string extension = Path.GetExtension(pcc.FileName);
+                OpenFileDialog d = new OpenFileDialog { Filter = "*" + extension + "|*" + extension };
+                if (d.ShowDialog() == DialogResult.OK)
+                {
+                    if (pcc.FileName == d.FileName)
+                    {
+                        MessageBox.Show("You selected the same file as the one already open.");
+                        return;
+                    }
+                    IMEPackage compareFile = MEPackageHandler.OpenMEPackage(d.FileName);
+                    if (pcc.Game != compareFile.Game)
+                    {
+                        MessageBox.Show("Files are for different games.");
+                        return;
+                    }
+
+                    int numExportsToEnumerate = Math.Min(pcc.ExportCount, compareFile.ExportCount);
+
+                    List<string> changedExports = new List<string>();
+                    for (int i = 0; i < numExportsToEnumerate; i++)
+                    {
+                        IExportEntry exp1 = pcc.Exports[i];
+                        IExportEntry exp2 = compareFile.Exports[i];
+
+                        if (exp1.DataOffset != exp2.DataOffset || exp1.Data.Length != exp2.Data.Length || !StructuralComparisons.StructuralEqualityComparer.Equals(exp1.Data, exp2.Data))
+                        {
+                            changedExports.Add("Export has changed: " + i+ " "+exp1.GetFullPath);
+                        }
+                    }
+
+                    ListDialog ld = new ListDialog(changedExports,"Changed exports between files", "The following exports are different between the files.");
+                    ld.Show();
+                }
+            }
+        }
     }
 }
