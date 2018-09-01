@@ -1,4 +1,6 @@
-﻿using ME3Explorer.Packages;
+﻿using KFreonLib.Debugging;
+using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using System;
 using System.Collections.Generic;
@@ -142,8 +144,21 @@ namespace ME3Explorer
                     string origImportFullName = origImport.GetFullPath;
                     //Debug.WriteLine("We should import " + origImport.GetFullPath);
 
-                    ImportEntry crossImport = getOrAddCrossImport(origImportFullName, importingPCC, destinationPCC);
-
+                    ImportEntry crossImport = null;
+                    string linkFailedDueToError = null;
+                    try
+                    {
+                        crossImport = getOrAddCrossImport(origImportFullName, importingPCC, destinationPCC);
+                    }
+                    catch (Exception e)
+                    {
+                        //Error during relink
+                        KFreonLib.Debugging.DebugOutput.StartDebugger("PCC Relinker");
+                        DebugOutput.PrintLn("Exception occured during relink: ");
+                        DebugOutput.PrintLn(ExceptionHandlerDialogWPF.FlattenException(e));
+                        DebugOutput.PrintLn("You may want to consider discarding this sessions' changes as relinking was not able to properly finish.");
+                        linkFailedDueToError = e.Message;
+                    }
                     if (crossImport != null)
                     {
                         //cache item. Imports are stored +1, Exports-1. Someday I will go back and make this just 0 indexed
@@ -154,6 +169,12 @@ namespace ME3Explorer
                     }
                     else
                     {
+                        if (linkFailedDueToError != null)
+                        {
+                            Debug.WriteLine("Relink failed: CrossImport porting failed for " + objProperty.Name + " " + objProperty.Value + ": " + importingPCC.getEntry(origvalue).GetFullPath);
+                            return "Relink failed for " + objProperty.Name + " " + objProperty.Value + ": " + linkFailedDueToError;
+                        }
+                        else
                         if (destinationPCC.getEntry(objProperty.Value) != null)
                         {
                             Debug.WriteLine("Relink failed: CrossImport porting failed for " + objProperty.Name + " " + objProperty.Value + ": " + importingPCC.getEntry(origvalue).GetFullPath);
@@ -724,25 +745,22 @@ namespace ME3Explorer
                     string fullobjectname = String.Join(".", importParts, 0, importParts.Count() - upstreamCount);
                     ImportEntry donorImport = null;
 
-                    //Get or create names for creating import and get upstream linkIdx
-                    int downstreamName = destinationPCC.FindNameOrAdd(importParts[importParts.Count() - upstreamCount - 1]);
-                    foreach (ImportEntry imp in importingPCC.Imports) //importing side info we will move to our dest pcc
+                //Get or create names for creating import and get upstream linkIdx
+                int downstreamName = destinationPCC.FindNameOrAdd(importParts[importParts.Count() - upstreamCount - 1]);
+                foreach (ImportEntry imp in importingPCC.Imports) //importing side info we will move to our dest pcc
+                {
+                    if (imp.GetFullPath == fullobjectname)
                     {
-                        if (imp.GetFullPath == fullobjectname)
-                        {
-                            donorImport = imp;
-                            break;
-                        }
+                        donorImport = imp;
+                        break;
                     }
-
-                    if (donorImport == null)
-                    {
-                        KFreonLib.Debugging.DebugOutput.StartDebugger("Package Editor Relinker");
-                        KFreonLib.Debugging.DebugOutput.PrintLn("Error: DonorImport was null while porting all required upstream imports. Could not find import in donor file: " + fullobjectname);
-                        KFreonLib.Debugging.DebugOutput.PrintLn("Upstreamcount remaining: " + upstreamCount);
-                    }
-                    int downstreamPackageFile = destinationPCC.FindNameOrAdd(Path.GetFileNameWithoutExtension(donorImport.PackageFile));
-                    int downstreamClassName = destinationPCC.FindNameOrAdd(donorImport.ClassName);
+                }
+                if (donorImport == null)
+                {
+                    throw new Exception("No suitable upstream import was found for porting - this may be an export in the source file that is referenced as a parent or dependency. You should import this object and its parents first. " + fullobjectname + "(as part of " + importFullName + ")");
+                }
+                int downstreamPackageName = destinationPCC.FindNameOrAdd(Path.GetFileNameWithoutExtension(donorImport.PackageFile));
+                int downstreamClassName = destinationPCC.FindNameOrAdd(donorImport.ClassName);
 
                     mostdownstreamimport = new ImportEntry(destinationPCC);
                     mostdownstreamimport.idxLink = donorUpstreamExport == null ? upstreamImport.UIndex : donorUpstreamExport.UIndex;
