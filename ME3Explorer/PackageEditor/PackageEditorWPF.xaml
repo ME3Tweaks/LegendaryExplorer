@@ -20,6 +20,7 @@
         <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"/>
         <CommandBinding Command="Save" Executed="SaveCommandBinding_Executed"/>
         <CommandBinding Command="SaveAs" Executed="SaveAsCommandBinding_Executed"/>
+        <CommandBinding Command="Commands:PackageEditorWPFCommands.ComparePackageCommand" Executed="ComparePackageBinding_Executed"/>
         <CommandBinding Command="Commands:PackageEditorWPFCommands.FindCommand" Executed="FindCommandBinding_Executed"/>
         <CommandBinding Command="Commands:PackageEditorWPFCommands.GotoCommand" Executed="GotoCommandBinding_Executed"/>
     </Window.CommandBindings>
@@ -51,7 +52,7 @@
             </MenuItem>
             <MenuItem Header="Modmaker">
                 <MenuItem Header="Open"/>
-                <MenuItem Header="Save"/>
+                <MenuItem Name="ComparePackageMenuItem" Header="Compare with another package" Command="Commands:PackageEditorWPFCommands.ComparePackageCommand" IsEnabled="False"/>
             </MenuItem>
             <MenuItem Header="Testing &amp; Debugging">
                 <MenuItem Header="Open"/>

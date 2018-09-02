@@ -2409,6 +2409,7 @@ namespace ME3Explorer
 
         private void compareWithAnotherVersionOfThisPccToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //This is also in PackageEditorWPF
             if (pcc != null)
             {
                 string extension = Path.GetExtension(pcc.FileName);
@@ -2430,18 +2431,58 @@ namespace ME3Explorer
                     int numExportsToEnumerate = Math.Min(pcc.ExportCount, compareFile.ExportCount);
 
                     List<string> changedExports = new List<string>();
+                    Stopwatch sw = Stopwatch.StartNew();
                     for (int i = 0; i < numExportsToEnumerate; i++)
                     {
                         IExportEntry exp1 = pcc.Exports[i];
                         IExportEntry exp2 = compareFile.Exports[i];
 
-                        if (exp1.DataOffset != exp2.DataOffset || exp1.Data.Length != exp2.Data.Length || !StructuralComparisons.StructuralEqualityComparer.Equals(exp1.Data, exp2.Data))
+                        //make data offset and data size the same, as the exports could be the same even if it was appended later.
+                        //The datasize being different is a data difference not a true header difference so we won't list it here.
+                        byte[] header1 = exp1.Header.TypedClone();
+                        byte[] header2 = exp2.Header.TypedClone();
+                        Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header1, 32, sizeof(long));
+                        Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header2, 32, sizeof(long));
+
+                        //if (!StructuralComparisons.StructuralEqualityComparer.Equals(header1, header2))
+                        if (!header1.SequenceEqual(header2))
+
                         {
-                            changedExports.Add("Export has changed: " + i+ " "+exp1.GetFullPath);
+                            foreach (byte b in header1)
+                            {
+                                Debug.Write(" " + b.ToString("X2"));
+                            }
+                            Debug.WriteLine("");
+                            foreach (byte b in header2)
+                            {
+                                Debug.Write(" " + b.ToString("X2"));
+                            }
+                            Debug.WriteLine("");
+                            changedExports.Add("Export header has changed: " + i + " " + exp1.GetFullPath);
+                        }
+                        if (!exp1.Data.SequenceEqual(exp2.Data))
+                        {
+                            changedExports.Add("Export data has changed: " + i + " " + exp1.GetFullPath);
                         }
                     }
 
-                    ListDialog ld = new ListDialog(changedExports,"Changed exports between files", "The following exports are different between the files.");
+                    IMEPackage enumerateExtras = pcc;
+                    string file = "this file";
+                    if (compareFile.ExportCount < numExportsToEnumerate)
+                    {
+                        file = "other file";
+                        enumerateExtras = compareFile;
+                    }
+
+                    for (int i = numExportsToEnumerate; i < compareFile.ExportCount; i++)
+                    {
+                        changedExports.Add("Export only exists in " + file + ": " + i + " " + enumerateExtras.Exports[i].GetFullPath);
+                    }
+
+                    sw.Stop();
+                    Debug.WriteLine("Time: " + sw.ElapsedMilliseconds + "ms");
+
+                    ListDialog ld = new ListDialog(changedExports, "Changed exports between files", "The following exports are different between the files.");
                     ld.Show();
                 }
             }
