@@ -620,6 +620,24 @@ namespace ME3Explorer
             }
         }
 
+        public void RefreshExportChangedStatus()
+        {
+            if (pcc != null)
+            {
+                for (int i = 0; i < pcc.Exports.Count; i++)
+                {
+                    if (pcc.Exports[i].DataChanged)
+                    {
+                        Debug.WriteLine("DataChanged for " + i + " " + pcc.Exports[i].GetFullPath);
+                    }
+                    object o = AllTreeViewNodes[i+1];
+                    AllTreeViewNodes[i+1].Background = (pcc.Exports[i].DataChanged || pcc.Exports[i].HeaderChanged) ? Brushes.Yellow : null;
+                    AllTreeViewNodes[i+1].ToolTip = (pcc.Exports[i].DataChanged || pcc.Exports[i].HeaderChanged) ? "This entry has been modified but has not been commited to disk yet" : null;
+
+                }
+            }
+        }
+
         private bool GetSelected(out int n)
         {
             if (CurrentView == View.Tree && LeftSide_TreeView.SelectedItem != null && ((TreeViewItem)LeftSide_TreeView.SelectedItem).Name.StartsWith("_"))
@@ -685,6 +703,7 @@ namespace ME3Explorer
                 //binaryInterpreterControl.RefreshMem();
                 Preview(true);
             }
+            RefreshExportChangedStatus();
         }
 
 

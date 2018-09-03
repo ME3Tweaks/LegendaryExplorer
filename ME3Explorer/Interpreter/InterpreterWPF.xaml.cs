@@ -1416,7 +1416,8 @@ namespace ME3Explorer
                     if (treeViewItem.Tag is ArrayPropertyBase)
                     {
                         Interpreter_TreeView.ContextMenu = Interpreter_TreeView.Resources["ArrayPropertyContext"] as System.Windows.Controls.ContextMenu;
-                    } else
+                    }
+                    else
                     {
                         Interpreter_TreeView.ContextMenu = Interpreter_TreeView.Resources["FolderContext"] as System.Windows.Controls.ContextMenu;
                     }
@@ -1430,6 +1431,19 @@ namespace ME3Explorer
                 source = VisualTreeHelper.GetParent(source);
 
             return source as TreeViewItem;
+        }
+
+        private void RemovePropertyCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        {
+            TreeViewItem tvi = (TreeViewItem)Interpreter_TreeView.SelectedItem;
+            if (tvi != null)
+            {
+                UProperty tag = (UProperty)tvi.Tag;
+                PropertyCollection props = CurrentLoadedExport.GetProperties();
+                props.Remove(tag);
+                CurrentLoadedExport.WriteProperties(props);
+                StartScan();
+            }
         }
     }
 }

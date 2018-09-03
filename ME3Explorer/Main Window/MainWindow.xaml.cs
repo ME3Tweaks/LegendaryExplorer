@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -52,6 +54,7 @@ namespace ME3Explorer
         public static readonly DependencyProperty DisableFlyoutsProperty =
             DependencyProperty.Register("DisableFlyouts", typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
 
+        private static FieldInfo _menuDropAlignmentField;
 
         public MainWindow()
         {
@@ -65,6 +68,16 @@ namespace ME3Explorer
                 MessageBox.Show(e.Message);
                 SystemCommands.CloseWindow(this);
             }
+
+            //make menu's appear right side, which is busted on WPF with touchscreens
+            _menuDropAlignmentField = typeof(SystemParameters).GetField("_menuDropAlignment", BindingFlags.NonPublic | BindingFlags.Static);
+            System.Diagnostics.Debug.Assert(_menuDropAlignmentField != null);
+
+            EnsureStandardPopupAlignment();
+            SystemParameters.StaticPropertyChanged += SystemParameters_StaticPropertyChanged;
+
+
+
             installModspanel.setToolList(Tools.Items.Where(x => x.tags.Contains("user")));
             Tools.FavoritesChanged += Tools_FavoritesChanged;
             Tools_FavoritesChanged(null, null);
@@ -73,7 +86,7 @@ namespace ME3Explorer
 
             DisableFlyouts = Properties.Settings.Default.DisableToolDescriptions;
             Topmost = Properties.Settings.Default.AlwaysOnTop;
-            
+
             /*if (!Properties.Settings.Default.DisableDLCCheckOnStart)
             {
                 if (Properties.Settings.Default.FirstRun == true)
@@ -94,11 +107,24 @@ namespace ME3Explorer
             }*/
         }
 
+        private static void SystemParameters_StaticPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            EnsureStandardPopupAlignment();
+        }
+
+        private static void EnsureStandardPopupAlignment()
+        {
+            if (SystemParameters.MenuDropAlignment && _menuDropAlignmentField != null)
+            {
+                _menuDropAlignmentField.SetValue(null, false);
+            }
+        }
+
         private void Tools_FavoritesChanged(object sender, EventArgs e)
         {
             IEnumerable<Tool> favs = Tools.Items.Where(x => x.IsFavorited);
             favoritesPanel.setToolList(favs);
-            favoritesWatermark.Visibility = favs.Any()? Visibility.Hidden : Visibility.Visible;
+            favoritesWatermark.Visibility = favs.Any() ? Visibility.Hidden : Visibility.Visible;
         }
 
         private void Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)

@@ -4,10 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ME3Explorer"
+             xmlns:Commands="clr-namespace:ME3Explorer.Commands"
              xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
              mc:Ignorable="d" 
              Loaded="Interpreter_Loaded"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.CommandBindings>
+        <CommandBinding Command="Commands:InterpreterWPFCommands.RemovePropertyCommand" Executed="RemovePropertyCommand_Executed"/>
+    </UserControl.CommandBindings>
     <Grid Margin="0,1,0,-1">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -38,17 +42,10 @@
             <TreeView.Resources>
                 <ContextMenu x:Key ="ArrayPropertyContext"  StaysOpen="true">
                     <MenuItem Header="Order by"/>
-                    <MenuItem Header="Remove property"/>
+                    <MenuItem Header="RemoveProperty" Command="Commands:InterpreterWPFCommands.RemovePropertyCommand"/>
                 </ContextMenu>
-                <ContextMenu x:Key="FolderContext"  StaysOpen="true">
-                    <MenuItem Header="Add..."/>
-                    <MenuItem Header="Rename"/>
-                    <MenuItem Header="Remove"/>
-                    <Separator/>
-                    <MenuItem Header="Copy"/>
-                    <MenuItem Header="Cut"/>
-                    <MenuItem Header="Paste"/>
-                    <MenuItem Header="Move"/>
+                <ContextMenu x:Key="StandardPropertContext"  StaysOpen="true">
+                    <MenuItem Header="RemoveProperty" Command="Commands:InterpreterWPFCommands.RemovePropertyCommand"/>
                 </ContextMenu>
             </TreeView.Resources>
         </TreeView>

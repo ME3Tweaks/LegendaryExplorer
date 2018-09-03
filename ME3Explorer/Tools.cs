@@ -546,6 +546,20 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "Package Editor WPF",
+                type = typeof(PackageEditorWPF),
+                icon = Application.Current.FindResource("iconPackageEditor") as ImageSource,
+                open = () =>
+                {
+                    PackageEditorWPF pck = new PackageEditorWPF();
+                    pck.Show();
+                },
+                tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
+                subCategory = "Core",
+                description = "Package Editor WPF is a complete rewrite of Package Editor using the WPF design langauge. It is currently under development."
+            });
+            set.Add(new Tool
+            {
                 name = "Pathfinding Editor",
                 type = typeof(PathfindingEditor),
                 icon = Application.Current.FindResource("iconPathfindingEditor") as ImageSource,
