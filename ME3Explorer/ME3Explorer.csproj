@@ -223,6 +223,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="CurveEd\CurveEditorHost.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Interpreter\AltPropertyEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -278,6 +282,9 @@
     </Compile>
     <Compile Include="Bio2DAEditor\Bio2DAEditor.Designer.cs">
       <DependentUpon>Bio2DAEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CurveEd\CurveEditorHost.xaml.cs">
+      <DependentUpon>CurveEditorHost.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interpreter\AltPropertyEditor.xaml.cs">
       <DependentUpon>AltPropertyEditor.xaml</DependentUpon>

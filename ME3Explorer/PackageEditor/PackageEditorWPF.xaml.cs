@@ -1,4 +1,5 @@
 ﻿using Be.Windows.Forms;
+using ME3Explorer.CurveEd;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
@@ -630,9 +631,9 @@ namespace ME3Explorer
                     {
                         Debug.WriteLine("DataChanged for " + i + " " + pcc.Exports[i].GetFullPath);
                     }
-                    object o = AllTreeViewNodes[i+1];
-                    AllTreeViewNodes[i+1].Background = (pcc.Exports[i].DataChanged || pcc.Exports[i].HeaderChanged) ? Brushes.Yellow : null;
-                    AllTreeViewNodes[i+1].ToolTip = (pcc.Exports[i].DataChanged || pcc.Exports[i].HeaderChanged) ? "This entry has been modified but has not been commited to disk yet" : null;
+                    object o = AllTreeViewNodes[i + 1];
+                    AllTreeViewNodes[i + 1].Background = (pcc.Exports[i].DataChanged || pcc.Exports[i].HeaderChanged) ? Brushes.Yellow : null;
+                    AllTreeViewNodes[i + 1].ToolTip = (pcc.Exports[i].DataChanged || pcc.Exports[i].HeaderChanged) ? "This entry has been modified but has not been commited to disk yet" : null;
 
                 }
             }
@@ -802,6 +803,46 @@ namespace ME3Explorer
                             Script_TextBox.Text = "Parsing UnrealScript Functions for this game is not supported.";
                         }
                     }
+
+                    if (Pcc.Game == MEGame.ME3)
+                    {
+
+                        //Curve Editor
+                        var props = exportEntry.GetProperties();
+                        bool showCurveEd = false;
+                        foreach (var prop in props)
+                        {
+                            if (prop is StructProperty structProp)
+                            {
+                                if (Enum.TryParse(structProp.StructType, out CurveType _))
+                                {
+                                    showCurveEd = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (showCurveEd)
+                        {
+                            CurveEditor_Tab.Visibility = Visibility.Visible;
+                            CurveEditor_SubModule.LoadExport(exportEntry);
+                        }
+                        else
+                        {
+                            //Change to interpreter if this tab is being hidden but is currently visible.
+                            //Interpreter is always available
+                            if (EditorTabs.SelectedItem == CurveEditor_Tab)
+                            {
+                                EditorTabs.SelectedItem = Interpreter_Tab;
+                            }
+                            CurveEditor_Tab.Visibility = Visibility.Collapsed;
+                        }
+                    }
+                    else
+                    {
+                        CurveEditor_Tab.Visibility = Visibility.Collapsed;
+                    }
+
 
                     /*
                     else if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))

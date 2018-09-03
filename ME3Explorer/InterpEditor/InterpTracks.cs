@@ -328,7 +328,7 @@ namespace ME3Explorer.Matinee
 
         private void OpenInCurveEd_Click(object sender, EventArgs e)
         {
-            CurveEd.CurveEditor c = new CurveEd.CurveEditor(pcc.Exports[index]);
+            CurveEd.CurveEditorHost c = new CurveEd.CurveEditorHost(pcc.Exports[index]);
             c.Show();
         }
 

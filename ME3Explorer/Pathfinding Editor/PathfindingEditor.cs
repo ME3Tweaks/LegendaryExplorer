@@ -3276,7 +3276,7 @@ namespace ME3Explorer
             int l = CurrentObjects[activeExportsListbox.SelectedIndex];
             if (l == -1)
                 return;
-            CurveEd.CurveEditor c = new CurveEd.CurveEditor(pcc.getExport(l));
+            CurveEd.CurveEditorHost c = new CurveEd.CurveEditorHost(pcc.getExport(l));
             c.Show();
         }
 

@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:Commands="clr-namespace:ME3Explorer.Commands"
+        xmlns:CurveEd="clr-namespace:ME3Explorer.CurveEd"
         Loaded="PackageEditorWPF_Loaded"
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
@@ -89,7 +90,7 @@
             <ListView Name="LeftSide_ListView" Grid.Column="0" Grid.Row="1"  SelectionChanged="LeftSide_SelectedItemChanged"/>
             <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" TreeViewItem.Selected="LeftSide_SelectedItemChanged" FontFamily="Consolas" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"/>
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Grid.Row="1"/>
-            <TabControl Grid.Column="2" Grid.Row="1">
+            <TabControl Name="EditorTabs" Grid.Column="2" Grid.Row="1">
 
                 <!--<TabItem Name="Properties_Tab" Header="Properties"/>-->
                 <TabItem Name="Interpreter_Tab" Header="Interpreter">
@@ -190,6 +191,9 @@
                 <TabItem Name="BinaryInterpreter_Tab" Header="Binary Interpreter"/>
                 <TabItem Name="Script_Tab" Header="Script">
                     <TextBox Name="Script_TextBox" TextWrapping="Wrap" Text="if(visible) ShowThis()" IsReadOnly="True" FontFamily="Consolas" Padding="5"/>
+                </TabItem>
+                <TabItem Name="CurveEditor_Tab" Header="Curve Editor">
+                    <CurveEd:CurveEditor x:Name="CurveEditor_SubModule"/>
                 </TabItem>
             </TabControl>
         </Grid>

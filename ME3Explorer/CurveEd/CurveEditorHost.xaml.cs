@@ -19,32 +19,26 @@ using ME3Explorer.Unreal;
 namespace ME3Explorer.CurveEd
 {
     /// <summary>
-    /// Interaction logic for CurveEditor.xaml
+    /// Interaction logic for CurveEditorHost.xaml
     /// </summary>
-    public partial class CurveEditor : UserControl
+    public partial class CurveEditorHost : WPFBase
     {
-        private IExportEntry expEntry;
+        IExportEntry exp;
 
-        public List<InterpCurve> InterpCurveTracks;
-
-        public CurveEditor()
+        public CurveEditorHost()
         {
             InitializeComponent();
         }
 
-        public void LoadExport(IExportEntry exp)
-        {
-            expEntry = exp;
-            Load();
-        }
-
-        public CurveEditor(IExportEntry exp)
+        public CurveEditorHost(IExportEntry exp)
         {
             InitializeComponent();
-            LoadExport(exp);
-            //Title = "Curve Editor | " + System.IO.Path.GetFileName(expEntry.FileRef.FileName) + " | " + exp.Index + ": " + exp.ClassName;
+            this.exp = exp;
+            CurveEditor_SubModule.LoadExport(exp);
+            Title = "Curve Editor | " + System.IO.Path.GetFileName(exp.FileRef.FileName) + " | " + exp.Index + ": " + exp.ClassName;
         }
 
+        /*
         private void Load()
         {
             InterpCurveTracks = new List<InterpCurve>();
@@ -56,7 +50,7 @@ namespace ME3Explorer.CurveEd
                 {
                     if (Enum.TryParse(structProp.StructType, out CurveType _))
                     {
-                        InterpCurveTracks.Add(new InterpCurve(expEntry.FileRef, structProp));
+                        InterpCurveTracks.Add(new InterpCurve(pcc, structProp));
                     }
                 }
             }
@@ -70,23 +64,10 @@ namespace ME3Explorer.CurveEd
             }
 
             TrackList.ItemsSource = InterpCurveTracks;
-            if (InterpCurveTracks.Count() > 0)
-            {
-
-                //TreeView in WPF can be really ugly sometimes
-                //Select the first track and display it so the default view isn't empty
-                //does not work yet - probably should ask SirC how this tool works
-                var tvi = TrackList.ItemContainerGenerator.ContainerFromItem(InterpCurveTracks[0])
-                          as TreeViewItem;
-
-                if (tvi != null)
-                {
-                    tvi.IsSelected = true;
-                }
-            }
             graph.Paint();
         }
 
+        
         private void TrackList_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (e.NewValue is Curve)
@@ -155,13 +136,14 @@ namespace ME3Explorer.CurveEd
             }
             graph.Paint();
             graph.SelectedPoint = selectedPoint;
-        }
+        }*/
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Commit();
+           // Commit();
         }
 
+        /*
         private void Commit()
         {
             var props = expEntry.GetProperties();
@@ -180,19 +162,18 @@ namespace ME3Explorer.CurveEd
         private void Save_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Commit();
-            //pcc.save();
-            //MessageBox.Show("Done");
-        }
+            pcc.save();
+            MessageBox.Show("Done");
+        }*/
 
-        /* public override void handleUpdate(List<PackageUpdate> updates)
+        public override void handleUpdate(List<PackageUpdate> updates)
         {
             IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change == PackageChange.ExportData);
             List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
-            if (updatedExports.Contains(expEntry.Index) && !this.IsForegroundWindow())
+            if (updatedExports.Contains(exp.Index) && !this.IsForegroundWindow())
             {
-                graph.Clear();
-                Load();
+                CurveEditor_SubModule.LoadExport(exp);
             }
-        }*/
+        }
     }
 }

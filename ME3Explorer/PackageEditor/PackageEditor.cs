@@ -1910,7 +1910,7 @@ namespace ME3Explorer
             int n = 0;
             if (GetSelected(out n) && n >= 0 && pcc.Game == MEGame.ME3)
             {
-                CurveEd.CurveEditor c = new CurveEd.CurveEditor(pcc.getExport(n));
+                CurveEd.CurveEditorHost c = new CurveEd.CurveEditorHost(pcc.getExport(n));
                 c.Show();
             }
         }
