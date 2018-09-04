@@ -1361,65 +1361,9 @@ namespace ME3Explorer
         }
 
         #region TreeViewBoilerplateForDragDrop
-        private void TheTreeView_CheckDropTarget(object sender, DragEventArgs e)
-        {
-            if (!IsValidDropTarget(e.OriginalSource as UIElement))
-            {
-                e.Effects = DragDropEffects.None;
-            }
-            e.Handled = true;
-        }
 
-        private void TheTreeView_Drop(object sender, DragEventArgs e)
-        {
-            e.Effects = DragDropEffects.None;
-            e.Handled = true;
-
-            // Verify that this is a valid drop and then store the drop target 
-            TreeViewItem container = GetNearestContainer(e.OriginalSource as UIElement);
-            if (container != null)
-            {
-                //TreeViewItem sourceDragTVI = (TreeViewItem) e.Data.GetData(;
-                //TreeViewItem target = (TreeViewItem)container.Header;
-                Debugger.Break();
-
-                //
-                /*if ((sourceStuff != null) && (targetStuff != null))
-                {
-                    if (!targetStuff.MoreStuff.Contains(sourceStuff))
-                    {
-                        _targetStuff = targetStuff;
-                        e.Effects = DragDropEffects.Move;
-                    }
-                }*/
-            }
-        }
-
-        private bool IsValidDropTarget(UIElement target)
-        {
-            if (target != null)
-            {
-                TreeViewItem container = GetNearestContainer(target);
-
-                // Ensure that the target is one of the root items 
-                return ((container != null) /*&& (((Stuff)container.Header).Parent == null)*/);
-            }
-
-            return false;
-        }
-
-        private TreeViewItem GetNearestContainer(UIElement element)
-        {
-            // Walk up the element tree to the nearest tree view item. 
-            TreeViewItem container = element as TreeViewItem;
-            while ((container == null) && (element != null))
-            {
-                element = VisualTreeHelper.GetParent(element) as UIElement;
-                container = element as TreeViewItem;
-            }
-
-            return container;
-        }
+        Point _lastMouseDown;
+        TreeViewItem draggedItem, _target;
 
         private void TreeView_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -1429,68 +1373,150 @@ namespace ME3Explorer
             }
         }
 
-        private Point _lastMouseDown;
-
         private void TreeView_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            try
             {
-                Point currentPosition = e.GetPosition(LeftSide_TreeView);
-
-                // Note: This should be based on some accessibility number and not just 2 pixels 
-                if ((Math.Abs(currentPosition.X - _lastMouseDown.X) > 2.0) ||
-                    (Math.Abs(currentPosition.Y - _lastMouseDown.Y) > 2.0))
+                if (e.LeftButton == MouseButtonState.Pressed)
                 {
-                   TreeViewItem selectedItem = (TreeViewItem) LeftSide_TreeView.SelectedItem;
-                    Debug.WriteLine("hi");
-                    
-                    if ((selectedItem != null) && (selectedItem.Parent != null))
+                    Point currentPosition = e.GetPosition(LeftSide_TreeView);
+
+                    if ((Math.Abs(currentPosition.X - _lastMouseDown.X) > 10.0) ||
+                        (Math.Abs(currentPosition.Y - _lastMouseDown.Y) > 10.0))
                     {
-                        TreeViewItem container = GetContainerFromStuff(selectedItem);
-                        if (container != null)
+                        draggedItem = (TreeViewItem)LeftSide_TreeView.SelectedItem;
+                        if (draggedItem != null)
                         {
-                            DragDropEffects finalDropEffect = DragDrop.DoDragDrop(container, selectedItem, DragDropEffects.Move);
-                            if ((finalDropEffect == DragDropEffects.Move) /*&& (_targetStuff != null)*/)
+                            DragDropEffects finalDropEffect = DragDrop.DoDragDrop(LeftSide_TreeView, LeftSide_TreeView.SelectedValue, DragDropEffects.Move);
+                            //Checking target is not null and item is
+                            //dragging(moving)
+                            if ((finalDropEffect == DragDropEffects.Move) && (_target != null))
                             {
-                                // A Move drop was accepted 
-                                //selectedItem.Parent.MoreStuff.Remove(selectedItem);
-                                //_targetStuff.MoreStuff.Add(selectedItem);
-                                //_targetStuff = null;
+                                // A Move drop was accepted
+                                if (!draggedItem.Header.ToString().Equals(_target.Header.ToString()))
+                                {
+                                    CopyItem(draggedItem, _target);
+                                    _target = null;
+                                    draggedItem = null;
+                                }
                             }
                         }
                     }
                 }
             }
+            catch (Exception)
+            {
+            }
         }
 
-        private TreeViewItem GetContainerFromStuff(TreeViewItem stuff)
+        private void TreeView_DragOver(object sender, DragEventArgs e)
         {
-            Stack<TreeViewItem> _stack = new Stack<TreeViewItem>();
-            _stack.Push(stuff);
-            TreeViewItem parent = (TreeViewItem) stuff.Parent;
-
-            while (parent != null)
+            try
             {
-                _stack.Push(parent);
-                if (parent.Parent is TreeViewItem)
+                Point currentPosition = e.GetPosition(LeftSide_TreeView);
+
+                if ((Math.Abs(currentPosition.X - _lastMouseDown.X) > 10.0) ||
+                   (Math.Abs(currentPosition.Y - _lastMouseDown.Y) > 10.0))
                 {
-                    parent = (TreeViewItem)parent.Parent;
-                } else
+                    // Verify that this is a valid drop and then store the drop target
+                    TreeViewItem item = GetNearestContainer(e.OriginalSource as UIElement);
+                    if (CheckDropTarget(draggedItem, item))
+                    {
+                        e.Effects = DragDropEffects.Move;
+                    }
+                    else
+                    {
+                        e.Effects = DragDropEffects.None;
+                    }
+                }
+                e.Handled = true;
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void TreeView_Drop(object sender, DragEventArgs e)
+        {
+            try
+            {
+                e.Effects = DragDropEffects.None;
+                e.Handled = true;
+
+                // Verify that this is a valid drop and then store the drop target
+                TreeViewItem TargetItem = GetNearestContainer
+                    (e.OriginalSource as UIElement);
+                if (TargetItem != null && draggedItem != null)
                 {
-                    break;
+                    _target = TargetItem;
+                    e.Effects = DragDropEffects.Move;
                 }
             }
-
-            ItemsControl container = LeftSide_TreeView;
-            while ((_stack.Count > 0) && (container != null))
+            catch (Exception)
             {
-                TreeViewItem top = _stack.Pop();
-                container = (ItemsControl)container.ItemContainerGenerator.ContainerFromItem(top);
             }
-
-            return container as TreeViewItem;
         }
 
-#endregion
+        private bool CheckDropTarget(TreeViewItem _sourceItem, TreeViewItem _targetItem)
+        {
+            if (_targetItem == null)
+            {
+                Debug.WriteLine("source or target null");
+                return false;
+            }
+            //Check whether the target item is meeting your condition
+            bool _isEqual = false;
+            if (!draggedItem.Header.ToString().Equals(_targetItem.Header.ToString()))
+            {
+                _isEqual = true;
+            }
+            return _isEqual;
+
+        }
+
+        private TreeViewItem GetNearestContainer(UIElement element)
+        {
+            // Walk up the element tree to the nearest tree view item.
+            TreeViewItem container = element as TreeViewItem;
+            while ((container == null) && (element != null))
+            {
+                element = VisualTreeHelper.GetParent(element) as UIElement;
+                container = element as TreeViewItem;
+            }
+            return container;
+        }
+
+        private void CopyItem(TreeViewItem _sourceItem, TreeViewItem _targetItem)
+        {
+
+            //Asking user wether he want to drop the dragged TreeViewItem here or not
+            if (MessageBox.Show("Would you like to drop " + _sourceItem.Header.ToString() + " into " + _targetItem.Header.ToString() + "", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+               /* try
+                {
+                    //adding dragged TreeViewItem in target TreeViewItem
+                    addChild(_sourceItem, _targetItem);
+
+                    //finding Parent TreeViewItem of dragged TreeViewItem 
+                    TreeViewItem ParentItem = FindVisualParent<TreeViewItem>(_sourceItem);
+                    // if parent is null then remove from TreeView else remove from Parent TreeViewItem
+                    if (ParentItem == null)
+                    {
+                        tvParameters.Items.Remove(_sourceItem);
+                    }
+                    else
+                    {
+                        ParentItem.Items.Remove(_sourceItem);
+                    }
+                }
+                catch
+                {
+
+                }*/
+            }
+
+        }
+
+        #endregion
     }
 }

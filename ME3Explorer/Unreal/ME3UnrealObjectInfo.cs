@@ -562,7 +562,7 @@ namespace ME3Explorer.Unreal
         public static void generateInfo()
         {
             string path = ME3Directory.gamePath;
-            string[] files = Directory.GetFiles(Path.Combine(path, "BIOGame", "*.pcc", SearchOption.AllDirectories);
+            string[] files = Directory.GetFiles(Path.Combine(path, "BIOGame"), "*.pcc", SearchOption.AllDirectories);
             string objectName;
             int length = files.Length;
             for (int i = 0; i < length; i++)

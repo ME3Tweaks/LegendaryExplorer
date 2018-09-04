@@ -89,13 +89,7 @@
                 <Button Content="Goto #" Click="GotoButton_Clicked"/>
             </ToolBar>
             <ListView Name="LeftSide_ListView" Grid.Column="0" Grid.Row="1"  SelectionChanged="LeftSide_SelectedItemChanged"/>
-            <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" TreeViewItem.Selected="LeftSide_SelectedItemChanged" FontFamily="Consolas" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" 
-              DragEnter="TheTreeView_CheckDropTarget" 
-              DragLeave="TheTreeView_CheckDropTarget" 
-              DragOver="TheTreeView_CheckDropTarget" 
-              Drop="TheTreeView_Drop"
-              MouseDown="TreeView_MouseDown" 
-              MouseMove="TreeView_MouseMove" >
+            <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" TreeViewItem.Selected="LeftSide_SelectedItemChanged" FontFamily="Consolas" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" >
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">
                         <Setter Property="AllowDrop" Value="True" />
@@ -105,6 +99,10 @@
                                 <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
                             </Trigger>
                         </Style.Triggers>-->
+                        <EventSetter Event="TreeViewItem.DragOver"  Handler="TreeView_DragOver"/>
+                        <EventSetter Event="TreeViewItem.Drop" Handler="TreeView_Drop"/>
+                        <EventSetter Event="TreeViewItem.MouseMove" Handler="TreeView_MouseMove"/>
+                        <EventSetter Event="TreeViewItem.MouseDown" Handler="TreeView_MouseDown"/>
                     </Style>
                 </TreeView.ItemContainerStyle>
             </TreeView>
