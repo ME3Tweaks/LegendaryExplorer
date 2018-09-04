@@ -256,6 +256,10 @@ namespace ME3Explorer
                             {
                                 s += index + " " + entry.GetFullPath;
                             }
+                            else if (index == 0)
+                            {
+                                s += index + " Null";
+                            }
                             else
                             {
                                 s += index + " Index out of bounds of " + (index < 0 ? "Import" : "Export") + " list";

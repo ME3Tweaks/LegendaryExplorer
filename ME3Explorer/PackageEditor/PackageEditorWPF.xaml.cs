@@ -70,6 +70,7 @@ namespace ME3Explorer
 
         public PackageEditorWPF()
         {
+            //ME3UnrealObjectInfo.generateInfo();
             CurrentView = View.Tree;
             InitializeComponent();
 
@@ -1358,5 +1359,138 @@ namespace ME3Explorer
                 }
             }
         }
+
+        #region TreeViewBoilerplateForDragDrop
+        private void TheTreeView_CheckDropTarget(object sender, DragEventArgs e)
+        {
+            if (!IsValidDropTarget(e.OriginalSource as UIElement))
+            {
+                e.Effects = DragDropEffects.None;
+            }
+            e.Handled = true;
+        }
+
+        private void TheTreeView_Drop(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
+
+            // Verify that this is a valid drop and then store the drop target 
+            TreeViewItem container = GetNearestContainer(e.OriginalSource as UIElement);
+            if (container != null)
+            {
+                //TreeViewItem sourceDragTVI = (TreeViewItem) e.Data.GetData(;
+                //TreeViewItem target = (TreeViewItem)container.Header;
+                Debugger.Break();
+
+                //
+                /*if ((sourceStuff != null) && (targetStuff != null))
+                {
+                    if (!targetStuff.MoreStuff.Contains(sourceStuff))
+                    {
+                        _targetStuff = targetStuff;
+                        e.Effects = DragDropEffects.Move;
+                    }
+                }*/
+            }
+        }
+
+        private bool IsValidDropTarget(UIElement target)
+        {
+            if (target != null)
+            {
+                TreeViewItem container = GetNearestContainer(target);
+
+                // Ensure that the target is one of the root items 
+                return ((container != null) /*&& (((Stuff)container.Header).Parent == null)*/);
+            }
+
+            return false;
+        }
+
+        private TreeViewItem GetNearestContainer(UIElement element)
+        {
+            // Walk up the element tree to the nearest tree view item. 
+            TreeViewItem container = element as TreeViewItem;
+            while ((container == null) && (element != null))
+            {
+                element = VisualTreeHelper.GetParent(element) as UIElement;
+                container = element as TreeViewItem;
+            }
+
+            return container;
+        }
+
+        private void TreeView_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                _lastMouseDown = e.GetPosition(LeftSide_TreeView);
+            }
+        }
+
+        private Point _lastMouseDown;
+
+        private void TreeView_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                Point currentPosition = e.GetPosition(LeftSide_TreeView);
+
+                // Note: This should be based on some accessibility number and not just 2 pixels 
+                if ((Math.Abs(currentPosition.X - _lastMouseDown.X) > 2.0) ||
+                    (Math.Abs(currentPosition.Y - _lastMouseDown.Y) > 2.0))
+                {
+                   TreeViewItem selectedItem = (TreeViewItem) LeftSide_TreeView.SelectedItem;
+                    Debug.WriteLine("hi");
+                    
+                    if ((selectedItem != null) && (selectedItem.Parent != null))
+                    {
+                        TreeViewItem container = GetContainerFromStuff(selectedItem);
+                        if (container != null)
+                        {
+                            DragDropEffects finalDropEffect = DragDrop.DoDragDrop(container, selectedItem, DragDropEffects.Move);
+                            if ((finalDropEffect == DragDropEffects.Move) /*&& (_targetStuff != null)*/)
+                            {
+                                // A Move drop was accepted 
+                                //selectedItem.Parent.MoreStuff.Remove(selectedItem);
+                                //_targetStuff.MoreStuff.Add(selectedItem);
+                                //_targetStuff = null;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private TreeViewItem GetContainerFromStuff(TreeViewItem stuff)
+        {
+            Stack<TreeViewItem> _stack = new Stack<TreeViewItem>();
+            _stack.Push(stuff);
+            TreeViewItem parent = (TreeViewItem) stuff.Parent;
+
+            while (parent != null)
+            {
+                _stack.Push(parent);
+                if (parent.Parent is TreeViewItem)
+                {
+                    parent = (TreeViewItem)parent.Parent;
+                } else
+                {
+                    break;
+                }
+            }
+
+            ItemsControl container = LeftSide_TreeView;
+            while ((_stack.Count > 0) && (container != null))
+            {
+                TreeViewItem top = _stack.Pop();
+                container = (ItemsControl)container.ItemContainerGenerator.ContainerFromItem(top);
+            }
+
+            return container as TreeViewItem;
+        }
+
+#endregion
     }
 }

@@ -8,6 +8,7 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:Commands="clr-namespace:ME3Explorer.Commands"
         xmlns:CurveEd="clr-namespace:ME3Explorer.CurveEd"
+        xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
         Loaded="PackageEditorWPF_Loaded"
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
@@ -62,7 +63,7 @@
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
             <StatusBarItem>
-                <TextBlock Name="StatusBar_LeftMostText" Text="Status goes here" />
+                <TextBlock Name="StatusBar_LeftMostText" Text="Package Editor WPF is in beta - not everything works right now!" />
             </StatusBarItem>
         </StatusBar>
         <Grid>
@@ -88,7 +89,25 @@
                 <Button Content="Goto #" Click="GotoButton_Clicked"/>
             </ToolBar>
             <ListView Name="LeftSide_ListView" Grid.Column="0" Grid.Row="1"  SelectionChanged="LeftSide_SelectedItemChanged"/>
-            <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" TreeViewItem.Selected="LeftSide_SelectedItemChanged" FontFamily="Consolas" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"/>
+            <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" TreeViewItem.Selected="LeftSide_SelectedItemChanged" FontFamily="Consolas" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" 
+              DragEnter="TheTreeView_CheckDropTarget" 
+              DragLeave="TheTreeView_CheckDropTarget" 
+              DragOver="TheTreeView_CheckDropTarget" 
+              Drop="TheTreeView_Drop"
+              MouseDown="TreeView_MouseDown" 
+              MouseMove="TreeView_MouseMove" >
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="AllowDrop" Value="True" />
+                        <Setter Property="FontWeight" Value="Normal" />
+                        <!--<Style.Triggers>
+                            <Trigger Property="SharedUI:TreeViewDropHighlighter.IsPossibleDropTarget" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                            </Trigger>
+                        </Style.Triggers>-->
+                    </Style>
+                </TreeView.ItemContainerStyle>
+            </TreeView>
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Grid.Row="1"/>
             <TabControl Name="EditorTabs" Grid.Column="2" Grid.Row="1">
 
@@ -107,7 +126,8 @@
                             <RowDefinition Name="Row_Index" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
 
                             <RowDefinition Name="Row_ExpClass" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
-                            <RowDefinition Name="Row_ImpClass" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/> <!--ImportsOnly-->
+                            <RowDefinition Name="Row_ImpClass" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                            <!--ImportsOnly-->
                             <RowDefinition Name="Row_Superclass" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
 
                             <RowDefinition Name="Row_Packagename" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
@@ -142,7 +162,8 @@
                         <TextBlock Name="InfoTab_ObjectNameIndex_TextBlock" VerticalAlignment="Center" Text="0x18 Object index:" Grid.Row="1" Grid.Column="0"/>
 
                         <TextBlock VerticalAlignment="Center" Text="0x00 Class:" Grid.Row="2" Grid.Column="0"/>
-                        <TextBlock VerticalAlignment="Center" Text="0x08 Class:" Grid.Row="3" Grid.Column="0"/> <!--Import-->
+                        <TextBlock VerticalAlignment="Center" Text="0x08 Class:" Grid.Row="3" Grid.Column="0"/>
+                        <!--Import-->
 
                         <TextBlock VerticalAlignment="Center" Text="0x04 Superclass:" Grid.Row="4" Grid.Column="0"/>
 
@@ -155,7 +176,7 @@
                         <TextBlock VerticalAlignment="Center" Text="Export data offset (dec):" Grid.Row="12" Grid.Column="0"/>
                         <TextBlock VerticalAlignment="Center" Text="Export data offset (hex):" Grid.Row="13" Grid.Column="0"/>
 
-                         <!--rightside-->
+                        <!--rightside-->
                         <ComboBox Name="InfoTab_Objectname_ComboBox" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Objectname_ComboBox_GotFocus" SelectionChanged="Info_ObjectNameComboBox_SelectionChanged"/>
                         <TextBox Name="InfoTab_ObjectnameIndex_TextBox"  VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" TextChanged="Info_IndexTextBox_TextChanged" GotFocus="InfoTab_ObjectNameIndex_ComboBox_GotFocus"/>
 

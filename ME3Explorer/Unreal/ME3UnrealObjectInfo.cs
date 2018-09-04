@@ -562,7 +562,7 @@ namespace ME3Explorer.Unreal
         public static void generateInfo()
         {
             string path = ME3Directory.gamePath;
-            string[] files = Directory.GetFiles(path, "*.pcc", SearchOption.AllDirectories);
+            string[] files = Directory.GetFiles(Path.Combine(path, "BIOGame", "*.pcc", SearchOption.AllDirectories);
             string objectName;
             int length = files.Length;
             for (int i = 0; i < length; i++)
@@ -642,7 +642,8 @@ namespace ME3Explorer.Unreal
             if (pcc.FileName.Contains("BIOGame"))
             {
                 info.pccPath = new string(pcc.FileName.Skip(pcc.FileName.LastIndexOf("BIOGame") + 8).ToArray());
-            } else
+            }
+            else
             {
                 info.pccPath = pcc.FileName; //used for dynamic resolution of files outside the game directory.
             }

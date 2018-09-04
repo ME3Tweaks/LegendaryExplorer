@@ -595,6 +595,7 @@
     <Compile Include="SharedUI\PromptDialog.xaml.cs">
       <DependentUpon>PromptDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\TreeViewDropHighlighter.cs" />
     <Compile Include="SingleInstance.cs" />
     <Compile Include="Soundplorer\DirectReplace.cs">
       <SubType>Form</SubType>
