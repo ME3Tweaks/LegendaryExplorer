@@ -117,7 +117,7 @@ namespace ME3Explorer.Packages
 
             set
             {
-                if (_data.SequenceEqual(value))
+                if (_data != null && value != null && _data.SequenceEqual(value))
                 {
                     return; //if the data is the same don't write it and trigger the side effects
                 }
