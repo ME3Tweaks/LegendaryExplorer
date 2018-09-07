@@ -29,6 +29,11 @@ namespace ME3Explorer.Packages
             get { return _header; }
             set
             {
+                if (_header != null && value != null && _header.SequenceEqual(value))
+                {
+                    return; //if the data is the same don't write it and trigger the side effects
+                }
+
                 bool isFirstLoad = _header == null;
                 _header = value;
                 if (!isFirstLoad)
@@ -178,16 +183,23 @@ namespace ME3Explorer.Packages
         /// <returns></returns>
         public PropertyCollection GetProperties(bool forceReload = false, bool includeNoneProperties = false)
         {
-            if (properties != null && !forceReload)
+            if (properties != null && !forceReload && !includeNoneProperties)
             {
                 return properties;
+            }
+            else if (!includeNoneProperties)
+            {
+                int start = GetPropertyStart();
+                MemoryStream stream = new MemoryStream(_data, false);
+                stream.Seek(start, SeekOrigin.Current);
+                return properties = PropertyCollection.ReadProps(FileRef, stream, ClassName);
             }
             else
             {
                 int start = GetPropertyStart();
                 MemoryStream stream = new MemoryStream(_data, false);
                 stream.Seek(start, SeekOrigin.Current);
-                return properties = PropertyCollection.ReadProps(FileRef, stream, ClassName, includeNoneProperties);
+                return PropertyCollection.ReadProps(FileRef, stream, ClassName, includeNoneProperties); //do not set properties as this may interfere with some other code. may change later.
             }
         }
 

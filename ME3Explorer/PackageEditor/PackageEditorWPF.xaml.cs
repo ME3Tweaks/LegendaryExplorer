@@ -628,7 +628,7 @@ namespace ME3Explorer
             {
                 for (int i = 0; i < pcc.Exports.Count; i++)
                 {
-                    if (pcc.Exports[i].DataChanged)
+                    if (pcc.Exports[i].DataChanged || pcc.Exports[i].HeaderChanged)
                     {
                         Debug.WriteLine("DataChanged for " + i + " " + pcc.Exports[i].GetFullPath);
                     }
@@ -1032,13 +1032,7 @@ namespace ME3Explorer
             if (InterpreterTab_Interpreter.CurrentLoadedExport != null)
             {
                 //This method only listens for save event when clicking save hex changes button, it does not execute the actual save
-                var nodeName = InterpreterTab_Interpreter.CurrentLoadedExport.UIndex.ToString().Replace("-", "n");
-                var updatedNode = AllTreeViewNodes.FirstOrDefault(s => s.Name.Substring(1) == nodeName);
-                if (updatedNode != null)
-                {
-                    updatedNode.Background = Brushes.Yellow;
-                    updatedNode.ToolTip = "This entry has been modified but has not been commited to disk yet";
-                }
+                RefreshExportChangedStatus();
             }
         }
 
@@ -1069,13 +1063,7 @@ namespace ME3Explorer
             {
                 Header_Hexbox.ByteProvider.ApplyChanges();
             }
-            var nodeName = CurrentlyLoadedEntry.UIndex.ToString().Replace("-", "n");
-            var updatedNode = AllTreeViewNodes.FirstOrDefault(s => s.Name.Substring(1) == nodeName);
-            if (updatedNode != null)
-            {
-                updatedNode.Background = Brushes.Yellow;
-                updatedNode.ToolTip = "This entry has been modified but has not been commited to disk yet";
-            }
+            RefreshExportChangedStatus();
             Info_Header_UnsavedChanges.Visibility = Header_Hexbox.ByteProvider.HasChanges() ? Visibility.Visible : Visibility.Hidden;
         }
 

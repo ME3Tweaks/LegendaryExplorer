@@ -252,7 +252,7 @@ namespace ME3Explorer.Unreal
                 p = getPropertyInfo(className, propName, !inStruct);
             }
 
-            if (p == null && export != null && export.ClassName != "Class")
+            if (p == null && export != null && export.ClassName != "Class" && export.idxClass > 0)
             {
                 export = export.FileRef.Exports[export.idxClass - 1]; //make sure you get actual class
                 ClassInfo currentInfo;

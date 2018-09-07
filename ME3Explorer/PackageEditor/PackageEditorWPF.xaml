@@ -12,7 +12,7 @@
         Loaded="PackageEditorWPF_Loaded"
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Package Editor" Height="530" Width="970">
+        Title="Package Editor" Height="650" Width="970">
     <Window.Resources>
         <ItemsPanelTemplate x:Key="VSP">
             <VirtualizingStackPanel/>
@@ -81,8 +81,8 @@
                 <Button Content="Imports" Height="22" Click="ImportsView_Click"/>
                 <Button Content="Exports" Height="22" Margin="3" Click="ExportsView_Click"/>
                 <Button Content="Tree View"  Height="22" Click="TreeView_Click"/>
-                <ComboBox Name="ClassDropdown_Combobox" Width="70" ItemsPanel="{StaticResource VSP}"/>
-                <Button Content="Find"/>
+                <ComboBox Name="ClassDropdown_Combobox" Width="140" ItemsPanel="{StaticResource VSP}" IsTextSearchEnabled="True"/>
+                <Button Content="Find object by class"/>
                 <TextBox Name="Search_TextBox" Width="70"/>
                 <Button Content="Search"/>
                 <TextBox Name="Goto_TextBox" Width="70" KeyDown="Goto_TextBox_KeyDown" />
@@ -171,8 +171,8 @@
                         <TextBlock VerticalAlignment="Center" Text="0x18 Object flags:" Grid.Row="8" Grid.Column="0"/>
                         <TextBlock VerticalAlignment="Center" Text="Header size:" Grid.Row="10" Grid.Column="0"/>
                         <TextBlock VerticalAlignment="Center" Text="Export data size:" Grid.Row="11" Grid.Column="0"/>
-                        <TextBlock VerticalAlignment="Center" Text="Export data offset (dec):" Grid.Row="12" Grid.Column="0"/>
-                        <TextBlock VerticalAlignment="Center" Text="Export data offset (hex):" Grid.Row="13" Grid.Column="0"/>
+                        <TextBlock VerticalAlignment="Center" Text="Export data offset (hex):" Grid.Row="12" Grid.Column="0"/>
+                        <TextBlock VerticalAlignment="Center" Text="Export data offset (dec):" Grid.Row="13" Grid.Column="0"/>
 
                         <!--rightside-->
                         <ComboBox Name="InfoTab_Objectname_ComboBox" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Objectname_ComboBox_GotFocus" SelectionChanged="Info_ObjectNameComboBox_SelectionChanged"/>

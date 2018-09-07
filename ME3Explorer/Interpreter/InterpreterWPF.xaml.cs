@@ -24,6 +24,12 @@ namespace ME3Explorer
     {
         private IMEPackage pcc;
         public IMEPackage Pcc { get { return pcc; } set { pcc = value; defaultStructValues.Clear(); } }
+
+        //Values in this list will cause the ExportToString() method to be called on an objectproperty in InterpreterWPF.
+        //This is useful for end user when they want to view things in a list for example, but all of the items are of the 
+        //same type and are not distinguishable without changing to another export, wasting a lot of time.
+        public readonly string[] ExportToStringConverters = { "LevelStreamingKismet" };
+
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
         private byte[] memory;
         private int memsize;
@@ -243,65 +249,73 @@ namespace ME3Explorer
             //s += "Size: " + prop.
             var nodeColor = Brushes.Black;
 
-            if (prop.PropType != PropertyType.None)
+            // if (prop.PropType != PropertyType.None)
+            //{
+            switch (prop.PropType)
             {
-                switch (prop.PropType)
-                {
-                    case PropertyType.ObjectProperty:
-                        {
-                            s += " Value: ";
-                            int index = (prop as ObjectProperty).Value;
-                            var entry = pcc.getEntry(index);
-                            if (entry != null)
-                            {
-                                s += index + " " + entry.GetFullPath;
-                            }
-                            else if (index == 0)
-                            {
-                                s += index + " Null";
-                            }
-                            else
-                            {
-                                s += index + " Index out of bounds of " + (index < 0 ? "Import" : "Export") + " list";
-                            }
-                            nodeColor = Brushes.Blue;
-                        }
-                        break;
-                    case PropertyType.IntProperty:
-                        {
-                            s += " Value: ";
-                            s += (prop as IntProperty).Value;
-                            nodeColor = Brushes.Green;
-                        }
-                        break;
-                    case PropertyType.FloatProperty:
-                        {
-                            s += " Value: ";
-                            s += (prop as FloatProperty).Value;
-                            nodeColor = Brushes.Red;
-                        }
-                        break;
-                    case PropertyType.BoolProperty:
-                        {
-                            s += " Value: ";
-                            s += (prop as BoolProperty).Value;
-                            nodeColor = Brushes.Orange;
-                        }
-                        break;
-                    case PropertyType.ArrayProperty:
-                        {
-                            s += ", Array Size: " + (prop as ArrayPropertyBase).ValuesAsProperties.Count();
-                        }
-                        break;
-                    case PropertyType.NameProperty:
+                case PropertyType.ObjectProperty:
+                    {
                         s += " Value: ";
-                        s += (prop as NameProperty).NameTableIndex + " " + (prop as NameProperty).Value;
-                        break;
-                    case PropertyType.StructProperty:
-                        s += ", ";
-                        s += (prop as StructProperty).StructType;
-                        break;
-                }
+                        int index = (prop as ObjectProperty).Value;
+                        var entry = pcc.getEntry(index);
+                        if (entry != null)
+                        {
+                            s += index + " " + entry.GetFullPath;
+                        }
+                        else if (index == 0)
+                        {
+                            s += index + " Null";
+                        }
+                        else
+                        {
+                            s += index + " Index out of bounds of " + (index < 0 ? "Import" : "Export") + " list";
+                        }
+                        nodeColor = Brushes.Blue;
+                    }
+                    break;
+                case PropertyType.IntProperty:
+                    {
+                        s += " Value: ";
+                        s += (prop as IntProperty).Value;
+                        nodeColor = Brushes.Green;
+                    }
+                    break;
+                case PropertyType.FloatProperty:
+                    {
+                        s += " Value: ";
+                        s += (prop as FloatProperty).Value;
+                        nodeColor = Brushes.Red;
+                    }
+                    break;
+                case PropertyType.BoolProperty:
+                    {
+                        s += " Value: ";
+                        s += (prop as BoolProperty).Value;
+                        nodeColor = Brushes.Orange;
+                    }
+                    break;
+                case PropertyType.ArrayProperty:
+                    {
+                        ArrayType at = GetArrayType(prop.Name.Name);
+                        s += ", " + at.ToString() + " Array Size: " + (prop as ArrayPropertyBase).ValuesAsProperties.Count();
+                    }
+                    break;
+                case PropertyType.NameProperty:
+                    s += " Value: ";
+                    s += (prop as NameProperty).NameTableIndex + " " + (prop as NameProperty).Value;
+                    break;
+                case PropertyType.ByteProperty:
+                    s += " Value: ";
+                    s += (prop as ByteProperty).Value;
+                    break;
+                case PropertyType.StructProperty:
+                    s += ", ";
+                    s += (prop as StructProperty).StructType;
+                    break;
+                case PropertyType.None:
+                    //  s += " NONE (Name)";
+                    nodeColor = Brushes.SlateGray;
+                    break;
             }
             Debug.WriteLine(s);
             TreeViewItem item = new TreeViewItem()
@@ -338,7 +352,26 @@ namespace ME3Explorer
             {
                 case PropertyType.ObjectProperty:
                     int oIndex = (prop as ObjectProperty).Value;
-                    s += ": " + ((oIndex > 0) ? pcc.getEntry(oIndex).GetFullPath : "[0] Null");
+                    s += ": [" + oIndex + "] ";
+                    if (oIndex > 0 || oIndex < 0)
+                    {
+                        if (oIndex <= pcc.ExportCount && oIndex > pcc.ImportCount * -1)
+                        {
+                            s += pcc.getEntry(oIndex).GetFullPath;
+                            if (oIndex > 0 && ExportToStringConverters.Contains(pcc.Exports[oIndex - 1].ClassName))
+                            {
+                                s += " " + ExportToString(pcc.Exports[oIndex - 1]);
+                            }
+                        }
+                        else
+                        {
+                            s += "Object index out of bounds of PCC imports/exports";
+                        }
+                    }
+                    else
+                    {
+                        s += "Null";
+                    }
                     break;
                 case PropertyType.StructProperty:
 
@@ -376,6 +409,23 @@ namespace ME3Explorer
                     GenerateTreeForProperty(subProp, item);
                 }
             }
+        }
+
+        private string ExportToString(IExportEntry exportEntry)
+        {
+            switch (exportEntry.ObjectName)
+            {
+                case "LevelStreamingKismet":
+                    /*if (pcc.getNameEntry(header.name) == "m_AutoPersistentObjects")
+                    {
+                        s += pcc.getExport(value).PackageFullName + ".";
+                    }*/
+                    //if (pcc.getNameEntry(header.name) == "StreamingLevels")
+                    //{
+                    NameProperty prop = exportEntry.GetProperty<NameProperty>("PackageName");
+                    return "(" + prop.Value.Name + "_" + prop.Value.Number + ")";
+            }
+            return "";
         }
 
         /*
@@ -1320,6 +1370,25 @@ namespace ME3Explorer
             return ArrayType.Int;
         }
 
+        private ArrayType GetArrayType(string propName, string typeName = null)
+        {
+            if (typeName == null)
+            {
+                typeName = className;
+            }
+            switch (pcc.Game)
+            {
+                case MEGame.ME1:
+                    return ME1UnrealObjectInfo.getArrayType(typeName, propName, export: CurrentLoadedExport);
+                case MEGame.ME2:
+                    return ME2UnrealObjectInfo.getArrayType(typeName, propName, export: CurrentLoadedExport);
+                case MEGame.ME3:
+                case MEGame.UDK:
+                    return ME3UnrealObjectInfo.getArrayType(typeName, propName, export: CurrentLoadedExport);
+            }
+            return ArrayType.Int;
+        }
+
         private ArrayType GetArrayType(int propName, string typeName = null)
         {
             if (typeName == null)
@@ -1357,7 +1426,15 @@ namespace ME3Explorer
 
         private void Interpreter_ToggleHexboxWidth_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-
+            GridLength len = HexboxColumnDefinition.Width;
+            if (len.Value < HexboxColumnDefinition.MaxWidth)
+            {
+                HexboxColumnDefinition.Width = new GridLength(HexboxColumnDefinition.MaxWidth);
+            }
+            else
+            {
+                HexboxColumnDefinition.Width = new GridLength(HexboxColumnDefinition.MinWidth);
+            }
         }
 
         private void Interpreter_TreeViewSelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
@@ -1448,6 +1525,35 @@ namespace ME3Explorer
                 CurrentLoadedExport.WriteProperties(props);
                 StartScan();
             }
+        }
+
+        private void ArrayOrderByValueCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        {
+            TreeViewItem tvi = (TreeViewItem)Interpreter_TreeView.SelectedItem;
+            if (tvi != null)
+            {
+                UProperty tag = (UProperty)tvi.Tag;
+                if (tag is ArrayPropertyBase)
+                {
+                    Debug.WriteLine("H!");
+                }
+
+                //PropertyCollection props = CurrentLoadedExport.GetProperties();
+                //props.Remove(tag);
+                //CurrentLoadedExport.WriteProperties(props);
+                //StartScan();
+            }
+        }
+
+        public ItemsControl GetSelectedTreeViewItemParent(TreeViewItem item)
+        {
+            DependencyObject parent = VisualTreeHelper.GetParent(item);
+            while (!(parent is TreeViewItem || parent is TreeView))
+            {
+                parent = VisualTreeHelper.GetParent(parent);
+            }
+
+            return parent as ItemsControl;
         }
     }
 }
