@@ -1548,11 +1548,64 @@ namespace ME3Explorer
                 {
                     Debug.WriteLine("H!");
                 }
+                ArrayType at = GetArrayType(tag.Name); //we may need to account for substructs
+                bool sorted = false;
+                switch (at)
+                {
+                    case ArrayType.Object:
+                        {
+                            ArrayProperty<ObjectProperty> list = (ArrayProperty<ObjectProperty>)tag;
+                            List<ObjectProperty> sortedList = list.ToList();
+                            sortedList.Sort();
+                            list.Values.Clear();
+                            list.Values.AddRange(sortedList);
+                            sorted = true;
+                        }
+                        break;
+                    case ArrayType.Int:
+                        {
+                            ArrayProperty<IntProperty> list = (ArrayProperty<IntProperty>)tag;
+                            List<IntProperty> sortedList = list.ToList();
+                            sortedList.Sort();
+                            list.Values.Clear();
+                            list.Values.AddRange(sortedList);
+                            sorted = true;
+                        }
+                        break;
+                    case ArrayType.Float:
+                        {
+                            ArrayProperty<FloatProperty> list = (ArrayProperty<FloatProperty>)tag;
+                            List<FloatProperty> sortedList = list.ToList();
+                            sortedList.Sort();
+                            list.Values.Clear();
+                            list.Values.AddRange(sortedList);
+                            sorted = true;
+                        }
+                        break;
+                }
+                if (sorted)
+                {
+                    ItemsControl i = GetSelectedTreeViewItemParent(tvi);
+                    //write at root node level
+                    if (i.Tag is nodeType && (nodeType) i.Tag == nodeType.Root)
+                    {
+                        CurrentLoadedExport.WriteProperty(tag);
+                        StartScan();
+                    }
 
+                    //have to figure out how to deal with structproperties or array of array propertie
+                    /*if (tvi.Tag is StructProperty)
+                    {
+                        StructProperty sp = tvi.Tag as StructProperty;
+                        sp.Properties.
+                        CurrentLoadedExport.WriteProperty(tag);
+                        StartScan();
+                    }*/
+                }
                 //PropertyCollection props = CurrentLoadedExport.GetProperties();
                 //props.Remove(tag);
                 //CurrentLoadedExport.WriteProperties(props);
-                //StartScan();
+                //
             }
         }
 

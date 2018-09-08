@@ -638,7 +638,7 @@ namespace ME3Explorer.Unreal
     }
 
     [DebuggerDisplay("IntProperty | {Name} = {Value}")]
-    public class IntProperty : UProperty
+    public class IntProperty : UProperty, IComparable
     {
         int _value;
         public int Value
@@ -672,6 +672,17 @@ namespace ME3Explorer.Unreal
             }
         }
 
+        public int CompareTo(object obj)
+        {
+            if (obj == null) return 1;
+
+            IntProperty otherInt = obj as IntProperty;
+            if (otherInt != null)
+                return this.Value.CompareTo(otherInt.Value);
+            else
+                throw new ArgumentException("Cannot compare IntProperty to object that is not of type IntProperty.");
+        }
+
         public static implicit operator IntProperty(int n)
         {
             return new IntProperty(n);
@@ -684,7 +695,7 @@ namespace ME3Explorer.Unreal
     }
 
     [DebuggerDisplay("FloatProperty | {Name} = {Value}")]
-    public class FloatProperty : UProperty
+    public class FloatProperty : UProperty, IComparable
     {
         float _value;
         public float Value
@@ -718,6 +729,17 @@ namespace ME3Explorer.Unreal
             }
         }
 
+        public int CompareTo(object obj)
+        {
+            if (obj == null) return 1;
+
+            FloatProperty otherFloat = obj as FloatProperty;
+            if (otherFloat != null)
+                return this.Value.CompareTo(otherFloat.Value);
+            else
+                throw new ArgumentException("Cannot compare FloatProperty to object that is not of type FloatProperty.");
+        }
+
         public static implicit operator FloatProperty(float n)
         {
             return new FloatProperty(n);
@@ -730,7 +752,7 @@ namespace ME3Explorer.Unreal
     }
 
     [DebuggerDisplay("ObjectProperty | {Name} = {Value}")]
-    public class ObjectProperty : UProperty
+    public class ObjectProperty : UProperty, IComparable
     {
         int _value;
         public int Value
@@ -762,6 +784,17 @@ namespace ME3Explorer.Unreal
             {
                 stream.WriteValueS32(Value);
             }
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj == null) return 1;
+
+            ObjectProperty otherObj = obj as ObjectProperty;
+            if (otherObj != null)
+                return this.Value.CompareTo(otherObj.Value);
+            else
+                throw new ArgumentException("Cannot compare ObjectProperty to object that is not of type ObjectProperty.");
         }
     }
 

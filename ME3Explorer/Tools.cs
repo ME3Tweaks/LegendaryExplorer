@@ -556,7 +556,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
                 subCategory = "Core",
-                description = "Package Editor WPF is a complete rewrite of Package Editor using the WPF design langauge. It is currently under development."
+                description = "Package Editor WPF is a complete rewrite of Package Editor using the WPF design language. It is currently under development."
             });
             set.Add(new Tool
             {
