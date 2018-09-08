@@ -15,7 +15,7 @@ namespace ME3Explorer.Unreal.Classes
     {
         public byte[] memory;
         public int memsize;
-        public ME3Package pcc;
+        public IMEPackage pcc;
         public List<PropertyReader.Property> props;
         public int readerpos;
         public PSKFile psk;
@@ -148,7 +148,7 @@ namespace ME3Explorer.Unreal.Classes
 
         #endregion 
 
-        public SkeletalMeshOld(ME3Package Pcc, int index)
+        public SkeletalMeshOld(IMEPackage Pcc, int index)
         {
             pcc = Pcc;
             memory = pcc.Exports[index].Data;

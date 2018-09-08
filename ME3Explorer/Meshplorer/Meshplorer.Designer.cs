@@ -46,6 +46,7 @@
             this.exportToOBJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.serializeToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importFromUDKToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importFromOBJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.importOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,7 +73,6 @@
             this.view = new ME3Explorer.Scene3D.SceneRenderControl();
             this.rtb1 = new System.Windows.Forms.RichTextBox();
             this.hb1 = new Be.Windows.Forms.HexBox();
-            this.importFromOBJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -226,47 +226,54 @@
             // exportToPSKToolStripMenuItem
             // 
             this.exportToPSKToolStripMenuItem.Name = "exportToPSKToolStripMenuItem";
-            this.exportToPSKToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportToPSKToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.exportToPSKToolStripMenuItem.Text = "Export to PSK";
             this.exportToPSKToolStripMenuItem.Click += new System.EventHandler(this.exportToPSKToolStripMenuItem_Click);
             // 
             // exportTo3DSToolStripMenuItem
             // 
             this.exportTo3DSToolStripMenuItem.Name = "exportTo3DSToolStripMenuItem";
-            this.exportTo3DSToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportTo3DSToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.exportTo3DSToolStripMenuItem.Text = "Export to 3DS";
             this.exportTo3DSToolStripMenuItem.Click += new System.EventHandler(this.exportTo3DSToolStripMenuItem_Click);
             // 
             // exportToOBJToolStripMenuItem
             // 
             this.exportToOBJToolStripMenuItem.Name = "exportToOBJToolStripMenuItem";
-            this.exportToOBJToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportToOBJToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.exportToOBJToolStripMenuItem.Text = "Export to OBJ";
             this.exportToOBJToolStripMenuItem.Click += new System.EventHandler(this.exportToOBJToolStripMenuItem_Click);
             // 
             // serializeToFileToolStripMenuItem
             // 
             this.serializeToFileToolStripMenuItem.Name = "serializeToFileToolStripMenuItem";
-            this.serializeToFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.serializeToFileToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.serializeToFileToolStripMenuItem.Text = "Serialize to file";
             this.serializeToFileToolStripMenuItem.Click += new System.EventHandler(this.serializeToFileToolStripMenuItem_Click);
             // 
             // importFromUDKToolStripMenuItem
             // 
             this.importFromUDKToolStripMenuItem.Name = "importFromUDKToolStripMenuItem";
-            this.importFromUDKToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importFromUDKToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.importFromUDKToolStripMenuItem.Text = "Import from UDK...";
             this.importFromUDKToolStripMenuItem.Click += new System.EventHandler(this.importFromUDKToolStripMenuItem_Click);
+            // 
+            // importFromOBJToolStripMenuItem
+            // 
+            this.importFromOBJToolStripMenuItem.Name = "importFromOBJToolStripMenuItem";
+            this.importFromOBJToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.importFromOBJToolStripMenuItem.Text = "Import from OBJ";
+            this.importFromOBJToolStripMenuItem.Click += new System.EventHandler(this.importFromOBJToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(171, 6);
             // 
             // importOptionsToolStripMenuItem
             // 
             this.importOptionsToolStripMenuItem.Name = "importOptionsToolStripMenuItem";
-            this.importOptionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importOptionsToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.importOptionsToolStripMenuItem.Text = "Import Options";
             this.importOptionsToolStripMenuItem.Click += new System.EventHandler(this.importOptionsToolStripMenuItem_Click);
             // 
@@ -520,6 +527,7 @@
             this.hb1.LineInfoForeColor = System.Drawing.Color.Empty;
             this.hb1.LineInfoVisible = true;
             this.hb1.Location = new System.Drawing.Point(0, 0);
+            this.hb1.MaxBytesPerLine = 100;
             this.hb1.MinBytesPerLine = 0;
             this.hb1.Name = "hb1";
             this.hb1.ReadOnly = true;
@@ -529,13 +537,6 @@
             this.hb1.TabIndex = 0;
             this.hb1.UseFixedBytesPerLine = true;
             this.hb1.VScrollBarVisible = true;
-            // 
-            // importFromOBJToolStripMenuItem
-            // 
-            this.importFromOBJToolStripMenuItem.Name = "importFromOBJToolStripMenuItem";
-            this.importFromOBJToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.importFromOBJToolStripMenuItem.Text = "Import from OBJ";
-            this.importFromOBJToolStripMenuItem.Click += new System.EventHandler(this.importFromOBJToolStripMenuItem_Click);
             // 
             // Meshplorer
             // 

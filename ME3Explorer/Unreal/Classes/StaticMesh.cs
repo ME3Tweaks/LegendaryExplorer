@@ -23,7 +23,7 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] memory;
         public int index;
         public int memsize;
-        public ME3Package pcc;
+        public IMEPackage pcc;
         public List<PropertyReader.Property> props;
         public int readerpos;
         public PSKFile psk;
@@ -176,7 +176,7 @@ namespace ME3Explorer.Unreal.Classes
         {
         }
 
-        public StaticMesh(ME3Package Pcc, int Index)
+        public StaticMesh(IMEPackage Pcc, int Index)
         {
             pcc = Pcc;
             index = Index;

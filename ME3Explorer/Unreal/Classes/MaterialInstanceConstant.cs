@@ -14,7 +14,7 @@ namespace ME3Explorer.Unreal.Classes
 {
     public class MaterialInstanceConstant
     {
-        public ME3Package pcc;
+        public IMEPackage pcc;
         public byte[] memory;
         public int memsize;
         public int index;
@@ -27,7 +27,7 @@ namespace ME3Explorer.Unreal.Classes
             public string Desc;
         }
 
-        public MaterialInstanceConstant(ME3Package Pcc,int Idx)
+        public MaterialInstanceConstant(IMEPackage Pcc,int Idx)
         {
             
             pcc = Pcc;

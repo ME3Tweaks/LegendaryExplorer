@@ -84,7 +84,8 @@ namespace ME3Explorer.Meshplorer
         {
             try
             {
-                LoadME3Package(path);
+                //LoadME3Package(path);
+                LoadMEPackage(path);
                 MeshplorerMode = 0;
                 RefreshMaterialList();
                 RefreshMeshList();
@@ -162,7 +163,7 @@ namespace ME3Explorer.Meshplorer
 
         public void LoadStaticMesh(int index)
         {
-            stm = new StaticMesh(pcc as ME3Package, index);
+            stm = new StaticMesh(pcc, index);
 
             // Load meshes for the LODs
             preview?.Dispose();
@@ -186,8 +187,8 @@ namespace ME3Explorer.Meshplorer
         {
             DisableLODs();
             UnCheckLODs();
-            skm = new SkeletalMesh(pcc as ME3Package, index);
-            skmold = new SkeletalMeshOld(pcc as ME3Package, index);
+            skm = new SkeletalMesh(pcc, index);
+            skmold = new SkeletalMeshOld(pcc, index);
             hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[index].Data);
 
             // Load preview model

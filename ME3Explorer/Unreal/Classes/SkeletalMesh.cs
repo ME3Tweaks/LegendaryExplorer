@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Microsoft.DirectX;
 using ME3Explorer.Packages;
 using System.Globalization;
+using System.Diagnostics;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -148,7 +149,7 @@ namespace ME3Explorer.Unreal.Classes
                 Position.Z = Container + Position.Z;
                 TangentX = Container + TangentX;
                 TangentY = Container + TangentY;
-                TangentZ = Container + TangentZ;                
+                TangentZ = Container + TangentZ;
                 if (Container.isLoading)
                     UV = new Vector2[4];
                 for (int i = 0; i < 4; i++)
@@ -157,12 +158,12 @@ namespace ME3Explorer.Unreal.Classes
                     UV[i].Y = Container + UV[i].Y;
                 }
                 Color = Container + Color;
-                Bone = Container + Bone;  
+                Bone = Container + Bone;
             }
 
             public TreeNode ToTree(int MyIndex)
             {
-                string s = MyIndex + " : Position : X(" ;
+                string s = MyIndex + " : Position : X(";
                 s += Position.X + ") Y(" + Position.Y + ") Z(" + Position.Z + ") ";
                 s += "TangentX(" + TangentX.ToString("X8") + ") TangentY(" + TangentY.ToString("X8") + ") TangentZ(" + TangentZ.ToString("X8") + ") ";
                 for (int i = 0; i < 4; i++)
@@ -358,7 +359,7 @@ namespace ME3Explorer.Unreal.Classes
 
             private float HalfToFloat(UInt16 val)
             {
-                
+
                 UInt16 u = val;
                 int sign = (u >> 15) & 0x00000001;
                 int exp = (u >> 10) & 0x0000001F;
@@ -413,8 +414,8 @@ namespace ME3Explorer.Unreal.Classes
                 {
                     GPUSkinVertexStruct v = Vertices[i];
                     v.Serialize(Container);
-                    
-                    if(VertexDiff > 0)
+
+                    if (VertexDiff > 0)
                     {
                         byte b = 0;
                         for (int j = 0; j < VertexDiff; j++)
@@ -638,7 +639,7 @@ namespace ME3Explorer.Unreal.Classes
         public int Unk2;
         public List<int> Unk3;
 
-        public ME3Package Owner;
+        public IMEPackage Owner;
         public int MyIndex;
         public bool Loaded = false;
         private int ReadEnd;
@@ -648,7 +649,7 @@ namespace ME3Explorer.Unreal.Classes
             Loaded = true;
         }
 
-        public SkeletalMesh(ME3Package pcc, int Index)
+        public SkeletalMesh(IMEPackage pcc, int Index)
         {
             Loaded = true;
             MyIndex = Index;
@@ -657,8 +658,7 @@ namespace ME3Explorer.Unreal.Classes
             int start = GetPropertyEnd();
             byte[] data = pcc.Exports[Index].Data;
             byte[] buff = new byte[data.Length - start];
-            for (int i = 0; i < data.Length - start; i++)
-                buff[i] = data[i + start];
+            Buffer.BlockCopy(data, 0, buff, 0, buff.Length);
             MemoryStream m = new MemoryStream(buff);
             SerializingContainer Container = new SerializingContainer(m);
             Container.isLoading = true;
@@ -727,7 +727,7 @@ namespace ME3Explorer.Unreal.Classes
             Rotation.X = Container + Rotation.X;
             Rotation.Y = Container + Rotation.Y;
             Rotation.Z = Container + Rotation.Z;
-            
+
         }
 
         private void SerializeBones(SerializingContainer Container)
@@ -834,7 +834,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public int GetPropertyEnd()
         {
-            
+
             int pos = 0x00;
             try
             {
@@ -891,7 +891,7 @@ namespace ME3Explorer.Unreal.Classes
         private TreeNode GetProperties(int n)
         {
             TreeNode res = new TreeNode("Properties");
-            
+
             int pos = 0x00;
             try
             {
@@ -980,7 +980,7 @@ namespace ME3Explorer.Unreal.Classes
         {
             TreeNode res = new TreeNode("Origin/Rotation");
             res.Nodes.Add("Origin : X(" + Origin.X + ") Y(" + Origin.Y + ") Z(" + Origin.Z + ")");
-            res.Nodes.Add("Rotation : X(" + Rotation.X + ") Y(" + Rotation.Y + ") Z(" + Rotation.Z + ")");            
+            res.Nodes.Add("Rotation : X(" + Rotation.X + ") Y(" + Rotation.Y + ") Z(" + Rotation.Z + ")");
             return res;
         }
 
@@ -1029,7 +1029,7 @@ namespace ME3Explorer.Unreal.Classes
 
         private float HalfToFloat(UInt16 val)
         {
-            
+
             UInt16 u = val;
             int sign = (u >> 15) & 0x00000001;
             int exp = (u >> 10) & 0x0000001F;
