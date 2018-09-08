@@ -8,11 +8,13 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:Commands="clr-namespace:ME3Explorer.Commands"
         xmlns:CurveEd="clr-namespace:ME3Explorer.CurveEd"
+        xmlns:dd="urn:gong-wpf-dragdrop"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
         Loaded="PackageEditorWPF_Loaded"
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Package Editor" Height="650" Width="970">
+        Title="Package Editor" Height="650" Width="970"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <ItemsPanelTemplate x:Key="VSP">
             <VirtualizingStackPanel/>
@@ -89,22 +91,22 @@
                 <Button Content="Goto #" Click="GotoButton_Clicked"/>
             </ToolBar>
             <ListView Name="LeftSide_ListView" Grid.Column="0" Grid.Row="1"  SelectionChanged="LeftSide_SelectedItemChanged"/>
-            <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" TreeViewItem.Selected="LeftSide_SelectedItemChanged" FontFamily="Consolas" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" >
-                <TreeView.ItemContainerStyle>
+            <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" TreeViewItem.Selected="LeftSide_SelectedItemChanged" FontFamily="Consolas" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}">
+                <!--<TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">
                         <Setter Property="AllowDrop" Value="True" />
-                        <Setter Property="FontWeight" Value="Normal" />
-                        <!--<Style.Triggers>
-                            <Trigger Property="SharedUI:TreeViewDropHighlighter.IsPossibleDropTarget" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
-                            </Trigger>
-                        </Style.Triggers>-->
                         <EventSetter Event="TreeViewItem.DragOver"  Handler="TreeView_DragOver"/>
                         <EventSetter Event="TreeViewItem.Drop" Handler="TreeView_Drop"/>
                         <EventSetter Event="TreeViewItem.MouseMove" Handler="TreeView_MouseMove"/>
                         <EventSetter Event="TreeViewItem.MouseDown" Handler="TreeView_MouseDown"/>
+                        <Setter Property="FontWeight" Value="Normal" />
+                        <Style.Triggers>
+                            <Trigger Property="SharedUI:TreeViewDropHighlighter.IsPossibleDropTarget" Value="True">
+                                <Setter Property="Background" Value="Green" />
+                            </Trigger>
+                        </Style.Triggers>
                     </Style>
-                </TreeView.ItemContainerStyle>
+                </TreeView.ItemContainerStyle>-->
             </TreeView>
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Grid.Row="1"/>
             <TabControl Name="EditorTabs" Grid.Column="2" Grid.Row="1">

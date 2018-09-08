@@ -306,7 +306,14 @@ namespace ME3Explorer
                     break;
                 case PropertyType.ByteProperty:
                     s += " Value: ";
-                    s += (prop as ByteProperty).Value;
+                    if (prop is EnumProperty)
+                    {
+                        s += (prop as EnumProperty).Value;
+                    }
+                    else
+                    {
+                        s += (prop as ByteProperty).Value;
+                    }
                     break;
                 case PropertyType.StructProperty:
                     s += ", ";
@@ -378,6 +385,10 @@ namespace ME3Explorer
                     break;
                 case PropertyType.BoolProperty:
                     s += ": " + (prop as BoolProperty).Value;
+                    break;
+                case PropertyType.IntProperty:
+                    s += ": ";
+                    s += (prop as IntProperty).Value;
                     break;
                 case PropertyType.NameProperty:
                     s += ": " + (prop as NameProperty).NameTableIndex + " " + (prop as NameProperty).Value;
