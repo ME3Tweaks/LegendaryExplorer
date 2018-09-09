@@ -47,6 +47,7 @@ namespace ME3Explorer
         public static readonly string PackageEditorDataFolder = System.IO.Path.Combine(App.AppDataFolder, @"PackageEditor\");
         private readonly string RECENTFILES_FILE = "RECENTFILES";
         public List<string> RFiles;
+        private SortedDictionary<int, int> crossPCCObjectMap;
         private string currentFile;
         private List<int> ClassNames;
         //private HexBox Header_Hexbox;
@@ -1244,11 +1245,13 @@ namespace ME3Explorer
         private void FindCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Search_TextBox.Focus();
+            Search_TextBox.SelectAll();
         }
 
         private void GotoCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Goto_TextBox.Focus();
+            Goto_TextBox.SelectAll();
         }
 
         private void InfoTab_Flags_ComboBox_ItemSelectionChanged(object sender, Xceed.Wpf.Toolkit.Primitives.ItemSelectionChangedEventArgs e)
@@ -1362,14 +1365,383 @@ namespace ME3Explorer
         {
             if (dropInfo.TargetItem is TreeViewItem && (dropInfo.Data as TreeViewItem).Name != "Root")
             {
-                TreeViewItem sourceItem = dropInfo.Data as TreeViewItem;
-                TreeViewItem targetItem = dropInfo.TargetItem as TreeViewItem;
+                crossPCCObjectMap = new SortedDictionary<int, int>();
+
+                AdvancedTreeViewItem<TreeViewItem> sourceItem = dropInfo.Data as AdvancedTreeViewItem<TreeViewItem>;
+                AdvancedTreeViewItem<TreeViewItem> targetItem = dropInfo.TargetItem as AdvancedTreeViewItem<TreeViewItem>;
                 if (sourceItem == targetItem)
                 {
                     return; //ignore
                 }
                 Debug.WriteLine("Adding source item: " + sourceItem.Tag.ToString());
+
+                //if (DestinationNode.TreeView != sourceNode.TreeView)
+                //{
+                IEntry entry = sourceItem.Tag as IEntry;
+                IEntry targetLinkEntry = targetItem.Tag as IEntry;
+
+                IMEPackage importpcc = entry.FileRef;
+                if (importpcc == null)
+                {
+                    return;
+                }
+
+
+
+                int n = entry.UIndex;
+                int link;
+                if (targetItem.Name == "Root")
+                {
+                    link = 0;
+                }
+                else
+                {
+                    link = targetLinkEntry.UIndex;
+                    //link = link >= 0 ? link + 1 : link;
+                }
+                int nextIndex;
+                if (n >= 0)
+                {
+                    if (!importExport(importpcc, n, link))
+                    {
+                        return;
+                    }
+                    nextIndex = pcc.ExportCount;
+                }
+                else
+                {
+                    getOrAddCrossImport(importpcc.getImport(Math.Abs(n) - 1).GetFullPath, importpcc, pcc, sourceItem.Items.Count == 0 ? link : (int?)null);
+                    //importImport(importpcc, -n - 1, link);
+                    nextIndex = -pcc.ImportCount;
+                }
+
+                //if this node has children
+                if (sourceItem.Items.Count > 0)
+                {
+                    importTree(sourceItem, importpcc, nextIndex);
+                }
+
+                //relinkObjects(importpcc);
+                List<string> relinkResults = new List<string>();
+                relinkResults.AddRange(relinkObjects2(importpcc));
+                relinkResults.AddRange(relinkBinaryObjects(importpcc));
+                crossPCCObjectMap = null;
+
+                RefreshView();
+                goToNumber(n >= 0 ? pcc.ExportCount - 1 : -pcc.ImportCount);
+                if (relinkResults.Count > 0)
+                {
+                    ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.");
+                    ld.Show();
+                }
+                else
+                {
+                    MessageBox.Show("Items have been ported and relinked with no reported issues.\nNote that this does not mean all binary properties were relinked, only supported ones were.");
+                }
+            }
+        }
+
+        private bool importTree(AdvancedTreeViewItem<TreeViewItem> sourceNode, IMEPackage importpcc, int n)
+        {
+            int nextIndex;
+            int index;
+            foreach (AdvancedTreeViewItem<TreeViewItem> node in sourceNode.Items)
+            {
+                index = (node.Tag as IEntry).UIndex;
+                if (index >= 0)
+                {
+                    index--; //code is written for 0-based indexing, while UIndex is not 0 based
+                    if (!importExport(importpcc, index, n))
+                    {
+                        return false;
+                    }
+                    nextIndex = pcc.ExportCount;
+                }
+                else
+                {
+                    getOrAddCrossImport(importpcc.getImport(Math.Abs(index) - 1).GetFullPath, importpcc, pcc);
+                    nextIndex = -pcc.ImportCount;
+                }
+                if (node.Items.Count > 0)
+                {
+                    if (!importTree(node, importpcc, nextIndex))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        private bool importExport(IMEPackage importpcc, int n, int link)
+        {
+            IExportEntry ex = importpcc.getExport(n);
+            IExportEntry nex = null;
+            switch (pcc.Game)
+            {
+                case MEGame.ME1:
+                    nex = new ME1ExportEntry(pcc as ME1Package);
+                    break;
+                case MEGame.ME2:
+                    nex = new ME2ExportEntry(pcc as ME2Package);
+                    break;
+                case MEGame.ME3:
+                    nex = new ME3ExportEntry(pcc as ME3Package);
+                    break;
+                case MEGame.UDK:
+                    nex = new UDKExportEntry(pcc as UDKPackage);
+                    break;
+            }
+            byte[] idata = ex.Data;
+            PropertyCollection props = ex.GetProperties();
+            int start = ex.GetPropertyStart();
+            int end = props.endOffset;
+            MemoryStream res = new MemoryStream();
+            if ((importpcc.getExport(n).ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+            {
+                //ME1, ME2 stack
+                byte[] stackdummy =        { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //Lets hope for the best :D
+                                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
+
+                if (pcc.Game != MEGame.ME3)
+                {
+                    stackdummy = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+                                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
+                }
+                res.Write(stackdummy, 0, stackdummy.Length);
+            }
+            else
+            {
+                res.Write(new byte[start], 0, start);
+            }
+            //store copy of names list in case something goes wrong
+            List<string> names = pcc.Names.ToList();
+            try
+            {
+                props.WriteTo(res, pcc);
+            }
+            catch (Exception exception)
+            {
+                //restore namelist
+                pcc.setNames(names);
+                MessageBox.Show("Error occured while trying to import " + ex.ObjectName + " : " + exception.Message);
+                return false;
+            }
+
+            //set header so addresses are set
+            var header = (byte[])ex.Header.Clone();
+            if ((importpcc.Game == MEGame.ME1 || importpcc.Game == MEGame.ME2) && pcc.Game == MEGame.ME3)
+            {
+                //we need to clip some bytes out of the header
+                byte[] clippedHeader = new byte[header.Length - 4];
+                Buffer.BlockCopy(header, 0, clippedHeader, 0, 0x27);
+                Buffer.BlockCopy(header, 0x2B, clippedHeader, 0x27, header.Length - 0x2B);
+
+                header = clippedHeader;
+            }
+            nex.Header = header;
+            bool dataAlreadySet = false;
+            if (importpcc.Game == MEGame.ME3)
+            {
+                switch (importpcc.getObjectName(ex.idxClass))
+                {
+                    case "SkeletalMesh":
+                        {
+                            SkeletalMesh skl = new SkeletalMesh(importpcc as ME3Package, n);
+                            SkeletalMesh.BoneStruct bone;
+                            for (int i = 0; i < skl.Bones.Count; i++)
+                            {
+                                bone = skl.Bones[i];
+                                string s = importpcc.getNameEntry(bone.Name);
+                                bone.Name = pcc.FindNameOrAdd(s);
+                                skl.Bones[i] = bone;
+                            }
+                            SkeletalMesh.TailNamesStruct tailName;
+                            for (int i = 0; i < skl.TailNames.Count; i++)
+                            {
+                                tailName = skl.TailNames[i];
+                                string s = importpcc.getNameEntry(tailName.Name);
+                                tailName.Name = pcc.FindNameOrAdd(s);
+                                skl.TailNames[i] = tailName;
+                            }
+                            SerializingContainer container = new SerializingContainer(res);
+                            container.isLoading = false;
+                            skl.Serialize(container);
+                            break;
+                        }
+                    default:
+                        //Write binary
+                        res.Write(idata, end, idata.Length - end);
+                        break;
+                }
+            }
+            else if (importpcc.Game == MEGame.UDK)
+            {
+                switch (importpcc.getObjectName(ex.idxClass))
+                {
+                    case "StaticMesh":
+                        {
+                            //res.Write(idata, end, idata.Length - end);
+                            //rewrite data
+                            nex.Data = res.ToArray();
+                            UDKStaticMesh usm = new UDKStaticMesh(importpcc as UDKPackage, n);
+                            usm.PortToME3Export(nex);
+                            dataAlreadySet = true;
+                            break;
+                        }
+                    default:
+                        //Write binary
+                        res.Write(idata, end, idata.Length - end);
+                        break;
+                }
+            }
+            else
+            {
+                //Write binary
+                res.Write(idata, end, idata.Length - end);
+            }
+
+            int classValue = 0;
+            int archetype = 0;
+
+            //Set class. This will only work if the class is an import, as we can't reliably pull in exports without lots of other stuff.
+            if (ex.idxClass < 0)
+            {
+                //The class of the export we are importing is an import. We should attempt to relink this.
+                ImportEntry portingFromClassImport = importpcc.getImport(Math.Abs(ex.idxClass) - 1);
+                ImportEntry newClassImport = getOrAddCrossImport(portingFromClassImport.GetFullPath, importpcc, pcc);
+                classValue = newClassImport.UIndex;
+            }
+
+            //Check archetype.
+            if (ex.idxArchtype < 0)
+            {
+                ImportEntry portingFromClassImport = importpcc.getImport(Math.Abs(ex.idxArchtype) - 1);
+                ImportEntry newClassImport = getOrAddCrossImport(portingFromClassImport.GetFullPath, importpcc, pcc);
+                archetype = newClassImport.UIndex;
+            }
+
+            if (!dataAlreadySet)
+            {
+                nex.Data = res.ToArray();
+            }
+            nex.idxClass = classValue;
+            nex.idxObjectName = pcc.FindNameOrAdd(importpcc.getNameEntry(ex.idxObjectName));
+            nex.idxLink = link;
+            nex.idxArchtype = archetype;
+            nex.idxClassParent = 0;
+            pcc.addExport(nex);
+
+            crossPCCObjectMap[n] = pcc.ExportCount - 1; //0 based.
+            return true;
+        }
+
+        private void ClassDropdown_Combobox_OnKeyDownHandler(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                FindNextObjectByClass();
+            }
+        }
+
+        private void FindNextObjectByClass()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void FindObjectByClass_Click(object sender, RoutedEventArgs e)
+        {
+            FindNextObjectByClass();
+        }
+
+        private void SearchButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            Search();
+        }
+
+        private void Searchbox_OnKeyDownHandler(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                Search();
+            }
+        }
+
+        private void Search()
+        {
+            if (pcc == null)
+                return;
+            int n = LeftSide_ListView.SelectedIndex;
+            if (Search_TextBox.Text == "")
+                return;
+            int start;
+            if (n == -1)
+                start = 0;
+            else
+                start = n + 1;
+
+
+            string searchTerm = Search_TextBox.Text.ToLower();
+            /*if (CurrentView == View.Names)
+            {
+                for (int i = start; i < pcc.Names.Count; i++)
+                    if (pcc.getNameEntry(i).ToLower().Contains(searchTerm))
+                    {
+                        listBox1.SelectedIndex = i;
+                        break;
+                    }
+            }
+            if (CurrentView == View.Imports)
+            {
+                IReadOnlyList<ImportEntry> imports = pcc.Imports;
+                for (int i = start; i < imports.Count; i++)
+                    if (imports[i].ObjectName.ToLower().Contains(searchTerm))
+                    {
+                        listBox1.SelectedIndex = i;
+                        break;
+                    }
+            }
+            if (CurrentView == View.Exports)
+            {
+                IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                for (int i = start; i < Exports.Count; i++)
+                    if (Exports[i].ObjectName.ToLower().Contains(searchTerm))
+                    {
+                        listBox1.SelectedIndex = i;
+                        break;
+                    }
+            }*/
+            if (CurrentView == View.Tree)
+            {
+                //this needs fixed as for some rason its way out of order...
+                AdvancedTreeViewItem<TreeViewItem> selectedNode = (AdvancedTreeViewItem<TreeViewItem>)LeftSide_TreeView.SelectedItem;
+                var items = LeftSide_TreeView.FlattenAdvancedTreeView().ToList();
+                int pos = selectedNode == null ? 0 : items.IndexOf(selectedNode);
+                pos += 1; //search this and 1 forward
+                for (int i = pos; i < items.Count; i++)
+                {
+                    AdvancedTreeViewItem<TreeViewItem> node = items[i];
+                    if (node.Name == "")
+                    {
+                        continue;
+                    }
+
+                    string name = node.Name.Substring(1); //get rid of _
+                    if (name.StartsWith("n"))
+                    {
+                        //its negative
+                        name = $"-{name.Substring(1)}";
+                    }
+
+                    int index = Convert.ToInt32(name);
+                    if (pcc.getObjectName(index.ToUnrealIdx()).ToLower().Contains(searchTerm))
+                    {
+                        goToNumber(index + 1);
+                        break;
+                    }
+                }
             }
         }
     }
+
 }

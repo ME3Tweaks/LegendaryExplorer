@@ -435,6 +435,7 @@
     <Compile Include="PackageEditor\PackageEditorDebugFunctions.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="PackageEditor\PackageEditorWPFRelinker.cs" />
     <Compile Include="PackageEditor\PackageEditorRelinker.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -466,6 +467,7 @@
     <Compile Include="SharedUI\AddPropertyDialogWPF.xaml.cs">
       <DependentUpon>AddPropertyDialogWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\Converters\NullEnabledConverter.cs" />
     <Compile Include="SharedUI\Conveters.cs" />
     <Compile Include="SharedUI\ExceptionHandlerDialogWPF.xaml.cs">
       <DependentUpon>ExceptionHandlerDialogWPF.xaml</DependentUpon>

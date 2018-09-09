@@ -8,6 +8,7 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:Commands="clr-namespace:ME3Explorer.Commands"
         xmlns:CurveEd="clr-namespace:ME3Explorer.CurveEd"
+        xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:dd="urn:gong-wpf-dragdrop"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
         Loaded="PackageEditorWPF_Loaded"
@@ -19,6 +20,7 @@
         <ItemsPanelTemplate x:Key="VSP">
             <VirtualizingStackPanel/>
         </ItemsPanelTemplate>
+        <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"/>
@@ -39,13 +41,13 @@
         <Menu Padding="4" DockPanel.Dock="Top">
             <MenuItem Header="File">
                 <MenuItem Header="_Open" Command="Open" InputGestureText="Ctrl+O"/>
-                <MenuItem Header="_Save"  Command="Save" InputGestureText="Ctrl+S"/>
-                <MenuItem Header="Save as" Command="SaveAs" InputGestureText="Ctrl+Shift+S"/>
+                <MenuItem Header="_Save"  Command="Save" InputGestureText="Ctrl+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                <MenuItem Header="Save as" Command="SaveAs" InputGestureText="Ctrl+Shift+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                 <MenuItem Header="Open in...">
-                    <MenuItem Header="Dialogue Editor"/>
-                    <MenuItem Header="FaceFX Editor"/>
-                    <MenuItem Header="Pathfinding Editor"/>
-                    <MenuItem Header="Sequence Editor"/>
+                    <MenuItem Header="Dialogue Editor"  IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="FaceFX Editor"  IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="Pathfinding Editor"  IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="Sequence Editor"  IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                 </MenuItem>
                 <Separator />
                 <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
@@ -79,16 +81,16 @@
                 <ColumnDefinition Width="6*" />
             </Grid.ColumnDefinitions>
             <ToolBar ToolBarTray.IsLocked="True" Grid.Row="0" Grid.ColumnSpan="3">
-                <Button Content="Names" Height="22" Margin="3" Click="NamesView_Click"/>
-                <Button Content="Imports" Height="22" Click="ImportsView_Click"/>
-                <Button Content="Exports" Height="22" Margin="3" Click="ExportsView_Click"/>
-                <Button Content="Tree View"  Height="22" Click="TreeView_Click"/>
-                <ComboBox Name="ClassDropdown_Combobox" Width="140" ItemsPanel="{StaticResource VSP}" IsTextSearchEnabled="True"/>
-                <Button Content="Find object by class"/>
-                <TextBox Name="Search_TextBox" Width="70"/>
-                <Button Content="Search"/>
-                <TextBox Name="Goto_TextBox" Width="70" KeyDown="Goto_TextBox_KeyDown" />
-                <Button Content="Goto #" Click="GotoButton_Clicked"/>
+                <Button Content="Names" Height="22" Margin="3" Click="NamesView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                <Button Content="Imports" Height="22" Click="ImportsView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                <Button Content="Exports" Height="22" Margin="3" Click="ExportsView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                <Button Content="Tree View"  Height="22" Click="TreeView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                <ComboBox Name="ClassDropdown_Combobox" Width="140" ItemsPanel="{StaticResource VSP}" IsTextSearchEnabled="True" KeyDown="ClassDropdown_Combobox_OnKeyDownHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                <Button Content="Find object by class" Click="FindObjectByClass_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                <TextBox Name="Search_TextBox" Width="70" KeyDown="Searchbox_OnKeyDownHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                <Button Content="Search" Click="SearchButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                <TextBox Name="Goto_TextBox" Width="70" KeyDown="Goto_TextBox_KeyDown" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                <Button Content="Goto #" Click="GotoButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
             </ToolBar>
             <ListView Name="LeftSide_ListView" Grid.Column="0" Grid.Row="1"  SelectionChanged="LeftSide_SelectedItemChanged"/>
             <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" TreeViewItem.Selected="LeftSide_SelectedItemChanged" FontFamily="Consolas" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}">
@@ -109,7 +111,7 @@
                 </TreeView.ItemContainerStyle>-->
             </TreeView>
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Grid.Row="1"/>
-            <TabControl Name="EditorTabs" Grid.Column="2" Grid.Row="1">
+            <TabControl Name="EditorTabs" Grid.Column="2" Grid.Row="1" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
 
                 <!--<TabItem Name="Properties_Tab" Header="Properties"/>-->
                 <TabItem Name="Interpreter_Tab" Header="Interpreter">
