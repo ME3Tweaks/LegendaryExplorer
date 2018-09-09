@@ -454,6 +454,7 @@ namespace ME3Explorer
                                 CurrentObjects.Add(exportEntry.Index);
                                 activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
                             }
+
                             //}
                             start += 4;
                             itemcount++;
@@ -587,6 +588,116 @@ namespace ME3Explorer
                     //fully += pos.Y;
                 }
                 CreateConnections();
+                if (HighlightSequenceReferences)
+                {
+
+                    var referencemap = new Dictionary<int, List<int>>(); //node index mapped to list of things referencing it
+                    foreach (IExportEntry export in pcc.Exports)
+                    {
+                        if (export.ClassName == "SFXSeqEvt_Touch" || export.ClassName.StartsWith("SeqVar") || export.ClassName.StartsWith("SFXSeq"))
+                        {
+                            var props = export.GetProperties();
+                            var originator = props.GetProp<ObjectProperty>("Originator");
+                            var objvalue = props.GetProp<ObjectProperty>("ObjValue");
+
+                            if (originator != null)
+                            {
+                                var index = originator.Value - 1; //0-based indexing is used here
+                                List<int> list;
+                                if (!referencemap.TryGetValue(index, out list))
+                                {
+                                    list = new List<int>();
+                                    referencemap[index] = list;
+                                }
+                                list.Add(export.UIndex);
+                            }
+                            if (objvalue != null)
+                            {
+                                var index = objvalue.Value - 1; //0-based indexing is used here
+                                List<int> list;
+                                if (!referencemap.TryGetValue(index, out list))
+                                {
+                                    list = new List<int>();
+                                    referencemap[index] = list;
+                                }
+                                list.Add(export.UIndex);
+                            }
+                        }
+                    }
+
+                    //Generate refereneced count
+                    for (int i = 0; i < CurrentObjects.Count; i++)
+                    {
+                        List<int> list;
+                        if (referencemap.TryGetValue(CurrentObjects[i], out list))
+                        {
+                            //node is referenced
+                            PathfindingNodeMaster nodeMaster = Objects.FirstOrDefault(o => o.Index == CurrentObjects[i]);
+                            nodeMaster.comment.Text += "\nReferenced in " + list.Count() + " sequence object" + (list.Count() != 1 ? "s" : "");
+                            foreach (int x in list)
+                            {
+                                nodeMaster.comment.Text += "\n" + x;
+                            }
+                        }
+                    }
+                    /*if (export.ClassName == "SFXSeqAct_AIFactory2")
+                        {
+                            PropertyCollection props = export.GetProperties();
+                            var objCommentProp = props.GetProp<ArrayProperty<StrProperty>>("m_aObjComment");
+                            string comment = "";
+                            if (objCommentProp != null) {
+                                foreach (string commentitem in objCommentProp)
+                                {
+                                    comment += commentitem + "\n";
+                                }
+                            }
+
+
+                            List<string> currentReferences;
+                        }*/
+                }
+
+                NodeTagListLoading = true;
+                allTagsCombobox.Items.Clear();
+                List<string> tags = new List<string>();
+                foreach (PathfindingNodeMaster n in Objects)
+                {
+                    if (n.NodeTag != null && n.NodeTag != "")
+                    {
+                        tags.Add(n.NodeTag);
+                    }
+                }
+                tags = tags.Distinct().ToList();
+                tags.Sort();
+                tags.Insert(0, "Node tags list");
+                allTagsCombobox.Items.AddRange(tags.ToArray());
+                allTagsCombobox.SelectedIndex = 0;
+                NodeTagListLoading = false;
+                /*foreach (IExportEntry export in pcc.Exports)
+            {
+
+            }
+            if (sequenceObjectsReferencingThisItem.Count > 0)
+            {
+            ToolStripDropDown submenu = new ToolStripDropDown();
+            foreach (IExportEntry referencing in sequenceObjectsReferencingThisItem)
+            {
+
+                ToolStripMenuItem breaklLinkItem = new ToolStripMenuItem(referencing.UIndex + " " + referencing.GetFullPath);
+                breaklLinkItem.Click += (object o, EventArgs args) =>
+                {
+                    //sequence editor load
+                    var editor = new SequenceEditor(referencing);
+                    editor.BringToFront();
+                    editor.Show();
+                };
+                submenu.Items.Add(breaklLinkItem);
+            }
+
+            exportsReferencingThisNodeToolStripMenuItem.Visible = true;
+            exportsReferencingThisNodeToolStripMenuItem.DropDown = submenu;
+            }*/
+
             }
             foreach (PNode o in Objects)
             {
@@ -604,6 +715,8 @@ namespace ME3Explorer
         private PathfindingNodeMaster CurrentlySelectedSplinePoint;
         private List<int> CurrentlyHighlightedCoverlinkNodes = new List<int>();
         private bool EverythingElseActive;
+        private bool HighlightSequenceReferences;
+        private bool NodeTagListLoading;
 
         public void LoadObject(int index)
         {
@@ -2125,8 +2238,8 @@ namespace ME3Explorer
                 if (createTwoWay)
                 {
                     pcc.addExport(reachSpectoClone.Clone()); //incoming
-                    //Debug.WriteLine("Clone 2 Num Exports: " + pcc.Exports.Count);
-                    //Debug.WriteLine("Clone 2 UIndex: " + pcc.Exports[incomingSpec].UIndex);
+                                                             //Debug.WriteLine("Clone 2 Num Exports: " + pcc.Exports.Count);
+                                                             //Debug.WriteLine("Clone 2 UIndex: " + pcc.Exports[incomingSpec].UIndex);
 
                 }
 
@@ -2887,7 +3000,7 @@ namespace ME3Explorer
                 if (exp.ClassName == "Level" && exp.ObjectName == "PersistentLevel")
                 {
                     int start = findEndOfProps(exp) + 4; //itemcount
-                    //Read persistent level binary
+                                                         //Read persistent level binary
                     byte[] data = exp.Data;
                     uint numberofitems = BitConverter.ToUInt32(data, start);
                     int countoffset = start;
@@ -3474,6 +3587,37 @@ namespace ME3Explorer
             graphEditor.showVolume_SFXBlockingVolume_Ledge = !graphEditor.showVolume_SFXBlockingVolume_Ledge;
             sFXBlockingVolumeLedgeToolStripMenuItem.Checked = graphEditor.showVolume_SFXBlockingVolume_Ledge;
             RefreshView();
+        }
+
+        private void highlightReferencedNodeFromSequencesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HighlightSequenceReferences = !HighlightSequenceReferences;
+            highlightReferencedNodeFromSequencesToolStripMenuItem.Checked = HighlightSequenceReferences;
+            RefreshView();
+            graphEditor.Invalidate();
+        }
+
+        private void findNextNodeWTagToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int currentIndex = activeExportsListbox.SelectedIndex;
+            if (currentIndex < 0) currentIndex = -1;
+            currentIndex++;
+
+            int nodeTagToFindIndex = allTagsCombobox.SelectedIndex;
+            if (nodeTagToFindIndex == 0) return; //empty
+            string nodeTagToFind = (string)allTagsCombobox.Items[nodeTagToFindIndex];
+
+            for (int i = 0; i < Objects.Count(); i++)
+            {
+
+                PathfindingNodeMaster ci = Objects[(i + currentIndex) % Objects.Count()];
+                if (ci.NodeTag == nodeTagToFind)
+                {
+                    int n = ci.Index;
+                    activeExportsListbox.SelectedIndex = CurrentObjects.IndexOf(n);
+                    break;
+                }
+            }
         }
     }
 

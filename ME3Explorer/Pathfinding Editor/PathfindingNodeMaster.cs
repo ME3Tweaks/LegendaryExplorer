@@ -41,7 +41,6 @@ namespace ME3Explorer.Pathfinding_Editor
         protected static Brush dynamicPathfindingNodeBrush = new SolidBrush(Color.FromArgb(46, 184, 25));
         protected static Brush dynamicPathnodefindingNodeBrush = new SolidBrush(Color.FromArgb(80, 184, 25));
 
-
         protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
         public static bool draggingOutlink = false;
         public static bool draggingVarlink = false;
@@ -57,6 +56,7 @@ namespace ME3Explorer.Pathfinding_Editor
         protected Pen outlinePen;
         public SText comment;
         public List<IExportEntry> ReachSpecs = new List<IExportEntry>();
+        public string NodeTag;
 
         public void Select()
         {
@@ -173,6 +173,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         retval += "_" + tagProp.Value.Number;
                     }
+                    NodeTag = retval;
                     return retval;
                 }
             }
