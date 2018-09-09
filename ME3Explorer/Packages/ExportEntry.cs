@@ -215,10 +215,19 @@ namespace ME3Explorer.Packages
 
             int propStart = GetPropertyStart();
             int propEnd = propsEnd();
-            //Debug.WriteLine("Datasize before write: " + this.Data.Length);
-            this.Data = _data.Take(propStart).Concat(m.ToArray()).Concat(_data.Skip(propEnd)).ToArray();
-            //Debug.WriteLine("Datasize after write: " + this.Data.Length);
+            byte[] propData = m.ToArray();
 
+            /*            Debug.WriteLine("Datasize before write: " + this.Data.Length);
+            var newData = _data.Take(propStart);
+            var data1 = newData.ToArray();
+            newData = newData.Concat(propData);
+            var data2 = newData.ToArray();
+            newData = newData.Concat(_data.Skip(propEnd));
+            var data3 = newData.ToArray();
+            */
+            this.Data = _data.Take(propStart).Concat(propData).Concat(_data.Skip(propEnd)).ToArray();
+
+            //Debug.WriteLine("Datasize after write: " + this.Data.Length);
         }
 
         public void WriteProperty(UProperty prop)
