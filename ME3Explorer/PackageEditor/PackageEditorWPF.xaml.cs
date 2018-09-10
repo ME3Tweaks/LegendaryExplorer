@@ -105,6 +105,7 @@ namespace ME3Explorer
                 RefreshView();
                 InitStuff();
                 StatusBar_LeftMostText.Text = System.IO.Path.GetFileName(s);
+                InterpreterTab_Interpreter.unloadExport();
             }
             catch (Exception e)
             {
