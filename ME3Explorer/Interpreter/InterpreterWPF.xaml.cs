@@ -39,7 +39,18 @@ namespace ME3Explorer
         private BioTlkFileSet tlkset;
         private BioTlkFileSet editorTlkSet;
         int readerpos;
-        public IExportEntry CurrentLoadedExport { get; set; }
+        private IExportEntry _currentLoadedExport;
+        public IExportEntry CurrentLoadedExport
+        {
+            get
+            {
+                return _currentLoadedExport;
+            }
+            private set
+            {
+                SetProperty(ref _currentLoadedExport, value);
+            }
+        }
 
         public struct PropHeader
         {

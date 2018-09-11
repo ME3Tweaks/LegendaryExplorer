@@ -749,6 +749,7 @@ namespace ME3Explorer
         {
             if (!GetSelected(out int n))
             {
+                InterpreterTab_Interpreter.unloadExport();
                 return;
             }
             Debug.WriteLine("New selection: " + n);
@@ -760,8 +761,10 @@ namespace ME3Explorer
                 //Info_HeaderRaw_Hexbox.Stream = new System.IO.MemoryStream(pcc.getEntry(n.ToUnrealIdx()).header);
                 //RefreshMetaData();
                 //export
+                Interpreter_Tab.IsEnabled = n >= 0;
                 if (n >= 0)
                 {
+
                     /*PreviewProps(n);
                      if (!packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
                      {
@@ -925,7 +928,7 @@ namespace ME3Explorer
                     CurrentlyLoadedEntry = importEntry;
                     Header_Hexbox.ByteProvider = new DynamicByteProvider(CurrentlyLoadedEntry.Header);
                     Header_Hexbox.ByteProvider.Changed += InfoTab_Header_ByteProvider_InternalChanged;
-                    Script_Tab.Visibility = BinaryInterpreter_Tab.Visibility = Interpreter_Tab.Visibility = Bio2DAViewer_Tab.Visibility = Visibility.Collapsed;
+                    Script_Tab.Visibility = BinaryInterpreter_Tab.Visibility = Bio2DAViewer_Tab.Visibility = Visibility.Collapsed;
                     Metadata_Tab.IsSelected = true;
                     PreviewInfo(n);
                     /*   n = -n - 1;
@@ -1741,6 +1744,36 @@ namespace ME3Explorer
                         break;
                     }
                 }
+            }
+        }
+
+        private void NextTabBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            int index = EditorTabs.SelectedIndex + 1;
+            while (index < EditorTabs.Items.Count)
+            {
+                TabItem ti = (TabItem) EditorTabs.Items[index];
+                if (ti.IsEnabled && ti.IsVisible)
+                {
+                    EditorTabs.SelectedIndex = index;
+                    break;
+                }
+                index++;
+            }
+        }
+
+        private void PreviousTabBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            int index = EditorTabs.SelectedIndex - 1;
+            while (index >= 0)
+            {
+                TabItem ti = (TabItem)EditorTabs.Items[index];
+                if (ti.IsEnabled && ti.IsVisible)
+                {
+                    EditorTabs.SelectedIndex = index;
+                    break;
+                }
+                index--;
             }
         }
     }

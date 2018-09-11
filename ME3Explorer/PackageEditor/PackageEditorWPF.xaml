@@ -29,6 +29,9 @@
         <CommandBinding Command="Commands:PackageEditorWPFCommands.ComparePackageCommand" Executed="ComparePackageBinding_Executed"/>
         <CommandBinding Command="Commands:PackageEditorWPFCommands.FindCommand" Executed="FindCommandBinding_Executed"/>
         <CommandBinding Command="Commands:PackageEditorWPFCommands.GotoCommand" Executed="GotoCommandBinding_Executed"/>
+        <CommandBinding Command="Commands:PackageEditorWPFCommands.NextTabCommand" Executed="NextTabBinding_Executed"/>
+        <CommandBinding Command="Commands:PackageEditorWPFCommands.PreviousTabCommand" Executed="PreviousTabBinding_Executed"/>
+
     </Window.CommandBindings>
     <Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Control" Command="Open"/>
@@ -36,6 +39,9 @@
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="SaveAs"/>
         <KeyBinding Key="F" Modifiers="Control" Command="Commands:PackageEditorWPFCommands.FindCommand"/>
         <KeyBinding Key="G" Modifiers="Control" Command="Commands:PackageEditorWPFCommands.GotoCommand"/>
+        <KeyBinding Key="Right" Modifiers="Alt" Command="Commands:PackageEditorWPFCommands.NextTabCommand"/>
+        <KeyBinding Key="Left" Modifiers="Alt" Command="Commands:PackageEditorWPFCommands.PreviousTabCommand"/>
+
     </Window.InputBindings>
     <DockPanel>
         <Menu Padding="4" DockPanel.Dock="Top">
