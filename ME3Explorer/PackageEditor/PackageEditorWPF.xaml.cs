@@ -643,6 +643,11 @@ namespace ME3Explorer
             }
         }
 
+        /// <summary>
+        /// Gets the selected entry in the left side view.
+        /// </summary>
+        /// <param name="n">int that will be updated to point to the selected entry index. Will return 0 if nothing was selected (check the return value for false).</param>
+        /// <returns>True if an item was selected, false if nothing was selected.</returns>
         private bool GetSelected(out int n)
         {
             if (CurrentView == View.Tree && LeftSide_TreeView.SelectedItem != null && ((TreeViewItem)LeftSide_TreeView.SelectedItem).Name.StartsWith("_"))
@@ -745,6 +750,11 @@ namespace ME3Explorer
             loadingNewData = false;
         }
 
+        /// <summary>
+        /// Prepares the right side of PackageEditorWPF for the current selected entry.
+        /// This may take a moment if the data that is being loaded is large or complex.
+        /// </summary>
+        /// <param name="isRefresh">(needs testing what this does)/param>
         private void Preview(bool isRefresh = false)
         {
             if (!GetSelected(out int n))
@@ -1196,6 +1206,11 @@ namespace ME3Explorer
             Header_Hexbox.SelectionLength = 4;
         }
 
+        /// <summary>
+        /// Handler for when the Goto button is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GotoButton_Clicked(object sender, RoutedEventArgs e)
         {
             int n;
@@ -1204,18 +1219,23 @@ namespace ME3Explorer
                 goToNumber(n);
             }
         }
-        private void goToNumber(int n)
+
+        /// <summary>
+        /// Selects the entry that corresponds to the given index
+        /// </summary>
+        /// <param name="entryIndex">Unreal-indexed entry number</param>
+        private void goToNumber(int entryIndex)
         {
-            if (n == 0)
+            if (entryIndex == 0)
             {
                 return; //PackageEditorWPF uses Unreal Indexing for entries
             }
             if (CurrentView == View.Tree)
             {
-                if (n >= -pcc.ImportCount && n < pcc.ExportCount)
+                if (entryIndex >= -pcc.ImportCount && entryIndex < pcc.ExportCount)
                 {
                     List<AdvancedTreeViewItem<TreeViewItem>> noNameNodes = AllTreeViewNodes.Where(s => s.Name.Length == 0).ToList();
-                    var nodeName = n.ToString().Replace("-", "n");
+                    var nodeName = entryIndex.ToString().Replace("-", "n");
                     List<AdvancedTreeViewItem<TreeViewItem>> nodes = AllTreeViewNodes.Where(s => s.Name.Length > 0 && s.Name.Substring(1) == nodeName).ToList();
                     if (nodes.Count > 0)
                     {
@@ -1226,12 +1246,18 @@ namespace ME3Explorer
             }
             else
             {
-                if (n >= 0 && n < LeftSide_ListView.Items.Count)
+                if (entryIndex >= 0 && entryIndex < LeftSide_ListView.Items.Count)
                 {
-                    LeftSide_ListView.SelectedIndex = n;
+                    LeftSide_ListView.SelectedIndex = entryIndex;
                 }
             }
         }
+
+        /// <summary>
+        /// Handler for the keydown event while the Goto Textbox is focused. It will issue the Goto button function when the enter key is pressed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Goto_TextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
@@ -1240,24 +1266,43 @@ namespace ME3Explorer
             }
         }
 
+        /// <summary>
+        /// Subclass of TreeViewItem that enables tracking of parent objects.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
         public class AdvancedTreeViewItem<T> : TreeViewItem
         {
             public T ParentNodeValue { get; set; }
             public T RootParentNodeValue { get; set; }
         }
 
+        /// <summary>
+        /// Command binding for when the Find command binding is issued (CTRL F)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FindCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Search_TextBox.Focus();
             Search_TextBox.SelectAll();
         }
 
+        /// <summary>
+        /// Command binding for when the Goto command is issued (CTRL G)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GotoCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Goto_TextBox.Focus();
             Goto_TextBox.SelectAll();
         }
 
+        /// <summary>
+        /// Handler for when the flags combobox item changes values in the metadata tab
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void InfoTab_Flags_ComboBox_ItemSelectionChanged(object sender, Xceed.Wpf.Toolkit.Primitives.ItemSelectionChangedEventArgs e)
         {
             if (!loadingNewData)
@@ -1276,6 +1321,11 @@ namespace ME3Explorer
             }
         }
 
+        /// <summary>
+        /// Command binding for opening the ComparePackage tool
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ComparePackageBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             if (pcc != null)
@@ -1356,6 +1406,10 @@ namespace ME3Explorer
             }
         }
 
+        /// <summary>
+        /// Drag/drop dragover handler for the entry list treeview
+        /// </summary>
+        /// <param name="dropInfo"></param>
         void IDropTarget.DragOver(IDropInfo dropInfo)
         {
             if ((dropInfo.Data as TreeViewItem).Name != "Root")
@@ -1365,6 +1419,10 @@ namespace ME3Explorer
             }
         }
 
+        /// <summary>
+        /// Drop handler for the entry list treeview
+        /// </summary>
+        /// <param name="dropInfo"></param>
         void IDropTarget.Drop(IDropInfo dropInfo)
         {
             if (dropInfo.TargetItem is TreeViewItem && (dropInfo.Data as TreeViewItem).Name != "Root")
@@ -1445,7 +1503,14 @@ namespace ME3Explorer
             }
         }
 
-        private bool importTree(AdvancedTreeViewItem<TreeViewItem> sourceNode, IMEPackage importpcc, int n)
+        /// <summary>
+        /// Recursive importing function for importing items from another PCC.
+        /// </summary>
+        /// <param name="sourceNode">Source node from the importing instance of PackageEditorWPF</param>
+        /// <param name="importpcc">PCC to import from</param>
+        /// <param name="link">The entry link the tree will be imported under</param>
+        /// <returns></returns>
+        private bool importTree(AdvancedTreeViewItem<TreeViewItem> sourceNode, IMEPackage importpcc, int link)
         {
             int nextIndex;
             int index;
@@ -1455,7 +1520,7 @@ namespace ME3Explorer
                 if (index >= 0)
                 {
                     index--; //code is written for 0-based indexing, while UIndex is not 0 based
-                    if (!importExport(importpcc, index, n))
+                    if (!importExport(importpcc, index, link))
                     {
                         return false;
                     }
@@ -1477,6 +1542,13 @@ namespace ME3Explorer
             return true;
         }
 
+        /// <summary>
+        /// Imports an export from another PCC into this editor's active one.
+        /// </summary>
+        /// <param name="importpcc">PCC to import from</param>
+        /// <param name="n">Export index in the importing PCC</param>
+        /// <param name="link">Export/Import index in the local PCC that will be used as the parent to attach to.</param>
+        /// <returns></returns>
         private bool importExport(IMEPackage importpcc, int n, int link)
         {
             IExportEntry ex = importpcc.getExport(n);
@@ -1640,6 +1712,11 @@ namespace ME3Explorer
             return true;
         }
 
+        /// <summary>
+        /// Handles pressing the enter key when the class dropdown is active. Automatically will attempt to find the next object by class.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ClassDropdown_Combobox_OnKeyDownHandler(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
@@ -1648,21 +1725,39 @@ namespace ME3Explorer
             }
         }
 
+        /// <summary>
+        /// Finds the next entry that has the selected class from the dropdown.
+        /// </summary>
         private void FindNextObjectByClass()
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Find object by class button click handler
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FindObjectByClass_Click(object sender, RoutedEventArgs e)
         {
             FindNextObjectByClass();
         }
 
+        /// <summary>
+        /// Click handler for the search button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SearchButton_Clicked(object sender, RoutedEventArgs e)
         {
             Search();
         }
 
+        /// <summary>
+        /// Key handler for the search box. This listens for the enter key.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Searchbox_OnKeyDownHandler(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
@@ -1671,6 +1766,9 @@ namespace ME3Explorer
             }
         }
 
+        /// <summary>
+        /// Takes the contents of the search box and finds the next instance of it.
+        /// </summary>
         private void Search()
         {
             if (pcc == null)
@@ -1747,6 +1845,11 @@ namespace ME3Explorer
             }
         }
 
+        /// <summary>
+        /// Binding for moving to the next visible and enabled tab.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NextTabBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             int index = EditorTabs.SelectedIndex + 1;
@@ -1762,6 +1865,11 @@ namespace ME3Explorer
             }
         }
 
+        /// <summary>
+        /// Binding to move to the previous visible and enabled tab.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PreviousTabBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             int index = EditorTabs.SelectedIndex - 1;
