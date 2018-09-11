@@ -16,6 +16,7 @@ using Be.Windows.Forms;
 using System.Windows;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using ME3Explorer.SharedUI;
 
 namespace ME3Explorer
 {
@@ -1617,7 +1618,7 @@ namespace ME3Explorer
                 {
                     ItemsControl i = GetSelectedTreeViewItemParent(tvi);
                     //write at root node level
-                    if (i.Tag is nodeType && (nodeType) i.Tag == nodeType.Root)
+                    if (i.Tag is nodeType && (nodeType)i.Tag == nodeType.Root)
                     {
                         CurrentLoadedExport.WriteProperty(tag);
                         StartScan();
@@ -1652,7 +1653,84 @@ namespace ME3Explorer
 
         private void Interpreter_AddProperty_Click(object sender, RoutedEventArgs e)
         {
+            if (pcc.Game == MEGame.UDK)
+            {
+                MessageBox.Show("Cannot add properties to UDK UPK files.", "Unsupported operation");
+                return;
+            }
 
+            PropertyCollection currentProps = CurrentLoadedExport.GetProperties();
+            List<string> props = new List<string>();
+            foreach (UProperty cProp in currentProps)
+            {
+                props.Add(cProp.Name);
+            }
+
+            string prop = AddPropertyDialogWPF.GetProperty(CurrentLoadedExport, props, pcc.Game);
+            if (prop != null)
+            {
+                string origname = CurrentLoadedExport.ClassName;
+                string temp = CurrentLoadedExport.ClassName;
+                List<string> classes = new List<string>();
+                Dictionary<string, ClassInfo> classList;
+                switch (pcc.Game)
+                {
+                    case MEGame.ME1:
+                        classList = ME1Explorer.Unreal.ME1UnrealObjectInfo.Classes;
+                        break;
+                    case MEGame.ME2:
+                        classList = ME2Explorer.Unreal.ME2UnrealObjectInfo.Classes;
+                        break;
+                    case MEGame.ME3:
+                    default:
+                        classList = ME3UnrealObjectInfo.Classes;
+                        break;
+                }
+                ClassInfo currentInfo = null;
+                if (!classList.ContainsKey(temp))
+                {
+                    IExportEntry exportTemp = CurrentLoadedExport.FileRef.Exports[CurrentLoadedExport.idxClass - 1];
+                    //current object is not in classes db, temporarily add it to the list
+                    switch (pcc.Game)
+                    {
+                        case MEGame.ME1:
+                            currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(exportTemp);
+                            break;
+                        case MEGame.ME2:
+                            currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(exportTemp);
+                            break;
+                        case MEGame.ME3:
+                        default:
+                            currentInfo = ME3UnrealObjectInfo.generateClassInfo(exportTemp);
+                            break;
+                    }
+                    currentInfo.baseClass = exportTemp.ClassParent;
+                }
+
+                UProperty property = generateNewProperty(prop, currentInfo);
+                //AddProperty(prop, currentInfo);
+
+                //RefreshMem();
+            }
+        }
+
+        private UProperty generateNewProperty(string prop, ClassInfo nonVanillaClassInfo)
+        {
+            if (prop != null)
+            {
+                PropertyInfo info = GetPropertyInfo(prop, className, nonVanillaClassInfo: nonVanillaClassInfo);
+                if (info == null)
+                {
+                    MessageBox.Show("Error reading property.", "Error");
+                    return null;
+                }
+                if (info.type == PropertyType.StructProperty /* && pcc.Game != MEGame.ME3*/)
+                {
+                    MessageBox.Show("Cannot add StructProperties when editing ME1 or ME2 files (or ME3 currently).", "Sorry :(");
+                    return null;
+                }
+            }
+            return null;
         }
 
         #region Property Changed Notification

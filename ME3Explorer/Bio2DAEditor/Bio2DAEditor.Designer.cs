@@ -56,7 +56,6 @@ namespace ME3Explorer
             this.exportToExcelButton = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.hb1 = new Be.Windows.Forms.HexBox();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -74,11 +73,11 @@ namespace ME3Explorer
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.panel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.nodeContextMenuStrip1.SuspendLayout();
@@ -109,7 +108,7 @@ namespace ME3Explorer
             this.exportToExcelButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(992, 27);
+            this.toolStrip1.Size = new System.Drawing.Size(992, 25);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -125,7 +124,7 @@ namespace ME3Explorer
             this.saveHexButton.Image = ((System.Drawing.Image)(resources.GetObject("saveHexButton.Image")));
             this.saveHexButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.saveHexButton.Name = "saveHexButton";
-            this.saveHexButton.Size = new System.Drawing.Size(107, 24);
+            this.saveHexButton.Size = new System.Drawing.Size(107, 22);
             this.saveHexButton.Text = "Save Hex Changes";
             this.saveHexButton.ToolTipText = "Saves hex changes in-memory (not to disk)";
             this.saveHexButton.Click += new System.EventHandler(this.saveHexButton_Click);
@@ -136,9 +135,8 @@ namespace ME3Explorer
             this.toggleHexWidthButton.Image = ((System.Drawing.Image)(resources.GetObject("toggleHexWidthButton.Image")));
             this.toggleHexWidthButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toggleHexWidthButton.Name = "toggleHexWidthButton";
-            this.toggleHexWidthButton.Size = new System.Drawing.Size(105, 24);
+            this.toggleHexWidthButton.Size = new System.Drawing.Size(105, 22);
             this.toggleHexWidthButton.Text = "Toggle Hex Width";
-            this.toggleHexWidthButton.Click += new System.EventHandler(this.toggleHexWidthButton_Click);
             // 
             // setValueSeparator
             // 
@@ -199,13 +197,12 @@ namespace ME3Explorer
             // addArrayElementButton
             // 
             this.addArrayElementButton.Name = "addArrayElementButton";
-            this.addArrayElementButton.Size = new System.Drawing.Size(23, 4);
-
+            this.addArrayElementButton.Size = new System.Drawing.Size(23, 22);
             // 
             // deleteArrayElementButton
             // 
             this.deleteArrayElementButton.Name = "deleteArrayElementButton";
-            this.deleteArrayElementButton.Size = new System.Drawing.Size(23, 4);
+            this.deleteArrayElementButton.Size = new System.Drawing.Size(23, 22);
             // 
             // moveUpButton
             // 
@@ -215,17 +212,17 @@ namespace ME3Explorer
             // moveDownButton
             // 
             this.moveDownButton.Name = "moveDownButton";
-            this.moveDownButton.Size = new System.Drawing.Size(23, 4);
+            this.moveDownButton.Size = new System.Drawing.Size(23, 22);
             // 
             // addPropButton
             // 
             this.addPropButton.Name = "addPropButton";
-            this.addPropButton.Size = new System.Drawing.Size(23, 4);
+            this.addPropButton.Size = new System.Drawing.Size(23, 22);
             // 
             // findBox
             // 
             this.findBox.Name = "findBox";
-            this.findBox.Size = new System.Drawing.Size(100, 23);
+            this.findBox.Size = new System.Drawing.Size(100, 25);
             this.findBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.findButton_Pressed);
             // 
             // findButton
@@ -234,21 +231,21 @@ namespace ME3Explorer
             this.findButton.Image = ((System.Drawing.Image)(resources.GetObject("findButton.Image")));
             this.findButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.findButton.Name = "findButton";
-            this.findButton.Size = new System.Drawing.Size(34, 19);
+            this.findButton.Size = new System.Drawing.Size(34, 22);
             this.findButton.Text = "Find";
             this.findButton.Click += new System.EventHandler(this.FindButton_Click);
             // 
             // viewModeDropDownList
             // 
             this.viewModeDropDownList.Name = "viewModeDropDownList";
-            this.viewModeDropDownList.Size = new System.Drawing.Size(121, 23);
+            this.viewModeDropDownList.Size = new System.Drawing.Size(121, 25);
             // 
             // exportToExcelButton
             // 
             this.exportToExcelButton.Image = ((System.Drawing.Image)(resources.GetObject("exportToExcelButton.Image")));
             this.exportToExcelButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.exportToExcelButton.Name = "exportToExcelButton";
-            this.exportToExcelButton.Size = new System.Drawing.Size(143, 20);
+            this.exportToExcelButton.Size = new System.Drawing.Size(143, 22);
             this.exportToExcelButton.Text = "Export table to xlsx file";
             this.exportToExcelButton.Click += new System.EventHandler(this.exportToExcel_Click);
             // 
@@ -256,7 +253,7 @@ namespace ME3Explorer
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 27);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -268,7 +265,6 @@ namespace ME3Explorer
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
             this.splitContainer1.Size = new System.Drawing.Size(992, 351);
-
             this.splitContainer1.SplitterDistance = 205;
             this.splitContainer1.TabIndex = 3;
             this.splitContainer1.SplitterMoving += new System.Windows.Forms.SplitterCancelEventHandler(this.splitContainer1_SplitterMoving);
@@ -282,25 +278,17 @@ namespace ME3Explorer
             this.hb1.LineInfoForeColor = System.Drawing.Color.Empty;
             this.hb1.LineInfoVisible = true;
             this.hb1.Location = new System.Drawing.Point(0, 0);
+            this.hb1.MaxBytesPerLine = 100;
             this.hb1.MinBytesPerLine = 4;
             this.hb1.Name = "hb1";
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb1.Size = new System.Drawing.Size(205, 349);
+            this.hb1.Size = new System.Drawing.Size(205, 351);
             this.hb1.StringViewVisible = true;
             this.hb1.TabIndex = 0;
             this.hb1.VScrollBarVisible = true;
             this.hb1.SelectionStartChanged += new System.EventHandler(this.hb1_SelectionChanged);
             this.hb1.SelectionLengthChanged += new System.EventHandler(this.hb1_SelectionChanged);
-
-            // dataGridView1
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(783, 349);
-            this.dataGridView1.TabIndex = 0;
-
             // splitContainer2
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -334,6 +322,7 @@ namespace ME3Explorer
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dataGridView1.Size = new System.Drawing.Size(783, 282);
             this.dataGridView1.TabIndex = 0;
+            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dataGridView1.SelectionChanged += new System.EventHandler(this.Table_SelectionChanged);
             // 
             // panel1
@@ -433,9 +422,6 @@ namespace ME3Explorer
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
@@ -443,7 +429,6 @@ namespace ME3Explorer
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.nodeContextMenuStrip1.ResumeLayout(false);

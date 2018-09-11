@@ -2685,7 +2685,7 @@ namespace ME3Explorer
                     break;
             }
             ClassInfo currentInfo = null;
-            if (!classList.ContainsKey(temp))
+            if (!classList.ContainsKey(temp) && export.idxClass > 0)
             {
                 IExportEntry exportTemp = export.FileRef.Exports[export.idxClass - 1];
                 //current object is not in classes db, temporarily add it to the list

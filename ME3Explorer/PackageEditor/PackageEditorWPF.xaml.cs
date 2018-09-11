@@ -97,7 +97,27 @@ namespace ME3Explorer
                 currentFile = s;
                 StatusBar_LeftMostText.Text = "Loading " + System.IO.Path.GetFileName(s);
                 LoadMEPackage(s);
+                StatusBar_GameID_Container.Visibility = Visibility.Visible;
 
+                switch (Pcc.Game)
+                {
+                    case MEGame.ME1:
+                        StatusBar_GameID_Text.Text = "ME1";
+                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
+                        break;
+                    case MEGame.ME2:
+                        StatusBar_GameID_Text.Text = "ME2";
+                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Maroon);
+                        break;
+                    case MEGame.ME3:
+                        StatusBar_GameID_Text.Text = "ME3";
+                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.DarkSeaGreen);
+                        break;
+                    case MEGame.UDK:
+                        StatusBar_GameID_Text.Text = "UDK";
+                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.IndianRed);
+                        break;
+                }
                 /*interpreterControl.Pcc = pcc;
                 binaryInterpreterControl.Pcc = pcc;
                 bio2DAEditor1.Pcc = pcc;
@@ -609,7 +629,7 @@ namespace ME3Explorer
                     InfoTab_PackageLink_ComboBox.SelectedIndex = imports.Count; //Class, 0
                 }
 
-                InfoTab_PackageFile_ComboBox.SelectedItem = importEntry.PackageFile;
+                InfoTab_PackageFile_ComboBox.SelectedItem = System.IO.Path.GetFileNameWithoutExtension(importEntry.PackageFile);
                 InfoTab_ObjectnameIndex_TextBox.Text = BitConverter.ToInt32(importEntry.Header, HEADER_OFFSET_IMP_IDXOBJECTNAME + 4).ToString();
                 /*infoHeaderBox.Text = "Import Header";
                  superclassTextBox.Visible = superclassLabel.Visible = false;
@@ -757,6 +777,7 @@ namespace ME3Explorer
         /// <param name="isRefresh">(needs testing what this does)/param>
         private void Preview(bool isRefresh = false)
         {
+            Info_Header_UnsavedChanges.Visibility = Visibility.Collapsed;
             if (!GetSelected(out int n))
             {
                 InterpreterTab_Interpreter.unloadExport();
@@ -877,22 +898,20 @@ namespace ME3Explorer
                     else
                     {
                         removeBinaryTabPane();
-                    }
+                    }*/
 
-                    if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
+                    if (Bio2DAEditorWPF.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
                     {
-                        if (!packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
-                        {
-                            packageEditorTabPane.TabPages.Add(bio2daEditorTab);
-                        }
+                        Bio2DAViewer_Tab.Visibility = Visibility.Visible;
+                        Bio2DATab_Bio2DAEditor.LoadExport(exportEntry);
                     }
                     else
                     {
-                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
-                        {
-                            packageEditorTabPane.TabPages.Remove(bio2daEditorTab);
-                        }
+                        Bio2DAViewer_Tab.Visibility = Visibility.Collapsed;
+                        Bio2DATab_Bio2DAEditor.UnloadExport();
                     }
+
+                    /*
 
                     headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.header);*/
                     if (!isRefresh)
@@ -1855,7 +1874,7 @@ namespace ME3Explorer
             int index = EditorTabs.SelectedIndex + 1;
             while (index < EditorTabs.Items.Count)
             {
-                TabItem ti = (TabItem) EditorTabs.Items[index];
+                TabItem ti = (TabItem)EditorTabs.Items[index];
                 if (ti.IsEnabled && ti.IsVisible)
                 {
                     EditorTabs.SelectedIndex = index;

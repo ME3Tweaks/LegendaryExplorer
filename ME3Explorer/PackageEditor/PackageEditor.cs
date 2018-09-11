@@ -151,7 +151,7 @@ namespace ME3Explorer
                 LoadMEPackage(s);
                 interpreterControl.Pcc = pcc;
                 binaryInterpreterControl.Pcc = pcc;
-                bio2DAEditor1.Pcc = pcc;
+               // bio2DAEditor1.Pcc = pcc;
                 treeView1.Tag = pcc;
                 RefreshView();
                 InitStuff();

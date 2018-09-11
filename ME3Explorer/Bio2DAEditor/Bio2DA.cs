@@ -13,14 +13,14 @@ using System.Threading.Tasks;
 
 namespace ME3Explorer
 {
-    class Bio2DA
+    public class Bio2DA
     {
         bool IsIndexed = false;
         int CellCount = 0;
         static string[] stringRefColumns = { "StringRef", "SaveGameStringRef", "Title", "LabelRef", "Name", "ActiveWorld", "Description", "ButtonLabel" };
-        Bio2DACell[,] Cells;
-        public List<string> rowNames;
-        public List<string> columnNames;
+        public Bio2DACell[,] Cells { get; set; }
+        public List<string> RowNames { get; set; }
+        public List<string> ColumnNames { get; set; }
         IExportEntry export;
         public Bio2DA(IExportEntry export)
         {
@@ -29,7 +29,7 @@ namespace ME3Explorer
             IMEPackage pcc = export.FileRef;
             byte[] data = export.Data;
 
-            rowNames = new List<string>();
+            RowNames = new List<string>();
             if (export.ClassName == "Bio2DA")
             {
                 string rowLabelsVar = "m_sRowLabel";
@@ -39,7 +39,7 @@ namespace ME3Explorer
                 {
                     foreach (NameProperty n in props)
                     {
-                        rowNames.Add(n.ToString());
+                        RowNames.Add(n.ToString());
                     }
                 }
                 else
@@ -57,7 +57,7 @@ namespace ME3Explorer
                 {
                     foreach (IntProperty n in props)
                     {
-                        rowNames.Add(n.Value.ToString());
+                        RowNames.Add(n.Value.ToString());
                     }
                 }
                 else
@@ -69,7 +69,7 @@ namespace ME3Explorer
             }
 
             //Get Columns
-            columnNames = new List<string>();
+            ColumnNames = new List<string>();
             int colcount = BitConverter.ToInt32(data, data.Length - 4);
             int currentcoloffset = 0;
             while (colcount >= 0)
@@ -79,10 +79,10 @@ namespace ME3Explorer
                 currentcoloffset += 8; //names in this case don't use nameindex values.
                 int nameindex = BitConverter.ToInt32(data, data.Length - currentcoloffset);
                 string name = pcc.getNameEntry(nameindex);
-                columnNames.Insert(0, name);
+                ColumnNames.Insert(0, name);
                 colcount--;
             }
-            Cells = new Bio2DACell[rowNames.Count(), columnNames.Count()];
+            Cells = new Bio2DACell[RowNames.Count(), ColumnNames.Count()];
 
             currentcoloffset += 4;  //column count.
             int infilecolcount = BitConverter.ToInt32(data, data.Length - currentcoloffset);
@@ -95,9 +95,9 @@ namespace ME3Explorer
             if (cellcount > 0)
             {
                 curroffset += 4;
-                for (int rowindex = 0; rowindex < rowNames.Count(); rowindex++)
+                for (int rowindex = 0; rowindex < RowNames.Count(); rowindex++)
                 {
-                    for (int colindex = 0; colindex < columnNames.Count() && curroffset < data.Length - currentcoloffset; colindex++)
+                    for (int colindex = 0; colindex < ColumnNames.Count() && curroffset < data.Length - currentcoloffset; colindex++)
                     {
                         byte dataType = 255;
                         dataType = data[curroffset];
@@ -110,7 +110,7 @@ namespace ME3Explorer
                         curroffset += dataSize;
                     }
                 }
-                CellCount = rowNames.Count() * columnNames.Count();
+                CellCount = RowNames.Count() * ColumnNames.Count();
             }
             else
             {
@@ -123,8 +123,8 @@ namespace ME3Explorer
                 while (CellCount < cellcount)
                 {
                     int index = BitConverter.ToInt32(data, curroffset);
-                    int row = index / columnNames.Count();
-                    int col = index % columnNames.Count();
+                    int row = index / ColumnNames.Count();
+                    int col = index % ColumnNames.Count();
                     curroffset += 4;
                     byte dataType = data[curroffset];
                     int dataSize = dataType == Bio2DACell.TYPE_NAME ? 8 : 4;
@@ -146,20 +146,20 @@ namespace ME3Explorer
             var worksheet = workbook.Worksheets.Add(export.ObjectName.Truncate(30));
 
             //write labels
-            for (int rowindex = 0; rowindex < rowNames.Count(); rowindex++)
+            for (int rowindex = 0; rowindex < RowNames.Count(); rowindex++)
             {
-                worksheet.Cell(rowindex + 2, 1).Value = rowNames[rowindex];
+                worksheet.Cell(rowindex + 2, 1).Value = RowNames[rowindex];
             }
 
-            for (int colindex = 0; colindex < columnNames.Count(); colindex++)
+            for (int colindex = 0; colindex < ColumnNames.Count(); colindex++)
             {
-                worksheet.Cell(1, colindex + 2).Value = columnNames[colindex];
+                worksheet.Cell(1, colindex + 2).Value = ColumnNames[colindex];
             }
 
             //write data
-            for (int rowindex = 0; rowindex < rowNames.Count(); rowindex++)
+            for (int rowindex = 0; rowindex < RowNames.Count(); rowindex++)
             {
-                for (int colindex = 0; colindex < columnNames.Count(); colindex++)
+                for (int colindex = 0; colindex < ColumnNames.Count(); colindex++)
                 {
                     if (Cells[rowindex, colindex] != null)
                         worksheet.Cell(rowindex + 2, colindex + 2).Value = Cells[rowindex, colindex].GetDisplayableValue();
@@ -185,9 +185,9 @@ namespace ME3Explorer
                 stream.WriteBytes(BitConverter.GetBytes(CellCount));
 
                 //Write cell data
-                for (int rowindex = 0; rowindex < rowNames.Count(); rowindex++)
+                for (int rowindex = 0; rowindex < RowNames.Count(); rowindex++)
                 {
-                    for (int colindex = 0; colindex < columnNames.Count(); colindex++)
+                    for (int colindex = 0; colindex < ColumnNames.Count(); colindex++)
                     {
                         Bio2DACell cell = Cells[rowindex, colindex];
                         if (cell != null)
@@ -195,7 +195,7 @@ namespace ME3Explorer
                             if (IsIndexed)
                             {
                                 //write index
-                                int index = (rowindex * columnNames.Count()) + colindex; //+1 because they are not zero based indexes since they are numerals
+                                int index = (rowindex * ColumnNames.Count()) + colindex; //+1 because they are not zero based indexes since they are numerals
                                 stream.WriteBytes(BitConverter.GetBytes(index));
                             }
                             stream.WriteByte(cell.Type);
@@ -222,11 +222,11 @@ namespace ME3Explorer
                     stream.WriteBytes(BitConverter.GetBytes(0)); //seems to be a 0 before column definitions
                 }
                 //Console.WriteLine("Columns defs start at " + stream.Position.ToString("X6"));
-                stream.WriteBytes(BitConverter.GetBytes(columnNames.Count()));
-                for (int colindex = 0; colindex < columnNames.Count(); colindex++)
+                stream.WriteBytes(BitConverter.GetBytes(ColumnNames.Count()));
+                for (int colindex = 0; colindex < ColumnNames.Count(); colindex++)
                 {
                     //Console.WriteLine("Writing column definition " + columnNames[colindex]);
-                    int nameIndexForCol = export.FileRef.findName(columnNames[colindex]);
+                    int nameIndexForCol = export.FileRef.findName(ColumnNames[colindex]);
                     stream.WriteBytes(BitConverter.GetBytes(nameIndexForCol));
                     stream.WriteBytes(BitConverter.GetBytes(0)); //second half of name reference in 2da is always zero since they're always indexed at 0
                     stream.WriteBytes(BitConverter.GetBytes(colindex));

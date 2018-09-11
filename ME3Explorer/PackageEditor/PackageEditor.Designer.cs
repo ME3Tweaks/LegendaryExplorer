@@ -814,7 +814,6 @@
             this.bio2DAEditor1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.bio2DAEditor1.Location = new System.Drawing.Point(3, 3);
             this.bio2DAEditor1.Name = "bio2DAEditor1";
-            this.bio2DAEditor1.Pcc = null;
             this.bio2DAEditor1.Size = new System.Drawing.Size(626, 413);
             this.bio2DAEditor1.TabIndex = 0;
             // 

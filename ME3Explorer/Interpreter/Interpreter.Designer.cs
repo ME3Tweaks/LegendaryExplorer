@@ -192,7 +192,7 @@ namespace ME3Explorer
             this.deleteArrayElementButton.Image = ((System.Drawing.Image)(resources.GetObject("deleteArrayElementButton.Image")));
             this.deleteArrayElementButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.deleteArrayElementButton.Name = "deleteArrayElementButton";
-            this.deleteArrayElementButton.Size = new System.Drawing.Size(121, 22);
+            this.deleteArrayElementButton.Size = new System.Drawing.Size(121, 19);
             this.deleteArrayElementButton.Text = "Delete Array Element";
             this.deleteArrayElementButton.Visible = false;
             this.deleteArrayElementButton.Click += new System.EventHandler(this.deleteArrayElement_Click);
@@ -203,7 +203,7 @@ namespace ME3Explorer
             this.moveUpButton.Image = ((System.Drawing.Image)(resources.GetObject("moveUpButton.Image")));
             this.moveUpButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.moveUpButton.Name = "moveUpButton";
-            this.moveUpButton.Size = new System.Drawing.Size(23, 22);
+            this.moveUpButton.Size = new System.Drawing.Size(23, 19);
             this.moveUpButton.Text = "▲";
             this.moveUpButton.ToolTipText = "Move element up";
             this.moveUpButton.Visible = false;
@@ -215,7 +215,7 @@ namespace ME3Explorer
             this.moveDownButton.Image = ((System.Drawing.Image)(resources.GetObject("moveDownButton.Image")));
             this.moveDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.moveDownButton.Name = "moveDownButton";
-            this.moveDownButton.Size = new System.Drawing.Size(23, 22);
+            this.moveDownButton.Size = new System.Drawing.Size(23, 19);
             this.moveDownButton.Text = "▼";
             this.moveDownButton.ToolTipText = "Move element down";
             this.moveDownButton.Visible = false;
@@ -227,7 +227,7 @@ namespace ME3Explorer
             this.addPropButton.Image = ((System.Drawing.Image)(resources.GetObject("addPropButton.Image")));
             this.addPropButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.addPropButton.Name = "addPropButton";
-            this.addPropButton.Size = new System.Drawing.Size(81, 22);
+            this.addPropButton.Size = new System.Drawing.Size(81, 19);
             this.addPropButton.Text = "Add Property";
             this.addPropButton.Click += new System.EventHandler(this.addPropButton_Click);
             // 
@@ -237,7 +237,7 @@ namespace ME3Explorer
             this.removePropertyButton.Image = ((System.Drawing.Image)(resources.GetObject("removePropertyButton.Image")));
             this.removePropertyButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.removePropertyButton.Name = "removePropertyButton";
-            this.removePropertyButton.Size = new System.Drawing.Size(102, 22);
+            this.removePropertyButton.Size = new System.Drawing.Size(102, 19);
             this.removePropertyButton.Text = "Remove Property";
             this.removePropertyButton.Click += new System.EventHandler(this.removePropertyButton_Click);
             // 
@@ -271,6 +271,7 @@ namespace ME3Explorer
             this.hb1.LineInfoForeColor = System.Drawing.Color.Empty;
             this.hb1.LineInfoVisible = true;
             this.hb1.Location = new System.Drawing.Point(0, 0);
+            this.hb1.MaxBytesPerLine = 100;
             this.hb1.MinBytesPerLine = 4;
             this.hb1.Name = "hb1";
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
@@ -314,9 +315,9 @@ namespace ME3Explorer
             // 
             this.nodeContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.expandAllChildrenToolStripMenuItem,
-            this.collapseAllChildrenToolStripMenuItem });
+            this.collapseAllChildrenToolStripMenuItem});
             this.nodeContextMenuStrip1.Name = "nodeContextMenuStrip1";
-            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(185, 70);
+            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(185, 48);
             // 
             // expandAllChildrenToolStripMenuItem
             // 

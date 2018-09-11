@@ -22,8 +22,6 @@ namespace ME3Explorer
 {
     public partial class Bio2DAEditor : UserControl
     {
-        public IMEPackage Pcc { get { return pcc; } set { pcc = value; defaultStructValues.Clear(); } }
-
         public int InterpreterMode { get; private set; }
         public IExportEntry export;
         public string className;
@@ -106,7 +104,6 @@ namespace ME3Explorer
 
         int? selectedNodePos = null;
         private Dictionary<string, string> ME1_TLK_DICT;
-        private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
         private Bio2DA table2da;
         public static readonly string[] ParsableBinaryClasses = { "Bio2DA", "Bio2DANumberedRows" };
 
@@ -114,7 +111,6 @@ namespace ME3Explorer
         {
             InitializeComponent();
             SetTopLevel(false);
-            defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
 
             //Load ME1TLK
             string tlkxmlpath = @"C:\users\mgame\desktop\me1tlk.xml";
@@ -149,18 +145,18 @@ namespace ME3Explorer
             dataGridView1.Columns.Clear();
             table2da = new Bio2DA(export);
             //Add columns
-            for (int j = 0; j < table2da.columnNames.Count(); j++)
+            for (int j = 0; j < table2da.ColumnNames.Count(); j++)
             {
-                dataGridView1.Columns.Add(table2da.columnNames[j], table2da.columnNames[j]);
+                dataGridView1.Columns.Add(table2da.ColumnNames[j], table2da.ColumnNames[j]);
             }
 
 
             //Add rows
-            for (int i = 0; i < table2da.rowNames.Count(); i++)
+            for (int i = 0; i < table2da.RowNames.Count(); i++)
             {
                 //defines row data. If you add columns, you need to add them here in order
                 List<Object> rowData = new List<object>();
-                for (int j = 0; j < table2da.columnNames.Count(); j++)
+                for (int j = 0; j < table2da.ColumnNames.Count(); j++)
                 {
                     Bio2DACell cell = table2da[i, j];
                     if (cell != null)
@@ -174,13 +170,13 @@ namespace ME3Explorer
                     //rowData.Add(table2da[i, j]);
                 }
                 dataGridView1.Rows.Add(rowData.ToArray());
-                dataGridView1.Rows[dataGridView1.Rows.Count - 1].HeaderCell.Value = table2da.rowNames[i];
+                dataGridView1.Rows[dataGridView1.Rows.Count - 1].HeaderCell.Value = table2da.RowNames[i];
             }
 
             //Add row headers
-            for (int i = 0; i < table2da.rowNames.Count(); i++)
+            for (int i = 0; i < table2da.RowNames.Count(); i++)
             {
-                dataGridView1.Rows[i].HeaderCell.Value = table2da.rowNames[i];
+                dataGridView1.Rows[i].HeaderCell.Value = table2da.RowNames[i];
             }
         }
 
@@ -188,31 +184,6 @@ namespace ME3Explorer
         {
             base.Show();
             //StartScan();
-        }
-
-        public nodeType getType(string s)
-        {
-            int ret = -1;
-            for (int i = 0; i < Types.Length; i++)
-                if (s == Types[i])
-                    ret = i;
-            return (nodeType)ret;
-        }
-
-        public void WriteString(FileStream fs, string s)
-        {
-            for (int i = 0; i < s.Length; i++)
-                fs.WriteByte((byte)s[i]);
-        }
-
-        private void resetPropEditingControls()
-        {
-            objectNameLabel.Visible = nameEntry.Visible = proptext.Visible = setPropertyButton.Visible = propDropdown.Visible =
-                addArrayElementButton.Visible = deleteArrayElementButton.Visible = moveDownButton.Visible =
-                moveUpButton.Visible = addPropButton.Visible = false;
-            nameEntry.AutoCompleteCustomSource.Clear();
-            nameEntry.Clear();
-            proptext.Clear();
         }
 
         private void WriteMem(int pos, byte[] buff)
@@ -247,18 +218,6 @@ namespace ME3Explorer
         {
             //a hack to set max width for SplitContainer1
             splitContainer1.Panel2MinSize = splitContainer1.Width - HEXBOX_MAX_WIDTH;
-        }
-
-        private void toggleHexWidthButton_Click(object sender, EventArgs e)
-        {
-            if (splitContainer1.SplitterDistance > splitContainer1.Panel1MinSize)
-            {
-                splitContainer1.SplitterDistance = splitContainer1.Panel1MinSize;
-            }
-            else
-            {
-                splitContainer1.SplitterDistance = HEXBOX_MAX_WIDTH;
-            }
         }
 
         private void hb1_SelectionChanged(object sender, EventArgs e)
@@ -442,6 +401,11 @@ namespace ME3Explorer
                 Label_CellCoordinate.Text = "Select a cell";
                 Label_CellType.Text = "Select a cell";
             }
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

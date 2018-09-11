@@ -72,8 +72,13 @@
             </MenuItem>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
+            <StatusBarItem VerticalContentAlignment="Center" Name="StatusBar_GameID_Container" Visibility="Collapsed">
+                <Border BorderBrush="Gray" BorderThickness="2,2,2,2" CornerRadius="3,3,3,3" VerticalAlignment="Center">
+                    <TextBlock Name="StatusBar_GameID_Text" Background="Red" Text="Game ID" FontSize="11" Foreground="White" Padding="4,3,4,3" FontFamily="Consolas" VerticalAlignment="Center"/>
+                </Border>
+            </StatusBarItem>
             <StatusBarItem>
-                <TextBlock Name="StatusBar_LeftMostText" Text="Package Editor WPF is in beta - not everything works right now!" />
+                <TextBlock Name="StatusBar_LeftMostText" Text="Package Editor WPF is in beta - not everything works right now!"/>
             </StatusBarItem>
         </StatusBar>
         <Grid>
@@ -216,7 +221,9 @@
                         </WindowsFormsHost>
                     </Grid>
                 </TabItem>
-                <TabItem Name="Bio2DAViewer_Tab" Header="Bio2DA Viewer"/>
+                <TabItem Name="Bio2DAViewer_Tab" Header="Bio2DA Editor">
+                    <global:Bio2DAEditorWPF x:Name="Bio2DATab_Bio2DAEditor"/>
+                </TabItem>
                 <TabItem Name="BinaryInterpreter_Tab" Header="Binary Interpreter"/>
                 <TabItem Name="Script_Tab" Header="Script">
                     <TextBox Name="Script_TextBox" TextWrapping="Wrap" Text="if(visible) ShowThis()" IsReadOnly="True" FontFamily="Consolas" Padding="5"/>

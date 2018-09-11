@@ -93,6 +93,9 @@
     <Reference Include="GongSolutions.Wpf.DragDrop, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\gong-wpf-dragdrop.1.1.0\lib\net46\GongSolutions.Wpf.DragDrop.dll</HintPath>
     </Reference>
+    <Reference Include="Gu.Wpf.DataGrid2D, Version=0.2.1.5, Culture=neutral, PublicKeyToken=34988ea4e73235be, processorArchitecture=MSIL">
+      <HintPath>..\packages\Gu.Wpf.DataGrid2D.0.2.1.5\lib\net45\Gu.Wpf.DataGrid2D.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -226,6 +229,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Bio2DAEditor\Bio2DAEditorWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CurveEd\CurveEditorHost.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -285,6 +292,9 @@
     </Compile>
     <Compile Include="Bio2DAEditor\Bio2DAEditor.Designer.cs">
       <DependentUpon>Bio2DAEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Bio2DAEditor\Bio2DAEditorWPF.xaml.cs">
+      <DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="CurveEd\CurveEditorHost.xaml.cs">
       <DependentUpon>CurveEditorHost.xaml</DependentUpon>

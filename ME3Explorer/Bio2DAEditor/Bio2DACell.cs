@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ME3Explorer
 {
-    class Bio2DACell
+    public class Bio2DACell
     {
         public const byte TYPE_INT = 0;
         public const byte TYPE_NAME = 1;
@@ -37,6 +37,11 @@ namespace ME3Explorer
                     return BitConverter.ToSingle(Data, 0).ToString();
             }
             return "Unknown type " + Type;
+        }
+
+        public override string ToString()
+        {
+            return GetDisplayableValue();
         }
 
         public int GetIntValue()
