@@ -28,7 +28,7 @@ namespace ME3Explorer
         public static string GetVersion()
         {
             Version ver = Assembly.GetExecutingAssembly().GetName().Version;
-            return "v"+ver.Major + "." + ver.Minor + "." + ver.Build + "." +ver.Revision;
+            return "v" + ver.Major + "." + ver.Minor + "." + ver.Build + "." + ver.Revision;
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)
@@ -132,7 +132,9 @@ namespace ME3Explorer
         {
             SharedUI.ExceptionHandlerDialogWPF eh = new SharedUI.ExceptionHandlerDialogWPF(e.Exception);
             eh.ShowDialog();
+#if !DEBUG
             e.Handled = eh.Handled;
+#endif
         }
     }
 }

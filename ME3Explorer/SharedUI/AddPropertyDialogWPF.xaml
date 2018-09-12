@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ME3Explorer.SharedUI"
         mc:Ignorable="d"
-        Title="Add Property" Height="353.39" Width="441.525">
+        Title="Add Property" Height="400" Width="650">
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="1*" MinWidth="150" />
+            <ColumnDefinition Width="5" MinWidth="5"/>
+            <ColumnDefinition Width="2*" MinWidth="250"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
@@ -20,6 +20,7 @@
         <TextBlock Text="Classes" FontWeight="Bold"/>
         <TextBlock Text="Properties" Grid.Row="0" Grid.Column="2" FontWeight="Bold"/>
         <ListView Name="ClassesListView" Grid.Column="0" Grid.Row="1" SelectionChanged="ClassesListView_SelectionChanged"/>
+        <GridSplitter Grid.Column="1" Width="5" Grid.RowSpan="1" Grid.Row="1" HorizontalAlignment="Stretch" />
         <ListView Name="PropertiesListView" Grid.Column="2" Grid.Row="1" MouseDoubleClick="PropertiesListView_MouseDoubleClick"/>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Grid.Row="2" Grid.ColumnSpan="3" FlowDirection="RightToLeft">
             <Button Name="AddButton" Content="Add Property" Width="90" Height="27" Margin="0,0,5,0" IsDefault="True" Click="AddButton_Click"/>

@@ -658,7 +658,9 @@ namespace ME3Explorer.Unreal.Classes
             int start = GetPropertyEnd();
             byte[] data = pcc.Exports[Index].Data;
             byte[] buff = new byte[data.Length - start];
-            Buffer.BlockCopy(data, 0, buff, 0, buff.Length);
+            //for (int i = 0; i < data.Length - start; i++)
+            //    buff[i] = data[i + start];
+            Buffer.BlockCopy(data, start, buff, 0, buff.Length);
             MemoryStream m = new MemoryStream(buff);
             SerializingContainer Container = new SerializingContainer(m);
             Container.isLoading = true;

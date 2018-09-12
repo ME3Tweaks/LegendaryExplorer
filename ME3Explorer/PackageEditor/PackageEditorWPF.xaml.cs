@@ -1,4 +1,5 @@
 ﻿using Be.Windows.Forms;
+using ByteSizeLib;
 using GongSolutions.Wpf.DragDrop;
 using ME3Explorer.CurveEd;
 using ME3Explorer.Packages;
@@ -95,7 +96,9 @@ namespace ME3Explorer
             try
             {
                 currentFile = s;
-                StatusBar_LeftMostText.Text = "Loading " + System.IO.Path.GetFileName(s);
+                StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
+                StatusBar_LeftMostText.Text = "Loading " + System.IO.Path.GetFileName(s) + " (" + ByteSize.FromBytes(new System.IO.FileInfo(s).Length) + ")";
+                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 LoadMEPackage(s);
                 StatusBar_GameID_Container.Visibility = Visibility.Visible;
 
@@ -1330,7 +1333,7 @@ namespace ME3Explorer
                 foreach (var flag in InfoTab_Flags_ComboBox.Items)
                 {
                     var selectorItem = InfoTab_Flags_ComboBox.ItemContainerGenerator.ContainerFromItem(flag) as SelectorItem;
-                    if ((selectorItem != null) && !selectorItem.IsSelected)
+                    if ((selectorItem != null) && !selectorItem.IsSelected.Value)
                     {
                         newFlags |= (EPropertyFlags)flag;
                     }
@@ -1749,7 +1752,81 @@ namespace ME3Explorer
         /// </summary>
         private void FindNextObjectByClass()
         {
-            throw new NotImplementedException();
+            if (pcc == null)
+                return;
+            int n = LeftSide_ListView.SelectedIndex;
+            if (ClassDropdown_Combobox.SelectedItem == null)
+                return;
+            int start;
+            if (n == -1)
+                start = 0;
+            else
+                start = n + 1;
+
+
+            string searchClass = ClassDropdown_Combobox.SelectedItem.ToString();
+            /*if (CurrentView == View.Names)
+            {
+                for (int i = start; i < pcc.Names.Count; i++)
+                    if (pcc.getNameEntry(i).ToLower().Contains(searchTerm))
+                    {
+                        listBox1.SelectedIndex = i;
+                        break;
+                    }
+            }
+            if (CurrentView == View.Imports)
+            {
+                IReadOnlyList<ImportEntry> imports = pcc.Imports;
+                for (int i = start; i < imports.Count; i++)
+                    if (imports[i].ObjectName.ToLower().Contains(searchTerm))
+                    {
+                        listBox1.SelectedIndex = i;
+                        break;
+                    }
+            }
+            if (CurrentView == View.Exports)
+            {
+                IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                for (int i = start; i < Exports.Count; i++)
+                    if (Exports[i].ObjectName.ToLower().Contains(searchTerm))
+                    {
+                        listBox1.SelectedIndex = i;
+                        break;
+                    }
+            }*/
+            if (CurrentView == View.Tree)
+            {
+                //this needs fixed as for some rason its way out of order...
+                AdvancedTreeViewItem<TreeViewItem> selectedNode = (AdvancedTreeViewItem<TreeViewItem>)LeftSide_TreeView.SelectedItem;
+                var items = LeftSide_TreeView.FlattenAdvancedTreeView().ToList();
+                int pos = selectedNode == null ? 0 : items.IndexOf(selectedNode);
+                pos += 1; //search this and 1 forward
+                int initialindex = pos + 1;
+                for (int i = 0; i < items.Count; i++)
+                {
+                    AdvancedTreeViewItem<TreeViewItem> node = items[(i + pos) % items.Count];
+                    if (node.Name == "Root")
+                    {
+                        continue;
+                    }
+
+                    string name = node.Name.Substring(1); //get rid of _
+                    if (name.StartsWith("n"))
+                    {
+                        //its negative
+                        name = $"-{name.Substring(1)}";
+                    }
+
+                    int index = Convert.ToInt32(name);
+                    //string cname = pcc.getEntry(index).ClassName;
+                    //Debug.WriteLine(cname);
+                    if (pcc.getEntry(index).ClassName.Equals(searchClass))
+                    {
+                        goToNumber(index + 1);
+                        break;
+                    }
+                }
+            }
         }
 
         /// <summary>
