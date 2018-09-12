@@ -302,6 +302,7 @@
     <Compile Include="CurveEd\CurveEditorHost.xaml.cs">
       <DependentUpon>CurveEditorHost.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FaceFXAnimSetEditor\ME1FaceFXAnimSet.cs" />
     <Compile Include="Interpreter\AltPropertyEditor.xaml.cs">
       <DependentUpon>AltPropertyEditor.xaml</DependentUpon>
     </Compile>

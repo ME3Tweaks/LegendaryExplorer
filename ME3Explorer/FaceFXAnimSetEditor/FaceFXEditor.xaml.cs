@@ -122,15 +122,20 @@ namespace ME3Explorer.FaceFX
 
         private void loadFaceFXAnimset()
         {
-            if (pcc.Game == MEGame.ME3)
+            switch (pcc.Game)
             {
-                FaceFX = new ME3FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
-                linesListBox.ItemsSource = FaceFX.Data.Data;
-            }
-            else
-            {
-                FaceFX = new ME2FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
-                linesListBox.ItemsSource = (FaceFX.Data as ME2DataAnimSetStruct).Data;
+                case MEGame.ME1:
+                    FaceFX = new ME1FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
+                    linesListBox.ItemsSource = (FaceFX.Data as ME1DataAnimSetStruct).Data;
+                    break;
+                case MEGame.ME2:
+                    FaceFX = new ME2FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
+                    linesListBox.ItemsSource = (FaceFX.Data as ME2DataAnimSetStruct).Data;
+                    break;
+                case MEGame.ME3:
+                    FaceFX = new ME3FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
+                    linesListBox.ItemsSource = FaceFX.Data.Data;
+                    break;
             }
             treeView.Nodes.Clear();
             graph.Clear();
