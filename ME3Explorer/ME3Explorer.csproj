@@ -621,6 +621,11 @@
     <Compile Include="Soundplorer\DirectReplace.Designer.cs">
       <DependentUpon>DirectReplace.cs</DependentUpon>
     </Compile>
+    <Compile Include="Soundplorer\ExportLoaderControl.cs" />
+    <Compile Include="Soundplorer\IExportLoader.cs" />
+    <Compile Include="Soundplorer\Soundpanel.xaml.cs">
+      <DependentUpon>Soundpanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Soundplorer\Soundplorer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -955,6 +960,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SharedUI\PromptDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Soundplorer\Soundpanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

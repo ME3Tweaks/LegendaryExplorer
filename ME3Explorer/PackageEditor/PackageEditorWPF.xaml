@@ -10,7 +10,7 @@
         xmlns:CurveEd="clr-namespace:ME3Explorer.CurveEd"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:dd="urn:gong-wpf-dragdrop"
-        xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
+        xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"           
         Loaded="PackageEditorWPF_Loaded"
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
@@ -229,7 +229,10 @@
                     <TextBox Name="Script_TextBox" TextWrapping="Wrap" Text="if(visible) ShowThis()" IsReadOnly="True" FontFamily="Consolas" Padding="5"/>
                 </TabItem>
                 <TabItem Name="CurveEditor_Tab" Header="Curve Editor">
-                    <CurveEd:CurveEditor x:Name="CurveEditor_SubModule"/>
+                    <CurveEd:CurveEditor x:Name="CurveTab_CurveEditor"/>
+                </TabItem>
+                <TabItem Name="Sound_Tab" Header="Sound">
+                    <global:Soundpanel x:Name="SoundTab_Soundpanel"/>
                 </TabItem>
             </TabControl>
         </Grid>

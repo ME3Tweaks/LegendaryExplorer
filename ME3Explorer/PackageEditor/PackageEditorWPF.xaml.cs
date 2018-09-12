@@ -42,6 +42,7 @@ namespace ME3Explorer
             Tree
         }
 
+        Dictionary<ExportLoaderControl,TabItem> ExportLoaders = new Dictionary<ExportLoaderControl, TabItem>();
         View CurrentView;
         public PropGrid pg;
 
@@ -76,6 +77,12 @@ namespace ME3Explorer
             //ME3UnrealObjectInfo.generateInfo();
             CurrentView = View.Tree;
             InitializeComponent();
+
+            //map export loaders to their tabs
+            ExportLoaders[InterpreterTab_Interpreter] = Interpreter_Tab;
+            ExportLoaders[SoundTab_Soundpanel] = Sound_Tab;
+            ExportLoaders[CurveTab_CurveEditor] = CurveEditor_Tab;
+            ExportLoaders[Bio2DATab_Bio2DAEditor] = Bio2DAViewer_Tab;
 
             LoadRecentList();
             RefreshRecent(false);
@@ -128,7 +135,7 @@ namespace ME3Explorer
                 RefreshView();
                 InitStuff();
                 StatusBar_LeftMostText.Text = System.IO.Path.GetFileName(s);
-                InterpreterTab_Interpreter.unloadExport();
+                InterpreterTab_Interpreter.UnloadExport();
             }
             catch (Exception e)
             {
@@ -783,7 +790,7 @@ namespace ME3Explorer
             Info_Header_UnsavedChanges.Visibility = Visibility.Collapsed;
             if (!GetSelected(out int n))
             {
-                InterpreterTab_Interpreter.unloadExport();
+                InterpreterTab_Interpreter.UnloadExport();
                 return;
             }
             Debug.WriteLine("New selection: " + n);
@@ -845,43 +852,35 @@ namespace ME3Explorer
                         }
                     }
 
-                    if (Pcc.Game == MEGame.ME3)
+                    foreach (KeyValuePair<ExportLoaderControl, TabItem> entry in ExportLoaders)
                     {
+                        if (entry.Key.CanParse(exportEntry))
+                        {
+                            entry.Key.LoadExport(exportEntry);
+                            entry.Value.Visibility = Visibility.Visible;
 
-                        //Curve Editor
-                        var props = exportEntry.GetProperties();
-                        bool showCurveEd = false;
-                        foreach (var prop in props)
+                        } else
                         {
-                            if (prop is StructProperty structProp)
-                            {
-                                if (Enum.TryParse(structProp.StructType, out CurveType _))
-                                {
-                                    showCurveEd = true;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (showCurveEd)
-                        {
-                            CurveEditor_Tab.Visibility = Visibility.Visible;
-                            CurveEditor_SubModule.LoadExport(exportEntry);
-                        }
-                        else
-                        {
-                            //Change to interpreter if this tab is being hidden but is currently visible.
-                            //Interpreter is always available
-                            if (EditorTabs.SelectedItem == CurveEditor_Tab)
-                            {
-                                EditorTabs.SelectedItem = Interpreter_Tab;
-                            }
-                            CurveEditor_Tab.Visibility = Visibility.Collapsed;
+                            entry.Value.Visibility = Visibility.Collapsed;
+                            entry.Key.UnloadExport();
                         }
                     }
-                    else
+
+                    //CHECK THE CURRENT TAB IS VISIBLE/ENABLED. IF NOT, CHOOSE FIRST TAB THAT IS 
+                    TabItem currentTab = (TabItem)EditorTabs.Items[EditorTabs.SelectedIndex];
+                    if (!currentTab.IsEnabled || !currentTab.IsVisible)
                     {
-                        CurveEditor_Tab.Visibility = Visibility.Collapsed;
+                        int index = 0;
+                        while (index < EditorTabs.Items.Count)
+                        {
+                            TabItem ti = (TabItem)EditorTabs.Items[index];
+                            if (ti.IsEnabled && ti.IsVisible)
+                            {
+                                EditorTabs.SelectedIndex = index;
+                                break;
+                            }
+                            index++;
+                        }
                     }
 
 
@@ -903,23 +902,23 @@ namespace ME3Explorer
                         removeBinaryTabPane();
                     }*/
 
-                    if (Bio2DAEditorWPF.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
-                    {
-                        Bio2DAViewer_Tab.Visibility = Visibility.Visible;
-                        Bio2DATab_Bio2DAEditor.LoadExport(exportEntry);
-                    }
-                    else
-                    {
-                        Bio2DAViewer_Tab.Visibility = Visibility.Collapsed;
-                        Bio2DATab_Bio2DAEditor.UnloadExport();
-                    }
+                    //if (Bio2DAEditorWPF.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
+                    //{
+                    //    Bio2DAViewer_Tab.Visibility = Visibility.Visible;
+                    //    Bio2DATab_Bio2DAEditor.LoadExport(exportEntry);
+                    //}
+                    //else
+                    //{
+                    //    Bio2DAViewer_Tab.Visibility = Visibility.Collapsed;
+                    //    Bio2DATab_Bio2DAEditor.UnloadExport();
+                    //}
 
                     /*
 
                     headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.header);*/
                     if (!isRefresh)
                     {
-                        InterpreterTab_Interpreter.loadNewExport(exportEntry);
+                        InterpreterTab_Interpreter.LoadExport(exportEntry);
                         Interpreter_Tab.Visibility = Visibility.Visible;
 
                         //interpreterControl.export = exportEntry;
@@ -960,7 +959,7 @@ namespace ME3Explorer
                     CurrentlyLoadedEntry = importEntry;
                     Header_Hexbox.ByteProvider = new DynamicByteProvider(CurrentlyLoadedEntry.Header);
                     Header_Hexbox.ByteProvider.Changed += InfoTab_Header_ByteProvider_InternalChanged;
-                    Script_Tab.Visibility = BinaryInterpreter_Tab.Visibility = Bio2DAViewer_Tab.Visibility = Visibility.Collapsed;
+                    Script_Tab.Visibility = BinaryInterpreter_Tab.Visibility = Bio2DAViewer_Tab.Visibility = Sound_Tab.Visibility = Visibility.Collapsed;
                     Metadata_Tab.IsSelected = true;
                     PreviewInfo(n);
                     /*   n = -n - 1;

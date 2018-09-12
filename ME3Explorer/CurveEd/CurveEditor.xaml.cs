@@ -21,9 +21,9 @@ namespace ME3Explorer.CurveEd
     /// <summary>
     /// Interaction logic for CurveEditor.xaml
     /// </summary>
-    public partial class CurveEditor : UserControl
+    public partial class CurveEditor : ExportLoaderControl
     {
-        private IExportEntry expEntry;
+        new MEGame[] SupportedGames = new MEGame[] { MEGame.ME3 };
 
         public List<InterpCurve> InterpCurveTracks;
 
@@ -32,9 +32,9 @@ namespace ME3Explorer.CurveEd
             InitializeComponent();
         }
 
-        public void LoadExport(IExportEntry exp)
+        public override void LoadExport(IExportEntry exp)
         {
-            expEntry = exp;
+            CurrentLoadedExport = exp;
             Load();
         }
 
@@ -49,14 +49,14 @@ namespace ME3Explorer.CurveEd
         {
             InterpCurveTracks = new List<InterpCurve>();
             
-            var props = expEntry.GetProperties();
+            var props = CurrentLoadedExport.GetProperties();
             foreach (var prop in props)
             {
                 if (prop is StructProperty structProp)
                 {
                     if (Enum.TryParse(structProp.StructType, out CurveType _))
                     {
-                        InterpCurveTracks.Add(new InterpCurve(expEntry.FileRef, structProp));
+                        InterpCurveTracks.Add(new InterpCurve(CurrentLoadedExport.FileRef, structProp));
                     }
                 }
             }
@@ -164,12 +164,12 @@ namespace ME3Explorer.CurveEd
 
         private void Commit()
         {
-            var props = expEntry.GetProperties();
+            var props = CurrentLoadedExport.GetProperties();
             foreach (InterpCurve item in InterpCurveTracks)
             {
                 props.AddOrReplaceProp(item.WriteProperties());
             }
-            expEntry.WriteProperties(props);
+            CurrentLoadedExport.WriteProperties(props);
         }
 
         private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -182,6 +182,32 @@ namespace ME3Explorer.CurveEd
             Commit();
             //pcc.save();
             //MessageBox.Show("Done");
+        }
+
+        public override void UnloadExport()
+        {
+            graph.Clear();
+            InterpCurveTracks = null;
+            CurrentLoadedExport = null;
+        }
+
+        public override bool CanParse(IExportEntry exportEntry)
+        {
+            if (exportEntry.FileRef.Game == MEGame.ME3)
+            {
+                var props = exportEntry.GetProperties();
+                foreach (var prop in props)
+                {
+                    if (prop is StructProperty structProp)
+                    {
+                        if (Enum.TryParse(structProp.StructType, out CurveType _))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
 
         /* public override void handleUpdate(List<PackageUpdate> updates)

@@ -23,7 +23,7 @@ namespace ME3Explorer
     /// <summary>
     /// Interaction logic for InterpreterWPF.xaml
     /// </summary>
-    public partial class InterpreterWPF : UserControl, INotifyPropertyChanged
+    public partial class InterpreterWPF : ExportLoaderControl
     {
         private IMEPackage pcc;
         public IMEPackage Pcc { get { return pcc; } set { pcc = value; defaultStructValues.Clear(); } }
@@ -40,18 +40,6 @@ namespace ME3Explorer
         private BioTlkFileSet tlkset;
         private BioTlkFileSet editorTlkSet;
         int readerpos;
-        private IExportEntry _currentLoadedExport;
-        public IExportEntry CurrentLoadedExport
-        {
-            get
-            {
-                return _currentLoadedExport;
-            }
-            private set
-            {
-                SetProperty(ref _currentLoadedExport, value);
-            }
-        }
 
         public struct PropHeader
         {
@@ -131,7 +119,7 @@ namespace ME3Explorer
         /// <summary>
         /// Unloads the loaded export, if any
         /// </summary>
-        public void unloadExport()
+        public override void UnloadExport()
         {
             pcc = null;
             CurrentLoadedExport = null;
@@ -145,7 +133,7 @@ namespace ME3Explorer
         /// Load a new export for display and editing in this control
         /// </summary>
         /// <param name="export"></param>
-        public void loadNewExport(IExportEntry export)
+        public override void LoadExport(IExportEntry export)
         {
             pcc = export.FileRef;
             CurrentLoadedExport = export;
@@ -1733,34 +1721,9 @@ namespace ME3Explorer
             return null;
         }
 
-        #region Property Changed Notification
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Notifies listeners when given property is updated.
-        /// </summary>
-        /// <param name="propertyname">Name of property to give notification for. If called in property, argument can be ignored as it will be default.</param>
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyname = null)
+        public override bool CanParse(IExportEntry exportEntry)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
-        }
-
-        /// <summary>
-        /// Sets given property and notifies listeners of its change. IGNORES setting the property to same value.
-        /// Should be called in property setters.
-        /// </summary>
-        /// <typeparam name="T">Type of given property.</typeparam>
-        /// <param name="field">Backing field to update.</param>
-        /// <param name="value">New value of property.</param>
-        /// <param name="propertyName">Name of property.</param>
-        /// <returns>True if success, false if backing field and new value aren't compatible.</returns>
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
             return true;
         }
-        #endregion
     }
 }

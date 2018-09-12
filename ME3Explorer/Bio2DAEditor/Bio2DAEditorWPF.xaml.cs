@@ -22,10 +22,9 @@ namespace ME3Explorer
     /// <summary>
     /// Interaction logic for Bio2DAEditorWPF.xaml
     /// </summary>
-    public partial class Bio2DAEditorWPF : UserControl, INotifyPropertyChanged
+    public partial class Bio2DAEditorWPF : ExportLoaderControl
     {
         private Bio2DA _table2da;
-        public static readonly string[] ParsableBinaryClasses = { "Bio2DA", "Bio2DANumberedRows" };
 
         public Bio2DA Table2DA
         {
@@ -45,12 +44,6 @@ namespace ME3Explorer
         public Bio2DAEditorWPF()
         {
             InitializeComponent();
-        }
-
-        public void LoadExport(IExportEntry export)
-        {
-            CurrentlyLoadedExport = export;
-            StartBio2DAScan();
         }
 
         private void StartBio2DAScan()
@@ -94,40 +87,22 @@ namespace ME3Explorer
             }*/
         }
 
-        #region Property Changed Notification
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Notifies listeners when given property is updated.
-        /// </summary>
-        /// <param name="propertyname">Name of property to give notification for. If called in property, argument can be ignored as it will be default.</param>
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyname = null)
+        public override bool CanParse(IExportEntry exportEntry)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
+            return exportEntry.ClassName == "Bio2DA" || exportEntry.ClassName == "Bio2DANumberedRows";
         }
 
-        /// <summary>
-        /// Sets given property and notifies listeners of its change. IGNORES setting the property to same value.
-        /// Should be called in property setters.
-        /// </summary>
-        /// <typeparam name="T">Type of given property.</typeparam>
-        /// <param name="field">Backing field to update.</param>
-        /// <param name="value">New value of property.</param>
-        /// <param name="propertyName">Name of property.</param>
-        /// <returns>True if success, false if backing field and new value aren't compatible.</returns>
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
+        public override void LoadExport(IExportEntry exportEntry)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
+            CurrentlyLoadedExport = exportEntry;
+            StartBio2DAScan();
         }
 
-        internal void UnloadExport()
+        public override void UnloadExport()
         {
+            Table2DA = null;
             CurrentlyLoadedExport = null;
         }
-        #endregion
     }
 
 }

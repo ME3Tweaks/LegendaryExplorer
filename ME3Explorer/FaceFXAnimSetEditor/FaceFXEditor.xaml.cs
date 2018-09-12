@@ -125,8 +125,8 @@ namespace ME3Explorer.FaceFX
             switch (pcc.Game)
             {
                 case MEGame.ME1:
-                    FaceFX = new ME1FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
-                    linesListBox.ItemsSource = (FaceFX.Data as ME1DataAnimSetStruct).Data;
+                    //FaceFX = new ME1FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
+                    //linesListBox.ItemsSource = (FaceFX.Data as ME1DataAnimSetStruct).Data;
                     break;
                 case MEGame.ME2:
                     FaceFX = new ME2FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
