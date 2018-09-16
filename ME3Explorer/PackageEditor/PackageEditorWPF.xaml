@@ -15,6 +15,9 @@
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="Package Editor" Height="650" Width="970"
+        DragOver="Window_DragOver"
+        Drop="Window_Drop"
+        AllowDrop="True"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <ItemsPanelTemplate x:Key="VSP">
@@ -66,8 +69,8 @@
                 <MenuItem Header="Open"/>
                 <MenuItem Name="ComparePackageMenuItem" Header="Compare with another package" Command="Commands:PackageEditorWPFCommands.ComparePackageCommand" IsEnabled="False"/>
             </MenuItem>
-            <MenuItem Header="Testing &amp; Debugging">
-                <MenuItem Header="Open"/>
+            <MenuItem Header="Experiments">
+                <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
                 <MenuItem Header="Save"/>
             </MenuItem>
         </Menu>

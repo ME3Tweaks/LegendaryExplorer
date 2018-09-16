@@ -42,7 +42,7 @@ namespace ME3Explorer
             Tree
         }
 
-        Dictionary<ExportLoaderControl,TabItem> ExportLoaders = new Dictionary<ExportLoaderControl, TabItem>();
+        Dictionary<ExportLoaderControl, TabItem> ExportLoaders = new Dictionary<ExportLoaderControl, TabItem>();
         View CurrentView;
         public PropGrid pg;
 
@@ -859,7 +859,8 @@ namespace ME3Explorer
                             entry.Key.LoadExport(exportEntry);
                             entry.Value.Visibility = Visibility.Visible;
 
-                        } else
+                        }
+                        else
                         {
                             entry.Value.Visibility = Visibility.Collapsed;
                             entry.Key.UnloadExport();
@@ -1433,7 +1434,7 @@ namespace ME3Explorer
         /// <param name="dropInfo"></param>
         void IDropTarget.DragOver(IDropInfo dropInfo)
         {
-            if ((dropInfo.Data as TreeViewItem).Name != "Root")
+            if ((dropInfo.Data as TreeViewItem) != null && (dropInfo.Data as TreeViewItem).Name != "Root")
             {
                 dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
                 dropInfo.Effects = DragDropEffects.Copy;
@@ -1979,6 +1980,46 @@ namespace ME3Explorer
                 index--;
             }
         }
-    }
 
+        private void BuildME1TLKDB_Clicked(object sender, RoutedEventArgs e)
+        {
+            string myBasePath = @"D:\Origin Games\Mass Effect\";
+            string bioBase = @"BioGame\CookedPC";
+            string[] extensions = new[] { ".u", ".upk" };
+            FileInfo[] files =
+    new DirectoryInfo(System.IO.Path.Combine(myBasePath, bioBase)).EnumerateFiles("*",SearchOption.AllDirectories)
+         .Where(f => extensions.Contains(f.Extension.ToLower()))
+         .ToArray();
+            Debugger.Break();
+
+        }
+
+        private void Window_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                // Assuming you have one file that you care about, pass it off to whatever
+                // handling code you have defined.
+                LoadFile(files[0]);
+            }
+        }
+
+        private void Window_DragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string ext = System.IO.Path.GetExtension(files[0]);
+                if (ext != ".u" && ext != ".upk" && ext != ".pcc")
+                {
+                    e.Effects = DragDropEffects.None;
+                    e.Handled = true;
+                }
+            }
+        }
+    }
 }

@@ -63,7 +63,7 @@ namespace ME3Explorer.FaceFX
         public string Licensee;
         public string Project;
         public int unk3;
-        public int unk4;
+        public ushort unk4;
     }
 
     public class ME3DataAnimSetStruct

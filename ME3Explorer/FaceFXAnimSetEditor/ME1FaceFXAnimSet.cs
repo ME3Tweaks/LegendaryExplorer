@@ -1,21 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Gibbed.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
+using Gibbed.IO;
+using System.Diagnostics;
 
 namespace ME3Explorer.FaceFX
 {
     public class ME1FaceFXAnimSet : IFaceFXAnimSet
     {
         IMEPackage pcc;
-        public IExportEntry Export { get; }
-        public ME1HeaderStruct header;
+        public IExportEntry export;
+        public IExportEntry Export { get { return export; } }
+        ME3HeaderStruct header;
         public HeaderStruct Header
         {
             get
@@ -23,27 +24,18 @@ namespace ME3Explorer.FaceFX
                 return header;
             }
         }
-
-        public ME2DataAnimSetStruct data;
-        public ME3DataAnimSetStruct Data
-        {
-            get
-            {
-                return data;
-            }
-        }
+        public ME3DataAnimSetStruct Data { get; private set; }
 
         public ME1FaceFXAnimSet()
         {
         }
-
         public ME1FaceFXAnimSet(IMEPackage Pcc, IExportEntry Entry)
         {
 
             pcc = Pcc;
-            Export = Entry;
-            int start = Export.propsEnd() + 4;
-            SerializingContainer Container = new SerializingContainer(new MemoryStream(Export.Data.Skip(start).ToArray()));
+            export = Entry;
+            int start = export.propsEnd() + 4;
+            SerializingContainer Container = new SerializingContainer(new MemoryStream(export.Data.Skip(start).ToArray()));
             Container.isLoading = true;
             Serialize(Container);
         }
@@ -57,9 +49,10 @@ namespace ME3Explorer.FaceFX
         void SerializeHeader(SerializingContainer Container)
         {
             if (Container.isLoading)
-                header = new ME1HeaderStruct();
+                header = new ME3HeaderStruct();
             header.Magic = Container + header.Magic;
             header.unk1 = Container + header.unk1;
+            //header.unk2 = Container + header.unk2;
             int count = 0;
             if (!Container.isLoading)
                 count = header.Licensee.Length;
@@ -76,66 +69,68 @@ namespace ME3Explorer.FaceFX
             header.unk4 = Container + header.unk4;
             count = 0;
             if (!Container.isLoading)
+                count = header.Nodes.Length;
+            count = Container + count;
+            if (Container.isLoading)
+                header.Nodes = new HNodeStruct[count];
+            for (int i = 0; i < count; i++)
+            {
+                if (Container.isLoading)
+                    header.Nodes[i] = new HNodeStruct();
+                HNodeStruct t = header.Nodes[i];
+                t.unk1 = Container + t.unk1;
+                t.unk2 = Container + t.unk2;
+                t.Name = SerializeString(Container, t.Name);
+                t.unk3 = Container + t.unk3;
+                header.Nodes[i] = t;
+            }
+            count = 0;
+            if (!Container.isLoading)
                 count = header.Names.Length;
             count = Container + count;
             if (Container.isLoading)
                 header.Names = new string[count];
-            ushort unk = 0;
             for (int i = 0; i < count; i++)
-            {
-                unk = Container + unk;
                 header.Names[i] = SerializeString(Container, header.Names[i]);
-            }
         }
 
         void SerializeData(SerializingContainer Container)
         {
             if (Container.isLoading)
-                data = new ME2DataAnimSetStruct();
-            data.unk1 = Container + data.unk1;
-            data.unk2 = Container + data.unk2;
-            data.unk3 = Container + data.unk3;
-            data.unk4 = Container + data.unk4;
-            data.unk5 = Container + data.unk5;
-            data.unk6 = Container + data.unk6;
-            data.unk7 = Container + data.unk7;
-            data.unk8 = Container + data.unk8;
-            data.unk9 = Container + data.unk9;
+                Data = new ME3DataAnimSetStruct();
+            Data.unk1 = Container + Data.unk1;
+            Data.unk2 = Container + Data.unk2;
+            Data.unk3 = Container + Data.unk3;
+            Data.unk4 = Container + Data.unk4;
             int count = 0;
             if (!Container.isLoading)
-                count = data.Data.Length;
+                count = Data.Data.Length;
             count = Container + count;
             if (Container.isLoading)
-                data.Data = new ME2FaceFXLine[count];
+                Data.Data = new ME3FaceFXLine[count];
             for (int i = 0; i < count; i++)
             {
                 if (Container.isLoading)
-                    data.Data[i] = new ME2FaceFXLine();
-                ME2FaceFXLine d = data.Data[i];
-                d.unk0 = Container + d.unk0;
-                d.unk1 = Container + d.unk1;
+                    Data.Data[i] = new ME3FaceFXLine();
+                ME3FaceFXLine d = Data.Data[i];
                 d.Name = Container + d.Name;
                 if (Container.isLoading)
                 {
                     d.NameAsString = header.Names[d.Name];
                 }
-                d.unk6 = Container + d.unk6;
                 int count2 = 0;
                 if (!Container.isLoading)
                     count2 = d.animations.Length;
                 count2 = Container + count2;
                 if (Container.isLoading)
-                    d.animations = new ME2NameRef[count2];
+                    d.animations = new ME3NameRef[count2];
                 for (int j = 0; j < count2; j++)
                 {
                     if (Container.isLoading)
-                        d.animations[j] = new ME2NameRef();
-                    ME2NameRef u = d.animations[j] as ME2NameRef;
-                    u.unk0 = Container + u.unk0;
-                    u.unk1 = Container + u.unk1;
+                        d.animations[j] = new ME3NameRef();
+                    ME3NameRef u = d.animations[j];
                     u.index = Container + u.index;
                     u.unk2 = Container + u.unk2;
-                    u.unk3 = Container + u.unk3;
                     d.animations[j] = u;
                 }
                 count2 = 0;
@@ -155,23 +150,28 @@ namespace ME3Explorer.FaceFX
                     u.leaveTangent = Container + u.leaveTangent;
                     d.points[j] = u;
                 }
-                d.unk4 = Container + d.unk4;
-                count2 = 0;
-                if (!Container.isLoading)
-                    count2 = d.numKeys.Length;
-                count2 = Container + count2;
-                if (Container.isLoading)
-                    d.numKeys = new int[count2];
-                for (int j = 0; j < count2; j++)
-                    d.numKeys[j] = Container + d.numKeys[j];
+                if (d.animations.Length > 0)
+                {
+                    count2 = 0;
+                    if (!Container.isLoading)
+                        count2 = d.numKeys.Length;
+                    count2 = Container + count2;
+                    if (Container.isLoading)
+                        d.numKeys = new int[count2];
+                    for (int j = 0; j < count2; j++)
+                        d.numKeys[j] = Container + d.numKeys[j];
+                }
+                else if (Container.isLoading)
+                {
+                    d.numKeys = new int[0];
+                }
                 d.FadeInTime = Container + d.FadeInTime;
                 d.FadeOutTime = Container + d.FadeOutTime;
                 d.unk2 = Container + d.unk2;
-                d.unk5 = Container + d.unk5;
                 d.path = SerializeString(Container, d.path);
                 d.ID = SerializeString(Container, d.ID);
                 d.index = Container + d.index;
-                data.Data[i] = d;
+                Data.Data[i] = d;
             }
         }
 
@@ -179,8 +179,6 @@ namespace ME3Explorer.FaceFX
         {
             int len = 0;
             byte t = 0;
-            ushort unk1 = 1;
-            unk1 = Container + unk1;
             if (Container.isLoading)
             {
                 s = "";
@@ -195,6 +193,33 @@ namespace ME3Explorer.FaceFX
                 foreach (char c in s)
                     t = Container + (byte)c;
             }
+            //Debug.WriteLine("Read string of len 0x" + len.ToString("X2") + ": " + s);
+            return s;
+        }
+
+        //ascii terminated
+        string SerializeStringTerminated(SerializingContainer Container, string s)
+        {
+            int len = 0;
+            byte t = 0;
+            //ushort unk1 = 1;
+            //unk1 = Container + unk1;
+            if (Container.isLoading)
+            {
+                s = "";
+                len = Container + len;
+                for (int i = 0; i < len; i++)
+                    s += (char)(Container + (byte)0);
+                Container.Memory.Position += 2; //00 00
+            }
+            else
+            {
+                len = s.Length;
+                len = Container + len;
+                foreach (char c in s)
+                    t = Container + (byte)c;
+                Container.Memory.Position += 2; //00 00
+            }
             return s;
         }
 
@@ -203,12 +228,18 @@ namespace ME3Explorer.FaceFX
             TreeNode res = new TreeNode("Header");
             res.Nodes.Add("Magic : 0x" + header.Magic.ToString("X8"));
             res.Nodes.Add("Unk1 : 0x" + header.unk1.ToString("X8"));
+            res.Nodes.Add("Unk2 : 0x" + header.unk2.ToString("X8"));
             res.Nodes.Add("Licensee : " + header.Licensee);
             res.Nodes.Add("Project : " + header.Project);
             res.Nodes.Add("Unk3 : 0x" + header.unk3.ToString("X8"));
             res.Nodes.Add("Unk4 : 0x" + header.unk4.ToString("X4"));
-            TreeNode t2 = new TreeNode("Names");
+            TreeNode t = new TreeNode("Nodes");
             int count = 0;
+            foreach (HNodeStruct h in header.Nodes)
+                t.Nodes.Add((count++) + " : " + h.unk1.ToString("X8") + " " + h.unk2.ToString("X8") + " \"" + h.Name + "\" " + h.unk3.ToString("X4"));
+            res.Nodes.Add(t);
+            TreeNode t2 = new TreeNode("Names");
+            count = 0;
             foreach (string s in header.Names)
                 t2.Nodes.Add((count++) + " : " + s);
             res.Nodes.Add(t2);
@@ -220,21 +251,21 @@ namespace ME3Explorer.FaceFX
         {
             TreeNode res = new TreeNode("Data");
             TreeNode t = new TreeNode("Header");
-            t.Nodes.Add(data.unk1.ToString("X8"));
-            t.Nodes.Add(data.unk2.ToString("X8"));
-            t.Nodes.Add(data.unk3.ToString("X8"));
-            t.Nodes.Add(data.unk4.ToString("X8"));
+            t.Nodes.Add(Data.unk1.ToString("X8"));
+            t.Nodes.Add(Data.unk2.ToString("X8"));
+            t.Nodes.Add(Data.unk3.ToString("X8"));
+            t.Nodes.Add(Data.unk4.ToString("X8"));
             res.Nodes.Add(t);
             TreeNode t2 = new TreeNode("Entries");
             int count = 0;
             int count2 = 0;
-            foreach (ME2FaceFXLine d in data.Data)
+            foreach (ME3FaceFXLine d in Data.Data)
             {
                 TreeNode t3 = new TreeNode((count++) + " : ID(" + d.ID.Trim() + ") Path : " + d.path.Trim());
                 t3.Nodes.Add("Name : 0x" + d.Name.ToString("X8") + " \"" + header.Names[d.Name].Trim() + "\"");
                 TreeNode t4 = new TreeNode("Animations");
                 count2 = 0;
-                foreach (ME2NameRef u in d.animations)
+                foreach (ME3NameRef u in d.animations)
                     t4.Nodes.Add((count2++) + " : " + u.index.ToString("X8") + " " + u.unk2.ToString("X8") + " \"" + header.Names[u.index].Trim() + "\"");
                 t3.Nodes.Add(t4);
                 TreeNode t5 = new TreeNode("Points");
@@ -293,42 +324,43 @@ namespace ME3Explorer.FaceFX
             Serialize(Container);
             m = Container.Memory;
             MemoryStream res = new MemoryStream();
-            int start = Export.propsEnd();
-            res.Write(Export.Data, 0, start);
+            int start = export.propsEnd();
+            res.Write(export.Data, 0, start);
             res.WriteValueS32((int)m.Length);
-            res.WriteBytes(m.ToArray());
-            Export.Data = res.ToArray();
+            res.WriteStream(m);
+            res.WriteValueS32(0);
+            export.Data = res.ToArray();
         }
 
         public void CloneEntry(int n)
         {
-            if (n < 0 || n >= data.Data.Length)
+            if (n < 0 || n >= Data.Data.Length)
                 return;
-            List<ME2FaceFXLine> list = new List<ME2FaceFXLine>();
-            list.AddRange(data.Data);
-            list.Add(data.Data[n]);
-            data.Data = list.ToArray();
+            List<ME3FaceFXLine> list = new List<ME3FaceFXLine>();
+            list.AddRange(Data.Data);
+            list.Add(Data.Data[n]);
+            Data.Data = list.ToArray();
         }
         public void RemoveEntry(int n)
         {
-            if (n < 0 || n >= data.Data.Length)
+            if (n < 0 || n >= Data.Data.Length)
                 return;
-            List<ME2FaceFXLine> list = new List<ME2FaceFXLine>();
-            list.AddRange(data.Data);
+            List<ME3FaceFXLine> list = new List<ME3FaceFXLine>();
+            list.AddRange(Data.Data);
             list.RemoveAt(n);
-            data.Data = list.ToArray();
+            Data.Data = list.ToArray();
         }
 
         public void MoveEntry(int n, int m)
         {
-            if (n < 0 || n >= data.Data.Length || m < 0 || m >= data.Data.Length)
+            if (n < 0 || n >= Data.Data.Length || m < 0 || m >= Data.Data.Length)
                 return;
-            List<ME2FaceFXLine> list = new List<ME2FaceFXLine>();
-            for (int i = 0; i < data.Data.Length; i++)
+            List<ME3FaceFXLine> list = new List<ME3FaceFXLine>();
+            for (int i = 0; i < Data.Data.Length; i++)
                 if (i != n)
-                    list.Add(data.Data[i]);
-            list.Insert(m, data.Data[n]);
-            data.Data = list.ToArray();
+                    list.Add(Data.Data[i]);
+            list.Insert(m, Data.Data[n]);
+            Data.Data = list.ToArray();
         }
 
         public void AddName(string s)
