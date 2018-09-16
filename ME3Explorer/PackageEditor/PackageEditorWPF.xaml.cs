@@ -175,7 +175,7 @@ namespace ME3Explorer
             File.WriteAllLines(path, RFiles);
         }
 
-        private void RefreshRecent(bool propogate, List<string> recents = null)
+        public void RefreshRecent(bool propogate, List<string> recents = null)
         {
             if (propogate && recents != null)
             {
@@ -1987,10 +1987,25 @@ namespace ME3Explorer
             string bioBase = @"BioGame\CookedPC";
             string[] extensions = new[] { ".u", ".upk" };
             FileInfo[] files =
-    new DirectoryInfo(System.IO.Path.Combine(myBasePath, bioBase)).EnumerateFiles("*",SearchOption.AllDirectories)
+    new DirectoryInfo(System.IO.Path.Combine(myBasePath, bioBase)).EnumerateFiles("*", SearchOption.AllDirectories)
          .Where(f => extensions.Contains(f.Extension.ToLower()))
          .ToArray();
             Debugger.Break();
+            int i = 1;
+            foreach (FileInfo f in files)
+            {
+                StatusBar_LeftMostText.Text = "Scanning " + f.FullName + " [" + i + "/" + files.Count() + "]";
+                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
+                using (IMEPackage pack = MEPackageHandler.OpenMEPackage(f.FullName))
+                {
+                    List<IExportEntry> tlkExports = pack.Exports.Where(x => (x.ObjectName == "tlk" || x.ObjectName == "tlk_M") && x.ClassName == "BioTlkFile").ToList();
+                    if (tlkExports.Count > 0)
+                    {
+                        Debug.WriteLine("Found exports in " + f.FullName);
+                    }
+                }
+                i++;
+            }
 
         }
 

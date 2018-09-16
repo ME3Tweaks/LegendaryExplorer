@@ -1047,6 +1047,13 @@ namespace ME3Explorer
                         ((PackageEditor)form).RefreshRecent(false, RFiles);
                     }
                 }
+                foreach (var form in App.Current.Windows)
+                {
+                    if (form is PackageEditorWPF && this != form)
+                    {
+                        ((PackageEditorWPF)form).RefreshRecent(false, RFiles);
+                    }
+                }
             }
             else if (recents != null)
             {
