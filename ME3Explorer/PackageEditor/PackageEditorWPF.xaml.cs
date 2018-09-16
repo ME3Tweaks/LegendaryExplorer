@@ -1990,23 +1990,67 @@ namespace ME3Explorer
     new DirectoryInfo(System.IO.Path.Combine(myBasePath, bioBase)).EnumerateFiles("*", SearchOption.AllDirectories)
          .Where(f => extensions.Contains(f.Extension.ToLower()))
          .ToArray();
-            Debugger.Break();
             int i = 1;
+            SortedDictionary<int, KeyValuePair<string, List<string>>> stringMapping = new SortedDictionary<int, KeyValuePair<string, List<string>>>();
             foreach (FileInfo f in files)
             {
-                StatusBar_LeftMostText.Text = "Scanning " + f.FullName + " [" + i + "/" + files.Count() + "]";
+                StatusBar_LeftMostText.Text = "[" + i + "/" + files.Count() + "] Scanning " + f.FullName;
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
+                int basePathLen = myBasePath.Length;
                 using (IMEPackage pack = MEPackageHandler.OpenMEPackage(f.FullName))
                 {
                     List<IExportEntry> tlkExports = pack.Exports.Where(x => (x.ObjectName == "tlk" || x.ObjectName == "tlk_M") && x.ClassName == "BioTlkFile").ToList();
                     if (tlkExports.Count > 0)
                     {
-                        Debug.WriteLine("Found exports in " + f.FullName);
+                        string subPath = f.FullName.Substring(basePathLen);
+                        Debug.WriteLine("Found exports in " + f.FullName.Substring(basePathLen));
+                        foreach (IExportEntry exp in tlkExports)
+                        {
+                            ME1Explorer.Unreal.Classes.TalkFile talkFile = new ME1Explorer.Unreal.Classes.TalkFile(exp);
+                            foreach (var sref in talkFile.StringRefs)
+                            {
+                                if (sref.StringID == 0) continue; //skip blank
+                                if (sref.Data == null || sref.Data == "-1" || sref.Data == "") continue; //skip blank
+
+                                KeyValuePair<string, List<string>> dictEntry;
+                                if (!stringMapping.TryGetValue(sref.StringID, out dictEntry))
+                                {
+                                    dictEntry = new KeyValuePair<string, List<string>>(sref.Data, new List<string>());
+                                    stringMapping[sref.StringID] = dictEntry;
+                                }
+                                if (sref.StringID == 158104)
+                                {
+                                    Debugger.Break();
+                                }
+                                dictEntry.Value.Add(subPath + " in uindex " + exp.UIndex + " \"" + exp.ObjectName + "\"");
+                            }
+                        }
                     }
+                    i++;
                 }
-                i++;
             }
 
+            int done = 0;
+            int total = stringMapping.Count();
+            using (System.IO.StreamWriter file =
+        new System.IO.StreamWriter(@"C:\Users\Public\SuperTLK.txt"))
+            {
+                StatusBar_LeftMostText.Text = "Writing... ";
+                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
+                foreach (KeyValuePair<int, KeyValuePair<string, List<string>>> entry in stringMapping)
+                {
+                    // do something with entry.Value or entry.Key
+                    file.WriteLine(entry.Key);
+                    file.WriteLine(entry.Value.Key);
+                    foreach (string fi in entry.Value.Value)
+                    {
+                        file.WriteLine(" - " + fi);
+                    }
+                    file.WriteLine();
+                }
+            }
+
+            StatusBar_LeftMostText.Text = "Done";
         }
 
         private void Window_Drop(object sender, DragEventArgs e)
