@@ -265,7 +265,6 @@ namespace ME1Explorer.Unreal
                     {
                         exportEntry = Exports[j];
                         if (exportEntry.ClassName == "Enum")
-
                         {
                             generateEnumValues(j, pcc);
                         }

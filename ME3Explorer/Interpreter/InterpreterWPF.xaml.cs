@@ -161,7 +161,7 @@ namespace ME3Explorer
                         {
                             tlkset = new BioTlkFileSet(pcc as ME1Package);
                         }
-                    } catch (Exeception e)
+                    } catch (Exception e)
                     {
                         tlkset = new BioTlkFileSet(pcc as ME1Package);
                     }
