@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ME3Explorer.SharedUI"
         mc:Ignorable="d"
-        Title="Unhandled Exception" Height="300" Width="500">
+        WindowStartupLocation="CenterOwner"
+        Title="Unhandled Exception" Height="300" Width="525">
     <DockPanel Margin="5" LastChildFill="True">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" DockPanel.Dock="Top">
             <Image Source="/Resources/error_x.png" Width="48" Height="48" Margin="10,10,15,0" VerticalAlignment="Top"/>

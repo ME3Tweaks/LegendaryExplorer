@@ -9,6 +9,8 @@ using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -71,6 +73,7 @@ namespace ME3Explorer
         private const int HEADER_OFFSET_IMP_IDXPACKAGEFILE = 0;
         private bool Visible_ObjectNameRow { get; set; }
         private List<AdvancedTreeViewItem<TreeViewItem>> AllTreeViewNodes = new List<AdvancedTreeViewItem<TreeViewItem>>();
+        private List<TreeViewEntry> AllTreeViewNodesX = new List<TreeViewEntry>();
 
         public PackageEditorWPF()
         {
@@ -102,6 +105,7 @@ namespace ME3Explorer
         {
             try
             {
+                AllTreeViewNodesX.Clear();
                 currentFile = s;
                 StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
                 StatusBar_LeftMostText.Text = "Loading " + System.IO.Path.GetFileName(s) + " (" + ByteSize.FromBytes(new System.IO.FileInfo(s).Length) + ")";
@@ -133,6 +137,7 @@ namespace ME3Explorer
                 bio2DAEditor1.Pcc = pcc;
                 treeView1.Tag = pcc;*/
                 RefreshView();
+                InitializeTreeView();
                 InitStuff();
                 StatusBar_LeftMostText.Text = System.IO.Path.GetFileName(s);
                 InterpreterTab_Interpreter.UnloadExport();
@@ -142,6 +147,116 @@ namespace ME3Explorer
                 StatusBar_LeftMostText.Text = "Failed to load " + System.IO.Path.GetFileName(s);
                 MessageBox.Show("Error loading " + System.IO.Path.GetFileName(s) + ":\n" + e.Message);
             }
+        }
+
+        private void InitializeTreeView()
+        {
+            if (pcc == null)
+            {
+                return;
+            }
+            IReadOnlyList<ImportEntry> Imports = pcc.Imports;
+            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            int importsOffset = Exports.Count;
+            int link;
+            /*AllTreeViewNodes = new List<AdvancedTreeViewItem<TreeViewItem>>(Exports.Count + imports.Count + 1)
+            {
+                new AdvancedTreeViewItem<TreeViewItem>() { Header = pcc.FileName, Tag = null, Name="Root" }
+            };*/
+
+            TreeViewEntry rootEntry = new TreeViewEntry(null, pcc.FileName);
+            rootEntry.IsExpanded = true;
+            AllTreeViewNodesX.Add(rootEntry);
+
+            for (int i = 0; i < Exports.Count; i++)
+            {
+                AllTreeViewNodesX.Add(new TreeViewEntry(Exports[i]));
+                /*
+                AllTreeViewNodes.Add(new AdvancedTreeViewItem<TreeViewItem>()
+                {
+                    Header = $"(Exp) {i + 1} : {Exports[i].ObjectName}({Exports[i].ClassName})",
+                    Name = $"_{i + 1}", //must start letter or _
+                    Foreground = Brushes.Black,
+                    Background = (Exports[i].DataChanged || Exports[i].HeaderChanged) ? Brushes.Yellow : null
+                });*/
+            }
+
+            for (int i = 0; i < Imports.Count; i++)
+            {
+                AllTreeViewNodesX.Add(new TreeViewEntry(Imports[i]));
+                /*
+                AllTreeViewNodes.Add(new AdvancedTreeViewItem<TreeViewItem>()
+                {
+                    Header = $"(Imp) {-i - 1} : {imports[i].ObjectName}({imports[i].ClassName})",
+                    Name = $"_n{i + 1}", //must start letter or _,
+                    Foreground = Brushes.Gray,
+                    Background = (imports[i].HeaderChanged) ? Brushes.Yellow : null
+                });*/
+            }
+
+            //configure links
+            //Order: 0 = Root, [Exports], [Imports], <extra, new stuff>
+            List<TreeViewEntry> itemsToRemove = new List<TreeViewEntry>();
+            foreach (TreeViewEntry entry in AllTreeViewNodesX)
+            {
+                if (entry.Entry != null)
+                {
+                    int tvLink = entry.Entry.idxLink;
+                    if (tvLink < 0)
+                    {
+                        //import
+                        Debug.WriteLine("import tvlink " + tvLink);
+
+                        tvLink = 1 + Exports.Count + Math.Abs(tvLink);
+                        Debug.WriteLine("Linking " + entry.Entry.GetFullPath + " to index " + tvLink);
+                    }
+
+                    TreeViewEntry parent = AllTreeViewNodesX[tvLink];
+                    parent.Sublinks.Add(entry);
+                    entry.Parent = parent;
+                    itemsToRemove.Add(entry);
+                }
+                //TreeViewEntry parent = 
+            }
+            AllTreeViewNodesX = AllTreeViewNodesX.Except(itemsToRemove).ToList();
+            ClearList(LeftSide_TreeView);
+            LeftSide_TreeView.ItemsSource = AllTreeViewNodesX;
+            /*
+            int curIndex;
+            for (int i = 1; i <= Exports.Count; i++)
+            {
+                node = AllTreeViewNodes[i];
+                curIndex = i;
+                while (node.Tag as IEntry == null && node.Name != "Root")
+                {
+                    node.Tag = pcc.getEntry(curIndex);
+                    //Debug.WriteLine(curIndex);
+                    curIndex = pcc.getEntry(curIndex).idxLink;
+                    link = curIndex >= 0 ? curIndex : (-curIndex + importsOffset);
+                    AllTreeViewNodes[link].Items.Add(node);
+                    node.ParentNodeValue = AllTreeViewNodes[link];
+                    node = AllTreeViewNodes[link];
+                }
+            }
+
+            for (int i = 1; i <= imports.Count; i++)
+            {
+                node = AllTreeViewNodes[i + importsOffset];
+                curIndex = -i;
+                while (node.Tag as IEntry == null && node.Name != "Root")
+                {
+                    node.Tag = pcc.getEntry(curIndex);
+                    curIndex = pcc.getEntry(curIndex).idxLink;
+                    link = curIndex >= 0 ? curIndex : (-curIndex + importsOffset);
+                    AllTreeViewNodes[link].Items.Add(node);
+                    node.ParentNodeValue = AllTreeViewNodes[link];
+                    node = AllTreeViewNodes[link];
+                }
+            }
+            LeftSide_TreeView.Items.Add(AllTreeViewNodes[0]);
+            AllTreeViewNodes[0].IsExpanded = true;
+            /*LeftSide_TreeView.Items[0].Expand();
+            */
         }
 
         private void LoadRecentList()
@@ -339,7 +454,7 @@ namespace ME3Explorer
             {
                 LeftSide_ListView.Visibility = Visibility.Collapsed;
                 LeftSide_TreeView.Visibility = Visibility.Visible;
-                ClearList(LeftSide_TreeView);
+                /*ClearList(LeftSide_TreeView);
                 int importsOffset = Exports.Count;
                 int link;
                 AllTreeViewNodes = new List<AdvancedTreeViewItem<TreeViewItem>>(Exports.Count + imports.Count + 1)
@@ -680,7 +795,7 @@ namespace ME3Explorer
         /// <returns>True if an item was selected, false if nothing was selected.</returns>
         private bool GetSelected(out int n)
         {
-            if (CurrentView == View.Tree && LeftSide_TreeView.SelectedItem != null && ((TreeViewItem)LeftSide_TreeView.SelectedItem).Name.StartsWith("_"))
+            /*if (CurrentView == View.Tree && LeftSide_TreeView.SelectedItem != null && ((TreeViewItem)LeftSide_TreeView.SelectedItem).Name.StartsWith("_"))
             {
                 string name = ((TreeViewItem)LeftSide_TreeView.SelectedItem).Name.Substring(1); //get rid of _
                 if (name.StartsWith("n"))
@@ -690,10 +805,16 @@ namespace ME3Explorer
                 }
                 n = Convert.ToInt32(name);
                 return true;
+            }*/
+            if (CurrentView == View.Tree && LeftSide_TreeView.SelectedItem != null)
+            {
+                TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+                n = Convert.ToInt32(selected.UIndex);
+                return true;
             }
             else if (CurrentView == View.Exports && LeftSide_ListView.SelectedItem != null)
             {
-                n = LeftSide_ListView.SelectedIndex;
+                n = LeftSide_ListView.SelectedIndex + 1; //to unreal indexing
                 return true;
             }
             else if (CurrentView == View.Imports && LeftSide_ListView.SelectedItem != null)
@@ -793,6 +914,19 @@ namespace ME3Explorer
                 InterpreterTab_Interpreter.UnloadExport();
                 return;
             }
+            if (n == 0)
+            {
+                foreach (KeyValuePair<ExportLoaderControl, TabItem> e in ExportLoaders)
+                {
+                    e.Key.UnloadExport();
+                    e.Value.Visibility = Visibility.Collapsed;
+                }
+                EditorTabs.IsEnabled = false;
+                Metadata_Tab.IsSelected = true;
+                ClearMetadataPane();
+                return;
+            }
+            EditorTabs.IsEnabled = true;
             Debug.WriteLine("New selection: " + n);
 
             if (CurrentView == View.Imports || CurrentView == View.Exports || CurrentView == View.Tree)
@@ -1254,9 +1388,9 @@ namespace ME3Explorer
             }
             if (CurrentView == View.Tree)
             {
-                if (entryIndex >= -pcc.ImportCount && entryIndex < pcc.ExportCount)
+                /*if (entryIndex >= -pcc.ImportCount && entryIndex < pcc.ExportCount)
                 {
-                    List<AdvancedTreeViewItem<TreeViewItem>> noNameNodes = AllTreeViewNodes.Where(s => s.Name.Length == 0).ToList();
+                    //List<AdvancedTreeViewItem<TreeViewItem>> noNameNodes = AllTreeViewNodes.Where(s => s.Name.Length == 0).ToList();
                     var nodeName = entryIndex.ToString().Replace("-", "n");
                     List<AdvancedTreeViewItem<TreeViewItem>> nodes = AllTreeViewNodes.Where(s => s.Name.Length > 0 && s.Name.Substring(1) == nodeName).ToList();
                     if (nodes.Count > 0)
@@ -1264,6 +1398,13 @@ namespace ME3Explorer
                         nodes[0].BringIntoView();
                         Dispatcher.BeginInvoke(DispatcherPriority.Background, (NoArgDelegate)delegate { nodes[0].ParentNodeValue.SelectItem(nodes[0]); });
                     }
+                }*/
+                var list = AllTreeViewNodesX[0].FlattenTree();
+                List<TreeViewEntry> selectNode = list.Where(s => s.Entry != null && s.UIndex == entryIndex).ToList();
+                if (selectNode.Count() > 0)
+                {
+                    selectNode[0].ExpandParents();
+                    selectNode[0].IsSelected = true;
                 }
             }
             else
@@ -1797,32 +1938,24 @@ namespace ME3Explorer
             if (CurrentView == View.Tree)
             {
                 //this needs fixed as for some rason its way out of order...
-                AdvancedTreeViewItem<TreeViewItem> selectedNode = (AdvancedTreeViewItem<TreeViewItem>)LeftSide_TreeView.SelectedItem;
-                var items = LeftSide_TreeView.FlattenAdvancedTreeView().ToList();
+                TreeViewEntry selectedNode = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+                var items = AllTreeViewNodesX[0].FlattenTree();
                 int pos = selectedNode == null ? 0 : items.IndexOf(selectedNode);
                 pos += 1; //search this and 1 forward
-                int initialindex = pos + 1;
                 for (int i = 0; i < items.Count; i++)
                 {
-                    AdvancedTreeViewItem<TreeViewItem> node = items[(i + pos) % items.Count];
-                    if (node.Name == "Root")
+                    int curIndex = (i + pos) % items.Count;
+                    TreeViewEntry node = items[(i + pos) % items.Count];
+                    if (node.Entry == null)
                     {
                         continue;
                     }
+                    Debug.WriteLine(curIndex+" "+node.Entry.ObjectName);
 
-                    string name = node.Name.Substring(1); //get rid of _
-                    if (name.StartsWith("n"))
+                    if (node.Entry.ClassName.Equals(searchClass))
                     {
-                        //its negative
-                        name = $"-{name.Substring(1)}";
-                    }
-
-                    int index = Convert.ToInt32(name);
-                    //string cname = pcc.getEntry(index).ClassName;
-                    //Debug.WriteLine(cname);
-                    if (pcc.getEntry(index).ClassName.Equals(searchClass))
-                    {
-                        goToNumber(index + 1);
+                        node.ExpandParents();
+                        node.IsSelected = true;
                         break;
                     }
                 }
@@ -1899,16 +2032,19 @@ namespace ME3Explorer
                         break;
                     }
             }
+            */
             if (CurrentView == View.Exports)
             {
                 IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                 for (int i = start; i < Exports.Count; i++)
+                {
                     if (Exports[i].ObjectName.ToLower().Contains(searchTerm))
                     {
-                        listBox1.SelectedIndex = i;
+                        LeftSide_ListView.SelectedIndex = i;
                         break;
                     }
-            }*/
+                }
+            }
             if (CurrentView == View.Tree)
             {
                 //this needs fixed as for some rason its way out of order...
@@ -2072,12 +2208,135 @@ namespace ME3Explorer
             {
                 // Note that you can have more than one file.
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                string ext = System.IO.Path.GetExtension(files[0]);
-                if (ext != ".u" && ext != ".upk" && ext != ".pcc")
+                string ext = System.IO.Path.GetExtension(files[0]).ToLower();
+                if (ext != ".u" && ext != ".upk" && ext != ".pcc" && ext != ".sfm")
                 {
                     e.Effects = DragDropEffects.None;
                     e.Handled = true;
                 }
+            }
+        }
+
+        internal void ClearMetadataPane()
+        {
+            InfoTab_Objectname_ComboBox.SelectedItem = null;
+            InfoTab_Class_ComboBox.SelectedItem = null;
+            InfoTab_Superclass_ComboBox.SelectedItem = null;
+            InfoTab_PackageLink_ComboBox.SelectedItem = null;
+            InfoTab_Headersize_TextBox.Text = null;
+            InfoTab_ObjectnameIndex_TextBox.Text = null;
+            InfoTab_Archetype_ComboBox.ItemsSource = null;
+            InfoTab_Archetype_ComboBox.Items.Clear();
+            InfoTab_Archetype_ComboBox.SelectedItem = null;
+            InfoTab_Flags_ComboBox.ItemsSource = null;
+            InfoTab_Flags_ComboBox.SelectedItem = null;
+            InfoTab_ExportDataSize_TextBox.Text = null;
+            InfoTab_ExportOffsetHex_TextBox.Text = null;
+            InfoTab_ExportOffsetDec_TextBox.Text = null;
+            Header_Hexbox.ByteProvider = new DynamicByteProvider(new byte[] { });
+
+        }
+    }
+
+    public class TreeViewEntry : INotifyPropertyChanged
+    {
+        protected void OnPropertyChanged(string propName)
+        {
+            var temp = PropertyChanged;
+            if (temp != null)
+                temp(this, new PropertyChangedEventArgs(propName));
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private System.Windows.Media.Brush _foregroundColor = System.Windows.Media.Brushes.DarkSeaGreen;
+        private bool isSelected;
+        public bool IsSelected
+        {
+            get { return this.isSelected; }
+            set
+            {
+                if (value != this.isSelected)
+                {
+                    this.isSelected = value;
+                    OnPropertyChanged("IsSelected");
+                }
+            }
+        }
+
+        private bool isExpanded;
+        public bool IsExpanded
+        {
+            get { return this.isExpanded; }
+            set
+            {
+                if (value != this.isExpanded)
+                {
+                    this.isExpanded = value;
+                    OnPropertyChanged("IsExpanded");
+                }
+            }
+        }
+
+        public void ExpandParents()
+        {
+            if (Parent != null)
+            {
+                Parent.ExpandParents();
+                Parent.IsExpanded = true;
+            }
+        }
+
+        /// <summary>
+        /// Flattens the tree into depth first order. Use this method for searching the list.
+        /// </summary>
+        /// <returns></returns>
+        public List<TreeViewEntry> FlattenTree()
+        {
+            List<TreeViewEntry> nodes = new List<TreeViewEntry>();
+            nodes.Add(this);
+            foreach(TreeViewEntry tve in Sublinks)
+            {
+                nodes.AddRange(tve.FlattenTree());
+            }
+            return nodes;
+        }
+
+        public TreeViewEntry Parent { get; set; }
+
+        /// <summary>
+        /// The entry object from the file that this node represents
+        /// </summary>
+        public IEntry Entry { get; set; }
+        /// <summary>
+        /// List of entries that link to this node
+        /// </summary>
+        public ObservableCollection<TreeViewEntry> Sublinks { get; set; }
+        public TreeViewEntry(IEntry entry, string displayName = null)
+        {
+            Entry = entry;
+            DisplayName = displayName;
+            Sublinks = new ObservableCollection<TreeViewEntry>();
+        }
+
+        private string _displayName;
+        public string DisplayName
+        {
+            get
+            {
+                if (_displayName != null) return _displayName;
+                string type = UIndex < 0 ? "Imp" : "Exp";
+                return $"({type}) {UIndex} {Entry.ObjectName}({Entry.ClassName})";
+            }
+            set { _displayName = value; }
+        }
+
+        public int UIndex { get { return Entry != null ? Entry.UIndex : 0; } }
+        public System.Windows.Media.Brush ForegroundColor
+        {
+            get { return Entry == null ? System.Windows.Media.Brushes.Black : UIndex > 0 ? System.Windows.Media.Brushes.Black : System.Windows.Media.Brushes.Gray; }
+            set
+            {
+                _foregroundColor = value;
+                OnPropertyChanged("ForegroundColor");
             }
         }
     }

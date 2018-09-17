@@ -131,8 +131,10 @@ namespace ME3Explorer
         void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             SharedUI.ExceptionHandlerDialogWPF eh = new SharedUI.ExceptionHandlerDialogWPF(e.Exception);
+            Window wpfActiveWindow = Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive);
+            eh.Owner = wpfActiveWindow;
             eh.ShowDialog();
-#if !DEBUG
+#if DEBUG
             e.Handled = eh.Handled;
 #endif
         }

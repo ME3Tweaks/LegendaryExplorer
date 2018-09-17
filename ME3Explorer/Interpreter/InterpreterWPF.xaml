@@ -57,6 +57,14 @@
                 <ContextMenu x:Key="StandardPropertContext"  StaysOpen="true">
                     <MenuItem Header="RemoveProperty" Command="Commands:InterpreterWPFCommands.RemovePropertyCommand"/>
                 </ContextMenu>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                      Color="LightBlue" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                      Color="Black" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                      Color="LightBlue" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+                      Color="Black" />
             </TreeView.Resources>
         </TreeView>
     </Grid>

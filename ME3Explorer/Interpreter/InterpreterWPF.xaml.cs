@@ -150,12 +150,18 @@ namespace ME3Explorer
                 // attempt to find a TlkFileSet associated with the object, else just pick the first one and hope it's correct
                 if (editorTlkSet == null)
                 {
-                    IntProperty tlkSetRef = export.GetProperty<IntProperty>("m_oTlkFileSet");
-                    if (tlkSetRef != null)
+                    try
                     {
-                        tlkset = new BioTlkFileSet(pcc as ME1Package, tlkSetRef.Value - 1);
-                    }
-                    else
+                        IntProperty tlkSetRef = export.GetProperty<IntProperty>("m_oTlkFileSet");
+                        if (tlkSetRef != null)
+                        {
+                            tlkset = new BioTlkFileSet(pcc as ME1Package, tlkSetRef.Value - 1);
+                        }
+                        else
+                        {
+                            tlkset = new BioTlkFileSet(pcc as ME1Package);
+                        }
+                    } catch (Exeception e)
                     {
                         tlkset = new BioTlkFileSet(pcc as ME1Package);
                     }

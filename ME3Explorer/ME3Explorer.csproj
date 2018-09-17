@@ -611,6 +611,7 @@
     <Compile Include="SharedUI\ExportSelectorWinForms.Designer.cs">
       <DependentUpon>ExportSelectorWinForms.cs</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\ListScrollBox.cs" />
     <Compile Include="SharedUI\PromptDialog.xaml.cs">
       <DependentUpon>PromptDialog.xaml</DependentUpon>
     </Compile>
