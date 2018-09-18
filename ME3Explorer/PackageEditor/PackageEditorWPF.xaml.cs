@@ -1,6 +1,7 @@
 ﻿using Be.Windows.Forms;
 using ByteSizeLib;
 using GongSolutions.Wpf.DragDrop;
+using ME1Explorer.Unreal;
 using ME3Explorer.CurveEd;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
@@ -878,14 +879,20 @@ namespace ME3Explorer
         /// <param name="e"></param>
         private void LeftSide_SelectedItemChanged(object sender, RoutedEventArgs e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Background,
-        (NoArgDelegate)delegate
-        {
+            /* Dispatcher.BeginInvoke(DispatcherPriority.Background,
+         (NoArgDelegate)delegate
+         {*/
             loadingNewData = true;
-
             Preview();
+            //TreeViewItem item = LeftSide_TreeView.ItemContainerGenerator.ContainerFromItem(sender as TreeViewItem) as TreeViewItem;
+
+            //if (item != null)
+            //{
+            //    item.BringIntoView();
+            //    e.Handled = true;
+            //}
             loadingNewData = false;
-        });
+            //});
         }
 
         /// <summary>
@@ -1403,8 +1410,9 @@ namespace ME3Explorer
                 List<TreeViewEntry> selectNode = list.Where(s => s.Entry != null && s.UIndex == entryIndex).ToList();
                 if (selectNode.Count() > 0)
                 {
-                    selectNode[0].ExpandParents();
+                    //selectNode[0].ExpandParents();
                     selectNode[0].IsSelected = true;
+                    selectNode[0].Focus(LeftSide_TreeView);
                 }
             }
             else
@@ -1950,12 +1958,13 @@ namespace ME3Explorer
                     {
                         continue;
                     }
-                    Debug.WriteLine(curIndex+" "+node.Entry.ObjectName);
+                    Debug.WriteLine(curIndex + " " + node.Entry.ObjectName);
 
                     if (node.Entry.ClassName.Equals(searchClass))
                     {
-                        node.ExpandParents();
+                        //node.ExpandParents();
                         node.IsSelected = true;
+                        node.Focus(LeftSide_TreeView);
                         break;
                     }
                 }
@@ -2048,29 +2057,25 @@ namespace ME3Explorer
             if (CurrentView == View.Tree)
             {
                 //this needs fixed as for some rason its way out of order...
-                AdvancedTreeViewItem<TreeViewItem> selectedNode = (AdvancedTreeViewItem<TreeViewItem>)LeftSide_TreeView.SelectedItem;
-                var items = LeftSide_TreeView.FlattenAdvancedTreeView().ToList();
-                int pos = selectedNode == null ? 0 : items.IndexOf(selectedNode);
+                TreeViewEntry selectedNode = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+                var items = AllTreeViewNodesX[0].FlattenTree();
+                int pos = selectedNode == null ? -1 : items.IndexOf(selectedNode);
                 pos += 1; //search this and 1 forward
-                for (int i = pos; i < items.Count; i++)
+                for (int i = 0; i < items.Count; i++)
                 {
-                    AdvancedTreeViewItem<TreeViewItem> node = items[i];
-                    if (node.Name == "")
+                    int curIndex = (i + pos) % items.Count;
+                    TreeViewEntry node = items[(i + pos) % items.Count];
+                    if (node.Entry == null)
                     {
                         continue;
                     }
-
-                    string name = node.Name.Substring(1); //get rid of _
-                    if (name.StartsWith("n"))
+                    Debug.WriteLine(curIndex + " " + node.Entry.ObjectName);
+                    if (node.Entry.ObjectName.ToLower().Contains(searchTerm))
                     {
-                        //its negative
-                        name = $"-{name.Substring(1)}";
-                    }
-
-                    int index = Convert.ToInt32(name);
-                    if (pcc.getObjectName(index.ToUnrealIdx()).ToLower().Contains(searchTerm))
-                    {
-                        goToNumber(index + 1);
+                        //node.ExpandParents();
+                        node.IsSelected = true;
+                        FocusTreeViewNode(node);
+                        //                        node.Focus(LeftSide_TreeView);
                         break;
                     }
                 }
@@ -2236,8 +2241,53 @@ namespace ME3Explorer
             Header_Hexbox.ByteProvider = new DynamicByteProvider(new byte[] { });
 
         }
-    }
 
+        private void BuildME1ObjectInfo_Clicked(object sender, RoutedEventArgs e)
+        {
+            ME1UnrealObjectInfo.generateInfo();
+        }
+
+        private void FocusTreeViewNode(TreeViewEntry node)
+        {
+            if (node == null) return;
+            var nodes = (IEnumerable<TreeViewEntry>)LeftSide_TreeView.ItemsSource;
+            if (nodes == null) return;
+
+            var stack = new Stack<TreeViewEntry>();
+            stack.Push(node);
+            var parent = node.Parent;
+            while (parent != null)
+            {
+                stack.Push(parent);
+                parent = parent.Parent;
+            }
+
+            var generator = LeftSide_TreeView.ItemContainerGenerator;
+            while (stack.Count > 0)
+            {
+                var dequeue = stack.Pop();
+                LeftSide_TreeView.UpdateLayout();
+
+                var treeViewItem = (TreeViewItem)generator.ContainerFromItem(dequeue);
+                if (stack.Count > 0)
+                {
+                    treeViewItem.IsExpanded = true;
+                }
+                else
+                {
+                    if (treeViewItem == null)
+                    {
+                        //This is being triggered when it shouldn't be
+                        Debugger.Break();
+                    }
+                    treeViewItem.IsSelected = true;
+                }
+                treeViewItem.BringIntoView();
+                generator = treeViewItem.ItemContainerGenerator;
+            }
+        }
+    }
+    [DebuggerDisplay("TreeViewEntry {DisplayName}")]
     public class TreeViewEntry : INotifyPropertyChanged
     {
         protected void OnPropertyChanged(string propName)
@@ -2285,6 +2335,12 @@ namespace ME3Explorer
             }
         }
 
+        public void Focus(TreeView tView)
+        {
+            TreeViewItem tvItem = (TreeViewItem)tView.ItemContainerGenerator.ContainerFromItem(this);
+            tvItem?.Focus();
+        }
+
         /// <summary>
         /// Flattens the tree into depth first order. Use this method for searching the list.
         /// </summary>
@@ -2293,7 +2349,7 @@ namespace ME3Explorer
         {
             List<TreeViewEntry> nodes = new List<TreeViewEntry>();
             nodes.Add(this);
-            foreach(TreeViewEntry tve in Sublinks)
+            foreach (TreeViewEntry tve in Sublinks)
             {
                 nodes.AddRange(tve.FlattenTree());
             }

@@ -34,7 +34,6 @@ namespace ME3Explorer
             }
             private set
             {
-                Debug.WriteLine("Setting 2da");
                 SetProperty(ref _table2da, value);
             }
         }

@@ -71,7 +71,7 @@
             </MenuItem>
             <MenuItem Header="Experiments">
                 <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
-                <MenuItem Header="Save"/>
+                <MenuItem Header="Build ME1 Object Info" Click="BuildME1ObjectInfo_Clicked"/>
             </MenuItem>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
@@ -126,7 +126,7 @@
                       Color="Black" />
                 </TreeView.Resources>
                 <TreeView.ItemContainerStyle>
-                    <Style TargetType="TreeViewItem">
+                    <Style TargetType="{x:Type TreeViewItem}">
                         <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
                         <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
                     </Style>

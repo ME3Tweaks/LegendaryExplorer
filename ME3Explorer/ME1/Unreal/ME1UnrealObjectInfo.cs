@@ -9,6 +9,7 @@ using KFreonLib.MEDirectories;
 using Newtonsoft.Json;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
+using System.Diagnostics;
 
 namespace ME1Explorer.Unreal
 {
@@ -250,6 +251,9 @@ namespace ME1Explorer.Unreal
         //Takes a long time (10 to 20 minutes maybe?). Application will be completely unresponsive during that time.
         public static void generateInfo()
         {
+            Classes = new Dictionary<string, ClassInfo>();
+            Structs = new Dictionary<string, ClassInfo>();
+            Enums = new Dictionary<string, List<string>>();
             ME1Package pcc;
             string path = ME1Directory.gamePath;
             string[] files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
@@ -258,7 +262,8 @@ namespace ME1Explorer.Unreal
             {
                 if (Path.GetExtension(files[i]) == ".upk" || Path.GetExtension(files[i]) == ".sfm" || Path.GetExtension(files[i]) == ".u")
                 {
-                    pcc = MEPackageHandler.OpenME1Package(path);
+                    Debug.WriteLine("File: " + files[i]);
+                    pcc = MEPackageHandler.OpenME1Package(files[i]);
                     IReadOnlyList<IExportEntry> Exports = pcc.Exports;
                     IExportEntry exportEntry;
                     for (int j = 0; j < Exports.Count; j++)
@@ -271,6 +276,7 @@ namespace ME1Explorer.Unreal
                         else if (exportEntry.ClassName == "Class")
                         {
                             objectName = exportEntry.ObjectName;
+                            Debug.WriteLine("Generating information for " + exportEntry.ObjectName);
                             if (!Classes.ContainsKey(exportEntry.ObjectName))
                             {
                                 Classes.Add(objectName, generateClassInfo(j, pcc));
@@ -285,6 +291,7 @@ namespace ME1Explorer.Unreal
                             }
                         }
                     }
+                    pcc.Release();
                 }
             }
             File.WriteAllText(Application.StartupPath + "//exec//ME1ObjectInfo.json", JsonConvert.SerializeObject(new { Classes = Classes, Structs = Structs, Enums = Enums }));
@@ -298,10 +305,21 @@ namespace ME1Explorer.Unreal
 
         private static ClassInfo generateClassInfo(int index, ME1Package pcc)
         {
-            ClassInfo info = new ClassInfo();
-            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-            info.baseClass = Exports[index].ClassParent;
-            foreach (IExportEntry entry in Exports)
+            ClassInfo info = new ClassInfo
+            {
+                baseClass = pcc.Exports[index].ClassParent,
+                exportIndex = index
+            };
+            if (pcc.FileName.Contains("BioGame"))
+            {
+                info.pccPath = new string(pcc.FileName.Skip(pcc.FileName.LastIndexOf("BioGame") + 8).ToArray());
+            }
+            else
+            {
+                info.pccPath = pcc.FileName; //used for dynamic resolution of files outside the game directory.
+            }
+
+            foreach (IExportEntry entry in pcc.Exports)
             {
                 if (entry.idxLink - 1 == index && entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"
                     && entry.ClassName != "Function" && entry.ClassName != "Const" && entry.ClassName != "State")
