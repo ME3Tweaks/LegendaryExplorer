@@ -9,7 +9,7 @@ namespace ME3Explorer
     /// <summary>
     /// Subclass of UserControl that also sets up the CurrentLoadedExport, LoadExport(), UnloadExport() and more methods
     /// </summary>
-    public abstract class ExportLoaderControl : UserControl
+    public abstract class ExportLoaderControl : UserControl, INotifyPropertyChanged
     {
         public abstract bool CanParse(IExportEntry exportEntry);
         public static MEGame[] SupportedGames;

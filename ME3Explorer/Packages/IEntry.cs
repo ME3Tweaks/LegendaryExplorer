@@ -6,6 +6,8 @@ namespace ME3Explorer.Packages
 {
     public interface IEntry
     {
+        event PropertyChangedEventHandler PropertyChanged;
+
         bool HeaderChanged { get; }
         int Index { get; set; }
         int UIndex { get; }
@@ -42,7 +44,6 @@ namespace ME3Explorer.Packages
 
         IExportEntry Clone();
 
-        event PropertyChangedEventHandler PropertyChanged;
 
         PropertyCollection GetProperties(bool forceReload = false, bool includeNoneProperties = false);
         void WriteProperties(PropertyCollection props);

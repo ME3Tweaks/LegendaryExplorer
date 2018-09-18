@@ -147,10 +147,13 @@ namespace ME3Explorer.Packages
 
             set
             {
-                dataChanged = value;
-                if (value)
+                if (dataChanged != value)
                 {
-                    OnPropertyChanged();
+                    dataChanged = value;
+                    if (value)
+                    {
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -165,10 +168,13 @@ namespace ME3Explorer.Packages
 
             set
             {
-                headerChanged = value;
-                if (value)
+                if (headerChanged != value)
                 {
-                    OnPropertyChanged();
+                    headerChanged = value;
+                    if (value)
+                    {
+                        OnPropertyChanged();
+                    }
                 }
             }
         }

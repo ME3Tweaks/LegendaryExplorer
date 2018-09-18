@@ -340,6 +340,10 @@ namespace ME3Explorer
                         s += (prop as ByteProperty).Value;
                     }
                     break;
+                case PropertyType.StrProperty:
+                    s += " Value: ";
+                    s += (prop as StrProperty).Value;
+                    break;
                 case PropertyType.StructProperty:
                     s += ", ";
                     s += (prop as StructProperty).StructType;
@@ -452,12 +456,6 @@ namespace ME3Explorer
             switch (exportEntry.ObjectName)
             {
                 case "LevelStreamingKismet":
-                    /*if (pcc.getNameEntry(header.name) == "m_AutoPersistentObjects")
-                    {
-                        s += pcc.getExport(value).PackageFullName + ".";
-                    }*/
-                    //if (pcc.getNameEntry(header.name) == "StreamingLevels")
-                    //{
                     NameProperty prop = exportEntry.GetProperty<NameProperty>("PackageName");
                     return "(" + prop.Value.Name + "_" + prop.Value.Number + ")";
             }

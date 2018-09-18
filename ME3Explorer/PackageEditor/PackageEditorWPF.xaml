@@ -69,6 +69,10 @@
                 <MenuItem Header="Open"/>
                 <MenuItem Name="ComparePackageMenuItem" Header="Compare with another package" Command="Commands:PackageEditorWPFCommands.ComparePackageCommand" IsEnabled="False"/>
             </MenuItem>
+
+            <MenuItem Header="Options">
+                <MenuItem Name="TouchComfyMode_MenuItem" Header="Touch Comfy Mode" Click="TouchComfyMode_Clicked"/>
+            </MenuItem>
             <MenuItem Header="Experiments">
                 <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
                 <MenuItem Header="Build ME1 Object Info" Click="BuildME1ObjectInfo_Clicked"/>
@@ -112,7 +116,18 @@
                     <HierarchicalDataTemplate DataType="{x:Type global:TreeViewEntry}" ItemsSource="{Binding Sublinks}">
                         <StackPanel Orientation="Horizontal">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding DisplayName}" Foreground="{Binding Path=ForegroundColor}" />
+                                <TextBlock Margin="{Binding Path=TreeViewMargin,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Text="{Binding DisplayName}" Foreground="{Binding Path=ForegroundColor}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ShouldHighlightAsChanged}" Value="true">
+                                                    <Setter Property="Background" Value="Yellow"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+
                             </StackPanel>
                         </StackPanel>
                     </HierarchicalDataTemplate>

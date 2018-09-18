@@ -45,6 +45,23 @@ namespace ME3Explorer
             Tree
         }
 
+        int _treeViewMargin = 2;
+        public int TreeViewMargin
+        {
+            get
+            {
+                return _treeViewMargin;
+            }
+            set
+            {
+                if (_treeViewMargin != value)
+                {
+                    _treeViewMargin = value;
+                    OnPropertyChanged("TreeViewMargin");
+                }
+            }
+        }
+
         Dictionary<ExportLoaderControl, TabItem> ExportLoaders = new Dictionary<ExportLoaderControl, TabItem>();
         View CurrentView;
         public PropGrid pg;
@@ -73,8 +90,8 @@ namespace ME3Explorer
         private const int HEADER_OFFSET_IMP_IDXOBJECTNAME = 20;
         private const int HEADER_OFFSET_IMP_IDXPACKAGEFILE = 0;
         private bool Visible_ObjectNameRow { get; set; }
-        private List<AdvancedTreeViewItem<TreeViewItem>> AllTreeViewNodes = new List<AdvancedTreeViewItem<TreeViewItem>>();
-        private List<TreeViewEntry> AllTreeViewNodesX = new List<TreeViewEntry>();
+        //private List<AdvancedTreeViewItem<TreeViewItem>> AllTreeViewNodes = new List<AdvancedTreeViewItem<TreeViewItem>>();
+        private ObservableCollection<TreeViewEntry> AllTreeViewNodesX = new ObservableCollection<TreeViewEntry>();
 
         public PackageEditorWPF()
         {
@@ -219,7 +236,7 @@ namespace ME3Explorer
                 }
                 //TreeViewEntry parent = 
             }
-            AllTreeViewNodesX = AllTreeViewNodesX.Except(itemsToRemove).ToList();
+            AllTreeViewNodesX = new ObservableCollection<TreeViewEntry>(AllTreeViewNodesX.Except(itemsToRemove).ToList());
             ClearList(LeftSide_TreeView);
             LeftSide_TreeView.ItemsSource = AllTreeViewNodesX;
             /*
@@ -773,7 +790,7 @@ namespace ME3Explorer
 
         public void RefreshExportChangedStatus()
         {
-            if (pcc != null)
+            /*if (pcc != null)
             {
                 for (int i = 0; i < pcc.Exports.Count; i++)
                 {
@@ -786,7 +803,7 @@ namespace ME3Explorer
                     AllTreeViewNodes[i + 1].ToolTip = (pcc.Exports[i].DataChanged || pcc.Exports[i].HeaderChanged) ? "This entry has been modified but has not been commited to disk yet" : null;
 
                 }
-            }
+            }*/
         }
 
         /// <summary>
@@ -1060,7 +1077,7 @@ namespace ME3Explorer
                     headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.header);*/
                     if (!isRefresh)
                     {
-                        InterpreterTab_Interpreter.LoadExport(exportEntry);
+                        //InterpreterTab_Interpreter.LoadExport(exportEntry);
                         Interpreter_Tab.Visibility = Visibility.Visible;
 
                         //interpreterControl.export = exportEntry;
@@ -1152,22 +1169,23 @@ namespace ME3Explorer
         private void SaveCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             //save();
+            /*
             foreach (var item in AllTreeViewNodes)
             {
                 item.Background = null;
                 item.ToolTip = null;
-            }
+            }*/
         }
 
         private void SaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             //saveAs();
-
+            /*
             foreach (var item in AllTreeViewNodes)
             {
                 item.Background = null;
                 item.ToolTip = null;
-            }
+            }*/
         }
 
         private void PackageEditorWPF_Loaded(object sender, RoutedEventArgs e)
@@ -2286,6 +2304,12 @@ namespace ME3Explorer
                 generator = treeViewItem.ItemContainerGenerator;
             }
         }
+
+        private void TouchComfyMode_Clicked(object sender, RoutedEventArgs e)
+        {
+            TouchComfyMode_MenuItem.IsChecked = !TouchComfyMode_MenuItem.IsChecked;
+            TreeViewMargin = TouchComfyMode_MenuItem.IsChecked ? 5 : 2;
+        }
     }
     [DebuggerDisplay("TreeViewEntry {DisplayName}")]
     public class TreeViewEntry : INotifyPropertyChanged
@@ -2369,8 +2393,17 @@ namespace ME3Explorer
         public TreeViewEntry(IEntry entry, string displayName = null)
         {
             Entry = entry;
+            if (entry != null)
+            {
+                entry.PropertyChanged += EntryPropertyChanging;
+            }
             DisplayName = displayName;
             Sublinks = new ObservableCollection<TreeViewEntry>();
+        }
+
+        private void EntryPropertyChanging(object sender, PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged("ShouldHighlightAsChanged");
         }
 
         private string _displayName;
@@ -2393,6 +2426,25 @@ namespace ME3Explorer
             {
                 _foregroundColor = value;
                 OnPropertyChanged("ForegroundColor");
+            }
+        }
+
+        public bool ShouldHighlightAsChanged
+        {
+            get
+            {
+                if (Entry != null)
+                {
+                    if (Entry.HeaderChanged)
+                    {
+                        return true;
+                    }
+                    else if (Entry is IExportEntry && (Entry as IExportEntry).DataChanged)
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
         }
     }
