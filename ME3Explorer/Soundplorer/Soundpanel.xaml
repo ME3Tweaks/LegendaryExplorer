@@ -5,8 +5,32 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ME3Explorer"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="400">
     <Grid>
-        <TextBlock Name="Temp" Grid.Row="0" Grid.Column="0"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="64"/>
+            <RowDefinition Height="64"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <TextBox Name="infoTextBox" Text="Select an export" Grid.Column="0" Grid.Row="0"/>
+        <Slider Name="timelineSlider" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="5"/>
+        <Grid HorizontalAlignment="Center" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="64"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="64"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="1" Click="Play_Clicked">
+                <Image Name="PlayingIcon_Image" Source="/soundplorer/play.png"/>
+            </Button>
+            <Button Grid.Column="3" Click="Pause_Clicked">
+                <Image Source="/soundplorer/stop.png"/>
+            </Button>
+        </Grid>
     </Grid>
 </local:ExportLoaderControl>

@@ -15,7 +15,7 @@ using KFreonLib.MEDirectories;
 
 namespace ME3Explorer
 {
-    public partial class Soundplorer : WinFormsBase
+    public partial class SoundplorerWinforms : WinFormsBase
     {
         public string CurrentFile;
         public List<int> ObjectIndexes;
@@ -23,7 +23,7 @@ namespace ME3Explorer
         WwiseBank wb;
         public string afcPath = "";
 
-        public Soundplorer()
+        public SoundplorerWinforms()
         {
             InitializeComponent();
         }
@@ -125,7 +125,7 @@ namespace ME3Explorer
                 if (path != "")
                 {
                     Status.Text = "Loading...";
-                    w.Play(path);
+                    //`w.Play(path);
                     Status.Text = "Ready";
                 }
             }

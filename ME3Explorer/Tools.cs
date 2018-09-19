@@ -614,15 +614,28 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Soundplorer",
-                type = typeof(Soundplorer),
+                type = typeof(SoundplorerWinforms),
                 icon = Application.Current.FindResource("iconSoundplorer") as ImageSource,
                 open = () =>
                 {
-                    (new Soundplorer()).Show();
+                    (new SoundplorerWinforms()).Show();
                 },
                 tags = new List<string> { "developer", "audio", "dialogue", "music", "wav", "ogg", "sound" },
                 subCategory = "Scene Shop",
                 description = "Soundplorer provides access to all Wwisestream and Wwisebank objects inside an ME3 PCC. Sounds can be played within the tool, exported, and changed via import.",
+            });
+            set.Add(new Tool
+            {
+                name = "Soundplorer WPF",
+                type = typeof(Soundplorer.SoundplorerWPF),
+                icon = Application.Current.FindResource("iconSoundplorer") as ImageSource,
+                open = () =>
+                {
+                    (new ME3Explorer.Soundplorer.SoundplorerWPF()).Show();
+                },
+                tags = new List<string> { "developer", "audio", "dialogue", "music", "wav", "ogg", "sound" },
+                subCategory = "Scene Shop",
+                description = "Soundplorer WPF is the newly rewritten version of Soundplorer.",
             });
             set.Add(new Tool
             {

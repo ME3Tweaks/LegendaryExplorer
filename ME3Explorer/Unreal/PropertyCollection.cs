@@ -798,7 +798,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
-    [DebuggerDisplay("ObjectProperty | {Name} = {Value}")]
+    [DebuggerDisplay("NameProperty | {Name} = {Value}")]
     public class NameProperty : UProperty
     {
         public int NameTableIndex;

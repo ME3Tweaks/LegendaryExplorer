@@ -110,8 +110,17 @@
     <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=1.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IO.RecyclableMemoryStream.1.2.2\lib\net45\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
     </Reference>
+    <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.8.4\lib\net35\NAudio.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio.Vorbis, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.Vorbis.1.0.0.0\lib\net35\NAudio.Vorbis.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NVorbis, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NVorbis.0.8.4.0\lib\NVorbis.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="SharpDX, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
@@ -633,6 +642,9 @@
     <Compile Include="Soundplorer\Soundplorer.Designer.cs">
       <DependentUpon>Soundplorer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Soundplorer\SoundplorerWPF.xaml.cs">
+      <DependentUpon>SoundplorerWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SubtitleScanner\FileHelpers.cs" />
     <Compile Include="SubtitleScanner\SubtitleScanner.cs">
       <SubType>Form</SubType>
@@ -965,6 +977,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Soundplorer\Soundpanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Soundplorer\SoundplorerWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1384,6 +1400,10 @@
       <Project>{40fb6624-5444-43dc-8b73-863a3d91e1f3}</Project>
       <Name>UDKLibWV</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WemSharp\WEMSharp.csproj">
+      <Project>{2EDFD763-C9CF-459E-9227-AFEBCAD33850}</Project>
+      <Name>WEMSharp</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\asset_explorer_64x64.png" />
@@ -1544,6 +1564,9 @@
     <Resource Include="Resources\audio_editor_icon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Soundplorer\pause.png" />
+    <Resource Include="Soundplorer\play.png" />
+    <Resource Include="Soundplorer\stop.png" />
     <None Include="Resources\excel.png" />
     <None Include="Resources\excel.gif" />
     <Resource Include="Resources\error_x.png" />

@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Media;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
+using WEMSharp;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -15,7 +16,6 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] memory;
         public int memsize;
         int Index;
-        public List<PropertyReader.Property> props;
         public SoundPlayer sp;
 
         public int DataSize;
@@ -29,7 +29,15 @@ namespace ME3Explorer.Unreal.Classes
         public WwiseStream()
         {
         }
-        
+
+        public WwiseStream(IExportEntry export)
+        {
+            Index = export.Index;
+            memory = export.Data;
+            memsize = memory.Length;
+            Deserialize(export.FileRef as ME3Package);
+        }
+
         public WwiseStream(ME3Package pcc, int index)
         {
             Index = index;
@@ -40,21 +48,25 @@ namespace ME3Explorer.Unreal.Classes
 
         public void Deserialize(ME3Package pcc)
         {
-            props = PropertyReader.getPropList(pcc.Exports[Index]);
-            int off = props[props.Count - 1].offend + 8;
+            PropertyCollection properties = pcc.Exports[Index].GetProperties();
+            int off = pcc.Exports[Index].propsEnd() + 8;
+            var propold = PropertyReader.getPropList(pcc.Exports[Index]);
+            int offold = propold[propold.Count - 1].offend + 8;
             ValueOffset = off;
             DataSize = BitConverter.ToInt32(memory, off);
             DataOffset = BitConverter.ToInt32(memory, off + 4);
-            for (int i = 0; i < props.Count; i++)
+            FileName = properties.GetProp<NameProperty>("Filename").Value;
+            Id = properties.GetProp<IntProperty>("Id");
+            /*for (int i = 0; i < props.Count; i++)
             {
                 if (pcc.Names[props[i].Name] == "Filename")
                     FileName = pcc.Names[props[i].Value.IntValue];
                 if (pcc.Names[props[i].Name] == "Id")
                     Id = props[i].Value.IntValue;
-            }
+            }*/
         }
 
-        public void ExtractToFile(string pathtoafc = "",string name = "",bool askSaveLoc = true)
+        public void ExtractToFile(string pathtoafc = "", string name = "", bool askSaveLoc = true)
         {
             if (FileName == "")
                 return;
@@ -108,18 +120,47 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
-        public void Play(string pathtoafc = "")
+        public Stream GetVorbisStream(string path)
+        {
+            if (!File.Exists(path))
+                return null;
+            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
+            Stream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            if (path.EndsWith(".pcc"))
+            {
+                using (ME3Package package = MEPackageHandler.OpenME3Package(path))
+                {
+                    if (package.IsCompressed)
+                    {
+                        Stream result = CompressionHelper.DecompressME3(fs);
+                        fs.Dispose();
+                        fs = result;
+                    }
+                }
+            }
+            if (DataOffset + DataSize > fs.Length)
+                return null;
+            //ExtractRawFromStream(fs);
+            MemoryStream riffData = ExtractRiffFromStream(fs);
+
+            WEMFile wem = new WEMFile(riffData, WEMForcePacketFormat.NoForcePacketFormat);
+            string codebookloc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\packed_codebooks.bin";
+
+            return wem.GenerateOGGStream(null, codebookloc, false, false);
+        }
+
+        public void Play(string afcPath = "")
         {
             if (FileName == "")
                 return;
             if (FileName == null)
             {
-                PlayWave(pathtoafc);
+                PlayWave(afcPath);
             }
-            else if (pathtoafc != "")
+            else if (afcPath != "")
             {
-                if (File.Exists(pathtoafc + FileName + ".afc"))
-                    PlayWave(pathtoafc + FileName + ".afc");
+                if (File.Exists(afcPath + FileName + ".afc"))
+                    PlayWave(afcPath + FileName + ".afc");
                 else
                 {
                     OpenFileDialog d = new OpenFileDialog();
@@ -137,39 +178,30 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
-        private void PlayWave(string path)
+        private void PlayWave(string afcPath)
         {
-            if (!File.Exists(path))
-                return;
-            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
-            Stream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-            if (path.EndsWith(".pcc"))
+            Stream vorbStream = GetVorbisStream(afcPath);
+
+            using (var vorbisStream = new NAudio.Vorbis.VorbisWaveReader(vorbStream))
+            using (var waveOut = new NAudio.Wave.WaveOutEvent())
             {
-                using (ME3Package package = MEPackageHandler.OpenME3Package(path))
-                {
-                    if (package.IsCompressed)
-                    {
-                        Stream result = CompressionHelper.DecompressME3(fs);
-                        fs.Dispose();
-                        fs = result;
-                    }
-                } 
+                waveOut.Init(vorbisStream);
+                waveOut.Play();
+
+                // wait here until playback stops or should stop
             }
-            if (DataOffset + DataSize > fs.Length)
-                return;
-            ExtractRawFromStream(fs);
-            ConvertRiffToWav();
+            /*ConvertRiffToWav();
             if (File.Exists(loc + "\\out.wav"))
             {
                 sp = new SoundPlayer(loc + "\\out.wav");
                 sp.Play();
                 while (!sp.IsLoadCompleted)
                     Application.DoEvents();
-            }
-            fs.Dispose();
+            }*/
+            //fs.Dispose();
         }
 
-        private void ExtractWav(string path, string name = "",bool askSave = true)
+        private void ExtractWav(string path, string name = "", bool askSave = true)
         {
             if (!File.Exists(path))
                 return;
@@ -230,7 +262,7 @@ namespace ME3Explorer.Unreal.Classes
             proc.Start();
             proc.WaitForExit();
             File.Delete(loc + "\\out.ogg");
-            File.Delete(loc + "\\out.dat");
+            //File.Delete(loc + "\\out.dat");
         }
 
         private void ExtractRawFromStream(Stream fs)
@@ -244,6 +276,17 @@ namespace ME3Explorer.Unreal.Classes
                 fs2.WriteByte((byte)fs.ReadByte());
             fs.Close();
             fs2.Close();
+        }
+
+        private MemoryStream ExtractRiffFromStream(Stream fs)
+        {
+            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
+            MemoryStream fs2 = new MemoryStream();
+            fs.Seek(DataOffset, SeekOrigin.Begin);
+            for (int i = 0; i < DataSize; i++)
+                fs2.WriteByte((byte)fs.ReadByte());
+            fs.Close();
+            return fs2;
         }
 
         private void ImportWav(string pathafc, string pathwav, int off)

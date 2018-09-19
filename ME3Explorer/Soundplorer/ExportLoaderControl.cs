@@ -11,9 +11,21 @@ namespace ME3Explorer
     /// </summary>
     public abstract class ExportLoaderControl : UserControl, INotifyPropertyChanged
     {
+        /// <summary>
+        /// Method to determine if an export is parsable by this control
+        /// </summary>
+        /// <param name="exportEntry"></param>
+        /// <returns></returns>
         public abstract bool CanParse(IExportEntry exportEntry);
+
+        /// <summary>
+        /// The list of supported games that this loader control can handle. Typically used by CanParse().
+        /// </summary>
         public static MEGame[] SupportedGames;
         private IExportEntry _currentLoadedExport;
+        /// <summary>
+        /// The currently loaded export, or null if none is currently loaded
+        /// </summary>
         public IExportEntry CurrentLoadedExport
         {
             get
@@ -26,7 +38,15 @@ namespace ME3Explorer
             }
         }
 
+        /// <summary>
+        /// Loads an export into this control and initializes the control
+        /// </summary>
+        /// <param name="exportEntry"></param>
         public abstract void LoadExport(IExportEntry exportEntry);
+
+        /// <summary>
+        /// Unloads any loaded exports from this control and resets the control UI
+        /// </summary>
         public abstract void UnloadExport();
 
 
