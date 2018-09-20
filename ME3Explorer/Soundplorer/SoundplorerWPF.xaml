@@ -6,6 +6,7 @@
         xmlns:global="clr-namespace:ME3Explorer"
         xmlns:local="clr-namespace:ME3Explorer.Soundplorer"
         mc:Ignorable="d"
+        Closing="Soundplorer_Closing"
         Title="Soundplorer" Height="450" Width="800">
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"/>

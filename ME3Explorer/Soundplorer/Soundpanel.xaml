@@ -1,36 +1,57 @@
 ﻿<local:ExportLoaderControl x:Class="ME3Explorer.Soundpanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ME3Explorer"
+             xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="400">
+             d:DesignHeight="450" d:DesignWidth="400"
+             Unloaded="SoundPanel_Unloaded"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <UserControl.Resources>
+        <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="64"/>
-            <RowDefinition Height="64"/>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="48"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <TextBox Name="infoTextBox" Text="Select an export" Grid.Column="0" Grid.Row="0"/>
-        <Slider Name="timelineSlider" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="5"/>
+        <Slider Grid.Column="0" Grid.Row="1" Margin="5" Minimum="0" Maximum="{Binding CurrentTrackLength, Mode=OneWay}" Value="{Binding CurrentTrackPosition, Mode=TwoWay}" x:Name="SeekbarControl" VerticalAlignment="Center"/>
         <Grid HorizontalAlignment="Center" Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="64"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="48"/>
                 <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="64"/>
+                <ColumnDefinition Width="48"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="16"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="1" Click="Play_Clicked">
-                <Image Name="PlayingIcon_Image" Source="/soundplorer/play.png"/>
+            <Button Grid.Column="2" Content="Export" ToolTip="Start or pause playback" Click="ExportAsOgg" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+            <Button Grid.Column="3" ToolTip="Start or pause playback" Command="{Binding StartPlaybackCommand}" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}">
+                <Image Name="PlayingIcon_Image" Source="{Binding PlayPauseImageSource}"/>
             </Button>
-            <Button Grid.Column="3" Click="Pause_Clicked">
+            <Button Grid.Column="5" ToolTip="Stop playback" Command="{Binding StopPlaybackCommand}" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}">
                 <Image Source="/soundplorer/stop.png"/>
             </Button>
+            <Slider Grid.Column="6" Grid.Row="1" Margin="5" Minimum="0" Maximum="1" Value="{Binding CurrentVolume, Mode=TwoWay}" x:Name="VolumebarControl" VerticalAlignment="Center"  IsMoveToPointEnabled="True">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="ValueChanged">
+                        <i:InvokeCommandAction Command="{Binding VolumeControlValueChangedCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Slider>
+            <Image Grid.Column="7" Source="/soundplorer/volume.png"/>
+
         </Grid>
     </Grid>
 </local:ExportLoaderControl>

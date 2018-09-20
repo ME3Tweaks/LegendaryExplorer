@@ -283,7 +283,12 @@ namespace ME3Explorer.Soundplorer
             int index = ObjectIndexes[n];
             IExportEntry ex = pcc.Exports[index];
             soundPanel.LoadExport(ex);
-            
+
+        }
+
+        private void Soundplorer_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            soundPanel.FreeAudioResources();
         }
     }
 }
