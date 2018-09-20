@@ -491,7 +491,7 @@
       <DependentUpon>AddPropertyDialogWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\Converters\NullEnabledConverter.cs" />
-    <Compile Include="SharedUI\Conveters.cs" />
+    <Compile Include="SharedUI\Converters\Conveters.cs" />
     <Compile Include="SharedUI\ExceptionHandlerDialogWPF.xaml.cs">
       <DependentUpon>ExceptionHandlerDialogWPF.xaml</DependentUpon>
     </Compile>
@@ -631,8 +631,8 @@
     <Compile Include="Soundplorer\DirectReplace.Designer.cs">
       <DependentUpon>DirectReplace.cs</DependentUpon>
     </Compile>
-    <Compile Include="Soundplorer\ExportLoaderControl.cs" />
-    <Compile Include="Soundplorer\IExportLoader.cs" />
+    <Compile Include="SharedUI\ExportLoaderControl.cs" />
+    <Compile Include="SharedUI\IExportLoader.cs" />
     <Compile Include="Soundplorer\Soundpanel.xaml.cs">
       <DependentUpon>Soundpanel.xaml</DependentUpon>
     </Compile>
