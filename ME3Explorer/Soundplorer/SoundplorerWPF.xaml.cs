@@ -4,6 +4,8 @@ using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,15 +27,15 @@ namespace ME3Explorer.Soundplorer
     /// </summary>
     public partial class SoundplorerWPF : WPFBase
     {
-        public static readonly string PackageEditorDataFolder = System.IO.Path.Combine(App.AppDataFolder, @"Soundplorer\");
+        public static readonly string SoundplorerDataFolder = System.IO.Path.Combine(App.AppDataFolder, @"Soundplorer\");
         private readonly string RECENTFILES_FILE = "RECENTFILES";
         public List<string> RFiles;
 
-        public string CurrentFile;
-        public List<int> ObjectIndexes;
         WwiseStream w;
         WwiseBank wb;
         public string afcPath = "";
+        BackgroundWorker backgroundScanner;
+        List<IExportEntry> BindedExportsList { get; set; }
 
         public SoundplorerWPF()
         {
@@ -48,7 +50,7 @@ namespace ME3Explorer.Soundplorer
             Recents_MenuItem.IsEnabled = false;
             RFiles = new List<string>();
             RFiles.Clear();
-            string path = PackageEditorDataFolder + RECENTFILES_FILE;
+            string path = SoundplorerDataFolder + RECENTFILES_FILE;
             if (File.Exists(path))
             {
                 string[] recents = File.ReadAllLines(path);
@@ -64,11 +66,11 @@ namespace ME3Explorer.Soundplorer
 
         private void SaveRecentList()
         {
-            if (!Directory.Exists(PackageEditorDataFolder))
+            if (!Directory.Exists(SoundplorerDataFolder))
             {
-                Directory.CreateDirectory(PackageEditorDataFolder);
+                Directory.CreateDirectory(SoundplorerDataFolder);
             }
-            string path = PackageEditorDataFolder + RECENTFILES_FILE;
+            string path = SoundplorerDataFolder + RECENTFILES_FILE;
             if (File.Exists(path))
                 File.Delete(path);
             File.WriteAllLines(path, RFiles);
@@ -208,7 +210,6 @@ namespace ME3Explorer.Soundplorer
                         break;
                 }
 
-                CurrentFile = fileName;
                 afcPath = "";
                 LoadObjects();
                 StatusBar_LeftMostText.Text = System.IO.Path.GetFileName(fileName);
@@ -224,20 +225,9 @@ namespace ME3Explorer.Soundplorer
 
         private void LoadObjects()
         {
-            SoundExports_ListBox.Items.Clear();
-            ObjectIndexes = new List<int>();
-            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
-            for (int i = 0; i < Exports.Count; i++)
-            {
-                IExportEntry e = Exports[i];
-                //Status.Text = "Scan object " + i + " / " + Exports.Count;
-                if (e.ClassName == "WwiseBank" || e.ClassName == "WwiseStream")
-                {
-                    string s = i.ToString("d6") + " : " + e.ClassName + " : \"" + e.ObjectName + "\"";
-                    SoundExports_ListBox.Items.Add(s);
-                    ObjectIndexes.Add(i);
-                }
-            }
+            BindedExportsList = Pcc.Exports.Where(e => e.ClassName == "WwiseBank" || e.ClassName == "WwiseStream").ToList();
+            SoundExports_ListBox.ItemsSource = BindedExportsList;
+            //string s = i.ToString("d6") + " : " + e.ClassName + " : \"" + e.ObjectName + "\"";
         }
 
         private void SaveCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -303,16 +293,13 @@ namespace ME3Explorer.Soundplorer
 
         private void SoundExports_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            int n = SoundExports_ListBox.SelectedIndex;
-            if (n == -1)
+            IExportEntry export = (IExportEntry) SoundExports_ListBox.SelectedItem;
+            if (export == null)
             {
                 soundPanel.UnloadExport();
                 return;
             }
-            int index = ObjectIndexes[n];
-            IExportEntry ex = pcc.Exports[index];
-            soundPanel.LoadExport(ex);
-
+            soundPanel.LoadExport(export);
         }
 
         private void Soundplorer_Closing(object sender, System.ComponentModel.CancelEventArgs e)
