@@ -504,6 +504,7 @@
     <Compile Include="SharedUI\AddPropertyDialogWPF.xaml.cs">
       <DependentUpon>AddPropertyDialogWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\Converters\WwiseDataExchangeEnabledConverter.cs" />
     <Compile Include="SharedUI\Converters\NullEnabledConverter.cs" />
     <Compile Include="SharedUI\Converters\BoolToCollapsedVisibilityConverter.cs" />
     <Compile Include="SharedUI\ExceptionHandlerDialogWPF.xaml.cs">

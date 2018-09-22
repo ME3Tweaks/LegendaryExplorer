@@ -104,7 +104,9 @@ namespace ME3Explorer.Unreal.Classes
                 return;
             if (pathtoafc != "")
             {
-                if (File.Exists(pathtoafc + FileName + ".afc"))
+                if (File.Exists(pathtoafc))
+                    ImportWav(pathtoafc, path, DataOffset);
+                else if (File.Exists(pathtoafc + FileName + ".afc")) //legacy code for old soundplorer
                     ImportWav(pathtoafc + FileName + ".afc", path, DataOffset);
                 else
                 {
@@ -233,7 +235,7 @@ namespace ME3Explorer.Unreal.Classes
         /// </summary>
         /// <param name="afcPath"></param>
         /// <returns></returns>
-        private string CreateWave(string afcPath)
+        public string CreateWave(string afcPath)
         {
             if (!File.Exists(afcPath))
                 return null;
@@ -363,35 +365,51 @@ namespace ME3Explorer.Unreal.Classes
         {
             if (!File.Exists(pathafc) || !File.Exists(pathwav))
                 return;
+
+            //Open AFC
             FileStream fs = new FileStream(pathafc, FileMode.Open, FileAccess.Read);
             byte[] Header = new byte[94];
+
+            //Seek to data we are replacing and read header
             fs.Seek(DataOffset, SeekOrigin.Begin);
-            for (int i = 0; i < 94; i++)
-                Header[i] = (byte)fs.ReadByte();
+            fs.Read(Header, 0, 94);
+
+            //for (int i = 0; i < 94; i++)
+            //    Header[i] = (byte)fs.Read();
             fs.Close();
-            fs = new FileStream(pathwav, FileMode.Open, FileAccess.Read);
-            byte[] newfile = new byte[fs.Length];
+
+            //read wave file into memory
+            //fs = new FileStream(pathwav, FileMode.Open, FileAccess.Read);
+            byte[] newWavfile = File.ReadAllBytes(pathwav);
+            /*byte[] newfile = new byte[fs.Length];
             for (int i = 0; i < fs.Length; i++)
                 newfile[i] = (byte)fs.ReadByte();
-            fs.Close();
-            newfile = ModifyHeader(newfile, Header);
+            fs.Close();*/
+
+            //tweak new wav header
+            newWavfile = ModifyHeader(newWavfile, Header);
+
+            //append new wav
             fs = new FileStream(pathafc, FileMode.Append, FileAccess.Write, FileShare.Write);
-            int newoff = (int)fs.Length;
-            int newsize = newfile.Length;
-            for (int i = 0; i < newsize; i++)
-                fs.WriteByte(newfile[i]);
+            int newWavDataOffset = (int)fs.Length;
+            int newWavSize = newWavfile.Length;
+            fs.Write(newWavfile, 0, newWavSize);
+            //for (int i = 0; i < newWavSize; i++)
+            //    fs.WriteByte(newWavfile[i]);
             uint newafcsize = (uint)fs.Length;
             fs.Close();
-            byte[] buff = BitConverter.GetBytes(newsize);
+
+            //update memory in this export (clone of memory)
+            byte[] buff = BitConverter.GetBytes(newWavSize);
             for (int i = 0; i < 4; i++)
                 memory[ValueOffset + i - 4] = buff[i];
             for (int i = 0; i < 4; i++)
                 memory[ValueOffset + i] = buff[i];
-            buff = BitConverter.GetBytes(newoff);
+            buff = BitConverter.GetBytes(newWavDataOffset);
             for (int i = 0; i < 4; i++)
                 memory[ValueOffset + i + 4] = buff[i];
-            DataSize = newsize;
-            DataOffset = newoff;
+            DataSize = newWavSize;
+            DataOffset = newWavDataOffset;
         }
 
         private byte[] ModifyHeader(byte[] nw, byte[] old)

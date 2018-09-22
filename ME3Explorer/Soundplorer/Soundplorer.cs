@@ -92,8 +92,8 @@ namespace ME3Explorer
             {
                 rtb1.Visible = false;
                 hb1.Visible = true;
-                wb = new WwiseBank(pcc as ME3Package, index);
-                hb1.ByteProvider = new DynamicByteProvider(wb.getBinary());
+                wb = new WwiseBank(pcc.Exports[index]);
+                hb1.ByteProvider = new DynamicByteProvider(wb.export.getBinaryData());
             }
         }
 

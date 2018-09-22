@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -32,7 +33,7 @@ namespace ME3Explorer
     /// </summary>
     public partial class Soundpanel : ExportLoaderControl
     {
-        new MEGame[] SupportedGames = new MEGame[] { MEGame.ME2,MEGame.ME3 };
+        new MEGame[] SupportedGames = new MEGame[] { MEGame.ME2, MEGame.ME3 };
 
         WwiseStream w;
         public string afcPath = "";
@@ -54,14 +55,23 @@ namespace ME3Explorer
 
         public override void LoadExport(IExportEntry exportEntry)
         {
-            WwiseStream w = new WwiseStream(exportEntry);
-            string s = "#" + exportEntry.Index + " WwiseStream : " + exportEntry.ObjectName + "\n\n";
-            s += "Filename : \"" + w.FileName + "\"\n";
-            s += "Data size: " + w.DataSize + " bytes\n";
-            s += "Data offset: 0x" + w.DataOffset.ToString("X8") + "\n";
-            s += "ID: 0x" + w.Id.ToString("X8") + " = " + w.Id + "\n";
-            CurrentLoadedExport = exportEntry;
-            infoTextBox.Text = s;
+            if (exportEntry.ClassName == "WwiseStream")
+            {
+                WwiseStream w = new WwiseStream(exportEntry);
+                string s = "#" + exportEntry.Index + " WwiseStream : " + exportEntry.ObjectName + "\n\n";
+                s += "Filename : \"" + w.FileName + "\"\n";
+                s += "Data size: " + w.DataSize + " bytes\n";
+                s += "Data offset: 0x" + w.DataOffset.ToString("X8") + "\n";
+                s += "ID: 0x" + w.Id.ToString("X8") + " = " + w.Id + "\n";
+                CurrentLoadedExport = exportEntry;
+                infoTextBox.Text = s;
+            }
+            if (exportEntry.ClassName == "WwiseBank")
+            {
+                WwiseBank wb = new WwiseBank(exportEntry);
+                infoTextBox.Text = wb.GetQuickScan();
+                CurrentLoadedExport = exportEntry;
+            }
         }
 
         public override void UnloadExport()
@@ -87,7 +97,7 @@ namespace ME3Explorer
 
         public override bool CanParse(IExportEntry exportEntry)
         {
-            return ((exportEntry.FileRef.Game == MEGame.ME2|| exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
+            return ((exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
         }
 
         private void Pause_Clicked(object sender, RoutedEventArgs e)
@@ -131,7 +141,7 @@ namespace ME3Explorer
             return null;
         }
 
-        
+
 
         #region MVVM stuff
         private string _playPauseImageSource;
@@ -304,7 +314,7 @@ namespace ME3Explorer
             bool playToggle = true;
             if (_playbackState == PlaybackState.Stopped)
             {
-                if (vorbisStream == null )
+                if (vorbisStream == null)
                 {
                     vorbisStream = getPCMStream();
                 }
@@ -356,7 +366,8 @@ namespace ME3Explorer
             //{
             //    return true;
             //}
-            return true;
+
+            return CurrentLoadedExport != null && (vorbisStream != null || CurrentLoadedExport.ClassName == "WwiseStream");
         }
 
         private void StopPlayback(object p)
@@ -467,24 +478,20 @@ namespace ME3Explorer
             }
         }
 
-        private void ExportAsOgg(object sender, RoutedEventArgs e)
+        private void ExportAsWavePCM(object sender, RoutedEventArgs e)
         {
-            Stream vorbisStream = getPCMStream();
-            vorbisStream.Position = 0;
-            if (vorbisStream != null)
+            if (CurrentLoadedExport.ClassName == "WwiseStream")
             {
                 SaveFileDialog d = new SaveFileDialog();
-                d.Filter = "Ogg Vorbis |*.ogg";
+                d.Filter = "Wave PCM File |*.wav";
+                d.FileName = CurrentLoadedExport.ObjectName + ".wav";
                 if (d.ShowDialog().Value)
                 {
-                    using (var fileStream = File.Create(d.FileName))
+                    WwiseStream w = new WwiseStream(CurrentLoadedExport);
+                    string wavPath = w.CreateWave(w.getPathToAFC());
+                    if (wavPath != null && File.Exists(wavPath))
                     {
-                        byte[] buffer = new byte[8 * 1024];
-                        int len;
-                        while ((len = vorbisStream.Read(buffer, 0, buffer.Length)) > 0)
-                        {
-                            fileStream.Write(buffer, 0, len);
-                        }
+                        File.Copy(wavPath, d.FileName, true);
                     }
                     MessageBox.Show("Done.");
                 }
@@ -519,6 +526,50 @@ namespace ME3Explorer
                     _audioPlayer.Play(NAudio.Wave.PlaybackState.Paused, CurrentVolume);
                 }
             }
+        }
+
+        private void ImportFromWave_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentLoadedExport != null && CurrentLoadedExport.ClassName == "WwiseStream")
+            {
+                WwiseStream w = new WwiseStream(CurrentLoadedExport);
+
+
+                if (w.IsPCCStored)
+                {
+                    //TODO: enable replacing of PCC-stored sounds
+                    MessageBox.Show("Cannot replace pcc-stored sounds.");
+                    return;
+                }
+                OpenFileDialog d = new OpenFileDialog();
+                d.Filter = "*Wave PCM File|*.wav";
+                bool? res = d.ShowDialog();
+                if (res.HasValue && res.Value)
+                {
+                    //if (path != "")
+                    //{
+                    //Status.Text = "Importing...";
+                    w.ImportFromFile(d.FileName, w.getPathToAFC());
+                    CurrentLoadedExport.Data = w.memory.TypedClone();
+                    //Status.Text = "Ready";
+                    MessageBox.Show("Done");
+                    //}
+                }
+            }
+        }
+
+    }
+
+    public class ImportExportSoundEnabledConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value == null ? false : true;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return false; //don't need this
         }
     }
 }

@@ -11,38 +11,29 @@ namespace ME3Explorer.Unreal.Classes
     {
         public byte[] memory;
         public int memsize;
+        public IExportEntry export;
         public int MyIndex;
-        public ME3Package pcc;
-        public List<PropertyReader.Property> props;
+        public IMEPackage pcc;
         public List<byte[]> Chunks;
         public List<byte[]> HIRCObjects;
         public int BinaryOffset;
         public byte[] didx_data;
         public byte[] data_data;
 
-        public WwiseBank(ME3Package Pcc, int Index)
+        public WwiseBank(IExportEntry export)
         {
-            
-            MyIndex = Index;
-            pcc = Pcc;
-            memory = pcc.Exports[Index].Data;
+            this.export = export;
+            MyIndex = export.Index;
+            pcc = export.FileRef;
+            memory = export.Data;
             memsize = memory.Length;
             Deserialize();
         }
 
         public void Deserialize()
         {
-            props = PropertyReader.getPropList(pcc.Exports[MyIndex]);
-            BinaryOffset = props[props.Count - 1].offend + 0x10;
+            BinaryOffset = export.propsEnd() + 0x10;
             ReadChunks();
-        }
-
-        public byte[] getBinary()
-        {
-            byte[] res = new byte[memsize - BinaryOffset];
-            for (int i = 0; i < memsize - BinaryOffset; i++)
-                res[i] = memory[BinaryOffset + i];
-            return res;
         }
 
         public void ReadChunks()
@@ -54,8 +45,9 @@ namespace ME3Explorer.Unreal.Classes
                 int start = pos;
                 int size = BitConverter.ToInt32(memory, start + 4) + 8;
                 byte[] buff = new byte[size];
-                for (int i = 0; i < size; i++)
-                    buff[i] = memory[start + i];
+                Buffer.BlockCopy(memory, start, buff, 0, size);
+//                for (int i = 0; i < size; i++)
+  //                  buff[i] = memory[start + i];
                 Chunks.Add(buff);
                 pos += size;
             }

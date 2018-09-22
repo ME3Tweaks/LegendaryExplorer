@@ -102,9 +102,10 @@ namespace ME3Explorer
         {
             BinaryInterpreter_TreeView.Items.Clear();
             byte[] data = CurrentLoadedExport.Data;
+            int binarystart = CurrentLoadedExport.propsEnd();
             TreeViewItem topLevelTree = new TreeViewItem()
             {
-                Header = $"{CurrentLoadedExport.propsEnd():X4} : {CurrentLoadedExport.ObjectName}",
+                Header = $"{binarystart:X4} : {CurrentLoadedExport.ObjectName}",
                 Tag = nodeType.Root,
                 Name = "_0",
                 IsExpanded = true
@@ -114,12 +115,15 @@ namespace ME3Explorer
             switch (CurrentLoadedExport.ClassName)
             {
                 case "WwiseStream":
-                    Scan_WwiseStream(topLevelTree, data);
+                    Scan_WwiseStream(topLevelTree, data, binarystart);
+                    break;
+                case "WwiseEvent":
+                    Scan_WwiseEvent(topLevelTree, data, binarystart);
                     break;
             }
         }
 
-        private void Scan_WwiseStream(TreeViewItem topLevelTree, byte[] data)
+        private void Scan_WwiseStream(TreeViewItem topLevelTree, byte[] data, int binaryStart)
         {
             /*
              *  
@@ -130,7 +134,7 @@ namespace ME3Explorer
              *  
              */
 
-            
+
             try
             {
                 int pos = data.Length - 16;
@@ -138,7 +142,7 @@ namespace ME3Explorer
                 topLevelTree.Items.Add(new TreeViewItem()
                 {
                     Header = $"{pos:X4} Unknown: {unk1}",
-                    Name = "_"+pos.ToString(),
+                    Name = "_" + pos.ToString(),
                 });
                 pos += 4;
                 int length = BitConverter.ToInt32(data, pos);
@@ -192,6 +196,53 @@ namespace ME3Explorer
             //treeView1.Nodes[0].Expand();
         }
 
+        private void Scan_WwiseEvent(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            try
+            {
+                int binarypos = binarystart;
+                List<TreeViewItem> subnodes = new List<TreeViewItem>();
+                int count = BitConverter.ToInt32(data, binarypos);
+                subnodes.Add(new TreeViewItem() { Header = $"0x{binarypos:X4} Count: {count.ToString()}" });
+                binarypos += 4; //+ int
+                if (count > 0)
+                {
+                    string nodeText = $"0x{binarypos:X4} ";
+                    int val = BitConverter.ToInt32(data, binarypos);
+                    string name = val.ToString();
+                    if (val > 0 && val <= CurrentLoadedExport.FileRef.Exports.Count)
+                    {
+                        IExportEntry exp = CurrentLoadedExport.FileRef.Exports[val - 1];
+                        nodeText += $"{name} {exp.PackageFullName}.{exp.ObjectName} ({exp.ClassName})";
+                    }
+                    else if (val < 0 && val != int.MinValue && Math.Abs(val) <= CurrentLoadedExport.FileRef.Imports.Count)
+                    {
+                        int csImportVal = Math.Abs(val) - 1;
+                        ImportEntry imp = CurrentLoadedExport.FileRef.Imports[csImportVal];
+                        nodeText += $"{name} {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
+                    }
+
+                    subnodes.Add(new TreeViewItem()
+                    {
+                        Header = nodeText,
+                        Tag = nodeType.StructLeafObject,
+                        Name = "_"+binarypos.ToString()
+                    });
+                    /*
+
+                                        int objectindex = BitConverter.ToInt32(data, binarypos);
+                                        IEntry obj = pcc.getEntry(objectindex);
+                                        string nodeValue = obj.GetFullPath;
+                                        node.Tag = nodeType.StructLeafObject;
+                                        */
+                }
+                topLevelTree.ItemsSource = subnodes;
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Items.Add($"An error occured parsing the wwiseevent: {ex.Message}");
+            }
+        }
         public override void UnloadExport()
         {
             CurrentLoadedExport = null;
