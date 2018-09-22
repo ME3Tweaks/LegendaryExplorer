@@ -37,7 +37,7 @@ namespace ME3Explorer.Soundplorer
         public string afcPath = "";
         BackgroundWorker backgroundScanner;
         List<SoundplorerExport> BindedExportsList { get; set; }
-
+        bool IsBusy { get; set; } = false;
         public SoundplorerWPF()
         {
             InitializeComponent();
