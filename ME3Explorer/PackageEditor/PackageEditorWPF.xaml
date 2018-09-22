@@ -250,7 +250,9 @@
                 <TabItem Name="Bio2DAViewer_Tab" Header="Bio2DA Editor">
                     <global:Bio2DAEditorWPF x:Name="Bio2DATab_Bio2DAEditor"/>
                 </TabItem>
-                <TabItem Name="BinaryInterpreter_Tab" Header="Binary Interpreter"/>
+                <TabItem Name="BinaryInterpreter_Tab" Header="Binary Interpreter">
+                    <global:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter"/>
+                </TabItem>
                 <TabItem Name="Script_Tab" Header="Script">
                     <TextBox Name="Script_TextBox" TextWrapping="Wrap" Text="if(visible) ShowThis()" IsReadOnly="True" FontFamily="Consolas" Padding="5"/>
                 </TabItem>

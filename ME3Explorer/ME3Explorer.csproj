@@ -247,6 +247,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="BinaryInterpreter\BinaryInterpreterWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Bio2DAEditor\Bio2DAEditorWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -302,6 +306,9 @@
     </Compile>
     <Compile Include="BinaryInterpreter\BinaryInterpreterHost.Designer.cs">
       <DependentUpon>BinaryInterpreterHost.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BinaryInterpreter\BinaryInterpreterWPF.xaml.cs">
+      <DependentUpon>BinaryInterpreterWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="Bio2DAEditor\Bio2DA.cs" />
     <Compile Include="Bio2DAEditor\Bio2DACell.cs" />
@@ -497,6 +504,7 @@
     <Compile Include="SharedUI\AddPropertyDialogWPF.xaml.cs">
       <DependentUpon>AddPropertyDialogWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\Converters\WwiseDataExchangeEnabledConverter.cs" />
     <Compile Include="SharedUI\Converters\NullEnabledConverter.cs" />
     <Compile Include="SharedUI\Converters\BoolToCollapsedVisibilityConverter.cs" />
     <Compile Include="SharedUI\ExceptionHandlerDialogWPF.xaml.cs">

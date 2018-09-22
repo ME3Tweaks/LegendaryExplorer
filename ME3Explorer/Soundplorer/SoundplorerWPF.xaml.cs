@@ -2,6 +2,7 @@
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -188,7 +189,7 @@ namespace ME3Explorer.Soundplorer
                 StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
                 StatusBar_LeftMostText.Text = "Loading " + System.IO.Path.GetFileName(fileName) + " (" + ByteSize.FromBytes(new System.IO.FileInfo(fileName).Length) + ")";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
-                LoadME3Package(fileName);
+                LoadMEPackage(fileName);
                 StatusBar_GameID_Container.Visibility = Visibility.Visible;
 
                 switch (Pcc.Game)
@@ -318,10 +319,7 @@ namespace ME3Explorer.Soundplorer
                 soundPanel.UnloadExport();
                 return;
             }
-            if (spExport.Export.ClassName == "WwiseStream")
-            {
-                soundPanel.LoadExport(spExport.Export);
-            }
+            soundPanel.LoadExport(spExport.Export);
         }
 
         private void Soundplorer_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -332,11 +330,67 @@ namespace ME3Explorer.Soundplorer
             }
             soundPanel.FreeAudioResources();
         }
+
+        private void ExtractWEMFromBank_Clicked(object sender, RoutedEventArgs e)
+        {
+            SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
+            if (spExport != null && spExport.Export.ClassName == "WwiseBank")
+            {
+                WwiseBank wb = new WwiseBank(spExport.Export);
+
+                var dlg = new CommonOpenFileDialog("Select Output Folder")
+                {
+                    IsFolderPicker = true
+                };
+
+                if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
+                {
+                    return;
+                }
+                wb.GetQuickScan(); //load data
+                wb.ExportAllWEMFiles(dlg.FileName);
+            }
+        }
+
+        private void ExtractBank_Clicked(object sender, RoutedEventArgs e)
+        {
+            SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
+            if (spExport != null && spExport.Export.ClassName == "WwiseBank")
+            {
+                SaveFileDialog d = new SaveFileDialog();
+
+                d.Filter = "WwiseBank|*.bnk";
+                bool? res = d.ShowDialog();
+                if (res.HasValue && res.Value)
+                {
+                    File.WriteAllBytes(d.FileName,spExport.Export.getBinaryData());
+                    MessageBox.Show("Done.");
+                }
+            }
+        }
     }
 
     internal class SoundplorerExport : INotifyPropertyChanged
     {
-        public IExportEntry Export;
+        public IExportEntry Export { get; set; }
+        public bool ShouldHighlightAsChanged
+        {
+            get
+            {
+                if (Export != null)
+                {
+                    if (Export.HeaderChanged)
+                    {
+                        return true;
+                    }
+                    else if (Export.DataChanged)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

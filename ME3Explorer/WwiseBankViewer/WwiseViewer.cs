@@ -74,8 +74,8 @@ namespace ME3Explorer.WwiseBankEditor
             if (n == -1)
                 return;
             int index = objects[n];
-            bank = new WwiseBank(pcc as ME3Package, index);
-            hb1.ByteProvider = new DynamicByteProvider(bank.getBinary());
+            bank = new WwiseBank(pcc.Exports[index]);
+            hb1.ByteProvider = new DynamicByteProvider(bank.export.getBinaryData());
             rtb1.Text = bank.GetQuickScan();
             ListRefresh2();
         }

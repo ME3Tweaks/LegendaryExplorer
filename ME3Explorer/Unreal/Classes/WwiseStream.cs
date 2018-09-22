@@ -38,10 +38,10 @@ namespace ME3Explorer.Unreal.Classes
             Index = export.Index;
             memory = export.Data;
             memsize = memory.Length;
-            Deserialize(export.FileRef as ME3Package);
+            Deserialize(export.FileRef);
         }
 
-        public WwiseStream(ME3Package pcc, int index)
+        public WwiseStream(IMEPackage pcc, int index)
         {
             Index = index;
             export = pcc.Exports[Index];
@@ -50,12 +50,11 @@ namespace ME3Explorer.Unreal.Classes
             Deserialize(pcc);
         }
 
-        public void Deserialize(ME3Package pcc)
+        public void Deserialize(IMEPackage pcc)
         {
             PropertyCollection properties = pcc.Exports[Index].GetProperties();
-            int off = pcc.Exports[Index].propsEnd() + 8;
-            var propold = PropertyReader.getPropList(pcc.Exports[Index]);
-            int offold = propold[propold.Count - 1].offend + 8;
+            //int off = pcc.Exports[Index].propsEnd() + 8;
+            int off = memory.Length - 8;
             ValueOffset = off;
             DataSize = BitConverter.ToInt32(memory, off);
             DataOffset = BitConverter.ToInt32(memory, off + 4);
@@ -105,7 +104,9 @@ namespace ME3Explorer.Unreal.Classes
                 return;
             if (pathtoafc != "")
             {
-                if (File.Exists(pathtoafc + FileName + ".afc"))
+                if (File.Exists(pathtoafc))
+                    ImportWav(pathtoafc, path, DataOffset);
+                else if (File.Exists(pathtoafc + FileName + ".afc")) //legacy code for old soundplorer
                     ImportWav(pathtoafc + FileName + ".afc", path, DataOffset);
                 else
                 {
@@ -195,7 +196,16 @@ namespace ME3Explorer.Unreal.Classes
                 return path; //in current directory of this pcc file
             }
 
-            path = ME3Directory.cookedPath + FileName + ".afc";
+            switch (export.FileRef.Game)
+            {
+                case MEGame.ME2:
+                    path = ME2Directory.cookedPath;
+                    break;
+                case MEGame.ME3:
+                    path = ME3Directory.cookedPath;
+                    break;
+            }
+            path += FileName + ".afc";
 
             if (File.Exists(path))
             {
@@ -220,172 +230,199 @@ namespace ME3Explorer.Unreal.Classes
             return "";
         }
 
-    /// <summary>
-    /// Creates wav file in temp directory
-    /// </summary>
-    /// <param name="afcPath"></param>
-    /// <returns></returns>
-    private string CreateWave(string afcPath)
-    {
-        if (!File.Exists(afcPath))
-            return null;
-        Stream fs = new FileStream(afcPath, FileMode.Open, FileAccess.Read);
-        if (afcPath.EndsWith(".pcc"))
+        /// <summary>
+        /// Creates wav file in temp directory
+        /// </summary>
+        /// <param name="afcPath"></param>
+        /// <returns></returns>
+        public string CreateWave(string afcPath)
         {
-            using (ME3Package package = MEPackageHandler.OpenME3Package(afcPath))
+            if (!File.Exists(afcPath))
+                return null;
+            Stream fs = new FileStream(afcPath, FileMode.Open, FileAccess.Read);
+            if (afcPath.EndsWith(".pcc"))
             {
-                if (package.IsCompressed)
+                using (IMEPackage package = MEPackageHandler.OpenMEPackage(afcPath))
                 {
-                    Stream result = CompressionHelper.DecompressME3(fs);
-                    fs.Dispose();
-                    fs = result;
+                    if (package.IsCompressed)
+                    {
+                        Stream result = new MemoryStream(CompressionHelper.Decompress(afcPath));
+                        fs.Dispose();
+                        fs = result;
+                    }
                 }
             }
+            if (DataOffset + DataSize > fs.Length)
+                return null;
+
+            string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
+
+            ExtractRawFromStream(fs, basePath);
+            fs.Dispose();
+
+            ConvertRiffToWav(basePath, export.FileRef.Game == MEGame.ME2);
+            return basePath + ".wav";
         }
-        if (DataOffset + DataSize > fs.Length)
-            return null;
 
-        string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
-
-        ExtractRawFromStream(fs, basePath);
-        fs.Dispose();
-
-        ConvertRiffToWav(basePath);
-        return basePath + ".wav";
-    }
-
-    private void PlayWave(string path)
-    {
-        string wavPath = CreateWave(path);
-        if (wavPath != null && File.Exists(wavPath))
+        private void PlayWave(string path)
         {
-            sp = new SoundPlayer(wavPath);
-            sp.Play();
-            while (!sp.IsLoadCompleted)
-                Application.DoEvents();
-        }
-    }
-
-    private void ExtractWav(string path, string name = "", bool askSave = true)
-    {
-        string wavPath = CreateWave(path);
-        if (wavPath != null && File.Exists(wavPath))
-        {
-            SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "Wave Files(*.wav)|*.wav";
-            d.FileName = name + ".wav";
-            if (askSave)
+            string wavPath = CreateWave(path);
+            if (wavPath != null && File.Exists(wavPath))
             {
-                if (d.ShowDialog() == DialogResult.OK)
-                    File.Copy(wavPath, d.FileName);
+                sp = new SoundPlayer(wavPath);
+                sp.Play();
+                while (!sp.IsLoadCompleted)
+                    Application.DoEvents();
+            }
+        }
+
+        private void ExtractWav(string path, string name = "", bool askSave = true)
+        {
+            string wavPath = CreateWave(path);
+            if (wavPath != null && File.Exists(wavPath))
+            {
+                SaveFileDialog d = new SaveFileDialog();
+                d.Filter = "Wave Files(*.wav)|*.wav";
+                d.FileName = name + ".wav";
+                if (askSave)
+                {
+                    if (d.ShowDialog() == DialogResult.OK)
+                        File.Copy(wavPath, d.FileName);
+                }
+                else
+                {
+                    File.Copy(wavPath, name, true);
+                }
+                if (askSave)
+                    MessageBox.Show("Done.");
+            }
+        }
+
+        private static void ConvertRiffToWav(string basePath, bool fullSetup)
+        {
+            //convert RIFF to OGG
+            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
+            System.Diagnostics.ProcessStartInfo procStartInfo = null;
+            if (!fullSetup)
+            {
+                procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\ww2ogg.exe", basePath + ".dat");
             }
             else
             {
-                File.Copy(wavPath, name, true);
+                procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\ww2ogg.exe", "--full-setup \"" + basePath + ".dat\"");
             }
-            if (askSave)
-                MessageBox.Show("Done.");
+            System.Diagnostics.Debug.WriteLine(loc + "\\ww2ogg.exe --full-setup " + basePath + ".dat");
+            procStartInfo.WorkingDirectory = loc;
+            procStartInfo.RedirectStandardOutput = true;
+            procStartInfo.RedirectStandardError = true;
+
+            procStartInfo.UseShellExecute = false;
+            procStartInfo.CreateNoWindow = true;
+            System.Diagnostics.Process proc = new System.Diagnostics.Process();
+            proc.StartInfo = procStartInfo;
+            proc.Start();
+            proc.WaitForExit();
+            proc.Close();
+
+            //convert OGG to WAV
+            procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\oggdec.exe", basePath + ".ogg");
+            procStartInfo.WorkingDirectory = loc;
+            procStartInfo.RedirectStandardOutput = true;
+            procStartInfo.UseShellExecute = false;
+            procStartInfo.CreateNoWindow = true;
+            proc = new System.Diagnostics.Process();
+            proc.StartInfo = procStartInfo;
+            proc.Start();
+            proc.WaitForExit();
+            File.Delete(basePath + ".ogg");
+            File.Delete(basePath + ".dat");
+        }
+
+        private void ExtractRawFromStream(Stream fs, string outputFile)
+        {
+            string outfile = outputFile + ".dat";
+            if (File.Exists(outfile))
+                File.Delete(outfile);
+            FileStream fs2 = new FileStream(outfile, FileMode.Create, FileAccess.Write);
+            fs.Seek(DataOffset, SeekOrigin.Begin);
+            for (int i = 0; i < DataSize; i++)
+                fs2.WriteByte((byte)fs.ReadByte());
+            fs.Close();
+            fs2.Close();
+        }
+
+        private MemoryStream ExtractRiffFromStream(Stream fs)
+        {
+            MemoryStream fs2 = new MemoryStream();
+            fs.Seek(DataOffset, SeekOrigin.Begin);
+            for (int i = 0; i < DataSize; i++)
+                fs2.WriteByte((byte)fs.ReadByte());
+            fs.Close();
+            return fs2;
+        }
+
+        private void ImportWav(string pathafc, string pathwav, int off)
+        {
+            if (!File.Exists(pathafc) || !File.Exists(pathwav))
+                return;
+
+            //Open AFC
+            FileStream fs = new FileStream(pathafc, FileMode.Open, FileAccess.Read);
+            byte[] Header = new byte[94];
+
+            //Seek to data we are replacing and read header
+            fs.Seek(DataOffset, SeekOrigin.Begin);
+            fs.Read(Header, 0, 94);
+
+            //for (int i = 0; i < 94; i++)
+            //    Header[i] = (byte)fs.Read();
+            fs.Close();
+
+            //read wave file into memory
+            //fs = new FileStream(pathwav, FileMode.Open, FileAccess.Read);
+            byte[] newWavfile = File.ReadAllBytes(pathwav);
+            /*byte[] newfile = new byte[fs.Length];
+            for (int i = 0; i < fs.Length; i++)
+                newfile[i] = (byte)fs.ReadByte();
+            fs.Close();*/
+
+            //tweak new wav header
+            newWavfile = ModifyHeader(newWavfile, Header);
+
+            //append new wav
+            fs = new FileStream(pathafc, FileMode.Append, FileAccess.Write, FileShare.Write);
+            int newWavDataOffset = (int)fs.Length;
+            int newWavSize = newWavfile.Length;
+            fs.Write(newWavfile, 0, newWavSize);
+            //for (int i = 0; i < newWavSize; i++)
+            //    fs.WriteByte(newWavfile[i]);
+            uint newafcsize = (uint)fs.Length;
+            fs.Close();
+
+            //update memory in this export (clone of memory)
+            byte[] buff = BitConverter.GetBytes(newWavSize);
+            for (int i = 0; i < 4; i++)
+                memory[ValueOffset + i - 4] = buff[i];
+            for (int i = 0; i < 4; i++)
+                memory[ValueOffset + i] = buff[i];
+            buff = BitConverter.GetBytes(newWavDataOffset);
+            for (int i = 0; i < 4; i++)
+                memory[ValueOffset + i + 4] = buff[i];
+            DataSize = newWavSize;
+            DataOffset = newWavDataOffset;
+        }
+
+        private byte[] ModifyHeader(byte[] nw, byte[] old)
+        {
+            MemoryStream m = new MemoryStream();
+            m.Write(nw, 0, 8);
+            m.Write(old, 8, 14);
+            m.Write(nw, 22, 10);
+            m.Write(old, 32, 8);
+            m.Write(nw, 40, 4);
+            int len = nw.Length - 52;
+            m.Write(nw, 52, len);
+            return m.ToArray();
         }
     }
-
-    private static void ConvertRiffToWav(string basePath)
-    {
-        //convert RIFF to OGG
-        string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
-        System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\ww2ogg.exe", basePath + ".dat");
-        procStartInfo.WorkingDirectory = loc;
-        procStartInfo.RedirectStandardOutput = true;
-        procStartInfo.UseShellExecute = false;
-        procStartInfo.CreateNoWindow = true;
-        System.Diagnostics.Process proc = new System.Diagnostics.Process();
-        proc.StartInfo = procStartInfo;
-        proc.Start();
-        proc.WaitForExit();
-        proc.Close();
-
-        //convert OGG to WAV
-        procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\oggdec.exe", basePath + ".ogg");
-        procStartInfo.WorkingDirectory = loc;
-        procStartInfo.RedirectStandardOutput = true;
-        procStartInfo.UseShellExecute = false;
-        procStartInfo.CreateNoWindow = true;
-        proc = new System.Diagnostics.Process();
-        proc.StartInfo = procStartInfo;
-        proc.Start();
-        proc.WaitForExit();
-        File.Delete(basePath + ".ogg");
-        File.Delete(basePath + ".dat");
-    }
-
-    private void ExtractRawFromStream(Stream fs, string outputFile)
-    {
-        string outfile = outputFile + ".dat";
-        if (File.Exists(outfile))
-            File.Delete(outfile);
-        FileStream fs2 = new FileStream(outfile, FileMode.Create, FileAccess.Write);
-        fs.Seek(DataOffset, SeekOrigin.Begin);
-        for (int i = 0; i < DataSize; i++)
-            fs2.WriteByte((byte)fs.ReadByte());
-        fs.Close();
-        fs2.Close();
-    }
-
-    private MemoryStream ExtractRiffFromStream(Stream fs)
-    {
-        MemoryStream fs2 = new MemoryStream();
-        fs.Seek(DataOffset, SeekOrigin.Begin);
-        for (int i = 0; i < DataSize; i++)
-            fs2.WriteByte((byte)fs.ReadByte());
-        fs.Close();
-        return fs2;
-    }
-
-    private void ImportWav(string pathafc, string pathwav, int off)
-    {
-        if (!File.Exists(pathafc) || !File.Exists(pathwav))
-            return;
-        FileStream fs = new FileStream(pathafc, FileMode.Open, FileAccess.Read);
-        byte[] Header = new byte[94];
-        fs.Seek(DataOffset, SeekOrigin.Begin);
-        for (int i = 0; i < 94; i++)
-            Header[i] = (byte)fs.ReadByte();
-        fs.Close();
-        fs = new FileStream(pathwav, FileMode.Open, FileAccess.Read);
-        byte[] newfile = new byte[fs.Length];
-        for (int i = 0; i < fs.Length; i++)
-            newfile[i] = (byte)fs.ReadByte();
-        fs.Close();
-        newfile = ModifyHeader(newfile, Header);
-        fs = new FileStream(pathafc, FileMode.Append, FileAccess.Write, FileShare.Write);
-        int newoff = (int)fs.Length;
-        int newsize = newfile.Length;
-        for (int i = 0; i < newsize; i++)
-            fs.WriteByte(newfile[i]);
-        uint newafcsize = (uint)fs.Length;
-        fs.Close();
-        byte[] buff = BitConverter.GetBytes(newsize);
-        for (int i = 0; i < 4; i++)
-            memory[ValueOffset + i - 4] = buff[i];
-        for (int i = 0; i < 4; i++)
-            memory[ValueOffset + i] = buff[i];
-        buff = BitConverter.GetBytes(newoff);
-        for (int i = 0; i < 4; i++)
-            memory[ValueOffset + i + 4] = buff[i];
-        DataSize = newsize;
-        DataOffset = newoff;
-    }
-
-    private byte[] ModifyHeader(byte[] nw, byte[] old)
-    {
-        MemoryStream m = new MemoryStream();
-        m.Write(nw, 0, 8);
-        m.Write(old, 8, 14);
-        m.Write(nw, 22, 10);
-        m.Write(old, 32, 8);
-        m.Write(nw, 40, 4);
-        int len = nw.Length - 52;
-        m.Write(nw, 52, len);
-        return m.ToArray();
-    }
-}
 }
