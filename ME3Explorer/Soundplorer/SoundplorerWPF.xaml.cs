@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -35,7 +36,7 @@ namespace ME3Explorer.Soundplorer
         WwiseBank wb;
         public string afcPath = "";
         BackgroundWorker backgroundScanner;
-        List<IExportEntry> BindedExportsList { get; set; }
+        List<SoundplorerExport> BindedExportsList { get; set; }
 
         public SoundplorerWPF()
         {
@@ -210,10 +211,14 @@ namespace ME3Explorer.Soundplorer
                         break;
                 }
 
-                afcPath = "";
                 LoadObjects();
                 StatusBar_LeftMostText.Text = System.IO.Path.GetFileName(fileName);
+                Title = "Soundplorer - " + System.IO.Path.GetFileName(fileName);
 
+                backgroundScanner = new BackgroundWorker();
+                backgroundScanner.DoWork += GetStreamTimes;
+                backgroundScanner.WorkerSupportsCancellation = true;
+                backgroundScanner.RunWorkerAsync();
                 //Status.Text = "Ready";
                 //saveToolStripMenuItem.Enabled = true;
             }
@@ -223,9 +228,23 @@ namespace ME3Explorer.Soundplorer
             }
         }
 
+        private void GetStreamTimes(object sender, DoWorkEventArgs e)
+        {
+            foreach (SoundplorerExport se in BindedExportsList)
+            {
+                if (backgroundScanner.CancellationPending == true)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+                Debug.WriteLine("Getting time for " + se.Export.UIndex);
+                se.LoadTime();
+            }
+        }
+
         private void LoadObjects()
         {
-            BindedExportsList = Pcc.Exports.Where(e => e.ClassName == "WwiseBank" || e.ClassName == "WwiseStream").ToList();
+            BindedExportsList = Pcc.Exports.Where(e => e.ClassName == "WwiseBank" || e.ClassName == "WwiseStream").Select(x => new SoundplorerExport(x)).ToList();
             SoundExports_ListBox.ItemsSource = BindedExportsList;
             //string s = i.ToString("d6") + " : " + e.ClassName + " : \"" + e.ObjectName + "\"";
         }
@@ -293,18 +312,133 @@ namespace ME3Explorer.Soundplorer
 
         private void SoundExports_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            IExportEntry export = (IExportEntry) SoundExports_ListBox.SelectedItem;
-            if (export == null)
+            SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
+            if (spExport == null)
             {
                 soundPanel.UnloadExport();
                 return;
             }
-            soundPanel.LoadExport(export);
+            if (spExport.Export.ClassName == "WwiseStream")
+            {
+                soundPanel.LoadExport(spExport.Export);
+            }
         }
 
         private void Soundplorer_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            if (backgroundScanner != null && backgroundScanner.IsBusy)
+            {
+                backgroundScanner.CancelAsync();
+            }
             soundPanel.FreeAudioResources();
+        }
+    }
+
+    internal class SoundplorerExport : INotifyPropertyChanged
+    {
+        public IExportEntry Export;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private bool _loaded = false;
+        public bool Loaded
+        {
+            get { return _loaded; }
+            set
+            {
+                if (value != this._loaded)
+                {
+                    this._loaded = value;
+                    OnPropertyChanged("Loaded");
+                }
+            }
+        }
+
+        private bool _hideSoundIcon = true;
+        public bool HideSoundIcon
+        {
+            get { return _hideSoundIcon; }
+            set
+            {
+                if (value != this._hideSoundIcon)
+                {
+                    this._hideSoundIcon = value;
+                    OnPropertyChanged("HideSoundIcon");
+                }
+            }
+        }
+
+        private string _timeString;
+        public string TimeString
+        {
+            get { return _timeString; }
+            set
+            {
+                if (value != this._timeString)
+                {
+                    this._timeString = value;
+                    OnPropertyChanged("TimeString");
+                }
+            }
+        }
+
+        private string _displayString;
+        public string DisplayString
+        {
+            get { return _displayString; }
+            set
+            {
+                if (value != this._displayString)
+                {
+                    this._displayString = value;
+                    OnPropertyChanged("DisplayString");
+                }
+            }
+        }
+        public SoundplorerExport(IExportEntry export)
+        {
+            this.Export = export;
+            UpdateDisplay();
+        }
+
+        private void UpdateDisplay()
+        {
+            int paddingSize = Export.FileRef.ExportCount.ToString().Length;
+            if (Export.ClassName == "WwiseStream")
+            {
+                DisplayString = Export.UIndex.ToString("d" + paddingSize) + " : " + Export.ObjectName + " (" + (TimeString == null ? "..." : TimeString) + ")";
+            }
+            else
+            {
+                Loaded = true;
+                HideSoundIcon = true;
+                DisplayString = Export.UIndex.ToString("d" + paddingSize) + " : " + Export.ClassName + " : \"" + Export.ObjectName + "\"";
+            }
+        }
+
+        public void LoadTime()
+        {
+            if (Export.ClassName == "WwiseStream")
+            {
+                WwiseStream w = new WwiseStream(Export);
+                TimeSpan? time = w.GetSoundLength();
+                if (time != null)
+                {
+                    //here backslash must be present to tell that parser colon is
+                    //not the part of format, it just a character that we want in output
+                    TimeString = time.Value.ToString(@"mm\:ss\:fff");
+                }
+                Loaded = true;
+                HideSoundIcon = false;
+                UpdateDisplay();
+            }
+        }
+
+        protected void OnPropertyChanged(string propName)
+        {
+            var temp = PropertyChanged;
+            if (temp != null)
+                temp(this, new PropertyChangedEventArgs(propName));
         }
     }
 }

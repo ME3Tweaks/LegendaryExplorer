@@ -112,7 +112,6 @@ namespace ME3Explorer
             {
                 if (CurrentLoadedExport.ClassName == "WwiseStream")
                 {
-                    //Stop();
                     w = new WwiseStream(CurrentLoadedExport);
                     string path;
                     if (w.IsPCCStored)
@@ -121,7 +120,7 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        path = getPathToAFC(w.FileName);
+                        path = w.getPathToAFC(); // only to check if AFC exists.
                     }
                     if (path != "")
                     {
@@ -132,28 +131,7 @@ namespace ME3Explorer
             return null;
         }
 
-        private string getPathToAFC(string afcName)
-        {
-            string path = ME3Directory.cookedPath;
-            if (!File.Exists(path + afcName + ".afc"))
-            {
-                if (!File.Exists(afcPath + w.FileName + ".afc"))
-                {
-                    OpenFileDialog d = new OpenFileDialog();
-                    d.Filter = w.FileName + ".afc|" + w.FileName + ".afc";
-                    if (d.ShowDialog().Value)
-                    {
-                        afcPath = System.IO.Path.GetDirectoryName(d.FileName) + '\\';
-                    }
-                    else
-                    {
-                        return "";
-                    }
-                }
-                return afcPath;
-            }
-            return path + afcName + ".afc";
-        }
+        
 
         #region MVVM stuff
         private string _playPauseImageSource;
