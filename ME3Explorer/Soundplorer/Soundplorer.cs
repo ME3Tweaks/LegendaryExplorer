@@ -251,6 +251,10 @@ namespace ME3Explorer
 
         private void directAFCReplaceToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (w == null)
+            {
+                return;
+            }
             if (w.IsPCCStored)
             {
                 MessageBox.Show("Cannot do an afc replace on a pcc-stored sound.");

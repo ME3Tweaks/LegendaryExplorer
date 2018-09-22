@@ -10,7 +10,7 @@
         <Grid Width="650">
             <Grid Margin="15,24,0,24">
 
-                <ScrollViewer Foreground="{x:Null}">
+                <ScrollViewer Foreground="{x:Null}" PanningMode="VerticalOnly">
                     <ItemsControl x:Name="SubCategoryList">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate >

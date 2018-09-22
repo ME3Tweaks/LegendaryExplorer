@@ -121,34 +121,11 @@ namespace ME3Explorer.Unreal.Classes
 
         public Stream GetPCMStream(string path)
         {
-            if (!File.Exists(path))
-                return null;
-            //string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
-            Stream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-            if (path.EndsWith(".pcc"))
+            string wavPath = CreateWave(path);
+            if (wavPath != null && File.Exists(wavPath))
             {
-                using (ME3Package package = MEPackageHandler.OpenME3Package(path))
-                {
-                    if (package.IsCompressed)
-                    {
-                        Stream result = CompressionHelper.DecompressME3(fs);
-                        fs.Dispose();
-                        fs = result;
-                    }
-                }
-            }
-            if (DataOffset + DataSize > fs.Length)
-                return null;
-
-            string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString(); //todo: clean these upon program exit or boot, not sure which
-
-            ExtractRawFromStream(fs, basePath);
-            fs.Dispose();
-
-            ConvertRiffToWav(basePath);
-            if (File.Exists(basePath + ".wav"))
-            {
-                byte[] pcmBytes = File.ReadAllBytes(basePath + ".wav");
+                byte[] pcmBytes = File.ReadAllBytes(wavPath);
+                File.Delete(wavPath);
                 return new MemoryStream(pcmBytes);
             }
             return null;
