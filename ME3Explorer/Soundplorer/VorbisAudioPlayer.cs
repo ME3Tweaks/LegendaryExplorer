@@ -2,6 +2,7 @@
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace ME3Explorer.Soundplorer
 
         public PlaybackStopTypes PlaybackStopType { get; set; }
 
-        public VorbisWaveReader _audioFileReader { get; set; }
+        public WaveFileReader _audioFileReader { get; set; }
         private WaveOutEvent _output;
 
         public event Action PlaybackResumed;
@@ -31,9 +32,9 @@ namespace ME3Explorer.Soundplorer
         public VorbisAudioPlayer(Stream audioBuffer, float volume)
         {
             PlaybackStopType = PlaybackStopTypes.PlaybackStoppedReachingEndOfFile;
-            _audioFileReader = new NAudio.Vorbis.VorbisWaveReader(audioBuffer);
+            _audioFileReader = new WaveFileReader(audioBuffer);
             _output = new WaveOutEvent();
-            _output.NumberOfBuffers = 4;
+            _output.NumberOfBuffers = 3;
             _output.PlaybackStopped += _output_PlaybackStopped;
             waveChannel = new WaveChannel32(_audioFileReader);
             waveChannel.PadWithZeroes = false;
@@ -137,7 +138,6 @@ namespace ME3Explorer.Soundplorer
 
         public double GetPositionInSeconds()
         {
-            Debug.WriteLine("Get pos in seconds: " + _audioFileReader != null ? _audioFileReader.CurrentTime.TotalSeconds : 0);
             return _audioFileReader != null ? _audioFileReader.CurrentTime.TotalSeconds : 0;
         }
 

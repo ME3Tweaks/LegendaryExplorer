@@ -3,9 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ME3Explorer", "ME3Explorer\ME3Explorer.csproj", "{60E91B60-FCEE-4B36-967E-4022D8A54F2F}"
-	ProjectSection(ProjectDependencies) = postProject
-		{2EDFD763-C9CF-459E-9227-AFEBCAD33850} = {2EDFD763-C9CF-459E-9227-AFEBCAD33850}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenZip", "Tools\SevenZip\SevenZip.csproj", "{B6C4D3B4-1267-48D5-8C3B-C86FF3E517A9}"
 EndProject
@@ -35,12 +32,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexConverter", "HexConverte
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gammtek.Conduit.Core", "Gammtek.Conduit.Core\Gammtek.Conduit.Core.csproj", "{9F364D6B-5046-4186-B684-968B52AFCB81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WEMSharp", "WemSharp\WEMSharp.csproj", "{2EDFD763-C9CF-459E-9227-AFEBCAD33850}"
-EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -266,28 +258,15 @@ Global
 		{9F364D6B-5046-4186-B684-968B52AFCB81}.Release|x64.Build.0 = Release|Any CPU
 		{9F364D6B-5046-4186-B684-968B52AFCB81}.Release|x86.ActiveCfg = Release|Any CPU
 		{9F364D6B-5046-4186-B684-968B52AFCB81}.Release|x86.Build.0 = Release|Any CPU
-		{2EDFD763-C9CF-459E-9227-AFEBCAD33850}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2EDFD763-C9CF-459E-9227-AFEBCAD33850}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2EDFD763-C9CF-459E-9227-AFEBCAD33850}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{2EDFD763-C9CF-459E-9227-AFEBCAD33850}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{2EDFD763-C9CF-459E-9227-AFEBCAD33850}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{2EDFD763-C9CF-459E-9227-AFEBCAD33850}.Debug|x64.Build.0 = Debug|Any CPU
-		{2EDFD763-C9CF-459E-9227-AFEBCAD33850}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{2EDFD763-C9CF-459E-9227-AFEBCAD33850}.Debug|x86.Build.0 = Debug|Any CPU
-		{2EDFD763-C9CF-459E-9227-AFEBCAD33850}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2EDFD763-C9CF-459E-9227-AFEBCAD33850}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2EDFD763-C9CF-459E-9227-AFEBCAD33850}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{2EDFD763-C9CF-459E-9227-AFEBCAD33850}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{2EDFD763-C9CF-459E-9227-AFEBCAD33850}.Release|x64.ActiveCfg = Release|Any CPU
-		{2EDFD763-C9CF-459E-9227-AFEBCAD33850}.Release|x64.Build.0 = Release|Any CPU
-		{2EDFD763-C9CF-459E-9227-AFEBCAD33850}.Release|x86.ActiveCfg = Release|Any CPU
-		{2EDFD763-C9CF-459E-9227-AFEBCAD33850}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17DE3D1F-A50B-4EFD-9B03-6C0B42D39949}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

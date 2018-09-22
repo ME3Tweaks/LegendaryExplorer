@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using System.Media;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
-using WEMSharp;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -120,11 +119,11 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
-        public Stream GetVorbisStream(string path)
+        public Stream GetPCMStream(string path)
         {
             if (!File.Exists(path))
                 return null;
-            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
+            //string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
             Stream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             if (path.EndsWith(".pcc"))
             {
@@ -140,13 +139,19 @@ namespace ME3Explorer.Unreal.Classes
             }
             if (DataOffset + DataSize > fs.Length)
                 return null;
-            //ExtractRawFromStream(fs);
-            MemoryStream riffData = ExtractRiffFromStream(fs);
 
-            WEMFile wem = new WEMFile(riffData, WEMForcePacketFormat.NoForcePacketFormat);
-            string codebookloc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\packed_codebooks.bin";
+            string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString(); //todo: clean these upon program exit or boot, not sure which
 
-            return wem.GenerateOGGStream(null, codebookloc, false, false);
+            ExtractRawFromStream(fs, basePath);
+            fs.Dispose();
+
+            ConvertRiffToWav(basePath);
+            if (File.Exists(basePath + ".wav"))
+            {
+                byte[] pcmBytes = File.ReadAllBytes(basePath + ".wav");
+                return new MemoryStream(pcmBytes);
+            }
+            return null;
         }
 
         public void Play(string afcPath = "")
@@ -178,38 +183,19 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
-        private void PlayWave(string afcPath)
+        /// <summary>
+        /// Creates wav file in temp directory
+        /// </summary>
+        /// <param name="afcPath"></param>
+        /// <returns></returns>
+        private string CreateWave(string afcPath)
         {
-            Stream vorbStream = GetVorbisStream(afcPath);
-
-            using (var vorbisStream = new NAudio.Vorbis.VorbisWaveReader(vorbStream))
-            using (var waveOut = new NAudio.Wave.WaveOutEvent())
+            if (!File.Exists(afcPath))
+                return null;
+            Stream fs = new FileStream(afcPath, FileMode.Open, FileAccess.Read);
+            if (afcPath.EndsWith(".pcc"))
             {
-                waveOut.Init(vorbisStream);
-                waveOut.Play();
-
-                // wait here until playback stops or should stop
-            }
-            /*ConvertRiffToWav();
-            if (File.Exists(loc + "\\out.wav"))
-            {
-                sp = new SoundPlayer(loc + "\\out.wav");
-                sp.Play();
-                while (!sp.IsLoadCompleted)
-                    Application.DoEvents();
-            }*/
-            //fs.Dispose();
-        }
-
-        private void ExtractWav(string path, string name = "", bool askSave = true)
-        {
-            if (!File.Exists(path))
-                return;
-            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
-            Stream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-            if (path.EndsWith(".pcc"))
-            {
-                using (ME3Package package = MEPackageHandler.OpenME3Package(path))
+                using (ME3Package package = MEPackageHandler.OpenME3Package(afcPath))
                 {
                     if (package.IsCompressed)
                     {
@@ -220,29 +206,56 @@ namespace ME3Explorer.Unreal.Classes
                 }
             }
             if (DataOffset + DataSize > fs.Length)
-                return;
-            ExtractRawFromStream(fs);
-            ConvertRiffToWav();
-            SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "Wave Files(*.wav)|*.wav";
-            d.FileName = name + ".wav";
-            if (askSave)
-            {
-                if (d.ShowDialog() == DialogResult.OK)
-                    File.Copy(loc + "\\out.wav", d.FileName);
-            }
-            else
-            {
-                File.Copy(loc + "\\out.wav", name, true);
-            }
-            if (askSave)
-                MessageBox.Show("Done.");
+                return null;
+
+            string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
+
+            ExtractRawFromStream(fs, basePath);
+            fs.Dispose();
+
+            ConvertRiffToWav(basePath);
+            return basePath + ".wav";
         }
 
-        private static void ConvertRiffToWav()
+        private void PlayWave(string path)
         {
+            string wavPath = CreateWave(path);
+            if (wavPath != null && File.Exists(wavPath))
+            {
+                sp = new SoundPlayer(wavPath);
+                sp.Play();
+                while (!sp.IsLoadCompleted)
+                    Application.DoEvents();
+            }
+        }
+
+        private void ExtractWav(string path, string name = "", bool askSave = true)
+        {
+            string wavPath = CreateWave(path);
+            if (wavPath != null && File.Exists(wavPath))
+            {
+                SaveFileDialog d = new SaveFileDialog();
+                d.Filter = "Wave Files(*.wav)|*.wav";
+                d.FileName = name + ".wav";
+                if (askSave)
+                {
+                    if (d.ShowDialog() == DialogResult.OK)
+                        File.Copy(wavPath, d.FileName);
+                }
+                else
+                {
+                    File.Copy(wavPath, name, true);
+                }
+                if (askSave)
+                    MessageBox.Show("Done.");
+            }
+        }
+
+        private static void ConvertRiffToWav(string basePath)
+        {
+            //convert RIFF to OGG
             string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
-            System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\ww2ogg.exe", "out.dat");
+            System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\ww2ogg.exe", basePath + ".dat");
             procStartInfo.WorkingDirectory = loc;
             procStartInfo.RedirectStandardOutput = true;
             procStartInfo.UseShellExecute = false;
@@ -252,7 +265,9 @@ namespace ME3Explorer.Unreal.Classes
             proc.Start();
             proc.WaitForExit();
             proc.Close();
-            procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\oggdec.exe", "out.ogg");
+
+            //convert OGG to WAV
+            procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\oggdec.exe", basePath + ".ogg");
             procStartInfo.WorkingDirectory = loc;
             procStartInfo.RedirectStandardOutput = true;
             procStartInfo.UseShellExecute = false;
@@ -261,16 +276,16 @@ namespace ME3Explorer.Unreal.Classes
             proc.StartInfo = procStartInfo;
             proc.Start();
             proc.WaitForExit();
-            File.Delete(loc + "\\out.ogg");
-            //File.Delete(loc + "\\out.dat");
+            File.Delete(basePath + ".ogg");
+            File.Delete(basePath + ".dat");
         }
 
-        private void ExtractRawFromStream(Stream fs)
+        private void ExtractRawFromStream(Stream fs, string outputFile)
         {
-            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
-            if (File.Exists(loc + "\\out.dat"))
-                File.Delete(loc + "\\out.dat");
-            FileStream fs2 = new FileStream(loc + "\\out.dat", FileMode.Create, FileAccess.Write);
+            string outfile = outputFile + ".dat";
+            if (File.Exists(outfile))
+                File.Delete(outfile);
+            FileStream fs2 = new FileStream(outfile, FileMode.Create, FileAccess.Write);
             fs.Seek(DataOffset, SeekOrigin.Begin);
             for (int i = 0; i < DataSize; i++)
                 fs2.WriteByte((byte)fs.ReadByte());
@@ -280,7 +295,6 @@ namespace ME3Explorer.Unreal.Classes
 
         private MemoryStream ExtractRiffFromStream(Stream fs)
         {
-            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
             MemoryStream fs2 = new MemoryStream();
             fs.Seek(DataOffset, SeekOrigin.Begin);
             for (int i = 0; i < DataSize; i++)

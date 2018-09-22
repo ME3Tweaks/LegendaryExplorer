@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using ME3Explorer.Soundplorer;
@@ -35,12 +36,19 @@ namespace ME3Explorer
 
         WwiseStream w;
         public string afcPath = "";
+        DispatcherTimer seekbarUpdateTimer = new DispatcherTimer();
+        private bool SeekUpdatingDueToTimer = false;
+        private bool SeekDragging = false;
+        Stream vorbisStream;
+
         public Soundpanel()
         {
             PlayPauseImageSource = "/soundplorer/play.png";
             LoadCommands();
             CurrentVolume = 1;
             _playbackState = PlaybackState.Stopped;
+            seekbarUpdateTimer.Interval = new TimeSpan(0, 0, 1);
+            seekbarUpdateTimer.Tick += new EventHandler(this.UpdateSeekBarPos);
             InitializeComponent();
         }
 
@@ -71,6 +79,7 @@ namespace ME3Explorer
             if (_audioPlayer != null)
             {
                 Debug.WriteLine("Unloading resources");
+                _audioPlayer.PlaybackStopType = VorbisAudioPlayer.PlaybackStopTypes.PlaybackStoppedByUser; //will prevent loop from restarting
                 _audioPlayer.Stop();
                 _audioPlayer.Dispose();
             }
@@ -97,7 +106,7 @@ namespace ME3Explorer
 
         }
 
-        private Stream getVorbisStream()
+        private Stream getPCMStream()
         {
             if (CurrentLoadedExport != null)
             {
@@ -116,7 +125,7 @@ namespace ME3Explorer
                     }
                     if (path != "")
                     {
-                        return w.GetVorbisStream(path);
+                        return w.GetPCMStream(path);
                     }
                 }
             }
@@ -205,7 +214,9 @@ namespace ME3Explorer
             {
                 if (value.Equals(_currentTrackPosition)) return;
                 _currentTrackPosition = value;
+                SeekUpdatingDueToTimer = true;
                 OnPropertyChanged(nameof(CurrentTrackPosition));
+                SeekUpdatingDueToTimer = false;
             }
         }
 
@@ -315,7 +326,12 @@ namespace ME3Explorer
             bool playToggle = true;
             if (_playbackState == PlaybackState.Stopped)
             {
-                Stream vorbisStream = getVorbisStream();
+                if (vorbisStream == null )
+                {
+                    vorbisStream = getPCMStream();
+                }
+
+                //check to make sure stream has loaded before we attempt to play it
                 if (vorbisStream != null)
                 {
                     vorbisStream.Position = 0;
@@ -326,6 +342,13 @@ namespace ME3Explorer
                     _audioPlayer.PlaybackStopped += _audioPlayer_PlaybackStopped;
                     CurrentTrackLength = _audioPlayer.GetLengthInSeconds();
                     playToggle = true;
+
+
+                    // Start the timer.  Note that this call can be made from any thread.
+                    seekbarUpdateTimer.Start();
+                    // Timer callback code here...
+
+
                     //_audioPlayer.Play(NAudio.Wave.PlaybackState.Stopped, CurrentVolume);
                     //CurrentlyPlayingTrack = CurrentlySelectedTrack;
                 }
@@ -340,6 +363,14 @@ namespace ME3Explorer
                 _audioPlayer.TogglePlayPause(CurrentVolume);
             }
         }
+        private void UpdateSeekBarPos(object state, EventArgs e)
+        {
+            if (!SeekDragging)
+            {
+                CurrentTrackPosition = _audioPlayer == null ? 0 : _audioPlayer.GetPositionInSeconds();
+            }
+        }
+
 
         private bool CanStartPlayback(object p)
         {
@@ -352,8 +383,14 @@ namespace ME3Explorer
 
         private void StopPlayback(object p)
         {
+            seekbarUpdateTimer.Stop();
             if (_audioPlayer != null)
             {
+                if (vorbisStream != null)
+                {
+                    vorbisStream.Dispose();
+                    vorbisStream = null;
+                }
                 _audioPlayer.PlaybackStopType = VorbisAudioPlayer.PlaybackStopTypes.PlaybackStoppedByUser;
                 _audioPlayer.Stop();
             }
@@ -454,7 +491,7 @@ namespace ME3Explorer
 
         private void ExportAsOgg(object sender, RoutedEventArgs e)
         {
-            Stream vorbisStream = getVorbisStream();
+            Stream vorbisStream = getPCMStream();
             vorbisStream.Position = 0;
             if (vorbisStream != null)
             {
@@ -472,6 +509,36 @@ namespace ME3Explorer
                         }
                     }
                     MessageBox.Show("Done.");
+                }
+            }
+        }
+
+        private void Seekbar_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
+        {
+            SeekDragging = true;
+        }
+
+        private void Seekbar_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            if (!SeekUpdatingDueToTimer)
+            {
+                if (_audioPlayer != null)
+                {
+                    _audioPlayer.SetPosition(CurrentTrackPosition);
+                    _audioPlayer.Play(NAudio.Wave.PlaybackState.Paused, CurrentVolume);
+                }
+            }
+            SeekDragging = false;
+        }
+
+        private void Seekbar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (!SeekUpdatingDueToTimer && !SeekDragging)
+            {
+                if (_audioPlayer != null)
+                {
+                    _audioPlayer.SetPosition(CurrentTrackPosition);
+                    _audioPlayer.Play(NAudio.Wave.PlaybackState.Paused, CurrentVolume);
                 }
             }
         }

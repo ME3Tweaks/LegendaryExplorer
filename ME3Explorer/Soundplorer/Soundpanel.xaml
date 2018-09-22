@@ -23,7 +23,11 @@
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <TextBox Name="infoTextBox" Text="Select an export" Grid.Column="0" Grid.Row="0"/>
-        <Slider Grid.Column="0" Grid.Row="1" Margin="5" Minimum="0" Maximum="{Binding CurrentTrackLength, Mode=OneWay}" Value="{Binding CurrentTrackPosition, Mode=TwoWay}" x:Name="SeekbarControl" VerticalAlignment="Center"/>
+        <Slider Grid.Column="0" Grid.Row="1" Margin="5" Minimum="0" Maximum="{Binding CurrentTrackLength, Mode=OneWay}" Value="{Binding CurrentTrackPosition, Mode=TwoWay}" x:Name="SeekbarControl" IsMoveToPointEnabled="True" VerticalAlignment="Center"
+                ValueChanged="Seekbar_ValueChanged"
+                Thumb.DragStarted="Seekbar_DragStarted"
+                Thumb.DragCompleted="Seekbar_DragCompleted">
+        </Slider>
         <Grid HorizontalAlignment="Center" Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>

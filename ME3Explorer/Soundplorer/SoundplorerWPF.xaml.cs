@@ -1,4 +1,5 @@
-﻿using ME3Explorer.Packages;
+﻿using ByteSizeLib;
+using ME3Explorer.Packages;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
 using System;
@@ -15,6 +16,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace ME3Explorer.Soundplorer
 {
@@ -180,10 +182,37 @@ namespace ME3Explorer.Soundplorer
         {
             try
             {
+                StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
+                StatusBar_LeftMostText.Text = "Loading " + System.IO.Path.GetFileName(fileName) + " (" + ByteSize.FromBytes(new System.IO.FileInfo(fileName).Length) + ")";
+                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 LoadME3Package(fileName);
+                StatusBar_GameID_Container.Visibility = Visibility.Visible;
+
+                switch (Pcc.Game)
+                {
+                    case MEGame.ME1:
+                        StatusBar_GameID_Text.Text = "ME1";
+                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
+                        break;
+                    case MEGame.ME2:
+                        StatusBar_GameID_Text.Text = "ME2";
+                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Maroon);
+                        break;
+                    case MEGame.ME3:
+                        StatusBar_GameID_Text.Text = "ME3";
+                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.DarkSeaGreen);
+                        break;
+                    case MEGame.UDK:
+                        StatusBar_GameID_Text.Text = "UDK";
+                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.IndianRed);
+                        break;
+                }
+
                 CurrentFile = fileName;
                 afcPath = "";
                 LoadObjects();
+                StatusBar_LeftMostText.Text = System.IO.Path.GetFileName(fileName);
+
                 //Status.Text = "Ready";
                 //saveToolStripMenuItem.Enabled = true;
             }

@@ -1408,10 +1408,6 @@
       <Project>{40fb6624-5444-43dc-8b73-863a3d91e1f3}</Project>
       <Name>UDKLibWV</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WemSharp\WEMSharp.csproj">
-      <Project>{2EDFD763-C9CF-459E-9227-AFEBCAD33850}</Project>
-      <Name>WEMSharp</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\asset_explorer_64x64.png" />
