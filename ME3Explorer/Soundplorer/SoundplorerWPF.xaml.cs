@@ -188,7 +188,7 @@ namespace ME3Explorer.Soundplorer
                 StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
                 StatusBar_LeftMostText.Text = "Loading " + System.IO.Path.GetFileName(fileName) + " (" + ByteSize.FromBytes(new System.IO.FileInfo(fileName).Length) + ")";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
-                LoadME3Package(fileName);
+                LoadMEPackage(fileName);
                 StatusBar_GameID_Container.Visibility = Visibility.Visible;
 
                 switch (Pcc.Game)

@@ -104,6 +104,7 @@ namespace ME3Explorer
             ExportLoaders[SoundTab_Soundpanel] = Sound_Tab;
             ExportLoaders[CurveTab_CurveEditor] = CurveEditor_Tab;
             ExportLoaders[Bio2DATab_Bio2DAEditor] = Bio2DAViewer_Tab;
+            ExportLoaders[BinaryInterpreterTab_BinaryInterpreter] = BinaryInterpreter_Tab;
 
             LoadRecentList();
             RefreshRecent(false);
@@ -121,8 +122,8 @@ namespace ME3Explorer
 
         private void LoadFile(string s)
         {
-            try
-            {
+          //  try
+            //{
                 AllTreeViewNodesX.Clear();
                 currentFile = s;
                 StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
@@ -159,12 +160,13 @@ namespace ME3Explorer
                 InitStuff();
                 StatusBar_LeftMostText.Text = System.IO.Path.GetFileName(s);
                 InterpreterTab_Interpreter.UnloadExport();
-            }
-            catch (Exception e)
-            {
-                StatusBar_LeftMostText.Text = "Failed to load " + System.IO.Path.GetFileName(s);
-                MessageBox.Show("Error loading " + System.IO.Path.GetFileName(s) + ":\n" + e.Message);
-            }
+            //}
+            //catch (Exception e)
+            //{
+                //StatusBar_LeftMostText.Text = "Failed to load " + System.IO.Path.GetFileName(s);
+                //MessageBox.Show("Error loading " + System.IO.Path.GetFileName(s) + ":\n" + e.Message);
+              //  throw e;
+            //}
         }
 
         private void InitializeTreeView()
@@ -225,7 +227,7 @@ namespace ME3Explorer
                         //import
                         Debug.WriteLine("import tvlink " + tvLink);
 
-                        tvLink = 1 + Exports.Count + Math.Abs(tvLink);
+                        tvLink = Exports.Count + Math.Abs(tvLink);
                         Debug.WriteLine("Linking " + entry.Entry.GetFullPath + " to index " + tvLink);
                     }
 
@@ -1075,7 +1077,7 @@ namespace ME3Explorer
                     /*
 
                     headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.header);*/
-                    if (!isRefresh)
+                    /*if (!isRefresh)
                     {
                         //InterpreterTab_Interpreter.LoadExport(exportEntry);
                         Interpreter_Tab.Visibility = Visibility.Visible;
@@ -1108,7 +1110,7 @@ namespace ME3Explorer
                         {
                             Bio2DAViewer_Tab.Visibility = Visibility.Collapsed;
                         }
-                    }
+                    }*/
                 }
                 //import
                 else
@@ -1152,17 +1154,17 @@ namespace ME3Explorer
             bool? result = d.ShowDialog();
             if (result.HasValue && result.Value)
             {
-                try
-                {
+                //try
+               // {
                     LoadFile(d.FileName);
                     AddRecent(d.FileName, false);
                     SaveRecentList();
                     RefreshRecent(true, RFiles);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Unable to open file:\n" + ex.Message);
-                }
+                //}
+                //catch (Exception ex)
+                //{
+                //    MessageBox.Show("Unable to open file:\n" + ex.Message);
+               // }
             }
         }
 

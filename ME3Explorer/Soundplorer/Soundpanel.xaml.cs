@@ -32,7 +32,7 @@ namespace ME3Explorer
     /// </summary>
     public partial class Soundpanel : ExportLoaderControl
     {
-        new MEGame[] SupportedGames = new MEGame[] { MEGame.ME3 };
+        new MEGame[] SupportedGames = new MEGame[] { MEGame.ME2,MEGame.ME3 };
 
         WwiseStream w;
         public string afcPath = "";
@@ -87,7 +87,7 @@ namespace ME3Explorer
 
         public override bool CanParse(IExportEntry exportEntry)
         {
-            return (exportEntry.FileRef.Game == MEGame.ME3 && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
+            return ((exportEntry.FileRef.Game == MEGame.ME2|| exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
         }
 
         private void Pause_Clicked(object sender, RoutedEventArgs e)
