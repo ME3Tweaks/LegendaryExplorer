@@ -311,7 +311,6 @@ namespace ME3Explorer.Unreal.Classes
             {
                 procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\ww2ogg.exe", "--full-setup \"" + basePath + ".dat\"");
             }
-            System.Diagnostics.Debug.WriteLine(loc + "\\ww2ogg.exe --full-setup " + basePath + ".dat");
             procStartInfo.WorkingDirectory = loc;
             procStartInfo.RedirectStandardOutput = true;
             procStartInfo.RedirectStandardError = true;

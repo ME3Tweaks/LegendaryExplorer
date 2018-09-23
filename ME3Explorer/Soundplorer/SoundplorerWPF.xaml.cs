@@ -1,5 +1,7 @@
 ﻿using ByteSizeLib;
 using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
+using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -10,7 +12,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,18 +31,27 @@ namespace ME3Explorer.Soundplorer
     /// <summary>
     /// Interaction logic for SoundplorerWPF.xaml
     /// </summary>
-    public partial class SoundplorerWPF : WPFBase
+    public partial class SoundplorerWPF : WPFBase, INotifyPropertyChanged
     {
         public static readonly string SoundplorerDataFolder = System.IO.Path.Combine(App.AppDataFolder, @"Soundplorer\");
         private readonly string RECENTFILES_FILE = "RECENTFILES";
         public List<string> RFiles;
 
-        WwiseStream w;
-        WwiseBank wb;
-        public string afcPath = "";
         BackgroundWorker backgroundScanner;
-        List<SoundplorerExport> BindedExportsList { get; set; }
-        bool IsBusy { get; set; } = false;
+        public List<SoundplorerExport> BindedExportsList { get; set; }
+        private bool _isBusy;
+        public bool IsBusy
+        {
+            get { return _isBusy; }
+            set { if (_isBusy != value) { _isBusy = value; OnPropertyChanged(); } }
+        }
+
+        private string _busyText;
+        public string BusyText
+        {
+            get { return _busyText; }
+            set { if (_busyText != value) { _busyText = value; OnPropertyChanged(); } }
+        }
         public SoundplorerWPF()
         {
             InitializeComponent();
@@ -363,14 +376,191 @@ namespace ME3Explorer.Soundplorer
                 bool? res = d.ShowDialog();
                 if (res.HasValue && res.Value)
                 {
-                    File.WriteAllBytes(d.FileName,spExport.Export.getBinaryData());
+                    File.WriteAllBytes(d.FileName, spExport.Export.getBinaryData());
                     MessageBox.Show("Done.");
                 }
             }
         }
+
+        private void CompactAFC_Clicked(object sender, RoutedEventArgs e)
+        {
+            var dlg = new CommonOpenFileDialog("Select mod's CookedPCConsole folder")
+            {
+                IsFolderPicker = true
+            };
+
+            if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
+            {
+                return;
+            }
+
+            string[] afcFiles = System.IO.Directory.GetFiles(dlg.FileName, "*.afc");
+            string[] pccFiles = System.IO.Directory.GetFiles(dlg.FileName, "*.pcc");
+
+            if (afcFiles.Count() > 0 && pccFiles.Count() > 0)
+            {
+                string foldername = System.IO.Path.GetFileName(dlg.FileName);
+                if (foldername.ToLower() == "cookedpcconsole")
+                {
+                    foldername = System.IO.Path.GetFileName(System.IO.Directory.GetParent(dlg.FileName).FullName);
+                }
+                string result = PromptDialog.Prompt("Enter an AFC filename that all mod referenced items will be repointed to.\n\nCompacting AFC folder: " + foldername, "Enter an AFC filename");
+                if (result != null)
+                {
+                    var regex = new Regex(@"^[a-zA-Z0-9_]+$");
+
+                    if (regex.IsMatch(result))
+                    {
+                        BusyText = "Finding all referenced audio";
+                        IsBusy = true;
+                        BackgroundWorker afcCompactWorker = new BackgroundWorker();
+                        afcCompactWorker.DoWork += CompactAFCBackgroundThread;
+                        afcCompactWorker.RunWorkerCompleted += compactAFCBackgroundThreadCompleted;
+                        afcCompactWorker.RunWorkerAsync(new Tuple<string, string>(dlg.FileName, result));
+                    }
+                    else
+                    {
+                        MessageBox.Show("Only alphanumeric characters and underscores are allowed for the AFC filename.", "Error creating AFC");
+                    }
+                }
+            }
+
+        }
+
+        private void compactAFCBackgroundThreadCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            IsBusy = false;
+        }
+
+        private void CompactAFCBackgroundThread(object sender, DoWorkEventArgs e)
+        {
+            var arguments = (Tuple<string, string>)e.Argument;
+            string path = arguments.Item1;
+            string NewAFCBaseName = arguments.Item2;
+
+            string[] pccFiles = System.IO.Directory.GetFiles(path, "*.pcc");
+            string[] afcFiles = System.IO.Directory.GetFiles(path, "*.afc").Select(x => System.IO.Path.GetFileNameWithoutExtension(x).ToLower()).ToArray();
+
+            var ReferencedAFCAudio = new List<Tuple<string, int, int>>();
+
+            int i = 1;
+            foreach (string pccPath in pccFiles)
+            {
+                BusyText = "Finding all referenced audio (" + i + "/" + pccFiles.Count() + ")";
+                using (IMEPackage pack = MEPackageHandler.OpenMEPackage(pccPath))
+                {
+                    List<IExportEntry> wwiseStreamExports = pack.Exports.Where(x => x.ClassName == "WwiseStream").ToList();
+                    foreach (IExportEntry exp in wwiseStreamExports)
+                    {
+                        var afcNameProp = exp.GetProperty<NameProperty>("Filename");
+                        if (afcNameProp != null && afcFiles.Contains(afcNameProp.ToString().ToLower()))
+                        {
+                            string afcName = afcNameProp.ToString().ToLower();
+                            int readPos = exp.Data.Length - 8;
+                            int audioSize = BitConverter.ToInt32(exp.Data, exp.Data.Length - 8);
+                            int audioOffset = BitConverter.ToInt32(exp.Data, exp.Data.Length - 4);
+                            ReferencedAFCAudio.Add(new Tuple<string, int, int>(afcName, audioSize, audioOffset));
+                        }
+                    }
+                }
+                i++;
+            }
+            ReferencedAFCAudio = ReferencedAFCAudio.Distinct().ToList();
+
+            //extract referenced audio
+            BusyText = "Extracting referenced audio";
+            var extractedAudioMap = new Dictionary<Tuple<string, int, int>, byte[]>();
+            i = 1;
+            foreach (Tuple<string, int, int> reference in ReferencedAFCAudio)
+            {
+                BusyText = "Extracting referenced audio (" + i + " / " + ReferencedAFCAudio.Count() + ")";
+                string afcPath = System.IO.Path.Combine(path, reference.Item1 + ".afc");
+                FileStream stream = new FileStream(afcPath, FileMode.Open, FileAccess.Read);
+                stream.Seek(reference.Item3, SeekOrigin.Begin);
+                byte[] extractedAudio = new byte[reference.Item2];
+                stream.Read(extractedAudio, 0, reference.Item2);
+                stream.Close();
+                extractedAudioMap[reference] = extractedAudio;
+                i++;
+            }
+
+            var newAFCEntryPointMap = new Dictionary<Tuple<string, int, int>, long>();
+            i = 1;
+            string newAfcPath = System.IO.Path.Combine(path, NewAFCBaseName + ".afc");
+            if (File.Exists(newAfcPath))
+            {
+                File.Delete(newAfcPath);
+            }
+            FileStream newAFCStream = new FileStream(newAfcPath, FileMode.CreateNew, FileAccess.Write);
+
+            foreach (Tuple<string, int, int> reference in ReferencedAFCAudio)
+            {
+                BusyText = "Building new AFC file (" + i + " / " + ReferencedAFCAudio.Count() + ")";
+                newAFCEntryPointMap[reference] = newAFCStream.Position; //save entry point in map
+                newAFCStream.Write(extractedAudioMap[reference], 0, extractedAudioMap[reference].Length);
+                i++;
+            }
+            newAFCStream.Close();
+            extractedAudioMap = null; //clean out ram on next GC
+
+            i = 1;
+            foreach (string pccPath in pccFiles)
+            {
+                BusyText = "Updating audio references (" + i + "/" + pccFiles.Count() + ")";
+                using (IMEPackage pack = MEPackageHandler.OpenMEPackage(pccPath))
+                {
+                    bool shouldSave = false;
+                    List<IExportEntry> wwiseStreamExports = pack.Exports.Where(x => x.ClassName == "WwiseStream").ToList();
+                    foreach (IExportEntry exp in wwiseStreamExports)
+                    {
+                        var afcNameProp = exp.GetProperty<NameProperty>("Filename");
+                        if (afcNameProp != null && afcFiles.Contains(afcNameProp.ToString().ToLower()))
+                        {
+                            string afcName = afcNameProp.ToString().ToLower();
+                            int readPos = exp.Data.Length - 8;
+                            int audioSize = BitConverter.ToInt32(exp.Data, exp.Data.Length - 8);
+                            int audioOffset = BitConverter.ToInt32(exp.Data, exp.Data.Length - 4);
+                            var key = new Tuple<string, int, int>(afcName, audioSize, audioOffset);
+                            long newOffset;
+                            if (newAFCEntryPointMap.TryGetValue(key, out newOffset))
+                            {
+                                //its a match
+                                afcNameProp.Value = NewAFCBaseName;
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    exp.WriteProperty(afcNameProp);
+                                    byte[] newData = exp.Data;
+                                    Buffer.BlockCopy(BitConverter.GetBytes((int)newOffset), 0, newData, newData.Length - 4, 4); //update AFC audio offset
+                                    exp.Data = newData;
+                                    if (exp.DataChanged)
+                                    {
+                                        //don't mark for saving if the data didn't acutally change (e.g. trying to compact a compacted AFC).
+                                        shouldSave = true;
+                                    }
+                                });
+                            }
+                        }
+                        if (shouldSave)
+                        {
+                            Application.Current.Dispatcher.Invoke(
+                            () =>
+                            {
+                                // Must run on the UI thread or the tool interop will throw an exception
+                                // because we are on a background thread.
+                                pack.save();
+                            });
+                        }
+                    }
+
+                }
+                i++;
+            }
+            BusyText = "Rebuild complete";
+            System.Threading.Thread.Sleep(2000);
+        }
     }
 
-    internal class SoundplorerExport : INotifyPropertyChanged
+    public class SoundplorerExport : INotifyPropertyChanged
     {
         public IExportEntry Export { get; set; }
         public bool ShouldHighlightAsChanged
@@ -403,7 +593,7 @@ namespace ME3Explorer.Soundplorer
                 if (value != this._loaded)
                 {
                     this._loaded = value;
-                    OnPropertyChanged("Loaded");
+                    OnPropertyChanged();
                 }
             }
         }
@@ -417,7 +607,7 @@ namespace ME3Explorer.Soundplorer
                 if (value != this._hideSoundIcon)
                 {
                     this._hideSoundIcon = value;
-                    OnPropertyChanged("HideSoundIcon");
+                    OnPropertyChanged();
                 }
             }
         }
@@ -431,7 +621,7 @@ namespace ME3Explorer.Soundplorer
                 if (value != this._timeString)
                 {
                     this._timeString = value;
-                    OnPropertyChanged("TimeString");
+                    OnPropertyChanged();
                 }
             }
         }
@@ -445,7 +635,7 @@ namespace ME3Explorer.Soundplorer
                 if (value != this._displayString)
                 {
                     this._displayString = value;
-                    OnPropertyChanged("DisplayString");
+                    OnPropertyChanged();
                 }
             }
         }
@@ -488,11 +678,14 @@ namespace ME3Explorer.Soundplorer
             }
         }
 
-        protected void OnPropertyChanged(string propName)
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            var temp = PropertyChanged;
-            if (temp != null)
-                temp(this, new PropertyChangedEventArgs(propName));
+            PropertyChangedEventHandler handler = PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }
