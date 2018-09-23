@@ -312,7 +312,7 @@ namespace ME3Explorer.Unreal.Classes
 
             //convert OGG to WAV
             string oggPath = Path.Combine(Directory.GetParent(riffPath).FullName, Path.GetFileNameWithoutExtension(riffPath)) + ".ogg";
-            procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\oggdec.exe", oggPath);
+            procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\oggdec.exe", "--quiet " + oggPath);
             procStartInfo.WorkingDirectory = loc;
             procStartInfo.RedirectStandardOutput = true;
             procStartInfo.UseShellExecute = false;
