@@ -561,6 +561,59 @@ namespace ME3Explorer.Soundplorer
             System.Threading.Thread.Sleep(2000);
         }
 
+        private void ExportWav_Clicked(object sender, RoutedEventArgs e)
+        {
+            SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
+            if (spExport != null && spExport.Export.ClassName == "WwiseStream")
+            {
+                SaveFileDialog d = new SaveFileDialog();
+
+                d.Filter = "Wave PCM|*.wav";
+                d.FileName = spExport.Export.ObjectName + ".wav";
+                bool? res = d.ShowDialog();
+                if (res.HasValue && res.Value)
+                {
+                    WwiseStream w = new WwiseStream(spExport.Export);
+                    string source = w.CreateWave(w.getPathToAFC());
+                    if (source != null && File.Exists(source))
+                    {
+                        File.Copy(source, d.FileName, true);
+                        File.Delete(source);
+                        MessageBox.Show("Done.");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error creating Wave file.\nThis might not be a supported codec or the AFC data may be incorrect.");
+                    }
+                }
+            }
+        }
+
+        private void ExportRaw_Clicked(object sender, RoutedEventArgs e)
+        {
+            SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
+            if (spExport != null && spExport.Export.ClassName == "WwiseStream")
+            {
+                SaveFileDialog d = new SaveFileDialog();
+
+                d.Filter = "Wwise OGG|*.ogg";
+                d.FileName = spExport.Export.ObjectName + ".ogg";
+                bool? res = d.ShowDialog();
+                if (res.HasValue && res.Value)
+                {
+                    WwiseStream w = new WwiseStream(spExport.Export);
+                    if (w.ExtractRawFromStream(d.FileName, w.getPathToAFC()))
+                    {
+                        MessageBox.Show("Done.");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error extracting Ogg file.\nMetadata for this raw data may be incorrect (e.g. too big for file).");
+                    }
+                }
+            }
+        }
+
         /*private void ContextMenu_Opening(object sender, ContextMenuEventArgs e)
         {
             Debug.WriteLine("hi");
@@ -683,12 +736,20 @@ namespace ME3Explorer.Soundplorer
             if (Export.ClassName == "WwiseStream")
             {
                 WwiseStream w = new WwiseStream(Export);
-                TimeSpan? time = w.GetSoundLength();
-                if (time != null)
+                string afcPath = w.getPathToAFC();
+                if (afcPath == "")
                 {
-                    //here backslash must be present to tell that parser colon is
-                    //not the part of format, it just a character that we want in output
-                    TimeString = time.Value.ToString(@"mm\:ss\:fff");
+                    TimeString = "Could not find AFC";
+                }
+                else
+                {
+                    TimeSpan? time = w.GetSoundLength();
+                    if (time != null)
+                    {
+                        //here backslash must be present to tell that parser colon is
+                        //not the part of format, it just a character that we want in output
+                        TimeString = time.Value.ToString(@"mm\:ss\:fff");
+                    }
                 }
                 Loaded = true;
                 HideSoundIcon = false;

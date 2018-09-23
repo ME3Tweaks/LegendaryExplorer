@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -34,7 +35,7 @@ namespace ME3Explorer
     public partial class Soundpanel : ExportLoaderControl
     {
         new MEGame[] SupportedGames = new MEGame[] { MEGame.ME2, MEGame.ME3 };
-
+        public BindingList<object> ExportInformationList { get; set; }
         WwiseStream w;
         public string afcPath = "";
         DispatcherTimer seekbarUpdateTimer = new DispatcherTimer();
@@ -45,6 +46,7 @@ namespace ME3Explorer
         public Soundpanel()
         {
             PlayPauseImageSource = "/soundplorer/play.png";
+            ExportInformationList = new BindingList<object>();
             LoadCommands();
             CurrentVolume = 1;
             _playbackState = PlaybackState.Stopped;
@@ -55,21 +57,41 @@ namespace ME3Explorer
 
         public override void LoadExport(IExportEntry exportEntry)
         {
+            ExportInformationList.Clear();
             if (exportEntry.ClassName == "WwiseStream")
             {
                 WwiseStream w = new WwiseStream(exportEntry);
-                string s = "#" + exportEntry.Index + " WwiseStream : " + exportEntry.ObjectName + "\n\n";
-                s += "Filename : \"" + w.FileName + "\"\n";
-                s += "Data size: " + w.DataSize + " bytes\n";
-                s += "Data offset: 0x" + w.DataOffset.ToString("X8") + "\n";
-                s += "ID: 0x" + w.Id.ToString("X8") + " = " + w.Id + "\n";
+                ExportInformationList.Add("#" + exportEntry.Index + " WwiseStream : " + exportEntry.ObjectName);
+                ExportInformationList.Add("Filename : " + w.FileName); ;
+                ExportInformationList.Add("Data size: " + w.DataSize + " bytes");
+                ExportInformationList.Add("Data offset: 0x" + w.DataOffset.ToString("X8"));
+                ExportInformationList.Add("ID: 0x" + w.Id.ToString("X8") + " = " + w.Id);
                 CurrentLoadedExport = exportEntry;
-                infoTextBox.Text = s;
             }
             if (exportEntry.ClassName == "WwiseBank")
             {
                 WwiseBank wb = new WwiseBank(exportEntry);
-                infoTextBox.Text = wb.GetQuickScan();
+                var embeddedWEMFiles = wb.GetWEMFilesMetadata();
+                var data = wb.GetDataBlock();
+                int i = 0;
+                foreach (var singleWemMetadata in embeddedWEMFiles)
+                {
+                    byte[] wemData = new byte[singleWemMetadata.Item3];
+                    //copy WEM data to buffer. Add 0x8 to skip DATA and DATASIZE header for this block.
+                    Buffer.BlockCopy(data, singleWemMetadata.Item2 + 0x8, wemData, 0, singleWemMetadata.Item3);
+                    //check for RIFF header as some don't seem to have it and are not playable.
+                    string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
+                    if (wemHeader == "RIFF")
+                    {
+                        EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, i + ": Embedded WEM 0x" + singleWemMetadata.Item1.ToString("X8"));
+                        ExportInformationList.Add(wem);
+                    }
+                    else
+                    {
+                        ExportInformationList.Add(i + ": Embedded WEM 0x" + singleWemMetadata.Item1.ToString("X8") + " - No RIFF header");
+                    }
+                    i++;
+                }
                 CurrentLoadedExport = exportEntry;
             }
         }
@@ -80,7 +102,7 @@ namespace ME3Explorer
             //waveOut.Stop();
             //CurrentVorbisStream.Dispose();
             //_audioPlayer.Dispose();
-            infoTextBox.Text = "Select an export";
+            //infoTextBox.Text = "Select an export";
             CurrentLoadedExport = null;
         }
 
@@ -106,16 +128,6 @@ namespace ME3Explorer
 
         }
 
-        private void Play_Clicked(object sender, RoutedEventArgs e)
-        {
-            PlayLoadedExport();
-        }
-
-        public void PlayLoadedExport()
-        {
-
-        }
-
         private Stream getPCMStream()
         {
             if (CurrentLoadedExport != null)
@@ -135,6 +147,24 @@ namespace ME3Explorer
                     if (path != "")
                     {
                         return w.GetPCMStream(path);
+                    }
+                }
+                if (CurrentLoadedExport.ClassName == "WwiseBank")
+                {
+                    object currentWEMItem = ExportInfoListBox.SelectedItem;
+                    if (currentWEMItem == null || currentWEMItem is string)
+                    {
+                        return null; //nothing selected, or current wem is not playable
+                    }
+                    var wemObject = (EmbeddedWEMFile)currentWEMItem;
+                    string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
+                    File.WriteAllBytes(basePath + ".dat", wemObject.WemData);
+                    WwiseStream.ConvertRiffToWav(basePath + ".dat", CurrentLoadedExport.FileRef.Game == MEGame.ME2);
+                    if (File.Exists(basePath + ".wav"))
+                    {
+                        byte[] pcmBytes = File.ReadAllBytes(basePath + ".wav");
+                        File.Delete(basePath + ".wav");
+                        return new MemoryStream(pcmBytes);
                     }
                 }
             }
@@ -362,12 +392,20 @@ namespace ME3Explorer
 
         private bool CanStartPlayback(object p)
         {
-            //if (CurrentlySelectedTrack != null)
-            //{
-            //    return true;
-            //}
+            if (vorbisStream != null) return true; //looping
+            if (CurrentLoadedExport == null) return false;
+            if (CurrentLoadedExport.ClassName == "WwiseStream") return true;
+            if (CurrentLoadedExport.ClassName == "WwiseBank")
+            {
+                object currentWEMItem = ExportInfoListBox.SelectedItem;
+                if (currentWEMItem == null || currentWEMItem is string)
+                {
+                    return false; //nothing selected, or current wem is not playable
+                }
+                if (currentWEMItem is EmbeddedWEMFile) return true;
+            }
 
-            return CurrentLoadedExport != null && (vorbisStream != null || CurrentLoadedExport.ClassName == "WwiseStream");
+            return false;
         }
 
         private void StopPlayback(object p)
@@ -557,7 +595,18 @@ namespace ME3Explorer
                 }
             }
         }
+    }
 
+    public class EmbeddedWEMFile
+    {
+        public EmbeddedWEMFile(byte[] WemData, string DisplayString)
+        {
+            this.WemData = WemData;
+            this.DisplayString = DisplayString;
+        }
+
+        public byte[] WemData { get; set; }
+        public string DisplayString { get; set; }
     }
 
     public class ImportExportSoundEnabledConverter : IValueConverter

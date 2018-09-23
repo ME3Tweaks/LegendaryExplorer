@@ -4,7 +4,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:ME3Explorer"
+             xmlns:soundplorer="clr-namespace:ME3Explorer.Soundplorer"
              xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400"
@@ -24,7 +26,17 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <TextBox Name="infoTextBox" Text="Select an export" Grid.Column="0" Grid.Row="0"/>
+        <!--<TextBox Name="infoTextBox" Text="Select an export" Grid.Column="0" Grid.Row="0"/>-->
+        <ListBox Name="ExportInfoListBox" Grid.Column="0" Grid.Row="0" ItemsSource="{Binding ExportInformationList}">
+            <ListBox.Resources>
+                <DataTemplate DataType="{x:Type s:String}">
+                    <TextBlock Text="{Binding}" Foreground="Gray"/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type local:EmbeddedWEMFile}">
+                    <TextBlock Text="{Binding DisplayString}" Foreground="Red"/>
+                </DataTemplate>
+            </ListBox.Resources>
+        </ListBox>
         <Slider Grid.Column="0" Grid.Row="1" Margin="5" Minimum="0" Maximum="{Binding CurrentTrackLength, Mode=OneWay}" Value="{Binding CurrentTrackPosition, Mode=TwoWay}" x:Name="SeekbarControl" IsMoveToPointEnabled="True" VerticalAlignment="Center"
                 ValueChanged="Seekbar_ValueChanged"
                 Thumb.DragStarted="Seekbar_DragStarted"

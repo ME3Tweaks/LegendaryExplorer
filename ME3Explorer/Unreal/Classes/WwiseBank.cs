@@ -46,19 +46,45 @@ namespace ME3Explorer.Unreal.Classes
                 int size = BitConverter.ToInt32(memory, start + 4) + 8;
                 byte[] buff = new byte[size];
                 Buffer.BlockCopy(memory, start, buff, 0, size);
-//                for (int i = 0; i < size; i++)
-  //                  buff[i] = memory[start + i];
+                //                for (int i = 0; i < size; i++)
+                //                  buff[i] = memory[start + i];
                 Chunks.Add(buff);
                 pos += size;
             }
         }
 
-        public string GetQuickScan()
+        /// <summary>
+        /// Gets DIDX information for this soundbank. 
+        /// </summary>
+        /// <returns>List of Tuple of ID, Offset, Datasize</returns>
+        public List<Tuple<int, int, int>> GetWEMFilesMetadata()
         {
-            string res = "";            
+            var returnData = new List<Tuple<int, int, int>>();
             foreach (byte[] buff in Chunks)
             {
-                res += "Found Chunk, ID:" + GetID(buff) + " len= " +buff.Length + " bytes\n";
+                if (GetID(buff) == "DIDX")
+                {
+                    //metadata
+                    int lendata = BitConverter.ToInt32(buff, 0x4);
+                    for (int i = 0; i < lendata / 0xC; i++)
+                    {
+                        int wemID = BitConverter.ToInt32(buff, 0x8 + i * 0xC);
+                        int offset = BitConverter.ToInt32(buff, 0xC + i * 0xC);
+                        int size = BitConverter.ToInt32(buff, 0x10 + i * 0xC);
+                        returnData.Add(new Tuple<int, int, int>(wemID, offset, size));
+                    }
+                    break;
+                }
+            }
+            return returnData;
+        }
+
+        public string GetQuickScan()
+        {
+            string res = "";
+            foreach (byte[] buff in Chunks)
+            {
+                res += "Found Chunk, ID:" + GetID(buff) + " len= " + buff.Length + " bytes\n";
                 switch (GetID(buff))
                 {
                     case "BKHD":
@@ -102,6 +128,20 @@ namespace ME3Explorer.Unreal.Classes
                 }
             }
             return res;
+        }
+
+        internal byte[] GetDataBlock()
+        {
+
+            foreach (byte[] buff in Chunks)
+            {
+                switch (GetID(buff))
+                {
+                    case "DATA":
+                        return buff;
+                }
+            }
+            return null;
         }
 
         public string GetHircObjType(byte b)
@@ -156,14 +196,14 @@ namespace ME3Explorer.Unreal.Classes
         {
             string res = "";
             res += "ID(" + buff[0].ToString("X2") + ") Size = " + BitConverter.ToInt32(buff, 1).ToString("X8") + " ";
-            res += GetHircObjType(buff[0]);            
+            res += GetHircObjType(buff[0]);
             return res;
         }
 
         public string QuickScanHirc(byte[] buff)
         {
             int count = BitConverter.ToInt32(buff, 0x8);
-            string res = "...Count = " + count + "\n";            
+            string res = "...Count = " + count + "\n";
             int pos = 0xC;
             HIRCObjects = new List<byte[]>();
             for (int i = 0; i < count; i++)
@@ -175,7 +215,7 @@ namespace ME3Explorer.Unreal.Classes
                 Console.WriteLine("QSH: " + size.ToString("X4"));
                 int ID = BitConverter.ToInt32(buff, pos + 5);
                 res += "Type = 0x" + type.ToString("X2") + " ID(" + ID.ToString("X8") + ") Size = 0x" + size.ToString("X8") + " " + GetHircObjType(type) + "\n";
-                int cnt, unk1, state, IDaudio, IDsource, stype ;//scope,atype;
+                int cnt, unk1, state, IDaudio, IDsource, stype;//scope,atype;
                 switch (type)
                 {
                     case 0x2:   //*Sound SFX/Sound Voice
@@ -188,10 +228,10 @@ namespace ME3Explorer.Unreal.Classes
                         res += ".........State = " + state.ToString("X8") + " (0=embed, 1=streamed, 2=stream/prefetched)\n";
                         res += ".........ID Audio  = " + IDaudio.ToString("X8") + "\n";
                         res += ".........ID Source = " + IDsource.ToString("X8") + "\n";
-                        if(stype == 0)
+                        if (stype == 0)
                             res += ".........Sound Type = Sound SFX\n";
                         else
-                            res += ".........Sound Type = Sound Voice\n"; 
+                            res += ".........Sound Type = Sound Voice\n";
                         break;
                     //case 0x3:
                     //    scope = buff[pos + 9];
@@ -220,7 +260,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public bool ExportAllWEMFiles(string path)
         {
-            
+
             if (data_data == null || didx_data == null || data_data.Length == 0 || didx_data.Length == 0)
                 return false;
             int len = didx_data.Length - 8;
@@ -230,7 +270,7 @@ namespace ME3Explorer.Unreal.Classes
                 int id = BitConverter.ToInt32(didx_data, 0x8 + i * 0xC);
                 int start = BitConverter.ToInt32(didx_data, 0xC + i * 0xC) + 0x8;
                 int size = BitConverter.ToInt32(didx_data, 0x10 + i * 0xC);
-                FileStream fs = new FileStream(Path.Combine(path, i.ToString("d4") + "_" + id.ToString("X8") + ".wem") ,FileMode.Create,FileAccess.Write);
+                FileStream fs = new FileStream(Path.Combine(path, i.ToString("d4") + "_" + id.ToString("X8") + ".wem"), FileMode.Create, FileAccess.Write);
                 fs.Write(data_data, start, size);
                 fs.Close();
             }
@@ -254,12 +294,12 @@ namespace ME3Explorer.Unreal.Classes
 
         public byte[] RecreateBinary()
         {
-            
+
             MemoryStream res = new MemoryStream();
             res.Write(memory, 0, BinaryOffset);
             int size = 0;
             byte[] tmp;
-            foreach(byte[] buff in Chunks)
+            foreach (byte[] buff in Chunks)
                 switch (GetID(buff))
                 {
                     case "HIRC":
@@ -289,7 +329,7 @@ namespace ME3Explorer.Unreal.Classes
             {
                 res.Write(obj, 0, obj.Length);
                 size += obj.Length;
-                Console.WriteLine(index + " = "+obj.Length.ToString("X4"));
+                Console.WriteLine(index + " = " + obj.Length.ToString("X4"));
                 index++;
             }
             Console.WriteLine(size);
