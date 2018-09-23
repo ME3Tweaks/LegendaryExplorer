@@ -32,7 +32,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public void Deserialize()
         {
-            BinaryOffset = export.propsEnd() + 0x10;
+            BinaryOffset = export.propsEnd() + (export.FileRef.Game == MEGame.ME2 ? 0x18 : 0x10);
             ReadChunks();
         }
 

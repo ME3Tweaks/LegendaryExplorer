@@ -373,10 +373,12 @@ namespace ME3Explorer.Soundplorer
                 SaveFileDialog d = new SaveFileDialog();
 
                 d.Filter = "WwiseBank|*.bnk";
+                d.FileName = spExport.Export.ObjectName + ".bnk";
                 bool? res = d.ShowDialog();
                 if (res.HasValue && res.Value)
                 {
-                    File.WriteAllBytes(d.FileName, spExport.Export.getBinaryData());
+                    //File.WriteAllBytes(d.FileName, spExport.Export.getBinaryData());
+                    File.WriteAllBytes(d.FileName, spExport.Export.Data);
                     MessageBox.Show("Done.");
                 }
             }
@@ -558,6 +560,22 @@ namespace ME3Explorer.Soundplorer
             BusyText = "Rebuild complete";
             System.Threading.Thread.Sleep(2000);
         }
+
+        /*private void ContextMenu_Opening(object sender, ContextMenuEventArgs e)
+        {
+            Debug.WriteLine("hi");
+            SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
+            if (spExport != null)
+            {
+                if (spExport.Export.ClassName == "WwiseBank")
+                {
+
+                } else
+                {
+                    ExportBankToFile_MenuItem.Visibility = Visibility.Collapsed;
+                }
+            }
+    }*/
     }
 
     public class SoundplorerExport : INotifyPropertyChanged
@@ -642,22 +660,22 @@ namespace ME3Explorer.Soundplorer
         public SoundplorerExport(IExportEntry export)
         {
             this.Export = export;
+            if (Export.ClassName == "WwiseStream")
+            {
+                TimeString = "Calculating";
+            }
+            else
+            {
+                TimeString = "Soundbank";
+                Loaded = true;
+            }
             UpdateDisplay();
         }
 
         private void UpdateDisplay()
         {
             int paddingSize = Export.FileRef.ExportCount.ToString().Length;
-            if (Export.ClassName == "WwiseStream")
-            {
-                DisplayString = Export.UIndex.ToString("d" + paddingSize) + " : " + Export.ObjectName + " (" + (TimeString == null ? "..." : TimeString) + ")";
-            }
-            else
-            {
-                Loaded = true;
-                HideSoundIcon = true;
-                DisplayString = Export.UIndex.ToString("d" + paddingSize) + " : " + Export.ClassName + " : \"" + Export.ObjectName + "\"";
-            }
+            DisplayString = Export.UIndex.ToString("d" + paddingSize) + " : " + Export.ObjectName;
         }
 
         public void LoadTime()
@@ -674,7 +692,6 @@ namespace ME3Explorer.Soundplorer
                 }
                 Loaded = true;
                 HideSoundIcon = false;
-                UpdateDisplay();
             }
         }
 

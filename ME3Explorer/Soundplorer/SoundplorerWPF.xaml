@@ -14,6 +14,16 @@
         Title="Soundplorer" Height="450" Width="830">
     <Window.Resources>
         <Converters:BoolToCollapsedVisibilityConverter x:Key="BoolToCollapsedVisibilityConverter"/>
+        <local:WwiseMenuItemVisibilityConverter x:Key="WwiseMenuItemVisibilityConverter"/>
+        <ContextMenu x:Key="MyMenu">
+            <MenuItem Name="ExportBankToFile_MenuItem" Header="Export bank to file" ToolTip="Exports the binary data of this export (embedded soundbank) to disk" Click="ExtractBank_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseBank'}"/>
+            <MenuItem Name="ExportAudio_MenuItem" Header="Export to WAV (PCM)" ToolTip="Exports this WwiseStream to a playable WAV file" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
+            <MenuItem Name="ReplaceAudio_MenuItem" Header="Replace audio" ToolTip="Appends new audio data to an AFC and points this WwiseStream to that data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
+            <MenuItem Name="CloneAndReplace_MenuItem" Header="Clone and replace audio" ToolTip="Create a new WwiseStream export and point it at new audio data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
+        </ContextMenu>
+        <Style x:Key="SoundExports_ContextMenuStyle" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="ContextMenu" Value="{StaticResource MyMenu}"/>
+        </Style>
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"/>
@@ -58,7 +68,7 @@
                     <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <ListBox Name="SoundExports_ListBox" Grid.Column="0" SelectionChanged="SoundExports_ListBox_SelectionChanged" ItemsSource="{Binding BindedExportList}">
+                <ListBox Name="SoundExports_ListBox" Grid.Column="0" SelectionChanged="SoundExports_ListBox_SelectionChanged" ItemsSource="{Binding BindedExportList}" ItemContainerStyle="{StaticResource SoundExports_ContextMenuStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
@@ -74,7 +84,10 @@
 
                                 <SharedUI:LoadingSpinner EllipseSize="4" HorizontalAlignment="Left" Margin="0,0,10,5" Height="16" Width="16" Visibility="{Binding Path=DataContext.Loaded, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToCollapsedVisibilityConverter}}"/>
                                 <Image Grid.Column="7" Source="/soundplorer/volume.png" Height="16" Width="16" Margin ="4" Visibility="{Binding Path=DataContext.HideSoundIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToCollapsedVisibilityConverter}}"/>
-                                <TextBlock Text="{Binding DisplayString}" VerticalAlignment="Center"/>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding DisplayString}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding TimeString}" VerticalAlignment="Center" Foreground="Gray"/>
+                                </StackPanel>
                             </StackPanel>
 
                             <!--

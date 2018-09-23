@@ -664,6 +664,7 @@
     <Compile Include="Soundplorer\SoundplorerWPF.xaml.cs">
       <DependentUpon>SoundplorerWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Soundplorer\WwiseMenuItemVisibilityConverter.cs" />
     <Compile Include="SubtitleScanner\FileHelpers.cs" />
     <Compile Include="SubtitleScanner\SubtitleScanner.cs">
       <SubType>Form</SubType>
