@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:global="clr-namespace:ME3Explorer"
         xmlns:local="clr-namespace:ME3Explorer.Soundplorer"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"        
@@ -28,6 +29,7 @@
         </ContextMenu>
         <Style x:Key="SoundExports_ContextMenuStyle" TargetType="{x:Type ListBoxItem}">
             <Setter Property="ContextMenu" Value="{StaticResource MyMenu}"/>
+            <Setter Property="Padding" Value="0"/>
         </Style>
     </Window.Resources>
     <Window.CommandBindings>
@@ -58,13 +60,13 @@
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
-                <StatusBarItem VerticalContentAlignment="Center" Name="StatusBar_GameID_Container" Visibility="Collapsed">
+                <StatusBarItem Padding="2" VerticalContentAlignment="Center" Name="StatusBar_GameID_Container" Visibility="Collapsed">
                     <Border BorderBrush="Gray" BorderThickness="2,2,2,2" CornerRadius="3,3,3,3" VerticalAlignment="Center">
                         <TextBlock Name="StatusBar_GameID_Text" Background="Red" Text="Game ID" FontSize="11" Foreground="White" Padding="4,3,4,3" FontFamily="Consolas" VerticalAlignment="Center"/>
                     </Border>
                 </StatusBarItem>
-                <SharedUI:LoadingSpinner EllipseSize="3" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,2" Visibility="{Binding Path=DataContext.IsBusyTaskbar, RelativeSource={RelativeSource AncestorType=Window},Converter={StaticResource BoolToVisibilityConverter}}"/>
-                <StatusBarItem>
+                <fa:ImageAwesome Icon="Spinner" Foreground="Gray" Spin="True" SpinDuration="3" Visibility="{Binding Path=DataContext.IsBusyTaskbar, RelativeSource={RelativeSource AncestorType=Window},Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <StatusBarItem Padding="0">
                     <TextBlock Name="StatusBar_LeftMostText" Text="Soundplorer WPF is currently in beta - not everything works right now!"/>
                 </StatusBarItem>
             </StatusBar>
@@ -74,10 +76,10 @@
                     <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <ListBox Name="SoundExports_ListBox" Grid.Column="0" SelectionChanged="SoundExports_ListBox_SelectionChanged" ItemsSource="{Binding BindedExportList}" ItemContainerStyle="{StaticResource SoundExports_ContextMenuStyle}">
+                <ListBox Name="SoundExports_ListBox" Margin="0" Padding="0" Grid.Column="0" SelectionChanged="SoundExports_ListBox_SelectionChanged" ItemsSource="{Binding BindedExportList}" ItemContainerStyle="{StaticResource SoundExports_ContextMenuStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0">
                                 <StackPanel.Style>
                                     <Style TargetType="{x:Type StackPanel}">
                                         <Style.Triggers>
@@ -87,9 +89,7 @@
                                         </Style.Triggers>
                                     </Style>
                                 </StackPanel.Style>
-
-                                <SharedUI:LoadingSpinner EllipseSize="4" HorizontalAlignment="Left" Margin="0,0,1,5" Height="16" Width="16" Visibility="{Binding Path=DataContext.NeedsLoading, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                <Image Grid.Column="7" Source="/soundplorer/volume.png" Height="16" Width="16" Margin ="4" Visibility="{Binding Path=DataContext.ShowSoundIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                <fa:ImageAwesome  Grid.Column="7" Icon="{Binding Icon}" Spin="{Binding NeedsLoading}" SpinDuration="1.2" Width="18" Height="18" Margin="2,0,4,0"/>
                                 <StackPanel>
                                     <TextBlock Text="{Binding DisplayString}" VerticalAlignment="Center"/>
                                     <TextBlock Text="{Binding TimeString}" VerticalAlignment="Center" Foreground="Gray"/>

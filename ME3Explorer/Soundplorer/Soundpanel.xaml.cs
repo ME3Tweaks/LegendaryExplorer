@@ -138,7 +138,7 @@ namespace ME3Explorer
                         }*/
                         if (wemHeader == "RIFF")
                         {
-                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, i + ": " + wemName);
+                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, i + ": " + wemName, singleWemMetadata.Item1);
                             ExportInformationList.Add(wem);
                         }
                         else
@@ -171,7 +171,6 @@ namespace ME3Explorer
         {
             if (_audioPlayer != null)
             {
-                Debug.WriteLine("Unloading resources");
                 _audioPlayer.PlaybackStopType = VorbisAudioPlayer.PlaybackStopTypes.PlaybackStoppedByUser; //will prevent loop from restarting
                 _audioPlayer.Stop();
                 _audioPlayer.Dispose();
@@ -299,7 +298,7 @@ namespace ME3Explorer
         public ICommand SavePlaylistCommand { get; set; }
         public ICommand LoadPlaylistCommand { get; set; }
 
-        public ICommand RewindToStartCommand { get; set; }
+        public ICommand ExportAudioCommand { get; set; }
         public ICommand StartPlaybackCommand { get; set; }
         public ICommand StopPlaybackCommand { get; set; }
         public ICommand ForwardToEndCommand { get; set; }
@@ -317,17 +316,12 @@ namespace ME3Explorer
 
         private void LoadCommands()
         {
-            // Menu commands
-            ExitApplicationCommand = new RelayCommand(ExitApplication, CanExitApplication);
-            AddFileToPlaylistCommand = new RelayCommand(AddFileToPlaylist, CanAddFileToPlaylist);
-            AddFolderToPlaylistCommand = new RelayCommand(AddFolderToPlaylist, CanAddFolderToPlaylist);
-            SavePlaylistCommand = new RelayCommand(SavePlaylist, CanSavePlaylist);
-            LoadPlaylistCommand = new RelayCommand(LoadPlaylist, CanLoadPlaylist);
-
             // Player commands
-            RewindToStartCommand = new RelayCommand(RewindToStart, CanRewindToStart);
+            ExportAudioCommand = new RelayCommand(ExportAudio, CanExportAudio);
             StartPlaybackCommand = new RelayCommand(StartPlayback, CanStartPlayback);
             StopPlaybackCommand = new RelayCommand(StopPlayback, CanStopPlayback);
+
+
 
             // Event commands
             TrackControlMouseDownCommand = new RelayCommand(TrackControlMouseDown, CanTrackControlMouseDown);
@@ -335,63 +329,57 @@ namespace ME3Explorer
             VolumeControlValueChangedCommand = new RelayCommand(VolumeControlValueChanged, CanVolumeControlValueChanged);
         }
 
-        // Menu commands
-        private void ExitApplication(object p)
-        {
-
-        }
-        private bool CanExitApplication(object p)
-        {
-            return true;
-        }
-
-        private void AddFileToPlaylist(object p)
-        {
-
-        }
-        private bool CanAddFileToPlaylist(object p)
-        {
-            return true;
-        }
-
-        private void AddFolderToPlaylist(object p)
-        {
-
-        }
-
-        private bool CanAddFolderToPlaylist(object p)
-        {
-            return true;
-        }
-
-        private void SavePlaylist(object p)
-        {
-
-        }
-
-        private bool CanSavePlaylist(object p)
-        {
-            return true;
-        }
-
-        private void LoadPlaylist(object p)
-        {
-
-        }
-
-        private bool CanLoadPlaylist(object p)
-        {
-            return true;
-        }
-
         // Player commands
-        private void RewindToStart(object p)
+        private void ExportAudio(object p)
         {
+            if (CurrentLoadedExport.ClassName == "WwiseStream")
+            {
+                SaveFileDialog d = new SaveFileDialog();
+                d.Filter = "Wave PCM File|*.wav";
+                d.FileName = CurrentLoadedExport.ObjectName + ".wav";
+                if (d.ShowDialog().Value)
+                {
+                    WwiseStream w = new WwiseStream(CurrentLoadedExport);
+                    string wavPath = w.CreateWave(w.getPathToAFC());
+                    if (wavPath != null && File.Exists(wavPath))
+                    {
+                        File.Copy(wavPath, d.FileName, true);
+                    }
+                    MessageBox.Show("Done.");
+                }
+            }
 
+            if (CurrentLoadedExport.ClassName == "WwiseBank")
+            {
+                EmbeddedWEMFile currentWEMItem = (EmbeddedWEMFile)ExportInfoListBox.SelectedItem;
+                SaveFileDialog d = new SaveFileDialog();
+                d.Filter = "Wave PCM File|*.wav";
+                d.FileName = CurrentLoadedExport.ObjectName + "_0x" + currentWEMItem.Id.ToString("X8") + ".wav";
+                if (d.ShowDialog().Value)
+                {
+
+                    Stream ms = getPCMStream();
+                    ms.Seek(0, SeekOrigin.Begin);
+                    using (FileStream fs = new FileStream(d.FileName, FileMode.OpenOrCreate))
+                    {
+                        ms.CopyTo(fs);
+                        fs.Flush();
+                    }
+                    MessageBox.Show("Done.");
+                    MessageBox.Show("Done.");
+                }
+            }
         }
-        private bool CanRewindToStart(object p)
+        private bool CanExportAudio(object p)
         {
-            return true;
+            if (CurrentLoadedExport == null) return false;
+            if (CurrentLoadedExport.ClassName == "WwiseStream") return true;
+            if (CurrentLoadedExport.ClassName == "WwiseBank")
+            {
+                object currentWEMItem = ExportInfoListBox.SelectedItem;
+                return currentWEMItem != null && currentWEMItem is EmbeddedWEMFile;
+            }
+            return false;
         }
 
         private void StartPlayback(object p)
@@ -583,26 +571,6 @@ namespace ME3Explorer
             }
         }
 
-        private void ExportAsWavePCM(object sender, RoutedEventArgs e)
-        {
-            if (CurrentLoadedExport.ClassName == "WwiseStream")
-            {
-                SaveFileDialog d = new SaveFileDialog();
-                d.Filter = "Wave PCM File |*.wav";
-                d.FileName = CurrentLoadedExport.ObjectName + ".wav";
-                if (d.ShowDialog().Value)
-                {
-                    WwiseStream w = new WwiseStream(CurrentLoadedExport);
-                    string wavPath = w.CreateWave(w.getPathToAFC());
-                    if (wavPath != null && File.Exists(wavPath))
-                    {
-                        File.Copy(wavPath, d.FileName, true);
-                    }
-                    MessageBox.Show("Done.");
-                }
-            }
-        }
-
         private void Seekbar_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
         {
             SeekDragging = true;
@@ -666,8 +634,10 @@ namespace ME3Explorer
 
     public class EmbeddedWEMFile
     {
-        public EmbeddedWEMFile(byte[] WemData, string DisplayString)
+        public int Id;
+        public EmbeddedWEMFile(byte[] WemData, string DisplayString, int Id)
         {
+            this.Id = Id;
             this.WemData = WemData;
             this.DisplayString = DisplayString;
         }

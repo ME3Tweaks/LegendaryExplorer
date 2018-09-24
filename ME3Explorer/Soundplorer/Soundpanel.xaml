@@ -6,6 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:s="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:ME3Explorer"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:soundplorer="clr-namespace:ME3Explorer.Soundplorer"
              xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
              mc:Ignorable="d" 
@@ -56,7 +57,7 @@
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="2" VerticalAlignment="Center">
                 <Button Content="Replace" ToolTip="Change audio by importing a Wave file" Click="ImportFromWave_Clicked" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="0,0,5,0" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource WwiseDataExchangeEnabledConverter}}"/>
-                <Button Content="Export" ToolTip="Export audio to Wave file" Click="ExportAsWavePCM" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="0,8,5,0" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource WwiseDataExchangeEnabledConverter}}"/>
+                <Button Content="Export" ToolTip="Export audio to Wave file" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="0,8,5,0" Command="{Binding ExportAudioCommand}"/>
             </StackPanel>
             <Button Grid.Column="3" ToolTip="Start or pause playback" Command="{Binding StartPlaybackCommand}" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}">
                 <Image Name="PlayingIcon_Image" Source="{Binding PlayPauseImageSource}"/>
@@ -82,7 +83,7 @@
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </Slider>
-                    <Image Height="16" Source="/soundplorer/volume.png"/>
+                    <fa:ImageAwesome Icon="VolumeUp" Height="16" Width="16"/>
                 </StackPanel>
             </StackPanel>
         </Grid>

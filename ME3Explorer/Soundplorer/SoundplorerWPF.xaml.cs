@@ -1,4 +1,5 @@
 ﻿using ByteSizeLib;
+using FontAwesome.WPF;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
@@ -700,15 +701,17 @@ namespace ME3Explorer.Soundplorer
             }
         }
 
-        private bool _showSoundIcon = false;
-        public bool ShowSoundIcon
+
+
+        private FontAwesomeIcon _icon;
+        public FontAwesomeIcon Icon
         {
-            get { return _showSoundIcon; }
+            get { return _icon; }
             set
             {
-                if (value != this._showSoundIcon)
+                if (value != this._icon)
                 {
-                    this._showSoundIcon = value;
+                    this._icon = value;
                     OnPropertyChanged();
                 }
             }
@@ -748,10 +751,12 @@ namespace ME3Explorer.Soundplorer
             {
                 TimeString = "Calculating";
                 NeedsLoading = true;
+                Icon = FontAwesomeIcon.Spinner;
             }
             else
             {
                 TimeString = "Soundbank";
+                Icon = FontAwesomeIcon.University;
                 NeedsLoading = false;
             }
             UpdateDisplay();
@@ -788,7 +793,7 @@ namespace ME3Explorer.Soundplorer
                     }
                 }
                 NeedsLoading = false;
-                ShowSoundIcon = true;
+                Icon = FontAwesomeIcon.VolumeUp;
             }
         }
 
