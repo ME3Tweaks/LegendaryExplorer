@@ -73,23 +73,29 @@ namespace ME3Explorer
                 var embeddedWEMFiles = wb.GetWEMFilesMetadata();
                 var data = wb.GetDataBlock();
                 int i = 0;
-                foreach (var singleWemMetadata in embeddedWEMFiles)
+                if (embeddedWEMFiles.Count > 0)
                 {
-                    byte[] wemData = new byte[singleWemMetadata.Item3];
-                    //copy WEM data to buffer. Add 0x8 to skip DATA and DATASIZE header for this block.
-                    Buffer.BlockCopy(data, singleWemMetadata.Item2 + 0x8, wemData, 0, singleWemMetadata.Item3);
-                    //check for RIFF header as some don't seem to have it and are not playable.
-                    string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
-                    if (wemHeader == "RIFF")
+                    foreach (var singleWemMetadata in embeddedWEMFiles)
                     {
-                        EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, i + ": Embedded WEM 0x" + singleWemMetadata.Item1.ToString("X8"));
-                        ExportInformationList.Add(wem);
+                        byte[] wemData = new byte[singleWemMetadata.Item3];
+                        //copy WEM data to buffer. Add 0x8 to skip DATA and DATASIZE header for this block.
+                        Buffer.BlockCopy(data, singleWemMetadata.Item2 + 0x8, wemData, 0, singleWemMetadata.Item3);
+                        //check for RIFF header as some don't seem to have it and are not playable.
+                        string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
+                        if (wemHeader == "RIFF")
+                        {
+                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, i + ": Embedded WEM 0x" + singleWemMetadata.Item1.ToString("X8"));
+                            ExportInformationList.Add(wem);
+                        }
+                        else
+                        {
+                            ExportInformationList.Add(i + ": Embedded WEM 0x" + singleWemMetadata.Item1.ToString("X8") + " - No RIFF header");
+                        }
+                        i++;
                     }
-                    else
-                    {
-                        ExportInformationList.Add(i + ": Embedded WEM 0x" + singleWemMetadata.Item1.ToString("X8") + " - No RIFF header");
-                    }
-                    i++;
+                } else
+                {
+                    ExportInformationList.Add("This soundbank has no embedded WEM files");
                 }
                 CurrentLoadedExport = exportEntry;
             }
@@ -345,20 +351,26 @@ namespace ME3Explorer
                 //check to make sure stream has loaded before we attempt to play it
                 if (vorbisStream != null)
                 {
-                    vorbisStream.Position = 0;
-                    _audioPlayer = new VorbisAudioPlayer(vorbisStream, CurrentVolume);
-                    _audioPlayer.PlaybackStopType = VorbisAudioPlayer.PlaybackStopTypes.PlaybackStoppedReachingEndOfFile;
-                    _audioPlayer.PlaybackPaused += _audioPlayer_PlaybackPaused;
-                    _audioPlayer.PlaybackResumed += _audioPlayer_PlaybackResumed;
-                    _audioPlayer.PlaybackStopped += _audioPlayer_PlaybackStopped;
-                    CurrentTrackLength = _audioPlayer.GetLengthInSeconds();
-                    playToggle = true;
+                    try
+                    {
+                        vorbisStream.Position = 0;
+                        _audioPlayer = new VorbisAudioPlayer(vorbisStream, CurrentVolume);
+                        _audioPlayer.PlaybackStopType = VorbisAudioPlayer.PlaybackStopTypes.PlaybackStoppedReachingEndOfFile;
+                        _audioPlayer.PlaybackPaused += _audioPlayer_PlaybackPaused;
+                        _audioPlayer.PlaybackResumed += _audioPlayer_PlaybackResumed;
+                        _audioPlayer.PlaybackStopped += _audioPlayer_PlaybackStopped;
+                        CurrentTrackLength = _audioPlayer.GetLengthInSeconds();
+                        playToggle = true;
 
-
-                    // Start the timer.  Note that this call can be made from any thread.
-                    seekbarUpdateTimer.Start();
-                    // Timer callback code here...
-
+                        // Start the timer.  Note that this call can be made from any thread.
+                        seekbarUpdateTimer.Start();
+                        // Timer callback code here...
+                    } catch (Exception)
+                    {
+                        //error playing audio or initializing
+                        vorbisStream = null;
+                        playToggle = false;
+                    }
 
                     //_audioPlayer.Play(NAudio.Wave.PlaybackState.Stopped, CurrentVolume);
                     //CurrentlyPlayingTrack = CurrentlySelectedTrack;
@@ -502,10 +514,14 @@ namespace ME3Explorer
 
         #endregion
 
-        private void SoundPanel_Unloaded(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Call this method when the soundpanel is being destroyed to release the audio and stop playback.
+        /// </summary>
+        public void Soundpanel_Unload()
         {
             if (_audioPlayer != null)
             {
+                _audioPlayer.Stop();
                 _audioPlayer.Dispose();
             }
         }

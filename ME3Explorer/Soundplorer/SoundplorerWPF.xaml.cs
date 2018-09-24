@@ -195,7 +195,7 @@ namespace ME3Explorer.Soundplorer
             }
         }
 
-        private void LoadFile(string fileName)
+        public void LoadFile(string fileName)
         {
             try
             {
@@ -415,6 +415,7 @@ namespace ME3Explorer.Soundplorer
                     {
                         BusyText = "Finding all referenced audio";
                         IsBusy = true;
+                        soundPanel.FreeAudioResources(); // stop playing
                         BackgroundWorker afcCompactWorker = new BackgroundWorker();
                         afcCompactWorker.DoWork += CompactAFCBackgroundThread;
                         afcCompactWorker.RunWorkerCompleted += compactAFCBackgroundThreadCompleted;
@@ -634,10 +635,16 @@ namespace ME3Explorer.Soundplorer
 
                     if (w.ExtractRawFromStream(riffOutputFile, w.getPathToAFC()))
                     {
-
-                        string outputOggPath = WwiseStream.ConvertRIFFToWWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2);
-                        if (outputOggPath != null && File.Exists(outputOggPath))
+                        MemoryStream oggStream = WwiseStream.ConvertRIFFToWWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2);
+                        //string outputOggPath = 
+                        if (oggStream != null)// && File.Exists(outputOggPath))
                         {
+                            oggStream.Seek(0, SeekOrigin.Begin);
+                            using (FileStream fs = new FileStream(d.FileName, FileMode.OpenOrCreate))
+                            {
+                                oggStream.CopyTo(fs);
+                                fs.Flush();
+                            }
                             MessageBox.Show("Done.");
                         }
                         else

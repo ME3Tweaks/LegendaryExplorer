@@ -122,50 +122,50 @@ namespace ME3Explorer
 
         private void LoadFile(string s)
         {
-          //  try
+            //  try
             //{
-                AllTreeViewNodesX.Clear();
-                currentFile = s;
-                StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
-                StatusBar_LeftMostText.Text = "Loading " + System.IO.Path.GetFileName(s) + " (" + ByteSize.FromBytes(new System.IO.FileInfo(s).Length) + ")";
-                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
-                LoadMEPackage(s);
-                StatusBar_GameID_Container.Visibility = Visibility.Visible;
+            AllTreeViewNodesX.Clear();
+            currentFile = s;
+            StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
+            StatusBar_LeftMostText.Text = "Loading " + System.IO.Path.GetFileName(s) + " (" + ByteSize.FromBytes(new System.IO.FileInfo(s).Length) + ")";
+            Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
+            LoadMEPackage(s);
+            StatusBar_GameID_Container.Visibility = Visibility.Visible;
 
-                switch (Pcc.Game)
-                {
-                    case MEGame.ME1:
-                        StatusBar_GameID_Text.Text = "ME1";
-                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
-                        break;
-                    case MEGame.ME2:
-                        StatusBar_GameID_Text.Text = "ME2";
-                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Maroon);
-                        break;
-                    case MEGame.ME3:
-                        StatusBar_GameID_Text.Text = "ME3";
-                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.DarkSeaGreen);
-                        break;
-                    case MEGame.UDK:
-                        StatusBar_GameID_Text.Text = "UDK";
-                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.IndianRed);
-                        break;
-                }
-                /*interpreterControl.Pcc = pcc;
-                binaryInterpreterControl.Pcc = pcc;
-                bio2DAEditor1.Pcc = pcc;
-                treeView1.Tag = pcc;*/
-                RefreshView();
-                InitializeTreeView();
-                InitStuff();
-                StatusBar_LeftMostText.Text = System.IO.Path.GetFileName(s);
-                InterpreterTab_Interpreter.UnloadExport();
+            switch (Pcc.Game)
+            {
+                case MEGame.ME1:
+                    StatusBar_GameID_Text.Text = "ME1";
+                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
+                    break;
+                case MEGame.ME2:
+                    StatusBar_GameID_Text.Text = "ME2";
+                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Maroon);
+                    break;
+                case MEGame.ME3:
+                    StatusBar_GameID_Text.Text = "ME3";
+                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.DarkSeaGreen);
+                    break;
+                case MEGame.UDK:
+                    StatusBar_GameID_Text.Text = "UDK";
+                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.IndianRed);
+                    break;
+            }
+            /*interpreterControl.Pcc = pcc;
+            binaryInterpreterControl.Pcc = pcc;
+            bio2DAEditor1.Pcc = pcc;
+            treeView1.Tag = pcc;*/
+            RefreshView();
+            InitializeTreeView();
+            InitStuff();
+            StatusBar_LeftMostText.Text = System.IO.Path.GetFileName(s);
+            InterpreterTab_Interpreter.UnloadExport();
             //}
             //catch (Exception e)
             //{
-                //StatusBar_LeftMostText.Text = "Failed to load " + System.IO.Path.GetFileName(s);
-                //MessageBox.Show("Error loading " + System.IO.Path.GetFileName(s) + ":\n" + e.Message);
-              //  throw e;
+            //StatusBar_LeftMostText.Text = "Failed to load " + System.IO.Path.GetFileName(s);
+            //MessageBox.Show("Error loading " + System.IO.Path.GetFileName(s) + ":\n" + e.Message);
+            //  throw e;
             //}
         }
 
@@ -1155,16 +1155,16 @@ namespace ME3Explorer
             if (result.HasValue && result.Value)
             {
                 //try
-               // {
-                    LoadFile(d.FileName);
-                    AddRecent(d.FileName, false);
-                    SaveRecentList();
-                    RefreshRecent(true, RFiles);
+                // {
+                LoadFile(d.FileName);
+                AddRecent(d.FileName, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
                 //}
                 //catch (Exception ex)
                 //{
                 //    MessageBox.Show("Unable to open file:\n" + ex.Message);
-               // }
+                // }
             }
         }
 
@@ -2311,6 +2311,45 @@ namespace ME3Explorer
         {
             TouchComfyMode_MenuItem.IsChecked = !TouchComfyMode_MenuItem.IsChecked;
             TreeViewMargin = TouchComfyMode_MenuItem.IsChecked ? 5 : 2;
+        }
+
+        private void PackageEditorWPF_Closing(object sender, CancelEventArgs e)
+        {
+            SoundTab_Soundpanel.FreeAudioResources();
+
+        }
+
+        private void OpenIn_Clicked(object sender, RoutedEventArgs e)
+        {
+            var myValue = (string) ((MenuItem)sender).Tag;
+            switch (myValue)
+            {
+                case "DialogueEditor":
+                    var diaEditor = new DialogEditor.DialogEditor();
+                    diaEditor.LoadFile(Pcc.FileName);
+                    diaEditor.Show();
+                    break;
+                case "FaceFXEditor":
+                    var facefxEditor = new FaceFX.FaceFXEditor();
+                    facefxEditor.LoadFile(Pcc.FileName);
+                    facefxEditor.Show();
+                    break;
+                case "PathfindingEditor":
+                    var pathEditor = new PathfindingEditor();
+                    pathEditor.LoadFile(Pcc.FileName);
+                    pathEditor.Show();
+                    break;
+                case "SoundplorerWPF":
+                    var soundplorerWPF = new Soundplorer.SoundplorerWPF();
+                    soundplorerWPF.LoadFile(Pcc.FileName);
+                    soundplorerWPF.Show();
+                    break;
+                case "SequenceEditor":
+                    var seqEditor = new SequenceEditor();
+                    seqEditor.LoadFile(Pcc.FileName);
+                    seqEditor.Show();
+                    break;
+            }
         }
     }
     [DebuggerDisplay("TreeViewEntry {DisplayName}")]

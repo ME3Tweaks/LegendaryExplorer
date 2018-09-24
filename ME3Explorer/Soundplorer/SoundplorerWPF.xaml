@@ -13,6 +13,7 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="Soundplorer" Height="450" Width="830">
     <Window.Resources>
+        <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:BoolToCollapsedVisibilityConverter x:Key="BoolToCollapsedVisibilityConverter"/>
         <local:WwiseMenuItemVisibilityConverter x:Key="WwiseMenuItemVisibilityConverter"/>
         <ContextMenu x:Key="MyMenu">
@@ -44,14 +45,14 @@
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_File"  Padding="4">
                     <MenuItem Header="_Open" Command="Open" InputGestureText="Ctrl+O"/>
-                    <MenuItem Header="_Save" Command="Save" InputGestureText="Ctrl+S"/>
-                    <MenuItem Header="_Save as" Command="SaveAs" InputGestureText="Ctrl+Shift+S"/>
+                    <MenuItem Header="_Save" Command="Save" InputGestureText="Ctrl+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="_Save as" Command="SaveAs" InputGestureText="Ctrl+Shift+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <Separator/>
                     <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
                 </MenuItem>
-                <MenuItem Header="_Wwise">
-                    <MenuItem Header="Extract Bank file" Click="ExtractBank_Clicked"/>
-                    <MenuItem Header="Extract WEMs from bank" Click="ExtractWEMFromBank_Clicked"/>
+                <MenuItem Header="_Wwise" Padding="4">
+                    <MenuItem Header="Extract Bank file" Click="ExtractBank_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="Extract WEMs from bank" Click="ExtractWEMFromBank_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <MenuItem Header="Compact a DLC mod AFC" Click="CompactAFC_Clicked"/>
 
                 </MenuItem>

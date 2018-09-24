@@ -313,29 +313,22 @@ namespace ME3Explorer.Unreal.Classes
         /// <param name="fullSetup">Full setup flag - use for ME2</param>
         public static MemoryStream ConvertRiffToWav(string riffPath, bool fullSetup)
         {
-            ConvertRIFFToWWwiseOGG(riffPath, fullSetup);
-
-            //convert OGG to WAV
-            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
-            string oggPath = Path.Combine(Directory.GetParent(riffPath).FullName, Path.GetFileNameWithoutExtension(riffPath)) + ".ogg";
-            MemoryStream outputData = new MemoryStream();
-
-            //{
-            //    Debug.WriteLine("Outputting to " + oggPath);
-            //    System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\oggdec.exe", oggPath);
-            //    procStartInfo.WorkingDirectory = loc;
-            //    procStartInfo.RedirectStandardOutput = true;
-            //    procStartInfo.UseShellExecute = false;
-            //    procStartInfo.CreateNoWindow = true;
-            //    //procStartInfo.StandardOutputEncoding = Encoding.GetEncoding(850); //standard cmd-page
-            //    System.Diagnostics.Process proc = new System.Diagnostics.Process();
-            //    proc.StartInfo = procStartInfo;
-
-            //    // Set our event handler to asynchronously read the sort output.
-            //    proc.Start();
-            //    proc.WaitForExit();
-            //}
+            Stream oggStream = ConvertRIFFToWWwiseOGG(riffPath, fullSetup);
+            if (oggStream != null)// && File.Exists(outputOggPath))
             {
+                oggStream.Seek(0, SeekOrigin.Begin);
+                string oggPath = Path.Combine(Directory.GetParent(riffPath).FullName, Path.GetFileNameWithoutExtension(riffPath)) + ".ogg";
+
+                using (FileStream fs = new FileStream(oggPath, FileMode.OpenOrCreate))
+                {
+                    oggStream.CopyTo(fs);
+                    fs.Flush();
+                }
+
+                //convert OGG to WAV
+                string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
+                MemoryStream outputData = new MemoryStream();
+
                 System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\oggdec.exe", "--stdout " + oggPath);
                 procStartInfo.WorkingDirectory = loc;
                 procStartInfo.RedirectStandardOutput = true;
@@ -352,10 +345,10 @@ namespace ME3Explorer.Unreal.Classes
                 {
                     proc.StandardOutput.BaseStream.CopyTo(outputData);
 
-                    /*using (var output = new FileStream(outputFile, FileMode.Create))
-                    {
-                        process.StandardOutput.BaseStream.CopyTo(output);
-                    }*/
+                        /*using (var output = new FileStream(outputFile, FileMode.Create))
+                        {
+                            process.StandardOutput.BaseStream.CopyTo(output);
+                        }*/
                 });
                 Task.WaitAll(outputTask);
 
@@ -370,16 +363,17 @@ namespace ME3Explorer.Unreal.Classes
                 outputData.Position = 0x28;
                 outputData.Write(BitConverter.GetBytes(((int)outputData.Length) - 0x24), 0, 4); //datasize
                 outputData.Position = 0;
+                return outputData;
             }
-            return outputData;
+            return null;
         }
 
         /// <summary>
-        /// Converts a RAW RIFF from game data to a Wwise-based Ogg Vorbis file
+        /// Converts a RAW RIFF from game data to a Wwise-based Ogg Vorbis stream
         /// </summary>
         /// <param name="riffPath">Path to RIFF RAW data</param>
         /// <param name="fullSetup">Full setup flag - use for ME2</param>
-        public static string ConvertRIFFToWWwiseOGG(string riffPath, bool fullSetup)
+        public static MemoryStream ConvertRIFFToWWwiseOGG(string riffPath, bool fullSetup)
         {
             //convert RIFF to WwiseOGG
             System.Diagnostics.Debug.WriteLine("ww2ogg: " + riffPath);
@@ -391,11 +385,11 @@ namespace ME3Explorer.Unreal.Classes
             System.Diagnostics.ProcessStartInfo procStartInfo = null;
             if (!fullSetup)
             {
-                procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\ww2ogg.exe", "\"" + riffPath + "\"");
+                procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\ww2ogg.exe", "--stdout \"" + riffPath + "\"");
             }
             else
             {
-                procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\ww2ogg.exe", "--full-setup \"" + riffPath + "\"");
+                procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\ww2ogg.exe", "--stdout --full-setup \"" + riffPath + "\"");
             }
             procStartInfo.WorkingDirectory = loc;
             procStartInfo.RedirectStandardOutput = true;
@@ -406,9 +400,25 @@ namespace ME3Explorer.Unreal.Classes
             System.Diagnostics.Process proc = new System.Diagnostics.Process();
             proc.StartInfo = procStartInfo;
             proc.Start();
+
+            MemoryStream outputData = new MemoryStream();
+            var outputTask = Task.Run(() =>
+            {
+                proc.StandardOutput.BaseStream.CopyTo(outputData);
+
+                /*using (var output = new FileStream(outputFile, FileMode.Create))
+                {
+                    process.StandardOutput.BaseStream.CopyTo(output);
+                }*/
+            });
+            Task.WaitAll(outputTask);
+
             proc.WaitForExit();
             proc.Close();
-            return Path.Combine(Directory.GetParent(riffPath).FullName, Path.GetFileNameWithoutExtension(riffPath)) + ".ogg";
+
+            Debug.WriteLine("Done");
+            return outputData;
+            //            return Path.Combine(Directory.GetParent(riffPath).FullName, Path.GetFileNameWithoutExtension(riffPath)) + ".ogg";
         }
 
         public bool ExtractRawFromStream(string outputFile, string afcPath)

@@ -12,6 +12,7 @@
         xmlns:dd="urn:gong-wpf-dragdrop"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"        
         Loaded="PackageEditorWPF_Loaded"
+        Closing="PackageEditorWPF_Closing"
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="Package Editor" Height="650" Width="970"
@@ -47,33 +48,34 @@
 
     </Window.InputBindings>
     <DockPanel>
-        <Menu Padding="4" DockPanel.Dock="Top">
-            <MenuItem Header="File">
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File" Padding="4" >
                 <MenuItem Header="_Open" Command="Open" InputGestureText="Ctrl+O"/>
                 <MenuItem Header="_Save"  Command="Save" InputGestureText="Ctrl+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                 <MenuItem Header="Save as" Command="SaveAs" InputGestureText="Ctrl+Shift+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                 <MenuItem Header="Open in...">
-                    <MenuItem Header="Dialogue Editor"  IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                    <MenuItem Header="FaceFX Editor"  IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                    <MenuItem Header="Pathfinding Editor"  IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                    <MenuItem Header="Sequence Editor"  IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="Dialogue Editor" Tag="DialogueEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="FaceFX Editor" Tag="FaceFXEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="Pathfinding Editor" Tag="PathfindingEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="Soundplorer WPF" Tag="SoundplorerWPF" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="Sequence Editor" Tag="SequenceEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                 </MenuItem>
                 <Separator />
                 <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
             </MenuItem>
-            <MenuItem Header="Edit">
+            <MenuItem Header="Edit" Padding="4">
                 <MenuItem Header="Open"/>
                 <MenuItem Header="Save"/>
             </MenuItem>
-            <MenuItem Header="Modmaker">
+            <MenuItem Header="Modmaker" Padding="4">
                 <MenuItem Header="Open"/>
                 <MenuItem Name="ComparePackageMenuItem" Header="Compare with another package" Command="Commands:PackageEditorWPFCommands.ComparePackageCommand" IsEnabled="False"/>
             </MenuItem>
 
-            <MenuItem Header="Options">
+            <MenuItem Header="Options" Padding="4">
                 <MenuItem Name="TouchComfyMode_MenuItem" Header="Touch Comfy Mode" Click="TouchComfyMode_Clicked"/>
             </MenuItem>
-            <MenuItem Header="Experiments">
+            <MenuItem Header="Experiments" Padding="4">
                 <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
                 <MenuItem Header="Build ME1 Object Info" Click="BuildME1ObjectInfo_Clicked"/>
             </MenuItem>

@@ -10,10 +10,10 @@
              xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400"
-             Unloaded="SoundPanel_Unloaded"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <UserControl.Resources>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+        <Converters:FriendlyTimeConverter x:Key="FriendlyTimeConverter"/>
         <Converters:WwiseDataExchangeEnabledConverter x:Key="WwiseDataExchangeEnabledConverter"/>
 
     </UserControl.Resources>
@@ -50,7 +50,7 @@
                 <ColumnDefinition Width="48"/>
                 <ColumnDefinition Width="5"/>
                 <ColumnDefinition Width="48"/>
-                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="16"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
@@ -64,15 +64,27 @@
             <Button Grid.Column="5" ToolTip="Stop playback" Command="{Binding StopPlaybackCommand}" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}">
                 <Image Source="/soundplorer/stop.png"/>
             </Button>
-            <Slider Grid.Column="6" Grid.Row="1" Margin="5" Minimum="0" Maximum="1" Value="{Binding CurrentVolume, Mode=TwoWay}" x:Name="VolumebarControl" VerticalAlignment="Center"  IsMoveToPointEnabled="True">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="ValueChanged">
-                        <i:InvokeCommandAction Command="{Binding VolumeControlValueChangedCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </Slider>
-            <Image Grid.Column="7" Source="/soundplorer/volume.png"/>
 
+            <StackPanel Grid.Column="6" Grid.Row="1" Margin="5,0,0,0" VerticalAlignment="Center">
+                <TextBlock Margin="6,0,0,0">
+                    <TextBlock.Text>    
+                        <MultiBinding StringFormat="{}{0} / {1}">
+                            <Binding Path="CurrentTrackPosition" Converter="{StaticResource FriendlyTimeConverter}"/>
+                            <Binding Path="CurrentTrackLength" Converter="{StaticResource FriendlyTimeConverter}"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <StackPanel Orientation="Horizontal" Margin="0,7,0,0">
+                    <Slider Width="60" Margin="0,0,5,0" Minimum="0" Maximum="1" Value="{Binding CurrentVolume, Mode=TwoWay}" x:Name="VolumebarControl" VerticalAlignment="Center"  IsMoveToPointEnabled="True">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="ValueChanged">
+                                <i:InvokeCommandAction Command="{Binding VolumeControlValueChangedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Slider>
+                    <Image Height="16" Source="/soundplorer/volume.png"/>
+                </StackPanel>
+            </StackPanel>
         </Grid>
     </Grid>
 </local:ExportLoaderControl>

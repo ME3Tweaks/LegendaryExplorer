@@ -30,14 +30,8 @@ namespace ME3Explorer.Soundplorer
 
         public VorbisAudioPlayer(Stream audioBuffer, float volume)
         {
-            File.WriteAllBytes(@"C:\users\public\test.wav", (audioBuffer as MemoryStream).ToArray());
-            byte[] bytes = File.ReadAllBytes(@"C:\users\public\test.wav");
-            MemoryStream ms = new MemoryStream(bytes);
-            Debug.WriteLine("bytes are same: " + bytes.SequenceEqual((audioBuffer as MemoryStream).ToArray()));
-            //WaveFileWriter.CreateWaveFile(@"C:\users\public\test.wav", audioBuffer);
-            //var waveFileReader = new RawSourceWaveStream(audioBuffer, WaveForm.WaveFormat);
 
-            _audioFileReader = new WaveFileReader(ms);
+            _audioFileReader = new WaveFileReader(audioBuffer);
             _output = new WaveOutEvent();
             _output.PlaybackStopped += _output_PlaybackStopped;
             waveChannel = new WaveChannel32(_audioFileReader);
