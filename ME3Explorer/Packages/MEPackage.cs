@@ -23,7 +23,13 @@ namespace ME3Explorer.Packages
 
     public struct PackageUpdate
     {
+        /// <summary>
+        /// Details on what piece of data has changed
+        /// </summary>
         public PackageChange change;
+        /// <summary>
+        /// 0-based index of what item has changed in this package -1 = import 0, 0 = export 0
+        /// </summary>
         public int index;
     }
 

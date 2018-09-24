@@ -228,13 +228,6 @@ namespace ME3Explorer.Soundplorer
                 LoadObjects();
                 StatusBar_LeftMostText.Text = System.IO.Path.GetFileName(fileName);
                 Title = "Soundplorer - " + System.IO.Path.GetFileName(fileName);
-
-                backgroundScanner = new BackgroundWorker();
-                backgroundScanner.DoWork += GetStreamTimes;
-                backgroundScanner.WorkerSupportsCancellation = true;
-                backgroundScanner.RunWorkerAsync();
-                //Status.Text = "Ready";
-                //saveToolStripMenuItem.Enabled = true;
             }
             catch (Exception ex)
             {
@@ -260,68 +253,48 @@ namespace ME3Explorer.Soundplorer
         {
             BindedExportsList = Pcc.Exports.Where(e => e.ClassName == "WwiseBank" || e.ClassName == "WwiseStream").Select(x => new SoundplorerExport(x)).ToList();
             SoundExports_ListBox.ItemsSource = BindedExportsList;
+
+            backgroundScanner = new BackgroundWorker();
+            backgroundScanner.DoWork += GetStreamTimes;
+            backgroundScanner.WorkerSupportsCancellation = true;
+            backgroundScanner.RunWorkerAsync();
             //string s = i.ToString("d6") + " : " + e.ClassName + " : \"" + e.ObjectName + "\"";
         }
 
         private void SaveCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            //save();
-            /*
-            foreach (var item in AllTreeViewNodes)
-            {
-                item.Background = null;
-                item.ToolTip = null;
-            }*/
+            Pcc.save();
         }
 
         private void SaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            //saveAs();
-            /*
-            foreach (var item in AllTreeViewNodes)
+            SaveFileDialog d = new SaveFileDialog();
+            string extension = System.IO.Path.GetExtension(pcc.FileName);
+            d.Filter = $"*{extension}|*{extension}";
+            bool? result = d.ShowDialog();
+            if (result.HasValue && result.Value)
             {
-                item.Background = null;
-                item.ToolTip = null;
-            }*/
+                Pcc.save(d.FileName);
+                MessageBox.Show("Done");
+            }
         }
 
 
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            /*List<PackageChange> changes = updates.Select(x => x.change).ToList();
+            List<PackageChange> changes = updates.Select(x => x.change).ToList();
             bool importChanges = changes.Contains(PackageChange.Import) || changes.Contains(PackageChange.ImportAdd);
             bool exportNonDataChanges = changes.Contains(PackageChange.ExportHeader) || changes.Contains(PackageChange.ExportAdd);
-            int n = 0;
-            bool hasSelection = GetSelected(out n);
-            if (CurrentView == View.Names && changes.Contains(PackageChange.Names))
+
+            var loadedIndexes = BindedExportsList.Where(x => x.Export != null).Select(y => y.Export.Index).ToList();
+            foreach (PackageUpdate pc in updates)
             {
-                //int scrollTo = LeftSide_ListView..TopIndex + 1;
-                //int selected = listBox1.SelectedIndex;
-                RefreshView();
-                //listBox1.SelectedIndex = selected;
-                //listBox1.TopIndex = scrollTo;
-            }
-            else if (CurrentView == View.Imports && importChanges ||
-                     CurrentView == View.Exports && exportNonDataChanges ||
-                     CurrentView == View.Tree && (importChanges || exportNonDataChanges))
-            {
-                RefreshView();
-                if (hasSelection)
+                if (loadedIndexes.Contains(pc.index))
                 {
-                    goToNumber(n);
+                    LoadObjects();
+                    break;
                 }
             }
-            else if ((CurrentView == View.Exports || CurrentView == View.Tree) &&
-                     hasSelection &&
-                     updates.Contains(new PackageUpdate { index = n - 1, change = PackageChange.ExportData }))
-            {
-                //interpreterControl.memory = pcc.getExport(n).Data;
-                //interpreterControl.RefreshMem();
-                //binaryInterpreterControl.memory = pcc.getExport(n).Data;
-                //binaryInterpreterControl.RefreshMem();
-                Preview(true);
-            }
-            RefreshExportChangedStatus();*/
         }
 
         private void SoundExports_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -791,7 +764,8 @@ namespace ME3Explorer.Soundplorer
                         //here backslash must be present to tell that parser colon is
                         //not the part of format, it just a character that we want in output
                         TimeString = time.Value.ToString(@"mm\:ss\:fff");
-                    } else
+                    }
+                    else
                     {
                         TimeString = "Error getting length";
                     }

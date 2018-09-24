@@ -1170,24 +1170,40 @@ namespace ME3Explorer
 
         private void SaveCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            //save();
-            /*
-            foreach (var item in AllTreeViewNodes)
+            Pcc.save();
+            foreach(IExportEntry entry in Pcc.Exports)
             {
-                item.Background = null;
-                item.ToolTip = null;
-            }*/
+                entry.HeaderChanged = false;
+                entry.DataChanged = false;
+            }
+            foreach (ImportEntry entry in Pcc.Imports)
+            {
+                entry.HeaderChanged = false;
+            }
         }
 
         private void SaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            //saveAs();
-            /*
-            foreach (var item in AllTreeViewNodes)
+            SaveFileDialog d = new SaveFileDialog();
+            string extension = System.IO.Path.GetExtension(pcc.FileName);
+            d.Filter = $"*{extension}|*{extension}";
+            bool? result = d.ShowDialog();
+            if (result.HasValue && result.Value)
             {
-                item.Background = null;
-                item.ToolTip = null;
-            }*/
+                Pcc.save(d.FileName);
+
+                foreach (IExportEntry entry in Pcc.Exports)
+                {
+                    entry.HeaderChanged = false;
+                    entry.DataChanged = false;
+                }
+                foreach (ImportEntry entry in Pcc.Imports)
+                {
+                    entry.HeaderChanged = false;
+                }
+
+                MessageBox.Show("Done");
+            }
         }
 
         private void PackageEditorWPF_Loaded(object sender, RoutedEventArgs e)

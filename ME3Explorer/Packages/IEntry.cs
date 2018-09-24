@@ -8,7 +8,7 @@ namespace ME3Explorer.Packages
     {
         event PropertyChangedEventHandler PropertyChanged;
 
-        bool HeaderChanged { get; }
+        bool HeaderChanged { get; set; }
         int Index { get; set; }
         int UIndex { get; }
         byte[] Header { get; set; }
