@@ -196,7 +196,6 @@ namespace ME3Explorer.Meshplorer
             UnCheckLODs();
             skm = new SkeletalMesh(pcc, index);
             skmold = new SkeletalMeshOld(pcc, index);
-            hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[index].Data);
 
             // Load preview model
             preview?.Dispose();
@@ -602,23 +601,6 @@ namespace ME3Explorer.Meshplorer
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (e.Node.Name != "")
-            {
-                try
-                {
-                    int off = Convert.ToInt32(e.Node.Name);
-                    IByteProvider db = hb1.ByteProvider;
-                    if (off >= 0 && off < db.Length)
-                    {
-                        hb1.SelectionStart = off;
-                        hb1.SelectionLength = 1;
-                    }
-                }
-                catch
-                {
-
-                }
-            }
             TreeNode t = e.Node;
             MaterialBox.Visible = false;
             MaterialApplyButton.Visible = false;
@@ -861,7 +843,6 @@ namespace ME3Explorer.Meshplorer
                     preview?.Dispose();
                     preview = null;
                     treeView1.Nodes.Clear();
-                    hb1.ByteProvider = new DynamicByteProvider(new List<byte>());
                     RefreshMeshList();
                 }
                 else
@@ -880,7 +861,6 @@ namespace ME3Explorer.Meshplorer
                     preview?.Dispose();
                     preview = null;
                     treeView1.Nodes.Clear();
-                    hb1.ByteProvider = new DynamicByteProvider(new List<byte>());
                     RefreshMeshList();
                 }
                 else
