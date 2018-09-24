@@ -355,7 +355,6 @@ namespace ME3Explorer.Unreal.Classes
                 proc.WaitForExit();
                 File.Delete(riffPath); //raw
                 File.Delete(oggPath); //intermediate
-                Debug.WriteLine("Read this many bytes: " + outputData.Length);
 
                 //Fix headers as they are not correct when output from oggdec over stdout - no idea what it is outputting.
                 outputData.Position = 0x4;
@@ -376,7 +375,7 @@ namespace ME3Explorer.Unreal.Classes
         public static MemoryStream ConvertRIFFToWWwiseOGG(string riffPath, bool fullSetup)
         {
             //convert RIFF to WwiseOGG
-            System.Diagnostics.Debug.WriteLine("ww2ogg: " + riffPath);
+            //System.Diagnostics.Debug.WriteLine("ww2ogg: " + riffPath);
             if (!File.Exists(riffPath))
             {
                 System.Diagnostics.Debug.WriteLine("Error: input file does not exist");
@@ -416,7 +415,7 @@ namespace ME3Explorer.Unreal.Classes
             proc.WaitForExit();
             proc.Close();
 
-            Debug.WriteLine("Done");
+            //Debug.WriteLine("Done");
             return outputData;
             //            return Path.Combine(Directory.GetParent(riffPath).FullName, Path.GetFileNameWithoutExtension(riffPath)) + ".ogg";
         }

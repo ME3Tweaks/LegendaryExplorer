@@ -23,6 +23,17 @@
         <CommandBinding Command="{x:Static SystemCommands.MaximizeWindowCommand}" CanExecute="Command_CanExecute" Executed="MaximizeCommand_Executed" />
         <CommandBinding Command="{x:Static SystemCommands.MinimizeWindowCommand}" CanExecute="Command_CanExecute" Executed="MinimizeCommand_Executed" />
     </Window.CommandBindings>
+    <Window.Resources>
+        <Style TargetType="{x:Type Button}" x:Key="ImageButtonStyle">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <ContentPresenter/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -207,8 +218,9 @@
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Label Content="ME3Tweaks" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalContentAlignment="Center"/>
-                            <Label Content="Fork" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,-3,0,0" HorizontalContentAlignment="Center"/>
+                            <Button Style="{StaticResource ImageButtonStyle}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" ToolTip="Join the ME3Tweaks Discord" Click="ME3TweaksDiscord_Clicked">
+                                <Image Width="140" RenderOptions.BitmapScalingMode="HighQuality" Cursor="Hand" Source="../Resources/me3tweaks_fork.png"/>
+                            </Button>
                         </Grid>
                     </StackPanel>
                     <local:ToolPanel x:Name="favoritesPanel" Grid.Row="2" Category="Favorites" ItemMargin="0,15,0,0" Rows="2" Columns="7"

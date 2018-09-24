@@ -14,7 +14,7 @@
         Title="Soundplorer" Height="450" Width="830">
     <Window.Resources>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
-        <Converters:BoolToCollapsedVisibilityConverter x:Key="BoolToCollapsedVisibilityConverter"/>
+        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <local:WwiseMenuItemVisibilityConverter x:Key="WwiseMenuItemVisibilityConverter"/>
         <ContextMenu x:Key="MyMenu">
             <MenuItem Name="ExportBankToFile_MenuItem" Header="Export bank to file" ToolTip="Exports the binary data of this export (embedded soundbank) to disk" Click="ExtractBank_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseBank'}"/>
@@ -63,6 +63,7 @@
                         <TextBlock Name="StatusBar_GameID_Text" Background="Red" Text="Game ID" FontSize="11" Foreground="White" Padding="4,3,4,3" FontFamily="Consolas" VerticalAlignment="Center"/>
                     </Border>
                 </StatusBarItem>
+                <SharedUI:LoadingSpinner EllipseSize="3" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,2" Visibility="{Binding Path=DataContext.IsBusyTaskbar, RelativeSource={RelativeSource AncestorType=Window},Converter={StaticResource BoolToVisibilityConverter}}"/>
                 <StatusBarItem>
                     <TextBlock Name="StatusBar_LeftMostText" Text="Soundplorer WPF is currently in beta - not everything works right now!"/>
                 </StatusBarItem>
@@ -87,8 +88,8 @@
                                     </Style>
                                 </StackPanel.Style>
 
-                                <SharedUI:LoadingSpinner EllipseSize="4" HorizontalAlignment="Left" Margin="0,0,10,5" Height="16" Width="16" Visibility="{Binding Path=DataContext.Loaded, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToCollapsedVisibilityConverter}}"/>
-                                <Image Grid.Column="7" Source="/soundplorer/volume.png" Height="16" Width="16" Margin ="4" Visibility="{Binding Path=DataContext.HideSoundIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToCollapsedVisibilityConverter}}"/>
+                                <SharedUI:LoadingSpinner EllipseSize="4" HorizontalAlignment="Left" Margin="0,0,1,5" Height="16" Width="16" Visibility="{Binding Path=DataContext.NeedsLoading, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                <Image Grid.Column="7" Source="/soundplorer/volume.png" Height="16" Width="16" Margin ="4" Visibility="{Binding Path=DataContext.ShowSoundIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                 <StackPanel>
                                     <TextBlock Text="{Binding DisplayString}" VerticalAlignment="Center"/>
                                     <TextBlock Text="{Binding TimeString}" VerticalAlignment="Center" Foreground="Gray"/>

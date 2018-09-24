@@ -22,6 +22,7 @@ using System.Windows.Threading;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using ME3Explorer.Soundplorer;
+using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
 using NAudio.Wave;
@@ -41,6 +42,8 @@ namespace ME3Explorer
         private bool SeekUpdatingDueToTimer = false;
         private bool SeekDragging = false;
         Stream vorbisStream;
+        //IMEPackage CurrentPackage; //used to tell when to update WwiseEvents list
+        //private Dictionary<IExportEntry, List<Tuple<string, int, double>>> WemIdsToWwwiseEventIdMapping = new Dictionary<IExportEntry, List<Tuple<string, int, double>>>();
 
         public Soundpanel()
         {
@@ -57,6 +60,44 @@ namespace ME3Explorer
         public override void LoadExport(IExportEntry exportEntry)
         {
             ExportInformationList.Clear();
+
+            //Check if we need to first gather wwiseevents for wem IDing
+            //Uncomment when HIRC stuff is implemented, if ever...
+            /*if (exportEntry.FileRef != CurrentPackage)
+            {
+                //update
+                WemIdsToWwwiseEventIdMapping.Clear();
+                List<IExportEntry> wwiseEventExports = exportEntry.FileRef.Exports.Where(x => x.ClassName == "WwiseEvent").ToList();
+                foreach (IExportEntry wwiseEvent in wwiseEventExports)
+                {
+                    StructProperty relationships = wwiseEvent.GetProperty<StructProperty>("Relationships");
+                    IntProperty id = wwiseEvent.GetProperty<IntProperty>("Id");
+                    FloatProperty DurationMilliseconds = wwiseEvent.GetProperty<FloatProperty>("DurationMilliseconds");
+
+                    if (relationships != null)
+                    {
+                        ObjectProperty bank = relationships.GetProp<ObjectProperty>("Bank");
+                        if (bank != null && bank.Value > 0)
+                        {
+                            //export in this file
+                            List<Tuple<string, int, double>> bankWemInfosList;
+                            Tuple<string, int, double> newData = new Tuple<string, int, double>(wwiseEvent.ObjectName, id.Value, DurationMilliseconds.Value);
+                            if (WemIdsToWwwiseEventIdMapping.TryGetValue(exportEntry.FileRef.Exports[bank.Value - 1], out bankWemInfosList))
+                            {
+                                bankWemInfosList.Add(newData);
+                            }
+                            else
+                            {
+                                WemIdsToWwwiseEventIdMapping[exportEntry.FileRef.Exports[bank.Value - 1]] = new List<Tuple<string, int, double>>();
+                                WemIdsToWwwiseEventIdMapping[exportEntry.FileRef.Exports[bank.Value - 1]].Add(newData);
+                            }
+                        }
+                    }
+                }
+
+            }
+            CurrentPackage = exportEntry.FileRef;*/
+
             if (exportEntry.ClassName == "WwiseStream")
             {
                 WwiseStream w = new WwiseStream(exportEntry);
@@ -82,23 +123,38 @@ namespace ME3Explorer
                         Buffer.BlockCopy(data, singleWemMetadata.Item2 + 0x8, wemData, 0, singleWemMetadata.Item3);
                         //check for RIFF header as some don't seem to have it and are not playable.
                         string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
+                        string wemName = "Embedded WEM 0x" + singleWemMetadata.Item1.ToString("X8");// + "(" + singleWemMetadata.Item1 + ")";
+
+                        /* //HIRC lookup, if I ever get around to supporting HIRC
+                        List<Tuple<string, int, double>> wemInfo;
+                        if (WemIdsToWwwiseEventIdMapping.TryGetValue(exportEntry, out wemInfo))
+                        {
+                            var info = wemInfo.FirstOrDefault(x => x.Item2 == singleWemMetadata.Item1); //item2 in x = ID, singleWemMetadata.Item1 = ID
+                            if (info != null)
+                            {
+                                //have info
+                                wemName = info.Item1;
+                            }
+                        }*/
                         if (wemHeader == "RIFF")
                         {
-                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, i + ": Embedded WEM 0x" + singleWemMetadata.Item1.ToString("X8"));
+                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, i + ": " + wemName);
                             ExportInformationList.Add(wem);
                         }
                         else
                         {
-                            ExportInformationList.Add(i + ": Embedded WEM 0x" + singleWemMetadata.Item1.ToString("X8") + " - No RIFF header");
+                            ExportInformationList.Add(i + ": " + wemName + " - No RIFF header");
                         }
                         i++;
                     }
-                } else
+                }
+                else
                 {
                     ExportInformationList.Add("This soundbank has no embedded WEM files");
                 }
                 CurrentLoadedExport = exportEntry;
             }
+
         }
 
         public override void UnloadExport()
@@ -365,7 +421,8 @@ namespace ME3Explorer
                         // Start the timer.  Note that this call can be made from any thread.
                         seekbarUpdateTimer.Start();
                         // Timer callback code here...
-                    } catch (Exception)
+                    }
+                    catch (Exception)
                     {
                         //error playing audio or initializing
                         vorbisStream = null;
@@ -418,7 +475,7 @@ namespace ME3Explorer
             seekbarUpdateTimer.Stop();
             if (_audioPlayer != null)
             {
-                
+
                 _audioPlayer.PlaybackStopType = VorbisAudioPlayer.PlaybackStopTypes.PlaybackStoppedByUser;
                 _audioPlayer.Stop();
             }

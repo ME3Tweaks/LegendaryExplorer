@@ -654,5 +654,21 @@ namespace ME3Explorer
                 dpiScaleY = source.CompositionTarget.TransformToDevice.M22;
             }
         }
+
+        private void ME3TweaksDiscord_Clicked(object sender, RoutedEventArgs e)
+        {
+            string link = "https://discordapp.com/invite/s8HA6dc";
+            try
+            {
+                System.Diagnostics.Process.Start(link);
+            }
+            catch (Exception other)
+            {
+                try
+                {
+                    System.Windows.Clipboard.SetText(link);
+                } catch { }
+            }
+        }
     }
 }

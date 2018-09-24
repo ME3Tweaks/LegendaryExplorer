@@ -46,6 +46,13 @@ namespace ME3Explorer.Soundplorer
             set { if (_isBusy != value) { _isBusy = value; OnPropertyChanged(); } }
         }
 
+        private bool _isBusyTaskbar;
+        public bool IsBusyTaskbar
+        {
+            get { return _isBusyTaskbar; }
+            set { if (_isBusyTaskbar != value) { _isBusyTaskbar = value; OnPropertyChanged(); } }
+        }
+
         private string _busyText;
         public string BusyText
         {
@@ -244,7 +251,7 @@ namespace ME3Explorer.Soundplorer
                     e.Cancel = true;
                     return;
                 }
-                Debug.WriteLine("Getting time for " + se.Export.UIndex);
+                //Debug.WriteLine("Getting time for " + se.Export.UIndex);
                 se.LoadTime();
             }
         }
@@ -256,9 +263,16 @@ namespace ME3Explorer.Soundplorer
 
             backgroundScanner = new BackgroundWorker();
             backgroundScanner.DoWork += GetStreamTimes;
+            backgroundScanner.RunWorkerCompleted += GetStreamTimes_Completed;
             backgroundScanner.WorkerSupportsCancellation = true;
             backgroundScanner.RunWorkerAsync();
+            IsBusyTaskbar = true;
             //string s = i.ToString("d6") + " : " + e.ClassName + " : \"" + e.ObjectName + "\"";
+        }
+
+        private void GetStreamTimes_Completed(object sender, RunWorkerCompletedEventArgs e)
+        {
+            IsBusyTaskbar = false;
         }
 
         private void SaveCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -388,6 +402,7 @@ namespace ME3Explorer.Soundplorer
                     {
                         BusyText = "Finding all referenced audio";
                         IsBusy = true;
+                        IsBusyTaskbar = true;
                         soundPanel.FreeAudioResources(); // stop playing
                         BackgroundWorker afcCompactWorker = new BackgroundWorker();
                         afcCompactWorker.DoWork += CompactAFCBackgroundThread;
@@ -406,6 +421,7 @@ namespace ME3Explorer.Soundplorer
         private void compactAFCBackgroundThreadCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             IsBusy = false;
+            IsBusyTaskbar = true;
         }
 
         private void CompactAFCBackgroundThread(object sender, DoWorkEventArgs e)
@@ -670,29 +686,29 @@ namespace ME3Explorer.Soundplorer
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private bool _loaded = false;
-        public bool Loaded
+        private bool _needsLoading;
+        public bool NeedsLoading
         {
-            get { return _loaded; }
+            get { return _needsLoading; }
             set
             {
-                if (value != this._loaded)
+                if (value != this._needsLoading)
                 {
-                    this._loaded = value;
+                    this._needsLoading = value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        private bool _hideSoundIcon = true;
-        public bool HideSoundIcon
+        private bool _showSoundIcon = false;
+        public bool ShowSoundIcon
         {
-            get { return _hideSoundIcon; }
+            get { return _showSoundIcon; }
             set
             {
-                if (value != this._hideSoundIcon)
+                if (value != this._showSoundIcon)
                 {
-                    this._hideSoundIcon = value;
+                    this._showSoundIcon = value;
                     OnPropertyChanged();
                 }
             }
@@ -731,11 +747,12 @@ namespace ME3Explorer.Soundplorer
             if (Export.ClassName == "WwiseStream")
             {
                 TimeString = "Calculating";
+                NeedsLoading = true;
             }
             else
             {
                 TimeString = "Soundbank";
-                Loaded = true;
+                NeedsLoading = false;
             }
             UpdateDisplay();
         }
@@ -770,8 +787,8 @@ namespace ME3Explorer.Soundplorer
                         TimeString = "Error getting length";
                     }
                 }
-                Loaded = true;
-                HideSoundIcon = false;
+                NeedsLoading = false;
+                ShowSoundIcon = true;
             }
         }
 

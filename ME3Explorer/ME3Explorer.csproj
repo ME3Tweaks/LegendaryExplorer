@@ -498,7 +498,7 @@
     <Compile Include="SharedUI\Converters\FriendlyTimeConverter.cs" />
     <Compile Include="SharedUI\Converters\WwiseDataExchangeEnabledConverter.cs" />
     <Compile Include="SharedUI\Converters\NullEnabledConverter.cs" />
-    <Compile Include="SharedUI\Converters\BoolToCollapsedVisibilityConverter.cs" />
+    <Compile Include="SharedUI\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="SharedUI\ExceptionHandlerDialogWPF.xaml.cs">
       <DependentUpon>ExceptionHandlerDialogWPF.xaml</DependentUpon>
     </Compile>
@@ -1593,6 +1593,7 @@
     <Resource Include="Resources\coalesced_editor_newB.ico" />
     <Resource Include="Resources\path_editor.ico" />
     <Resource Include="Resources\path_editor_64.png" />
+    <Resource Include="Resources\me3tweaks_fork.png" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
