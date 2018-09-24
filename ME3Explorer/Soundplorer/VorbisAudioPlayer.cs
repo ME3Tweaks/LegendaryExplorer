@@ -1,5 +1,4 @@
-﻿using NAudio.Vorbis;
-using NAudio.Wave;
+﻿using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,14 +30,20 @@ namespace ME3Explorer.Soundplorer
 
         public VorbisAudioPlayer(Stream audioBuffer, float volume)
         {
-            PlaybackStopType = PlaybackStopTypes.PlaybackStoppedReachingEndOfFile;
-            _audioFileReader = new WaveFileReader(audioBuffer);
+            File.WriteAllBytes(@"C:\users\public\test.wav", (audioBuffer as MemoryStream).ToArray());
+            byte[] bytes = File.ReadAllBytes(@"C:\users\public\test.wav");
+            MemoryStream ms = new MemoryStream(bytes);
+            Debug.WriteLine("bytes are same: " + bytes.SequenceEqual((audioBuffer as MemoryStream).ToArray()));
+            //WaveFileWriter.CreateWaveFile(@"C:\users\public\test.wav", audioBuffer);
+            //var waveFileReader = new RawSourceWaveStream(audioBuffer, WaveForm.WaveFormat);
+
+            _audioFileReader = new WaveFileReader(ms);
             _output = new WaveOutEvent();
-            _output.NumberOfBuffers = 3;
             _output.PlaybackStopped += _output_PlaybackStopped;
             waveChannel = new WaveChannel32(_audioFileReader);
             waveChannel.PadWithZeroes = false;
             _output.Init(waveChannel);
+            PlaybackStopType = PlaybackStopTypes.PlaybackStoppedReachingEndOfFile;
         }
 
         public void Play(PlaybackState playbackState, double currentVolumeLevel)
@@ -125,7 +130,6 @@ namespace ME3Explorer.Soundplorer
 
         public double GetLengthInSeconds()
         {
-            Debug.WriteLine("Get length in seconds: " + _audioFileReader.TotalTime.TotalSeconds);
             if (_audioFileReader != null)
             {
                 return _audioFileReader.TotalTime.TotalSeconds;

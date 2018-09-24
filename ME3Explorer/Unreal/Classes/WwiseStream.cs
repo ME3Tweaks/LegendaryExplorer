@@ -9,6 +9,8 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
 using NAudio.Wave;
 using KFreonLib.MEDirectories;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -128,6 +130,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public Stream GetPCMStream(string path)
         {
+            return CreateWaveStream(path);
             string wavPath = CreateWave(path);
             if (wavPath != null && File.Exists(wavPath))
             {
@@ -179,11 +182,19 @@ namespace ME3Explorer.Unreal.Classes
                 path = getPathToAFC();
             }
 
-            string wavPath = CreateWave(path);
-            if (wavPath != null && File.Exists(wavPath))
+            Stream waveStream = CreateWaveStream(path);
+            if (waveStream != null)
             {
-                WaveFileReader wf = new WaveFileReader(wavPath);
-                return wf.TotalTime;
+                //Check it is RIFF
+                byte[] riffHeaderBytes = new byte[4];
+                waveStream.Read(riffHeaderBytes, 0, 4);
+                string wemHeader = "" + (char)riffHeaderBytes[0] + (char)riffHeaderBytes[1] + (char)riffHeaderBytes[2] + (char)riffHeaderBytes[3];
+                if (wemHeader == "RIFF")
+                {
+                    waveStream.Position = 0;
+                    WaveFileReader wf = new WaveFileReader(waveStream);
+                    return wf.TotalTime;
+                }
             }
             return null;
         }
@@ -246,6 +257,21 @@ namespace ME3Explorer.Unreal.Classes
             return basePath + ".wav";
         }
 
+
+        /// <summary>
+        /// Creates wav stream from this WwiseStream
+        /// </summary>
+        /// <param name="afcPath"></param>
+        /// <returns></returns>
+        public Stream CreateWaveStream(string afcPath)
+        {
+            string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
+            if (ExtractRawFromStream(basePath + ".dat", getPathToAFC()))
+            {
+                return ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
+            }
+            return null;
+        }
         private void PlayWave(string path)
         {
             string wavPath = CreateWave(path);
@@ -280,7 +306,80 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
-        public static void ConvertRiffToWav(string riffPath, bool fullSetup)
+        /// <summary>
+        /// Converts a RAW RIFF from game data to a playable WAV stream. This can be written to disk as a playable WAV file.
+        /// </summary>
+        /// <param name="riffPath">Path to RIFF RAW data</param>
+        /// <param name="fullSetup">Full setup flag - use for ME2</param>
+        public static MemoryStream ConvertRiffToWav(string riffPath, bool fullSetup)
+        {
+            ConvertRIFFToWWwiseOGG(riffPath, fullSetup);
+
+            //convert OGG to WAV
+            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
+            string oggPath = Path.Combine(Directory.GetParent(riffPath).FullName, Path.GetFileNameWithoutExtension(riffPath)) + ".ogg";
+            MemoryStream outputData = new MemoryStream();
+
+            //{
+            //    Debug.WriteLine("Outputting to " + oggPath);
+            //    System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\oggdec.exe", oggPath);
+            //    procStartInfo.WorkingDirectory = loc;
+            //    procStartInfo.RedirectStandardOutput = true;
+            //    procStartInfo.UseShellExecute = false;
+            //    procStartInfo.CreateNoWindow = true;
+            //    //procStartInfo.StandardOutputEncoding = Encoding.GetEncoding(850); //standard cmd-page
+            //    System.Diagnostics.Process proc = new System.Diagnostics.Process();
+            //    proc.StartInfo = procStartInfo;
+
+            //    // Set our event handler to asynchronously read the sort output.
+            //    proc.Start();
+            //    proc.WaitForExit();
+            //}
+            {
+                System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\oggdec.exe", "--stdout " + oggPath);
+                procStartInfo.WorkingDirectory = loc;
+                procStartInfo.RedirectStandardOutput = true;
+                procStartInfo.UseShellExecute = false;
+                procStartInfo.CreateNoWindow = true;
+                //procStartInfo.StandardOutputEncoding = Encoding.GetEncoding(850); //standard cmd-page
+                System.Diagnostics.Process proc = new System.Diagnostics.Process();
+                proc.StartInfo = procStartInfo;
+
+                // Set our event handler to asynchronously read the sort output.
+                proc.Start();
+                //proc.BeginOutputReadLine();
+                var outputTask = Task.Run(() =>
+                {
+                    proc.StandardOutput.BaseStream.CopyTo(outputData);
+
+                    /*using (var output = new FileStream(outputFile, FileMode.Create))
+                    {
+                        process.StandardOutput.BaseStream.CopyTo(output);
+                    }*/
+                });
+                Task.WaitAll(outputTask);
+
+                proc.WaitForExit();
+                File.Delete(riffPath); //raw
+                File.Delete(oggPath); //intermediate
+                Debug.WriteLine("Read this many bytes: " + outputData.Length);
+
+                //Fix headers as they are not correct when output from oggdec over stdout - no idea what it is outputting.
+                outputData.Position = 0x4;
+                outputData.Write(BitConverter.GetBytes(((int)outputData.Length) - 0x8), 0, 4); //filesize
+                outputData.Position = 0x28;
+                outputData.Write(BitConverter.GetBytes(((int)outputData.Length) - 0x24), 0, 4); //datasize
+                outputData.Position = 0;
+            }
+            return outputData;
+        }
+
+        /// <summary>
+        /// Converts a RAW RIFF from game data to a Wwise-based Ogg Vorbis file
+        /// </summary>
+        /// <param name="riffPath">Path to RIFF RAW data</param>
+        /// <param name="fullSetup">Full setup flag - use for ME2</param>
+        public static string ConvertRIFFToWWwiseOGG(string riffPath, bool fullSetup)
         {
             //convert RIFF to WwiseOGG
             System.Diagnostics.Debug.WriteLine("ww2ogg: " + riffPath);
@@ -292,7 +391,7 @@ namespace ME3Explorer.Unreal.Classes
             System.Diagnostics.ProcessStartInfo procStartInfo = null;
             if (!fullSetup)
             {
-                procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\ww2ogg.exe", riffPath);
+                procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\ww2ogg.exe", "\"" + riffPath + "\"");
             }
             else
             {
@@ -309,20 +408,7 @@ namespace ME3Explorer.Unreal.Classes
             proc.Start();
             proc.WaitForExit();
             proc.Close();
-
-            //convert OGG to WAV
-            string oggPath = Path.Combine(Directory.GetParent(riffPath).FullName, Path.GetFileNameWithoutExtension(riffPath)) + ".ogg";
-            procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\oggdec.exe", "--quiet " + oggPath);
-            procStartInfo.WorkingDirectory = loc;
-            procStartInfo.RedirectStandardOutput = true;
-            procStartInfo.UseShellExecute = false;
-            procStartInfo.CreateNoWindow = true;
-            proc = new System.Diagnostics.Process();
-            proc.StartInfo = procStartInfo;
-            proc.Start();
-            proc.WaitForExit();
-            File.Delete(riffPath);
-            File.Delete(oggPath);
+            return Path.Combine(Directory.GetParent(riffPath).FullName, Path.GetFileNameWithoutExtension(riffPath)) + ".ogg";
         }
 
         public bool ExtractRawFromStream(string outputFile, string afcPath)

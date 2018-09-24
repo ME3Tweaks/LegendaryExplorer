@@ -18,7 +18,8 @@
         <ContextMenu x:Key="MyMenu">
             <MenuItem Name="ExportBankToFile_MenuItem" Header="Export bank to file" ToolTip="Exports the binary data of this export (embedded soundbank) to disk" Click="ExtractBank_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseBank'}"/>
             <MenuItem Header="Export to..." Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}">
-                <MenuItem Name="ExportAudioRaw_MenuItem" Header="Export to OGG (Wwise)" ToolTip="Exports this WwiseStream's raw data to a Wwise proprietary Ogg file" Click="ExportRaw_Clicked"/>
+                <MenuItem Name="ExportAudioRaw_MenuItem" Header="Export RIFF" ToolTip="Exports the raw data as stored in game files.&#x0a;To play, you must put this through ww2ogg to ogg and oggdec to wav." Click="ExportRaw_Clicked"/>
+                <MenuItem Name="ExportAudioOgg_MenuItem" Header="Export to OGG (Wwise)" ToolTip="Exports this WwiseStream's raw data to a Wwise proprietary Ogg file.&#x0a;To play, you must use oggdec to convert to a wav." Click="ExportOgg_Clicked"/>
                 <MenuItem Name="ExportAudioPCM_MenuItem" Header="Export to WAV (PCM)" ToolTip="Exports this WwiseStream to a playable WAV file" Click="ExportWav_Clicked"/>
             </MenuItem>
             <MenuItem Name="ReplaceAudio_MenuItem" Header="Replace audio" ToolTip="Appends new audio data to an AFC and points this WwiseStream to that data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>

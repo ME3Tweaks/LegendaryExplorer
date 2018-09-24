@@ -574,11 +574,14 @@ namespace ME3Explorer.Soundplorer
                 if (res.HasValue && res.Value)
                 {
                     WwiseStream w = new WwiseStream(spExport.Export);
-                    string source = w.CreateWave(w.getPathToAFC());
-                    if (source != null && File.Exists(source))
+                    Stream source = w.CreateWaveStream(w.getPathToAFC());
+                    if (source != null)
                     {
-                        File.Copy(source, d.FileName, true);
-                        File.Delete(source);
+                        using (var fileStream = File.Create(d.FileName))
+                        {
+                            source.Seek(0, SeekOrigin.Begin);
+                            source.CopyTo(fileStream);
+                        }
                         MessageBox.Show("Done.");
                     }
                     else
@@ -596,8 +599,8 @@ namespace ME3Explorer.Soundplorer
             {
                 SaveFileDialog d = new SaveFileDialog();
 
-                d.Filter = "Wwise OGG|*.ogg";
-                d.FileName = spExport.Export.ObjectName + ".ogg";
+                d.Filter = "Wwise WEM|*.wem";
+                d.FileName = spExport.Export.ObjectName + ".wem";
                 bool? res = d.ShowDialog();
                 if (res.HasValue && res.Value)
                 {
@@ -608,7 +611,39 @@ namespace ME3Explorer.Soundplorer
                     }
                     else
                     {
-                        MessageBox.Show("Error extracting Ogg file.\nMetadata for this raw data may be incorrect (e.g. too big for file).");
+                        MessageBox.Show("Error extracting WEM file.\nMetadata for this raw data may be incorrect (e.g. too big for file).");
+                    }
+                }
+            }
+        }
+
+        private void ExportOgg_Clicked(object sender, RoutedEventArgs e)
+        {
+            SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
+            if (spExport != null && spExport.Export.ClassName == "WwiseStream")
+            {
+                SaveFileDialog d = new SaveFileDialog();
+
+                d.Filter = "Wwise OGG|*.ogg";
+                d.FileName = spExport.Export.ObjectName + ".ogg";
+                bool? res = d.ShowDialog();
+                if (res.HasValue && res.Value)
+                {
+                    WwiseStream w = new WwiseStream(spExport.Export);
+                    string riffOutputFile = System.IO.Path.Combine(Directory.GetParent(d.FileName).FullName, System.IO.Path.GetFileNameWithoutExtension(d.FileName)) + ".dat";
+
+                    if (w.ExtractRawFromStream(riffOutputFile, w.getPathToAFC()))
+                    {
+
+                        string outputOggPath = WwiseStream.ConvertRIFFToWWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2);
+                        if (outputOggPath != null && File.Exists(outputOggPath))
+                        {
+                            MessageBox.Show("Done.");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error extracting Ogg file.\nMetadata for the raw data may be incorrect (e.g. too big for file).");
+                        }
                     }
                 }
             }
@@ -749,6 +784,9 @@ namespace ME3Explorer.Soundplorer
                         //here backslash must be present to tell that parser colon is
                         //not the part of format, it just a character that we want in output
                         TimeString = time.Value.ToString(@"mm\:ss\:fff");
+                    } else
+                    {
+                        TimeString = "Error getting length";
                     }
                 }
                 Loaded = true;

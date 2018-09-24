@@ -24,7 +24,6 @@ using ME3Explorer.Packages;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
-using NAudio.Vorbis;
 using NAudio.Wave;
 
 namespace ME3Explorer
@@ -146,7 +145,7 @@ namespace ME3Explorer
                     }
                     if (path != "")
                     {
-                        return w.GetPCMStream(path);
+                        return w.CreateWaveStream(path);
                     }
                 }
                 if (CurrentLoadedExport.ClassName == "WwiseBank")
@@ -159,13 +158,7 @@ namespace ME3Explorer
                     var wemObject = (EmbeddedWEMFile)currentWEMItem;
                     string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
                     File.WriteAllBytes(basePath + ".dat", wemObject.WemData);
-                    WwiseStream.ConvertRiffToWav(basePath + ".dat", CurrentLoadedExport.FileRef.Game == MEGame.ME2);
-                    if (File.Exists(basePath + ".wav"))
-                    {
-                        byte[] pcmBytes = File.ReadAllBytes(basePath + ".wav");
-                        File.Delete(basePath + ".wav");
-                        return new MemoryStream(pcmBytes);
-                    }
+                    return WwiseStream.ConvertRiffToWav(basePath + ".dat", CurrentLoadedExport.FileRef.Game == MEGame.ME2);
                 }
             }
             return null;
@@ -413,18 +406,19 @@ namespace ME3Explorer
             seekbarUpdateTimer.Stop();
             if (_audioPlayer != null)
             {
-                if (vorbisStream != null)
-                {
-                    vorbisStream.Dispose();
-                    vorbisStream = null;
-                }
+                
                 _audioPlayer.PlaybackStopType = VorbisAudioPlayer.PlaybackStopTypes.PlaybackStoppedByUser;
                 _audioPlayer.Stop();
+            }
+            if (vorbisStream != null)
+            {
+                vorbisStream.Dispose();
+                vorbisStream = null;
             }
         }
         private bool CanStopPlayback(object p)
         {
-            if (_playbackState == PlaybackState.Playing || _playbackState == PlaybackState.Paused)
+            if (_playbackState == PlaybackState.Playing || _playbackState == PlaybackState.Paused || vorbisStream != null)
             {
                 return true;
             }
