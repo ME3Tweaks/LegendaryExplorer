@@ -43,7 +43,7 @@ namespace ME3Explorer.Soundplorer
         public List<string> RFiles;
 
         BackgroundWorker backgroundScanner;
-        public List<SoundplorerExport> BindedExportsList { get; set; }
+        public BindingList<SoundplorerExport> BindedExportsList { get; set; }
         private bool _isBusy;
         public bool IsBusy
         {
@@ -257,8 +257,9 @@ namespace ME3Explorer.Soundplorer
 
         private void GetStreamTimes(object sender, DoWorkEventArgs e)
         {
+            var ExportsToLoad = (List<SoundplorerExport>)e.Argument;
             int i = 0;
-            foreach (SoundplorerExport se in BindedExportsList)
+            foreach (SoundplorerExport se in ExportsToLoad)
             {
                 backgroundScanner.ReportProgress((int)((i * 100.0) / BindedExportsList.Count));
 
@@ -273,18 +274,29 @@ namespace ME3Explorer.Soundplorer
             }
         }
 
-        private void LoadObjects()
+        private void LoadObjects(List<SoundplorerExport> ExportsToReload = null)
         {
-            BindedExportsList = Pcc.Exports.Where(e => e.ClassName == "WwiseBank" || e.ClassName == "WwiseStream").Select(x => new SoundplorerExport(x)).ToList();
-            SoundExports_ListBox.ItemsSource = BindedExportsList;
-
+            if (ExportsToReload == null)
+            {
+                BindedExportsList = new BindingList<SoundplorerExport>(Pcc.Exports.Where(e => e.ClassName == "WwiseBank" || e.ClassName == "WwiseStream").Select(x => new SoundplorerExport(x)).ToList());
+                SoundExports_ListBox.ItemsSource = BindedExportsList;
+            }
+            else
+            {
+                foreach (SoundplorerExport se in ExportsToReload)
+                {
+                    se.SubText = "Refreshing";
+                    se.NeedsLoading = true;
+                    se.Icon = FontAwesomeIcon.Spinner;
+                }
+            }
             backgroundScanner = new BackgroundWorker();
             backgroundScanner.DoWork += GetStreamTimes;
             backgroundScanner.RunWorkerCompleted += GetStreamTimes_Completed;
             backgroundScanner.WorkerReportsProgress = true;
             backgroundScanner.ProgressChanged += GetStreamTimes_ReportProgress;
             backgroundScanner.WorkerSupportsCancellation = true;
-            backgroundScanner.RunWorkerAsync();
+            backgroundScanner.RunWorkerAsync(ExportsToReload != null ? ExportsToReload : BindedExportsList.ToList());
             IsBusyTaskbar = true;
             //string s = i.ToString("d6") + " : " + e.ClassName + " : \"" + e.ObjectName + "\"";
         }
@@ -326,13 +338,21 @@ namespace ME3Explorer.Soundplorer
             bool exportNonDataChanges = changes.Contains(PackageChange.ExportHeader) || changes.Contains(PackageChange.ExportAdd);
 
             var loadedIndexes = BindedExportsList.Where(x => x.Export != null).Select(y => y.Export.Index).ToList();
+
+            List<SoundplorerExport> exportsRequiringReload = new List<SoundplorerExport>();
             foreach (PackageUpdate pc in updates)
             {
                 if (loadedIndexes.Contains(pc.index))
                 {
-                    LoadObjects();
-                    break;
+                    SoundplorerExport sp = BindedExportsList.First(x => x.Export.Index == pc.index);
+                    sp.OnPropertyChanged("ShouldHighlightAsChanged");
+                    exportsRequiringReload.Add(sp);
                 }
+            }
+
+            if (exportsRequiringReload.Count() > 0)
+            {
+                LoadObjects(exportsRequiringReload);
             }
         }
 
@@ -671,7 +691,32 @@ namespace ME3Explorer.Soundplorer
 
         private void CloneAndReplace_Clicked(object sender, RoutedEventArgs e)
         {
-
+            //OpenFileDialog d = new OpenFileDialog { Filter = "Wave PCM files|*.wav", Title = "Select audio file for new export" };
+            //bool? chosenFileDialog = d.ShowDialog();
+            //if (chosenFileDialog.HasValue && chosenFileDialog.Value)
+            //{
+            string result = PromptDialog.Prompt("Enter a new object name for the cloned item.", "Cloned export name");
+            if (result != null)
+            {
+                SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
+                if (spExport != null && spExport.Export.ClassName == "WwiseStream")
+                {
+                    IExportEntry clone = spExport.Export.Clone();
+                    clone.idxObjectName = clone.FileRef.FindNameOrAdd(result);
+                    spExport.Export.FileRef.addExport(clone);
+                    SoundplorerExport newExport = new SoundplorerExport(clone);
+                    BindedExportsList.Add(newExport);
+                    var reloadList = new List<SoundplorerExport>();
+                    reloadList.Add(newExport);
+                    SoundExports_ListBox.ScrollIntoView(newExport);
+                    SoundExports_ListBox.UpdateLayout();
+                    var item = SoundExports_ListBox.ItemContainerGenerator.ContainerFromItem(newExport) as ListBoxItem;
+                    if (item != null) item.Focus();
+                    soundPanel.ReplaceAudio(clone);
+                    LoadObjects(reloadList);
+                }
+            }
+            //}
         }
 
         private void ReplaceAudio_Clicked(object sender, RoutedEventArgs e)
@@ -1053,7 +1098,7 @@ namespace ME3Explorer.Soundplorer
 
         }
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
 
