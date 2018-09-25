@@ -679,22 +679,79 @@ namespace ME3Explorer.Soundplorer
             }
         }
 
-        /*private void ContextMenu_Opening(object sender, ContextMenuEventArgs e)
+        private void Window_Drop(object sender, DragEventArgs e)
         {
-            Debug.WriteLine("hi");
-            SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
-            if (spExport != null)
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                if (spExport.Export.ClassName == "WwiseBank")
-                {
+                // Note that you can have more than one file.
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-                } else
+                // Assuming you have one file that you care about, pass it off to whatever
+                // handling code you have defined.
+                LoadFile(files[0]);
+            }
+        }
+
+        /// <summary>
+        /// Convert files to Wwise-encoded Oggs. Requires Wwise to be installed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ConvertToWwise_Clicked(object sender, RoutedEventArgs e)
+        {
+            //Verify Wwise is installed with the correct version
+            string wwisePath = Environment.GetEnvironmentVariable("WWiseRoot");
+            if (wwisePath != null)
+            {
+                string pathToExe = System.IO.Path.Combine(wwisePath, @"Authoring\x64\Release\bin\WwiseCLI.exe");
+                if (File.Exists(pathToExe))
                 {
-                    ExportBankToFile_MenuItem.Visibility = Visibility.Collapsed;
+                    //check that it's a supported version...
+                    var versionInfo = FileVersionInfo.GetVersionInfo(pathToExe);
+                    string version = versionInfo.ProductVersion; // Will typically return "1.0.0" in your case
+                    if (version != "2010.3.3.3773")
+                    {
+                        //wrong version
+                        MessageBox.Show("WwiseCLI.exe found, but it's the wrong version:" + version + ".\nInstall Wwise Build 3773 to use this tool.");
+                        return;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("WwiseCLI.exe was not found on your system.\nInstall Wwise Build 3773 to use this tool.");
+                    return;
                 }
             }
-    }*/
+            else
+            {
+                MessageBox.Show("Wwise does not appear to be installed on your system.\nInstall Wwise Build 3773 to use this tool.");
+                return;
+            }
+
+            //Wwise installed and cli found
+            MessageBox.Show("OK");
+
+
+            /* The process for converting is going to be pretty in depth but will make converting files much easier and faster.
+             * 1. Have a drag/drop panel or folder chooser where user .wav files will exist
+             * 2. User starts conversion
+             * 
+             * Program steps when conversion starts:
+             * 1. Copy source files to the originals directory, as this is where the data is converted from (Originals\SFX\)
+             * 2. Update the Default Work Unit.wwu file in Actor-Mixer-Hierarchy:
+             *    - Add Sound objects to AudioObjects for each sound.
+             *       -SoundName: PathWithoutExtension(wav)
+             *       -ID: GUID.GenerateGUID() <-- Might not be necessary
+             *       -ShortID: FNVHash (must port from C to C# - see https://www.audiokinetic.com/qa/13/how-can-i-generate-wwise-work-units-wwu-files <-- Might not be necessary
+             *       -other stuff.
+             *    - Set conversion settings. Maybe just use the default
+             * 3. Generate a soundbank through the CLI, runnign our project and setting the cache dir to our own.
+             * 4. Pull the files out of the cache and then discard the project.
+             * */
+        }
     }
+
+
 
     public class SoundplorerExport : INotifyPropertyChanged
     {

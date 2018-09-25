@@ -10,6 +10,8 @@
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"        
         Closing="Soundplorer_Closing"
+        Drop="Window_Drop"
+        AllowDrop="True"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="Soundplorer" Height="450" Width="830">
@@ -56,7 +58,7 @@
                     <MenuItem Header="Extract Bank file" Click="ExtractBank_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <MenuItem Header="Extract WEMs from bank" Click="ExtractWEMFromBank_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <MenuItem Header="Compact a DLC mod AFC" Click="CompactAFC_Clicked"/>
-
+                    <MenuItem Header="Convert Wave files to Wwise Ogg" Click="ConvertToWwise_Clicked"/>
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">

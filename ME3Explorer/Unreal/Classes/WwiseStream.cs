@@ -204,7 +204,15 @@ namespace ME3Explorer.Unreal.Classes
 
         public string getPathToAFC()
         {
+            //Check if pcc-stored
+            if (export.FileRef.FileName == "")
+            {
+
+            }
+
             //Look in currect directory first
+
+
             string path = Path.Combine(Path.GetDirectoryName(export.FileRef.FileName), FileName + ".afc");
             if (File.Exists(path))
             {

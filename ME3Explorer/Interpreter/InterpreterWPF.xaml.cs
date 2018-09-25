@@ -353,7 +353,6 @@ namespace ME3Explorer
                     nodeColor = Brushes.SlateGray;
                     break;
             }
-            Debug.WriteLine(s);
             TreeViewItem item = new TreeViewItem()
             {
                 Header = s,
@@ -1494,8 +1493,6 @@ namespace ME3Explorer
                 int hexPos = Convert.ToInt32(hexPosStr);
                 Interpreter_Hexbox.SelectionStart = hexPos;
                 Interpreter_Hexbox.SelectionLength = 1;
-                //Interpreter_HexBox.SetPosition(hexPos);
-                //                Debug.WriteLine(newSelectedItem.Name);
             }
 
         }
@@ -1567,10 +1564,6 @@ namespace ME3Explorer
             if (tvi != null)
             {
                 UProperty tag = (UProperty)tvi.Tag;
-                if (tag is ArrayPropertyBase)
-                {
-                    Debug.WriteLine("H!");
-                }
                 ArrayType at = GetArrayType(tag.Name); //we may need to account for substructs
                 bool sorted = false;
                 switch (at)

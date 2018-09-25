@@ -55,14 +55,15 @@ namespace ME3Explorer.SharedUI
                     classList = ME3UnrealObjectInfo.Classes;
                     break;
             }
-            foreach (KeyValuePair<string, ClassInfo> entry in classList)
-            {
-                // do something with entry.Value or entry.Key
-                if (entry.Key.StartsWith("LightMap"))
-                {
-                    Debug.WriteLine(entry.Key);
-                }
-            }
+            //For debugging ME1 Objectinfo when we get around to it
+            //foreach (KeyValuePair<string, ClassInfo> entry in classList)
+            //{
+            //    // do something with entry.Value or entry.Key
+            //    if (entry.Key.StartsWith("LightMap"))
+            //    {
+            //        Debug.WriteLine(entry.Key);
+            //    }
+            //}
             if (!classList.ContainsKey(temp) && export.idxClass < 0)
             {
                 //lookup import parent info

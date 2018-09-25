@@ -225,10 +225,10 @@ namespace ME3Explorer
                     if (tvLink < 0)
                     {
                         //import
-                        Debug.WriteLine("import tvlink " + tvLink);
+                        //Debug.WriteLine("import tvlink " + tvLink);
 
                         tvLink = Exports.Count + Math.Abs(tvLink);
-                        Debug.WriteLine("Linking " + entry.Entry.GetFullPath + " to index " + tvLink);
+                        //Debug.WriteLine("Linking " + entry.Entry.GetFullPath + " to index " + tvLink);
                     }
 
                     TreeViewEntry parent = AllTreeViewNodesX[tvLink];
@@ -1171,7 +1171,7 @@ namespace ME3Explorer
         private void SaveCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Pcc.save();
-            foreach(IExportEntry entry in Pcc.Exports)
+            foreach (IExportEntry entry in Pcc.Exports)
             {
                 entry.HeaderChanged = false;
                 entry.DataChanged = false;
@@ -1448,7 +1448,9 @@ namespace ME3Explorer
                 {
                     //selectNode[0].ExpandParents();
                     selectNode[0].IsSelected = true;
-                    selectNode[0].Focus(LeftSide_TreeView);
+                    FocusTreeViewNode(selectNode[0]);
+
+                    //selectNode[0].Focus(LeftSide_TreeView);
                 }
             }
             else
@@ -1994,13 +1996,14 @@ namespace ME3Explorer
                     {
                         continue;
                     }
-                    Debug.WriteLine(curIndex + " " + node.Entry.ObjectName);
+                    //Debug.WriteLine(curIndex + " " + node.Entry.ObjectName);
 
                     if (node.Entry.ClassName.Equals(searchClass))
                     {
                         //node.ExpandParents();
                         node.IsSelected = true;
-                        node.Focus(LeftSide_TreeView);
+                        FocusTreeViewNode(node);
+                        //                        node.Focus(LeftSide_TreeView);
                         break;
                     }
                 }
@@ -2283,7 +2286,7 @@ namespace ME3Explorer
             ME1UnrealObjectInfo.generateInfo();
         }
 
-        private void FocusTreeViewNode(TreeViewEntry node)
+        private void FocusTreeViewNodeOld(TreeViewEntry node)
         {
             if (node == null) return;
             var nodes = (IEnumerable<TreeViewEntry>)LeftSide_TreeView.ItemsSource;
@@ -2323,6 +2326,94 @@ namespace ME3Explorer
             }
         }
 
+        private void FocusTreeViewNode(TreeViewEntry node)
+        {
+            if (node == null)
+                return;
+
+            var treeViewItem = GetTreeViewItem(LeftSide_TreeView, node);
+            treeViewItem?.BringIntoView();
+        }
+
+
+        public static TreeViewItem GetTreeViewItem(ItemsControl container, object item)
+        {
+            if (container == null)
+                throw new ArgumentNullException(nameof(container));
+
+            if (item == null)
+                throw new ArgumentNullException(nameof(item));
+
+            if (container.DataContext == item)
+                return container as TreeViewItem;
+
+            if (container is TreeViewItem && !((TreeViewItem)container).IsExpanded)
+            {
+                container.SetValue(TreeViewItem.IsExpandedProperty, true);
+            }
+
+            container.ApplyTemplate();
+            if (container.Template.FindName("ItemsHost", container) is ItemsPresenter itemsPresenter)
+            {
+                itemsPresenter.ApplyTemplate();
+            }
+            else
+            {
+                itemsPresenter = FindVisualChild<ItemsPresenter>(container);
+                if (itemsPresenter == null)
+                {
+                    container.UpdateLayout();
+                    itemsPresenter = FindVisualChild<ItemsPresenter>(container);
+                }
+            }
+
+            var itemsHostPanel = (Panel)VisualTreeHelper.GetChild(itemsPresenter, 0);
+            var children = itemsHostPanel.Children;
+            var virtualizingPanel = itemsHostPanel as VirtualizingPanel;
+            for (int i = 0, count = container.Items.Count; i < count; i++)
+            {
+                TreeViewItem subContainer;
+                if (virtualizingPanel != null)
+                {
+                    // this is the part that requires .NET 4.5+
+                    virtualizingPanel.BringIndexIntoViewPublic(i);
+                    subContainer = (TreeViewItem)container.ItemContainerGenerator.ContainerFromIndex(i);
+                }
+                else
+                {
+                    subContainer = (TreeViewItem)container.ItemContainerGenerator.ContainerFromIndex(i);
+                    subContainer.BringIntoView();
+                }
+
+                if (subContainer != null)
+                {
+                    TreeViewItem resultContainer = GetTreeViewItem(subContainer, item);
+                    if (resultContainer != null)
+                        return resultContainer;
+
+                    subContainer.IsExpanded = false;
+                }
+            }
+            return null;
+        }
+
+        private static T FindVisualChild<T>(Visual visual) where T : Visual
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(visual); i++)
+            {
+                if (VisualTreeHelper.GetChild(visual, i) is Visual child)
+                {
+                    if (child is T item)
+                        return item;
+
+                    item = FindVisualChild<T>(child);
+                    if (item != null)
+                        return item;
+                }
+            }
+            return null;
+        }
+
         private void TouchComfyMode_Clicked(object sender, RoutedEventArgs e)
         {
             TouchComfyMode_MenuItem.IsChecked = !TouchComfyMode_MenuItem.IsChecked;
@@ -2337,7 +2428,7 @@ namespace ME3Explorer
 
         private void OpenIn_Clicked(object sender, RoutedEventArgs e)
         {
-            var myValue = (string) ((MenuItem)sender).Tag;
+            var myValue = (string)((MenuItem)sender).Tag;
             switch (myValue)
             {
                 case "DialogueEditor":
@@ -2416,11 +2507,11 @@ namespace ME3Explorer
             }
         }
 
-        public void Focus(TreeView tView)
-        {
-            TreeViewItem tvItem = (TreeViewItem)tView.ItemContainerGenerator.ContainerFromItem(this);
-            tvItem?.Focus();
-        }
+        //public void Focus(TreeView tView)
+        //{
+        //    TreeViewItem tvItem = (TreeViewItem)tView.ItemContainerGenerator.ContainerFromItem(this);
+        //    tvItem?.Focus();
+        //}
 
         /// <summary>
         /// Flattens the tree into depth first order. Use this method for searching the list.
