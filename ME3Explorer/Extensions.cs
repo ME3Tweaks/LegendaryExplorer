@@ -518,6 +518,24 @@ namespace ME3Explorer
         {
             value.WriteTo(stream);
         }
+
+        /// <summary>
+        /// Copies the inputstream to the outputstream, for the specified amount of bytes
+        /// </summary>
+        /// <param name="input">Stream to copy from</param>
+        /// <param name="output">Stream to copy to</param>
+        /// <param name="bytes">The number of bytes to copy</param>
+        public static void CopyToEx(this Stream input, Stream output, int bytes)
+        {
+            byte[] buffer = new byte[32768];
+            int read;
+            while (bytes > 0 &&
+                   (read = input.Read(buffer, 0, Math.Min(buffer.Length, bytes))) > 0)
+            {
+                output.Write(buffer, 0, read);
+                bytes -= read;
+            }
+        }
     }
 
     public static class UnrealExtensions

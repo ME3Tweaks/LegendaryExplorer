@@ -559,9 +559,9 @@ namespace ME3Explorer.Soundplorer
                         Application.Current.Dispatcher.Invoke(
                         () =>
                         {
-                                // Must run on the UI thread or the tool interop will throw an exception
-                                // because we are on a background thread.
-                                pack.save();
+                            // Must run on the UI thread or the tool interop will throw an exception
+                            // because we are on a background thread.
+                            pack.save();
                         });
                     }
                 }
@@ -634,7 +634,7 @@ namespace ME3Explorer.Soundplorer
             {
                 SaveFileDialog d = new SaveFileDialog();
 
-                d.Filter = "Wwise OGG|*.ogg";
+                d.Filter = "Ogg Vorbis|*.ogg";
                 d.FileName = spExport.Export.ObjectName + ".ogg";
                 bool? res = d.ShowDialog();
                 if (res.HasValue && res.Value)
@@ -658,10 +658,24 @@ namespace ME3Explorer.Soundplorer
                         }
                         else
                         {
-                            MessageBox.Show("Error extracting Ogg file.\nMetadata for the raw data may be incorrect (e.g. too big for file).");
+                            MessageBox.Show("Error extracting Ogg file.\nMetadata for the raw data may be incorrect (e.g. header specifies data is longer than it actually is).");
                         }
                     }
                 }
+            }
+        }
+
+        private void CloneAndReplace_Clicked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ReplaceAudio_Clicked(object sender, RoutedEventArgs e)
+        {
+            SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
+            if (spExport != null)
+            {
+                soundPanel.ReplaceAudio(spExport.Export);
             }
         }
 

@@ -97,7 +97,7 @@ namespace ME3Explorer
 
             }
             CurrentPackage = exportEntry.FileRef;*/
-            ExportInformationList.Add("#" + exportEntry.Index + " "+ exportEntry.ClassName + " : " + exportEntry.ObjectName);
+            ExportInformationList.Add("#" + exportEntry.Index + " " + exportEntry.ClassName + " : " + exportEntry.ObjectName);
             if (exportEntry.ClassName == "WwiseStream")
             {
                 WwiseStream w = new WwiseStream(exportEntry);
@@ -601,27 +601,33 @@ namespace ME3Explorer
             }
         }
 
-        private void ImportFromWave_Clicked(object sender, RoutedEventArgs e)
+        private void ReplaceAudio_Clicked(object sender, RoutedEventArgs e)
         {
-            if (CurrentLoadedExport != null && CurrentLoadedExport.ClassName == "WwiseStream")
+            ReplaceAudio();
+        }
+
+        /// <summary>
+        /// Replaces the audio in the current loaded export, or the forced export. Will prompt user for a Wwise Encoded Ogg file.
+        /// </summary>
+        /// <param name="forcedExport">Export to update. If null, the currently loadedo ne is used instead.</param>
+        public void ReplaceAudio(IExportEntry forcedExport = null)
+        {
+            IExportEntry exportToWorkOn = forcedExport ?? CurrentLoadedExport;
+            if (exportToWorkOn != null && exportToWorkOn.ClassName == "WwiseStream")
             {
-                WwiseStream w = new WwiseStream(CurrentLoadedExport);
-
-
+                WwiseStream w = new WwiseStream(exportToWorkOn);
                 if (w.IsPCCStored)
                 {
                     //TODO: enable replacing of PCC-stored sounds
                     MessageBox.Show("Cannot replace pcc-stored sounds.");
                     return;
                 }
+
                 OpenFileDialog d = new OpenFileDialog();
-                d.Filter = "*Wave PCM File|*.wav";
+                d.Filter = "Wwise Encoded Ogg|*.ogg";
                 bool? res = d.ShowDialog();
                 if (res.HasValue && res.Value)
                 {
-                    //if (path != "")
-                    //{
-                    //Status.Text = "Importing...";
                     w.ImportFromFile(d.FileName, w.getPathToAFC());
                     CurrentLoadedExport.Data = w.memory.TypedClone();
                     //Status.Text = "Ready";

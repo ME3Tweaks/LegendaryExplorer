@@ -105,26 +105,29 @@ namespace ME3Explorer.Unreal.Classes
         {
             if (FileName == "")
                 return;
-            if (pathtoafc != "")
+            using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
-                if (File.Exists(pathtoafc))
-                    ImportWav(pathtoafc, path, DataOffset);
-                else if (File.Exists(pathtoafc + FileName + ".afc")) //legacy code for old soundplorer
-                    ImportWav(pathtoafc + FileName + ".afc", path, DataOffset);
+                if (pathtoafc != "")
+                {
+                    if (File.Exists(pathtoafc))
+                        ImportWwiseOgg(pathtoafc, stream, DataOffset);
+                    else if (File.Exists(pathtoafc + FileName + ".afc")) //legacy code for old soundplorer
+                        ImportWwiseOgg(pathtoafc + FileName + ".afc", stream, DataOffset);
+                    else
+                    {
+                        OpenFileDialog d = new OpenFileDialog();
+                        d.Filter = FileName + ".afc|" + FileName + ".afc";
+                        if (d.ShowDialog() == DialogResult.OK)
+                            ImportWwiseOgg(d.FileName, stream, DataOffset);
+                    }
+                }
                 else
                 {
                     OpenFileDialog d = new OpenFileDialog();
                     d.Filter = FileName + ".afc|" + FileName + ".afc";
                     if (d.ShowDialog() == DialogResult.OK)
-                        ImportWav(d.FileName, path, DataOffset);
+                        ImportWwiseOgg(d.FileName, stream, DataOffset);
                 }
-            }
-            else
-            {
-                OpenFileDialog d = new OpenFileDialog();
-                d.Filter = FileName + ".afc|" + FileName + ".afc";
-                if (d.ShowDialog() == DialogResult.OK)
-                    ImportWav(d.FileName, path, DataOffset);
             }
         }
 
@@ -345,10 +348,10 @@ namespace ME3Explorer.Unreal.Classes
                 {
                     proc.StandardOutput.BaseStream.CopyTo(outputData);
 
-                        /*using (var output = new FileStream(outputFile, FileMode.Create))
-                        {
-                            process.StandardOutput.BaseStream.CopyTo(output);
-                        }*/
+                    /*using (var output = new FileStream(outputFile, FileMode.Create))
+                    {
+                        process.StandardOutput.BaseStream.CopyTo(output);
+                    }*/
                 });
                 Task.WaitAll(outputTask);
 
@@ -467,11 +470,44 @@ namespace ME3Explorer.Unreal.Classes
             return fs2;
         }
 
-        private void ImportWav(string pathafc, string pathwav, int off)
+        /// <summary>
+        /// Converts a Wwise-genreated ogg to the format usable by ME3.
+        /// This effectivey replaces the need for afc_creator.exe
+        /// </summary>
+        /// <param name="memory">Stream containing wwiseogg</param>
+        /// <returns>ME3 AFC ready stream, at position 0</returns>
+        private MemoryStream ConvertWwiseOggToME3Ogg(Stream memory)
         {
-            if (!File.Exists(pathafc) || !File.Exists(pathwav))
-                return;
+            memory.Position = 0;
+            MemoryStream convertedStream = new MemoryStream();
+            memory.CopyToEx(convertedStream, 4);
+            convertedStream.Write(BitConverter.GetBytes((int)memory.Length - 16), 0, 4);
+            memory.Position += 4; //skip over size
+            memory.CopyToEx(convertedStream, 0x24); //up to VORB
+            memory.Position += 8; //skip vorb
+            memory.CopyTo(convertedStream); //copy remaining data
 
+            //update format bytes
+            convertedStream.Seek(0x10, SeekOrigin.Begin);
+            byte[] firstFmtBytes = { 0x42, 0x00, 0x00, 0x00, 0xFF, 0xFF };
+            convertedStream.Write(firstFmtBytes, 0x0, firstFmtBytes.Length);
+
+            //Update second format bytes
+            convertedStream.Seek(0x20, SeekOrigin.Begin);
+            byte[] secondFmtBytes = { 0x00, 0x00, 0x00, 0x00, 0x30, 0x00, 0x18, 0x00 };
+            convertedStream.Write(secondFmtBytes, 0x0, secondFmtBytes.Length);
+
+            convertedStream.Position = 0;
+            return convertedStream;
+        }
+
+        private void ImportWwiseOgg(string pathafc, Stream wwiseOggStream, int off)
+        {
+            if (!File.Exists(pathafc) || wwiseOggStream == null)
+                return;
+            //Convert wwiseoggstream
+            MemoryStream convertedStream = ConvertWwiseOggToME3Ogg(wwiseOggStream);
+            File.WriteAllBytes(@"C:\Users\mgame\Desktop\afc_creator\Debug\converted.afc", convertedStream.ToArray());
             //Open AFC
             FileStream fs = new FileStream(pathafc, FileMode.Open, FileAccess.Read);
             byte[] Header = new byte[94];
@@ -486,14 +522,15 @@ namespace ME3Explorer.Unreal.Classes
 
             //read wave file into memory
             //fs = new FileStream(pathwav, FileMode.Open, FileAccess.Read);
-            byte[] newWavfile = File.ReadAllBytes(pathwav);
+            MemoryStream tempStream = new MemoryStream();
+            byte[] newWavfile = convertedStream.ToArray();
             /*byte[] newfile = new byte[fs.Length];
             for (int i = 0; i < fs.Length; i++)
                 newfile[i] = (byte)fs.ReadByte();
             fs.Close();*/
 
             //tweak new wav header
-            newWavfile = ModifyHeader(newWavfile, Header);
+            //newWavfile = ModifyHeader(newWavfile, Header);
 
             //append new wav
             fs = new FileStream(pathafc, FileMode.Append, FileAccess.Write, FileShare.Write);
@@ -502,7 +539,7 @@ namespace ME3Explorer.Unreal.Classes
             fs.Write(newWavfile, 0, newWavSize);
             //for (int i = 0; i < newWavSize; i++)
             //    fs.WriteByte(newWavfile[i]);
-            uint newafcsize = (uint)fs.Length;
+            //uint newafcsize = (uint)fs.Length;
             fs.Close();
 
             //update memory in this export (clone of memory)
@@ -518,6 +555,13 @@ namespace ME3Explorer.Unreal.Classes
             DataOffset = newWavDataOffset;
         }
 
+        /// <summary>
+        /// Not gonna lie, I have no idea what this does, but I also didn't write it.
+        /// - Mgamerz
+        /// </summary>
+        /// <param name="nw"></param>
+        /// <param name="old"></param>
+        /// <returns></returns>
         private byte[] ModifyHeader(byte[] nw, byte[] old)
         {
             MemoryStream m = new MemoryStream();

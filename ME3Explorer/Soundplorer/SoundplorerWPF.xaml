@@ -24,8 +24,8 @@
                 <MenuItem Name="ExportAudioOgg_MenuItem" Header="Export to OGG (Wwise)" ToolTip="Exports this WwiseStream's raw data to a Wwise proprietary Ogg file.&#x0a;To play, you must use oggdec to convert to a wav." Click="ExportOgg_Clicked"/>
                 <MenuItem Name="ExportAudioPCM_MenuItem" Header="Export to WAV (PCM)" ToolTip="Exports this WwiseStream to a playable WAV file" Click="ExportWav_Clicked"/>
             </MenuItem>
-            <MenuItem Name="ReplaceAudio_MenuItem" Header="Replace audio" ToolTip="Appends new audio data to an AFC and points this WwiseStream to that data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
-            <MenuItem Name="CloneAndReplace_MenuItem" Header="Clone and replace audio" ToolTip="Create a new WwiseStream export and point it at new audio data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
+            <MenuItem Name="ReplaceAudio_MenuItem" Click="ReplaceAudio_Clicked" Header="Replace audio" ToolTip="Appends new audio data to an AFC and points this WwiseStream to that data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
+            <MenuItem Name="CloneAndReplace_MenuItem" Click="CloneAndReplace_Clicked" Header="Clone and replace audio" ToolTip="Create a new WwiseStream export and point it at new audio data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
         </ContextMenu>
         <Style x:Key="SoundExports_ContextMenuStyle" TargetType="{x:Type ListBoxItem}">
             <Setter Property="ContextMenu" Value="{StaticResource MyMenu}"/>
