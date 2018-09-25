@@ -507,7 +507,6 @@ namespace ME3Explorer.Unreal.Classes
                 return;
             //Convert wwiseoggstream
             MemoryStream convertedStream = ConvertWwiseOggToME3Ogg(wwiseOggStream);
-            File.WriteAllBytes(@"C:\Users\mgame\Desktop\afc_creator\Debug\converted.afc", convertedStream.ToArray());
             //Open AFC
             FileStream fs = new FileStream(pathafc, FileMode.Open, FileAccess.Read);
             byte[] Header = new byte[94];
