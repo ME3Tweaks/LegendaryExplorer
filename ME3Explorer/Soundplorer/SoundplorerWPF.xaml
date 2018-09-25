@@ -29,9 +29,14 @@
             <MenuItem Name="ReplaceAudio_MenuItem" Click="ReplaceAudio_Clicked" Header="Replace audio" ToolTip="Appends new audio data to an AFC and points this WwiseStream to that data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
             <MenuItem Name="CloneAndReplace_MenuItem" Click="CloneAndReplace_Clicked" Header="Clone and replace audio" ToolTip="Create a new WwiseStream export and point it at new audio data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
         </ContextMenu>
-        <Style x:Key="SoundExports_ContextMenuStyle" TargetType="{x:Type ListBoxItem}">
+        <Style x:Key="SoundExports_ListboxItemStyle" TargetType="{x:Type ListBoxItem}">
             <Setter Property="ContextMenu" Value="{StaticResource MyMenu}"/>
             <Setter Property="Padding" Value="0"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ShouldHighlightAsChanged}" Value="true">
+                    <Setter Property="Background" Value="Yellow"/>
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
     <Window.CommandBindings>
@@ -78,19 +83,11 @@
                     <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <ListBox Name="SoundExports_ListBox" Margin="0" Padding="0" Grid.Column="0" SelectionChanged="SoundExports_ListBox_SelectionChanged" ItemsSource="{Binding BindedExportList}" ItemContainerStyle="{StaticResource SoundExports_ContextMenuStyle}">
+                <ListBox Name="SoundExports_ListBox" Margin="0" Padding="0" Grid.Column="0" SelectionChanged="SoundExports_ListBox_SelectionChanged" ItemsSource="{Binding BindedExportList}" ItemContainerStyle="{StaticResource SoundExports_ListboxItemStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0">
-                                <StackPanel.Style>
-                                    <Style TargetType="{x:Type StackPanel}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ShouldHighlightAsChanged}" Value="true">
-                                                <Setter Property="Background" Value="Yellow"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </StackPanel.Style>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0">
+
                                 <fa:ImageAwesome  Grid.Column="7" Icon="{Binding Icon}" Spin="{Binding NeedsLoading}" SpinDuration="1.2" Width="18" Height="18" Margin="2,0,4,0"/>
                                 <StackPanel>
                                     <TextBlock Text="{Binding DisplayString}" VerticalAlignment="Center"/>

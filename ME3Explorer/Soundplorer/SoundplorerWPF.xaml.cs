@@ -1,5 +1,6 @@
 ﻿using ByteSizeLib;
 using FontAwesome.WPF;
+using KFreonLib.Debugging;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
@@ -12,7 +13,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -26,6 +29,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Xml.Linq;
 
 namespace ME3Explorer.Soundplorer
 {
@@ -697,17 +701,22 @@ namespace ME3Explorer.Soundplorer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ConvertToWwise_Clicked(object sender, RoutedEventArgs e)
+        private async void ConvertToWwise_Clicked(object sender, RoutedEventArgs e)
         {
+            if (Directory.Exists(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject")))
+            {
+                await TryDeleteDirectory(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject"));
+            }
+
             //Verify Wwise is installed with the correct version
             string wwisePath = Environment.GetEnvironmentVariable("WWiseRoot");
             if (wwisePath != null)
             {
-                string pathToExe = System.IO.Path.Combine(wwisePath, @"Authoring\x64\Release\bin\WwiseCLI.exe");
-                if (File.Exists(pathToExe))
+                wwisePath = System.IO.Path.Combine(wwisePath, @"Authoring\x64\Release\bin\WwiseCLI.exe");
+                if (File.Exists(wwisePath))
                 {
                     //check that it's a supported version...
-                    var versionInfo = FileVersionInfo.GetVersionInfo(pathToExe);
+                    var versionInfo = FileVersionInfo.GetVersionInfo(wwisePath);
                     string version = versionInfo.ProductVersion; // Will typically return "1.0.0" in your case
                     if (version != "2010.3.3.3773")
                     {
@@ -729,7 +738,7 @@ namespace ME3Explorer.Soundplorer
             }
 
             //Wwise installed and cli found
-            MessageBox.Show("OK");
+            //MessageBox.Show("OK");
 
 
             /* The process for converting is going to be pretty in depth but will make converting files much easier and faster.
@@ -748,6 +757,155 @@ namespace ME3Explorer.Soundplorer
              * 3. Generate a soundbank through the CLI, runnign our project and setting the cache dir to our own.
              * 4. Pull the files out of the cache and then discard the project.
              * */
+
+            //Folder chooser for .wavs
+            var dlg = new CommonOpenFileDialog("Select folder containing .wav files")
+            {
+                IsFolderPicker = true
+            };
+
+            if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
+            {
+                return;
+            }
+
+            string[] filesToConvert = Directory.GetFiles(dlg.FileName, "*.wav");
+            if (filesToConvert.Count() == 0)
+            {
+                MessageBox.Show("The selected folder does not contain any .wav files for converting.");
+                return;
+            }
+
+            //Extract the template project to temp
+            var assembly = Assembly.GetExecutingAssembly();
+            var stuff = assembly.GetManifestResourceNames();
+            var resourceName = "ME3Explorer.Soundplorer.WwiseTemplateProject.zip";
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            {
+                ZipArchive archive = new ZipArchive(stream);
+                archive.ExtractToDirectory(System.IO.Path.GetTempPath());
+            }
+
+            //XElement wwiseDocument = new XElement("WwiseDocument", new XAttribute("Type", "WorkUnit"), new XAttribute("ID", "{5EBAC175-501D-487D-9F9C-C635AB93A866}"), new XAttribute("SchemaVersion", 44.ToString()));
+            XElement externalSourcesList = new XElement("ExternalSourcesList", new XAttribute("SchemaVersion", 1.ToString()), new XAttribute("Root", dlg.FileName));
+
+            //Generate the default Actor-Mixer document with the data we need
+
+            //XElement wwiseDocument = new XElement("WwiseDocument", new XAttribute("Type", "WorkUnit"), new XAttribute("ID", "{5EBAC175-501D-487D-9F9C-C635AB93A866}"), new XAttribute("SchemaVersion", 44.ToString()));
+            //XElement audioObjects = new XElement("AudioObjects");
+            //wwiseDocument.Add(audioObjects);
+
+            foreach (string file in filesToConvert)
+            {
+                XElement source = new XElement("Source", new XAttribute("Path", System.IO.Path.GetFileName(file)), new XAttribute("Conversion", "Vorbis"));
+                externalSourcesList.Add(source);
+
+                /*string guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
+                XElement sound = new XElement("Sound", new XAttribute("Name", System.IO.Path.GetFileNameWithoutExtension(file)), new XAttribute("Type", "SoundFX"), new XAttribute("ID", guid));
+                audioObjects.Add(sound);
+
+                XElement childrenList = new XElement("ChildrenList");
+                sound.Add(childrenList);
+
+                guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
+                XElement audioFileSource = new XElement("AudioFileSource", new XAttribute("Name", System.IO.Path.GetFileNameWithoutExtension(file)), new XAttribute("ID", guid));
+                childrenList.Add(audioFileSource);
+
+                audioFileSource.Add(new XElement("Language", "SFX"));
+                audioFileSource.Add(new XElement("AudioFile", System.IO.Path.GetFileName(file)));
+
+                //Bus Routing
+                //			<BusRouting Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" />
+
+                XElement busRouting = new XElement("BusRouting", new XAttribute("Name", "Master Audio Bus"), new XAttribute("ID", "{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}"));
+                sound.Add(busRouting);
+
+                //Default conversion settings GUID for templateproject: {6D1B890C-9826-4384-BF07-C15223E9FB56}
+                XElement conversionInfo = new XElement("ConversionInfo");
+                sound.Add(conversionInfo);
+
+                XElement conversionRef = new XElement("ConversionRef", new XAttribute("Name", "Default Conversion Settings"), new XAttribute("ID", "{6D1B890C-9826-4384-BF07-C15223E9FB56}"));
+                conversionInfo.Add(conversionRef);
+
+                XElement activeSourceList = new XElement("ActiveSourceList");
+                sound.Add(activeSourceList);
+
+                XElement activeSource = new XElement("ActiveSource", new XAttribute("Name", System.IO.Path.GetFileName(file)), new XAttribute("ID", guid), new XAttribute("Platform", "Linked"));
+                activeSourceList.Add(activeSource);*/
+            }
+
+            //Write ExternalSources.wsources
+            string wsourcesFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject", "ExternalSources.wsources");
+
+            File.WriteAllText(wsourcesFile, externalSourcesList.ToString());
+            Debug.WriteLine(externalSourcesList.ToString());
+
+
+            //Run Conversion
+            DebugOutput.StartDebugger("Wwise Wav to Ogg Converter");
+            Process process = new Process();
+            process.StartInfo.FileName = wwisePath;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.OutputDataReceived += (s, eventArgs) => { Debug.WriteLine(eventArgs.Data); DebugOutput.PrintLn(eventArgs.Data); };
+            process.ErrorDataReceived += (s, eventArgs) => { Debug.WriteLine(eventArgs.Data); DebugOutput.PrintLn(eventArgs.Data); };
+
+            string projFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject", "TemplateProject.wproj");
+            process.StartInfo.Arguments = $"\"{projFile}\" -ConvertExternalSources Windows";
+
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
+            process.Start();
+            process.BeginOutputReadLine();
+            process.WaitForExit();
+            process.Close();
+
+            //Files generates
+            string outputDirectory = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject", "OutputFiles");
+            string copyToDirectory = System.IO.Path.Combine(dlg.FileName, "Converted");
+            Directory.CreateDirectory(copyToDirectory);
+            foreach (string file in filesToConvert)
+            {
+                string basename = System.IO.Path.GetFileNameWithoutExtension(file);
+                File.Copy(System.IO.Path.Combine(outputDirectory, basename + ".ogg"), System.IO.Path.Combine(copyToDirectory, basename + ".ogg"), true);
+            }
+            var deleteResult = await TryDeleteDirectory(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject"));
+            Debug.WriteLine("Deleted templatedproject: " + deleteResult);
+            MessageBox.Show("Files have been converted and placed into the Converted subdirectory.");
+        }
+
+        public static async Task<bool> TryDeleteDirectory(string directoryPath, int maxRetries = 10, int millisecondsDelay = 30)
+        {
+            if (directoryPath == null)
+                throw new ArgumentNullException(directoryPath);
+            if (maxRetries < 1)
+                throw new ArgumentOutOfRangeException(nameof(maxRetries));
+            if (millisecondsDelay < 1)
+                throw new ArgumentOutOfRangeException(nameof(millisecondsDelay));
+
+            for (int i = 0; i < maxRetries; ++i)
+            {
+                try
+                {
+                    if (Directory.Exists(directoryPath))
+                    {
+                        Directory.Delete(directoryPath, true);
+                    }
+
+                    return true;
+                }
+                catch (IOException)
+                {
+                    await Task.Delay(millisecondsDelay);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    await Task.Delay(millisecondsDelay);
+                }
+            }
+
+            return false;
         }
     }
 

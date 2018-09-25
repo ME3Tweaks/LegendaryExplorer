@@ -1339,6 +1339,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <EmbeddedResource Include="Soundplorer\WwiseTemplateProject.zip" />
     <Resource Include="Resources\Exo-Regular.ttf" />
     <Resource Include="Resources\Exo-SemiBold.ttf" />
     <Resource Include="Resources\TitilliumWeb-Light.ttf" />
