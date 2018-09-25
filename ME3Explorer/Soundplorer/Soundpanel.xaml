@@ -34,7 +34,7 @@
                     <TextBlock Text="{Binding}" Foreground="Gray"/>
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type local:EmbeddedWEMFile}">
-                    <TextBlock Text="{Binding DisplayString}" Foreground="Red"/>
+                    <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue"/>
                 </DataTemplate>
             </ListBox.Resources>
         </ListBox>

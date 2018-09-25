@@ -67,7 +67,7 @@
                 </StatusBarItem>
                 <fa:ImageAwesome Icon="Spinner" Foreground="Gray" Spin="True" SpinDuration="3" Visibility="{Binding Path=DataContext.IsBusyTaskbar, RelativeSource={RelativeSource AncestorType=Window},Converter={StaticResource BoolToVisibilityConverter}}"/>
                 <StatusBarItem Padding="0">
-                    <TextBlock Name="StatusBar_LeftMostText" Text="Soundplorer WPF is currently in beta - not everything works right now!"/>
+                    <TextBlock Name="StatusBar_LeftMostText" Text="{Binding TaskbarText}"/>
                 </StatusBarItem>
             </StatusBar>
             <Grid Margin="5">
@@ -92,7 +92,7 @@
                                 <fa:ImageAwesome  Grid.Column="7" Icon="{Binding Icon}" Spin="{Binding NeedsLoading}" SpinDuration="1.2" Width="18" Height="18" Margin="2,0,4,0"/>
                                 <StackPanel>
                                     <TextBlock Text="{Binding DisplayString}" VerticalAlignment="Center"/>
-                                    <TextBlock Text="{Binding TimeString}" VerticalAlignment="Center" Foreground="Gray"/>
+                                    <TextBlock Text="{Binding SubText}" VerticalAlignment="Center" Foreground="Gray"/>
                                 </StackPanel>
                             </StackPanel>
 

@@ -97,11 +97,10 @@ namespace ME3Explorer
 
             }
             CurrentPackage = exportEntry.FileRef;*/
-
+            ExportInformationList.Add("#" + exportEntry.Index + " "+ exportEntry.ClassName + " : " + exportEntry.ObjectName);
             if (exportEntry.ClassName == "WwiseStream")
             {
                 WwiseStream w = new WwiseStream(exportEntry);
-                ExportInformationList.Add("#" + exportEntry.Index + " WwiseStream : " + exportEntry.ObjectName);
                 ExportInformationList.Add("Filename : " + w.FileName); ;
                 ExportInformationList.Add("Data size: " + w.DataSize + " bytes");
                 ExportInformationList.Add("Data offset: 0x" + w.DataOffset.ToString("X8"));
@@ -553,6 +552,7 @@ namespace ME3Explorer
 
         private void _audioPlayer_PlaybackPaused()
         {
+            UpdateSeekBarPos(null, null);
             _playbackState = PlaybackState.Paused;
             PlayPauseImageSource = "/soundplorer/play.png";
         }

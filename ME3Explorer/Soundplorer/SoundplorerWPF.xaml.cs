@@ -60,8 +60,17 @@ namespace ME3Explorer.Soundplorer
             get { return _busyText; }
             set { if (_busyText != value) { _busyText = value; OnPropertyChanged(); } }
         }
+
+        private string _taskbarText;
+        public string TaskbarText
+        {
+            get { return _taskbarText; }
+            set { if (_taskbarText != value) { _taskbarText = value; OnPropertyChanged(); } }
+        }
+
         public SoundplorerWPF()
         {
+            TaskbarText = "Open a file to view sound-related exports";
             InitializeComponent();
 
             LoadRecentList();
@@ -208,7 +217,7 @@ namespace ME3Explorer.Soundplorer
             try
             {
                 StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
-                StatusBar_LeftMostText.Text = "Loading " + System.IO.Path.GetFileName(fileName) + " (" + ByteSize.FromBytes(new System.IO.FileInfo(fileName).Length) + ")";
+                TaskbarText = "Loading " + System.IO.Path.GetFileName(fileName) + " (" + ByteSize.FromBytes(new System.IO.FileInfo(fileName).Length) + ")";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 LoadMEPackage(fileName);
                 StatusBar_GameID_Container.Visibility = Visibility.Visible;
@@ -234,7 +243,6 @@ namespace ME3Explorer.Soundplorer
                 }
 
                 LoadObjects();
-                StatusBar_LeftMostText.Text = System.IO.Path.GetFileName(fileName);
                 Title = "Soundplorer - " + System.IO.Path.GetFileName(fileName);
             }
             catch (Exception ex)
@@ -245,15 +253,19 @@ namespace ME3Explorer.Soundplorer
 
         private void GetStreamTimes(object sender, DoWorkEventArgs e)
         {
+            int i = 0;
             foreach (SoundplorerExport se in BindedExportsList)
             {
+                backgroundScanner.ReportProgress((int)((i * 100.0) / BindedExportsList.Count));
+
                 if (backgroundScanner.CancellationPending == true)
                 {
                     e.Cancel = true;
                     return;
                 }
                 //Debug.WriteLine("Getting time for " + se.Export.UIndex);
-                se.LoadTime();
+                se.LoadData();
+                i++;
             }
         }
 
@@ -265,14 +277,22 @@ namespace ME3Explorer.Soundplorer
             backgroundScanner = new BackgroundWorker();
             backgroundScanner.DoWork += GetStreamTimes;
             backgroundScanner.RunWorkerCompleted += GetStreamTimes_Completed;
+            backgroundScanner.WorkerReportsProgress = true;
+            backgroundScanner.ProgressChanged += GetStreamTimes_ReportProgress;
             backgroundScanner.WorkerSupportsCancellation = true;
             backgroundScanner.RunWorkerAsync();
             IsBusyTaskbar = true;
             //string s = i.ToString("d6") + " : " + e.ClassName + " : \"" + e.ObjectName + "\"";
         }
 
+        private void GetStreamTimes_ReportProgress(object sender, ProgressChangedEventArgs e)
+        {
+            TaskbarText = "Parsing " + System.IO.Path.GetFileName(Pcc.FileName) + " (" + e.ProgressPercentage + "%)";
+        }
+
         private void GetStreamTimes_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
+            TaskbarText = System.IO.Path.GetFileName(Pcc.FileName);
             IsBusyTaskbar = false;
         }
 
@@ -422,7 +442,7 @@ namespace ME3Explorer.Soundplorer
         private void compactAFCBackgroundThreadCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             IsBusy = false;
-            IsBusyTaskbar = true;
+            IsBusyTaskbar = false;
         }
 
         private void CompactAFCBackgroundThread(object sender, DoWorkEventArgs e)
@@ -533,18 +553,17 @@ namespace ME3Explorer.Soundplorer
                                 });
                             }
                         }
-                        if (shouldSave)
+                    }
+                    if (shouldSave)
+                    {
+                        Application.Current.Dispatcher.Invoke(
+                        () =>
                         {
-                            Application.Current.Dispatcher.Invoke(
-                            () =>
-                            {
                                 // Must run on the UI thread or the tool interop will throw an exception
                                 // because we are on a background thread.
                                 pack.save();
-                            });
-                        }
+                        });
                     }
-
                 }
                 i++;
             }
@@ -718,7 +737,7 @@ namespace ME3Explorer.Soundplorer
         }
 
         private string _timeString;
-        public string TimeString
+        public string SubText
         {
             get { return _timeString; }
             set
@@ -749,26 +768,25 @@ namespace ME3Explorer.Soundplorer
             this.Export = export;
             if (Export.ClassName == "WwiseStream")
             {
-                TimeString = "Calculating";
-                NeedsLoading = true;
+                SubText = "Calculating stream length";
                 Icon = FontAwesomeIcon.Spinner;
             }
             else
             {
-                TimeString = "Soundbank";
+                SubText = "Calculating number of embedded WEMs";
                 Icon = FontAwesomeIcon.University;
-                NeedsLoading = false;
             }
+            NeedsLoading = true;
             UpdateDisplay();
         }
 
         private void UpdateDisplay()
         {
             int paddingSize = Export.FileRef.ExportCount.ToString().Length;
-            DisplayString = Export.UIndex.ToString("d" + paddingSize) + " : " + Export.ObjectName;
+            DisplayString = Export.UIndex.ToString("d" + paddingSize) + ": " + Export.ObjectName;
         }
 
-        public void LoadTime()
+        public void LoadData()
         {
             if (Export.ClassName == "WwiseStream")
             {
@@ -776,7 +794,7 @@ namespace ME3Explorer.Soundplorer
                 string afcPath = w.getPathToAFC();
                 if (afcPath == "")
                 {
-                    TimeString = "Could not find AFC";
+                    SubText = "Could not find AFC";
                 }
                 else
                 {
@@ -785,16 +803,25 @@ namespace ME3Explorer.Soundplorer
                     {
                         //here backslash must be present to tell that parser colon is
                         //not the part of format, it just a character that we want in output
-                        TimeString = time.Value.ToString(@"mm\:ss\:fff");
+                        SubText = time.Value.ToString(@"mm\:ss\:fff");
                     }
                     else
                     {
-                        TimeString = "Error getting length";
+                        SubText = "Error getting length";
                     }
                 }
                 NeedsLoading = false;
                 Icon = FontAwesomeIcon.VolumeUp;
             }
+            if (Export.ClassName == "WwiseBank")
+            {
+                WwiseBank wb = new WwiseBank(Export);
+                var embeddedWEMFiles = wb.GetWEMFilesMetadata();
+                SubText = embeddedWEMFiles.Count() + " embedded WEM" + (embeddedWEMFiles.Count() != 1 ? "s" : "");
+                NeedsLoading = false;
+                Icon = FontAwesomeIcon.University;
+            }
+
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
