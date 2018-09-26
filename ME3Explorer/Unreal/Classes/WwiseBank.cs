@@ -394,8 +394,8 @@ namespace ME3Explorer.Unreal.Classes
             }
 
             newBankBinaryStream.Position = 0;
-            byte[] datax = newBankBinaryStream.ToArray();
-            File.WriteAllBytes(@"C:\users\public\test.bnk", datax);
+            //byte[] datax = newBankBinaryStream.ToArray();
+            //File.WriteAllBytes(@"C:\users\public\test.bnk", datax);
             MemoryStream newExportData = new MemoryStream();
             newExportData.Write(export.Data, 0, BinaryOffset); //all but binary data.
             newBankBinaryStream.CopyTo(newExportData);
