@@ -110,6 +110,11 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
+        /// <summary>
+        /// This method is deprecated and will be removed eventually
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="pathtoafc"></param>
         public void ImportFromFile(string path, string pathtoafc = "")
         {
             if (FileName == "")
@@ -143,16 +148,12 @@ namespace ME3Explorer.Unreal.Classes
         public Stream GetPCMStream(string path)
         {
             return CreateWaveStream(path);
-            string wavPath = CreateWave(path);
-            if (wavPath != null && File.Exists(wavPath))
-            {
-                byte[] pcmBytes = File.ReadAllBytes(wavPath);
-                File.Delete(wavPath);
-                return new MemoryStream(pcmBytes);
-            }
-            return null;
         }
 
+        /// <summary>
+        /// This method is deprecated.
+        /// </summary>
+        /// <param name="afcPath"></param>
         public void Play(string afcPath = "")
         {
             if (FileName == "")
@@ -497,7 +498,7 @@ namespace ME3Explorer.Unreal.Classes
         /// </summary>
         /// <param name="memory">Stream containing wwiseogg</param>
         /// <returns>ME3 AFC ready stream, at position 0</returns>
-        private MemoryStream ConvertWwiseOggToME3Ogg(Stream memory)
+        public static MemoryStream ConvertWwiseOggToME3Ogg(Stream memory)
         {
             memory.Position = 0;
             MemoryStream convertedStream = new MemoryStream();
@@ -573,26 +574,6 @@ namespace ME3Explorer.Unreal.Classes
                 memory[ValueOffset + i + 4] = buff[i];
             DataSize = newWavSize;
             DataOffset = newWavDataOffset;
-        }
-
-        /// <summary>
-        /// Not gonna lie, I have no idea what this does, but I also didn't write it.
-        /// - Mgamerz
-        /// </summary>
-        /// <param name="nw"></param>
-        /// <param name="old"></param>
-        /// <returns></returns>
-        private byte[] ModifyHeader(byte[] nw, byte[] old)
-        {
-            MemoryStream m = new MemoryStream();
-            m.Write(nw, 0, 8);
-            m.Write(old, 8, 14);
-            m.Write(nw, 22, 10);
-            m.Write(old, 32, 8);
-            m.Write(nw, 40, 4);
-            int len = nw.Length - 52;
-            m.Write(nw, 52, len);
-            return m.ToArray();
         }
     }
 }

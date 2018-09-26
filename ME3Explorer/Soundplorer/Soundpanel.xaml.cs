@@ -39,6 +39,7 @@ namespace ME3Explorer
     {
         new MEGame[] SupportedGames = new MEGame[] { MEGame.ME2, MEGame.ME3 };
         public BindingList<object> ExportInformationList { get; set; }
+        private List<EmbeddedWEMFile> AllWems = new List<EmbeddedWEMFile>(); //used only for rebuilding soundbank
         WwiseStream w;
         public string afcPath = "";
         DispatcherTimer seekbarUpdateTimer = new DispatcherTimer();
@@ -63,7 +64,7 @@ namespace ME3Explorer
         public override void LoadExport(IExportEntry exportEntry)
         {
             ExportInformationList.Clear();
-
+            AllWems.Clear();
             //Check if we need to first gather wwiseevents for wem IDing
             //Uncomment when HIRC stuff is implemented, if ever...
             /*if (exportEntry.FileRef != CurrentPackage)
@@ -114,7 +115,7 @@ namespace ME3Explorer
             {
                 WwiseBank wb = new WwiseBank(exportEntry);
                 var embeddedWEMFiles = wb.GetWEMFilesMetadata();
-                var data = wb.GetDataBlock();
+                var data = wb.GetChunk("DATA");
                 int i = 0;
                 if (embeddedWEMFiles.Count > 0)
                 {
@@ -138,15 +139,16 @@ namespace ME3Explorer
                                 wemName = info.Item1;
                             }
                         }*/
+                        EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, i + ": " + wemName, exportEntry.FileRef.Game, singleWemMetadata.Item1);
                         if (wemHeader == "RIFF")
                         {
-                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, i + ": " + wemName, CurrentLoadedExport.FileRef.Game, singleWemMetadata.Item1);
                             ExportInformationList.Add(wem);
                         }
                         else
                         {
                             ExportInformationList.Add(i + ": " + wemName + " - No RIFF header");
                         }
+                        AllWems.Add(wem);
                         i++;
                     }
                 }
@@ -341,14 +343,96 @@ namespace ME3Explorer
             }
             if (CurrentLoadedExport.ClassName == "WwiseBank")
             {
-                return false; //maybe someday...
+                object currentWEMItem = ExportInfoListBox.SelectedItem;
+                bool result = currentWEMItem != null && currentWEMItem is EmbeddedWEMFile && CurrentLoadedExport.FileRef.Game == MEGame.ME3;
+                Debug.WriteLine("Result " + result);
+                return result;
             }
             return false;
         }
 
         private void ReplaceAudio(object obj)
         {
-            ReplaceAudioFromWave();
+            if (CurrentLoadedExport == null) return;
+            if (CurrentLoadedExport.ClassName == "WwiseStream")
+            {
+                ReplaceAudioFromWave();
+            }
+            if (CurrentLoadedExport.ClassName == "WwiseBank")
+            {
+                ReplaceWEMAudioFromWave();
+            }
+        }
+
+        private async void ReplaceWEMAudioFromWave(string sourceFile = null)
+        {
+            object currentWEMItem = ExportInfoListBox.SelectedItem;
+            if (currentWEMItem is EmbeddedWEMFile && CurrentLoadedExport.FileRef.Game == MEGame.ME3)
+            {
+                EmbeddedWEMFile wemToReplace = (EmbeddedWEMFile)currentWEMItem;
+                string wwisePath = GetWwiseCLIPath(false);
+                if (wwisePath == null) return;
+                if (sourceFile == null)
+                {
+                    OpenFileDialog d = new OpenFileDialog();
+                    d.Filter = "Wave PCM|*.wav";
+                    bool? res = d.ShowDialog();
+                    if (res.HasValue && res.Value)
+                    {
+                        sourceFile = d.FileName;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+
+                //Convert and rpelace
+                ReplaceWEMAudioFromWwiseOgg(await RunWwiseConversion(wwisePath, sourceFile), wemToReplace);
+            }
+        }
+
+        /// <summary>
+        /// Rewrites the soundbank export with new data from the ogg.
+        /// </summary>
+        /// <param name="oggPath"></param>
+        private void ReplaceWEMAudioFromWwiseOgg(string oggPath, EmbeddedWEMFile wem)
+        {
+            WwiseBank w = new WwiseBank(CurrentLoadedExport);
+            if (oggPath == null)
+            {
+                OpenFileDialog d = new OpenFileDialog();
+                d.Filter = "Wwise Encoded Ogg|*.ogg";
+                bool? res = d.ShowDialog();
+                if (res.HasValue && res.Value)
+                {
+                    oggPath = d.FileName;
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            MemoryStream convertedStream = null;
+            using (var fileStream = new FileStream(oggPath, FileMode.Open))
+            {
+                convertedStream = WwiseStream.ConvertWwiseOggToME3Ogg(fileStream);
+            }
+
+            //Update the EmbeddedWEMFile. As this is an object it will be updated in the references.
+            if (wem.HasBeenFixed)
+            {
+                wem.OriginalWemData = convertedStream.ToArray();
+            }
+            else
+            {
+                wem.WemData = convertedStream.ToArray();
+            }
+
+            w.UpdateDataChunk(AllWems); //updates this export's data.
+            File.Delete(oggPath);
+            MessageBox.Show("Done");
         }
 
         public async void ReplaceAudioFromWave(string sourceFile = null, IExportEntry forcedExport = null)
@@ -578,7 +662,7 @@ namespace ME3Explorer
             {
                 EmbeddedWEMFile currentWEMItem = (EmbeddedWEMFile)ExportInfoListBox.SelectedItem;
                 SaveFileDialog d = new SaveFileDialog();
-                d.Filter = "Wave PCM File|*.wav";
+                d.Filter = "Wave PCM|*.wav";
                 d.FileName = CurrentLoadedExport.ObjectName + "_0x" + currentWEMItem.Id.ToString("X8") + ".wav";
                 if (d.ShowDialog().Value)
                 {
@@ -590,7 +674,6 @@ namespace ME3Explorer
                         ms.CopyTo(fs);
                         fs.Flush();
                     }
-                    MessageBox.Show("Done.");
                     MessageBox.Show("Done.");
                 }
             }
@@ -883,6 +966,8 @@ namespace ME3Explorer
 
             if (size != WemData.Length - 8)
             {
+                OriginalWemData = WemData.TypedClone(); //store copy of the original data in the event the user rewrites a WEM
+
                 //Some clips in ME3 are just the intro to the audio. The raw data is literally cutoff and the first ~.5 seconds are inserted into the soundbank.
                 //In order to attempt to even listen to these we have to fix the headers for size and subchunk2size.
                 size = WemData.Length - 8;
@@ -904,6 +989,7 @@ namespace ME3Explorer
         }
 
         public byte[] WemData { get; set; }
+        public byte[] OriginalWemData { get; set; }
         public string DisplayString { get; set; }
     }
 

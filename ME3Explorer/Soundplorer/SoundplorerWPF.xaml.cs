@@ -415,7 +415,7 @@ namespace ME3Explorer.Soundplorer
                         location = dlg.FileName;
                     }
 
-                    var data = wb.GetDataBlock();
+                    var data = wb.GetChunk("DATA");
                     if (embeddedWEMFiles.Count > 0)
                     {
                         foreach (var singleWemMetadata in embeddedWEMFiles)

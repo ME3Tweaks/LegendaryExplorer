@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ME3Explorer.Packages;
+using System.Diagnostics;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -43,7 +44,8 @@ namespace ME3Explorer.Unreal.Classes
             while (pos < memory.Length)
             {
                 int start = pos;
-                int size = BitConverter.ToInt32(memory, start + 4) + 8;
+                Debug.WriteLine("Reading chunk: " + GetID(memory, start));
+                int size = BitConverter.ToInt32(memory, start + 4) + 8; //size of chunk is at +4, we add 8 as it includes header and size
                 byte[] buff = new byte[size];
                 Buffer.BlockCopy(memory, start, buff, 0, size);
                 //                for (int i = 0; i < size; i++)
@@ -130,15 +132,18 @@ namespace ME3Explorer.Unreal.Classes
             return res;
         }
 
-        internal byte[] GetDataBlock()
+        /// <summary>
+        /// Gets a chunk by name.
+        /// </summary>
+        /// <param name="name">4 character chunk header (BKHD, DATA, DIDX, HIRC, etc.</param>
+        /// <returns>byte[] of this chunk, or null if not found</returns>
+        internal byte[] GetChunk(string name)
         {
-
             foreach (byte[] buff in Chunks)
             {
-                switch (GetID(buff))
+                if (GetID(buff) == name)
                 {
-                    case "DATA":
-                        return buff;
+                    return buff;
                 }
             }
             return null;
@@ -276,9 +281,9 @@ namespace ME3Explorer.Unreal.Classes
             return true;
         }
 
-        public string GetID(byte[] buff)
+        public string GetID(byte[] buff, int offset = 0)
         {
-            return "" + (char)buff[0] + (char)buff[1] + (char)buff[2] + (char)buff[3];
+            return "" + (char)buff[offset] + (char)buff[offset + 1] + (char)buff[offset + 2] + (char)buff[offset + 3];
         }
 
         public void CloneHIRCObject(int n)
@@ -336,6 +341,65 @@ namespace ME3Explorer.Unreal.Classes
             res.Seek(0x4, 0);
             res.Write(BitConverter.GetBytes(size), 0, 4);
             return res.ToArray();
+        }
+
+        /// <summary>
+        /// Replaces a WEM file with another. Updates the loaded export's data.
+        /// </summary>
+        public void UpdateDataChunk(List<EmbeddedWEMFile> wemFiles)
+        {
+            MemoryStream newBankBinaryStream = new MemoryStream();
+            //Write Bank Header Chunk
+            byte[] header = GetChunk("BKHD");
+            newBankBinaryStream.Write(header, 0, header.Length);
+
+            if (wemFiles.Count > 0)
+            {
+                //DIDX Chunk
+                MemoryStream didxBlock = new MemoryStream();
+                didxBlock.Write(Encoding.ASCII.GetBytes("DIDX"), 0, 4);
+                didxBlock.Write(BitConverter.GetBytes(wemFiles.Count * 12), 0, 4); //12 bytes per entry
+
+                //DATA Chunk
+                MemoryStream dataBlock = new MemoryStream();
+                dataBlock.Write(Encoding.ASCII.GetBytes("DATA"), 0, 4);
+                dataBlock.Write(BitConverter.GetBytes(0), 0, 4); //we will seek back here and write this after
+
+                foreach (EmbeddedWEMFile wem in wemFiles)
+                {
+                    int offset = (int)dataBlock.Position - 4; //remove DATA
+                    byte[] dataToWrite = wem.HasBeenFixed ? wem.OriginalWemData : wem.WemData;
+                    didxBlock.Write(BitConverter.GetBytes(wem.Id), 0, 4); //Write ID
+                    didxBlock.Write(BitConverter.GetBytes(offset), 0, 4); //Write Offset
+                    didxBlock.Write(BitConverter.GetBytes(dataToWrite.Length), 0, 4); //Write Size
+
+                    dataBlock.Write(dataToWrite, 0, dataToWrite.Length);
+                }
+                int dataSize = (int)dataBlock.Position - 8; //header, size
+                dataBlock.Position = 4;
+                dataBlock.Write(BitConverter.GetBytes(dataSize), 0, 4);
+
+                didxBlock.Position = 0;
+                dataBlock.Position = 0;
+
+                didxBlock.CopyTo(newBankBinaryStream);
+                dataBlock.CopyTo(newBankBinaryStream);
+            }
+
+            //Write the remaining chunks.
+            List<byte[]> remainingChunks = Chunks.Where(x => GetID(x) != "BKHD" && GetID(x) != "DIDX" && GetID(x) != "DATA").ToList();
+            foreach (byte[] chunk in remainingChunks)
+            {
+                newBankBinaryStream.Write(chunk, 0, chunk.Length);
+            }
+
+            newBankBinaryStream.Position = 0;
+            byte[] datax = newBankBinaryStream.ToArray();
+            File.WriteAllBytes(@"C:\users\public\test.bnk", datax);
+            MemoryStream newExportData = new MemoryStream();
+            newExportData.Write(export.Data, 0, BinaryOffset); //all but binary data.
+            newBankBinaryStream.CopyTo(newExportData);
+            export.Data = newExportData.ToArray();
         }
     }
 }
