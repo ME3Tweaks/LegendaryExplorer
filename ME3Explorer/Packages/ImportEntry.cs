@@ -42,7 +42,7 @@ namespace ME3Explorer.Packages
                 }
             }
         }
-        
+
         public int idxPackageFile { get { return BitConverter.ToInt32(Header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 0, sizeof(int)); HeaderChanged = true; } }
         //int PackageNameNumber
         public int idxClassName { get { return BitConverter.ToInt32(Header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 8, sizeof(int)); HeaderChanged = true; } }
@@ -114,6 +114,21 @@ namespace ME3Explorer.Packages
                 headerChanged = value;
                 if (value)
                 {
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+
+        private bool _entryHasPendingChanges = false;
+        public bool EntryHasPendingChanges
+        {
+            get { return _entryHasPendingChanges; }
+            set
+            {
+                if (value != _entryHasPendingChanges)
+                {
+                    _entryHasPendingChanges = value;
                     OnPropertyChanged();
                 }
             }

@@ -1448,7 +1448,7 @@ namespace ME3Explorer
                 {
                     //selectNode[0].ExpandParents();
                     selectNode[0].IsSelected = true;
-                    FocusTreeViewNode(selectNode[0]);
+                    FocusTreeViewNodeOld(selectNode[0]);
 
                     //selectNode[0].Focus(LeftSide_TreeView);
                 }
@@ -2002,7 +2002,7 @@ namespace ME3Explorer
                     {
                         //node.ExpandParents();
                         node.IsSelected = true;
-                        FocusTreeViewNode(node);
+                        FocusTreeViewNodeOld(node);
                         //                        node.Focus(LeftSide_TreeView);
                         break;
                     }
@@ -2108,12 +2108,12 @@ namespace ME3Explorer
                     {
                         continue;
                     }
-                    Debug.WriteLine(curIndex + " " + node.Entry.ObjectName);
+                    //Debug.WriteLine(curIndex + " " + node.Entry.ObjectName);
                     if (node.Entry.ObjectName.ToLower().Contains(searchTerm))
                     {
                         //node.ExpandParents();
                         node.IsSelected = true;
-                        FocusTreeViewNode(node);
+                        FocusTreeViewNodeOld(node);
                         //                        node.Focus(LeftSide_TreeView);
                         break;
                     }
@@ -2331,8 +2331,107 @@ namespace ME3Explorer
             if (node == null)
                 return;
 
-            var treeViewItem = GetTreeViewItem(LeftSide_TreeView, node);
+            var treeViewItem = GetTreeViewItemNEW(LeftSide_TreeView, node);
             treeViewItem?.BringIntoView();
+        }
+
+        public TreeViewItem GetTreeViewItemNEW(ItemsControl container, TreeViewEntry item)
+        {
+            if (container == null)
+                throw new ArgumentNullException(nameof(container));
+
+            if (item == null)
+                throw new ArgumentNullException(nameof(item));
+
+            if (container.DataContext == item)
+                return container as TreeViewItem;
+
+            //get parent tree
+            var stack = new Stack<TreeViewEntry>();
+            stack.Push(item);
+            var parent = item.Parent;
+            while (parent != null)
+            {
+                stack.Push(parent);
+                parent = parent.Parent;
+            }
+
+            var generator = LeftSide_TreeView.ItemContainerGenerator;
+            while (stack.Count > 0)
+            {
+                var dequeue = stack.Pop();
+                LeftSide_TreeView.UpdateLayout();
+                int indexInGenerator = generator.Items.IndexOf(dequeue);
+                Debug.WriteLine("Index in generator: " + indexInGenerator);
+
+                var treeViewItem = (TreeViewItem)generator.ContainerFromItem(dequeue);
+                if (stack.Count > 0)
+                {
+                    treeViewItem.IsExpanded = true;
+                }
+                else
+                {
+                    //if (treeViewItem == null)
+                    //{
+                    //    //This is being triggered when it shouldn't be
+                    //    Debugger.Break();
+                    //}
+                    //treeViewItem.IsSelected = true;
+                }
+                treeViewItem.BringIntoView();
+                generator = treeViewItem.ItemContainerGenerator;
+            }
+
+            //container starts as treeview
+            //if (container is TreeViewItem && !((TreeViewItem)container).IsExpanded)
+            //{
+            //    container.SetValue(TreeViewItem.IsExpandedProperty, true);
+            //}
+
+            container.ApplyTemplate();
+            if (container.Template.FindName("ItemsHost", container) is ItemsPresenter itemsPresenter)
+            {
+                itemsPresenter.ApplyTemplate();
+            }
+            else
+            {
+                itemsPresenter = FindVisualChild<ItemsPresenter>(container);
+                if (itemsPresenter == null)
+                {
+                    container.UpdateLayout();
+                    itemsPresenter = FindVisualChild<ItemsPresenter>(container);
+                }
+            }
+
+            var itemsHostPanel = (Panel)VisualTreeHelper.GetChild(itemsPresenter, 0);
+            var children = itemsHostPanel.Children;
+            var virtualizingPanel = itemsHostPanel as VirtualizingPanel;
+            for (int i = 0, count = container.Items.Count; i < count; i++)
+            {
+                /*TreeViewItem subContainer;
+                if (virtualizingPanel != null)
+                {
+                    // this is the part that requires .NET 4.5+
+                    virtualizingPanel.BringIndexIntoViewPublic(i);
+                    subContainer = (TreeViewItem)container.ItemContainerGenerator.ContainerFromIndex(i);
+                }
+                else
+                {
+                    subContainer = (TreeViewItem)container.ItemContainerGenerator.ContainerFromIndex(i);
+                    subContainer.BringIntoView();
+                }
+
+                if (subContainer != null)
+                {
+                    TreeViewItem resultContainer = GetTreeViewItem(subContainer, item);
+                    if (resultContainer != null)
+                        return resultContainer;
+
+                    subContainer.IsExpanded = false;
+                }*/
+                Debug.WriteLine(container.Items[i]);
+            }
+            return null;
         }
 
 
@@ -2541,18 +2640,10 @@ namespace ME3Explorer
         public TreeViewEntry(IEntry entry, string displayName = null)
         {
             Entry = entry;
-            if (entry != null)
-            {
-                entry.PropertyChanged += EntryPropertyChanging;
-            }
             DisplayName = displayName;
             Sublinks = new ObservableCollection<TreeViewEntry>();
         }
 
-        private void EntryPropertyChanging(object sender, PropertyChangedEventArgs e)
-        {
-            OnPropertyChanged("ShouldHighlightAsChanged");
-        }
 
         private string _displayName;
         public string DisplayName
@@ -2577,23 +2668,9 @@ namespace ME3Explorer
             }
         }
 
-        public bool ShouldHighlightAsChanged
+        public override string ToString()
         {
-            get
-            {
-                if (Entry != null)
-                {
-                    if (Entry.HeaderChanged)
-                    {
-                        return true;
-                    }
-                    else if (Entry is IExportEntry && (Entry as IExportEntry).DataChanged)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
+            return "TreeViewEntry " + DisplayName;
         }
     }
 }

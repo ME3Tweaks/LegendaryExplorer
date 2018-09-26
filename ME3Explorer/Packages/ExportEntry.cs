@@ -10,7 +10,7 @@ using UsefulThings.WPF;
 
 namespace ME3Explorer.Packages
 {
-    public abstract class ExportEntry : ViewModelBase
+    public abstract class ExportEntry : ViewModelBase, IEntry
     {
         public IMEPackage FileRef { get; protected set; }
 
@@ -39,6 +39,7 @@ namespace ME3Explorer.Packages
                 if (!isFirstLoad)
                 {
                     HeaderChanged = true;
+                    EntryHasPendingChanges = true;
                 }
             }
         }
@@ -126,11 +127,13 @@ namespace ME3Explorer.Packages
                 {
                     return; //if the data is the same don't write it and trigger the side effects
                 }
+
                 _data = value;
                 DataSize = value.Length;
                 DataChanged = true;
                 properties = null;
                 propsEndOffset = null;
+                EntryHasPendingChanges = true;
             }
         }
 
@@ -175,6 +178,20 @@ namespace ME3Explorer.Packages
                     {
                         OnPropertyChanged();
                     }
+                }
+            }
+        }
+
+        private bool _entryHasPendingChanges = false;
+        public bool EntryHasPendingChanges
+        {
+            get { return _entryHasPendingChanges; }
+            set
+            {
+                if (value != _entryHasPendingChanges)
+                {
+                    _entryHasPendingChanges = value;
+                    OnPropertyChanged();
                 }
             }
         }

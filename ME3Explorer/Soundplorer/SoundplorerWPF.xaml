@@ -42,7 +42,7 @@
             <Setter Property="ContextMenu" Value="{StaticResource MyMenu}"/>
             <Setter Property="Padding" Value="0"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding ShouldHighlightAsChanged}" Value="true">
+                <DataTrigger Binding="{Binding Path=Export.EntryHasPendingChanges}" Value="true">
                     <Setter Property="Background" Value="Yellow"/>
                 </DataTrigger>
             </Style.Triggers>

@@ -357,7 +357,6 @@ namespace ME3Explorer.Soundplorer
                 if (loadedIndexes.Contains(pc.index))
                 {
                     SoundplorerExport sp = BindedExportsList.First(x => x.Export.Index == pc.index);
-                    sp.OnPropertyChanged("ShouldHighlightAsChanged");
                     exportsRequiringReload.Add(sp);
                 }
             }
@@ -904,24 +903,6 @@ namespace ME3Explorer.Soundplorer
     public class SoundplorerExport : INotifyPropertyChanged
     {
         public IExportEntry Export { get; set; }
-        public bool ShouldHighlightAsChanged
-        {
-            get
-            {
-                if (Export != null)
-                {
-                    if (Export.HeaderChanged)
-                    {
-                        return true;
-                    }
-                    else if (Export.DataChanged)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

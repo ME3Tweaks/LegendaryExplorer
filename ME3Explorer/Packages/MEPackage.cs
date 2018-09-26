@@ -214,6 +214,7 @@ namespace ME3Explorer.Packages
             importEntry.Index = imports.Count;
             importEntry.PropertyChanged += importChanged;
             imports.Add(importEntry);
+            importEntry.EntryHasPendingChanges = true;
             ImportCount = imports.Count;
 
             updateTools(PackageChange.ImportAdd, ImportCount - 1);
@@ -307,10 +308,13 @@ namespace ME3Explorer.Packages
             foreach (var export in exports)
             {
                 export.DataChanged = false;
+                export.HeaderChanged = false;
+                export.EntryHasPendingChanges = false;
             }
             foreach (var import in imports)
             {
                 import.HeaderChanged = false;
+                import.EntryHasPendingChanges = false;
             }
             namesAdded = 0;
 
