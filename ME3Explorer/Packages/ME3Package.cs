@@ -89,14 +89,12 @@ namespace ME3Explorer.Packages
                 {
                     throw new FormatException("Not an ME3 Package!");
                 }
-                
                 if (IsCompressed)
                 {
                     inStream = CompressionHelper.DecompressME3(pccStream);
-
                     //read uncompressed header
                     inStream.Seek(0, SeekOrigin.Begin);
-                    inStream.Read(header, 0, header.Length);
+                    inStream.Read(header, 0, header.Length); //load uncompressed header
                 }
                 else
                 {
@@ -105,7 +103,6 @@ namespace ME3Explorer.Packages
                     pccStream.CopyTo(inStream);
                 }
             }
-            
             names = new List<string>();
             inStream.Seek(NameOffset, SeekOrigin.Begin);
             for (int i = 0; i < NameCount; i++)
@@ -114,7 +111,6 @@ namespace ME3Explorer.Packages
                 string str = inStream.ReadString(strLength * -2, true, Encoding.Unicode);
                 names.Add(str);
             }
-            
             imports = new List<ImportEntry>();
             inStream.Seek(ImportOffset, SeekOrigin.Begin);
             for (int i = 0; i < ImportCount; i++)
@@ -124,7 +120,6 @@ namespace ME3Explorer.Packages
                 imp.PropertyChanged += importChanged;
                 imports.Add(imp);
             }
-            
             exports = new List<IExportEntry>();
             inStream.Seek(ExportOffset, SeekOrigin.Begin);
             for (int i = 0; i < ExportCount; i++)

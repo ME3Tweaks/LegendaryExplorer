@@ -261,13 +261,12 @@ namespace ME3Explorer.Soundplorer
             int i = 0;
             foreach (SoundplorerExport se in ExportsToLoad)
             {
-                backgroundScanner.ReportProgress((int)((i * 100.0) / BindedExportsList.Count));
-
                 if (backgroundScanner.CancellationPending == true)
                 {
                     e.Cancel = true;
                     return;
                 }
+                backgroundScanner.ReportProgress((int)((i * 100.0) / BindedExportsList.Count));
                 //Debug.WriteLine("Getting time for " + se.Export.UIndex);
                 se.LoadData();
                 i++;
@@ -289,6 +288,10 @@ namespace ME3Explorer.Soundplorer
                     se.NeedsLoading = true;
                     se.Icon = FontAwesomeIcon.Spinner;
                 }
+            }
+            if (backgroundScanner != null && backgroundScanner.IsBusy)
+            {
+                backgroundScanner.CancelAsync(); //cancel current operation
             }
             backgroundScanner = new BackgroundWorker();
             backgroundScanner.DoWork += GetStreamTimes;

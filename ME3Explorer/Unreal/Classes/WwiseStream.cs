@@ -55,11 +55,20 @@ namespace ME3Explorer.Unreal.Classes
         public void Deserialize(IMEPackage pcc)
         {
             PropertyCollection properties = pcc.Exports[Index].GetProperties();
-            //int off = pcc.Exports[Index].propsEnd() + 8;
-            int off = memory.Length - 8;
-            ValueOffset = off;
-            DataSize = BitConverter.ToInt32(memory, off);
-            DataOffset = BitConverter.ToInt32(memory, off + 4);
+            if (pcc.Game == MEGame.ME3)
+            {
+                int off = pcc.Exports[Index].propsEnd() + 8;
+                ValueOffset = off;
+                DataSize = BitConverter.ToInt32(memory, off);
+                DataOffset = BitConverter.ToInt32(memory, off + 4);
+            }
+            else if (pcc.Game == MEGame.ME2)
+            {
+                int off = pcc.Exports[Index].propsEnd() + 0x28;
+                ValueOffset = off;
+                DataSize = BitConverter.ToInt32(memory, off);
+                DataOffset = BitConverter.ToInt32(memory, off + 4);
+            }
             NameProperty nameProp = properties.GetProp<NameProperty>("Filename");
             FileName = nameProp != null ? nameProp.Value : null;
             Id = properties.GetProp<IntProperty>("Id");

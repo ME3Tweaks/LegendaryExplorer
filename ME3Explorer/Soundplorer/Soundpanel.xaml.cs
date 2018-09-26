@@ -101,7 +101,7 @@ namespace ME3Explorer
             if (exportEntry.ClassName == "WwiseStream")
             {
                 WwiseStream w = new WwiseStream(exportEntry);
-                ExportInformationList.Add("Filename : " + w.FileName); ;
+                ExportInformationList.Add("Filename : " + (w.FileName ?? "Stored in this PCC"));
                 ExportInformationList.Add("Data size: " + w.DataSize + " bytes");
                 ExportInformationList.Add("Data offset: 0x" + w.DataOffset.ToString("X8"));
                 ExportInformationList.Add("ID: 0x" + w.Id.ToString("X8") + " = " + w.Id);
@@ -291,17 +291,11 @@ namespace ME3Explorer
             }
         }
 
-        public ICommand ExitApplicationCommand { get; set; }
-        public ICommand AddFileToPlaylistCommand { get; set; }
-        public ICommand AddFolderToPlaylistCommand { get; set; }
-        public ICommand SavePlaylistCommand { get; set; }
-        public ICommand LoadPlaylistCommand { get; set; }
+        public ICommand ReplaceAudioCommand { get; set; }
 
         public ICommand ExportAudioCommand { get; set; }
         public ICommand StartPlaybackCommand { get; set; }
         public ICommand StopPlaybackCommand { get; set; }
-        public ICommand ForwardToEndCommand { get; set; }
-        public ICommand ShuffleCommand { get; set; }
 
         public ICommand TrackControlMouseDownCommand { get; set; }
         public ICommand TrackControlMouseUpCommand { get; set; }
@@ -316,6 +310,7 @@ namespace ME3Explorer
         private void LoadCommands()
         {
             // Player commands
+            ReplaceAudioCommand = new RelayCommand(ReplaceAudio, CanReplaceAudio);
             ExportAudioCommand = new RelayCommand(ExportAudio, CanExportAudio);
             StartPlaybackCommand = new RelayCommand(StartPlayback, CanStartPlayback);
             StopPlaybackCommand = new RelayCommand(StopPlayback, CanStopPlayback);
@@ -326,6 +321,25 @@ namespace ME3Explorer
             TrackControlMouseDownCommand = new RelayCommand(TrackControlMouseDown, CanTrackControlMouseDown);
             TrackControlMouseUpCommand = new RelayCommand(TrackControlMouseUp, CanTrackControlMouseUp);
             VolumeControlValueChangedCommand = new RelayCommand(VolumeControlValueChanged, CanVolumeControlValueChanged);
+        }
+
+        private bool CanReplaceAudio(object obj)
+        {
+            if (CurrentLoadedExport == null) return false;
+            if (CurrentLoadedExport.ClassName == "WwiseStream")
+            {
+                return CurrentLoadedExport.FileRef.Game == MEGame.ME3;
+            }
+            if (CurrentLoadedExport.ClassName == "WwiseBank")
+            {
+                return false; //maybe someday...
+            }
+            return false;
+        }
+
+        private void ReplaceAudio(object obj)
+        {
+            ReplaceAudio();
         }
 
         // Player commands
@@ -599,11 +613,6 @@ namespace ME3Explorer
                     _audioPlayer.Play(NAudio.Wave.PlaybackState.Paused, CurrentVolume);
                 }
             }
-        }
-
-        private void ReplaceAudio_Clicked(object sender, RoutedEventArgs e)
-        {
-            ReplaceAudio();
         }
 
         /// <summary>
