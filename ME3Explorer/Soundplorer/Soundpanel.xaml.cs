@@ -137,7 +137,7 @@ namespace ME3Explorer
                         }*/
                         if (wemHeader == "RIFF")
                         {
-                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, i + ": " + wemName, singleWemMetadata.Item1);
+                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, i + ": " + wemName, CurrentLoadedExport.FileRef.Game, singleWemMetadata.Item1);
                             ExportInformationList.Add(wem);
                         }
                         else
@@ -187,17 +187,23 @@ namespace ME3Explorer
 
         }
 
-        private Stream getPCMStream()
+        /// <summary>
+        /// Gets a PCM stream of data (WAV) from either teh currently loaded export or selected WEM
+        /// </summary>
+        /// <param name="forcedWemFile">WEM that we will force to get a stream for</param>
+        /// <returns></returns>
+        public Stream getPCMStream(IExportEntry forcedWwiseStreamExport = null, EmbeddedWEMFile forcedWemFile = null)
         {
-            if (CurrentLoadedExport != null)
+            IExportEntry localCurrentExport = forcedWwiseStreamExport ?? CurrentLoadedExport;
+            if (localCurrentExport != null || forcedWemFile != null)
             {
-                if (CurrentLoadedExport.ClassName == "WwiseStream")
+                if (localCurrentExport != null && localCurrentExport.ClassName == "WwiseStream")
                 {
-                    w = new WwiseStream(CurrentLoadedExport);
+                    w = new WwiseStream(localCurrentExport);
                     string path;
                     if (w.IsPCCStored)
                     {
-                        path = CurrentLoadedExport.FileRef.FileName;
+                        path = localCurrentExport.FileRef.FileName;
                     }
                     else
                     {
@@ -208,9 +214,9 @@ namespace ME3Explorer
                         return w.CreateWaveStream(path);
                     }
                 }
-                if (CurrentLoadedExport.ClassName == "WwiseBank")
+                if (forcedWemFile != null || (localCurrentExport != null && localCurrentExport.ClassName == "WwiseBank"))
                 {
-                    object currentWEMItem = ExportInfoListBox.SelectedItem;
+                    object currentWEMItem = forcedWemFile ?? ExportInfoListBox.SelectedItem;
                     if (currentWEMItem == null || currentWEMItem is string)
                     {
                         return null; //nothing selected, or current wem is not playable
@@ -218,7 +224,7 @@ namespace ME3Explorer
                     var wemObject = (EmbeddedWEMFile)currentWEMItem;
                     string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
                     File.WriteAllBytes(basePath + ".dat", wemObject.WemData);
-                    return WwiseStream.ConvertRiffToWav(basePath + ".dat", CurrentLoadedExport.FileRef.Game == MEGame.ME2);
+                    return WwiseStream.ConvertRiffToWav(basePath + ".dat", wemObject.Game == MEGame.ME2);
                 }
             }
             return null;
@@ -650,11 +656,39 @@ namespace ME3Explorer
     public class EmbeddedWEMFile
     {
         public int Id;
-        public EmbeddedWEMFile(byte[] WemData, string DisplayString, int Id)
+        public bool HasBeenFixed;
+        public MEGame Game;
+        public EmbeddedWEMFile(byte[] WemData, string DisplayString, MEGame game, int Id = 0)
         {
             this.Id = Id;
+            this.Game = game;
             this.WemData = WemData;
             this.DisplayString = DisplayString;
+
+
+            int size = BitConverter.ToInt32(WemData, 4);
+            int subchunk2size = BitConverter.ToInt32(WemData, 0x5A);
+
+            if (size != WemData.Length - 8)
+            {
+                //Some clips in ME3 are just the intro to the audio. The raw data is literally cutoff and the first ~.5 seconds are inserted into the soundbank.
+                //In order to attempt to even listen to these we have to fix the headers for size and subchunk2size.
+                size = WemData.Length - 8;
+                HasBeenFixed = true;
+                this.DisplayString += " - Preloading";
+                int offset = 4;
+                WemData[offset] = (byte)size; // fourth byte
+                WemData[offset + 1] = (byte)(size >> 8); // third byte
+                WemData[offset + 2] = (byte)(size >> 16); // second byte
+                WemData[offset + 3] = (byte)(size >> 24); // last byte
+
+                offset = 0x5A; //Subchunk2 size offset
+                size = WemData.Length - 94; //size of data to follow
+                WemData[offset] = (byte)size; // fourth byte
+                WemData[offset + 1] = (byte)(size >> 8); // third byte
+                WemData[offset + 2] = (byte)(size >> 16); // second byte
+                WemData[offset + 3] = (byte)(size >> 24); // last byte
+            }
         }
 
         public byte[] WemData { get; set; }

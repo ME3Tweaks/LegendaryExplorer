@@ -220,6 +220,7 @@ namespace ME3Explorer.Soundplorer
         {
             try
             {
+                soundPanel.FreeAudioResources(); //stop playback
                 StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
                 TaskbarText = "Loading " + System.IO.Path.GetFileName(fileName) + " (" + ByteSize.FromBytes(new System.IO.FileInfo(fileName).Length) + ")";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
@@ -273,7 +274,7 @@ namespace ME3Explorer.Soundplorer
             }
         }
 
-        private void LoadObjects(List<SoundplorerExport> ExportsToReload = null)
+        private async void LoadObjects(List<SoundplorerExport> ExportsToReload = null)
         {
             if (ExportsToReload == null)
             {
@@ -292,7 +293,15 @@ namespace ME3Explorer.Soundplorer
             if (backgroundScanner != null && backgroundScanner.IsBusy)
             {
                 backgroundScanner.CancelAsync(); //cancel current operation
+                while (backgroundScanner.IsBusy)
+                {
+                    //I am sorry for this. I truely am. 
+                    //But it's the simplest code to get the job done while we wait for the thread to finish.
+                    await Task.Delay(200);
+                }
             }
+
+
             backgroundScanner = new BackgroundWorker();
             backgroundScanner.DoWork += GetStreamTimes;
             backgroundScanner.RunWorkerCompleted += GetStreamTimes_Completed;
@@ -379,24 +388,64 @@ namespace ME3Explorer.Soundplorer
             soundPanel.FreeAudioResources();
         }
 
-        private void ExtractWEMFromBank_Clicked(object sender, RoutedEventArgs e)
+        private void ExtractWEMAsWaveFromBank_Clicked(object sender, RoutedEventArgs e)
         {
             SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
+            ExtractBankToWav(spExport);
+        }
+
+        private void ExtractBankToWav(SoundplorerExport spExport, string location = null)
+        {
             if (spExport != null && spExport.Export.ClassName == "WwiseBank")
             {
                 WwiseBank wb = new WwiseBank(spExport.Export);
-
-                var dlg = new CommonOpenFileDialog("Select Output Folder")
+                var embeddedWEMFiles = wb.GetWEMFilesMetadata();
+                if (embeddedWEMFiles.Count > 0)
                 {
-                    IsFolderPicker = true
-                };
+                    if (location == null)
+                    {
+                        var dlg = new CommonOpenFileDialog("Select output folder")
+                        {
+                            IsFolderPicker = true
+                        };
 
-                if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
-                {
-                    return;
+                        if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
+                        {
+                            return;
+                        }
+                        location = dlg.FileName;
+                    }
+
+                    var data = wb.GetDataBlock();
+                    if (embeddedWEMFiles.Count > 0)
+                    {
+                        foreach (var singleWemMetadata in embeddedWEMFiles)
+                        {
+                            byte[] wemData = new byte[singleWemMetadata.Item3];
+                            //copy WEM data to buffer. Add 0x8 to skip DATA and DATASIZE header for this block.
+                            Buffer.BlockCopy(data, singleWemMetadata.Item2 + 0x8, wemData, 0, singleWemMetadata.Item3);
+                            //check for RIFF header as some don't seem to have it and are not playable.
+                            string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
+                            string wemName = spExport.Export.ObjectName + "_0x" + singleWemMetadata.Item1.ToString("X8");
+
+                            if (wemHeader == "RIFF")
+                            {
+                                EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, wemName, spExport.Export.FileRef.Game); //will correct truncated stuff
+                                Stream waveStream = soundPanel.getPCMStream(forcedWemFile: wem);
+                                if (waveStream != null && waveStream.Length > 0)
+                                {
+                                    string outputname = wemName + ".wav";
+                                    string outpath = System.IO.Path.Combine(location, outputname);
+                                    using (var fileStream = File.Create(outpath))
+                                    {
+                                        waveStream.Seek(0, SeekOrigin.Begin);
+                                        waveStream.CopyTo(fileStream);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-                wb.GetQuickScan(); //load data
-                wb.ExportAllWEMFiles(dlg.FileName);
             }
         }
 
@@ -600,28 +649,48 @@ namespace ME3Explorer.Soundplorer
 
         private void ExportWav_Clicked(object sender, RoutedEventArgs e)
         {
-            SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
+            ExportWave((SoundplorerExport)SoundExports_ListBox.SelectedItem);
+        }
+
+        private void ExportWave(SoundplorerExport spExport, string outputLocation = null)
+        {
             if (spExport != null && spExport.Export.ClassName == "WwiseStream")
             {
-                SaveFileDialog d = new SaveFileDialog();
-
-                d.Filter = "Wave PCM|*.wav";
-                d.FileName = spExport.Export.ObjectName + ".wav";
-                bool? res = d.ShowDialog();
-                if (res.HasValue && res.Value)
+                bool silent = outputLocation != null;
+                if (outputLocation == null)
                 {
-                    WwiseStream w = new WwiseStream(spExport.Export);
-                    Stream source = w.CreateWaveStream(w.getPathToAFC());
-                    if (source != null)
+                    SaveFileDialog d = new SaveFileDialog();
+
+                    d.Filter = "Wave PCM|*.wav";
+                    d.FileName = spExport.Export.ObjectName + ".wav";
+                    bool? res = d.ShowDialog();
+                    if (res.HasValue && res.Value)
                     {
-                        using (var fileStream = File.Create(d.FileName))
-                        {
-                            source.Seek(0, SeekOrigin.Begin);
-                            source.CopyTo(fileStream);
-                        }
-                        MessageBox.Show("Done.");
+                        outputLocation = d.FileName;
                     }
                     else
+                    {
+                        return;
+                    }
+                }
+
+                WwiseStream w = new WwiseStream(spExport.Export);
+                Stream source = w.CreateWaveStream(w.getPathToAFC());
+                if (source != null)
+                {
+                    using (var fileStream = File.Create(outputLocation))
+                    {
+                        source.Seek(0, SeekOrigin.Begin);
+                        source.CopyTo(fileStream);
+                    }
+                    if (!silent)
+                    {
+                        MessageBox.Show("Done.");
+                    }
+                }
+                else
+                {
+                    if (!silent)
                     {
                         MessageBox.Show("Error creating Wave file.\nThis might not be a supported codec or the AFC data may be incorrect.");
                     }
@@ -955,6 +1024,35 @@ namespace ME3Explorer.Soundplorer
 
             return false;
         }
+
+        private void ExtractAllAudio_Clicked(object sender, RoutedEventArgs e)
+        {
+            var dlg = new CommonOpenFileDialog("Select output folder")
+            {
+                IsFolderPicker = true
+            };
+
+            if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
+            {
+                return;
+            }
+            var location = dlg.FileName;
+
+            IsBusy = true;
+            foreach (SoundplorerExport sp in BindedExportsList)
+            {
+                if (sp.Export.ClassName == "WwiseStream")
+                {
+                    string outfile = System.IO.Path.Combine(location, sp.Export.ObjectName + ".wav");
+                    ExportWave(sp, outfile);
+                }
+                if (sp.Export.ClassName == "WwiseBank")
+                {
+                    ExtractBankToWav(sp, location);
+                }
+            }
+            IsBusy = false;
+        }
     }
 
 
@@ -1084,7 +1182,7 @@ namespace ME3Explorer.Soundplorer
                     }
                     else
                     {
-                        SubText = "Error getting length";
+                        SubText = "Error getting length, may be unsupported";
                     }
                 }
                 NeedsLoading = false;

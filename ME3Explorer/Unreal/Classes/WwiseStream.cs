@@ -400,6 +400,7 @@ namespace ME3Explorer.Unreal.Classes
             {
                 System.Diagnostics.Debug.WriteLine("Error: input file does not exist");
             }
+
             string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
             System.Diagnostics.ProcessStartInfo procStartInfo = null;
             if (!fullSetup)
@@ -421,9 +422,11 @@ namespace ME3Explorer.Unreal.Classes
             proc.Start();
 
             MemoryStream outputData = new MemoryStream();
+            MemoryStream outputErrorData = new MemoryStream();
             var outputTask = Task.Run(() =>
             {
                 proc.StandardOutput.BaseStream.CopyTo(outputData);
+                proc.StandardError.BaseStream.CopyTo(outputErrorData);
 
                 /*using (var output = new FileStream(outputFile, FileMode.Create))
                 {
@@ -434,6 +437,7 @@ namespace ME3Explorer.Unreal.Classes
 
             proc.WaitForExit();
             proc.Close();
+            //File.WriteAllBytes(System.IO.Path.Combine(loc, "testingoggerr.txt"), outputErrorData.ToArray());
 
             //Debug.WriteLine("Done");
             return outputData;

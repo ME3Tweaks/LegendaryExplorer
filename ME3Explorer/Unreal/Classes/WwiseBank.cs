@@ -260,7 +260,6 @@ namespace ME3Explorer.Unreal.Classes
 
         public bool ExportAllWEMFiles(string path)
         {
-
             if (data_data == null || didx_data == null || data_data.Length == 0 || didx_data.Length == 0)
                 return false;
             int len = didx_data.Length - 8;
