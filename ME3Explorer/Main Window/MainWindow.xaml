@@ -231,7 +231,7 @@
                             <ColumnDefinition Width="15"/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <local:ToolPanel x:Name="installModspanel" Grid.Column="0" Category="Install Mods" Width="385" ItemMargin="0,10,0,0" Columns="5"
+                        <local:ToolPanel x:Name="installModspanel" Grid.Column="0" Category="Develop Mods" Width="385" ItemMargin="0,10,0,0" Columns="5"
 							ItemControlMargin="-6.5,0" ClipToBounds="True" ToolMouseOver="ToolMouseOver"/>
                         <Border Grid.Column="2" Background="#7210192A">
                             <StackPanel Orientation="Vertical" Margin="6,0">

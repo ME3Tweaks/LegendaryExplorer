@@ -24,34 +24,6 @@ namespace ME3Explorer
     /// </summary>
     public partial class InitialSetup : Window
     {
-        Dictionary<string, string> prettyDLCNames = new Dictionary<string, string>
-        {
-            ["DLC_CON_APP01"] = "Alternate Appearance Pack 1",
-            ["DLC_EXP_Pack003"] = "Citadel",
-            ["DLC_EXP_Pack003_Base"] = "Citadel Base",
-            ["DLC_OnlinePassHidCE"] = "Collector's Edition Bonus Content",
-            ["DLC_CON_END"] = "Extended Cut",
-            ["DLC_HEN_PR"] = "From Ashes",
-            ["DLC_CON_GUN01"] = "Firefight Pack",
-            ["DLC_CON_GUN02"] = "Groundside Resistance Pack",
-            ["DLC_EXP_Pack001"] = "Leviathan",
-            ["DLC_CON_DH1"] = "Mass Effect: Genesis 2",
-            ["DLC_EXP_Pack002"] = "Omega",
-            ["DLC_CON_MP3"] = "Earth",
-            ["DLC_CON_MP2"] = "Rebellion",
-            ["DLC_CON_MP5"] = "Reckoning",
-            ["DLC_CON_MP1"] = "Resurgence",
-            ["DLC_CON_MP4"] = "Retaliation",
-            ["DLC_UPD_Patch01"] = "Patch01",
-            ["DLC_UPD_Patch02"] = "Patch02"
-        };
-
-        List<DLCPackage> sfarsToUnpack = new List<DLCPackage>();
-        double totalUncompressedSize;
-
-        bool step1Complete;
-        bool step2Complete;
-
         public InitialSetup()
         {
             InitializeComponent();
@@ -60,56 +32,15 @@ namespace ME3Explorer
             me3PathBox.Text = ME3Directory.gamePath;
         }
 
-        private void prepDLCUnpacking()
-        {
-            if (ME3Directory.gamePath != null)
-            {
-                var parts = ME3Directory.gamePath.Split(':');
-                DriveInfo info = new DriveInfo(parts[0]);
-                double availableSpace = info.AvailableFreeSpace;
-                availableSpaceRun.Text = UsefulThings.General.GetFileSizeAsString(availableSpace);
-                double requiredSpace = GetRequiredSize();
-                if (requiredSpace >= 0)
-                {
-                    requiredSpaceRun.Text = UsefulThings.General.GetFileSizeAsString(requiredSpace);
-                }
-                else
-                {
-                    requiredSpaceRun.Text = "?";
-                }
-                unpackOutput.AppendLine($"Packed DLC detected: {sfarsToUnpack.Count}");
-                if (sfarsToUnpack.Count > 0)
-                {
-                    if (availableSpace < requiredSpace)
-                    {
-                        requiredSpaceRun.Foreground = new SolidColorBrush(Color.FromRgb(0xb8, 0, 0));
-                        unpackDLCButton.Content = "Unpack Failed!";
-                        failSetup();
-                        step2Mask.Visibility = Visibility.Visible;
-                        step2TextBlock.Inlines.Add("--FAILED");
-                    }
-                }
-                else
-                {
-                    completeStep2();
-                }
-                unpackDLCButton.IsEnabled = true; 
-            }
-            else
-            {
-                completeStep2();
-            }
-        }
-
         private void completeStep2()
         {
-            step2Mask.Visibility = Visibility.Visible;
+            /*step2Mask.Visibility = Visibility.Visible;
             step2TextBlock.Inlines.Add("--COMPLETE");
             unpackOutput.AppendLine("DLC Unpacking Complete");
             unpackDLCButton.Content = "Unpacked";
             timeRemainingTextBlock.Text = "Complete";
             step2Complete = true;
-            checkIfFinished();
+            checkIfFinished();*/
         }
 
         private void failSetup()
@@ -117,48 +48,6 @@ namespace ME3Explorer
             doneButton.Background = new SolidColorBrush(Color.FromRgb(0xb8, 0, 0));
             doneButton.Content = "Setup failed! Exit by clicking the \"x\" in the upper right.";
             doneButton.IsEnabled = true;
-        }
-
-        private double GetRequiredSize()
-        {
-            var folders = Directory.EnumerateDirectories(ME3Directory.DLCPath);
-            var extracted = folders.Where(folder => Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).Any(file => file.EndsWith("pcconsoletoc.bin", StringComparison.OrdinalIgnoreCase)));
-            var unextracted = folders.Except(extracted);
-
-            double compressedSize = 0;
-            double uncompressedSize = 0;
-            double largestUncompressedSize = 0;
-            double temp;
-            foreach (var folder in unextracted)
-            {
-                if (folder.Contains("__metadata"))
-                    continue;
-
-                try
-                {
-                    FileInfo info = new FileInfo(Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).First(file => file.EndsWith(".sfar", StringComparison.OrdinalIgnoreCase)));
-                    compressedSize += info.Length;
-
-                    DLCPackage sfar = new DLCPackage(info.FullName);
-                    sfarsToUnpack.Add(sfar);
-
-                    temp = sfar.UncompressedSize;
-                    uncompressedSize += temp;
-                    if (temp > largestUncompressedSize)
-                    {
-                        largestUncompressedSize = temp;
-                    }
-                }
-                catch (Exception)
-                {
-                    return -1;
-                }
-            }
-            totalUncompressedSize = uncompressedSize;
-            //each SFAR is stripped of all its files after unpacking, so the maximum space needed on the drive is 
-            //the difference between the uncompressed size and compressed size of all SFARS, plus the compressed size
-            //of the largest SFAR. I'm using the uncompressed size instead as a fudge factor.
-            return (uncompressedSize - compressedSize) + largestUncompressedSize;
         }
 
         private void me1PathBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -176,7 +65,7 @@ namespace ME3Explorer
         private void me2PathBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (File.Exists(Path.Combine(me2PathBox.Text, "Binaries", "MassEffect2.exe")))
-            { 
+            {
                 me2PathBox.BorderBrush = Brushes.Lime;
             }
             else
@@ -194,6 +83,35 @@ namespace ME3Explorer
             else
             {
                 me3PathBox.BorderBrush = Brushes.Red;
+            }
+        }
+
+        private void ChangeGamePath(int gameNum)
+        {
+            string game = "Mass Effect" + (gameNum > 1 ? " " + gameNum : "");
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Title = $"Select {game} executable";
+            game = game.Replace(" ", "");
+            string filter = $"{game}.exe|{game}.exe";
+            ofd.Filter = filter;
+            if (ofd.ShowDialog() == true)
+            {
+                string result = Path.GetDirectoryName(Path.GetDirectoryName(ofd.FileName));
+
+                if (gameNum == 3)
+                    result = Path.GetDirectoryName(result); //up one more because of win32 directory.
+                switch (gameNum)
+                {
+                    case 1:
+                        me1PathBox.Text = result;
+                        break;
+                    case 2:
+                        me2PathBox.Text = result;
+                        break;
+                    case 3:
+                        me3PathBox.Text = result;
+                        break;
+                }
             }
         }
 
@@ -231,6 +149,7 @@ namespace ME3Explorer
             }
         }
 
+        /*
         private void pathsOKButton_Click(object sender, RoutedEventArgs e)
         {
             string me1Path = null;
@@ -265,129 +184,30 @@ namespace ME3Explorer
             step1TextBlock.Inlines.Add("--COMPLETE");
             step1Complete = true;
             prepDLCUnpacking();
-        }
-
-        private void checkIfFinished()
-        {
-            if (step1Complete && step2Complete)
-            {
-                doneButton.IsEnabled = true;
-                doneButton.Content = "Done! Click here to exit Setup and launch ME3Explorer.";
-            }
-        }
+        }*/
 
         private void DoneButton_Click(object sender, RoutedEventArgs e)
         {
+            ME1Directory.gamePath = me1PathBox.Text;
+            ME2Directory.gamePath = me2PathBox.Text;
+            ME3Directory.gamePath = me3PathBox.Text;
+            MEDirectories.SaveSettings(new List<string> { me1PathBox.Text, me2PathBox.Text, me3PathBox.Text });
             this.Close();
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void ChangeME1GamePath_Click(object sender, RoutedEventArgs e)
         {
-            if (!step1Complete || !step2Complete)
-            {
-                MessageBoxResult result = MessageBox.Show(
-                    "Setup is incomplete. Game paths may be incorrect and you will not be able to use the toolset to mod or browse textures for ME3. Cancel setup?",
-                    "", MessageBoxButton.YesNo);
-                if (result == MessageBoxResult.No)
-                {
-                    e.Cancel = true;
-                }
-            }
+            ChangeGamePath(1);
         }
 
-        private async void unpackDLCButton_Click(object sender, RoutedEventArgs e)
+        private void ChangeME2GamePath_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                unpackDLCButton.IsEnabled = false;
-                unpackDLCButton.Content = "Unpacking...";
-                string[] patt = { "pcc", "bik", "tfc", "afc", "cnd", "tlk", "bin", "dlc" };
-                string gamebase = ME3Directory.gamePath;
-                taskBarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
-                unpackProgress.Maximum = totalUncompressedSize;
-                taskBarItemInfo.ProgressValue = 0;
-                timeRemainingTextBlock.Text = "Estimating Time Remaining...";
+            ChangeGamePath(2);
+        }
 
-                unpackOutput.AppendLine("DLC unpacking initiated...");
-                double uncompressedSoFar = 0;
-                DateTime initial = DateTime.Now;
-                foreach (var sfar in sfarsToUnpack)
-                {
-                    string dlcName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(sfar.FileName)));
-                    if (prettyDLCNames.ContainsKey(dlcName))
-                    {
-                        dlcName = prettyDLCNames[dlcName];
-                    }
-                    unpackOutput.AppendLine($"Unpacking {dlcName}...");
-                    if (sfar.Files.Length > 1)
-                    {
-                        List<int> Indexes = new List<int>();
-                        for (int i = 0; i < sfar.Files.Length; i++)
-                        {
-                            string DLCpath = sfar.Files[i].FileName;
-                            for (int j = 0; j < patt.Length; j++)
-                            {
-                                if (DLCpath.EndsWith(patt[j], StringComparison.OrdinalIgnoreCase))
-                                {
-                                    string outpath = gamebase + DLCpath.Replace("/", "\\");
-                                    if (!Directory.Exists(Path.GetDirectoryName(outpath)))
-                                        Directory.CreateDirectory(Path.GetDirectoryName(outpath));
-
-                                    if (!File.Exists(outpath))
-                                    {
-                                        using (FileStream fs = new FileStream(outpath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
-                                        {
-                                            await sfar.DecompressEntryAsync(i, fs);
-                                        }
-                                    }
-                                    Indexes.Add(i);
-
-                                    uncompressedSoFar += sfar.Files[i].RealUncompressedSize;
-                                    unpackProgress.Value = uncompressedSoFar;
-                                    TimeSpan elapsed = DateTime.Now - initial;
-                                    double percentComplete = uncompressedSoFar / totalUncompressedSize * 100;
-                                    taskBarItemInfo.ProgressValue = percentComplete / 100.0;
-                                    double temp = elapsed.TotalSeconds / percentComplete;
-                                    TimeSpan timeRemaining = TimeSpan.FromSeconds((double.IsNaN(temp) ? 0 : temp) * (100 - percentComplete));
-                                    if (timeRemaining.TotalMilliseconds < 1)
-                                    {
-                                        timeRemainingTextBlock.Text = $"Estimating Time Remaining...";
-                                    }
-                                    else if (timeRemaining.TotalMinutes < 1)
-                                    {
-                                        timeRemainingTextBlock.Text = $"Estimated Time Remaining: < 1 minute";
-                                    }
-                                    else
-                                    {
-                                        timeRemainingTextBlock.Text = string.Format("Estimated Time Remaining: {0:%h}h {0:%m}m", timeRemaining);
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                        sfar.DeleteEntries(Indexes);
-                    }
-                    unpackOutput.AppendLine($"{dlcName} unpacked");
-                }
-                unpackOutput.AppendLine("Generating TOCs...");
-                await Task.Run(() =>
-                {
-                    AutoTOC.GenerateAllTOCs();
-                });
-                unpackOutput.AppendLine("ALL TOCs Generated!");
-                unpackOutput.AppendLine($"Elapsed time: {DateTime.Now - initial}");
-                unpackProgress.Value = unpackProgress.Maximum;
-                taskBarItemInfo.ProgressState = TaskbarItemProgressState.None;
-                completeStep2();
-            }
-            catch (Exception ex)
-            {
-                unpackDLCButton.Content = "Unpack Failed!";
-                failSetup();
-                step2Mask.Visibility = Visibility.Visible;
-                step2TextBlock.Inlines.Add("--FAILED");
-                MessageBox.Show("Unpacking Failed!\n" + ex.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+        private void ChangeME3GamePath_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeGamePath(3);
         }
     }
 }

@@ -76,24 +76,11 @@ namespace ME3Explorer
 
             Topmost = Properties.Settings.Default.AlwaysOnTop;
 
-            /*if (!Properties.Settings.Default.DisableDLCCheckOnStart)
+            //Check that at least one game path is set. If none are, show the initial dialog.
+            if (ME1Directory.gamePath == null && ME2Directory.gamePath == null && ME3Directory.gamePath == null)
             {
-                if (Properties.Settings.Default.FirstRun == true)
-                {
-                    (new InitialSetup()).ShowDialog();
-                    Properties.Settings.Default.FirstRun = false;
-                }
-                else if (ME3Directory.gamePath != null && File.Exists(Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "MassEffect3.exe")))
-                {
-                    var folders = Directory.EnumerateDirectories(ME3Directory.DLCPath).Where(x => !x.Contains("__metadata") && x.Contains("DLC_"));
-                    var extracted = folders.Where(folder => Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).Any(file => file.EndsWith("pcconsoletoc.bin", StringComparison.OrdinalIgnoreCase)));
-                    var unextracted = folders.Except(extracted);
-                    if (unextracted.Any())
-                    {
-                        (new InitialSetup()).ShowDialog();
-                    } 
-                }
-            }*/
+                (new InitialSetup()).ShowDialog();
+            }
         }
 
         private static void SystemParameters_StaticPropertyChanged(object sender, PropertyChangedEventArgs e)

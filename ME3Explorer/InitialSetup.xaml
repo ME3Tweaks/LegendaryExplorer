@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
         Title="ME3Explorer Initial Setup" Icon="Resources/meexp_favicon.ico" Background="#FFD8D8D8"
-        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Closing="Window_Closing" Width="616" Height="735">
+        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Width="616" Height="404">
     <Window.Resources>
         <Style x:Key="setupButton" TargetType="Button" BasedOn="{StaticResource BorderedButton}">
             <Setter Property="Background" Value="#FF808080"/>
@@ -35,26 +35,22 @@
         <StackPanel Orientation="Horizontal">
             <Image Width="249" Height="109" Source="Resources/me3exp_smallbanner_v1.png"/>
             <Grid Width="351" Height="109" Background="#FF1F283C">
-                <TextBlock Text="Welcome to ME3Explorer, the unofficial &quot;creation kit&quot; for the Mass Effect trilogy!" Margin="0" Foreground="#FFD8D8D8"
+                <TextBlock Text="Welcome to ME3Explorer ME3Tweaks Fork, the bleeding edge editor for the Mass Effect trilogy!" Margin="0" Foreground="#FFD8D8D8"
                            TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="18" FontFamily="{StaticResource Exo-SemiBold}" TextAlignment="Center"
                            Width="293" VerticalAlignment="Center"/>
             </Grid>
         </StackPanel>
         <Rectangle Height="4" Fill="#FFF3F3F3"/>
-        <Label Content="This wizard will guide you through the setup process for ME3Explorer." FontFamily="{StaticResource Exo-SemiBold}" 
-               Foreground="#FF080808" FontSize="18" HorizontalAlignment="Center" Height="35" VerticalContentAlignment="Center"/>
         <Grid>
             <StackPanel x:Name="step1Section">
                 <Label Height="32" Background="#FFBFBFBF">
                     <TextBlock x:Name="step1TextBlock" Foreground="#FF080808" FontSize="18" VerticalAlignment="Center" 
                                FontFamily="{StaticResource TitilliumWeb-SemiBold}" Margin="0,0,0,-1">
-                        Step 1.
-                        <Run Text=" Verify Game Paths " FontFamily="{StaticResource TitilliumWeb-Regular}"/>
+                        <Run Text=" Set Game Paths " FontFamily="{StaticResource TitilliumWeb-Regular}"/>
                     </TextBlock>
                 </Label>
                 <TextBlock TextWrapping="Wrap" FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="10,3,10,0" TextAlignment="Justify">
-                    The install path for each Mass Effect game on your PC is listed below. Click &quot;Paths Ok&quot;, if <LineBreak/>
-                    the paths are correct. If incorrect, click &quot;Change Paths&quot; &amp; navigate to the correct location(s).
+                    The install path for each Mass Effect game on your PC is listed below. If a listed path is wrong, click browse next to it to change it.
                 </TextBlock>
                 <Grid Margin="0,0,0,10">
                     <Grid.ColumnDefinitions>
@@ -76,116 +72,41 @@
                             </Style>
                         </StackPanel.Resources>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Mass Effect 1: "/>
-                            <TextBox x:Name="me1PathBox" TextChanged="me1PathBox_TextChanged"/>
+                            <TextBlock Text="Mass Effect 1: " VerticalAlignment="Center"/>
+                            <TextBox x:Name="me1PathBox" TextChanged="me1PathBox_TextChanged" VerticalContentAlignment="Center"/>
+                            <Button Style="{StaticResource setupButton}" Content="Browse" Margin="3,0,0,0" Click="ChangeME1GamePath_Click" VerticalAlignment="Top" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Mass Effect 2: "/>
-                            <TextBox x:Name="me2PathBox" TextChanged="me2PathBox_TextChanged"/>
+                            <TextBlock Text="Mass Effect 2: "  VerticalAlignment="Center"/>
+                            <TextBox x:Name="me2PathBox" TextChanged="me2PathBox_TextChanged" VerticalContentAlignment="Center"/>
+                            <Button Style="{StaticResource setupButton}" Content="Browse" Margin="3,0,0,0" Click="ChangeME2GamePath_Click" VerticalAlignment="Top" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Mass Effect 3: "/>
-                            <TextBox x:Name="me3PathBox" TextChanged="me3PathBox_TextChanged"/>
+                            <TextBlock Text="Mass Effect 3: " VerticalAlignment="Center"/>
+                            <TextBox x:Name="me3PathBox" TextChanged="me3PathBox_TextChanged" VerticalContentAlignment="Center"/>
+                            <Button Style="{StaticResource setupButton}" Content="Browse" Margin="3,0,0,0" Click="ChangeME3GamePath_Click" VerticalAlignment="Top" />
                         </StackPanel>
                     </StackPanel>
-                    <Grid Grid.Column="1" Margin="0,8,0,0">
-                        <Button Style="{StaticResource setupButton}" Content="Change Paths" Margin="11,5,11,0" Click="changePathsButton_Click" VerticalAlignment="Top" />
-                        <Button Style="{StaticResource setupButton}" Content="Paths OK" Margin="11,0,11,5" Click="pathsOKButton_Click" VerticalAlignment="Bottom" />
-                    </Grid>
                 </Grid>
             </StackPanel>
             <Rectangle x:Name="step1Mask" Fill="#C4D8D8D8" Visibility="Collapsed"/>
         </Grid>
-        <Grid>
-            <StackPanel x:Name="step2Section">
-                <Label Height="32" Background="#FFBFBFBF">
-                    <TextBlock x:Name="step2TextBlock" Foreground="#FF080808" FontSize="18"
-                               FontFamily="{StaticResource TitilliumWeb-SemiBold}" VerticalAlignment="Center" Margin="0,0,0,-2">
-                        Step 2.
-                        <Run Text=" DLC Unpacking " FontFamily="{StaticResource TitilliumWeb-Regular}"/>
-                    </TextBlock>
-                </Label>
-                <Grid Margin="0,0,0,5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="255"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid Margin="10,8,10,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" TextWrapping="Wrap" FontSize="15" Foreground="#FF4D4D4D" Height="141" Width="325"
-                               Grid.ColumnSpan="2">
-                            To mod or view <Run FontFamily="{StaticResource TitilliumWeb-SemiBold}">Mass Effect 3</Run> textures,
-                            <Run TextDecorations="Underline">all</Run> DLC must be unpacked. Unpacking SFARs also makes it easier to browse their contents.
-                            This process may take up to an hour, and cannot be stopped once started. Space requirements for your system are specified below.
-                            When ready, click "Unpack DLC".
-                        </TextBlock>
-                        <StackPanel Grid.Row="1">
-                            <TextBlock FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="15" Foreground="#FF080808">
-                        Available Space: <Run x:Name="availableSpaceRun" FontFamily="/ME3Explorer;component/Resources/#Hack" Text=""/>
-                            </TextBlock>
-                            <TextBlock FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="15" Foreground="#FF080808">
-                        Required Space: <Run x:Name="requiredSpaceRun" FontFamily="/ME3Explorer;component/Resources/#Hack" Text=""/>
-                            </TextBlock>
-                        </StackPanel>
-                        <Button x:Name="unpackDLCButton" Style="{StaticResource setupButton}" Content="Unpack DLC" Grid.Row="1" Grid.Column="1"
-                                Click="unpackDLCButton_Click" IsEnabled="False" Width="140" Height="40" FontSize="17" HorizontalAlignment="Right" Margin="0"/>
-                    </Grid>
-                    <Grid Grid.Column="1" Margin="0,10,10,10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="20"/>
-                        </Grid.RowDefinitions>
-                        <RichTextBox x:Name="unpackOutput" Background="Black" BorderBrush="#FF8B8B8B" Foreground="Lime" IsUndoEnabled="True" IsTabStop="False"
-                                     FontFamily="/ME3Explorer;component/Resources/#Hack" Focusable="False" AllowDrop="False" IsReadOnly="True" 
-                                     ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Auto" Height="145" FontWeight="Thin" >
-                            <RichTextBox.Resources>
-                                <Style TargetType="{x:Type Paragraph}">
-                                    <Setter Property="Margin" Value="0"/>
-                                </Style>
-                            </RichTextBox.Resources>
-                        </RichTextBox>
-                        <ProgressBar x:Name="unpackProgress" Grid.Row="1" Background="White" BorderBrush="{x:Null}"/>
-                        <TextBlock x:Name="timeRemainingTextBlock" Grid.Row="2" FontFamily="{DynamicResource TitilliumWeb-Light}"/>
-                    </Grid>
-                </Grid>
-            </StackPanel>
-            <Rectangle x:Name="step2Mask" Fill="#C4D8D8D8" Visibility="Collapsed"/>
-        </Grid>
-        <StackPanel x:Name="step3Section">
-            <Label Height="32" Background="#FFBFBFBF">
-                <TextBlock Foreground="#FF080808" FontSize="18" VerticalAlignment="Center">
-                <Run Text="Step 3. " FontFamily="{StaticResource TitilliumWeb-SemiBold}"/>
-                <Run Text="ME3Explorer Wiki" FontFamily="{StaticResource TitilliumWeb-Regular}"/>
-                </TextBlock>
-            </Label>
-            <TextBlock TextWrapping="Wrap" FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="10,3,10,0" TextAlignment="Justify">
-                You are now finished setting up ME3Explorer! Close this dialog to open the main toolset window. For a brief overview of the toolset and more,
-                see the <Hyperlink NavigateUri="http://me3explorer.wikia.com/wiki/ME3Explorer_Wiki" Foreground="#FF182574" local:HyperlinkExtensions.IsExternal="True">ME3Explorer Wiki</Hyperlink> on Wikia.
-            </TextBlock>
-            <Button x:Name="doneButton" Content="ME3Explorer setup in progress..." Width="480" Height="45" IsEnabled="False" Click="DoneButton_Click"
+
+        <Button x:Name="doneButton" Content="Click here to continue" Width="480" Height="45" Click="DoneButton_Click"
                     Foreground="#FFD8D8D8" FontSize="18" Background="#FF1F283C" Margin="60,5" FontFamily="{StaticResource Exo-SemiBold}">
-                <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource setupButton}">
-                        <Style.Triggers>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsEnabled" Value="True"/>
-                                    <Condition Property="IsMouseOver" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Foreground" Value="#FFFDFDFD"/>
-                            </MultiTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
-        </StackPanel>
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource setupButton}">
+                    <Style.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsEnabled" Value="True"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Foreground" Value="#FFFDFDFD"/>
+                        </MultiTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
     </StackPanel>
 </Window>
