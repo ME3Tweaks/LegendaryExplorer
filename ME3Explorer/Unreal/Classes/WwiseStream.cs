@@ -178,7 +178,7 @@ namespace ME3Explorer.Unreal.Classes
             string path;
             if (IsPCCStored)
             {
-                path = export.FileRef.FileName;
+                path = export.FileRef.FileName; //we must load it decompressed.
             }
             else
             {
@@ -205,9 +205,9 @@ namespace ME3Explorer.Unreal.Classes
         public string getPathToAFC()
         {
             //Check if pcc-stored
-            if (export.FileRef.FileName == "")
+            if (FileName == null)
             {
-
+                return null; //it's pcc stored. we will return null for this case since we already coded for "".
             }
 
             //Look in currect directory first
@@ -277,7 +277,7 @@ namespace ME3Explorer.Unreal.Classes
         public Stream CreateWaveStream(string afcPath)
         {
             string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
-            if (ExtractRawFromStream(basePath + ".dat", getPathToAFC()))
+            if (ExtractRawFromStream(basePath + ".dat", afcPath))
             {
                 return ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
             }

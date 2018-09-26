@@ -416,19 +416,9 @@
                             <Label Content="Advanced Settings" FontSize="23" 
 								VerticalAlignment="Center" Background="#7F5692A2" Width="237" Height="46"/>
                         </StackPanel>
-                        <ScrollViewer Margin="15,20.6,0,0" Height="350" VerticalScrollBarVisibility="Hidden" Foreground="#FFFDFDFD" 
+                        <ScrollViewer Margin="15,0,0,0" Height="350" VerticalScrollBarVisibility="Hidden" Foreground="#FFFDFDFD" 
 							FontFamily="{StaticResource ResourceKey=TitilliumWeb-Regular}">
                             <StackPanel>
-                                <TextBlock Text="ME3Explorer Setup" FontSize="20"/>
-                                <Rectangle Height="2" Width="270" Fill="#A3FBFBFB"/>
-                                <TextBlock Text="InfoPanel Flyouts" FontSize="20" Margin="0,16,0,0"/>
-                                <Rectangle Height="2" Width="270" Fill="#A3FBFBFB"/>
-                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                                    <CheckBox x:Name="disableFlyoutsCheckBox" VerticalAlignment="Center" Margin="0,1,0,0" IsChecked="{Binding DisableFlyouts}"/>
-                                    <TextBlock Text="Disable tool descriptions" FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="18" Foreground="#FFF9F9F9" Margin="6,0,0,0"/>
-                                    <Image Height="16" Width="16" Source="../Resources/About_icon.ico" Cursor="Hand" ToolTipService.ShowDuration="30000"
-										ToolTip="Prevents display of infopanels containing tool descriptions. Appropriate for more advanced users." Margin="6,0,0,0"/>
-                                </StackPanel>
                                 <TextBlock Text="Always On Top" FontSize="20" Margin="0,16,0,0"/>
                                 <Rectangle Height="2" Width="270" Fill="#A3FBFBFB"/>
                                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
