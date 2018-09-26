@@ -224,7 +224,7 @@
                         </Grid>
                     </StackPanel>
                     <local:ToolPanel x:Name="favoritesPanel" Grid.Row="2" Category="Favorites" ItemMargin="0,15,0,0" Rows="2" Columns="7"
-						ItemControlMargin="-13,0" ClipToBounds="True"/>
+						ItemControlMargin="-13,0" ClipToBounds="True" ToolMouseOver="ToolMouseOver"/>
                     <Grid Grid.Row="4">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>

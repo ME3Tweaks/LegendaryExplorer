@@ -44,16 +44,6 @@ namespace ME3Explorer
         public static double dpiScaleX = 1;
         public static double dpiScaleY = 1;
 
-        public bool DisableFlyouts
-        {
-            get { return (bool)GetValue(DisableFlyoutsProperty); }
-            set { SetValue(DisableFlyoutsProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for DisableFlyouts.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty DisableFlyoutsProperty =
-            DependencyProperty.Register("DisableFlyouts", typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
-
         private static FieldInfo _menuDropAlignmentField;
 
         public MainWindow()
@@ -84,7 +74,6 @@ namespace ME3Explorer
             utilitiesPanel.setToolList(Tools.Items.Where(x => x.tags.Contains("utility")));
             createModsPanel.setToolList(Tools.Items.Where(x => x.tags.Contains("developer")));
 
-            DisableFlyouts = Properties.Settings.Default.DisableToolDescriptions;
             Topmost = Properties.Settings.Default.AlwaysOnTop;
 
             /*if (!Properties.Settings.Default.DisableDLCCheckOnStart)
@@ -292,7 +281,6 @@ namespace ME3Explorer
                 e.Cancel = true;
             }
             Properties.Settings.Default.DisableDLCCheckOnStart = true;// disableSetupCheckBox.IsChecked ?? false;
-            Properties.Settings.Default.DisableToolDescriptions = DisableFlyouts;
             Properties.Settings.Default.AlwaysOnTop = alwaysOnTopCheckBox.IsChecked ?? false;
         }
 
@@ -446,7 +434,7 @@ namespace ME3Explorer
         private void openToolInfo(Tool e)
         {
             toolInfoPanel.setTool(e);
-            if (!ToolInfoPanelOpen && !DisableFlyouts)
+            if (!ToolInfoPanelOpen)
             {
                 if (SearchOpen)
                 {
