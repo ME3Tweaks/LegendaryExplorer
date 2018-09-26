@@ -20,13 +20,11 @@ A clear and concise description of what you expected to happen.
 **Screenshots and files used to replicate this**
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari] and 
- - Version [e.g. 22]
-
 **Version information:**
 If you have using a development build that I have directly given instead of the Mod Manager or Github release, please post the signature date on the ME3Executable by going to Properties->Digitial Signatures. Otherwise, please post the full version number.
 
-**Additional context**
+**Stack trace**
+If you see an error dialog with a details or copy button, please post the details here. 
+
+**Other information**
 Add any other context about the problem here.
