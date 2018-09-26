@@ -249,9 +249,10 @@ namespace ME3Explorer
             {
                 if (tool.open != null)
                 {
+                    //for each word we've typed in
                     foreach (string word in words)
                     {
-                        if (tool.tags.FuzzyMatch(word) || tool.name.ToLower().Split(' ').FuzzyMatch(word))
+                        if (tool.tags.FuzzyMatch(word) || tool.name.ToLower().Contains(word) || tool.name.ToLower().Split(' ').FuzzyMatch(word))
                         {
                             results.Add(tool);
                             break;
@@ -667,7 +668,8 @@ namespace ME3Explorer
                 try
                 {
                     System.Windows.Clipboard.SetText(link);
-                } catch { }
+                }
+                catch { }
             }
         }
     }
