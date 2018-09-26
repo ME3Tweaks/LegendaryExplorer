@@ -5,7 +5,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,6 +21,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Xml.Linq;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using ME3Explorer.Soundplorer;
@@ -345,7 +348,210 @@ namespace ME3Explorer
 
         private void ReplaceAudio(object obj)
         {
-            ReplaceAudio();
+            ReplaceAudioFromWave();
+        }
+
+        public async void ReplaceAudioFromWave(string sourceFile = null, IExportEntry forcedExport = null)
+        {
+            string wwisePath = GetWwiseCLIPath(false);
+            if (wwisePath == null) return;
+            if (sourceFile == null)
+            {
+                OpenFileDialog d = new OpenFileDialog();
+                d.Filter = "Wave PCM|*.wav";
+                bool? res = d.ShowDialog();
+                if (res.HasValue && res.Value)
+                {
+                    sourceFile = d.FileName;
+                }
+                else
+                {
+                    return;
+                }
+            }
+            //Convert and rpelace
+            ReplaceAudioFromWwiseOgg(await RunWwiseConversion(wwisePath, sourceFile), forcedExport);
+        }
+
+        public async Task<string> RunWwiseConversion(string wwisePath, string fileOrFolderPath)
+        {
+            /* The process for converting is going to be pretty in depth but will make converting files much easier and faster.
+                         * 1. User chooses a folder of .wav (or this method is passed a .wav and we will return that)
+                         * 2. Conversion takes place
+                         * 
+                         * Program steps when conversion starts:
+                         * 1. Extract the Wwise TemplateProject as it is required for command line . This is extracted to the root of %Temp%
+                         * 2. Generate the external sources file that points to the folder and each item to convert within it
+                         * 3. Run the generate command
+                         * 4. Move files from OutputFiles directory in the project
+                         * 5. Delete the project
+                         * */
+
+
+
+            //Extract the template project to temp
+            var assembly = Assembly.GetExecutingAssembly();
+            var stuff = assembly.GetManifestResourceNames();
+            var resourceName = "ME3Explorer.Soundplorer.WwiseTemplateProject.zip";
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            {
+                ZipArchive archive = new ZipArchive(stream);
+                archive.ExtractToDirectory(System.IO.Path.GetTempPath());
+            }
+
+
+            //Generate the external sources document
+            string[] filesToConvert = null;
+            string folderParent = null;
+            bool isSingleFile = false;
+            if (Directory.Exists(fileOrFolderPath))
+            {
+                //it's a directory
+                filesToConvert = Directory.GetFiles(fileOrFolderPath, "*.wav");
+                folderParent = fileOrFolderPath;
+            }
+            else
+            {
+                //it's a single file
+                isSingleFile = true;
+                filesToConvert = new string[] { fileOrFolderPath };
+                folderParent = Directory.GetParent(fileOrFolderPath).FullName;
+            }
+
+
+            XElement externalSourcesList = new XElement("ExternalSourcesList", new XAttribute("SchemaVersion", 1.ToString()), new XAttribute("Root", folderParent));
+            foreach (string file in filesToConvert)
+            {
+                XElement source = new XElement("Source", new XAttribute("Path", System.IO.Path.GetFileName(file)), new XAttribute("Conversion", "Vorbis"));
+                externalSourcesList.Add(source);
+            }
+
+            //Write ExternalSources.wsources
+            string wsourcesFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject", "ExternalSources.wsources");
+
+            File.WriteAllText(wsourcesFile, externalSourcesList.ToString());
+            Debug.WriteLine(externalSourcesList.ToString());
+
+
+            //Run Conversion
+
+            //uncomment the following lines to view output from wwisecli
+            //DebugOutput.StartDebugger("Wwise Wav to Ogg Converter");
+            Process process = new Process();
+            process.StartInfo.FileName = wwisePath;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            //process.OutputDataReceived += (s, eventArgs) => { Debug.WriteLine(eventArgs.Data); DebugOutput.PrintLn(eventArgs.Data); };
+            //process.ErrorDataReceived += (s, eventArgs) => { Debug.WriteLine(eventArgs.Data); DebugOutput.PrintLn(eventArgs.Data); };
+
+            string projFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject", "TemplateProject.wproj");
+            process.StartInfo.Arguments = $"\"{projFile}\" -ConvertExternalSources Windows";
+
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
+            process.Start();
+            process.BeginOutputReadLine();
+            process.WaitForExit();
+            process.Close();
+
+            //Files generates
+            string outputDirectory = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject", "OutputFiles");
+            string copyToDirectory = System.IO.Path.Combine(folderParent, "Converted");
+            Directory.CreateDirectory(copyToDirectory);
+            foreach (string file in filesToConvert)
+            {
+                string basename = System.IO.Path.GetFileNameWithoutExtension(file);
+                File.Copy(System.IO.Path.Combine(outputDirectory, basename + ".ogg"), System.IO.Path.Combine(copyToDirectory, basename + ".ogg"), true);
+            }
+            var deleteResult = await TryDeleteDirectory(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject"));
+            Debug.WriteLine("Deleted templatedproject: " + deleteResult);
+
+            if (isSingleFile)
+            {
+                return System.IO.Path.Combine(copyToDirectory, System.IO.Path.GetFileNameWithoutExtension(fileOrFolderPath) + ".ogg");
+            }
+            else
+            {
+                return copyToDirectory;
+            }
+        }
+
+
+        public static async Task<bool> TryDeleteDirectory(string directoryPath, int maxRetries = 10, int millisecondsDelay = 30)
+        {
+            if (directoryPath == null)
+                throw new ArgumentNullException(directoryPath);
+            if (maxRetries < 1)
+                throw new ArgumentOutOfRangeException(nameof(maxRetries));
+            if (millisecondsDelay < 1)
+                throw new ArgumentOutOfRangeException(nameof(millisecondsDelay));
+
+            for (int i = 0; i < maxRetries; ++i)
+            {
+                try
+                {
+                    if (Directory.Exists(directoryPath))
+                    {
+                        Directory.Delete(directoryPath, true);
+                    }
+
+                    return true;
+                }
+                catch (IOException)
+                {
+                    await Task.Delay(millisecondsDelay);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    await Task.Delay(millisecondsDelay);
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if Wwwise Build 3773 x64 is installed using the system environment variable. Returns the path if is valid.
+        /// </summary>
+        /// <param name="silent">Supress dialogs</param>
+        /// <returns>Path to WwiseCLI if Wwise Build 3773 x64 is found, null otherwise</returns>
+        public static string GetWwiseCLIPath(bool silent)
+        {
+            string wwisePath = Environment.GetEnvironmentVariable("WWiseRoot");
+            if (wwisePath != null)
+            {
+                wwisePath = System.IO.Path.Combine(wwisePath, @"Authoring\x64\Release\bin\WwiseCLI.exe");
+                if (File.Exists(wwisePath))
+                {
+                    //check that it's a supported version...
+                    var versionInfo = FileVersionInfo.GetVersionInfo(wwisePath);
+                    string version = versionInfo.ProductVersion; // Will typically return "1.0.0" in your case
+                    if (version != "2010.3.3.3773")
+                    {
+                        //wrong version
+                        if (!silent)
+                            MessageBox.Show("WwiseCLI.exe found, but it's the wrong version:" + version + ".\nInstall Wwise Build 3773 to use this feature.");
+                        return null;
+                    }
+                    else
+                    {
+                        return wwisePath;
+                    }
+                }
+                else
+                {
+                    if (!silent)
+                        MessageBox.Show("WwiseCLI.exe was not found on your system.\nInstall Wwise Build 3773 to use this feature.");
+                    return null;
+                }
+            }
+            else
+            {
+                if (!silent)
+                    MessageBox.Show("Wwise does not appear to be installed on your system.\nInstall Wwise Build 3773 to use this feature.");
+                return null;
+            }
         }
 
         // Player commands
@@ -625,7 +831,7 @@ namespace ME3Explorer
         /// Replaces the audio in the current loaded export, or the forced export. Will prompt user for a Wwise Encoded Ogg file.
         /// </summary>
         /// <param name="forcedExport">Export to update. If null, the currently loadedo ne is used instead.</param>
-        public void ReplaceAudio(IExportEntry forcedExport = null)
+        public void ReplaceAudioFromWwiseOgg(string oggPath = null, IExportEntry forcedExport = null)
         {
             IExportEntry exportToWorkOn = forcedExport ?? CurrentLoadedExport;
             if (exportToWorkOn != null && exportToWorkOn.ClassName == "WwiseStream")
@@ -634,21 +840,27 @@ namespace ME3Explorer
                 if (w.IsPCCStored)
                 {
                     //TODO: enable replacing of PCC-stored sounds
-                    MessageBox.Show("Cannot replace pcc-stored sounds.");
+                    MessageBox.Show("Cannot replace pcc-stored sounds yet.");
                     return;
                 }
 
-                OpenFileDialog d = new OpenFileDialog();
-                d.Filter = "Wwise Encoded Ogg|*.ogg";
-                bool? res = d.ShowDialog();
-                if (res.HasValue && res.Value)
+                if (oggPath == null)
                 {
-                    w.ImportFromFile(d.FileName, w.getPathToAFC());
-                    CurrentLoadedExport.Data = w.memory.TypedClone();
-                    //Status.Text = "Ready";
-                    MessageBox.Show("Done");
-                    //}
+                    OpenFileDialog d = new OpenFileDialog();
+                    d.Filter = "Wwise Encoded Ogg|*.ogg";
+                    bool? res = d.ShowDialog();
+                    if (res.HasValue && res.Value)
+                    {
+                        oggPath = d.FileName;
+                    }
+                    else
+                    {
+                        return;
+                    }
                 }
+                w.ImportFromFile(oggPath, w.getPathToAFC());
+                CurrentLoadedExport.Data = w.memory.TypedClone();
+                MessageBox.Show("Done");
             }
         }
     }
@@ -707,4 +919,5 @@ namespace ME3Explorer
             return false; //don't need this
         }
     }
+
 }

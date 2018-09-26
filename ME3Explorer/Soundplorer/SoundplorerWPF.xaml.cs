@@ -763,10 +763,15 @@ namespace ME3Explorer.Soundplorer
 
         private void CloneAndReplace_Clicked(object sender, RoutedEventArgs e)
         {
-            //OpenFileDialog d = new OpenFileDialog { Filter = "Wave PCM files|*.wav", Title = "Select audio file for new export" };
-            //bool? chosenFileDialog = d.ShowDialog();
-            //if (chosenFileDialog.HasValue && chosenFileDialog.Value)
-            //{
+            SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
+            if (spExport != null)
+            {
+                CloneAndReplace(false);
+            }
+        }
+
+        private void CloneAndReplace(bool fromWave)
+        {
             string result = PromptDialog.Prompt("Enter a new object name for the cloned item.", "Cloned export name");
             if (result != null)
             {
@@ -784,11 +789,17 @@ namespace ME3Explorer.Soundplorer
                     SoundExports_ListBox.UpdateLayout();
                     var item = SoundExports_ListBox.ItemContainerGenerator.ContainerFromItem(newExport) as ListBoxItem;
                     if (item != null) item.Focus();
-                    soundPanel.ReplaceAudio(clone);
+                    if (fromWave)
+                    {
+                        soundPanel.ReplaceAudioFromWwiseOgg(forcedExport: clone);
+                    }
+                    else
+                    {
+                        soundPanel.ReplaceAudioFromWave(forcedExport: clone);
+                    }
                     LoadObjects(reloadList);
                 }
             }
-            //}
         }
 
         private void ReplaceAudio_Clicked(object sender, RoutedEventArgs e)
@@ -796,7 +807,7 @@ namespace ME3Explorer.Soundplorer
             SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
             if (spExport != null)
             {
-                soundPanel.ReplaceAudio(spExport.Export);
+                soundPanel.ReplaceAudioFromWwiseOgg(forcedExport: spExport.Export);
             }
         }
 
@@ -818,73 +829,18 @@ namespace ME3Explorer.Soundplorer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void ConvertToWwise_Clicked(object sender, RoutedEventArgs e)
+        private async void ConvertFolderToWwise_Clicked(object sender, RoutedEventArgs e)
         {
             if (Directory.Exists(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject")))
             {
-                await TryDeleteDirectory(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject"));
+                await Soundpanel.TryDeleteDirectory(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject"));
             }
 
             //Verify Wwise is installed with the correct version
-            string wwisePath = Environment.GetEnvironmentVariable("WWiseRoot");
-            if (wwisePath != null)
-            {
-                wwisePath = System.IO.Path.Combine(wwisePath, @"Authoring\x64\Release\bin\WwiseCLI.exe");
-                if (File.Exists(wwisePath))
-                {
-                    //check that it's a supported version...
-                    var versionInfo = FileVersionInfo.GetVersionInfo(wwisePath);
-                    string version = versionInfo.ProductVersion; // Will typically return "1.0.0" in your case
-                    if (version != "2010.3.3.3773")
-                    {
-                        //wrong version
-                        MessageBox.Show("WwiseCLI.exe found, but it's the wrong version:" + version + ".\nInstall Wwise Build 3773 to use this tool.");
-                        return;
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("WwiseCLI.exe was not found on your system.\nInstall Wwise Build 3773 to use this tool.");
-                    return;
-                }
-            }
-            else
-            {
-                MessageBox.Show("Wwise does not appear to be installed on your system.\nInstall Wwise Build 3773 to use this tool.");
-                return;
-            }
-
-            //Wwise installed and cli found
-            //MessageBox.Show("OK");
-
-
-            /* The process for converting is going to be pretty in depth but will make converting files much easier and faster.
-             * 1. Have a drag/drop panel or folder chooser where user .wav files will exist
-             * 2. User starts conversion
-             * 
-             * Program steps when conversion starts:
-             * 1. Copy source files to the originals directory, as this is where the data is converted from (Originals\SFX\)
-             * 2. Update the Default Work Unit.wwu file in Actor-Mixer-Hierarchy:
-             *    - Add Sound objects to AudioObjects for each sound.
-             *       -SoundName: PathWithoutExtension(wav)
-             *       -ID: GUID.GenerateGUID() <-- Might not be necessary
-             *       -ShortID: FNVHash (must port from C to C# - see https://www.audiokinetic.com/qa/13/how-can-i-generate-wwise-work-units-wwu-files <-- Might not be necessary
-             *       -other stuff.
-             *    - Set conversion settings. Maybe just use the default
-             * 3. Generate a soundbank through the CLI, runnign our project and setting the cache dir to our own.
-             * 4. Pull the files out of the cache and then discard the project.
-             * */
-
-            //Folder chooser for .wavs
-            var dlg = new CommonOpenFileDialog("Select folder containing .wav files")
-            {
-                IsFolderPicker = true
-            };
-
-            if (dlg.ShowDialog() != CommonFileDialogResult.Ok)
-            {
-                return;
-            }
+            string wwisePath = Soundpanel.GetWwiseCLIPath(false);
+            if (wwisePath == null) return; //abort. getpath is not silent so it will show dialogs before this is reached.
+            var dlg = new CommonOpenFileDialog("Select folder containing .wav files") { IsFolderPicker = true };
+            if (dlg.ShowDialog() != CommonFileDialogResult.Ok) { return; }
 
             string[] filesToConvert = Directory.GetFiles(dlg.FileName, "*.wav");
             if (filesToConvert.Count() == 0)
@@ -893,136 +849,8 @@ namespace ME3Explorer.Soundplorer
                 return;
             }
 
-            //Extract the template project to temp
-            var assembly = Assembly.GetExecutingAssembly();
-            var stuff = assembly.GetManifestResourceNames();
-            var resourceName = "ME3Explorer.Soundplorer.WwiseTemplateProject.zip";
-
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            {
-                ZipArchive archive = new ZipArchive(stream);
-                archive.ExtractToDirectory(System.IO.Path.GetTempPath());
-            }
-
-            //XElement wwiseDocument = new XElement("WwiseDocument", new XAttribute("Type", "WorkUnit"), new XAttribute("ID", "{5EBAC175-501D-487D-9F9C-C635AB93A866}"), new XAttribute("SchemaVersion", 44.ToString()));
-            XElement externalSourcesList = new XElement("ExternalSourcesList", new XAttribute("SchemaVersion", 1.ToString()), new XAttribute("Root", dlg.FileName));
-
-            //Generate the default Actor-Mixer document with the data we need
-
-            //XElement wwiseDocument = new XElement("WwiseDocument", new XAttribute("Type", "WorkUnit"), new XAttribute("ID", "{5EBAC175-501D-487D-9F9C-C635AB93A866}"), new XAttribute("SchemaVersion", 44.ToString()));
-            //XElement audioObjects = new XElement("AudioObjects");
-            //wwiseDocument.Add(audioObjects);
-
-            foreach (string file in filesToConvert)
-            {
-                XElement source = new XElement("Source", new XAttribute("Path", System.IO.Path.GetFileName(file)), new XAttribute("Conversion", "Vorbis"));
-                externalSourcesList.Add(source);
-
-                /*string guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
-                XElement sound = new XElement("Sound", new XAttribute("Name", System.IO.Path.GetFileNameWithoutExtension(file)), new XAttribute("Type", "SoundFX"), new XAttribute("ID", guid));
-                audioObjects.Add(sound);
-
-                XElement childrenList = new XElement("ChildrenList");
-                sound.Add(childrenList);
-
-                guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
-                XElement audioFileSource = new XElement("AudioFileSource", new XAttribute("Name", System.IO.Path.GetFileNameWithoutExtension(file)), new XAttribute("ID", guid));
-                childrenList.Add(audioFileSource);
-
-                audioFileSource.Add(new XElement("Language", "SFX"));
-                audioFileSource.Add(new XElement("AudioFile", System.IO.Path.GetFileName(file)));
-
-                //Bus Routing
-                //			<BusRouting Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" />
-
-                XElement busRouting = new XElement("BusRouting", new XAttribute("Name", "Master Audio Bus"), new XAttribute("ID", "{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}"));
-                sound.Add(busRouting);
-
-                //Default conversion settings GUID for templateproject: {6D1B890C-9826-4384-BF07-C15223E9FB56}
-                XElement conversionInfo = new XElement("ConversionInfo");
-                sound.Add(conversionInfo);
-
-                XElement conversionRef = new XElement("ConversionRef", new XAttribute("Name", "Default Conversion Settings"), new XAttribute("ID", "{6D1B890C-9826-4384-BF07-C15223E9FB56}"));
-                conversionInfo.Add(conversionRef);
-
-                XElement activeSourceList = new XElement("ActiveSourceList");
-                sound.Add(activeSourceList);
-
-                XElement activeSource = new XElement("ActiveSource", new XAttribute("Name", System.IO.Path.GetFileName(file)), new XAttribute("ID", guid), new XAttribute("Platform", "Linked"));
-                activeSourceList.Add(activeSource);*/
-            }
-
-            //Write ExternalSources.wsources
-            string wsourcesFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject", "ExternalSources.wsources");
-
-            File.WriteAllText(wsourcesFile, externalSourcesList.ToString());
-            Debug.WriteLine(externalSourcesList.ToString());
-
-
-            //Run Conversion
-            DebugOutput.StartDebugger("Wwise Wav to Ogg Converter");
-            Process process = new Process();
-            process.StartInfo.FileName = wwisePath;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.RedirectStandardError = true;
-            process.OutputDataReceived += (s, eventArgs) => { Debug.WriteLine(eventArgs.Data); DebugOutput.PrintLn(eventArgs.Data); };
-            process.ErrorDataReceived += (s, eventArgs) => { Debug.WriteLine(eventArgs.Data); DebugOutput.PrintLn(eventArgs.Data); };
-
-            string projFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject", "TemplateProject.wproj");
-            process.StartInfo.Arguments = $"\"{projFile}\" -ConvertExternalSources Windows";
-
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.CreateNoWindow = true;
-            process.Start();
-            process.BeginOutputReadLine();
-            process.WaitForExit();
-            process.Close();
-
-            //Files generates
-            string outputDirectory = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject", "OutputFiles");
-            string copyToDirectory = System.IO.Path.Combine(dlg.FileName, "Converted");
-            Directory.CreateDirectory(copyToDirectory);
-            foreach (string file in filesToConvert)
-            {
-                string basename = System.IO.Path.GetFileNameWithoutExtension(file);
-                File.Copy(System.IO.Path.Combine(outputDirectory, basename + ".ogg"), System.IO.Path.Combine(copyToDirectory, basename + ".ogg"), true);
-            }
-            var deleteResult = await TryDeleteDirectory(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject"));
-            Debug.WriteLine("Deleted templatedproject: " + deleteResult);
-            MessageBox.Show("Files have been converted and placed into the Converted subdirectory.");
-        }
-
-        public static async Task<bool> TryDeleteDirectory(string directoryPath, int maxRetries = 10, int millisecondsDelay = 30)
-        {
-            if (directoryPath == null)
-                throw new ArgumentNullException(directoryPath);
-            if (maxRetries < 1)
-                throw new ArgumentOutOfRangeException(nameof(maxRetries));
-            if (millisecondsDelay < 1)
-                throw new ArgumentOutOfRangeException(nameof(millisecondsDelay));
-
-            for (int i = 0; i < maxRetries; ++i)
-            {
-                try
-                {
-                    if (Directory.Exists(directoryPath))
-                    {
-                        Directory.Delete(directoryPath, true);
-                    }
-
-                    return true;
-                }
-                catch (IOException)
-                {
-                    await Task.Delay(millisecondsDelay);
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    await Task.Delay(millisecondsDelay);
-                }
-            }
-
-            return false;
+            string convertedFolder = await soundPanel.RunWwiseConversion(wwisePath, dlg.FileName);
+            MessageBox.Show("Done. Converted ogg files have been placed into:\n" + convertedFolder);
         }
 
         private void ExtractAllAudio_Clicked(object sender, RoutedEventArgs e)
@@ -1053,9 +881,25 @@ namespace ME3Explorer.Soundplorer
             }
             IsBusy = false;
         }
+
+        private void ReplaceAudioFromWav_Clicked(object sender, RoutedEventArgs e)
+        {
+            SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
+            if (spExport != null)
+            {
+                soundPanel.ReplaceAudioFromWave(forcedExport: spExport.Export);
+            }
+        }
+
+        private void CloneAndReplaceFromWav_Clicked(object sender, RoutedEventArgs e)
+        {
+            SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
+            if (spExport != null)
+            {
+                CloneAndReplace(true);
+            }
+        }
     }
-
-
 
     public class SoundplorerExport : INotifyPropertyChanged
     {
