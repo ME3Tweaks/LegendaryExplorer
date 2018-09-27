@@ -178,6 +178,7 @@ namespace ME3Explorer
                 _audioPlayer.PlaybackStopType = VorbisAudioPlayer.PlaybackStopTypes.PlaybackStoppedByUser; //will prevent loop from restarting
                 _audioPlayer.Stop();
                 _audioPlayer.Dispose();
+                vorbisStream = null;
             }
         }
 

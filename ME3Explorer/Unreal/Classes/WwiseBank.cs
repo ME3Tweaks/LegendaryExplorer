@@ -367,7 +367,7 @@ namespace ME3Explorer.Unreal.Classes
 
                 foreach (EmbeddedWEMFile wem in wemFiles)
                 {
-                    int offset = (int)dataBlock.Position - 4; //remove DATA
+                    int offset = (int)dataBlock.Position - 8; //remove DATA and size
                     byte[] dataToWrite = wem.HasBeenFixed ? wem.OriginalWemData : wem.WemData;
                     didxBlock.Write(BitConverter.GetBytes(wem.Id), 0, 4); //Write ID
                     didxBlock.Write(BitConverter.GetBytes(offset), 0, 4); //Write Offset

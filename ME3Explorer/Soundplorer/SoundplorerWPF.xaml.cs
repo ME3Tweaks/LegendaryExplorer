@@ -361,9 +361,19 @@ namespace ME3Explorer.Soundplorer
                 }
             }
 
+
+
             if (exportsRequiringReload.Count() > 0)
             {
+                SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
+                if (spExport == null)
+                {
+                    if (exportsRequiringReload.Contains(spExport)) {
+                        soundPanel.FreeAudioResources(); //unload the current export
+                    }
+                }
                 LoadObjects(exportsRequiringReload);
+                soundPanel.LoadExport(spExport.Export); //reload
             }
         }
 
