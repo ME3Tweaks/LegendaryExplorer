@@ -616,7 +616,7 @@ namespace ME3Explorer
                     {
                         //wrong version
                         if (!silent)
-                            MessageBox.Show("WwiseCLI.exe found, but it's the wrong version:" + version + ".\nInstall Wwise Build 3773 to use this feature.");
+                            MessageBox.Show("WwiseCLI.exe found, but it's the wrong version:" + version + ".\nInstall Wwise Build 3773 64bit to use this feature.");
                         return null;
                     }
                     else
@@ -627,14 +627,14 @@ namespace ME3Explorer
                 else
                 {
                     if (!silent)
-                        MessageBox.Show("WwiseCLI.exe was not found on your system.\nInstall Wwise Build 3773 to use this feature.");
+                        MessageBox.Show("WwiseCLI.exe was not found on your system.\nInstall Wwise Build 3773 64bit to use this feature.");
                     return null;
                 }
             }
             else
             {
                 if (!silent)
-                    MessageBox.Show("Wwise does not appear to be installed on your system.\nInstall Wwise Build 3773 to use this feature.");
+                    MessageBox.Show("Wwise does not appear to be installed on your system.\nInstall Wwise Build 3773 64bit to use this feature.");
                 return null;
             }
         }
