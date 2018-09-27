@@ -77,8 +77,6 @@ namespace ME3Explorer.Soundplorer
 
         public SoundplorerWPF()
         {
-            SoundplorerSettings.ReverseEndianDisplayOfID = Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness;
-
             TaskbarText = "Open a file to view sound-related exports";
             InitializeComponent();
 
@@ -933,52 +931,12 @@ namespace ME3Explorer.Soundplorer
             }
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void ReverseEndiannessOfIDs_Clicked(object sender, RoutedEventArgs e)
         {
             ReverseEndianDisplayOfIDs_MenuItem.IsChecked = !ReverseEndianDisplayOfIDs_MenuItem.IsChecked;
-            SoundplorerSettings.ReverseEndianDisplayOfID = ReverseEndianDisplayOfIDs_MenuItem.IsChecked;
             Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness = ReverseEndianDisplayOfIDs_MenuItem.IsChecked;
+            Properties.Settings.Default.Save();
         }
-
-
-    }
-
-    public static class SoundplorerSettings
-    {
-        public static event EventHandler StaticPropertyChanged;
-        private static bool _reverseEndianDisplayOfID;
-        public static bool ReverseEndianDisplayOfID
-        {
-            get
-            {
-                return _reverseEndianDisplayOfID;
-            }
-
-            set
-            {
-                if (_reverseEndianDisplayOfID != value)
-                {
-                    _reverseEndianDisplayOfID = value;
-                    OnStaticPropertyChanged(EventArgs.Empty);
-                }
-            }
-        }
-
-        #region Property handling for static variables
-
-        // Declare a static event representing changes to your static property
-
-        // Raise the change event through this static method
-        public static void OnStaticPropertyChanged(EventArgs e)
-        {
-            EventHandler handler = StaticPropertyChanged;
-
-            if (handler != null)
-            {
-                handler(null, e);
-            }
-        }
-        #endregion
     }
 
     public class SoundplorerExport : INotifyPropertyChanged

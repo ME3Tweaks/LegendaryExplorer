@@ -129,9 +129,9 @@ namespace ME3Explorer
 
 
                         string wemId = singleWemMetadata.Item1.ToString("X8");
-                        if (SoundplorerSettings.ReverseEndianDisplayOfID)
+                        if (Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness)
                         {
-                            wemId = ReverseBytes(singleWemMetadata.Item1).ToString("X8") + "(Reversed)";
+                            wemId = ReverseBytes(singleWemMetadata.Item1).ToString("X8") + " (Reversed)";
                         }
                         string wemName = "Embedded WEM 0x" + wemId;// + "(" + singleWemMetadata.Item1 + ")";
 
@@ -359,7 +359,6 @@ namespace ME3Explorer
             {
                 object currentWEMItem = ExportInfoListBox.SelectedItem;
                 bool result = currentWEMItem != null && currentWEMItem is EmbeddedWEMFile && CurrentLoadedExport.FileRef.Game == MEGame.ME3;
-                Debug.WriteLine("Result " + result);
                 return result;
             }
             return false;
