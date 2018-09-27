@@ -126,7 +126,14 @@ namespace ME3Explorer
                         Buffer.BlockCopy(data, singleWemMetadata.Item2 + 0x8, wemData, 0, singleWemMetadata.Item3);
                         //check for RIFF header as some don't seem to have it and are not playable.
                         string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
-                        string wemName = "Embedded WEM 0x" + singleWemMetadata.Item1.ToString("X8");// + "(" + singleWemMetadata.Item1 + ")";
+
+
+                        string wemId = singleWemMetadata.Item1.ToString("X8");
+                        if (SoundplorerSettings.ReverseEndianDisplayOfID)
+                        {
+                            wemId = ReverseBytes(singleWemMetadata.Item1).ToString("X8") + "(Reversed)";
+                        }
+                        string wemName = "Embedded WEM 0x" + wemId;// + "(" + singleWemMetadata.Item1 + ")";
 
                         /* //HIRC lookup, if I ever get around to supporting HIRC
                         List<Tuple<string, int, double>> wemInfo;
@@ -159,6 +166,12 @@ namespace ME3Explorer
                 CurrentLoadedExport = exportEntry;
             }
 
+        }
+
+        public static UInt32 ReverseBytes(UInt32 value)
+        {
+            return (value & 0x000000FFU) << 24 | (value & 0x0000FF00U) << 8 |
+                (value & 0x00FF0000U) >> 8 | (value & 0xFF000000U) >> 24;
         }
 
         public override void UnloadExport()
@@ -775,6 +788,11 @@ namespace ME3Explorer
 
         private void StopPlayback(object p)
         {
+            StopPlaying();
+        }
+
+        public void StopPlaying()
+        {
             seekbarUpdateTimer.Stop();
             if (_audioPlayer != null)
             {
@@ -788,6 +806,7 @@ namespace ME3Explorer
                 vorbisStream = null;
             }
         }
+
         private bool CanStopPlayback(object p)
         {
             if (_playbackState == PlaybackState.Playing || _playbackState == PlaybackState.Paused || vorbisStream != null)
@@ -957,10 +976,10 @@ namespace ME3Explorer
 
     public class EmbeddedWEMFile
     {
-        public int Id;
+        public uint Id;
         public bool HasBeenFixed;
         public MEGame Game;
-        public EmbeddedWEMFile(byte[] WemData, string DisplayString, MEGame game, int Id = 0)
+        public EmbeddedWEMFile(byte[] WemData, string DisplayString, MEGame game, uint Id = 0)
         {
             this.Id = Id;
             this.Game = game;

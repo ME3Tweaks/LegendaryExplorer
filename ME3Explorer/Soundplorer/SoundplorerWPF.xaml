@@ -31,7 +31,7 @@
             <MenuItem Header="Replace audio..." Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}">
                 <MenuItem Name="ReplaceAudio_MenuItem" Click="ReplaceAudio_Clicked" Header="From Wwise encoded Ogg" ToolTip="Appends new audio data to an AFC and points this WwiseStream to that data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
                 <MenuItem Name="ReplaceAudioFromWav_MenuItem" Click="ReplaceAudioFromWav_Clicked" Header="From PCM Wav" ToolTip="Appends new audio data to an AFC and points this WwiseStream to that data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
-               
+
             </MenuItem>
             <MenuItem Header="Clone and replace..." Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}">
                 <MenuItem Name="CloneAndReplace_MenuItem" Click="CloneAndReplace_Clicked" Header="Clone and replace audio" ToolTip="Create a new WwiseStream export and point it at new audio data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
@@ -47,6 +47,7 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <local:SoundplorerWPF x:Key="staticSoundplorer"/> <!-- Used for signaling EndianSwap in static context -->
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"/>
@@ -72,6 +73,9 @@
                     <MenuItem Header="Extract all audio from this file" Click="ExtractAllAudio_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <MenuItem Header="Compact a DLC mod AFC" Click="CompactAFC_Clicked"/>
                     <MenuItem Header="Convert Wave files to Wwise Ogg" Click="ConvertFolderToWwise_Clicked"/>
+                </MenuItem>
+                <MenuItem Header="_Options" Padding="4">
+                    <MenuItem Name="ReverseEndianDisplayOfIDs_MenuItem" Header="Reverse endianness of displayed ID's" Click="MenuItem_Click" IsChecked="{Binding Source={x:Static local:SoundplorerSettings.ReverseEndianDisplayOfID}, Mode=OneWay}"/>
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">

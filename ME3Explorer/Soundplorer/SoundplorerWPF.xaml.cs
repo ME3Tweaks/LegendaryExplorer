@@ -44,6 +44,9 @@ namespace ME3Explorer.Soundplorer
 
         BackgroundWorker backgroundScanner;
         public BindingList<SoundplorerExport> BindedExportsList { get; set; }
+
+
+
         private bool _isBusy;
         public bool IsBusy
         {
@@ -74,6 +77,8 @@ namespace ME3Explorer.Soundplorer
 
         public SoundplorerWPF()
         {
+            SoundplorerSettings.ReverseEndianDisplayOfID = Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness;
+
             TaskbarText = "Open a file to view sound-related exports";
             InitializeComponent();
 
@@ -368,7 +373,8 @@ namespace ME3Explorer.Soundplorer
                 SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
                 if (spExport == null)
                 {
-                    if (exportsRequiringReload.Contains(spExport)) {
+                    if (exportsRequiringReload.Contains(spExport))
+                    {
                         soundPanel.FreeAudioResources(); //unload the current export
                     }
                 }
@@ -912,12 +918,67 @@ namespace ME3Explorer.Soundplorer
         private void SoundExportItem_KeyDown(object sender, KeyEventArgs e)
         {
             KeyEventArgs ke = e as KeyEventArgs;
-            if (ke != null && ke.Key == Key.Space)
+            if (ke != null)
             {
-                soundPanel.StartOrPause();
-                ke.Handled = true;
+                if (ke.Key == Key.Space)
+                {
+                    soundPanel.StartOrPause();
+                    ke.Handled = true;
+                }
+                if (ke.Key == Key.Escape)
+                {
+                    soundPanel.StopPlaying();
+                    ke.Handled = true;
+                }
             }
         }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ReverseEndianDisplayOfIDs_MenuItem.IsChecked = !ReverseEndianDisplayOfIDs_MenuItem.IsChecked;
+            SoundplorerSettings.ReverseEndianDisplayOfID = ReverseEndianDisplayOfIDs_MenuItem.IsChecked;
+            Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness = ReverseEndianDisplayOfIDs_MenuItem.IsChecked;
+        }
+
+
+    }
+
+    public static class SoundplorerSettings
+    {
+        public static event EventHandler StaticPropertyChanged;
+        private static bool _reverseEndianDisplayOfID;
+        public static bool ReverseEndianDisplayOfID
+        {
+            get
+            {
+                return _reverseEndianDisplayOfID;
+            }
+
+            set
+            {
+                if (_reverseEndianDisplayOfID != value)
+                {
+                    _reverseEndianDisplayOfID = value;
+                    OnStaticPropertyChanged(EventArgs.Empty);
+                }
+            }
+        }
+
+        #region Property handling for static variables
+
+        // Declare a static event representing changes to your static property
+
+        // Raise the change event through this static method
+        public static void OnStaticPropertyChanged(EventArgs e)
+        {
+            EventHandler handler = StaticPropertyChanged;
+
+            if (handler != null)
+            {
+                handler(null, e);
+            }
+        }
+        #endregion
     }
 
     public class SoundplorerExport : INotifyPropertyChanged

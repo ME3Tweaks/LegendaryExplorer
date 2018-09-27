@@ -146,12 +146,12 @@ namespace ME3Explorer.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool DisableDLCCheckOnStart {
+        public bool SoundplorerReverseIDDisplayEndianness {
             get {
-                return ((bool)(this["DisableDLCCheckOnStart"]));
+                return ((bool)(this["SoundplorerReverseIDDisplayEndianness"]));
             }
             set {
-                this["DisableDLCCheckOnStart"] = value;
+                this["SoundplorerReverseIDDisplayEndianness"] = value;
             }
         }
         

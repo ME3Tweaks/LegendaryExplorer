@@ -75,7 +75,6 @@ namespace ME3Explorer
             createModsPanel.setToolList(Tools.Items.Where(x => x.tags.Contains("developer")));
 
             Topmost = Properties.Settings.Default.AlwaysOnTop;
-
             //Check that at least one game path is set. If none are, show the initial dialog.
             if (ME1Directory.gamePath == null && ME2Directory.gamePath == null && ME3Directory.gamePath == null)
             {
@@ -267,7 +266,6 @@ namespace ME3Explorer
             {
                 e.Cancel = true;
             }
-            Properties.Settings.Default.DisableDLCCheckOnStart = true;// disableSetupCheckBox.IsChecked ?? false;
             Properties.Settings.Default.AlwaysOnTop = alwaysOnTopCheckBox.IsChecked ?? false;
         }
 
