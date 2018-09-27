@@ -48,7 +48,6 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <local:SoundplorerWPF x:Key="staticSoundplorer"/> <!-- Used for signaling EndianSwap in static context -->
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"/>

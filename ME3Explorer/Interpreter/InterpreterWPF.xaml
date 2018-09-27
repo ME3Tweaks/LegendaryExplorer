@@ -12,6 +12,27 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <UserControl.Resources>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+        <ContextMenu x:Key="PropertyContextMenu">
+            <!--
+            <MenuItem Header="Export bank to file" ToolTip="Exports the binary data of this export (embedded soundbank) to disk" Click="ExtractBank_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseBank'}"/>
+            <MenuItem Header="Extract complete bank file" Click="ExtractBank_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseBank'}"/>
+            <MenuItem Header="Extract all bank audio to wave" Click="ExtractWEMAsWaveFromBank_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseBank'}"/>
+            <MenuItem Header="Export to..." Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}">
+                <MenuItem Name="ExportAudioRaw_MenuItem" Header="Export RIFF" ToolTip="Exports the raw data as stored in game files.&#x0a;To play, you must put this through ww2ogg to ogg and oggdec to wav." Click="ExportRaw_Clicked"/>
+                <MenuItem Name="ExportAudioOgg_MenuItem" Header="Export to OGG (Wwise)" ToolTip="Exports this WwiseStream's raw data to a Wwise proprietary Ogg file.&#x0a;To play, you must use oggdec to convert to a wav." Click="ExportOgg_Clicked"/>
+                <MenuItem Name="ExportAudioPCM_MenuItem" Header="Export to WAV (PCM)" ToolTip="Exports this WwiseStream to a playable WAV file" Click="ExportWav_Clicked"/>
+            </MenuItem>
+            <MenuItem Header="Replace audio..." Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}">
+                <MenuItem Name="ReplaceAudio_MenuItem" Click="ReplaceAudio_Clicked" Header="From Wwise encoded Ogg" ToolTip="Appends new audio data to an AFC and points this WwiseStream to that data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
+                <MenuItem Name="ReplaceAudioFromWav_MenuItem" Click="ReplaceAudioFromWav_Clicked" Header="From PCM Wav" ToolTip="Appends new audio data to an AFC and points this WwiseStream to that data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
+
+            </MenuItem>
+            <MenuItem Header="Clone and replace..." Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}">
+                <MenuItem Name="CloneAndReplace_MenuItem" Click="CloneAndReplace_Clicked" Header="Clone and replace audio" ToolTip="Create a new WwiseStream export and point it at new audio data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
+                <MenuItem Name="CloneAndReplaceFromWav_MenuItem" Click="CloneAndReplaceFromWav_Clicked" Header="Clone and replace audio" ToolTip="Create a new WwiseStream export and point it at new audio data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
+            </MenuItem>-->
+        </ContextMenu>
+
     </UserControl.Resources>
     <UserControl.CommandBindings>
         <CommandBinding Command="Commands:InterpreterWPFCommands.ArrayOrderByValueCommand" Executed="ArrayOrderByValueCommand_Executed"/>
@@ -32,7 +53,6 @@
             <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
             <Button Content="Toggle Hexbox Width" Click="Interpreter_ToggleHexboxWidth_Click"/>
             <Button Content="Add Property" Click="Interpreter_AddProperty_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
-
         </ToolBar>
         <!--<control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />-->
         <WindowsFormsHost Name="Interpreter_Hexbox_Host" Grid.Row="10" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">

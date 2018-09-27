@@ -33,6 +33,10 @@ namespace ME3Explorer
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
         public readonly string[] ExportToStringConverters = { "LevelStreamingKismet" };
 
+        //Values in this list will cause custom code to be fired to modify what the displayed string is for IntProperties
+        //when the class matches.
+        public readonly string[] IntToStringConverters = { "WwiseEvent" };
+
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
         private byte[] memory;
         private int memsize;
@@ -161,7 +165,8 @@ namespace ME3Explorer
                         {
                             tlkset = new BioTlkFileSet(pcc as ME1Package);
                         }
-                    } catch (Exception e)
+                    }
+                    catch (Exception e)
                     {
                         tlkset = new BioTlkFileSet(pcc as ME1Package);
                     }
@@ -286,6 +291,10 @@ namespace ME3Explorer
                         if (entry != null)
                         {
                             s += index + " " + entry.GetFullPath;
+                            if (index > 0 && ExportToStringConverters.Contains(entry.ClassName))
+                            {
+                                s += " " + ExportToString(pcc.Exports[index - 1]);
+                            }
                         }
                         else if (index == 0)
                         {
@@ -302,6 +311,10 @@ namespace ME3Explorer
                     {
                         s += " Value: ";
                         s += (prop as IntProperty).Value;
+                        if (IntToStringConverters.Contains(CurrentLoadedExport.ClassName))
+                        {
+                            s += IntToString(prop.Name, (prop as IntProperty).Value);
+                        }
                         nodeColor = Brushes.Green;
                     }
                     break;
@@ -377,6 +390,28 @@ namespace ME3Explorer
                     GenerateTreeForProperty(subProp, item);
                 }
             }
+        }
+
+        /// <summary>
+        /// Converts a value of a property into a more human readable string.
+        /// This is for IntProperty.
+        /// </summary>
+        /// <param name="name">Name of the property</param>
+        /// <param name="value">Value of the property to transform</param>
+        /// <returns></returns>
+        private string IntToString(NameReference name, int value)
+        {
+            switch (CurrentLoadedExport.ClassName)
+            {
+                case "WwiseEvent":
+                    switch (name)
+                    {
+                        case "Id":
+                            return " (0x" + value.ToString("X8") + ")";
+                    }
+                    break;
+            }
+            return "";
         }
 
         private void GenerateTreeForArrayProperty(UProperty prop, TreeViewItem parent, int index)
