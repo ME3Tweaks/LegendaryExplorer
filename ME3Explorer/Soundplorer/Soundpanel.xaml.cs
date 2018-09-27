@@ -693,6 +693,11 @@ namespace ME3Explorer
 
         private void StartPlayback(object p)
         {
+            StartOrPause();
+        }
+
+        public void StartOrPause()
+        {
             bool playToggle = true;
             if (_playbackState == PlaybackState.Stopped)
             {
@@ -740,6 +745,7 @@ namespace ME3Explorer
                 _audioPlayer.TogglePlayPause(CurrentVolume);
             }
         }
+
         private void UpdateSeekBarPos(object state, EventArgs e)
         {
             if (!SeekDragging)

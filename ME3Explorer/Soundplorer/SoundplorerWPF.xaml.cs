@@ -908,6 +908,16 @@ namespace ME3Explorer.Soundplorer
                 CloneAndReplace(true);
             }
         }
+
+        private void SoundExportItem_KeyDown(object sender, KeyEventArgs e)
+        {
+            KeyEventArgs ke = e as KeyEventArgs;
+            if (ke != null && ke.Key == Key.Space)
+            {
+                soundPanel.StartOrPause();
+                ke.Handled = true;
+            }
+        }
     }
 
     public class SoundplorerExport : INotifyPropertyChanged
