@@ -583,7 +583,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "codex", "state transition", "quest", "natives" },
                 subCategory = "Core",
-                description = "Plot Editor is used to examine, edit, and search ME3's plot maps for quests, state events, and codices.\n\nSupport for ME1 and ME2 is planned for the future."
+                description = "Plot Editor is used to examine, edit, and search ME3's plot maps for quests, state events, and codices."
             });
             set.Add(new Tool
             {
