@@ -127,7 +127,6 @@ namespace ME3Explorer
                         //check for RIFF header as some don't seem to have it and are not playable.
                         string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
 
-
                         string wemId = singleWemMetadata.Item1.ToString("X8");
                         if (Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness)
                         {

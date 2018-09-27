@@ -80,6 +80,8 @@ namespace ME3Explorer
             {
                 (new InitialSetup()).ShowDialog();
             }
+            List<string> directories = new List<string> { ME1Directory.gamePath, ME2Directory.gamePath, ME3Directory.gamePath };
+            gamePathsWarningIcon.Visibility = directories.All(item => item == null) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private static void SystemParameters_StaticPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -458,7 +460,10 @@ namespace ME3Explorer
             {
                 me3Path = me3PathBox.Text;
             }
-            MEDirectories.SaveSettings(new List<string> { me1Path, me2Path, me3Path });
+            List<string> directories = new List<string> { me1Path, me2Path, me3Path };
+            MEDirectories.SaveSettings(directories);
+
+            gamePathsWarningIcon.Visibility = directories.All(item => item == null) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void pathBrowseButton_Click(object sender, RoutedEventArgs e)

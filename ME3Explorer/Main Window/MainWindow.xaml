@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ME3Explorer"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
         mc:Ignorable="d" DataContext="{Binding Mode=OneWay, RelativeSource={RelativeSource Self}}" 
@@ -274,8 +275,11 @@
                                             </Rectangle.OpacityMask>
                                         </Rectangle>
                                         <StackPanel  Margin="10,0,0,0" VerticalAlignment="Center">
-                                            <TextBlock x:Name="labelGamePaths" Text="Game Paths"/>
-                                            <Rectangle Width="{Binding ActualWidth, ElementName=labelGamePaths}" Margin="0,-6,0,0"/>
+                                            <StackPanel Name="stackpanelGamePaths" Orientation="Horizontal">
+                                                <TextBlock x:Name="labelGamePaths" Text="Game Paths"/>
+                                                <fa:ImageAwesome Name="gamePathsWarningIcon" Icon="ExclamationTriangle" Opacity=".7" Foreground="Yellow" Height="14" Width="14" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <Rectangle Width="{Binding ActualWidth, ElementName=stackpanelGamePaths}" Margin="0,-6,0,0"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </Button>
