@@ -358,7 +358,7 @@ namespace ME3Explorer.Unreal
                 {
                     foreach (PropertyInfo p in info.properties.Values)
                     {
-                        if (p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty && reSearch)
+                        if ((p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty) && reSearch)
                         {
                             PropertyInfo val = getPropertyInfo(p.reference, propName, true, nonVanillaClassInfo, reSearch: false);
                             if (val != null)
@@ -371,7 +371,7 @@ namespace ME3Explorer.Unreal
                 //look in base class
                 if (temp.ContainsKey(info.baseClass))
                 {
-                    PropertyInfo val = getPropertyInfo(info.baseClass, propName, inStruct, nonVanillaClassInfo, reSearch: false);
+                    PropertyInfo val = getPropertyInfo(info.baseClass, propName, inStruct, nonVanillaClassInfo, reSearch: true);
                     if (val != null)
                     {
                         return val;
