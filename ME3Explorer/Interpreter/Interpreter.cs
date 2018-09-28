@@ -3075,6 +3075,7 @@ namespace ME3Explorer
             Buffer.BlockCopy(export.Data, 0, newdata, 0, posStart);
             Buffer.BlockCopy(export.Data, posEnd, newdata, posStart, export.Data.Length - posEnd);
             export.Data = newdata;
+            memory = newdata;
             RefreshMem();
         }
     }
