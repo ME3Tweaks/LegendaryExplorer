@@ -91,7 +91,7 @@ namespace ME3Explorer
         private const int HEADER_OFFSET_IMP_IDXPACKAGEFILE = 0;
         private bool Visible_ObjectNameRow { get; set; }
         //private List<AdvancedTreeViewItem<TreeViewItem>> AllTreeViewNodes = new List<AdvancedTreeViewItem<TreeViewItem>>();
-        private ObservableCollection<TreeViewEntry> AllTreeViewNodesX = new ObservableCollection<TreeViewEntry>();
+        public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; set; } = new ObservableCollectionExtended<TreeViewEntry>();
 
         public PackageEditorWPF()
         {
@@ -178,11 +178,6 @@ namespace ME3Explorer
             IReadOnlyList<ImportEntry> Imports = pcc.Imports;
             IReadOnlyList<IExportEntry> Exports = pcc.Exports;
             int importsOffset = Exports.Count;
-            int link;
-            /*AllTreeViewNodes = new List<AdvancedTreeViewItem<TreeViewItem>>(Exports.Count + imports.Count + 1)
-            {
-                new AdvancedTreeViewItem<TreeViewItem>() { Header = pcc.FileName, Tag = null, Name="Root" }
-            };*/
 
             TreeViewEntry rootEntry = new TreeViewEntry(null, pcc.FileName);
             rootEntry.IsExpanded = true;
@@ -191,27 +186,11 @@ namespace ME3Explorer
             for (int i = 0; i < Exports.Count; i++)
             {
                 AllTreeViewNodesX.Add(new TreeViewEntry(Exports[i]));
-                /*
-                AllTreeViewNodes.Add(new AdvancedTreeViewItem<TreeViewItem>()
-                {
-                    Header = $"(Exp) {i + 1} : {Exports[i].ObjectName}({Exports[i].ClassName})",
-                    Name = $"_{i + 1}", //must start letter or _
-                    Foreground = Brushes.Black,
-                    Background = (Exports[i].DataChanged || Exports[i].HeaderChanged) ? Brushes.Yellow : null
-                });*/
             }
 
             for (int i = 0; i < Imports.Count; i++)
             {
                 AllTreeViewNodesX.Add(new TreeViewEntry(Imports[i]));
-                /*
-                AllTreeViewNodes.Add(new AdvancedTreeViewItem<TreeViewItem>()
-                {
-                    Header = $"(Imp) {-i - 1} : {imports[i].ObjectName}({imports[i].ClassName})",
-                    Name = $"_n{i + 1}", //must start letter or _,
-                    Foreground = Brushes.Gray,
-                    Background = (imports[i].HeaderChanged) ? Brushes.Yellow : null
-                });*/
             }
 
             //configure links
@@ -234,49 +213,12 @@ namespace ME3Explorer
                     TreeViewEntry parent = AllTreeViewNodesX[tvLink];
                     parent.Sublinks.Add(entry);
                     entry.Parent = parent;
-                    itemsToRemove.Add(entry);
-                }
-                //TreeViewEntry parent = 
-            }
-            AllTreeViewNodesX = new ObservableCollection<TreeViewEntry>(AllTreeViewNodesX.Except(itemsToRemove).ToList());
-            ClearList(LeftSide_TreeView);
-            LeftSide_TreeView.ItemsSource = AllTreeViewNodesX;
-            /*
-            int curIndex;
-            for (int i = 1; i <= Exports.Count; i++)
-            {
-                node = AllTreeViewNodes[i];
-                curIndex = i;
-                while (node.Tag as IEntry == null && node.Name != "Root")
-                {
-                    node.Tag = pcc.getEntry(curIndex);
-                    //Debug.WriteLine(curIndex);
-                    curIndex = pcc.getEntry(curIndex).idxLink;
-                    link = curIndex >= 0 ? curIndex : (-curIndex + importsOffset);
-                    AllTreeViewNodes[link].Items.Add(node);
-                    node.ParentNodeValue = AllTreeViewNodes[link];
-                    node = AllTreeViewNodes[link];
+                    itemsToRemove.Add(entry); //remove from this level as we have added it to another already
                 }
             }
-
-            for (int i = 1; i <= imports.Count; i++)
-            {
-                node = AllTreeViewNodes[i + importsOffset];
-                curIndex = -i;
-                while (node.Tag as IEntry == null && node.Name != "Root")
-                {
-                    node.Tag = pcc.getEntry(curIndex);
-                    curIndex = pcc.getEntry(curIndex).idxLink;
-                    link = curIndex >= 0 ? curIndex : (-curIndex + importsOffset);
-                    AllTreeViewNodes[link].Items.Add(node);
-                    node.ParentNodeValue = AllTreeViewNodes[link];
-                    node = AllTreeViewNodes[link];
-                }
-            }
-            LeftSide_TreeView.Items.Add(AllTreeViewNodes[0]);
-            AllTreeViewNodes[0].IsExpanded = true;
-            /*LeftSide_TreeView.Items[0].Expand();
-            */
+            var rootNodes = new ObservableCollectionExtended<TreeViewEntry>(AllTreeViewNodesX.Except(itemsToRemove).ToList());
+            AllTreeViewNodesX.Clear();
+            AllTreeViewNodesX.AddRange(rootNodes);
         }
 
         private void LoadRecentList()
@@ -1475,15 +1417,7 @@ namespace ME3Explorer
             }
         }
 
-        /// <summary>
-        /// Subclass of TreeViewItem that enables tracking of parent objects.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        public class AdvancedTreeViewItem<T> : TreeViewItem
-        {
-            public T ParentNodeValue { get; set; }
-            public T RootParentNodeValue { get; set; }
-        }
+
 
         /// <summary>
         /// Command binding for when the Find command binding is issued (CTRL F)
@@ -1621,7 +1555,7 @@ namespace ME3Explorer
         /// <param name="dropInfo"></param>
         void IDropTarget.DragOver(IDropInfo dropInfo)
         {
-            if ((dropInfo.Data as TreeViewItem) != null && (dropInfo.Data as TreeViewItem).Name != "Root")
+            if ((dropInfo.Data as TreeViewEntry) != null && (dropInfo.Data as TreeViewEntry).Parent != null)
             {
                 dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
                 dropInfo.Effects = DragDropEffects.Copy;
@@ -1634,22 +1568,22 @@ namespace ME3Explorer
         /// <param name="dropInfo"></param>
         void IDropTarget.Drop(IDropInfo dropInfo)
         {
-            if (dropInfo.TargetItem is TreeViewItem && (dropInfo.Data as TreeViewItem).Name != "Root")
+            if (dropInfo.TargetItem is TreeViewEntry && (dropInfo.Data as TreeViewEntry).Parent != null)
             {
                 crossPCCObjectMap = new SortedDictionary<int, int>();
 
-                AdvancedTreeViewItem<TreeViewItem> sourceItem = dropInfo.Data as AdvancedTreeViewItem<TreeViewItem>;
-                AdvancedTreeViewItem<TreeViewItem> targetItem = dropInfo.TargetItem as AdvancedTreeViewItem<TreeViewItem>;
-                if (sourceItem == targetItem)
+                TreeViewEntry sourceItem = dropInfo.Data as TreeViewEntry;
+                TreeViewEntry targetItem = dropInfo.TargetItem as TreeViewEntry;
+                if (sourceItem == targetItem || (targetItem.Entry != null && sourceItem.Entry.FileRef == targetItem.Entry.FileRef))
                 {
                     return; //ignore
                 }
-                Debug.WriteLine("Adding source item: " + sourceItem.Tag.ToString());
+                //Debug.WriteLine("Adding source item: " + sourceItem.Tag.ToString());
 
                 //if (DestinationNode.TreeView != sourceNode.TreeView)
                 //{
-                IEntry entry = sourceItem.Tag as IEntry;
-                IEntry targetLinkEntry = targetItem.Tag as IEntry;
+                IEntry entry = sourceItem.Entry;
+                IEntry targetLinkEntry = targetItem.Entry;
 
                 IMEPackage importpcc = entry.FileRef;
                 if (importpcc == null)
@@ -1661,7 +1595,7 @@ namespace ME3Explorer
 
                 int n = entry.UIndex;
                 int link;
-                if (targetItem.Name == "Root")
+                if (targetItem.Parent == null) //dropped on a first level node
                 {
                     link = 0;
                 }
@@ -1671,26 +1605,35 @@ namespace ME3Explorer
                     //link = link >= 0 ? link + 1 : link;
                 }
                 int nextIndex;
+                TreeViewEntry newItem = null;
                 if (n >= 0)
                 {
-                    if (!importExport(importpcc, n, link))
+                    if (!importExport(entry as IExportEntry, link))
                     {
                         return;
                     }
                     nextIndex = pcc.ExportCount;
+                    IExportEntry newExport = pcc.Exports[nextIndex - 1]; //0 based
+                    newItem = new TreeViewEntry(newExport);
                 }
                 else
                 {
-                    getOrAddCrossImport(importpcc.getImport(Math.Abs(n) - 1).GetFullPath, importpcc, pcc, sourceItem.Items.Count == 0 ? link : (int?)null);
+                    getOrAddCrossImport(importpcc.getImport(Math.Abs(n) - 1).GetFullPath, importpcc, pcc, sourceItem.Sublinks.Count == 0 ? link : (int?)null);
                     //importImport(importpcc, -n - 1, link);
                     nextIndex = -pcc.ImportCount;
+                    ImportEntry newImport = pcc.Imports[nextIndex - 1]; //0 based
+                    newItem = new TreeViewEntry(newImport);
                 }
+                newItem.Parent = targetItem;
+                targetItem.Sublinks.Add(newItem); //TODO: Resort the children so they display in the proper order
 
                 //if this node has children
-                if (sourceItem.Items.Count > 0)
+                if (sourceItem.Sublinks.Count > 0)
                 {
-                    importTree(sourceItem, importpcc, nextIndex);
+                    importTree(sourceItem, importpcc, newItem);
                 }
+
+                targetItem.SortChildren();
 
                 //relinkObjects(importpcc);
                 List<string> relinkResults = new List<string>();
@@ -1699,7 +1642,7 @@ namespace ME3Explorer
                 crossPCCObjectMap = null;
 
                 RefreshView();
-                goToNumber(n >= 0 ? pcc.ExportCount - 1 : -pcc.ImportCount);
+                goToNumber(n >= 0 ? pcc.ExportCount : -pcc.ImportCount);
                 if (relinkResults.Count > 0)
                 {
                     ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.");
@@ -1719,30 +1662,39 @@ namespace ME3Explorer
         /// <param name="importpcc">PCC to import from</param>
         /// <param name="link">The entry link the tree will be imported under</param>
         /// <returns></returns>
-        private bool importTree(AdvancedTreeViewItem<TreeViewItem> sourceNode, IMEPackage importpcc, int link)
+        private bool importTree(TreeViewEntry sourceNode, IMEPackage importpcc, TreeViewEntry newItemParent)
         {
             int nextIndex;
             int index;
-            foreach (AdvancedTreeViewItem<TreeViewItem> node in sourceNode.Items)
+            foreach (TreeViewEntry node in sourceNode.Sublinks)
             {
-                index = (node.Tag as IEntry).UIndex;
+                index = node.Entry.UIndex;
+                TreeViewEntry newEntry = null;
                 if (index >= 0)
                 {
                     index--; //code is written for 0-based indexing, while UIndex is not 0 based
-                    if (!importExport(importpcc, index, link))
+                    if (!importExport(node.Entry as IExportEntry, newItemParent.UIndex))
                     {
                         return false;
                     }
                     nextIndex = pcc.ExportCount;
+                    IExportEntry newExport = pcc.Exports[nextIndex - 1]; //0 based
+                    newEntry = new TreeViewEntry(newExport);
                 }
                 else
                 {
                     getOrAddCrossImport(importpcc.getImport(Math.Abs(index) - 1).GetFullPath, importpcc, pcc);
                     nextIndex = -pcc.ImportCount;
+
+                    ImportEntry newImport = pcc.Imports[nextIndex - 1]; //0 based
+                    newEntry = new TreeViewEntry(newImport);
                 }
-                if (node.Items.Count > 0)
+                newEntry.Parent = newItemParent;
+                newItemParent.Sublinks.Add(newEntry); //TODO: Resort the children so they display in the proper order
+
+                if (node.Sublinks.Count > 0)
                 {
-                    if (!importTree(node, importpcc, nextIndex))
+                    if (!importTree(node, importpcc, newEntry))
                     {
                         return false;
                     }
@@ -1758,9 +1710,8 @@ namespace ME3Explorer
         /// <param name="n">Export index in the importing PCC</param>
         /// <param name="link">Export/Import index in the local PCC that will be used as the parent to attach to.</param>
         /// <returns></returns>
-        private bool importExport(IMEPackage importpcc, int n, int link)
+        private bool importExport(IExportEntry ex, int link)
         {
-            IExportEntry ex = importpcc.getExport(n);
             IExportEntry nex = null;
             switch (pcc.Game)
             {
@@ -1782,7 +1733,7 @@ namespace ME3Explorer
             int start = ex.GetPropertyStart();
             int end = props.endOffset;
             MemoryStream res = new MemoryStream();
-            if ((importpcc.getExport(n).ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+            if ((ex.ObjectFlags & (ulong)EObjectFlags.HasStack) != 0)
             {
                 //ME1, ME2 stack
                 byte[] stackdummy =        { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //Lets hope for the best :D
@@ -1815,7 +1766,7 @@ namespace ME3Explorer
 
             //set header so addresses are set
             var header = (byte[])ex.Header.Clone();
-            if ((importpcc.Game == MEGame.ME1 || importpcc.Game == MEGame.ME2) && pcc.Game == MEGame.ME3)
+            if ((ex.FileRef.Game == MEGame.ME1 || ex.FileRef.Game == MEGame.ME2) && pcc.Game == MEGame.ME3)
             {
                 //we need to clip some bytes out of the header
                 byte[] clippedHeader = new byte[header.Length - 4];
@@ -1826,18 +1777,19 @@ namespace ME3Explorer
             }
             nex.Header = header;
             bool dataAlreadySet = false;
-            if (importpcc.Game == MEGame.ME3)
+            if (ex.FileRef.Game == MEGame.ME3)
             {
-                switch (importpcc.getObjectName(ex.idxClass))
+                switch (ex.FileRef.getObjectName(ex.idxClass))
                 {
+                    //Todo: Figure out how to fix this for orikon.
                     case "SkeletalMesh":
                         {
-                            SkeletalMesh skl = new SkeletalMesh(importpcc as ME3Package, n);
+                            SkeletalMesh skl = new SkeletalMesh(ex);
                             SkeletalMesh.BoneStruct bone;
                             for (int i = 0; i < skl.Bones.Count; i++)
                             {
                                 bone = skl.Bones[i];
-                                string s = importpcc.getNameEntry(bone.Name);
+                                string s = ex.FileRef.getNameEntry(bone.Name);
                                 bone.Name = pcc.FindNameOrAdd(s);
                                 skl.Bones[i] = bone;
                             }
@@ -1845,7 +1797,7 @@ namespace ME3Explorer
                             for (int i = 0; i < skl.TailNames.Count; i++)
                             {
                                 tailName = skl.TailNames[i];
-                                string s = importpcc.getNameEntry(tailName.Name);
+                                string s = ex.FileRef.getNameEntry(tailName.Name);
                                 tailName.Name = pcc.FindNameOrAdd(s);
                                 skl.TailNames[i] = tailName;
                             }
@@ -1860,16 +1812,16 @@ namespace ME3Explorer
                         break;
                 }
             }
-            else if (importpcc.Game == MEGame.UDK)
+            else if (ex.FileRef.Game == MEGame.UDK)
             {
-                switch (importpcc.getObjectName(ex.idxClass))
+                switch (ex.FileRef.getObjectName(ex.idxClass))
                 {
                     case "StaticMesh":
                         {
                             //res.Write(idata, end, idata.Length - end);
                             //rewrite data
                             nex.Data = res.ToArray();
-                            UDKStaticMesh usm = new UDKStaticMesh(importpcc as UDKPackage, n);
+                            UDKStaticMesh usm = new UDKStaticMesh(ex.FileRef as UDKPackage, ex.Index);
                             usm.PortToME3Export(nex);
                             dataAlreadySet = true;
                             break;
@@ -1893,16 +1845,16 @@ namespace ME3Explorer
             if (ex.idxClass < 0)
             {
                 //The class of the export we are importing is an import. We should attempt to relink this.
-                ImportEntry portingFromClassImport = importpcc.getImport(Math.Abs(ex.idxClass) - 1);
-                ImportEntry newClassImport = getOrAddCrossImport(portingFromClassImport.GetFullPath, importpcc, pcc);
+                ImportEntry portingFromClassImport = ex.FileRef.getImport(Math.Abs(ex.idxClass) - 1);
+                ImportEntry newClassImport = getOrAddCrossImport(portingFromClassImport.GetFullPath, ex.FileRef, pcc);
                 classValue = newClassImport.UIndex;
             }
 
             //Check archetype.
             if (ex.idxArchtype < 0)
             {
-                ImportEntry portingFromClassImport = importpcc.getImport(Math.Abs(ex.idxArchtype) - 1);
-                ImportEntry newClassImport = getOrAddCrossImport(portingFromClassImport.GetFullPath, importpcc, pcc);
+                ImportEntry portingFromClassImport = ex.FileRef.getImport(Math.Abs(ex.idxArchtype) - 1);
+                ImportEntry newClassImport = getOrAddCrossImport(portingFromClassImport.GetFullPath, ex.FileRef, pcc);
                 archetype = newClassImport.UIndex;
             }
 
@@ -1911,13 +1863,13 @@ namespace ME3Explorer
                 nex.Data = res.ToArray();
             }
             nex.idxClass = classValue;
-            nex.idxObjectName = pcc.FindNameOrAdd(importpcc.getNameEntry(ex.idxObjectName));
+            nex.idxObjectName = pcc.FindNameOrAdd(ex.FileRef.getNameEntry(ex.idxObjectName));
             nex.idxLink = link;
             nex.idxArchtype = archetype;
             nex.idxClassParent = 0;
             pcc.addExport(nex);
 
-            crossPCCObjectMap[n] = pcc.ExportCount - 1; //0 based.
+            crossPCCObjectMap[ex.Index] = pcc.ExportCount - 1; //0 based.
             return true;
         }
 
@@ -2259,6 +2211,11 @@ namespace ME3Explorer
                     e.Handled = true;
                 }
             }
+            else
+            {
+                e.Effects = DragDropEffects.None;
+                e.Handled = true;
+            }
         }
 
         internal void ClearMetadataPane()
@@ -2319,7 +2276,10 @@ namespace ME3Explorer
                         //This is being triggered when it shouldn't be
                         Debugger.Break();
                     }
-                    treeViewItem.IsSelected = true;
+                    else
+                    {
+                        treeViewItem.IsSelected = true;
+                    }
                 }
                 treeViewItem.BringIntoView();
                 generator = treeViewItem.ItemContainerGenerator;
@@ -2636,12 +2596,12 @@ namespace ME3Explorer
         /// <summary>
         /// List of entries that link to this node
         /// </summary>
-        public ObservableCollection<TreeViewEntry> Sublinks { get; set; }
+        public ObservableCollectionExtended<TreeViewEntry> Sublinks { get; set; }
         public TreeViewEntry(IEntry entry, string displayName = null)
         {
             Entry = entry;
             DisplayName = displayName;
-            Sublinks = new ObservableCollection<TreeViewEntry>();
+            Sublinks = new ObservableCollectionExtended<TreeViewEntry>();
         }
 
 
@@ -2671,6 +2631,19 @@ namespace ME3Explorer
         public override string ToString()
         {
             return "TreeViewEntry " + DisplayName;
+        }
+
+        /// <summary>
+        /// Sorts this node's children in ascending positives first, then descending negatives
+        /// </summary>
+        internal void SortChildren()
+        {
+            var exportNodes = Sublinks.Where(x => x.Entry.UIndex > 0).OrderBy(x => x.UIndex).ToList();
+            var importNodes = Sublinks.Where(x => x.Entry.UIndex < 0).OrderBy(x => x.UIndex).Reverse().ToList(); //we want this in descending order
+
+            exportNodes.AddRange(importNodes);
+            Sublinks.Clear();
+            Sublinks.AddRange(exportNodes);
         }
     }
 }

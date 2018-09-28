@@ -648,15 +648,20 @@ namespace ME3Explorer.Unreal.Classes
         {
             Loaded = true;
         }
+        
+        public SkeletalMesh(IExportEntry export)
+        {
+            LoadSkeletalMesh(export);
+        }
 
-        public SkeletalMesh(IMEPackage pcc, int Index)
+        private void LoadSkeletalMesh(IExportEntry export)
         {
             Loaded = true;
-            MyIndex = Index;
-            Owner = pcc;
-            Flags = (int)(pcc.Exports[Index].ObjectFlags >> 32);
+            MyIndex = export.Index;
+            Owner = export.FileRef;
+            Flags = (int)(export.ObjectFlags >> 32);
             int start = GetPropertyEnd();
-            byte[] data = pcc.Exports[Index].Data;
+            byte[] data = export.Data;
             byte[] buff = new byte[data.Length - start];
             //for (int i = 0; i < data.Length - start; i++)
             //    buff[i] = data[i + start];
@@ -676,6 +681,11 @@ namespace ME3Explorer.Unreal.Classes
             catch
             {
             }
+        }
+
+        public SkeletalMesh(IMEPackage pcc, int Index)
+        {
+            LoadSkeletalMesh(pcc.Exports[Index]);
         }
 
         public void Serialize(SerializingContainer Container)

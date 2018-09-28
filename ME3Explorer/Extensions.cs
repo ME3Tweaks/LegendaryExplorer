@@ -57,26 +57,6 @@ namespace ME3Explorer
         }
 
         /// <summary>
-        /// Flattens a treeview that contains AdvancedTreeViewItem nodes.
-        /// </summary>
-        /// <param name="tv"></param>
-        /// <returns></returns>
-        public static IEnumerable<PackageEditorWPF.AdvancedTreeViewItem<System.Windows.Controls.TreeViewItem>> FlattenAdvancedTreeView(this System.Windows.Controls.TreeView tv)
-        {
-            return tv.Items.Cast<PackageEditorWPF.AdvancedTreeViewItem<System.Windows.Controls.TreeViewItem>>().SelectMany(x => FlattenAdvancedTree(x));
-
-            List<PackageEditorWPF.AdvancedTreeViewItem<System.Windows.Controls.TreeViewItem>> FlattenAdvancedTree(PackageEditorWPF.AdvancedTreeViewItem<System.Windows.Controls.TreeViewItem> rootNode)
-            {
-                var nodes = new List<PackageEditorWPF.AdvancedTreeViewItem<System.Windows.Controls.TreeViewItem>> { rootNode };
-                foreach (PackageEditorWPF.AdvancedTreeViewItem<System.Windows.Controls.TreeViewItem> node in rootNode.Items)
-                {
-                    nodes.AddRange(FlattenAdvancedTree(node));
-                }
-                return nodes;
-            }
-        }
-
-        /// <summary>
         /// Select specified item in a TreeView
         /// </summary>
         public static void SelectItem(this System.Windows.Controls.TreeViewItem treeView, object item)
