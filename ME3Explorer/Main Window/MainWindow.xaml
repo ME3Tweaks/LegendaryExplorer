@@ -369,32 +369,39 @@
 								VerticalAlignment="Center" Background="#7F5692A2" Width="237" Height="46"/>
                         </StackPanel>
                         <StackPanel Margin="15,20,0,0">
-                            <TextBlock Style="{StaticResource styleGameTitle}" Text="Mass Effect"/>
-                            <Rectangle/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource styleGameTitle}" Text="Mass Effect"/>
+                                <fa:ImageAwesome Name="me1GamePathWarningIcon" Icon="ExclamationTriangle" Opacity=".7" Foreground="Yellow" Height="16" Width="16" Margin="2,1,0,0"/>
+                            </StackPanel>                            <Rectangle/>
                             <Grid>
                                 <TextBlock Style="{StaticResource styleGameNotFound}"/>
-                                <TextBox x:Name="me1PathBox"/>
+                                <TextBox x:Name="me1PathBox"  IsReadOnly="True"/>
                             </Grid>
-                            <Button x:Name="me1PathBrowseButton"/>
+                                <Button x:Name="me1PathBrowseButton"/>
                         </StackPanel>
                         <StackPanel Margin="15,20,0,0">
-                            <TextBlock Style="{StaticResource styleGameTitle}" Text="Mass Effect 2"/>
-                            <Rectangle/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource styleGameTitle}" Text="Mass Effect 2"/>
+                                <fa:ImageAwesome Name="me2GamePathWarningIcon" Icon="ExclamationTriangle" Opacity=".7" Foreground="Yellow" Height="16" Width="16" Margin="2,1,0,0"/>
+                            </StackPanel>                            <Rectangle/>
                             <Grid>
                                 <TextBlock Style="{StaticResource styleGameNotFound}"/>
-                                <TextBox x:Name="me2PathBox"/>
+                                <TextBox x:Name="me2PathBox"  IsReadOnly="True"/>
                             </Grid>
-                            <Button x:Name="me2PathBrowseButton"/>
-                        </StackPanel>
+                                <Button x:Name="me2PathBrowseButton"/>
+                            </StackPanel>         
                         <StackPanel Margin="15,20,0,0">
-                            <TextBlock Style="{StaticResource styleGameTitle}" Text="Mass Effect 3"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource styleGameTitle}" Text="Mass Effect 3"/>
+                                <fa:ImageAwesome Name="me3GamePathWarningIcon" Icon="ExclamationTriangle" Opacity=".7" Foreground="Yellow" Height="16" Width="16" Margin="2,1,0,0"/>
+                            </StackPanel>
                             <Rectangle/>
                             <Grid>
                                 <TextBlock Style="{StaticResource styleGameNotFound}"/>
-                                <TextBox x:Name="me3PathBox"/>
+                                <TextBox x:Name="me3PathBox" IsReadOnly="True"/>
                             </Grid>
-                            <Button x:Name="me3PathBrowseButton"/>
-                        </StackPanel>
+                                <Button x:Name="me3PathBrowseButton"/>
+                        </StackPanel>                        
                     </StackPanel>
                 </Grid>
             </Grid>

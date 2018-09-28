@@ -17,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using FontAwesome.WPF;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using Microsoft.Win32;
@@ -80,8 +81,8 @@ namespace ME3Explorer
             {
                 (new InitialSetup()).ShowDialog();
             }
-            List<string> directories = new List<string> { ME1Directory.gamePath, ME2Directory.gamePath, ME3Directory.gamePath };
-            gamePathsWarningIcon.Visibility = directories.All(item => item == null) ? Visibility.Visible : Visibility.Collapsed;
+            UpdateGamePathWarningIconStatus();
+
         }
 
         private static void SystemParameters_StaticPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -463,7 +464,7 @@ namespace ME3Explorer
             List<string> directories = new List<string> { me1Path, me2Path, me3Path };
             MEDirectories.SaveSettings(directories);
 
-            gamePathsWarningIcon.Visibility = directories.All(item => item == null) ? Visibility.Visible : Visibility.Collapsed;
+            gamePathsWarningIcon.Visibility = directories.All(item => item == null || !Directory.Exists(item)) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void pathBrowseButton_Click(object sender, RoutedEventArgs e)
@@ -512,7 +513,21 @@ namespace ME3Explorer
                             me3PathBox.Visibility = Visibility.Visible;
                             break;
                     }
+                    UpdateGamePathWarningIconStatus();
                 }
+            }
+        }
+
+        private void UpdateGamePathWarningIconStatus()
+        {
+            var warningIcons = new List<ImageAwesome> { me1GamePathWarningIcon, me2GamePathWarningIcon, me3GamePathWarningIcon };
+            var directories = new List<string> { ME1Directory.gamePath, ME2Directory.gamePath, ME3Directory.gamePath };
+            gamePathsWarningIcon.Visibility = directories.Any(item => item != null && (!Directory.Exists(item) || !Directory.Exists(Path.Combine(item, "BIOGame")) || !Directory.Exists(Path.Combine(item, "Binaries")))) ? Visibility.Visible : Visibility.Collapsed;
+            for (int i = 0; i < warningIcons.Count; i++)
+            {
+                ImageAwesome icon = warningIcons[i];
+                string directory = directories[i];
+                icon.Visibility = directory != null && (!Directory.Exists(directory) || !Directory.Exists(Path.Combine(directory, "BIOGame")) || !Directory.Exists(Path.Combine(directory, "Binaries"))) ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
