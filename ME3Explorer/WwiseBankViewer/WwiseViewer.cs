@@ -13,6 +13,7 @@ using ME3Explorer.Packages;
 using ME3Explorer;
 using Be.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Diagnostics;
 
 namespace ME3Explorer.WwiseBankEditor
 {
@@ -159,8 +160,8 @@ namespace ME3Explorer.WwiseBankEditor
             b.CopyTo(tmp, 1);
 
             bank.HIRCObjects[m] = tmp;
-            Console.WriteLine("HIRC hex size: " + bank.HIRCObjects[m].Count().ToString("X4"));
             saveBank();
+            RefreshSelected();
         }
 
         private void editSoundSFXVoiceToolStripMenuItem1_Click(object sender, EventArgs e)
