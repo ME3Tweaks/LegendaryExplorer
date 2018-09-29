@@ -150,14 +150,15 @@ namespace ME3Explorer.Packages
 
             set
             {
-                if (dataChanged != value)
-                {
-                    dataChanged = value;
-                    if (value)
-                    {
-                        OnPropertyChanged();
-                    }
-                }
+                //This cannot be optimized as we cannot subscribe to array change events unfortunately
+
+                //if (dataChanged != value)
+                //{
+                dataChanged = value;
+                //    if (value)
+                //    {
+                OnPropertyChanged();
+                //    }
             }
         }
 
@@ -171,14 +172,14 @@ namespace ME3Explorer.Packages
 
             set
             {
-                if (headerChanged != value)
-                {
-                    headerChanged = value;
-                    if (value)
-                    {
-                        OnPropertyChanged();
-                    }
-                }
+                //This cannot be optimized as we cannot subscribe to array chagne events
+                //if (headerChanged != value)
+                //{
+                headerChanged = value;
+                //    if (value)
+                //    {
+                OnPropertyChanged();
+                //    }
             }
         }
 

@@ -112,10 +112,7 @@ namespace ME3Explorer.Packages
             set
             {
                 headerChanged = value;
-                if (value)
-                {
-                    OnPropertyChanged();
-                }
+                OnPropertyChanged();
             }
         }
 
