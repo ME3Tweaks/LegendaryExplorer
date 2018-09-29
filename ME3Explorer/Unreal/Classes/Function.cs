@@ -26,6 +26,9 @@ namespace ME3Explorer.Unreal.Classes
                                     null, "Public", "Private", "Protected", 
                                     "Delegate", "NetServer", "HasOutParms", "HasDefaults", 
                                     "NetClient", "FuncInherit", "FuncOverrideMatch"};
+        internal string ScriptText;
+
+        internal List<BytecodeToken> TokenList { get; private set; }
 
         public Function()
         {
@@ -92,7 +95,7 @@ namespace ME3Explorer.Unreal.Classes
             pos += 4;
         }
 
-        public string ToRawText(bool debug = true)
+        public void ParseFunction()
         {
             string s = "";
             s += "Childindex : " + child + "\n";
@@ -102,8 +105,10 @@ namespace ME3Explorer.Unreal.Classes
             s += GetFlags() + "\n";
             s += "Native Index: " + nativeindex + "\n";
             s += "Script:\n";
-            s += Bytecode.ToRawText(script, pcc,debug);
-            return s;
+            var parsedData = Bytecode.ParseBytecode(script, pcc);
+            s += parsedData.Item1;
+            TokenList = parsedData.Item2;
+            ScriptText = s;
         }
     }
 }

@@ -10,7 +10,9 @@
              mc:Ignorable="d" 
              Loaded="Interpreter_Loaded"
              xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
-             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             d:DesignWidth="800"
+             d:DesignHeight="500">
     <UserControl.Resources>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <ContextMenu x:Key="PropertyContextMenu">
@@ -39,114 +41,121 @@
         <CommandBinding Command="Commands:InterpreterWPFCommands.ArrayOrderByValueCommand" Executed="ArrayOrderByValueCommand_Executed"/>
         <CommandBinding Command="Commands:InterpreterWPFCommands.RemovePropertyCommand" Executed="RemovePropertyCommand_Executed"/>
     </UserControl.CommandBindings>
-    <Grid Margin="0,1,0,-1">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="1*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="220" MaxWidth="718" Width="285" Name="HexboxColumnDefinition" />
-            <ColumnDefinition Width="1" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <ToolBar Grid.Row="0" Grid.ColumnSpan="3" ToolBarTray.IsLocked="True">
+    <DockPanel>
+        <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
             <Button Name="SaveHexChange_Button" Content="Save Hex Changes" Click="Interpreter_SaveHexChanged_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
             <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
             <Button Content="Toggle Hexbox Width" Click="Interpreter_ToggleHexboxWidth_Click"/>
             <Button Content="Add Property" Click="Interpreter_AddProperty_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
         </ToolBar>
-        <!--<control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />-->
-        <WindowsFormsHost Name="Interpreter_Hexbox_Host" Grid.Row="10" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">
-            <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" VScrollBarVisible="True">
-            </hb1:HexBox>
-        </WindowsFormsHost>
-        <GridSplitter Grid.Column="1" 
+
+        <StatusBar Height="23" DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock Name="StatusBar_LeftMostText" Text="Nothing selected"/>
+            </StatusBarItem>
+        </StatusBar>
+        <Grid Margin="0,1,0,-1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="220" MaxWidth="718" Width="285" Name="HexboxColumnDefinition" />
+                <ColumnDefinition Width="1" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <!--<control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />-->
+            <WindowsFormsHost Name="Interpreter_Hexbox_Host" Grid.Row="10" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">
+                <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" VScrollBarVisible="True">
+                </hb1:HexBox>
+            </WindowsFormsHost>
+            <GridSplitter Grid.Column="1" 
                       Grid.Row="1" HorizontalAlignment="Stretch" 
                       Margin="-5,0"
                       BorderThickness="5,0"
                       BorderBrush="Transparent"
                       Panel.ZIndex="60"/>
-        <SharedUI:StretchingTreeView x:Name="Interpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="Interpreter_TreeViewSelectedItemChanged" PreviewMouseRightButtonDown="Interpreter_TreeView_PreviewMouseRightButtonDown" ItemsSource="{Binding PropertyNodes}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
-            <SharedUI:StretchingTreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type global:UPropertyTreeViewEntry}" ItemsSource="{Binding ChildrenProperties}">
-                    <StackPanel x:Name="PropertyItem_Container" Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="1">
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock x:Name="PropertyItem_DisplayName" Text="{Binding DisplayName}" VerticalAlignment="Center" FontStyle="Italic"/>
-                                <TextBlock x:Name="PropertyItem_DisplayValue" Text="{Binding DisplayValue}" VerticalAlignment="Center" FontWeight="Bold"/>
+            <SharedUI:StretchingTreeView x:Name="Interpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="Interpreter_TreeViewSelectedItemChanged" PreviewMouseRightButtonDown="Interpreter_TreeView_PreviewMouseRightButtonDown" ItemsSource="{Binding PropertyNodes}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                <SharedUI:StretchingTreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type global:UPropertyTreeViewEntry}" ItemsSource="{Binding ChildrenProperties}">
+                        <StackPanel x:Name="PropertyItem_Container" Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="1">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="PropertyItem_DisplayName" Text="{Binding DisplayName}" VerticalAlignment="Center" FontStyle="Italic"/>
+                                    <TextBlock x:Name="PropertyItem_DisplayValue" Text="{Binding DisplayValue}" VerticalAlignment="Center" FontWeight="Bold"/>
+                                </StackPanel>
+                                <TextBlock x:Name="PropertyItem_DisplayType" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0"/>
                             </StackPanel>
-                            <TextBlock x:Name="PropertyItem_DisplayType" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0"/>
                         </StackPanel>
-                    </StackPanel>
-                    <HierarchicalDataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding PropertyType}" Value="ObjectProperty">
-                            <Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#6d6c3f"/>
-                            <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d6c3f"/>
-                            <Setter TargetName="PropertyItem_Container" Property="Background" Value="#fffec4"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding PropertyType}" Value="IntProperty">
-                            <Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#664f46"/>
-                            <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#664f46"/>
-                            <Setter TargetName="PropertyItem_Container" Property="Background" Value="#ffeae2"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding PropertyType}" Value="StringProperty">
-                            <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#374f46"/>
-                            <Setter TargetName="PropertyItem_Container" Property="Background" Value="#e2fff4"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding PropertyType}" Value="ArrayProperty">
-                            <Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#382c4c"/>
-                            <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#382c4c"/>
-                            <Setter TargetName="PropertyItem_Container" Property="Background" Value="#d3bef4"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding PropertyType}" Value="BoolProperty">
-                            <Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#43563a"/>
-                            <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#43563a"/>
-                            <Setter TargetName="PropertyItem_Container" Property="Background" Value="#ecffe2"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding PropertyType}" Value="StructProperty">
-                            <Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#593953"/>
-                            <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#593953"/>
-                            <Setter TargetName="PropertyItem_Container" Property="Background" Value="#f4beea"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding PropertyType}" Value="ByteProperty">
-                            <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#474647"/>
-                            <Setter TargetName="PropertyItem_Container" Property="Background" Value="#afaeaf"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding PropertyType}" Value="NameProperty">
-                            <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#4a5568"/>
-                            <Setter TargetName="PropertyItem_Container" Property="Background" Value="#e2edff"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding PropertyType}" Value="None">
-                            <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d4818"/>
-                            <Setter TargetName="PropertyItem_Container" Property="Background" Value="#ffb759"/>
-                        </DataTrigger>
-                    </HierarchicalDataTemplate.Triggers>
-                </HierarchicalDataTemplate>
-                <ContextMenu x:Key ="ArrayPropertyContext"  StaysOpen="true">
-                    <MenuItem Header="Order by">
-                        <MenuItem Header="Value" Command="Commands:InterpreterWPFCommands.ArrayOrderByValueCommand"/>
-                        <MenuItem Header="Other" ToolTip="Not yet implemented"/>
-                    </MenuItem>
-                    <MenuItem Header="RemoveProperty" Command="Commands:InterpreterWPFCommands.RemovePropertyCommand"/>
-                </ContextMenu>
-                <ContextMenu x:Key="StandardPropertContext"  StaysOpen="true">
-                    <MenuItem Header="RemoveProperty" Command="Commands:InterpreterWPFCommands.RemovePropertyCommand"/>
-                </ContextMenu>
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                        <HierarchicalDataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding PropertyType}" Value="ObjectProperty">
+                                <Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#6d6c3f"/>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d6c3f"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#fffec4"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding PropertyType}" Value="IntProperty">
+                                <Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#664f46"/>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#664f46"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#ffeae2"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding PropertyType}" Value="StringProperty">
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#374f46"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#e2fff4"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding PropertyType}" Value="ArrayProperty">
+                                <Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#382c4c"/>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#382c4c"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#d3bef4"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding PropertyType}" Value="BoolProperty">
+                                <Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#43563a"/>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#43563a"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88ecffe2"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding PropertyType}" Value="StructProperty">
+                                <Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#593953"/>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#593953"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88f4beea"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding PropertyType}" Value="ByteProperty">
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#474647"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88afaeaf"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding PropertyType}" Value="NameProperty">
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#4a5568"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88e2edff"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding PropertyType}" Value="None">
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d4818"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88ffb759"/>
+                            </DataTrigger>
+                        </HierarchicalDataTemplate.Triggers>
+                    </HierarchicalDataTemplate>
+                    <ContextMenu x:Key ="ArrayPropertyContext"  StaysOpen="true">
+                        <MenuItem Header="Order by">
+                            <MenuItem Header="Value" Command="Commands:InterpreterWPFCommands.ArrayOrderByValueCommand"/>
+                            <MenuItem Header="Other" ToolTip="Not yet implemented"/>
+                        </MenuItem>
+                        <MenuItem Header="RemoveProperty" Command="Commands:InterpreterWPFCommands.RemovePropertyCommand"/>
+                    </ContextMenu>
+                    <ContextMenu x:Key="StandardPropertContext"  StaysOpen="true">
+                        <MenuItem Header="RemoveProperty" Command="Commands:InterpreterWPFCommands.RemovePropertyCommand"/>
+                    </ContextMenu>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
                       Color="LightBlue" />
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
                       Color="Black" />
-                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
                       Color="LightBlue" />
-                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
                       Color="Black" />
-            </SharedUI:StretchingTreeView.Resources>
-            <SharedUI:StretchingTreeView.ItemContainerStyle>
-                <Style TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
-                    <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
-                </Style>
-            </SharedUI:StretchingTreeView.ItemContainerStyle>
-        </SharedUI:StretchingTreeView>
-    </Grid>
+                </SharedUI:StretchingTreeView.Resources>
+                <SharedUI:StretchingTreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
+                        <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
+                    </Style>
+                </SharedUI:StretchingTreeView.ItemContainerStyle>
+            </SharedUI:StretchingTreeView>
+        </Grid>
+    </DockPanel>
 </global:ExportLoaderControl>

@@ -39,8 +39,8 @@ namespace ME3Explorer
         public readonly string[] IntToStringConverters = { "WwiseEvent" };
 
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
-        private byte[] memory;
-        private int memsize;
+        //private byte[] memory;
+        //private int memsize;
         private string className;
         private BioTlkFileSet tlkset;
         private BioTlkFileSet editorTlkSet;
@@ -128,8 +128,6 @@ namespace ME3Explorer
         {
             pcc = null;
             CurrentLoadedExport = null;
-            memory = null;
-            memsize = 0;
             Interpreter_Hexbox.ByteProvider = new DynamicByteProvider(new byte[] { });
             PropertyNodes.Clear();
         }
@@ -142,8 +140,6 @@ namespace ME3Explorer
         {
             pcc = export.FileRef;
             CurrentLoadedExport = export;
-            memory = export.Data;
-            memsize = memory.Length;
             //List<byte> bytes = export.Data.ToList();
             //MemoryStream ms = new MemoryStream(); //initializing memorystream directly with byte[] does not allow it to expand.
             //ms.Write(export.Data, 0, export.Data.Length); //write the data into the memorystream.
@@ -270,7 +266,6 @@ namespace ME3Explorer
             {
                 Interpreter_TreeView.S = Interpreter_TreeView.Items[0];
             }*/
-            memsize = memory.Length;
         }
 
         private void GenerateTreeForProperty(UProperty prop, UPropertyTreeViewEntry parent)
@@ -404,7 +399,7 @@ namespace ME3Explorer
 
         private void GenerateTreeForArrayProperty(UProperty prop, UPropertyTreeViewEntry parent, int index)
         {
-            string displayPrefix = prop.Offset.ToString("X4") + " Item " + index + "";
+            string displayPrefix = prop.Offset.ToString("X4") + " Item " + index + ": ";
             string displayValue = "";
             switch (prop.PropType)
             {
@@ -418,7 +413,7 @@ namespace ME3Explorer
                             displayValue = pcc.getEntry(oIndex).GetFullPath;
                             if (oIndex > 0 && ExportToStringConverters.Contains(pcc.Exports[oIndex - 1].ClassName))
                             {
-                                displayPrefix += " " + ExportToString(pcc.Exports[oIndex - 1]);
+                                displayValue += " " + ExportToString(pcc.Exports[oIndex - 1]);
                             }
                         }
                         else
@@ -1380,6 +1375,53 @@ namespace ME3Explorer
             return (nodeType)(-1);
         }*/
 
+        private void hb1_SelectionChanged(object sender, EventArgs e)
+        {
+            int start = (int)Interpreter_Hexbox.SelectionStart;
+            int len = (int)Interpreter_Hexbox.SelectionLength;
+            int size = (int)Interpreter_Hexbox.ByteProvider.Length;
+            //TODO: Optimize this so this is only called when data has changed
+            byte[] currentData = (Interpreter_Hexbox.ByteProvider as DynamicByteProvider).Bytes.ToArray();
+            try
+            {
+                if (currentData != null && start != -1 && start < size)
+                {
+                    string s = $"Byte: {currentData[start]}"; //if selection is same as size this will crash.
+                    if (start <= currentData.Length - 4)
+                    {
+                        int val = BitConverter.ToInt32(currentData, start);
+                        s += $", Int: {val}";
+                        if (pcc.isName(val))
+                        {
+                            s += $", Name: {pcc.getNameEntry(val)}";
+                        }
+                        if (pcc.getEntry(val) is IExportEntry exp)
+                        {
+                            s += $", Export: {exp.ObjectName}";
+                        }
+                        else if (pcc.getEntry(val) is ImportEntry imp)
+                        {
+                            s += $", Import: {imp.ObjectName}";
+                        }
+                    }
+                    s += $" | Start=0x{start.ToString("X8")} ";
+                    if (len > 0)
+                    {
+                        s += $"Length=0x{len.ToString("X8")} ";
+                        s += $"End=0x{(start + len - 1).ToString("X8")}";
+                    }
+                    StatusBar_LeftMostText.Text = s;
+                }
+                else
+                {
+                    StatusBar_LeftMostText.Text = "Nothing Selected";
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
         #region UnrealObjectInfo
         private PropertyInfo GetPropertyInfo(int propName)
         {
@@ -1509,17 +1551,13 @@ namespace ME3Explorer
         /// <param name="e"></param>
         private void UpdateHexboxPosition(object tvi)
         {
-            return; //fix later
-
             UPropertyTreeViewEntry newSelectedItem = (UPropertyTreeViewEntry)tvi;
-            if (newSelectedItem != null)
+            if (newSelectedItem != null && newSelectedItem.Property != null)
             {
-                //    var hexPosStr = newSelectedItem.Name.Substring(1); //remove _
-                //  int hexPos = Convert.ToInt32(hexPosStr);
-                //Interpreter_Hexbox.SelectionStart = hexPos;
-                //Interpreter_Hexbox.SelectionLength = 1;
+                var hexPos = newSelectedItem.Property.Offset;
+                Interpreter_Hexbox.SelectionStart = hexPos;
+                Interpreter_Hexbox.SelectionLength = 1; //maybe change
             }
-
         }
 
         private void Interpreter_Loaded(object sender, System.Windows.RoutedEventArgs e)
@@ -1876,10 +1914,12 @@ namespace ME3Explorer
                     if (Property.PropType == Unreal.PropertyType.ArrayProperty)
                     {
                         return "ArrayProperty - TODO";
+                        //return $"ArrayProperty({(Property as ArrayProperty).arrayType})";
+
                     }
                     else if (Property.PropType == Unreal.PropertyType.StructProperty)
                     {
-                        return "StructProperty - TODO";
+                        return $"StructProperty({(Property as StructProperty).StructType})";
                     }
                     else
                     {

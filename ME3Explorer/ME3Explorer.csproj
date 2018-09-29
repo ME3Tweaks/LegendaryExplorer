@@ -724,6 +724,9 @@
     <Compile Include="TPFTools\KFreonTPFTools3.Designer.cs">
       <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
     </Compile>
+    <Compile Include="UnrealScriptControl\UnrealScriptWPF.xaml.cs">
+      <DependentUpon>UnrealScriptWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Unreal\BitConverter.cs" />
     <Compile Include="Unreal\Bytecode.cs" />
     <Compile Include="Unreal\Classes\AnimNodeSlot.cs" />
@@ -1018,6 +1021,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Main Window\ToolPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UnrealScriptControl\UnrealScriptWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

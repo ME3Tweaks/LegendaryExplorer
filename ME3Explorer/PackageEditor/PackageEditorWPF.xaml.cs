@@ -104,6 +104,7 @@ namespace ME3Explorer
             ExportLoaders[SoundTab_Soundpanel] = Sound_Tab;
             ExportLoaders[CurveTab_CurveEditor] = CurveEditor_Tab;
             ExportLoaders[Bio2DATab_Bio2DAEditor] = Bio2DAViewer_Tab;
+            ExportLoaders[ScriptTab_UnrealScriptEditor] = Script_Tab;
             ExportLoaders[BinaryInterpreterTab_BinaryInterpreter] = BinaryInterpreter_Tab;
 
             LoadRecentList();
@@ -923,14 +924,14 @@ namespace ME3Explorer
                     Header_Hexbox.ByteProvider = new DynamicByteProvider(CurrentlyLoadedEntry.Header);
                     Header_Hexbox.ByteProvider.Changed += InfoTab_Header_ByteProvider_InternalChanged;
                     Info_Header_UnsavedChanges.Visibility = Visibility.Hidden;
-                    Script_Tab.Visibility = exportEntry.ClassName == "Function" ? Visibility.Visible : Visibility.Collapsed;
+                    /*Script_Tab.Visibility = exportEntry.ClassName == "Function" ? Visibility.Visible : Visibility.Collapsed;
                     if (exportEntry.ClassName == "Function")
                     {
                         /*
                                                 if (!Script_Tab.TabPages.ContainsKey(nameof(scriptTab)))
                                                 {
                                                     packageEditorTabPane.TabPages.Add(scriptTab);
-                                                }*/
+                                                }
                         if (pcc.Game == MEGame.ME3)
                         {
                             Function func = new Function(exportEntry.Data, pcc);
@@ -952,7 +953,7 @@ namespace ME3Explorer
                         {
                             Script_TextBox.Text = "Parsing UnrealScript Functions for this game is not supported.";
                         }
-                    }
+                    }*/
 
                     foreach (KeyValuePair<ExportLoaderControl, TabItem> entry in ExportLoaders)
                     {
