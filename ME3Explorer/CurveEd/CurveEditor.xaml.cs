@@ -209,16 +209,5 @@ namespace ME3Explorer.CurveEd
             }
             return false;
         }
-
-        /* public override void handleUpdate(List<PackageUpdate> updates)
-        {
-            IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.change == PackageChange.ExportData);
-            List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
-            if (updatedExports.Contains(expEntry.Index) && !this.IsForegroundWindow())
-            {
-                graph.Clear();
-                Load();
-            }
-        }*/
     }
 }

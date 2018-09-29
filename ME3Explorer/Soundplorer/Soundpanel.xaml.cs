@@ -108,7 +108,12 @@ namespace ME3Explorer
                 ExportInformationList.Add("Filename : " + (w.FileName ?? "Stored in this PCC"));
                 ExportInformationList.Add("Data size: " + w.DataSize + " bytes");
                 ExportInformationList.Add("Data offset: 0x" + w.DataOffset.ToString("X8"));
-                ExportInformationList.Add("ID: 0x" + w.Id.ToString("X8") + " = " + w.Id);
+                string wemId = "ID: 0x" + w.Id.ToString("X8");
+                if (Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness)
+                {
+                    wemId += $" {ReverseBytes((uint)w.Id).ToString("X8")} (Reversed)";
+                }
+                ExportInformationList.Add(wemId);
                 CurrentLoadedExport = exportEntry;
             }
             if (exportEntry.ClassName == "WwiseBank")
