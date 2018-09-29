@@ -31,7 +31,7 @@
         <GridSplitter Grid.Row="0" Grid.Column="1" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
         <DockPanel Grid.Row="0" Grid.Column="2">
             <TextBlock Text="Tokens" DockPanel.Dock="Top" FontWeight="Bold"/>
-            <ListBox Name="Tokens_ListBox" VerticalAlignment="Stretch" />
+            <ListBox Name="Tokens_ListBox" VerticalAlignment="Stretch" ItemsSource="{Binding TokensList}"/>
         </DockPanel>
         <GridSplitter Grid.Row="1" Grid.ColumnSpan="3" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
         <DockPanel Grid.Row="2" Grid.ColumnSpan="3">

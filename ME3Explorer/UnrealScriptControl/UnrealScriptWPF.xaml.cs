@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Be.Windows.Forms;
 using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
+using ME3Explorer.Unreal;
 
 namespace ME3Explorer
 {
@@ -23,6 +26,7 @@ namespace ME3Explorer
     public partial class UnrealScriptWPF : ExportLoaderControl
     {
         private HexBox ScriptEditor_Hexbox;
+        public ObservableCollectionExtended<BytecodeToken> TokenList { get; set; } = new ObservableCollectionExtended<BytecodeToken>();
 
         public UnrealScriptWPF()
         {
@@ -48,9 +52,8 @@ namespace ME3Explorer
                 var func = new ME3Explorer.Unreal.Classes.Function(data, CurrentLoadedExport.FileRef);
                 func.ParseFunction();
                 Function_TextBox.Text = func.ScriptText;
-                Tokens_ListBox.ItemsSource = func.TokenList;
-                
-
+                TokenList.Clear();
+                TokenList.AddRange(func.TokenList);
             }
             else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
             {
