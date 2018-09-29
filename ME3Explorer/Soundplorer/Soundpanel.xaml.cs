@@ -111,7 +111,7 @@ namespace ME3Explorer
                 string wemId = "ID: 0x" + w.Id.ToString("X8");
                 if (Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness)
                 {
-                    wemId += $" {ReverseBytes((uint)w.Id).ToString("X8")} (Reversed)";
+                    wemId += $" | 0x{ReverseBytes((uint)w.Id).ToString("X8")} (Reversed)";
                 }
                 ExportInformationList.Add(wemId);
                 CurrentLoadedExport = exportEntry;
