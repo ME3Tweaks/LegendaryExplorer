@@ -638,6 +638,7 @@
     <Compile Include="SharedUI\PromptDialog.xaml.cs">
       <DependentUpon>PromptDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\StretchingTreeView.cs" />
     <Compile Include="SingleInstance.cs" />
     <Compile Include="Soundplorer\VorbisAudioPlayer.cs" />
     <Compile Include="Soundplorer\DirectReplace.cs">

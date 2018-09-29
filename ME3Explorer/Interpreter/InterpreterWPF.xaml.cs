@@ -27,6 +27,7 @@ namespace ME3Explorer
     {
         private IMEPackage pcc;
         public IMEPackage Pcc { get { return pcc; } set { pcc = value; defaultStructValues.Clear(); } }
+        public ObservableCollectionExtended<UPropertyTreeViewEntry> PropertyNodes { get; set; } = new ObservableCollectionExtended<UPropertyTreeViewEntry>();
 
         //Values in this list will cause the ExportToString() method to be called on an objectproperty in InterpreterWPF.
         //This is useful for end user when they want to view things in a list for example, but all of the items are of the 
@@ -130,7 +131,7 @@ namespace ME3Explorer
             memory = null;
             memsize = 0;
             Interpreter_Hexbox.ByteProvider = new DynamicByteProvider(new byte[] { });
-            Interpreter_TreeView.Items.Clear();
+            PropertyNodes.Clear();
         }
 
         /// <summary>
@@ -179,20 +180,24 @@ namespace ME3Explorer
             StartScan();
         }
 
+        /// <summary>
+        /// Call this when reloading the entire tree.
+        /// </summary>
+        /// <param name="expandedItems"></param>
+        /// <param name="topNodeName"></param>
+        /// <param name="selectedNodeName"></param>
         private void StartScan(IEnumerable<string> expandedItems = null, string topNodeName = null, string selectedNodeName = null)
         {
-            //resetPropEditingControls();
-            //Interpreter_TreeView.BeginUpdate();
-            Interpreter_TreeView.Items.Clear();
+            PropertyNodes.Clear();
             readerpos = CurrentLoadedExport.GetPropertyStart();
 
-            TreeViewItem topLevelTree = new TreeViewItem()
+            UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry()
             {
-                Header = "0000 : " + CurrentLoadedExport.ObjectName,
+                DisplayName = $"Export {CurrentLoadedExport.UIndex }: { CurrentLoadedExport.ObjectName} ({CurrentLoadedExport.ClassName})",
                 IsExpanded = true
             };
-            topLevelTree.Tag = nodeType.Root;
-            topLevelTree.Name = "_" + "0";
+
+            PropertyNodes.Add(topLevelTree);
 
             try
             {
@@ -201,16 +206,14 @@ namespace ME3Explorer
                 {
                     GenerateTreeForProperty(prop, topLevelTree);
                 }
-                //GenerateTreeFromProperties(topLevelTree, props);
             }
             catch (Exception ex)
             {
-                TreeViewItem errorNode = new TreeViewItem()
+                UPropertyTreeViewEntry errorNode = new UPropertyTreeViewEntry()
                 {
-                    Header = $"PARSE ERROR {ex.Message}"
+                    DisplayName = $"PARSE ERROR {ex.Message}"
                 };
-                topLevelTree.Items.Add(errorNode);
-                //addPropButton.Visible = false;
+                topLevelTree.ChildrenProperties.Add(errorNode);
             }
             /*try
             {
@@ -227,7 +230,6 @@ namespace ME3Explorer
                 //addPropButton.Visible = false;
                 //removePropertyButton.Visible = false;
             }*/
-            Interpreter_TreeView.Items.Add(topLevelTree);
             //Interpreter_TreeView.CollapseAll();
             //Interpreter_TreeView.Items[0].Expand();
 
@@ -271,109 +273,95 @@ namespace ME3Explorer
             memsize = memory.Length;
         }
 
-        private void GenerateTreeForProperty(UProperty prop, TreeViewItem parent)
+        private void GenerateTreeForProperty(UProperty prop, UPropertyTreeViewEntry parent)
         {
-            string s = prop.Offset.ToString("X4") + ": ";
-            s += "\"" + prop.Name + "\" ";
-            s += "Type: " + prop.PropType;
-            //s += "Size: " + prop.
+            string displayName = $"{prop.Offset.ToString("X4")}: { prop.Name}: ";
+            string displayValue = "";
             var nodeColor = Brushes.Black;
-
-            // if (prop.PropType != PropertyType.None)
-            //{
             switch (prop.PropType)
             {
                 case PropertyType.ObjectProperty:
                     {
-                        s += " Value: ";
                         int index = (prop as ObjectProperty).Value;
                         var entry = pcc.getEntry(index);
                         if (entry != null)
                         {
-                            s += index + " " + entry.GetFullPath;
+                            displayValue = $"[{index}] {entry.GetFullPath}";
                             if (index > 0 && ExportToStringConverters.Contains(entry.ClassName))
                             {
-                                s += " " + ExportToString(pcc.Exports[index - 1]);
+                                displayValue += " " + ExportToString(pcc.Exports[index - 1]);
                             }
                         }
                         else if (index == 0)
                         {
-                            s += index + " Null";
+                            displayValue = index + " Null";
                         }
                         else
                         {
-                            s += index + " Index out of bounds of " + (index < 0 ? "Import" : "Export") + " list";
+                            displayValue = index + " Index out of bounds of " + (index < 0 ? "Import" : "Export") + " list";
                         }
                         nodeColor = Brushes.Blue;
                     }
                     break;
                 case PropertyType.IntProperty:
                     {
-                        s += " Value: ";
-                        s += (prop as IntProperty).Value;
+                        displayValue = (prop as IntProperty).Value.ToString();
                         if (IntToStringConverters.Contains(CurrentLoadedExport.ClassName))
                         {
-                            s += IntToString(prop.Name, (prop as IntProperty).Value);
+                            displayValue += IntToString(prop.Name, (prop as IntProperty).Value);
                         }
                         nodeColor = Brushes.Green;
                     }
                     break;
                 case PropertyType.FloatProperty:
                     {
-                        s += " Value: ";
-                        s += (prop as FloatProperty).Value;
+                        displayValue = (prop as FloatProperty).Value.ToString();
                         nodeColor = Brushes.Red;
                     }
                     break;
                 case PropertyType.BoolProperty:
                     {
-                        s += " Value: ";
-                        s += (prop as BoolProperty).Value;
+                        displayValue = (prop as BoolProperty).Value.ToString();
                         nodeColor = Brushes.Orange;
                     }
                     break;
                 case PropertyType.ArrayProperty:
                     {
                         ArrayType at = GetArrayType(prop.Name.Name);
-                        s += ", " + at.ToString() + " Array Size: " + (prop as ArrayPropertyBase).ValuesAsProperties.Count();
+                        displayValue = $"{at.ToString()} array, with {(prop as ArrayPropertyBase).ValuesAsProperties.Count()} items";
                     }
                     break;
                 case PropertyType.NameProperty:
-                    s += " Value: ";
-                    s += (prop as NameProperty).NameTableIndex + " " + (prop as NameProperty).Value;
+                    displayValue = (prop as NameProperty).NameTableIndex + " " + (prop as NameProperty).Value;
                     break;
                 case PropertyType.ByteProperty:
-                    s += " Value: ";
                     if (prop is EnumProperty)
                     {
-                        s += (prop as EnumProperty).Value;
+                        displayValue = (prop as EnumProperty).Value;
                     }
                     else
                     {
-                        s += (prop as ByteProperty).Value;
+                        displayValue = (prop as ByteProperty).Value.ToString();
                     }
                     break;
                 case PropertyType.StrProperty:
-                    s += " Value: ";
-                    s += (prop as StrProperty).Value;
+                    displayValue = (prop as StrProperty).Value;
                     break;
                 case PropertyType.StructProperty:
-                    s += ", ";
-                    s += (prop as StructProperty).StructType;
+                    displayValue = (prop as StructProperty).StructType;
                     break;
                 case PropertyType.None:
-                    //  s += " NONE (Name)";
+                    displayValue = "End of properties";
                     nodeColor = Brushes.SlateGray;
                     break;
             }
-            TreeViewItem item = new TreeViewItem()
+            UPropertyTreeViewEntry item = new UPropertyTreeViewEntry()
             {
-                Header = s,
-                Name = "_" + prop.Offset.ToString(),
-                Foreground = nodeColor,
-                Tag = prop
+                Property = prop,
+                DisplayValue = displayValue,
+                DisplayName = displayName
             };
-            parent.Items.Add(item);
+            parent.ChildrenProperties.Add(item);
             if (prop.PropType == PropertyType.ArrayProperty)
             {
                 int i = 0;
@@ -414,59 +402,59 @@ namespace ME3Explorer
             return "";
         }
 
-        private void GenerateTreeForArrayProperty(UProperty prop, TreeViewItem parent, int index)
+        private void GenerateTreeForArrayProperty(UProperty prop, UPropertyTreeViewEntry parent, int index)
         {
-            string s = prop.Offset.ToString("X4") + " Item " + index + "";
-
+            string displayPrefix = prop.Offset.ToString("X4") + " Item " + index + "";
+            string displayValue = "";
             switch (prop.PropType)
             {
                 case PropertyType.ObjectProperty:
                     int oIndex = (prop as ObjectProperty).Value;
-                    s += ": [" + oIndex + "] ";
+                    displayValue = ": [" + oIndex + "] ";
                     if (oIndex > 0 || oIndex < 0)
                     {
                         if (oIndex <= pcc.ExportCount && oIndex > pcc.ImportCount * -1)
                         {
-                            s += pcc.getEntry(oIndex).GetFullPath;
+                            displayValue = pcc.getEntry(oIndex).GetFullPath;
                             if (oIndex > 0 && ExportToStringConverters.Contains(pcc.Exports[oIndex - 1].ClassName))
                             {
-                                s += " " + ExportToString(pcc.Exports[oIndex - 1]);
+                                displayPrefix += " " + ExportToString(pcc.Exports[oIndex - 1]);
                             }
                         }
                         else
                         {
-                            s += "Object index out of bounds of PCC imports/exports";
+                            displayValue = "Object index out of bounds of PCC imports/exports";
                         }
                     }
                     else
                     {
-                        s += "Null";
+                        displayValue = "Null";
                     }
                     break;
                 case PropertyType.StructProperty:
-
+                    //TODO
                     break;
                 case PropertyType.BoolProperty:
-                    s += ": " + (prop as BoolProperty).Value;
+                    displayValue = (prop as BoolProperty).Value.ToString();
                     break;
                 case PropertyType.IntProperty:
-                    s += ": ";
-                    s += (prop as IntProperty).Value;
+                    displayValue = (prop as IntProperty).Value.ToString();
                     break;
                 case PropertyType.NameProperty:
-                    s += ": " + (prop as NameProperty).NameTableIndex + " " + (prop as NameProperty).Value;
+                    displayValue = (prop as NameProperty).NameTableIndex + " " + (prop as NameProperty).Value;
 
                     break;
             }
 
 
-            TreeViewItem item = new TreeViewItem()
+            UPropertyTreeViewEntry item = new UPropertyTreeViewEntry()
             {
-                Header = s,
-                Name = "_" + prop.Offset,
-                Tag = prop
+                DisplayName = displayPrefix,
+                DisplayValue = displayValue,
+                Property = prop
             };
-            parent.Items.Add(item);
+
+            parent.ChildrenProperties.Add(item);
             if (prop.PropType == PropertyType.ArrayProperty)
             {
                 int i = 0;
@@ -1423,7 +1411,7 @@ namespace ME3Explorer
             return null;
         }
 
-        private ArrayType GetArrayType(PropertyInfo propInfo)
+        private static ArrayType GetArrayType(PropertyInfo propInfo, IMEPackage pcc)
         {
             switch (pcc.Game)
             {
@@ -1521,13 +1509,15 @@ namespace ME3Explorer
         /// <param name="e"></param>
         private void UpdateHexboxPosition(object tvi)
         {
-            TreeViewItem newSelectedItem = (TreeViewItem)tvi;
+            return; //fix later
+
+            UPropertyTreeViewEntry newSelectedItem = (UPropertyTreeViewEntry)tvi;
             if (newSelectedItem != null)
             {
-                var hexPosStr = newSelectedItem.Name.Substring(1); //remove _
-                int hexPos = Convert.ToInt32(hexPosStr);
-                Interpreter_Hexbox.SelectionStart = hexPos;
-                Interpreter_Hexbox.SelectionLength = 1;
+                //    var hexPosStr = newSelectedItem.Name.Substring(1); //remove _
+                //  int hexPos = Convert.ToInt32(hexPosStr);
+                //Interpreter_Hexbox.SelectionStart = hexPos;
+                //Interpreter_Hexbox.SelectionLength = 1;
             }
 
         }
@@ -1757,5 +1747,178 @@ namespace ME3Explorer
         {
             return true;
         }
+    }
+
+    [DebuggerDisplay("UPropertyTreeViewEntry {DisplayName}")]
+    public class UPropertyTreeViewEntry : INotifyPropertyChanged
+    {
+        protected void OnPropertyChanged(string propName)
+        {
+            var temp = PropertyChanged;
+            if (temp != null)
+                temp(this, new PropertyChangedEventArgs(propName));
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private System.Windows.Media.Brush _foregroundColor = System.Windows.Media.Brushes.DarkSeaGreen;
+        private bool isSelected;
+        public bool IsSelected
+        {
+            get { return this.isSelected; }
+            set
+            {
+                if (value != this.isSelected)
+                {
+                    this.isSelected = value;
+                    OnPropertyChanged("IsSelected");
+                }
+            }
+        }
+
+        private bool isExpanded;
+        public bool IsExpanded
+        {
+            get { return this.isExpanded; }
+            set
+            {
+                if (value != this.isExpanded)
+                {
+                    this.isExpanded = value;
+                    OnPropertyChanged("IsExpanded");
+                }
+            }
+        }
+
+        public void ExpandParents()
+        {
+            if (Parent != null)
+            {
+                Parent.ExpandParents();
+                Parent.IsExpanded = true;
+            }
+        }
+
+        //public void Focus(TreeView tView)
+        //{
+        //    TreeViewItem tvItem = (TreeViewItem)tView.ItemContainerGenerator.ContainerFromItem(this);
+        //    tvItem?.Focus();
+        //}
+
+        /// <summary>
+        /// Flattens the tree into depth first order. Use this method for searching the list.
+        /// </summary>
+        /// <returns></returns>
+        public List<UPropertyTreeViewEntry> FlattenTree()
+        {
+            List<UPropertyTreeViewEntry> nodes = new List<UPropertyTreeViewEntry>();
+            nodes.Add(this);
+            foreach (UPropertyTreeViewEntry tve in ChildrenProperties)
+            {
+                nodes.AddRange(tve.FlattenTree());
+            }
+            return nodes;
+        }
+
+        public UPropertyTreeViewEntry Parent { get; set; }
+
+        /// <summary>
+        /// The UProperty object from the export's properties that this node represents
+        /// </summary>
+        public UProperty Property { get; set; }
+        /// <summary>
+        /// List of children properties that link to this node.
+        /// Only Struct and ArrayProperties will have this populated.
+        /// </summary>
+        public ObservableCollectionExtended<UPropertyTreeViewEntry> ChildrenProperties { get; set; }
+        public UPropertyTreeViewEntry(UProperty property, string displayName = null)
+        {
+            Property = property;
+            DisplayName = displayName;
+            ChildrenProperties = new ObservableCollectionExtended<UPropertyTreeViewEntry>();
+        }
+
+        public UPropertyTreeViewEntry()
+        {
+            ChildrenProperties = new ObservableCollectionExtended<UPropertyTreeViewEntry>();
+        }
+
+        private string _displayValue;
+        public string DisplayValue
+        {
+            get
+            {
+                if (_displayValue != null) return _displayValue;
+                return "";
+            }
+            set { _displayValue = value; }
+        }
+
+        private string _displayName;
+        public string DisplayName
+        {
+            get
+            {
+                if (_displayName != null) return _displayName;
+                return "DisplayName for this UPropertyTreeViewItem is null!";
+                //string type = UIndex < 0 ? "Imp" : "Exp";
+                //return $"({type}) {UIndex} {Entry.ObjectName}({Entry.ClassName})"; */
+            }
+            set { _displayName = value; }
+        }
+
+
+
+        public string PropertyType
+        {
+            get
+            {
+                if (Property != null)
+                {
+                    if (Property.PropType == Unreal.PropertyType.ArrayProperty)
+                    {
+                        return "ArrayProperty - TODO";
+                    }
+                    else if (Property.PropType == Unreal.PropertyType.StructProperty)
+                    {
+                        return "StructProperty - TODO";
+                    }
+                    else
+                    {
+                        return Property.PropType.ToString();
+                    }
+                }
+                return "Currently loaded export";
+                //string type = UIndex < 0 ? "Imp" : "Exp";
+                //return $"({type}) {UIndex} {Entry.ObjectName}({Entry.ClassName})"; */
+            }
+            //set { _displayName = value; }
+        }
+
+        //public System.Windows.Media.Brush ForegroundColor
+        //{
+        //    get { return Property == null ? System.Windows.Media.Brushes.Black : UIndex > 0 ? System.Windows.Media.Brushes.Black : System.Windows.Media.Brushes.Gray; }
+        //    set
+        //    {
+        //        _foregroundColor = value;
+        //        OnPropertyChanged("ForegroundColor");
+        //    }
+        //}
+
+        public override string ToString()
+        {
+            return "UPropertyTreeViewEntry " + DisplayName;
+        }
+
+        ///// <summary>
+        ///// Sorts this node's children in ascending positives first, then descending negatives
+        ///// </summary>
+        //internal void SortChildren()
+        //{
+        //    var exportNodes = ChildrenProperties.Where(x => x.Entry.UIndex > 0).OrderBy(x => x.UIndex).ToList();
+        //    var importNodes = ChildrenProperties.Where(x => x.Entry.UIndex < 0).OrderBy(x => x.UIndex).Reverse().ToList(); //we want this in descending order
+
+        //    exportNodes.AddRange(importNodes);
+        //    ChildrenProperties.Clear();
+        //    ChildrenProperties.AddRange(exportNodes);
+        //}
     }
 }

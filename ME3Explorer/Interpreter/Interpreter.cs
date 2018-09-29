@@ -332,10 +332,6 @@ namespace ME3Explorer
                 ImportEntry donorTopLevelImport = null;
                 foreach (ImportEntry imp in pcc.Imports) //importing side info we will move to our dest pcc
                 {
-                    if (imp.GetFullPath.StartsWith("BioVFX"))
-                    {
-                        Console.WriteLine(imp.GetFullPath);
-                    }
                     if (imp.GetFullPath == fullobjectname)
                     {
                         donorTopLevelImport = imp;
