@@ -23,8 +23,6 @@ namespace ME3Explorer.CurveEd
     /// </summary>
     public partial class CurveEditor : ExportLoaderControl
     {
-        new MEGame[] SupportedGames = new MEGame[] { MEGame.ME3 };
-
         public List<InterpCurve> InterpCurveTracks;
 
         public CurveEditor()

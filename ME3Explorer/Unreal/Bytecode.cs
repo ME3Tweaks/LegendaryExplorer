@@ -7,15 +7,9 @@ using ME3Explorer.Packages;
 
 namespace ME3Explorer.Unreal
 {
-    static class Bytecode
+    public static class Bytecode
     {
-        public struct Token
-        {
-            public byte[] raw;
-            public string text;
-            public bool stop;
-            public byte op;
-        }
+
         public static readonly Dictionary<short, string> byteOpnameMap = new Dictionary<short, string>
         {
              { 0x00, "EX_LocalVariable" },
@@ -428,9 +422,9 @@ namespace ME3Explorer.Unreal
         private const int EX_Unkn14 = 0x5A;
         private const int EX_Unkn15 = 0x59;
 
-        
 
-        static List<BytecodeToken> _debug;
+
+        static List<BytecodeSingularToken> _debug;
         static int DebugCounter;
 
         #endregion
@@ -643,7 +637,7 @@ namespace ME3Explorer.Unreal
             NATIVE_UpdateURL = 0x0222
         };
 
-        public static Tuple<string, List<BytecodeToken>> ParseBytecode(byte[] raw, IMEPackage pcc)
+        public static Tuple<List<Token>, List<BytecodeSingularToken>> ParseBytecode(byte[] raw, IMEPackage pcc)
         {
 
             string s = "";
@@ -651,16 +645,27 @@ namespace ME3Explorer.Unreal
             memory = raw;
             memsize = raw.Length;
             DebugCounter = 0;
-            _debug = new List<BytecodeToken>();
+            _debug = new List<BytecodeSingularToken>();
             List<Token> t = ReadAll(0);
-            int pos = 32;
+
+            //calculate padding width.
+            int totalLength = 32;
             for (int i = 0; i < t.Count; i++)
             {
-                s += pos.ToString("X2") + " : " + t[i].text + "\n";
+                totalLength += t[i].raw.Length;
+            }
+
+            //calculate block position and assign paddingwidth.
+            int paddingSize = totalLength.ToString().Length;
+            int pos = 0x20;
+            for (int i = 0; i < t.Count; i++)
+            {
+                t[i].pos = pos;
+                t[i].paddingSize = paddingSize;
                 pos += t[i].raw.Length;
             }
-            SortDbgMsg();
-            return new Tuple<string, List<BytecodeToken>>(s, _debug);
+            _debug.Sort();
+            return new Tuple<List<Token>, List<BytecodeSingularToken>>(t, _debug);
         }
 
         private static void SortDbgMsg()
@@ -672,7 +677,7 @@ namespace ME3Explorer.Unreal
                 for (int i = 0; i < _debug.Count() - 1; i++)
                     if (_debug[i].tokenIndex > _debug[i + 1].tokenIndex)
                     {
-                        BytecodeToken t = _debug[i];
+                        BytecodeSingularToken t = _debug[i];
                         _debug[i] = _debug[i + 1];
                         _debug[i + 1] = t;
                         done = false;
@@ -703,7 +708,7 @@ namespace ME3Explorer.Unreal
             res.text = "";
             res.raw = new byte[1];
             res.stop = true;
-            Token newTok;
+            Token newTok = new Token();
             if (start >= memsize)
                 return res;
             byte t = memory[start];
@@ -1247,7 +1252,7 @@ namespace ME3Explorer.Unreal
                         break;
                 }
             }
-            BytecodeToken msg = new BytecodeToken();
+            BytecodeSingularToken msg = new BytecodeSingularToken();
             string opname;// = 
             byteOpnameMap.TryGetValue(t, out opname);
             if (opname == null || opname == "")
@@ -1255,7 +1260,7 @@ namespace ME3Explorer.Unreal
                 opname = "UNKNOWN(0x" + t.ToString("X2") + ")";
             }
 
-            string op = opname + "[0x" + t.ToString("X2") + "]";
+            string op = $"[0x{t.ToString("X2")}] {opname}";
             string tokenpos = "0x" + (start + 32).ToString("X");
             string data = res.text;
             msg.opCode = op;
@@ -4526,10 +4531,9 @@ namespace ME3Explorer.Unreal
             t.raw[0] = memory[start];
             return t;
         }
-
     }
 
-    public class BytecodeToken
+    public class BytecodeSingularToken : IComparable<BytecodeSingularToken>
     {
         public int tokenIndex;
         public string opCode;
@@ -4540,5 +4544,37 @@ namespace ME3Explorer.Unreal
         {
             return $"0x{startPos.ToString("X4")}: {opCode} {currentStack}";
         }
+
+        public int CompareTo(BytecodeSingularToken that)
+        {
+            return this.tokenIndex.CompareTo(that.tokenIndex);
+        }
     }
-}
+
+    public class Token
+    {
+        public byte[] raw;
+        public string text { get; set; }
+        public bool stop;
+        public byte op { get; set; }
+        public int pos { get; set; }
+        public string posStr
+        {
+            get
+            {
+                return pos.ToString("X" + paddingSize);
+            }
+        }
+
+        internal int paddingSize;
+
+        public override string ToString()
+        {
+            return $"0x{pos.ToString("X" + paddingSize)} : {text}";
+        }
+    }
+}            //for (int i = 0; i < t.Count; i++)
+             //{
+             //    s += "0x" + pos.ToString("X" + paddingSize) + " : " + t[i].text + "\n";
+             //    pos += t[i].raw.Length;
+             //}

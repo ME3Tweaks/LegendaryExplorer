@@ -27,8 +27,10 @@ namespace ME3Explorer.Unreal.Classes
                                     "Delegate", "NetServer", "HasOutParms", "HasDefaults", 
                                     "NetClient", "FuncInherit", "FuncOverrideMatch"};
         internal string ScriptText;
+        public string HeaderText;
+        public List<Token> ScriptBlocks;
 
-        internal List<BytecodeToken> TokenList { get; private set; }
+        internal List<BytecodeSingularToken> SingularTokenList { get; private set; }
 
         public Function()
         {
@@ -97,18 +99,16 @@ namespace ME3Explorer.Unreal.Classes
 
         public void ParseFunction()
         {
-            string s = "";
-            s += "Childindex : " + child + "\n";
-            s += "Unknown1 : " + unk1 + "\n";
-            s += "Unknown2 : " + unk2 + "\n";
-            s += "Script Size : " + size + "\n";
-            s += GetFlags() + "\n";
-            s += "Native Index: " + nativeindex + "\n";
-            s += "Script:\n";
+            HeaderText = "";
+            HeaderText += "Childindex : " + child + "\n";
+            HeaderText += "Unknown1 : " + unk1 + "\n";
+            HeaderText += "Unknown2 : " + unk2 + "\n";
+            HeaderText += "Script Size : " + size + "\n";
+            HeaderText += GetFlags() + "\n";
+            HeaderText += "Native Index: " + nativeindex;
             var parsedData = Bytecode.ParseBytecode(script, pcc);
-            s += parsedData.Item1;
-            TokenList = parsedData.Item2;
-            ScriptText = s;
+            ScriptBlocks = parsedData.Item1;
+            SingularTokenList = parsedData.Item2;
         }
     }
 }

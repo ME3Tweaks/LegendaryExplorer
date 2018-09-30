@@ -556,8 +556,8 @@ namespace ME3Explorer
                                 func.ParseFunction();
                                 string text = func.ScriptText;
                                 text += "\nDebug print:\n\n";
-                                for (int i = 0; i < func.TokenList.Count(); i++)
-                                    text += func.TokenList[i].ToString();
+                                for (int i = 0; i < func.SingularTokenList.Count(); i++)
+                                    text += func.SingularTokenList[i].ToString();
                                 rtb1.Text = text;
                             }
                             else if (pcc.Game == MEGame.ME1)

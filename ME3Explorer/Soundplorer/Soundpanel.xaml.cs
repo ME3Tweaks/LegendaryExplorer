@@ -37,7 +37,6 @@ namespace ME3Explorer
     /// </summary>
     public partial class Soundpanel : ExportLoaderControl
     {
-        new MEGame[] SupportedGames = new MEGame[] { MEGame.ME2, MEGame.ME3 };
         public BindingList<object> ExportInformationList { get; set; }
         private List<EmbeddedWEMFile> AllWems = new List<EmbeddedWEMFile>(); //used only for rebuilding soundbank
         WwiseStream w;
