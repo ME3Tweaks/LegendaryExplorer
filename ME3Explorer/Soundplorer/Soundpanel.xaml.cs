@@ -343,12 +343,19 @@ namespace ME3Explorer
         public ICommand TrackControlMouseDownCommand { get; set; }
         public ICommand TrackControlMouseUpCommand { get; set; }
         public ICommand VolumeControlValueChangedCommand { get; set; }
+        /// <summary>
+        /// The cached stream source is used to determine if we should unload the current vorbis stream
+        /// when pressing play again after playback has been stopped.
+        /// </summary>
+        private object CachedStreamSource { get; set; }
+
         private enum PlaybackState
         {
             Playing, Stopped, Paused
         }
 
         private PlaybackState _playbackState;
+        private bool RestartingDueToLoop;
 
         private void LoadCommands()
         {
@@ -697,7 +704,6 @@ namespace ME3Explorer
                 d.FileName = CurrentLoadedExport.ObjectName + "_0x" + currentWEMItem.Id.ToString("X8") + ".wav";
                 if (d.ShowDialog().Value)
                 {
-
                     Stream ms = getPCMStream();
                     ms.Seek(0, SeekOrigin.Begin);
                     using (FileStream fs = new FileStream(d.FileName, FileMode.OpenOrCreate))
@@ -733,9 +739,25 @@ namespace ME3Explorer
             {
                 if (vorbisStream == null)
                 {
-                    vorbisStream = getPCMStream();
+                    UpdateVorbisStream();
                 }
-
+                else
+                {
+                    if (!RestartingDueToLoop)
+                    {
+                        //check if cached is the same as what we want to play
+                        if (CurrentLoadedExport.ClassName == "WwiseStream" && CachedStreamSource != CurrentLoadedExport)
+                        {
+                            //invalidate the cache
+                            UpdateVorbisStream();
+                        }
+                        else if (CurrentLoadedExport.ClassName == "WwiseBank" && CachedStreamSource != ExportInfoListBox.SelectedItem)
+                        {
+                            //Invalidate the cache
+                            UpdateVorbisStream();
+                        }
+                    }
+                }
                 //check to make sure stream has loaded before we attempt to play it
                 if (vorbisStream != null)
                 {
@@ -773,6 +795,19 @@ namespace ME3Explorer
             if (playToggle)
             {
                 _audioPlayer.TogglePlayPause(CurrentVolume);
+            }
+        }
+
+        private void UpdateVorbisStream()
+        {
+            vorbisStream = getPCMStream();
+            if (CurrentLoadedExport.ClassName == "WwiseStream")
+            {
+                CachedStreamSource = CurrentLoadedExport;
+            }
+            else if (CurrentLoadedExport.ClassName == "WwiseBank")
+            {
+                CachedStreamSource = ExportInfoListBox.SelectedItem;
             }
         }
 
@@ -892,7 +927,9 @@ namespace ME3Explorer
 
             if (_audioPlayer.PlaybackStopType == VorbisAudioPlayer.PlaybackStopTypes.PlaybackStoppedReachingEndOfFile && Properties.Settings.Default.SoundpanelRepeating)
             {
+                RestartingDueToLoop = true;
                 StartPlayback(null);
+                RestartingDueToLoop = false;
             }
         }
 
