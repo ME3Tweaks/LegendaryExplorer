@@ -262,5 +262,17 @@ namespace ME3Explorer.Properties {
                 this["MeshplorerViewFirstPerson"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SoundpanelRepeating {
+            get {
+                return ((bool)(this["SoundpanelRepeating"]));
+            }
+            set {
+                this["SoundpanelRepeating"] = value;
+            }
+        }
     }
 }

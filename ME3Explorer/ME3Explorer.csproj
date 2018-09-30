@@ -660,6 +660,7 @@
     <Compile Include="Soundplorer\SoundplorerWPF.xaml.cs">
       <DependentUpon>SoundplorerWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\Converters\FontAwesomeStateColorConverter.cs" />
     <Compile Include="Soundplorer\WwiseMenuItemVisibilityConverter.cs" />
     <Compile Include="SubtitleScanner\FileHelpers.cs" />
     <Compile Include="SubtitleScanner\SubtitleScanner.cs">

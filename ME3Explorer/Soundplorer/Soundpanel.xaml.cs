@@ -22,6 +22,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml.Linq;
+using FontAwesome.WPF;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using ME3Explorer.Soundplorer;
@@ -51,7 +52,7 @@ namespace ME3Explorer
 
         public Soundpanel()
         {
-            PlayPauseImageSource = "/soundplorer/play.png";
+            PlayPauseIcon = FontAwesomeIcon.Play;
             ExportInformationList = new BindingList<object>();
             LoadCommands();
             CurrentVolume = 1;
@@ -256,17 +257,30 @@ namespace ME3Explorer
 
 
         #region MVVM stuff
-        private string _playPauseImageSource;
-        public string PlayPauseImageSource
+        private bool _repeating;
+        public bool Repeating
+        {
+            get { return _repeating; }
+            set
+            {
+                if (value == _repeating) return;
+                _repeating = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private FontAwesomeIcon _playPauseImageSource;
+        public FontAwesomeIcon PlayPauseIcon
         {
             get { return _playPauseImageSource; }
             set
             {
                 if (value == _playPauseImageSource) return;
                 _playPauseImageSource = value;
-                OnPropertyChanged(nameof(PlayPauseImageSource));
+                OnPropertyChanged();
             }
         }
+
 
         private string _title;
         private double _currentTrackLength;
@@ -871,12 +885,12 @@ namespace ME3Explorer
         private void _audioPlayer_PlaybackStopped()
         {
             _playbackState = PlaybackState.Stopped;
-            PlayPauseImageSource = "/soundplorer/play.png";
+            PlayPauseIcon = FontAwesomeIcon.Play;
 
             CommandManager.InvalidateRequerySuggested();
             CurrentTrackPosition = 0;
 
-            if (_audioPlayer.PlaybackStopType == VorbisAudioPlayer.PlaybackStopTypes.PlaybackStoppedReachingEndOfFile)
+            if (_audioPlayer.PlaybackStopType == VorbisAudioPlayer.PlaybackStopTypes.PlaybackStoppedReachingEndOfFile && Properties.Settings.Default.SoundpanelRepeating)
             {
                 StartPlayback(null);
             }
@@ -885,14 +899,14 @@ namespace ME3Explorer
         private void _audioPlayer_PlaybackResumed()
         {
             _playbackState = PlaybackState.Playing;
-            PlayPauseImageSource = "/soundplorer/pause.png";
+            PlayPauseIcon = FontAwesomeIcon.Pause;
         }
 
         private void _audioPlayer_PlaybackPaused()
         {
             UpdateSeekBarPos(null, null);
             _playbackState = PlaybackState.Paused;
-            PlayPauseImageSource = "/soundplorer/play.png";
+            PlayPauseIcon = FontAwesomeIcon.Play;
         }
 
         #endregion
@@ -974,6 +988,12 @@ namespace ME3Explorer
                 CurrentLoadedExport.Data = w.memory.TypedClone();
                 MessageBox.Show("Done");
             }
+        }
+
+        private void RepeatingButton_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.SoundpanelRepeating = !Properties.Settings.Default.SoundpanelRepeating;
+            Properties.Settings.Default.Save();
         }
     }
 
