@@ -12,7 +12,7 @@ Some highlights of features that were developed on this fork:
  - Package Editor has property relinking when drag/dropping between files for the entire tree. This saves a HUGE amount of time for users compared to the old manual way.
  - You can view Bio2DA tables natively in Bio2DA editor view in Package Editor.
  - You can edit levels using Pathfinding Editor, including placement of objects, pathfinding, and spline movement and recalculation of reparam tables
- - WPF rewrites of multiple tools to use a more more design language - better DPI scaling, more features. These include PackageEditorWPF (and its contents), and SoundplorerWPF, with more on the way. All of these tools are being completely rewritten.
+ - WPF rewrites of multiple tools to use a more modern design language - better DPI scaling, more features. These include PackageEditorWPF (and its contents), and SoundplorerWPF, with more on the way. All of these tools are being completely rewritten.
  - Many more not listed here
   
 You can get thse releases in Mass Effect 3 Mod Manager from the tools menu, or you can download from the releases tab above.
