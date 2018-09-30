@@ -1579,10 +1579,6 @@
     <Resource Include="Resources\audio_editor_icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Soundplorer\volume.png" />
-    <Resource Include="Soundplorer\pause.png" />
-    <Resource Include="Soundplorer\play.png" />
-    <Resource Include="Soundplorer\stop.png" />
     <None Include="Resources\excel.png" />
     <None Include="Resources\excel.gif" />
     <Resource Include="Resources\error_x.png" />
