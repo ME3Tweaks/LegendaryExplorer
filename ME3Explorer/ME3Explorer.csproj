@@ -640,7 +640,7 @@
     </Compile>
     <Compile Include="SingleInstance.cs" />
     <Compile Include="Soundplorer\SoundplorerWPFCommands.cs" />
-    <Compile Include="Soundplorer\VorbisAudioPlayer.cs" />
+    <Compile Include="Soundplorer\SoundpanelAudioPlayer.cs" />
     <Compile Include="Soundplorer\DirectReplace.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ME3Explorer.Soundplorer
 {
-    public class VorbisAudioPlayer
+    public class SoundpanelAudioPlayer
     {
         public enum PlaybackStopTypes
         {
@@ -28,7 +28,7 @@ namespace ME3Explorer.Soundplorer
 
         private WaveChannel32 waveChannel;
 
-        public VorbisAudioPlayer(Stream audioBuffer, float volume)
+        public SoundpanelAudioPlayer(Stream audioBuffer, float volume)
         {
 
             _audioFileReader = new WaveFileReader(audioBuffer);

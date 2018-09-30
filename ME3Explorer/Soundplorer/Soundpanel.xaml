@@ -34,7 +34,12 @@
                     <TextBlock Text="{Binding}" Foreground="Gray"/>
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type local:EmbeddedWEMFile}">
-                    <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue"/>
+                    <!-- Do not remove transparent background. It is required for mouse hit testing.-->
+                    <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue" Background="Transparent">
+                        <TextBlock.InputBindings>
+                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding Path=DataContext.DoubleClickCommand, RelativeSource={RelativeSource AncestorType={x:Type local:Soundpanel}}}"/>
+                        </TextBlock.InputBindings>
+                    </TextBlock>
                 </DataTemplate>
             </ListBox.Resources>
         </ListBox>
@@ -54,7 +59,7 @@
                     HorizontalAlignment="Stretch"
                 Thumb.DragStarted="Seekbar_DragStarted"
                 Thumb.DragCompleted="Seekbar_DragCompleted"/>
-            
+
         </DockPanel>
         <Grid HorizontalAlignment="Center" Grid.Row="2">
             <Grid.ColumnDefinitions>

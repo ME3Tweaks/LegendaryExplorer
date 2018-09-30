@@ -191,12 +191,10 @@ namespace ME3Explorer
 
         public void FreeAudioResources()
         {
+            StopPlaying();
             if (_audioPlayer != null)
             {
-                _audioPlayer.PlaybackStopType = VorbisAudioPlayer.PlaybackStopTypes.PlaybackStoppedByUser; //will prevent loop from restarting
-                _audioPlayer.Stop();
                 _audioPlayer.Dispose();
-                vorbisStream = null;
             }
         }
 
@@ -286,7 +284,7 @@ namespace ME3Explorer
         private double _currentTrackLength;
         private double _currentTrackPosition;
         private float _currentVolume;
-        private VorbisAudioPlayer _audioPlayer;
+        private SoundpanelAudioPlayer _audioPlayer;
         public string Title
         {
             get { return _title; }
@@ -339,6 +337,7 @@ namespace ME3Explorer
         public ICommand ExportAudioCommand { get; set; }
         public ICommand StartPlaybackCommand { get; set; }
         public ICommand StopPlaybackCommand { get; set; }
+        public ICommand DoubleClickCommand { get; set; }
 
         public ICommand TrackControlMouseDownCommand { get; set; }
         public ICommand TrackControlMouseUpCommand { get; set; }
@@ -364,13 +363,25 @@ namespace ME3Explorer
             ExportAudioCommand = new RelayCommand(ExportAudio, CanExportAudio);
             StartPlaybackCommand = new RelayCommand(StartPlayback, CanStartPlayback);
             StopPlaybackCommand = new RelayCommand(StopPlayback, CanStopPlayback);
-
+            DoubleClickCommand = new RelayCommand(DoubleClickStartPlayback, CanDoubleClick);
 
 
             // Event commands
             TrackControlMouseDownCommand = new RelayCommand(TrackControlMouseDown, CanTrackControlMouseDown);
             TrackControlMouseUpCommand = new RelayCommand(TrackControlMouseUp, CanTrackControlMouseUp);
             VolumeControlValueChangedCommand = new RelayCommand(VolumeControlValueChanged, CanVolumeControlValueChanged);
+        }
+
+        private void DoubleClickStartPlayback(object obj)
+        {
+            StopPlaying();
+            StartOrPausePlaying();
+        }
+
+        private bool CanDoubleClick(object obj)
+        {
+            object currentWEMItem = ExportInfoListBox.SelectedItem;
+            return currentWEMItem != null && currentWEMItem is EmbeddedWEMFile;
         }
 
         private bool CanReplaceAudio(object obj)
@@ -729,10 +740,10 @@ namespace ME3Explorer
 
         private void StartPlayback(object p)
         {
-            StartOrPause();
+            StartOrPausePlaying();
         }
 
-        public void StartOrPause()
+        public void StartOrPausePlaying()
         {
             bool playToggle = true;
             if (_playbackState == PlaybackState.Stopped)
@@ -764,8 +775,8 @@ namespace ME3Explorer
                     try
                     {
                         vorbisStream.Position = 0;
-                        _audioPlayer = new VorbisAudioPlayer(vorbisStream, CurrentVolume);
-                        _audioPlayer.PlaybackStopType = VorbisAudioPlayer.PlaybackStopTypes.PlaybackStoppedReachingEndOfFile;
+                        _audioPlayer = new SoundpanelAudioPlayer(vorbisStream, CurrentVolume);
+                        _audioPlayer.PlaybackStopType = SoundpanelAudioPlayer.PlaybackStopTypes.PlaybackStoppedReachingEndOfFile;
                         _audioPlayer.PlaybackPaused += _audioPlayer_PlaybackPaused;
                         _audioPlayer.PlaybackResumed += _audioPlayer_PlaybackResumed;
                         _audioPlayer.PlaybackStopped += _audioPlayer_PlaybackStopped;
@@ -849,7 +860,7 @@ namespace ME3Explorer
             if (_audioPlayer != null)
             {
 
-                _audioPlayer.PlaybackStopType = VorbisAudioPlayer.PlaybackStopTypes.PlaybackStoppedByUser;
+                _audioPlayer.PlaybackStopType = SoundpanelAudioPlayer.PlaybackStopTypes.PlaybackStoppedByUser;
                 _audioPlayer.Stop();
             }
             if (vorbisStream != null)
@@ -925,7 +936,7 @@ namespace ME3Explorer
             CommandManager.InvalidateRequerySuggested();
             CurrentTrackPosition = 0;
 
-            if (_audioPlayer.PlaybackStopType == VorbisAudioPlayer.PlaybackStopTypes.PlaybackStoppedReachingEndOfFile && Properties.Settings.Default.SoundpanelRepeating)
+            if (_audioPlayer.PlaybackStopType == SoundpanelAudioPlayer.PlaybackStopTypes.PlaybackStoppedReachingEndOfFile && Properties.Settings.Default.SoundpanelRepeating)
             {
                 RestartingDueToLoop = true;
                 StartPlayback(null);
@@ -953,9 +964,9 @@ namespace ME3Explorer
         /// </summary>
         public void Soundpanel_Unload()
         {
+            StopPlaying();
             if (_audioPlayer != null)
             {
-                _audioPlayer.Stop();
                 _audioPlayer.Dispose();
             }
         }
@@ -1042,7 +1053,7 @@ namespace ME3Explorer
                 {
                     if (CanStartPlayback(null))
                     {
-                        StartOrPause();
+                        StartOrPausePlaying();
                     }
                     ke.Handled = true;
                 }

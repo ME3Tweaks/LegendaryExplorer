@@ -923,7 +923,7 @@ namespace ME3Explorer.Soundplorer
                 {
                     if (soundPanel.CanStartPlayback(null))
                     {
-                        soundPanel.StartOrPause();
+                        soundPanel.StartOrPausePlaying();
                     }
                     ke.Handled = true;
                 }

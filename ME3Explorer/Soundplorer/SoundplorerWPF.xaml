@@ -109,6 +109,9 @@
                                     <TextBlock Text="{Binding DisplayString}" VerticalAlignment="Center"/>
                                     <TextBlock Text="{Binding SubText}" VerticalAlignment="Center" Foreground="Gray"/>
                                 </StackPanel>
+                                <StackPanel.InputBindings>
+                                    <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding Path=DataContext.DoubleClickCommand, RelativeSource={RelativeSource AncestorType={x:Type local:SoundplorerWPF}}}"/>
+                                </StackPanel.InputBindings>
                             </StackPanel>
 
                             <!--
