@@ -337,7 +337,6 @@ namespace ME3Explorer
         public ICommand ExportAudioCommand { get; set; }
         public ICommand StartPlaybackCommand { get; set; }
         public ICommand StopPlaybackCommand { get; set; }
-        public ICommand DoubleClickCommand { get; set; }
 
         public ICommand TrackControlMouseDownCommand { get; set; }
         public ICommand TrackControlMouseUpCommand { get; set; }
@@ -363,25 +362,11 @@ namespace ME3Explorer
             ExportAudioCommand = new RelayCommand(ExportAudio, CanExportAudio);
             StartPlaybackCommand = new RelayCommand(StartPlayback, CanStartPlayback);
             StopPlaybackCommand = new RelayCommand(StopPlayback, CanStopPlayback);
-            DoubleClickCommand = new RelayCommand(DoubleClickStartPlayback, CanDoubleClick);
-
 
             // Event commands
             TrackControlMouseDownCommand = new RelayCommand(TrackControlMouseDown, CanTrackControlMouseDown);
             TrackControlMouseUpCommand = new RelayCommand(TrackControlMouseUp, CanTrackControlMouseUp);
             VolumeControlValueChangedCommand = new RelayCommand(VolumeControlValueChanged, CanVolumeControlValueChanged);
-        }
-
-        private void DoubleClickStartPlayback(object obj)
-        {
-            StopPlaying();
-            StartOrPausePlaying();
-        }
-
-        private bool CanDoubleClick(object obj)
-        {
-            object currentWEMItem = ExportInfoListBox.SelectedItem;
-            return currentWEMItem != null && currentWEMItem is EmbeddedWEMFile;
         }
 
         private bool CanReplaceAudio(object obj)
@@ -865,7 +850,7 @@ namespace ME3Explorer
             }
             if (vorbisStream != null)
             {
-                vorbisStream.Dispose();
+                //vorbisStream.Dispose();
                 vorbisStream = null;
             }
         }
@@ -1062,6 +1047,16 @@ namespace ME3Explorer
                     StopPlaying();
                     ke.Handled = true;
                 }
+            }
+        }
+
+        private void ExportInfoListBox_DoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            object currentWEMItem = ExportInfoListBox.SelectedItem;
+            if (currentWEMItem != null && currentWEMItem is EmbeddedWEMFile)
+            {
+                StopPlaying();
+                StartOrPausePlaying();
             }
         }
     }

@@ -948,6 +948,16 @@ namespace ME3Explorer.Soundplorer
             editor.LoadFile(Pcc.FileName);
             editor.Show();
         }
+
+        private void SoundExports_ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var item = ((FrameworkElement)e.OriginalSource).DataContext as SoundplorerExport;
+            if (item != null)
+            {
+                soundPanel.StopPlaying();
+                soundPanel.StartOrPausePlaying();
+            }
+        }
     }
 
     public class SoundplorerExport : INotifyPropertyChanged

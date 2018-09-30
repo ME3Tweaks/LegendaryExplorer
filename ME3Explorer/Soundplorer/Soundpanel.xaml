@@ -28,18 +28,14 @@
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <!--<TextBox Name="infoTextBox" Text="Select an export" Grid.Column="0" Grid.Row="0"/>-->
-        <ListBox Name="ExportInfoListBox" Grid.Column="0" Grid.Row="0" ItemsSource="{Binding ExportInformationList}" PreviewKeyDown="WEMItem_KeyDown">
+        <ListBox Name="ExportInfoListBox" Grid.Column="0" Grid.Row="0" ItemsSource="{Binding ExportInformationList}" PreviewKeyDown="WEMItem_KeyDown" MouseDoubleClick="ExportInfoListBox_DoubleClick">
             <ListBox.Resources>
                 <DataTemplate DataType="{x:Type s:String}">
                     <TextBlock Text="{Binding}" Foreground="Gray"/>
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type local:EmbeddedWEMFile}">
                     <!-- Do not remove transparent background. It is required for mouse hit testing.-->
-                    <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue" Background="Transparent">
-                        <TextBlock.InputBindings>
-                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding Path=DataContext.DoubleClickCommand, RelativeSource={RelativeSource AncestorType={x:Type local:Soundpanel}}}"/>
-                        </TextBlock.InputBindings>
-                    </TextBlock>
+                    <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue"/>
                 </DataTemplate>
             </ListBox.Resources>
         </ListBox>
