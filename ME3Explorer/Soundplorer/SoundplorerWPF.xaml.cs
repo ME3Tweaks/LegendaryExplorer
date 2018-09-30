@@ -920,7 +920,10 @@ namespace ME3Explorer.Soundplorer
             {
                 if (ke.Key == Key.Space)
                 {
-                    soundPanel.StartOrPause();
+                    if (soundPanel.CanStartPlayback(null))
+                    {
+                        soundPanel.StartOrPause();
+                    }
                     ke.Handled = true;
                 }
                 if (ke.Key == Key.Escape)

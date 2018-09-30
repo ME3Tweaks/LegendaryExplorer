@@ -785,7 +785,7 @@ namespace ME3Explorer
         }
 
 
-        private bool CanStartPlayback(object p)
+        public bool CanStartPlayback(object p)
         {
             if (vorbisStream != null) return true; //looping
             if (CurrentLoadedExport == null) return false;
@@ -994,6 +994,27 @@ namespace ME3Explorer
         {
             Properties.Settings.Default.SoundpanelRepeating = !Properties.Settings.Default.SoundpanelRepeating;
             Properties.Settings.Default.Save();
+        }
+
+        private void WEMItem_KeyDown(object sender, KeyEventArgs e)
+        {
+            KeyEventArgs ke = e as KeyEventArgs;
+            if (ke != null)
+            {
+                if (ke.Key == Key.Space)
+                {
+                    if (CanStartPlayback(null))
+                    {
+                        StartOrPause();
+                    }
+                    ke.Handled = true;
+                }
+                if (ke.Key == Key.Escape)
+                {
+                    StopPlaying();
+                    ke.Handled = true;
+                }
+            }
         }
     }
 

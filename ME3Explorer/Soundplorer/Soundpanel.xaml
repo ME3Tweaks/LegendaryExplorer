@@ -28,7 +28,7 @@
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <!--<TextBox Name="infoTextBox" Text="Select an export" Grid.Column="0" Grid.Row="0"/>-->
-        <ListBox Name="ExportInfoListBox" Grid.Column="0" Grid.Row="0" ItemsSource="{Binding ExportInformationList}">
+        <ListBox Name="ExportInfoListBox" Grid.Column="0" Grid.Row="0" ItemsSource="{Binding ExportInformationList}" PreviewKeyDown="WEMItem_KeyDown">
             <ListBox.Resources>
                 <DataTemplate DataType="{x:Type s:String}">
                     <TextBlock Text="{Binding}" Foreground="Gray"/>
