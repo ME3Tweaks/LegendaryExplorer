@@ -15,7 +15,7 @@ using KFreonLib.MEDirectories;
 
 namespace ME3Explorer
 {
-    public partial class Soundplorer : WinFormsBase
+    public partial class SoundplorerWinforms : WinFormsBase
     {
         public string CurrentFile;
         public List<int> ObjectIndexes;
@@ -23,7 +23,7 @@ namespace ME3Explorer
         WwiseBank wb;
         public string afcPath = "";
 
-        public Soundplorer()
+        public SoundplorerWinforms()
         {
             InitializeComponent();
         }
@@ -92,8 +92,8 @@ namespace ME3Explorer
             {
                 rtb1.Visible = false;
                 hb1.Visible = true;
-                wb = new WwiseBank(pcc as ME3Package, index);
-                hb1.ByteProvider = new DynamicByteProvider(wb.getBinary());
+                wb = new WwiseBank(pcc.Exports[index]);
+                hb1.ByteProvider = new DynamicByteProvider(wb.export.getBinaryData());
             }
         }
 
@@ -251,6 +251,10 @@ namespace ME3Explorer
 
         private void directAFCReplaceToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (w == null)
+            {
+                return;
+            }
             if (w.IsPCCStored)
             {
                 MessageBox.Show("Cannot do an afc replace on a pcc-stored sound.");

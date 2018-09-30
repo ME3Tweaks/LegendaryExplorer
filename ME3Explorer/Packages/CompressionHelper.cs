@@ -322,8 +322,9 @@ namespace ME3Explorer.Packages
                 output.WriteBytes(tasks[i].Result);
             }
 
-            output.Seek(packageFlagsOffset, SeekOrigin.Begin);
-            output.WriteValueU32(packageFlags & ~0x02000000u, endian);
+            //Do not change the IsCompressed bit as it will not accurately reflect the state of the file on disk.
+            //output.Seek(packageFlagsOffset, SeekOrigin.Begin);
+            //output.WriteValueU32(packageFlags & ~0x02000000u, endian); //Mark file as decompressed.
             return output;
         }
         #endregion

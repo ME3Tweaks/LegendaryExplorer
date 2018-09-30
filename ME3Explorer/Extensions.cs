@@ -39,6 +39,36 @@ namespace ME3Explorer
         }
     }
 
+    public static class TreeViewItemExtension
+    {
+        public static IEnumerable<System.Windows.Controls.TreeViewItem> FlattenTreeView(this System.Windows.Controls.TreeView tv)
+        {
+            return tv.Items.Cast<System.Windows.Controls.TreeViewItem>().SelectMany(x => FlattenTree(x));
+
+            List<System.Windows.Controls.TreeViewItem> FlattenTree(System.Windows.Controls.TreeViewItem rootNode)
+            {
+                var nodes = new List<System.Windows.Controls.TreeViewItem> { rootNode };
+                foreach (System.Windows.Controls.TreeViewItem node in rootNode.Items)
+                {
+                    nodes.AddRange(FlattenTree(node));
+                }
+                return nodes;
+            }
+        }
+
+        /// <summary>
+        /// Select specified item in a TreeView
+        /// </summary>
+        public static void SelectItem(this System.Windows.Controls.TreeViewItem treeView, object item)
+        {
+            var tvItem = treeView.ItemContainerGenerator.ContainerFromItem(item) as System.Windows.Controls.TreeViewItem;
+            if (tvItem != null)
+            {
+                tvItem.IsSelected = true;
+            }
+        }
+    }
+
     public static class EnumerableExtensions
     {
         public static int FindOrAdd<T>(this List<T> list, T element)
@@ -467,6 +497,24 @@ namespace ME3Explorer
         public static void WriteStream(this Stream stream, MemoryStream value)
         {
             value.WriteTo(stream);
+        }
+
+        /// <summary>
+        /// Copies the inputstream to the outputstream, for the specified amount of bytes
+        /// </summary>
+        /// <param name="input">Stream to copy from</param>
+        /// <param name="output">Stream to copy to</param>
+        /// <param name="bytes">The number of bytes to copy</param>
+        public static void CopyToEx(this Stream input, Stream output, int bytes)
+        {
+            byte[] buffer = new byte[32768];
+            int read;
+            while (bytes > 0 &&
+                   (read = input.Read(buffer, 0, Math.Min(buffer.Length, bytes))) > 0)
+            {
+                output.Write(buffer, 0, read);
+                bytes -= read;
+            }
         }
     }
 

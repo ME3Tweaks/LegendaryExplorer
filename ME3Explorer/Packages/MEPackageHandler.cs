@@ -62,7 +62,6 @@ namespace ME3Explorer.Packages
                 else if (version == 868 && licenseVersion == 0)
                 {
                     //UDK
-                    Debug.WriteLine("UDK FILE!");
                     package = UDKConstructorDelegate(pathToFile);
                 }
                 else

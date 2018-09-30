@@ -79,7 +79,7 @@ namespace ME3Explorer
                 {
                     (new ModMaker()).Show();
                 },
-                tags = new List<string> { "user", "utility", ".mod", "mod", "mesh" },
+                tags = new List<string> { "utility", ".mod", "mod", "mesh" },
                 subCategory = "Mod Packagers",
                 description = "ModMaker is used to create and install files with the \".mod\" extension. MOD files are compatible with ME3 and may be packaged with meshes and other game resources.\n\nAttention: Installation of textures via MOD files is deprecated. Use MM to extract any textures, then install them with TPF Tools, instead."
             });
@@ -92,7 +92,7 @@ namespace ME3Explorer
                 {
                     (new KFreonTPFTools3()).Show();
                 },
-                tags = new List<string> { "user", "utility", "texture", "tpf", "dds", "bmp", "jpg", "png" },
+                tags = new List<string> { "utility", "texture", "tpf", "dds", "bmp", "jpg", "png" },
                 subCategory = "Mod Packagers",
                 description = "TPF Tools is the toolset’s primary texture installation utility for users. An alternative to Texmod, TPF Tools allows for permanent insertion of textures into game files. It’s compatible with a variety of texture formats, will help “repair” improperly-formatted textures, and has an assortment of other features.\n\nTPF Tools can also be used by modders to package textures into TPFs for distribution."
             });
@@ -422,7 +422,7 @@ namespace ME3Explorer
                             (new ME1Explorer.DialogEditor()).Show();
                             break;
                     }
-                    
+
                 },
                 tags = new List<string> { "developer", "me1", "me2", "me3", "cutscene" },
                 subCategory = "Scene Shop",
@@ -546,6 +546,20 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "Package Editor WPF",
+                type = typeof(PackageEditorWPF),
+                icon = Application.Current.FindResource("iconPackageEditor") as ImageSource,
+                open = () =>
+                {
+                    PackageEditorWPF pck = new PackageEditorWPF();
+                    pck.Show();
+                },
+                tags = new List<string> { "user", "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
+                subCategory = "Core",
+                description = "Package Editor WPF is a complete rewrite of Package Editor using the WPF design language. It is currently under development."
+            });
+            set.Add(new Tool
+            {
                 name = "Pathfinding Editor",
                 type = typeof(PathfindingEditor),
                 icon = Application.Current.FindResource("iconPathfindingEditor") as ImageSource,
@@ -553,7 +567,7 @@ namespace ME3Explorer
                 {
                     (new PathfindingEditor()).Show();
                 },
-                tags = new List<string> { "developer", "path", "ai", "combat", "spline", "spawn", "map", "path", "node", "cover", "level"},
+                tags = new List<string> { "user","developer", "path", "ai", "combat", "spline", "spawn", "map", "path", "node", "cover", "level" },
                 subCategory = "Core",
                 description = "Pathfinding Editor allows you to modify pathing nodes so squadmates and enemies can move around a map. You can also edit placement of several different types of level objects such as StaticMeshes, Splines, CoverSlots, and more.",
             });
@@ -569,7 +583,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "codex", "state transition", "quest", "natives" },
                 subCategory = "Core",
-                description = "Plot Editor is used to examine, edit, and search ME3's plot maps for quests, state events, and codices.\n\nSupport for ME1 and ME2 is planned for the future."
+                description = "Plot Editor is used to examine, edit, and search ME3's plot maps for quests, state events, and codices."
             });
             set.Add(new Tool
             {
@@ -577,10 +591,10 @@ namespace ME3Explorer
                 type = typeof(SequenceEditor),
                 icon = Application.Current.FindResource("iconSequenceEditor") as ImageSource,
                 open = () =>
-                { 
+                {
                     (new SequenceEditor()).Show();
                 },
-                tags = new List<string> { "developer", "kismet", "me1", "me2", "me3" },
+                tags = new List<string> { "user", "developer", "kismet", "me1", "me2", "me3" },
                 subCategory = "Core",
                 description = "Sequence Editor is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
             });
@@ -600,15 +614,28 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Soundplorer",
-                type = typeof(Soundplorer),
+                type = typeof(SoundplorerWinforms),
                 icon = Application.Current.FindResource("iconSoundplorer") as ImageSource,
                 open = () =>
                 {
-                    (new Soundplorer()).Show();
+                    (new SoundplorerWinforms()).Show();
                 },
                 tags = new List<string> { "developer", "audio", "dialogue", "music", "wav", "ogg", "sound" },
                 subCategory = "Scene Shop",
                 description = "Soundplorer provides access to all Wwisestream and Wwisebank objects inside an ME3 PCC. Sounds can be played within the tool, exported, and changed via import.",
+            });
+            set.Add(new Tool
+            {
+                name = "Soundplorer WPF",
+                type = typeof(Soundplorer.SoundplorerWPF),
+                icon = Application.Current.FindResource("iconSoundplorer") as ImageSource,
+                open = () =>
+                {
+                    (new ME3Explorer.Soundplorer.SoundplorerWPF()).Show();
+                },
+                tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound" },
+                subCategory = "Scene Shop",
+                description = "Soundplorer WPF is the newly rewritten version of Soundplorer.",
             });
             set.Add(new Tool
             {
@@ -619,7 +646,7 @@ namespace ME3Explorer
                 {
                     (new Texplorer2()).Show();
                 },
-                tags = new List<string> { "user" ,"developer", "texture", "tfc", "scan", "tree" },
+                tags = new List<string> { "developer", "texture", "tfc", "scan", "tree" },
                 subCategory = "Meshes + Textures",
                 description = "For users and modders alike, Texplorer is the toolset's primary texture tool for the trilogy. Textures are organized into a package tree, and each is displayed with its associated data. Textures can be searched, extracted/replaced, and exported into TPF Tools."
             });
@@ -705,7 +732,7 @@ namespace ME3Explorer
                 catch
                 {
                     return;
-                } 
+                }
             }
         }
     }

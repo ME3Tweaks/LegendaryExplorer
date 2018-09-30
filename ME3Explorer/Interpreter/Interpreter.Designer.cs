@@ -271,6 +271,7 @@ namespace ME3Explorer
             this.hb1.LineInfoForeColor = System.Drawing.Color.Empty;
             this.hb1.LineInfoVisible = true;
             this.hb1.Location = new System.Drawing.Point(0, 0);
+            this.hb1.MaxBytesPerLine = 100;
             this.hb1.MinBytesPerLine = 4;
             this.hb1.Name = "hb1";
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
@@ -314,9 +315,9 @@ namespace ME3Explorer
             // 
             this.nodeContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.expandAllChildrenToolStripMenuItem,
-            this.collapseAllChildrenToolStripMenuItem });
+            this.collapseAllChildrenToolStripMenuItem});
             this.nodeContextMenuStrip1.Name = "nodeContextMenuStrip1";
-            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(185, 70);
+            this.nodeContextMenuStrip1.Size = new System.Drawing.Size(185, 48);
             // 
             // expandAllChildrenToolStripMenuItem
             // 

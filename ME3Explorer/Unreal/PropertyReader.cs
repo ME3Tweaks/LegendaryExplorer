@@ -617,7 +617,8 @@ namespace ME3Explorer.Unreal
             }
             //int type = (int)BitConverter.ToInt64(raw, pos + 8);            
             int type = (int)BitConverter.ToInt32(raw, pos + 8);
-            if (!pcc.isName(type)){
+            if (!pcc.isName(type))
+            {
                 return result;
             }
             p.Size = BitConverter.ToInt32(raw, pos + 16);
@@ -964,8 +965,8 @@ namespace ME3Explorer.Unreal
                     }
                     break;
                 case "StrProperty":
-                    name2 = p.Value.StringValue ;
-                    if (p.Value.StringValue.Length >0)
+                    name2 = p.Value.StringValue;
+                    if (p.Value.StringValue.Length > 0)
                     {
                         name2 += '\0';
                     }
@@ -1303,8 +1304,7 @@ namespace ME3Explorer.Unreal
 
         public static void WriteByteProperty(this Stream stream, IMEPackage pcc, string propName, byte value)
         {
-            Debug.WriteLine("Writing byte property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
-
+            //Debug.WriteLine("Writing byte property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
             stream.WritePropHeader(pcc, propName, PropertyType.ByteProperty, 1);
             if (pcc.Game == MEGame.ME3)
             {
@@ -1360,7 +1360,7 @@ namespace ME3Explorer.Unreal
 
         public static void WriteStringProperty(this Stream stream, IMEPackage pcc, string propName, string value)
         {
-            Debug.WriteLine("Writing string property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
+            //Debug.WriteLine("Writing string property " + propName + ", value: " + value + " at 0x" + stream.Position.ToString("X6"));
             int strLen = value.Length == 0 ? 0 : value.Length + 1;
             if (pcc.Game == MEGame.ME3)
             {

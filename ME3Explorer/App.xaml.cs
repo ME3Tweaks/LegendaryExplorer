@@ -28,7 +28,7 @@ namespace ME3Explorer
         public static string GetVersion()
         {
             Version ver = Assembly.GetExecutingAssembly().GetName().Version;
-            return "v"+ver.Major + "." + ver.Minor + "." + ver.Build + "." +ver.Revision;
+            return "v" + ver.Major + "." + ver.Minor + "." + ver.Build + "." + ver.Revision;
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)
@@ -131,8 +131,12 @@ namespace ME3Explorer
         void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             SharedUI.ExceptionHandlerDialogWPF eh = new SharedUI.ExceptionHandlerDialogWPF(e.Exception);
+            Window wpfActiveWindow = Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive);
+            eh.Owner = wpfActiveWindow;
             eh.ShowDialog();
+#if DEBUG
             e.Handled = eh.Handled;
+#endif
         }
     }
 }

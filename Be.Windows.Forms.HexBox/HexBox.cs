@@ -1377,6 +1377,7 @@ namespace Be.Windows.Forms
         /// </summary>
         public HexBox()
         {
+            this.MaxBytesPerLine = 0x64; //default absolute max.
             this._vScrollBar = new VScrollBar();
             this._vScrollBar.Scroll += new ScrollEventHandler(_vScrollBar_Scroll);
 
@@ -3700,13 +3701,13 @@ namespace Be.Windows.Forms
             if (_iHexMaxHBytes == value)
                 return;
 
-            if (value > MinBytesPerLine)
+            if (value > MinBytesPerLine && value <= MaxBytesPerLine)
             {
                 _iHexMaxHBytes = value;
             }
             else
             {
-                _iHexMaxHBytes = MinBytesPerLine;
+                _iHexMaxHBytes = value > MaxBytesPerLine ? MaxBytesPerLine : MinBytesPerLine;
             }
             OnHorizontalByteCountChanged(EventArgs.Empty);
         }
@@ -4060,7 +4061,16 @@ namespace Be.Windows.Forms
         #endregion
 
         public System.Drawing.Font BoldFont { get; set; }
+        /// <summary>
+        /// Sets the minimum amount of bytes per row that can be displayed.
+        /// </summary>
         public int MinBytesPerLine { get; set; }
+
+        /// <summary>
+        /// Sets the maximum amount of bytes per row that cna be displayed.
+        /// </summary>
+        public int MaxBytesPerLine { get; set; }
+
         public Color LineInfoForeColor { get; set; }
     }
 }

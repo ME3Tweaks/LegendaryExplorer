@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ME3Explorer</RootNamespace>
     <AssemblyName>ME3Explorer</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -49,7 +49,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>embedded</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -72,6 +72,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ByteSize, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ByteSize.1.3.0\lib\net45\ByteSize.dll</HintPath>
+    </Reference>
     <Reference Include="ClosedXML, Version=0.92.1.0, Culture=neutral, PublicKeyToken=fd1eb21b62ae805b, processorArchitecture=MSIL">
       <HintPath>..\packages\ClosedXML.0.92.1\lib\net46\ClosedXML.dll</HintPath>
     </Reference>
@@ -90,6 +93,15 @@
     <Reference Include="FastMember.Signed, Version=1.3.0.0, Culture=neutral, PublicKeyToken=9e8f22703bef9a29, processorArchitecture=MSIL">
       <HintPath>..\packages\FastMember.Signed.1.3.0\lib\net45\FastMember.Signed.dll</HintPath>
     </Reference>
+    <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
+      <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="GongSolutions.Wpf.DragDrop, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\gong-wpf-dragdrop.1.1.0\lib\net46\GongSolutions.Wpf.DragDrop.dll</HintPath>
+    </Reference>
+    <Reference Include="Gu.Wpf.DataGrid2D, Version=0.2.1.5, Culture=neutral, PublicKeyToken=34988ea4e73235be, processorArchitecture=MSIL">
+      <HintPath>..\packages\Gu.Wpf.DataGrid2D.0.2.1.5\lib\net45\Gu.Wpf.DataGrid2D.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -98,8 +110,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Ionic.Zip.Reduced.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=1.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IO.RecyclableMemoryStream.1.2.2\lib\net45\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.8.4\lib\net35\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -130,10 +148,6 @@
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Console">
-      <HintPath>..\packages\System.Console.4.3.1\lib\net46\System.Console.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.2.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
@@ -158,6 +172,9 @@
     <Reference Include="System.Threading.Tasks.Dataflow, Version=4.5.24.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Tpl.Dataflow.4.5.24\lib\portable-net45+win8+wpa81\System.Threading.Tasks.Dataflow.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -207,29 +224,38 @@
     <Reference Include="UIAutomationProvider" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
-    <Reference Include="WPFHexaEditor, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WPFHexaEditor.1.4.0\lib\net47\WPFHexaEditor.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    <Reference Include="Xceed.Wpf.DataGrid, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.DataGrid, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.Toolkit, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="BinaryInterpreter\BinaryInterpreterWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Bio2DAEditor\Bio2DAEditorWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CurveEd\CurveEditorHost.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Interpreter\AltPropertyEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -278,6 +304,9 @@
     <Compile Include="BinaryInterpreter\BinaryInterpreterHost.Designer.cs">
       <DependentUpon>BinaryInterpreterHost.cs</DependentUpon>
     </Compile>
+    <Compile Include="BinaryInterpreter\BinaryInterpreterWPF.xaml.cs">
+      <DependentUpon>BinaryInterpreterWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Bio2DAEditor\Bio2DA.cs" />
     <Compile Include="Bio2DAEditor\Bio2DACell.cs" />
     <Compile Include="Bio2DAEditor\Bio2DAEditor.cs">
@@ -286,6 +315,13 @@
     <Compile Include="Bio2DAEditor\Bio2DAEditor.Designer.cs">
       <DependentUpon>Bio2DAEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Bio2DAEditor\Bio2DAEditorWPF.xaml.cs">
+      <DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CurveEd\CurveEditorHost.xaml.cs">
+      <DependentUpon>CurveEditorHost.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FaceFXAnimSetEditor\ME1FaceFXAnimSet.cs" />
     <Compile Include="Interpreter\AltPropertyEditor.xaml.cs">
       <DependentUpon>AltPropertyEditor.xaml</DependentUpon>
     </Compile>
@@ -330,6 +366,7 @@
     <Compile Include="Interpreter\InterpreterWPF.xaml.cs">
       <DependentUpon>InterpreterWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interpreter\InterpreterWPFCommands.cs" />
     <Compile Include="Interpreter\PropertyEditor.xaml.cs">
       <DependentUpon>PropertyEditor.xaml</DependentUpon>
     </Compile>
@@ -431,12 +468,14 @@
     <Compile Include="PackageEditor\PackageEditorDebugFunctions.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="PackageEditor\PackageEditorWPFRelinker.cs" />
     <Compile Include="PackageEditor\PackageEditorRelinker.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PackageEditor\PackageEditorWPF.xaml.cs">
       <DependentUpon>PackageEditorWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PackageEditor\PackageEditorWPFCommands.cs" />
     <Compile Include="Packages\UDKPackage.cs" />
     <Compile Include="Packages\MEPackage.cs" />
     <Compile Include="Pathfinding Editor\SplineNodes.cs" />
@@ -458,9 +497,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="RelayCommand.cs" />
     <Compile Include="SharedUI\AddPropertyDialogWPF.xaml.cs">
       <DependentUpon>AddPropertyDialogWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\Converters\FriendlyTimeConverter.cs" />
+    <Compile Include="SharedUI\Converters\WwiseDataExchangeEnabledConverter.cs" />
+    <Compile Include="SharedUI\Converters\NullEnabledConverter.cs" />
+    <Compile Include="SharedUI\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="SharedUI\ExceptionHandlerDialogWPF.xaml.cs">
       <DependentUpon>ExceptionHandlerDialogWPF.xaml</DependentUpon>
     </Compile>
@@ -589,15 +633,24 @@
     <Compile Include="SharedUI\ExportSelectorWinForms.Designer.cs">
       <DependentUpon>ExportSelectorWinForms.cs</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\ListScrollBox.cs" />
+    <Compile Include="SharedUI\ObservableCollectionExtended.cs" />
     <Compile Include="SharedUI\PromptDialog.xaml.cs">
       <DependentUpon>PromptDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="SingleInstance.cs" />
+    <Compile Include="Soundplorer\SoundplorerWPFCommands.cs" />
+    <Compile Include="Soundplorer\SoundpanelAudioPlayer.cs" />
     <Compile Include="Soundplorer\DirectReplace.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Soundplorer\DirectReplace.Designer.cs">
       <DependentUpon>DirectReplace.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SharedUI\ExportLoaderControl.cs" />
+    <Compile Include="SharedUI\IExportLoader.cs" />
+    <Compile Include="Soundplorer\Soundpanel.xaml.cs">
+      <DependentUpon>Soundpanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Soundplorer\Soundplorer.cs">
       <SubType>Form</SubType>
@@ -605,6 +658,11 @@
     <Compile Include="Soundplorer\Soundplorer.Designer.cs">
       <DependentUpon>Soundplorer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Soundplorer\SoundplorerWPF.xaml.cs">
+      <DependentUpon>SoundplorerWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SharedUI\Converters\FontAwesomeStateColorConverter.cs" />
+    <Compile Include="Soundplorer\WwiseMenuItemVisibilityConverter.cs" />
     <Compile Include="SubtitleScanner\FileHelpers.cs" />
     <Compile Include="SubtitleScanner\SubtitleScanner.cs">
       <SubType>Form</SubType>
@@ -933,6 +991,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SharedUI\PromptDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Soundplorer\Soundpanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Soundplorer\SoundplorerWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1279,6 +1345,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <EmbeddedResource Include="Soundplorer\WwiseTemplateProject.zip" />
     <Resource Include="Resources\Exo-Regular.ttf" />
     <Resource Include="Resources\Exo-SemiBold.ttf" />
     <Resource Include="Resources\TitilliumWeb-Light.ttf" />
@@ -1521,6 +1588,7 @@
     <Resource Include="Resources\coalesced_editor_newB.ico" />
     <Resource Include="Resources\path_editor.ico" />
     <Resource Include="Resources\path_editor_64.png" />
+    <Resource Include="Resources\me3tweaks_fork.png" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

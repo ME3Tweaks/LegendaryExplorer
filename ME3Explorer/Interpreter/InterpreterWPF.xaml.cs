@@ -6,19 +6,37 @@ using ME3Explorer.Unreal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Windows.Media;
 using System.IO;
 using System.Linq;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Threading;
+using Be.Windows.Forms;
+using System.Windows;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using ME3Explorer.SharedUI;
 
 namespace ME3Explorer
 {
     /// <summary>
     /// Interaction logic for InterpreterWPF.xaml
     /// </summary>
-    public partial class InterpreterWPF : UserControl
+    public partial class InterpreterWPF : ExportLoaderControl
     {
         private IMEPackage pcc;
         public IMEPackage Pcc { get { return pcc; } set { pcc = value; defaultStructValues.Clear(); } }
+
+        //Values in this list will cause the ExportToString() method to be called on an objectproperty in InterpreterWPF.
+        //This is useful for end user when they want to view things in a list for example, but all of the items are of the 
+        //same type and are not distinguishable without changing to another export, wasting a lot of time.
+        public readonly string[] ExportToStringConverters = { "LevelStreamingKismet" };
+
+        //Values in this list will cause custom code to be fired to modify what the displayed string is for IntProperties
+        //when the class matches.
+        public readonly string[] IntToStringConverters = { "WwiseEvent" };
+
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
         private byte[] memory;
         private int memsize;
@@ -26,7 +44,6 @@ namespace ME3Explorer
         private BioTlkFileSet tlkset;
         private BioTlkFileSet editorTlkSet;
         int readerpos;
-        IExportEntry export;
 
         public struct PropHeader
         {
@@ -53,6 +70,7 @@ namespace ME3Explorer
             "None",
             "BioMask4Property",
         };
+        private HexBox Interpreter_Hexbox;
 
         public enum nodeType
         {
@@ -102,16 +120,33 @@ namespace ME3Explorer
             defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
         }
 
-        public void loadNewExport(IExportEntry export)
+        /// <summary>
+        /// Unloads the loaded export, if any
+        /// </summary>
+        public override void UnloadExport()
+        {
+            pcc = null;
+            CurrentLoadedExport = null;
+            memory = null;
+            memsize = 0;
+            Interpreter_Hexbox.ByteProvider = new DynamicByteProvider(new byte[] { });
+            Interpreter_TreeView.Items.Clear();
+        }
+
+        /// <summary>
+        /// Load a new export for display and editing in this control
+        /// </summary>
+        /// <param name="export"></param>
+        public override void LoadExport(IExportEntry export)
         {
             pcc = export.FileRef;
-            this.export = export;
+            CurrentLoadedExport = export;
             memory = export.Data;
             memsize = memory.Length;
-            List<byte> bytes = export.Data.ToList();
-            MemoryStream ms = new MemoryStream(); //initializing memorystream directly with byte[] does not allow it to expand.
-            ms.Write(export.Data, 0, export.Data.Length); //write the data into the memorystream.
-            Interpreter_HexBox.Stream = ms;
+            //List<byte> bytes = export.Data.ToList();
+            //MemoryStream ms = new MemoryStream(); //initializing memorystream directly with byte[] does not allow it to expand.
+            //ms.Write(export.Data, 0, export.Data.Length); //write the data into the memorystream.
+            Interpreter_Hexbox.ByteProvider = new DynamicByteProvider(export.Data);
             className = export.ClassName;
 
             if (pcc.Game == MEGame.ME1)
@@ -119,12 +154,19 @@ namespace ME3Explorer
                 // attempt to find a TlkFileSet associated with the object, else just pick the first one and hope it's correct
                 if (editorTlkSet == null)
                 {
-                    PropertyReader.Property tlkSetRef = PropertyReader.getPropList(export).FirstOrDefault(x => pcc.getNameEntry(x.Name) == "m_oTlkFileSet");
-                    if (tlkSetRef != null)
+                    try
                     {
-                        tlkset = new BioTlkFileSet(pcc as ME1Package, tlkSetRef.Value.IntValue - 1);
+                        IntProperty tlkSetRef = export.GetProperty<IntProperty>("m_oTlkFileSet");
+                        if (tlkSetRef != null)
+                        {
+                            tlkset = new BioTlkFileSet(pcc as ME1Package, tlkSetRef.Value - 1);
+                        }
+                        else
+                        {
+                            tlkset = new BioTlkFileSet(pcc as ME1Package);
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
                         tlkset = new BioTlkFileSet(pcc as ME1Package);
                     }
@@ -142,11 +184,11 @@ namespace ME3Explorer
             //resetPropEditingControls();
             //Interpreter_TreeView.BeginUpdate();
             Interpreter_TreeView.Items.Clear();
-            readerpos = export.GetPropertyStart();
+            readerpos = CurrentLoadedExport.GetPropertyStart();
 
             TreeViewItem topLevelTree = new TreeViewItem()
             {
-                Header = "0000 : " + export.ObjectName,
+                Header = "0000 : " + CurrentLoadedExport.ObjectName,
                 IsExpanded = true
             };
             topLevelTree.Tag = nodeType.Root;
@@ -154,11 +196,10 @@ namespace ME3Explorer
 
             try
             {
-                PropertyCollection props = export.GetProperties();
+                PropertyCollection props = CurrentLoadedExport.GetProperties(includeNoneProperties: true);
                 foreach (UProperty prop in props)
                 {
                     GenerateTreeForProperty(prop, topLevelTree);
-
                 }
                 //GenerateTreeFromProperties(topLevelTree, props);
             }
@@ -233,14 +274,104 @@ namespace ME3Explorer
         private void GenerateTreeForProperty(UProperty prop, TreeViewItem parent)
         {
             string s = prop.Offset.ToString("X4") + ": ";
-            s += "Name: \"" + prop.Name + "\" ";
-            s += "Type: \"" + prop.PropType + "\" ";
+            s += "\"" + prop.Name + "\" ";
+            s += "Type: " + prop.PropType;
             //s += "Size: " + prop.
-            s += " Value: ";
+            var nodeColor = Brushes.Black;
 
+            // if (prop.PropType != PropertyType.None)
+            //{
+            switch (prop.PropType)
+            {
+                case PropertyType.ObjectProperty:
+                    {
+                        s += " Value: ";
+                        int index = (prop as ObjectProperty).Value;
+                        var entry = pcc.getEntry(index);
+                        if (entry != null)
+                        {
+                            s += index + " " + entry.GetFullPath;
+                            if (index > 0 && ExportToStringConverters.Contains(entry.ClassName))
+                            {
+                                s += " " + ExportToString(pcc.Exports[index - 1]);
+                            }
+                        }
+                        else if (index == 0)
+                        {
+                            s += index + " Null";
+                        }
+                        else
+                        {
+                            s += index + " Index out of bounds of " + (index < 0 ? "Import" : "Export") + " list";
+                        }
+                        nodeColor = Brushes.Blue;
+                    }
+                    break;
+                case PropertyType.IntProperty:
+                    {
+                        s += " Value: ";
+                        s += (prop as IntProperty).Value;
+                        if (IntToStringConverters.Contains(CurrentLoadedExport.ClassName))
+                        {
+                            s += IntToString(prop.Name, (prop as IntProperty).Value);
+                        }
+                        nodeColor = Brushes.Green;
+                    }
+                    break;
+                case PropertyType.FloatProperty:
+                    {
+                        s += " Value: ";
+                        s += (prop as FloatProperty).Value;
+                        nodeColor = Brushes.Red;
+                    }
+                    break;
+                case PropertyType.BoolProperty:
+                    {
+                        s += " Value: ";
+                        s += (prop as BoolProperty).Value;
+                        nodeColor = Brushes.Orange;
+                    }
+                    break;
+                case PropertyType.ArrayProperty:
+                    {
+                        ArrayType at = GetArrayType(prop.Name.Name);
+                        s += ", " + at.ToString() + " Array Size: " + (prop as ArrayPropertyBase).ValuesAsProperties.Count();
+                    }
+                    break;
+                case PropertyType.NameProperty:
+                    s += " Value: ";
+                    s += (prop as NameProperty).NameTableIndex + " " + (prop as NameProperty).Value;
+                    break;
+                case PropertyType.ByteProperty:
+                    s += " Value: ";
+                    if (prop is EnumProperty)
+                    {
+                        s += (prop as EnumProperty).Value;
+                    }
+                    else
+                    {
+                        s += (prop as ByteProperty).Value;
+                    }
+                    break;
+                case PropertyType.StrProperty:
+                    s += " Value: ";
+                    s += (prop as StrProperty).Value;
+                    break;
+                case PropertyType.StructProperty:
+                    s += ", ";
+                    s += (prop as StructProperty).StructType;
+                    break;
+                case PropertyType.None:
+                    //  s += " NONE (Name)";
+                    nodeColor = Brushes.SlateGray;
+                    break;
+            }
             TreeViewItem item = new TreeViewItem()
             {
-                Header = s
+                Header = s,
+                Name = "_" + prop.Offset.ToString(),
+                Foreground = nodeColor,
+                Tag = prop
             };
             parent.Items.Add(item);
             if (prop.PropType == PropertyType.ArrayProperty)
@@ -261,21 +392,79 @@ namespace ME3Explorer
             }
         }
 
+        /// <summary>
+        /// Converts a value of a property into a more human readable string.
+        /// This is for IntProperty.
+        /// </summary>
+        /// <param name="name">Name of the property</param>
+        /// <param name="value">Value of the property to transform</param>
+        /// <returns></returns>
+        private string IntToString(NameReference name, int value)
+        {
+            switch (CurrentLoadedExport.ClassName)
+            {
+                case "WwiseEvent":
+                    switch (name)
+                    {
+                        case "Id":
+                            return " (0x" + value.ToString("X8") + ")";
+                    }
+                    break;
+            }
+            return "";
+        }
+
         private void GenerateTreeForArrayProperty(UProperty prop, TreeViewItem parent, int index)
         {
-            string s = prop.Offset.ToString("X4") + ": ";
+            string s = prop.Offset.ToString("X4") + " Item " + index + "";
 
             switch (prop.PropType)
             {
                 case PropertyType.ObjectProperty:
-                    s += pcc.getEntry((prop as ObjectProperty).Value).GetFullPath;
+                    int oIndex = (prop as ObjectProperty).Value;
+                    s += ": [" + oIndex + "] ";
+                    if (oIndex > 0 || oIndex < 0)
+                    {
+                        if (oIndex <= pcc.ExportCount && oIndex > pcc.ImportCount * -1)
+                        {
+                            s += pcc.getEntry(oIndex).GetFullPath;
+                            if (oIndex > 0 && ExportToStringConverters.Contains(pcc.Exports[oIndex - 1].ClassName))
+                            {
+                                s += " " + ExportToString(pcc.Exports[oIndex - 1]);
+                            }
+                        }
+                        else
+                        {
+                            s += "Object index out of bounds of PCC imports/exports";
+                        }
+                    }
+                    else
+                    {
+                        s += "Null";
+                    }
+                    break;
+                case PropertyType.StructProperty:
+
+                    break;
+                case PropertyType.BoolProperty:
+                    s += ": " + (prop as BoolProperty).Value;
+                    break;
+                case PropertyType.IntProperty:
+                    s += ": ";
+                    s += (prop as IntProperty).Value;
+                    break;
+                case PropertyType.NameProperty:
+                    s += ": " + (prop as NameProperty).NameTableIndex + " " + (prop as NameProperty).Value;
+
                     break;
             }
 
 
             TreeViewItem item = new TreeViewItem()
             {
-                Header = s
+                Header = s,
+                Name = "_" + prop.Offset,
+                Tag = prop
             };
             parent.Items.Add(item);
             if (prop.PropType == PropertyType.ArrayProperty)
@@ -296,6 +485,18 @@ namespace ME3Explorer
             }
         }
 
+        private string ExportToString(IExportEntry exportEntry)
+        {
+            switch (exportEntry.ObjectName)
+            {
+                case "LevelStreamingKismet":
+                    NameProperty prop = exportEntry.GetProperty<NameProperty>("PackageName");
+                    return "(" + prop.Value.Name + "_" + prop.Value.Number + ")";
+            }
+            return "";
+        }
+
+        /*
         public List<PropHeader> ReadHeadersTillNone()
         {
             List<PropHeader> ret = new List<PropHeader>();
@@ -1040,6 +1241,12 @@ namespace ME3Explorer
                 case PropertyType.Unknown:
                     throw new NotImplementedException($"at position {pos.ToString("X4")}: cannot read Unknown property of Immutable struct");
                 case PropertyType.None:
+                    node = new TreeViewItem() { Header = s };
+                    node.Name = "_" + pos.ToString();
+                    node.Tag = nodeType.StructLeafObject;
+                    t.Items.Add(node);
+                    pos += 8;
+                    break;
                 default:
                     break;
             }
@@ -1183,7 +1390,7 @@ namespace ME3Explorer
                     return (nodeType)i;
                 }
             return (nodeType)(-1);
-        }
+        }*/
 
         #region UnrealObjectInfo
         private PropertyInfo GetPropertyInfo(int propName)
@@ -1231,6 +1438,25 @@ namespace ME3Explorer
             return ArrayType.Int;
         }
 
+        private ArrayType GetArrayType(string propName, string typeName = null)
+        {
+            if (typeName == null)
+            {
+                typeName = className;
+            }
+            switch (pcc.Game)
+            {
+                case MEGame.ME1:
+                    return ME1UnrealObjectInfo.getArrayType(typeName, propName, export: CurrentLoadedExport);
+                case MEGame.ME2:
+                    return ME2UnrealObjectInfo.getArrayType(typeName, propName, export: CurrentLoadedExport);
+                case MEGame.ME3:
+                case MEGame.UDK:
+                    return ME3UnrealObjectInfo.getArrayType(typeName, propName, export: CurrentLoadedExport);
+            }
+            return ArrayType.Int;
+        }
+
         private ArrayType GetArrayType(int propName, string typeName = null)
         {
             if (typeName == null)
@@ -1240,12 +1466,12 @@ namespace ME3Explorer
             switch (pcc.Game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName), export: export);
+                    return ME1UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName), export: CurrentLoadedExport);
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName), export: export);
+                    return ME2UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName), export: CurrentLoadedExport);
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName), export: export);
+                    return ME3UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName), export: CurrentLoadedExport);
             }
             return ArrayType.Int;
         }
@@ -1268,7 +1494,268 @@ namespace ME3Explorer
 
         private void Interpreter_ToggleHexboxWidth_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            GridLength len = HexboxColumnDefinition.Width;
+            if (len.Value < HexboxColumnDefinition.MaxWidth)
+            {
+                HexboxColumnDefinition.Width = new GridLength(HexboxColumnDefinition.MaxWidth);
+            }
+            else
+            {
+                HexboxColumnDefinition.Width = new GridLength(HexboxColumnDefinition.MinWidth);
+            }
+        }
 
+        private void Interpreter_TreeViewSelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Background,
+(NoArgDelegate)delegate { UpdateHexboxPosition(e.NewValue); });
+        }
+
+        private delegate void NoArgDelegate();
+        /// <summary>
+        /// Tree view selected item changed. This runs in a delegate due to how multithread bubble-up items work with treeview.
+        /// Without this delegate, the item selected will randomly be a parent item instead.
+        /// From https://www.codeproject.com/Tips/208896/WPF-TreeView-SelectedItemChanged-called-twice
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UpdateHexboxPosition(object tvi)
+        {
+            TreeViewItem newSelectedItem = (TreeViewItem)tvi;
+            if (newSelectedItem != null)
+            {
+                var hexPosStr = newSelectedItem.Name.Substring(1); //remove _
+                int hexPos = Convert.ToInt32(hexPosStr);
+                Interpreter_Hexbox.SelectionStart = hexPos;
+                Interpreter_Hexbox.SelectionLength = 1;
+            }
+
+        }
+
+        private void Interpreter_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            Interpreter_Hexbox = (HexBox)Interpreter_Hexbox_Host.Child;
+        }
+
+        private void Interpreter_SaveHexChanged_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            IByteProvider provider = Interpreter_Hexbox.ByteProvider;
+            if (provider != null)
+            {
+                MemoryStream m = new MemoryStream();
+                for (int i = 0; i < provider.Length; i++)
+                    m.WriteByte(provider.ReadByte(i));
+                CurrentLoadedExport.Data = m.ToArray();
+            }
+        }
+
+        private void Interpreter_TreeView_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            TreeViewItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
+
+            if (treeViewItem != null)
+            {
+                treeViewItem.Focus();
+                e.Handled = true;
+
+                if (treeViewItem.Tag != null)
+                {
+                    if (treeViewItem.Tag is ArrayPropertyBase)
+                    {
+                        Interpreter_TreeView.ContextMenu = Interpreter_TreeView.Resources["ArrayPropertyContext"] as System.Windows.Controls.ContextMenu;
+                    }
+                    else
+                    {
+                        Interpreter_TreeView.ContextMenu = Interpreter_TreeView.Resources["FolderContext"] as System.Windows.Controls.ContextMenu;
+                    }
+                }
+            }
+        }
+
+        static TreeViewItem VisualUpwardSearch(DependencyObject source)
+        {
+            while (source != null && !(source is TreeViewItem))
+                source = VisualTreeHelper.GetParent(source);
+
+            return source as TreeViewItem;
+        }
+
+        private void RemovePropertyCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        {
+            TreeViewItem tvi = (TreeViewItem)Interpreter_TreeView.SelectedItem;
+            if (tvi != null)
+            {
+                UProperty tag = (UProperty)tvi.Tag;
+                PropertyCollection props = CurrentLoadedExport.GetProperties();
+                props.Remove(tag);
+                CurrentLoadedExport.WriteProperties(props);
+                StartScan();
+            }
+        }
+
+        private void ArrayOrderByValueCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        {
+            TreeViewItem tvi = (TreeViewItem)Interpreter_TreeView.SelectedItem;
+            if (tvi != null)
+            {
+                UProperty tag = (UProperty)tvi.Tag;
+                ArrayType at = GetArrayType(tag.Name); //we may need to account for substructs
+                bool sorted = false;
+                switch (at)
+                {
+                    case ArrayType.Object:
+                        {
+                            ArrayProperty<ObjectProperty> list = (ArrayProperty<ObjectProperty>)tag;
+                            List<ObjectProperty> sortedList = list.ToList();
+                            sortedList.Sort();
+                            list.Values.Clear();
+                            list.Values.AddRange(sortedList);
+                            sorted = true;
+                        }
+                        break;
+                    case ArrayType.Int:
+                        {
+                            ArrayProperty<IntProperty> list = (ArrayProperty<IntProperty>)tag;
+                            List<IntProperty> sortedList = list.ToList();
+                            sortedList.Sort();
+                            list.Values.Clear();
+                            list.Values.AddRange(sortedList);
+                            sorted = true;
+                        }
+                        break;
+                    case ArrayType.Float:
+                        {
+                            ArrayProperty<FloatProperty> list = (ArrayProperty<FloatProperty>)tag;
+                            List<FloatProperty> sortedList = list.ToList();
+                            sortedList.Sort();
+                            list.Values.Clear();
+                            list.Values.AddRange(sortedList);
+                            sorted = true;
+                        }
+                        break;
+                }
+                if (sorted)
+                {
+                    ItemsControl i = GetSelectedTreeViewItemParent(tvi);
+                    //write at root node level
+                    if (i.Tag is nodeType && (nodeType)i.Tag == nodeType.Root)
+                    {
+                        CurrentLoadedExport.WriteProperty(tag);
+                        StartScan();
+                    }
+
+                    //have to figure out how to deal with structproperties or array of array propertie
+                    /*if (tvi.Tag is StructProperty)
+                    {
+                        StructProperty sp = tvi.Tag as StructProperty;
+                        sp.Properties.
+                        CurrentLoadedExport.WriteProperty(tag);
+                        StartScan();
+                    }*/
+                }
+                //PropertyCollection props = CurrentLoadedExport.GetProperties();
+                //props.Remove(tag);
+                //CurrentLoadedExport.WriteProperties(props);
+                //
+            }
+        }
+
+        public ItemsControl GetSelectedTreeViewItemParent(TreeViewItem item)
+        {
+            DependencyObject parent = VisualTreeHelper.GetParent(item);
+            while (!(parent is TreeViewItem || parent is TreeView))
+            {
+                parent = VisualTreeHelper.GetParent(parent);
+            }
+
+            return parent as ItemsControl;
+        }
+
+        private void Interpreter_AddProperty_Click(object sender, RoutedEventArgs e)
+        {
+            if (pcc.Game == MEGame.UDK)
+            {
+                MessageBox.Show("Cannot add properties to UDK UPK files.", "Unsupported operation");
+                return;
+            }
+
+            PropertyCollection currentProps = CurrentLoadedExport.GetProperties();
+            List<string> props = new List<string>();
+            foreach (UProperty cProp in currentProps)
+            {
+                props.Add(cProp.Name);
+            }
+
+            string prop = AddPropertyDialogWPF.GetProperty(CurrentLoadedExport, props, pcc.Game);
+            if (prop != null)
+            {
+                string origname = CurrentLoadedExport.ClassName;
+                string temp = CurrentLoadedExport.ClassName;
+                List<string> classes = new List<string>();
+                Dictionary<string, ClassInfo> classList;
+                switch (pcc.Game)
+                {
+                    case MEGame.ME1:
+                        classList = ME1Explorer.Unreal.ME1UnrealObjectInfo.Classes;
+                        break;
+                    case MEGame.ME2:
+                        classList = ME2Explorer.Unreal.ME2UnrealObjectInfo.Classes;
+                        break;
+                    case MEGame.ME3:
+                    default:
+                        classList = ME3UnrealObjectInfo.Classes;
+                        break;
+                }
+                ClassInfo currentInfo = null;
+                if (!classList.ContainsKey(temp))
+                {
+                    IExportEntry exportTemp = CurrentLoadedExport.FileRef.Exports[CurrentLoadedExport.idxClass - 1];
+                    //current object is not in classes db, temporarily add it to the list
+                    switch (pcc.Game)
+                    {
+                        case MEGame.ME1:
+                            currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(exportTemp);
+                            break;
+                        case MEGame.ME2:
+                            currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(exportTemp);
+                            break;
+                        case MEGame.ME3:
+                        default:
+                            currentInfo = ME3UnrealObjectInfo.generateClassInfo(exportTemp);
+                            break;
+                    }
+                    currentInfo.baseClass = exportTemp.ClassParent;
+                }
+
+                UProperty property = generateNewProperty(prop, currentInfo);
+                //AddProperty(prop, currentInfo);
+
+                //RefreshMem();
+            }
+        }
+
+        private UProperty generateNewProperty(string prop, ClassInfo nonVanillaClassInfo)
+        {
+            if (prop != null)
+            {
+                PropertyInfo info = GetPropertyInfo(prop, className, nonVanillaClassInfo: nonVanillaClassInfo);
+                if (info == null)
+                {
+                    MessageBox.Show("Error reading property.", "Error");
+                    return null;
+                }
+                if (info.type == PropertyType.StructProperty /* && pcc.Game != MEGame.ME3*/)
+                {
+                    MessageBox.Show("Cannot add StructProperties when editing ME1 or ME2 files (or ME3 currently).", "Sorry :(");
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        public override bool CanParse(IExportEntry exportEntry)
+        {
+            return true;
         }
     }
 }

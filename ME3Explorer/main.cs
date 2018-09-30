@@ -39,6 +39,7 @@ namespace ME3Explorer
                     splashScreen.Show(false);
                 }
                 SetDllDirectory(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "lib"));
+                CleanupTempFiles();
                 App app = new App();
                 app.InitializeComponent();
                 //will throw exception on some tools when opening over remote desktop.
@@ -50,6 +51,24 @@ namespace ME3Explorer
             else
             {
                 Environment.Exit(exitCode);
+            }
+        }
+
+        private static void CleanupTempFiles()
+        {
+            //Cleanup orphaned temp sounds from soundplorer
+            DirectoryInfo tempDirectoryInfo = new DirectoryInfo(System.IO.Path.GetTempPath());
+            FileInfo[] Files = tempDirectoryInfo.GetFiles("ME3EXP_SOUND_*");
+            foreach (FileInfo file in Files)
+            {
+                try
+                {
+                    File.Delete(file.FullName);
+                }
+                catch (Exception)
+                {
+                    //ignore error
+                }
             }
         }
 

@@ -82,6 +82,18 @@ namespace ME1Explorer.Unreal.Classes
             LoadTlkData();
         }
 
+        public TalkFile(IExportEntry export)
+        {
+            if (export.FileRef.Game != MEGame.ME1)
+            {
+                throw new Exception("ME1 Unreal TalkFile cannot be initialized with a non-ME1 file");
+            }
+            pcc = export.FileRef as ME1Package;
+            index = export.Index;
+            tlkSetIndex = -1;
+            LoadTlkData();
+        }
+
         public TalkFile(ME1Package _pcc, int _index, bool _male, int _langRef, int _tlkSetIndex)
         {
             pcc = _pcc;

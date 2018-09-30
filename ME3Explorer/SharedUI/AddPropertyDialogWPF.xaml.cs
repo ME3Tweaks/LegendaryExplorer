@@ -2,6 +2,7 @@
 using ME3Explorer.Unreal;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,7 +55,21 @@ namespace ME3Explorer.SharedUI
                     classList = ME3UnrealObjectInfo.Classes;
                     break;
             }
-            if (!classList.ContainsKey(temp))
+            //For debugging ME1 Objectinfo when we get around to it
+            //foreach (KeyValuePair<string, ClassInfo> entry in classList)
+            //{
+            //    // do something with entry.Value or entry.Key
+            //    if (entry.Key.StartsWith("LightMap"))
+            //    {
+            //        Debug.WriteLine(entry.Key);
+            //    }
+            //}
+            if (!classList.ContainsKey(temp) && export.idxClass < 0)
+            {
+                //lookup import parent info
+                temp = export.ClassParent;
+            }
+            else if (!classList.ContainsKey(temp) && export.idxClass > 0)
             {
                 export = export.FileRef.Exports[export.idxClass - 1];
                 //current object is not in classes db, temporarily add it to the list

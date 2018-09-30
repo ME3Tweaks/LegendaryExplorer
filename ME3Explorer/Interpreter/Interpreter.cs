@@ -367,7 +367,7 @@ namespace ME3Explorer
                 // mostdownstreamimport.idxLink = downstreamLinkIdx; ??
                 mostdownstreamimport.idxClassName = downstreamClassName;
                 mostdownstreamimport.idxObjectName = downstreamName;
-                mostdownstreamimport.idxPackageName = downstreamPackageName;
+                mostdownstreamimport.idxPackageFile = downstreamPackageName;
                 destinationPCC.addImport(mostdownstreamimport);
                 upstreamImport = mostdownstreamimport;
                 upstreamCount--;
@@ -412,7 +412,7 @@ namespace ME3Explorer
                 mostdownstreamimport.idxLink = downstreamLinkIdx;
                 mostdownstreamimport.idxClassName = downstreamClassName;
                 mostdownstreamimport.idxObjectName = downstreamName;
-                mostdownstreamimport.idxPackageName = downstreamPackageName;
+                mostdownstreamimport.idxPackageFile = downstreamPackageName;
                 destinationPCC.addImport(mostdownstreamimport);
                 upstreamImport = mostdownstreamimport;
             }
@@ -493,7 +493,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
+                topLevelTree.Nodes.Add("PARSE ERROR: " + ex.Message);
             }
             return topLevelTree;
         }
@@ -515,7 +515,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                topLevelTree.Nodes.Add("PARSE ERROR " + ex.Message);
+                topLevelTree.Nodes.Add("PARSE ERROR: " + ex.Message);
                 addPropButton.Visible = false;
                 removePropertyButton.Visible = false;
             }
@@ -576,7 +576,7 @@ namespace ME3Explorer
             {
                 if (readerpos > memory.Length)
                 {
-                    throw new IndexOutOfRangeException(": tried to read past bounds of Export Data");
+                    throw new IndexOutOfRangeException("tried to read past bounds of Export Data");
                 }
                 NodeType type = getType(pcc.getNameEntry(header.type));
                 //Debug.WriteLine("Generating tree item for " + pcc.getNameEntry(header.name) + " at 0x" + header.offset.ToString("X6"));
@@ -605,6 +605,7 @@ namespace ME3Explorer
                         if (arrayType == ArrayType.Struct)
                         {
                             PropertyInfo info = GetPropertyInfo(header.name);
+                            
                             t.Text = t.Text.Insert(t.Text.IndexOf("Size: ") - 2, $"({info.reference})");
                             for (int i = 0; i < arrayLength; i++)
                             {
@@ -2684,7 +2685,7 @@ namespace ME3Explorer
                     break;
             }
             ClassInfo currentInfo = null;
-            if (!classList.ContainsKey(temp))
+            if (!classList.ContainsKey(temp) && export.idxClass > 0)
             {
                 IExportEntry exportTemp = export.FileRef.Exports[export.idxClass - 1];
                 //current object is not in classes db, temporarily add it to the list
@@ -3074,6 +3075,7 @@ namespace ME3Explorer
             Buffer.BlockCopy(export.Data, 0, newdata, 0, posStart);
             Buffer.BlockCopy(export.Data, posEnd, newdata, posStart, export.Data.Length - posEnd);
             export.Data = newdata;
+            memory = newdata;
             RefreshMem();
         }
     }

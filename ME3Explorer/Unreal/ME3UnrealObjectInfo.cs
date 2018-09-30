@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using ME3Explorer.Packages;
 using ME2Explorer.Unreal;
 using ME1Explorer.Unreal;
+using System.Diagnostics;
 
 namespace ME3Explorer.Unreal
 {
@@ -250,7 +251,8 @@ namespace ME3Explorer.Unreal
             {
                 p = getPropertyInfo(className, propName, !inStruct);
             }
-            if (p == null && export != null && export.ClassName != "Class")
+
+            if (p == null && export != null && export.ClassName != "Class" && export.idxClass > 0)
             {
                 export = export.FileRef.Exports[export.idxClass - 1]; //make sure you get actual class
                 ClassInfo currentInfo;
@@ -268,12 +270,17 @@ namespace ME3Explorer.Unreal
                         break;
                 }
                 currentInfo.baseClass = export.ClassParent;
+
                 p = getPropertyInfo(className, propName, inStruct, currentInfo);
                 if (p == null)
                 {
                     p = getPropertyInfo(className, propName, !inStruct, currentInfo);
                 }
-
+                if (p == null)
+                {
+                    //getting property info failed
+                    return ArrayType.Int;
+                }
             }
             return getArrayType(p);
         }
@@ -325,7 +332,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
+        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true)
         {
             if (className.StartsWith("Default__"))
             {
@@ -351,9 +358,9 @@ namespace ME3Explorer.Unreal
                 {
                     foreach (PropertyInfo p in info.properties.Values)
                     {
-                        if (p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty)
+                        if ((p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty) && reSearch)
                         {
-                            PropertyInfo val = getPropertyInfo(p.reference, propName, true, nonVanillaClassInfo);
+                            PropertyInfo val = getPropertyInfo(p.reference, propName, true, nonVanillaClassInfo, reSearch: false);
                             if (val != null)
                             {
                                 return val;
@@ -364,7 +371,7 @@ namespace ME3Explorer.Unreal
                 //look in base class
                 if (temp.ContainsKey(info.baseClass))
                 {
-                    PropertyInfo val = getPropertyInfo(info.baseClass, propName, inStruct, nonVanillaClassInfo);
+                    PropertyInfo val = getPropertyInfo(info.baseClass, propName, inStruct, nonVanillaClassInfo, reSearch: true);
                     if (val != null)
                     {
                         return val;
@@ -382,7 +389,12 @@ namespace ME3Explorer.Unreal
                 ClassInfo info = Structs[className];
                 try
                 {
-                    using (ME3Package importPCC = MEPackageHandler.OpenME3Package(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath)))
+                    string filepath = (Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
+                    if (File.Exists(info.pccPath))
+                    {
+                        filepath = info.pccPath; //Used for dynamic lookup
+                    }
+                    using (ME3Package importPCC = MEPackageHandler.OpenME3Package(filepath))
                     {
                         byte[] buff;
                         //Plane and CoverReference inherit from other structs, meaning they don't have default values (who knows why)
@@ -430,7 +442,12 @@ namespace ME3Explorer.Unreal
                 ClassInfo info = Structs[className];
                 try
                 {
-                    using (ME3Package importPCC = MEPackageHandler.OpenME3Package(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath)))
+                    string filepath = (Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
+                    if (File.Exists(info.pccPath))
+                    {
+                        filepath = info.pccPath; //Used for dynamic lookup
+                    }
+                    using (ME3Package importPCC = MEPackageHandler.OpenME3Package(filepath))
                     {
                         IExportEntry entry = pcc.Exports[info.exportIndex + 1];
                         List<PropertyReader.Property> Props = PropertyReader.getPropList(entry);
@@ -464,7 +481,12 @@ namespace ME3Explorer.Unreal
                 ClassInfo info = Structs[className];
                 try
                 {
-                    using (ME3Package importPCC = MEPackageHandler.OpenME3Package(Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath)))
+                    string filepath = (Path.Combine(ME3Directory.gamePath, @"BIOGame\" + info.pccPath));
+                    if (File.Exists(info.pccPath))
+                    {
+                        filepath = info.pccPath; //Used for dynamic lookup
+                    }
+                    using (ME3Package importPCC = MEPackageHandler.OpenME3Package(filepath))
                     {
                         byte[] buff;
                         //Plane and CoverReference inherit from other structs, meaning they don't have default values (who knows why)
@@ -540,7 +562,7 @@ namespace ME3Explorer.Unreal
         public static void generateInfo()
         {
             string path = ME3Directory.gamePath;
-            string[] files = Directory.GetFiles(path, "*.pcc", SearchOption.AllDirectories);
+            string[] files = Directory.GetFiles(Path.Combine(path, "BIOGame"), "*.pcc", SearchOption.AllDirectories);
             string objectName;
             int length = files.Length;
             for (int i = 0; i < length; i++)
@@ -615,9 +637,18 @@ namespace ME3Explorer.Unreal
             ClassInfo info = new ClassInfo
             {
                 baseClass = pcc.Exports[index].ClassParent,
-                exportIndex = index,
-                pccPath = new string(pcc.FileName.Skip(pcc.FileName.LastIndexOf("BIOGame") + 8).ToArray())
+                exportIndex = index
             };
+            if (pcc.FileName.Contains("BIOGame"))
+            {
+                info.pccPath = new string(pcc.FileName.Skip(pcc.FileName.LastIndexOf("BIOGame") + 8).ToArray());
+            }
+            else
+            {
+                info.pccPath = pcc.FileName; //used for dynamic resolution of files outside the game directory.
+            }
+
+
             foreach (ME3ExportEntry entry in pcc.Exports)
             {
                 if (entry.idxLink - 1 == index && entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"

@@ -391,7 +391,6 @@ namespace ME3Explorer.Packages
             {
                 try
                 {
-                    Debug.WriteLine("Reading string at 0x" + listsStream.Position.ToString("X8"));
                     int len = listsStream.ReadValueS32();
                     string s = listsStream.ReadString((uint)(len - 1));
                     //skipping irrelevant data
@@ -426,92 +425,6 @@ namespace ME3Explorer.Packages
                 exp.PropertyChanged += exportChanged;
                 exports.Add(exp);
             }
-
-            /*
-
-
-            Loaded = true;
-            FileName = Path.GetFullPath(UDKPackagePath);
-            using (FileStream udkStream = File.OpenRead(FileName))
-            {
-            `                Names = new List<NameEntry>();
-                Imports = new List<ImportEntry>();
-                Exports = new List<ExportEntry>();
-
-                udkStream.Read(header, 0, header.Length);
-
-                //unsure about magic number. for now just let it try anything
-                if (magic != 2653586369)
-                {
-                    //throw new FormatException("not a udk file");
-                }
-
-                //again, unsure of what versions ought to be supported
-                if (lowVers != 684 && highVers != 0)
-                {
-                    //throw new FormatException("unsupported version");
-                }
-
-                Stream listsStream;
-                listsStream = udkStream;
-                headerEnd = NameOffset;
-
-                // fill names list
-                listsStream.Seek(NameOffset, SeekOrigin.Begin);
-                for (int i = 0; i < NameCount; i++)
-                {
-                    long currOffset = listsStream.Position;
-                    int strLength = listsStream.ReadValueS32();
-                    NameEntry n = new NameEntry();
-                    if (strLength < 0)
-                    {
-                        n.name = listsStream.ReadString(strLength * -2, true, Encoding.Unicode);
-                    }
-                    else
-                    {
-                        n.name = listsStream.ReadString(strLength, true, Encoding.ASCII);
-                    }
-                    n.unk = listsStream.ReadValueS32();
-                    n.flags = listsStream.ReadValueS32();
-                    Names.Add(n);
-                }
-                //Debug.WriteLine("Names done. Current offset: "+listsStream.Position);
-                //Debug.WriteLine("Import Offset: " + ImportOffset);
-
-                // fill import list
-                //Console.Out.WriteLine("IMPORT OFFSET: " + ImportOffset);
-                listsStream.Seek(ImportOffset, SeekOrigin.Begin);
-                byte[] buffer = new byte[ImportEntry.byteSize];
-                for (int i = 0; i < ImportCount; i++)
-                {
-
-                    long offset = listsStream.Position;
-                    ImportEntry e = new ImportEntry(this, listsStream);
-                    Imports.Add(e);
-                    //Debug.WriteLine("Read import " + i + " " + e.ObjectName + ", offset: " + offset);
-                };
-
-                // fill export list (only the headers, not the data)
-                listsStream.Seek(ExportOffset, SeekOrigin.Begin);
-                //Console.Out.WriteLine("Export OFFSET: " + ImportOffset);
-                for (int i = 0; i < ExportCount; i++)
-                {
-                    uint expInfoOffset = (uint)listsStream.Position;
-
-                    listsStream.Seek(44, SeekOrigin.Current);
-                    int count = listsStream.ReadValueS32();
-                    listsStream.Seek(-48, SeekOrigin.Current);
-
-                    int expInfoSize = 68 + (count * 4);
-                    buffer = new byte[expInfoSize];
-
-                    listsStream.Read(buffer, 0, buffer.Length);
-                    ExportEntry e = new ExportEntry(this, buffer, expInfoOffset);
-                    //Debug.WriteLine("Read export " + i + " " + e.ObjectName + ", offset: " + expInfoOffset+ ", size: "+expInfoSize); 
-                    Exports.Add(e);
-                }
-            }*/
-            Debug.WriteLine(getMetadataString());
         }
 
         public UDKPackage()
@@ -519,15 +432,16 @@ namespace ME3Explorer.Packages
         }
 
         /// <summary>
-        ///     save PCC to same file by reconstruction if possible, append if not
+        ///     Not supported for UDK files
         /// </summary>
         public void save()
         {
-            save(FileName);
+            //Saving is not supported for UPK files.
+            return;
         }
 
         /// <summary>
-        ///     save PCC by reconstruction if possible, append if not
+        ///     Not supported for UDK files
         /// </summary>
         /// <param name="path">full path + file name.</param>
         public void save(string path)
@@ -537,7 +451,7 @@ namespace ME3Explorer.Packages
         }
 
         /// <summary>
-        ///     save PCCObject to file by reconstruction from data
+        ///     Not supported for UDK files
         /// </summary>
         /// <param name="path">full path + file name.</param>
         public void saveByReconstructing(string path)
@@ -547,13 +461,10 @@ namespace ME3Explorer.Packages
             
         }
 
-       
+
 
         /// <summary>
-        /// This method is an alternate way of saving PCCs
-        /// Instead of reconstructing the PCC from the data taken, it instead copies across the existing
-        /// data, appends new exports, updates the export list, changes the namelist location and updates the
-        /// value in the header
+        /// Not supported for UDK files
         /// </summary>
         /// <param name="newFileName">The filename to write to</param>
         /// <param name="attemptOverwrite">Do you wish to attempt to overwrite the existing export</param>

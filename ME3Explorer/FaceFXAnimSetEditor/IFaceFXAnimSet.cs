@@ -56,6 +56,16 @@ namespace ME3Explorer.FaceFX
         public int unk4;
     }
 
+    public class ME1HeaderStruct : HeaderStruct
+    {
+        public uint Magic;
+        public int unk1;
+        public string Licensee;
+        public string Project;
+        public int unk3;
+        public ushort unk4;
+    }
+
     public class ME3DataAnimSetStruct
     {
         public int unk1;

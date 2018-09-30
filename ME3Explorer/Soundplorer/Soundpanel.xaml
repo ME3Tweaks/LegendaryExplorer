@@ -1,0 +1,105 @@
+﻿<local:ExportLoaderControl x:Class="ME3Explorer.Soundpanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
+             xmlns:local="clr-namespace:ME3Explorer"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:properties="clr-namespace:ME3Explorer.Properties"
+             xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="400"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <UserControl.Resources>
+        <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+        <Converters:FriendlyTimeConverter x:Key="FriendlyTimeConverter"/>
+        <Converters:WwiseDataExchangeEnabledConverter x:Key="WwiseDataExchangeEnabledConverter"/>
+        <Converters:FontAwesomeStateColorConverter x:Key="FontAwesomeStateColorConverter"/>
+    </UserControl.Resources>
+    <Grid Margin="0,0,0,8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="48"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <!--<TextBox Name="infoTextBox" Text="Select an export" Grid.Column="0" Grid.Row="0"/>-->
+        <ListBox Name="ExportInfoListBox" Grid.Column="0" Grid.Row="0" ItemsSource="{Binding ExportInformationList}" PreviewKeyDown="WEMItem_KeyDown" MouseDoubleClick="ExportInfoListBox_DoubleClick">
+            <ListBox.Resources>
+                <DataTemplate DataType="{x:Type s:String}">
+                    <TextBlock Text="{Binding}" Foreground="Gray"/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type local:EmbeddedWEMFile}">
+                    <!-- Do not remove transparent background. It is required for mouse hit testing.-->
+                    <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue"/>
+                </DataTemplate>
+            </ListBox.Resources>
+        </ListBox>
+        <DockPanel Grid.Column="0" Grid.Row="1" Margin="0,0,5,0">
+            <Button Name="Button1" DockPanel.Dock="Right"
+            Background="Transparent" BorderBrush="Transparent"
+            Click="RepeatingButton_Click">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter Content="{TemplateBinding Content}"/>
+                    </ControlTemplate>
+                </Button.Template>
+                <fa:ImageAwesome Icon="Repeat" Height="16" Width="16" Foreground="{Binding Source={x:Static properties:Settings.Default}, Path=SoundpanelRepeating, Mode=TwoWay, Converter={StaticResource FontAwesomeStateColorConverter}}" ToolTip="Repeat"/>
+            </Button>
+            <Slider  Margin="5" Minimum="0" Maximum="{Binding CurrentTrackLength, Mode=OneWay}" Value="{Binding CurrentTrackPosition, Mode=TwoWay}" x:Name="SeekbarControl" IsMoveToPointEnabled="True" VerticalAlignment="Center"
+                ValueChanged="Seekbar_ValueChanged"
+                    HorizontalAlignment="Stretch"
+                Thumb.DragStarted="Seekbar_DragStarted"
+                Thumb.DragCompleted="Seekbar_DragCompleted"/>
+
+        </DockPanel>
+        <Grid HorizontalAlignment="Center" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="48"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="48"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                <Button Content="Replace" ToolTip="Change audio by importing a Wave file" Command="{Binding ReplaceAudioCommand}" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <Button Content="Export" ToolTip="Export audio to Wave file" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="0,8,5,0" Command="{Binding ExportAudioCommand}"/>
+            </StackPanel>
+            <Button Grid.Column="3" ToolTip="Start or pause playback" Command="{Binding StartPlaybackCommand}" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}">
+                <fa:ImageAwesome Icon="{Binding PlayPauseIcon}" Height="24" Width="24"/>
+            </Button>
+            <Button Grid.Column="5" ToolTip="Stop playback" Command="{Binding StopPlaybackCommand}" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}">
+                <fa:ImageAwesome Icon="Stop" Height="24" Width="24"/>
+            </Button>
+
+            <StackPanel Grid.Column="6" Grid.Row="1" Margin="5,0,0,0" VerticalAlignment="Center">
+                <TextBlock Margin="6,0,0,0">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0} / {1}">
+                            <Binding Path="CurrentTrackPosition" Converter="{StaticResource FriendlyTimeConverter}"/>
+                            <Binding Path="CurrentTrackLength" Converter="{StaticResource FriendlyTimeConverter}"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <StackPanel Orientation="Horizontal" Margin="0,7,0,0">
+                    <Slider Width="60" Margin="0,0,5,0" Minimum="0" Maximum="1" Value="{Binding CurrentVolume, Mode=TwoWay}" x:Name="VolumebarControl" VerticalAlignment="Center"  IsMoveToPointEnabled="True">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="ValueChanged">
+                                <i:InvokeCommandAction Command="{Binding VolumeControlValueChangedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Slider>
+                    <fa:ImageAwesome Icon="VolumeUp" Height="16" Width="16"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</local:ExportLoaderControl>

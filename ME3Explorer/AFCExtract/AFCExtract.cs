@@ -45,6 +45,7 @@ namespace ME3Explorer
                 for (int i = 0; i < memsize; i++)
                 {
                     memory[i] = (byte)fileStream.ReadByte();
+                    //RIFF header
                     if(i>=3 && memory[i] == 0x46
                         && memory[i - 1] == 0x46
                         && memory[i - 2] == 0x49
@@ -112,7 +113,7 @@ namespace ME3Explorer
                 proc.WaitForExit();
                 proc.Close();
                 listBox2.Items.Add("\nConvert to Wav");
-                procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\exec\\oggdec.exe", "out.ogg");
+                procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\exec\\oggdec.exe", "--quiet out.ogg");
                 procStartInfo.WorkingDirectory = loc + "\\exec";
                 procStartInfo.RedirectStandardOutput = true;
                 procStartInfo.UseShellExecute = false;
@@ -163,7 +164,7 @@ namespace ME3Explorer
                     proc.Close();
                     listBox2.Items.Add("\n#" + i + "/" + (entr.Count - 1) + " Convert to Wav");
                     listBox2.SelectedIndex = listBox2.Items.Count - 1;
-                    procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\exec\\oggdec.exe", "out.ogg");
+                    procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\exec\\oggdec.exe", "--quiet out.ogg");
                     procStartInfo.WorkingDirectory = loc + "\\exec";
                     procStartInfo.RedirectStandardOutput = true;
                     procStartInfo.UseShellExecute = false;

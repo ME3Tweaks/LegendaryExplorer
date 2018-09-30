@@ -133,6 +133,21 @@ namespace ME3Explorer.Pathfinding_Editor
                             createSpecButton.Enabled = true;
                         }
                     }
+                    else
+                    {
+                        float dirX = (float)((destPoint.X - sourcePoint.X) / distance);
+                        float dirY = (float)((destPoint.Y - sourcePoint.Y) / distance);
+                        float dirZ = (float)((destPoint.Z - sourcePoint.Z) / distance);
+
+
+                        distanceLabel.Text = "Distance: 0 - move one of the nodes";
+                        directionX.Text = "X: N/A";
+                        directionY.Text = "Y: N/A";
+                        directionZ.Text = "Z: N/A";
+
+                        destinationLabel.Text = "| " + destExport.ClassName;
+                        createSpecButton.Enabled = false;
+                    }
                 }
             }
             else

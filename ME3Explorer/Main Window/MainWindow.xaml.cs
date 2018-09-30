@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using FontAwesome.WPF;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using Microsoft.Win32;
@@ -42,16 +45,7 @@ namespace ME3Explorer
         public static double dpiScaleX = 1;
         public static double dpiScaleY = 1;
 
-        public bool DisableFlyouts
-        {
-            get { return (bool)GetValue(DisableFlyoutsProperty); }
-            set { SetValue(DisableFlyoutsProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for DisableFlyouts.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty DisableFlyoutsProperty =
-            DependencyProperty.Register("DisableFlyouts", typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
-
+        private static FieldInfo _menuDropAlignmentField;
 
         public MainWindow()
         {
@@ -65,40 +59,50 @@ namespace ME3Explorer
                 MessageBox.Show(e.Message);
                 SystemCommands.CloseWindow(this);
             }
+
+            //make menu's appear right side, which is busted on WPF with touchscreens
+            _menuDropAlignmentField = typeof(SystemParameters).GetField("_menuDropAlignment", BindingFlags.NonPublic | BindingFlags.Static);
+            System.Diagnostics.Debug.Assert(_menuDropAlignmentField != null);
+
+            EnsureStandardPopupAlignment();
+            SystemParameters.StaticPropertyChanged += SystemParameters_StaticPropertyChanged;
+
+
+
             installModspanel.setToolList(Tools.Items.Where(x => x.tags.Contains("user")));
             Tools.FavoritesChanged += Tools_FavoritesChanged;
             Tools_FavoritesChanged(null, null);
             utilitiesPanel.setToolList(Tools.Items.Where(x => x.tags.Contains("utility")));
             createModsPanel.setToolList(Tools.Items.Where(x => x.tags.Contains("developer")));
 
-            DisableFlyouts = Properties.Settings.Default.DisableToolDescriptions;
             Topmost = Properties.Settings.Default.AlwaysOnTop;
-            
-            /*if (!Properties.Settings.Default.DisableDLCCheckOnStart)
+            //Check that at least one game path is set. If none are, show the initial dialog.
+            if (ME1Directory.gamePath == null && ME2Directory.gamePath == null && ME3Directory.gamePath == null)
             {
-                if (Properties.Settings.Default.FirstRun == true)
-                {
-                    (new InitialSetup()).ShowDialog();
-                    Properties.Settings.Default.FirstRun = false;
-                }
-                else if (ME3Directory.gamePath != null && File.Exists(Path.Combine(ME3Directory.gamePath, "Binaries", "Win32", "MassEffect3.exe")))
-                {
-                    var folders = Directory.EnumerateDirectories(ME3Directory.DLCPath).Where(x => !x.Contains("__metadata") && x.Contains("DLC_"));
-                    var extracted = folders.Where(folder => Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).Any(file => file.EndsWith("pcconsoletoc.bin", StringComparison.OrdinalIgnoreCase)));
-                    var unextracted = folders.Except(extracted);
-                    if (unextracted.Any())
-                    {
-                        (new InitialSetup()).ShowDialog();
-                    } 
-                }
-            }*/
+                (new InitialSetup()).ShowDialog();
+            }
+            UpdateGamePathWarningIconStatus();
+
+        }
+
+        private static void SystemParameters_StaticPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            EnsureStandardPopupAlignment();
+        }
+
+        private static void EnsureStandardPopupAlignment()
+        {
+            if (SystemParameters.MenuDropAlignment && _menuDropAlignmentField != null)
+            {
+                _menuDropAlignmentField.SetValue(null, false);
+            }
         }
 
         private void Tools_FavoritesChanged(object sender, EventArgs e)
         {
             IEnumerable<Tool> favs = Tools.Items.Where(x => x.IsFavorited);
             favoritesPanel.setToolList(favs);
-            favoritesWatermark.Visibility = favs.Any()? Visibility.Hidden : Visibility.Visible;
+            favoritesWatermark.Visibility = favs.Any() ? Visibility.Hidden : Visibility.Visible;
         }
 
         private void Command_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -223,9 +227,10 @@ namespace ME3Explorer
             {
                 if (tool.open != null)
                 {
+                    //for each word we've typed in
                     foreach (string word in words)
                     {
-                        if (tool.tags.FuzzyMatch(word) || tool.name.ToLower().Split(' ').FuzzyMatch(word))
+                        if (tool.tags.FuzzyMatch(word) || tool.name.ToLower().Contains(word) || tool.name.ToLower().Split(' ').FuzzyMatch(word))
                         {
                             results.Add(tool);
                             break;
@@ -264,8 +269,6 @@ namespace ME3Explorer
             {
                 e.Cancel = true;
             }
-            Properties.Settings.Default.DisableDLCCheckOnStart = true;// disableSetupCheckBox.IsChecked ?? false;
-            Properties.Settings.Default.DisableToolDescriptions = DisableFlyouts;
             Properties.Settings.Default.AlwaysOnTop = alwaysOnTopCheckBox.IsChecked ?? false;
         }
 
@@ -419,7 +422,7 @@ namespace ME3Explorer
         private void openToolInfo(Tool e)
         {
             toolInfoPanel.setTool(e);
-            if (!ToolInfoPanelOpen && !DisableFlyouts)
+            if (!ToolInfoPanelOpen)
             {
                 if (SearchOpen)
                 {
@@ -458,7 +461,10 @@ namespace ME3Explorer
             {
                 me3Path = me3PathBox.Text;
             }
-            MEDirectories.SaveSettings(new List<string> { me1Path, me2Path, me3Path });
+            List<string> directories = new List<string> { me1Path, me2Path, me3Path };
+            MEDirectories.SaveSettings(directories);
+
+            gamePathsWarningIcon.Visibility = directories.All(item => item == null || !Directory.Exists(item)) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void pathBrowseButton_Click(object sender, RoutedEventArgs e)
@@ -507,7 +513,21 @@ namespace ME3Explorer
                             me3PathBox.Visibility = Visibility.Visible;
                             break;
                     }
+                    UpdateGamePathWarningIconStatus();
                 }
+            }
+        }
+
+        private void UpdateGamePathWarningIconStatus()
+        {
+            var warningIcons = new List<ImageAwesome> { me1GamePathWarningIcon, me2GamePathWarningIcon, me3GamePathWarningIcon };
+            var directories = new List<string> { ME1Directory.gamePath, ME2Directory.gamePath, ME3Directory.gamePath };
+            gamePathsWarningIcon.Visibility = directories.Any(item => item != null && (!Directory.Exists(item) || !Directory.Exists(Path.Combine(item, "BIOGame")) || !Directory.Exists(Path.Combine(item, "Binaries")))) ? Visibility.Visible : Visibility.Collapsed;
+            for (int i = 0; i < warningIcons.Count; i++)
+            {
+                ImageAwesome icon = warningIcons[i];
+                string directory = directories[i];
+                icon.Visibility = directory != null && (!Directory.Exists(directory) || !Directory.Exists(Path.Combine(directory, "BIOGame")) || !Directory.Exists(Path.Combine(directory, "Binaries"))) ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -626,6 +646,23 @@ namespace ME3Explorer
             {
                 dpiScaleX = source.CompositionTarget.TransformToDevice.M11;
                 dpiScaleY = source.CompositionTarget.TransformToDevice.M22;
+            }
+        }
+
+        private void ME3TweaksDiscord_Clicked(object sender, RoutedEventArgs e)
+        {
+            string link = "https://discordapp.com/invite/s8HA6dc";
+            try
+            {
+                System.Diagnostics.Process.Start(link);
+            }
+            catch (Exception other)
+            {
+                try
+                {
+                    System.Windows.Clipboard.SetText(link);
+                }
+                catch { }
             }
         }
     }

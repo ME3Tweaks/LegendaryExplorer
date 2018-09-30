@@ -245,8 +245,7 @@ namespace ME3Explorer.CurveEd
                                 new FloatProperty(point.LeaveTangent, "LeaveTangent"),
                                 new EnumProperty(point.InterpMode.ToString(), "EInterpCurveMode", pcc, "InterpMode")
                             });
-                        }).ToList(), ArrayType.Struct, "Points"),
-                        new NoneProperty()
+                        }).ToList(), ArrayType.Struct, "Points")
                     }, Name);
                 case CurveType.InterpCurveVector:
                     var points = new List<StructProperty>();

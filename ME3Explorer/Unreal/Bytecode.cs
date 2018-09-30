@@ -3552,7 +3552,7 @@ namespace ME3Explorer.Unreal
             t.text = pcc.getNameEntry(index);
             int pos = start + 9;
             UInt16 postUnk6 = BitConverter.ToUInt16(memory, pos);
-            Debug.WriteLine("Unk6 post-name 2 bytes "+t.text+": " + postUnk6 + " 0x" + postUnk6.ToString("X4"));
+            //Debug.WriteLine("Unk6 post-name 2 bytes "+t.text+": " + postUnk6 + " 0x" + postUnk6.ToString("X4"));
             pos += 2;
             t.text += "(";
             int count = 0;

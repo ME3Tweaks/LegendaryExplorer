@@ -45,7 +45,7 @@ namespace ME3Explorer.FaceFX
 
         private void Open_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog{ Filter = "*.pcc|*.pcc"};
+            OpenFileDialog d = new OpenFileDialog{ Filter = "Supported file types|*.pcc;*.u;*.upk"};
             if (d.ShowDialog() == true)
             {
                 LoadFile(d.FileName);
@@ -57,12 +57,12 @@ namespace ME3Explorer.FaceFX
             try
             {
                 LoadMEPackage(fileName);
-                if (pcc.Game == MEGame.ME1)
+                /*if (pcc.Game == MEGame.ME1)
                 {
                     pcc?.Release(wpfWindow: this);
                     pcc = null;
                     throw new FormatException("FaceFXEditor does not work on ME1 files.");
-                }
+                }*/
                 selectedLine = null;
                 FaceFX = null;
                 treeView.Nodes.Clear();
@@ -122,15 +122,20 @@ namespace ME3Explorer.FaceFX
 
         private void loadFaceFXAnimset()
         {
-            if (pcc.Game == MEGame.ME3)
+            switch (pcc.Game)
             {
-                FaceFX = new ME3FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
-                linesListBox.ItemsSource = FaceFX.Data.Data;
-            }
-            else
-            {
-                FaceFX = new ME2FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
-                linesListBox.ItemsSource = (FaceFX.Data as ME2DataAnimSetStruct).Data;
+                case MEGame.ME1:
+                    FaceFX = new ME1FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
+                    linesListBox.ItemsSource = (FaceFX.Data as ME3DataAnimSetStruct).Data;
+                    break;
+                case MEGame.ME2:
+                    FaceFX = new ME2FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
+                    linesListBox.ItemsSource = (FaceFX.Data as ME2DataAnimSetStruct).Data;
+                    break;
+                case MEGame.ME3:
+                    FaceFX = new ME3FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
+                    linesListBox.ItemsSource = FaceFX.Data.Data;
+                    break;
             }
             treeView.Nodes.Clear();
             graph.Clear();

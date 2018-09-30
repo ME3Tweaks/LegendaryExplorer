@@ -87,6 +87,47 @@ Floats*/
             Root,
         }
 
+        /// <summary>
+        /// Storage Types for Texture2D
+        /// </summary>
+        public enum StorageTypes
+        {
+            pccUnc = StorageFlags.noFlags,                                     // ME1 (Compressed PCC), ME2 (Compressed PCC)
+            pccLZO = StorageFlags.compressedLZO,                               // ME1 (Uncompressed PCC)
+            pccZlib = StorageFlags.compressedZlib,                             // ME1 (Uncompressed PCC)
+            extUnc = StorageFlags.externalFile,                                // ME3 (DLC TFC archive)
+            extLZO = StorageFlags.externalFile | StorageFlags.compressedLZO,   // ME1 (Reference to PCC), ME2 (TFC archive)
+            extZlib = StorageFlags.externalFile | StorageFlags.compressedZlib, // ME3 (non-DLC TFC archive)
+            empty = StorageFlags.externalFile | StorageFlags.unused,           // ME1, ME2, ME3
+        }
+
+        /// <summary>
+        /// Storage type flags for Texture2D
+        /// </summary>
+        public enum StorageFlags
+        {
+            noFlags = 0,
+            externalFile = 1 << 0,
+            compressedZlib = 1 << 1,
+            compressedLZO = 1 << 4,
+            unused = 1 << 5,
+        }
+
+        //So I don't have to modify and fix a bunch of extensions classes
+        public static uint ReadUInt32(Stream stream)
+        {
+            byte[] buffer = new byte[sizeof(uint)];
+            if (stream.Read(buffer, 0, sizeof(uint)) != sizeof(uint))
+                throw new Exception();
+            return BitConverter.ToUInt32(buffer, 0);
+        }
+
+        public static int ReadInt32(Stream stream)
+        {
+            return (int)ReadUInt32(stream);
+        }
+
+
         Dictionary<int, string> me1TLK = new Dictionary<int, string>();
         private int lastSetOffset = -1; //offset set by program, used for checking if user changed since set 
         private NodeType LAST_SELECTED_PROP_TYPE = NodeType.Unknown; //last property type user selected. Will use to check the current offset for type
@@ -101,7 +142,7 @@ Floats*/
         public static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "SeekFreeShaderCache", "Class", "BioStage", "ObjectProperty", "Const",
             "Enum", "ArrayProperty","FloatProperty", "IntProperty", "BoolProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
             "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "PrefabInstance",
-            "WwiseStream", "TextureMovie", "GuidCache", "World"};
+            "WwiseStream", "TextureMovie", "GuidCache", "World", "Texture2D"};
 
 
         public BinaryInterpreter()
@@ -274,6 +315,9 @@ Floats*/
                 case "BioDynamicAnimSet":
                     StartBioDynamicAnimSetScan();
                     break;
+                case "Texture2D":
+                    StartTextureBinaryScan();
+                    break;
                 case "WwiseEvent":
                     StartWWiseEventScan();
                     break;
@@ -341,6 +385,170 @@ Floats*/
             treeView1.EndUpdate();
             memsize = memory.Length;
         }
+
+        private void StartTextureBinaryScan(string nodeNameToSelect = null)
+        {
+            TreeNode topLevelTree = new TreeNode($"0000 : {export.ObjectName}({export.ClassName})")
+            {
+                Tag = NodeType.Root,
+                Name = "0"
+            };
+            try
+            {
+                var textureData = new MemoryStream(export.Data);
+
+                int unrealExportIndex = ReadInt32(textureData);
+                topLevelTree.Nodes.Add(new TreeNode($"0x{textureData.Position - 4:X5} Unreal Unique Index: {unrealExportIndex}")
+                {
+                    Name = (textureData.Position - 4).ToString(),
+                    Tag = NodeType.StructLeafInt
+                });
+
+                Unreal.PropertyCollection properties = export.GetProperties();
+                if (textureData.Length == properties.endOffset)
+                    return; // no binary data
+
+
+                textureData.Position = properties.endOffset;
+                if (pcc.Game != MEGame.ME3)
+                {
+                    textureData.Seek(12, SeekOrigin.Current); // 12 zeros
+                    textureData.Seek(4, SeekOrigin.Current); // position in the package
+                }
+
+                //mipMapsList = new List<MipMap>();
+                int numMipMaps = ReadInt32(textureData);
+                for (int l = 0; l < numMipMaps; l++)
+                {
+                    //MipMap mipmap = new MipMap();
+                    var mipMapNode = new TreeNode($"0x{textureData.Position - 4} MipMap #{l}")
+                    {
+                        Name = (textureData.Position - 4).ToString()
+                    };
+                    topLevelTree.Nodes.Add(mipMapNode);
+
+                    StorageTypes storageType = (StorageTypes)ReadInt32(textureData);
+                    mipMapNode.Nodes.Add(new TreeNode($"0x{textureData.Position - 4} Storage Type: {storageType}")
+                    {
+                        Name = (textureData.Position - 4).ToString()
+                    });
+
+                    var uncompressedSize = ReadInt32(textureData);
+                    mipMapNode.Nodes.Add(new TreeNode($"0x{textureData.Position - 4} Uncompressed Size: {uncompressedSize}")
+                    {
+                        Name = (textureData.Position - 4).ToString()
+                    });
+
+                    var compressedSize = ReadInt32(textureData);
+                    mipMapNode.Nodes.Add(new TreeNode($"0x{textureData.Position - 4} Compressed Size: {compressedSize}")
+                    {
+                        Name = (textureData.Position - 4).ToString()
+                    });
+
+                    var dataOffset = ReadInt32(textureData);
+                    mipMapNode.Nodes.Add(new TreeNode($"0x{textureData.Position - 4} Data Offset: 0x{dataOffset.ToString("X8")}")
+                    {
+                        Name = (textureData.Position - 4).ToString()
+                    });
+
+                    //mipmap.storageType = (StorageTypes)
+                    //mipmap.uncompressedSize = textureData.ReadInt32();
+                    //mipmap.compressedSize = textureData.ReadInt32();
+                    //mipmap.dataOffset = textureData.ReadUInt32();
+
+
+                    if (storageType == StorageTypes.pccUnc)
+                    {
+                        //mipmap.internalOffset = (uint)textureData.Position;
+                        textureData.Seek(uncompressedSize, SeekOrigin.Current);
+                    }
+                    if (storageType == StorageTypes.pccLZO ||
+                        storageType == StorageTypes.pccZlib)
+                    {
+                        //mipmap.internalOffset = (uint)textureData.Position;
+                        textureData.Seek(compressedSize, SeekOrigin.Current);
+                    }
+
+                    var mipWidth = ReadInt32(textureData);
+                    mipMapNode.Nodes.Add(new TreeNode($"0x{textureData.Position - 4} Mip Width: {mipWidth}")
+                    {
+                        Name = (textureData.Position - 4).ToString()
+                    });
+
+                    var mipHeight = ReadInt32(textureData);
+                    mipMapNode.Nodes.Add(new TreeNode($"0x{textureData.Position - 4} Mip Height: {mipHeight}")
+                    {
+                        Name = (textureData.Position - 4).ToString()
+                    });
+
+                    //if (fixDim)
+                    //{
+                    //    if (mipmap.width == 4 && mipMapsList.Exists(mip => mip.width == mipmap.width))
+                    //        mipmap.width = mipMapsList.Last().width / 2;
+                    //    if (mipmap.height == 4 && mipMapsList.Exists(mip => mip.height == mipmap.height))
+                    //        mipmap.height = mipMapsList.Last().height / 2;
+
+                    //    if (mipmap.width == 0)
+                    //        mipmap.width = 1;
+                    //    if (mipmap.height == 0)
+                    //        mipmap.height = 1;
+                    //}
+
+                    //mipMapsList.Add(mipmap);
+                }
+                /*
+                restOfData = textureData.ReadToBuffer(textureData.Length - textureData.Position);
+
+                packagePath = package.packagePath;
+                packageName = Path.GetFileNameWithoutExtension(packagePath).ToUpper();
+                if (GameData.gameType == MeType.ME1_TYPE)
+                {
+                    string baseName = package.resolvePackagePath(package.exportsTable[exportId].linkId).Split('.')[0].ToUpper();
+                    if (mipMapsList.Exists(s => s.storageType == StorageTypes.extLZO) ||
+                        mipMapsList.Exists(s => s.storageType == StorageTypes.extZlib) ||
+                        mipMapsList.Exists(s => s.storageType == StorageTypes.extUnc))
+                    {
+                        basePackageName = baseName;
+                        if (basePackageName == "")
+                            throw new Exception("");
+                        slave = true;
+                    }
+                    else
+                    {
+                        if (baseName != "" && !properties.exists("NeverStream") &&
+                            GameData.packageFiles.Exists(s => Path.GetFileNameWithoutExtension(s).Equals(baseName, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            basePackageName = baseName;
+                            weakSlave = true;
+                        }
+                    }
+                }*/
+
+            }
+            catch (Exception e)
+            {
+                topLevelTree.Nodes.Add($"An error occured parsing the {export.ClassName} binary: {e.Message}");
+            }
+            treeView1.Nodes.Add(topLevelTree);
+            treeView1.CollapseAll();
+            treeView1.Nodes[0].Expand();
+            TreeNode[] nodes;
+
+            if (nodeNameToSelect != null)
+            {
+                nodes = treeView1.Nodes.Find(nodeNameToSelect, true);
+                if (nodes.Length > 0)
+                {
+                    treeView1.SelectedNode = nodes[0];
+                }
+                else
+                {
+                    treeView1.SelectedNode = treeView1.Nodes[0];
+                }
+            }
+        }
+
+
 
         private void StartStackScan()
         {
@@ -661,7 +869,7 @@ Floats*/
              *  
              */
 
-            if ((export.header[0x1f] & 0x2) != 0)
+            if ((export.Header[0x1f] & 0x2) != 0)
             {
                 byte[] data = export.Data;
                 TreeNode topLevelTree = new TreeNode($"0000 : {export.ObjectName}")
@@ -737,13 +945,13 @@ Floats*/
              *  RawTris +(size*count)
              *  meshversion +4
              *  lodcount +4
-	         *      guid +16
-	         *      sectioncount +4
-		     *          MATERIAL <------------------------
-		     *          +36
-		     *          unk5
-		     *          +13
-	         *      section[0].unk5 == 1 ? +12 : +4
+             *      guid +16
+             *      sectioncount +4
+             *          MATERIAL <------------------------
+             *          +36
+             *          unk5
+             *          +13
+             *      section[0].unk5 == 1 ? +12 : +4
              */
 
             byte[] data = export.Data;
@@ -1057,7 +1265,7 @@ Floats*/
                 [Camera name
                     unreal property data]*/
 
-            if ((export.header[0x1f] & 0x2) != 0)
+            if ((export.Header[0x1f] & 0x2) != 0)
             {
                 byte[] data = export.Data;
                 TreeNode topLevelTree = new TreeNode($"0000 : {export.ObjectName}");
@@ -2162,8 +2370,8 @@ Floats*/
                     Name = offset.ToString()
                 });
                 offset += skipAmount + 10; //heuristic to find end of script
-                //for (int i = 0; i < 5; i++)
-                //{
+                                           //for (int i = 0; i < 5; i++)
+                                           //{
                 uint stateMask = BitConverter.ToUInt32(data, offset);
                 topLevelTree.Nodes.Add(new TreeNode($"0x{offset:X5} Statemask: {stateMask} [{getStateFlagsStr(stateMask)}]")
                 {
@@ -2226,10 +2434,10 @@ Floats*/
                     int postComponentsNoneNameIndex = BitConverter.ToInt32(data, offset);
                     int postComponentNoneIndex = BitConverter.ToInt32(data, offset + 4);
                     string postCompName = export.FileRef.getNameEntry(postComponentsNoneNameIndex); //This appears to be unused in ME#, it is always None it seems.
-                    /*if (postCompName != "None")
-                    {
-                        Debugger.Break();
-                    }*/
+                                                                                                    /*if (postCompName != "None")
+                                                                                                    {
+                                                                                                        Debugger.Break();
+                                                                                                    }*/
                     topLevelTree.Nodes.Add(new TreeNode($"0x{offset:X5} Post-Components Blank ({postCompName})")
                     {
                         Name = offset.ToString(),

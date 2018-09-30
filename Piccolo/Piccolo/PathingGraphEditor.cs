@@ -236,6 +236,7 @@ namespace UMD.HCIL.PathingGraphEditor
         public bool showVolume_WwiseAudioVolume = false;
         public bool showVolume_BlockingVolume = false;
         public bool showVolume_SFXCombatZones = false;
+        public bool showVolume_SFXBlockingVolume_Ledge = false;
 
         protected override void OnPaint(PaintEventArgs e)
         {

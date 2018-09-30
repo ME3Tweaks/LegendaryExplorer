@@ -41,7 +41,6 @@ namespace ME3Explorer.Pathfinding_Editor
         protected static Brush dynamicPathfindingNodeBrush = new SolidBrush(Color.FromArgb(46, 184, 25));
         protected static Brush dynamicPathnodefindingNodeBrush = new SolidBrush(Color.FromArgb(80, 184, 25));
 
-
         protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
         public static bool draggingOutlink = false;
         public static bool draggingVarlink = false;
@@ -57,6 +56,7 @@ namespace ME3Explorer.Pathfinding_Editor
         protected Pen outlinePen;
         public SText comment;
         public List<IExportEntry> ReachSpecs = new List<IExportEntry>();
+        public string NodeTag;
 
         public void Select()
         {
@@ -88,6 +88,22 @@ namespace ME3Explorer.Pathfinding_Editor
             try
             {
                 PropertyCollection props = export.GetProperties();
+                float xScalar = 1;
+                float yScalar = 1;
+                //float zScalar = 1;
+
+                var drawScale = props.GetProp<FloatProperty>("DrawScale");
+                var drawScale3d = props.GetProp<StructProperty>("DrawScale3D");
+                if (drawScale != null)
+                {
+                    xScalar = yScalar = drawScale.Value;
+                }
+                if (drawScale3d != null)
+                {
+                    xScalar *= drawScale3d.GetProp<FloatProperty>("X").Value;
+                    yScalar *= drawScale3d.GetProp<FloatProperty>("Y").Value;
+                }
+
                 var brushComponent = props.GetProp<ObjectProperty>("BrushComponent");
                 if (brushComponent == null)
                 {
@@ -109,8 +125,8 @@ namespace ME3Explorer.Pathfinding_Editor
                 foreach (StructProperty vertex in verticiesList)
                 {
                     Vector3 point = new Vector3();
-                    point.X = vertex.GetProp<FloatProperty>("X");
-                    point.Y = vertex.GetProp<FloatProperty>("Y");
+                    point.X = vertex.GetProp<FloatProperty>("X") * xScalar;
+                    point.Y = vertex.GetProp<FloatProperty>("Y") * yScalar;
                     point.Z = vertex.GetProp<FloatProperty>("Z");
                     brushVertices.Add(point);
                 }
@@ -157,6 +173,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         retval += "_" + tagProp.Value.Number;
                     }
+                    NodeTag = retval;
                     return retval;
                 }
             }

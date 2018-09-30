@@ -6,10 +6,12 @@ namespace ME3Explorer.Packages
 {
     public interface IEntry
     {
-        bool HeaderChanged { get; }
+        event PropertyChangedEventHandler PropertyChanged;
+        bool EntryHasPendingChanges { get; set; } //used to signal that this entry has uncommited changes
+        bool HeaderChanged { get; set; }
         int Index { get; set; }
         int UIndex { get; }
-        byte[] header { get; }
+        byte[] Header { get; set; }
         IMEPackage FileRef { get; }
         int idxLink { get; set; }
         int idxObjectName { get; set; }
@@ -41,11 +43,9 @@ namespace ME3Explorer.Packages
         bool ReadsFromConfig { get; }
 
         IExportEntry Clone();
-        void setHeader(byte[] v);
 
-        event PropertyChangedEventHandler PropertyChanged;
 
-        PropertyCollection GetProperties(bool forceReload = false);
+        PropertyCollection GetProperties(bool forceReload = false, bool includeNoneProperties = false);
         void WriteProperties(PropertyCollection props);
         int propsEnd();
         int GetPropertyStart();

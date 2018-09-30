@@ -13,6 +13,7 @@ using System.Text;
 using ME3Explorer.SharedUI;
 using Gibbed.IO;
 using System.Globalization;
+using System.Collections;
 
 namespace ME3Explorer
 {
@@ -108,7 +109,7 @@ namespace ME3Explorer
             }
         }
 
-        
+
 
         public void LoadMostRecent()
         {
@@ -150,7 +151,7 @@ namespace ME3Explorer
                 LoadMEPackage(s);
                 interpreterControl.Pcc = pcc;
                 binaryInterpreterControl.Pcc = pcc;
-                bio2DAEditor1.Pcc = pcc;
+               // bio2DAEditor1.Pcc = pcc;
                 treeView1.Tag = pcc;
                 RefreshView();
                 InitStuff();
@@ -257,7 +258,7 @@ namespace ME3Explorer
                 NameIdx = imports[n].idxObjectName;
                 ClassIdx = imports[n].idxClassName;
                 LinkIdx = imports[n].idxLink;
-                ArchetypeIdx = imports[n].idxPackageName;
+                ArchetypeIdx = imports[n].idxPackageFile;
 
                 archetypeLabel.Text = "Package File";
                 indexTextBox.Visible = indexLabel.Visible = false;
@@ -523,134 +524,142 @@ namespace ME3Explorer
             }
             if (CurrentView == View.Imports || CurrentView == View.Exports || CurrentView == View.Tree)
             {
-                tabControl1_SelectedIndexChanged(null, null);
-                PreviewInfo(n);
-                RefreshMetaData();
-                //export
-                if (n >= 0)
+                try
                 {
-                    PreviewProps(n);
-                    if (!packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
-                    {
-                        packageEditorTabPane.TabPages.Insert(0, propertiesTab);
-                    }
-                    if (!packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
-                    {
-                        packageEditorTabPane.TabPages.Insert(1, interpreterTab);
-                    }
+                    tabControl1_SelectedIndexChanged(null, null);
 
-                    IExportEntry exportEntry = pcc.getExport(n);
-                    if (exportEntry.ClassName == "Function")
+                    PreviewInfo(n);
+                    RefreshMetaData();
+                    //export
+                    if (n >= 0)
                     {
-                        if (!packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
+                        PreviewProps(n);
+                        if (!packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
                         {
-                            packageEditorTabPane.TabPages.Add(scriptTab);
+                            packageEditorTabPane.TabPages.Insert(0, propertiesTab);
                         }
-                        if (pcc.Game == MEGame.ME3)
+                        if (!packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
                         {
-                            Function func = new Function(exportEntry.Data, pcc);
-                            rtb1.Text = func.ToRawText();
+                            packageEditorTabPane.TabPages.Insert(1, interpreterTab);
                         }
-                        else if (pcc.Game == MEGame.ME1)
+
+                        IExportEntry exportEntry = pcc.getExport(n);
+                        if (exportEntry.ClassName == "Function")
                         {
-                            ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(exportEntry.Data, pcc as ME1Package);
-                            try
+                            if (!packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
                             {
+                                packageEditorTabPane.TabPages.Add(scriptTab);
+                            }
+                            if (pcc.Game == MEGame.ME3)
+                            {
+                                Function func = new Function(exportEntry.Data, pcc);
                                 rtb1.Text = func.ToRawText();
                             }
-                            catch (Exception e)
+                            else if (pcc.Game == MEGame.ME1)
                             {
-                                rtb1.Text = "Error parsing function: " + e.Message;
+                                ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(exportEntry.Data, pcc as ME1Package);
+                                try
+                                {
+                                    rtb1.Text = func.ToRawText();
+                                }
+                                catch (Exception e)
+                                {
+                                    rtb1.Text = "Error parsing function: " + e.Message;
+                                }
+                            }
+                            else
+                            {
+                                rtb1.Text = "Parsing UnrealScript Functions for this game is not supported.";
+                            }
+                        }
+                        else if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
+                        {
+                            packageEditorTabPane.TabPages.Remove(scriptTab);
+                        }
+
+                        if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) ||
+                                (exportEntry.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+                        {
+                            if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
+                            {
+                                packageEditorTabPane.TabPages.Add(binaryEditorTab);
                             }
                         }
                         else
                         {
-                            rtb1.Text = "Parsing UnrealScript Functions for this game is not supported.";
+                            removeBinaryTabPane();
                         }
-                    }
-                    else if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
-                    {
-                        packageEditorTabPane.TabPages.Remove(scriptTab);
-                    }
 
-                    if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) ||
-                            (exportEntry.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
-                    {
-                        if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
-                        {
-                            packageEditorTabPane.TabPages.Add(binaryEditorTab);
-                        }
-                    }
-                    else
-                    {
-                        removeBinaryTabPane();
-                    }
-
-                    if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
-                    {
-                        if (!packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
-                        {
-                            packageEditorTabPane.TabPages.Add(bio2daEditorTab);
-                        }
-                    }
-                    else
-                    {
-                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
-                        {
-                            packageEditorTabPane.TabPages.Remove(bio2daEditorTab);
-                        }
-                    }
-
-                    headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.header);
-                    if (!isRefresh)
-                    {
-                        interpreterControl.export = exportEntry;
-                        interpreterControl.InitInterpreter();
-
-                        if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) ||
-                            (exportEntry.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
-                        {
-                            if (exportEntry.ClassName == "Class" && exportEntry.ObjectName.StartsWith("Default__"))
-                            {
-                                //do nothing, this class is not actually a class.
-                                removeBinaryTabPane();
-                            }
-                            else
-                            {
-                                binaryInterpreterControl.export = exportEntry;
-                                binaryInterpreterControl.InitInterpreter();
-                            }
-                        }
                         if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
                         {
-                            bio2DAEditor1.export = exportEntry;
-                            bio2DAEditor1.InitInterpreter();
+                            if (!packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
+                            {
+                                packageEditorTabPane.TabPages.Add(bio2daEditorTab);
+                            }
+                        }
+                        else
+                        {
+                            if (packageEditorTabPane.TabPages.ContainsKey(nameof(bio2daEditorTab)))
+                            {
+                                packageEditorTabPane.TabPages.Remove(bio2daEditorTab);
+                            }
+                        }
+
+                        headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.Header);
+                        if (!isRefresh)
+                        {
+                            interpreterControl.export = exportEntry;
+                            interpreterControl.InitInterpreter();
+
+                            if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName) ||
+                                (exportEntry.ObjectFlags & (ulong)UnrealFlags.EObjectFlags.HasStack) != 0)
+                            {
+                                if (exportEntry.ClassName == "Class" && exportEntry.ObjectName.StartsWith("Default__"))
+                                {
+                                    //do nothing, this class is not actually a class.
+                                    removeBinaryTabPane();
+                                }
+                                else
+                                {
+                                    binaryInterpreterControl.export = exportEntry;
+                                    binaryInterpreterControl.InitInterpreter();
+                                }
+                            }
+                            if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
+                            {
+                                bio2DAEditor1.export = exportEntry;
+                                bio2DAEditor1.InitInterpreter();
+                            }
+                        }
+                        UpdateStatusEx(n);
+                    }
+                    //import
+                    else
+                    {
+                        n = -n - 1;
+                        headerRawHexBox.ByteProvider = new DynamicByteProvider(pcc.getImport(n).Header);
+                        UpdateStatusIm(n);
+                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
+                        {
+                            packageEditorTabPane.TabPages.Remove(interpreterTab);
+                        }
+                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
+                        {
+                            packageEditorTabPane.TabPages.Remove(propertiesTab);
+                        }
+                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
+                        {
+                            packageEditorTabPane.TabPages.Remove(scriptTab);
+                        }
+                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
+                        {
+                            packageEditorTabPane.TabPages.Remove(binaryEditorTab);
                         }
                     }
-                    UpdateStatusEx(n);
                 }
-                //import
-                else
+                catch (Exception e)
                 {
-                    n = -n - 1;
-                    headerRawHexBox.ByteProvider = new DynamicByteProvider(pcc.getImport(n).header);
-                    UpdateStatusIm(n);
-                    if (packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
-                    {
-                        packageEditorTabPane.TabPages.Remove(interpreterTab);
-                    }
-                    if (packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
-                    {
-                        packageEditorTabPane.TabPages.Remove(propertiesTab);
-                    }
-                    if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
-                    {
-                        packageEditorTabPane.TabPages.Remove(scriptTab);
-                    }
-                    if (packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
-                    {
-                        packageEditorTabPane.TabPages.Remove(binaryEditorTab);
-                    }
+                    MessageBox.Show("Error previewing this export:\n" + ExceptionHandlerDialogWPF.FlattenException(e));
                 }
             }
         }
@@ -692,7 +701,7 @@ namespace ME3Explorer
                     classNameBox.Text = exportEntry.ClassName;
                     superclassTextBox.Text = exportEntry.ClassParent;
                     packageNameBox.Text = exportEntry.PackageFullName;
-                    headerSizeBox.Text = exportEntry.header.Length + " bytes";
+                    headerSizeBox.Text = exportEntry.Header.Length + " bytes";
                     indexBox.Text = exportEntry.indexValue.ToString();
                     archetypeBox.Text = exportEntry.ArchtypeName;
 
@@ -1038,6 +1047,13 @@ namespace ME3Explorer
                         ((PackageEditor)form).RefreshRecent(false, RFiles);
                     }
                 }
+                foreach (var form in App.Current.Windows)
+                {
+                    if (form is PackageEditorWPF && this != form)
+                    {
+                        ((PackageEditorWPF)form).RefreshRecent(false, RFiles);
+                    }
+                }
             }
             else if (recents != null)
             {
@@ -1339,7 +1355,7 @@ namespace ME3Explorer
                 importEntry.idxObjectName = NameIdx;
                 importEntry.idxClassName = ClassIdx;
                 importEntry.idxLink = LinkIdx;
-                importEntry.idxPackageName = ArchetypeIdx;
+                importEntry.idxPackageFile = ArchetypeIdx;
                 n = -n - 1;
             }
         }
@@ -1417,6 +1433,7 @@ namespace ME3Explorer
             MemoryStream m = new MemoryStream();
             IByteProvider provider = headerRawHexBox.ByteProvider;
             int requiredheaderlength = n > 0 ? 0x44 : 0x1C; //0x44 for exports, 0x1B for imports
+            if (pcc.Game == MEGame.ME1) { requiredheaderlength = n > 0 ? 0x48 : 0x1C; }
             if (provider.Length != requiredheaderlength)
             {
                 MessageBox.Show("Invalid hex length");
@@ -1426,11 +1443,11 @@ namespace ME3Explorer
                 m.WriteByte(provider.ReadByte(i));
             if (n > 0)
             {
-                pcc.getExport(n).setHeader(m.ToArray());
+                pcc.getExport(n).Header = m.ToArray();
             }
             else if (n < 0)
             {
-                pcc.getImport(Math.Abs(n) - 1).setHeader(m.ToArray());
+                pcc.getImport(Math.Abs(n) - 1).Header = m.ToArray();
             }
         }
 
@@ -1590,7 +1607,7 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        getOrAddCrossImport(importpcc.getImport(Math.Abs(n) - 1).GetFullPath, importpcc, pcc);
+                        getOrAddCrossImport(importpcc.getImport(Math.Abs(n) - 1).GetFullPath, importpcc, pcc, sourceNode.Nodes.Count == 0 ? link : (int?)null);
                         //importImport(importpcc, -n - 1, link);
                         nextIndex = -pcc.ImportCount;
                     }
@@ -1762,7 +1779,7 @@ namespace ME3Explorer
             }
 
             //set header so addresses are set
-            var header = (byte[])ex.header.Clone();
+            var header = (byte[])ex.Header.Clone();
             if ((importpcc.Game == MEGame.ME1 || importpcc.Game == MEGame.ME2) && pcc.Game == MEGame.ME3)
             {
                 //we need to clip some bytes out of the header
@@ -1772,7 +1789,7 @@ namespace ME3Explorer
 
                 header = clippedHeader;
             }
-            nex.setHeader(header);
+            nex.Header = header;
             bool dataAlreadySet = false;
             if (importpcc.Game == MEGame.ME3)
             {
@@ -1900,7 +1917,7 @@ namespace ME3Explorer
             int n = 0;
             if (GetSelected(out n) && n >= 0 && pcc.Game == MEGame.ME3)
             {
-                CurveEd.CurveEditor c = new CurveEd.CurveEditor(pcc.getExport(n));
+                CurveEd.CurveEditorHost c = new CurveEd.CurveEditorHost(pcc.getExport(n));
                 c.Show();
             }
         }
@@ -2376,6 +2393,106 @@ namespace ME3Explorer
             }
         }
 
+        private void dEBUGFindMateriaInstancesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string[] files = System.IO.Directory.GetFiles(@"X:\ME3-MMTesting\BioGame\CookedPCConsole", "*.pcc", SearchOption.AllDirectories);
+            foreach (string file in files)
+            {
+                // Debug.WriteLine(file);
+                ME3Package pack = MEPackageHandler.OpenME3Package(file);
+                foreach (IExportEntry name in pack.Exports)
+                {
+                    if (name.ClassName == "MaterialInstance")
+                    {
+                        Debug.WriteLine("Found material instance in " + file);
+                        pack.Release();
+                        continue;
+                    }
+                }
+                pack.Release();
+            }
+            MessageBox.Show("Done");
+        }
 
+        private void compareWithAnotherVersionOfThisPccToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //This is also in PackageEditorWPF
+            if (pcc != null)
+            {
+                string extension = Path.GetExtension(pcc.FileName);
+                OpenFileDialog d = new OpenFileDialog { Filter = "*" + extension + "|*" + extension };
+                if (d.ShowDialog() == DialogResult.OK)
+                {
+                    if (pcc.FileName == d.FileName)
+                    {
+                        MessageBox.Show("You selected the same file as the one already open.");
+                        return;
+                    }
+                    IMEPackage compareFile = MEPackageHandler.OpenMEPackage(d.FileName);
+                    if (pcc.Game != compareFile.Game)
+                    {
+                        MessageBox.Show("Files are for different games.");
+                        return;
+                    }
+
+                    int numExportsToEnumerate = Math.Min(pcc.ExportCount, compareFile.ExportCount);
+
+                    List<string> changedExports = new List<string>();
+                    Stopwatch sw = Stopwatch.StartNew();
+                    for (int i = 0; i < numExportsToEnumerate; i++)
+                    {
+                        IExportEntry exp1 = pcc.Exports[i];
+                        IExportEntry exp2 = compareFile.Exports[i];
+
+                        //make data offset and data size the same, as the exports could be the same even if it was appended later.
+                        //The datasize being different is a data difference not a true header difference so we won't list it here.
+                        byte[] header1 = exp1.Header.TypedClone();
+                        byte[] header2 = exp2.Header.TypedClone();
+                        Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header1, 32, sizeof(long));
+                        Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header2, 32, sizeof(long));
+
+                        //if (!StructuralComparisons.StructuralEqualityComparer.Equals(header1, header2))
+                        if (!header1.SequenceEqual(header2))
+
+                        {
+                            foreach (byte b in header1)
+                            {
+                                Debug.Write(" " + b.ToString("X2"));
+                            }
+                            Debug.WriteLine("");
+                            foreach (byte b in header2)
+                            {
+                                Debug.Write(" " + b.ToString("X2"));
+                            }
+                            Debug.WriteLine("");
+                            changedExports.Add("Export header has changed: " + i + " " + exp1.GetFullPath);
+                        }
+                        if (!exp1.Data.SequenceEqual(exp2.Data))
+                        {
+                            changedExports.Add("Export data has changed: " + i + " " + exp1.GetFullPath);
+                        }
+                    }
+
+                    IMEPackage enumerateExtras = pcc;
+                    string file = "this file";
+                    if (compareFile.ExportCount < numExportsToEnumerate)
+                    {
+                        file = "other file";
+                        enumerateExtras = compareFile;
+                    }
+
+                    for (int i = numExportsToEnumerate; i < compareFile.ExportCount; i++)
+                    {
+                        changedExports.Add("Export only exists in " + file + ": " + i + " " + enumerateExtras.Exports[i].GetFullPath);
+                    }
+
+                    sw.Stop();
+                    Debug.WriteLine("Time: " + sw.ElapsedMilliseconds + "ms");
+
+                    ListDialog ld = new ListDialog(changedExports, "Changed exports between files", "The following exports are different between the files.");
+                    ld.Show();
+                }
+            }
+        }
     }
 }

@@ -1,22 +1,18 @@
-﻿<global:WPFBase
+﻿<global:ExportLoaderControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:global="clr-namespace:ME3Explorer"
              xmlns:local="clr-namespace:ME3Explorer.CurveEd"
-             xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" x:Class="ME3Explorer.CurveEd.CurveEditor"
+             xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" 
+             x:Class="ME3Explorer.CurveEd.CurveEditor"
              mc:Ignorable="d" 
-             d:DesignHeight="297.789" d:DesignWidth="600.737" Closing="Window_Closing" Title="Curve Editor">
-    <Window.CommandBindings>
+             d:DesignHeight="297.789" d:DesignWidth="600.737">
+    <!--<Window.CommandBindings>
         <CommandBinding Command="Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>
-    </Window.CommandBindings>
+    </Window.CommandBindings>-->
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File">
-                <MenuItem Header="_Save" Command="Save"/>
-            </MenuItem>
-        </Menu>
         <Border  DockPanel.Dock="Top" BorderThickness="0,0,0,2" BorderBrush="#FF606060" >
             <StackPanel Orientation="Horizontal" Background="#FF404040" >
                 <StackPanel.Resources>
@@ -137,4 +133,4 @@
         </TreeView>
         <local:CurveGraph x:Name="graph" SelectedPointChanged="graph_SelectedPointChanged"/>
     </DockPanel>
-</global:WPFBase>
+</global:ExportLoaderControl>

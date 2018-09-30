@@ -23,7 +23,13 @@ namespace ME3Explorer.Packages
 
     public struct PackageUpdate
     {
+        /// <summary>
+        /// Details on what piece of data has changed
+        /// </summary>
         public PackageChange change;
+        /// <summary>
+        /// 0-based index of what item has changed in this package -1 = import 0, 0 = export 0
+        /// </summary>
         public int index;
     }
 
@@ -37,7 +43,7 @@ namespace ME3Explorer.Packages
         {
             get
             {
-                return exports.Any(entry => entry.DataChanged == true) || imports.Any(entry => entry.HeaderChanged == true) || namesAdded > 0;
+                return exports.Any(entry => entry.DataChanged == true || entry.HeaderChanged == true) || imports.Any(entry => entry.HeaderChanged == true) || namesAdded > 0;
             }
         }
         public bool CanReconstruct { get { return !exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }
@@ -208,6 +214,7 @@ namespace ME3Explorer.Packages
             importEntry.Index = imports.Count;
             importEntry.PropertyChanged += importChanged;
             imports.Add(importEntry);
+            importEntry.EntryHasPendingChanges = true;
             ImportCount = imports.Count;
 
             updateTools(PackageChange.ImportAdd, ImportCount - 1);
@@ -301,10 +308,13 @@ namespace ME3Explorer.Packages
             foreach (var export in exports)
             {
                 export.DataChanged = false;
+                export.HeaderChanged = false;
+                export.EntryHasPendingChanges = false;
             }
             foreach (var import in imports)
             {
                 import.HeaderChanged = false;
+                import.EntryHasPendingChanges = false;
             }
             namesAdded = 0;
 

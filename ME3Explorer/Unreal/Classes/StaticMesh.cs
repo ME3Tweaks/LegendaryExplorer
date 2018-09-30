@@ -14,6 +14,7 @@ using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using ME3Explorer.Scene3D;
+using System.Globalization;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -22,7 +23,7 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] memory;
         public int index;
         public int memsize;
-        public ME3Package pcc;
+        public IMEPackage pcc;
         public List<PropertyReader.Property> props;
         public int readerpos;
         public PSKFile psk;
@@ -175,7 +176,7 @@ namespace ME3Explorer.Unreal.Classes
         {
         }
 
-        public StaticMesh(ME3Package Pcc, int Index)
+        public StaticMesh(IMEPackage Pcc, int Index)
         {
             pcc = Pcc;
             index = Index;
@@ -386,50 +387,50 @@ namespace ME3Explorer.Unreal.Classes
                 for (int j = 0; j < l.SectionCount; j++)
                 {
                     Section s = new Section();
-                    string q = "Section [" + j + "] : {(Name)";
+                    string q = "Section [" + j + "] : {Name = ";
                     s.Name = BitConverter.ToInt32(memory, readerpos);
+                    q += s.Name;
                     if (s.Name > 0)
                     {
                         m.MatInst.Add(new MaterialInstanceConstant(pcc, s.Name - 1));
-                        q += pcc.getObjectName(s.Name) + " ; ";
+                        q += "('" + pcc.getObjectName(s.Name) + "'), ";
                     }
 
-                    q += s.Name + " ; ";
                     s.Unk1 = BitConverter.ToInt32(memory, readerpos + 4);
-                    q += s.Unk1 + " ; ";
+                    q += "Unk1 = " + s.Unk1 + ", ";
                     s.Unk2 = BitConverter.ToInt32(memory, readerpos + 8);
-                    q += s.Unk2 + " ; ";
+                    q += "Unk2 = " + s.Unk2 + ", ";
                     s.Unk3 = BitConverter.ToInt32(memory, readerpos + 12);
-                    q += s.Unk3 + " ; (FirstIdx)";
+                    q += "Unk3 = " + s.Unk3 + ", ";
                     s.FirstIdx1 = BitConverter.ToInt32(memory, readerpos + 16);
-                    q += s.FirstIdx1 + " ; (NumFaces)";
+                    q += "FirstIdx1 = " + s.FirstIdx1 + ", ";
                     s.NumFaces1 = BitConverter.ToInt32(memory, readerpos + 20);
-                    q += s.NumFaces1 + " ; (VertexMin)";
+                    q += "NumFaces1 = " + s.NumFaces1 + ", ";
                     s.MatEff1 = BitConverter.ToInt32(memory, readerpos + 24);
-                    q += s.MatEff1 + " ; (VertexMax)";
+                    q += "MatEff1 = " + s.MatEff1 + ", ";
                     s.MatEff2 = BitConverter.ToInt32(memory, readerpos + 28);
-                    q += s.MatEff2 + " ; ";
+                    q += "MatEff2 = " + s.MatEff2 + ", ";
                     s.Unk4 = BitConverter.ToInt32(memory, readerpos + 32);
-                    q += s.Unk4 + " ; ";
+                    q += "Unk4 = " + s.Unk4 + ", ";
                     s.Unk5 = BitConverter.ToInt32(memory, readerpos + 36);
-                    q += s.Unk5 + " ; (FirstIdx)";
+                    q += "Unk5 = " + s.Unk5 + ", ";
                     if (s.Unk5 == 1)
                     {
                         s.FirstIdx2 = BitConverter.ToInt32(memory, readerpos + 40);
-                        q += s.FirstIdx2 + " ; (NumFaces)";
+                        q += "FirstIdx2 = " + s.FirstIdx2 + ", ";
                         s.NumFaces2 = BitConverter.ToInt32(memory, readerpos + 44);
-                        q += s.NumFaces2 + " ; ";
+                        q += "NumFaces2 = " + s.NumFaces2 + ", ";
                         s.Unk6 = memory[readerpos + 48];
-                        q += s.Unk6 + "}";
+                        q += "Unk6 = " + s.Unk6 + "}";
                     }
                     else
                     {
                         s.Unk6 = memory[readerpos + 40];
                         s.FirstIdx2 = BitConverter.ToInt32(memory, readerpos + 41);
-                        q += s.FirstIdx2 + " ; (NumFaces)";
+                        q += "FirstIdx2 = " + s.FirstIdx2 + ", ";
                         s.NumFaces2 = BitConverter.ToInt32(memory, readerpos + 45);
-                        q += s.NumFaces2 + " ; ";                        
-                        q += s.Unk6 + "}";
+                        q += "NumFaces2 = " + s.NumFaces2 + ", ";                        
+                        q += "Unk6 = " + s.Unk6 + "}";
                     }
                     t2.Nodes.Add(q);
                     readerpos += 49;
@@ -864,7 +865,8 @@ namespace ME3Explorer.Unreal.Classes
             fs.Write(BitConverter.GetBytes(Mesh.Bounds.Box.Y), 0, 4);
             fs.Write(BitConverter.GetBytes(Mesh.Bounds.Box.Z), 0, 4);
             fs.Write(BitConverter.GetBytes(Mesh.Bounds.R), 0, 4);
-            for (int i = 0; i < 7; i++)
+            fs.Write(BitConverter.GetBytes(Mesh.Bounds.RB_BodySetup), 0, 4);
+            for (int i = 0; i < 6; i++)
                 fs.Write(BitConverter.GetBytes(Mesh.Bounds.unk[i]), 0, 4);
         }
 
@@ -1036,7 +1038,8 @@ namespace ME3Explorer.Unreal.Classes
             fs.Write(BitConverter.GetBytes(Mesh.Bounds.Box.Y), 0, 4);
             fs.Write(BitConverter.GetBytes(Mesh.Bounds.Box.Z), 0, 4);
             fs.Write(BitConverter.GetBytes(Mesh.Bounds.R), 0, 4);
-            for (int i = 0; i < 7; i++)
+            fs.Write(BitConverter.GetBytes(Mesh.Bounds.RB_BodySetup), 0, 4);
+            for (int i = 0; i < 6; i++)
                 fs.Write(BitConverter.GetBytes(Mesh.Bounds.unk[i]), 0, 4);
         }
 
@@ -1673,13 +1676,13 @@ namespace ME3Explorer.Unreal.Classes
             return b;
         }
 
-        public void ExportToPsk(string path)
+        public void ExportPSK(string path)
         {
-            PSKFile p = ExportToPsk();
+            PSKFile p = BuildPSK();
             p.Export(path);
         }
 
-        public PSKFile ExportToPsk()
+        private PSKFile BuildPSK()
         {
             PSKFile psk = new PSKFile();
             PSKFile.PSKContainer pskc = new PSKFile.PSKContainer();
@@ -1745,7 +1748,7 @@ namespace ME3Explorer.Unreal.Classes
         {
             try
             {
-                PSKFile p = ExportToPsk();
+                PSKFile p = BuildPSK();
                 Helper3DS.AddMeshTo3DS(f, p, m);
             }
             catch (Exception e)
@@ -1754,11 +1757,71 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
+        public void ExportOBJ(string path)
+        {
+            using (StreamWriter writer = new StreamWriter(path))
+            using (StreamWriter mtlWriter = new StreamWriter(Path.ChangeExtension(path, ".mtl")))
+            {
+                writer.WriteLine("mtllib " + Path.GetFileNameWithoutExtension(path) + ".mtl");
+                // Vertices
+                List<Vector3> points = null;
+                List<Vector2> uvs = null;
+                Dictionary<int, int> LODVertexOffsets = new Dictionary<int, int>(); // offset into the OBJ vertices that each buffer starts at
+                points = Mesh.Vertices.Points;
+                uvs = new List<Vector2>();
+                for (int i = 0; i < points.Count; i++)
+                {
+                    uvs.Add(Mesh.Edges.UVSet[i].UVs[0]);
+                }
+                foreach (var mat in Mesh.Mat.MatInst)
+                {
+                    mtlWriter.WriteLine("newmtl " + pcc.getObjectName(mat.index));
+                }
+
+                for (int i = 0; i < points.Count; i++)
+                {
+                    Vector3 v = points[i];
+                    writer.WriteLine("v " + v.X.ToString(CultureInfo.InvariantCulture) + " " + v.Z.ToString(CultureInfo.InvariantCulture) + " " + v.Y.ToString(CultureInfo.InvariantCulture));
+                    writer.WriteLine("vt " + uvs[i].X.ToString(CultureInfo.InvariantCulture) + " " + uvs[i].Y.ToString(CultureInfo.InvariantCulture));
+                }
+
+                // Triangles
+                foreach (var lod in Mesh.Mat.Lods)
+                {
+                    foreach (var section in lod.Sections)
+                    {
+                        writer.WriteLine("usemtl " + pcc.getObjectName(section.Name));
+                        writer.WriteLine("g " + pcc.getObjectName(section.Name));
+                        if (Mesh.IdxBuf.Indexes != null && Mesh.IdxBuf.count > 0)
+                        {
+                            // Use the index buffer
+                            for (int i = section.FirstIdx1; i < section.FirstIdx1 + section.NumFaces1 * 3; i += 3)
+                            {
+                                writer.WriteLine("f " + (Mesh.IdxBuf.Indexes[i] + 1).ToString(CultureInfo.InvariantCulture) + "/" + (Mesh.IdxBuf.Indexes[i] + 1).ToString(CultureInfo.InvariantCulture) + " "
+                                    + (Mesh.IdxBuf.Indexes[i + 1] + 1).ToString(CultureInfo.InvariantCulture) + "/" + (Mesh.IdxBuf.Indexes[i + 1] + 1).ToString(CultureInfo.InvariantCulture) + " "
+                                    + (Mesh.IdxBuf.Indexes[i + 2] + 1).ToString(CultureInfo.InvariantCulture) + "/" + (Mesh.IdxBuf.Indexes[i + 2] + 1).ToString(CultureInfo.InvariantCulture));
+                            }
+                        }
+                        else
+                        {
+                            // Ad-lib our own indices by assuming that every triangle is used exactly once in order
+                            for (int i = section.FirstIdx1; i < section.FirstIdx1 + section.NumFaces1 * 3; i += 3)
+                            {
+                                writer.WriteLine("f " + (i + 1).ToString(CultureInfo.InvariantCulture) + "/" + (i + 1) + " "
+                                    + (i + 2).ToString(CultureInfo.InvariantCulture) + "/" + (i + 2).ToString(CultureInfo.InvariantCulture) + " "
+                                    + (i + 3).ToString(CultureInfo.InvariantCulture) + "/" + (i + 3).ToString(CultureInfo.InvariantCulture));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Import
 
-        public void ImportFromPsk(string path)
+        public void ImportPSK(string path)
         {
             psk = new PSKFile();
             psk.ImportPSK(path);
@@ -1923,6 +1986,283 @@ namespace ME3Explorer.Unreal.Classes
 #endregion
             RecalculateBoundings();
 
+        }
+
+        private class OBJTriangle
+        {
+            public int[] PositionIndices = new int[3];
+            public int[] UVIndices = new int[3];
+            public int[] NormalIndices = new int[3];
+            public int MaterialIndex;
+        }
+
+        private class WeldedTriangle
+        {
+            public int[] VertexIndices = new int[3];
+            public int MaterialIndex;
+        }
+
+        public void ImportOBJ(string path)
+        {
+            // Read OBJ data
+            List<Vector3> positions = new List<Vector3>();
+            List<Vector2> uvs = new List<Vector2>();
+            List<Vector3> normals = new List<Vector3>();
+            List<List<OBJTriangle>> sections = new List<List<OBJTriangle>>();
+            List<string> materials = new List<string>();
+
+            using (StreamReader reader = new StreamReader(path))
+            {
+                int currentMaterialIndex = 0;
+                while (!reader.EndOfStream)
+                {
+                    string line = reader.ReadLine().Trim();
+
+                    if (String.IsNullOrEmpty(line) || line.StartsWith("#"))
+                        continue;
+
+                    string[] parts = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (parts[0] == "v")
+                    {
+                        // Read position (Note the axis flip)
+                        positions.Add(new Vector3(Single.Parse(parts[1], CultureInfo.InvariantCulture),
+                            Single.Parse(parts[3], CultureInfo.InvariantCulture),
+                            Single.Parse(parts[2], CultureInfo.InvariantCulture)));
+                    }
+                    else if (parts[0] == "vt")
+                    {
+                        // Read UV
+                        uvs.Add(new Vector2(Single.Parse(parts[1], CultureInfo.InvariantCulture),
+                            Single.Parse(parts[2], CultureInfo.InvariantCulture)));
+                    }
+                    else if (parts[0] == "vn")
+                    {
+                        // Read normal
+                        normals.Add(new Vector3(Single.Parse(parts[1], CultureInfo.InvariantCulture),
+                            Single.Parse(parts[2], CultureInfo.InvariantCulture),
+                            Single.Parse(parts[3], CultureInfo.InvariantCulture)));
+                    }
+                    else if (parts[0] == "f")
+                    {
+                        // Read face
+                        OBJTriangle triangle = new OBJTriangle();
+                        for (int v = 0; v < 3; v++)
+                        {
+                            string[] components = parts[v + 1].Split('/');
+                            if (components[0].Length > 0)
+                            {
+                                triangle.PositionIndices[v] = Int32.Parse(components[0]) - 1;
+                            }
+                            if (components.Length > 1 && components[1].Length > 0)
+                            {
+                                triangle.UVIndices[v] = Int32.Parse(components[1]) - 1;
+                            }
+                            if (components.Length > 2 && components[2].Length > 0)
+                            {
+                                triangle.NormalIndices[v] = Int32.Parse(components[2]) - 1;
+                            }
+                        }
+                        triangle.MaterialIndex = currentMaterialIndex;
+                        while (triangle.MaterialIndex >= sections.Count)
+                            sections.Add(new List<OBJTriangle>());
+                        sections[triangle.MaterialIndex].Add(triangle);
+                    }
+                    else if (parts[0] == "usemtl")
+                    {
+                        string matName = parts[1];
+
+                        if (materials.Contains(matName))
+                        {
+                            currentMaterialIndex = materials.IndexOf(matName);
+                        }
+                        else
+                        {
+                            currentMaterialIndex = materials.Count;
+                            materials.Add(matName);
+                        }
+                    }
+                }
+            }
+
+            // We need to weld the list of positions to the list of uvs to produce one list of (position, uv) pairs, and get new indices to match.
+            List<Tuple<Vector3, Vector2>> weldedVertices = new List<Tuple<Vector3, Vector2>>();
+            List<List<WeldedTriangle>> weldedSections = new List<List<WeldedTriangle>>();
+
+            foreach (List<OBJTriangle> section in sections)
+            {
+                List<WeldedTriangle> weldedSection = new List<WeldedTriangle>();
+                foreach (OBJTriangle triangle in section)
+                {
+                    if (triangle.PositionIndices.Length != triangle.UVIndices.Length)
+                        throw new FormatException("What the heck is even going on????");
+
+                    WeldedTriangle weldedTriangle = new WeldedTriangle();
+                    for (int i = 0; i < triangle.PositionIndices.Length; i++)
+                    {
+                        Tuple<Vector3, Vector2> vertex = new Tuple<Vector3, Vector2>(positions[triangle.PositionIndices[i]], uvs[triangle.UVIndices[i]]);
+                        int vertexIndex = weldedVertices.IndexOf(vertex);
+                        if (vertexIndex == -1)
+                        {
+                            vertexIndex = weldedVertices.Count;
+                            weldedVertices.Add(vertex);
+                        }
+                        weldedTriangle.VertexIndices[i] = vertexIndex;
+                    }
+                    weldedTriangle.MaterialIndex = triangle.MaterialIndex;
+                    weldedSection.Add(weldedTriangle);
+                    if (section.IndexOf(triangle) % 100 == 0)
+                    System.Diagnostics.Debug.WriteLine("Weld: " + section.IndexOf(triangle) + " out of " + section.Count);
+                }
+                weldedSections.Add(weldedSection);
+            }
+
+            // [ ] k-DOP Tree
+            // [X] Raw Tris
+            List<StaticMesh.RawTriangle> rawTriangles = new List<StaticMesh.RawTriangle>();
+            foreach (List<WeldedTriangle> section in weldedSections)
+            {
+                foreach (WeldedTriangle t in section)
+                {
+                    rawTriangles.Add(new StaticMesh.RawTriangle() { mat = (short)t.MaterialIndex, v0 = (short)t.VertexIndices[0], v1 = (short)t.VertexIndices[1], v2 = (short)t.VertexIndices[2] });
+                }
+            }
+            RawTriangles = rawTriangles;
+            Mesh.RawTris = new StaticMesh.RawTris() { RawTriangles = rawTriangles, t = new TreeNode("New Raw Triangles!!!!") };
+            // [X] Materials
+            Lod l = Mesh.Mat.Lods[0];
+            l.Sections = new List<Section>();
+            int indexCount = 0;
+            foreach (List<WeldedTriangle> section in weldedSections)
+            {
+                Section newSection = new Section();
+                newSection.Name = 0; // Null material
+                newSection.Unk1 = 1;
+                newSection.Unk2 = 1;
+                newSection.Unk3 = 1;
+                newSection.Unk4 = weldedSections.IndexOf(section);
+                newSection.Unk5 = 1;
+                newSection.Unk6 = 0;
+                newSection.FirstIdx1 = newSection.FirstIdx2 = indexCount;
+                newSection.NumFaces1 = newSection.NumFaces2 = section.Count;
+                
+                int minPosIndex = section[0].VertexIndices[0];
+                int maxPosIndex = section[0].VertexIndices[0];
+                foreach (WeldedTriangle tri in section)
+                {
+                    foreach (int posIndex in tri.VertexIndices)
+                    {
+                        if (posIndex < minPosIndex)
+                            minPosIndex = posIndex;
+                        if (posIndex > maxPosIndex)
+                            maxPosIndex = posIndex;
+                    }
+                }
+
+                newSection.MatEff1 = minPosIndex;
+                newSection.MatEff2 = maxPosIndex;
+                l.Sections.Add(newSection);
+                indexCount += section.Count * 3;
+            }
+            l.SectionCount = l.Sections.Count;
+
+
+            // Crusty material selection code
+            for (int i = 0; i < l.SectionCount; i++)
+            {
+                Select_Material selm = new Select_Material();
+                selm.hasSelected = false;
+                selm.listBox1.Items.Clear();
+                selm.Objects = new List<int>();
+                for (int j = 0; j < pcc.Exports.Count; j++)
+                {
+                    IExportEntry e = pcc.Exports[j];
+                    if (e.ClassName == "Material" || e.ClassName == "MaterialInstanceConstant")
+                    {
+                        selm.listBox1.Items.Add(j + "\t" + e.ClassName + " : " + e.ObjectName);
+                        selm.Objects.Add(j);
+                    }
+                }
+                selm.Show();
+                while (selm != null && !selm.hasSelected)
+                {
+                    Application.DoEvents();
+                }
+                Section s = l.Sections[i];
+                s.Name = selm.SelIndex + 1;
+                l.Sections[i] = s;
+                selm.Close();
+            }
+
+
+
+
+            l.NumVert = weldedVertices.Count;
+            Mesh.Mat.Lods[0] = l;
+            // [X] Verts
+            Mesh.Vertices = new Verts();
+            Mesh.Vertices.Points = new List<Vector3>();
+            foreach (Tuple<Vector3, Vector2> pos in weldedVertices)
+            {
+                Mesh.Vertices.Points.Add(pos.Item1);
+            }
+            Mesh.Buffers.IndexBuffer = Mesh.Vertices.Points.Count;
+            byte[] countBytes = BitConverter.GetBytes(Mesh.Vertices.Points.Count);
+            for (int i = 0; i < 4; i++)
+                Mesh.UnknownPart.data[24 + i] = countBytes[i];
+            // [ ] Buffers
+            // [X] Edges
+            int setCount = Mesh.Edges.UVSet[0].UVs.Count;
+            Mesh.Buffers.UV1 = setCount;
+            Mesh.Buffers.UV2 = setCount * 4 + 8;
+            Mesh.Edges = new Edges();
+            Mesh.Edges.UVSet = new List<UVSet>();
+            for (int i = 0; i < weldedVertices.Count; i++)
+            {
+                UVSet newSet = new UVSet();
+                newSet.UVs = new List<Vector2>();
+                for (int set = 0; set < setCount; set++)
+                {
+                    newSet.UVs.Add(weldedVertices[i].Item2);
+                }
+                newSet.x1 = 0;
+                newSet.x2 = 0;
+                newSet.y1 = 0;
+                newSet.y2 = 0;
+                newSet.z1 = 0;
+                newSet.z2 = 0;
+                newSet.w1 = 0;
+                newSet.w2 = 0;
+                Mesh.Edges.UVSet.Add(newSet);
+            }
+            Mesh.Edges.count = weldedVertices.Count;
+            Mesh.Edges.size = 8 + 4 * setCount;
+            // [ ] Unknown Part?
+            // [X] Index Buffer
+            if (Mesh.IdxBuf.Indexes.Count > 0)
+            {
+                Mesh.IdxBuf.Indexes = new List<ushort>();
+
+                foreach (List<WeldedTriangle> section in weldedSections)
+                {
+                    foreach (WeldedTriangle t in section)
+                    {
+                        Mesh.IdxBuf.Indexes.Add((ushort)t.VertexIndices[0]);
+                        Mesh.IdxBuf.Indexes.Add((ushort)t.VertexIndices[1]);
+                        Mesh.IdxBuf.Indexes.Add((ushort)t.VertexIndices[2]);
+                    }
+                }
+
+                Mesh.IdxBuf.count = Mesh.IdxBuf.Indexes.Count;
+                // TODO: Use 32-bit indices if triangles.Count * 3 > 0xFFFF
+            }
+            // [ ] End
+            // [X] Boundings
+            RecalculateBoundings();
+            //     [ ] Unk
+            CalcTangentSpace();
+
+            System.Diagnostics.Debug.WriteLine("OBJ stats: input was " + positions.Count + " positions, " + uvs.Count + " uvs, welded became " + weldedVertices + " vertices.");
         }
 
         #endregion

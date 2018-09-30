@@ -167,7 +167,7 @@ namespace Be.Windows.Forms
                         fileBlock.Length - (index - blockOffset + 1));
                 }
 
-				block = _dataMap.Replace(block, new MemoryDataBlock(value));
+                block = _dataMap.Replace(block, new MemoryDataBlock(value));
 
                 if (prefixBlock != null)
                 {
@@ -177,6 +177,97 @@ namespace Be.Windows.Forms
                 if (suffixBlock != null)
                 {
                     _dataMap.AddAfter(block, suffixBlock);
+                }
+            }
+            finally
+            {
+                OnChanged(EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// See <see cref="IByteProvider.WriteByte" /> for more information.
+        /// </summary>
+        public void WriteBytes(long index, byte[] values)
+        {
+            try
+            {
+                int i = 0;
+                foreach (byte value in values)
+                {
+                    // Find the block affected.
+                    long blockOffset;
+                    DataBlock block = GetDataBlock(index, out blockOffset);
+
+                    // If the byte is already in a memory block, modify it.
+                    MemoryDataBlock memoryBlock = block as MemoryDataBlock;
+                    if (memoryBlock != null)
+                    {
+                        memoryBlock.Data[index + i - blockOffset] = value;
+                        return;
+                    }
+
+                    FileDataBlock fileBlock = (FileDataBlock)block;
+
+                    // If the byte changing is the first byte in the block and the previous block is a memory block, extend that.
+                    if (blockOffset == index + i && block.PreviousBlock != null)
+                    {
+                        MemoryDataBlock previousMemoryBlock = block.PreviousBlock as MemoryDataBlock;
+                        if (previousMemoryBlock != null)
+                        {
+                            previousMemoryBlock.AddByteToEnd(value);
+                            fileBlock.RemoveBytesFromStart(1);
+                            if (fileBlock.Length == 0)
+                            {
+                                _dataMap.Remove(fileBlock);
+                            }
+                            return;
+                        }
+                    }
+
+                    // If the byte changing is the last byte in the block and the next block is a memory block, extend that.
+                    if (blockOffset + fileBlock.Length - 1 == index + i && block.NextBlock != null)
+                    {
+                        MemoryDataBlock nextMemoryBlock = block.NextBlock as MemoryDataBlock;
+                        if (nextMemoryBlock != null)
+                        {
+                            nextMemoryBlock.AddByteToStart(value);
+                            fileBlock.RemoveBytesFromEnd(1);
+                            if (fileBlock.Length == 0)
+                            {
+                                _dataMap.Remove(fileBlock);
+                            }
+                            return;
+                        }
+                    }
+
+                    // Split the block into a prefix and a suffix and place a memory block in-between.
+                    FileDataBlock prefixBlock = null;
+                    if (index + i > blockOffset)
+                    {
+                        prefixBlock = new FileDataBlock(fileBlock.FileOffset, index + i - blockOffset);
+                    }
+
+                    FileDataBlock suffixBlock = null;
+                    if (index + i < blockOffset + fileBlock.Length - 1)
+                    {
+                        suffixBlock = new FileDataBlock(
+                            fileBlock.FileOffset + index + i - blockOffset + 1,
+                            fileBlock.Length - (index + i - blockOffset + 1));
+                    }
+
+                    block = _dataMap.Replace(block, new MemoryDataBlock(value));
+
+                    if (prefixBlock != null)
+                    {
+                        _dataMap.AddBefore(block, prefixBlock);
+                    }
+
+                    if (suffixBlock != null)
+                    {
+                        _dataMap.AddAfter(block, suffixBlock);
+                    }
+                    i++;
                 }
             }
             finally
@@ -232,7 +323,7 @@ namespace Be.Windows.Forms
                         fileBlock.Length - (index - blockOffset));
                 }
 
-				block = _dataMap.Replace(block, new MemoryDataBlock(bs));
+                block = _dataMap.Replace(block, new MemoryDataBlock(bs));
 
                 if (prefixBlock != null)
                 {
@@ -283,7 +374,7 @@ namespace Be.Windows.Forms
                             _dataMap.AddFirst(new MemoryDataBlock(new byte[0]));
                         }
                     }
-                    
+
                     bytesToDelete -= count;
                     blockOffset += block.Length;
                     block = (bytesToDelete > 0) ? nextBlock : null;
@@ -514,7 +605,7 @@ namespace Be.Windows.Forms
         {
             // First, determine whether the next file block needs to move before this one.
             long nextDataOffset;
-			FileDataBlock nextFileBlock = GetNextFileDataBlock(fileBlock, dataOffset, out nextDataOffset);
+            FileDataBlock nextFileBlock = GetNextFileDataBlock(fileBlock, dataOffset, out nextDataOffset);
             if (nextFileBlock != null && dataOffset + fileBlock.Length > nextFileBlock.FileOffset)
             {
                 // The next block needs to move first, so do that now.
@@ -555,8 +646,8 @@ namespace Be.Windows.Forms
                 }
             }
 
-			// This block now points to a different position in the file.
-			fileBlock.SetFileOffset(dataOffset);
+            // This block now points to a different position in the file.
+            fileBlock.SetFileOffset(dataOffset);
         }
 
         void ReInitialize()
