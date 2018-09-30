@@ -69,7 +69,7 @@
             </MenuItem>
             <MenuItem Header="Modmaker" Padding="4">
                 <MenuItem Header="Open"/>
-                <MenuItem Name="ComparePackageMenuItem" Header="Compare with another package" Command="Commands:PackageEditorWPFCommands.ComparePackageCommand" IsEnabled="False"/>
+                <MenuItem Name="ComparePackageMenuItem" Header="Compare with another package" Command="Commands:PackageEditorWPFCommands.ComparePackageCommand" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
             </MenuItem>
 
             <MenuItem Header="Options" Padding="4">

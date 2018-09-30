@@ -5,6 +5,7 @@ using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
+using ME3Explorer.WwiseBankEditor;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
@@ -939,6 +940,13 @@ namespace ME3Explorer.Soundplorer
             ReverseEndianDisplayOfIDs_MenuItem.IsChecked = !ReverseEndianDisplayOfIDs_MenuItem.IsChecked;
             Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness = ReverseEndianDisplayOfIDs_MenuItem.IsChecked;
             Properties.Settings.Default.Save();
+        }
+
+        private void OpenInWwiseBankEditor_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var editor = new WwiseEditor();
+            editor.LoadFile(Pcc.FileName);
+            editor.Show();
         }
     }
 
