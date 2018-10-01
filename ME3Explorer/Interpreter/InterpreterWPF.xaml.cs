@@ -1714,7 +1714,7 @@ namespace ME3Explorer
                 props.Add(cProp.Name);
             }
 
-            string prop = AddPropertyDialogWPF.GetProperty(CurrentLoadedExport, props, pcc.Game);
+            Tuple<string,PropertyInfo> prop = AddPropertyDialogWPF.GetProperty(CurrentLoadedExport, props, pcc.Game);
             if (prop != null)
             {
                 string origname = CurrentLoadedExport.ClassName;
@@ -1755,10 +1755,12 @@ namespace ME3Explorer
                     currentInfo.baseClass = exportTemp.ClassParent;
                 }
 
-                UProperty property = generateNewProperty(prop, currentInfo);
-                //AddProperty(prop, currentInfo);
+                UProperty property = generateNewProperty(prop.Item1, currentInfo);
+                currentProps.Add(property);
 
-                //RefreshMem();
+                //Todo: Create new node, prevent refresh of this instance.
+                CurrentLoadedExport.WriteProperties(currentProps);
+                //End Todo
             }
         }
 
