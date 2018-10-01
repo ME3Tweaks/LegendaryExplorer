@@ -6,8 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using lib3ds.Net;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
 
 namespace ME3Explorer.Unreal
 {

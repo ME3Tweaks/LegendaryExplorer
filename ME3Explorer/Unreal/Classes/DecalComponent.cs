@@ -10,8 +10,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -171,11 +170,6 @@ namespace ME3Explorer.Unreal.Classes
                         break;
                 }
                     #endregion                
-        }
-
-        public void Render(Device device, Matrix m)
-        {
-
         }
 
         public void ProcessTreeClick(int[] path, bool AutoFocus, Matrix m)

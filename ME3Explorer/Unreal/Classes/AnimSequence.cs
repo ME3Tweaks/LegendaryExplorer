@@ -12,8 +12,7 @@ using System.Windows.Forms;
 using ME3Explorer;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -164,7 +163,7 @@ namespace ME3Explorer.Unreal.Classes
         public Vector4 DecompressVector3(Vector3 v)
         {
             Vector4 r = new Vector4(v.X, v.Y, v.Z, 0);
-            float l = r.LengthSq();
+            float l = r.LengthSquared();
             if (l == 0)
                 r.W = -1;
             else if (l > 0 && l < 1.0f)

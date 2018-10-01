@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
-
 namespace ME3LibWV.UnrealClasses
 {
     public class ModelComponent: _DXRenderableObject
@@ -14,11 +11,6 @@ namespace ME3LibWV.UnrealClasses
         {
             pcc = Pcc;
             MyIndex = index;
-        }
-
-        public override void Render(Device device)
-        {
-            
         }
 
         public override TreeNode ToTree()
@@ -32,11 +24,5 @@ namespace ME3LibWV.UnrealClasses
         {
             Selected = s;
         }
-
-        public override float Process3DClick(Vector3 org, Vector3 dir, float max)
-        {
-            return -1f;
-        }
-
     }
 }

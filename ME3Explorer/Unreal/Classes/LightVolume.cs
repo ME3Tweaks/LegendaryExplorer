@@ -12,8 +12,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
 using KFreonLib.Debugging;
 
 namespace ME3Explorer.Unreal.Classes
@@ -190,13 +189,6 @@ namespace ME3Explorer.Unreal.Classes
                 isEdited = true;
                 MyMatrix *= m;
             }
-        }
-
-        public void Render(Device device)
-        {
-            device.Transform.World = MyMatrix;
-            if (brush != null)
-                brush.Render(device);
         }
 
         public TreeNode ToTree()
