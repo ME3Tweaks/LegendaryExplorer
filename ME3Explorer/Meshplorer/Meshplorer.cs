@@ -193,7 +193,6 @@ namespace ME3Explorer.Meshplorer
             DisableLODs();
             UnCheckLODs();
             skm = new SkeletalMesh(pcc as ME3Package, index);
-            hb1.ByteProvider = new DynamicByteProvider(pcc.Exports[index].Data);
 
             // Load preview model
             preview?.Dispose();

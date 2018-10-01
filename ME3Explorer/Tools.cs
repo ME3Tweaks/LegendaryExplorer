@@ -486,7 +486,8 @@ namespace ME3Explorer
                 tags = new List<string>(),
                 subCategory = other,
             });
-            set.Add(new Tool
+            //Benji's tool. Uncomment when we have more progress.
+            /*set.Add(new Tool
             {
                 name = "Level Explorer",
                 type = typeof(LevelExplorer.LevelExplorer),
@@ -499,7 +500,7 @@ namespace ME3Explorer
                 subCategory = other,
                 description = "Level Explorer allows you to view the meshes of a level. This tool is deprecated, no longer supported, and will be replaced in the future.\n\nFor those who have trouble with this tool, level objects can also be visualized with ME3Creator.",
 
-            });
+            });*/
             set.Add(new Tool
             {
                 name = "Mesh Database",
