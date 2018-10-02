@@ -397,7 +397,7 @@ namespace ME3Explorer.Unreal.Classes
 
                 foreach (EmbeddedWEMFile wem in wemFiles)
                 {
-                    while (dataBlock.Position - 8 % 16 != 0)
+                    while ((dataBlock.Position - 8) % 16 != 0)
                     {
                         dataBlock.WriteByte(0); //byte align to 16
                     }
