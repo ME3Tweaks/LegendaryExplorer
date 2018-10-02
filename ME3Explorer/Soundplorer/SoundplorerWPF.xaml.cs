@@ -44,9 +44,7 @@ namespace ME3Explorer.Soundplorer
         public List<string> RFiles;
 
         BackgroundWorker backgroundScanner;
-        public BindingList<SoundplorerExport> BindedExportsList { get; set; }
-
-
+        public ObservableCollectionExtended<SoundplorerExport> BindedExportsList { get; set; } = new ObservableCollectionExtended<SoundplorerExport>();
 
         private bool _isBusy;
         public bool IsBusy
@@ -76,6 +74,7 @@ namespace ME3Explorer.Soundplorer
             set { if (_taskbarText != value) { _taskbarText = value; OnPropertyChanged(); } }
         }
 
+        
         public SoundplorerWPF()
         {
             TaskbarText = "Open a file to view sound-related exports";
@@ -271,8 +270,9 @@ namespace ME3Explorer.Soundplorer
         {
             if (ExportsToReload == null)
             {
-                BindedExportsList = new BindingList<SoundplorerExport>(Pcc.Exports.Where(e => e.ClassName == "WwiseBank" || e.ClassName == "WwiseStream").Select(x => new SoundplorerExport(x)).ToList());
-                SoundExports_ListBox.ItemsSource = BindedExportsList;
+                BindedExportsList.Clear();
+                BindedExportsList.AddRange(Pcc.Exports.Where(e => e.ClassName == "WwiseBank" || e.ClassName == "WwiseStream").Select(x => new SoundplorerExport(x)));
+                //SoundExports_ListBox.ItemsSource = BindedExportsList; //todo: figure out why this is required and data is not binding
             }
             else
             {

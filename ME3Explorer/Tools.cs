@@ -167,7 +167,7 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "DLC Unpacker Editor",
+                name = "DLC Unpacker",
                 type = typeof(DLCUnpacker.DLCUnpacker),
                 icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,
                 open = () =>

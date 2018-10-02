@@ -46,6 +46,14 @@ namespace ME3Explorer
         private bool SeekUpdatingDueToTimer = false;
         private bool SeekDragging = false;
         Stream vorbisStream;
+        private string _quickScanText;
+        public string QuickScanText
+        {
+            get { return _quickScanText; }
+            set { if (_quickScanText != value) { _quickScanText = value; OnPropertyChanged(); } }
+        }
+
+
         //IMEPackage CurrentPackage; //used to tell when to update WwiseEvents list
         //private Dictionary<IExportEntry, List<Tuple<string, int, double>>> WemIdsToWwwiseEventIdMapping = new Dictionary<IExportEntry, List<Tuple<string, int, double>>>();
 
@@ -119,6 +127,14 @@ namespace ME3Explorer
             if (exportEntry.ClassName == "WwiseBank")
             {
                 WwiseBank wb = new WwiseBank(exportEntry);
+
+                if (exportEntry.FileRef.Game == MEGame.ME3)
+                {
+                    QuickScanText = wb.GetQuickScan();
+                } else
+                {
+                    QuickScanText = "Cannot scan ME2 game files.";
+                }
                 var embeddedWEMFiles = wb.GetWEMFilesMetadata();
                 var data = wb.GetChunk("DATA");
                 int i = 0;

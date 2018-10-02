@@ -99,7 +99,7 @@
                     <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <ListBox Name="SoundExports_ListBox" Margin="0" Padding="0" Grid.Column="0" SelectionChanged="SoundExports_ListBox_SelectionChanged" ItemsSource="{Binding BindedExportList}" ItemContainerStyle="{StaticResource SoundExports_ListboxItemStyle}" PreviewKeyDown="SoundExportItem_KeyDown" MouseDoubleClick="SoundExports_ListBox_MouseDoubleClick">
+                <ListBox Name="SoundExports_ListBox" Margin="0" Padding="0" Grid.Column="0" SelectionChanged="SoundExports_ListBox_SelectionChanged" ItemsSource="{Binding BindedExportsList}" ItemContainerStyle="{StaticResource SoundExports_ListboxItemStyle}" PreviewKeyDown="SoundExportItem_KeyDown" MouseDoubleClick="SoundExports_ListBox_MouseDoubleClick">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0">
