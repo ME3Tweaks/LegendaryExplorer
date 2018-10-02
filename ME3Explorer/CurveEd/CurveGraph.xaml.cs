@@ -28,7 +28,7 @@ namespace ME3Explorer.CurveEd
         private Point dragPos;
 
         public event RoutedPropertyChangedEventHandler<CurvePoint> SelectedPointChanged;
-
+        public static bool TrackLoading = false;
         public Curve SelectedCurve
         {
             get { return (Curve)GetValue(SelectedCurveProperty); }
@@ -41,10 +41,13 @@ namespace ME3Explorer.CurveEd
 
         private static void OnSelectedCurveChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
+
             CurveGraph c = sender as CurveGraph;
             if (c != null)
             {
+                TrackLoading = true;
                 c.SelectedPoint = c.SelectedCurve.CurvePoints.FirstOrDefault();
+                TrackLoading = false;
             }
         }
 
