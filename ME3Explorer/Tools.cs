@@ -486,37 +486,21 @@ namespace ME3Explorer
                 tags = new List<string>(),
                 subCategory = other,
             });
-            set.Add(new Tool
+            //Benji's tool. Uncomment when we have more progress.
+            /*set.Add(new Tool
             {
                 name = "Level Explorer",
-                type = typeof(LevelExplorer.LevelEditor.Leveleditor),
+                type = typeof(LevelExplorer.LevelExplorer),
                 icon = Application.Current.FindResource("iconLevelEditor") as ImageSource,
                 open = () =>
                 {
-                    (new LevelExplorer.LevelEditor.Leveleditor()).Show();
+                    (new LevelExplorer.LevelExplorer()).Show();
                 },
                 tags = new List<string> { "developer" },
                 subCategory = other,
                 description = "Level Explorer allows you to view the meshes of a level. This tool is deprecated, no longer supported, and will be replaced in the future.\n\nFor those who have trouble with this tool, level objects can also be visualized with ME3Creator.",
 
-            });
-            set.Add(new Tool
-            {
-                name = "ME3 Creator",
-                type = typeof(ME3Creator.Form1),
-                icon = Application.Current.FindResource("iconME3Creator") as ImageSource,
-                open = () =>
-                {
-                    string loc = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                    if (File.Exists(loc + "\\ME3Creator.exe"))
-                    {
-                        Process.Start(loc + "\\ME3Creator.exe");
-                    }
-                },
-                tags = new List<string> { "developer", "level" },
-                subCategory = "Core",
-                description = "ME3Creator is deprecated. All functionalities save the level viewer and file header viewer are now incorporated into Package Editor. It will be removed from the toolset in the near future.",
-            });
+            });*/
             set.Add(new Tool
             {
                 name = "Mesh Database",

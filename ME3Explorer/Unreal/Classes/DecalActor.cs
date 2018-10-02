@@ -10,8 +10,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
 
 namespace ME3Explorer.Unreal.Classes
 {
@@ -45,7 +44,6 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] data;
         public List<PropertyReader.Property> Props;
         public DecalComponent DC;
-        public Matrix MyMatrix;
 
         public DecalActor(ME3Package Pcc, int Index)
         {
@@ -93,12 +91,6 @@ namespace ME3Explorer.Unreal.Classes
                 }
             if (pcc.isExport(Decal - 1) && pcc.Exports[Decal - 1].ClassName == "DecalComponent")
                 DC = new DecalComponent(pcc, Decal - 1);
-            MyMatrix = Matrix.Identity;
-            MyMatrix *= Matrix.Scaling(DrawScale3D);
-            MyMatrix *= Matrix.Scaling(new Vector3(DrawScale, DrawScale, DrawScale));
-            Vector3 rot = RotatorToDX(Rotator);
-            MyMatrix *= Matrix.RotationYawPitchRoll(rot.X, rot.Y, rot.Z);
-            MyMatrix *= Matrix.Translation(location);
         }
 
         public Vector3 RotatorToDX(Vector3 v)
@@ -125,10 +117,6 @@ namespace ME3Explorer.Unreal.Classes
             r.Y = (int)r.Y % 65536;
             r.Z = (int)r.Z % 65536;
             return r;
-        }
-
-        public void Render(Device device)
-        {
         }
 
         public void ProcessTreeClick(int[] path, bool AutoFocus)

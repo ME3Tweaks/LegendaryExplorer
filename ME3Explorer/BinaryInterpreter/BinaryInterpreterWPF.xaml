@@ -18,6 +18,19 @@
         <CommandBinding Command="Commands:InterpreterWPFCommands.ArrayOrderByValueCommand" Executed="ArrayOrderByValueCommand_Executed"/>
         <CommandBinding Command="Commands:InterpreterWPFCommands.RemovePropertyCommand" Executed="RemovePropertyCommand_Executed"/>
     </UserControl.CommandBindings>-->
+    <DockPanel>
+    <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
+        <Button Name="SaveHexChange_Button" Content="Save Hex Changes" Click="BinaryInterpreter_SaveHexChanged_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+        <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
+        <Button Content="Toggle Hexbox Width" Click="BinaryInterpreter_ToggleHexboxWidth_Click"/>
+        <!--<Button Content="Add Property" Click="Interpreter_AddProperty_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>-->
+
+    </ToolBar>
+    <StatusBar Height="23" DockPanel.Dock="Bottom">
+        <StatusBarItem>
+            <TextBlock Name="StatusBar_LeftMostText" Text="Nothing selected"/>
+        </StatusBarItem>
+    </StatusBar>
     <Grid Margin="0,1,0,-1">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -28,16 +41,10 @@
             <ColumnDefinition Width="1" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <ToolBar Grid.Row="0" Grid.ColumnSpan="3" ToolBarTray.IsLocked="True">
-            <Button Name="SaveHexChange_Button" Content="Save Hex Changes" Click="BinaryInterpreter_SaveHexChanged_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-            <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
-            <Button Content="Toggle Hexbox Width" Click="BinaryInterpreter_ToggleHexboxWidth_Click"/>
-            <!--<Button Content="Add Property" Click="Interpreter_AddProperty_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>-->
 
-        </ToolBar>
         <!--<control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />-->
         <WindowsFormsHost Name="BinaryInterpreter_Hexbox_Host" Grid.Row="10" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">
-            <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" VScrollBarVisible="True">
+                <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" VScrollBarVisible="True">
             </hb1:HexBox>
         </WindowsFormsHost>
         <GridSplitter Grid.Column="1" 
@@ -69,4 +76,5 @@
             </TreeView.Resources>
         </TreeView>
     </Grid>
+    </DockPanel>
 </local:ExportLoaderControl>

@@ -1213,21 +1213,21 @@ Floats*/
                 });
                 pos += 4;
                 int length = BitConverter.ToInt32(data, pos);
-                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} stream length: {length} (0x{length:X})")
+                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Stream length: {length} (0x{length:X})")
                 {
                     Name = pos.ToString(),
                     Tag = NodeType.StructLeafInt
                 });
                 pos += 4;
                 length = BitConverter.ToInt32(data, pos);
-                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} stream length: {length} (0x{length:X})")
+                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Stream length: {length} (0x{length:X})")
                 {
                     Name = pos.ToString(),
                     Tag = NodeType.StructLeafInt
                 });
                 pos += 4;
                 int offset = BitConverter.ToInt32(data, pos);
-                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} stream offset in file: {offset} (0x{offset:X})")
+                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Stream offset in file: {offset} (0x{offset:X})")
                 {
                     Name = pos.ToString(),
                     Tag = NodeType.StructLeafInt
@@ -1235,7 +1235,7 @@ Floats*/
                 pos += 4;
                 if (pos < data.Length && export.GetProperty<NameProperty>("Filename") == null)
                 {
-                    topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Embedded sound data. Can be extracted with Soundplorer.")
+                    topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Embedded sound data. Use Soundplorer to modify this data.")
                     {
                         Name = pos.ToString(),
                         Tag = NodeType.Unknown

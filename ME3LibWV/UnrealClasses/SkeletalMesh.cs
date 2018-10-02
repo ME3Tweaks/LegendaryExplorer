@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
 
 namespace ME3LibWV.UnrealClasses
 {
@@ -444,8 +443,6 @@ namespace ME3LibWV.UnrealClasses
         public int MyIndex;
         public bool Loaded = false;
         private long ReadEnd;
-
-        public List<CustomVertex.PositionTextured[]> DirectXSections;
 
         public SkeletalMesh()
         {

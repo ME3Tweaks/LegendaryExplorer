@@ -10,8 +10,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
 using KFreonLib.Debugging;
 
 namespace ME3Explorer.Unreal.Classes

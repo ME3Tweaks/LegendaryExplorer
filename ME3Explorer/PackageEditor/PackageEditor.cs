@@ -553,7 +553,12 @@ namespace ME3Explorer
                             if (pcc.Game == MEGame.ME3)
                             {
                                 Function func = new Function(exportEntry.Data, pcc);
-                                rtb1.Text = func.ToRawText();
+                                func.ParseFunction();
+                                string text = func.ScriptText;
+                                text += "\nDebug print:\n\n";
+                                for (int i = 0; i < func.SingularTokenList.Count(); i++)
+                                    text += func.SingularTokenList[i].ToString();
+                                rtb1.Text = text;
                             }
                             else if (pcc.Game == MEGame.ME1)
                             {

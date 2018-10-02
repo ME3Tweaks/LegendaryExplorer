@@ -27,7 +27,7 @@ namespace ME3Explorer.Packages
 
     public class PropertyInfo
     {
-        public Unreal.PropertyType type;
+        public Unreal.PropertyType type { get; set; }
         public string reference;
     }
 

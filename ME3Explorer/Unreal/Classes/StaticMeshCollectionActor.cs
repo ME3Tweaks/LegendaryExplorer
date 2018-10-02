@@ -11,8 +11,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
 using lib3ds.Net;
 using KFreonLib.Debugging;
 
@@ -132,13 +131,6 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
-        public void Render(Device device)
-        {
-            for (int i = 0; i < STMC.Count; i++)
-                if(STMC[i]!=null)
-                    STMC[i].Render(device, Matrices[i]);
-        }
-
         public void ProcessTreeClick(int[] path, bool AutoFocus)
         {
             if (path.Length == 3) //select all childs
@@ -154,27 +146,10 @@ namespace ME3Explorer.Unreal.Classes
                         if (STMC[i].MyIndex == Entries[idx])
                         {
                             STMC[i].SetSelection(true);
-                            if(AutoFocus)
-                                STMC[i].Focus(Matrices[i]);//focus camera
+                            //if(AutoFocus)
+                            //    STMC[i].Focus(Matrices[i]);//focus camera
                         }
             }
-        }
-
-        public float Process3DClick(Vector3 org, Vector3 dir, out int Idx)
-        {
-            float dist = -1f;
-            Idx = -1;
-            for (int i = 0; i < STMC.Count; i++)
-                if (STMC[i] != null)
-                {
-                    float d = STMC[i].Process3DClick(org, dir, Matrices[i]);
-                    if ((d < dist && d > 0) || (dist == -1 && d > 0))
-                    {
-                        dist = d;
-                        Idx = i;
-                    }
-                }
-            return dist;
         }
 
         public void ApplyTransform(Matrix m)

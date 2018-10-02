@@ -257,7 +257,7 @@
                     <global:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter"/>
                 </TabItem>
                 <TabItem Name="Script_Tab" Header="Script">
-                    <TextBox Name="Script_TextBox" TextWrapping="Wrap" Text="if(visible) ShowThis()" IsReadOnly="True" FontFamily="Consolas" Padding="5"/>
+                    <global:UnrealScriptWPF x:Name="ScriptTab_UnrealScriptEditor"/>
                 </TabItem>
                 <TabItem Name="CurveEditor_Tab" Header="Curve Editor">
                     <CurveEd:CurveEditor x:Name="CurveTab_CurveEditor"/>
