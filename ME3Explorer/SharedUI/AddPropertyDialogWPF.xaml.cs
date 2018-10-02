@@ -14,7 +14,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-
 namespace ME3Explorer.SharedUI
 {
     /// <summary>
@@ -22,7 +21,7 @@ namespace ME3Explorer.SharedUI
     /// </summary>
     public partial class AddPropertyDialogWPF : Window
     {
-        public List<string> extantProps;
+        public List<string> existingProperties;
         Dictionary<string, ClassInfo> classList;
 
         public AddPropertyDialogWPF()
@@ -36,7 +35,7 @@ namespace ME3Explorer.SharedUI
             Close();
         }
 
-        public static string GetProperty(IExportEntry export, List<string> _extantProps, MEGame game)
+        public static Tuple<string, PropertyInfo> GetProperty(IExportEntry export, List<string> _existingProperties, MEGame game)
         {
             string origname = export.ClassName;
             string temp = export.ClassName;
@@ -99,13 +98,13 @@ namespace ME3Explorer.SharedUI
             classes.Reverse();
             AddPropertyDialogWPF prompt = new AddPropertyDialogWPF();
             prompt.classList = classList;
-            prompt.extantProps = _extantProps;
+            prompt.existingProperties = _existingProperties;
             prompt.ClassesListView.ItemsSource = classes;
             prompt.ClassesListView.SelectedItem = origname;
             prompt.ShowDialog();
             if (prompt.DialogResult.HasValue && prompt.DialogResult.Value && prompt.PropertiesListView.SelectedIndex != -1)
             {
-                return prompt.PropertiesListView.SelectedItem as string;
+                return Tuple.Create(((KeyValuePair<string, PropertyInfo>)prompt.PropertiesListView.SelectedItem).Key, ((KeyValuePair<string, PropertyInfo>)prompt.PropertiesListView.SelectedItem).Value);
             }
             else
             {
@@ -121,8 +120,8 @@ namespace ME3Explorer.SharedUI
         private void ClassesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string className = ClassesListView.SelectedItem as string;
-            List<string> props = classList[className].properties.Keys.Except(extantProps).ToList();
-            props.Sort();
+            var props = classList[className].properties.Where(x => !existingProperties.Contains(x.Key)).OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
+            //props.Sort();
             PropertiesListView.ItemsSource = props;
         }
 
