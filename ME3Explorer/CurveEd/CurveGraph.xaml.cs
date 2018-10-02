@@ -168,6 +168,7 @@ namespace ME3Explorer.CurveEd
 
         public void Paint(bool recomputeView = false)
         {
+            TrackLoading = true;
             graph.Children.Clear();
 
             LinkedList<CurvePoint> points = SelectedCurve.CurvePoints;
@@ -298,6 +299,7 @@ namespace ME3Explorer.CurveEd
                 }
                 lastAnchor = a;
             }
+            TrackLoading = false;
         }
 
         private void PathBetween(Anchor a1, Anchor a2, CurveMode interpMode = CurveMode.CIM_Linear)

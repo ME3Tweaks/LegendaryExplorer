@@ -40,13 +40,12 @@ namespace ME3Explorer.CurveEd
         {
             InitializeComponent();
             LoadExport(exp);
-            //Title = "Curve Editor | " + System.IO.Path.GetFileName(expEntry.FileRef.FileName) + " | " + exp.Index + ": " + exp.ClassName;
         }
 
         private void Load()
         {
             InterpCurveTracks = new List<InterpCurve>();
-            
+
             var props = CurrentLoadedExport.GetProperties();
             foreach (var prop in props)
             {
@@ -58,7 +57,7 @@ namespace ME3Explorer.CurveEd
                     }
                 }
             }
-            
+
             foreach (var interpCurve in InterpCurveTracks)
             {
                 foreach (var curve in interpCurve.Curves)
@@ -68,30 +67,18 @@ namespace ME3Explorer.CurveEd
             }
 
             TrackList.ItemsSource = InterpCurveTracks;
-            if (InterpCurveTracks.Count() > 0)
-            {
-
-                //TreeView in WPF can be really ugly sometimes
-                //Select the first track and display it so the default view isn't empty
-                //does not work yet - probably should ask SirC how this tool works
-                var tvi = TrackList.ItemContainerGenerator.ContainerFromItem(InterpCurveTracks[0])
-                          as TreeViewItem;
-
-                if (tvi != null)
-                {
-                    tvi.IsSelected = true;
-                }
-            }
             graph.Paint();
         }
 
         private void TrackList_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
+            CurveGraph.TrackLoading = true;
             if (e.NewValue is Curve)
             {
                 graph.SelectedCurve = e.NewValue as Curve;
             }
             graph.Paint(true);
+            CurveGraph.TrackLoading = false;
         }
 
         private void graph_SelectedPointChanged(object sender, RoutedPropertyChangedEventArgs<CurvePoint> e)
@@ -162,12 +149,15 @@ namespace ME3Explorer.CurveEd
 
         private void Commit()
         {
-            var props = CurrentLoadedExport.GetProperties();
-            foreach (InterpCurve item in InterpCurveTracks)
+            if (!CurveGraph.TrackLoading)
             {
-                props.AddOrReplaceProp(item.WriteProperties());
+                var props = CurrentLoadedExport.GetProperties();
+                foreach (InterpCurve item in InterpCurveTracks)
+                {
+                    props.AddOrReplaceProp(item.WriteProperties());
+                }
+                CurrentLoadedExport.WriteProperties(props);
             }
-            CurrentLoadedExport.WriteProperties(props);
         }
 
         private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)

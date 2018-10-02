@@ -114,10 +114,9 @@ namespace ME3Explorer.CurveEd
             {
                 SharedValueChanged?.Invoke(this, e);
             }
-            if (!CurveGraph.TrackLoading)
-            {
-                SaveChanges?.Invoke();
-            }
+
+            SaveChanges?.Invoke();
+
         }
 
         public void RemovePoint(LinkedListNode<CurvePoint> p)
