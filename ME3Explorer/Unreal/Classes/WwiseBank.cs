@@ -397,7 +397,11 @@ namespace ME3Explorer.Unreal.Classes
 
                 foreach (EmbeddedWEMFile wem in wemFiles)
                 {
-                    int offset = (int)dataBlock.Position - 8; //remove DATA and size
+                    while (dataBlock.Position - 8 % 16 != 0)
+                    {
+                        dataBlock.WriteByte(0); //byte align to 16
+                    }
+                    int offset = (int)dataBlock.Position - 8; //remove DATA and size. This is effectively start offset
                     byte[] dataToWrite = wem.HasBeenFixed ? wem.OriginalWemData : wem.WemData;
                     didxBlock.Write(BitConverter.GetBytes(wem.Id), 0, 4); //Write ID
                     didxBlock.Write(BitConverter.GetBytes(offset), 0, 4); //Write Offset
