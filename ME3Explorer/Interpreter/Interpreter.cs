@@ -332,10 +332,6 @@ namespace ME3Explorer
                 ImportEntry donorTopLevelImport = null;
                 foreach (ImportEntry imp in pcc.Imports) //importing side info we will move to our dest pcc
                 {
-                    if (imp.GetFullPath.StartsWith("BioVFX"))
-                    {
-                        Console.WriteLine(imp.GetFullPath);
-                    }
                     if (imp.GetFullPath == fullobjectname)
                     {
                         donorTopLevelImport = imp;
@@ -2665,7 +2661,7 @@ namespace ME3Explorer
                 return;
             }
             List<string> props = PropertyReader.getPropList(export).Select(x => pcc.getNameEntry(x.Name)).ToList();
-            string prop = AddPropertyDialogWPF.GetProperty(export, props, pcc.Game);
+            var prop = AddPropertyDialogWPF.GetProperty(export, props, pcc.Game);
 
             string origname = export.ClassName;
             string temp = export.ClassName;
@@ -2705,7 +2701,7 @@ namespace ME3Explorer
                 currentInfo.baseClass = exportTemp.ClassParent;
             }
 
-            AddProperty(prop, currentInfo);
+            AddProperty(prop.Item1, currentInfo);
             RefreshMem();
         }
 

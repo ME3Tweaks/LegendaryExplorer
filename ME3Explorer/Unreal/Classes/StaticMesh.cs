@@ -7,8 +7,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Media;
 using ME3Explorer.Unreal;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
 using lib3ds.Net;
 using KFreonLib.Debugging;
 using KFreonLib.MEDirectories;
@@ -123,7 +122,6 @@ namespace ME3Explorer.Unreal.Classes
             public int FirstIdx2;
             public int NumFaces2;
             public byte Unk6;
-            public CustomVertex.PositionNormalTextured[] RawTriangles;
         }
 
         public struct Bounding
@@ -1190,170 +1188,6 @@ namespace ME3Explorer.Unreal.Classes
         }
         #endregion
 
-
-        #endregion
-
-        #region DirectX
-        public void Render(Device device, Matrix m)
-        {
-            device.VertexFormat = CustomVertex.PositionNormalTextured.Format;
-            device.RenderState.Lighting = true;
-            if (DirectXGlobal.DrawWireFrame || isVolumetric)
-                device.RenderState.FillMode = FillMode.WireFrame;
-            else
-                device.RenderState.FillMode = FillMode.Solid;
-            device.Transform.World = m;
-            device.RenderState.CullMode = Cull.None;
-            try
-            {
-                for (int i = 0; i < Mesh.Mat.Lods[0].SectionCount; i++)
-                {
-                    Section sec = Mesh.Mat.Lods[0].Sections[i];
-                    if (isSelected)
-                        device.SetTexture(0, DirectXGlobal.Tex_Select);
-                    else
-                        device.SetTexture(0, DirectXGlobal.Tex_Default);
-                    #region CreateDXMesh
-                    if (sec.RawTriangles == null)
-                    {
-                        sec.RawTriangles = new CustomVertex.PositionNormalTextured[sec.NumFaces1 * 3];
-                        try
-                        {
-                            if (Mesh.IdxBuf.Indexes.Count() != 0)
-                                for (int j = 0; j < sec.NumFaces1; j++)
-                                {
-                                    int Idx = Mesh.IdxBuf.Indexes[sec.FirstIdx1 + j * 3];
-                                    Vector3 pos = Mesh.Vertices.Points[Idx];
-                                    Vector2 UV = Mesh.Edges.UVSet[Idx].UVs[0];
-                                    sec.RawTriangles[j * 3] = new CustomVertex.PositionNormalTextured(pos, new Vector3(0, 0, 0), UV.X, UV.Y);
-                                    Idx = Mesh.IdxBuf.Indexes[sec.FirstIdx1 + j * 3 + 1];
-                                    pos = Mesh.Vertices.Points[Idx];
-                                    UV = Mesh.Edges.UVSet[Idx].UVs[0];
-                                    sec.RawTriangles[j * 3 + 1] = new CustomVertex.PositionNormalTextured(pos, new Vector3(0, 0, 0), UV.X, UV.Y);
-                                    Idx = Mesh.IdxBuf.Indexes[sec.FirstIdx1 + j * 3 + 2];
-                                    pos = Mesh.Vertices.Points[Idx];
-                                    UV = Mesh.Edges.UVSet[Idx].UVs[0];
-                                    sec.RawTriangles[j * 3 + 2] = new CustomVertex.PositionNormalTextured(pos, new Vector3(0, 0, 0), UV.X, UV.Y);
-                                }
-                            else
-                                for (int j = 0; j < sec.NumFaces1; j++)
-                                {
-                                    int Idx = Mesh.RawTris.RawTriangles[sec.FirstIdx1 / 3 + j].v0;
-                                    Vector3 pos = Mesh.Vertices.Points[Idx];
-                                    Vector2 UV = Mesh.Edges.UVSet[Idx].UVs[0];
-                                    sec.RawTriangles[j * 3] = new CustomVertex.PositionNormalTextured(pos, new Vector3(0, 0, 0), UV.X, UV.Y);
-                                    Idx = Mesh.RawTris.RawTriangles[sec.FirstIdx1 / 3 + j].v1;
-                                    pos = Mesh.Vertices.Points[Idx];
-                                    UV = Mesh.Edges.UVSet[Idx].UVs[0];
-                                    sec.RawTriangles[j * 3 + 1] = new CustomVertex.PositionNormalTextured(pos, new Vector3(0, 0, 0), UV.X, UV.Y);
-                                    Idx = Mesh.RawTris.RawTriangles[sec.FirstIdx1 / 3 + j].v2;
-                                    pos = Mesh.Vertices.Points[Idx];
-                                    UV = Mesh.Edges.UVSet[Idx].UVs[0];
-                                    sec.RawTriangles[j * 3 + 2] = new CustomVertex.PositionNormalTextured(pos, new Vector3(0, 0, 0), UV.X, UV.Y);
-                                }
-                        }
-                        catch (Exception e)
-                        {
-                            DebugOutput.PrintLn("Static Mesh error on reading dx mesh: " + e.Message);
-                            sec.RawTriangles = new CustomVertex.PositionNormalTextured[0];
-                        }
-
-                        for (int j = 0; j < sec.RawTriangles.Length; j += 3)
-                        {
-                            Vector3 p0 = sec.RawTriangles[j].Position - sec.RawTriangles[j + 1].Position;
-                            Vector3 p1 = sec.RawTriangles[j].Position - sec.RawTriangles[j + 2].Position;
-                            p0.Normalize();
-                            p1.Normalize();
-                            Vector3 n = Vector3.Cross(p0, p1);
-                            sec.RawTriangles[j].Normal = n;
-                            sec.RawTriangles[j + 1].Normal = n;
-                            sec.RawTriangles[j + 2].Normal = n;
-                        }
-                        Mesh.Mat.Lods[0].Sections[i] = sec;
-                    }
-                    #endregion
-                    if (sec.RawTriangles != null && sec.RawTriangles.Length != 0)
-                        device.DrawUserPrimitives(PrimitiveType.TriangleList, sec.RawTriangles.Length / 3, sec.RawTriangles);
-                }
-            }
-            catch (Exception e)
-            {
-                DebugOutput.PrintLn("Static Mesh ERROR: " + e.Message);
-            }
-        }
-
-        public void Focus(Matrix m)
-        {
-            Vector3 center = Vector3.TransformCoordinate(Mesh.Bounds.Origin, m);
-            Vector3 dis = center - DirectXGlobal.Cam.pos;
-            dis.Normalize();
-            DirectXGlobal.Cam.dir = dis;
-            DirectXGlobal.Cam.pos = center - dis * Mesh.Bounds.R * 2;
-        }
-
-        public float Process3DClick(Vector3 org, Vector3 dir, Matrix m)
-        {
-            float dist = -1f;
-                for (int i = 0; i < Mesh.Mat.Lods[0].SectionCount; i++)
-                {
-                    Section sec = Mesh.Mat.Lods[0].Sections[i];
-                    float d = -1f;
-                    for (int j = 0; j < sec.RawTriangles.Length / 3; j++)
-                        if (RayIntersectTriangle(org,
-                                                dir,
-                                                Vector3.TransformCoordinate(sec.RawTriangles[j * 3].Position, m),
-                                                Vector3.TransformCoordinate(sec.RawTriangles[j * 3 + 1].Position, m),
-                                                Vector3.TransformCoordinate(sec.RawTriangles[j * 3 + 2].Position, m),
-                                                out d))
-                            if ((d < dist && d > 0) || (dist == -1f && d > 0))
-                                dist = d;
-                }
-            return dist;
-        }
-
-        Vector2 RaySphereIntersect(Vector3 p, Vector3 d, float r)
-        {
-            float det, b;
-            b = -Vector3.Dot(p, d);
-            det = b * b - Vector3.Dot(p, p) + r * r;
-            if (det < 0) return new Vector2(-1, -1);
-            det = (float)Math.Sqrt(det);
-            Vector2 v = new Vector2(b - det, b + det);
-            if (v.Y < 0) return new Vector2(-1, -1);
-            if (v.X < 0) v.X = 0;
-            return v;
-        }
-
-        public bool RayIntersectTriangle(Vector3 rayPosition, Vector3 rayDirection, Vector3 tri0, Vector3 tri1, Vector3 tri2, out float pickDistance)
-        {
-            pickDistance = -1f;
-            // Find vectors for two edges sharing vert0
-            Vector3 edge1 = tri1 - tri0;
-            Vector3 edge2 = tri2 - tri0;
-            // Begin calculating determinant - also used to calculate barycentricU parameter
-            Vector3 pvec = Vector3.Cross(rayDirection, edge2);
-            // If determinant is near zero, ray lies in plane of triangle
-            float det = Vector3.Dot(edge1, pvec);
-            if (det < 0.0001f)
-                return false;
-            // Calculate distance from vert0 to ray origin
-            Vector3 tvec = rayPosition - tri0;
-            // Calculate barycentricU parameter and test bounds
-            float barycentricU = Vector3.Dot(tvec, pvec);
-            if (barycentricU < 0.0f || barycentricU > det)
-                return false;
-            // Prepare to test barycentricV parameter
-            Vector3 qvec = Vector3.Cross(tvec, edge1);
-            // Calculate barycentricV parameter and test bounds
-            float barycentricV = Vector3.Dot(rayDirection, qvec);
-            if (barycentricV < 0.0f || barycentricU + barycentricV > det)
-                return false;
-            // Calculate pickDistance
-            pickDistance = Vector3.Dot(edge2, qvec);
-            float fInvDet = 1.0f / det;
-            pickDistance *= fInvDet;
-            return true;
-        }
 
         #endregion
 

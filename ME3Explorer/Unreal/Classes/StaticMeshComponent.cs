@@ -5,8 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
 using lib3ds.Net;
 
 namespace ME3Explorer.Unreal.Classes
@@ -373,15 +372,6 @@ namespace ME3Explorer.Unreal.Classes
             return r;
         }
 
-        public void Render(Device device, Matrix m)
-        {
-            if (STM != null)
-            {
-                Matrix t = MyMatrix * m;
-                STM.Render(device, t);
-            }
-        }
-
         public void SetSelection(bool Selected)
         {
             if (STM != null)
@@ -393,25 +383,6 @@ namespace ME3Explorer.Unreal.Classes
             if (STM != null)
                 return STM.GetSelection();
             return false;
-        }
-
-        public void Focus(Matrix m)
-        {
-            if (STM != null)
-            {
-                Matrix t = MyMatrix * m;
-                STM.Focus(t);
-            }
-        }
-
-        public float Process3DClick(Vector3 org, Vector3 dir, Matrix m)
-        {
-            if (STM != null)
-            {
-                Matrix t = MyMatrix * m;
-                return STM.Process3DClick(org, dir, t);                
-            }
-            return -1f;
         }
 
         public void Export3DS(Lib3dsFile f, Matrix m)

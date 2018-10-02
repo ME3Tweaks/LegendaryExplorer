@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
 
 namespace ME3LibWV.UnrealClasses
 {
@@ -61,12 +60,6 @@ namespace ME3LibWV.UnrealClasses
                 }
         }
 
-        public void Render(Device device)
-        {
-            foreach (_DXRenderableObject o in RenderObjects)
-                o.Render(device);
-        }
-
         public TreeNode ToTree()
         {
             TreeNode t = new TreeNode("E#" + MyIndex.ToString("d6") + " : Level");
@@ -106,17 +99,6 @@ namespace ME3LibWV.UnrealClasses
             return t;
         }
 
-        public  void Process3DClick(Vector3 org, Vector3 dir)
-        {
-            float dist = -1;
-            DeSelectAll();
-            foreach (_DXRenderableObject o in RenderObjects)
-            {
-                float d = o.Process3DClick(org, dir, dist);
-                if ((d < dist && d > 0) || (dist == -1 && d > 0))
-                    dist = d;
-            }
-        }
         public void DeSelectAll()
         {
             foreach (_DXRenderableObject o in RenderObjects)

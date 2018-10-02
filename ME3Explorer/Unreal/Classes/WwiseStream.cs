@@ -273,7 +273,8 @@ namespace ME3Explorer.Unreal.Classes
             string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
             if (ExtractRawFromStream(basePath + ".dat", getPathToAFC()))
             {
-                ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
+                MemoryStream dataStream = ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
+                File.WriteAllBytes(basePath + ".wav", dataStream.ToArray());
             }
             return basePath + ".wav";
         }
@@ -295,11 +296,11 @@ namespace ME3Explorer.Unreal.Classes
         }
         private void PlayWave(string path)
         {
-            string wavPath = CreateWave(path);
-            if (wavPath != null && File.Exists(wavPath))
+            Stream waveStream = CreateWaveStream(path);
+            if (waveStream != null)
             {
-                sp = new SoundPlayer(wavPath);
-                sp.Play();
+                sp = new SoundPlayer(waveStream);
+                sp.PlaySync();
                 while (!sp.IsLoadCompleted)
                     Application.DoEvents();
             }

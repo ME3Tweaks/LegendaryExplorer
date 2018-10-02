@@ -59,7 +59,8 @@ namespace ME3Explorer.ScriptDB
                                 ScriptEntry n = new ScriptEntry();
                                 n.file = Path.GetFileName(file);
                                 n.name = ent.PackageFullName + "." + ent.ObjectName;
-                                n.script = f.ToRawText(false);
+                                f.ParseFunction();
+                                n.script = f.ScriptText;
                                 database.Add(n);
                                 DebugOutput.PrintLn("\tFound \"" + n.name + "\"", false);
                             }

@@ -5,8 +5,6 @@ using System.Linq;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
 using ME3Explorer;
@@ -366,7 +364,7 @@ namespace ME3Explorer.Unreal.Classes
                         break;
                 }
         }
-
+        /*
         public void Process3DClick(Vector3 org, Vector3 dir)
         {
             int Idx = -1;
@@ -575,7 +573,7 @@ namespace ME3Explorer.Unreal.Classes
             {
                 DebugOutput.PrintLn("Level ERROR: " + e.Message);
             }
-        }
+        }*/
 
         public void Export3DS(Lib3dsFile f)
         {

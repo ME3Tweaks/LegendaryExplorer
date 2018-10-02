@@ -25,7 +25,6 @@ namespace ME3Explorer
     public partial class Bio2DAEditorWPF : ExportLoaderControl
     {
         private Bio2DA _table2da;
-
         public Bio2DA Table2DA
         {
             get
@@ -38,8 +37,6 @@ namespace ME3Explorer
             }
         }
 
-        public IExportEntry CurrentlyLoadedExport { get; private set; }
-
         public Bio2DAEditorWPF()
         {
             InitializeComponent();
@@ -49,7 +46,7 @@ namespace ME3Explorer
         {
             //dataGridView1.Rows.Clear();
             //dataGridView1.Columns.Clear();
-            Table2DA = new Bio2DA(CurrentlyLoadedExport);
+            Table2DA = new Bio2DA(CurrentLoadedExport);
             //Add columns
             /*for (int j = 0; j < table2da.columnNames.Count(); j++)
             {
@@ -93,14 +90,14 @@ namespace ME3Explorer
 
         public override void LoadExport(IExportEntry exportEntry)
         {
-            CurrentlyLoadedExport = exportEntry;
+            CurrentLoadedExport = exportEntry;
             StartBio2DAScan();
         }
 
         public override void UnloadExport()
         {
             Table2DA = null;
-            CurrentlyLoadedExport = null;
+            CurrentLoadedExport = null;
         }
     }
 
