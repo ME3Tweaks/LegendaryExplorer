@@ -1,0 +1,45 @@
+﻿<global:WPFBase x:Class="ME3Explorer.DLCUnpacker.DLCUnpacker"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ME3Explorer.DLCUnpacker"
+        xmlns:global="clr-namespace:ME3Explorer"
+        mc:Ignorable="d"
+        Title="DLC Unpacker" Height="267.903" Width="553.072">
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="150"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="5"  Text="This tool allows you to unpack your Mass Effect 3 DLC into loose files that you can use for modding."/>
+        <TextBlock Grid.Row="2" Text="Required space:"/>
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding RequiredSpaceText}"/>
+        <TextBlock Grid.Row="3" Text="Available space:"/>
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding AvailableSpaceText}"/>
+
+        <TextBlock Grid.Row="4" Name="availableSpaceRun">
+            <TextBlock.Text>
+                <MultiBinding StringFormat="{}{0} ({1}%)">
+                    <Binding Path="CurrentOperationText" />
+                    <Binding Path="CurrentPercentValue" />
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
+
+        <Button Grid.Row="5" Name="UnpackDLCButton" Content="Unpack DLC" Click="UnpackDLCButton_Click"/>
+        <ProgressBar Grid.Row="6" Grid.ColumnSpan="4" Value="{Binding CurrentProgressValue}" IsIndeterminate="{Binding ProgressBarIndeterminate}"/>
+    </Grid>
+</global:WPFBase>

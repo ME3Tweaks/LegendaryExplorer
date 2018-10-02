@@ -167,6 +167,19 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "DLC Unpacker Editor",
+                type = typeof(DLCUnpacker.DLCUnpacker),
+                icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,
+                open = () =>
+                {
+                    (new DLCUnpacker.DLCUnpacker()).Show();
+                },
+                tags = new List<string> { "utility", "dlc", "sfar", "unpack", "extract" },
+                subCategory = "Extractors + Repackers",
+                description = "DLC Unpacker allows you to extract Mass Effect 3 DLC SFAR files, allowing you to access their contents for modding.",
+            });
+            set.Add(new Tool
+            {
                 name = "Hex Converter",
                 type = typeof(HexConverter.Hexconverter),
                 icon = Application.Current.FindResource("iconHexConverter") as ImageSource,
