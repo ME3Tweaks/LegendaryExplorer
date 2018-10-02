@@ -120,22 +120,11 @@ namespace ME3Explorer.Soundplorer
         {
             if (propogate && recents != null)
             {
-                //we are posting an update to other instances of packed
-
-                //This code can be removed when non-WPF package editor is removed.
-                var forms = System.Windows.Forms.Application.OpenForms;
-                foreach (System.Windows.Forms.Form form in forms)
+                foreach (var window in App.Current.Windows)
                 {
-                    if (form is PackageEditor) //it will never be "this"
+                    if (window is SoundplorerWPF && this != window)
                     {
-                        ((PackageEditor)form).RefreshRecent(false, RFiles);
-                    }
-                }
-                foreach (var form in App.Current.Windows)
-                {
-                    if (form is PackageEditorWPF && this != form)
-                    {
-                        ((PackageEditorWPF)form).RefreshRecent(false, RFiles);
+                        ((SoundplorerWPF)window).RefreshRecent(false, RFiles);
                     }
                 }
             }

@@ -805,6 +805,9 @@
     </Compile>
     <Compile Include="WPFBase.cs" />
     <Compile Include="WPFConverters.cs" />
+    <Compile Include="WwiseBankViewer\WwiseBankViewerWPF.xaml.cs">
+      <DependentUpon>WwiseBankViewerWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WwiseBankViewer\WwiseViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1034,6 +1037,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UnrealScriptControl\UnrealScriptWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WwiseBankViewer\WwiseBankViewerWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
