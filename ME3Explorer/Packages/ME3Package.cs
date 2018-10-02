@@ -91,6 +91,7 @@ namespace ME3Explorer.Packages
                 }
                 if (IsCompressed)
                 {
+                    //Aquadran: Code to decompress package on disk.
                     inStream = CompressionHelper.DecompressME3(pccStream);
                     //read uncompressed header
                     inStream.Seek(0, SeekOrigin.Begin);
@@ -283,6 +284,7 @@ namespace ME3Explorer.Packages
             byte[] oldPCC = new byte[lastDataOffset];
             if (IsCompressed)
             {
+                //Aquadran: Code to decompress package on disk.
                 oldPCC = CompressionHelper.Decompress(FileName).Take(lastDataOffset).ToArray();
                 IsCompressed = false;
             }

@@ -72,6 +72,10 @@ namespace ME3Explorer.Packages
             MemoryStream listsStream;
             if (IsCompressed)
             {
+                //Aquadran: Code to decompress package on disk.
+                //Do not set the decompressed flag as some tools use this flag
+                //to determine if the file on disk is still compressed or not
+                //e.g. soundplorer's offset based audio access
                 listsStream = CompressionHelper.DecompressME1orME2(tempStream);
 
                 //Correct the header
