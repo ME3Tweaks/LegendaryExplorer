@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:ME3Explorer.DLCUnpacker"
         xmlns:global="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
-        Title="DLC Unpacker" Height="267.903" Width="553.072">
+        Title="DLC Unpacker" Height="193.539" Width="553.072"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
@@ -30,16 +31,16 @@
         <TextBlock Grid.Row="3" Text="Available space:"/>
         <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding AvailableSpaceText}"/>
 
-        <TextBlock Grid.Row="4" Name="availableSpaceRun">
+        <TextBlock Grid.Row="5" Grid.ColumnSpan="5">
             <TextBlock.Text>
                 <MultiBinding StringFormat="{}{0} ({1}%)">
                     <Binding Path="CurrentOperationText" />
-                    <Binding Path="CurrentPercentValue" />
+                    <Binding Path="CurrentOperationPercentValue" />
                 </MultiBinding>
             </TextBlock.Text>
         </TextBlock>
 
-        <Button Grid.Row="5" Name="UnpackDLCButton" Content="Unpack DLC" Click="UnpackDLCButton_Click"/>
-        <ProgressBar Grid.Row="6" Grid.ColumnSpan="4" Value="{Binding CurrentProgressValue}" IsIndeterminate="{Binding ProgressBarIndeterminate}"/>
+        <Button Grid.Row="6" Command="{Binding UnpackDLCCommand}" Content="Unpack DLC"/>
+        <ProgressBar Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="4" Value="{Binding CurrentOverallProgressValue}" IsIndeterminate="{Binding ProgressBarIndeterminate}"/>
     </Grid>
 </global:WPFBase>
