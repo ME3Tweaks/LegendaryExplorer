@@ -99,8 +99,13 @@ namespace ME3Explorer.Unreal.Classes
                         for (int i = 0; i < lendata / 0xC; i++)
                         {
                             res += "......WEM(" + i + ") : ID (0x" + BitConverter.ToInt32(buff, 0x8 + i * 0xC).ToString("X8");
-                            res += ") Start Offset(0x" + BitConverter.ToInt32(buff, 0xC + i * 0xC).ToString("X8");
-                            res += ") Size(0x" + BitConverter.ToInt32(buff, 0x10 + i * 0xC).ToString("X8") + ")\n";
+                            int startoffset = BitConverter.ToInt32(buff, 0xC + i * 0xC);
+
+                            res += ") Start Offset(0x" + startoffset.ToString("X8");
+                            int size = BitConverter.ToInt32(buff, 0x10 + i * 0xC);
+                            res += ") Size(0x" + size.ToString("X8") + ")";
+                            res += " End Offset(0x" + (startoffset + size).ToString("X8") + ")\n";
+
                         }
                         didx_data = buff;
                         break;
