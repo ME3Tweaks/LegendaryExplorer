@@ -23,7 +23,6 @@
         <local:WwiseMenuItemVisibilityConverter x:Key="WwiseMenuItemVisibilityConverter"/>
         <ContextMenu x:Key="MyMenu">
             <MenuItem Header="Export bank to file" ToolTip="Exports the binary data of this export (embedded soundbank) to disk" Click="ExtractBank_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseBank'}"/>
-            <MenuItem Header="Extract complete bank file" Click="ExtractBank_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseBank'}"/>
             <MenuItem Header="Extract all bank audio to wave" Click="ExtractWEMAsWaveFromBank_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseBank'}"/>
             <MenuItem Header="Export to..." Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}">
                 <MenuItem Name="ExportAudioRaw_MenuItem" Header="Export RIFF" ToolTip="Exports the raw data as stored in game files.&#x0a;To play, you must put this through ww2ogg to ogg and oggdec to wav." Click="ExportRaw_Clicked"/>

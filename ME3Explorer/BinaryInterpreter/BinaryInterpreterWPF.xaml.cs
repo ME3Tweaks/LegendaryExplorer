@@ -310,26 +310,42 @@ namespace ME3Explorer
                     Name = "_" + pos.ToString(),
                 });
                 pos += 4;
+                string dataset1type = CurrentLoadedExport.ClassName == "WwiseStream" ? "Stream length" : "??? Length";
                 topLevelTree.Items.Add(new TreeViewItem()
                 {
-                    Header = $"{DataSize:X4} Stream length: {DataSize} (0x{DataSize:X})",
+                    Header = $"{DataSize:X4} : {dataset1type} {DataSize} (0x{DataSize:X})",
                     Name = "_" + pos.ToString(),
                     Tag = nodeType.StructLeafInt
                 });
                 pos += 4;
                 topLevelTree.Items.Add(new TreeViewItem()
                 {
-                    Header = $"{ pos:X4} Stream length: {DataSize2} (0x{ DataSize2:X})",
+                    Header = $"{ pos:X4} {dataset1type}: {DataSize2} (0x{ DataSize2:X})",
                     Name = "_" + pos.ToString(),
                     Tag = nodeType.StructLeafInt
                 });
                 pos += 4;
+                string dataset2type = CurrentLoadedExport.ClassName == "WwiseStream" ? "Stream offset" : "??? offset";
                 topLevelTree.Items.Add(new TreeViewItem()
                 {
-                    Header = $"{pos:X4} Stream offset in file: {DataOffset} (0x{DataOffset:X})",
+                    Header = $"{pos:X4} {dataset2type} in file: {DataOffset} (0x{DataOffset:X})",
                     Name = "_" + pos.ToString(),
                     Tag = nodeType.StructLeafInt
                 });
+
+                if (CurrentLoadedExport.ClassName == "WwiseBank")
+                {
+                    if (CurrentLoadedExport.DataOffset < DataOffset && (CurrentLoadedExport.DataOffset + CurrentLoadedExport.DataSize) < DataOffset)
+                    {
+                        topLevelTree.Items.Add(new TreeViewItem()
+                        {
+                            Header = $"Click here to jump to the calculated offset in this export",
+                            Name = "_" + (DataOffset - CurrentLoadedExport.DataOffset).ToString(),
+                            Tag = nodeType.Unknown
+                        });
+                    }
+                }
+
                 pos += 4;
                 if (CurrentLoadedExport.ClassName == "WwiseStream")
                 {
@@ -437,15 +453,18 @@ namespace ME3Explorer
 
         private void BinaryInterpreter_TreeViewSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            TreeViewItem tvi = (TreeViewItem) BinaryInterpreter_TreeView.SelectedItem;
-            string tag = (string) tvi.Name;
-            if (tag != null && tag.StartsWith("_"))
+            TreeViewItem tvi = (TreeViewItem)BinaryInterpreter_TreeView.SelectedItem;
+            if (tvi != null)
             {
-                tag = tag.Substring(1); //remove _
-                if (int.TryParse(tag, out int result))
+                string tag = (string)tvi.Name;
+                if (tag != null && tag.StartsWith("_"))
                 {
-                    BinaryInterpreter_Hexbox.SelectionStart = result;
-                    BinaryInterpreter_Hexbox.SelectionLength = 1;
+                    tag = tag.Substring(1); //remove _
+                    if (int.TryParse(tag, out int result))
+                    {
+                        BinaryInterpreter_Hexbox.SelectionStart = result;
+                        BinaryInterpreter_Hexbox.SelectionLength = 1;
+                    }
                 }
             }
         }
@@ -500,6 +519,7 @@ namespace ME3Explorer
                         s += $"Length=0x{len.ToString("X8")} ";
                         s += $"End=0x{(start + len - 1).ToString("X8")}";
                     }
+                    s += $" | File offset: {(CurrentLoadedExport.DataOffset + start).ToString("X8")}";
                     StatusBar_LeftMostText.Text = s;
                 }
                 else
