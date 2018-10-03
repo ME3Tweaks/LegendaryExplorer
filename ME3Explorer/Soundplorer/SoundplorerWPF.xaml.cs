@@ -325,7 +325,7 @@ namespace ME3Explorer.Soundplorer
         private void SaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             SaveFileDialog d = new SaveFileDialog();
-            string extension = System.IO.Path.GetExtension(pcc.FileName);
+            string extension = System.IO.Path.GetExtension(Pcc.FileName);
             d.Filter = $"*{extension}|*{extension}";
             bool? result = d.ShowDialog();
             if (result.HasValue && result.Value)

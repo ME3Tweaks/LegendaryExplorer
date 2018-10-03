@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:global="clr-namespace:ME3Explorer"
         mc:Ignorable="d"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:Commands="clr-namespace:ME3Explorer.Commands"
         xmlns:CurveEd="clr-namespace:ME3Explorer.CurveEd"
@@ -30,7 +32,6 @@
         <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"/>
         <CommandBinding Command="Save" Executed="SaveCommandBinding_Executed"/>
         <CommandBinding Command="SaveAs" Executed="SaveAsCommandBinding_Executed"/>
-        <CommandBinding Command="Commands:PackageEditorWPFCommands.ComparePackageCommand" Executed="ComparePackageBinding_Executed"/>
         <CommandBinding Command="Commands:PackageEditorWPFCommands.FindCommand" Executed="FindCommandBinding_Executed"/>
         <CommandBinding Command="Commands:PackageEditorWPFCommands.GotoCommand" Executed="GotoCommandBinding_Executed"/>
         <CommandBinding Command="Commands:PackageEditorWPFCommands.NextTabCommand" Executed="NextTabBinding_Executed"/>
@@ -67,9 +68,17 @@
                 <MenuItem Header="Open"/>
                 <MenuItem Header="Save"/>
             </MenuItem>
-            <MenuItem Header="Modmaker" Padding="4">
-                <MenuItem Header="Open"/>
-                <MenuItem Name="ComparePackageMenuItem" Header="Compare with another package" Command="Commands:PackageEditorWPFCommands.ComparePackageCommand" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+            <MenuItem Header="Tools" Padding="4">
+                <MenuItem Name="ComparePackageMenuItem" Header="Compare with another package" Command="{Binding ComparePackagesCommand}"/>
+                <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <MenuItem Header="Complete export data"  Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file"/>
+                    <MenuItem Header="Binary data only"   Command="{Binding ExportBinaryDataCommand}" ToolTip="Export only binary data (bytes after properties) to a .bin file"/>
+                </MenuItem>
+                <MenuItem Header="Import..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <MenuItem Header="Complete export data"  Command="{Binding ImportAllDataCommand}" ToolTip="Import a .bin file and replace the contents of this export"/>
+                    <MenuItem Header="Binary data only"  Command="{Binding ImportBinaryDataCommand}" ToolTip="Import a .bin file and replace only the binary section of this export"/>
+                </MenuItem>
+
             </MenuItem>
 
             <MenuItem Header="Options" Padding="4">
@@ -114,7 +123,7 @@
             </ToolBar>
             <SharedUI:ListBoxScroll x:Name="LeftSide_ListView" Grid.Column="0" Grid.Row="1"  SelectionChanged="LeftSide_SelectedItemChanged"/>
             <!-- VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" -->
-            <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" TreeViewItem.Selected="LeftSide_SelectedItemChanged" FontFamily="Consolas"  dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" ItemsSource="{Binding AllTreeViewNodesX}">
+            <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" TreeViewItem.Selected="LeftSide_SelectedItemChanged" FontFamily="Consolas" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" ItemsSource="{Binding AllTreeViewNodesX}">
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type global:TreeViewEntry}" ItemsSource="{Binding Sublinks}">
                         <StackPanel Orientation="Horizontal">
@@ -132,6 +141,11 @@
                                 </TextBlock>
 
                             </StackPanel>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                    <ei:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
                         </StackPanel>
                     </HierarchicalDataTemplate>
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
@@ -142,6 +156,7 @@
                       Color="LightBlue" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
                       Color="Black" />
+
                 </TreeView.Resources>
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">
@@ -149,6 +164,20 @@
                         <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
                     </Style>
                 </TreeView.ItemContainerStyle>
+                <TreeView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Clone" Command="{Binding CloneCommand}"/>
+                        <MenuItem Header="Clone Tree" Command="{Binding CloneTreeCommand}"/>
+                        <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                            <MenuItem Header="Complete export data"  Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file"/>
+                            <MenuItem Header="Binary data only"   Command="{Binding ExportBinaryDataCommand}" ToolTip="Export only binary data (bytes after properties) to a .bin file"/>
+                        </MenuItem>
+                        <MenuItem Header="Import..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                            <MenuItem Header="Complete export data"  Command="{Binding ImportAllDataCommand}" ToolTip="Import a .bin file and replace the contents of this export"/>
+                            <MenuItem Header="Binary data only"  Command="{Binding ImportBinaryDataCommand}" ToolTip="Import a .bin file and replace only the binary section of this export"/>
+                        </MenuItem>
+                    </ContextMenu>
+                </TreeView.ContextMenu>
             </TreeView>
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Grid.Row="1"/>
             <TabControl Name="EditorTabs" Grid.Column="2" Grid.Row="1" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">

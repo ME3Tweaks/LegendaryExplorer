@@ -57,12 +57,6 @@ namespace ME3Explorer.FaceFX
             try
             {
                 LoadMEPackage(fileName);
-                /*if (pcc.Game == MEGame.ME1)
-                {
-                    pcc?.Release(wpfWindow: this);
-                    pcc = null;
-                    throw new FormatException("FaceFXEditor does not work on ME1 files.");
-                }*/
                 selectedLine = null;
                 FaceFX = null;
                 treeView.Nodes.Clear();
@@ -73,8 +67,8 @@ namespace ME3Explorer.FaceFX
             }
             catch (Exception ex)
             {
-                pcc?.Release(wpfWindow: this);
-                pcc = null;
+                Pcc?.Release(wpfWindow: this);
+                Pcc = null;
                 MessageBox.Show("Error:\n" + ex.Message);
             }
         }
@@ -83,9 +77,9 @@ namespace ME3Explorer.FaceFX
         {
             var item = FaceFXAnimSetComboBox.SelectedItem as IExportEntry;
             animSets = new List<IExportEntry>();
-            for (int i = 0; i < pcc.Exports.Count; i++)
-                if (pcc.Exports[i].ClassName == "FaceFXAnimSet")
-                    animSets.Add(pcc.Exports[i]);
+            for (int i = 0; i < Pcc.Exports.Count; i++)
+                if (Pcc.Exports[i].ClassName == "FaceFXAnimSet")
+                    animSets.Add(Pcc.Exports[i]);
             FaceFXAnimSetComboBox.ItemsSource = animSets;
             FaceFXAnimSetComboBox.SelectedIndex = 0;
             if (animSets.Contains(item))
@@ -96,10 +90,10 @@ namespace ME3Explorer.FaceFX
 
         private void Save_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (pcc != null)
+            if (Pcc != null)
             {
                 SaveChanges();
-                pcc.save();
+                Pcc.save();
                 MessageBox.Show("Done!");
             }
         }
@@ -111,7 +105,7 @@ namespace ME3Explorer.FaceFX
 
         private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = pcc != null;
+            e.CanExecute = Pcc != null;
         }
 
         private void LoadButton_Click(object sender, RoutedEventArgs e)
@@ -122,18 +116,18 @@ namespace ME3Explorer.FaceFX
 
         private void loadFaceFXAnimset()
         {
-            switch (pcc.Game)
+            switch (Pcc.Game)
             {
                 case MEGame.ME1:
-                    FaceFX = new ME1FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
+                    FaceFX = new ME1FaceFXAnimSet(Pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
                     linesListBox.ItemsSource = (FaceFX.Data as ME3DataAnimSetStruct).Data;
                     break;
                 case MEGame.ME2:
-                    FaceFX = new ME2FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
+                    FaceFX = new ME2FaceFXAnimSet(Pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
                     linesListBox.ItemsSource = (FaceFX.Data as ME2DataAnimSetStruct).Data;
                     break;
                 case MEGame.ME3:
-                    FaceFX = new ME3FaceFXAnimSet(pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
+                    FaceFX = new ME3FaceFXAnimSet(Pcc, FaceFXAnimSetComboBox.SelectedItem as IExportEntry);
                     linesListBox.ItemsSource = FaceFX.Data.Data;
                     break;
             }
@@ -168,7 +162,7 @@ namespace ME3Explorer.FaceFX
             updateAnimListBox();
             if (int.TryParse(selectedLine.ID, out int tlkID))
             {
-                if (pcc.Game == MEGame.ME3)
+                if (Pcc.Game == MEGame.ME3)
                 {
                     lineText.Text = ME3TalkFiles.findDataById(tlkID);
                 }
@@ -213,7 +207,7 @@ namespace ME3Explorer.FaceFX
             {
                 List<CurvePoint> curvePoints = new List<CurvePoint>();
                 List<int> numKeys = new List<int>();
-                if (pcc.Game == MEGame.ME3)
+                if (Pcc.Game == MEGame.ME3)
                 {
                     List<ME3NameRef> animations = new List<ME3NameRef>();
                     foreach (Animation anim in animationListBox.ItemsSource)
@@ -303,7 +297,7 @@ namespace ME3Explorer.FaceFX
                 List<string> names = FaceFX.Header.Names.ToList();
                 ME3FaceFXLine line = d.line;
                 line.Name = names.FindOrAdd(sourceNames[line.Name]);
-                if (pcc.Game == MEGame.ME3)
+                if (Pcc.Game == MEGame.ME3)
                 {
                     line.animations = line.animations.Select(x => new ME3NameRef
                     {
@@ -384,7 +378,7 @@ namespace ME3Explorer.FaceFX
                 int group = d.group;
                 Animation a = d.anim;
                 List<string> names = FaceFX.Header.Names.ToList();
-                if (pcc.Game == MEGame.ME3)
+                if (Pcc.Game == MEGame.ME3)
                 {
                     selectedLine.animations = selectedLine.animations.Concat(new ME3NameRef { index = names.FindOrAdd(a.Name), unk2 = 0 }).ToArray();
                 }
@@ -419,7 +413,7 @@ namespace ME3Explorer.FaceFX
         private void DeleteLine_Click(object sender, RoutedEventArgs e)
         {
             ME3FaceFXLine line = (ME3FaceFXLine)linesListBox.SelectedItem;
-            if (pcc.Game == MEGame.ME3)
+            if (Pcc.Game == MEGame.ME3)
             {
                 List<ME3FaceFXLine> lines = FaceFX.Data.Data.ToList();
                 lines.Remove(line);
@@ -539,7 +533,7 @@ namespace ME3Explorer.FaceFX
             {
                 foreach (var i in updatedExports)
                 {
-                    if (pcc.getExport(i).ClassName == "FaceFXAnimSet")
+                    if (Pcc.getExport(i).ClassName == "FaceFXAnimSet")
                     {
                         RefreshComboBox();
                         break;
@@ -665,7 +659,7 @@ namespace ME3Explorer.FaceFX
                     List<string> names = FaceFX.Header.Names.ToList();
                     foreach (var animSec in lineSec.animSecs)
                     {
-                        if (pcc.Game == MEGame.ME3)
+                        if (Pcc.Game == MEGame.ME3)
                         {
                             newAnims.Add(new ME3NameRef { index = names.FindOrAdd(animSec.Key), unk2 = 0 });
                         }

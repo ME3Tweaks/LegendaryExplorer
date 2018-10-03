@@ -92,13 +92,314 @@ namespace ME3Explorer
         private bool Visible_ObjectNameRow { get; set; }
         //private List<AdvancedTreeViewItem<TreeViewItem>> AllTreeViewNodes = new List<AdvancedTreeViewItem<TreeViewItem>>();
         public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; set; } = new ObservableCollectionExtended<TreeViewEntry>();
+        #region Commands
+        public ICommand ComparePackagesCommand { get; set; }
+        public ICommand ExportAllDataCommand { get; set; }
+        public ICommand ExportBinaryDataCommand { get; set; }
+        public ICommand ImportAllDataCommand { get; set; }
+        public ICommand ImportBinaryDataCommand { get; set; }
+        public ICommand CloneCommand { get; set; }
+        public ICommand CloneTreeCommand { get; set; }
+
+        private void LoadCommands()
+        {
+            ComparePackagesCommand = new RelayCommand(ComparePackages, PackageIsLoaded);
+            ExportAllDataCommand = new RelayCommand(ExportAllData, ExportIsSelected);
+            ExportBinaryDataCommand = new RelayCommand(ExportBinaryData, ExportIsSelected);
+            ImportAllDataCommand = new RelayCommand(ImportAllData, ExportIsSelected);
+            ImportBinaryDataCommand = new RelayCommand(ImportBinaryData, ExportIsSelected);
+            CloneCommand = new RelayCommand(CloneEntry, EntryIsSelected);
+            CloneTreeCommand = new RelayCommand(CloneTree, EntryIsSelected);
+        }
+
+        private void CloneTree(object obj)
+        {
+            if (GetSelected(out int n))
+            {
+                int nextIndex;
+                crossPCCObjectMap = new SortedDictionary<int, int>();
+                TreeViewEntry rootNode = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+                if (n >= 0)
+                {
+                    nextIndex = Pcc.ExportCount;
+                    IExportEntry exp = Pcc.getExport(n).Clone();
+                    Pcc.addExport(exp);
+                    crossPCCObjectMap[n] = Pcc.ExportCount - 1; //0 based.
+                    n = nextIndex + 1;
+                }
+                else
+                {
+                    nextIndex = -Pcc.ImportCount - 1;
+                    ImportEntry imp = Pcc.getImport(-n - 1).Clone();
+                    Pcc.addImport(imp);
+                    n = nextIndex;
+                    //We do not relink imports in same-pcc.
+                }
+                cloneTree(n, rootNode);
+                relinkObjects2(Pcc);
+                relinkBinaryObjects(Pcc);
+                crossPCCObjectMap = null;
+                RefreshView();
+                goToNumber(nextIndex);
+            }
+        }
+
+        private void CloneEntry(object obj)
+        {
+            if (GetSelected(out int n))
+            {
+                TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+                TreeViewEntry newEntry = null;
+                if (n >= 0)
+                {
+
+                    IExportEntry ent = (selected.Entry as IExportEntry).Clone();
+                    Pcc.addExport(ent);
+                    newEntry = new TreeViewEntry(ent);
+                }
+                else
+                {
+                    ImportEntry imp = (selected.Entry as ImportEntry).Clone();
+                    Pcc.addImport(imp);
+                    newEntry = new TreeViewEntry(imp);
+                }
+                newEntry.Parent = selected.Parent;
+                selected.Parent.Sublinks.Add(newEntry);
+                selected.Parent.SortChildren();
+                goToNumber(newEntry.UIndex);
+
+            }
+        }
+
+        private void cloneTree(int n, TreeViewEntry rootNode)
+        {
+            int nextIndex = 0;
+            if (rootNode.Sublinks.Count > 0)
+            {
+                foreach (TreeViewEntry node in rootNode.Sublinks)
+                {
+                    if (node.UIndex > 0)
+                    {
+                        nextIndex = Pcc.ExportCount + 1;
+                        IExportEntry exp = (node.Entry as IExportEntry).Clone();
+                        exp.idxLink = n;
+                        Pcc.addExport(exp);
+                        crossPCCObjectMap[node.UIndex - 1] = Pcc.ExportCount - 1; //0 based. Just how the code was written.
+                    }
+                    else if (node.UIndex < 0)
+                    {
+                        nextIndex = -Pcc.ImportCount - 1;
+                        ImportEntry imp = (node.Entry as ImportEntry).Clone();
+                        imp.idxLink = n;
+                        Pcc.addImport(imp);
+                        //we do not relink imports in same-pcc
+                    }
+                    if (nextIndex != 0 && node.Sublinks.Count > 0)
+                    {
+                        cloneTree(nextIndex, node);
+                    }
+                }
+            }
+        }
+
+        private void ImportBinaryData(object obj)
+        {
+            ImportExpData(true);
+        }
+
+        private void ImportAllData(object obj)
+        {
+            ImportExpData(false);
+        }
+
+        private void ImportExpData(bool binaryOnly)
+        {
+            if (!GetSelected(out int n))
+            {
+                return;
+            }
+            IExportEntry export = Pcc.getExport(n);
+            OpenFileDialog d = new OpenFileDialog
+            {
+                Filter = "*.bin|*.bin",
+                FileName = export.ObjectName + ".bin"
+            };
+            var result = d.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                byte[] data = File.ReadAllBytes(d.FileName);
+                if (binaryOnly)
+                {
+                    export.setBinaryData(data);
+                }
+                else
+                {
+                    export.Data = data;
+                }
+                MessageBox.Show("Done.");
+            }
+        }
+
+        private void ExportBinaryData(object obj)
+        {
+            ExportExpData(true);
+        }
+
+        private void ExportAllData(object obj)
+        {
+            ExportExpData(false);
+        }
+
+        private void ExportExpData(bool binaryOnly)
+        {
+            if (!GetSelected(out int n))
+            {
+                return;
+            }
+            IExportEntry export = Pcc.getExport(n);
+            SaveFileDialog d = new SaveFileDialog
+            {
+                Filter = "*.bin|*.bin",
+                FileName = export.ObjectName + ".bin"
+            };
+            var result = d.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                if (binaryOnly)
+                {
+                    File.WriteAllBytes(d.FileName, export.getBinaryData());
+                }
+                else
+                {
+                    File.WriteAllBytes(d.FileName, export.Data);
+                }
+                MessageBox.Show("Done.");
+            }
+        }
+
+        private bool ExportIsSelected(object obj)
+        {
+            int n;
+            if (GetSelected(out n))
+            {
+                return n > 0;
+            }
+            else return false;
+        }
+
+        private bool ImportIsSelected(object obj)
+        {
+            int n;
+            if (GetSelected(out n))
+            {
+                return n < 0;
+            }
+            else return false;
+        }
+
+        private bool EntryIsSelected(object obj)
+        {
+            int n;
+            if (GetSelected(out n))
+            {
+                return n != 0;
+            }
+            else return false;
+        }
+
+        private bool PackageIsLoaded(object obj)
+        {
+            return Pcc != null;
+        }
+
+        private void ComparePackages(object obj)
+        {
+            if (Pcc != null)
+            {
+                string extension = System.IO.Path.GetExtension(Pcc.FileName);
+                OpenFileDialog d = new OpenFileDialog { Filter = "*" + extension + "|*" + extension };
+                if (d.ShowDialog().Value)
+                {
+                    if (Pcc.FileName == d.FileName)
+                    {
+                        MessageBox.Show("You selected the same file as the one already open.");
+                        return;
+                    }
+                    IMEPackage compareFile = MEPackageHandler.OpenMEPackage(d.FileName);
+                    if (Pcc.Game != compareFile.Game)
+                    {
+                        MessageBox.Show("Files are for different games.");
+                        return;
+                    }
+
+                    int numExportsToEnumerate = Math.Min(Pcc.ExportCount, compareFile.ExportCount);
+
+                    List<string> changedExports = new List<string>();
+                    Stopwatch sw = Stopwatch.StartNew();
+                    for (int i = 0; i < numExportsToEnumerate; i++)
+                    {
+                        IExportEntry exp1 = Pcc.Exports[i];
+                        IExportEntry exp2 = compareFile.Exports[i];
+
+                        //make data offset and data size the same, as the exports could be the same even if it was appended later.
+                        //The datasize being different is a data difference not a true header difference so we won't list it here.
+                        byte[] header1 = exp1.Header.TypedClone();
+                        byte[] header2 = exp2.Header.TypedClone();
+                        Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header1, 32, sizeof(long));
+                        Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header2, 32, sizeof(long));
+
+                        //if (!StructuralComparisons.StructuralEqualityComparer.Equals(header1, header2))
+                        if (!header1.SequenceEqual(header2))
+
+                        {
+                            foreach (byte b in header1)
+                            {
+                                Debug.Write(" " + b.ToString("X2"));
+                            }
+                            Debug.WriteLine("");
+                            foreach (byte b in header2)
+                            {
+                                Debug.Write(" " + b.ToString("X2"));
+                            }
+                            Debug.WriteLine("");
+                            changedExports.Add("Export header has changed: " + i + " " + exp1.GetFullPath);
+                        }
+                        if (!exp1.Data.SequenceEqual(exp2.Data))
+                        {
+                            changedExports.Add("Export data has changed: " + i + " " + exp1.GetFullPath);
+                        }
+                    }
+
+                    IMEPackage enumerateExtras = Pcc;
+                    string file = "this file";
+                    if (compareFile.ExportCount < numExportsToEnumerate)
+                    {
+                        file = "other file";
+                        enumerateExtras = compareFile;
+                    }
+
+                    for (int i = numExportsToEnumerate; i < compareFile.ExportCount; i++)
+                    {
+                        changedExports.Add("Export only exists in " + file + ": " + i + " " + enumerateExtras.Exports[i].GetFullPath);
+                    }
+
+                    sw.Stop();
+                    Debug.WriteLine("Time: " + sw.ElapsedMilliseconds + "ms");
+
+                    ListDialog ld = new ListDialog(changedExports, "Changed exports between files", "The following exports are different between the files.");
+                    ld.Show();
+                }
+            }
+        }
+        #endregion
 
         public PackageEditorWPF()
         {
             //ME3UnrealObjectInfo.generateInfo();
             CurrentView = View.Tree;
-            InitializeComponent();
+            LoadCommands();
 
+            InitializeComponent();
             //map export loaders to their tabs
             ExportLoaders[InterpreterTab_Interpreter] = Interpreter_Tab;
             ExportLoaders[SoundTab_Soundpanel] = Sound_Tab;
@@ -109,16 +410,6 @@ namespace ME3Explorer
 
             LoadRecentList();
             RefreshRecent(false);
-        }
-
-        private void OpenFile_Clicked(object sender, RoutedEventArgs e)
-        {
-            OpenFile();
-        }
-
-        private void OpenFile()
-        {
-
         }
 
         private void LoadFile(string s)
@@ -172,15 +463,15 @@ namespace ME3Explorer
 
         private void InitializeTreeView()
         {
-            if (pcc == null)
+            if (Pcc == null)
             {
                 return;
             }
-            IReadOnlyList<ImportEntry> Imports = pcc.Imports;
-            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            IReadOnlyList<ImportEntry> Imports = Pcc.Imports;
+            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
             int importsOffset = Exports.Count;
 
-            TreeViewEntry rootEntry = new TreeViewEntry(null, pcc.FileName);
+            TreeViewEntry rootEntry = new TreeViewEntry(null, Pcc.FileName);
             rootEntry.IsExpanded = true;
             AllTreeViewNodesX.Add(rootEntry);
 
@@ -222,6 +513,7 @@ namespace ME3Explorer
             AllTreeViewNodesX.AddRange(rootNodes);
         }
 
+        #region Recents
         private void LoadRecentList()
         {
             Recents_MenuItem.IsEnabled = false;
@@ -336,20 +628,20 @@ namespace ME3Explorer
             Recents_MenuItem.IsEnabled = true;
         }
 
+#endregion
+
         private void RefreshView()
         {
-            if (pcc == null)
+            if (Pcc == null)
             {
                 return;
             }
-            //listBox1.BeginUpdate();
-            //treeView1.BeginUpdate();
             ClearList(LeftSide_ListView);
-            IReadOnlyList<ImportEntry> imports = pcc.Imports;
-            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            IReadOnlyList<ImportEntry> imports = Pcc.Imports;
+            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
             if (CurrentView == View.Names)
             {
-                LeftSide_ListView.ItemsSource = pcc.Names;
+                LeftSide_ListView.ItemsSource = Pcc.Names;
             }
 
             if (CurrentView == View.Imports)
@@ -359,7 +651,7 @@ namespace ME3Explorer
 
                 for (int i = 0; i < imports.Count; i++)
                 {
-                    //" (0x" + (pcc.ImportOffset + (i * ImportEntry.byteSize)).ToString("X4") + ")\
+                    //" (0x" + (Pcc.ImportOffset + (i * ImportEntry.byteSize)).ToString("X4") + ")\
                     string importStr = $"{ i.ToString().PadLeft(padding, '0')}: {imports[i].GetFullPath}";
                     /*if (imports[i].PackageFullName != "Class" && imports[i].PackageFullName != "Package")
                     {
@@ -378,7 +670,7 @@ namespace ME3Explorer
                 for (int i = 0; i < Exports.Count; i++)
                 {
                     string s = $"{i.ToString().PadLeft(padding, '0')}: ";
-                    IExportEntry exp = pcc.getExport(i);
+                    IExportEntry exp = Pcc.getExport(i);
                     string PackageFullName = exp.PackageFullName;
                     if (PackageFullName != "Class" && PackageFullName != "Package")
                         s += PackageFullName + ".";
@@ -417,73 +709,6 @@ namespace ME3Explorer
             {
                 LeftSide_ListView.Visibility = Visibility.Collapsed;
                 LeftSide_TreeView.Visibility = Visibility.Visible;
-                /*ClearList(LeftSide_TreeView);
-                int importsOffset = Exports.Count;
-                int link;
-                AllTreeViewNodes = new List<AdvancedTreeViewItem<TreeViewItem>>(Exports.Count + imports.Count + 1)
-                {
-                    new AdvancedTreeViewItem<TreeViewItem>() { Header = pcc.FileName, Tag = null, Name="Root" }
-                };
-
-
-                for (int i = 0; i < Exports.Count; i++)
-                {
-                    AllTreeViewNodes.Add(new AdvancedTreeViewItem<TreeViewItem>()
-                    {
-                        Header = $"(Exp) {i + 1} : {Exports[i].ObjectName}({Exports[i].ClassName})",
-                        Name = $"_{i + 1}", //must start letter or _
-                        Foreground = Brushes.Black,
-                        Background = (Exports[i].DataChanged || Exports[i].HeaderChanged) ? Brushes.Yellow : null
-                    });
-                }
-
-                for (int i = 0; i < imports.Count; i++)
-                {
-                    AllTreeViewNodes.Add(new AdvancedTreeViewItem<TreeViewItem>()
-                    {
-                        Header = $"(Imp) {-i - 1} : {imports[i].ObjectName}({imports[i].ClassName})",
-                        Name = $"_n{i + 1}", //must start letter or _,
-                        Foreground = Brushes.Gray,
-                        Background = (imports[i].HeaderChanged) ? Brushes.Yellow : null
-                    });
-                }
-
-                AdvancedTreeViewItem<TreeViewItem> node;
-                int curIndex;
-                for (int i = 1; i <= Exports.Count; i++)
-                {
-                    node = AllTreeViewNodes[i];
-                    curIndex = i;
-                    while (node.Tag as IEntry == null && node.Name != "Root")
-                    {
-                        node.Tag = pcc.getEntry(curIndex);
-                        //Debug.WriteLine(curIndex);
-                        curIndex = pcc.getEntry(curIndex).idxLink;
-                        link = curIndex >= 0 ? curIndex : (-curIndex + importsOffset);
-                        AllTreeViewNodes[link].Items.Add(node);
-                        node.ParentNodeValue = AllTreeViewNodes[link];
-                        node = AllTreeViewNodes[link];
-                    }
-                }
-
-                for (int i = 1; i <= imports.Count; i++)
-                {
-                    node = AllTreeViewNodes[i + importsOffset];
-                    curIndex = -i;
-                    while (node.Tag as IEntry == null && node.Name != "Root")
-                    {
-                        node.Tag = pcc.getEntry(curIndex);
-                        curIndex = pcc.getEntry(curIndex).idxLink;
-                        link = curIndex >= 0 ? curIndex : (-curIndex + importsOffset);
-                        AllTreeViewNodes[link].Items.Add(node);
-                        node.ParentNodeValue = AllTreeViewNodes[link];
-                        node = AllTreeViewNodes[link];
-                    }
-                }
-                LeftSide_TreeView.Items.Add(AllTreeViewNodes[0]);
-                AllTreeViewNodes[0].IsExpanded = true;
-                /*LeftSide_TreeView.Items[0].Expand();
-                */
             }
             else
             {
@@ -495,22 +720,22 @@ namespace ME3Explorer
 
         public void InitStuff()
         {
-            if (pcc == null)
+            if (Pcc == null)
                 return;
             ComparePackageMenuItem.IsEnabled = true;
             ClassNames = new List<int>();
-            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
             for (int i = 0; i < Exports.Count; i++)
             {
                 ClassNames.Add(Exports[i].idxClass); //This can probably be linq'd
             }
-            List<string> names = ClassNames.Distinct().Select(pcc.getObjectName).ToList();
+            List<string> names = ClassNames.Distinct().Select(Pcc.getObjectName).ToList();
             names.Sort();
             ClearList(ClassDropdown_Combobox);
             ClassDropdown_Combobox.ItemsSource = names.ToArray();
-            InfoTab_Objectname_ComboBox.ItemsSource = pcc.Names;
-            InfoTab_ImpClass_ComboBox.ItemsSource = pcc.Names;
-            InfoTab_PackageFile_ComboBox.ItemsSource = pcc.Names;
+            InfoTab_Objectname_ComboBox.ItemsSource = Pcc.Names;
+            InfoTab_ImpClass_ComboBox.ItemsSource = Pcc.Names;
+            InfoTab_PackageFile_ComboBox.ItemsSource = Pcc.Names;
         }
 
         /// <summary>
@@ -585,7 +810,7 @@ namespace ME3Explorer
 
         public void PreviewInfo(int n)
         {
-            IReadOnlyList<ImportEntry> imports = pcc.Imports;
+            IReadOnlyList<ImportEntry> imports = Pcc.Imports;
             List<string> Classes = new List<string>();
             for (int i = imports.Count - 1; i >= 0; i--)
             {
@@ -593,7 +818,7 @@ namespace ME3Explorer
             }
             Classes.Add("0 : Class");
             int count = 1;
-            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
             foreach (IExportEntry exp in Exports)
             {
                 Classes.Add($"{count++}: {exp.GetFullPath}");
@@ -618,7 +843,7 @@ namespace ME3Explorer
                     InfoTab_Link_TextBlock.Text = "0x08 Link:";
                     InfoTab_ObjectName_TextBlock.Text = "0x0C Object name:";
 
-                    IExportEntry exportEntry = pcc.getExport(n);
+                    IExportEntry exportEntry = Pcc.getExport(n);
                     InfoTab_Objectname_ComboBox.SelectedItem = exportEntry.ObjectName;
 
                     if (exportEntry.idxClass != 0)
@@ -691,7 +916,7 @@ namespace ME3Explorer
             else
             {
                 n = -n - 1; //convert to 0 based indexing (imports list)
-                ImportEntry importEntry = pcc.getImport(n);
+                ImportEntry importEntry = Pcc.getImport(n);
                 InfoTab_Headersize_TextBox.Text = importEntry.Header.Length + " bytes";
                 Row_Archetype.Height = new GridLength(0);
                 Row_ExpClass.Height = new GridLength(0);
@@ -735,24 +960,24 @@ namespace ME3Explorer
 
         public void RefreshExportChangedStatus()
         {
-            /*if (pcc != null)
+            /*if (Pcc != null)
             {
                 for (int i = 0; i < pcc.Exports.Count; i++)
                 {
-                    if (pcc.Exports[i].DataChanged || pcc.Exports[i].HeaderChanged)
+                    if (Pcc.Exports[i].DataChanged || pcc.Exports[i].HeaderChanged)
                     {
                         Debug.WriteLine("DataChanged for " + i + " " + pcc.Exports[i].GetFullPath);
                     }
                     object o = AllTreeViewNodes[i + 1];
-                    AllTreeViewNodes[i + 1].Background = (pcc.Exports[i].DataChanged || pcc.Exports[i].HeaderChanged) ? Brushes.Yellow : null;
-                    AllTreeViewNodes[i + 1].ToolTip = (pcc.Exports[i].DataChanged || pcc.Exports[i].HeaderChanged) ? "This entry has been modified but has not been commited to disk yet" : null;
+                    AllTreeViewNodes[i + 1].Background = (Pcc.Exports[i].DataChanged || pcc.Exports[i].HeaderChanged) ? Brushes.Yellow : null;
+                    AllTreeViewNodes[i + 1].ToolTip = (Pcc.Exports[i].DataChanged || pcc.Exports[i].HeaderChanged) ? "This entry has been modified but has not been commited to disk yet" : null;
 
                 }
             }*/
         }
 
         /// <summary>
-        /// Gets the selected entry in the left side view.
+        /// Gets the selected entry uindex in the left side view.
         /// </summary>
         /// <param name="n">int that will be updated to point to the selected entry index. Will return 0 if nothing was selected (check the return value for false).</param>
         /// <returns>True if an item was selected, false if nothing was selected.</returns>
@@ -902,7 +1127,7 @@ namespace ME3Explorer
             {
                 //tabControl1_SelectedIndexChanged(null, null);
                 PreviewInfo(n);
-                //Info_HeaderRaw_Hexbox.Stream = new System.IO.MemoryStream(pcc.getEntry(n.ToUnrealIdx()).header);
+                //Info_HeaderRaw_Hexbox.Stream = new System.IO.MemoryStream(Pcc.getEntry(n.ToUnrealIdx()).header);
                 //RefreshMetaData();
                 //export
                 Interpreter_Tab.IsEnabled = n >= 0;
@@ -919,7 +1144,7 @@ namespace ME3Explorer
                          packageEditorTabPane.TabPages.Insert(1, interpreterTab);
                      }*/
 
-                    IExportEntry exportEntry = pcc.getExport(n - 1);
+                    IExportEntry exportEntry = Pcc.getExport(n - 1);
                     CurrentlyLoadedEntry = exportEntry;
                     Header_Hexbox.ByteProvider = new DynamicByteProvider(CurrentlyLoadedEntry.Header);
                     Header_Hexbox.ByteProvider.Changed += InfoTab_Header_ByteProvider_InternalChanged;
@@ -932,12 +1157,12 @@ namespace ME3Explorer
                                                 {
                                                     packageEditorTabPane.TabPages.Add(scriptTab);
                                                 }
-                        if (pcc.Game == MEGame.ME3)
+                        if (Pcc.Game == MEGame.ME3)
                         {
                             Function func = new Function(exportEntry.Data, pcc);
                             Script_TextBox.Text = func.ToRawText();
                         }
-                        else if (pcc.Game == MEGame.ME1)
+                        else if (Pcc.Game == MEGame.ME1)
                         {
                             ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(exportEntry.Data, pcc as ME1Package);
                             try
@@ -1059,7 +1284,7 @@ namespace ME3Explorer
                 else
                 {
                     Visible_ObjectNameRow = false;
-                    ImportEntry importEntry = pcc.getImport(-n - 1);
+                    ImportEntry importEntry = Pcc.getImport(-n - 1);
                     CurrentlyLoadedEntry = importEntry;
                     Header_Hexbox.ByteProvider = new DynamicByteProvider(CurrentlyLoadedEntry.Header);
                     Header_Hexbox.ByteProvider.Changed += InfoTab_Header_ByteProvider_InternalChanged;
@@ -1067,7 +1292,7 @@ namespace ME3Explorer
                     Metadata_Tab.IsSelected = true;
                     PreviewInfo(n);
                     /*   n = -n - 1;
-                       headerRawHexBox.ByteProvider = new DynamicByteProvider(pcc.getImport(n).header);
+                       headerRawHexBox.ByteProvider = new DynamicByteProvider(Pcc.getImport(n).header);
                        UpdateStatusIm(n);
                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
                        {
@@ -1128,7 +1353,7 @@ namespace ME3Explorer
         private void SaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             SaveFileDialog d = new SaveFileDialog();
-            string extension = System.IO.Path.GetExtension(pcc.FileName);
+            string extension = System.IO.Path.GetExtension(Pcc.FileName);
             d.Filter = $"*{extension}|*{extension}";
             bool? result = d.ShowDialog();
             if (result.HasValue && result.Value)
@@ -1199,7 +1424,7 @@ namespace ME3Explorer
             if (!loadingNewData)
             {
                 var selectedClassIndex = InfoTab_Class_ComboBox.SelectedIndex;
-                var unrealIndex = selectedClassIndex - pcc.ImportCount;
+                var unrealIndex = selectedClassIndex - Pcc.ImportCount;
                 Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXCLASS, BitConverter.GetBytes(unrealIndex));
             }
         }
@@ -1230,7 +1455,7 @@ namespace ME3Explorer
             if (!loadingNewData)
             {
                 var selectedImpExp = InfoTab_PackageLink_ComboBox.SelectedIndex;
-                var unrealIndex = selectedImpExp - pcc.ImportCount;
+                var unrealIndex = selectedImpExp - Pcc.ImportCount;
                 Header_Hexbox.ByteProvider.WriteBytes(CurrentlyLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXLINK : HEADER_OFFSET_IMP_IDXLINK, BitConverter.GetBytes(unrealIndex));
             }
         }
@@ -1240,7 +1465,7 @@ namespace ME3Explorer
             if (!loadingNewData)
             {
                 var selectedClassIndex = InfoTab_Superclass_ComboBox.SelectedIndex;
-                var unrealIndex = selectedClassIndex - pcc.ImportCount;
+                var unrealIndex = selectedClassIndex - Pcc.ImportCount;
                 Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXSUPERCLASS, BitConverter.GetBytes(unrealIndex));
             }
         }
@@ -1271,7 +1496,7 @@ namespace ME3Explorer
             if (!loadingNewData)
             {
                 var selectedArchetTypeIndex = InfoTab_Archetype_ComboBox.SelectedIndex;
-                var unrealIndex = selectedArchetTypeIndex - pcc.ImportCount;
+                var unrealIndex = selectedArchetTypeIndex - Pcc.ImportCount;
                 Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXARCHETYPE, BitConverter.GetBytes(selectedArchetTypeIndex));
             }
         }
@@ -1472,82 +1697,7 @@ namespace ME3Explorer
         /// <param name="e"></param>
         private void ComparePackageBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (pcc != null)
-            {
-                string extension = System.IO.Path.GetExtension(pcc.FileName);
-                OpenFileDialog d = new OpenFileDialog { Filter = "*" + extension + "|*" + extension };
-                if (d.ShowDialog().Value)
-                {
-                    if (pcc.FileName == d.FileName)
-                    {
-                        MessageBox.Show("You selected the same file as the one already open.");
-                        return;
-                    }
-                    IMEPackage compareFile = MEPackageHandler.OpenMEPackage(d.FileName);
-                    if (pcc.Game != compareFile.Game)
-                    {
-                        MessageBox.Show("Files are for different games.");
-                        return;
-                    }
 
-                    int numExportsToEnumerate = Math.Min(pcc.ExportCount, compareFile.ExportCount);
-
-                    List<string> changedExports = new List<string>();
-                    Stopwatch sw = Stopwatch.StartNew();
-                    for (int i = 0; i < numExportsToEnumerate; i++)
-                    {
-                        IExportEntry exp1 = pcc.Exports[i];
-                        IExportEntry exp2 = compareFile.Exports[i];
-
-                        //make data offset and data size the same, as the exports could be the same even if it was appended later.
-                        //The datasize being different is a data difference not a true header difference so we won't list it here.
-                        byte[] header1 = exp1.Header.TypedClone();
-                        byte[] header2 = exp2.Header.TypedClone();
-                        Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header1, 32, sizeof(long));
-                        Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header2, 32, sizeof(long));
-
-                        //if (!StructuralComparisons.StructuralEqualityComparer.Equals(header1, header2))
-                        if (!header1.SequenceEqual(header2))
-
-                        {
-                            foreach (byte b in header1)
-                            {
-                                Debug.Write(" " + b.ToString("X2"));
-                            }
-                            Debug.WriteLine("");
-                            foreach (byte b in header2)
-                            {
-                                Debug.Write(" " + b.ToString("X2"));
-                            }
-                            Debug.WriteLine("");
-                            changedExports.Add("Export header has changed: " + i + " " + exp1.GetFullPath);
-                        }
-                        if (!exp1.Data.SequenceEqual(exp2.Data))
-                        {
-                            changedExports.Add("Export data has changed: " + i + " " + exp1.GetFullPath);
-                        }
-                    }
-
-                    IMEPackage enumerateExtras = pcc;
-                    string file = "this file";
-                    if (compareFile.ExportCount < numExportsToEnumerate)
-                    {
-                        file = "other file";
-                        enumerateExtras = compareFile;
-                    }
-
-                    for (int i = numExportsToEnumerate; i < compareFile.ExportCount; i++)
-                    {
-                        changedExports.Add("Export only exists in " + file + ": " + i + " " + enumerateExtras.Exports[i].GetFullPath);
-                    }
-
-                    sw.Stop();
-                    Debug.WriteLine("Time: " + sw.ElapsedMilliseconds + "ms");
-
-                    ListDialog ld = new ListDialog(changedExports, "Changed exports between files", "The following exports are different between the files.");
-                    ld.Show();
-                }
-            }
         }
 
         /// <summary>
@@ -1613,16 +1763,16 @@ namespace ME3Explorer
                     {
                         return;
                     }
-                    nextIndex = pcc.ExportCount;
-                    IExportEntry newExport = pcc.Exports[nextIndex - 1]; //0 based
+                    nextIndex = Pcc.ExportCount;
+                    IExportEntry newExport = Pcc.Exports[nextIndex - 1]; //0 based
                     newItem = new TreeViewEntry(newExport);
                 }
                 else
                 {
-                    getOrAddCrossImport(importpcc.getImport(Math.Abs(n) - 1).GetFullPath, importpcc, pcc, sourceItem.Sublinks.Count == 0 ? link : (int?)null);
+                    getOrAddCrossImport(importpcc.getImport(Math.Abs(n) - 1).GetFullPath, importpcc, Pcc, sourceItem.Sublinks.Count == 0 ? link : (int?)null);
                     //importImport(importpcc, -n - 1, link);
-                    nextIndex = -pcc.ImportCount;
-                    ImportEntry newImport = pcc.Imports[nextIndex - 1]; //0 based
+                    nextIndex = -Pcc.ImportCount;
+                    ImportEntry newImport = Pcc.Imports[nextIndex - 1]; //0 based
                     newItem = new TreeViewEntry(newImport);
                 }
                 newItem.Parent = targetItem;
@@ -1643,7 +1793,7 @@ namespace ME3Explorer
                 crossPCCObjectMap = null;
 
                 RefreshView();
-                goToNumber(n >= 0 ? pcc.ExportCount : -pcc.ImportCount);
+                goToNumber(n >= 0 ? Pcc.ExportCount : -Pcc.ImportCount);
                 if (relinkResults.Count > 0)
                 {
                     ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.");
@@ -1678,16 +1828,16 @@ namespace ME3Explorer
                     {
                         return false;
                     }
-                    nextIndex = pcc.ExportCount;
-                    IExportEntry newExport = pcc.Exports[nextIndex - 1]; //0 based
+                    nextIndex = Pcc.ExportCount;
+                    IExportEntry newExport = Pcc.Exports[nextIndex - 1]; //0 based
                     newEntry = new TreeViewEntry(newExport);
                 }
                 else
                 {
-                    getOrAddCrossImport(importpcc.getImport(Math.Abs(index) - 1).GetFullPath, importpcc, pcc);
-                    nextIndex = -pcc.ImportCount;
+                    getOrAddCrossImport(importpcc.getImport(Math.Abs(index) - 1).GetFullPath, importpcc, Pcc);
+                    nextIndex = -Pcc.ImportCount;
 
-                    ImportEntry newImport = pcc.Imports[nextIndex - 1]; //0 based
+                    ImportEntry newImport = Pcc.Imports[nextIndex - 1]; //0 based
                     newEntry = new TreeViewEntry(newImport);
                 }
                 newEntry.Parent = newItemParent;
@@ -1714,19 +1864,19 @@ namespace ME3Explorer
         private bool importExport(IExportEntry ex, int link)
         {
             IExportEntry nex = null;
-            switch (pcc.Game)
+            switch (Pcc.Game)
             {
                 case MEGame.ME1:
-                    nex = new ME1ExportEntry(pcc as ME1Package);
+                    nex = new ME1ExportEntry(Pcc as ME1Package);
                     break;
                 case MEGame.ME2:
-                    nex = new ME2ExportEntry(pcc as ME2Package);
+                    nex = new ME2ExportEntry(Pcc as ME2Package);
                     break;
                 case MEGame.ME3:
-                    nex = new ME3ExportEntry(pcc as ME3Package);
+                    nex = new ME3ExportEntry(Pcc as ME3Package);
                     break;
                 case MEGame.UDK:
-                    nex = new UDKExportEntry(pcc as UDKPackage);
+                    nex = new UDKExportEntry(Pcc as UDKPackage);
                     break;
             }
             byte[] idata = ex.Data;
@@ -1740,7 +1890,7 @@ namespace ME3Explorer
                 byte[] stackdummy =        { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //Lets hope for the best :D
                                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
 
-                if (pcc.Game != MEGame.ME3)
+                if (Pcc.Game != MEGame.ME3)
                 {
                     stackdummy = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
                                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
@@ -1752,22 +1902,22 @@ namespace ME3Explorer
                 res.Write(new byte[start], 0, start);
             }
             //store copy of names list in case something goes wrong
-            List<string> names = pcc.Names.ToList();
+            List<string> names = Pcc.Names.ToList();
             try
             {
-                props.WriteTo(res, pcc);
+                props.WriteTo(res, Pcc);
             }
             catch (Exception exception)
             {
                 //restore namelist
-                pcc.setNames(names);
+                Pcc.setNames(names);
                 MessageBox.Show("Error occured while trying to import " + ex.ObjectName + " : " + exception.Message);
                 return false;
             }
 
             //set header so addresses are set
             var header = (byte[])ex.Header.Clone();
-            if ((ex.FileRef.Game == MEGame.ME1 || ex.FileRef.Game == MEGame.ME2) && pcc.Game == MEGame.ME3)
+            if ((ex.FileRef.Game == MEGame.ME1 || ex.FileRef.Game == MEGame.ME2) && Pcc.Game == MEGame.ME3)
             {
                 //we need to clip some bytes out of the header
                 byte[] clippedHeader = new byte[header.Length - 4];
@@ -1791,7 +1941,7 @@ namespace ME3Explorer
                             {
                                 bone = skl.Bones[i];
                                 string s = ex.FileRef.getNameEntry(bone.Name);
-                                bone.Name = pcc.FindNameOrAdd(s);
+                                bone.Name = Pcc.FindNameOrAdd(s);
                                 skl.Bones[i] = bone;
                             }
                             SkeletalMesh.TailNamesStruct tailName;
@@ -1799,7 +1949,7 @@ namespace ME3Explorer
                             {
                                 tailName = skl.TailNames[i];
                                 string s = ex.FileRef.getNameEntry(tailName.Name);
-                                tailName.Name = pcc.FindNameOrAdd(s);
+                                tailName.Name = Pcc.FindNameOrAdd(s);
                                 skl.TailNames[i] = tailName;
                             }
                             SerializingContainer container = new SerializingContainer(res);
@@ -1847,7 +1997,7 @@ namespace ME3Explorer
             {
                 //The class of the export we are importing is an import. We should attempt to relink this.
                 ImportEntry portingFromClassImport = ex.FileRef.getImport(Math.Abs(ex.idxClass) - 1);
-                ImportEntry newClassImport = getOrAddCrossImport(portingFromClassImport.GetFullPath, ex.FileRef, pcc);
+                ImportEntry newClassImport = getOrAddCrossImport(portingFromClassImport.GetFullPath, ex.FileRef, Pcc);
                 classValue = newClassImport.UIndex;
             }
 
@@ -1855,7 +2005,7 @@ namespace ME3Explorer
             if (ex.idxArchtype < 0)
             {
                 ImportEntry portingFromClassImport = ex.FileRef.getImport(Math.Abs(ex.idxArchtype) - 1);
-                ImportEntry newClassImport = getOrAddCrossImport(portingFromClassImport.GetFullPath, ex.FileRef, pcc);
+                ImportEntry newClassImport = getOrAddCrossImport(portingFromClassImport.GetFullPath, ex.FileRef, Pcc);
                 archetype = newClassImport.UIndex;
             }
 
@@ -1864,13 +2014,13 @@ namespace ME3Explorer
                 nex.Data = res.ToArray();
             }
             nex.idxClass = classValue;
-            nex.idxObjectName = pcc.FindNameOrAdd(ex.FileRef.getNameEntry(ex.idxObjectName));
+            nex.idxObjectName = Pcc.FindNameOrAdd(ex.FileRef.getNameEntry(ex.idxObjectName));
             nex.idxLink = link;
             nex.idxArchtype = archetype;
             nex.idxClassParent = 0;
-            pcc.addExport(nex);
+            Pcc.addExport(nex);
 
-            crossPCCObjectMap[ex.Index] = pcc.ExportCount - 1; //0 based.
+            crossPCCObjectMap[ex.Index] = Pcc.ExportCount - 1; //0 based.
             return true;
         }
 
@@ -1892,7 +2042,7 @@ namespace ME3Explorer
         /// </summary>
         private void FindNextObjectByClass()
         {
-            if (pcc == null)
+            if (Pcc == null)
                 return;
             int n = LeftSide_ListView.SelectedIndex;
             if (ClassDropdown_Combobox.SelectedItem == null)
@@ -1908,7 +2058,7 @@ namespace ME3Explorer
             /*if (CurrentView == View.Names)
             {
                 for (int i = start; i < pcc.Names.Count; i++)
-                    if (pcc.getNameEntry(i).ToLower().Contains(searchTerm))
+                    if (Pcc.getNameEntry(i).ToLower().Contains(searchTerm))
                     {
                         listBox1.SelectedIndex = i;
                         break;
@@ -2001,7 +2151,7 @@ namespace ME3Explorer
         /// </summary>
         private void Search()
         {
-            if (pcc == null)
+            if (Pcc == null)
                 return;
             int n = LeftSide_ListView.SelectedIndex;
             if (Search_TextBox.Text == "")
@@ -2017,7 +2167,7 @@ namespace ME3Explorer
             /*if (CurrentView == View.Names)
             {
                 for (int i = start; i < pcc.Names.Count; i++)
-                    if (pcc.getNameEntry(i).ToLower().Contains(searchTerm))
+                    if (Pcc.getNameEntry(i).ToLower().Contains(searchTerm))
                     {
                         listBox1.SelectedIndex = i;
                         break;
@@ -2036,7 +2186,7 @@ namespace ME3Explorer
             */
             if (CurrentView == View.Exports)
             {
-                IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
                 for (int i = start; i < Exports.Count; i++)
                 {
                     if (Exports[i].ObjectName.ToLower().Contains(searchTerm))
@@ -2275,15 +2425,19 @@ namespace ME3Explorer
                     if (treeViewItem == null)
                     {
                         //This is being triggered when it shouldn't be
-                        Debugger.Break();
+                        Debug.WriteLine("FocusNode has triggered null item - CANNOT FOCUS! ");
+                        //Debugger.Break();
                     }
                     else
                     {
                         treeViewItem.IsSelected = true;
                     }
                 }
-                treeViewItem.BringIntoView();
-                generator = treeViewItem.ItemContainerGenerator;
+                if (treeViewItem != null)
+                {
+                    treeViewItem.BringIntoView();
+                    generator = treeViewItem.ItemContainerGenerator;
+                }
             }
         }
 

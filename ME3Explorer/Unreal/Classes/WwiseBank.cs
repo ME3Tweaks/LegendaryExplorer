@@ -106,13 +106,13 @@ namespace ME3Explorer.Unreal.Classes
                             {
                                 if (previousEndOffset < startoffset)
                                 {
-                                    res += "Data found between listed offset/sizes:";
+                                    //res += "Data found between listed offset/sizes:";
                                     while (previousEndOffset < startoffset)
                                     {
-                                        res += " " + data[8 + previousEndOffset].ToString("X2");
+                                      //  res += " " + data[8 + previousEndOffset].ToString("X2");
                                         previousEndOffset++;
                                     }
-                                    res += "\n";
+                                   // res += "\n";
                                 }
                             }
                             res += "......WEM(" + i + ") : ID (0x" + BitConverter.ToInt32(buff, 0x8 + i * 0xC).ToString("X8");

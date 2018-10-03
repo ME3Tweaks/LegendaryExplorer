@@ -51,7 +51,7 @@ namespace ME3Explorer.Audio_Editor
 
         private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = pcc != null && !pcc.FileName.IsNullOrWhiteSpace();
+            e.CanExecute = Pcc != null && !Pcc.FileName.IsNullOrWhiteSpace();
         }
 
         private void Save_Executed(object sender, ExecutedRoutedEventArgs e)
