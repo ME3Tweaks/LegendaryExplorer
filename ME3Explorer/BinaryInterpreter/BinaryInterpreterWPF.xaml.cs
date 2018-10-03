@@ -335,15 +335,15 @@ namespace ME3Explorer
 
                 if (CurrentLoadedExport.ClassName == "WwiseBank")
                 {
-                    if (CurrentLoadedExport.DataOffset < DataOffset && (CurrentLoadedExport.DataOffset + CurrentLoadedExport.DataSize) < DataOffset)
-                    {
+                    //if (CurrentLoadedExport.DataOffset < DataOffset && (CurrentLoadedExport.DataOffset + CurrentLoadedExport.DataSize) < DataOffset)
+                    //{
                         topLevelTree.Items.Add(new TreeViewItem()
                         {
-                            Header = $"Click here to jump to the calculated offset in this export",
-                            Name = "_" + (DataOffset - CurrentLoadedExport.DataOffset).ToString(),
+                            Header = $"Click here to jump to the calculated end offset of wwisebank in this export",
+                            Name = "_" + (DataSize2 + CurrentLoadedExport.propsEnd() + 16).ToString(),
                             Tag = nodeType.Unknown
                         });
-                    }
+                    //}
                 }
 
                 pos += 4;
