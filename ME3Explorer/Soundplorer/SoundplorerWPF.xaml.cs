@@ -74,7 +74,7 @@ namespace ME3Explorer.Soundplorer
             set { if (_taskbarText != value) { _taskbarText = value; OnPropertyChanged(); } }
         }
 
-        
+
         public SoundplorerWPF()
         {
             TaskbarText = "Open a file to view sound-related exports";
@@ -457,17 +457,23 @@ namespace ME3Explorer.Soundplorer
             SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
             if (spExport != null && spExport.Export.ClassName == "WwiseBank")
             {
-                SaveFileDialog d = new SaveFileDialog();
+                ExportBank(spExport);
+            }
+        }
 
-                d.Filter = "WwiseBank|*.bnk";
-                d.FileName = spExport.Export.ObjectName + ".bnk";
-                bool? res = d.ShowDialog();
-                if (res.HasValue && res.Value)
-                {
-                    //File.WriteAllBytes(d.FileName, spExport.Export.getBinaryData());
-                    File.WriteAllBytes(d.FileName, spExport.Export.Data);
-                    MessageBox.Show("Done.");
-                }
+        private void ExportBank(SoundplorerExport spExport)
+        {
+            SaveFileDialog d = new SaveFileDialog();
+
+            d.Filter = "WwiseBank|*.bnk";
+            d.FileName = spExport.Export.ObjectName + ".bnk";
+            d.Title = "Select save location for bank file";
+            bool? res = d.ShowDialog();
+            if (res.HasValue && res.Value)
+            {
+                //File.WriteAllBytes(d.FileName, spExport.Export.getBinaryData());
+                File.WriteAllBytes(d.FileName, spExport.Export.Data);
+                MessageBox.Show("Done.");
             }
         }
 
@@ -945,6 +951,42 @@ namespace ME3Explorer.Soundplorer
             {
                 soundPanel.StopPlaying();
                 soundPanel.StartOrPausePlaying();
+            }
+        }
+
+        private void DebugWriteBankToFileRebuild_Clicked(object sender, RoutedEventArgs e)
+        {
+            SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
+            if (spExport != null)
+            {
+                if (spExport.Export.ClassName == "WwiseBank")
+                {
+                    WwiseBank wb = new WwiseBank(spExport.Export);
+                    var embeddedWEMFiles = wb.GetWEMFilesMetadata();
+                    var data = wb.GetChunk("DATA");
+                    int i = 0;
+                    if (embeddedWEMFiles.Count > 0)
+                    {
+                        List<EmbeddedWEMFile> AllWems = new List<EmbeddedWEMFile>();
+                        foreach (var singleWemMetadata in embeddedWEMFiles)
+                        {
+                            byte[] wemData = new byte[singleWemMetadata.Item3];
+                            //copy WEM data to buffer. Add 0x8 to skip DATA and DATASIZE header for this block.
+                            Buffer.BlockCopy(data, singleWemMetadata.Item2 + 0x8, wemData, 0, singleWemMetadata.Item3);
+                            //check for RIFF header as some don't seem to have it and are not playable.
+                            string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
+
+                            string wemId = singleWemMetadata.Item1.ToString("X8");
+                            string wemName = "Embedded WEM 0x" + wemId;// + "(" + singleWemMetadata.Item1 + ")";
+
+                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, i + ": " + wemName, spExport.Export.FileRef.Game, singleWemMetadata.Item1);
+                            AllWems.Add(wem);
+                            i++;
+                        }
+                        wb.UpdateDataChunk(AllWems);
+                        ExportBank(spExport);
+                    }
+                }
             }
         }
     }

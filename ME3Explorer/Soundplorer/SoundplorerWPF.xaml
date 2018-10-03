@@ -80,6 +80,8 @@
                 </MenuItem>
                 <MenuItem Header="_Options" Padding="4">
                     <MenuItem Name="ReverseEndianDisplayOfIDs_MenuItem" Header="Reverse endianness of displayed ID's" Click="ReverseEndiannessOfIDs_Clicked" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=SoundplorerReverseIDDisplayEndianness, Mode=TwoWay}"/>
+                    <MenuItem Name="RebuildWwiseBankToFile_MenuItem" Header="Debugging: Rebuild wwisebank to file" Click="DebugWriteBankToFileRebuild_Clicked" />
+
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
