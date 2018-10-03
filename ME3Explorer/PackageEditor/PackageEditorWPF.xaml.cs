@@ -116,8 +116,8 @@ namespace ME3Explorer
         {
             if (GetSelected(out int n))
             {
-                int nextIndex;
-                crossPCCObjectMap = new SortedDictionary<int, int>();
+                int nextIndex; //used to select the final node
+                /*crossPCCObjectMap = new SortedDictionary<int, int>();
                 TreeViewEntry rootNode = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
                 if (n >= 0)
                 {
@@ -125,7 +125,7 @@ namespace ME3Explorer
                     IExportEntry exp = Pcc.getExport(n).Clone();
                     Pcc.addExport(exp);
                     crossPCCObjectMap[n] = Pcc.ExportCount - 1; //0 based.
-                    n = nextIndex + 1;
+                    n = ;
                 }
                 else
                 {
@@ -134,8 +134,33 @@ namespace ME3Explorer
                     Pcc.addImport(imp);
                     n = nextIndex;
                     //We do not relink imports in same-pcc.
+                }*/
+
+                crossPCCObjectMap = new SortedDictionary<int, int>();
+                TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+                TreeViewEntry newEntry = null;
+                if (n >= 0)
+                {
+
+                    IExportEntry ent = (selected.Entry as IExportEntry).Clone();
+                    Pcc.addExport(ent);
+                    newEntry = new TreeViewEntry(ent);
+                    crossPCCObjectMap[n] = ent.Index; //0 based. map old index to new index
                 }
-                cloneTree(n, rootNode);
+                else
+                {
+                    ImportEntry imp = (selected.Entry as ImportEntry).Clone();
+                    Pcc.addImport(imp);
+                    newEntry = new TreeViewEntry(imp);
+                    //Imports are not relinked when locally cloning a tree
+                }
+                nextIndex = newEntry.UIndex;
+                newEntry.Parent = selected.Parent;
+                selected.Parent.Sublinks.Add(newEntry);
+                selected.Parent.SortChildren();
+                //goToNumber(newEntry.UIndex);
+
+                cloneTree(selected, newEntry);
                 relinkObjects2(Pcc);
                 relinkBinaryObjects(Pcc);
                 crossPCCObjectMap = null;
@@ -171,18 +196,35 @@ namespace ME3Explorer
             }
         }
 
-        private void cloneTree(int n, TreeViewEntry rootNode)
+        private void cloneTree(TreeViewEntry originalRootNode, TreeViewEntry newRootNode)
         {
-            int nextIndex = 0;
-            if (rootNode.Sublinks.Count > 0)
+            if (originalRootNode.Sublinks.Count > 0)
             {
-                foreach (TreeViewEntry node in rootNode.Sublinks)
+                foreach (TreeViewEntry node in originalRootNode.Sublinks)
                 {
+                    TreeViewEntry newEntry = null;
                     if (node.UIndex > 0)
+                    {
+                        IExportEntry ent = (node.Entry as IExportEntry).Clone();
+                        Pcc.addExport(ent);
+                        newEntry = new TreeViewEntry(ent);
+                        crossPCCObjectMap[node.Entry.Index] = ent.Index; //map old node index to new node index
+                    }
+                    else if (node.UIndex < 0)
+                    {
+                        ImportEntry imp = (node.Entry as ImportEntry).Clone();
+                        Pcc.addImport(imp);
+                        newEntry = new TreeViewEntry(imp);
+                    }
+                    newEntry.Entry.idxLink = newRootNode.Entry.UIndex;
+                    newEntry.Parent = newRootNode;
+                    newRootNode.Sublinks.Add(newEntry);
+
+                    /*if (node.UIndex > 0)
                     {
                         nextIndex = Pcc.ExportCount + 1;
                         IExportEntry exp = (node.Entry as IExportEntry).Clone();
-                        exp.idxLink = n;
+                        exp.idxLink = link;
                         Pcc.addExport(exp);
                         crossPCCObjectMap[node.UIndex - 1] = Pcc.ExportCount - 1; //0 based. Just how the code was written.
                     }
@@ -190,16 +232,17 @@ namespace ME3Explorer
                     {
                         nextIndex = -Pcc.ImportCount - 1;
                         ImportEntry imp = (node.Entry as ImportEntry).Clone();
-                        imp.idxLink = n;
+                        imp.idxLink = link;
                         Pcc.addImport(imp);
                         //we do not relink imports in same-pcc
-                    }
-                    if (nextIndex != 0 && node.Sublinks.Count > 0)
+                    }*/
+                    if (node.Sublinks.Count > 0)
                     {
-                        cloneTree(nextIndex, node);
+                        cloneTree(node, newEntry);
                     }
                 }
             }
+            newRootNode.SortChildren();
         }
 
         private void ImportBinaryData(object obj)
@@ -628,7 +671,7 @@ namespace ME3Explorer
             Recents_MenuItem.IsEnabled = true;
         }
 
-#endregion
+        #endregion
 
         private void RefreshView()
         {
