@@ -81,7 +81,8 @@
                             <StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock x:Name="PropertyItem_DisplayName" Text="{Binding DisplayName}" VerticalAlignment="Center" FontStyle="Italic"/>
-                                    <TextBlock x:Name="PropertyItem_DisplayValue" Text="{Binding DisplayValue}" VerticalAlignment="Center" FontWeight="Bold"/>
+                                    <SharedUI:EditableTextBlock x:Name="PropertyItem_DisplayValue" IsEditable="{Binding EditableType}" Text="{Binding DisplayValue, Mode=TwoWay}"                                              IsInEditMode="{Binding Edit, Mode=TwoWay}"/>
+                                    <TextBlock  VerticalAlignment="Center" FontWeight="Bold"/>
                                 </StackPanel>
                                 <TextBlock x:Name="PropertyItem_DisplayType" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0"/>
                             </StackPanel>
@@ -127,6 +128,10 @@
                             <DataTrigger Binding="{Binding PropertyType}" Value="None">
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d4818"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88ffb759"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding HasChanges}" Value="None">
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="Red"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="Yellow"/>
                             </DataTrigger>
                         </HierarchicalDataTemplate.Triggers>
                     </HierarchicalDataTemplate>

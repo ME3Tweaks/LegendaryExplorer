@@ -1715,9 +1715,10 @@ namespace ME3Explorer
             }
 
             Tuple<string,PropertyInfo> prop = AddPropertyDialogWPF.GetProperty(CurrentLoadedExport, props, pcc.Game);
+
             if (prop != null)
             {
-                string origname = CurrentLoadedExport.ClassName;
+                /*string origname = CurrentLoadedExport.ClassName;
                 string temp = CurrentLoadedExport.ClassName;
                 List<string> classes = new List<string>();
                 Dictionary<string, ClassInfo> classList;
@@ -1753,11 +1754,31 @@ namespace ME3Explorer
                             break;
                     }
                     currentInfo.baseClass = exportTemp.ClassParent;
+                }*/
+
+                UProperty newProperty = null;
+                //Todo: Maybe lookup the default value?
+                switch (prop.Item2.type)
+                {
+                    case PropertyType.IntProperty:
+                        newProperty = new IntProperty(0,prop.Item1);
+                        break;
+                    case PropertyType.BoolProperty:
+                        newProperty = new BoolProperty(false,prop.Item1);
+                        break;
+                    case PropertyType.FloatProperty:
+                        newProperty = new FloatProperty(0.0f, prop.Item1);
+                        break;
+                    case PropertyType.ArrayProperty:
+                        newProperty = new ArrayProperty<IntProperty>(ArrayType.Int,prop.Item1); //We can just set it to int as it will be reparsed and resolved.
+                        break;
                 }
 
-                UProperty property = generateNewProperty(prop.Item1, currentInfo);
-                currentProps.Add(property);
-
+                //UProperty property = generateNewProperty(prop.Item1, currentInfo);
+                if (newProperty != null)
+                {
+                    currentProps.Add(newProperty);
+                }
                 //Todo: Create new node, prevent refresh of this instance.
                 CurrentLoadedExport.WriteProperties(currentProps);
                 //End Todo
@@ -1825,6 +1846,28 @@ namespace ME3Explorer
                     this.isExpanded = value;
                     OnPropertyChanged("IsExpanded");
                 }
+            }
+        }
+
+        public bool EditableType
+        {
+            get
+            {
+                if (Property == null) return false;
+
+                switch (Property.PropType)
+                {
+                    case Unreal.PropertyType.BoolProperty:
+                    case Unreal.PropertyType.ByteProperty:
+                    case Unreal.PropertyType.FloatProperty:
+                    case Unreal.PropertyType.IntProperty:
+                    case Unreal.PropertyType.NameProperty:
+                    case Unreal.PropertyType.StringRefProperty:
+                    case Unreal.PropertyType.StrProperty:
+                    case Unreal.PropertyType.ObjectProperty:
+                        return true;
+                }
+                return false;
             }
         }
 
