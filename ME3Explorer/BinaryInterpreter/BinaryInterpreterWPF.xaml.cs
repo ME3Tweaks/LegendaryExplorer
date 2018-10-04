@@ -130,7 +130,7 @@ namespace ME3Explorer
                     break;
                 case "WwiseStream":
                 case "WwiseBank":
-                    Scan_WwiseStream(topLevelTree, data, binarystart);
+                    Scan_WwiseStreamBank(topLevelTree, data, binarystart);
                     break;
                 case "WwiseEvent":
                     Scan_WwiseEvent(topLevelTree, data, binarystart);
@@ -293,12 +293,13 @@ namespace ME3Explorer
             }*/
         }
 
-        private void Scan_WwiseStream(TreeViewItem topLevelTree, byte[] data, int binaryStart)
+        private void Scan_WwiseStreamBank(TreeViewItem topLevelTree, byte[] data, int binaryStart)
         {
             /*
-             * stream length in AFC +4
-             * stream length in AFC +4 (repeat)
-             * stream offset in AFC +4
+             * int32 0?
+             * stream length in AFC +4 | (bank size)
+             * stream length in AFC +4 | (repeat) (bank size)
+             * stream offset in AFC +4 | (bank offset in file)
              */
 
 
