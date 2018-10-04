@@ -40,7 +40,7 @@ namespace ME3Explorer
     {
         public BindingList<object> ExportInformationList { get; set; }
         private List<EmbeddedWEMFile> AllWems = new List<EmbeddedWEMFile>(); //used only for rebuilding soundbank
-        WwiseStream w;
+        WwiseStream wwiseStream;
         public string afcPath = "";
         DispatcherTimer seekbarUpdateTimer = new DispatcherTimer();
         private bool SeekUpdatingDueToTimer = false;
@@ -244,19 +244,19 @@ namespace ME3Explorer
             {
                 if (localCurrentExport != null && localCurrentExport.ClassName == "WwiseStream")
                 {
-                    w = new WwiseStream(localCurrentExport);
+                    wwiseStream = new WwiseStream(localCurrentExport);
                     string path;
-                    if (w.IsPCCStored)
+                    if (wwiseStream.IsPCCStored)
                     {
                         path = localCurrentExport.FileRef.FileName;
                     }
                     else
                     {
-                        path = w.getPathToAFC(); // only to check if AFC exists.
+                        path = wwiseStream.getPathToAFC(); // only to check if AFC exists.
                     }
                     if (path != "")
                     {
-                        return w.CreateWaveStream(path);
+                        return wwiseStream.CreateWaveStream(path);
                     }
                 }
                 if (forcedWemFile != null || (localCurrentExport != null && localCurrentExport.ClassName == "WwiseBank"))
@@ -1054,8 +1054,7 @@ namespace ME3Explorer
 
         private void WEMItem_KeyDown(object sender, KeyEventArgs e)
         {
-            KeyEventArgs ke = e as KeyEventArgs;
-            if (ke != null)
+            if (e is KeyEventArgs ke)
             {
                 if (ke.Key == Key.Space)
                 {
@@ -1133,7 +1132,7 @@ namespace ME3Explorer
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == null ? false : true;
+            return value != null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

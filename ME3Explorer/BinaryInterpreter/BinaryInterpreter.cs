@@ -2197,71 +2197,6 @@ Floats*/
             //}
         }
 
-        private void StartClassScan(string nodeNameToSelect = null)
-        {
-            const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
-
-            TreeNode topLevelTree = new TreeNode($"0000 : {export.ObjectName}")
-            {
-                Tag = NodeType.Root,
-                Name = "0"
-            };
-            try
-            {
-                List<TreeNode> subnodes = ReadTableBackwards(export);
-                subnodes.Reverse();
-                for (int i = nonTableEntryCount; i < subnodes.Count; i++)
-                {
-                    string text = subnodes[i].Text;
-                    text = $"{i - nonTableEntryCount} | {text}";
-                    subnodes[i].Text = text;
-                }
-                topLevelTree.Nodes.AddRange(subnodes.ToArray());
-            }
-            catch (Exception ex)
-            {
-                topLevelTree.Nodes.Add($"An error occured parsing the class: {ex.Message}");
-            }
-            treeView1.Nodes.Add(topLevelTree);
-            treeView1.CollapseAll();
-            treeView1.Nodes[0].Expand();
-            TreeNode[] nodes;
-            //if (expandedNodes != null)
-            //{
-            //    int memDiff = memory.Length - memsize;
-            //    int selectedPos = getPosFromNode(selectedNodeName);
-            //    int curPos = 0;
-            //    foreach (string item in expandedNodes)
-            //    {
-            //        curPos = getPosFromNode(item);
-            //        if (curPos > selectedPos)
-            //        {
-            //            curPos += memDiff;
-            //        }
-            //        nodes = treeView1.Nodes.Find((item[0] == '-' ? -curPos : curPos).ToString(), true);
-            //        if (nodes.Length > 0)
-            //        {
-            //            foreach (var node in nodes)
-            //            {
-            //                node.Expand();
-            //            }
-            //        }
-            //    }
-            //}
-            if (nodeNameToSelect != null)
-            {
-                nodes = treeView1.Nodes.Find(nodeNameToSelect, true);
-                if (nodes.Length > 0)
-                {
-                    treeView1.SelectedNode = nodes[0];
-                }
-                else
-                {
-                    treeView1.SelectedNode = treeView1.Nodes[0];
-                }
-            }
-        }
-
         private void StartClassScan2(string nodeNameToSelect = null)
         {
             //const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
@@ -2689,7 +2624,7 @@ Floats*/
             Simulated = 0x00000004U,
         }
 
-        private string getStateFlagsStr(uint stateFlags)
+        public static string getStateFlagsStr(uint stateFlags)
         {
             string str = "";
             if (stateFlags == 0)

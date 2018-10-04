@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -134,6 +136,12 @@ namespace ME3Explorer
                     break;
                 case "WwiseEvent":
                     Scan_WwiseEvent(topLevelTree, data, binarystart);
+                    break;
+                case "BioStage":
+                    StartBioStageScan(topLevelTree, data, binarystart);
+                    break;
+                case "Class":
+                    StartClassScan(topLevelTree, data, binarystart);
                     break;
             }
         }
@@ -485,7 +493,7 @@ namespace ME3Explorer
                     {
                         Header = $"0x{binarypos:X4} Name: {nodeValue}",
                         Tag = NodeType.StructLeafName,
-                        Name = binarypos.ToString()
+                        Name = $"_{binarypos.ToString()}"
                     });
                     binarypos += 12;
                 }
@@ -495,6 +503,549 @@ namespace ME3Explorer
             {
                 topLevelTree.Items.Add($"An error occured parsing the biodynamicanimset: {ex.Message}");
             }
+        }
+
+
+        //TODO: unfinished. currently does not display the properties for the list of BioStageCamera objects at the end
+        private void StartBioStageScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            /*
+             * Length (int)
+                Name: m_aCameraList
+                int unknown 0
+                Count + int unknown
+                [Camera name
+                    unreal property data]*/
+
+            if ((CurrentLoadedExport.Header[0x1f] & 0x2) != 0)
+            {
+                List<TreeViewItem> subnodes = new List<TreeViewItem>();
+                
+                int pos = binarystart;
+                int length = BitConverter.ToInt32(data, binarystart);
+                subnodes.Add(new TreeViewItem()
+                {
+                    Header = $"{binarystart:X4} Length: {length}",
+                    Name = $"_{pos.ToString()}"
+                });
+                pos += 4;
+                if (length != 0)
+                {
+                    int nameindex = BitConverter.ToInt32(data, pos);
+                    int nameindexunreal = BitConverter.ToInt32(data, pos + 4);
+
+                    string name = CurrentLoadedExport.FileRef.getNameEntry(nameindex);
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = $"{pos:X4} Camera: {name}_{nameindexunreal}",
+                        Name = $"_{pos.ToString()}",
+                        Tag = NodeType.StructLeafName
+                    });
+
+                    pos += 8;
+                    int shouldbezero = BitConverter.ToInt32(data, pos);
+                    if (shouldbezero != 0)
+                    {
+                        Debug.WriteLine($"NOT ZERO FOUND: {pos}");
+                    }
+                    pos += 4;
+
+                    int count = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = $"{pos:X4} Count: {count}",
+                        Name = $"_{pos.ToString()}"
+                    });
+                    pos += 4;
+
+                    shouldbezero = BitConverter.ToInt32(data, pos);
+                    if (shouldbezero != 0)
+                    {
+                        Debug.WriteLine($"NOT ZERO FOUND: {pos}");
+                    }
+                    pos += 4;
+                    try
+                    {
+                        var stream = new MemoryStream(data);
+                        for (int i = 0; i < count; i++)
+                        {
+                            nameindex = BitConverter.ToInt32(data, pos);
+                            nameindexunreal = BitConverter.ToInt32(data, pos + 4);
+                            TreeViewItem parentnode = new TreeViewItem
+                            {
+                                Header = $"{pos:X4} Camera {i + 1}: {CurrentLoadedExport.FileRef.getNameEntry(nameindex)}_{nameindexunreal}",
+                                Tag = NodeType.StructLeafName,
+                                Name = $"_{pos.ToString()}"
+                            };
+                            subnodes.Add(parentnode);
+                            pos += 8;
+                            stream.Seek(pos, SeekOrigin.Begin);
+                            var props = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, stream, "BioStageCamera");
+                            //finish writing function here
+                            pos = props.endOffset;
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        subnodes.Add(new TreeViewItem { Header = $"Error reading binary data: {ex}" });
+                    }
+                }
+                topLevelTree.ItemsSource = subnodes;
+            }
+        }
+
+
+        private void StartClassScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            //const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
+
+            try
+            {
+                List<TreeViewItem> subnodes = new List<TreeViewItem>();
+                int offset = 0;
+
+                int unrealExportIndex = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} Unreal Unique Index: {unrealExportIndex}",
+                    Name = "_" + offset.ToString(),
+
+                    Tag = NodeType.StructLeafInt
+                });
+                offset += 4;
+
+
+                int superclassIndex = BitConverter.ToInt32(data, offset);
+                string superclassStr = getEntryFullPath(superclassIndex);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} Superclass Index: {superclassIndex}({superclassStr})",
+                    Name = "_" + offset.ToString(),
+
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+
+                int unknown1 = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} Unknown 1: {unknown1}",
+                    Name = "_" + offset.ToString(),
+
+                    Tag = NodeType.StructLeafInt
+                });
+                offset += 4;
+
+                int classObjTree = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} ProbeMask/Class Object Tree Final Pointer Index: {classObjTree}",
+                    Name = "_" + offset.ToString(),
+
+                    Tag = NodeType.StructLeafInt
+                });
+                offset += 4;
+
+
+                //I am not sure what these mean. However if Pt1&2 are 33/25, the following bytes that follow are extended.
+                int headerUnknown1 = BitConverter.ToInt32(data, offset);
+                Int64 ignoreMask = BitConverter.ToInt64(data, offset);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} IgnoreMask: 0x{ignoreMask:X16}",
+                    Name = "_" + offset.ToString(),
+
+                    Tag = NodeType.StructLeafInt
+                });
+                offset += 8;
+
+                Int16 labelOffset = BitConverter.ToInt16(data, offset);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} LabelOffset: 0x{labelOffset:X4}",
+                    Name = "_" + offset.ToString()
+
+                });
+                offset += 2;
+
+                int skipAmount = 0x6;
+                //Find end of script block. Seems to be 10 FF's.
+                while (offset + skipAmount + 10 < data.Length)
+                {
+                    //Debug.WriteLine($"Checking at 0x{offset + skipAmount + 10:X4}");
+                    bool isEnd = true;
+                    for (int i = 0; i < 10; i++)
+                    {
+                        byte b = data[offset + skipAmount + i];
+                        if (b != 0xFF)
+                        {
+                            isEnd = false;
+                            break;
+                        }
+                    }
+                    if (isEnd)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        skipAmount++;
+                    }
+                }
+                //if (headerUnknown1 == 33 && headerUnknown2 == 25)
+                //{
+                //    skipAmount = 0x2F;
+                //}
+                //else if (headerUnknown1 == 34 && headerUnknown2 == 26)
+                //{
+                //    skipAmount = 0x30;
+                //}
+                //else if (headerUnknown1 == 728 && headerUnknown2 == 532)
+                //{
+                //    skipAmount = 0x22A;
+                //}
+                int offsetEnd = offset + skipAmount + 10;
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} State/Script Block: 0x{offset:X4} - 0x{offsetEnd:X4}",
+                    Name = "_" + offset.ToString()
+
+                });
+                offset += skipAmount + 10; //heuristic to find end of script
+                                           //for (int i = 0; i < 5; i++)
+                                           //{
+                uint stateMask = BitConverter.ToUInt32(data, offset);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} Statemask: {stateMask} [{getStateFlagsStr(stateMask)}]",
+                    Name = "_" + offset.ToString(),
+
+                    Tag = NodeType.StructLeafInt
+                });
+                offset += 4;
+                //}
+                //offset += 2; //oher unknown
+                int localFunctionsTableCount = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} Local Functions Count: {localFunctionsTableCount}",
+                    Name = "_" + offset.ToString(),
+
+                    Tag = NodeType.StructLeafInt
+                });
+                offset += 4;
+                for (int i = 0; i < localFunctionsTableCount; i++)
+                {
+                    int nameTableIndex = BitConverter.ToInt32(data, offset);
+                    int nameIndex = BitConverter.ToInt32(data, offset + 4);
+                    offset += 8;
+                    int functionObjectIndex = BitConverter.ToInt32(data, offset);
+                    offset += 4;
+                    subnodes.Last().Items.Add(new TreeViewItem
+                    {
+                        Header = $"0x{offset - 12:X5}  {CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex)}() = {functionObjectIndex}({CurrentLoadedExport.FileRef.Exports[functionObjectIndex - 1].GetFullPath})",
+                        Name = "_" + (offset - 12).ToString(),
+
+                        Tag = NodeType.StructLeafName //might need to add a subnode for the 3rd int
+                    });
+                }
+
+                int classMask = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} Class Mask: 0x{classMask:X8}",
+                    Name = "_" + offset.ToString(),
+
+                    Tag = NodeType.StructLeafInt
+                });
+                offset += 4;
+
+                if (CurrentLoadedExport.FileRef.Game != MEGame.ME3)
+                {
+                    offset += 1; //seems to be a blank byte here
+                }
+
+                int coreReference = BitConverter.ToInt32(data, offset);
+                string coreRefFullPath = getEntryFullPath(coreReference);
+
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} Outer Class: {coreReference} ({coreRefFullPath})",
+                    Name = "_" + offset.ToString(),
+
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+
+
+                if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
+                {
+                    offset = ClassParser_ReadComponentsTable(subnodes, data, offset);
+                    offset = ClassParser_ReadImplementsTable(subnodes, data, offset);
+                    int postComponentsNoneNameIndex = BitConverter.ToInt32(data, offset);
+                    int postComponentNoneIndex = BitConverter.ToInt32(data, offset + 4);
+                    string postCompName = CurrentLoadedExport.FileRef.getNameEntry(postComponentsNoneNameIndex); //This appears to be unused in ME#, it is always None it seems.
+                                                                                                    /*if (postCompName != "None")
+                                                                                                    {
+                                                                                                        Debugger.Break();
+                                                                                                    }*/
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Post-Components Blank ({postCompName})",
+                        Name = "_" + offset.ToString(),
+
+                        Tag = NodeType.StructLeafName
+                    });
+                    offset += 8;
+
+                    int unknown4 = BitConverter.ToInt32(data, offset);
+                    /*if (unknown4 != 0)
+                    {
+                        Debug.WriteLine("Unknown 4 is not 0: {unknown4);
+                       // Debugger.Break();
+                    }*/
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Unknown 4: {unknown4}",
+                        Name = "_" + offset.ToString(),
+
+                        Tag = NodeType.StructLeafInt
+                    });
+                    offset += 4;
+                }
+                else
+                {
+                    offset = ClassParser_ReadImplementsTable(subnodes, data, offset);
+                    offset = ClassParser_ReadComponentsTable(subnodes, data, offset);
+
+                    /*int unknown4 = BitConverter.ToInt32(data, offset);
+                    node = new TreeViewItem($"0x{offset:X5} Unknown 4: {unknown4);
+                    node.Name = offset.ToString();
+                    node.Tag = nodeType.StructLeafInt;
+                    subnodes.Add(node);
+                    offset += 4;*/
+
+                    int me12unknownend1 = BitConverter.ToInt32(data, offset);
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = $"0x{offset:X5} ME1/ME2 Unknown1: {me12unknownend1}",
+                        Name = "_" + offset.ToString(),
+
+                        Tag = NodeType.StructLeafName
+                    });
+                    offset += 4;
+
+                    int me12unknownend2 = BitConverter.ToInt32(data, offset);
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = $"0x{offset:X5} ME1/ME2 Unknown2: {me12unknownend2}",
+                        Name = "_" + offset.ToString(),
+
+                        Tag = NodeType.StructLeafName
+                    });
+                    offset += 4;
+                }
+
+                int defaultsClassLink = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} Class Defaults: {defaultsClassLink} ({CurrentLoadedExport.FileRef.Exports[defaultsClassLink - 1].GetFullPath})",
+                    Name = "_" + offset.ToString(),
+
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+
+                if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
+                {
+                    int functionsTableCount = BitConverter.ToInt32(data, offset);
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Full Functions Table Count: {functionsTableCount}",
+                        Name = "_" + offset.ToString(),
+
+                        Tag = NodeType.StructLeafInt
+                    });
+                    offset += 4;
+
+                    for (int i = 0; i < functionsTableCount; i++)
+                    {
+                        int functionsTableIndex = BitConverter.ToInt32(data, offset);
+                        string impexpName = getEntryFullPath(functionsTableIndex);
+                        subnodes.Last().Items.Add(new TreeViewItem
+                        {
+                            Header = $"0x{offset:X5} {impexpName}",
+                            Tag = NodeType.StructLeafObject,
+                            Name = "_" + offset.ToString()
+
+                        });
+                        offset += 4;
+                    }
+                }
+                topLevelTree.ItemsSource = subnodes;
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Items.Add($"An error occured parsing the class: {ex.Message}");
+            }
+        }
+
+        private int ClassParser_ReadComponentsTable(List<TreeViewItem> subnodes, byte[] data, int offset)
+        {
+            if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
+            {
+                int componentTableNameIndex = BitConverter.ToInt32(data, offset);
+                int componentTableIndex = BitConverter.ToInt32(data, offset + 4);
+                offset += 8;
+
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset - 8:X5} Components Table ({CurrentLoadedExport.FileRef.getNameEntry(componentTableNameIndex)})",
+                    Name = "_" + (offset - 8).ToString(),
+
+                    Tag = NodeType.StructLeafName
+                });
+                int componentTableCount = BitConverter.ToInt32(data, offset);
+                offset += 4;
+
+                for (int i = 0; i < componentTableCount; i++)
+                {
+                    int nameTableIndex = BitConverter.ToInt32(data, offset);
+                    int nameIndex = BitConverter.ToInt32(data, offset + 4);
+                    offset += 8;
+                    int componentObjectIndex = BitConverter.ToInt32(data, offset);
+                    offset += 4;
+                    string objectName = getEntryFullPath(componentObjectIndex);
+                    subnodes.Last().Items.Add(new TreeViewItem
+                    {
+                        Header = $"0x{offset - 12:X5}  {CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex)}({objectName})",
+                        Name = "_" + (offset - 12).ToString(),
+
+                        Tag = NodeType.StructLeafName
+                    });
+                }
+            }
+            else
+            {
+                int componentTableCount = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} Components Table Count: {componentTableCount}",
+                    Name = "_" + offset.ToString(),
+
+                    Tag = NodeType.StructLeafInt
+                });
+                offset += 4;
+
+                for (int i = 0; i < componentTableCount; i++)
+                {
+                    int nameTableIndex = BitConverter.ToInt32(data, offset);
+                    int nameIndex = BitConverter.ToInt32(data, offset + 4);
+                    offset += 8;
+                    int componentObjectIndex = BitConverter.ToInt32(data, offset);
+
+                    string objName = "Null";
+                    if (componentObjectIndex != 0)
+                    {
+                        objName = getEntryFullPath(componentObjectIndex);
+                    }
+                    subnodes.Last().Items.Add(new TreeViewItem
+                    {
+                        Header = $"0x{offset - 8:X5}  {CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex)}({objName})",
+                        Name = "_" + (offset - 8).ToString(),
+
+                        Tag = NodeType.StructLeafName
+                    });
+                    offset += 4;
+
+                }
+            }
+            return offset;
+        }
+
+        private int ClassParser_ReadImplementsTable(List<TreeViewItem> subnodes, byte[] data, int offset)
+        {
+            if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
+            {
+                int interfaceCount = BitConverter.ToInt32(data, offset);
+
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} Implemented Interfaces Table Count: {interfaceCount}",
+                    Name = "_" + offset.ToString(),
+                    Tag = NodeType.StructLeafInt
+                });
+                offset += 4;
+                for (int i = 0; i < interfaceCount; i++)
+                {
+                    int interfaceIndex = BitConverter.ToInt32(data, offset);
+                    offset += 4;
+
+                    string objectName = getEntryFullPath(interfaceIndex);
+                    TreeViewItem subnode = new TreeViewItem
+                    {
+                        Header = $"0x{offset - 12:X5}  {interfaceIndex} {objectName}",
+                        Name = "_" + (offset - 4).ToString(),
+                        Tag = NodeType.StructLeafName
+                    };
+                    subnodes.Last().Items.Add(subnode);
+
+                    //propertypointer
+                    interfaceIndex = BitConverter.ToInt32(data, offset);
+                    offset += 4;
+
+                    objectName = getEntryFullPath(interfaceIndex);
+                    subnode.Items.Add(new TreeViewItem
+                    {
+                        Header = $"0x{offset - 12:X5}  Interface Property Link: {interfaceIndex} {objectName}",
+                        Name = "_" + (offset - 4).ToString(),
+
+                        Tag = NodeType.StructLeafObject
+                    });
+                }
+            }
+            else
+            {
+                int interfaceTableName = BitConverter.ToInt32(data, offset); //????
+                offset += 8;
+
+                int interfaceCount = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset - 8:X5} Implemented Interfaces Table Count: {interfaceCount} ({CurrentLoadedExport.FileRef.getNameEntry(interfaceTableName)})",
+                    Name = "_" + (offset - 8).ToString(),
+
+                    Tag = NodeType.StructLeafInt
+                });
+                offset += 4;
+                for (int i = 0; i < interfaceCount; i++)
+                {
+                    int interfaceNameIndex = BitConverter.ToInt32(data, offset);
+                    offset += 8;
+
+                    TreeViewItem subnode = new TreeViewItem
+                    {
+                        Header = $"0x{offset - 8:X5}  {CurrentLoadedExport.FileRef.getNameEntry(interfaceNameIndex)}",
+                        Name = "_" + (offset - 8).ToString(),
+
+                        Tag = NodeType.StructLeafName
+                    };
+                    subnodes.Last().Items.Add(subnode);
+
+                    //propertypointer
+                    /* interfaceIndex = BitConverter.ToInt32(data, offset);
+                     offset += 4;
+
+                     objectName = getEntryFullPath(interfaceIndex);
+                     TreeNode subsubnode = new TreeNode($"0x{offset - 12:X5}  Interface Property Link: {interfaceIndex} {objectName}");
+                     subsubnode.Name = (offset - 4).ToString();
+                     subsubnode.Tag = nodeType.StructLeafObject;
+                     subnode.Nodes.Add(subsubnode);
+                     */
+                }
+            }
+            return offset;
         }
 
         public override void UnloadExport()
