@@ -520,7 +520,9 @@
     <Compile Include="SharedUI\Converters\WwiseDataExchangeEnabledConverter.cs" />
     <Compile Include="SharedUI\Converters\NullEnabledConverter.cs" />
     <Compile Include="SharedUI\Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="SharedUI\EditableComboBox.cs" />
     <Compile Include="SharedUI\EditableTextBlock.cs" />
+    <Compile Include="SharedUI\EditableComboBoxAdorner.cs" />
     <Compile Include="SharedUI\EditableTextBlockAdorner.cs" />
     <Compile Include="SharedUI\ExceptionHandlerDialogWPF.xaml.cs">
       <DependentUpon>ExceptionHandlerDialogWPF.xaml</DependentUpon>
