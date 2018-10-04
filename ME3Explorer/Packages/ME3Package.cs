@@ -360,7 +360,7 @@ namespace ME3Explorer.Packages
         private static void UpdateOffsets(IExportEntry export)
         {
             //update offsets for pcc-stored audio in wwisestreams
-            if (export.ClassName == "WwiseStream" && export.GetProperty<NameProperty>("Filename") == null)
+            if ((export.ClassName == "WwiseStream" && export.GetProperty<NameProperty>("Filename") == null) || export.ClassName == "WwiseBank")
             {
                 byte[] binData = export.getBinaryData();
                 binData.OverwriteRange(12, BitConverter.GetBytes(export.DataOffset + export.propsEnd() + 16));

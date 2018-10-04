@@ -20,7 +20,7 @@
     </UserControl.CommandBindings>-->
     <DockPanel>
     <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
-        <Button Name="SaveHexChange_Button" Content="Save Hex Changes" Click="BinaryInterpreter_SaveHexChanged_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
+        <Button Name="SaveHexChange_Button" Content="Save Hex Changes" Click="BinaryInterpreter_SaveHexChanges_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
         <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
         <Button Content="Toggle Hexbox Width" Click="BinaryInterpreter_ToggleHexboxWidth_Click"/>
         <!--<Button Content="Add Property" Click="Interpreter_AddProperty_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>-->

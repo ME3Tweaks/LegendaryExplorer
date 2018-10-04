@@ -71,119 +71,127 @@ namespace ME3Explorer
 
         public override void LoadExport(IExportEntry exportEntry)
         {
-            ExportInformationList.Clear();
-            AllWems.Clear();
-            //Check if we need to first gather wwiseevents for wem IDing
-            //Uncomment when HIRC stuff is implemented, if ever...
-            /*if (exportEntry.FileRef != CurrentPackage)
+            try
             {
-                //update
-                WemIdsToWwwiseEventIdMapping.Clear();
-                List<IExportEntry> wwiseEventExports = exportEntry.FileRef.Exports.Where(x => x.ClassName == "WwiseEvent").ToList();
-                foreach (IExportEntry wwiseEvent in wwiseEventExports)
+                ExportInformationList.Clear();
+                AllWems.Clear();
+                //Check if we need to first gather wwiseevents for wem IDing
+                //Uncomment when HIRC stuff is implemented, if ever...
+                /*if (exportEntry.FileRef != CurrentPackage)
                 {
-                    StructProperty relationships = wwiseEvent.GetProperty<StructProperty>("Relationships");
-                    IntProperty id = wwiseEvent.GetProperty<IntProperty>("Id");
-                    FloatProperty DurationMilliseconds = wwiseEvent.GetProperty<FloatProperty>("DurationMilliseconds");
-
-                    if (relationships != null)
+                    //update
+                    WemIdsToWwwiseEventIdMapping.Clear();
+                    List<IExportEntry> wwiseEventExports = exportEntry.FileRef.Exports.Where(x => x.ClassName == "WwiseEvent").ToList();
+                    foreach (IExportEntry wwiseEvent in wwiseEventExports)
                     {
-                        ObjectProperty bank = relationships.GetProp<ObjectProperty>("Bank");
-                        if (bank != null && bank.Value > 0)
+                        StructProperty relationships = wwiseEvent.GetProperty<StructProperty>("Relationships");
+                        IntProperty id = wwiseEvent.GetProperty<IntProperty>("Id");
+                        FloatProperty DurationMilliseconds = wwiseEvent.GetProperty<FloatProperty>("DurationMilliseconds");
+
+                        if (relationships != null)
                         {
-                            //export in this file
-                            List<Tuple<string, int, double>> bankWemInfosList;
-                            Tuple<string, int, double> newData = new Tuple<string, int, double>(wwiseEvent.ObjectName, id.Value, DurationMilliseconds.Value);
-                            if (WemIdsToWwwiseEventIdMapping.TryGetValue(exportEntry.FileRef.Exports[bank.Value - 1], out bankWemInfosList))
+                            ObjectProperty bank = relationships.GetProp<ObjectProperty>("Bank");
+                            if (bank != null && bank.Value > 0)
                             {
-                                bankWemInfosList.Add(newData);
+                                //export in this file
+                                List<Tuple<string, int, double>> bankWemInfosList;
+                                Tuple<string, int, double> newData = new Tuple<string, int, double>(wwiseEvent.ObjectName, id.Value, DurationMilliseconds.Value);
+                                if (WemIdsToWwwiseEventIdMapping.TryGetValue(exportEntry.FileRef.Exports[bank.Value - 1], out bankWemInfosList))
+                                {
+                                    bankWemInfosList.Add(newData);
+                                }
+                                else
+                                {
+                                    WemIdsToWwwiseEventIdMapping[exportEntry.FileRef.Exports[bank.Value - 1]] = new List<Tuple<string, int, double>>();
+                                    WemIdsToWwwiseEventIdMapping[exportEntry.FileRef.Exports[bank.Value - 1]].Add(newData);
+                                }
+                            }
+                        }
+                    }
+
+                }
+                CurrentPackage = exportEntry.FileRef;*/
+                ExportInformationList.Add("#" + exportEntry.Index + " " + exportEntry.ClassName + " : " + exportEntry.ObjectName);
+                if (exportEntry.ClassName == "WwiseStream")
+                {
+                    WwiseStream w = new WwiseStream(exportEntry);
+                    ExportInformationList.Add("Filename : " + (w.FileName ?? "Stored in this PCC"));
+                    ExportInformationList.Add("Data size: " + w.DataSize + " bytes");
+                    ExportInformationList.Add("Data offset: 0x" + w.DataOffset.ToString("X8"));
+                    string wemId = "ID: 0x" + w.Id.ToString("X8");
+                    if (Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness)
+                    {
+                        wemId += $" | 0x{ReverseBytes((uint)w.Id).ToString("X8")} (Reversed)";
+                    }
+                    ExportInformationList.Add(wemId);
+                    CurrentLoadedExport = exportEntry;
+                }
+                if (exportEntry.ClassName == "WwiseBank")
+                {
+                    WwiseBank wb = new WwiseBank(exportEntry);
+
+                    if (exportEntry.FileRef.Game == MEGame.ME3)
+                    {
+                        QuickScanText = wb.GetQuickScan();
+                    }
+                    else
+                    {
+                        QuickScanText = "Cannot scan ME2 game files.";
+                    }
+                    var embeddedWEMFiles = wb.GetWEMFilesMetadata();
+                    var data = wb.GetChunk("DATA");
+                    int i = 0;
+                    if (embeddedWEMFiles.Count > 0)
+                    {
+                        foreach (var singleWemMetadata in embeddedWEMFiles)
+                        {
+                            byte[] wemData = new byte[singleWemMetadata.Item3];
+                            //copy WEM data to buffer. Add 0x8 to skip DATA and DATASIZE header for this block.
+                            Buffer.BlockCopy(data, singleWemMetadata.Item2 + 0x8, wemData, 0, singleWemMetadata.Item3);
+                            //check for RIFF header as some don't seem to have it and are not playable.
+                            string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
+
+                            string wemId = singleWemMetadata.Item1.ToString("X8");
+                            if (Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness)
+                            {
+                                wemId = ReverseBytes(singleWemMetadata.Item1).ToString("X8") + " (Reversed)";
+                            }
+                            string wemName = "Embedded WEM 0x" + wemId;// + "(" + singleWemMetadata.Item1 + ")";
+
+                            /* //HIRC lookup, if I ever get around to supporting HIRC
+                            List<Tuple<string, int, double>> wemInfo;
+                            if (WemIdsToWwwiseEventIdMapping.TryGetValue(exportEntry, out wemInfo))
+                            {
+                                var info = wemInfo.FirstOrDefault(x => x.Item2 == singleWemMetadata.Item1); //item2 in x = ID, singleWemMetadata.Item1 = ID
+                                if (info != null)
+                                {
+                                    //have info
+                                    wemName = info.Item1;
+                                }
+                            }*/
+                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, i + ": " + wemName, exportEntry.FileRef.Game, singleWemMetadata.Item1);
+                            if (wemHeader == "RIFF")
+                            {
+                                ExportInformationList.Add(wem);
                             }
                             else
                             {
-                                WemIdsToWwwiseEventIdMapping[exportEntry.FileRef.Exports[bank.Value - 1]] = new List<Tuple<string, int, double>>();
-                                WemIdsToWwwiseEventIdMapping[exportEntry.FileRef.Exports[bank.Value - 1]].Add(newData);
+                                ExportInformationList.Add(i + ": " + wemName + " - No RIFF header");
                             }
+                            AllWems.Add(wem);
+                            i++;
                         }
                     }
-                }
-
-            }
-            CurrentPackage = exportEntry.FileRef;*/
-            ExportInformationList.Add("#" + exportEntry.Index + " " + exportEntry.ClassName + " : " + exportEntry.ObjectName);
-            if (exportEntry.ClassName == "WwiseStream")
-            {
-                WwiseStream w = new WwiseStream(exportEntry);
-                ExportInformationList.Add("Filename : " + (w.FileName ?? "Stored in this PCC"));
-                ExportInformationList.Add("Data size: " + w.DataSize + " bytes");
-                ExportInformationList.Add("Data offset: 0x" + w.DataOffset.ToString("X8"));
-                string wemId = "ID: 0x" + w.Id.ToString("X8");
-                if (Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness)
-                {
-                    wemId += $" | 0x{ReverseBytes((uint)w.Id).ToString("X8")} (Reversed)";
-                }
-                ExportInformationList.Add(wemId);
-                CurrentLoadedExport = exportEntry;
-            }
-            if (exportEntry.ClassName == "WwiseBank")
-            {
-                WwiseBank wb = new WwiseBank(exportEntry);
-
-                if (exportEntry.FileRef.Game == MEGame.ME3)
-                {
-                    QuickScanText = wb.GetQuickScan();
-                } else
-                {
-                    QuickScanText = "Cannot scan ME2 game files.";
-                }
-                var embeddedWEMFiles = wb.GetWEMFilesMetadata();
-                var data = wb.GetChunk("DATA");
-                int i = 0;
-                if (embeddedWEMFiles.Count > 0)
-                {
-                    foreach (var singleWemMetadata in embeddedWEMFiles)
+                    else
                     {
-                        byte[] wemData = new byte[singleWemMetadata.Item3];
-                        //copy WEM data to buffer. Add 0x8 to skip DATA and DATASIZE header for this block.
-                        Buffer.BlockCopy(data, singleWemMetadata.Item2 + 0x8, wemData, 0, singleWemMetadata.Item3);
-                        //check for RIFF header as some don't seem to have it and are not playable.
-                        string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
-
-                        string wemId = singleWemMetadata.Item1.ToString("X8");
-                        if (Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness)
-                        {
-                            wemId = ReverseBytes(singleWemMetadata.Item1).ToString("X8") + " (Reversed)";
-                        }
-                        string wemName = "Embedded WEM 0x" + wemId;// + "(" + singleWemMetadata.Item1 + ")";
-
-                        /* //HIRC lookup, if I ever get around to supporting HIRC
-                        List<Tuple<string, int, double>> wemInfo;
-                        if (WemIdsToWwwiseEventIdMapping.TryGetValue(exportEntry, out wemInfo))
-                        {
-                            var info = wemInfo.FirstOrDefault(x => x.Item2 == singleWemMetadata.Item1); //item2 in x = ID, singleWemMetadata.Item1 = ID
-                            if (info != null)
-                            {
-                                //have info
-                                wemName = info.Item1;
-                            }
-                        }*/
-                        EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, i + ": " + wemName, exportEntry.FileRef.Game, singleWemMetadata.Item1);
-                        if (wemHeader == "RIFF")
-                        {
-                            ExportInformationList.Add(wem);
-                        }
-                        else
-                        {
-                            ExportInformationList.Add(i + ": " + wemName + " - No RIFF header");
-                        }
-                        AllWems.Add(wem);
-                        i++;
+                        ExportInformationList.Add("This soundbank has no embedded WEM files");
                     }
+                    CurrentLoadedExport = exportEntry;
                 }
-                else
-                {
-                    ExportInformationList.Add("This soundbank has no embedded WEM files");
-                }
-                CurrentLoadedExport = exportEntry;
+            }
+            catch (Exception e)
+            {
+
             }
 
         }

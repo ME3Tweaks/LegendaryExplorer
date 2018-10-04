@@ -407,7 +407,12 @@ namespace ME3Explorer.Unreal.Classes
             //byte[] datax = newBankBinaryStream.ToArray();
             //File.WriteAllBytes(@"C:\users\public\test.bnk", datax);
             MemoryStream newExportData = new MemoryStream();
-            newExportData.Write(export.Data, 0, BinaryOffset); //all but binary data.
+            newExportData.Write(export.Data, 0, export.propsEnd()); //all but binary data.
+            //WwiseBank header (pre bank)
+            newExportData.Write(BitConverter.GetBytes(0), 0, 4);
+            newExportData.Write(BitConverter.GetBytes((int)newBankBinaryStream.Length), 0, 4);
+            newExportData.Write(BitConverter.GetBytes((int)newBankBinaryStream.Length), 0, 4);
+            newExportData.Write(BitConverter.GetBytes((int)newExportData.Position + export.DataOffset + 4), 0, 4);
             newBankBinaryStream.CopyTo(newExportData);
             export.Data = newExportData.ToArray();
         }
