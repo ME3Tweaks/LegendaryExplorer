@@ -122,6 +122,12 @@ namespace ME3Explorer
                 case "ObjectProperty":
                     StartObjectScan(topLevelTree, data, binarystart);
                     break;
+                case "BioDynamicAnimSet":
+                    StartBioDynamicAnimSetScan(topLevelTree, data, binarystart);
+                    break;
+                case "ObjectRedirector":
+                    StartObjectRedirectorScan(topLevelTree, data, binarystart);
+                    break;
                 case "WwiseStream":
                 case "WwiseBank":
                     Scan_WwiseStream(topLevelTree, data, binarystart);
@@ -130,6 +136,16 @@ namespace ME3Explorer
                     Scan_WwiseEvent(topLevelTree, data, binarystart);
                     break;
             }
+        }
+
+        private void StartObjectRedirectorScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            int redirnum = BitConverter.ToInt32(data, binarystart);
+            topLevelTree.Items.Add(new TreeViewItem()
+            {
+                Header = $"{binarystart:X4} Redirect references to this export to: {redirnum} {CurrentLoadedExport.FileRef.getEntry(redirnum).GetFullPath}",
+                Name = binarystart.ToString()
+            });
         }
 
         private void StartObjectScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
@@ -310,7 +326,7 @@ namespace ME3Explorer
                     Name = "_" + pos.ToString(),
                 });
                 pos += 4;
-                string dataset1type = CurrentLoadedExport.ClassName == "WwiseStream" ? "Stream length" : "??? Length";
+                string dataset1type = CurrentLoadedExport.ClassName == "WwiseStream" ? "Stream length" : "Bank size";
                 topLevelTree.Items.Add(new TreeViewItem()
                 {
                     Header = $"{DataSize:X4} : {dataset1type} {DataSize} (0x{DataSize:X})",
@@ -325,7 +341,7 @@ namespace ME3Explorer
                     Tag = nodeType.StructLeafInt
                 });
                 pos += 4;
-                string dataset2type = CurrentLoadedExport.ClassName == "WwiseStream" ? "Stream offset" : "??? offset";
+                string dataset2type = CurrentLoadedExport.ClassName == "WwiseStream" ? "Stream offset" : "Bank offset";
                 topLevelTree.Items.Add(new TreeViewItem()
                 {
                     Header = $"{pos:X4} {dataset2type} in file: {DataOffset} (0x{DataOffset:X})",
@@ -337,12 +353,12 @@ namespace ME3Explorer
                 {
                     //if (CurrentLoadedExport.DataOffset < DataOffset && (CurrentLoadedExport.DataOffset + CurrentLoadedExport.DataSize) < DataOffset)
                     //{
-                        topLevelTree.Items.Add(new TreeViewItem()
-                        {
-                            Header = $"Click here to jump to the calculated end offset of wwisebank in this export",
-                            Name = "_" + (DataSize2 + CurrentLoadedExport.propsEnd() + 16).ToString(),
-                            Tag = nodeType.Unknown
-                        });
+                    topLevelTree.Items.Add(new TreeViewItem()
+                    {
+                        Header = $"Click here to jump to the calculated end offset of wwisebank in this export",
+                        Name = "_" + (DataSize2 + CurrentLoadedExport.propsEnd() + 16).ToString(),
+                        Tag = nodeType.Unknown
+                    });
                     //}
                 }
 
@@ -375,7 +391,7 @@ namespace ME3Explorer
                     });
                     topLevelTree.Items.Add(new TreeViewItem()
                     {
-                        Header = $"The stream offset to this data is not auto updated currently.",
+                        Header = $"The bank offset to this data will be automatically updated when this file is saved.",
                         Tag = nodeType.Unknown
                     });
                 }
@@ -439,6 +455,47 @@ namespace ME3Explorer
                 topLevelTree.Items.Add($"An error occured parsing the wwiseevent: {ex.Message}");
             }
         }
+
+        private void StartBioDynamicAnimSetScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            try
+            {
+                int binarypos = binarystart;
+                List<TreeViewItem> subnodes = new List<TreeViewItem>();
+                int count = BitConverter.ToInt32(data, binarypos);
+                subnodes.Add(new TreeViewItem()
+                {
+                    Header = $"0x{binarypos:X4} Count: {count.ToString()}"
+                });
+                binarypos += 4; //+ int
+                for (int i = 0; i < count; i++)
+                {
+                    int nameIndex = BitConverter.ToInt32(data, binarypos);
+                    int nameIndexNum = BitConverter.ToInt32(data, binarypos + 4);
+                    int shouldBe1 = BitConverter.ToInt32(data, binarypos + 8);
+                    string nodeValue = $"{CurrentLoadedExport.FileRef.Names[nameIndex]}_{nameIndexNum}";
+                    if (shouldBe1 != 1)
+                    {
+                        //ERROR
+                        nodeValue += " - Not followed by 1 (integer)!";
+                    }
+
+                    subnodes.Add(new TreeViewItem()
+                    {
+                        Header = $"0x{binarypos:X4} Name: {nodeValue}",
+                        Tag = NodeType.StructLeafName,
+                        Name = binarypos.ToString()
+                    });
+                    binarypos += 12;
+                }
+                subnodes.ForEach(o => topLevelTree.Items.Add(o));
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Items.Add($"An error occured parsing the biodynamicanimset: {ex.Message}");
+            }
+        }
+
         public override void UnloadExport()
         {
             CurrentLoadedExport = null;
@@ -446,7 +503,7 @@ namespace ME3Explorer
             BinaryInterpreter_TreeView.Items.Clear();
         }
 
-        private void BinaryInterpreter_SaveHexChanged_Click(object sender, RoutedEventArgs e)
+        private void BinaryInterpreter_SaveHexChanges_Click(object sender, RoutedEventArgs e)
         {
 
         }
