@@ -97,40 +97,16 @@ namespace ME3Explorer.Unreal.Classes
                         byte[] data = GetChunk("DATA");
                         int lendata = BitConverter.ToInt32(buff, 0x4);
                         res += "...Embedded WEM Files : " + lendata / 0xC + "\n";
-                        int previousEndOffset = -1;
                         int dataStartOffset = lendata + 8; //data and datasize
                         for (int i = 0; i < lendata / 0xC; i++)
                         {
                             int startoffset = BitConverter.ToInt32(buff, 0xC + i * 0xC);
-                            if (previousEndOffset >= 0)
-                            {
-                                if (previousEndOffset < startoffset)
-                                {
-                                    //res += "Data found between listed offset/sizes:";
-                                    while (previousEndOffset < startoffset)
-                                    {
-                                      //  res += " " + data[8 + previousEndOffset].ToString("X2");
-                                        previousEndOffset++;
-                                    }
-                                   // res += "\n";
-                                }
-                            }
                             res += "......WEM(" + i + ") : ID (0x" + BitConverter.ToInt32(buff, 0x8 + i * 0xC).ToString("X8");
 
                             res += ") Start Offset(0x" + startoffset.ToString("X8");
                             int size = BitConverter.ToInt32(buff, 0x10 + i * 0xC);
                             res += ") Size(0x" + size.ToString("X8") + ")";
                             res += " End Offset(0x" + (startoffset + size).ToString("X8") + ")\n";
-                            previousEndOffset = startoffset + size;
-                        }
-                        if (previousEndOffset + 8 < GetChunk("DATA").Length)
-                        {
-                            res += "Trailing garbage data found in data section:";
-                            while (previousEndOffset + 8 < data.Length)
-                            {
-                                res += " " + data[8 + previousEndOffset].ToString("X2");
-                                previousEndOffset++;
-                            }
                         }
                         didx_data = buff;
                         break;
