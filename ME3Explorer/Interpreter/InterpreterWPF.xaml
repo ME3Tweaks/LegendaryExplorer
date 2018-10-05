@@ -14,28 +14,8 @@
              d:DesignWidth="800"
              d:DesignHeight="500">
     <UserControl.Resources>
+        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
-        <ContextMenu x:Key="PropertyContextMenu">
-            <!--
-            <MenuItem Header="Export bank to file" ToolTip="Exports the binary data of this export (embedded soundbank) to disk" Click="ExtractBank_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseBank'}"/>
-            <MenuItem Header="Extract complete bank file" Click="ExtractBank_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseBank'}"/>
-            <MenuItem Header="Extract all bank audio to wave" Click="ExtractWEMAsWaveFromBank_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseBank'}"/>
-            <MenuItem Header="Export to..." Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}">
-                <MenuItem Name="ExportAudioRaw_MenuItem" Header="Export RIFF" ToolTip="Exports the raw data as stored in game files.&#x0a;To play, you must put this through ww2ogg to ogg and oggdec to wav." Click="ExportRaw_Clicked"/>
-                <MenuItem Name="ExportAudioOgg_MenuItem" Header="Export to OGG (Wwise)" ToolTip="Exports this WwiseStream's raw data to a Wwise proprietary Ogg file.&#x0a;To play, you must use oggdec to convert to a wav." Click="ExportOgg_Clicked"/>
-                <MenuItem Name="ExportAudioPCM_MenuItem" Header="Export to WAV (PCM)" ToolTip="Exports this WwiseStream to a playable WAV file" Click="ExportWav_Clicked"/>
-            </MenuItem>
-            <MenuItem Header="Replace audio..." Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}">
-                <MenuItem Name="ReplaceAudio_MenuItem" Click="ReplaceAudio_Clicked" Header="From Wwise encoded Ogg" ToolTip="Appends new audio data to an AFC and points this WwiseStream to that data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
-                <MenuItem Name="ReplaceAudioFromWav_MenuItem" Click="ReplaceAudioFromWav_Clicked" Header="From PCM Wav" ToolTip="Appends new audio data to an AFC and points this WwiseStream to that data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
-
-            </MenuItem>
-            <MenuItem Header="Clone and replace..." Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}">
-                <MenuItem Name="CloneAndReplace_MenuItem" Click="CloneAndReplace_Clicked" Header="Clone and replace audio" ToolTip="Create a new WwiseStream export and point it at new audio data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
-                <MenuItem Name="CloneAndReplaceFromWav_MenuItem" Click="CloneAndReplaceFromWav_Clicked" Header="Clone and replace audio" ToolTip="Create a new WwiseStream export and point it at new audio data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
-            </MenuItem>-->
-        </ContextMenu>
-
     </UserControl.Resources>
     <UserControl.CommandBindings>
         <CommandBinding Command="Commands:InterpreterWPFCommands.ArrayOrderByValueCommand" Executed="ArrayOrderByValueCommand_Executed"/>
@@ -160,6 +140,16 @@
                         <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
                     </Style>
                 </SharedUI:StretchingTreeView.ItemContainerStyle>
+                <SharedUI:StretchingTreeView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Remove property" ToolTip="Remove this property from this export" Command="{Binding RemovePropertyCommand}" Visibility="{Binding Path=IsEnabled,Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <!--<MenuItem Header="Order array...">
+                            <MenuItem Header="By value" ToolTip="Remove this property from this export" Command="{Binding RemovePropertyCommand}" Visibility="{Binding Path=IsEnabled,Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+
+                        </MenuItem>--> 
+                    </ContextMenu>
+                </SharedUI:StretchingTreeView.ContextMenu>
             </SharedUI:StretchingTreeView>
         </Grid>
     </DockPanel>

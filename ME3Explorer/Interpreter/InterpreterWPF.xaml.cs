@@ -17,6 +17,7 @@ using System.Windows;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using ME3Explorer.SharedUI;
+using System.Windows.Input;
 
 namespace ME3Explorer
 {
@@ -25,8 +26,6 @@ namespace ME3Explorer
     /// </summary>
     public partial class InterpreterWPF : ExportLoaderControl
     {
-        private IMEPackage pcc;
-        public IMEPackage Pcc { get { return pcc; } set { pcc = value; defaultStructValues.Clear(); } }
         public ObservableCollectionExtended<UPropertyTreeViewEntry> PropertyNodes { get; set; } = new ObservableCollectionExtended<UPropertyTreeViewEntry>();
 
         //Values in this list will cause the ExportToString() method to be called on an objectproperty in InterpreterWPF.
@@ -117,16 +116,49 @@ namespace ME3Explorer
 
         public InterpreterWPF()
         {
+            LoadCommands();
             InitializeComponent();
             defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
         }
+
+        #region Commands
+        public ICommand RemovePropertyCommand { get; set; }
+        private void LoadCommands()
+        {
+            // Player commands
+            RemovePropertyCommand = new RelayCommand(RemoveProperty, CanRemoveProperty);
+        }
+
+        private void RemoveProperty(object obj)
+        {
+            UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
+            if (tvi != null && tvi.Property != null)
+            {
+                UProperty tag = tvi.Property;
+                PropertyCollection props = CurrentLoadedExport.GetProperties();
+                props.Remove(tag);
+                CurrentLoadedExport.WriteProperties(props);
+                StartScan();
+            }
+        }
+
+        private bool CanRemoveProperty(object obj)
+        {
+            UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
+            if (tvi != null)
+            {
+                return tvi.Parent != null && tvi.Parent.Parent == null; //only items with a single parent (root nodes)
+            }
+            return false;
+        }
+
+        #endregion
 
         /// <summary>
         /// Unloads the loaded export, if any
         /// </summary>
         public override void UnloadExport()
         {
-            pcc = null;
             CurrentLoadedExport = null;
             Interpreter_Hexbox.ByteProvider = new DynamicByteProvider(new byte[] { });
             PropertyNodes.Clear();
@@ -138,7 +170,6 @@ namespace ME3Explorer
         /// <param name="export"></param>
         public override void LoadExport(IExportEntry export)
         {
-            pcc = export.FileRef;
             CurrentLoadedExport = export;
             //List<byte> bytes = export.Data.ToList();
             //MemoryStream ms = new MemoryStream(); //initializing memorystream directly with byte[] does not allow it to expand.
@@ -146,7 +177,7 @@ namespace ME3Explorer
             Interpreter_Hexbox.ByteProvider = new DynamicByteProvider(export.Data);
             className = export.ClassName;
 
-            if (pcc.Game == MEGame.ME1)
+            if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
             {
                 // attempt to find a TlkFileSet associated with the object, else just pick the first one and hope it's correct
                 if (editorTlkSet == null)
@@ -156,16 +187,16 @@ namespace ME3Explorer
                         IntProperty tlkSetRef = export.GetProperty<IntProperty>("m_oTlkFileSet");
                         if (tlkSetRef != null)
                         {
-                            tlkset = new BioTlkFileSet(pcc as ME1Package, tlkSetRef.Value - 1);
+                            tlkset = new BioTlkFileSet(CurrentLoadedExport.FileRef as ME1Package, tlkSetRef.Value - 1);
                         }
                         else
                         {
-                            tlkset = new BioTlkFileSet(pcc as ME1Package);
+                            tlkset = new BioTlkFileSet(CurrentLoadedExport.FileRef as ME1Package);
                         }
                     }
                     catch (Exception e)
                     {
-                        tlkset = new BioTlkFileSet(pcc as ME1Package);
+                        tlkset = new BioTlkFileSet(CurrentLoadedExport.FileRef as ME1Package);
                     }
                 }
                 else
@@ -278,13 +309,13 @@ namespace ME3Explorer
                 case PropertyType.ObjectProperty:
                     {
                         int index = (prop as ObjectProperty).Value;
-                        var entry = pcc.getEntry(index);
+                        var entry = CurrentLoadedExport.FileRef.getEntry(index);
                         if (entry != null)
                         {
                             displayValue = $"[{index}] {entry.GetFullPath}";
                             if (index > 0 && ExportToStringConverters.Contains(entry.ClassName))
                             {
-                                displayValue += " " + ExportToString(pcc.Exports[index - 1]);
+                                displayValue += " " + ExportToString(CurrentLoadedExport.FileRef.Exports[index - 1]);
                             }
                         }
                         else if (index == 0)
@@ -354,7 +385,8 @@ namespace ME3Explorer
             {
                 Property = prop,
                 DisplayValue = displayValue,
-                DisplayName = displayName
+                DisplayName = displayName,
+                Parent = parent
             };
             parent.ChildrenProperties.Add(item);
             if (prop.PropType == PropertyType.ArrayProperty)
@@ -405,15 +437,15 @@ namespace ME3Explorer
             {
                 case PropertyType.ObjectProperty:
                     int oIndex = (prop as ObjectProperty).Value;
-                    displayValue = ": [" + oIndex + "] ";
+                    displayValue = ": [" + oIndex + "] ";   
                     if (oIndex > 0 || oIndex < 0)
                     {
-                        if (oIndex <= pcc.ExportCount && oIndex > pcc.ImportCount * -1)
+                        if (oIndex <=CurrentLoadedExport.FileRef.ExportCount && oIndex >CurrentLoadedExport.FileRef.ImportCount * -1)
                         {
-                            displayValue = pcc.getEntry(oIndex).GetFullPath;
-                            if (oIndex > 0 && ExportToStringConverters.Contains(pcc.Exports[oIndex - 1].ClassName))
+                            displayValue =CurrentLoadedExport.FileRef.getEntry(oIndex).GetFullPath;
+                            if (oIndex > 0 && ExportToStringConverters.Contains(CurrentLoadedExport.FileRef.Exports[oIndex - 1].ClassName))
                             {
-                                displayValue += " " + ExportToString(pcc.Exports[oIndex - 1]);
+                                displayValue += " " + ExportToString(CurrentLoadedExport.FileRef.Exports[oIndex - 1]);
                             }
                         }
                         else
@@ -446,7 +478,8 @@ namespace ME3Explorer
             {
                 DisplayName = displayPrefix,
                 DisplayValue = displayValue,
-                Property = prop
+                Property = prop,
+                Parent = parent
             };
 
             parent.ChildrenProperties.Add(item);
@@ -495,10 +528,10 @@ namespace ME3Explorer
                 }
                 p.name = BitConverter.ToInt32(memory, readerpos);
 
-                if (readerpos == 4 && pcc.isName(p.name) && pcc.getNameEntry(p.name) == export.ObjectName)
+                if (readerpos == 4 &&CurrentLoadedExport.FileRef.isName(p.name) &&CurrentLoadedExport.FileRef.getNameEntry(p.name) == export.ObjectName)
                 {
                     //It's a primitive component header
-                    //Debug.WriteLine("Primitive Header " + pcc.Names[p.name]);
+                    //Debug.WriteLine("Primitive Header " +CurrentLoadedExport.FileRef.Names[p.name]);
                     readerpos += 12;
                     continue;
                 }
@@ -507,16 +540,16 @@ namespace ME3Explorer
                     run = false;
                 else
                 {
-                    string name = pcc.getNameEntry(p.name);
-                    if (pcc.getNameEntry(p.name) != "None")
+                    string name =CurrentLoadedExport.FileRef.getNameEntry(p.name);
+                    if (CurrentLoadedExport.FileRef.getNameEntry(p.name) != "None")
                     {
                         p.type = BitConverter.ToInt32(memory, readerpos + 8);
-                        if (p.name == 0 && p.type == 0 && pcc.getNameEntry(0) == "ArrayProperty")
+                        if (p.name == 0 && p.type == 0 &&CurrentLoadedExport.FileRef.getNameEntry(0) == "ArrayProperty")
                         {
                             //This could be a struct that just happens to have arrayproperty at name 0... this might fubar some stuff
                             return ret;
                         }
-                        if (!pcc.isName(p.type) || getType(pcc.getNameEntry(p.type)) == nodeType.Unknown)
+                        if (!pcc.isName(p.type) || getType(CurrentLoadedExport.FileRef.getNameEntry(p.type)) == nodeType.Unknown)
                             run = false;
                         else
                         {
@@ -526,18 +559,18 @@ namespace ME3Explorer
                             ret.Add(p);
                             readerpos += p.size + 24;
 
-                            if (getType(pcc.getNameEntry(p.type)) == nodeType.StructProperty) //StructName
+                            if (getType(CurrentLoadedExport.FileRef.getNameEntry(p.type)) == nodeType.StructProperty) //StructName
                                 readerpos += 8;
-                            if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
+                            if (CurrentLoadedExport.FileRef.Game == MEGame.ME3 ||CurrentLoadedExport.FileRef.Game == MEGame.UDK)
                             {
-                                if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)//Boolbyte
+                                if (getType(CurrentLoadedExport.FileRef.getNameEntry(p.type)) == nodeType.BoolProperty)//Boolbyte
                                     readerpos++;
-                                if (getType(pcc.getNameEntry(p.type)) == nodeType.ByteProperty)//byteprop
+                                if (getType(CurrentLoadedExport.FileRef.getNameEntry(p.type)) == nodeType.ByteProperty)//byteprop
                                     readerpos += 8;
                             }
                             else
                             {
-                                if (getType(pcc.getNameEntry(p.type)) == nodeType.BoolProperty)
+                                if (getType(CurrentLoadedExport.FileRef.getNameEntry(p.type)) == nodeType.BoolProperty)
                                     readerpos += 4;
                             }
                         }
@@ -565,8 +598,8 @@ namespace ME3Explorer
                 {
                     throw new IndexOutOfRangeException(": tried to read past bounds of Export Data");
                 }
-                nodeType type = getType(pcc.getNameEntry(header.type));
-                //Debug.WriteLine("Generating tree item for " + pcc.getNameEntry(header.name) + " at 0x" + header.offset.ToString("X6"));
+                nodeType type = getType(CurrentLoadedExport.FileRef.getNameEntry(header.type));
+                //Debug.WriteLine("Generating tree item for " +CurrentLoadedExport.FileRef.getNameEntry(header.name) + " at 0x" + header.offset.ToString("X6"));
 
                 if (type != nodeType.ArrayProperty && type != nodeType.StructProperty)
                 {
@@ -670,14 +703,14 @@ namespace ME3Explorer
                                         value--; //0-indexed
                                         if (isImport)
                                         {
-                                            if (pcc.ImportCount > value)
+                                            if (CurrentLoadedExport.FileRef.ImportCount > value)
                                             {
-                                                if (pcc.getNameEntry(header.name) == "m_AutoPersistentObjects")
+                                                if (CurrentLoadedExport.FileRef.getNameEntry(header.name) == "m_AutoPersistentObjects")
                                                 {
-                                                    s += pcc.getImport(value).PackageFullName + ".";
+                                                    s +=CurrentLoadedExport.FileRef.getImport(value).PackageFullName + ".";
                                                 }
 
-                                                s += pcc.getImport(value).ObjectName + " [IMPORT " + value + "]";
+                                                s +=CurrentLoadedExport.FileRef.getImport(value).ObjectName + " [IMPORT " + value + "]";
                                             }
                                             else
                                             {
@@ -686,20 +719,20 @@ namespace ME3Explorer
                                         }
                                         else
                                         {
-                                            if (pcc.ExportCount > value)
+                                            if (CurrentLoadedExport.FileRef.ExportCount > value)
                                             {
-                                                if (pcc.getNameEntry(header.name) == "m_AutoPersistentObjects")
+                                                if (CurrentLoadedExport.FileRef.getNameEntry(header.name) == "m_AutoPersistentObjects")
                                                 {
-                                                    s += pcc.getExport(value).PackageFullName + ".";
+                                                    s +=CurrentLoadedExport.FileRef.getExport(value).PackageFullName + ".";
                                                 }
-                                                if (pcc.getNameEntry(header.name) == "StreamingLevels")
+                                                if (CurrentLoadedExport.FileRef.getNameEntry(header.name) == "StreamingLevels")
                                                 {
-                                                    IExportEntry streamingLevel = pcc.getExport(value);
+                                                    IExportEntry streamingLevel =CurrentLoadedExport.FileRef.getExport(value);
                                                     NameProperty prop = streamingLevel.GetProperty<NameProperty>("PackageName");
 
                                                     s += prop.Value.Name + "_" + prop.Value.Number + " in ";
                                                 }
-                                                s += pcc.getExport(value).ObjectName + " [EXPORT " + value + "]";
+                                                s +=CurrentLoadedExport.FileRef.getExport(value).ObjectName + " [EXPORT " + value + "]";
                                             }
                                             else
                                             {
@@ -720,7 +753,7 @@ namespace ME3Explorer
                                     }
                                     else
                                     {
-                                        if (pcc.Names.Count > value)
+                                        if (CurrentLoadedExport.FileRef.Names.Count > value)
                                         {
                                             s += $"\"{pcc.Names[value]}\"_{BitConverter.ToInt32(memory, pos + 4)}[NAMEINDEX {value}]";
                                         }
@@ -789,7 +822,7 @@ namespace ME3Explorer
                     }
                     if (type == nodeType.StructProperty)
                     {
-                        if (pcc.getNameEntry(header.name) == "ArriveTangent")
+                        if (CurrentLoadedExport.FileRef.getNameEntry(header.name) == "ArriveTangent")
                         {
                             Debug.WriteLine("test");
                         }
@@ -802,7 +835,7 @@ namespace ME3Explorer
                         }
                         else
                         {
-                            string structType = pcc.getNameEntry(BitConverter.ToInt32(memory, header.offset + 24));
+                            string structType =CurrentLoadedExport.FileRef.getNameEntry(BitConverter.ToInt32(memory, header.offset + 24));
                             GenerateSpecialStruct(t, structType, header.size);
                         }
                         localRoot.Items.Add(t);
@@ -830,7 +863,7 @@ namespace ME3Explorer
                     readerpos += 4;
                 }
             }
-            else if (pcc.Game == MEGame.ME3)
+            else if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
             {
                 if (ME3UnrealObjectInfo.Structs.ContainsKey(structType))
                 {
@@ -842,7 +875,7 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        byte[] defaultValue = ME3UnrealObjectInfo.getDefaultClassValue(pcc as ME3Package, structType, true);
+                        byte[] defaultValue = ME3UnrealObjectInfo.getDefaultClassValue(CurrentLoadedExport.FileRef as ME3Package, structType, true);
                         if (defaultValue == null)
                         {
                             //just prints the raw hex since there's no telling what it actually is
@@ -852,12 +885,12 @@ namespace ME3Explorer
                             readerpos += size;
                             return;
                         }
-                        props = PropertyReader.ReadProp(pcc, defaultValue, 0);
+                        props = PropertyReader.ReadProp(CurrentLoadedExport.FileRef, defaultValue, 0);
                         defaultStructValues.Add(structType, props);
                     }
                     for (int i = 0; i < props.Count; i++)
                     {
-                        string s = readerpos.ToString("X4") + ": " + pcc.getNameEntry(props[i].Name) + " : ";
+                        string s = readerpos.ToString("X4") + ": " +CurrentLoadedExport.FileRef.getNameEntry(props[i].Name) + " : ";
                         readerpos = GenerateSpecialStructProp(t, s, readerpos, props[i]);
                     }
                 }
@@ -1068,7 +1101,7 @@ namespace ME3Explorer
                     break;
                 case PropertyType.ObjectProperty:
                     n = BitConverter.ToInt32(memory, pos);
-                    s += n + " (" + pcc.getObjectName(n) + ")";
+                    s += n + " (" +CurrentLoadedExport.FileRef.getObjectName(n) + ")";
                     node = new TreeViewItem() { Header = s };
                     node.Name = "_" + pos.ToString();
                     node.Tag = nodeType.StructLeafObject;
@@ -1088,7 +1121,7 @@ namespace ME3Explorer
                 case PropertyType.NameProperty:
                     n = BitConverter.ToInt32(memory, pos);
                     pos += 4;
-                    s += "\"" + pcc.getNameEntry(n) + "\"_" + BitConverter.ToInt32(memory, pos);
+                    s += "\"" +CurrentLoadedExport.FileRef.getNameEntry(n) + "\"_" + BitConverter.ToInt32(memory, pos);
                     node = new TreeViewItem() { Header = s };
                     node.Name = "_" + pos.ToString();
                     node.Tag = nodeType.StructLeafName;
@@ -1111,7 +1144,7 @@ namespace ME3Explorer
                         {
                             s += "\"" + enumName + "\", ";
                         }
-                        s += "\"" + pcc.getNameEntry(BitConverter.ToInt32(memory, pos)) + "\"";
+                        s += "\"" +CurrentLoadedExport.FileRef.getNameEntry(BitConverter.ToInt32(memory, pos)) + "\"";
                         node = new TreeViewItem() { Header = s };
                         node.Name = "_" + pos.ToString();
                         node.Tag = nodeType.StructLeafEnum;
@@ -1240,28 +1273,28 @@ namespace ME3Explorer
         public TreeViewItem GenerateNode(PropHeader p)
         {
             string s = p.offset.ToString("X4") + ": ";
-            s += "Name: \"" + pcc.getNameEntry(p.name) + "\" ";
-            s += "Type: \"" + pcc.getNameEntry(p.type) + "\" ";
+            s += "Name: \"" +CurrentLoadedExport.FileRef.getNameEntry(p.name) + "\" ";
+            s += "Type: \"" +CurrentLoadedExport.FileRef.getNameEntry(p.type) + "\" ";
             s += "Size: " + p.size + " Value: ";
-            nodeType propertyType = getType(pcc.getNameEntry(p.type));
+            nodeType propertyType = getType(CurrentLoadedExport.FileRef.getNameEntry(p.type));
             int idx;
             byte val;
             switch (propertyType)
             {
                 case nodeType.IntProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    if (pcc.getNameEntry(p.name) == "m_nStrRefID")
+                    if (CurrentLoadedExport.FileRef.getNameEntry(p.name) == "m_nStrRefID")
                     {
                         s += "#" + idx + ": ";
-                        if (pcc.Game == MEGame.ME3)
+                        if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
                         {
                             s += ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(idx);
                         }
-                        else if (pcc.Game == MEGame.ME2)
+                        else if (CurrentLoadedExport.FileRef.Game == MEGame.ME2)
                         {
                             s += ME2Explorer.ME2TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME2Explorer.ME2TalkFiles.findDataById(idx);
                         }
-                        else if (pcc.Game == MEGame.ME1)
+                        else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
                         {
                             s += tlkset == null ? "(.tlk not loaded)" : tlkset.findDataById(idx);
                         }
@@ -1273,7 +1306,7 @@ namespace ME3Explorer
                     break;
                 case nodeType.ObjectProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += idx + " (" + pcc.getObjectName(idx) + ")";
+                    s += idx + " (" +CurrentLoadedExport.FileRef.getObjectName(idx) + ")";
                     break;
                 case nodeType.StrProperty:
                     int count = BitConverter.ToInt32(memory, p.offset + 24);
@@ -1300,14 +1333,14 @@ namespace ME3Explorer
                     break;
                 case nodeType.NameProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += "\"" + pcc.getNameEntry(idx) + "\"_" + BitConverter.ToInt32(memory, p.offset + 28);
+                    s += "\"" +CurrentLoadedExport.FileRef.getNameEntry(idx) + "\"_" + BitConverter.ToInt32(memory, p.offset + 28);
                     break;
                 case nodeType.StructProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += "\"" + pcc.getNameEntry(idx) + "\"";
+                    s += "\"" +CurrentLoadedExport.FileRef.getNameEntry(idx) + "\"";
                     break;
                 case nodeType.ByteProperty:
-                    if (pcc.Game == MEGame.ME3 || pcc.Game == MEGame.UDK)
+                    if (CurrentLoadedExport.FileRef.Game == MEGame.ME3 ||CurrentLoadedExport.FileRef.Game == MEGame.UDK)
                     {
                         if (p.size == 1)
                         {
@@ -1318,7 +1351,7 @@ namespace ME3Explorer
                         {
                             idx = BitConverter.ToInt32(memory, p.offset + 24);
                             int idx2 = BitConverter.ToInt32(memory, p.offset + 32);
-                            s += "\"" + pcc.getNameEntry(idx) + "\",\"" + pcc.getNameEntry(idx2) + "\"";
+                            s += "\"" +CurrentLoadedExport.FileRef.getNameEntry(idx) + "\",\"" +CurrentLoadedExport.FileRef.getNameEntry(idx2) + "\"";
                         }
                     }
                     else
@@ -1331,7 +1364,7 @@ namespace ME3Explorer
                         else
                         {
                             idx = BitConverter.ToInt32(memory, p.offset + 24);
-                            s += "\"" + pcc.getNameEntry(idx) + "\"";
+                            s += "\"" +CurrentLoadedExport.FileRef.getNameEntry(idx) + "\"";
                         }
                     }
                     break;
@@ -1342,15 +1375,15 @@ namespace ME3Explorer
                 case nodeType.StringRefProperty:
                     idx = BitConverter.ToInt32(memory, p.offset + 24);
                     s += "#" + idx + ": ";
-                    if (pcc.Game == MEGame.ME3)
+                    if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
                     {
                         s += ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(idx);
                     }
-                    else if (pcc.Game == MEGame.ME2)
+                    else if (CurrentLoadedExport.FileRef.Game == MEGame.ME2)
                     {
                         s += ME2Explorer.ME2TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME2Explorer.ME2TalkFiles.findDataById(idx);
                     }
-                    else if (pcc.Game == MEGame.ME1)
+                    else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
                     {
                         s += tlkset == null ? "(.tlk not loaded)" : tlkset.findDataById(idx);
                     }
@@ -1391,15 +1424,15 @@ namespace ME3Explorer
                     {
                         int val = BitConverter.ToInt32(currentData, start);
                         s += $", Int: {val}";
-                        if (pcc.isName(val))
+                        if (CurrentLoadedExport.FileRef.isName(val))
                         {
-                            s += $", Name: {pcc.getNameEntry(val)}";
+                            s += $", Name: {CurrentLoadedExport.FileRef.getNameEntry(val)}";
                         }
-                        if (pcc.getEntry(val) is IExportEntry exp)
+                        if (CurrentLoadedExport.FileRef.getEntry(val) is IExportEntry exp)
                         {
                             s += $", Export: {exp.ObjectName}";
                         }
-                        else if (pcc.getEntry(val) is ImportEntry imp)
+                        else if (CurrentLoadedExport.FileRef.getEntry(val) is ImportEntry imp)
                         {
                             s += $", Import: {imp.ObjectName}";
                         }
@@ -1425,22 +1458,22 @@ namespace ME3Explorer
         #region UnrealObjectInfo
         private PropertyInfo GetPropertyInfo(int propName)
         {
-            switch (pcc.Game)
+            switch (CurrentLoadedExport.FileRef.Game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getPropertyInfo(className, pcc.getNameEntry(propName));
+                    return ME1UnrealObjectInfo.getPropertyInfo(className,CurrentLoadedExport.FileRef.getNameEntry(propName));
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getPropertyInfo(className, pcc.getNameEntry(propName));
+                    return ME2UnrealObjectInfo.getPropertyInfo(className,CurrentLoadedExport.FileRef.getNameEntry(propName));
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getPropertyInfo(className, pcc.getNameEntry(propName));
+                    return ME3UnrealObjectInfo.getPropertyInfo(className,CurrentLoadedExport.FileRef.getNameEntry(propName));
             }
             return null;
         }
 
         private PropertyInfo GetPropertyInfo(string propname, string typeName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
         {
-            switch (pcc.Game)
+            switch (CurrentLoadedExport.FileRef.Game)
             {
                 case MEGame.ME1:
                     return ME1UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
@@ -1474,7 +1507,7 @@ namespace ME3Explorer
             {
                 typeName = className;
             }
-            switch (pcc.Game)
+            switch (CurrentLoadedExport.FileRef.Game)
             {
                 case MEGame.ME1:
                     return ME1UnrealObjectInfo.getArrayType(typeName, propName, export: CurrentLoadedExport);
@@ -1493,27 +1526,27 @@ namespace ME3Explorer
             {
                 typeName = className;
             }
-            switch (pcc.Game)
+            switch (CurrentLoadedExport.FileRef.Game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName), export: CurrentLoadedExport);
+                    return ME1UnrealObjectInfo.getArrayType(typeName,CurrentLoadedExport.FileRef.getNameEntry(propName), export: CurrentLoadedExport);
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName), export: CurrentLoadedExport);
+                    return ME2UnrealObjectInfo.getArrayType(typeName,CurrentLoadedExport.FileRef.getNameEntry(propName), export: CurrentLoadedExport);
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getArrayType(typeName, pcc.getNameEntry(propName), export: CurrentLoadedExport);
+                    return ME3UnrealObjectInfo.getArrayType(typeName,CurrentLoadedExport.FileRef.getNameEntry(propName), export: CurrentLoadedExport);
             }
             return ArrayType.Int;
         }
 
         private List<string> GetEnumValues(string enumName, int propName)
         {
-            switch (pcc.Game)
+            switch (CurrentLoadedExport.FileRef.Game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getEnumfromProp(className, pcc.getNameEntry(propName));
+                    return ME1UnrealObjectInfo.getEnumfromProp(className,CurrentLoadedExport.FileRef.getNameEntry(propName));
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getEnumfromProp(className, pcc.getNameEntry(propName));
+                    return ME2UnrealObjectInfo.getEnumfromProp(className,CurrentLoadedExport.FileRef.getNameEntry(propName));
                 case MEGame.ME3:
                 case MEGame.UDK:
                     return ME3UnrealObjectInfo.getEnumValues(enumName, true);
@@ -1701,7 +1734,7 @@ namespace ME3Explorer
 
         private void Interpreter_AddProperty_Click(object sender, RoutedEventArgs e)
         {
-            if (pcc.Game == MEGame.UDK)
+            if (CurrentLoadedExport.FileRef.Game == MEGame.UDK)
             {
                 MessageBox.Show("Cannot add properties to UDK UPK files.", "Unsupported operation");
                 return;
@@ -1714,7 +1747,7 @@ namespace ME3Explorer
                 props.Add(cProp.Name);
             }
 
-            Tuple<string,PropertyInfo> prop = AddPropertyDialogWPF.GetProperty(CurrentLoadedExport, props, pcc.Game);
+            Tuple<string,PropertyInfo> prop = AddPropertyDialogWPF.GetProperty(CurrentLoadedExport, props,CurrentLoadedExport.FileRef.Game);
 
             if (prop != null)
             {
@@ -1722,7 +1755,7 @@ namespace ME3Explorer
                 string temp = CurrentLoadedExport.ClassName;
                 List<string> classes = new List<string>();
                 Dictionary<string, ClassInfo> classList;
-                switch (pcc.Game)
+                switch (CurrentLoadedExport.FileRef.Game)
                 {
                     case MEGame.ME1:
                         classList = ME1Explorer.Unreal.ME1UnrealObjectInfo.Classes;
@@ -1740,7 +1773,7 @@ namespace ME3Explorer
                 {
                     IExportEntry exportTemp = CurrentLoadedExport.FileRef.Exports[CurrentLoadedExport.idxClass - 1];
                     //current object is not in classes db, temporarily add it to the list
-                    switch (pcc.Game)
+                    switch (CurrentLoadedExport.FileRef.Game)
                     {
                         case MEGame.ME1:
                             currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(exportTemp);
@@ -1795,7 +1828,7 @@ namespace ME3Explorer
                     MessageBox.Show("Error reading property.", "Error");
                     return null;
                 }
-                if (info.type == PropertyType.StructProperty /* && pcc.Game != MEGame.ME3*/)
+                if (info.type == PropertyType.StructProperty /* &&CurrentLoadedExport.FileRef.Game != MEGame.ME3*/)
                 {
                     MessageBox.Show("Cannot add StructProperties when editing ME1 or ME2 files (or ME3 currently).", "Sorry :(");
                     return null;

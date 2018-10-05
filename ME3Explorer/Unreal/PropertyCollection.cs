@@ -835,6 +835,37 @@ namespace ME3Explorer.Unreal
             }
         }
 
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as NameProperty);
+        }
+
+        public bool Equals(NameProperty p)
+        {
+            // If parameter is null, return false.
+            if (object.ReferenceEquals(p, null))
+            {
+                return false;
+            }
+
+            // Optimization for a common success case.
+            if (object.ReferenceEquals(this, p))
+            {
+                return true;
+            }
+
+            // If run-time types are not exactly the same, return false.
+            if (this.GetType() != p.GetType())
+            {
+                return false;
+            }
+
+            // Return true if the fields match.
+            // Note that the base class is not invoked because it is
+            // System.Object, which defines Equals as reference equality.
+            return (Value == p.Value.Name) && (Value.Number == p.Value.Number);
+        }
+
         public override string ToString()
         {
             return Value;
