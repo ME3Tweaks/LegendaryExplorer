@@ -27,6 +27,9 @@
             <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
             <Button Content="Toggle Hexbox Width" Click="Interpreter_ToggleHexboxWidth_Click"/>
             <Button Content="Add Property" Click="Interpreter_AddProperty_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
+            <TextBlock Text="|" VerticalAlignment="Center"/>
+            <TextBox Width="50" VerticalAlignment="Center" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
+            <Button Content="Set" Click="SetValue_Click"/>
         </ToolBar>
 
         <StatusBar Height="23" DockPanel.Dock="Bottom">
@@ -61,8 +64,8 @@
                             <StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock x:Name="PropertyItem_DisplayName" Text="{Binding DisplayName}" VerticalAlignment="Center" FontStyle="Italic"/>
-                                    <SharedUI:EditableTextBlock x:Name="PropertyItem_DisplayValue" IsEditable="{Binding EditableType}" Text="{Binding DisplayValue, Mode=TwoWay}"                                              IsInEditMode="{Binding Edit, Mode=TwoWay}"/>
-                                    <TextBlock  VerticalAlignment="Center" FontWeight="Bold"/>
+                                    <SharedUI:EditableTextBlock x:Name="PropertyItem_DisplayValue" IsEditable="{Binding EditableType}" Text="{Binding EditableValue, Mode=TwoWay}" IsInEditMode="{Binding Edit, Mode=TwoWay}"/>
+                                    <TextBlock x:Name="PropertyItem_ParsedValue" Margin="5,0,0,0"  Text="{Binding ParsedValue}" VerticalAlignment="Center" FontStyle="Italic"/>
                                 </StackPanel>
                                 <TextBlock x:Name="PropertyItem_DisplayType" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0"/>
                             </StackPanel>
@@ -109,8 +112,8 @@
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d4818"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88ffb759"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding HasChanges}" Value="None">
-                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="Red"/>
+                            <DataTrigger Binding="{Binding HasChanges}" Value="True">
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="Maroon"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="Yellow"/>
                             </DataTrigger>
                         </HierarchicalDataTemplate.Triggers>

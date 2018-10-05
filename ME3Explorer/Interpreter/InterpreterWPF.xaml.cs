@@ -302,7 +302,8 @@ namespace ME3Explorer
         private void GenerateTreeForProperty(UProperty prop, UPropertyTreeViewEntry parent)
         {
             string displayName = $"{prop.Offset.ToString("X4")}: { prop.Name}: ";
-            string displayValue = "";
+            string editableValue = ""; //editable value
+            string parsedValue = ""; //human formatted item. Will most times be blank
             var nodeColor = Brushes.Black;
             switch (prop.PropType)
             {
@@ -312,79 +313,86 @@ namespace ME3Explorer
                         var entry = CurrentLoadedExport.FileRef.getEntry(index);
                         if (entry != null)
                         {
-                            displayValue = $"[{index}] {entry.GetFullPath}";
+                            editableValue = index.ToString();
+                            parsedValue = entry.GetFullPath;
                             if (index > 0 && ExportToStringConverters.Contains(entry.ClassName))
                             {
-                                displayValue += " " + ExportToString(CurrentLoadedExport.FileRef.Exports[index - 1]);
+                                editableValue += " " + ExportToString(CurrentLoadedExport.FileRef.Exports[index - 1]);
                             }
                         }
                         else if (index == 0)
                         {
-                            displayValue = index + " Null";
+                            editableValue = index.ToString();
+                            parsedValue = "Null";
+
                         }
                         else
                         {
-                            displayValue = index + " Index out of bounds of " + (index < 0 ? "Import" : "Export") + " list";
+                            editableValue = index.ToString();
+                            parsedValue = "Index out of bounds of " + (index < 0 ? "Import" : "Export") + " list";
                         }
                         nodeColor = Brushes.Blue;
                     }
                     break;
                 case PropertyType.IntProperty:
                     {
-                        displayValue = (prop as IntProperty).Value.ToString();
+                        editableValue = (prop as IntProperty).Value.ToString();
                         if (IntToStringConverters.Contains(CurrentLoadedExport.ClassName))
                         {
-                            displayValue += IntToString(prop.Name, (prop as IntProperty).Value);
+                            editableValue += IntToString(prop.Name, (prop as IntProperty).Value);
                         }
                         nodeColor = Brushes.Green;
                     }
                     break;
                 case PropertyType.FloatProperty:
                     {
-                        displayValue = (prop as FloatProperty).Value.ToString();
+                        editableValue = (prop as FloatProperty).Value.ToString();
                         nodeColor = Brushes.Red;
                     }
                     break;
                 case PropertyType.BoolProperty:
                     {
-                        displayValue = (prop as BoolProperty).Value.ToString();
+                        editableValue = (prop as BoolProperty).Value.ToString(); //combobox
                         nodeColor = Brushes.Orange;
                     }
                     break;
                 case PropertyType.ArrayProperty:
                     {
                         ArrayType at = GetArrayType(prop.Name.Name);
-                        displayValue = $"{at.ToString()} array, with {(prop as ArrayPropertyBase).ValuesAsProperties.Count()} items";
+                        parsedValue = $"{at.ToString()} array, with {(prop as ArrayPropertyBase).ValuesAsProperties.Count()} items";
                     }
                     break;
                 case PropertyType.NameProperty:
-                    displayValue = (prop as NameProperty).NameTableIndex + " " + (prop as NameProperty).Value;
+                    editableValue = (prop as NameProperty).NameTableIndex + " " + (prop as NameProperty).Value; //will require special 2-box setup
                     break;
                 case PropertyType.ByteProperty:
                     if (prop is EnumProperty)
                     {
-                        displayValue = (prop as EnumProperty).Value;
+                        //editableValue = (prop as EnumProperty).Value.ToString();
+                        parsedValue = (prop as EnumProperty).Value;
                     }
                     else
                     {
-                        displayValue = (prop as ByteProperty).Value.ToString();
+                        editableValue = (prop as ByteProperty).Value.ToString();
+                        parsedValue = (prop as ByteProperty).Value.ToString();
                     }
                     break;
                 case PropertyType.StrProperty:
-                    displayValue = (prop as StrProperty).Value;
+                    editableValue = (prop as StrProperty).Value;
                     break;
                 case PropertyType.StructProperty:
-                    displayValue = (prop as StructProperty).StructType;
+                    parsedValue = (prop as StructProperty).StructType;
                     break;
                 case PropertyType.None:
-                    displayValue = "End of properties";
+                    parsedValue = "End of properties";
                     nodeColor = Brushes.SlateGray;
                     break;
             }
             UPropertyTreeViewEntry item = new UPropertyTreeViewEntry()
             {
                 Property = prop,
-                DisplayValue = displayValue,
+                EditableValue = editableValue,
+                ParsedValue = parsedValue,
                 DisplayName = displayName,
                 Parent = parent
             };
@@ -437,12 +445,12 @@ namespace ME3Explorer
             {
                 case PropertyType.ObjectProperty:
                     int oIndex = (prop as ObjectProperty).Value;
-                    displayValue = ": [" + oIndex + "] ";   
+                    displayValue = ": [" + oIndex + "] ";
                     if (oIndex > 0 || oIndex < 0)
                     {
-                        if (oIndex <=CurrentLoadedExport.FileRef.ExportCount && oIndex >CurrentLoadedExport.FileRef.ImportCount * -1)
+                        if (oIndex <= CurrentLoadedExport.FileRef.ExportCount && oIndex > CurrentLoadedExport.FileRef.ImportCount * -1)
                         {
-                            displayValue =CurrentLoadedExport.FileRef.getEntry(oIndex).GetFullPath;
+                            displayValue = CurrentLoadedExport.FileRef.getEntry(oIndex).GetFullPath;
                             if (oIndex > 0 && ExportToStringConverters.Contains(CurrentLoadedExport.FileRef.Exports[oIndex - 1].ClassName))
                             {
                                 displayValue += " " + ExportToString(CurrentLoadedExport.FileRef.Exports[oIndex - 1]);
@@ -477,7 +485,7 @@ namespace ME3Explorer
             UPropertyTreeViewEntry item = new UPropertyTreeViewEntry()
             {
                 DisplayName = displayPrefix,
-                DisplayValue = displayValue,
+                EditableValue = displayValue,
                 Property = prop,
                 Parent = parent
             };
@@ -1461,12 +1469,12 @@ namespace ME3Explorer
             switch (CurrentLoadedExport.FileRef.Game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getPropertyInfo(className,CurrentLoadedExport.FileRef.getNameEntry(propName));
+                    return ME1UnrealObjectInfo.getPropertyInfo(className, CurrentLoadedExport.FileRef.getNameEntry(propName));
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getPropertyInfo(className,CurrentLoadedExport.FileRef.getNameEntry(propName));
+                    return ME2UnrealObjectInfo.getPropertyInfo(className, CurrentLoadedExport.FileRef.getNameEntry(propName));
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getPropertyInfo(className,CurrentLoadedExport.FileRef.getNameEntry(propName));
+                    return ME3UnrealObjectInfo.getPropertyInfo(className, CurrentLoadedExport.FileRef.getNameEntry(propName));
             }
             return null;
         }
@@ -1529,12 +1537,12 @@ namespace ME3Explorer
             switch (CurrentLoadedExport.FileRef.Game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getArrayType(typeName,CurrentLoadedExport.FileRef.getNameEntry(propName), export: CurrentLoadedExport);
+                    return ME1UnrealObjectInfo.getArrayType(typeName, CurrentLoadedExport.FileRef.getNameEntry(propName), export: CurrentLoadedExport);
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getArrayType(typeName,CurrentLoadedExport.FileRef.getNameEntry(propName), export: CurrentLoadedExport);
+                    return ME2UnrealObjectInfo.getArrayType(typeName, CurrentLoadedExport.FileRef.getNameEntry(propName), export: CurrentLoadedExport);
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getArrayType(typeName,CurrentLoadedExport.FileRef.getNameEntry(propName), export: CurrentLoadedExport);
+                    return ME3UnrealObjectInfo.getArrayType(typeName, CurrentLoadedExport.FileRef.getNameEntry(propName), export: CurrentLoadedExport);
             }
             return ArrayType.Int;
         }
@@ -1544,9 +1552,9 @@ namespace ME3Explorer
             switch (CurrentLoadedExport.FileRef.Game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getEnumfromProp(className,CurrentLoadedExport.FileRef.getNameEntry(propName));
+                    return ME1UnrealObjectInfo.getEnumfromProp(className, CurrentLoadedExport.FileRef.getNameEntry(propName));
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getEnumfromProp(className,CurrentLoadedExport.FileRef.getNameEntry(propName));
+                    return ME2UnrealObjectInfo.getEnumfromProp(className, CurrentLoadedExport.FileRef.getNameEntry(propName));
                 case MEGame.ME3:
                 case MEGame.UDK:
                     return ME3UnrealObjectInfo.getEnumValues(enumName, true);
@@ -1747,7 +1755,7 @@ namespace ME3Explorer
                 props.Add(cProp.Name);
             }
 
-            Tuple<string,PropertyInfo> prop = AddPropertyDialogWPF.GetProperty(CurrentLoadedExport, props,CurrentLoadedExport.FileRef.Game);
+            Tuple<string, PropertyInfo> prop = AddPropertyDialogWPF.GetProperty(CurrentLoadedExport, props, CurrentLoadedExport.FileRef.Game);
 
             if (prop != null)
             {
@@ -1794,16 +1802,16 @@ namespace ME3Explorer
                 switch (prop.Item2.type)
                 {
                     case PropertyType.IntProperty:
-                        newProperty = new IntProperty(0,prop.Item1);
+                        newProperty = new IntProperty(0, prop.Item1);
                         break;
                     case PropertyType.BoolProperty:
-                        newProperty = new BoolProperty(false,prop.Item1);
+                        newProperty = new BoolProperty(false, prop.Item1);
                         break;
                     case PropertyType.FloatProperty:
                         newProperty = new FloatProperty(0.0f, prop.Item1);
                         break;
                     case PropertyType.ArrayProperty:
-                        newProperty = new ArrayProperty<IntProperty>(ArrayType.Int,prop.Item1); //We can just set it to int as it will be reparsed and resolved.
+                        newProperty = new ArrayProperty<IntProperty>(ArrayType.Int, prop.Item1); //We can just set it to int as it will be reparsed and resolved.
                         break;
                 }
 
@@ -1841,19 +1849,31 @@ namespace ME3Explorer
         {
             return true;
         }
+
+        private void SetValue_Click(object sender, RoutedEventArgs e)
+        {
+            //todo: set value
+            UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
+            if (tvi != null && tvi.Property != null)
+            {
+                UProperty tag = tvi.Property;
+                PropertyCollection props = CurrentLoadedExport.GetProperties();
+                props.Remove(tag);
+                CurrentLoadedExport.WriteProperties(props);
+                StartScan();
+            }
+        }
     }
 
-    [DebuggerDisplay("UPropertyTreeViewEntry {DisplayName}")]
+    [DebuggerDisplay("UPropertyTreeViewEntry | {DisplayName}")]
     public class UPropertyTreeViewEntry : INotifyPropertyChanged
     {
-        protected void OnPropertyChanged(string propName)
+        protected void OnPropertyChanged([CallerMemberName] string propName = null)
         {
-            var temp = PropertyChanged;
-            if (temp != null)
-                temp(this, new PropertyChangedEventArgs(propName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
         }
         public event PropertyChangedEventHandler PropertyChanged;
-        private System.Windows.Media.Brush _foregroundColor = System.Windows.Media.Brushes.DarkSeaGreen;
+        private Brush _foregroundColor = Brushes.DarkSeaGreen;
         private bool isSelected;
         public bool IsSelected
         {
@@ -1890,14 +1910,14 @@ namespace ME3Explorer
 
                 switch (Property.PropType)
                 {
-                    case Unreal.PropertyType.BoolProperty:
-                    case Unreal.PropertyType.ByteProperty:
+                    //case Unreal.PropertyType.BoolProperty:
+                    //case Unreal.PropertyType.ByteProperty:
                     case Unreal.PropertyType.FloatProperty:
                     case Unreal.PropertyType.IntProperty:
-                    case Unreal.PropertyType.NameProperty:
-                    case Unreal.PropertyType.StringRefProperty:
+                    //case Unreal.PropertyType.NameProperty:
+                    //case Unreal.PropertyType.StringRefProperty:
                     case Unreal.PropertyType.StrProperty:
-                    case Unreal.PropertyType.ObjectProperty:
+                        //case Unreal.PropertyType.ObjectProperty:
                         return true;
                 }
                 return false;
@@ -1957,15 +1977,44 @@ namespace ME3Explorer
             ChildrenProperties = new ObservableCollectionExtended<UPropertyTreeViewEntry>();
         }
 
-        private string _displayValue;
-        public string DisplayValue
+        private string _editableValue;
+        public string EditableValue
         {
             get
             {
-                if (_displayValue != null) return _displayValue;
+                if (_editableValue != null) return _editableValue;
                 return "";
             }
-            set { _displayValue = value; }
+            set
+            {
+                //Todo: Write property value here
+                if (_editableValue != null && _editableValue != value)
+                {
+                    switch (Property.PropType)
+                    {
+                        case Unreal.PropertyType.IntProperty:
+                            if (int.TryParse(value, out int parsedIntVal))
+                            {
+                                (Property as IntProperty).Value = parsedIntVal;
+
+                                HasChanges = true;
+                            }
+                            break;
+                    }
+                }
+                _editableValue = value;
+            }
+        }
+
+        private bool _hasChanges;
+        public bool HasChanges
+        {
+            get { return _hasChanges; }
+            set
+            {
+                _hasChanges = value;
+                OnPropertyChanged();
+            }
         }
 
         private string _displayName;
@@ -1981,7 +2030,22 @@ namespace ME3Explorer
             set { _displayName = value; }
         }
 
+        public bool IsUpdatable = false; //set to
 
+        private string _parsedValue;
+        public string ParsedValue
+        {
+            get
+            {
+                if (_parsedValue != null) return _parsedValue;
+                return "";
+            }
+            set
+            {
+                _parsedValue = value;
+
+            }
+        }
 
         public string PropertyType
         {
@@ -1991,7 +2055,7 @@ namespace ME3Explorer
                 {
                     if (Property.PropType == Unreal.PropertyType.ArrayProperty)
                     {
-                        return "ArrayProperty - TODO";
+                        return "ArrayProperty - TODO"; //we don't have reference to current pcc so we cannot look this up at this time.
                         //return $"ArrayProperty({(Property as ArrayProperty).arrayType})";
 
                     }
