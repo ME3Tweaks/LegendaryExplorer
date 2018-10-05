@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -1000,25 +1001,7 @@ namespace ME3Explorer
                  headerSizeBox.Text = ImportEntry.byteSize + " bytes";*/
             }
         }
-
-        public void RefreshExportChangedStatus()
-        {
-            /*if (Pcc != null)
-            {
-                for (int i = 0; i < pcc.Exports.Count; i++)
-                {
-                    if (Pcc.Exports[i].DataChanged || pcc.Exports[i].HeaderChanged)
-                    {
-                        Debug.WriteLine("DataChanged for " + i + " " + pcc.Exports[i].GetFullPath);
-                    }
-                    object o = AllTreeViewNodes[i + 1];
-                    AllTreeViewNodes[i + 1].Background = (Pcc.Exports[i].DataChanged || pcc.Exports[i].HeaderChanged) ? Brushes.Yellow : null;
-                    AllTreeViewNodes[i + 1].ToolTip = (Pcc.Exports[i].DataChanged || pcc.Exports[i].HeaderChanged) ? "This entry has been modified but has not been commited to disk yet" : null;
-
-                }
-            }*/
-        }
-
+        
         /// <summary>
         /// Gets the selected entry uindex in the left side view.
         /// </summary>
@@ -1095,7 +1078,6 @@ namespace ME3Explorer
                 //binaryInterpreterControl.RefreshMem();
                 Preview(true);
             }
-            RefreshExportChangedStatus();
         }
 
 
@@ -1382,15 +1364,6 @@ namespace ME3Explorer
         private void SaveCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Pcc.save();
-            foreach (IExportEntry entry in Pcc.Exports)
-            {
-                entry.HeaderChanged = false;
-                entry.DataChanged = false;
-            }
-            foreach (ImportEntry entry in Pcc.Imports)
-            {
-                entry.HeaderChanged = false;
-            }
         }
 
         private void SaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -1402,64 +1375,14 @@ namespace ME3Explorer
             if (result.HasValue && result.Value)
             {
                 Pcc.save(d.FileName);
-
-                foreach (IExportEntry entry in Pcc.Exports)
-                {
-                    entry.HeaderChanged = false;
-                    entry.DataChanged = false;
-                }
-                foreach (ImportEntry entry in Pcc.Imports)
-                {
-                    entry.HeaderChanged = false;
-                }
-
                 MessageBox.Show("Done");
             }
         }
 
         private void PackageEditorWPF_Loaded(object sender, RoutedEventArgs e)
         {
+            // Get reference to hexbox winforms control
             Header_Hexbox = (HexBox)Header_Hexbox_Host.Child;
-            InterpreterTab_Interpreter.SaveHexChange_Button.Click += Interpreter_SaveHexChanges_Clicked;
-            //            // Create the interop host control.
-            //            System.Windows.Forms.Integration.WindowsFormsHost host =
-            //                new System.Windows.Forms.Integration.WindowsFormsHost();
-
-            //            // Create the MaskedTextBox control.
-            //            Header_Hexbox = new Be.Windows.Forms.HexBox();
-            //            this.Header_Hexbox.BoldFont = null;
-            //            this.Header_Hexbox.BytesPerLine = 16;
-            ////            this.Header_Hexbox.Dock = System.Windows.Forms.DockStyle.Fill;
-            //            this.Header_Hexbox.Dock = System.Windows.Forms.DockStyle.Left;
-
-            //            this.Header_Hexbox.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            //            this.Header_Hexbox.LineInfoForeColor = System.Drawing.Color.Empty;
-            //            this.Header_Hexbox.LineInfoVisible = true;
-            //            this.Header_Hexbox.ColumnInfoVisible = true;
-            //            this.Header_Hexbox.Location = new System.Drawing.Point(0, 0);
-            //            this.Header_Hexbox.MinBytesPerLine = 4;
-            //            this.Header_Hexbox.Name = "Header_Hexbox";
-            //            this.Header_Hexbox.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            //            this.Header_Hexbox.StringViewVisible = true;
-            //            this.Header_Hexbox.TabIndex = 0;
-            //            this.Header_Hexbox.VScrollBarVisible = true;
-            //            //this.Header_Hexbox.SelectionStartChanged += new System.EventHandler(this.Header_Hexbox_SelectionChanged);
-            //            //this.Header_Hexbox.SelectionLengthChanged += new System.EventHandler(this.Header_Hexbox_SelectionChanged);
-
-            //            host.Child = Header_Hexbox;
-
-            //            // Add the interop host control to the Grid
-            //            // control's collection of child controls.
-            //            WpfHosted_BeHexbox.Children.Add(host);
-        }
-
-        private void Interpreter_SaveHexChanges_Clicked(object sender, RoutedEventArgs e)
-        {
-            if (InterpreterTab_Interpreter.CurrentLoadedExport != null)
-            {
-                //This method only listens for save event when clicking save hex changes button, it does not execute the actual save
-                RefreshExportChangedStatus();
-            }
         }
 
         private void Info_ClassComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1485,11 +1408,16 @@ namespace ME3Explorer
             for (int i = 0; i < provider.Length; i++)
                 m.WriteByte(provider.ReadByte(i));
             CurrentlyLoadedEntry.Header = m.ToArray();
+            TreeViewEntry tve = GetTreeViewEntryByUIndex(CurrentlyLoadedEntry.UIndex);
+            if (tve != null)
+            {
+                tve.RefreshDisplayName();
+            }
+            //todo: mvvm-ize this
             if (Header_Hexbox.ByteProvider != null)
             {
                 Header_Hexbox.ByteProvider.ApplyChanges();
             }
-            RefreshExportChangedStatus();
             Info_Header_UnsavedChanges.Visibility = Header_Hexbox.ByteProvider.HasChanges() ? Visibility.Visible : Visibility.Hidden;
         }
 
@@ -1671,6 +1599,12 @@ namespace ME3Explorer
                     LeftSide_ListView.SelectedIndex = entryIndex;
                 }
             }
+        }
+
+        private TreeViewEntry GetTreeViewEntryByUIndex(int uindex)
+        {
+            var nodes = AllTreeViewNodesX[0].FlattenTree();
+            return nodes.FirstOrDefault(x => x.UIndex == uindex);
         }
 
         /// <summary>
@@ -2719,7 +2653,7 @@ namespace ME3Explorer
     [DebuggerDisplay("TreeViewEntry {DisplayName}")]
     public class TreeViewEntry : INotifyPropertyChanged
     {
-        protected void OnPropertyChanged(string propName)
+        protected void OnPropertyChanged([CallerMemberName] string propName = null)
         {
             var temp = PropertyChanged;
             if (temp != null)
@@ -2802,6 +2736,10 @@ namespace ME3Explorer
             Sublinks = new ObservableCollectionExtended<TreeViewEntry>();
         }
 
+        public void RefreshDisplayName()
+        {
+            OnPropertyChanged("DisplayName");
+        }
 
         private string _displayName;
         public string DisplayName
@@ -2812,7 +2750,7 @@ namespace ME3Explorer
                 string type = UIndex < 0 ? "Imp" : "Exp";
                 return $"({type}) {UIndex} {Entry.ObjectName}({Entry.ClassName})";
             }
-            set { _displayName = value; }
+            set { _displayName = value; OnPropertyChanged(); }
         }
 
         public int UIndex { get { return Entry != null ? Entry.UIndex : 0; } }
