@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Be.Windows.Forms;
+using Gibbed.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using static ME3Explorer.BinaryInterpreter;
@@ -142,6 +143,16 @@ namespace ME3Explorer
                     break;
                 case "Class":
                     StartClassScan(topLevelTree, data, binarystart);
+                    break;
+                case "Enum":
+                case "Const":
+                    StartEnumScan(topLevelTree, data, binarystart);
+                    break;
+                case "GuidCache":
+                    StartGuidCacheScan(topLevelTree, data, binarystart);
+                    break;
+                case "Level":
+                    StartLevelScan(topLevelTree, data, binarystart);
                     break;
             }
         }
@@ -1046,6 +1057,278 @@ namespace ME3Explorer
                 }
             }
             return offset;
+        }
+
+        private void StartEnumScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            try
+            {
+                var subnodes = new List<TreeViewItem>();
+                int offset = 0;
+                int unrealExportIndex = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} Unreal Unique Index: {unrealExportIndex}",
+                    Name = "_" + offset.ToString(),
+                    Tag = NodeType.StructLeafInt
+                });
+                offset += 4;
+
+                int noneUnrealProperty = BitConverter.ToInt32(data, offset);
+                int noneUnrealPropertyIndex = BitConverter.ToInt32(data, offset + 4);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} Unreal property None Name: {CurrentLoadedExport.FileRef.getNameEntry(noneUnrealProperty)}",
+                    Name = "_" + offset.ToString(),
+                    Tag = NodeType.StructLeafName
+                });
+                offset += 8;
+
+                int superclassIndex = BitConverter.ToInt32(data, offset);
+                string superclassStr = getEntryFullPath(superclassIndex);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} Superclass: {superclassIndex}({superclassStr})",
+                    Name = "_" + offset.ToString(),
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+
+                int classObjTree = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {getEntryFullPath(classObjTree)}",
+                    Name = "_" + offset.ToString(),
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+
+                if (CurrentLoadedExport.ClassName == "Enum")
+                {
+
+                    int enumSize = BitConverter.ToInt32(data, offset);
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Enum Size: {enumSize}",
+                        Name = "_" + offset.ToString(),
+                        Tag = NodeType.StructLeafInt
+                    });
+                    offset += 4;
+
+                    for (int i = 0; i < enumSize; i++)
+                    {
+                        int enumName = BitConverter.ToInt32(data, offset);
+                        int enumNameIndex = BitConverter.ToInt32(data, offset + 4);
+                        subnodes.Add(new TreeViewItem
+                        {
+                            Header = $"0x{offset:X5} EnumName[{i}]: {CurrentLoadedExport.FileRef.getNameEntry(enumName)}",
+                            Name = "_" + offset.ToString(),
+                            Tag = NodeType.StructLeafName
+                        });
+                        offset += 8;
+                    }
+                }
+
+                if (CurrentLoadedExport.ClassName == "Const")
+                {
+                    int literalStringLength = BitConverter.ToInt32(data, offset);
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Const Literal Length: {literalStringLength}",
+                        Name = "_" + offset.ToString(),
+                        Tag = NodeType.IntProperty
+                    });
+                    offset += 4;
+
+                    //value is stored as a literal string in binary.
+                    MemoryStream stream = new MemoryStream(data) { Position = offset };
+                    if (literalStringLength < 0)
+                    {
+                        string str = stream.ReadString((literalStringLength * -2), true, Encoding.Unicode);
+                        subnodes.Add(new TreeViewItem
+                        {
+                            Header = $"0x{offset:X5} Const Literal Value: {str}",
+                            Name = "_" + offset.ToString(),
+                            Tag = NodeType.StrProperty
+                        });
+                    }
+                }
+                topLevelTree.ItemsSource = subnodes;
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Items.Add($"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}");
+            }
+        }
+
+        private void StartGuidCacheScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            /*
+             *  
+             *  count +4
+             *      nameentry +8
+             *      guid +16
+             *      
+             */
+
+            try
+            {
+                var subnodes = new List<TreeViewItem>();
+                int pos = binarystart;
+                int count = BitConverter.ToInt32(data, pos);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"{pos:X4} count: {count}",
+                    Name = "_" + pos.ToString(),
+
+                });
+                pos += 4;
+                for (int i = 0; i < count && pos < data.Length; i++)
+                {
+                    int nameRef = BitConverter.ToInt32(data, pos);
+                    int nameIdx = BitConverter.ToInt32(data, pos + 4);
+                    Guid guid = new Guid(data.Skip(pos + 8).Take(16).ToArray());
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = $"{pos:X4} {CurrentLoadedExport.FileRef.getNameEntry(nameRef)}_{nameIdx}: {{{guid}}}",
+                        Name = "_" + pos.ToString(),
+
+                        Tag = NodeType.StructLeafName
+                    });
+                    pos += 24;
+                }
+                topLevelTree.ItemsSource = subnodes;
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Items.Add($"Error reading binary data: {ex}");
+            }
+        }
+
+        private void StartLevelScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            try
+            {
+                var subnodes = new List<TreeViewItem>();
+                //find start of class binary (end of props)
+                int start = 0x4;
+                while (start < data.Length)
+                {
+                    uint nameindex = BitConverter.ToUInt32(data, start);
+                    if (nameindex < CurrentLoadedExport.FileRef.Names.Count && CurrentLoadedExport.FileRef.Names[(int)nameindex] == "None")
+                    {
+                        //found it
+                        start += 8;
+                        break;
+                    }
+                    else
+                    {
+                        start += 4;
+                    }
+                }
+
+                //Console.WriteLine("Found start of binary at {start.ToString("X8"));
+
+                uint exportid = BitConverter.ToUInt32(data, start);
+                start += 4;
+                uint numberofitems = BitConverter.ToUInt32(data, start);
+                int countoffset = start;
+                TreeViewItem countnode = new TreeViewItem
+                {
+                    Tag = NodeType.Unknown,
+                    Header = $"{start:X4} Level Items List Length: {numberofitems}",
+                    Name = "_" + start.ToString()
+
+                };
+                subnodes.Add(countnode);
+
+
+                start += 4;
+                uint bioworldinfoexportid = BitConverter.ToUInt32(data, start);
+                TreeViewItem bionode = new TreeViewItem
+                {
+                    Tag = NodeType.StructLeafObject,
+                    Header = $"{start:X4} BioWorldInfo Export: {bioworldinfoexportid}",
+                    Name = "_" + start.ToString()
+
+                };
+                if (bioworldinfoexportid < CurrentLoadedExport.FileRef.ExportCount && bioworldinfoexportid > 0)
+                {
+                    int me3expindex = (int)bioworldinfoexportid;
+                    IEntry exp = CurrentLoadedExport.FileRef.getEntry(me3expindex);
+                    bionode.Header += $" ({exp.PackageFullName}.{exp.ObjectName})";
+                }
+                subnodes.Add(bionode);
+
+                IExportEntry bioworldinfo = CurrentLoadedExport.FileRef.Exports[(int)bioworldinfoexportid - 1];
+                if (bioworldinfo.ObjectName != "BioWorldInfo")
+                {
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Tag = NodeType.Unknown,
+                        Header = $"{start:X4} Export pointer to bioworldinfo resolves to wrong export. Resolved to {bioworldinfo.ObjectName} as export {bioworldinfoexportid}",
+                        Name = "_" + start.ToString()
+
+                    });
+                    topLevelTree.ItemsSource = subnodes;
+                    return;
+                }
+
+                start += 4;
+                uint shouldbezero = BitConverter.ToUInt32(data, start);
+                if (shouldbezero != 0)
+                {
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Tag = NodeType.Unknown,
+                        Header = $"{start:X4} Export may have extra parameters not accounted for yet (did not find 0 at 0x{start:X5} )",
+                        Name = "_" + start.ToString()
+
+                    });
+                    topLevelTree.ItemsSource = subnodes;
+                    return;
+                }
+                start += 4;
+                int itemcount = 2; //Skip bioworldinfo and Class
+
+                while (itemcount < numberofitems)
+                {
+                    //get header.
+                    uint itemexportid = BitConverter.ToUInt32(data, start);
+                    if (itemexportid - 1 < CurrentLoadedExport.FileRef.Exports.Count)
+                    {
+                        IExportEntry locexp = CurrentLoadedExport.FileRef.Exports[(int)itemexportid - 1];
+                        //Console.WriteLine($"0x{start:X5} \t0x{itemexportid:X5} \t{locexp.PackageFullName}.{locexp.ObjectName}_{locexp.indexValue} [{itemexportid - 1}]");
+                        subnodes.Add(new TreeViewItem
+                        {
+                            Tag = NodeType.ArrayLeafObject,
+                            Header = $"{start:X4}|{itemcount}: {locexp.PackageFullName}.{locexp.ObjectName}_{locexp.indexValue} [{itemexportid - 1}]",
+                            Name = "_" + start.ToString()
+
+                        });
+                        start += 4;
+                        itemcount++;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"0x{start:X5} \t0x{itemexportid:X5} \tInvalid item. Ensure the list is the correct length. (Export {itemexportid})");
+                        subnodes.Add(new TreeViewItem
+                        {
+                            Tag = NodeType.ArrayLeafObject,
+                            Header = $"{start:X4} Invalid item.Ensure the list is the correct length. (Export {itemexportid})",
+                            Name = "_" + start.ToString()
+
+                        });
+                        start += 4;
+                        itemcount++;
+                    }
+                }
+                topLevelTree.ItemsSource = subnodes;
+            }
+            catch (Exception e)
+            {
+              topLevelTree.Items.Add($"Error parsing level: {e.Message}");
+            }
         }
 
         public override void UnloadExport()
