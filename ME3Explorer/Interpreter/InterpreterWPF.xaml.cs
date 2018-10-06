@@ -299,6 +299,8 @@ namespace ME3Explorer
             }*/
         }
 
+
+
         private void GenerateTreeForProperty(UProperty prop, UPropertyTreeViewEntry parent)
         {
             string displayName = $"{prop.Offset.ToString("X4")}: { prop.Name}: ";
@@ -394,8 +396,10 @@ namespace ME3Explorer
                 EditableValue = editableValue,
                 ParsedValue = parsedValue,
                 DisplayName = displayName,
-                Parent = parent
+                Parent = parent,
             };
+            item.PropertyUpdated += OnPropertyUpdated;
+
             parent.ChildrenProperties.Add(item);
             if (prop.PropType == PropertyType.ArrayProperty)
             {
@@ -412,6 +416,33 @@ namespace ME3Explorer
                 {
                     GenerateTreeForProperty(subProp, item);
                 }
+            }
+        }
+
+        /// <summary>
+        /// This handler is assigned to UPropertyTreeViewEntry and is called
+        /// when the value stored by the entry is updated.
+        /// </summary>
+        /// <param name="sender">Calling UPropertyTreeViewEntry object</param>
+        /// <param name="e"></param>
+        private void OnPropertyUpdated(object sender, EventArgs e)
+        {
+            Debug.WriteLine("prop updated");
+            UPropertyTreeViewEntry Sender = sender as UPropertyTreeViewEntry;
+            if (Sender != null && Sender.Property != null)
+            {
+                int offset = (int)Sender.Property.Offset;
+
+                switch (Sender.Property.PropType)
+                {
+                    case PropertyType.IntProperty:
+                        Interpreter_Hexbox.ByteProvider.WriteBytes(offset, BitConverter.GetBytes((Sender.Property as IntProperty).Value));
+                        break;
+                    case PropertyType.FloatProperty:
+                        Interpreter_Hexbox.ByteProvider.WriteBytes(offset, BitConverter.GetBytes((Sender.Property as FloatProperty).Value));
+                        break;
+                }
+                Interpreter_Hexbox.Refresh();
             }
         }
 
@@ -1882,7 +1913,7 @@ namespace ME3Explorer
             {
                 if (value != this.isSelected)
                 {
-                    this.isSelected = value;
+                    isSelected = value;
                     OnPropertyChanged("IsSelected");
                 }
             }
@@ -1954,6 +1985,8 @@ namespace ME3Explorer
             return nodes;
         }
 
+        public event EventHandler PropertyUpdated;
+
         public UPropertyTreeViewEntry Parent { get; set; }
 
         /// <summary>
@@ -1996,8 +2029,22 @@ namespace ME3Explorer
                             if (int.TryParse(value, out int parsedIntVal))
                             {
                                 (Property as IntProperty).Value = parsedIntVal;
-
+                                PropertyUpdated?.Invoke(this, EventArgs.Empty);
                                 HasChanges = true;
+                            } else
+                            {
+                                return;
+                            }
+                            break;
+                        case Unreal.PropertyType.FloatProperty:
+                            if (float.TryParse(value, out float parsedFloatVal))
+                            {
+                                (Property as FloatProperty).Value = parsedFloatVal;
+                                PropertyUpdated?.Invoke(this, EventArgs.Empty);
+                                HasChanges = true;
+                            } else
+                            {
+                                return;
                             }
                             break;
                     }
