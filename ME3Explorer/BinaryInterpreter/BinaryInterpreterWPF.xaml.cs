@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Be.Windows.Forms;
+using Gibbed.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using static ME3Explorer.BinaryInterpreter;
@@ -142,6 +143,10 @@ namespace ME3Explorer
                     break;
                 case "Class":
                     StartClassScan(topLevelTree, data, binarystart);
+                    break;
+                case "Enum":
+                case "Const":
+                    StartEnumScan(topLevelTree, data, binarystart);
                     break;
             }
         }
@@ -1046,6 +1051,108 @@ namespace ME3Explorer
                 }
             }
             return offset;
+        }
+
+        private void StartEnumScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            try
+            {
+                var subnodes = new List<TreeViewItem>();
+                int offset = 0;
+                int unrealExportIndex = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} Unreal Unique Index: {unrealExportIndex}",
+                    Name = "_" + offset.ToString(),
+                    Tag = NodeType.StructLeafInt
+                });
+                offset += 4;
+
+                int noneUnrealProperty = BitConverter.ToInt32(data, offset);
+                int noneUnrealPropertyIndex = BitConverter.ToInt32(data, offset + 4);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} Unreal property None Name: {CurrentLoadedExport.FileRef.getNameEntry(noneUnrealProperty)}",
+                    Name = "_" + offset.ToString(),
+                    Tag = NodeType.StructLeafName
+                });
+                offset += 8;
+
+                int superclassIndex = BitConverter.ToInt32(data, offset);
+                string superclassStr = getEntryFullPath(superclassIndex);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} Superclass: {superclassIndex}({superclassStr})",
+                    Name = "_" + offset.ToString(),
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+
+                int classObjTree = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {getEntryFullPath(classObjTree)}",
+                    Name = "_" + offset.ToString(),
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+
+                if (CurrentLoadedExport.ClassName == "Enum")
+                {
+
+                    int enumSize = BitConverter.ToInt32(data, offset);
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Enum Size: {enumSize}",
+                        Name = "_" + offset.ToString(),
+                        Tag = NodeType.StructLeafInt
+                    });
+                    offset += 4;
+
+                    for (int i = 0; i < enumSize; i++)
+                    {
+                        int enumName = BitConverter.ToInt32(data, offset);
+                        int enumNameIndex = BitConverter.ToInt32(data, offset + 4);
+                        subnodes.Add(new TreeViewItem
+                        {
+                            Header = $"0x{offset:X5} EnumName[{i}]: {CurrentLoadedExport.FileRef.getNameEntry(enumName)}",
+                            Name = "_" + offset.ToString(),
+                            Tag = NodeType.StructLeafName
+                        });
+                        offset += 8;
+                    }
+                }
+
+                if (CurrentLoadedExport.ClassName == "Const")
+                {
+                    int literalStringLength = BitConverter.ToInt32(data, offset);
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = $"0x{offset:X5} Const Literal Length: {literalStringLength}",
+                        Name = "_" + offset.ToString(),
+                        Tag = NodeType.IntProperty
+                    });
+                    offset += 4;
+
+                    //value is stored as a literal string in binary.
+                    MemoryStream stream = new MemoryStream(data) { Position = offset };
+                    if (literalStringLength < 0)
+                    {
+                        string str = stream.ReadString((literalStringLength * -2), true, Encoding.Unicode);
+                        subnodes.Add(new TreeViewItem
+                        {
+                            Header = $"0x{offset:X5} Const Literal Value: {str}",
+                            Name = "_" + offset.ToString(),
+                            Tag = NodeType.StrProperty
+                        });
+                    }
+                }
+                topLevelTree.ItemsSource = subnodes;
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Items.Add($"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}");
+            }
         }
 
         public override void UnloadExport()
