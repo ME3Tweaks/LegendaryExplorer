@@ -148,6 +148,9 @@ namespace ME3Explorer
                 case "Const":
                     StartEnumScan(topLevelTree, data, binarystart);
                     break;
+                case "GuidCache":
+                    StartGuidCacheScan(topLevelTree, data, binarystart);
+                    break;
             }
         }
 
@@ -1152,6 +1155,50 @@ namespace ME3Explorer
             catch (Exception ex)
             {
                 topLevelTree.Items.Add($"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}");
+            }
+        }
+
+        private void StartGuidCacheScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            /*
+             *  
+             *  count +4
+             *      nameentry +8
+             *      guid +16
+             *      
+             */
+
+            try
+            {
+                var subnodes = new List<TreeViewItem>();
+                int pos = binarystart;
+                int count = BitConverter.ToInt32(data, pos);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"{pos:X4} count: {count}",
+                    Name = "_" + pos.ToString(),
+
+                });
+                pos += 4;
+                for (int i = 0; i < count && pos < data.Length; i++)
+                {
+                    int nameRef = BitConverter.ToInt32(data, pos);
+                    int nameIdx = BitConverter.ToInt32(data, pos + 4);
+                    Guid guid = new Guid(data.Skip(pos + 8).Take(16).ToArray());
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = $"{pos:X4} {CurrentLoadedExport.FileRef.getNameEntry(nameRef)}_{nameIdx}: {{{guid}}}",
+                        Name = "_" + pos.ToString(),
+
+                        Tag = NodeType.StructLeafName
+                    });
+                    pos += 24;
+                }
+                topLevelTree.ItemsSource = subnodes;
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Items.Add($"Error reading binary data: {ex}");
             }
         }
 
