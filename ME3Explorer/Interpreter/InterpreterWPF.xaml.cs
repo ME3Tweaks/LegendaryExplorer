@@ -2150,4 +2150,25 @@ namespace ME3Explorer
         //    ChildrenProperties.AddRange(exportNodes);
         //}
     }
+
+    public class PropertyEditorSetSelector : DataTemplateSelector
+    {
+        public DataTemplate SingleTextboxEditorSet { get; set; }
+        public DataTemplate DualTextboxEditorSet { get; set; }
+        public DataTemplate ComboBoxEditorSet { get; set; }
+
+        bool someKindOfCondition = true;
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+
+            if (someKindOfCondition)
+            {
+                return SingleTextboxEditorSet;
+            }
+            else
+            {
+                return DualTextboxEditorSet;
+            }
+        }
+    }
 }

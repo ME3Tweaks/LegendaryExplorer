@@ -1146,7 +1146,7 @@ namespace ME3Explorer
                 return;
             }
             EditorTabs.IsEnabled = true;
-            Debug.WriteLine("New selection: " + n);
+            //Debug.WriteLine("New selection: " + n);
 
             if (CurrentView == View.Imports || CurrentView == View.Exports || CurrentView == View.Tree)
             {

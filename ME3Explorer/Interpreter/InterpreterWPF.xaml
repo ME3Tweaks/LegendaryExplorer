@@ -64,7 +64,7 @@
                             <StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock x:Name="PropertyItem_DisplayName" Text="{Binding DisplayName}" VerticalAlignment="Center" FontStyle="Italic"/>
-                                    <SharedUI:EditableTextBlock x:Name="PropertyItem_DisplayValue" IsEditable="{Binding EditableType}" Text="{Binding EditableValue, Mode=TwoWay}" IsInEditMode="{Binding Edit, Mode=TwoWay}"/>
+                                    <ContentControl x:Name="PropertyItem_EditorSet" Content="{Binding Data}"/>
                                     <TextBlock x:Name="PropertyItem_ParsedValue" Margin="5,0,0,0"  Text="{Binding ParsedValue}" VerticalAlignment="Center" FontStyle="Italic"/>
                                 </StackPanel>
                                 <TextBlock x:Name="PropertyItem_DisplayType" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0"/>
@@ -72,12 +72,19 @@
                         </StackPanel>
                         <HierarchicalDataTemplate.Triggers>
                             <DataTrigger Binding="{Binding PropertyType}" Value="ObjectProperty">
-                                <Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#6d6c3f"/>
+                                <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#6d6c3f"/>-->
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d6c3f"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#fffec4"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding PropertyType}" Value="IntProperty">
-                                <Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#664f46"/>
+                                <!--<Setter TargetName="PropertyItem_EditorSet" Property="ContentTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <SharedUI:EditableTextBlock x:Name="PropertyItem_DisplayValue" IsEditable="{Binding EditableType}" Text="{Binding EditableValue, Mode=TwoWay}" IsInEditMode="{Binding Edit, Mode=TwoWay}"/>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>-->
+                                <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#664f46"/>-->
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#664f46"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#ffeae2"/>
                             </DataTrigger>
@@ -86,17 +93,17 @@
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#e2fff4"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding PropertyType}" Value="ArrayProperty">
-                                <Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#382c4c"/>
+                                <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#382c4c"/>-->
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#382c4c"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#d3bef4"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding PropertyType}" Value="BoolProperty">
-                                <Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#43563a"/>
+                                <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#43563a"/>-->
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#43563a"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88ecffe2"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding PropertyType}" Value="StructProperty">
-                                <Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#593953"/>
+                                <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#593953"/>-->
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#593953"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88f4beea"/>
                             </DataTrigger>
@@ -105,6 +112,7 @@
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88afaeaf"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding PropertyType}" Value="NameProperty">
+                                <!--<Setter TargetName="PropertyItem_EditorSet" Property="ContentTemplate" Value="{StaticResource EditorSet_NamePropertyTemplate}"/>-->
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#4a5568"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88e2edff"/>
                             </DataTrigger>
@@ -116,6 +124,8 @@
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="Maroon"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="Yellow"/>
                             </DataTrigger>
+
+
                         </HierarchicalDataTemplate.Triggers>
                     </HierarchicalDataTemplate>
                     <ContextMenu x:Key ="ArrayPropertyContext"  StaysOpen="true">
@@ -150,7 +160,7 @@
                             <MenuItem Header="By value" ToolTip="Remove this property from this export" Command="{Binding RemovePropertyCommand}" Visibility="{Binding Path=IsEnabled,Converter={StaticResource BoolToVisibilityConverter}}"/>
 
 
-                        </MenuItem>--> 
+                        </MenuItem>-->
                     </ContextMenu>
                 </SharedUI:StretchingTreeView.ContextMenu>
             </SharedUI:StretchingTreeView>
