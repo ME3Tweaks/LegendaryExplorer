@@ -151,6 +151,9 @@ namespace ME3Explorer
                 case "GuidCache":
                     StartGuidCacheScan(topLevelTree, data, binarystart);
                     break;
+                case "Level":
+                    StartLevelScan(topLevelTree, data, binarystart);
+                    break;
             }
         }
 
@@ -1199,6 +1202,132 @@ namespace ME3Explorer
             catch (Exception ex)
             {
                 topLevelTree.Items.Add($"Error reading binary data: {ex}");
+            }
+        }
+
+        private void StartLevelScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            try
+            {
+                var subnodes = new List<TreeViewItem>();
+                //find start of class binary (end of props)
+                int start = 0x4;
+                while (start < data.Length)
+                {
+                    uint nameindex = BitConverter.ToUInt32(data, start);
+                    if (nameindex < CurrentLoadedExport.FileRef.Names.Count && CurrentLoadedExport.FileRef.Names[(int)nameindex] == "None")
+                    {
+                        //found it
+                        start += 8;
+                        break;
+                    }
+                    else
+                    {
+                        start += 4;
+                    }
+                }
+
+                //Console.WriteLine("Found start of binary at {start.ToString("X8"));
+
+                uint exportid = BitConverter.ToUInt32(data, start);
+                start += 4;
+                uint numberofitems = BitConverter.ToUInt32(data, start);
+                int countoffset = start;
+                TreeViewItem countnode = new TreeViewItem
+                {
+                    Tag = NodeType.Unknown,
+                    Header = $"{start:X4} Level Items List Length: {numberofitems}",
+                    Name = "_" + start.ToString()
+
+                };
+                subnodes.Add(countnode);
+
+
+                start += 4;
+                uint bioworldinfoexportid = BitConverter.ToUInt32(data, start);
+                TreeViewItem bionode = new TreeViewItem
+                {
+                    Tag = NodeType.StructLeafObject,
+                    Header = $"{start:X4} BioWorldInfo Export: {bioworldinfoexportid}",
+                    Name = "_" + start.ToString()
+
+                };
+                if (bioworldinfoexportid < CurrentLoadedExport.FileRef.ExportCount && bioworldinfoexportid > 0)
+                {
+                    int me3expindex = (int)bioworldinfoexportid;
+                    IEntry exp = CurrentLoadedExport.FileRef.getEntry(me3expindex);
+                    bionode.Header += $" ({exp.PackageFullName}.{exp.ObjectName})";
+                }
+                subnodes.Add(bionode);
+
+                IExportEntry bioworldinfo = CurrentLoadedExport.FileRef.Exports[(int)bioworldinfoexportid - 1];
+                if (bioworldinfo.ObjectName != "BioWorldInfo")
+                {
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Tag = NodeType.Unknown,
+                        Header = $"{start:X4} Export pointer to bioworldinfo resolves to wrong export. Resolved to {bioworldinfo.ObjectName} as export {bioworldinfoexportid}",
+                        Name = "_" + start.ToString()
+
+                    });
+                    topLevelTree.ItemsSource = subnodes;
+                    return;
+                }
+
+                start += 4;
+                uint shouldbezero = BitConverter.ToUInt32(data, start);
+                if (shouldbezero != 0)
+                {
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Tag = NodeType.Unknown,
+                        Header = $"{start:X4} Export may have extra parameters not accounted for yet (did not find 0 at 0x{start:X5} )",
+                        Name = "_" + start.ToString()
+
+                    });
+                    topLevelTree.ItemsSource = subnodes;
+                    return;
+                }
+                start += 4;
+                int itemcount = 2; //Skip bioworldinfo and Class
+
+                while (itemcount < numberofitems)
+                {
+                    //get header.
+                    uint itemexportid = BitConverter.ToUInt32(data, start);
+                    if (itemexportid - 1 < CurrentLoadedExport.FileRef.Exports.Count)
+                    {
+                        IExportEntry locexp = CurrentLoadedExport.FileRef.Exports[(int)itemexportid - 1];
+                        //Console.WriteLine($"0x{start:X5} \t0x{itemexportid:X5} \t{locexp.PackageFullName}.{locexp.ObjectName}_{locexp.indexValue} [{itemexportid - 1}]");
+                        subnodes.Add(new TreeViewItem
+                        {
+                            Tag = NodeType.ArrayLeafObject,
+                            Header = $"{start:X4}|{itemcount}: {locexp.PackageFullName}.{locexp.ObjectName}_{locexp.indexValue} [{itemexportid - 1}]",
+                            Name = "_" + start.ToString()
+
+                        });
+                        start += 4;
+                        itemcount++;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"0x{start:X5} \t0x{itemexportid:X5} \tInvalid item. Ensure the list is the correct length. (Export {itemexportid})");
+                        subnodes.Add(new TreeViewItem
+                        {
+                            Tag = NodeType.ArrayLeafObject,
+                            Header = $"{start:X4} Invalid item.Ensure the list is the correct length. (Export {itemexportid})",
+                            Name = "_" + start.ToString()
+
+                        });
+                        start += 4;
+                        itemcount++;
+                    }
+                }
+                topLevelTree.ItemsSource = subnodes;
+            }
+            catch (Exception e)
+            {
+              topLevelTree.Items.Add($"Error parsing level: {e.Message}");
             }
         }
 
