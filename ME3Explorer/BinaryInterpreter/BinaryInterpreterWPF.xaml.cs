@@ -158,6 +158,9 @@ namespace ME3Explorer
                 case "PrefabInstance":
                     StartPrefabInstanceScan(topLevelTree, data, binarystart);
                     break;
+                case "SkeletalMesh":
+                    StartSkeletalMeshScan(topLevelTree, data, binarystart);
+                    break;
             }
         }
 
@@ -1460,6 +1463,49 @@ namespace ME3Explorer
 
                     pos += 4;
                     count--;
+                }
+
+                topLevelTree.ItemsSource = subnodes;
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Items.Add($"Error reading binary data: {ex}");
+            }
+        }
+
+        private void StartSkeletalMeshScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            /*
+             *  
+             *  Bounding +28
+             *  count +4
+             *      materials
+             *  
+             */
+            try
+            {
+                var subnodes = new List<TreeViewItem>();
+                int pos = binarystart;
+                pos += 28; //bounding
+                int count = BitConverter.ToInt32(data, pos);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"{pos:X4} Material Count: {count}",
+                    Name = "_" + pos,
+
+                });
+                pos += 4;
+                for (int i = 0; i < count; i++)
+                {
+                    int material = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = $"{pos:X4} Material: ({material}) {CurrentLoadedExport.FileRef.getEntry(material)?.GetFullPath ?? ""}",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafObject
+                    });
+                    pos += 4;
                 }
 
                 topLevelTree.ItemsSource = subnodes;
