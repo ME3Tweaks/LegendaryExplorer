@@ -28,8 +28,13 @@
             <Button Content="Toggle Hexbox Width" Click="Interpreter_ToggleHexboxWidth_Click"/>
             <Button Content="Add Property" Click="Interpreter_AddProperty_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
             <TextBlock Text="|" VerticalAlignment="Center"/>
-            <TextBox Width="50" VerticalAlignment="Center" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
-            <Button Content="Set" Click="SetValue_Click"/>
+            <TextBox Width="80" Name="Value_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" TextChanged="Value_TextBox_TextChanged" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
+            <TextBlock Text="_" Name="NameIndexPrefix_TextBlock" VerticalAlignment="Center"/>
+            <TextBox Width="30" Name="NameIndex_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
+            <ComboBox Name="Value_ComboBox" MinWidth="80" VerticalAlignment="Center"  ToolTip="Value for this property"/>
+
+            <Button Content="Set" Click="SetValue_Click" VerticalAlignment="Center"/>
+            <TextBlock Name="ParsedValue_TextBlock" VerticalAlignment="Center" Foreground="Gray" Margin="5,0,0,0"/>
         </ToolBar>
 
         <StatusBar Height="23" DockPanel.Dock="Bottom">
@@ -64,8 +69,9 @@
                             <StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock x:Name="PropertyItem_DisplayName" Text="{Binding DisplayName}" VerticalAlignment="Center" FontStyle="Italic"/>
-                                    <ContentControl x:Name="PropertyItem_EditorSet" Content="{Binding Data}"/>
-                                    <TextBlock x:Name="PropertyItem_ParsedValue" Margin="5,0,0,0"  Text="{Binding ParsedValue}" VerticalAlignment="Center" FontStyle="Italic"/>
+                                    <!--<ContentControl x:Name="PropertyItem_EditorSet" Content="{Binding Data}"/>-->
+                                    <TextBlock x:Name="PropertyItem_EditableValue" Margin="0,0,0,0" Text="{Binding EditableValue}" VerticalAlignment="Center" FontWeight="Bold"/>
+                                    <TextBlock x:Name="PropertyItem_ParsedValue" Margin="5,0,0,0" Text="{Binding ParsedValue}" VerticalAlignment="Center" FontStyle="Italic"/>
                                 </StackPanel>
                                 <TextBlock x:Name="PropertyItem_DisplayType" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0"/>
                             </StackPanel>
@@ -77,16 +83,8 @@
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#fffec4"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding PropertyType}" Value="IntProperty">
-                                <!--<Setter TargetName="PropertyItem_EditorSet" Property="ContentTemplate">
-                                    <Setter.Value>
-                                        <DataTemplate>
-                                            <SharedUI:EditableTextBlock x:Name="PropertyItem_DisplayValue" IsEditable="{Binding EditableType}" Text="{Binding EditableValue, Mode=TwoWay}" IsInEditMode="{Binding Edit, Mode=TwoWay}"/>
-                                        </DataTemplate>
-                                    </Setter.Value>
-                                </Setter>-->
-                                <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#664f46"/>-->
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#664f46"/>
-                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#ffeae2"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#AAffeae2"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding PropertyType}" Value="StringProperty">
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#374f46"/>

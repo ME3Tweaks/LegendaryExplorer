@@ -32,7 +32,11 @@ namespace ME3Explorer
         //This is useful for end user when they want to view things in a list for example, but all of the items are of the 
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
         public readonly string[] ExportToStringConverters = { "LevelStreamingKismet" };
-
+        /// <summary>
+        /// The current list of loaded properties that back the property tree.
+        /// This is used so we can do direct object reference comparisons for things like removal
+        /// </summary>
+        private PropertyCollection CurrentLoadedProperties;
         //Values in this list will cause custom code to be fired to modify what the displayed string is for IntProperties
         //when the class matches.
         public readonly string[] IntToStringConverters = { "WwiseEvent" };
@@ -44,7 +48,8 @@ namespace ME3Explorer
         private BioTlkFileSet tlkset;
         private BioTlkFileSet editorTlkSet;
         int readerpos;
-
+        int RescanSelectionOffset = 0;
+        private List<FrameworkElement> EditorSetElements = new List<FrameworkElement>();
         public struct PropHeader
         {
             public int name;
@@ -118,6 +123,12 @@ namespace ME3Explorer
         {
             LoadCommands();
             InitializeComponent();
+            EditorSetElements.Add(Value_TextBox); //str, strref, int, float, obj
+            EditorSetElements.Add(Value_ComboBox); //bool, name
+            EditorSetElements.Add(NameIndexPrefix_TextBlock); //nameindex
+            EditorSetElements.Add(NameIndex_TextBox); //nameindex
+            EditorSetElements.Add(ParsedValue_TextBlock);
+
             defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
         }
 
@@ -170,6 +181,19 @@ namespace ME3Explorer
         /// <param name="export"></param>
         public override void LoadExport(IExportEntry export)
         {
+            //check rescan
+            if (CurrentLoadedExport != null && export.FileRef == CurrentLoadedExport.FileRef && export.UIndex == CurrentLoadedExport.UIndex)
+            {
+                UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
+                if (tvi != null && tvi.Property != null)
+                {
+                    RescanSelectionOffset = (int)tvi.Property.Offset;
+                }
+            }
+            else
+            {
+                RescanSelectionOffset = 0;
+            }
             CurrentLoadedExport = export;
             //List<byte> bytes = export.Data.ToList();
             //MemoryStream ms = new MemoryStream(); //initializing memorystream directly with byte[] does not allow it to expand.
@@ -228,8 +252,8 @@ namespace ME3Explorer
 
             try
             {
-                PropertyCollection props = CurrentLoadedExport.GetProperties(includeNoneProperties: true);
-                foreach (UProperty prop in props)
+                CurrentLoadedProperties = CurrentLoadedExport.GetProperties(includeNoneProperties: true);
+                foreach (UProperty prop in CurrentLoadedProperties)
                 {
                     GenerateTreeForProperty(prop, topLevelTree);
                 }
@@ -241,6 +265,17 @@ namespace ME3Explorer
                     DisplayName = $"PARSE ERROR {ex.Message}"
                 };
                 topLevelTree.ChildrenProperties.Add(errorNode);
+            }
+
+            if (RescanSelectionOffset != 0)
+            {
+                var flattenedTree = topLevelTree.FlattenTree();
+                var itemToSelect = flattenedTree.FirstOrDefault(x => x.Property != null && x.Property.Offset == RescanSelectionOffset);
+                if (itemToSelect != null)
+                {
+                    itemToSelect.ExpandParents();
+                    itemToSelect.IsSelected = true;
+                }
             }
             /*try
             {
@@ -365,7 +400,8 @@ namespace ME3Explorer
                     }
                     break;
                 case PropertyType.NameProperty:
-                    editableValue = (prop as NameProperty).NameTableIndex + " " + (prop as NameProperty).Value; //will require special 2-box setup
+                    editableValue = (prop as NameProperty).NameTableIndex.ToString() + "_" + (prop as NameProperty).Name.Number.ToString();
+                    parsedValue = (prop as NameProperty).Value + "_" + (prop as NameProperty).Name.Number.ToString(); //will require special 2-box setup
                     break;
                 case PropertyType.ByteProperty:
                     if (prop is EnumProperty)
@@ -551,902 +587,6 @@ namespace ME3Explorer
             return "";
         }
 
-        /*
-        public List<PropHeader> ReadHeadersTillNone()
-        {
-            List<PropHeader> ret = new List<PropHeader>();
-            bool run = true;
-            while (run)
-            {
-                PropHeader p = new PropHeader();
-                if (readerpos > memory.Length || readerpos < 0)
-                {
-                    //nothing else to interpret.
-                    run = false;
-                    continue;
-                }
-                p.name = BitConverter.ToInt32(memory, readerpos);
-
-                if (readerpos == 4 &&CurrentLoadedExport.FileRef.isName(p.name) &&CurrentLoadedExport.FileRef.getNameEntry(p.name) == export.ObjectName)
-                {
-                    //It's a primitive component header
-                    //Debug.WriteLine("Primitive Header " +CurrentLoadedExport.FileRef.Names[p.name]);
-                    readerpos += 12;
-                    continue;
-                }
-
-                if (!pcc.isName(p.name))
-                    run = false;
-                else
-                {
-                    string name =CurrentLoadedExport.FileRef.getNameEntry(p.name);
-                    if (CurrentLoadedExport.FileRef.getNameEntry(p.name) != "None")
-                    {
-                        p.type = BitConverter.ToInt32(memory, readerpos + 8);
-                        if (p.name == 0 && p.type == 0 &&CurrentLoadedExport.FileRef.getNameEntry(0) == "ArrayProperty")
-                        {
-                            //This could be a struct that just happens to have arrayproperty at name 0... this might fubar some stuff
-                            return ret;
-                        }
-                        if (!pcc.isName(p.type) || getType(CurrentLoadedExport.FileRef.getNameEntry(p.type)) == nodeType.Unknown)
-                            run = false;
-                        else
-                        {
-                            p.size = BitConverter.ToInt32(memory, readerpos + 16);
-                            p.index = BitConverter.ToInt32(memory, readerpos + 20);
-                            p.offset = readerpos;
-                            ret.Add(p);
-                            readerpos += p.size + 24;
-
-                            if (getType(CurrentLoadedExport.FileRef.getNameEntry(p.type)) == nodeType.StructProperty) //StructName
-                                readerpos += 8;
-                            if (CurrentLoadedExport.FileRef.Game == MEGame.ME3 ||CurrentLoadedExport.FileRef.Game == MEGame.UDK)
-                            {
-                                if (getType(CurrentLoadedExport.FileRef.getNameEntry(p.type)) == nodeType.BoolProperty)//Boolbyte
-                                    readerpos++;
-                                if (getType(CurrentLoadedExport.FileRef.getNameEntry(p.type)) == nodeType.ByteProperty)//byteprop
-                                    readerpos += 8;
-                            }
-                            else
-                            {
-                                if (getType(CurrentLoadedExport.FileRef.getNameEntry(p.type)) == nodeType.BoolProperty)
-                                    readerpos += 4;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        p.type = p.name;
-                        p.size = 0;
-                        p.index = 0;
-                        p.offset = readerpos;
-                        ret.Add(p);
-                        readerpos += 8;
-                        run = false;
-                    }
-                }
-            }
-            return ret;
-        }
-
-        public void GenerateTree(TreeViewItem localRoot, List<PropHeader> headersList)
-        {
-            foreach (PropHeader header in headersList)
-            {
-                if (readerpos > memory.Length)
-                {
-                    throw new IndexOutOfRangeException(": tried to read past bounds of Export Data");
-                }
-                nodeType type = getType(CurrentLoadedExport.FileRef.getNameEntry(header.type));
-                //Debug.WriteLine("Generating tree item for " +CurrentLoadedExport.FileRef.getNameEntry(header.name) + " at 0x" + header.offset.ToString("X6"));
-
-                if (type != nodeType.ArrayProperty && type != nodeType.StructProperty)
-                {
-
-                    localRoot.Items.Add(GenerateNode(header));
-                }
-                else
-                {
-                    if (type == nodeType.ArrayProperty)
-                    {
-                        TreeViewItem t = GenerateNode(header);
-                        int arrayLength = BitConverter.ToInt32(memory, header.offset + 24);
-                        readerpos = header.offset + 28;
-                        int tmp = readerpos;
-                        ArrayType arrayType;
-                        try
-                        {
-                            arrayType = GetArrayType(header.name);
-                        }
-                        catch (Exception)
-                        {
-                            arrayType = ArrayType.Int;
-                        }
-                        if (arrayType == ArrayType.Struct)
-                        {
-                            PropertyInfo info = GetPropertyInfo(header.name);
-                            t.Header = t.Header.ToString().Insert(t.Header.ToString().IndexOf("Size: ") - 2, $"({info.reference})");
-                            for (int i = 0; i < arrayLength; i++)
-                            {
-                                readerpos = tmp;
-                                int pos = tmp;
-                                List<PropHeader> arrayListPropHeaders = ReadHeadersTillNone();
-                                tmp = readerpos;
-                                TreeViewItem n = new TreeViewItem() { Header = i.ToString() };
-                                n.Tag = nodeType.ArrayLeafStruct;
-                                n.Name = "_" + (-pos).ToString();
-                                t.Items.Add(n);
-                                n = (TreeViewItem)t.Items[t.Items.Count - 1]; //final node
-                                if (info != null && (ME3UnrealObjectInfo.isImmutable(info.reference) || arrayListPropHeaders.Count == 0))
-                                {
-                                    readerpos = pos;
-                                    GenerateSpecialStruct(n, info.reference, header.size / arrayLength);
-                                    tmp = readerpos;
-                                }
-                                else if (arrayListPropHeaders.Count > 0)
-                                {
-                                    GenerateTree(n, arrayListPropHeaders);
-                                }
-                                else
-                                {
-                                    throw new Exception($"at position {readerpos.ToString("X4")}. Could not read element {i} of ArrayProperty {pcc.getNameEntry(header.name)}");
-                                }
-                                t.Items.Remove(t.Items[t.Items.Count - 1]);
-                                t.Items.Add(n);
-                            }
-                            localRoot.Items.Add(t);
-                        }
-                        else
-                        {
-                            t.Header = t.Header.ToString().Insert(t.Header.ToString().IndexOf("Size: ") - 2, $"({arrayType.ToString()})");
-                            int count = 0;
-                            int pos;
-                            if (header.size > 1000 && arrayType == ArrayType.Byte)
-                            {
-                                TreeViewItem node = new TreeViewItem();
-                                node.Name = "_" + (header.offset + 28).ToString();
-                                node.Tag = nodeType.Unknown;
-                                node.Header = "Large binary data array. Skipping Parsing";
-                                t.Items.Add(node);
-                                localRoot.Items.Add(t);
-                                continue;
-                            }
-                            for (int i = 0; i < (header.size - 4); count++)
-                            {
-                                pos = header.offset + 28 + i;
-                                if (pos > memory.Length)
-                                {
-                                    throw new Exception(": tried to read past bounds of Export Data");
-                                }
-                                int val = BitConverter.ToInt32(memory, pos);
-                                string s = pos.ToString("X4") + "|" + count + ": ";
-                                TreeViewItem node = new TreeViewItem();
-                                node.Name = "_" + pos.ToString();
-                                if (arrayType == ArrayType.Object)
-                                {
-                                    node.Tag = nodeType.ArrayLeafObject;
-                                    int value = val;
-                                    if (value == 0)
-                                    {
-                                        //invalid
-                                        s += "Null [" + value + "] ";
-                                    }
-                                    else
-                                    {
-
-                                        bool isImport = value < 0;
-                                        if (isImport)
-                                        {
-                                            value = -value;
-                                        }
-                                        value--; //0-indexed
-                                        if (isImport)
-                                        {
-                                            if (CurrentLoadedExport.FileRef.ImportCount > value)
-                                            {
-                                                if (CurrentLoadedExport.FileRef.getNameEntry(header.name) == "m_AutoPersistentObjects")
-                                                {
-                                                    s +=CurrentLoadedExport.FileRef.getImport(value).PackageFullName + ".";
-                                                }
-
-                                                s +=CurrentLoadedExport.FileRef.getImport(value).ObjectName + " [IMPORT " + value + "]";
-                                            }
-                                            else
-                                            {
-                                                s += "Index not in import list [" + value + "]";
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (CurrentLoadedExport.FileRef.ExportCount > value)
-                                            {
-                                                if (CurrentLoadedExport.FileRef.getNameEntry(header.name) == "m_AutoPersistentObjects")
-                                                {
-                                                    s +=CurrentLoadedExport.FileRef.getExport(value).PackageFullName + ".";
-                                                }
-                                                if (CurrentLoadedExport.FileRef.getNameEntry(header.name) == "StreamingLevels")
-                                                {
-                                                    IExportEntry streamingLevel =CurrentLoadedExport.FileRef.getExport(value);
-                                                    NameProperty prop = streamingLevel.GetProperty<NameProperty>("PackageName");
-
-                                                    s += prop.Value.Name + "_" + prop.Value.Number + " in ";
-                                                }
-                                                s +=CurrentLoadedExport.FileRef.getExport(value).ObjectName + " [EXPORT " + value + "]";
-                                            }
-                                            else
-                                            {
-                                                s += "Index not in export list [" + value + "]";
-                                            }
-                                        }
-                                    }
-                                    i += 4;
-                                }
-                                else if (arrayType == ArrayType.Name || arrayType == ArrayType.Enum)
-                                {
-
-                                    node.Tag = arrayType == ArrayType.Name ? nodeType.ArrayLeafName : nodeType.ArrayLeafEnum;
-                                    int value = val;
-                                    if (value < 0)
-                                    {
-                                        s += "Invalid Name Index [" + value + "]";
-                                    }
-                                    else
-                                    {
-                                        if (CurrentLoadedExport.FileRef.Names.Count > value)
-                                        {
-                                            s += $"\"{pcc.Names[value]}\"_{BitConverter.ToInt32(memory, pos + 4)}[NAMEINDEX {value}]";
-                                        }
-                                        else
-                                        {
-                                            s += "Index not in name list [" + value + "]";
-                                        }
-                                    }
-                                    i += 8;
-                                }
-                                else if (arrayType == ArrayType.Float)
-                                {
-                                    node.Tag = nodeType.ArrayLeafFloat;
-                                    s += BitConverter.ToSingle(memory, pos).ToString("0.0######");
-                                    i += 4;
-                                }
-                                else if (arrayType == ArrayType.Byte)
-                                {
-                                    node.Tag = nodeType.ArrayLeafByte;
-                                    s += "(byte)" + memory[pos];
-                                    i += 1;
-                                }
-                                else if (arrayType == ArrayType.Bool)
-                                {
-                                    node.Tag = nodeType.ArrayLeafBool;
-                                    s += BitConverter.ToBoolean(memory, pos);
-                                    i += 1;
-                                }
-                                else if (arrayType == ArrayType.String)
-                                {
-                                    node.Tag = nodeType.ArrayLeafString;
-                                    int sPos = pos + 4;
-                                    s += "\"";
-                                    if (val < 0)
-                                    {
-                                        int len = -val;
-                                        for (int j = 1; j < len; j++)
-                                        {
-                                            s += BitConverter.ToChar(memory, sPos);
-                                            sPos += 2;
-                                        }
-                                        i += (len * 2) + 4;
-                                    }
-                                    else
-                                    {
-                                        for (int j = 1; j < val; j++)
-                                        {
-                                            s += (char)memory[sPos];
-                                            sPos++;
-                                        }
-                                        i += val + 4;
-                                    }
-                                    s += "\"";
-                                }
-                                else
-                                {
-                                    node.Tag = nodeType.ArrayLeafInt;
-                                    s += val.ToString();
-                                    i += 4;
-                                }
-                                node.Header = s;
-                                t.Items.Add(node);
-                            }
-                            localRoot.Items.Add(t);
-                        }
-                    }
-                    if (type == nodeType.StructProperty)
-                    {
-                        if (CurrentLoadedExport.FileRef.getNameEntry(header.name) == "ArriveTangent")
-                        {
-                            Debug.WriteLine("test");
-                        }
-                        TreeViewItem t = GenerateNode(header);
-                        readerpos = header.offset + 32;
-                        List<PropHeader> ll = ReadHeadersTillNone();
-                        if (ll.Count != 0)
-                        {
-                            GenerateTree(t, ll);
-                        }
-                        else
-                        {
-                            string structType =CurrentLoadedExport.FileRef.getNameEntry(BitConverter.ToInt32(memory, header.offset + 24));
-                            GenerateSpecialStruct(t, structType, header.size);
-                        }
-                        localRoot.Items.Add(t);
-                    }
-
-                }
-            }
-        }
-        //structs that are serialized down to just their values.
-        private void GenerateSpecialStruct(TreeViewItem t, string structType, int size)
-        {
-            TreeViewItem node;
-            //have to handle this specially to get the degrees conversion
-            if (structType == "Rotator")
-            {
-                string[] labels = { "Pitch", "Yaw", "Roll" };
-                int val;
-                for (int i = 0; i < 3; i++)
-                {
-                    val = BitConverter.ToInt32(memory, readerpos);
-                    node = new TreeViewItem() { Header = readerpos.ToString("X4") + ": " + labels[i] + " : " + val + " (" + (val * 360f / 65536f).ToString("0.0######") + " degrees)" };
-                    node.Name = "_" + readerpos.ToString();
-                    node.Tag = nodeType.StructLeafDeg;
-                    t.Items.Add(node);
-                    readerpos += 4;
-                }
-            }
-            else if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
-            {
-                if (ME3UnrealObjectInfo.Structs.ContainsKey(structType))
-                {
-                    List<PropertyReader.Property> props;
-                    //memoize
-                    if (defaultStructValues.ContainsKey(structType))
-                    {
-                        props = defaultStructValues[structType];
-                    }
-                    else
-                    {
-                        byte[] defaultValue = ME3UnrealObjectInfo.getDefaultClassValue(CurrentLoadedExport.FileRef as ME3Package, structType, true);
-                        if (defaultValue == null)
-                        {
-                            //just prints the raw hex since there's no telling what it actually is
-                            node = new TreeViewItem() { Header = readerpos.ToString("X4") + ": " + memory.Skip(readerpos).Take(size).Aggregate("", (b, s) => b + " " + s.ToString("X2")) };
-                            node.Tag = nodeType.Unknown;
-                            t.Items.Add(node);
-                            readerpos += size;
-                            return;
-                        }
-                        props = PropertyReader.ReadProp(CurrentLoadedExport.FileRef, defaultValue, 0);
-                        defaultStructValues.Add(structType, props);
-                    }
-                    for (int i = 0; i < props.Count; i++)
-                    {
-                        string s = readerpos.ToString("X4") + ": " +CurrentLoadedExport.FileRef.getNameEntry(props[i].Name) + " : ";
-                        readerpos = GenerateSpecialStructProp(t, s, readerpos, props[i]);
-                    }
-                }
-            }
-            else
-            {
-                //TODO: implement getDefaultClassValue() for ME1 and ME2 so this isn't needed
-                int pos = readerpos;
-                if (structType == "Vector2d" || structType == "RwVector2")
-                {
-                    string[] labels = { "X", "Y" };
-                    for (int i = 0; i < 2; i++)
-                    {
-                        node = new TreeViewItem() { Header = pos.ToString("X4") + ": " + labels[i] + " : " + BitConverter.ToSingle(memory, pos).ToString("0.0######") };
-                        node.Name = "_" + pos.ToString();
-                        node.Tag = nodeType.StructLeafFloat;
-                        t.Items.Add(node);
-                        pos += 4;
-                    }
-                }
-                else if (structType == "Vector" || structType == "RwVector3")
-                {
-                    string[] labels = { "X", "Y", "Z" };
-                    for (int i = 0; i < 3; i++)
-                    {
-                        node = new TreeViewItem() { Header = pos.ToString("X4") + ": " + labels[i] + " : " + BitConverter.ToSingle(memory, pos).ToString("0.0######") };
-                        node.Name = "_" + pos.ToString();
-                        node.Tag = nodeType.StructLeafFloat;
-                        t.Items.Add(node);
-                        pos += 4;
-                    }
-                }
-                else if (structType == "Color")
-                {
-                    string[] labels = { "B", "G", "R", "A" };
-                    for (int i = 0; i < 4; i++)
-                    {
-                        node = new TreeViewItem()
-                        {
-                            Header = pos.ToString("X4") + ": " + labels[i] + " : " + memory[pos]
-                        };
-                        node.Name = "_" + pos.ToString();
-                        node.Tag = nodeType.StructLeafByte;
-                        t.Items.Add(node);
-                        pos += 1;
-                    }
-                }
-                else if (structType == "LinearColor")
-                {
-                    string[] labels = { "R", "G", "B", "A" };
-                    for (int i = 0; i < 4; i++)
-                    {
-                        node = new TreeViewItem()
-                        {
-                            Header = pos.ToString("X4") + ": " + labels[i] + " : " + BitConverter.ToSingle(memory, pos).ToString("0.0######")
-                        };
-                        node.Name = "_" + pos.ToString();
-                        node.Tag = nodeType.StructLeafFloat;
-                        t.Items.Add(node);
-                        pos += 4;
-                    }
-                }
-                //uses EndsWith to support RwQuat, RwVector4, and RwPlane
-                else if (structType.EndsWith("Quat") || structType.EndsWith("Vector4") || structType.EndsWith("Plane"))
-                {
-                    string[] labels = { "X", "Y", "Z", "W" };
-                    for (int i = 0; i < 4; i++)
-                    {
-                        node = new TreeViewItem()
-                        {
-                            Header = pos.ToString("X4") + ": " + labels[i] + " : " + BitConverter.ToSingle(memory, pos).ToString("0.0######")
-                        };
-                        node.Name = "_" + pos.ToString();
-                        node.Tag = nodeType.StructLeafFloat;
-                        t.Items.Add(node);
-                        pos += 4;
-                    }
-                }
-                else if (structType == "TwoVectors")
-                {
-                    string[] labels = { "X", "Y", "Z", "X", "Y", "Z" };
-                    for (int i = 0; i < 6; i++)
-                    {
-                        node = new TreeViewItem() { Header = pos.ToString("X4") + ": " + labels[i] + " : " + BitConverter.ToSingle(memory, pos).ToString("0.0######") };
-
-                        node.Name = "_" + pos.ToString();
-                        node.Tag = nodeType.StructLeafFloat;
-                        t.Items.Add(node);
-                        pos += 4;
-                    }
-                }
-                else if (structType == "Matrix" || structType == "RwMatrix44")
-                {
-                    string[] labels = { "X Plane", "Y Plane", "Z Plane", "W Plane" };
-                    string[] labels2 = { "X", "Y", "Z", "W" };
-                    TreeViewItem node2;
-                    for (int i = 0; i < 3; i++)
-                    {
-                        node2 = new TreeViewItem()
-                        {
-                            Header = labels[i]
-                        };
-                        node2.Name = "_" + pos.ToString();
-                        for (int j = 0; j < 4; j++)
-                        {
-                            node = new TreeViewItem() { Header = pos.ToString("X4") + ": " + labels2[j] + " : " + BitConverter.ToSingle(memory, pos).ToString("0.0######") };
-                            node.Name = "_" + pos.ToString();
-                            node.Tag = nodeType.StructLeafFloat;
-                            node2.Items.Add(node);
-                            pos += 4;
-                        }
-                        t.Items.Add(node2);
-                    }
-                }
-                else if (structType == "Guid")
-                {
-                    string[] labels = { "A", "B", "C", "D" };
-                    for (int i = 0; i < 4; i++)
-                    {
-                        node = new TreeViewItem()
-                        {
-                            Header = pos.ToString("X4") + ": " + labels[i] + " : " + BitConverter.ToInt32(memory, pos)
-                        };
-                        node.Name = "_" + pos.ToString();
-                        node.Tag = nodeType.StructLeafInt;
-                        t.Items.Add(node);
-                        pos += 4;
-                    }
-                }
-                else if (structType == "IntPoint")
-                {
-                    string[] labels = { "X", "Y" };
-                    for (int i = 0; i < 2; i++)
-                    {
-                        node = new TreeViewItem()
-                        {
-                            Header = pos.ToString("X4") + ": " + labels[i] + " : " + BitConverter.ToInt32(memory, pos)
-                        };
-                        node.Name = "_" + pos.ToString();
-                        node.Tag = nodeType.StructLeafInt;
-                        t.Items.Add(node);
-                        pos += 4;
-                    }
-                }
-                else if (structType == "Box" || structType == "BioRwBox")
-                {
-                    string[] labels = { "Min", "Max" };
-                    string[] labels2 = { "X", "Y", "Z" };
-                    TreeViewItem node2;
-                    for (int i = 0; i < 2; i++)
-                    {
-                        node2 = new TreeViewItem() { Header = labels[i] };
-                        node2.Name = "_" + pos.ToString();
-                        for (int j = 0; j < 3; j++)
-                        {
-                            node = new TreeViewItem() { Header = pos.ToString("X4") + ": " + labels2[j] + " : " + BitConverter.ToSingle(memory, pos).ToString("0.0######") };
-                            node.Name = "_" + pos.ToString();
-                            node.Tag = nodeType.StructLeafFloat;
-                            node2.Items.Add(node);
-                            pos += 4;
-                        }
-                        t.Items.Add(node2);
-                    }
-                    node = new TreeViewItem() { Header = pos.ToString("X4") + ": IsValid : " + memory[pos] };
-                    node.Name = "_" + pos.ToString();
-                    node.Tag = nodeType.StructLeafByte;
-                    t.Items.Add(node);
-                    pos += 1;
-                }
-                else
-                {
-                    //just prints the raw hex since there's no telling what it actually is
-                    node = new TreeViewItem() { Header = pos.ToString("X4") + ": " + memory.Skip(pos).Take(size).Aggregate("", (b, s) => b + " " + s.ToString("X2")) };
-                    node.Tag = nodeType.Unknown;
-                    t.Items.Add(node);
-                    pos += size;
-                }
-                readerpos = pos;
-            }
-        }
-
-        private int GenerateSpecialStructProp(TreeViewItem t, string s, int pos, PropertyReader.Property prop)
-        {
-            if (pos > memory.Length)
-            {
-                throw new Exception(": tried to read past bounds of Export Data");
-            }
-            int n;
-            TreeViewItem node;
-            PropertyInfo propInfo;
-            switch (prop.TypeVal)
-            {
-                case PropertyType.FloatProperty:
-                    s += BitConverter.ToSingle(memory, pos).ToString("0.0######");
-                    node = new TreeViewItem() { Header = s };
-                    node.Name = "_" + pos.ToString();
-                    node.Tag = nodeType.StructLeafFloat;
-                    t.Items.Add(node);
-                    pos += 4;
-                    break;
-                case PropertyType.IntProperty:
-                    s += BitConverter.ToInt32(memory, pos).ToString();
-                    node = new TreeViewItem() { Header = s };
-                    node.Name = "_" + pos.ToString();
-                    node.Tag = nodeType.StructLeafInt;
-                    t.Items.Add(node);
-                    pos += 4;
-                    break;
-                case PropertyType.ObjectProperty:
-                    n = BitConverter.ToInt32(memory, pos);
-                    s += n + " (" +CurrentLoadedExport.FileRef.getObjectName(n) + ")";
-                    node = new TreeViewItem() { Header = s };
-                    node.Name = "_" + pos.ToString();
-                    node.Tag = nodeType.StructLeafObject;
-                    t.Items.Add(node);
-                    pos += 4;
-                    break;
-                case PropertyType.StringRefProperty:
-                    n = BitConverter.ToInt32(memory, pos);
-                    s += "#" + n + ": ";
-                    s += ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(n);
-                    node = new TreeViewItem() { Header = s };
-                    node.Name = "_" + pos.ToString();
-                    node.Tag = nodeType.StructLeafInt;
-                    t.Items.Add(node);
-                    pos += 4;
-                    break;
-                case PropertyType.NameProperty:
-                    n = BitConverter.ToInt32(memory, pos);
-                    pos += 4;
-                    s += "\"" +CurrentLoadedExport.FileRef.getNameEntry(n) + "\"_" + BitConverter.ToInt32(memory, pos);
-                    node = new TreeViewItem() { Header = s };
-                    node.Name = "_" + pos.ToString();
-                    node.Tag = nodeType.StructLeafName;
-                    t.Items.Add(node);
-                    pos += 4;
-                    break;
-                case PropertyType.BoolProperty:
-                    s += (memory[pos] > 0).ToString();
-                    node = new TreeViewItem() { Header = s };
-                    node.Name = "_" + pos.ToString();
-                    node.Tag = nodeType.StructLeafBool;
-                    t.Items.Add(node);
-                    pos += 1;
-                    break;
-                case PropertyType.ByteProperty:
-                    if (prop.Size != 1)
-                    {
-                        string enumName = GetPropertyInfo(prop.Name)?.reference;
-                        if (enumName != null)
-                        {
-                            s += "\"" + enumName + "\", ";
-                        }
-                        s += "\"" +CurrentLoadedExport.FileRef.getNameEntry(BitConverter.ToInt32(memory, pos)) + "\"";
-                        node = new TreeViewItem() { Header = s };
-                        node.Name = "_" + pos.ToString();
-                        node.Tag = nodeType.StructLeafEnum;
-                        t.Items.Add(node);
-                        pos += 8;
-                    }
-                    else
-                    {
-                        s += "(byte)" + memory[pos];
-                        node = new TreeViewItem() { Header = s };
-                        node.Name = "_" + pos.ToString();
-                        node.Tag = nodeType.StructLeafByte;
-                        t.Items.Add(node);
-                        pos += 1;
-                    }
-                    break;
-                case PropertyType.StrProperty:
-                    n = BitConverter.ToInt32(memory, pos);
-                    pos += 4;
-                    s += "\"";
-                    for (int i = 0; i < n - 1; i++)
-                        s += (char)memory[pos + i * 2];
-                    s += "\"";
-                    node = new TreeViewItem() { Header = s };
-                    node.Name = "_" + pos.ToString();
-                    node.Tag = nodeType.StructLeafStr;
-                    t.Items.Add(node);
-                    pos += n * 2;
-                    break;
-                case PropertyType.ArrayProperty:
-                    n = BitConverter.ToInt32(memory, pos);
-                    s += n + " elements";
-                    node = new TreeViewItem() { Header = s };
-                    node.Name = "_" + pos.ToString();
-                    node.Tag = nodeType.StructLeafArray;
-                    pos += 4;
-                    propInfo = GetPropertyInfo(prop.Name);
-                    ArrayType arrayType = GetArrayType(propInfo);
-                    TreeViewItem node2;
-                    string s2;
-                    for (int i = 0; i < n; i++)
-                    {
-                        if (arrayType == ArrayType.Struct)
-                        {
-                            readerpos = pos;
-                            node2 = new TreeViewItem()
-                            {
-                                Header = i + ": (" + propInfo.reference + ")"
-                            };
-                            node2.Name = "_" + (-pos).ToString();
-                            node2.Tag = nodeType.StructLeafStruct;
-                            GenerateSpecialStruct(node2, propInfo.reference, 0);
-                            node.Items.Add(node2);
-                            pos = readerpos;
-                        }
-                        else
-                        {
-                            s2 = "";
-                            PropertyType type = PropertyType.None;
-                            int size = 0;
-                            switch (arrayType)
-                            {
-                                case ArrayType.Object:
-                                    type = PropertyType.ObjectProperty;
-                                    break;
-                                case ArrayType.Name:
-                                    type = PropertyType.NameProperty;
-                                    break;
-                                case ArrayType.Byte:
-                                    type = PropertyType.ByteProperty;
-                                    size = 1;
-                                    break;
-                                case ArrayType.Enum:
-                                    type = PropertyType.ByteProperty;
-                                    break;
-                                case ArrayType.Bool:
-                                    type = PropertyType.BoolProperty;
-                                    break;
-                                case ArrayType.String:
-                                    type = PropertyType.StrProperty;
-                                    break;
-                                case ArrayType.Float:
-                                    type = PropertyType.FloatProperty;
-                                    break;
-                                case ArrayType.Int:
-                                    type = PropertyType.IntProperty;
-                                    break;
-                            }
-                            pos = GenerateSpecialStructProp(node, s2, pos, new PropertyReader.Property { TypeVal = type, Size = size });
-                        }
-                    }
-                    t.Items.Add(node);
-                    break;
-                case PropertyType.StructProperty:
-                    propInfo = GetPropertyInfo(prop.Name);
-                    s += propInfo.reference;
-                    node = new TreeViewItem()
-                    {
-                        Header = s
-                    };
-                    node.Name = "_" + (-pos).ToString();
-                    node.Tag = nodeType.StructLeafStruct;
-                    readerpos = pos;
-                    GenerateSpecialStruct(node, propInfo.reference, 0);
-                    pos = readerpos;
-                    t.Items.Add(node);
-                    break;
-                case PropertyType.DelegateProperty:
-                    throw new NotImplementedException($"at position {pos.ToString("X4")}: cannot read Delegate property of Immutable struct");
-                case PropertyType.Unknown:
-                    throw new NotImplementedException($"at position {pos.ToString("X4")}: cannot read Unknown property of Immutable struct");
-                case PropertyType.None:
-                    node = new TreeViewItem() { Header = s };
-                    node.Name = "_" + pos.ToString();
-                    node.Tag = nodeType.StructLeafObject;
-                    t.Items.Add(node);
-                    pos += 8;
-                    break;
-                default:
-                    break;
-            }
-
-            return pos;
-        }
-
-        public TreeViewItem GenerateNode(PropHeader p)
-        {
-            string s = p.offset.ToString("X4") + ": ";
-            s += "Name: \"" +CurrentLoadedExport.FileRef.getNameEntry(p.name) + "\" ";
-            s += "Type: \"" +CurrentLoadedExport.FileRef.getNameEntry(p.type) + "\" ";
-            s += "Size: " + p.size + " Value: ";
-            nodeType propertyType = getType(CurrentLoadedExport.FileRef.getNameEntry(p.type));
-            int idx;
-            byte val;
-            switch (propertyType)
-            {
-                case nodeType.IntProperty:
-                    idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    if (CurrentLoadedExport.FileRef.getNameEntry(p.name) == "m_nStrRefID")
-                    {
-                        s += "#" + idx + ": ";
-                        if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
-                        {
-                            s += ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(idx);
-                        }
-                        else if (CurrentLoadedExport.FileRef.Game == MEGame.ME2)
-                        {
-                            s += ME2Explorer.ME2TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME2Explorer.ME2TalkFiles.findDataById(idx);
-                        }
-                        else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
-                        {
-                            s += tlkset == null ? "(.tlk not loaded)" : tlkset.findDataById(idx);
-                        }
-                    }
-                    else
-                    {
-                        s += idx.ToString();
-                    }
-                    break;
-                case nodeType.ObjectProperty:
-                    idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += idx + " (" +CurrentLoadedExport.FileRef.getObjectName(idx) + ")";
-                    break;
-                case nodeType.StrProperty:
-                    int count = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += "\"";
-                    if (count < 0)
-                    {
-                        for (int i = 0; i < count * -1 - 1; i++)
-                            s += (char)memory[p.offset + 28 + i * 2];
-                    }
-                    else
-                    {
-                        for (int i = 0; i < count - 1; i++)
-                            s += (char)memory[p.offset + 28 + i];
-                    }
-                    s += "\"";
-                    break;
-                case nodeType.BoolProperty:
-                    val = memory[p.offset + 24];
-                    s += (val == 1).ToString();
-                    break;
-                case nodeType.FloatProperty:
-                    float f = BitConverter.ToSingle(memory, p.offset + 24);
-                    s += f.ToString("0.0######");
-                    break;
-                case nodeType.NameProperty:
-                    idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += "\"" +CurrentLoadedExport.FileRef.getNameEntry(idx) + "\"_" + BitConverter.ToInt32(memory, p.offset + 28);
-                    break;
-                case nodeType.StructProperty:
-                    idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += "\"" +CurrentLoadedExport.FileRef.getNameEntry(idx) + "\"";
-                    break;
-                case nodeType.ByteProperty:
-                    if (CurrentLoadedExport.FileRef.Game == MEGame.ME3 ||CurrentLoadedExport.FileRef.Game == MEGame.UDK)
-                    {
-                        if (p.size == 1)
-                        {
-                            val = memory[p.offset + 32];
-                            s += val.ToString();
-                        }
-                        else
-                        {
-                            idx = BitConverter.ToInt32(memory, p.offset + 24);
-                            int idx2 = BitConverter.ToInt32(memory, p.offset + 32);
-                            s += "\"" +CurrentLoadedExport.FileRef.getNameEntry(idx) + "\",\"" +CurrentLoadedExport.FileRef.getNameEntry(idx2) + "\"";
-                        }
-                    }
-                    else
-                    {
-                        if (p.size == 1)
-                        {
-                            val = memory[p.offset + 24];
-                            s += val.ToString();
-                        }
-                        else
-                        {
-                            idx = BitConverter.ToInt32(memory, p.offset + 24);
-                            s += "\"" +CurrentLoadedExport.FileRef.getNameEntry(idx) + "\"";
-                        }
-                    }
-                    break;
-                case nodeType.ArrayProperty:
-                    idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += idx + "(count)";
-                    break;
-                case nodeType.StringRefProperty:
-                    idx = BitConverter.ToInt32(memory, p.offset + 24);
-                    s += "#" + idx + ": ";
-                    if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
-                    {
-                        s += ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(idx);
-                    }
-                    else if (CurrentLoadedExport.FileRef.Game == MEGame.ME2)
-                    {
-                        s += ME2Explorer.ME2TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME2Explorer.ME2TalkFiles.findDataById(idx);
-                    }
-                    else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
-                    {
-                        s += tlkset == null ? "(.tlk not loaded)" : tlkset.findDataById(idx);
-                    }
-                    break;
-            }
-            TreeViewItem ret = new TreeViewItem()
-            {
-                Header = s
-            };
-            ret.Tag = propertyType;
-            ret.Name = "_" + p.offset.ToString();
-            return ret;
-        }
-
-        public nodeType getType(string s)
-        {
-            for (int i = 0; i < Types.Length; i++)
-                if (s == Types[i])
-                {
-                    return (nodeType)i;
-                }
-            return (nodeType)(-1);
-        }*/
-
         private void hb1_SelectionChanged(object sender, EventArgs e)
         {
             int start = (int)Interpreter_Hexbox.SelectionStart;
@@ -1609,21 +749,86 @@ namespace ME3Explorer
 
         private void Interpreter_TreeViewSelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Background,
-(NoArgDelegate)delegate { UpdateHexboxPosition(e.NewValue); });
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, (NoArgDelegate)delegate { UpdateHexboxPosition(e.NewValue as UPropertyTreeViewEntry); });
+            UPropertyTreeViewEntry newSelectedItem = (UPropertyTreeViewEntry)e.NewValue;
+            //list of visible elements for editing
+            List<FrameworkElement> SupportedEditorSetElements = new List<FrameworkElement>();
+            if (newSelectedItem != null && newSelectedItem.Property != null)
+            {
+                switch (newSelectedItem.Property)
+                {
+                    case IntProperty ip:
+                        Value_TextBox.Text = ip.Value.ToString();
+                        SupportedEditorSetElements.Add(Value_TextBox);
+                        break;
+
+                    case FloatProperty fp:
+                        Value_TextBox.Text = fp.Value.ToString();
+                        SupportedEditorSetElements.Add(Value_TextBox);
+                        break;
+                    case BoolProperty bp:
+                        SupportedEditorSetElements.Add(Value_ComboBox);
+                        List<string> values = new List<string>(new string[] { "True", "False" });
+                        Value_ComboBox.ItemsSource = values;
+                        Value_ComboBox.SelectedIndex = bp.Value ? 0 : 1; //true : false
+                        break;
+                    case ObjectProperty op:
+                        Value_TextBox.Text = op.Value.ToString();
+                        UpdateParsedEditorValue();
+                        SupportedEditorSetElements.Add(Value_TextBox);
+                        SupportedEditorSetElements.Add(ParsedValue_TextBlock);
+                        break;
+                }
+
+                //Hide the non-used controls
+                foreach (FrameworkElement fe in EditorSetElements)
+                {
+                    fe.Visibility = SupportedEditorSetElements.Contains(fe) ? Visibility.Visible : Visibility.Collapsed;
+                }
+            }
         }
 
-        private delegate void NoArgDelegate();
+        private void UpdateParsedEditorValue()
+        {
+            UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
+            if (tvi != null && tvi.Property != null && tvi.Property is ObjectProperty)
+            {
+                if (int.TryParse(Value_TextBox.Text, out int index))
+                {
+                    if (index == 0)
+                    {
+                        ParsedValue_TextBlock.Text = "Null";
+                    }
+                    else
+                    {
+                        var entry = CurrentLoadedExport.FileRef.getEntry(index);
+                        if (entry != null)
+                        {
+                            ParsedValue_TextBlock.Text = entry.GetFullPath;
+                        }
+                        else
+                        {
+                            ParsedValue_TextBlock.Text = "Index out of bounds of entry list";
+                        }
+                    }
+                } else
+                {
+                    ParsedValue_TextBlock.Text = "Invalid value";
+                }
+            }
+        }
+
         /// <summary>
         /// Tree view selected item changed. This runs in a delegate due to how multithread bubble-up items work with treeview.
         /// Without this delegate, the item selected will randomly be a parent item instead.
         /// From https://www.codeproject.com/Tips/208896/WPF-TreeView-SelectedItemChanged-called-twice
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void UpdateHexboxPosition(object tvi)
+        private delegate void NoArgDelegate();
+
+
+
+        private void UpdateHexboxPosition(UPropertyTreeViewEntry newSelectedItem)
         {
-            UPropertyTreeViewEntry newSelectedItem = (UPropertyTreeViewEntry)tvi;
             if (newSelectedItem != null && newSelectedItem.Property != null)
             {
                 var hexPos = newSelectedItem.Property.Offset;
@@ -1686,9 +891,8 @@ namespace ME3Explorer
             if (tvi != null)
             {
                 UProperty tag = (UProperty)tvi.Tag;
-                PropertyCollection props = CurrentLoadedExport.GetProperties();
-                props.Remove(tag);
-                CurrentLoadedExport.WriteProperties(props);
+                CurrentLoadedProperties.Remove(tag);
+                CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
                 StartScan();
             }
         }
@@ -1779,10 +983,10 @@ namespace ME3Explorer
                 return;
             }
 
-            PropertyCollection currentProps = CurrentLoadedExport.GetProperties();
             List<string> props = new List<string>();
-            foreach (UProperty cProp in currentProps)
+            foreach (UProperty cProp in CurrentLoadedProperties)
             {
+                //build a list we are going to the add dialog
                 props.Add(cProp.Name);
             }
 
@@ -1841,6 +1045,12 @@ namespace ME3Explorer
                     case PropertyType.FloatProperty:
                         newProperty = new FloatProperty(0.0f, prop.Item1);
                         break;
+                    case PropertyType.StringRefProperty:
+                        newProperty = new StringRefProperty(prop.Item1);
+                        break;
+                    case PropertyType.StrProperty:
+                        newProperty = new StrProperty("", prop.Item1);
+                        break;
                     case PropertyType.ArrayProperty:
                         newProperty = new ArrayProperty<IntProperty>(ArrayType.Int, prop.Item1); //We can just set it to int as it will be reparsed and resolved.
                         break;
@@ -1849,10 +1059,10 @@ namespace ME3Explorer
                 //UProperty property = generateNewProperty(prop.Item1, currentInfo);
                 if (newProperty != null)
                 {
-                    currentProps.Add(newProperty);
+                    CurrentLoadedProperties.Add(newProperty);
                 }
                 //Todo: Create new node, prevent refresh of this instance.
-                CurrentLoadedExport.WriteProperties(currentProps);
+                CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
                 //End Todo
             }
         }
@@ -1867,6 +1077,7 @@ namespace ME3Explorer
                     MessageBox.Show("Error reading property.", "Error");
                     return null;
                 }
+                //TODO: Implement code to generate a new StructProperty UProperty
                 if (info.type == PropertyType.StructProperty /* &&CurrentLoadedExport.FileRef.Game != MEGame.ME3*/)
                 {
                     MessageBox.Show("Cannot add StructProperties when editing ME1 or ME2 files (or ME3 currently).", "Sorry :(");
@@ -1884,15 +1095,88 @@ namespace ME3Explorer
         private void SetValue_Click(object sender, RoutedEventArgs e)
         {
             //todo: set value
+            bool updated = false;
             UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
             if (tvi != null && tvi.Property != null)
             {
                 UProperty tag = tvi.Property;
-                PropertyCollection props = CurrentLoadedExport.GetProperties();
-                props.Remove(tag);
-                CurrentLoadedExport.WriteProperties(props);
-                StartScan();
+                switch (tag)
+                {
+                    case IntProperty ip:
+                        {
+                            //scoped for variable re-use
+                            if (int.TryParse(Value_TextBox.Text, out int i) && i != ip.Value)
+                            {
+                                ip.Value = i;
+                                updated = true;
+                            }
+                        }
+                        break;
+                    case FloatProperty fp:
+                        {
+                            if (float.TryParse(Value_TextBox.Text, out float f) && f != fp.Value)
+                            {
+                                fp.Value = f;
+                                updated = true;
+                            }
+                        }
+                        break;
+                    case BoolProperty bp:
+                        if (bp.Value != (Value_ComboBox.SelectedIndex == 0))
+                        {
+                            bp.Value = Value_ComboBox.SelectedIndex == 0; //0 = true
+                            updated = true;
+                        }
+                        break;
+                    case StrProperty sp:
+                        if (sp.Value != Value_TextBox.Text)
+                        {
+                            sp.Value = Value_TextBox.Text;
+                            updated = true;
+                        }
+                        break;
+                    case StringRefProperty srp:
+                        {
+                            if (int.TryParse(Value_TextBox.Text, out int s) && s != srp.Value)
+                            {
+                                srp.Value = s;
+                                updated = true;
+                            }
+                        }
+                        break;
+                    case ObjectProperty op:
+                        {
+                            if (int.TryParse(Value_TextBox.Text, out int o) && o != op.Value)
+                            {
+                                op.Value = o;
+                                updated = true;
+                            }
+                        }
+                        break;
+                }
+                //PropertyCollection props = CurrentLoadedExport.GetProperties();
+                //props.Remove(tag);
+
+                if (updated)
+                {
+                    //will cause a refresh from packageeditorwpf
+                    CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
+                }
+                //StartScan();
             }
+        }
+
+        private void ValueTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                SetValue_Click(null, null);
+            }
+        }
+
+        private void Value_TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdateParsedEditorValue();
         }
     }
 
@@ -1933,6 +1217,9 @@ namespace ME3Explorer
             }
         }
 
+        /// <summary>
+        /// Used for inline editing. Return true to allow inline editing for property type
+        /// </summary>
         public bool EditableType
         {
             get
@@ -1963,12 +1250,6 @@ namespace ME3Explorer
                 Parent.IsExpanded = true;
             }
         }
-
-        //public void Focus(TreeView tView)
-        //{
-        //    TreeViewItem tvItem = (TreeViewItem)tView.ItemContainerGenerator.ContainerFromItem(this);
-        //    tvItem?.Focus();
-        //}
 
         /// <summary>
         /// Flattens the tree into depth first order. Use this method for searching the list.
@@ -2031,7 +1312,8 @@ namespace ME3Explorer
                                 (Property as IntProperty).Value = parsedIntVal;
                                 PropertyUpdated?.Invoke(this, EventArgs.Empty);
                                 HasChanges = true;
-                            } else
+                            }
+                            else
                             {
                                 return;
                             }
@@ -2042,7 +1324,8 @@ namespace ME3Explorer
                                 (Property as FloatProperty).Value = parsedFloatVal;
                                 PropertyUpdated?.Invoke(this, EventArgs.Empty);
                                 HasChanges = true;
-                            } else
+                            }
+                            else
                             {
                                 return;
                             }
@@ -2103,7 +1386,7 @@ namespace ME3Explorer
                     if (Property.PropType == Unreal.PropertyType.ArrayProperty)
                     {
                         return "ArrayProperty - TODO"; //we don't have reference to current pcc so we cannot look this up at this time.
-                        //return $"ArrayProperty({(Property as ArrayProperty).arrayType})";
+                                                       //return $"ArrayProperty({(Property as ArrayProperty).arrayType})";
 
                     }
                     else if (Property.PropType == Unreal.PropertyType.StructProperty)
@@ -2122,33 +1405,10 @@ namespace ME3Explorer
             //set { _displayName = value; }
         }
 
-        //public System.Windows.Media.Brush ForegroundColor
-        //{
-        //    get { return Property == null ? System.Windows.Media.Brushes.Black : UIndex > 0 ? System.Windows.Media.Brushes.Black : System.Windows.Media.Brushes.Gray; }
-        //    set
-        //    {
-        //        _foregroundColor = value;
-        //        OnPropertyChanged("ForegroundColor");
-        //    }
-        //}
-
         public override string ToString()
         {
             return "UPropertyTreeViewEntry " + DisplayName;
         }
-
-        ///// <summary>
-        ///// Sorts this node's children in ascending positives first, then descending negatives
-        ///// </summary>
-        //internal void SortChildren()
-        //{
-        //    var exportNodes = ChildrenProperties.Where(x => x.Entry.UIndex > 0).OrderBy(x => x.UIndex).ToList();
-        //    var importNodes = ChildrenProperties.Where(x => x.Entry.UIndex < 0).OrderBy(x => x.UIndex).Reverse().ToList(); //we want this in descending order
-
-        //    exportNodes.AddRange(importNodes);
-        //    ChildrenProperties.Clear();
-        //    ChildrenProperties.AddRange(exportNodes);
-        //}
     }
 
     public class PropertyEditorSetSelector : DataTemplateSelector

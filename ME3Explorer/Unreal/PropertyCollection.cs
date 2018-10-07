@@ -1265,6 +1265,15 @@ namespace ME3Explorer.Unreal
             PropType = PropertyType.StringRefProperty;
         }
 
+        /// <summary>
+        /// For constructing new property
+        /// </summary>
+        /// <param name="name"></param>
+        public StringRefProperty(NameReference? name = null) : base(name)
+        {
+            PropType = PropertyType.StringRefProperty;
+        }
+
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)
