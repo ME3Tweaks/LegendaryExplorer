@@ -170,6 +170,9 @@ namespace ME3Explorer
                 case "Texture2D":
                     StartTextureBinaryScan(topLevelTree, data, binarystart);
                     break;
+                case "TextureMovie":
+                    StartTextureMovieScan(topLevelTree, data, binarystart);
+                    break;
             }
         }
 
@@ -1897,6 +1900,79 @@ namespace ME3Explorer
             catch (Exception e)
             {
                 topLevelTree.Items.Add($"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {e.Message}");
+            }
+        }
+
+        private void StartTextureMovieScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            /*
+             *  
+             *  count +4
+             *      stream length in TFC +4
+             *      stream length in TFC +4 (repeat)
+             *      stream offset in TFC +4
+             *  
+             */
+            try
+            {
+                var subnodes = new List<TreeViewItem>();
+                int pos = binarystart;
+                int unk1 = BitConverter.ToInt32(data, pos);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"{pos:X4} Unknown: {unk1}",
+                    Name = "_" + pos,
+
+                });
+                pos += 4;
+                int length = BitConverter.ToInt32(data, pos);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"{pos:X4} bik length: {length} (0x{length:X})",
+                    Name = "_" + pos,
+
+                    Tag = NodeType.StructLeafInt
+                });
+                pos += 4;
+                length = BitConverter.ToInt32(data, pos);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"{pos:X4} bik length: {length} (0x{length:X})",
+                    Name = "_" + pos,
+
+                    Tag = NodeType.StructLeafInt
+                });
+                pos += 4;
+                int offset = BitConverter.ToInt32(data, pos);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"{pos:X4} bik offset in file: {offset} (0x{offset:X})",
+                    Name = "_" + pos,
+
+                    Tag = NodeType.StructLeafInt
+                });
+                pos += 4;
+                if (pos < data.Length && CurrentLoadedExport.GetProperty<NameProperty>("Filename") == null)
+                {
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = $"{pos:X4} The rest of the binary is the bik.",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.Unknown
+                    });
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = "The stream offset to this data will be automatically updated when this file is saved.",
+                        Tag = NodeType.Unknown
+                    });
+                }
+
+                topLevelTree.ItemsSource = subnodes;
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Items.Add($"Error reading binary data: {ex}");
             }
         }
         #endregion
