@@ -161,6 +161,9 @@ namespace ME3Explorer
                 case "SkeletalMesh":
                     StartSkeletalMeshScan(topLevelTree, data, binarystart);
                     break;
+                case "StaticMeshCollectionActor":
+                    StartStaticMeshCollectionActorScan(topLevelTree, data, binarystart);
+                    break;
             }
         }
 
@@ -1513,6 +1516,142 @@ namespace ME3Explorer
             catch (Exception ex)
             {
                 topLevelTree.Items.Add($"Error reading binary data: {ex}");
+            }
+        }
+
+        private void StartStaticMeshCollectionActorScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            try
+            {
+                var subnodes = new List<TreeViewItem>();
+                //get a list of staticmesh stuff from the props.
+                var smacitems = new List<IExportEntry>();
+                var props = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
+
+                foreach (var prop in props)
+                {
+                    if (prop.Value > 0)
+                    {
+                        smacitems.Add(CurrentLoadedExport.FileRef.getEntry(prop.Value) as IExportEntry);
+                    }
+                    else
+                    {
+                        smacitems.Add(null);
+                    }
+                }
+
+                //find start of class binary (end of props)
+                int start = binarystart;
+
+                //Lets make sure this binary is divisible by 64.
+                if ((data.Length - start) % 64 != 0)
+                {
+                    topLevelTree.Items.Add(new TreeViewItem
+                    {
+                        Tag = NodeType.Unknown,
+                        Header = $"{start:X4} Binary data is not divisible by 64 ({data.Length - start})! SMCA binary data should be a length divisible by 64.",
+                        Name = "_" + start
+
+                    });
+                    return;
+                }
+
+                int smcaindex = 0;
+                while (start < data.Length && smcaindex < smacitems.Count)
+                {
+                    TreeViewItem smcanode = new TreeViewItem
+                    {
+                        Tag = NodeType.Unknown
+                    };
+                    IExportEntry assossiateddata = smacitems[smcaindex];
+                    string staticmesh = "";
+                    string objtext = "Null - unused data";
+                    if (assossiateddata != null)
+                    {
+                        objtext = $"[Export {assossiateddata.Index}] {assossiateddata.ObjectName}_{assossiateddata.indexValue}";
+
+                        //find associated static mesh value for display.
+                        byte[] smc_data = assossiateddata.Data;
+                        int staticmeshstart = 0x4;
+                        bool found = false;
+                        while (staticmeshstart < smc_data.Length && smc_data.Length - 8 >= staticmeshstart)
+                        {
+                            ulong nameindex = BitConverter.ToUInt64(smc_data, staticmeshstart);
+                            if (nameindex < (ulong)CurrentLoadedExport.FileRef.Names.Count && CurrentLoadedExport.FileRef.Names[(int)nameindex] == "StaticMesh")
+                            {
+                                //found it
+                                found = true;
+                                break;
+                            }
+                            else
+                            {
+                                staticmeshstart += 1;
+                            }
+                        }
+
+                        if (found)
+                        {
+                            int staticmeshexp = BitConverter.ToInt32(smc_data, staticmeshstart + 0x18);
+                            if (staticmeshexp > 0 && staticmeshexp < CurrentLoadedExport.FileRef.ExportCount)
+                            {
+                                staticmesh = CurrentLoadedExport.FileRef.getEntry(staticmeshexp).ObjectName;
+                            }
+                        }
+                    }
+
+                    smcanode.Header = $"{start:X4} [{smcaindex}] {objtext} {staticmesh}";
+                    smcanode.Name = "_" + start;
+                    subnodes.Add(smcanode);
+
+                    //Read nodes
+                    for (int i = 0; i < 16; i++)
+                    {
+                        float smcadata = BitConverter.ToSingle(data, start);
+                        TreeViewItem node = new TreeViewItem
+                        {
+                            Tag = NodeType.StructLeafFloat,
+                            Header = start.ToString("X4")
+                        };
+
+                        string label = i.ToString();
+                        switch (i)
+                        {
+                            case 1:
+                                label = "ScalingXorY1:";
+                                break;
+                            case 12:
+                                label = "LocX:";
+                                break;
+                            case 13:
+                                label = "LocY:";
+                                break;
+                            case 14:
+                                label = "LocZ:";
+                                break;
+                            case 15:
+                                label = "CameraLayerDistance?:";
+                                break;
+                        }
+
+                        node.Header += $" {label} {smcadata}";
+
+                        //Lookup staticmeshcomponent so we can see what this actually is without flipping
+                        // export
+
+                        node.Name = "_" + start;
+                        smcanode.Items.Add(node);
+                        start += 4;
+                    }
+
+                    smcaindex++;
+                }
+
+                topLevelTree.ItemsSource = subnodes;
+
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Items.Add($"An error occured parsing the staticmesh: {ex.Message}");
             }
         }
         #endregion
