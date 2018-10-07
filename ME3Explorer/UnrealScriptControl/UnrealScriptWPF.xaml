@@ -27,7 +27,7 @@
         <DockPanel Grid.Row="0" Grid.Column="0">
             <DockPanel DockPanel.Dock="Top">
                 <TextBlock Text="Script header" DockPanel.Dock="Top" FontWeight="Bold"/>
-                <TextBox Name="Function_Header" Text="Script Header\nGoes here" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch"/>
+                <TextBox Name="Function_Header" Text="Script Header\nGoes here" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" IsReadOnly="True"/>
             </DockPanel>
             <DockPanel>
                 <TextBlock Text="Decompiled script" DockPanel.Dock="Top" FontWeight="Bold"/>
