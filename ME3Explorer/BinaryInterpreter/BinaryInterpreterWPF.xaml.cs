@@ -167,6 +167,9 @@ namespace ME3Explorer
                 case "StaticMesh":
                     StartStaticMeshScan(topLevelTree, data, binarystart);
                     break;
+                case "Texture2D":
+                    StartTextureBinaryScan(topLevelTree, data, binarystart);
+                    break;
             }
         }
 
@@ -1736,6 +1739,164 @@ namespace ME3Explorer
             catch (Exception ex)
             {
                 topLevelTree.Items.Add($"Error reading binary data: {ex}");
+            }
+        }
+
+        private void StartTextureBinaryScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            try
+            {
+                var subnodes = new List<TreeViewItem>();
+                var textureData = new MemoryStream(data);
+
+                int unrealExportIndex = ReadInt32(textureData);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"0x{textureData.Position - 4:X5} Unreal Unique Index: {unrealExportIndex}",
+                    Name = "_" + (textureData.Position - 4),
+
+                    Tag = NodeType.StructLeafInt
+                });
+
+                PropertyCollection properties = CurrentLoadedExport.GetProperties();
+                if (textureData.Length == properties.endOffset)
+                    return; // no binary data
+
+
+                textureData.Position = properties.endOffset;
+                if (CurrentLoadedExport.FileRef.Game != MEGame.ME3)
+                {
+                    textureData.Seek(12, SeekOrigin.Current); // 12 zeros
+                    textureData.Seek(4, SeekOrigin.Current); // position in the package
+                }
+
+                //mipMapsList = new List<MipMap>();
+                int numMipMaps = ReadInt32(textureData);
+                for (int l = 0; l < numMipMaps; l++)
+                {
+                    //MipMap mipmap = new MipMap();
+                    var mipMapNode = new TreeViewItem
+                    {
+                        Header = $"0x{textureData.Position - 4} MipMap #{l}",
+                        Name = "_" + (textureData.Position - 4)
+
+                    };
+                    subnodes.Add(mipMapNode);
+
+                    StorageTypes storageType = (StorageTypes)ReadInt32(textureData);
+                    mipMapNode.Items.Add(new TreeViewItem
+                    {
+                        Header = $"0x{textureData.Position - 4} Storage Type: {storageType}",
+                        Name = "_" + (textureData.Position - 4)
+
+                    });
+
+                    var uncompressedSize = ReadInt32(textureData);
+                    mipMapNode.Items.Add(new TreeViewItem
+                    {
+                        Header = $"0x{textureData.Position - 4} Uncompressed Size: {uncompressedSize}",
+                        Name = "_" + (textureData.Position - 4)
+
+                    });
+
+                    var compressedSize = ReadInt32(textureData);
+                    mipMapNode.Items.Add(new TreeViewItem
+                    {
+                        Header = $"0x{textureData.Position - 4} Compressed Size: {compressedSize}",
+                        Name = "_" + (textureData.Position - 4)
+
+                    });
+
+                    var dataOffset = ReadInt32(textureData);
+                    mipMapNode.Items.Add(new TreeViewItem
+                    {
+                        Header = $"0x{textureData.Position - 4} Data Offset: 0x{dataOffset.ToString("X8")}",
+                        Name = "_" + (textureData.Position - 4)
+
+                    });
+
+                    //mipmap.storageType = (StorageTypes)
+                    //mipmap.uncompressedSize = textureData.ReadInt32();
+                    //mipmap.compressedSize = textureData.ReadInt32();
+                    //mipmap.dataOffset = textureData.ReadUInt32();
+
+
+                    switch (storageType)
+                    {
+                        case StorageTypes.pccUnc:
+                            //mipmap.internalOffset = (uint)textureData.Position;
+                            textureData.Seek(uncompressedSize, SeekOrigin.Current);
+                            break;
+                        case StorageTypes.pccLZO:
+                        case StorageTypes.pccZlib:
+                            //mipmap.internalOffset = (uint)textureData.Position;
+                            textureData.Seek(compressedSize, SeekOrigin.Current);
+                            break;
+                    }
+
+                    var mipWidth = ReadInt32(textureData);
+                    mipMapNode.Items.Add(new TreeViewItem
+                    {
+                        Header = $"0x{textureData.Position - 4} Mip Width: {mipWidth}",
+                        Name = "_" + (textureData.Position - 4)
+
+                    });
+
+                    var mipHeight = ReadInt32(textureData);
+                    mipMapNode.Items.Add(new TreeViewItem
+                    {
+                        Header = $"0x{textureData.Position - 4} Mip Height: {mipHeight}",
+                        Name = "_" + (textureData.Position - 4)
+
+                    });
+
+                    //if (fixDim)
+                    //{
+                    //    if (mipmap.width == 4 && mipMapsList.Exists(mip => mip.width == mipmap.width))
+                    //        mipmap.width = mipMapsList.Last().width / 2;
+                    //    if (mipmap.height == 4 && mipMapsList.Exists(mip => mip.height == mipmap.height))
+                    //        mipmap.height = mipMapsList.Last().height / 2;
+
+                    //    if (mipmap.width == 0)
+                    //        mipmap.width = 1;
+                    //    if (mipmap.height == 0)
+                    //        mipmap.height = 1;
+                    //}
+
+                    //mipMapsList.Add(mipmap);
+                }
+                /*
+                restOfData = textureData.ReadToBuffer(textureData.Length - textureData.Position);
+
+                packagePath = package.packagePath;
+                packageName = Path.GetFileNameWithoutExtension(packagePath).ToUpper();
+                if (GameData.gameType == MeType.ME1_TYPE)
+                {
+                    string baseName = package.resolvePackagePath(package.exportsTable[exportId].linkId).Split('.')[0].ToUpper();
+                    if (mipMapsList.Exists(s => s.storageType == StorageTypes.extLZO) ||
+                        mipMapsList.Exists(s => s.storageType == StorageTypes.extZlib) ||
+                        mipMapsList.Exists(s => s.storageType == StorageTypes.extUnc))
+                    {
+                        basePackageName = baseName;
+                        if (basePackageName == "")
+                            throw new Exception("");
+                        slave = true;
+                    }
+                    else
+                    {
+                        if (baseName != "" && !properties.exists("NeverStream") &&
+                            GameData.packageFiles.Exists(s => Path.GetFileNameWithoutExtension(s).Equals(baseName, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            basePackageName = baseName;
+                            weakSlave = true;
+                        }
+                    }
+                }*/
+                topLevelTree.ItemsSource = subnodes;
+            }
+            catch (Exception e)
+            {
+                topLevelTree.Items.Add($"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {e.Message}");
             }
         }
         #endregion
