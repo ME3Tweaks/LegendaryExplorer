@@ -164,6 +164,9 @@ namespace ME3Explorer
                 case "StaticMeshCollectionActor":
                     StartStaticMeshCollectionActorScan(topLevelTree, data, binarystart);
                     break;
+                case "StaticMesh":
+                    StartStaticMeshScan(topLevelTree, data, binarystart);
+                    break;
             }
         }
 
@@ -1652,6 +1655,87 @@ namespace ME3Explorer
             catch (Exception ex)
             {
                 topLevelTree.Items.Add($"An error occured parsing the staticmesh: {ex.Message}");
+            }
+        }
+
+        private void StartStaticMeshScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            /*
+             *  
+             *  Bounding +28
+             *  RB_BodySetup <----------------------------
+             *  more bounding +28 
+             *  size +4 bytes
+             *  count +4 bytes
+             *  kDOPTree +(size*count)
+             *  size +4 bytes
+             *  count +4 bytes
+             *  RawTris +(size*count)
+             *  meshversion +4
+             *  lodcount +4
+             *      guid +16
+             *      sectioncount +4
+             *          MATERIAL <------------------------
+             *          +36
+             *          unk5
+             *          +13
+             *      section[0].unk5 == 1 ? +12 : +4
+             */
+            try
+            {
+                var subnodes = new List<TreeViewItem>();
+                int pos = binarystart;
+                pos += 28;
+                int rbRef = BitConverter.ToInt32(data, pos);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"{pos:X4} RB_BodySetup: ({rbRef}) {CurrentLoadedExport.FileRef.getEntry(rbRef)?.GetFullPath ?? ""}",
+                    Name = "_" + pos,
+
+                    Tag = NodeType.StructLeafObject
+
+                });
+                pos += 28; //bounding
+                int size = BitConverter.ToInt32(data, pos);
+                int count = BitConverter.ToInt32(data, pos + 4);
+                pos += 8 + (size * count); //kDOPTree
+                size = BitConverter.ToInt32(data, pos);
+                count = BitConverter.ToInt32(data, pos + 4);
+                pos += 8 + (size * count); //RawTris
+                pos += 4; //meshversion
+                int lodCount = BitConverter.ToInt32(data, pos);
+                pos += 4;
+                int unk5 = 0;
+                for (int i = 0; i < lodCount; i++)
+                {
+                    pos += 16; //guid
+                    int sectionCount = BitConverter.ToInt32(data, pos);
+                    pos += 4;
+                    for (int j = 0; j < sectionCount; j++)
+                    {
+                        int material = BitConverter.ToInt32(data, pos);
+                        subnodes.Add(new TreeViewItem
+                        {
+                            Header = $"{pos:X4} Material: ({material}) {CurrentLoadedExport.FileRef.getEntry(material)?.GetFullPath ?? ""}",
+                            Name = "_" + pos,
+
+                            Tag = NodeType.StructLeafObject
+                        });
+                        pos += 36;
+                        if (j == 0)
+                        {
+                            unk5 = BitConverter.ToInt32(data, pos);
+                        }
+                        pos += 13;
+                    }
+                    pos += unk5 == 1 ? 12 : 4;
+                }
+
+                topLevelTree.ItemsSource = subnodes;
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Items.Add($"Error reading binary data: {ex}");
             }
         }
         #endregion
