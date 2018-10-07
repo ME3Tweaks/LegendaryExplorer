@@ -155,6 +155,9 @@ namespace ME3Explorer
                 case "MaterialInstanceConstant":
                     StartMaterialScan(topLevelTree, data, binarystart);
                     break;
+                case "PrefabInstance":
+                    StartPrefabInstanceScan(topLevelTree, data, binarystart);
+                    break;
             }
         }
 
@@ -1392,6 +1395,78 @@ namespace ME3Explorer
             catch (Exception ex)
             {
                 topLevelTree.Items.Add($"An error occured parsing the material: {ex.Message}");
+            }
+        }
+
+        private void StartPrefabInstanceScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            /*
+             *  count: 4 bytes 
+             *      Prefab ref : 4 bytes
+             *      Level Object : 4 bytes
+             *  0: 4 bytes
+             *  
+             */
+
+            if ((CurrentLoadedExport.Header[0x1f] & 0x2) == 0)
+            {
+                return;
+            }
+
+            try
+            {
+                var subnodes = new List<TreeViewItem>();
+                int pos = binarystart;
+                int count = BitConverter.ToInt32(data, pos);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"{pos:X4} Count: {count}",
+                    Name = "_" + pos
+
+                });
+                pos += 4;
+                while (pos + 8 <= data.Length && count > 0)
+                {
+                    var exportRef = BitConverter.ToInt32(data, pos);
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = $"{pos:X4}: {exportRef} Prefab: {CurrentLoadedExport.FileRef.getEntry(exportRef).GetFullPath}",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.StructLeafObject
+                    });
+                    pos += 4;
+                    exportRef = BitConverter.ToInt32(data, pos);
+                    if (exportRef == 0)
+                    {
+                        subnodes.Last().Items.Add(new TreeViewItem
+                        {
+                            Header = $"{pos:X4}: {exportRef} Level Object: Null",
+                            Name = "_" + pos,
+
+                            Tag = NodeType.StructLeafObject
+                        });
+                    }
+                    else
+                    {
+                        subnodes.Last().Items.Add(new TreeViewItem
+                        {
+                            Header = $"{pos:X4}: {exportRef} Level Object: {CurrentLoadedExport.FileRef.getEntry(exportRef).GetFullPath}",
+                            Name = "_" + pos,
+
+                            Tag = NodeType.StructLeafObject
+                        });
+                    }
+
+                    pos += 4;
+                    count--;
+                }
+
+                topLevelTree.ItemsSource = subnodes;
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Items.Add($"Error reading binary data: {ex}");
             }
         }
         #endregion
