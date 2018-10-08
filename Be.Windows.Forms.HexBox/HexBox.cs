@@ -654,6 +654,18 @@ namespace Be.Windows.Forms
                 return true;
             }
 
+            protected virtual bool PreProcessWmKeyDown_ControlShiftC(ref Message m)
+            {
+                _hexBox.CopyHex();
+                return true;
+            }
+
+            protected virtual bool PreProcessWmKeyDown_ControlShiftV(ref Message m)
+            {
+                _hexBox.PasteHex();
+                return true;
+            }
+
             #endregion
 
             #region PreProcessWmChar methods
@@ -817,6 +829,8 @@ namespace Be.Windows.Forms
                         _messageHandlers.Add(Keys.C | Keys.Control, new MessageDelegate(PreProcessWmKeyDown_ControlC)); // copy 
                         _messageHandlers.Add(Keys.X | Keys.Control, new MessageDelegate(PreProcessWmKeyDown_ControlX)); // cut
                         _messageHandlers.Add(Keys.V | Keys.Control, new MessageDelegate(PreProcessWmKeyDown_ControlV)); // paste
+                        _messageHandlers.Add(Keys.C | Keys.Control | Keys.Shift, new MessageDelegate(PreProcessWmKeyDown_ControlShiftC)); // copy hex
+                        _messageHandlers.Add(Keys.V | Keys.Control | Keys.Shift, new MessageDelegate(PreProcessWmKeyDown_ControlShiftV)); // paste hex
                     }
                     return _messageHandlers;
                 }
@@ -1250,6 +1264,82 @@ namespace Be.Windows.Forms
         /// Contains a state value about Insert or Write mode. When this value is true and the ByteProvider SupportsInsert is true bytes are inserted instead of overridden.
         /// </summary>
         bool _insertActive;
+
+
+        /// <summary>
+        /// Hightlight region entry
+        /// </summary>
+        public class HighlightRegion : IEquatable<HighlightRegion>
+        {
+            /// <summary>
+            /// Hightlight region start index
+            /// </summary>
+            public long Start { get; set; }
+
+            /// <summary>
+            /// Hightlight region end index
+            /// </summary>
+            public long End { get; set; }
+
+            /// <summary>
+            /// Hightlight region foreground color
+            /// </summary>
+            public Color ForeColor { get; set; }
+
+            /// <summary>
+            /// Hightlight region background color
+            /// </summary>
+            public Color BackColor { get; set; }
+
+            /// <summary>
+            /// Hightlight region label
+            /// </summary>
+            public String Label { get; set; }
+
+            /// <summary>
+            /// Checks hightlight region within position index
+            /// </summary>
+            public bool IsWithin(long t)
+            {
+                return t >= Start && t <= End;
+            }
+
+            /// <summary>
+            /// Merge two hightlight regions
+            /// </summary>
+            public void Merge(HighlightRegion other)
+            {
+                Start = Math.Min(Start, other.Start);
+                End = Math.Max(End, other.End);
+            }
+
+            /// <summary>
+            /// Checks if hightlight regions overlap
+            /// </summary>
+            public bool Overlaps(HighlightRegion other)
+            {
+                return IsWithin(other.Start) || IsWithin(other.End) || other.IsWithin(Start);
+            }
+
+            /// <summary>
+            /// Checks two hightlight regions have same coordinates
+            /// </summary>
+            public bool Equals(HighlightRegion other)
+            {
+                return other.Start == Start && other.End == End;
+            }
+        }
+
+        /// <summary>
+        /// Hightlighted regions
+        /// </summary>
+        List<HighlightRegion> _highlightRegions = new List<HighlightRegion>();
+
+        /// <summary>
+        /// Seleced region
+        /// </summary>
+        HighlightRegion _selectedRegion;
+
         #endregion
 
         #region Events
@@ -1368,6 +1458,16 @@ namespace Be.Windows.Forms
         /// </summary>
         [Description("Occurs, when the RequiredWidth property changes")]
         public event EventHandler RequiredWidthChanged;
+        /// <summary>
+        /// Occurs, when the highlight region is added
+        /// </summary>
+        [Description("Occurs, when the highlight region is added")]
+        public event EventHandler HighlightRegionAdded;
+        /// <summary>
+        /// Occurs, when the highlight region is selected
+        /// </summary>
+        [Description("Occurs, when the highlight region is selected")]
+        public event EventHandler HighlightRegionSelected;
         #endregion
 
         #region Ctors
@@ -1797,9 +1897,7 @@ namespace Be.Windows.Forms
             NativeMethods.CreateCaret(Handle, IntPtr.Zero, caretWidth, caretHeight);
 
             UpdateCaret();
-
             NativeMethods.ShowCaret(Handle);
-
             _caretVisible = true;
         }
 
@@ -2304,6 +2402,89 @@ namespace Be.Windows.Forms
 
         #endregion
 
+        #region Highlight methods
+        /// <summary>
+        /// Highlights bytes
+        /// </summary>
+        /// <param name="start">the start index of the selection</param>
+        /// <param name="size">the length of the selection</param>
+        /// <param name="fColor">Fore color</param>
+        /// <param name="bColor">Back color</param>
+        /// <param name="label">Region label</param>
+        public void Highlight(long start, long size, Color fColor, Color bColor, String label = null)
+        {
+
+            HighlightRegion region = new HighlightRegion()
+            {
+                Start = start,
+                End = start + size - 1,
+                ForeColor = fColor,
+                BackColor = bColor,
+                Label = label
+            };
+
+            if (!_highlightRegions.Contains(region))
+            {
+                HighlightRegion found = null;
+                while ((found = _highlightRegions.Find(item => item.Overlaps(region))) != null)
+                {
+                    region.Merge(found);
+                    _highlightRegions.Remove(found);
+                }
+
+                _highlightRegions.Add(region);
+
+                OnHighlightRegionAdded(EventArgs.Empty);
+
+                Invalidate();
+            }
+        }
+
+
+        /// <summary>
+        /// Highlights bytes
+        /// </summary>
+        /// <param name="start">the start index of the selection</param>
+        /// <param name="size">the length of the selection</param>
+        public void Highlight(long start, long size)
+        {
+            Highlight(start, size, HighlightForeColor, HighlightBackColor);
+        }
+
+        /// <summary>
+        /// Remove highlighted region by position
+        /// </summary>
+        /// /// <param name="pos">highlight position</param>
+        public void Unhighlight(long pos)
+        {
+            var found = _highlightRegions.Find(item => item.IsWithin(pos));
+            if (found != null)
+            {
+                _highlightRegions.Remove(found);
+                Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// Remove highlighted region by the caret position
+        /// </summary>
+        public void Unhighlight()
+        {
+            Unhighlight(_bytePos);
+        }
+
+        /// <summary>
+        /// Highlights selected bytes
+        /// </summary>
+        public void HighlightSelected()
+        {
+            if (SelectionLength > 0)
+            {
+                Highlight(SelectionStart, SelectionLength);
+            }
+        }
+        #endregion
+
         #region Paint methods
         /// <summary>
         /// Paints the background.
@@ -2486,9 +2667,15 @@ namespace Be.Windows.Forms
 
                 bool isSelectedByte = i >= _bytePos && i <= (_bytePos + _selectionLength - 1) && _selectionLength != 0;
 
+                HighlightRegion hl = _highlightRegions.Find(item => item.IsWithin(i));
+
                 if (isSelectedByte && isKeyInterpreterActive)
                 {
                     PaintHexStringSelected(g, b, selBrush, selBrushBack, gridPoint);
+                }
+                else if (null != hl)
+                {
+                    PaintHexStringSelected(g, b, new SolidBrush(hl.ForeColor), new SolidBrush(hl.BackColor), gridPoint);
                 }
                 else
                 {
@@ -2568,10 +2755,17 @@ namespace Be.Windows.Forms
 
                 string s = new String(ByteCharConverter.ToChar(b), 1);
 
+                HighlightRegion hl = _highlightRegions.Find(item => item.IsWithin(i));
+
                 if (isSelectedByte && isStringKeyInterpreterActive)
                 {
                     g.FillRectangle(selBrushBack, byteStringPointF.X, byteStringPointF.Y, _charSize.Width, _charSize.Height);
                     g.DrawString(s, Font, selBrush, byteStringPointF, _stringFormat);
+                }
+                else if (null != hl)
+                {
+                    g.FillRectangle(new SolidBrush(hl.BackColor), byteStringPointF.X, byteStringPointF.Y, _charSize.Width, _charSize.Height);
+                    g.DrawString(s, Font, new SolidBrush(hl.ForeColor), byteStringPointF, _stringFormat);
                 }
                 else
                 {
@@ -3188,6 +3382,8 @@ namespace Be.Windows.Forms
                         CreateCaret();
                 }
 
+                _highlightRegions.Clear();
+
                 CheckCurrentLineChanged();
                 CheckCurrentPositionInLineChanged();
 
@@ -3436,6 +3632,31 @@ namespace Be.Windows.Forms
         Color _selectionForeColor = Color.White;
 
         /// <summary>
+        /// Gets or sets the foreground color for the highlighted bytes.
+        /// </summary>
+        [DefaultValue(typeof(Color), "Black"), Category("Hex"), Description("Highlight foreground color.")]
+        public Color HighlightForeColor
+        {
+            get { return _hlForeColor; }
+            set
+            {
+                _hlForeColor = value; Invalidate();
+            }
+        }
+        Color _hlForeColor = Color.Black;
+
+        /// <summary>
+        /// Gets or sets the background color for the highlighted bytes.
+        /// </summary>
+        [DefaultValue(typeof(Color), "Yellow"), Category("Hex"), Description("Highlight background color.")]
+        public Color HighlightBackColor
+        {
+            get { return _hlBackColor; }
+            set { _hlBackColor = value; Invalidate(); }
+        }
+        Color _hlBackColor = Color.Yellow;
+
+        /// <summary>
         /// Gets or sets the visibility of a shadow selection.
         /// </summary>
         [DefaultValue(true), Category("Hex"), Description("Gets or sets the visibility of a shadow selection.")]
@@ -3598,6 +3819,17 @@ namespace Be.Windows.Forms
         }
         IByteCharConverter _byteCharConverter;
 
+        /// <summary>
+        /// Gets currently selected region
+        /// </summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public HighlightRegion SelectedRegion
+        {
+            get
+            {
+                return _selectedRegion;
+            }
+        }
         #endregion
 
         #region Misc
@@ -3684,6 +3916,12 @@ namespace Be.Windows.Forms
                 CheckCurrentPositionInLineChanged();
 
                 OnSelectionStartChanged(EventArgs.Empty);
+
+                _selectedRegion = _highlightRegions.Find(item => item.IsWithin(_bytePos));
+                if (null != _selectedRegion)
+                {
+                    OnHighlightRegionSelected(EventArgs.Empty);
+                }
             }
         }
 
@@ -4034,6 +4272,26 @@ namespace Be.Windows.Forms
         void _byteProvider_LengthChanged(object sender, EventArgs e)
         {
             UpdateScrollSize();
+        }
+
+        /// <summary>
+        /// Raises the HighlightRegionAdded event.
+        /// </summary>
+        /// <param name="e">An EventArgs that contains the event data.</param>
+        protected virtual void OnHighlightRegionAdded(EventArgs e)
+        {
+            if (HighlightRegionAdded != null)
+                HighlightRegionAdded(this, e);
+        }
+
+        /// <summary>
+        /// Raises the HighlightRegionSelected event.
+        /// </summary>
+        /// <param name="e">An EventArgs that contains the event data.</param>
+        protected virtual void OnHighlightRegionSelected(EventArgs e)
+        {
+            if (HighlightRegionSelected != null)
+                HighlightRegionSelected(this, e);
         }
         #endregion
 
