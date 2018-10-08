@@ -38,7 +38,7 @@ namespace ME3Explorer
         static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "SeekFreeShaderCache", "Class", "BioStage", "ObjectProperty", "Const",
             "Enum", "ArrayProperty","FloatProperty", "IntProperty", "BoolProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
             "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "PrefabInstance",
-            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D"};
+            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D", "State"};
 
         public override bool CanParse(IExportEntry exportEntry)
         {
@@ -169,6 +169,9 @@ namespace ME3Explorer
                     break;
                 case "Texture2D":
                     StartTextureBinaryScan(topLevelTree, data, binarystart);
+                    break;
+                case "State":
+                    StartStateScan(topLevelTree, data, binarystart);
                     break;
                 case "TextureMovie":
                     StartTextureMovieScan(topLevelTree, data, binarystart);
@@ -1352,7 +1355,7 @@ namespace ME3Explorer
         private void StartMaterialScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
         {
             const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
-            
+
             if (binarystart >= data.Length)
             {
                 topLevelTree.Items.Add("No Binary Data");
@@ -1403,9 +1406,9 @@ namespace ME3Explorer
                 }
 
                 topLevelTree.ItemsSource = subnodes;
-                subnodes.Add(new TreeViewItem{ Header = "There's a bunch more binary in this object, guids and name refs and object refs." });
-                subnodes.Add(new TreeViewItem{ Header = "Unfortunately this tool is not smart enough to understand them, but you might be able to." });
-                subnodes.Add(new TreeViewItem{ Header = "This is your chance to prove that humans are still better than machines." });
+                subnodes.Add(new TreeViewItem { Header = "There's a bunch more binary in this object, guids and name refs and object refs." });
+                subnodes.Add(new TreeViewItem { Header = "Unfortunately this tool is not smart enough to understand them, but you might be able to." });
+                subnodes.Add(new TreeViewItem { Header = "This is your chance to prove that humans are still better than machines." });
             }
             catch (Exception ex)
             {
@@ -1975,6 +1978,80 @@ namespace ME3Explorer
                 topLevelTree.Items.Add($"Error reading binary data: {ex}");
             }
         }
+
+        private void StartStateScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            /*
+             *  
+             *      count +4
+             *      stream length in TFC +4
+             *      stream length in TFC +4 (repeat)
+             *      stream offset in TFC +4
+             *  
+             */
+            try
+            {
+                var subnodes = new List<TreeViewItem>();
+                int pos = binarystart;
+                int stateEntryIndex = BitConverter.ToInt32(data, pos);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"{pos:X4} State Entry: {stateEntryIndex} {getEntryFullPath(stateEntryIndex)}",
+                    Name = "_" + pos,
+                    Tag = NodeType.StructLeafObject
+                });
+                pos += 4;
+
+                /*int length = BitConverter.ToInt32(data, pos);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"{pos:X4} bik length: {length} (0x{length:X})",
+                    Name = "_" + pos,
+
+                    Tag = NodeType.StructLeafInt
+                });
+                pos += 4;
+                length = BitConverter.ToInt32(data, pos);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"{pos:X4} bik length: {length} (0x{length:X})",
+                    Name = "_" + pos,
+
+                    Tag = NodeType.StructLeafInt
+                });
+                pos += 4;
+                int offset = BitConverter.ToInt32(data, pos);
+                subnodes.Add(new TreeViewItem
+                {
+                    Header = $"{pos:X4} bik offset in file: {offset} (0x{offset:X})",
+                    Name = "_" + pos,
+
+                    Tag = NodeType.StructLeafInt
+                });
+                pos += 4;
+                if (pos < data.Length && CurrentLoadedExport.GetProperty<NameProperty>("Filename") == null)
+                {
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = $"{pos:X4} The rest of the binary is the bik.",
+                        Name = "_" + pos,
+
+                        Tag = NodeType.Unknown
+                    });
+                    subnodes.Add(new TreeViewItem
+                    {
+                        Header = "The stream offset to this data will be automatically updated when this file is saved.",
+                        Tag = NodeType.Unknown
+                    });
+                }
+                */
+                topLevelTree.ItemsSource = subnodes;
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Items.Add($"Error reading binary data: {ex}");
+            }
+        }
         #endregion
 
         public override void UnloadExport()
@@ -1991,7 +2068,7 @@ namespace ME3Explorer
 
         private void BinaryInterpreter_TreeViewSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (BinaryInterpreter_TreeView.SelectedItem is TreeViewItem tvi 
+            if (BinaryInterpreter_TreeView.SelectedItem is TreeViewItem tvi
                 && tvi.Name is string tag
                 && tag.StartsWith("_"))
             {

@@ -48,253 +48,274 @@
         <KeyBinding Key="Left" Modifiers="Alt" Command="Commands:PackageEditorWPFCommands.PreviousTabCommand"/>
 
     </Window.InputBindings>
-    <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="File" Padding="4" >
-                <MenuItem Header="_Open" Command="Open" InputGestureText="Ctrl+O"/>
-                <MenuItem Header="_Save"  Command="Save" InputGestureText="Ctrl+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                <MenuItem Header="Save as" Command="SaveAs" InputGestureText="Ctrl+Shift+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                <MenuItem Header="Open in...">
-                    <MenuItem Header="Dialogue Editor" Tag="DialogueEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                    <MenuItem Header="FaceFX Editor" Tag="FaceFXEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                    <MenuItem Header="Pathfinding Editor" Tag="PathfindingEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                    <MenuItem Header="Soundplorer WPF" Tag="SoundplorerWPF" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                    <MenuItem Header="Sequence Editor" Tag="SequenceEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+    <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
+
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="File" Padding="4" >
+                    <MenuItem Header="_Open" Command="Open" InputGestureText="Ctrl+O"/>
+                    <MenuItem Header="_Save"  Command="Save" InputGestureText="Ctrl+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="Save as" Command="SaveAs" InputGestureText="Ctrl+Shift+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="Open in...">
+                        <MenuItem Header="Dialogue Editor" Tag="DialogueEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                        <MenuItem Header="FaceFX Editor" Tag="FaceFXEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                        <MenuItem Header="Pathfinding Editor" Tag="PathfindingEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                        <MenuItem Header="Soundplorer WPF" Tag="SoundplorerWPF" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                        <MenuItem Header="Sequence Editor" Tag="SequenceEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
                 </MenuItem>
-                <Separator />
-                <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
-            </MenuItem>
-            <MenuItem Header="Edit" Padding="4">
-                <MenuItem Header="Open"/>
-                <MenuItem Header="Save"/>
-            </MenuItem>
-            <MenuItem Header="Tools" Padding="4">
-                <MenuItem Name="ComparePackageMenuItem" Header="Compare with another package" Command="{Binding ComparePackagesCommand}"/>
-                <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
-                    <MenuItem Header="Complete export data"  Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file"/>
-                    <MenuItem Header="Binary data only"   Command="{Binding ExportBinaryDataCommand}" ToolTip="Export only binary data (bytes after properties) to a .bin file"/>
+                <MenuItem Header="Edit" Padding="4">
+                    <MenuItem Header="Open"/>
+                    <MenuItem Header="Save"/>
                 </MenuItem>
-                <MenuItem Header="Import..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
-                    <MenuItem Header="Complete export data"  Command="{Binding ImportAllDataCommand}" ToolTip="Import a .bin file and replace the contents of this export"/>
-                    <MenuItem Header="Binary data only"  Command="{Binding ImportBinaryDataCommand}" ToolTip="Import a .bin file and replace only the binary section of this export"/>
+                <MenuItem Header="Tools" Padding="4">
+                    <MenuItem Name="ComparePackageMenuItem" Header="Compare with another package" Command="{Binding ComparePackagesCommand}"/>
+                    <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <MenuItem Header="Complete export data"  Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file"/>
+                        <MenuItem Header="Binary data only"   Command="{Binding ExportBinaryDataCommand}" ToolTip="Export only binary data (bytes after properties) to a .bin file"/>
+                    </MenuItem>
+                    <MenuItem Header="Import..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <MenuItem Header="Complete export data"  Command="{Binding ImportAllDataCommand}" ToolTip="Import a .bin file and replace the contents of this export"/>
+                        <MenuItem Header="Binary data only"  Command="{Binding ImportBinaryDataCommand}" ToolTip="Import a .bin file and replace only the binary section of this export"/>
+                    </MenuItem>
+
                 </MenuItem>
 
-            </MenuItem>
-
-            <MenuItem Header="Options" Padding="4">
-                <MenuItem Name="TouchComfyMode_MenuItem" Header="Touch Comfy Mode" Click="TouchComfyMode_Clicked"/>
-            </MenuItem>
-            <MenuItem Header="Experiments" Padding="4">
-                <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
-                <MenuItem Header="Build ME1 Object Info" Click="BuildME1ObjectInfo_Clicked"/>
-            </MenuItem>
-        </Menu>
-        <StatusBar Height="23" DockPanel.Dock="Bottom">
-            <StatusBarItem VerticalContentAlignment="Center" Name="StatusBar_GameID_Container" Visibility="Collapsed">
-                <Border BorderBrush="Gray" BorderThickness="2,2,2,2" CornerRadius="3,3,3,3" VerticalAlignment="Center">
-                    <TextBlock Name="StatusBar_GameID_Text" Background="Red" Text="Game ID" FontSize="11" Foreground="White" Padding="4,3,4,3" FontFamily="Consolas" VerticalAlignment="Center"/>
-                </Border>
-            </StatusBarItem>
-            <StatusBarItem>
-                <TextBlock Name="StatusBar_LeftMostText" Text="Package Editor WPF is in beta - not everything works right now!"/>
-            </StatusBarItem>
-        </StatusBar>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="1*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="5" />
-                <ColumnDefinition Width="6*" />
-            </Grid.ColumnDefinitions>
-            <ToolBar ToolBarTray.IsLocked="True" Grid.Row="0" Grid.ColumnSpan="3">
-                <Button Content="Names" Height="22" Margin="3" Click="NamesView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                <Button Content="Imports" Height="22" Click="ImportsView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                <Button Content="Exports" Height="22" Margin="3" Click="ExportsView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                <Button Content="Tree View"  Height="22" Click="TreeView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                <ComboBox Name="ClassDropdown_Combobox" Width="140" ItemsPanel="{StaticResource VSP}" IsTextSearchEnabled="True" KeyDown="ClassDropdown_Combobox_OnKeyDownHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                <Button Content="Find object by class" Click="FindObjectByClass_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                <TextBox Name="Search_TextBox" Width="70" KeyDown="Searchbox_OnKeyDownHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                <Button Content="Search" Click="SearchButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                <TextBox Name="Goto_TextBox" Width="70" KeyDown="Goto_TextBox_KeyDown" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                <Button Content="Goto #" Click="GotoButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-            </ToolBar>
-            <SharedUI:ListBoxScroll x:Name="LeftSide_ListView" Grid.Column="0" Grid.Row="1"  SelectionChanged="LeftSide_SelectedItemChanged"/>
-            <!-- VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" -->
-            <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" TreeViewItem.Selected="LeftSide_SelectedItemChanged" FontFamily="Consolas" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" ItemsSource="{Binding AllTreeViewNodesX}">
-                <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type global:TreeViewEntry}" ItemsSource="{Binding Sublinks}">
-                        <StackPanel Orientation="Horizontal">
+                <MenuItem Header="Options" Padding="4">
+                    <MenuItem Name="TouchComfyMode_MenuItem" Header="Touch Comfy Mode" Click="TouchComfyMode_Clicked"/>
+                </MenuItem>
+                <MenuItem Header="Experiments" Padding="4">
+                    <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
+                    <MenuItem Header="Build ME1 Object Info" Click="BuildME1ObjectInfo_Clicked"/>
+                </MenuItem>
+            </Menu>
+            <StatusBar Height="23" DockPanel.Dock="Bottom">
+                <StatusBarItem VerticalContentAlignment="Center" Name="StatusBar_GameID_Container" Visibility="Collapsed">
+                    <Border BorderBrush="Gray" BorderThickness="2,2,2,2" CornerRadius="3,3,3,3" VerticalAlignment="Center">
+                        <TextBlock Name="StatusBar_GameID_Text" Background="Red" Text="Game ID" FontSize="11" Foreground="White" Padding="4,3,4,3" FontFamily="Consolas" VerticalAlignment="Center"/>
+                    </Border>
+                </StatusBarItem>
+                <StatusBarItem>
+                    <TextBlock Name="StatusBar_LeftMostText" Text="Package Editor WPF is in beta - not everything works right now!"/>
+                </StatusBarItem>
+            </StatusBar>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="6*" />
+                </Grid.ColumnDefinitions>
+                <ToolBar ToolBarTray.IsLocked="True" Grid.Row="0" Grid.ColumnSpan="3">
+                    <Button Content="Names" Height="22" Margin="3" Click="NamesView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <Button Content="Imports" Height="22" Click="ImportsView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <Button Content="Exports" Height="22" Margin="3" Click="ExportsView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <Button Content="Tree View"  Height="22" Click="TreeView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <ComboBox Name="ClassDropdown_Combobox" Width="140" ItemsPanel="{StaticResource VSP}" IsTextSearchEnabled="True" KeyDown="ClassDropdown_Combobox_OnKeyDownHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <Button Content="Find object by class" Click="FindObjectByClass_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <TextBox Name="Search_TextBox" Width="70" KeyDown="Searchbox_OnKeyDownHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <Button Content="Search" Click="SearchButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <TextBox Name="Goto_TextBox" Width="70" KeyDown="Goto_TextBox_KeyDown" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <Button Content="Goto #" Click="GotoButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                </ToolBar>
+                <SharedUI:ListBoxScroll x:Name="LeftSide_ListView" Grid.Column="0" Grid.Row="1"  SelectionChanged="LeftSide_SelectedItemChanged"/>
+                <!-- VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" -->
+                <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" TreeViewItem.Selected="LeftSide_SelectedItemChanged" FontFamily="Consolas" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" ItemsSource="{Binding AllTreeViewNodesX}">
+                    <TreeView.Resources>
+                        <HierarchicalDataTemplate DataType="{x:Type global:TreeViewEntry}" ItemsSource="{Binding Sublinks}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="{Binding Path=TreeViewMargin,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Text="{Binding DisplayName}" Foreground="{Binding Path=ForegroundColor}">
-                                    <TextBlock.Style>
-                                        <Style TargetType="{x:Type TextBlock}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=Entry.EntryHasPendingChanges}" Value="true">
-                                                    <Setter Property="Background" Value="Yellow"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Margin="{Binding Path=TreeViewMargin,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Text="{Binding DisplayName}" Foreground="{Binding Path=ForegroundColor}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="{x:Type TextBlock}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=Entry.EntryHasPendingChanges}" Value="true">
+                                                        <Setter Property="Background" Value="Yellow"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
 
+                                </StackPanel>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                        <ei:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                             </StackPanel>
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="PreviewMouseRightButtonDown">
-                                    <ei:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                        </StackPanel>
-                    </HierarchicalDataTemplate>
-                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                        </HierarchicalDataTemplate>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
                       Color="LightBlue" />
-                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
                       Color="Black" />
-                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
                       Color="LightBlue" />
-                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
                       Color="Black" />
 
-                </TreeView.Resources>
-                <TreeView.ItemContainerStyle>
-                    <Style TargetType="{x:Type TreeViewItem}">
-                        <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
-                        <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
-                    </Style>
-                </TreeView.ItemContainerStyle>
-                <TreeView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Clone" Command="{Binding CloneCommand}"/>
-                        <MenuItem Header="Clone Tree" Command="{Binding CloneTreeCommand}"/>
-                        <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
-                            <MenuItem Header="Complete export data"  Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file"/>
-                            <MenuItem Header="Binary data only"   Command="{Binding ExportBinaryDataCommand}" ToolTip="Export only binary data (bytes after properties) to a .bin file"/>
-                        </MenuItem>
-                        <MenuItem Header="Import..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
-                            <MenuItem Header="Complete export data"  Command="{Binding ImportAllDataCommand}" ToolTip="Import a .bin file and replace the contents of this export"/>
-                            <MenuItem Header="Binary data only"  Command="{Binding ImportBinaryDataCommand}" ToolTip="Import a .bin file and replace only the binary section of this export"/>
-                        </MenuItem>
-                    </ContextMenu>
-                </TreeView.ContextMenu>
-            </TreeView>
-            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Grid.Row="1"/>
-            <TabControl Name="EditorTabs" Grid.Column="2" Grid.Row="1" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
-
-                <!--<TabItem Name="Properties_Tab" Header="Properties"/>-->
-                <TabItem Name="Interpreter_Tab" Header="Interpreter">
-                    <global:InterpreterWPF x:Name="InterpreterTab_Interpreter"/>
-                </TabItem>
-                <TabItem Name="Metadata_Tab"  Header="Metadata">
-                    <TabItem.Resources>
-                        <System:Int32 x:Key="InfoTab_TopMargins">24</System:Int32>
-                        <System:Int32 x:Key="InfoTab_MaxWidth">700</System:Int32>
-                    </TabItem.Resources>
-                    <Grid Margin="5" HorizontalAlignment="Stretch">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Name="Row_ObjectName" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
-                            <RowDefinition Name="Row_Index" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
-
-                            <RowDefinition Name="Row_ExpClass" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
-                            <RowDefinition Name="Row_ImpClass" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
-                            <!--ImportsOnly-->
-                            <RowDefinition Name="Row_Superclass" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
-
-                            <RowDefinition Name="Row_Packagename" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
-                            <RowDefinition Name="Row_Packagefile" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
-                            <!--ImportsOnly-->
-                            <RowDefinition Name="Row_Archetype" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
-                            <RowDefinition Name="Row_ObjectFlags" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
-                            <RowDefinition Height="10"/>
-                            <RowDefinition Name="Row_HeaderSize"  Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
-                            <RowDefinition Name="Row_ExportDataSize" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
-                            <RowDefinition Name="Row_ExportDataOffsetDec" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
-                            <RowDefinition Name="Row_ExportDataOffsetHex" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="150"/>
-                            <RowDefinition Height="25"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="130"/>
-                            <ColumnDefinition Width="1*" MaxWidth="600"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.Resources>
-                            <Style x:Name="MetadataTextboxStyle" TargetType="{x:Type TextBox}">
-                                <Style.Triggers>
-                                    <Trigger Property="IsReadOnly" Value="True">
-                                        <Setter Property="Background" Value="LightGray" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Grid.Resources>
-                        <TextBlock Name="InfoTab_ObjectName_TextBlock" VerticalAlignment="Center" Text="0x0C Object name:" Grid.Row="0" Grid.Column="0"/>
-                        <TextBlock Name="InfoTab_ObjectNameIndex_TextBlock" VerticalAlignment="Center" Text="0x18 Object index:" Grid.Row="1" Grid.Column="0"/>
-
-                        <TextBlock VerticalAlignment="Center" Text="0x00 Class:" Grid.Row="2" Grid.Column="0"/>
-                        <TextBlock VerticalAlignment="Center" Text="0x08 Class:" Grid.Row="3" Grid.Column="0"/>
-                        <!--Import-->
-
-                        <TextBlock VerticalAlignment="Center" Text="0x04 Superclass:" Grid.Row="4" Grid.Column="0"/>
-
-                        <TextBlock Name="InfoTab_Link_TextBlock" VerticalAlignment="Center" Text="0x08 Link:" Grid.Row="5" Grid.Column="0"/>
-                        <TextBlock VerticalAlignment="Center" Text="0x00 Package file:" Grid.Row="6" Grid.Column="0"/>
-                        <TextBlock VerticalAlignment="Center" Text="0x14 Archetype:" Grid.Row="7" Grid.Column="0"/>
-                        <TextBlock VerticalAlignment="Center" Text="0x18 Object flags:" Grid.Row="8" Grid.Column="0"/>
-                        <TextBlock VerticalAlignment="Center" Text="Header size:" Grid.Row="10" Grid.Column="0"/>
-                        <TextBlock VerticalAlignment="Center" Text="Export data size:" Grid.Row="11" Grid.Column="0"/>
-                        <TextBlock VerticalAlignment="Center" Text="Export data offset (hex):" Grid.Row="12" Grid.Column="0"/>
-                        <TextBlock VerticalAlignment="Center" Text="Export data offset (dec):" Grid.Row="13" Grid.Column="0"/>
-
-                        <!--rightside-->
-                        <ComboBox Name="InfoTab_Objectname_ComboBox" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Objectname_ComboBox_GotFocus" SelectionChanged="Info_ObjectNameComboBox_SelectionChanged"/>
-                        <TextBox Name="InfoTab_ObjectnameIndex_TextBox"  VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" TextChanged="Info_IndexTextBox_TextChanged" GotFocus="InfoTab_ObjectNameIndex_ComboBox_GotFocus"/>
-
-                        <ComboBox Name="InfoTab_Class_ComboBox" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Class_ComboBox_GotFocus" SelectionChanged="Info_ClassComboBox_SelectionChanged"/>
-                        <ComboBox Name="InfoTab_ImpClass_ComboBox" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_ImpClass_ComboBox_GotFocus" SelectionChanged="Info_ImpClassComboBox_SelectionChanged"/>
-
-                        <ComboBox Name="InfoTab_Superclass_ComboBox" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Superclass_ComboBox_GotFocus" SelectionChanged="Info_SuperClassComboBox_SelectionChanged"/>
-
-                        <ComboBox Name="InfoTab_PackageLink_ComboBox" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" ToolTip="What entry this one is nested under.&#x0a;Set to 0 to make this a top level entry." ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_PackageLink_ComboBox_GotFocus" SelectionChanged="Info_PackageLinkClassComboBox_SelectionChanged"/>
-                        <ComboBox Name="InfoTab_PackageFile_ComboBox" VerticalAlignment="Center" Grid.Row="6" Grid.Column="1" ToolTip="Set what package file this class' type is from is from." ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_PackageFile_ComboBox_GotFocus" SelectionChanged="Info_PackageFileComboBox_SelectionChanged"/>
-
-                        <ComboBox Name="InfoTab_Archetype_ComboBox" VerticalAlignment="Center" Grid.Row="7" Grid.Column="1" ItemsPanel="{StaticResource VSP}"  GotFocus="InfoTab_Archetype_ComboBox_GotFocus" SelectionChanged="Info_ArchetypeComboBox_SelectionChanged"/>
-                        <xctk:CheckComboBox Name="InfoTab_Flags_ComboBox" IsEditable="False" Delimiter=" " VerticalAlignment="Center" Grid.Row="8" Grid.Column="1" GotFocus="InfoTab_Flags_ComboBox_GotFocus" ItemSelectionChanged="InfoTab_Flags_ComboBox_ItemSelectionChanged"/>
-                        <Separator Grid.ColumnSpan="2" Grid.Row="9"/>
-
-                        <TextBox Name="InfoTab_Headersize_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="10" Grid.Column="1" IsReadOnly="true"/>
-                        <TextBox Name="InfoTab_ExportDataSize_TextBox" Grid.Row="11" Grid.Column="1" IsReadOnly ="true" VerticalAlignment="Center"/>
-                        <TextBox Name="InfoTab_ExportOffsetHex_TextBox" Grid.Row="12" Grid.Column="1" IsReadOnly ="true" VerticalAlignment="Center"/>
-                        <TextBox Name="InfoTab_ExportOffsetDec_TextBox" Grid.Row="13" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
-                        <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Grid.Row="14">
-                            <Button Name="Info_HeaderHexSaveChanges" Content="Save hex changes"  Margin="3,0,3,0" Padding="2" Click="Info_HeaderHexSaveChanges_Click"/>
-                            <TextBlock Name="Info_Header_UnsavedChanges" Text="Changes not yet saved" Foreground="Red" Margin="0,0,3,0"  VerticalAlignment="Center" Visibility="Hidden"/>
+                    </TreeView.Resources>
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
+                            <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
+                        </Style>
+                    </TreeView.ItemContainerStyle>
+                    <TreeView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Clone" Command="{Binding CloneCommand}"/>
+                            <MenuItem Header="Clone Tree" Command="{Binding CloneTreeCommand}"/>
+                            <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                                <MenuItem Header="Complete export data"  Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file"/>
+                                <MenuItem Header="Binary data only"   Command="{Binding ExportBinaryDataCommand}" ToolTip="Export only binary data (bytes after properties) to a .bin file"/>
+                            </MenuItem>
+                            <MenuItem Header="Import..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                                <MenuItem Header="Complete export data"  Command="{Binding ImportAllDataCommand}" ToolTip="Import a .bin file and replace the contents of this export"/>
+                                <MenuItem Header="Binary data only"  Command="{Binding ImportBinaryDataCommand}" ToolTip="Import a .bin file and replace only the binary section of this export"/>
+                            </MenuItem>
+                        </ContextMenu>
+                    </TreeView.ContextMenu>
+                </TreeView>
+                <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Grid.Row="1"/>
+                <TabControl Name="EditorTabs" Grid.Column="2" Grid.Row="1" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <TabItem Name="Intro_Tab" Header="Welcome">
+                        <StackPanel>
+                            <TextBlock Margin="5" Text="Welcome to Package Editor WPF, the rewritten version of Package Editor" FontWeight="Bold"/>
+                            <TextBlock Margin="5">
+                            Package Editor WPF is a bit different from the classic Package Editor.
+                                <LineBreak/>
+                                Indexes are done strictly by UIndex, which is how they appear in game code. This means:
+                                <LineBreak/>
+                                -  Export references will be incremented by 1 from what you have seen in Package Editor
+                            <LineBreak/>
+                                -  Import references will remain the same
+                             <LineBreak/>
+                            <LineBreak/>
+                            Package Editor WPF is still in development - the tool is very complex,
+                                <LineBreak/>
+                                and will take some time for development to complete.
+                            </TextBlock>
                         </StackPanel>
-                        <!--<StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Grid.Row="10"  Width="Auto" Height="Auto" Margin="0,5,0,0"  MaxWidth="650">-->
-                        <!--Grid.Row="10" Grid.ColumnSpan="2"-->
-                        <WindowsFormsHost Name="Header_Hexbox_Host" Background="Yellow" Grid.Row="15" Grid.ColumnSpan="2" Margin="0,5,0,0"  MaxWidth="730" HorizontalAlignment="Stretch">
-                            <hb1:HexBox  MinBytesPerLine="4" MaxBytesPerLine="16" BytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" UseFixedBytesPerLine="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True">
-                            </hb1:HexBox>
-                        </WindowsFormsHost>
-                    </Grid>
-                </TabItem>
-                <TabItem Name="Bio2DAViewer_Tab" Header="Bio2DA Editor">
-                    <global:Bio2DAEditorWPF x:Name="Bio2DATab_Bio2DAEditor"/>
-                </TabItem>
-                <TabItem Name="BinaryInterpreter_Tab" Header="Binary Interpreter">
-                    <global:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter"/>
-                </TabItem>
-                <TabItem Name="Script_Tab" Header="Script">
-                    <global:UnrealScriptWPF x:Name="ScriptTab_UnrealScriptEditor"/>
-                </TabItem>
-                <TabItem Name="CurveEditor_Tab" Header="Curve Editor">
-                    <CurveEd:CurveEditor x:Name="CurveTab_CurveEditor"/>
-                </TabItem>
-                <TabItem Name="Sound_Tab" Header="Sound">
-                    <global:Soundpanel x:Name="SoundTab_Soundpanel"/>
-                </TabItem>
-            </TabControl>
-        </Grid>
-    </DockPanel>
+                    </TabItem>
+                    <!--<TabItem Name="Properties_Tab" Header="Properties"/>-->
+                    <TabItem Name="Interpreter_Tab" Header="Interpreter">
+                        <global:InterpreterWPF x:Name="InterpreterTab_Interpreter"/>
+                    </TabItem>
+                    <TabItem Name="Metadata_Tab"  Header="Metadata">
+                        <TabItem.Resources>
+                            <System:Int32 x:Key="InfoTab_TopMargins">24</System:Int32>
+                            <System:Int32 x:Key="InfoTab_MaxWidth">700</System:Int32>
+                        </TabItem.Resources>
+                        <Grid Margin="5" HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Name="Row_ObjectName" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                                <RowDefinition Name="Row_Index" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+
+                                <RowDefinition Name="Row_ExpClass" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                                <RowDefinition Name="Row_ImpClass" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                                <!--ImportsOnly-->
+                                <RowDefinition Name="Row_Superclass" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+
+                                <RowDefinition Name="Row_Packagename" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                                <RowDefinition Name="Row_Packagefile" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                                <!--ImportsOnly-->
+                                <RowDefinition Name="Row_Archetype" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                                <RowDefinition Name="Row_ObjectFlags" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                                <RowDefinition Height="10"/>
+                                <RowDefinition Name="Row_HeaderSize"  Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                                <RowDefinition Name="Row_ExportDataSize" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                                <RowDefinition Name="Row_ExportDataOffsetDec" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                                <RowDefinition Name="Row_ExportDataOffsetHex" Height="{Binding Source={StaticResource InfoTab_TopMargins}}"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="150"/>
+                                <RowDefinition Height="25"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="130"/>
+                                <ColumnDefinition Width="1*" MaxWidth="600"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.Resources>
+                                <Style x:Name="MetadataTextboxStyle" TargetType="{x:Type TextBox}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsReadOnly" Value="True">
+                                            <Setter Property="Background" Value="LightGray" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Resources>
+                            <TextBlock Name="InfoTab_ObjectName_TextBlock" VerticalAlignment="Center" Text="0x0C Object name:" Grid.Row="0" Grid.Column="0"/>
+                            <TextBlock Name="InfoTab_ObjectNameIndex_TextBlock" VerticalAlignment="Center" Text="0x18 Object index:" Grid.Row="1" Grid.Column="0"/>
+
+                            <TextBlock VerticalAlignment="Center" Text="0x00 Class:" Grid.Row="2" Grid.Column="0"/>
+                            <TextBlock VerticalAlignment="Center" Text="0x08 Class:" Grid.Row="3" Grid.Column="0"/>
+                            <!--Import-->
+
+                            <TextBlock VerticalAlignment="Center" Text="0x04 Superclass:" Grid.Row="4" Grid.Column="0"/>
+
+                            <TextBlock Name="InfoTab_Link_TextBlock" VerticalAlignment="Center" Text="0x08 Link:" Grid.Row="5" Grid.Column="0"/>
+                            <TextBlock VerticalAlignment="Center" Text="0x00 Package file:" Grid.Row="6" Grid.Column="0"/>
+                            <TextBlock VerticalAlignment="Center" Text="0x14 Archetype:" Grid.Row="7" Grid.Column="0"/>
+                            <TextBlock VerticalAlignment="Center" Text="0x18 Object flags:" Grid.Row="8" Grid.Column="0"/>
+                            <TextBlock VerticalAlignment="Center" Text="Header size:" Grid.Row="10" Grid.Column="0"/>
+                            <TextBlock VerticalAlignment="Center" Text="Export data size:" Grid.Row="11" Grid.Column="0"/>
+                            <TextBlock VerticalAlignment="Center" Text="Export data offset (hex):" Grid.Row="12" Grid.Column="0"/>
+                            <TextBlock VerticalAlignment="Center" Text="Export data offset (dec):" Grid.Row="13" Grid.Column="0"/>
+
+                            <!--rightside-->
+                            <ComboBox Name="InfoTab_Objectname_ComboBox" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Objectname_ComboBox_GotFocus" SelectionChanged="Info_ObjectNameComboBox_SelectionChanged"/>
+                            <TextBox Name="InfoTab_ObjectnameIndex_TextBox"  VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" TextChanged="Info_IndexTextBox_TextChanged" GotFocus="InfoTab_ObjectNameIndex_ComboBox_GotFocus"/>
+
+                            <ComboBox Name="InfoTab_Class_ComboBox" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Class_ComboBox_GotFocus" SelectionChanged="Info_ClassComboBox_SelectionChanged"/>
+                            <ComboBox Name="InfoTab_ImpClass_ComboBox" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_ImpClass_ComboBox_GotFocus" SelectionChanged="Info_ImpClassComboBox_SelectionChanged"/>
+
+                            <ComboBox Name="InfoTab_Superclass_ComboBox" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Superclass_ComboBox_GotFocus" SelectionChanged="Info_SuperClassComboBox_SelectionChanged"/>
+
+                            <ComboBox Name="InfoTab_PackageLink_ComboBox" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" ToolTip="What entry this one is nested under.&#x0a;Set to 0 to make this a top level entry." ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_PackageLink_ComboBox_GotFocus" SelectionChanged="Info_PackageLinkClassComboBox_SelectionChanged"/>
+                            <ComboBox Name="InfoTab_PackageFile_ComboBox" VerticalAlignment="Center" Grid.Row="6" Grid.Column="1" ToolTip="Set what package file this class' type is from is from." ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_PackageFile_ComboBox_GotFocus" SelectionChanged="Info_PackageFileComboBox_SelectionChanged"/>
+
+                            <ComboBox Name="InfoTab_Archetype_ComboBox" VerticalAlignment="Center" Grid.Row="7" Grid.Column="1" ItemsPanel="{StaticResource VSP}"  GotFocus="InfoTab_Archetype_ComboBox_GotFocus" SelectionChanged="Info_ArchetypeComboBox_SelectionChanged"/>
+                            <xctk:CheckComboBox Name="InfoTab_Flags_ComboBox" IsEditable="False" Delimiter=" " VerticalAlignment="Center" Grid.Row="8" Grid.Column="1" GotFocus="InfoTab_Flags_ComboBox_GotFocus" ItemSelectionChanged="InfoTab_Flags_ComboBox_ItemSelectionChanged"/>
+                            <Separator Grid.ColumnSpan="2" Grid.Row="9"/>
+
+                            <TextBox Name="InfoTab_Headersize_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="10" Grid.Column="1" IsReadOnly="true"/>
+                            <TextBox Name="InfoTab_ExportDataSize_TextBox" Grid.Row="11" Grid.Column="1" IsReadOnly ="true" VerticalAlignment="Center"/>
+                            <TextBox Name="InfoTab_ExportOffsetHex_TextBox" Grid.Row="12" Grid.Column="1" IsReadOnly ="true" VerticalAlignment="Center"/>
+                            <TextBox Name="InfoTab_ExportOffsetDec_TextBox" Grid.Row="13" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
+                            <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Grid.Row="14">
+                                <Button Name="Info_HeaderHexSaveChanges" Content="Save hex changes"  Margin="3,0,3,0" Padding="2" Click="Info_HeaderHexSaveChanges_Click"/>
+                                <TextBlock Name="Info_Header_UnsavedChanges" Text="Changes not yet saved" Foreground="Red" Margin="0,0,3,0"  VerticalAlignment="Center" Visibility="Hidden"/>
+                            </StackPanel>
+                            <!--<StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Grid.Row="10"  Width="Auto" Height="Auto" Margin="0,5,0,0"  MaxWidth="650">-->
+                            <!--Grid.Row="10" Grid.ColumnSpan="2"-->
+                            <WindowsFormsHost Name="Header_Hexbox_Host" Background="Yellow" Grid.Row="15" Grid.ColumnSpan="2" Margin="0,5,0,0"  MaxWidth="730" HorizontalAlignment="Stretch">
+                                <hb1:HexBox  MinBytesPerLine="4" MaxBytesPerLine="16" BytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" UseFixedBytesPerLine="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True">
+                                </hb1:HexBox>
+                            </WindowsFormsHost>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Name="Bio2DAViewer_Tab" Header="Bio2DA Editor">
+                        <global:Bio2DAEditorWPF x:Name="Bio2DATab_Bio2DAEditor"/>
+                    </TabItem>
+                    <TabItem Name="BinaryInterpreter_Tab" Header="Binary Interpreter">
+                        <global:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter"/>
+                    </TabItem>
+                    <TabItem Name="Script_Tab" Header="Script">
+                        <global:UnrealScriptWPF x:Name="ScriptTab_UnrealScriptEditor"/>
+                    </TabItem>
+                    <TabItem Name="CurveEditor_Tab" Header="Curve Editor">
+                        <CurveEd:CurveEditor x:Name="CurveTab_CurveEditor"/>
+                    </TabItem>
+                    <TabItem Name="Sound_Tab" Header="Sound">
+                        <global:Soundpanel x:Name="SoundTab_Soundpanel"/>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </DockPanel>
+    </xctk:BusyIndicator>
 </global:WPFBase>

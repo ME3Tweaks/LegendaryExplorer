@@ -18,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -63,6 +64,11 @@ namespace ME3Explorer
             }
         }
 
+        /// <summary>
+        /// Used to populate the metadata editor values so the list does not constantly need to rebuilt, which can slow down the program on large files like SFXGame or BIOC_Base.
+        /// </summary>
+        List<string> AllEntriesList;
+
         Dictionary<ExportLoaderControl, TabItem> ExportLoaders = new Dictionary<ExportLoaderControl, TabItem>();
         View CurrentView;
         public PropGrid pg;
@@ -101,6 +107,29 @@ namespace ME3Explorer
         public ICommand ImportBinaryDataCommand { get; set; }
         public ICommand CloneCommand { get; set; }
         public ICommand CloneTreeCommand { get; set; }
+
+        private bool _isBusy;
+        public bool IsBusy
+        {
+            get { return _isBusy; }
+            set { if (_isBusy != value) { _isBusy = value; OnPropertyChanged(); } }
+        }
+
+        private bool _isBusyTaskbar;
+        public bool IsBusyTaskbar
+        {
+            get { return _isBusyTaskbar; }
+            set { if (_isBusyTaskbar != value) { _isBusyTaskbar = value; OnPropertyChanged(); } }
+        }
+
+        private string _busyText;
+        private List<string> Classes;
+
+        public string BusyText
+        {
+            get { return _busyText; }
+            set { if (_busyText != value) { _busyText = value; OnPropertyChanged(); } }
+        }
 
         private void LoadCommands()
         {
@@ -460,6 +489,15 @@ namespace ME3Explorer
         {
             //  try
             //{
+            IsBusy = true;
+            foreach (KeyValuePair<ExportLoaderControl, TabItem> entry in ExportLoaders)
+            {
+                entry.Value.Visibility = Visibility.Collapsed;
+            }
+            Metadata_Tab.Visibility = Visibility.Collapsed;
+            Intro_Tab.Visibility = Visibility.Visible;
+            Intro_Tab.IsSelected = true;
+
             AllTreeViewNodesX.Clear();
             currentFile = s;
             StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
@@ -467,7 +505,7 @@ namespace ME3Explorer
             Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
             LoadMEPackage(s);
             StatusBar_GameID_Container.Visibility = Visibility.Visible;
-
+            //Metadata_Tab.IsSelected = true; //due to winforms interop thread issues
             switch (Pcc.Game)
             {
                 case MEGame.ME1:
@@ -492,10 +530,17 @@ namespace ME3Explorer
             bio2DAEditor1.Pcc = pcc;
             treeView1.Tag = pcc;*/
             RefreshView();
-            InitializeTreeView();
             InitStuff();
             StatusBar_LeftMostText.Text = System.IO.Path.GetFileName(s);
             InterpreterTab_Interpreter.UnloadExport();
+            InitializeTreeView();
+
+            BackgroundWorker bg = new BackgroundWorker();
+            bg.DoWork += InitializeTreeViewBackground;
+            bg.RunWorkerCompleted += InitializeTreeViewBackground_Completed;
+            bg.RunWorkerAsync();
+            ////            InitializeTreeView();
+
             //}
             //catch (Exception e)
             //{
@@ -505,14 +550,87 @@ namespace ME3Explorer
             //}
         }
 
-        private void InitializeTreeView()
+        private void InitializeTreeViewBackground_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (e.Result != null)
+            {
+                AllTreeViewNodesX.Clear();
+                AllTreeViewNodesX.AddRange(e.Result as ObservableCollectionExtended<TreeViewEntry>);
+            }
+            IsBusy = false;
+
+        }
+
+        private void InitializeTreeViewBackground(object sender, DoWorkEventArgs e)
+        {
+            if (Thread.CurrentThread.Name == null)
+                Thread.CurrentThread.Name = "PackageEditorWPF TreeViewInitialization";
+
+            BusyText = "Loading " + System.IO.Path.GetFileName(Pcc.FileName);
             if (Pcc == null)
             {
                 return;
             }
             IReadOnlyList<ImportEntry> Imports = Pcc.Imports;
             IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
+            int importsOffset = Exports.Count;
+
+            TreeViewEntry rootEntry = new TreeViewEntry(null, Pcc.FileName);
+            rootEntry.IsExpanded = true;
+
+            List<TreeViewEntry> rootNodes = new List<TreeViewEntry>();
+            rootNodes.Add(rootEntry);
+            string filename = System.IO.Path.GetFileName(Pcc.FileName);
+            for (int i = 0; i < Exports.Count; i++)
+            {
+                rootNodes.Add(new TreeViewEntry(Exports[i]));
+                BusyText = $"Loading {filename} ({(i * 100.0) / (Exports.Count + Imports.Count)}%)";
+            }
+
+            for (int i = 0; i < Imports.Count; i++)
+            {
+                rootNodes.Add(new TreeViewEntry(Imports[i]));
+                BusyText = $"Loading {filename} ({((int)(i * 100.0) / (Exports.Count + Imports.Count))}%)";
+            }
+
+            //configure links
+            //Order: 0 = Root, [Exports], [Imports], <extra, new stuff>
+            List<TreeViewEntry> itemsToRemove = new List<TreeViewEntry>();
+            foreach (TreeViewEntry entry in rootNodes)
+            {
+                if (entry.Entry != null)
+                {
+                    int tvLink = entry.Entry.idxLink;
+                    if (tvLink < 0)
+                    {
+                        //import
+                        //Debug.WriteLine("import tvlink " + tvLink);
+
+                        tvLink = Exports.Count + Math.Abs(tvLink);
+                        //Debug.WriteLine("Linking " + entry.Entry.GetFullPath + " to index " + tvLink);
+                    }
+
+                    TreeViewEntry parent = rootNodes[tvLink];
+                    parent.Sublinks.Add(entry);
+                    entry.Parent = parent;
+                    itemsToRemove.Add(entry); //remove from this level as we have added it to another already
+                }
+            }
+            e.Result = new ObservableCollectionExtended<TreeViewEntry>(rootNodes.Except(itemsToRemove).ToList());
+        }
+
+        private void InitializeTreeView()
+        {
+
+            IsBusy = true;
+            //IsBusyText = "Loading " + System.IO.Path.GetFileName(Pcc.FileName);
+            if (Pcc == null)
+            {
+                return;
+            }
+            IReadOnlyList<ImportEntry> Imports = Pcc.Imports;
+            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
+            AllEntriesList = new List<string>();
             int importsOffset = Exports.Count;
 
             TreeViewEntry rootEntry = new TreeViewEntry(null, Pcc.FileName);
@@ -555,6 +673,7 @@ namespace ME3Explorer
             var rootNodes = new ObservableCollectionExtended<TreeViewEntry>(AllTreeViewNodesX.Except(itemsToRemove).ToList());
             AllTreeViewNodesX.Clear();
             AllTreeViewNodesX.AddRange(rootNodes);
+            IsBusy = false;
         }
 
         #region Recents
@@ -773,6 +892,9 @@ namespace ME3Explorer
             {
                 ClassNames.Add(Exports[i].idxClass); //This can probably be linq'd
             }
+
+            ReloadClassesListForMetadata(); //can be optimized with above statement
+
             List<string> names = ClassNames.Distinct().Select(Pcc.getObjectName).ToList();
             names.Sort();
             ClearList(ClassDropdown_Combobox);
@@ -852,10 +974,10 @@ namespace ME3Explorer
             }*/
         }
 
-        public void PreviewInfo(int n)
+        private void ReloadClassesListForMetadata()
         {
             IReadOnlyList<ImportEntry> imports = Pcc.Imports;
-            List<string> Classes = new List<string>();
+            Classes = new List<string>();
             for (int i = imports.Count - 1; i >= 0; i--)
             {
                 Classes.Add($"{-i + 1}: {imports[i].GetFullPath}");
@@ -868,6 +990,11 @@ namespace ME3Explorer
                 Classes.Add($"{count++}: {exp.GetFullPath}");
             }
             InfoTab_PackageLink_ComboBox.ItemsSource = Classes;
+        }
+
+        public void PreviewInfo(int n)
+        {
+
 
             if (n > 0)
             {
@@ -894,40 +1021,40 @@ namespace ME3Explorer
                     {
                         //IEntry _class = pcc.getEntry(exportEntry.idxClass);
                         InfoTab_Class_ComboBox.ItemsSource = Classes;
-                        InfoTab_Class_ComboBox.SelectedIndex = exportEntry.idxClass + imports.Count; //make positive
+                        InfoTab_Class_ComboBox.SelectedIndex = exportEntry.idxClass + exportEntry.FileRef.Imports.Count; //make positive
                     }
                     else
                     {
-                        InfoTab_Class_ComboBox.SelectedIndex = imports.Count; //Class, 0
+                        InfoTab_Class_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
                     }
                     InfoTab_Superclass_ComboBox.ItemsSource = Classes;
                     if (exportEntry.idxClassParent != 0)
                     {
-                        InfoTab_Superclass_ComboBox.SelectedIndex = exportEntry.idxClassParent + imports.Count; //make positive
+                        InfoTab_Superclass_ComboBox.SelectedIndex = exportEntry.idxClassParent + exportEntry.FileRef.Imports.Count; //make positive
                     }
                     else
                     {
-                        InfoTab_Superclass_ComboBox.SelectedIndex = imports.Count; //Class, 0
+                        InfoTab_Superclass_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
                     }
 
                     if (exportEntry.idxLink != 0)
                     {
-                        InfoTab_PackageLink_ComboBox.SelectedIndex = exportEntry.idxLink + imports.Count; //make positive
+                        InfoTab_PackageLink_ComboBox.SelectedIndex = exportEntry.idxLink + exportEntry.FileRef.Imports.Count; //make positive
                     }
                     else
                     {
-                        InfoTab_PackageLink_ComboBox.SelectedIndex = imports.Count; //Class, 0
+                        InfoTab_PackageLink_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
                     }
                     InfoTab_Headersize_TextBox.Text = exportEntry.Header.Length + " bytes";
                     InfoTab_ObjectnameIndex_TextBox.Text = BitConverter.ToInt32(exportEntry.Header, HEADER_OFFSET_EXP_IDXOBJECTNAME + 4).ToString();
                     InfoTab_Archetype_ComboBox.ItemsSource = Classes;
                     if (exportEntry.idxArchtype != 0)
                     {
-                        InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.idxArchtype + imports.Count; //make positive
+                        InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.idxArchtype + exportEntry.FileRef.Imports.Count; //make positive
                     }
                     else
                     {
-                        InfoTab_Archetype_ComboBox.SelectedIndex = imports.Count; //Class, 0
+                        InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
                     }
                     var flagsList = Enum.GetValues(typeof(EObjectFlags)).Cast<EObjectFlags>().Distinct().ToList();
                     //Don't even get me started on how dumb it is that SelectedItems is read only...
@@ -979,11 +1106,11 @@ namespace ME3Explorer
                 InfoTab_ImpClass_ComboBox.SelectedItem = importEntry.ClassName;
                 if (importEntry.idxLink != 0)
                 {
-                    InfoTab_PackageLink_ComboBox.SelectedIndex = importEntry.idxLink + imports.Count; //make positive
+                    InfoTab_PackageLink_ComboBox.SelectedIndex = importEntry.idxLink + importEntry.FileRef.Imports.Count; //make positive
                 }
                 else
                 {
-                    InfoTab_PackageLink_ComboBox.SelectedIndex = imports.Count; //Class, 0
+                    InfoTab_PackageLink_ComboBox.SelectedIndex = importEntry.FileRef.Imports.Count; //Class, 0
                 }
 
                 InfoTab_PackageFile_ComboBox.SelectedItem = System.IO.Path.GetFileNameWithoutExtension(importEntry.PackageFile);
@@ -1001,7 +1128,7 @@ namespace ME3Explorer
                  headerSizeBox.Text = ImportEntry.byteSize + " bytes";*/
             }
         }
-        
+
         /// <summary>
         /// Gets the selected entry uindex in the left side view.
         /// </summary>
@@ -1141,11 +1268,16 @@ namespace ME3Explorer
                     e.Value.Visibility = Visibility.Collapsed;
                 }
                 EditorTabs.IsEnabled = false;
-                Metadata_Tab.IsSelected = true;
+                Metadata_Tab.Visibility = Visibility.Collapsed;
                 ClearMetadataPane();
+                Intro_Tab.Visibility = Visibility.Visible;
+                Intro_Tab.IsSelected = true;
+
                 return;
             }
             EditorTabs.IsEnabled = true;
+            Metadata_Tab.Visibility = Visibility.Visible;
+            Intro_Tab.Visibility = Visibility.Collapsed;
             //Debug.WriteLine("New selection: " + n);
 
             if (CurrentView == View.Imports || CurrentView == View.Exports || CurrentView == View.Tree)
@@ -1220,123 +1352,124 @@ namespace ME3Explorer
                         }
                     }
 
-                    //CHECK THE CURRENT TAB IS VISIBLE/ENABLED. IF NOT, CHOOSE FIRST TAB THAT IS 
-                    TabItem currentTab = (TabItem)EditorTabs.Items[EditorTabs.SelectedIndex];
-                    if (!currentTab.IsEnabled || !currentTab.IsVisible)
-                    {
-                        int index = 0;
-                        while (index < EditorTabs.Items.Count)
-                        {
-                            TabItem ti = (TabItem)EditorTabs.Items[index];
-                            if (ti.IsEnabled && ti.IsVisible)
-                            {
-                                EditorTabs.SelectedIndex = index;
-                                break;
-                            }
-                            index++;
-                        }
-                    }
+
+                }
 
 
-                    /*
-                    else if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
+                /*
+                else if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
+                {
+                    packageEditorTabPane.TabPages.Remove(scriptTab);
+                }
+
+                if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName))
+                {
+                    if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
                     {
-                        packageEditorTabPane.TabPages.Remove(scriptTab);
+                        packageEditorTabPane.TabPages.Add(binaryEditorTab);
                     }
+                }
+                else
+                {
+                    removeBinaryTabPane();
+                }*/
+
+                //if (Bio2DAEditorWPF.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
+                //{
+                //    Bio2DAViewer_Tab.Visibility = Visibility.Visible;
+                //    Bio2DATab_Bio2DAEditor.LoadExport(exportEntry);
+                //}
+                //else
+                //{
+                //    Bio2DAViewer_Tab.Visibility = Visibility.Collapsed;
+                //    Bio2DATab_Bio2DAEditor.UnloadExport();
+                //}
+
+                /*
+
+                headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.header);*/
+                /*if (!isRefresh)
+                {
+                    //InterpreterTab_Interpreter.LoadExport(exportEntry);
+                    Interpreter_Tab.Visibility = Visibility.Visible;
+
+                    //interpreterControl.export = exportEntry;
+                    //interpreterControl.InitInterpreter();
 
                     if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName))
                     {
-                        if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
+                        if (exportEntry.ClassName == "Class" && exportEntry.ObjectName.StartsWith("Default__"))
                         {
-                            packageEditorTabPane.TabPages.Add(binaryEditorTab);
-                        }
-                    }
-                    else
-                    {
-                        removeBinaryTabPane();
-                    }*/
-
-                    //if (Bio2DAEditorWPF.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
-                    //{
-                    //    Bio2DAViewer_Tab.Visibility = Visibility.Visible;
-                    //    Bio2DATab_Bio2DAEditor.LoadExport(exportEntry);
-                    //}
-                    //else
-                    //{
-                    //    Bio2DAViewer_Tab.Visibility = Visibility.Collapsed;
-                    //    Bio2DATab_Bio2DAEditor.UnloadExport();
-                    //}
-
-                    /*
-
-                    headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.header);*/
-                    /*if (!isRefresh)
-                    {
-                        //InterpreterTab_Interpreter.LoadExport(exportEntry);
-                        Interpreter_Tab.Visibility = Visibility.Visible;
-
-                        //interpreterControl.export = exportEntry;
-                        //interpreterControl.InitInterpreter();
-
-                        if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName))
-                        {
-                            if (exportEntry.ClassName == "Class" && exportEntry.ObjectName.StartsWith("Default__"))
-                            {
-                                //do nothing, this class is not actually a class.
-                                BinaryInterpreter_Tab.Visibility = Visibility.Visible;
-                            }
-                            else
-                            {
-                                //binaryInterpreterControl.export = exportEntry;
-                                //binaryInterpreterControl.InitInterpreter();
-                                BinaryInterpreter_Tab.Visibility = Visibility.Collapsed;
-
-                            }
-                        }
-                        if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
-                        {
-                            Bio2DAViewer_Tab.Visibility = Visibility.Visible;
-                            //bio2DAEditor1.export = exportEntry;
-                            //bio2DAEditor1.InitInterpreter();
+                            //do nothing, this class is not actually a class.
+                            BinaryInterpreter_Tab.Visibility = Visibility.Visible;
                         }
                         else
                         {
-                            Bio2DAViewer_Tab.Visibility = Visibility.Collapsed;
+                            //binaryInterpreterControl.export = exportEntry;
+                            //binaryInterpreterControl.InitInterpreter();
+                            BinaryInterpreter_Tab.Visibility = Visibility.Collapsed;
+
                         }
-                    }*/
-                }
-                //import
-                else
-                {
-                    Visible_ObjectNameRow = false;
-                    ImportEntry importEntry = Pcc.getImport(-n - 1);
-                    CurrentlyLoadedEntry = importEntry;
-                    Header_Hexbox.ByteProvider = new DynamicByteProvider(CurrentlyLoadedEntry.Header);
-                    Header_Hexbox.ByteProvider.Changed += InfoTab_Header_ByteProvider_InternalChanged;
-                    Script_Tab.Visibility = BinaryInterpreter_Tab.Visibility = Bio2DAViewer_Tab.Visibility = Sound_Tab.Visibility = Visibility.Collapsed;
-                    Metadata_Tab.IsSelected = true;
-                    PreviewInfo(n);
-                    /*   n = -n - 1;
-                       headerRawHexBox.ByteProvider = new DynamicByteProvider(Pcc.getImport(n).header);
-                       UpdateStatusIm(n);
-                       if (packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
-                       {
-                           packageEditorTabPane.TabPages.Remove(interpreterTab);
-                       }
-                       if (packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
-                       {
-                           packageEditorTabPane.TabPages.Remove(propertiesTab);
-                       }
-                       if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
-                       {
-                           packageEditorTabPane.TabPages.Remove(scriptTab);
-                       }
-                       if (packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
-                       {
-                           packageEditorTabPane.TabPages.Remove(binaryEditorTab);
-                       }
+                    }
+                    if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
+                    {
+                        Bio2DAViewer_Tab.Visibility = Visibility.Visible;
+                        //bio2DAEditor1.export = exportEntry;
+                        //bio2DAEditor1.InitInterpreter();
+                    }
+                    else
+                    {
+                        Bio2DAViewer_Tab.Visibility = Visibility.Collapsed;
+                    }
+                }*/
+            }
+            //import
+            else
+            {
+                Visible_ObjectNameRow = false;
+                ImportEntry importEntry = Pcc.getImport(-n - 1);
+                CurrentlyLoadedEntry = importEntry;
+                Header_Hexbox.ByteProvider = new DynamicByteProvider(CurrentlyLoadedEntry.Header);
+                Header_Hexbox.ByteProvider.Changed += InfoTab_Header_ByteProvider_InternalChanged;
+                Script_Tab.Visibility = BinaryInterpreter_Tab.Visibility = Bio2DAViewer_Tab.Visibility = Sound_Tab.Visibility = Visibility.Collapsed;
+                Metadata_Tab.IsSelected = true;
+                PreviewInfo(n);
+                /*   n = -n - 1;
+                   headerRawHexBox.ByteProvider = new DynamicByteProvider(Pcc.getImport(n).header);
+                   UpdateStatusIm(n);
+                   if (packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
+                   {
+                       packageEditorTabPane.TabPages.Remove(interpreterTab);
                    }
-                   */
+                   if (packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
+                   {
+                       packageEditorTabPane.TabPages.Remove(propertiesTab);
+                   }
+                   if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
+                   {
+                       packageEditorTabPane.TabPages.Remove(scriptTab);
+                   }
+                   if (packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
+                   {
+                       packageEditorTabPane.TabPages.Remove(binaryEditorTab);
+                   }
+               }
+               */
+            }
+            //CHECK THE CURRENT TAB IS VISIBLE/ENABLED. IF NOT, CHOOSE FIRST TAB THAT IS 
+            TabItem currentTab = (TabItem)EditorTabs.Items[EditorTabs.SelectedIndex];
+            if (!currentTab.IsEnabled || !currentTab.IsVisible)
+            {
+                int index = 0;
+                while (index < EditorTabs.Items.Count)
+                {
+                    TabItem ti = (TabItem)EditorTabs.Items[index];
+                    if (ti.IsEnabled && ti.IsVisible)
+                    {
+                        EditorTabs.SelectedIndex = index;
+                        break;
+                    }
+                    index++;
                 }
             }
         }

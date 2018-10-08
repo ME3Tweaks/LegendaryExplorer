@@ -85,7 +85,7 @@ namespace ME3Explorer
 
         public override bool CanParse(IExportEntry exportEntry)
         {
-            return exportEntry.ClassName == "Bio2DA" || exportEntry.ClassName == "Bio2DANumberedRows";
+            return !exportEntry.ObjectName.Contains("Default__") && (exportEntry.ClassName == "Bio2DA" || exportEntry.ClassName == "Bio2DANumberedRows");
         }
 
         public override void LoadExport(IExportEntry exportEntry)

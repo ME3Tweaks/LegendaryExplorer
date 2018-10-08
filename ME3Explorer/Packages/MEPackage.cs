@@ -53,7 +53,7 @@ namespace ME3Explorer.Packages
         protected ushort lowVers { get { return BitConverter.ToUInt16(header, 4); } }
         protected ushort highVers { get { return BitConverter.ToUInt16(header, 6); } }
         protected int expDataBegOffset { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); } }
-        protected int nameSize { get { int val = BitConverter.ToInt32(header, 12); return (val < 0) ? val * -2 : val; } }
+        protected int nameSize { get { int val = BitConverter.ToInt32(header, 12); return (val < 0) ? val * -2 : val; } } //this may be able to be optimized. It is used a lot during package load
         protected uint flags { get { return BitConverter.ToUInt32(header, 16 + nameSize); } }
 
 

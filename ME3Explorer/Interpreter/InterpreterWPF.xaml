@@ -70,7 +70,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock x:Name="PropertyItem_DisplayName" Text="{Binding DisplayName}" VerticalAlignment="Center" FontStyle="Italic"/>
                                     <!--<ContentControl x:Name="PropertyItem_EditorSet" Content="{Binding Data}"/>-->
-                                    <TextBlock x:Name="PropertyItem_EditableValue" Margin="0,0,0,0" Text="{Binding EditableValue}" VerticalAlignment="Center" FontWeight="Bold"/>
+                                    <TextBlock x:Name="PropertyItem_EditableValue" Margin="5,0,0,0" Text="{Binding EditableValue}" VerticalAlignment="Center" FontWeight="Bold"/>
                                     <TextBlock x:Name="PropertyItem_ParsedValue" Margin="5,0,0,0" Text="{Binding ParsedValue}" VerticalAlignment="Center" FontStyle="Italic"/>
                                 </StackPanel>
                                 <TextBlock x:Name="PropertyItem_DisplayType" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0"/>
@@ -80,7 +80,7 @@
                             <DataTrigger Binding="{Binding PropertyType}" Value="ObjectProperty">
                                 <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#6d6c3f"/>-->
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d6c3f"/>
-                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#fffec4"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88fffec4"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding PropertyType}" Value="IntProperty">
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#664f46"/>
