@@ -2744,9 +2744,15 @@ namespace Be.Windows.Forms
 
                 bool isSelectedByte = i >= _bytePos && i <= (_bytePos + _selectionLength - 1) && _selectionLength != 0;
 
+                HighlightRegion hl = _highlightRegions.Find(item => item.IsWithin(i));
+
                 if (isSelectedByte && isKeyInterpreterActive)
                 {
                     PaintHexStringSelected(g, b, selBrush, selBrushBack, gridPoint);
+                }
+                else if (null != hl)
+                {
+                    PaintHexStringSelected(g, b, new SolidBrush(hl.ForeColor), new SolidBrush(hl.BackColor), gridPoint);
                 }
                 else
                 {
@@ -2755,7 +2761,6 @@ namespace Be.Windows.Forms
 
                 string s = new String(ByteCharConverter.ToChar(b), 1);
 
-                HighlightRegion hl = _highlightRegions.Find(item => item.IsWithin(i));
 
                 if (isSelectedByte && isStringKeyInterpreterActive)
                 {
