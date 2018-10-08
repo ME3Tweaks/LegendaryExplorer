@@ -253,8 +253,8 @@ namespace ME3Explorer.Pathfinding_Editor
                         radVal = size.X;
                         heightVal = size.Y;
 
-                        long heightOffset = height.Offset;
-                        long radiusOffset = radius.Offset;
+                        long heightOffset = height.ValueOffset;
+                        long radiusOffset = radius.ValueOffset;
 
                         //Manually write it to avoid property writing errors with cover stuff
                         byte[] data = export.Data;

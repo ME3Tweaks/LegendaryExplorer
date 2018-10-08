@@ -2268,7 +2268,7 @@ namespace ME3Explorer
                 //Add to source node prop
                 ArrayProperty<ObjectProperty> PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
                 byte[] memory = startNode.Data;
-                memory = addObjectArrayLeaf(memory, (int)PathList.Offset, outgoingSpecExp.UIndex);
+                memory = addObjectArrayLeaf(memory, (int)PathList.ValueOffset, outgoingSpecExp.UIndex);
                 startNode.Data = memory;
                 outgoingSpecExp.WriteProperty(outgoingSpecStartProp);
                 outgoingSpecExp.WriteProperty(outgoingEndStructProp);
@@ -2307,7 +2307,7 @@ namespace ME3Explorer
                     //Add to source node prop
                     ArrayProperty<ObjectProperty> DestPathList = pcc.Exports[destinationIndex].GetProperty<ArrayProperty<ObjectProperty>>("PathList");
                     memory = destNode.Data;
-                    memory = addObjectArrayLeaf(memory, (int)DestPathList.Offset, incomingSpecExp.UIndex);
+                    memory = addObjectArrayLeaf(memory, (int)DestPathList.ValueOffset, incomingSpecExp.UIndex);
                     destNode.Data = memory;
                     //destNode.WriteProperty(DestPathList);
                     incomingSpecExp.WriteProperty(incomingSpecStartProp);
@@ -3073,7 +3073,7 @@ namespace ME3Explorer
                         ObjectProperty nextNav = chainItem.GetProperty<ObjectProperty>("nextNavigationPoint");
 
                         byte[] expData = chainItem.Data;
-                        SharedPathfinding.WriteMem(expData, (int)nextNav.Offset, BitConverter.GetBytes(nextchainItem.UIndex));
+                        SharedPathfinding.WriteMem(expData, (int)nextNav.ValueOffset, BitConverter.GetBytes(nextchainItem.UIndex));
                         chainItem.Data = expData;
                         Debug.WriteLine(chainItem.Index + " Chain link -> " + nextchainItem.UIndex);
                     }
@@ -3618,43 +3618,6 @@ namespace ME3Explorer
                     break;
                 }
             }
-        }
-    }
-
-    public static class ExportInputPrompt
-    {
-        public static IExportEntry ShowDialog(string text, string caption, IMEPackage pcc)
-        {
-            Form prompt = new Form()
-            {
-                Width = 500,
-                Height = 150,
-                FormBorderStyle = FormBorderStyle.FixedDialog,
-                Text = caption,
-                StartPosition = FormStartPosition.CenterScreen
-            };
-            Label textLabel = new Label() { Left = 50, Top = 20, Text = text };
-            //TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 400 };
-            ComboBox items = new ComboBox() { Left = 50, Top = 50, Width = 400 };
-            items.DropDownStyle = ComboBoxStyle.DropDownList;
-            List<IExportEntry> exports = new List<IExportEntry>();
-            foreach (IExportEntry exp in pcc.Exports)
-            {
-                if (exp.ObjectName == "StaticMeshCollectionActor")
-                {
-                    items.Items.Add(exp.Index + " " + exp.ObjectName + "_" + exp.indexValue);
-                    exports.Add(exp);
-                }
-            }
-
-            Button confirmation = new Button() { Text = "Ok", Left = 350, Width = 100, Top = 70, DialogResult = DialogResult.OK };
-            confirmation.Click += (sender, e) => { prompt.Close(); };
-            prompt.Controls.Add(items);
-            prompt.Controls.Add(confirmation);
-            prompt.Controls.Add(textLabel);
-            prompt.AcceptButton = confirmation;
-
-            return prompt.ShowDialog() == DialogResult.OK ? exports[items.SelectedIndex] : null;
         }
     }
 }

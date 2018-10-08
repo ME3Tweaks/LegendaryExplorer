@@ -104,6 +104,18 @@ namespace ME3Explorer.Pathfinding_Editor
                     yScalar *= drawScale3d.GetProp<FloatProperty>("Y").Value;
                 }
 
+                //Todo: figure out how to do rotation properly for yaw. rotationpoint seems to be the issue.
+                //var rotation = props.GetProp<StructProperty>("Rotation");
+                //if (rotation != null)
+                //{
+                //    var yaw = rotation.GetProp<IntProperty>("Yaw");
+                //    if (yaw != 0)
+                //    {
+                //        var translatedYaw = yaw * 360f / 65536f;
+                //        RotateInPlace(translatedYaw);
+                //        Debug.WriteLine("Rotation YAW found on " + export.UIndex + " " + translatedYaw);
+                //    }
+                //}
                 var brushComponent = props.GetProp<ObjectProperty>("BrushComponent");
                 if (brushComponent == null)
                 {
@@ -153,7 +165,8 @@ namespace ME3Explorer.Pathfinding_Editor
                     graphVertices.Add(graphPoint);
                 }
                 return graphVertices.ToArray();
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 return null;
             }

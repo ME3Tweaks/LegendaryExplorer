@@ -191,7 +191,7 @@ namespace ME3Explorer
                 UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
                 if (tvi != null && tvi.Property != null)
                 {
-                    RescanSelectionOffset = (int)tvi.Property.Offset;
+                    RescanSelectionOffset = (int)tvi.Property.ValueOffset;
                 }
             }
             else
@@ -274,7 +274,7 @@ namespace ME3Explorer
             if (RescanSelectionOffset != 0)
             {
                 var flattenedTree = topLevelTree.FlattenTree();
-                var itemToSelect = flattenedTree.FirstOrDefault(x => x.Property != null && x.Property.Offset == RescanSelectionOffset);
+                var itemToSelect = flattenedTree.FirstOrDefault(x => x.Property != null && x.Property.ValueOffset == RescanSelectionOffset);
                 if (itemToSelect != null)
                 {
                     itemToSelect.ExpandParents();
@@ -363,7 +363,7 @@ namespace ME3Explorer
 
         private UPropertyTreeViewEntry GenerateUPropertyTreeViewEntry(UProperty prop, UPropertyTreeViewEntry parent, string displayPrefix = "")
         {
-            string displayName = $"{prop.Offset.ToString("X4")}{displayPrefix}: {prop.Name}:";
+            string displayName = $"{prop.ValueOffset.ToString("X4")}{displayPrefix}: {prop.Name}:";
             string editableValue = ""; //editable value
             string parsedValue = ""; //human formatted item. Will most times be blank
             switch (prop)
@@ -475,7 +475,7 @@ namespace ME3Explorer
             UPropertyTreeViewEntry Sender = sender as UPropertyTreeViewEntry;
             if (Sender != null && Sender.Property != null)
             {
-                int offset = (int)Sender.Property.Offset;
+                int offset = (int)Sender.Property.ValueOffset;
 
                 switch (Sender.Property.PropType)
                 {
@@ -514,7 +514,7 @@ namespace ME3Explorer
 
         private void GenerateTreeForArrayProperty(UProperty prop, UPropertyTreeViewEntry parent, int index)
         {
-            string displayPrefix = prop.Offset.ToString("X4") + " Item " + index + ": ";
+            string displayPrefix = prop.ValueOffset.ToString("X4") + " Item " + index + ": ";
             string displayValue = "";
             switch (prop.PropType)
             {
@@ -886,9 +886,42 @@ namespace ME3Explorer
         {
             if (newSelectedItem != null && newSelectedItem.Property != null)
             {
-                var hexPos = newSelectedItem.Property.Offset;
+                var hexPos = newSelectedItem.Property.ValueOffset;
                 Interpreter_Hexbox.SelectionStart = hexPos;
                 Interpreter_Hexbox.SelectionLength = 1; //maybe change
+                Interpreter_Hexbox.UnhighlightAll();
+                if (newSelectedItem.Property is NoneProperty)
+                {
+                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 4, 8);
+                    return;
+                }
+
+                if (newSelectedItem.Parent.Property != null && newSelectedItem.Parent.Property.PropType == PropertyType.ArrayProperty)
+                {
+                    if (newSelectedItem.Property is NameProperty np)
+                    {
+                        Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 8);
+                    }
+                    else
+                    {
+                        Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
+                    }
+                    return;
+                }
+
+
+                else if (newSelectedItem.Property is StructProperty sp)
+                {
+                    //struct size highlighting... not sure how to do this with this little info
+                }
+                else if (newSelectedItem.Property is NameProperty np)
+                {
+                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 24, 32);
+                }
+                else if (newSelectedItem.Parent.PropertyType != PropertyType.ArrayProperty.ToString())
+                {
+                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 24, 28);
+                }
             }
         }
 
@@ -1206,6 +1239,13 @@ namespace ME3Explorer
                                 op.Value = o;
                                 updated = true;
                             }
+                        }
+                        break;
+                    case EnumProperty ep:
+                        if (ep.Value != (string)Value_ComboBox.SelectedItem)
+                        {
+                            ep.Value = (string)Value_ComboBox.SelectedItem; //0 = true
+                            updated = true;
                         }
                         break;
                 }

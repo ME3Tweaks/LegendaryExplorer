@@ -1110,6 +1110,11 @@ namespace Be.Windows.Forms
             }
             #endregion
         }
+
+        public void RemoveHighlights()
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         #region Fields
@@ -2471,6 +2476,15 @@ namespace Be.Windows.Forms
         public void Unhighlight()
         {
             Unhighlight(_bytePos);
+        }
+
+        /// <summary>
+        /// Removes all highlighted regions
+        /// </summary>
+        public void UnhighlightAll()
+        {
+            _highlightRegions.Clear();
+            Invalidate();
         }
 
         /// <summary>

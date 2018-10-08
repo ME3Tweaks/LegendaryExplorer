@@ -22,10 +22,10 @@ namespace ME3Explorer.Pathfinding_Editor
                 IntProperty D = guidProp.GetProp<IntProperty>("D");
                 byte[] data = export.Data;
 
-                WriteMem(data, (int)A.Offset, BitConverter.GetBytes(rnd.Next()));
-                WriteMem(data, (int)B.Offset, BitConverter.GetBytes(rnd.Next()));
-                WriteMem(data, (int)C.Offset, BitConverter.GetBytes(rnd.Next()));
-                WriteMem(data, (int)D.Offset, BitConverter.GetBytes(rnd.Next()));
+                WriteMem(data, (int)A.ValueOffset, BitConverter.GetBytes(rnd.Next()));
+                WriteMem(data, (int)B.ValueOffset, BitConverter.GetBytes(rnd.Next()));
+                WriteMem(data, (int)C.ValueOffset, BitConverter.GetBytes(rnd.Next()));
+                WriteMem(data, (int)D.ValueOffset, BitConverter.GetBytes(rnd.Next()));
                 export.Data = data;
             }
         }
