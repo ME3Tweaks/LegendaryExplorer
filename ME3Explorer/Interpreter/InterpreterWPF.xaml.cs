@@ -896,6 +896,7 @@ namespace ME3Explorer
                     return;
                 }
 
+                //array children
                 if (newSelectedItem.Parent.Property != null && newSelectedItem.Parent.Property.PropType == PropertyType.ArrayProperty)
                 {
                     if (newSelectedItem.Property is NameProperty np)
@@ -909,6 +910,10 @@ namespace ME3Explorer
                     return;
                 }
 
+                else if (newSelectedItem.Parent.Property != null && newSelectedItem.Parent.Property.PropType == PropertyType.StructProperty)
+                {
+                    //Determine if it is immutable or not, somehow.
+                }
 
                 else if (newSelectedItem.Property is StructProperty sp)
                 {
@@ -917,6 +922,10 @@ namespace ME3Explorer
                 else if (newSelectedItem.Property is NameProperty np)
                 {
                     Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 24, 32);
+                }
+                else if (newSelectedItem.Property is BoolProperty bp)
+                {
+                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 24, 25);
                 }
                 else if (newSelectedItem.Parent.PropertyType != PropertyType.ArrayProperty.ToString())
                 {

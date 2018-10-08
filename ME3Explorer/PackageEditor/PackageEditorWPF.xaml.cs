@@ -533,7 +533,7 @@ namespace ME3Explorer
             InitStuff();
             StatusBar_LeftMostText.Text = System.IO.Path.GetFileName(s);
             InterpreterTab_Interpreter.UnloadExport();
-            InitializeTreeView();
+            //InitializeTreeView();
 
             BackgroundWorker bg = new BackgroundWorker();
             bg.DoWork += InitializeTreeViewBackground;
@@ -580,17 +580,14 @@ namespace ME3Explorer
 
             List<TreeViewEntry> rootNodes = new List<TreeViewEntry>();
             rootNodes.Add(rootEntry);
-            string filename = System.IO.Path.GetFileName(Pcc.FileName);
             for (int i = 0; i < Exports.Count; i++)
             {
                 rootNodes.Add(new TreeViewEntry(Exports[i]));
-                BusyText = $"Loading {filename} ({(i * 100.0) / (Exports.Count + Imports.Count)}%)";
             }
 
             for (int i = 0; i < Imports.Count; i++)
             {
                 rootNodes.Add(new TreeViewEntry(Imports[i]));
-                BusyText = $"Loading {filename} ({((int)(i * 100.0) / (Exports.Count + Imports.Count))}%)";
             }
 
             //configure links
@@ -671,7 +668,7 @@ namespace ME3Explorer
                 }
             }
             var rootNodes = new ObservableCollectionExtended<TreeViewEntry>(AllTreeViewNodesX.Except(itemsToRemove).ToList());
-            AllTreeViewNodesX.Clear();
+            AllTreeViewNodesX.ClearEx();
             AllTreeViewNodesX.AddRange(rootNodes);
             IsBusy = false;
         }

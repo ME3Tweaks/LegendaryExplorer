@@ -49,6 +49,15 @@ namespace ME3Explorer.SharedUI
         }
 
         /// <summary> 
+        /// Removes all items then raises collection changed event
+        /// </summary> 
+        public void ClearEx()
+        {
+            Items.Clear();
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        /// <summary> 
         /// Clears the current collection and replaces it with the specified item. 
         /// </summary> 
         public void Replace(T item)
