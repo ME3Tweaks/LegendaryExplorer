@@ -417,7 +417,7 @@ namespace ME3Explorer
                     {
                         //todo - assign bottom text to show array type.
                         ArrayType at = GetArrayType(prop.Name.Name);
-                        parsedValue = $"{at.ToString()} array, {ap.ValuesAsProperties.Count()} items";
+                        editableValue = $"{at.ToString()} array";
                     }
                     break;
                 case NameProperty np:
@@ -1492,7 +1492,7 @@ namespace ME3Explorer
                         //we don't have reference to current pcc so we cannot look this up at this time.
                         //return $"ArrayProperty({(Property as ArrayProperty).arrayType})";
                         var props = (Property as ArrayPropertyBase).ValuesAsProperties;
-                        return $"ArrayProperty | {props.Count()} item{(props.Count() != 1 ? "s" : "")}";
+                        return $"ArrayProperty - {props.Count()} item{(props.Count() != 1 ? "s" : "")}";
 
                     }
                     else if (Property.PropType == Unreal.PropertyType.StructProperty)

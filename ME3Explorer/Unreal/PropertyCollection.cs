@@ -630,7 +630,8 @@ namespace ME3Explorer.Unreal
                     {
                         prop.WriteTo(m, pcc, IsImmutable);
                     }
-                    if (!IsImmutable)
+
+                    if (!IsImmutable && (!(Properties.Last() is NoneProperty)))
                     {
                         m.WriteNoneProperty(pcc);
                     }

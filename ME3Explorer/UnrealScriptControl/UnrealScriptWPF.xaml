@@ -7,7 +7,8 @@
              xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
              xmlns:global="clr-namespace:ME3Explorer"
              xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
-             d:DesignHeight="450" d:DesignWidth="800"
+                            xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                            d:DesignHeight="450" d:DesignWidth="800"
              Loaded="UnrealScriptWPF_Loaded"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <global:ExportLoaderControl.Resources>
@@ -85,6 +86,9 @@
                         IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" ToolTip="Decompile the current hex without saving it to the export"/>
                 <Button Name="SaveHexChange_Button" Content="Save Hex Changes" Click="ScriptEditor_SaveHexChanges_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" ToolTip="Save the below hex as the export data"/>
                 <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
+                <xctk:IntegerUpDown Name="StartOffset_Changer" Value="32"/>
+
+
                 <!--<Button Content="Toggle Hexbox Width" Click="Interpreter_ToggleHexboxWidth_Click"/>
                     <Button Content="Add Property" Click="Interpreter_AddProperty_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>-->
             </ToolBar>

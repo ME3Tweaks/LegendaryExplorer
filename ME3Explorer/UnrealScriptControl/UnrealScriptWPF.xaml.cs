@@ -50,7 +50,7 @@ namespace ME3Explorer
 
         public override bool CanParse(IExportEntry exportEntry)
         {
-            return exportEntry.ClassName == "Function" && exportEntry.FileRef.Game == MEGame.ME3;
+            return (exportEntry.ClassName == "Function" || exportEntry.ClassName == "State") && exportEntry.FileRef.Game == MEGame.ME3;
         }
 
         public override void LoadExport(IExportEntry exportEntry)
@@ -65,7 +65,7 @@ namespace ME3Explorer
         {
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
             {
-                var func = new ME3Explorer.Unreal.Classes.Function(data, CurrentLoadedExport.FileRef);
+                var func = new ME3Explorer.Unreal.Classes.Function(data, CurrentLoadedExport.FileRef, CurrentLoadedExport.ClassName == "State" ? Convert.ToInt32(StartOffset_Changer.Text) : 32);
                 func.ParseFunction();
                 DecompiledScriptBlocks.Clear();
                 DecompiledScriptBlocks.AddRange(func.ScriptBlocks);
@@ -158,7 +158,7 @@ namespace ME3Explorer
                 //    }
                 //}
                 //Tokens_ListBox.SelectedIndex = index;
-                
+
                 Token token = DecompiledScriptBlocks.FirstOrDefault(x => start >= x.pos && start < (x.pos + x.raw.Length));
                 if (token != null)
                 {

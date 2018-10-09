@@ -631,10 +631,10 @@ namespace ME3Explorer
         private void StartClassScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
         {
             //const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
+            var subnodes = new List<TreeViewItem>();
 
             try
             {
-                var subnodes = new List<TreeViewItem>();
                 int offset = 0;
 
                 int unrealExportIndex = BitConverter.ToInt32(data, offset);
@@ -776,9 +776,8 @@ namespace ME3Explorer
                     offset += 4;
                     subnodes.Last().Items.Add(new TreeViewItem
                     {
-                        Header = $"0x{offset - 12:X5}  {CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex)}() = {functionObjectIndex}({CurrentLoadedExport.FileRef.Exports[functionObjectIndex - 1].GetFullPath})",
+                        Header = $"0x{offset - 12:X5}  {CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex)}() = {functionObjectIndex} ({getEntryFullPath(functionObjectIndex)})",
                         Name = "_" + (offset - 12),
-
                         Tag = NodeType.StructLeafName //might need to add a subnode for the 3rd int
                     });
                 }
@@ -882,7 +881,7 @@ namespace ME3Explorer
                 int defaultsClassLink = BitConverter.ToInt32(data, offset);
                 subnodes.Add(new TreeViewItem
                 {
-                    Header = $"0x{offset:X5} Class Defaults: {defaultsClassLink} ({CurrentLoadedExport.FileRef.Exports[defaultsClassLink - 1].GetFullPath})",
+                    Header = $"0x{offset:X5} Class Defaults: {defaultsClassLink} ({getEntryFullPath(defaultsClassLink)}))",
                     Name = "_" + offset,
 
                     Tag = NodeType.StructLeafObject
@@ -919,6 +918,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
+                subnodes.ForEach(x => topLevelTree.Items.Add(x));
                 topLevelTree.Items.Add($"An error occured parsing the class: {ex.Message}");
             }
         }

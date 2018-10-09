@@ -36,14 +36,14 @@ namespace ME3Explorer.Unreal.Classes
         {
         }
 
-        public Function(byte[] raw, IMEPackage Pcc)
+        public Function(byte[] raw, IMEPackage Pcc, int clippingSize = 32)
         {
             pcc = Pcc;
             memory = raw;
             memsize = raw.Length;
             flagint = GetFlagInt();
             nativeindex = GetNatIdx();
-            Deserialize();
+            Deserialize(clippingSize);
         }
 
         public int GetNatIdx()
@@ -75,13 +75,13 @@ namespace ME3Explorer.Unreal.Classes
         }
 
 
-        public void Deserialize()
+        public void Deserialize(int clippingSize = 32)
         {
             
             ReadHeader();
-            script = new byte[memsize - 32];
-            for (int i = 32; i < memsize; i++)
-                script[i - 32] = memory[i];
+            script = new byte[memsize - clippingSize];
+            for (int i = clippingSize; i < memsize; i++)
+                script[i - clippingSize] = memory[i];
         }
 
         public void ReadHeader()
