@@ -2519,17 +2519,38 @@ namespace ME3Explorer
                 stack.Push(parent);
                 parent = parent.Parent;
             }
-
+            TreeViewItem container = null;
             var generator = LeftSide_TreeView.ItemContainerGenerator;
             while (stack.Count > 0)
             {
-                var dequeue = stack.Pop();
                 LeftSide_TreeView.UpdateLayout();
 
-                var treeViewItem = (TreeViewItem)generator.ContainerFromItem(dequeue);
+                var dequeue = stack.Pop();
+                // use DispatcherPriority.ContextIdle, so that we wait for all of the UI elements for any newly visible children to be created
+                var index = generator.Items.IndexOf(dequeue);
+
+                // first bring the last child into view
+                Action action = () =>
+                {
+                    var lastChild = generator.ContainerFromIndex(generator.Items.Count - 1) as TreeViewItem;
+                    lastChild?.BringIntoView();
+                };
+                Dispatcher.Invoke(action, DispatcherPriority.ContextIdle);
+                LeftSide_TreeView.UpdateLayout();
+
+                // then bring the expanded item (back) into view
+                TreeViewItem treeViewItem = generator.ContainerFromIndex(index) as TreeViewItem;
+                if (treeViewItem == null && container != null) treeViewItem = GetTreeViewItem(container, dequeue);
+                action = () => { treeViewItem?.BringIntoView(); };
+                Dispatcher.Invoke(action, DispatcherPriority.ContextIdle);
+
+
+
+                //var treeViewItem = (TreeViewItem)generator.ContainerFromItem(dequeue);
                 if (stack.Count > 0)
                 {
-                    treeViewItem.IsExpanded = true;
+                    action = () => { if (treeViewItem != null) treeViewItem.IsExpanded = true; };
+                    Dispatcher.Invoke(action, DispatcherPriority.ContextIdle);
                 }
                 else
                 {
@@ -2546,7 +2567,8 @@ namespace ME3Explorer
                 }
                 if (treeViewItem != null)
                 {
-                    treeViewItem.BringIntoView();
+                    //treeViewItem.BringIntoView();
+                    container = treeViewItem;
                     generator = treeViewItem.ItemContainerGenerator;
                 }
             }
@@ -2710,14 +2732,14 @@ namespace ME3Explorer
                     subContainer.BringIntoView();
                 }
 
-                if (subContainer != null)
+                /*if (subContainer != null)
                 {
                     TreeViewItem resultContainer = GetTreeViewItem(subContainer, item);
                     if (resultContainer != null)
                         return resultContainer;
 
                     subContainer.IsExpanded = false;
-                }
+                }*/
             }
             return null;
         }
