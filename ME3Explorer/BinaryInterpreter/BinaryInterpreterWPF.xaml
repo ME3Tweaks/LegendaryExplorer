@@ -53,7 +53,7 @@
                       BorderThickness="5,0"
                       BorderBrush="Transparent"
                       Panel.ZIndex="60"/>
-        <TreeView Name="BinaryInterpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="BinaryInterpreter_TreeViewSelectedItemChanged" PreviewMouseRightButtonDown="BinaryInterpreter_TreeView_PreviewMouseRightButtonDown">
+        <TreeView Name="BinaryInterpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="BinaryInterpreter_TreeViewSelectedItemChanged" PreviewMouseRightButtonDown="BinaryInterpreter_TreeView_PreviewMouseRightButtonDown" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True">
             <TreeView.Resources>
                 <!--<ContextMenu x:Key ="ArrayPropertyContext"  StaysOpen="true">
                     <MenuItem Header="Order by">

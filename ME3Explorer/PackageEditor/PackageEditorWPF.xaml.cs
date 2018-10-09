@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
@@ -489,6 +490,8 @@ namespace ME3Explorer
         {
             //  try
             //{
+            GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+            GC.Collect();
             IsBusy = true;
             foreach (KeyValuePair<ExportLoaderControl, TabItem> entry in ExportLoaders)
             {
@@ -532,6 +535,7 @@ namespace ME3Explorer
             RefreshView();
             InitStuff();
             StatusBar_LeftMostText.Text = System.IO.Path.GetFileName(s);
+            Title = "Package Editor WPF - " + System.IO.Path.GetFileName(s);
             InterpreterTab_Interpreter.UnloadExport();
             //InitializeTreeView();
 

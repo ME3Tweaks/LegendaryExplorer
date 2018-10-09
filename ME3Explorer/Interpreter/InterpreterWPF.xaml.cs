@@ -431,7 +431,7 @@ namespace ME3Explorer
                     break;
                 case EnumProperty ep:
                     //editableValue = (prop as EnumProperty).Value.ToString();
-                    parsedValue = (prop as EnumProperty).Value;
+                    editableValue = (prop as EnumProperty).Value;
                     break;
                 case StringRefProperty strrefp:
                     editableValue = strrefp.Value.ToString();
