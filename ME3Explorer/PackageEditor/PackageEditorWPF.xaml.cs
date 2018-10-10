@@ -1688,6 +1688,7 @@ namespace ME3Explorer
             int n;
             if (int.TryParse(Goto_TextBox.Text, out n))
             {
+                Debug.WriteLine("Goto");
                 goToNumber(n);
             }
         }
@@ -1742,14 +1743,15 @@ namespace ME3Explorer
         }
 
         /// <summary>
-        /// Handler for the keydown event while the Goto Textbox is focused. It will issue the Goto button function when the enter key is pressed.
+        /// Handler for the keyup event while the Goto Textbox is focused. It will issue the Goto button function when the enter key is pressed.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Goto_TextBox_KeyDown(object sender, KeyEventArgs e)
+        private void Goto_TextBox_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Return)
+            if (e.Key == Key.Return && !e.IsRepeat)
             {
+                Debug.WriteLine("keydown");
                 GotoButton_Clicked(null, null);
             }
         }
@@ -2140,7 +2142,7 @@ namespace ME3Explorer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ClassDropdown_Combobox_OnKeyDownHandler(object sender, KeyEventArgs e)
+        private void ClassDropdown_Combobox_OnKeyUpHandler(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
             {
@@ -2249,7 +2251,7 @@ namespace ME3Explorer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Searchbox_OnKeyDownHandler(object sender, KeyEventArgs e)
+        private void Searchbox_OnKeyUpHandler(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
             {
@@ -2523,27 +2525,30 @@ namespace ME3Explorer
             var generator = LeftSide_TreeView.ItemContainerGenerator;
             while (stack.Count > 0)
             {
-                LeftSide_TreeView.UpdateLayout();
+                //LeftSide_TreeView.UpdateLayout();
 
                 var dequeue = stack.Pop();
                 // use DispatcherPriority.ContextIdle, so that we wait for all of the UI elements for any newly visible children to be created
                 var index = generator.Items.IndexOf(dequeue);
 
                 // first bring the last child into view
-                Action action = () =>
+                /*Action action = () =>
                 {
                     var lastChild = generator.ContainerFromIndex(generator.Items.Count - 1) as TreeViewItem;
                     lastChild?.BringIntoView();
                 };
                 Dispatcher.Invoke(action, DispatcherPriority.ContextIdle);
                 LeftSide_TreeView.UpdateLayout();
-
+                */
                 // then bring the expanded item (back) into view
                 TreeViewItem treeViewItem = generator.ContainerFromIndex(index) as TreeViewItem;
                 if (treeViewItem == null && container != null) treeViewItem = GetTreeViewItem(container, dequeue);
-                action = () => { treeViewItem?.BringIntoView(); };
+                Action action = () => { treeViewItem?.BringIntoView(); };
                 Dispatcher.Invoke(action, DispatcherPriority.ContextIdle);
-
+                if (treeViewItem == null)
+                {
+                    Debug.WriteLine("This shoudln't be null");
+                }
 
 
                 //var treeViewItem = (TreeViewItem)generator.ContainerFromItem(dequeue);
@@ -2573,115 +2578,6 @@ namespace ME3Explorer
                 }
             }
         }
-
-        private void FocusTreeViewNode(TreeViewEntry node)
-        {
-            if (node == null)
-                return;
-
-            var treeViewItem = GetTreeViewItemNEW(LeftSide_TreeView, node);
-            treeViewItem?.BringIntoView();
-        }
-
-        public TreeViewItem GetTreeViewItemNEW(ItemsControl container, TreeViewEntry item)
-        {
-            if (container == null)
-                throw new ArgumentNullException(nameof(container));
-
-            if (item == null)
-                throw new ArgumentNullException(nameof(item));
-
-            if (container.DataContext == item)
-                return container as TreeViewItem;
-
-            //get parent tree
-            var stack = new Stack<TreeViewEntry>();
-            stack.Push(item);
-            var parent = item.Parent;
-            while (parent != null)
-            {
-                stack.Push(parent);
-                parent = parent.Parent;
-            }
-
-            var generator = LeftSide_TreeView.ItemContainerGenerator;
-            while (stack.Count > 0)
-            {
-                var dequeue = stack.Pop();
-                LeftSide_TreeView.UpdateLayout();
-                int indexInGenerator = generator.Items.IndexOf(dequeue);
-                Debug.WriteLine("Index in generator: " + indexInGenerator);
-
-                var treeViewItem = (TreeViewItem)generator.ContainerFromItem(dequeue);
-                if (stack.Count > 0)
-                {
-                    treeViewItem.IsExpanded = true;
-                }
-                else
-                {
-                    //if (treeViewItem == null)
-                    //{
-                    //    //This is being triggered when it shouldn't be
-                    //    Debugger.Break();
-                    //}
-                    //treeViewItem.IsSelected = true;
-                }
-                treeViewItem.BringIntoView();
-                generator = treeViewItem.ItemContainerGenerator;
-            }
-
-            //container starts as treeview
-            //if (container is TreeViewItem && !((TreeViewItem)container).IsExpanded)
-            //{
-            //    container.SetValue(TreeViewItem.IsExpandedProperty, true);
-            //}
-
-            container.ApplyTemplate();
-            if (container.Template.FindName("ItemsHost", container) is ItemsPresenter itemsPresenter)
-            {
-                itemsPresenter.ApplyTemplate();
-            }
-            else
-            {
-                itemsPresenter = FindVisualChild<ItemsPresenter>(container);
-                if (itemsPresenter == null)
-                {
-                    container.UpdateLayout();
-                    itemsPresenter = FindVisualChild<ItemsPresenter>(container);
-                }
-            }
-
-            var itemsHostPanel = (Panel)VisualTreeHelper.GetChild(itemsPresenter, 0);
-            var children = itemsHostPanel.Children;
-            var virtualizingPanel = itemsHostPanel as VirtualizingPanel;
-            for (int i = 0, count = container.Items.Count; i < count; i++)
-            {
-                /*TreeViewItem subContainer;
-                if (virtualizingPanel != null)
-                {
-                    // this is the part that requires .NET 4.5+
-                    virtualizingPanel.BringIndexIntoViewPublic(i);
-                    subContainer = (TreeViewItem)container.ItemContainerGenerator.ContainerFromIndex(i);
-                }
-                else
-                {
-                    subContainer = (TreeViewItem)container.ItemContainerGenerator.ContainerFromIndex(i);
-                    subContainer.BringIntoView();
-                }
-
-                if (subContainer != null)
-                {
-                    TreeViewItem resultContainer = GetTreeViewItem(subContainer, item);
-                    if (resultContainer != null)
-                        return resultContainer;
-
-                    subContainer.IsExpanded = false;
-                }*/
-                Debug.WriteLine(container.Items[i]);
-            }
-            return null;
-        }
-
 
         public static TreeViewItem GetTreeViewItem(ItemsControl container, object item)
         {
@@ -2724,22 +2620,14 @@ namespace ME3Explorer
                 {
                     // this is the part that requires .NET 4.5+
                     virtualizingPanel.BringIndexIntoViewPublic(i);
-                    subContainer = (TreeViewItem)container.ItemContainerGenerator.ContainerFromIndex(i);
+                    subContainer = (TreeViewItem)container.ItemContainerGenerator.ContainerFromIndex(i); //find item
+                    if (subContainer.DataContext == item) return subContainer;
                 }
                 else
                 {
                     subContainer = (TreeViewItem)container.ItemContainerGenerator.ContainerFromIndex(i);
                     subContainer.BringIntoView();
                 }
-
-                /*if (subContainer != null)
-                {
-                    TreeViewItem resultContainer = GetTreeViewItem(subContainer, item);
-                    if (resultContainer != null)
-                        return resultContainer;
-
-                    subContainer.IsExpanded = false;
-                }*/
             }
             return null;
         }
