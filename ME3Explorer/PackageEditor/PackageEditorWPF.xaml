@@ -122,6 +122,7 @@
                     <Button Content="Search" Click="SearchButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <TextBox Name="Goto_TextBox" Width="70" KeyUp="Goto_TextBox_KeyUp" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <Button Content="Goto #" Click="GotoButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <TextBlock Name="Goto_Preview_TextBox" VerticalAlignment="Center" Foreground="Gray" Margin="5,0,0,0"/>
                 </ToolBar>
                 <SharedUI:ListBoxScroll x:Name="LeftSide_ListView" Grid.Column="0" Grid.Row="1"  SelectionChanged="LeftSide_SelectedItemChanged"/>
                 <!-- VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" -->

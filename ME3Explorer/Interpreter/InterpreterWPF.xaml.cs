@@ -1151,12 +1151,37 @@ namespace ME3Explorer
                     case PropertyType.ArrayProperty:
                         newProperty = new ArrayProperty<IntProperty>(ArrayType.Int, prop.Item1); //We can just set it to int as it will be reparsed and resolved.
                         break;
+                    case PropertyType.StructProperty:
+                        // Generate the bytecode and then read it as a prop.
+                        // This is effectively have default interpreter does it
+                        // and I have to use it since I dno't have a way to just
+                        // get UProperty struct
+                        List<byte> buff = new List<byte>();
+                        //name
+                        buff.AddRange(BitConverter.GetBytes(CurrentLoadedExport.FileRef.FindNameOrAdd(prop.Item1)));
+                        buff.AddRange(new byte[4]);
+                        //type
+                        buff.AddRange(BitConverter.GetBytes(CurrentLoadedExport.FileRef.FindNameOrAdd(prop.Item2.type.ToString())));
+                        buff.AddRange(new byte[4]);
+                        byte[] structBuff = ME3UnrealObjectInfo.getDefaultClassValue(CurrentLoadedExport.FileRef as ME3Package, prop.Item2.reference);
+                        //struct length
+                        buff.AddRange(BitConverter.GetBytes(structBuff.Length));
+                        buff.AddRange(new byte[4]);
+                        //struct Type
+                        buff.AddRange(BitConverter.GetBytes(CurrentLoadedExport.FileRef.FindNameOrAdd(prop.Item2.reference)));
+                        buff.AddRange(new byte[4]);
+                        buff.AddRange(structBuff);
+                        structBuff = buff.ToArray();
+                        //read data to get property. We set includeNonePRoperty because this buff only has one property - true ones will have at least 2 (the single prop, and None). So we don't want to clip off our property
+                        var structPropertyGenerated = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, new MemoryStream(structBuff), CurrentLoadedExport.ClassName, includeNoneProperty: true, requireNoneAtEnd: false);
+                        newProperty = structPropertyGenerated[0]; //i'm sure i won't regret this later
+                        break;
                 }
 
                 //UProperty property = generateNewProperty(prop.Item1, currentInfo);
                 if (newProperty != null)
                 {
-                    CurrentLoadedProperties.Add(newProperty);
+                    CurrentLoadedProperties.Insert(CurrentLoadedProperties.Count - 1, newProperty); //insert before noneproperty
                 }
                 //Todo: Create new node, prevent refresh of this instance.
                 CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);

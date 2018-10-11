@@ -1751,8 +1751,38 @@ namespace ME3Explorer
         {
             if (e.Key == Key.Return && !e.IsRepeat)
             {
-                Debug.WriteLine("keydown");
                 GotoButton_Clicked(null, null);
+            }
+            else
+            {
+                if (Goto_TextBox.Text.Length == 0)
+                {
+                    Goto_Preview_TextBox.Text = "";
+                    return;
+                }
+                if (int.TryParse(Goto_TextBox.Text, out int index))
+                {
+                    if (index == 0)
+                    {
+                        Goto_Preview_TextBox.Text = "Invalid value";
+                    }
+                    else
+                    {
+                        var entry = Pcc.getEntry(index);
+                        if (entry != null)
+                        {
+                            Goto_Preview_TextBox.Text = entry.GetFullPath;
+                        }
+                        else
+                        {
+                            Goto_Preview_TextBox.Text = "Index out of bounds of entry list";
+                        }
+                    }
+                }
+                else
+                {
+                    Goto_Preview_TextBox.Text = "Invalid value";
+                }
             }
         }
 
@@ -2525,22 +2555,11 @@ namespace ME3Explorer
             var generator = LeftSide_TreeView.ItemContainerGenerator;
             while (stack.Count > 0)
             {
-                //LeftSide_TreeView.UpdateLayout();
-
+                //pop the next child off the stack
                 var dequeue = stack.Pop();
-                // use DispatcherPriority.ContextIdle, so that we wait for all of the UI elements for any newly visible children to be created
                 var index = generator.Items.IndexOf(dequeue);
 
-                // first bring the last child into view
-                /*Action action = () =>
-                {
-                    var lastChild = generator.ContainerFromIndex(generator.Items.Count - 1) as TreeViewItem;
-                    lastChild?.BringIntoView();
-                };
-                Dispatcher.Invoke(action, DispatcherPriority.ContextIdle);
-                LeftSide_TreeView.UpdateLayout();
-                */
-                // then bring the expanded item (back) into view
+                //see if the container is already loaded. If not, we will have to generate them until we get it (why microsoft...)
                 TreeViewItem treeViewItem = generator.ContainerFromIndex(index) as TreeViewItem;
                 if (treeViewItem == null && container != null) treeViewItem = GetTreeViewItem(container, dequeue);
                 Action action = () => { treeViewItem?.BringIntoView(); };
@@ -2550,8 +2569,6 @@ namespace ME3Explorer
                     Debug.WriteLine("This shoudln't be null");
                 }
 
-
-                //var treeViewItem = (TreeViewItem)generator.ContainerFromItem(dequeue);
                 if (stack.Count > 0)
                 {
                     action = () => { if (treeViewItem != null) treeViewItem.IsExpanded = true; };
@@ -2561,8 +2578,8 @@ namespace ME3Explorer
                 {
                     if (treeViewItem == null)
                     {
-                        //This is being triggered when it shouldn't be
-                        Debug.WriteLine("FocusNode has triggered null item - CANNOT FOCUS! ");
+                        //Hope this doesn't happen anymore.
+                        Debug.WriteLine("FocusNode has triggered null item - CANNOT FOCUS!");
                         //Debugger.Break();
                     }
                     else
@@ -2572,7 +2589,6 @@ namespace ME3Explorer
                 }
                 if (treeViewItem != null)
                 {
-                    //treeViewItem.BringIntoView();
                     container = treeViewItem;
                     generator = treeViewItem.ItemContainerGenerator;
                 }
@@ -2741,12 +2757,6 @@ namespace ME3Explorer
                 Parent.IsExpanded = true;
             }
         }
-
-        //public void Focus(TreeView tView)
-        //{
-        //    TreeViewItem tvItem = (TreeViewItem)tView.ItemContainerGenerator.ContainerFromItem(this);
-        //    tvItem?.Focus();
-        //}
 
         /// <summary>
         /// Flattens the tree into depth first order. Use this method for searching the list.

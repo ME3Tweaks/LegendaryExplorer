@@ -60,7 +60,7 @@ namespace ME3Explorer.Unreal
             stream.WriteNoneProperty(pcc);
         }
 
-        public static PropertyCollection ReadProps(IMEPackage pcc, MemoryStream stream, string typeName, bool includeNoneProperty = false)
+        public static PropertyCollection ReadProps(IMEPackage pcc, MemoryStream stream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true)
         {
             //Uncomment this for debugging property engine
             /*DebugOutput.StartDebugger("Property Engine ReadProps() for "+typeName);
@@ -203,8 +203,9 @@ namespace ME3Explorer.Unreal
             if (props.Count > 0)
             {
                 //error reading props.
-                if (props[props.Count - 1].PropType != PropertyType.None)
+                if (props[props.Count - 1].PropType != PropertyType.None && requireNoneAtEnd)
                 {
+                    Debug.WriteLine("Invalid properties: Does not end with None");
                     stream.Seek(startPosition, SeekOrigin.Begin);
                     return new PropertyCollection { endOffset = (int)stream.Position };
                 }
@@ -575,7 +576,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
-    [DebuggerDisplay("StructProperty | {Name ?? StructType}")]
+    [DebuggerDisplay("StructProperty | {Name.Name} - {StructType}")]
     public class StructProperty : UProperty
     {
         public readonly bool IsImmutable;
