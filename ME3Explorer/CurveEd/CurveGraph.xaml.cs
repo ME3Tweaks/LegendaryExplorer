@@ -31,8 +31,8 @@ namespace ME3Explorer.CurveEd
         public static bool TrackLoading = false;
         public Curve SelectedCurve
         {
-            get { return (Curve)GetValue(SelectedCurveProperty); }
-            set { SetValue(SelectedCurveProperty, value); }
+            get => (Curve)GetValue(SelectedCurveProperty);
+            set => SetValue(SelectedCurveProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for SelectedCurve.  This enables animation, styling, binding, etc...
@@ -41,9 +41,7 @@ namespace ME3Explorer.CurveEd
 
         private static void OnSelectedCurveChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-
-            CurveGraph c = sender as CurveGraph;
-            if (c != null)
+            if (sender is CurveGraph c)
             {
                 TrackLoading = true;
                 c.SelectedPoint = c.SelectedCurve.CurvePoints.FirstOrDefault();
@@ -53,8 +51,8 @@ namespace ME3Explorer.CurveEd
 
         public CurvePoint SelectedPoint
         {
-            get { return (CurvePoint)GetValue(SelectedPointProperty); }
-            set { SetValue(SelectedPointProperty, value); }
+            get => (CurvePoint)GetValue(SelectedPointProperty);
+            set => SetValue(SelectedPointProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for SelectedPoint.  This enables animation, styling, binding, etc...
@@ -63,15 +61,12 @@ namespace ME3Explorer.CurveEd
 
         private static void OnSelectedPointChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            CurveGraph c = sender as CurveGraph;
-            if (c != null)
+            if (sender is CurveGraph c)
             {
                 foreach (var o in c.graph.Children)
                 {
-                    Anchor a;
-                    if (o is Anchor)
+                    if (o is Anchor a)
                     {
-                        a = o as Anchor;
                         if (a.point.Value != e.NewValue as CurvePoint)
                         {
                             a.IsSelected = false;
@@ -83,8 +78,8 @@ namespace ME3Explorer.CurveEd
         }
         public double VerticalScale
         {
-            get { return (double)GetValue(VerticalScaleProperty); }
-            set { SetValue(VerticalScaleProperty, value); }
+            get => (double)GetValue(VerticalScaleProperty);
+            set => SetValue(VerticalScaleProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for VerticalScale.  This enables animation, styling, binding, etc...
@@ -93,8 +88,8 @@ namespace ME3Explorer.CurveEd
 
         public double HorizontalScale
         {
-            get { return (double)GetValue(HorizontalScaleProperty); }
-            set { SetValue(HorizontalScaleProperty, value); }
+            get => (double)GetValue(HorizontalScaleProperty);
+            set => SetValue(HorizontalScaleProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for HorizontalScale.  This enables animation, styling, binding, etc...
@@ -103,8 +98,8 @@ namespace ME3Explorer.CurveEd
 
         public double VerticalOffset
         {
-            get { return (double)GetValue(VerticalOffsetProperty); }
-            set { SetValue(VerticalOffsetProperty, value); }
+            get => (double)GetValue(VerticalOffsetProperty);
+            set => SetValue(VerticalOffsetProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for VerticalOffset.  This enables animation, styling, binding, etc...
@@ -113,8 +108,8 @@ namespace ME3Explorer.CurveEd
 
         public double HorizontalOffset
         {
-            get { return (double)GetValue(HorizontalOffsetProperty); }
-            set { SetValue(HorizontalOffsetProperty, value); }
+            get => (double)GetValue(HorizontalOffsetProperty);
+            set => SetValue(HorizontalOffsetProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for HorizontalOffset.  This enables animation, styling, binding, etc...
@@ -276,8 +271,7 @@ namespace ME3Explorer.CurveEd
 
                 if (node.Previous == null)
                 {
-                    line = new Line();
-                    line.X1 = -10;
+                    line = new Line {X1 = -10};
                     line.bind(Line.Y1Property, a, "Y", new YConverter(), ActualHeight);
                     line.bind(Line.X2Property, a, "X");
                     line.bind(Line.Y2Property, a, "Y", new YConverter(), ActualHeight);
@@ -305,7 +299,6 @@ namespace ME3Explorer.CurveEd
         private void PathBetween(Anchor a1, Anchor a2, CurveMode interpMode = CurveMode.CIM_Linear)
         {
             Line line;
-            BezierSegment bez;
             switch (interpMode)
             {
                 case CurveMode.CIM_Linear:
@@ -334,9 +327,11 @@ namespace ME3Explorer.CurveEd
                 case CurveMode.CIM_CurveUser:
                 case CurveMode.CIM_CurveBreak:
                 case CurveMode.CIM_CurveAutoClamped:
-                    bez = new BezierSegment(this);
-                    bez.Slope1 = a1.point.Value.LeaveTangent;
-                    bez.Slope2 = a2.point.Value.ArriveTangent;
+                    var bez = new BezierSegment(this)
+                    {
+                        Slope1 = a1.point.Value.LeaveTangent,
+                        Slope2 = a2.point.Value.ArriveTangent
+                    };
                     bez.bind(BezierSegment.X1Property, a1, "X");
                     bez.bind(BezierSegment.Y1Property, a1, "Y");
                     bez.bind(BezierSegment.X2Property, a2, "X");
@@ -369,26 +364,30 @@ namespace ME3Explorer.CurveEd
 
         private void graph_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.OriginalSource == graph && e.RightButton == MouseButtonState.Released)
+            if (ReferenceEquals(e.OriginalSource, graph) && e.RightButton == MouseButtonState.Released)
             {
                 dragging = true;
                 dragPos = e.GetPosition(graph);
                 Cursor = Cursors.ScrollNS;
             }
-            else if (e.OriginalSource == graph && e.ChangedButton == MouseButton.Right)
+            else if (ReferenceEquals(e.OriginalSource, graph) && e.ChangedButton == MouseButton.Right)
             {
                 ContextMenu cm = new ContextMenu();
 
-                MenuItem addKey = new MenuItem();
-                addKey.Header = "Add Key";
+                MenuItem addKey = new MenuItem
+                {
+                    Header = "Add Key",
+                    Tag = e.GetPosition(graph)
+                };
                 addKey.Click += AddKey_Click;
-                addKey.Tag = e.GetPosition(graph);
                 cm.Items.Add(addKey);
 
-                MenuItem offsetKeys = new MenuItem();
-                offsetKeys.Header = "Offset All Keys After This Point";
+                MenuItem offsetKeys = new MenuItem
+                {
+                    Header = "Offset All Keys After This Point",
+                    Tag = e.GetPosition(graph)
+                };
                 offsetKeys.Click += OffsetKeys_Click;
-                offsetKeys.Tag = e.GetPosition(graph);
                 cm.Items.Add(offsetKeys);
 
                 cm.PlacementTarget = sender as Canvas;
@@ -401,8 +400,7 @@ namespace ME3Explorer.CurveEd
             Point pos = (Point)(sender as MenuItem).Tag;
             double inVal = unrealX(pos.X);
             string res = Microsoft.VisualBasic.Interaction.InputBox("Seconds to offset keys by", DefaultResponse: "0.0");
-            float delta = 0;
-            if (float.TryParse(res, out delta))
+            if (float.TryParse(res, out var delta))
             {
                 LinkedListNode<CurvePoint> node = SelectedCurve.CurvePoints.First;
                 while (node?.Next != null && node.Value.InVal < inVal)
@@ -478,8 +476,8 @@ namespace ME3Explorer.CurveEd
             {
                 result = b.Text.Insert(b.CaretIndex, e.Text);
             }
-            float f = 0;
-            if (!float.TryParse(result, out f))
+
+            if (!float.TryParse(result, out _))
             {
                 e.Handled = true;
             }
@@ -488,9 +486,8 @@ namespace ME3Explorer.CurveEd
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox b = sender as TextBox;
-            double d = 0;
             //SirCxyrtyx: doing a stack trace to resolve a circular calling situation is horrible, I know. I'm so sorry about this.
-            if (double.TryParse(b.Text, out d) && b.IsFocused && b.IsKeyboardFocused && !KFreonLib.Misc.Methods.FindInStack("Anchor"))
+            if (double.TryParse(b.Text, out var d) && b.IsFocused && b.IsKeyboardFocused && !KFreonLib.Misc.Methods.FindInStack(nameof(Anchor)))
             {
                 Anchor a = graph.Children.OfType<Anchor>().FirstOrDefault(x => x.IsSelected);
                 if (a != null && b.Name == "xTextBox")

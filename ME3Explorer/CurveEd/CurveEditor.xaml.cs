@@ -21,7 +21,7 @@ namespace ME3Explorer.CurveEd
     /// <summary>
     /// Interaction logic for CurveEditor.xaml
     /// </summary>
-    public partial class CurveEditor : ExportLoaderControl
+    public sealed partial class CurveEditor : ExportLoaderControl
     {
         public List<InterpCurve> InterpCurveTracks;
 
@@ -30,9 +30,9 @@ namespace ME3Explorer.CurveEd
             InitializeComponent();
         }
 
-        public override void LoadExport(IExportEntry exp)
+        public override void LoadExport(IExportEntry exportEntry)
         {
-            CurrentLoadedExport = exp;
+            CurrentLoadedExport = exportEntry;
             Load();
         }
 
@@ -73,9 +73,9 @@ namespace ME3Explorer.CurveEd
         private void TrackList_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             CurveGraph.TrackLoading = true;
-            if (e.NewValue is Curve)
+            if (e.NewValue is Curve curve)
             {
-                graph.SelectedCurve = e.NewValue as Curve;
+                graph.SelectedCurve = curve;
             }
             graph.Paint(true);
             CurveGraph.TrackLoading = false;
@@ -107,15 +107,13 @@ namespace ME3Explorer.CurveEd
                 case CurveMode.CIM_CurveAutoClamped:
                     btnClamped.IsChecked = true;
                     break;
-                default:
-                    break;
             }
         }
 
         private void btnInterpMode_Click(object sender, RoutedEventArgs e)
         {
             CurvePoint selectedPoint = graph.SelectedPoint;
-            switch ((sender as RadioButton).Name)
+            switch ((sender as RadioButton)?.Name)
             {
                 case "btnLinear":
                     selectedPoint.InterpMode = CurveMode.CIM_Linear;
@@ -134,8 +132,6 @@ namespace ME3Explorer.CurveEd
                     break;
                 case "btnClamped":
                     selectedPoint.InterpMode = CurveMode.CIM_CurveAutoClamped;
-                    break;
-                default:
                     break;
             }
             graph.Paint();
@@ -186,12 +182,10 @@ namespace ME3Explorer.CurveEd
                 var props = exportEntry.GetProperties();
                 foreach (var prop in props)
                 {
-                    if (prop is StructProperty structProp)
+                    if (prop is StructProperty structProp 
+                        && Enum.TryParse(structProp.StructType, out CurveType _))
                     {
-                        if (Enum.TryParse(structProp.StructType, out CurveType _))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }

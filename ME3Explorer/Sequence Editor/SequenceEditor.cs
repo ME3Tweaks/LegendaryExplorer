@@ -27,7 +27,7 @@ namespace ME3Explorer
     public partial class SequenceEditor : WinFormsBase
     {
         public List<string> RFiles;
-        private readonly string RECENTFILES_FILE = "RECENTFILES";
+        private const string RECENTFILES_FILE = "RECENTFILES";
         private List<IExportEntry> SequenceExports = new List<IExportEntry>();
         public SequenceEditor()
         {
@@ -117,9 +117,7 @@ namespace ME3Explorer
                     }
 
                 }
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
                 catch
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
                 {
                 }
                 var comp = new Microsoft.VisualBasic.Devices.Computer();
@@ -238,9 +236,9 @@ namespace ME3Explorer
                 var forms = Application.OpenForms;
                 foreach (Form form in forms)
                 {
-                    if (form is SequenceEditor && this != form)
+                    if (form is SequenceEditor seqEd && this != form)
                     {
-                        ((SequenceEditor)form).RefreshRecent(false, RFiles);
+                        seqEd.RefreshRecent(false, RFiles);
                     }
                 }
             }
@@ -324,8 +322,7 @@ namespace ME3Explorer
         {
             if (autoSaveViewToolStripMenuItem.Checked)
                 saveView();
-            OpenFileDialog d = new OpenFileDialog();
-            d.Filter = App.FileFilter;
+            OpenFileDialog d = new OpenFileDialog {Filter = App.FileFilter};
             if (d.ShowDialog() == DialogResult.OK)
             {
                 LoadFile(d.FileName);
@@ -359,25 +356,26 @@ namespace ME3Explorer
         private void LoadSequences()
         {
             treeView1.Nodes.Clear();
-            Dictionary<string, TreeNode> prefabs = new Dictionary<string, TreeNode>();
+            var prefabs = new Dictionary<string, TreeNode>();
             for (int i = 0; i < pcc.ExportCount; i++)
             {
                 IExportEntry exportEntry = pcc.getExport(i);
-                if (exportEntry.ClassName == "Sequence" && !pcc.getObjectClass(exportEntry.idxLink).Contains("Sequence"))
+                switch (exportEntry.ClassName)
                 {
-                    treeView1.Nodes.Add(FindSequences(pcc, i, !(exportEntry.ObjectName == "Main_Sequence")));
-                    SequenceExports.Add(exportEntry);
-                }
-                if (exportEntry.ClassName == "Prefab")
-                {
-                    try
-                    {
-                        prefabs.Add(exportEntry.ObjectName, new TreeNode(exportEntry.GetFullPath));
-                    }
-                    catch (Exception)
-                    {
-
-                    }
+                    case "Sequence" when !pcc.getObjectClass(exportEntry.idxLink).Contains("Sequence"):
+                        treeView1.Nodes.Add(FindSequences(pcc, i, exportEntry.ObjectName != "Main_Sequence"));
+                        SequenceExports.Add(exportEntry);
+                        break;
+                    case "Prefab":
+                        try
+                        {
+                            prefabs.Add(exportEntry.ObjectName, new TreeNode(exportEntry.GetFullPath));
+                        }
+                        catch
+                        {
+                            // ignored
+                        }
+                        break;
                 }
             }
             if (prefabs.Count > 0)
@@ -417,15 +415,18 @@ namespace ME3Explorer
 
         public TreeNode FindSequences(IMEPackage pcc, int index, bool wantFullName = false)
         {
-            TreeNode ret = new TreeNode("#" + index + ": " + (wantFullName ? pcc.getExport(index).GetFullPath : pcc.getExport(index).ObjectName));
-            ret.Name = index.ToString();
-            var seqObjs = pcc.getExport(index).GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+            IExportEntry rootSeq = pcc.getExport(index);
+            TreeNode ret = new TreeNode
+            {
+                Text = $"#{index}: {(wantFullName ? rootSeq.GetFullPath : rootSeq.ObjectName)}",
+                Name = index.ToString()
+            };
+            var seqObjs = rootSeq.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
             if (seqObjs != null)
             {
-                IExportEntry exportEntry;
                 foreach (ObjectProperty seqObj in seqObjs)
                 {
-                    exportEntry = pcc.getExport(seqObj.Value - 1);
+                    IExportEntry exportEntry = pcc.getExport(seqObj.Value - 1);
                     if (exportEntry.ClassName == "Sequence" || exportEntry.ClassName.StartsWith("PrefabSequence"))
                     {
                         TreeNode t = FindSequences(pcc, seqObj.Value - 1, false);
@@ -469,7 +470,7 @@ namespace ME3Explorer
             graphEditor.Enabled = false;
             graphEditor.UseWaitCursor = true;
             Sequence = seqExport;
-            toolStripStatusLabel2.Text = "\t#" + Sequence.Index + Sequence.ObjectName;
+            toolStripStatusLabel2.Text = $"\t#{Sequence.Index}{Sequence.ObjectName}";
             GetProperties(Sequence);
             GetObjects(Sequence);
             SetupJSON(Sequence);
@@ -482,10 +483,7 @@ namespace ME3Explorer
                 GenerateGraph();
             } catch (Exception e)
             {
-                MessageBox.Show("Error loading sequences from file:\n" + e.Message);
-#if DEBUG
-                //throw e;
-#endif
+                MessageBox.Show($"Error loading sequences from file:\n{e.Message}");
             }
             selectedIndex = -1;
             graphEditor.Enabled = true;
@@ -499,7 +497,7 @@ namespace ME3Explorer
             var seqObjs = export.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
             if (seqObjs != null)
             {
-                var objIndices = seqObjs.Select(x => x.Value - 1).ToList();
+                List<int> objIndices = seqObjs.Select(x => x.Value - 1).ToList();
                 objIndices.Sort();
                 foreach (int seqObj in objIndices)
                 {
@@ -568,15 +566,16 @@ namespace ME3Explorer
             else
             {
                 string viewsPath = ME3ViewsPath;
-                if (pcc.Game == MEGame.ME2)
+                switch (pcc.Game)
                 {
-                    viewsPath = ME2ViewsPath;
+                    case MEGame.ME2:
+                        viewsPath = ME2ViewsPath;
+                        break;
+                    case MEGame.ME1:
+                        viewsPath = ME1ViewsPath;
+                        break;
                 }
-                else if (pcc.Game == MEGame.ME1)
-                {
-                    viewsPath = ME1ViewsPath;
-                }
-                JSONpath = viewsPath + CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1) + ".#" + export.Index + objectName + ".JSON";
+                JSONpath = $"{viewsPath}{CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1)}.#{export.Index}{objectName}.JSON";
                 RefOrRefChild = false;
             }
         }
@@ -591,10 +590,11 @@ namespace ME3Explorer
             Objects = new List<SObj>();
             if (CurrentObjects != null)
             {
-                for (int i = 0; i < CurrentObjects.Count(); i++)
+                foreach (var obj in CurrentObjects)
                 {
-                    LoadObject(CurrentObjects[i]);
+                    LoadObject(obj);
                 }
+
                 CreateConnections();
             }
             foreach (SObj o in Objects)
@@ -617,20 +617,20 @@ namespace ME3Explorer
             SaveData savedInfo = new SaveData(-1);
             if (SavedPositions.Count > 0)
             {
-                if (RefOrRefChild)
-                    savedInfo = SavedPositions.FirstOrDefault(p => CurrentObjects.IndexOf(index) == p.index);
-                else
-                    savedInfo = SavedPositions.FirstOrDefault(p => index == p.index);
+                savedInfo = SavedPositions.FirstOrDefault(p => p.index == (RefOrRefChild ? CurrentObjects.IndexOf(index) : index));
             }
             PropertyCollection props = pcc.getExport(index).GetProperties();
             foreach (var prop in props)
             {
-                if (prop.Name == "ObjPosX")
+                switch (prop)
                 {
-                    x = (prop as IntProperty).Value;
+                    case IntProperty intProp when intProp.Name == "ObjPosX":
+                        x = intProp.Value;
+                        break;
+                    case IntProperty intProp when intProp.Name == "ObjPosY":
+                        y = intProp.Value;
+                        break;
                 }
-                else if (prop.Name == "ObjPosY")
-                    y = (prop as IntProperty).Value;
             }
 
             if (s.StartsWith("BioSeqEvt_") || s.StartsWith("SeqEvt_") || s.StartsWith("SFXSeqEvt_") || s.StartsWith("SeqEvent_"))
@@ -689,7 +689,6 @@ namespace ME3Explorer
         public bool LoadDialogueObjects()
         {
             float StartPosDialog = 0;
-            int InterpIndex;
             try
             {
                 for (int i = 0; i < CurrentObjects.Count; i++)
@@ -697,7 +696,7 @@ namespace ME3Explorer
                     if (pcc.getExport(CurrentObjects[i]).ObjectName.StartsWith("BioSeqEvt_ConvNode"))
                     {
                         Objects[i].SetOffset(StartPosDialog, 600);//Startconv event
-                        InterpIndex = CurrentObjects.IndexOf(((SEvent)Objects[i]).Outlinks[0].Links[0]);
+                        int InterpIndex = CurrentObjects.IndexOf(((SEvent)Objects[i]).Outlinks[0].Links[0]);
                         Objects[InterpIndex].SetOffset(StartPosDialog + 150, 600);//Interp
                         Objects[CurrentObjects.IndexOf(((SAction)Objects[InterpIndex]).Varlinks[0].Links[0])].SetOffset(StartPosDialog + 165, 770);//Interpdata
                         StartPosDialog += Objects[InterpIndex].Width + 200;
@@ -720,9 +719,9 @@ namespace ME3Explorer
         {
             if (Objects != null && Objects.Count != 0)
             {
-                for (int i = 0; i < Objects.Count; i++)
+                foreach (SObj obj in Objects)
                 {
-                    graphEditor.addNode(Objects[i]);
+                    graphEditor.addNode(obj);
                 }
                 foreach (SObj o in graphEditor.nodeLayer)
                 {
@@ -763,7 +762,7 @@ namespace ME3Explorer
             }
         }
 
-        public void GetProperties(IExportEntry export)
+        private void GetProperties(IExportEntry export)
         {
             List<PropertyReader.Property> p;
             switch (export.ClassName)
@@ -774,15 +773,16 @@ namespace ME3Explorer
             }
             pg = new PropGrid();
             pg1.SelectedObject = pg;
-            for (int l = 0; l < p.Count; l++)
-                pg.Add(PropertyReader.PropertyToGrid(p[l], pcc));
+            foreach (var prop in p)
+                pg.Add(PropertyReader.PropertyToGrid(prop, pcc));
+
             pg1.Refresh();
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             int n = listBox1.SelectedIndex;
-            if (n == -1 || n < 0 || n >= CurrentObjects.Count())
+            if (n == -1 || n < 0 || n >= CurrentObjects.Count)
                 return;
             SObj s = Objects.FirstOrDefault(o => o.Index == CurrentObjects[n]);
             if (s != null)
@@ -790,8 +790,7 @@ namespace ME3Explorer
                 if (selectedIndex != -1)
                 {
                     SObj d = Objects.FirstOrDefault(o => o.Index == CurrentObjects[selectedIndex]);
-                    if (d != null)
-                        d.Deselect();
+                    d?.Deselect();
                 }
                 s.Select();
                 if (!selectedByNode)
@@ -808,10 +807,12 @@ namespace ME3Explorer
             if (autoSaveViewToolStripMenuItem.Checked)
                 saveView();
 
-            Dictionary<string, object> options = new Dictionary<string, object>();
-            options.Add("OutputNumbers", SObj.OutputNumbers);
-            options.Add("AutoSave", autoSaveViewToolStripMenuItem.Checked);
-            options.Add("GlobalSeqRefView", useGlobalSequenceRefSavesToolStripMenuItem.Checked);
+            var options = new Dictionary<string, object>
+            {
+                { "OutputNumbers", SObj.OutputNumbers },
+                { "AutoSave", autoSaveViewToolStripMenuItem.Checked },
+                { "GlobalSeqRefView", useGlobalSequenceRefSavesToolStripMenuItem.Checked }
+            };
             string outputFile = JsonConvert.SerializeObject(options);
             if (!Directory.Exists(SequenceEditorDataFolder))
                 Directory.CreateDirectory(SequenceEditorDataFolder);
@@ -822,8 +823,7 @@ namespace ME3Explorer
         {
             if (CurrentObjects.Count == 0)
                 return;
-            SaveFileDialog d = new SaveFileDialog();
-            d.Filter = "Bmp Files (*.bmp)|*.bmp";
+            SaveFileDialog d = new SaveFileDialog {Filter = "Bmp Files (*.bmp)|*.bmp"};
             if (d.ShowDialog() == DialogResult.OK)
             {
                 PNode r = graphEditor.Root;
@@ -847,13 +847,14 @@ namespace ME3Explorer
             {
                 if (treeView1.SelectedNode == null)
                     return;
-                else
-                    n = Convert.ToInt32(treeView1.SelectedNode.Name);
+                n = Convert.ToInt32(treeView1.SelectedNode.Name);
             }
             else
                 n = CurrentObjects[n];
-            InterpreterHost ip = new InterpreterHost(pcc.FileName, n);
-            ip.Text = "Interpreter (SequenceEditor)";
+            InterpreterHost ip = new InterpreterHost(pcc.FileName, n)
+            {
+                Text = "Interpreter (SequenceEditor)"
+            };
             ip.Show();
         }
 
@@ -893,7 +894,7 @@ namespace ME3Explorer
                                 temp = new ToolStripMenuItem("Break link from " + sBox.Varlinks[i].Desc + " to " + sBox.Varlinks[i].Links[j]);
                                 int linkConnection = i;
                                 int linkIndex = j;
-                                temp.Click += (object o, EventArgs args) =>
+                                temp.Click += (o, args) =>
                                 {
                                     sBox.RemoveVarlink(linkConnection, linkIndex);
                                 };
@@ -910,7 +911,7 @@ namespace ME3Explorer
                                 temp = new ToolStripMenuItem("Break link from " + sBox.Outlinks[i].Desc + " to " + sBox.Outlinks[i].Links[j] + " :" + sBox.Outlinks[i].InputIndices[j]);
                                 int linkConnection = i;
                                 int linkIndex = j;
-                                temp.Click += (object o, EventArgs args) =>
+                                temp.Click += (o, args) =>
                                 {
                                     sBox.RemoveOutlink(linkConnection, linkIndex);
                                 };
@@ -920,21 +921,18 @@ namespace ME3Explorer
                     }
                     if (varLinkMenu.Items.Count > 0)
                     {
-                        temp = new ToolStripMenuItem("Variable Links");
-                        temp.DropDown = varLinkMenu;
+                        temp = new ToolStripMenuItem("Variable Links") {DropDown = varLinkMenu};
                         submenu.Items.Add(temp);
                     }
                     if (outLinkMenu.Items.Count > 0)
                     {
-                        temp = new ToolStripMenuItem("Output Links");
-                        temp.DropDown = outLinkMenu;
+                        temp = new ToolStripMenuItem("Output Links") {DropDown = outLinkMenu};
                         submenu.Items.Add(temp);
                     }
                     if (submenu.Items.Count > 0)
                     {
-                        temp = new ToolStripMenuItem("Break all Links");
+                        temp = new ToolStripMenuItem("Break all Links") {Tag = sender};
                         temp.Click += removeAllLinks_handler;
-                        temp.Tag = sender;
                         submenu.Items.Add(temp);
                         breakLinksToolStripMenuItem.Enabled = true;
                         breakLinksToolStripMenuItem.DropDown = submenu;
@@ -988,14 +986,15 @@ namespace ME3Explorer
             SavedPositions = new List<SaveData>();
             foreach (SObj p in graphEditor.nodeLayer)
             {
-                SaveData s = new SaveData();
                 if (p.Pickable)
                 {
-                    s.absoluteIndex = RefOrRefChild;
-                    s.index = RefOrRefChild ? CurrentObjects.IndexOf(p.Index) : p.Index;
-                    s.X = p.X + p.Offset.X;
-                    s.Y = p.Y + p.Offset.Y;
-                    SavedPositions.Add(s);
+                    SavedPositions.Add(new SaveData
+                    {
+                        absoluteIndex = RefOrRefChild,
+                        index = RefOrRefChild ? CurrentObjects.IndexOf(p.Index) : p.Index,
+                        X = p.X + p.Offset.X,
+                        Y = p.Y + p.Offset.Y
+                    });
                 }
             }
             if (extraSaveData != null)
@@ -1065,13 +1064,12 @@ namespace ME3Explorer
 
         private void addObject(int index, bool removeLinks = true)
         {
-            SaveData s = new SaveData();
-            s.index = index;
-            s.X = graphEditor.Camera.Bounds.X + graphEditor.Camera.Bounds.Width / 2;
-            s.Y = graphEditor.Camera.Bounds.Y + graphEditor.Camera.Bounds.Height / 2;
-            List<SaveData> list = new List<SaveData>();
-            list.Add(s);
-            extraSaveData = list;
+            extraSaveData = new List<SaveData> { new SaveData
+            {
+                index = index,
+                X = graphEditor.Camera.Bounds.X + graphEditor.Camera.Bounds.Width / 2,
+                Y = graphEditor.Camera.Bounds.Y + graphEditor.Camera.Bounds.Height / 2
+            }};
             addObjectToSequence(index, removeLinks, Sequence);
         }
 
@@ -1171,24 +1169,29 @@ namespace ME3Explorer
         {
             if (pcc != null)
             {
-
-                if (pcc.Game == MEGame.ME3)
+                switch (pcc.Game)
                 {
-                    TlkManager tm = new TlkManager();
-                    tm.InitTlkManager();
-                    tm.Show();
-                }
-                else if (pcc.Game == MEGame.ME2)
-                {
-                    ME2Explorer.TlkManager tm = new ME2Explorer.TlkManager();
-                    tm.InitTlkManager();
-                    tm.Show();
-                }
-                else if (pcc.Game == MEGame.ME1)
-                {
-                    ME1Explorer.TlkManager tm = new ME1Explorer.TlkManager();
-                    tm.InitTlkManager(talkFiles);
-                    tm.Show();
+                    case MEGame.ME3:
+                    {
+                        TlkManager tm = new TlkManager();
+                        tm.InitTlkManager();
+                        tm.Show();
+                        break;
+                    }
+                    case MEGame.ME2:
+                    {
+                        ME2Explorer.TlkManager tm = new ME2Explorer.TlkManager();
+                        tm.InitTlkManager();
+                        tm.Show();
+                        break;
+                    }
+                    case MEGame.ME1:
+                    {
+                        ME1Explorer.TlkManager tm = new ME1Explorer.TlkManager();
+                        tm.InitTlkManager(talkFiles);
+                        tm.Show();
+                        break;
+                    }
                 }
             }
         }
@@ -1222,9 +1225,8 @@ namespace ME3Explorer
         {
             if (pcc == null)
                 return;
-            SaveFileDialog d = new SaveFileDialog();
             string extension = Path.GetExtension(pcc.FileName);
-            d.Filter = $"*{extension}|*{extension}";
+            SaveFileDialog d = new SaveFileDialog {Filter = $"*{extension}|*{extension}"};
             if (d.ShowDialog() == DialogResult.OK)
             {
                 pcc.save(d.FileName);
@@ -1281,9 +1283,9 @@ namespace ME3Explorer
                 exp.WriteProperty(seqObjs);
 
                 //clone all children
-                for (int i = 0; i < oldObjects.Count; i++)
+                foreach (var obj in oldObjects)
                 {
-                    cloneObject(oldObjects[i] - 1, exp, false);
+                    cloneObject(obj - 1, exp, false);
                 }
 
                 //re-point children's links to new objects
@@ -1333,8 +1335,8 @@ namespace ME3Explorer
                 }
 
                 //re-point sequence links to new objects
-                int oldObj = 0;
-                int newObj = 0;
+                int oldObj;
+                int newObj;
                 var propCollection = exp.GetProperties();
                 var inputLinksProp = propCollection.GetProp<ArrayProperty<StructProperty>>("InputLinks");
                 if (inputLinksProp != null)
@@ -1397,8 +1399,8 @@ namespace ME3Explorer
                 parentSequence.WriteProperty(seqObjs);
 
                 //set SequenceReference's linked name indices
-                List<int> inputIndices = new List<int>();
-                List<int> outputIndices = new List<int>();
+                var inputIndices = new List<int>();
+                var outputIndices = new List<int>();
 
                 IExportEntry newSequence = pcc.getExport(exp.Index + 1);
                 var props = newSequence.GetProperties();
@@ -1479,7 +1481,7 @@ namespace ME3Explorer
                 return;
             }
 
-            if (updatedExports.Intersect(CurrentObjects).Count() > 0)
+            if (updatedExports.Intersect(CurrentObjects).Any())
             {
                 RefreshView();
             }
@@ -1498,7 +1500,7 @@ namespace ME3Explorer
     {
         public static float MIN_SCALE = .005f;
         public static float MAX_SCALE = 15;
-        PCamera camera;
+        readonly PCamera camera;
 
         public ZoomController(GraphEditor graphEditor)
         {
@@ -1512,13 +1514,14 @@ namespace ME3Explorer
         {
             if (e.Control)
             {
-                if (e.KeyCode == Keys.OemMinus)
+                switch (e.KeyCode)
                 {
-                    scaleView(0.8f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
-                }
-                else if (e.KeyCode == Keys.Oemplus)
-                {
-                    scaleView(1.2f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                    case Keys.OemMinus:
+                        scaleView(0.8f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                        break;
+                    case Keys.Oemplus:
+                        scaleView(1.2f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                        break;
                 }
             }
         }

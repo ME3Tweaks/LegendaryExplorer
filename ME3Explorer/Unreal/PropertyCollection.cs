@@ -196,8 +196,6 @@ namespace ME3Explorer.Unreal
                             props.Add(new NoneProperty(stream, "None"));
                         }
                         break;
-                    default:
-                        break;
                 }
             }
             if (props.Count > 0)
@@ -241,9 +239,9 @@ namespace ME3Explorer.Unreal
                         }
                         defaultStructValues.Add(structType, defaultProps);
                     }
-                    for (int i = 0; i < defaultProps.Count; i++)
+                    foreach (var prop in defaultProps)
                     {
-                        UProperty uProperty = ReadSpecialStructProp(pcc, stream, defaultProps[i], structType);
+                        UProperty uProperty = ReadSpecialStructProp(pcc, stream, prop, structType);
                         if (uProperty.PropType != PropertyType.None)
                         {
                             props.Add(uProperty);
@@ -540,8 +538,8 @@ namespace ME3Explorer.Unreal
 
         public NameReference Name
         {
-            get { return _name; }
-            set { SetProperty(ref _name, value); }
+            get => _name;
+            set => SetProperty(ref _name, value);
         }
 
         protected UProperty(NameReference? name)
@@ -579,8 +577,8 @@ namespace ME3Explorer.Unreal
     public class StructProperty : UProperty
     {
         public readonly bool IsImmutable;
-        public string StructType { get; private set; }
-        public PropertyCollection Properties { get; private set; }
+        public string StructType { get; }
+        public PropertyCollection Properties { get; }
 
         public StructProperty(string structType, PropertyCollection props, NameReference? name = null, bool isImmutable = false) : base(name)
         {
@@ -647,8 +645,8 @@ namespace ME3Explorer.Unreal
         int _value;
         public int Value
         {
-            get { return _value; }
-            set { SetProperty(ref _value, value); }
+            get => _value;
+            set => SetProperty(ref _value, value);
         }
 
         public IntProperty(MemoryStream stream, NameReference? name = null) : base(name)
@@ -678,13 +676,15 @@ namespace ME3Explorer.Unreal
 
         public int CompareTo(object obj)
         {
-            if (obj == null) return 1;
-
-            IntProperty otherInt = obj as IntProperty;
-            if (otherInt != null)
-                return this.Value.CompareTo(otherInt.Value);
-            else
-                throw new ArgumentException("Cannot compare IntProperty to object that is not of type IntProperty.");
+            switch (obj)
+            {
+                case null:
+                    return 1;
+                case IntProperty otherInt:
+                    return Value.CompareTo(otherInt.Value);
+                default:
+                    throw new ArgumentException("Cannot compare IntProperty to object that is not of type IntProperty.");
+            }
         }
 
         public static implicit operator IntProperty(int n)
@@ -704,8 +704,8 @@ namespace ME3Explorer.Unreal
         float _value;
         public float Value
         {
-            get { return _value; }
-            set { SetProperty(ref _value, value); }
+            get => _value;
+            set => SetProperty(ref _value, value);
         }
 
         public FloatProperty(MemoryStream stream, NameReference? name = null) : base(name)
@@ -735,13 +735,15 @@ namespace ME3Explorer.Unreal
 
         public int CompareTo(object obj)
         {
-            if (obj == null) return 1;
-
-            FloatProperty otherFloat = obj as FloatProperty;
-            if (otherFloat != null)
-                return this.Value.CompareTo(otherFloat.Value);
-            else
-                throw new ArgumentException("Cannot compare FloatProperty to object that is not of type FloatProperty.");
+            switch (obj)
+            {
+                case null:
+                    return 1;
+                case FloatProperty otherFloat:
+                    return Value.CompareTo(otherFloat.Value);
+                default:
+                    throw new ArgumentException("Cannot compare FloatProperty to object that is not of type FloatProperty.");
+            }
         }
 
         public static implicit operator FloatProperty(float n)
@@ -761,8 +763,8 @@ namespace ME3Explorer.Unreal
         int _value;
         public int Value
         {
-            get { return _value; }
-            set { SetProperty(ref _value, value); }
+            get => _value;
+            set => SetProperty(ref _value, value);
         }
 
         public ObjectProperty(MemoryStream stream, NameReference? name = null) : base(name)
@@ -792,13 +794,15 @@ namespace ME3Explorer.Unreal
 
         public int CompareTo(object obj)
         {
-            if (obj == null) return 1;
-
-            ObjectProperty otherObj = obj as ObjectProperty;
-            if (otherObj != null)
-                return this.Value.CompareTo(otherObj.Value);
-            else
-                throw new ArgumentException("Cannot compare ObjectProperty to object that is not of type ObjectProperty.");
+            switch (obj)
+            {
+                case null:
+                    return 1;
+                case ObjectProperty otherObj:
+                    return this.Value.CompareTo(otherObj.Value);
+                default:
+                    throw new ArgumentException("Cannot compare ObjectProperty to object that is not of type ObjectProperty.");
+            }
         }
     }
 
@@ -809,8 +813,8 @@ namespace ME3Explorer.Unreal
         NameReference _value;
         public NameReference Value
         {
-            get { return _value; }
-            set { SetProperty(ref _value, value); }
+            get => _value;
+            set => SetProperty(ref _value, value);
         }
 
         public NameProperty(MemoryStream stream, IMEPackage pcc, NameReference? name = null) : base(name)
@@ -841,13 +845,13 @@ namespace ME3Explorer.Unreal
 
         public override bool Equals(object obj)
         {
-            return this.Equals(obj as NameProperty);
+            return Equals(obj as NameProperty);
         }
 
         public bool Equals(NameProperty p)
         {
             // If parameter is null, return false.
-            if (object.ReferenceEquals(p, null))
+            if (p is null)
             {
                 return false;
             }
@@ -882,8 +886,8 @@ namespace ME3Explorer.Unreal
         bool _value;
         public bool Value
         {
-            get { return _value; }
-            set { SetProperty(ref _value, value); }
+            get => _value;
+            set => SetProperty(ref _value, value);
         }
 
         public BoolProperty(MemoryStream stream, MEGame game, NameReference? name = null) : base(name)
@@ -935,8 +939,8 @@ namespace ME3Explorer.Unreal
         byte _value;
         public byte Value
         {
-            get { return _value; }
-            set { SetProperty(ref _value, value); }
+            get => _value;
+            set => SetProperty(ref _value, value);
         }
 
         public ByteProperty(byte val, NameReference? name = null) : base(name)
@@ -970,8 +974,8 @@ namespace ME3Explorer.Unreal
         byte _value;
         public byte Value
         {
-            get { return _value; }
-            set { SetProperty(ref _value, value); }
+            get => _value;
+            set => SetProperty(ref _value, value);
         }
 
         public BioMask4Property(MemoryStream stream, NameReference? name = null) : base(name)
@@ -993,14 +997,14 @@ namespace ME3Explorer.Unreal
 
     public class EnumProperty : UProperty
     {
-        public NameReference EnumType { get; private set; }
+        public NameReference EnumType { get; }
         NameReference _value;
         public NameReference Value
         {
-            get { return _value; }
-            set { SetProperty(ref _value, value); }
+            get => _value;
+            set => SetProperty(ref _value, value);
         }
-        public List<string> EnumValues { get; private set; }
+        public List<string> EnumValues { get; }
 
         public EnumProperty(MemoryStream stream, IMEPackage pcc, NameReference enumType, NameReference? name = null) : base(name)
         {
@@ -1049,10 +1053,10 @@ namespace ME3Explorer.Unreal
     }
 
     [DebuggerDisplay("ArrayProperty<{arrayType}> | {Name}, Length = {Values.Count}")]
-    public class ArrayProperty<T> : ArrayPropertyBase, IEnumerable<T>, IList<T> where T : UProperty
+    public class ArrayProperty<T> : ArrayPropertyBase, IList<T> where T : UProperty
     {
-        public List<T> Values { get; private set; }
-        public override IEnumerable<UProperty> ValuesAsProperties => Values.Cast<UProperty>();
+        public List<T> Values { get; }
+        public override IEnumerable<UProperty> ValuesAsProperties => Values;
         public readonly ArrayType arrayType;
 
         public ArrayProperty(long startOffset, List<T> values, ArrayType type, NameReference name) : base(name)
@@ -1114,13 +1118,13 @@ namespace ME3Explorer.Unreal
         #endregion
 
         #region IList<T>
-        public int Count { get { return Values.Count; } }
-        public bool IsReadOnly { get { return ((ICollection<T>)Values).IsReadOnly; } }
+        public int Count => Values.Count;
+        public bool IsReadOnly => ((ICollection<T>)Values).IsReadOnly;
 
         public T this[int index]
         {
-            get { return Values[index]; }
-            set { Values[index] = value; }
+            get => Values[index];
+            set => Values[index] = value;
         }
 
         public void Add(T item)
@@ -1171,8 +1175,8 @@ namespace ME3Explorer.Unreal
         string _value;
         public string Value
         {
-            get { return _value; }
-            set { SetProperty(ref _value, value); }
+            get => _value;
+            set => SetProperty(ref _value, value);
         }
 
         public StrProperty(MemoryStream stream, NameReference? name = null) : base(name)
@@ -1258,8 +1262,8 @@ namespace ME3Explorer.Unreal
         int _value;
         public int Value
         {
-            get { return _value; }
-            set { SetProperty(ref _value, value); }
+            get => _value;
+            set => SetProperty(ref _value, value);
         }
 
         public StringRefProperty(MemoryStream stream, NameReference? name = null) : base(name)

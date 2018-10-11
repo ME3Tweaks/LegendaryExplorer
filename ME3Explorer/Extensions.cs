@@ -25,7 +25,7 @@ namespace ME3Explorer
     {
         public static IEnumerable<System.Windows.Forms.TreeNode> FlattenTreeView(this System.Windows.Forms.TreeView tv)
         {
-            return tv.Nodes.Cast<System.Windows.Forms.TreeNode>().SelectMany(x => FlattenTree(x));
+            return tv.Nodes.Cast<System.Windows.Forms.TreeNode>().SelectMany(FlattenTree);
             
             List<System.Windows.Forms.TreeNode> FlattenTree(System.Windows.Forms.TreeNode rootNode)
             {
@@ -43,7 +43,7 @@ namespace ME3Explorer
     {
         public static IEnumerable<System.Windows.Controls.TreeViewItem> FlattenTreeView(this System.Windows.Controls.TreeView tv)
         {
-            return tv.Items.Cast<System.Windows.Controls.TreeViewItem>().SelectMany(x => FlattenTree(x));
+            return tv.Items.Cast<System.Windows.Controls.TreeViewItem>().SelectMany(FlattenTree);
 
             List<System.Windows.Controls.TreeViewItem> FlattenTree(System.Windows.Controls.TreeViewItem rootNode)
             {
@@ -61,8 +61,7 @@ namespace ME3Explorer
         /// </summary>
         public static void SelectItem(this System.Windows.Controls.TreeViewItem treeView, object item)
         {
-            var tvItem = treeView.ItemContainerGenerator.ContainerFromItem(item) as System.Windows.Controls.TreeViewItem;
-            if (tvItem != null)
+            if (treeView.ItemContainerGenerator.ContainerFromItem(item) is System.Windows.Controls.TreeViewItem tvItem)
             {
                 tvItem.IsSelected = true;
             }
@@ -257,9 +256,7 @@ namespace ME3Explorer
             {
                 v1[i] = i;
             }
-            int above;
-            int left;
-            int cost;
+
             for (int i = 1; i <= n; i++)
             {
                 v0 = v1;
@@ -267,8 +264,9 @@ namespace ME3Explorer
                 v1[0] = i;
                 for (int j = 1; j <= m; j++)
                 {
-                    above = v1[j - 1] + 1;
-                    left = v0[j] + 1;
+                    int above = v1[j - 1] + 1;
+                    int left = v0[j] + 1;
+                    int cost;
                     if (j > m || j > n)
                     {
                         cost = 1;
@@ -288,10 +286,9 @@ namespace ME3Explorer
 
         public static bool FuzzyMatch(this IEnumerable<string> words, string word, double threshold = 0.75)
         {
-            int dist;
             foreach (string s in words)
-               {
-                dist = s.LevenshteinDistance(word);
+            {
+                int dist = s.LevenshteinDistance(word);
                 if (1 - (double)dist / Math.Max(s.Length, word.Length) > threshold)
                 {
                     return true;
@@ -360,7 +357,7 @@ namespace ME3Explorer
     public static class ExternalExtensions
     {
         [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
+        static extern IntPtr GetForegroundWindow();
         [DllImport("user32.dll")]
         static extern bool SetForegroundWindow(IntPtr hWnd);
         [DllImport("user32.dll")]
@@ -425,7 +422,7 @@ namespace ME3Explorer
 
         public static BitmapSource DrawToBitmapSource(this System.Windows.Forms.Control control)
         {
-            int WM_PRINT = 0x317, PRF_CLIENT = 4,
+            const int WM_PRINT = 0x317, PRF_CLIENT = 4,
             PRF_CHILDREN = 0x10, PRF_NON_CLIENT = 2,
             COMBINED_PRINTFLAGS = PRF_CLIENT | PRF_CHILDREN | PRF_NON_CLIENT;
 
@@ -507,7 +504,7 @@ namespace ME3Explorer
         /// <param name="bytes">The number of bytes to copy</param>
         public static void CopyToEx(this Stream input, Stream output, int bytes)
         {
-            byte[] buffer = new byte[32768];
+            var buffer = new byte[32768];
             int read;
             while (bytes > 0 &&
                    (read = input.Read(buffer, 0, Math.Min(buffer.Length, bytes))) > 0)
@@ -539,6 +536,14 @@ namespace ME3Explorer
                 return null;
             }
             return i > 0 ? i - 1 : i;
+        }
+    }
+
+    public static class EnumExtensions
+    {
+        public static T[] GetValues<T>() where T : Enum
+        {
+            return (T[])Enum.GetValues(typeof(T));
         }
     }
 }

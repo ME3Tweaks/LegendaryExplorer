@@ -24,8 +24,8 @@ namespace ME3Explorer.CurveEd
 
         public double Y
         {
-            get { return (double)GetValue(YProperty); }
-            set { SetValue(YProperty, value); }
+            get => (double)GetValue(YProperty);
+            set => SetValue(YProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Y.  This enables animation, styling, binding, etc...
@@ -34,8 +34,7 @@ namespace ME3Explorer.CurveEd
 
         private static void OnYChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            Anchor a = sender as Anchor;
-            if (a?.graph != null)
+            if (sender is Anchor a && a.graph != null)
             {
                 a.point.Value.OutVal = Convert.ToSingle(a.graph.unrealY((double)e.NewValue));
                 if (a.IsSelected)
@@ -51,8 +50,8 @@ namespace ME3Explorer.CurveEd
 
         public double X
         {
-            get { return (double)GetValue(XProperty); }
-            set { SetValue(XProperty, value); }
+            get => (double)GetValue(XProperty);
+            set => SetValue(XProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for X.  This enables animation, styling, binding, etc...
@@ -61,8 +60,7 @@ namespace ME3Explorer.CurveEd
 
         private static void OnXChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            Anchor a = sender as Anchor;
-            if (a?.graph != null)
+            if (sender is Anchor a && a.graph != null)
             {
                 a.point.Value.InVal = Convert.ToSingle(a.graph.unrealX((double)e.NewValue));
             }
@@ -70,8 +68,8 @@ namespace ME3Explorer.CurveEd
 
         public bool IsSelected
         {
-            get { return (bool)GetValue(IsSelectedProperty); }
-            set { SetValue(IsSelectedProperty, value); }
+            get => (bool)GetValue(IsSelectedProperty);
+            set => SetValue(IsSelectedProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for IsSelected.  This enables animation, styling, binding, etc...
@@ -80,8 +78,7 @@ namespace ME3Explorer.CurveEd
 
         private static void OnIsSelectedChange(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            Anchor a = sender as Anchor;
-            if (a != null)
+            if (sender is Anchor a)
             {
                 //selected
                 if ((bool)e.NewValue)
@@ -179,12 +176,10 @@ namespace ME3Explorer.CurveEd
             if (e.ChangedButton == MouseButton.Right)
             {
                 ContextMenu cm = new ContextMenu();
-                MenuItem setTime = new MenuItem();
-                setTime.Header = "Set Time";
+                MenuItem setTime = new MenuItem {Header = "Set Time"};
                 setTime.Click += SetTime_Click;
                 cm.Items.Add(setTime);
-                MenuItem setValue = new MenuItem();
-                setValue.Header = "Set Value";
+                MenuItem setValue = new MenuItem {Header = "Set Value"};
                 setValue.Click += SetValue_Click;
                 cm.Items.Add(setValue);
                 switch (point.Value.InterpMode)
@@ -206,8 +201,7 @@ namespace ME3Explorer.CurveEd
                     default:
                         break;
                 }
-                MenuItem deleteKey = new MenuItem();
-                deleteKey.Header = "Delete Key";
+                MenuItem deleteKey = new MenuItem {Header = "Delete Key"};
                 deleteKey.Click += DeleteKey_Click;
                 cm.Items.Add(deleteKey);
                 cm.PlacementTarget = sender as Anchor;
@@ -234,8 +228,7 @@ namespace ME3Explorer.CurveEd
             float prev = point.Previous?.Value.InVal ?? float.MinValue;
             float next = point.Next?.Value.InVal ?? float.MaxValue;
             string res = Microsoft.VisualBasic.Interaction.InputBox($"Enter time between {prev} and {next}", "Set Time", point.Value.InVal.ToString());
-            float result = 0;
-            if (float.TryParse(res, out result) && result > prev && result < next)
+            if (float.TryParse(res, out var result) && result > prev && result < next)
             {
                 X = graph.localX(result);
                 graph.Paint(true);
@@ -244,9 +237,8 @@ namespace ME3Explorer.CurveEd
 
         private void SetValue_Click(object sender, RoutedEventArgs e)
         {
-            string res = Microsoft.VisualBasic.Interaction.InputBox($"Enter new value", "Set Value", point.Value.OutVal.ToString());
-            float result = 0;
-            if (float.TryParse(res, out result))
+            string res = Microsoft.VisualBasic.Interaction.InputBox("Enter new value", "Set Value", point.Value.OutVal.ToString());
+            if (float.TryParse(res, out var result))
             {
                 Y = graph.localY(result);
                 graph.Paint(true);
