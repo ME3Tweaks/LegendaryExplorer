@@ -32,9 +32,21 @@ namespace ME3Explorer
     {
         private HexBox BinaryInterpreter_Hexbox;
 
+        public enum InterpreterMode
+        {
+            Objects,
+            Names,
+            Integers,
+            Floats
+        }
+
+        private InterpreterMode interpreterMode = InterpreterMode.Objects;
+
         public BinaryInterpreterWPF()
         {
             InitializeComponent();
+            viewModeComboBox.ItemsSource = Enum.GetValues(typeof(InterpreterMode)).Cast<InterpreterMode>();
+            viewModeComboBox.SelectedItem = InterpreterMode.Objects;
         }
 
         static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "SeekFreeShaderCache", "Class", "BioStage", "ObjectProperty", "Const",
@@ -103,7 +115,12 @@ namespace ME3Explorer
 
         private void StartBinaryScan()
         {
+            if (CurrentLoadedExport is null)
+            {
+                return;
+            }
             BinaryInterpreter_TreeView.Items.Clear();
+            viewModeComboBox.Visibility = Visibility.Hidden;
             byte[] data = CurrentLoadedExport.Data;
             int binarystart = CurrentLoadedExport.propsEnd();
             TreeViewItem topLevelTree = new TreeViewItem
@@ -177,6 +194,9 @@ namespace ME3Explorer
                     break;
                 case "TextureMovie":
                     StartTextureMovieScan(topLevelTree, data, binarystart);
+                    break;
+                default:
+                    StartGenericScan(topLevelTree, data, binarystart);
                     break;
             }
         }
@@ -2031,6 +2051,104 @@ namespace ME3Explorer
                 topLevelTree.Items.Add($"Error reading binary data: {ex}");
             }
         }
+
+        private void StartGenericScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            if (binarystart == data.Length)
+            {
+                return;
+            }
+            try
+            {
+                viewModeComboBox.Visibility = Visibility.Visible;
+                var subnodes = new List<TreeViewItem>();
+                int binarypos = binarystart;
+
+                //binarypos += 0x1C; //Skip ??? and GUID
+                //int guid = BitConverter.ToInt32(data, binarypos);
+                /*int num1 = BitConverter.ToInt32(data, binarypos);
+                TreeNode node = new TreeNode($"0x{binarypos:X4} ???: {num1.ToString());
+                subnodes.Add(node);
+                binarypos += 4;
+                int num2 = BitConverter.ToInt32(data, binarypos);
+                node = new TreeNode($"0x{binarypos:X4} Count: {num2.ToString());
+                subnodes.Add(node);
+                binarypos += 4;
+                */
+                int datasize = 4;
+                if (interpreterMode == InterpreterMode.Names)
+                {
+                    datasize = 8;
+                }
+
+                while (binarypos <= data.Length - datasize)
+                {
+
+                    string nodeText = $"0x{binarypos:X4} : ";
+                    var node = new TreeViewItem();
+
+                    switch (interpreterMode)
+                    {
+                        case InterpreterMode.Objects:
+                            {
+                                int val = BitConverter.ToInt32(data, binarypos);
+                                string name = val.ToString();
+                                if (val > 0 && val <= CurrentLoadedExport.FileRef.ExportCount)
+                                {
+                                    IExportEntry exp = CurrentLoadedExport.FileRef.Exports[val - 1];
+                                    nodeText += $"{name} {exp.PackageFullName}.{exp.ObjectName} ({exp.ClassName})";
+                                }
+                                else if (val < 0 && val != int.MinValue && Math.Abs(val) <= CurrentLoadedExport.FileRef.ImportCount)
+                                {
+                                    int csImportVal = Math.Abs(val) - 1;
+                                    ImportEntry imp = CurrentLoadedExport.FileRef.Imports[csImportVal];
+                                    nodeText += $"{name} {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
+                                }
+                                node.Tag = NodeType.StructLeafObject;
+                                break;
+                            }
+                        case InterpreterMode.Names:
+                            {
+                                int val = BitConverter.ToInt32(data, binarypos);
+                                if (val > 0 && val <= CurrentLoadedExport.FileRef.NameCount)
+                                {
+                                    nodeText += $"{val} \t{CurrentLoadedExport.FileRef.getNameEntry(val)}";
+                                }
+                                else
+                                {
+                                    nodeText += $"\t{val}";
+                                }
+                                node.Tag = NodeType.StructLeafName;
+                                break;
+                            }
+                        case InterpreterMode.Floats:
+                            {
+                                float val = BitConverter.ToSingle(data, binarypos);
+                                nodeText += val.ToString();
+                                node.Tag = NodeType.StructLeafFloat;
+                                break;
+                            }
+                        case InterpreterMode.Integers:
+                            {
+                                int val = BitConverter.ToInt32(data, binarypos);
+                                nodeText += val.ToString();
+                                node.Tag = NodeType.StructLeafInt;
+                                break;
+                            }
+                    }
+                    node.Header = nodeText;
+                    node.Name = "_" + binarypos;
+                    subnodes.Add(node);
+                    binarypos += 4;
+                }
+
+                topLevelTree.ItemsSource = subnodes;
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Items.Add($"An error occured parsing the staticmesh: {ex.Message}");
+            }
+        }
         #endregion
 
         public override void UnloadExport()
@@ -2138,6 +2256,12 @@ namespace ME3Explorer
                 retStr += coreRefEntry.GetFullPath;
             }
             return retStr;
+        }
+
+        private void viewModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            interpreterMode = (InterpreterMode) viewModeComboBox.SelectedValue;
+            StartBinaryScan();
         }
     }
 }
