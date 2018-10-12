@@ -491,6 +491,9 @@
       <DependentUpon>PackageEditorWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="PackageEditor\PackageEditorWPFCommands.cs" />
+    <Compile Include="PackageEditor\TreeMergeDialog.xaml.cs">
+      <DependentUpon>TreeMergeDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Packages\UDKPackage.cs" />
     <Compile Include="Packages\MEPackage.cs" />
     <Compile Include="Pathfinding Editor\SplineNodes.cs" />
@@ -990,6 +993,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PackageEditor\PackageEditorWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PackageEditor\TreeMergeDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

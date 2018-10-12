@@ -3,6 +3,7 @@ using ByteSizeLib;
 using GongSolutions.Wpf.DragDrop;
 using ME1Explorer.Unreal;
 using ME3Explorer.CurveEd;
+using ME3Explorer.PackageEditorWPFControls;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
@@ -1864,10 +1865,19 @@ namespace ME3Explorer
         {
             if (dropInfo.TargetItem is TreeViewEntry && (dropInfo.Data as TreeViewEntry).Parent != null)
             {
+                //Check if the path of the target and the source is the same. If so, offer to merge instead
                 crossPCCObjectMap = new SortedDictionary<int, int>();
 
                 TreeViewEntry sourceItem = dropInfo.Data as TreeViewEntry;
                 TreeViewEntry targetItem = dropInfo.TargetItem as TreeViewEntry;
+
+                if (sourceItem.Entry.GetFullPath == targetItem.Entry.GetFullPath)
+                {
+                    //ask if user wants to merge
+                    new TreeMergeDialog().ShowDialog();
+                    return;
+                }
+
                 if (sourceItem == targetItem || (targetItem.Entry != null && sourceItem.Entry.FileRef == targetItem.Entry.FileRef))
                 {
                     return; //ignore
