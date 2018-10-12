@@ -57,7 +57,10 @@ namespace ME3Explorer.Unreal
             {
                 prop.WriteTo(stream, pcc);
             }
-            stream.WriteNoneProperty(pcc);
+            if (!(this.Last() is NoneProperty))
+            {
+                stream.WriteNoneProperty(pcc);
+            }
         }
 
         public static PropertyCollection ReadProps(IMEPackage pcc, MemoryStream stream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true)
@@ -171,7 +174,7 @@ namespace ME3Explorer.Unreal
                         break;
                     case PropertyType.ArrayProperty:
                         {
-                            props.Add(ReadArrayProperty(stream, pcc, typeName, nameRef));
+                            props.Add(ReadArrayProperty(stream, pcc, typeName, nameRef, IncludeNoneProperties: includeNoneProperty));
                         }
                         break;
                     case PropertyType.StrProperty:
@@ -409,7 +412,7 @@ namespace ME3Explorer.Unreal
             throw new NotImplementedException("cannot read Unknown property of Immutable struct");
         }
 
-        public static UProperty ReadArrayProperty(MemoryStream stream, IMEPackage pcc, string enclosingType, NameReference name, bool IsInImmutable = false)
+        public static UProperty ReadArrayProperty(MemoryStream stream, IMEPackage pcc, string enclosingType, NameReference name, bool IsInImmutable = false, bool IncludeNoneProperties = false)
         {
             long arrayOffset = IsInImmutable ? stream.Position : stream.Position - 24;
             ArrayType arrayType = UnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType);
@@ -471,7 +474,7 @@ namespace ME3Explorer.Unreal
                             for (int i = 0; i < count; i++)
                             {
                                 long structOffset = stream.Position;
-                                PropertyCollection structProps = ReadProps(pcc, stream, arrayStructType);
+                                PropertyCollection structProps = ReadProps(pcc, stream, arrayStructType, includeNoneProperty: IncludeNoneProperties);
                                 StructProperty structP = new StructProperty(arrayStructType, structProps);
                                 structP.ValueOffset = structOffset;
                                 props.Add(structP);
@@ -551,6 +554,18 @@ namespace ME3Explorer.Unreal
         }
 
         public abstract void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false);
+
+        /// <summary>
+        /// Gets the length of this property in bytes. Do not use this if this is an ArrayProperty child object.
+        /// </summary>
+        /// <param name="pcc"></param>
+        /// <returns></returns>
+        public long GetLength(IMEPackage pcc)
+        {
+            var stream = new MemoryStream();
+            WriteTo(stream, pcc);
+            return stream.Length;
+        }
     }
 
     [DebuggerDisplay("NoneProperty")]
@@ -617,7 +632,7 @@ namespace ME3Explorer.Unreal
                 {
                     prop.WriteTo(stream, pcc, IsImmutable);
                 }
-                if (!IsImmutable)
+                if (!IsImmutable && (!(Properties.Last() is NoneProperty)))
                 {
                     stream.WriteNoneProperty(pcc);
                 }

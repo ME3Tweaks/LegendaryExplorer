@@ -128,7 +128,8 @@ namespace ME3Explorer
             EditorSetElements.Add(NameIndexPrefix_TextBlock); //nameindex
             EditorSetElements.Add(NameIndex_TextBox); //nameindex
             EditorSetElements.Add(ParsedValue_TextBlock);
-
+            Set_Button.Visibility = Visibility.Collapsed;
+            EditorSet_Separator.Visibility = Visibility.Collapsed;
             defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
         }
 
@@ -172,6 +173,8 @@ namespace ME3Explorer
         {
             CurrentLoadedExport = null;
             EditorSetElements.ForEach(x => x.Visibility = Visibility.Collapsed);
+            Set_Button.Visibility = Visibility.Collapsed;
+            EditorSet_Separator.Visibility = Visibility.Collapsed;
             Interpreter_Hexbox.ByteProvider = new DynamicByteProvider(new byte[] { });
             PropertyNodes.Clear();
         }
@@ -813,6 +816,11 @@ namespace ME3Explorer
                 {
                     fe.Visibility = SupportedEditorSetElements.Contains(fe) ? Visibility.Visible : Visibility.Collapsed;
                 }
+                if (SupportedEditorSetElements.Count > 0)
+                {
+                    Set_Button.Visibility = Visibility.Visible;
+                    EditorSet_Separator.Visibility = Visibility.Visible;
+                }
             }
         }
 
@@ -895,9 +903,16 @@ namespace ME3Explorer
                     Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 4, 8);
                     return;
                 }
+                else if (newSelectedItem.Property is EnumProperty)
+                {
+                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 32, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
+                    return;
+                }
+
+                Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 24, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
 
                 //array children
-                if (newSelectedItem.Parent.Property != null && newSelectedItem.Parent.Property.PropType == PropertyType.ArrayProperty)
+                /*if (newSelectedItem.Parent.Property != null && newSelectedItem.Parent.Property.PropType == PropertyType.ArrayProperty)
                 {
                     if (newSelectedItem.Property is NameProperty np)
                     {
@@ -930,7 +945,7 @@ namespace ME3Explorer
                 else if (newSelectedItem.Parent.PropertyType != PropertyType.ArrayProperty.ToString())
                 {
                     Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 24, 28);
-                }
+                }*/
             }
         }
 
@@ -1543,27 +1558,6 @@ namespace ME3Explorer
         public override string ToString()
         {
             return "UPropertyTreeViewEntry " + DisplayName;
-        }
-    }
-
-    public class PropertyEditorSetSelector : DataTemplateSelector
-    {
-        public DataTemplate SingleTextboxEditorSet { get; set; }
-        public DataTemplate DualTextboxEditorSet { get; set; }
-        public DataTemplate ComboBoxEditorSet { get; set; }
-
-        bool someKindOfCondition = true;
-        public override DataTemplate SelectTemplate(object item, DependencyObject container)
-        {
-
-            if (someKindOfCondition)
-            {
-                return SingleTextboxEditorSet;
-            }
-            else
-            {
-                return DualTextboxEditorSet;
-            }
         }
     }
 }
