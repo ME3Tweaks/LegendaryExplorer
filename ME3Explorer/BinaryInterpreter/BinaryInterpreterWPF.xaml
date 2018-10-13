@@ -8,7 +8,8 @@
              xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
              xmlns:local="clr-namespace:ME3Explorer"
              xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
-             d:DesignHeight="450" d:DesignWidth="800"
+                           xmlns:fa="http://schemas.fontawesome.io/icons/"
+                           d:DesignHeight="450" d:DesignWidth="800"
              Loaded="BinaryInterpreter_Loaded"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <UserControl.Resources>
@@ -18,64 +19,67 @@
         <CommandBinding Command="Commands:InterpreterWPFCommands.ArrayOrderByValueCommand" Executed="ArrayOrderByValueCommand_Executed"/>
         <CommandBinding Command="Commands:InterpreterWPFCommands.RemovePropertyCommand" Executed="RemovePropertyCommand_Executed"/>
     </UserControl.CommandBindings>-->
-    <DockPanel>
-    <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
-        <Button Name="SaveHexChange_Button" Content="Save Hex Changes" Click="BinaryInterpreter_SaveHexChanges_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
-        <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
-        <Button Content="Toggle Hexbox Width" Click="BinaryInterpreter_ToggleHexboxWidth_Click"/>
-        <ComboBox Name="viewModeComboBox" Height="22" Margin="0" VerticalAlignment="Top" Width="120" SelectionChanged="viewModeComboBox_SelectionChanged"/>
-        <!--<Button Content="Add Property" Click="Interpreter_AddProperty_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>-->
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <StackPanel Name="OnDemand_Panel" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Name="OnDemand_Title_TextBlock" Text="This export is larger than 20KB" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" />
+            <TextBlock Name="OnDemand_Subtext_TextBlock" Text="Large exports are not automatically parsed to improve performance" HorizontalAlignment="Center"/>
+            <Button Name="ParseBinary_Button" Content="Parse binary" HorizontalAlignment="Center" Margin="5" Padding="3" Click="ParseBinary_Button_Click"/>
+            <fa:ImageAwesome  Name="ParseBinary_Spinner" Grid.Column="7" Icon="Spinner" Spin="True" SpinDuration="2" Width="24" Height="24" Margin="5"/>
+        </StackPanel>
+        <DockPanel Name="LoadedContent_Panel">
+            <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
+                <Button Name="SaveHexChange_Button" Content="Save Hex Changes" Click="BinaryInterpreter_SaveHexChanges_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
+                <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
+                <Button Content="Toggle Hexbox Width" Click="BinaryInterpreter_ToggleHexboxWidth_Click"/>
+                <ComboBox Name="viewModeComboBox" Height="22" Margin="0" VerticalAlignment="Top" Width="120" SelectionChanged="viewModeComboBox_SelectionChanged"/>
+                <!--<Button Content="Add Property" Click="Interpreter_AddProperty_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>-->
+            </ToolBar>
+            <StatusBar Height="23" DockPanel.Dock="Bottom" Name="BinaryInterpreter_StatusBar">
+                <StatusBarItem>
+                    <TextBlock Name="StatusBar_LeftMostText" Text="Nothing selected"/>
+                </StatusBarItem>
+            </StatusBar>
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
-    </ToolBar>
-    <StatusBar Height="23" DockPanel.Dock="Bottom">
-        <StatusBarItem>
-            <TextBlock Name="StatusBar_LeftMostText" Text="Nothing selected"/>
-        </StatusBarItem>
-    </StatusBar>
-    <Grid Margin="0,1,0,-1">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="1*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="220" MaxWidth="718" Width="285" Name="HexboxColumnDefinition" />
-            <ColumnDefinition Width="1" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+                <Grid Margin="0,1,0,-1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MinWidth="220" MaxWidth="718" Width="285" Name="HexboxColumnDefinition" />
+                        <ColumnDefinition Width="1" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-        <!--<control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />-->
-        <WindowsFormsHost Name="BinaryInterpreter_Hexbox_Host" Grid.Row="10" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">
-                <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" VScrollBarVisible="True">
-            </hb1:HexBox>
-        </WindowsFormsHost>
-        <GridSplitter Grid.Column="1" 
+                    <!--<control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />-->
+                    <WindowsFormsHost Name="BinaryInterpreter_Hexbox_Host" Grid.Row="10" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">
+                        <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" VScrollBarVisible="True">
+                        </hb1:HexBox>
+                    </WindowsFormsHost>
+                    <GridSplitter Grid.Column="1" 
                       Grid.Row="1" HorizontalAlignment="Stretch" 
                       Margin="-5,0"
                       BorderThickness="5,0"
                       BorderBrush="Transparent"
                       Panel.ZIndex="60"/>
-        <TreeView Name="BinaryInterpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="BinaryInterpreter_TreeViewSelectedItemChanged" PreviewMouseRightButtonDown="BinaryInterpreter_TreeView_PreviewMouseRightButtonDown" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True">
-            <TreeView.Resources>
-                <!--<ContextMenu x:Key ="ArrayPropertyContext"  StaysOpen="true">
-                    <MenuItem Header="Order by">
-                        <MenuItem Header="Value" Command="Commands:InterpreterWPFCommands.ArrayOrderByValueCommand"/>
-                        <MenuItem Header="Other" ToolTip="Not yet implemented"/>
-                    </MenuItem>
-                    <MenuItem Header="RemoveProperty" Command="Commands:InterpreterWPFCommands.RemovePropertyCommand"/>
-                </ContextMenu>
-                <ContextMenu x:Key="StandardPropertContext"  StaysOpen="true">
-                    <MenuItem Header="RemoveProperty" Command="Commands:BinaryInterpreterWPFCommands.RemovePropertyCommand"/>
-                </ContextMenu>-->
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                    <TreeView Name="BinaryInterpreter_TreeView" Grid.Row="1" Grid.Column="2" Width="Auto" FontFamily="Consolas" SelectedItemChanged="BinaryInterpreter_TreeViewSelectedItemChanged" PreviewMouseRightButtonDown="BinaryInterpreter_TreeView_PreviewMouseRightButtonDown" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True">
+                        <TreeView.Resources>
+                            <HierarchicalDataTemplate DataType="{x:Type local:BinaryInterpreterWPFTreeViewItem}" ItemsSource="{Binding Items}">
+                                <TextBlock Text="{Binding Path=Header}" />
+                            </HierarchicalDataTemplate>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
                       Color="LightBlue" />
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
                       Color="Black" />
-                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
                       Color="LightBlue" />
-                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
                       Color="Black" />
-            </TreeView.Resources>
-        </TreeView>
+                        </TreeView.Resources>
+                    </TreeView>
+                </Grid>
+            </Grid>
+        </DockPanel>
     </Grid>
-    </DockPanel>
 </local:ExportLoaderControl>

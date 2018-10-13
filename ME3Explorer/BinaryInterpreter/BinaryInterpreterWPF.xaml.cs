@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using Be.Windows.Forms;
 using Gammtek.Conduit.Extensions;
 using Gibbed.IO;
@@ -31,7 +34,7 @@ namespace ME3Explorer
     public partial class BinaryInterpreterWPF : ExportLoaderControl
     {
         private HexBox BinaryInterpreter_Hexbox;
-
+        BackgroundWorker ScanWorker;
         public enum InterpreterMode
         {
             Objects,
@@ -62,10 +65,20 @@ namespace ME3Explorer
         public override void LoadExport(IExportEntry exportEntry)
         {
             CurrentLoadedExport = exportEntry;
-            DynamicByteProvider db = new DynamicByteProvider(exportEntry.Data);
-            BinaryInterpreter_Hexbox.ByteProvider = db;
 
-            StartBinaryScan();
+            OnDemand_Panel.Visibility = Visibility.Visible;
+            LoadedContent_Panel.Visibility = Visibility.Collapsed;
+            if (CurrentLoadedExport.Data.Length < 20480)
+            {
+                StartBinaryScan();
+            }
+            else
+            {
+                ParseBinary_Button.Visibility = Visibility.Visible;
+                ParseBinary_Spinner.Visibility = Visibility.Collapsed;
+                OnDemand_Title_TextBlock.Text = "This export is larger than 20KB";
+                OnDemand_Subtext_TextBlock.Text = "Large exports are not automatically parsed to improve performance";
+            }
         }
 
         #region static stuff
@@ -119,19 +132,47 @@ namespace ME3Explorer
             {
                 return;
             }
-            BinaryInterpreter_TreeView.Items.Clear();
+            OnDemand_Title_TextBlock.Text = "Parsing binary";
+            OnDemand_Subtext_TextBlock.Text = "Please wait";
+            ParseBinary_Button.Visibility = Visibility.Collapsed;
+            ParseBinary_Spinner.Visibility = Visibility.Visible;
+            DynamicByteProvider db = new DynamicByteProvider(CurrentLoadedExport.Data);
+            BinaryInterpreter_Hexbox.ByteProvider = db;
             viewModeComboBox.Visibility = Visibility.Hidden;
             byte[] data = CurrentLoadedExport.Data;
             int binarystart = CurrentLoadedExport.propsEnd();
-            TreeViewItem topLevelTree = new TreeViewItem
+            BinaryInterpreterWPFTreeViewItem topLevelTree = new BinaryInterpreterWPFTreeViewItem
             {
                 Header = $"{binarystart:X4} : {CurrentLoadedExport.ObjectName}",
                 Tag = NodeType.Root,
                 Name = "_0",
                 IsExpanded = true
             };
-            BinaryInterpreter_TreeView.Items.Add(topLevelTree);
+            //BinaryInterpreter_TreeView.Items.Add(topLevelTree);
 
+            ScanWorker = new BackgroundWorker();
+            ScanWorker.WorkerSupportsCancellation = true;
+            ScanWorker.DoWork += PerformScanBackground;
+            ScanWorker.WorkerReportsProgress = true;
+            ScanWorker.RunWorkerCompleted += PerformScan_Completed;
+            //We will not modify topleveltree in background thread, however we will pass it through to the completed method.
+            ScanWorker.RunWorkerAsync(new Tuple<BinaryInterpreterWPFTreeViewItem, byte[], int>(topLevelTree, data, binarystart));
+        }
+
+        private void PerformScan_Completed(object sender, RunWorkerCompletedEventArgs e)
+        {
+            var result = (List<BinaryInterpreterWPFTreeViewItem>)e.Result;
+            OnDemand_Panel.Visibility = Visibility.Collapsed;
+            LoadedContent_Panel.Visibility = Visibility.Visible;
+            BinaryInterpreter_TreeView.ItemsSource = result;
+        }
+
+        private void PerformScanBackground(object sender, DoWorkEventArgs e)
+        {
+            List<BinaryInterpreterWPFTreeViewItem> subNodes = null;
+            Tuple<BinaryInterpreterWPFTreeViewItem, byte[], int> arguments = (Tuple<BinaryInterpreterWPFTreeViewItem, byte[], int>)e.Argument;
+            byte[] data = arguments.Item2;
+            int binarystart = arguments.Item3;
             switch (CurrentLoadedExport.ClassName)
             {
                 case "IntProperty":
@@ -139,86 +180,91 @@ namespace ME3Explorer
                 case "ArrayProperty":
                 case "FloatProperty":
                 case "ObjectProperty":
-                    StartObjectScan(topLevelTree, data);
+                    subNodes = StartObjectScan(data);
                     break;
                 case "BioDynamicAnimSet":
-                    StartBioDynamicAnimSetScan(topLevelTree, data, binarystart);
+                    subNodes = StartBioDynamicAnimSetScan(data, binarystart);
                     break;
                 case "ObjectRedirector":
-                    StartObjectRedirectorScan(topLevelTree, data, binarystart);
+                    subNodes = StartObjectRedirectorScan(data, binarystart);
                     break;
                 case "WwiseStream":
                 case "WwiseBank":
-                    Scan_WwiseStreamBank(topLevelTree, data);
+                    subNodes = Scan_WwiseStreamBank(data);
                     break;
                 case "WwiseEvent":
-                    Scan_WwiseEvent(topLevelTree, data, binarystart);
+                    subNodes = Scan_WwiseEvent(data, binarystart);
                     break;
                 case "BioStage":
-                    StartBioStageScan(topLevelTree, data, binarystart);
+                    subNodes = StartBioStageScan(data, binarystart);
                     break;
                 case "Class":
-                    StartClassScan(topLevelTree, data);
+                    subNodes = StartClassScan(data);
                     break;
                 case "Enum":
                 case "Const":
-                    StartEnumScan(topLevelTree, data);
+                    subNodes = StartEnumScan(data);
                     break;
                 case "GuidCache":
-                    StartGuidCacheScan(topLevelTree, data, binarystart);
+                    subNodes = StartGuidCacheScan(data, binarystart);
                     break;
                 case "Level":
-                    StartLevelScan(topLevelTree, data);
+                    subNodes = StartLevelScan(data);
                     break;
                 case "Material":
                 case "MaterialInstanceConstant":
-                    StartMaterialScan(topLevelTree, data, binarystart);
+                    subNodes = StartMaterialScan(data, binarystart);
                     break;
                 case "PrefabInstance":
-                    StartPrefabInstanceScan(topLevelTree, data, binarystart);
+                    subNodes = StartPrefabInstanceScan(data, binarystart);
                     break;
                 case "SkeletalMesh":
-                    StartSkeletalMeshScan(topLevelTree, data, binarystart);
+                    subNodes = StartSkeletalMeshScan(data, binarystart);
                     break;
                 case "StaticMeshCollectionActor":
-                    StartStaticMeshCollectionActorScan(topLevelTree, data, binarystart);
+                    subNodes = StartStaticMeshCollectionActorScan(data, binarystart);
                     break;
                 case "StaticMesh":
-                    StartStaticMeshScan(topLevelTree, data, binarystart);
+                    subNodes = StartStaticMeshScan(data, binarystart);
                     break;
                 case "Texture2D":
-                    StartTextureBinaryScan(topLevelTree, data);
+                    subNodes = StartTextureBinaryScan(data);
                     break;
                 case "State":
-                    StartStateScan(topLevelTree, data, binarystart);
+                    subNodes = StartStateScan(data, binarystart);
                     break;
                 case "TextureMovie":
-                    StartTextureMovieScan(topLevelTree, data, binarystart);
+                    subNodes = StartTextureMovieScan(data, binarystart);
                     break;
                 default:
-                    StartGenericScan(topLevelTree, data, binarystart);
+                    subNodes = StartGenericScan(data, binarystart);
                     break;
             }
+            e.Result = subNodes;
         }
 
         #region scans
-        private void StartObjectRedirectorScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        private List<BinaryInterpreterWPFTreeViewItem> StartObjectRedirectorScan(byte[] data, int binarystart)
         {
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+
             int redirnum = BitConverter.ToInt32(data, binarystart);
-            topLevelTree.Items.Add(new TreeViewItem
+            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
             {
                 Header = $"{binarystart:X4} Redirect references to this export to: {redirnum} {CurrentLoadedExport.FileRef.getEntry(redirnum).GetFullPath}",
                 Name = binarystart.ToString()
             });
+            return subnodes;
         }
 
-        private void StartObjectScan(TreeViewItem topLevelTree, byte[] data)
+        private List<BinaryInterpreterWPFTreeViewItem> StartObjectScan(byte[] data)
         {
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
             try
             {
                 int offset = 0; //this property starts at 0 for parsing
                 int unrealExportIndex = BitConverter.ToInt32(data, offset);
-                topLevelTree.Items.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Unreal Unique Index: {unrealExportIndex}",
                     Name = "_" + offset,
@@ -228,7 +274,7 @@ namespace ME3Explorer
 
                 int noneUnrealProperty = BitConverter.ToInt32(data, offset);
                 //int noneUnrealPropertyIndex = BitConverter.ToInt32(data, offset + 4);
-                topLevelTree.Items.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Unreal property None Name: {CurrentLoadedExport.FileRef.getNameEntry(noneUnrealProperty)}",
                     Name = "_" + offset,
@@ -238,7 +284,7 @@ namespace ME3Explorer
 
                 int superclassIndex = BitConverter.ToInt32(data, offset);
                 string superclassStr = getEntryFullPath(superclassIndex);
-                topLevelTree.Items.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Superclass: {superclassIndex}({superclassStr})",
                     Name = "_" + offset,
@@ -247,7 +293,7 @@ namespace ME3Explorer
                 offset += 4;
 
                 int classObjTree = BitConverter.ToInt32(data, offset);
-                topLevelTree.Items.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {getEntryFullPath(classObjTree)}",
                     Name = "_" + offset,
@@ -256,14 +302,14 @@ namespace ME3Explorer
                 offset += 4;
 
                 UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)BitConverter.ToUInt64(data, offset);
-                TreeViewItem objectFlagsNode = new TreeViewItem
+                BinaryInterpreterWPFTreeViewItem objectFlagsNode = new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} ObjectFlags: 0x{(ulong)ObjectFlagsMask:X16}",
                     Name = "_" + offset,
                     Tag = NodeType.StructLeafInt
                 };
 
-                topLevelTree.Items.Add(objectFlagsNode);
+                subnodes.Add(objectFlagsNode);
 
                 //Create objectflags tree
                 foreach (UnrealFlags.EPropertyFlags flag in GetValues<UnrealFlags.EPropertyFlags>())
@@ -271,7 +317,7 @@ namespace ME3Explorer
                     if ((ObjectFlagsMask & flag) != UnrealFlags.EPropertyFlags.None)
                     {
                         string reason = UnrealFlags.propertyflagsdesc[flag];
-                        objectFlagsNode.Items.Add(new TreeViewItem
+                        objectFlagsNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = $"{(ulong)flag:X16} {flag} {reason}",
                             Name = "_" + offset
@@ -281,7 +327,7 @@ namespace ME3Explorer
                 offset += 8;
 
                 int unk1 = BitConverter.ToInt32(data, offset);
-                topLevelTree.Items.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Unknown1 {unk1}",
                     Name = "_" + offset,
@@ -291,7 +337,7 @@ namespace ME3Explorer
 
                 //has listed outerclass
                 int none = BitConverter.ToInt32(data, offset);
-                topLevelTree.Items.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} None: {CurrentLoadedExport.FileRef.getNameEntry(none)}",
                     Name = "_" + offset,
@@ -300,7 +346,7 @@ namespace ME3Explorer
                 offset += 8;
 
                 int unk2 = BitConverter.ToInt32(data, offset);
-                topLevelTree.Items.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Unknown2: {unk2}",
                     Name = "_" + offset,
@@ -311,40 +357,41 @@ namespace ME3Explorer
                 switch (CurrentLoadedExport.ClassName)
                 {
                     case "ObjectProperty":
-                    {
-                        //has listed outerclass
-                        int outer = BitConverter.ToInt32(data, offset);
-                        topLevelTree.Items.Add(new TreeViewItem
                         {
-                            Header = $"0x{offset:X5} OuterClass: {outer} {getEntryFullPath(outer)}",
-                            Name = "_" + offset,
-                            Tag = NodeType.StructLeafInt
-                        });
-                        offset += 4;
-                        break;
-                    }
+                            //has listed outerclass
+                            int outer = BitConverter.ToInt32(data, offset);
+                            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} OuterClass: {outer} {getEntryFullPath(outer)}",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+                            break;
+                        }
                     case "ArrayProperty":
-                    {
-                        //has listed outerclass
-                        int outer = BitConverter.ToInt32(data, offset);
-                        topLevelTree.Items.Add(new TreeViewItem
                         {
-                            Header = $"0x{offset:X5} Array can hold objects of type: {outer} {getEntryFullPath(outer)}",
-                            Name = "_" + offset,
-                            Tag = NodeType.StructLeafInt
-                        });
-                        offset += 4;
-                        break;
-                    }
+                            //has listed outerclass
+                            int outer = BitConverter.ToInt32(data, offset);
+                            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Array can hold objects of type: {outer} {getEntryFullPath(outer)}",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+                            break;
+                        }
                 }
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add($"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}");
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}" });
             }
+            return subnodes;
         }
 
-        private void Scan_WwiseStreamBank(TreeViewItem topLevelTree, byte[] data)
+        private List<BinaryInterpreterWPFTreeViewItem> Scan_WwiseStreamBank(byte[] data)
         {
             /*
              * int32 0?
@@ -352,8 +399,7 @@ namespace ME3Explorer
              * stream length in AFC +4 | (repeat) (bank size)
              * stream offset in AFC +4 | (bank offset in file)
              */
-
-
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
             try
             {
                 int pos = 0;
@@ -372,21 +418,21 @@ namespace ME3Explorer
                 int DataSize2 = BitConverter.ToInt32(data, pos + 8);
                 int DataOffset = BitConverter.ToInt32(data, pos + 0xC);
 
-                topLevelTree.Items.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"{pos:X4} Unknown: {unk1}",
                     Name = "_" + pos,
                 });
                 pos += 4;
                 string dataset1type = CurrentLoadedExport.ClassName == "WwiseStream" ? "Stream length" : "Bank size";
-                topLevelTree.Items.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"{DataSize:X4} : {dataset1type} {DataSize} (0x{DataSize:X})",
                     Name = "_" + pos,
                     Tag = NodeType.StructLeafInt
                 });
                 pos += 4;
-                topLevelTree.Items.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"{ pos:X4} {dataset1type}: {DataSize2} (0x{ DataSize2:X})",
                     Name = "_" + pos,
@@ -394,7 +440,7 @@ namespace ME3Explorer
                 });
                 pos += 4;
                 string dataset2type = CurrentLoadedExport.ClassName == "WwiseStream" ? "Stream offset" : "Bank offset";
-                topLevelTree.Items.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"{pos:X4} {dataset2type} in file: {DataOffset} (0x{DataOffset:X})",
                     Name = "_" + pos,
@@ -405,7 +451,7 @@ namespace ME3Explorer
                 {
                     //if (CurrentLoadedExport.DataOffset < DataOffset && (CurrentLoadedExport.DataOffset + CurrentLoadedExport.DataSize) < DataOffset)
                     //{
-                    topLevelTree.Items.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = "Click here to jump to the calculated end offset of wwisebank in this export",
                         Name = "_" + (DataSize2 + CurrentLoadedExport.propsEnd() + 16),
@@ -418,28 +464,28 @@ namespace ME3Explorer
                 switch (CurrentLoadedExport.ClassName)
                 {
                     case "WwiseStream" when pos < data.Length && CurrentLoadedExport.GetProperty<NameProperty>("Filename") == null:
-                    {
-                        topLevelTree.Items.Add(new TreeViewItem
                         {
-                            Header = $"{pos:X4} Embedded sound data. Use Soundplorer to modify this data.",
-                            Name = "_" + pos,
-                            Tag = NodeType.Unknown
-                        });
-                        topLevelTree.Items.Add(new TreeViewItem
-                        {
-                            Header = "The stream offset to this data will be automatically updated when this file is saved.",
-                            Tag = NodeType.Unknown
-                        });
-                        break;
-                    }
+                            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"{pos:X4} Embedded sound data. Use Soundplorer to modify this data.",
+                                Name = "_" + pos,
+                                Tag = NodeType.Unknown
+                            });
+                            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = "The stream offset to this data will be automatically updated when this file is saved.",
+                                Tag = NodeType.Unknown
+                            });
+                            break;
+                        }
                     case "WwiseBank":
-                        topLevelTree.Items.Add(new TreeViewItem
+                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = $"{pos:X4} Embedded soundbank. Use Soundplorer WPF to view data.",
                             Name = "_" + pos,
                             Tag = NodeType.Unknown
                         });
-                        topLevelTree.Items.Add(new TreeViewItem
+                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = "The bank offset to this data will be automatically updated when this file is saved.",
                             Tag = NodeType.Unknown
@@ -449,21 +495,22 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"Error reading binary data: {ex}"
                 });
             }
+            return subnodes;
         }
 
-        private void Scan_WwiseEvent(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        private List<BinaryInterpreterWPFTreeViewItem> Scan_WwiseEvent(byte[] data, int binarystart)
         {
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
             try
             {
                 int binarypos = binarystart;
-                var subnodes = new List<TreeViewItem>();
                 int count = BitConverter.ToInt32(data, binarypos);
-                subnodes.Add(new TreeViewItem { Header = $"0x{binarypos:X4} Count: {count.ToString()}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem { Header = $"0x{binarypos:X4} Count: {count.ToString()}" });
                 binarypos += 4; //+ int
                 if (count > 0)
                 {
@@ -482,36 +529,36 @@ namespace ME3Explorer
                         nodeText += $"{name} {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
                     }
 
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = nodeText,
                         Tag = NodeType.StructLeafObject,
                         Name = "_" + binarypos
                     });
                     /*
-
-                                        int objectindex = BitConverter.ToInt32(data, binarypos);
-                                        IEntry obj = pcc.getEntry(objectindex);
-                                        string nodeValue = obj.GetFullPath;
-                                        node.Tag = nodeType.StructLeafObject;
-                                        */
+                    int objectindex = BitConverter.ToInt32(data, binarypos);
+                    IEntry obj = pcc.getEntry(objectindex);
+                    string nodeValue = obj.GetFullPath;
+                    node.Tag = nodeType.StructLeafObject;
+                    */
                 }
-                topLevelTree.ItemsSource = subnodes;
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add($"An error occured parsing the wwiseevent: {ex.Message}");
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the wwiseevent: {ex.Message}" });
             }
+            return subnodes;
         }
 
-        private void StartBioDynamicAnimSetScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        private List<BinaryInterpreterWPFTreeViewItem> StartBioDynamicAnimSetScan(byte[] data, int binarystart)
         {
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+
             try
             {
                 int binarypos = binarystart;
-                var subnodes = new List<TreeViewItem>();
                 int count = BitConverter.ToInt32(data, binarypos);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{binarypos:X4} Count: {count.ToString()}"
                 });
@@ -528,7 +575,7 @@ namespace ME3Explorer
                         nodeValue += " - Not followed by 1 (integer)!";
                     }
 
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{binarypos:X4} Name: {nodeValue}",
                         Tag = NodeType.StructLeafName,
@@ -536,16 +583,16 @@ namespace ME3Explorer
                     });
                     binarypos += 12;
                 }
-                subnodes.ForEach(o => topLevelTree.Items.Add(o));
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add($"An error occured parsing the biodynamicanimset: {ex.Message}");
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the biodynamicanimset: {ex.Message}" });
             }
+            return subnodes;
         }
 
         //TODO: unfinished. currently does not display the properties for the list of BioStageCamera objects at the end
-        private void StartBioStageScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        private List<BinaryInterpreterWPFTreeViewItem> StartBioStageScan(byte[] data, int binarystart)
         {
             /*
              * Length (int)
@@ -554,14 +601,13 @@ namespace ME3Explorer
                 Count + int unknown
                 [Camera name
                     unreal property data]*/
-
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
             if ((CurrentLoadedExport.Header[0x1f] & 0x2) != 0)
             {
-                var subnodes = new List<TreeViewItem>();
 
                 int pos = binarystart;
                 int length = BitConverter.ToInt32(data, binarystart);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"{binarystart:X4} Length: {length}",
                     Name = $"_{pos.ToString()}"
@@ -573,7 +619,7 @@ namespace ME3Explorer
                     int nameindexunreal = BitConverter.ToInt32(data, pos + 4);
 
                     string name = CurrentLoadedExport.FileRef.getNameEntry(nameindex);
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"{pos:X4} Camera: {name}_{nameindexunreal}",
                         Name = $"_{pos.ToString()}",
@@ -589,7 +635,7 @@ namespace ME3Explorer
                     pos += 4;
 
                     int count = BitConverter.ToInt32(data, pos);
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"{pos:X4} Count: {count}",
                         Name = $"_{pos.ToString()}"
@@ -609,7 +655,7 @@ namespace ME3Explorer
                         {
                             nameindex = BitConverter.ToInt32(data, pos);
                             nameindexunreal = BitConverter.ToInt32(data, pos + 4);
-                            TreeViewItem parentnode = new TreeViewItem
+                            BinaryInterpreterWPFTreeViewItem parentnode = new BinaryInterpreterWPFTreeViewItem
                             {
                                 Header = $"{pos:X4} Camera {i + 1}: {CurrentLoadedExport.FileRef.getNameEntry(nameindex)}_{nameindexunreal}",
                                 Tag = NodeType.StructLeafName,
@@ -626,24 +672,23 @@ namespace ME3Explorer
                     }
                     catch (Exception ex)
                     {
-                        subnodes.Add(new TreeViewItem { Header = $"Error reading binary data: {ex}" });
+                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem { Header = $"Error reading binary data: {ex}" });
                     }
                 }
-                topLevelTree.ItemsSource = subnodes;
             }
+            return subnodes;
         }
 
-        private void StartClassScan(TreeViewItem topLevelTree, byte[] data)
+        private List<BinaryInterpreterWPFTreeViewItem> StartClassScan(byte[] data)
         {
             //const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
-            var subnodes = new List<TreeViewItem>();
-
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
             try
             {
                 int offset = 0;
 
                 int unrealExportIndex = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Unreal Unique Index: {unrealExportIndex}",
                     Name = "_" + offset,
@@ -655,7 +700,7 @@ namespace ME3Explorer
 
                 int superclassIndex = BitConverter.ToInt32(data, offset);
                 string superclassStr = getEntryFullPath(superclassIndex);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Superclass Index: {superclassIndex}({superclassStr})",
                     Name = "_" + offset,
@@ -665,7 +710,7 @@ namespace ME3Explorer
                 offset += 4;
 
                 int unknown1 = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Unknown 1: {unknown1}",
                     Name = "_" + offset,
@@ -675,7 +720,7 @@ namespace ME3Explorer
                 offset += 4;
 
                 int classObjTree = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} ProbeMask/Class Object Tree Final Pointer Index: {classObjTree}",
                     Name = "_" + offset,
@@ -688,7 +733,7 @@ namespace ME3Explorer
                 //I am not sure what these mean. However if Pt1&2 are 33/25, the following bytes that follow are extended.
                 //int headerUnknown1 = BitConverter.ToInt32(data, offset);
                 Int64 ignoreMask = BitConverter.ToInt64(data, offset);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} IgnoreMask: 0x{ignoreMask:X16}",
                     Name = "_" + offset,
@@ -698,7 +743,7 @@ namespace ME3Explorer
                 offset += 8;
 
                 Int16 labelOffset = BitConverter.ToInt16(data, offset);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} LabelOffset: 0x{labelOffset:X4}",
                     Name = "_" + offset
@@ -740,7 +785,7 @@ namespace ME3Explorer
                 //    skipAmount = 0x22A;
                 //}
                 int offsetEnd = offset + skipAmount + 10;
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} State/Script Block: 0x{offset:X4} - 0x{offsetEnd:X4}",
                     Name = "_" + offset
@@ -750,7 +795,7 @@ namespace ME3Explorer
                                            //for (int i = 0; i < 5; i++)
                                            //{
                 uint stateMask = BitConverter.ToUInt32(data, offset);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Statemask: {stateMask} [{getStateFlagsStr(stateMask)}]",
                     Name = "_" + offset,
@@ -761,7 +806,7 @@ namespace ME3Explorer
                 //}
                 //offset += 2; //oher unknown
                 int localFunctionsTableCount = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Local Functions Count: {localFunctionsTableCount}",
                     Name = "_" + offset,
@@ -776,7 +821,7 @@ namespace ME3Explorer
                     offset += 8;
                     int functionObjectIndex = BitConverter.ToInt32(data, offset);
                     offset += 4;
-                    subnodes.Last().Items.Add(new TreeViewItem
+                    subnodes.Last().Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset - 12:X5}  {CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex)}() = {functionObjectIndex} ({getEntryFullPath(functionObjectIndex)})",
                         Name = "_" + (offset - 12),
@@ -785,7 +830,7 @@ namespace ME3Explorer
                 }
 
                 int classMask = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Class Mask: 0x{classMask:X8}",
                     Name = "_" + offset,
@@ -802,7 +847,7 @@ namespace ME3Explorer
                 int coreReference = BitConverter.ToInt32(data, offset);
                 string coreRefFullPath = getEntryFullPath(coreReference);
 
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Outer Class: {coreReference} ({coreRefFullPath})",
                     Name = "_" + offset,
@@ -823,7 +868,7 @@ namespace ME3Explorer
                                                                                                                  {
                                                                                                                      Debugger.Break();
                                                                                                                  }*/
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset:X5} Post-Components Blank ({postCompName})",
                         Name = "_" + offset,
@@ -838,7 +883,7 @@ namespace ME3Explorer
                         Debug.WriteLine("Unknown 4 is not 0: {unknown4);
                        // Debugger.Break();
                     }*/
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset:X5} Unknown 4: {unknown4}",
                         Name = "_" + offset,
@@ -853,14 +898,14 @@ namespace ME3Explorer
                     offset = ClassParser_ReadComponentsTable(subnodes, data, offset);
 
                     /*int unknown4 = BitConverter.ToInt32(data, offset);
-                    node = new TreeViewItem($"0x{offset:X5} Unknown 4: {unknown4);
+                    node = new BinaryInterpreterWPFTreeViewItem($"0x{offset:X5} Unknown 4: {unknown4);
                     node.Name = offset.ToString();
                     node.Tag = nodeType.StructLeafInt;
                     subnodes.Add(node);
                     offset += 4;*/
 
                     int me12unknownend1 = BitConverter.ToInt32(data, offset);
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset:X5} ME1/ME2 Unknown1: {me12unknownend1}",
                         Name = "_" + offset,
@@ -870,7 +915,7 @@ namespace ME3Explorer
                     offset += 4;
 
                     int me12unknownend2 = BitConverter.ToInt32(data, offset);
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset:X5} ME1/ME2 Unknown2: {me12unknownend2}",
                         Name = "_" + offset,
@@ -881,7 +926,7 @@ namespace ME3Explorer
                 }
 
                 int defaultsClassLink = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Class Defaults: {defaultsClassLink} ({getEntryFullPath(defaultsClassLink)}))",
                     Name = "_" + offset,
@@ -893,7 +938,7 @@ namespace ME3Explorer
                 if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
                 {
                     int functionsTableCount = BitConverter.ToInt32(data, offset);
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset:X5} Full Functions Table Count: {functionsTableCount}",
                         Name = "_" + offset,
@@ -906,7 +951,7 @@ namespace ME3Explorer
                     {
                         int functionsTableIndex = BitConverter.ToInt32(data, offset);
                         string impexpName = getEntryFullPath(functionsTableIndex);
-                        subnodes.Last().Items.Add(new TreeViewItem
+                        subnodes.Last().Items.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = $"0x{offset:X5} {impexpName}",
                             Tag = NodeType.StructLeafObject,
@@ -916,16 +961,15 @@ namespace ME3Explorer
                         offset += 4;
                     }
                 }
-                topLevelTree.ItemsSource = subnodes;
             }
             catch (Exception ex)
             {
-                subnodes.ForEach(x => topLevelTree.Items.Add(x));
-                topLevelTree.Items.Add($"An error occured parsing the class: {ex.Message}");
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the class: {ex.Message}" });
             }
+            return subnodes;
         }
 
-        private int ClassParser_ReadComponentsTable(List<TreeViewItem> subnodes, byte[] data, int offset)
+        private int ClassParser_ReadComponentsTable(List<BinaryInterpreterWPFTreeViewItem> subnodes, byte[] data, int offset)
         {
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
             {
@@ -933,7 +977,7 @@ namespace ME3Explorer
                 //int componentTableIndex = BitConverter.ToInt32(data, offset + 4);
                 offset += 8;
 
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset - 8:X5} Components Table ({CurrentLoadedExport.FileRef.getNameEntry(componentTableNameIndex)})",
                     Name = "_" + (offset - 8),
@@ -951,7 +995,7 @@ namespace ME3Explorer
                     int componentObjectIndex = BitConverter.ToInt32(data, offset);
                     offset += 4;
                     string objectName = getEntryFullPath(componentObjectIndex);
-                    subnodes.Last().Items.Add(new TreeViewItem
+                    subnodes.Last().Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset - 12:X5}  {CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex)}({objectName})",
                         Name = "_" + (offset - 12),
@@ -963,7 +1007,7 @@ namespace ME3Explorer
             else
             {
                 int componentTableCount = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Components Table Count: {componentTableCount}",
                     Name = "_" + offset,
@@ -984,7 +1028,7 @@ namespace ME3Explorer
                     {
                         objName = getEntryFullPath(componentObjectIndex);
                     }
-                    subnodes.Last().Items.Add(new TreeViewItem
+                    subnodes.Last().Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset - 8:X5}  {CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex)}({objName})",
                         Name = "_" + (offset - 8),
@@ -998,13 +1042,13 @@ namespace ME3Explorer
             return offset;
         }
 
-        private int ClassParser_ReadImplementsTable(List<TreeViewItem> subnodes, byte[] data, int offset)
+        private int ClassParser_ReadImplementsTable(List<BinaryInterpreterWPFTreeViewItem> subnodes, byte[] data, int offset)
         {
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
             {
                 int interfaceCount = BitConverter.ToInt32(data, offset);
 
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Implemented Interfaces Table Count: {interfaceCount}",
                     Name = "_" + offset,
@@ -1017,7 +1061,7 @@ namespace ME3Explorer
                     offset += 4;
 
                     string objectName = getEntryFullPath(interfaceIndex);
-                    TreeViewItem subnode = new TreeViewItem
+                    BinaryInterpreterWPFTreeViewItem subnode = new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset - 12:X5}  {interfaceIndex} {objectName}",
                         Name = "_" + (offset - 4),
@@ -1030,7 +1074,7 @@ namespace ME3Explorer
                     offset += 4;
 
                     objectName = getEntryFullPath(interfaceIndex);
-                    subnode.Items.Add(new TreeViewItem
+                    subnode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset - 12:X5}  Interface Property Link: {interfaceIndex} {objectName}",
                         Name = "_" + (offset - 4),
@@ -1045,7 +1089,7 @@ namespace ME3Explorer
                 offset += 8;
 
                 int interfaceCount = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset - 8:X5} Implemented Interfaces Table Count: {interfaceCount} ({CurrentLoadedExport.FileRef.getNameEntry(interfaceTableName)})",
                     Name = "_" + (offset - 8),
@@ -1058,7 +1102,7 @@ namespace ME3Explorer
                     int interfaceNameIndex = BitConverter.ToInt32(data, offset);
                     offset += 8;
 
-                    TreeViewItem subnode = new TreeViewItem
+                    BinaryInterpreterWPFTreeViewItem subnode = new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset - 8:X5}  {CurrentLoadedExport.FileRef.getNameEntry(interfaceNameIndex)}",
                         Name = "_" + (offset - 8),
@@ -1082,14 +1126,15 @@ namespace ME3Explorer
             return offset;
         }
 
-        private void StartEnumScan(TreeViewItem topLevelTree, byte[] data)
+        private List<BinaryInterpreterWPFTreeViewItem> StartEnumScan(byte[] data)
         {
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+
             try
             {
-                var subnodes = new List<TreeViewItem>();
                 int offset = 0;
                 int unrealExportIndex = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Unreal Unique Index: {unrealExportIndex}",
                     Name = "_" + offset,
@@ -1099,7 +1144,7 @@ namespace ME3Explorer
 
                 int noneUnrealProperty = BitConverter.ToInt32(data, offset);
                 //int noneUnrealPropertyIndex = BitConverter.ToInt32(data, offset + 4);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Unreal property None Name: {CurrentLoadedExport.FileRef.getNameEntry(noneUnrealProperty)}",
                     Name = "_" + offset,
@@ -1109,7 +1154,7 @@ namespace ME3Explorer
 
                 int superclassIndex = BitConverter.ToInt32(data, offset);
                 string superclassStr = getEntryFullPath(superclassIndex);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Superclass: {superclassIndex}({superclassStr})",
                     Name = "_" + offset,
@@ -1118,7 +1163,7 @@ namespace ME3Explorer
                 offset += 4;
 
                 int classObjTree = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {getEntryFullPath(classObjTree)}",
                     Name = "_" + offset,
@@ -1130,7 +1175,7 @@ namespace ME3Explorer
                 {
 
                     int enumSize = BitConverter.ToInt32(data, offset);
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset:X5} Enum Size: {enumSize}",
                         Name = "_" + offset,
@@ -1142,7 +1187,7 @@ namespace ME3Explorer
                     {
                         int enumName = BitConverter.ToInt32(data, offset);
                         //int enumNameIndex = BitConverter.ToInt32(data, offset + 4);
-                        subnodes.Add(new TreeViewItem
+                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = $"0x{offset:X5} EnumName[{i}]: {CurrentLoadedExport.FileRef.getNameEntry(enumName)}",
                             Name = "_" + offset,
@@ -1155,7 +1200,7 @@ namespace ME3Explorer
                 if (CurrentLoadedExport.ClassName == "Const")
                 {
                     int literalStringLength = BitConverter.ToInt32(data, offset);
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset:X5} Const Literal Length: {literalStringLength}",
                         Name = "_" + offset,
@@ -1168,7 +1213,7 @@ namespace ME3Explorer
                     if (literalStringLength < 0)
                     {
                         string str = stream.ReadString((literalStringLength * -2), true, Encoding.Unicode);
-                        subnodes.Add(new TreeViewItem
+                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = $"0x{offset:X5} Const Literal Value: {str}",
                             Name = "_" + offset,
@@ -1176,15 +1221,15 @@ namespace ME3Explorer
                         });
                     }
                 }
-                topLevelTree.ItemsSource = subnodes;
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add($"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}");
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}" });
             }
+            return subnodes;
         }
 
-        private void StartGuidCacheScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        private List<BinaryInterpreterWPFTreeViewItem> StartGuidCacheScan(byte[] data, int binarystart)
         {
             /*
              *  
@@ -1193,13 +1238,13 @@ namespace ME3Explorer
              *      guid +16
              *      
              */
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
 
             try
             {
-                var subnodes = new List<TreeViewItem>();
                 int pos = binarystart;
                 int count = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"{pos:X4} count: {count}",
                     Name = "_" + pos,
@@ -1211,7 +1256,7 @@ namespace ME3Explorer
                     int nameRef = BitConverter.ToInt32(data, pos);
                     int nameIdx = BitConverter.ToInt32(data, pos + 4);
                     Guid guid = new Guid(data.Skip(pos + 8).Take(16).ToArray());
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"{pos:X4} {CurrentLoadedExport.FileRef.getNameEntry(nameRef)}_{nameIdx}: {{{guid}}}",
                         Name = "_" + pos,
@@ -1220,19 +1265,20 @@ namespace ME3Explorer
                     });
                     pos += 24;
                 }
-                topLevelTree.ItemsSource = subnodes;
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add($"Error reading binary data: {ex}");
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
+            return subnodes;
         }
 
-        private void StartLevelScan(TreeViewItem topLevelTree, byte[] data)
+        private List<BinaryInterpreterWPFTreeViewItem> StartLevelScan(byte[] data)
         {
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+
             try
             {
-                var subnodes = new List<TreeViewItem>();
                 //find start of class binary (end of props)
                 int start = 0x4;
                 while (start < data.Length)
@@ -1253,7 +1299,7 @@ namespace ME3Explorer
                 start += 4;
                 uint numberofitems = BitConverter.ToUInt32(data, start);
                 //int countoffset = start;
-                TreeViewItem countnode = new TreeViewItem
+                BinaryInterpreterWPFTreeViewItem countnode = new BinaryInterpreterWPFTreeViewItem
                 {
                     Tag = NodeType.Unknown,
                     Header = $"{start:X4} Level Items List Length: {numberofitems}",
@@ -1265,7 +1311,7 @@ namespace ME3Explorer
 
                 start += 4;
                 uint bioworldinfoexportid = BitConverter.ToUInt32(data, start);
-                TreeViewItem bionode = new TreeViewItem
+                BinaryInterpreterWPFTreeViewItem bionode = new BinaryInterpreterWPFTreeViewItem
                 {
                     Tag = NodeType.StructLeafObject,
                     Header = $"{start:X4} BioWorldInfo Export: {bioworldinfoexportid}",
@@ -1283,30 +1329,28 @@ namespace ME3Explorer
                 IExportEntry bioworldinfo = CurrentLoadedExport.FileRef.Exports[(int)bioworldinfoexportid - 1];
                 if (bioworldinfo.ObjectName != "BioWorldInfo")
                 {
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Tag = NodeType.Unknown,
                         Header = $"{start:X4} Export pointer to bioworldinfo resolves to wrong export. Resolved to {bioworldinfo.ObjectName} as export {bioworldinfoexportid}",
                         Name = "_" + start
 
                     });
-                    topLevelTree.ItemsSource = subnodes;
-                    return;
+                    return subnodes;
                 }
 
                 start += 4;
                 uint shouldbezero = BitConverter.ToUInt32(data, start);
                 if (shouldbezero != 0)
                 {
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Tag = NodeType.Unknown,
                         Header = $"{start:X4} Export may have extra parameters not accounted for yet (did not find 0 at 0x{start:X5} )",
                         Name = "_" + start
 
                     });
-                    topLevelTree.ItemsSource = subnodes;
-                    return;
+                    return subnodes;
                 }
                 start += 4;
                 int itemcount = 2; //Skip bioworldinfo and Class
@@ -1319,7 +1363,7 @@ namespace ME3Explorer
                     {
                         IExportEntry locexp = CurrentLoadedExport.FileRef.Exports[(int)itemexportid - 1];
                         //Console.WriteLine($"0x{start:X5} \t0x{itemexportid:X5} \t{locexp.PackageFullName}.{locexp.ObjectName}_{locexp.indexValue} [{itemexportid - 1}]");
-                        subnodes.Add(new TreeViewItem
+                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Tag = NodeType.ArrayLeafObject,
                             Header = $"{start:X4}|{itemcount}: {locexp.PackageFullName}.{locexp.ObjectName}_{locexp.indexValue} [{itemexportid - 1}]",
@@ -1331,8 +1375,8 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        Console.WriteLine($"0x{start:X5} \t0x{itemexportid:X5} \tInvalid item. Ensure the list is the correct length. (Export {itemexportid})");
-                        subnodes.Add(new TreeViewItem
+                        //Console.WriteLine($"0x{start:X5} \t0x{itemexportid:X5} \tInvalid item. Ensure the list is the correct length. (Export {itemexportid})");
+                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Tag = NodeType.ArrayLeafObject,
                             Header = $"{start:X4} Invalid item.Ensure the list is the correct length. (Export {itemexportid})",
@@ -1343,32 +1387,32 @@ namespace ME3Explorer
                         itemcount++;
                     }
                 }
-                topLevelTree.ItemsSource = subnodes;
             }
             catch (Exception e)
             {
-                topLevelTree.Items.Add($"Error parsing level: {e.Message}");
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error parsing level: {e.Message}" });
             }
+            return subnodes;
         }
 
-        private void StartMaterialScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        private List<BinaryInterpreterWPFTreeViewItem> StartMaterialScan(byte[] data, int binarystart)
         {
             //const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
 
             if (binarystart >= data.Length)
             {
-                topLevelTree.Items.Add("No Binary Data");
-                return;
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = "No Binary Data" });
+                return subnodes;
             }
             try
             {
-                var subnodes = new List<TreeViewItem>();
                 int binarypos = binarystart;
 
                 binarypos += 0x20; //Skip ??? and GUID
 
                 int count = BitConverter.ToInt32(data, binarypos);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{binarypos:X4} Count: {count}",
                     Name = "_" + binarypos
@@ -1393,7 +1437,7 @@ namespace ME3Explorer
                         name += $" {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
 
                     }
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{binarypos:X4} {name}",
                         Tag = NodeType.StructLeafObject,
@@ -1404,18 +1448,18 @@ namespace ME3Explorer
                     count--;
                 }
 
-                topLevelTree.ItemsSource = subnodes;
-                subnodes.Add(new TreeViewItem { Header = "There's a bunch more binary in this object, guids and name refs and object refs." });
-                subnodes.Add(new TreeViewItem { Header = "Unfortunately this tool is not smart enough to understand them, but you might be able to." });
-                subnodes.Add(new TreeViewItem { Header = "This is your chance to prove that humans are still better than machines." });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem { Header = "There's a bunch more binary in this object, guids and name refs and object refs." });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem { Header = "Unfortunately this tool is not smart enough to understand them, but you might be able to." });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem { Header = "This is your chance to prove that humans are still better than machines." });
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add($"An error occured parsing the material: {ex.Message}");
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the material: {ex.Message}" });
             }
+            return subnodes;
         }
 
-        private void StartPrefabInstanceScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        private List<BinaryInterpreterWPFTreeViewItem> StartPrefabInstanceScan(byte[] data, int binarystart)
         {
             /*
              *  count: 4 bytes 
@@ -1424,18 +1468,17 @@ namespace ME3Explorer
              *  0: 4 bytes
              *  
              */
-
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
             if ((CurrentLoadedExport.Header[0x1f] & 0x2) == 0)
             {
-                return;
+                return subnodes;
             }
 
             try
             {
-                var subnodes = new List<TreeViewItem>();
                 int pos = binarystart;
                 int count = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"{pos:X4} Count: {count}",
                     Name = "_" + pos
@@ -1445,7 +1488,7 @@ namespace ME3Explorer
                 while (pos + 8 <= data.Length && count > 0)
                 {
                     var exportRef = BitConverter.ToInt32(data, pos);
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"{pos:X4}: {exportRef} Prefab: {CurrentLoadedExport.FileRef.getEntry(exportRef).GetFullPath}",
                         Name = "_" + pos,
@@ -1456,7 +1499,7 @@ namespace ME3Explorer
                     exportRef = BitConverter.ToInt32(data, pos);
                     if (exportRef == 0)
                     {
-                        subnodes.Last().Items.Add(new TreeViewItem
+                        subnodes.Last().Items.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = $"{pos:X4}: {exportRef} Level Object: Null",
                             Name = "_" + pos,
@@ -1466,7 +1509,7 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        subnodes.Last().Items.Add(new TreeViewItem
+                        subnodes.Last().Items.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = $"{pos:X4}: {exportRef} Level Object: {CurrentLoadedExport.FileRef.getEntry(exportRef).GetFullPath}",
                             Name = "_" + pos,
@@ -1479,15 +1522,15 @@ namespace ME3Explorer
                     count--;
                 }
 
-                topLevelTree.ItemsSource = subnodes;
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add($"Error reading binary data: {ex}");
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
+            return subnodes;
         }
 
-        private void StartSkeletalMeshScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        private List<BinaryInterpreterWPFTreeViewItem> StartSkeletalMeshScan(byte[] data, int binarystart)
         {
             /*
              *  
@@ -1496,13 +1539,14 @@ namespace ME3Explorer
              *      materials
              *  
              */
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+
             try
             {
-                var subnodes = new List<TreeViewItem>();
                 int pos = binarystart;
                 pos += 28; //bounding
                 int count = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"{pos:X4} Material Count: {count}",
                     Name = "_" + pos,
@@ -1512,7 +1556,7 @@ namespace ME3Explorer
                 for (int i = 0; i < count; i++)
                 {
                     int material = BitConverter.ToInt32(data, pos);
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"{pos:X4} Material: ({material}) {CurrentLoadedExport.FileRef.getEntry(material)?.GetFullPath ?? ""}",
                         Name = "_" + pos,
@@ -1521,20 +1565,19 @@ namespace ME3Explorer
                     });
                     pos += 4;
                 }
-
-                topLevelTree.ItemsSource = subnodes;
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add($"Error reading binary data: {ex}");
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
+            return subnodes;
         }
 
-        private void StartStaticMeshCollectionActorScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        private List<BinaryInterpreterWPFTreeViewItem> StartStaticMeshCollectionActorScan(byte[] data, int binarystart)
         {
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
             try
             {
-                var subnodes = new List<TreeViewItem>();
                 //get a list of staticmesh stuff from the props.
                 var smacitems = new List<IExportEntry>();
                 var props = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
@@ -1557,20 +1600,20 @@ namespace ME3Explorer
                 //Lets make sure this binary is divisible by 64.
                 if ((data.Length - start) % 64 != 0)
                 {
-                    topLevelTree.Items.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Tag = NodeType.Unknown,
                         Header = $"{start:X4} Binary data is not divisible by 64 ({data.Length - start})! SMCA binary data should be a length divisible by 64.",
                         Name = "_" + start
 
                     });
-                    return;
+                    return subnodes;
                 }
 
                 int smcaindex = 0;
                 while (start < data.Length && smcaindex < smacitems.Count)
                 {
-                    TreeViewItem smcanode = new TreeViewItem
+                    BinaryInterpreterWPFTreeViewItem smcanode = new BinaryInterpreterWPFTreeViewItem
                     {
                         Tag = NodeType.Unknown
                     };
@@ -1618,7 +1661,7 @@ namespace ME3Explorer
                     for (int i = 0; i < 16; i++)
                     {
                         float smcadata = BitConverter.ToSingle(data, start);
-                        TreeViewItem node = new TreeViewItem
+                        BinaryInterpreterWPFTreeViewItem node = new BinaryInterpreterWPFTreeViewItem
                         {
                             Tag = NodeType.StructLeafFloat,
                             Header = start.ToString("X4")
@@ -1656,17 +1699,18 @@ namespace ME3Explorer
 
                     smcaindex++;
                 }
-
-                topLevelTree.ItemsSource = subnodes;
+                //topLevelTree.ItemsSource = subnodes;
 
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add($"An error occured parsing the staticmesh: {ex.Message}");
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the staticmeshcollectionactor: {ex.Message}" });
             }
+            return subnodes;
+
         }
 
-        private void StartStaticMeshScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        private List<BinaryInterpreterWPFTreeViewItem> StartStaticMeshScan(byte[] data, int binarystart)
         {
             /*
              *  
@@ -1689,13 +1733,13 @@ namespace ME3Explorer
              *          +13
              *      section[0].unk5 == 1 ? +12 : +4
              */
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
             try
             {
-                var subnodes = new List<TreeViewItem>();
                 int pos = binarystart;
                 pos += 28;
                 int rbRef = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"{pos:X4} RB_BodySetup: ({rbRef}) {CurrentLoadedExport.FileRef.getEntry(rbRef)?.GetFullPath ?? ""}",
                     Name = "_" + pos,
@@ -1722,7 +1766,7 @@ namespace ME3Explorer
                     for (int j = 0; j < sectionCount; j++)
                     {
                         int material = BitConverter.ToInt32(data, pos);
-                        subnodes.Add(new TreeViewItem
+                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = $"{pos:X4} Material: ({material}) {CurrentLoadedExport.FileRef.getEntry(material)?.GetFullPath ?? ""}",
                             Name = "_" + pos,
@@ -1738,24 +1782,24 @@ namespace ME3Explorer
                     }
                     pos += unk5 == 1 ? 12 : 4;
                 }
-
-                topLevelTree.ItemsSource = subnodes;
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add($"Error reading binary data: {ex}");
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
+            return subnodes;
         }
 
-        private void StartTextureBinaryScan(TreeViewItem topLevelTree, byte[] data)
+        private List<BinaryInterpreterWPFTreeViewItem> StartTextureBinaryScan(byte[] data)
         {
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+
             try
             {
-                var subnodes = new List<TreeViewItem>();
                 var textureData = new MemoryStream(data);
 
                 int unrealExportIndex = ReadInt32(textureData);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{textureData.Position - 4:X5} Unreal Unique Index: {unrealExportIndex}",
                     Name = "_" + (textureData.Position - 4),
@@ -1765,7 +1809,7 @@ namespace ME3Explorer
 
                 PropertyCollection properties = CurrentLoadedExport.GetProperties();
                 if (textureData.Length == properties.endOffset)
-                    return; // no binary data
+                    return subnodes; // no binary data
 
 
                 textureData.Position = properties.endOffset;
@@ -1780,7 +1824,7 @@ namespace ME3Explorer
                 for (int l = 0; l < numMipMaps; l++)
                 {
                     //MipMap mipmap = new MipMap();
-                    var mipMapNode = new TreeViewItem
+                    var mipMapNode = new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{textureData.Position - 4} MipMap #{l}",
                         Name = "_" + (textureData.Position - 4)
@@ -1789,7 +1833,7 @@ namespace ME3Explorer
                     subnodes.Add(mipMapNode);
 
                     StorageTypes storageType = (StorageTypes)ReadInt32(textureData);
-                    mipMapNode.Items.Add(new TreeViewItem
+                    mipMapNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{textureData.Position - 4} Storage Type: {storageType}",
                         Name = "_" + (textureData.Position - 4)
@@ -1797,7 +1841,7 @@ namespace ME3Explorer
                     });
 
                     var uncompressedSize = ReadInt32(textureData);
-                    mipMapNode.Items.Add(new TreeViewItem
+                    mipMapNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{textureData.Position - 4} Uncompressed Size: {uncompressedSize}",
                         Name = "_" + (textureData.Position - 4)
@@ -1805,7 +1849,7 @@ namespace ME3Explorer
                     });
 
                     var compressedSize = ReadInt32(textureData);
-                    mipMapNode.Items.Add(new TreeViewItem
+                    mipMapNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{textureData.Position - 4} Compressed Size: {compressedSize}",
                         Name = "_" + (textureData.Position - 4)
@@ -1813,7 +1857,7 @@ namespace ME3Explorer
                     });
 
                     var dataOffset = ReadInt32(textureData);
-                    mipMapNode.Items.Add(new TreeViewItem
+                    mipMapNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{textureData.Position - 4} Data Offset: 0x{dataOffset:X8}",
                         Name = "_" + (textureData.Position - 4)
@@ -1840,7 +1884,7 @@ namespace ME3Explorer
                     }
 
                     var mipWidth = ReadInt32(textureData);
-                    mipMapNode.Items.Add(new TreeViewItem
+                    mipMapNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{textureData.Position - 4} Mip Width: {mipWidth}",
                         Name = "_" + (textureData.Position - 4)
@@ -1848,7 +1892,7 @@ namespace ME3Explorer
                     });
 
                     var mipHeight = ReadInt32(textureData);
-                    mipMapNode.Items.Add(new TreeViewItem
+                    mipMapNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{textureData.Position - 4} Mip Height: {mipHeight}",
                         Name = "_" + (textureData.Position - 4)
@@ -1897,15 +1941,15 @@ namespace ME3Explorer
                         }
                     }
                 }*/
-                topLevelTree.ItemsSource = subnodes;
             }
             catch (Exception e)
             {
-                topLevelTree.Items.Add($"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {e.Message}");
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {e.Message}" });
             }
+            return subnodes;
         }
 
-        private void StartTextureMovieScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        private List<BinaryInterpreterWPFTreeViewItem> StartTextureMovieScan(byte[] data, int binarystart)
         {
             /*
              *  
@@ -1915,12 +1959,12 @@ namespace ME3Explorer
              *      stream offset in TFC +4
              *  
              */
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
             try
             {
-                var subnodes = new List<TreeViewItem>();
                 int pos = binarystart;
                 int unk1 = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"{pos:X4} Unknown: {unk1}",
                     Name = "_" + pos,
@@ -1928,7 +1972,7 @@ namespace ME3Explorer
                 });
                 pos += 4;
                 int length = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"{pos:X4} bik length: {length} (0x{length:X})",
                     Name = "_" + pos,
@@ -1937,7 +1981,7 @@ namespace ME3Explorer
                 });
                 pos += 4;
                 length = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"{pos:X4} bik length: {length} (0x{length:X})",
                     Name = "_" + pos,
@@ -1946,7 +1990,7 @@ namespace ME3Explorer
                 });
                 pos += 4;
                 int offset = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"{pos:X4} bik offset in file: {offset} (0x{offset:X})",
                     Name = "_" + pos,
@@ -1956,29 +2000,28 @@ namespace ME3Explorer
                 pos += 4;
                 if (pos < data.Length && CurrentLoadedExport.GetProperty<NameProperty>("Filename") == null)
                 {
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"{pos:X4} The rest of the binary is the bik.",
                         Name = "_" + pos,
 
                         Tag = NodeType.Unknown
                     });
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = "The stream offset to this data will be automatically updated when this file is saved.",
                         Tag = NodeType.Unknown
                     });
                 }
-
-                topLevelTree.ItemsSource = subnodes;
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add($"Error reading binary data: {ex}");
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
+            return subnodes;
         }
 
-        private void StartStateScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        private List<BinaryInterpreterWPFTreeViewItem> StartStateScan(byte[] data, int binarystart)
         {
             /*
              *  
@@ -1988,12 +2031,13 @@ namespace ME3Explorer
              *      stream offset in TFC +4
              *  
              */
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+
             try
             {
-                var subnodes = new List<TreeViewItem>();
                 int pos = binarystart;
                 int stateEntryIndex = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"{pos:X4} State Entry: {stateEntryIndex} {getEntryFullPath(stateEntryIndex)}",
                     Name = "_" + pos,
@@ -2002,7 +2046,7 @@ namespace ME3Explorer
                 pos += 4;
 
                 /*int length = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"{pos:X4} bik length: {length} (0x{length:X})",
                     Name = "_" + pos,
@@ -2011,7 +2055,7 @@ namespace ME3Explorer
                 });
                 pos += 4;
                 length = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"{pos:X4} bik length: {length} (0x{length:X})",
                     Name = "_" + pos,
@@ -2020,7 +2064,7 @@ namespace ME3Explorer
                 });
                 pos += 4;
                 int offset = BitConverter.ToInt32(data, pos);
-                subnodes.Add(new TreeViewItem
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"{pos:X4} bik offset in file: {offset} (0x{offset:X})",
                     Name = "_" + pos,
@@ -2030,38 +2074,40 @@ namespace ME3Explorer
                 pos += 4;
                 if (pos < data.Length && CurrentLoadedExport.GetProperty<NameProperty>("Filename") == null)
                 {
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"{pos:X4} The rest of the binary is the bik.",
                         Name = "_" + pos,
 
                         Tag = NodeType.Unknown
                     });
-                    subnodes.Add(new TreeViewItem
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = "The stream offset to this data will be automatically updated when this file is saved.",
                         Tag = NodeType.Unknown
                     });
                 }
                 */
-                topLevelTree.ItemsSource = subnodes;
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add($"Error reading binary data: {ex}");
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
+            return subnodes;
         }
 
-        private void StartGenericScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        private List<BinaryInterpreterWPFTreeViewItem> StartGenericScan(byte[] data, int binarystart)
         {
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+
             if (binarystart == data.Length)
             {
-                return;
+                return subnodes;
             }
             try
             {
-                viewModeComboBox.Visibility = Visibility.Visible;
-                var subnodes = new List<TreeViewItem>();
+                //TODO: move this to UI thread
+                //viewModeComboBox.Visibility = Visibility.Visible;
                 int binarypos = binarystart;
 
                 //binarypos += 0x1C; //Skip ??? and GUID
@@ -2085,7 +2131,7 @@ namespace ME3Explorer
                 {
 
                     string nodeText = $"0x{binarypos:X4} : ";
-                    var node = new TreeViewItem();
+                    var node = new BinaryInterpreterWPFTreeViewItem();
 
                     switch (interpreterMode)
                     {
@@ -2141,21 +2187,43 @@ namespace ME3Explorer
                     subnodes.Add(node);
                     binarypos += 4;
                 }
-
-                topLevelTree.ItemsSource = subnodes;
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add($"An error occured parsing the staticmesh: {ex.Message}");
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the staticmesh: {ex.Message}" });
             }
+            return subnodes;
         }
         #endregion
 
         public override void UnloadExport()
         {
-            CurrentLoadedExport = null;
             BinaryInterpreter_Hexbox.ByteProvider = new DynamicByteProvider(new byte[] { });
-            BinaryInterpreter_TreeView.Items.Clear();
+            BinaryInterpreter_TreeView.ItemsSource = null;
+            if (CurrentLoadedExport != null && CurrentLoadedExport.Data.Length > 20480)
+            {
+                //There was likely a large amount of nodes placed onto the UI
+                //Lets free that memory while this export unloads
+                //but we wait a few seconds to let the UI release everything
+                //(Waiting for a render does not seem to release references)
+
+                Action detach = null;
+                var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(4) };
+
+                var handler = new EventHandler((s, args) =>
+                {
+                    GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+                    GC.Collect();
+                    // Note: When stop is called this DispatcherTimer handler will be GC'd (eventually). There is no need to unregister the event.
+                    timer.Stop();
+                    detach?.Invoke();
+                });
+
+                detach = new Action(() => timer.Tick -= handler); // No need for deregistering but just for safety let's do it.
+                timer.Tick += handler;
+                timer.Start();
+            }
+            CurrentLoadedExport = null;
         }
 
         private void BinaryInterpreter_SaveHexChanges_Click(object sender, RoutedEventArgs e)
@@ -2165,7 +2233,7 @@ namespace ME3Explorer
 
         private void BinaryInterpreter_TreeViewSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (BinaryInterpreter_TreeView.SelectedItem is TreeViewItem tvi
+            if (BinaryInterpreter_TreeView.SelectedItem is BinaryInterpreterWPFTreeViewItem tvi
                 && tvi.Name is string tag
                 && tag.StartsWith("_"))
             {
@@ -2260,8 +2328,33 @@ namespace ME3Explorer
 
         private void viewModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            interpreterMode = (InterpreterMode) viewModeComboBox.SelectedValue;
+            interpreterMode = (InterpreterMode)viewModeComboBox.SelectedValue;
             StartBinaryScan();
+        }
+
+        private void ParseBinary_Button_Click(object sender, RoutedEventArgs e)
+        {
+            StartBinaryScan();
+        }
+    }
+
+    class BinaryInterpreterWPFTreeViewItem
+    {
+        public string Header { get; set; }
+        public string Name { get; set; }
+        public object Tag { get; set; }
+        public bool IsExpanded { get; set; }
+
+        public List<BinaryInterpreterWPFTreeViewItem> Items;
+        public BinaryInterpreterWPFTreeViewItem()
+        {
+            Items = new List<BinaryInterpreterWPFTreeViewItem>();
+        }
+
+        public BinaryInterpreterWPFTreeViewItem(string header)
+        {
+            Items = new List<BinaryInterpreterWPFTreeViewItem>();
+            Header = header;
         }
     }
 }
