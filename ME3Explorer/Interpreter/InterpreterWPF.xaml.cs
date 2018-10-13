@@ -816,11 +816,9 @@ namespace ME3Explorer
                 {
                     fe.Visibility = SupportedEditorSetElements.Contains(fe) ? Visibility.Visible : Visibility.Collapsed;
                 }
-                if (SupportedEditorSetElements.Count > 0)
-                {
-                    Set_Button.Visibility = Visibility.Visible;
-                    EditorSet_Separator.Visibility = Visibility.Visible;
-                }
+
+                Set_Button.Visibility = SupportedEditorSetElements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+                EditorSet_Separator.Visibility = SupportedEditorSetElements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
