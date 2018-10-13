@@ -537,6 +537,61 @@ namespace ME3Explorer
             }
             return i > 0 ? i - 1 : i;
         }
+
+        /// <summary>
+        /// Checks if this object is of a specific generic type (e.g. List<IntProperty>)
+        /// </summary>
+        /// <param name="typeToCheck">typeof() of the item you are checking</param>
+        /// <param name="genericType">typeof() of the value you are checking against</param>
+        /// <returns>True if type matches, false otherwise</returns>
+        public static bool IsOfGenericType(this Type typeToCheck, Type genericType)
+        {
+            Type concreteType;
+            return typeToCheck.IsOfGenericType(genericType, out concreteType);
+        }
+
+        /// <summary>
+        /// Checks if this object is of a specific generic type (e.g. List<IntProperty>)
+        /// </summary>
+        /// <param name="typeToCheck">typeof() of the item you are checking</param>
+        /// <param name="genericType">typeof() of the value you are checking against</param>
+        /// <param name="concreteGenericType">Concrete type output if this result is true</param>
+        /// <returns>True if type matches, false otherwise</returns>
+        public static bool IsOfGenericType(this Type typeToCheck, Type genericType, out Type concreteGenericType)
+        {
+            while (true)
+            {
+                concreteGenericType = null;
+
+                if (genericType == null)
+                    throw new ArgumentNullException(nameof(genericType));
+
+                if (!genericType.IsGenericTypeDefinition)
+                    throw new ArgumentException("The definition needs to be a GenericTypeDefinition", nameof(genericType));
+
+                if (typeToCheck == null || typeToCheck == typeof(object))
+                    return false;
+
+                if (typeToCheck == genericType)
+                {
+                    concreteGenericType = typeToCheck;
+                    return true;
+                }
+
+                if ((typeToCheck.IsGenericType ? typeToCheck.GetGenericTypeDefinition() : typeToCheck) == genericType)
+                {
+                    concreteGenericType = typeToCheck;
+                    return true;
+                }
+
+                if (genericType.IsInterface)
+                    foreach (var i in typeToCheck.GetInterfaces())
+                        if (i.IsOfGenericType(genericType, out concreteGenericType))
+                            return true;
+
+                typeToCheck = typeToCheck.BaseType;
+            }
+        }
     }
 
     public static class EnumExtensions

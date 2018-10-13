@@ -75,6 +75,7 @@ namespace ME3Explorer.Unreal
             long startPosition = stream.Position;
             while (stream.Position + 8 <= stream.Length)
             {
+                long propertyStartPosition = stream.Position;
                 int nameIdx = stream.ReadValueS32();
                 if (!pcc.isName(nameIdx))
                 {
@@ -84,7 +85,7 @@ namespace ME3Explorer.Unreal
                 string name = pcc.getNameEntry(nameIdx);
                 if (name == "None")
                 {
-                    props.Add(new NoneProperty(stream, "None"));
+                    props.Add(new NoneProperty(stream, "None") { StartOffset = propertyStartPosition});
                     stream.Seek(4, SeekOrigin.Current);
                     break;
                 }
@@ -113,38 +114,37 @@ namespace ME3Explorer.Unreal
                     case PropertyType.StructProperty:
                         string structType = pcc.getNameEntry(stream.ReadValueS32());
                         stream.Seek(4, SeekOrigin.Current);
+                        long valOffset = stream.Position;
                         if (ME3UnrealObjectInfo.isImmutable(structType))
                         {
                             PropertyCollection structProps = ReadSpecialStruct(pcc, stream, structType, size);
-                            var structprop = new StructProperty(structType, structProps, nameRef, true);
-                            structprop.ValueOffset = stream.Position - 4;
-                            props.Add(structprop);
+                            props.Add(new StructProperty(structType, structProps, nameRef, true) { StartOffset = propertyStartPosition, ValueOffset = valOffset });
                         }
                         else
                         {
                             PropertyCollection structProps = ReadProps(pcc, stream, structType, includeNoneProperty);
-                            var structprop = new StructProperty(structType, structProps, nameRef);
-                            structprop.ValueOffset = stream.Position - 4;
-                            props.Add(structprop);
+                            props.Add(new StructProperty(structType, structProps, nameRef) { StartOffset = propertyStartPosition, ValueOffset = valOffset });
                         }
                         break;
                     case PropertyType.IntProperty:
-                        props.Add(new IntProperty(stream, nameRef));
+                        IntProperty ip = new IntProperty(stream, nameRef);
+                        ip.StartOffset = propertyStartPosition;
+                        props.Add(ip);
                         break;
                     case PropertyType.FloatProperty:
-                        props.Add(new FloatProperty(stream, nameRef));
+                        props.Add(new FloatProperty(stream, nameRef) { StartOffset = propertyStartPosition });
                         break;
                     case PropertyType.ObjectProperty:
-                        props.Add(new ObjectProperty(stream, nameRef));
+                        props.Add(new ObjectProperty(stream, nameRef) { StartOffset = propertyStartPosition });
                         break;
                     case PropertyType.NameProperty:
-                        props.Add(new NameProperty(stream, pcc, nameRef));
+                        props.Add(new NameProperty(stream, pcc, nameRef) { StartOffset = propertyStartPosition });
                         break;
                     case PropertyType.BoolProperty:
-                        props.Add(new BoolProperty(stream, pcc.Game, nameRef));
+                        props.Add(new BoolProperty(stream, pcc.Game, nameRef) { StartOffset = propertyStartPosition });
                         break;
                     case PropertyType.BioMask4Property:
-                        props.Add(new BioMask4Property(stream, nameRef));
+                        props.Add(new BioMask4Property(stream, nameRef) { StartOffset = propertyStartPosition });
                         break;
                     case PropertyType.ByteProperty:
                         {
@@ -160,7 +160,7 @@ namespace ME3Explorer.Unreal
                                 {
                                     enumType.Name = UnrealObjectInfo.GetEnumType(pcc.Game, name, typeName);
                                 }
-                                props.Add(new EnumProperty(stream, pcc, enumType, nameRef));
+                                props.Add(new EnumProperty(stream, pcc, enumType, nameRef) { StartOffset = propertyStartPosition });
                             }
                             else
                             {
@@ -168,35 +168,37 @@ namespace ME3Explorer.Unreal
                                 {
                                     stream.Seek(8, SeekOrigin.Current);
                                 }
-                                props.Add(new ByteProperty(stream, nameRef));
+                                props.Add(new ByteProperty(stream, nameRef) { StartOffset = propertyStartPosition });
                             }
                         }
                         break;
                     case PropertyType.ArrayProperty:
                         {
-                            props.Add(ReadArrayProperty(stream, pcc, typeName, nameRef, IncludeNoneProperties: includeNoneProperty));
+                            UProperty ap = ReadArrayProperty(stream, pcc, typeName, nameRef, IncludeNoneProperties: includeNoneProperty);
+                            ap.StartOffset = propertyStartPosition;
+                            props.Add(ap);
                         }
                         break;
                     case PropertyType.StrProperty:
                         {
-                            props.Add(new StrProperty(stream, nameRef));
+                            props.Add(new StrProperty(stream, nameRef) { StartOffset = propertyStartPosition });
                         }
                         break;
                     case PropertyType.StringRefProperty:
-                        props.Add(new StringRefProperty(stream, nameRef));
+                        props.Add(new StringRefProperty(stream, nameRef) { StartOffset = propertyStartPosition });
                         break;
                     case PropertyType.DelegateProperty:
-                        props.Add(new DelegateProperty(stream, pcc, nameRef));
+                        props.Add(new DelegateProperty(stream, pcc, nameRef) { StartOffset = propertyStartPosition });
                         break;
                     case PropertyType.Unknown:
                         {
-                            props.Add(new UnknownProperty(stream, size, pcc.getNameEntry(typeIdx), nameRef));
+                            props.Add(new UnknownProperty(stream, size, pcc.getNameEntry(typeIdx), nameRef) { StartOffset = propertyStartPosition });
                         }
                         break;
                     case PropertyType.None:
                         if (includeNoneProperty)
                         {
-                            props.Add(new NoneProperty(stream, "None"));
+                            props.Add(new NoneProperty(stream, "None") { StartOffset = propertyStartPosition });
                         }
                         break;
                 }
@@ -373,35 +375,35 @@ namespace ME3Explorer.Unreal
             switch (template.PropType)
             {
                 case PropertyType.FloatProperty:
-                    return new FloatProperty(stream, template.Name);
+                    return new FloatProperty(stream, template.Name) { StartOffset = stream.Position };
                 case PropertyType.IntProperty:
-                    return new IntProperty(stream, template.Name);
+                    return new IntProperty(stream, template.Name) { StartOffset = stream.Position };
                 case PropertyType.ObjectProperty:
-                    return new ObjectProperty(stream, template.Name);
+                    return new ObjectProperty(stream, template.Name) { StartOffset = stream.Position };
                 case PropertyType.StringRefProperty:
-                    return new StringRefProperty(stream, template.Name);
+                    return new StringRefProperty(stream, template.Name) { StartOffset = stream.Position };
                 case PropertyType.NameProperty:
-                    return new NameProperty(stream, pcc, template.Name);
+                    return new NameProperty(stream, pcc, template.Name) { StartOffset = stream.Position };
                 case PropertyType.BoolProperty:
-                    return new BoolProperty(stream, pcc.Game, template.Name);
+                    return new BoolProperty(stream, pcc.Game, template.Name) { StartOffset = stream.Position };
                 case PropertyType.ByteProperty:
                     if (template is EnumProperty)
                     {
                         string enumType = UnrealObjectInfo.GetEnumType(pcc.Game, template.Name, structType);
-                        return new EnumProperty(stream, pcc, enumType, template.Name);
+                        return new EnumProperty(stream, pcc, enumType, template.Name) { StartOffset = stream.Position };
                     }
                     return new ByteProperty(stream, template.Name);
                 case PropertyType.BioMask4Property:
-                    return new BioMask4Property(stream, template.Name);
+                    return new BioMask4Property(stream, template.Name) { StartOffset = stream.Position };
                 case PropertyType.StrProperty:
-                    return new StrProperty(stream, template.Name);
+                    return new StrProperty(stream, template.Name) { StartOffset = stream.Position };
                 case PropertyType.ArrayProperty:
-                    return ReadArrayProperty(stream, pcc, structType, template.Name, true);
+                    return ReadArrayProperty(stream, pcc, structType, template.Name, true); //todo
                 case PropertyType.StructProperty:
                     PropertyCollection structProps = ReadSpecialStruct(pcc, stream, UnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType).reference, 0);
-                    return new StructProperty(structType, structProps, template.Name, true);
+                    return new StructProperty(structType, structProps, template.Name, true); //todo
                 case PropertyType.None:
-                    return new NoneProperty(template.Name);
+                    return new NoneProperty(template.Name) { StartOffset = stream.Position };
                 case PropertyType.DelegateProperty:
                     throw new NotImplementedException("cannot read Delegate property of Immutable struct");
                 case PropertyType.Unknown:
@@ -540,6 +542,11 @@ namespace ME3Explorer.Unreal
         /// </summary>
         public long ValueOffset;
 
+        /// <summary>
+        /// Offset to the start of this property as it was read by PropertyCollection.ReadProps()
+        /// </summary>
+        internal long StartOffset;
+
         public NameReference Name
         {
             get => _name;
@@ -593,6 +600,7 @@ namespace ME3Explorer.Unreal
     public class StructProperty : UProperty
     {
         public readonly bool IsImmutable;
+
         public string StructType { get; }
         public PropertyCollection Properties { get; }
 

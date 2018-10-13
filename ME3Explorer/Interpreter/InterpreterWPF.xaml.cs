@@ -366,7 +366,7 @@ namespace ME3Explorer
 
         private UPropertyTreeViewEntry GenerateUPropertyTreeViewEntry(UProperty prop, UPropertyTreeViewEntry parent, string displayPrefix = "")
         {
-            string displayName = $"{prop.ValueOffset.ToString("X4")}{displayPrefix}: {prop.Name}:";
+            string displayName = $"{prop.StartOffset.ToString("X4")}{displayPrefix}: {prop.Name}:";
             string editableValue = ""; //editable value
             string parsedValue = ""; //human formatted item. Will most times be blank
             switch (prop)
@@ -896,19 +896,48 @@ namespace ME3Explorer
                 Interpreter_Hexbox.SelectionStart = hexPos;
                 Interpreter_Hexbox.SelectionLength = 1; //maybe change
                 Interpreter_Hexbox.UnhighlightAll();
-                if (newSelectedItem.Property is NoneProperty)
+                switch (newSelectedItem.Property)
                 {
-                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 4, 8);
-                    return;
-                }
-                else if (newSelectedItem.Property is EnumProperty)
-                {
-                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 32, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
-                    return;
+                    //case NoneProperty np:
+                    //    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 4, 8);
+                    //    return;
+                    //case StructProperty sp:
+                    //    break;
+                    case ObjectProperty op:
+                    case FloatProperty fp:
+                    case IntProperty ip:
+                        if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable && (newSelectedItem.Property is IntProperty || newSelectedItem.Property is FloatProperty || newSelectedItem.Property is ObjectProperty))
+                        {
+                            Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
+                            return;
+                        }
+                        else if (newSelectedItem.Parent.Property is ArrayProperty<IntProperty> || newSelectedItem.Parent.Property is ArrayProperty<FloatProperty> || newSelectedItem.Parent.Property is ArrayProperty<ObjectProperty>)
+                        {
+                            Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
+                            return;
+                        }
+                        //otherwise use the default
+                        break;
+                    //case EnumProperty ep:
+                    //    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 32, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
+                    //    return;
                 }
 
-                Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 24, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
+                Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
 
+                //else if (newSelectedItem.Parent.Property is ArrayProperty<IntProperty> || newSelectedItem.Parent.Property is ArrayProperty<FloatProperty> || newSelectedItem.Parent.Property is ArrayProperty<ObjectProperty>)
+                //{
+                //    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
+                //    return;
+                //}
+                //else if (newSelectedItem.Property is StructProperty)
+                //{
+                //    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 40, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
+                //    return;
+                //}
+                //else
+                //{
+                //}
                 //array children
                 /*if (newSelectedItem.Parent.Property != null && newSelectedItem.Parent.Property.PropType == PropertyType.ArrayProperty)
                 {
