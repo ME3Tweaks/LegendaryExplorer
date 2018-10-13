@@ -5,55 +5,46 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ME3Explorer.PackageEditorWPFControls"
         mc:Ignorable="d"
-        Title="Package porting options" Height="230.72" Width="449.153">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="50"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="180"/>
-            <ColumnDefinition Width="180"/>
-            <ColumnDefinition Width="180"/>
-            <ColumnDefinition Width="180"/>
-        </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" Grid.ColumnSpan="4" Text="Select what you'd like to do for this porting operation."/>
-        <Button Grid.Row="1">
-            <Button.Content>
-                <StackPanel HorizontalAlignment="Center">
-                    <TextBlock Text="Merge" HorizontalAlignment="Center" FontWeight="Bold"/>
-                    <TextBlock Text="children of X into Y" Foreground="Gray" FontSize="9"  HorizontalAlignment="Center"/>
-                </StackPanel>
-            </Button.Content>
-        </Button>
-        <Button Grid.Row="2">
-            <Button.Content>
-                <StackPanel HorizontalAlignment="Center">
-                    <TextBlock Text="Clone" HorizontalAlignment="Center" FontWeight="Bold"/>
-                    <TextBlock Text="Clone X's tree as a child of Y" Foreground="Gray" FontSize="9"  HorizontalAlignment="Center"/>
-                </StackPanel>
-            </Button.Content>
-        </Button>
-        <Button Grid.Row="1" Grid.Column="1">
-            <Button.Content>
-                <StackPanel HorizontalAlignment="Center">
-                    <TextBlock Text="Replace export data of X" HorizontalAlignment="Center" FontWeight="Bold"/>
-                    <TextBlock Text="with export data from Y" Foreground="Gray" FontSize="9"  HorizontalAlignment="Center"/>
-                </StackPanel>
-            </Button.Content>
-        </Button>
-        <Button Grid.Row="2" Grid.Column="1">
-            <Button.Content>
-                <StackPanel HorizontalAlignment="Center">
-                    <TextBlock Text="Add only X" HorizontalAlignment="Center" FontWeight="Bold"/>
-                    <TextBlock Text="as child of Y" Foreground="Gray" FontSize="9"  HorizontalAlignment="Center"/>
-                </StackPanel>
-            </Button.Content>
-        </Button>
-    </Grid>
+        WindowStartupLocation="CenterOwner"
+        Title="Package porting options" Height="240" Width="450">
+    <StackPanel Margin="5">
+        <TextBlock HorizontalAlignment="Center" Text="Select what you'd like to do for this porting operation."/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button  Width="200" Height="60" Margin="5" Click="MergeButton_Click">
+                <Button.Content>
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="Merge" HorizontalAlignment="Center" FontWeight="Bold"/>
+                        <TextBlock Text="children of X into Y" Foreground="Gray" FontSize="9"  HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <Button Width="200" Height="60" Margin="5" Click="CloneTreeButton_Click">
+                <Button.Content>
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="Clone" HorizontalAlignment="Center" FontWeight="Bold"/>
+                        <TextBlock Text="Clone X's tree as a child of Y" Foreground="Gray" FontSize="9"  HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button  Width="200" Height="60"  Margin="5" Click="ReplaceButton_Click">
+                <Button.Content>
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="Replace export data of X" HorizontalAlignment="Center" FontWeight="Bold"/>
+                        <TextBlock Text="with export data from Y" Foreground="Gray" FontSize="9"  HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <Button  Width="200" Height="60" Margin="5" Click="AddSingularButton_Click">
+                <Button.Content>
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="Add only X" HorizontalAlignment="Center" FontWeight="Bold"/>
+                        <TextBlock Text="as child of Y" Foreground="Gray" FontSize="9"  HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+        </StackPanel>
+        <Button Content="Cancel" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="5" Padding="3" Click="CancelButton_Click"/>
+    </StackPanel>
 </Window>

@@ -792,6 +792,14 @@ namespace ME3Explorer
             ClearList(LeftSide_ListView);
             IReadOnlyList<ImportEntry> imports = Pcc.Imports;
             IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
+            if (AllTreeViewNodesX.Count > 0)
+            {
+                foreach (TreeViewEntry tv in AllTreeViewNodesX[0].FlattenTree())
+                {
+                    tv.RefreshDisplayName();
+                }
+            }
+
             if (CurrentView == View.Names)
             {
                 LeftSide_ListView.ItemsSource = Pcc.Names;
@@ -860,6 +868,7 @@ namespace ME3Explorer
             }
             if (CurrentView == View.Tree)
             {
+                
                 LeftSide_ListView.Visibility = Visibility.Collapsed;
                 LeftSide_TreeView.Visibility = Visibility.Visible;
             }
@@ -1396,17 +1405,13 @@ namespace ME3Explorer
                 TreeViewEntry sourceItem = dropInfo.Data as TreeViewEntry;
                 TreeViewEntry targetItem = dropInfo.TargetItem as TreeViewEntry;
 
-                if (sourceItem.Entry.GetFullPath == targetItem.Entry.GetFullPath)
-                {
-                    //ask if user wants to merge
-                    new TreeMergeDialog().ShowDialog();
-                    return;
-                }
 
                 if (sourceItem == targetItem || (targetItem.Entry != null && sourceItem.Entry.FileRef == targetItem.Entry.FileRef))
                 {
                     return; //ignore
                 }
+                var portingOption = TreeMergeDialog.GetMergeType(this, sourceItem, targetItem);
+
                 //Debug.WriteLine("Adding source item: " + sourceItem.Tag.ToString());
 
                 //if (DestinationNode.TreeView != sourceNode.TreeView)
@@ -2232,9 +2237,7 @@ namespace ME3Explorer
     {
         protected void OnPropertyChanged([CallerMemberName] string propName = null)
         {
-            var temp = PropertyChanged;
-            if (temp != null)
-                temp(this, new PropertyChangedEventArgs(propName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
         }
         public event PropertyChangedEventHandler PropertyChanged;
         private System.Windows.Media.Brush _foregroundColor = System.Windows.Media.Brushes.DarkSeaGreen;

@@ -161,10 +161,10 @@ namespace ME3Explorer
 
         private void PerformScan_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
-            var result = (List<BinaryInterpreterWPFTreeViewItem>)e.Result;
+            var result = (BinaryInterpreterWPFTreeViewItem)e.Result;
             OnDemand_Panel.Visibility = Visibility.Collapsed;
             LoadedContent_Panel.Visibility = Visibility.Visible;
-            BinaryInterpreter_TreeView.ItemsSource = result;
+            BinaryInterpreter_TreeView.ItemsSource = new List<BinaryInterpreterWPFTreeViewItem>(new BinaryInterpreterWPFTreeViewItem[] { result });
         }
 
         private void PerformScanBackground(object sender, DoWorkEventArgs e)
@@ -240,7 +240,9 @@ namespace ME3Explorer
                     subNodes = StartGenericScan(data, binarystart);
                     break;
             }
-            e.Result = subNodes;
+
+            arguments.Item1.Items = subNodes;
+            e.Result = arguments.Item1; //return topLevelTree
         }
 
         #region scans
@@ -1826,8 +1828,8 @@ namespace ME3Explorer
                     //MipMap mipmap = new MipMap();
                     var mipMapNode = new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{textureData.Position - 4} MipMap #{l}",
-                        Name = "_" + (textureData.Position - 4)
+                        Header = $"0x{textureData.Position} MipMap #{l}",
+                        Name = "_" + (textureData.Position)
 
                     };
                     subnodes.Add(mipMapNode);
@@ -2345,7 +2347,7 @@ namespace ME3Explorer
         public object Tag { get; set; }
         public bool IsExpanded { get; set; }
 
-        public List<BinaryInterpreterWPFTreeViewItem> Items;
+        public List<BinaryInterpreterWPFTreeViewItem> Items { get; set; }
         public BinaryInterpreterWPFTreeViewItem()
         {
             Items = new List<BinaryInterpreterWPFTreeViewItem>();
