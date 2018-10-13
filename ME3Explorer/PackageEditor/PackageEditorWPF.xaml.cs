@@ -32,6 +32,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Xceed.Wpf.Toolkit.Primitives;
+using static ME3Explorer.EnumExtensions;
 using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer
@@ -1058,7 +1059,7 @@ namespace ME3Explorer
                     {
                         InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
                     }
-                    var flagsList = Enum.GetValues(typeof(EObjectFlags)).Cast<EObjectFlags>().Distinct().ToList();
+                    var flagsList = GetValues<EObjectFlags>().Distinct().ToList();
                     //Don't even get me started on how dumb it is that SelectedItems is read only...
                     string selectedFlags = "";
                     foreach (EObjectFlags flag in flagsList)

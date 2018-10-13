@@ -17,9 +17,11 @@ using System.Windows.Shapes;
 using Be.Windows.Forms;
 using Gammtek.Conduit.Extensions;
 using Gibbed.IO;
+using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using static ME3Explorer.BinaryInterpreter;
+using static ME3Explorer.EnumExtensions;
 
 namespace ME3Explorer
 {
@@ -30,9 +32,21 @@ namespace ME3Explorer
     {
         private HexBox BinaryInterpreter_Hexbox;
 
+        public enum InterpreterMode
+        {
+            Objects,
+            Names,
+            Integers,
+            Floats
+        }
+
+        private InterpreterMode interpreterMode = InterpreterMode.Objects;
+
         public BinaryInterpreterWPF()
         {
             InitializeComponent();
+            viewModeComboBox.ItemsSource = Enum.GetValues(typeof(InterpreterMode)).Cast<InterpreterMode>();
+            viewModeComboBox.SelectedItem = InterpreterMode.Objects;
         }
 
         static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "SeekFreeShaderCache", "Class", "BioStage", "ObjectProperty", "Const",
@@ -45,17 +59,17 @@ namespace ME3Explorer
             return ParsableBinaryClasses.Contains(exportEntry.ClassName);
         }
 
-        public override void LoadExport(IExportEntry export)
+        public override void LoadExport(IExportEntry exportEntry)
         {
-            CurrentLoadedExport = export;
-            DynamicByteProvider db = new DynamicByteProvider(export.Data);
+            CurrentLoadedExport = exportEntry;
+            DynamicByteProvider db = new DynamicByteProvider(exportEntry.Data);
             BinaryInterpreter_Hexbox.ByteProvider = db;
 
             StartBinaryScan();
         }
 
         #region static stuff
-        public enum nodeType
+        public enum NodeType
         {
             Unknown = -1,
             StructProperty = 0,
@@ -101,13 +115,18 @@ namespace ME3Explorer
 
         private void StartBinaryScan()
         {
+            if (CurrentLoadedExport is null)
+            {
+                return;
+            }
             BinaryInterpreter_TreeView.Items.Clear();
+            viewModeComboBox.Visibility = Visibility.Hidden;
             byte[] data = CurrentLoadedExport.Data;
             int binarystart = CurrentLoadedExport.propsEnd();
-            TreeViewItem topLevelTree = new TreeViewItem()
+            TreeViewItem topLevelTree = new TreeViewItem
             {
                 Header = $"{binarystart:X4} : {CurrentLoadedExport.ObjectName}",
-                Tag = nodeType.Root,
+                Tag = NodeType.Root,
                 Name = "_0",
                 IsExpanded = true
             };
@@ -120,7 +139,7 @@ namespace ME3Explorer
                 case "ArrayProperty":
                 case "FloatProperty":
                 case "ObjectProperty":
-                    StartObjectScan(topLevelTree, data, binarystart);
+                    StartObjectScan(topLevelTree, data);
                     break;
                 case "BioDynamicAnimSet":
                     StartBioDynamicAnimSetScan(topLevelTree, data, binarystart);
@@ -130,7 +149,7 @@ namespace ME3Explorer
                     break;
                 case "WwiseStream":
                 case "WwiseBank":
-                    Scan_WwiseStreamBank(topLevelTree, data, binarystart);
+                    Scan_WwiseStreamBank(topLevelTree, data);
                     break;
                 case "WwiseEvent":
                     Scan_WwiseEvent(topLevelTree, data, binarystart);
@@ -139,17 +158,17 @@ namespace ME3Explorer
                     StartBioStageScan(topLevelTree, data, binarystart);
                     break;
                 case "Class":
-                    StartClassScan(topLevelTree, data, binarystart);
+                    StartClassScan(topLevelTree, data);
                     break;
                 case "Enum":
                 case "Const":
-                    StartEnumScan(topLevelTree, data, binarystart);
+                    StartEnumScan(topLevelTree, data);
                     break;
                 case "GuidCache":
                     StartGuidCacheScan(topLevelTree, data, binarystart);
                     break;
                 case "Level":
-                    StartLevelScan(topLevelTree, data, binarystart);
+                    StartLevelScan(topLevelTree, data);
                     break;
                 case "Material":
                 case "MaterialInstanceConstant":
@@ -168,13 +187,16 @@ namespace ME3Explorer
                     StartStaticMeshScan(topLevelTree, data, binarystart);
                     break;
                 case "Texture2D":
-                    StartTextureBinaryScan(topLevelTree, data, binarystart);
+                    StartTextureBinaryScan(topLevelTree, data);
                     break;
                 case "State":
                     StartStateScan(topLevelTree, data, binarystart);
                     break;
                 case "TextureMovie":
                     StartTextureMovieScan(topLevelTree, data, binarystart);
+                    break;
+                default:
+                    StartGenericScan(topLevelTree, data, binarystart);
                     break;
             }
         }
@@ -183,20 +205,20 @@ namespace ME3Explorer
         private void StartObjectRedirectorScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
         {
             int redirnum = BitConverter.ToInt32(data, binarystart);
-            topLevelTree.Items.Add(new TreeViewItem()
+            topLevelTree.Items.Add(new TreeViewItem
             {
                 Header = $"{binarystart:X4} Redirect references to this export to: {redirnum} {CurrentLoadedExport.FileRef.getEntry(redirnum).GetFullPath}",
                 Name = binarystart.ToString()
             });
         }
 
-        private void StartObjectScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        private void StartObjectScan(TreeViewItem topLevelTree, byte[] data)
         {
             try
             {
                 int offset = 0; //this property starts at 0 for parsing
                 int unrealExportIndex = BitConverter.ToInt32(data, offset);
-                topLevelTree.Items.Add(new TreeViewItem()
+                topLevelTree.Items.Add(new TreeViewItem
                 {
                     Header = $"0x{offset:X5} Unreal Unique Index: {unrealExportIndex}",
                     Name = "_" + offset,
@@ -205,8 +227,8 @@ namespace ME3Explorer
                 offset += 4;
 
                 int noneUnrealProperty = BitConverter.ToInt32(data, offset);
-                int noneUnrealPropertyIndex = BitConverter.ToInt32(data, offset + 4);
-                topLevelTree.Items.Add(new TreeViewItem()
+                //int noneUnrealPropertyIndex = BitConverter.ToInt32(data, offset + 4);
+                topLevelTree.Items.Add(new TreeViewItem
                 {
                     Header = $"0x{offset:X5} Unreal property None Name: {CurrentLoadedExport.FileRef.getNameEntry(noneUnrealProperty)}",
                     Name = "_" + offset,
@@ -216,7 +238,7 @@ namespace ME3Explorer
 
                 int superclassIndex = BitConverter.ToInt32(data, offset);
                 string superclassStr = getEntryFullPath(superclassIndex);
-                topLevelTree.Items.Add(new TreeViewItem()
+                topLevelTree.Items.Add(new TreeViewItem
                 {
                     Header = $"0x{offset:X5} Superclass: {superclassIndex}({superclassStr})",
                     Name = "_" + offset,
@@ -225,7 +247,7 @@ namespace ME3Explorer
                 offset += 4;
 
                 int classObjTree = BitConverter.ToInt32(data, offset);
-                topLevelTree.Items.Add(new TreeViewItem()
+                topLevelTree.Items.Add(new TreeViewItem
                 {
                     Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {getEntryFullPath(classObjTree)}",
                     Name = "_" + offset,
@@ -234,7 +256,7 @@ namespace ME3Explorer
                 offset += 4;
 
                 UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)BitConverter.ToUInt64(data, offset);
-                TreeViewItem objectFlagsNode = new TreeViewItem()
+                TreeViewItem objectFlagsNode = new TreeViewItem
                 {
                     Header = $"0x{offset:X5} ObjectFlags: 0x{(ulong)ObjectFlagsMask:X16}",
                     Name = "_" + offset,
@@ -244,14 +266,14 @@ namespace ME3Explorer
                 topLevelTree.Items.Add(objectFlagsNode);
 
                 //Create objectflags tree
-                foreach (UnrealFlags.EPropertyFlags flag in Enum.GetValues(typeof(UnrealFlags.EPropertyFlags)))
+                foreach (UnrealFlags.EPropertyFlags flag in GetValues<UnrealFlags.EPropertyFlags>())
                 {
                     if ((ObjectFlagsMask & flag) != UnrealFlags.EPropertyFlags.None)
                     {
                         string reason = UnrealFlags.propertyflagsdesc[flag];
-                        objectFlagsNode.Items.Add(new TreeViewItem()
+                        objectFlagsNode.Items.Add(new TreeViewItem
                         {
-                            Header = $"{(ulong)flag:X16} {flag} {(reason.Length > 0 ? reason : "")}",
+                            Header = $"{(ulong)flag:X16} {flag} {reason}",
                             Name = "_" + offset
                         });
                     }
@@ -259,7 +281,7 @@ namespace ME3Explorer
                 offset += 8;
 
                 int unk1 = BitConverter.ToInt32(data, offset);
-                topLevelTree.Items.Add(new TreeViewItem()
+                topLevelTree.Items.Add(new TreeViewItem
                 {
                     Header = $"0x{offset:X5} Unknown1 {unk1}",
                     Name = "_" + offset,
@@ -269,7 +291,7 @@ namespace ME3Explorer
 
                 //has listed outerclass
                 int none = BitConverter.ToInt32(data, offset);
-                topLevelTree.Items.Add(new TreeViewItem()
+                topLevelTree.Items.Add(new TreeViewItem
                 {
                     Header = $"0x{offset:X5} None: {CurrentLoadedExport.FileRef.getNameEntry(none)}",
                     Name = "_" + offset,
@@ -278,7 +300,7 @@ namespace ME3Explorer
                 offset += 8;
 
                 int unk2 = BitConverter.ToInt32(data, offset);
-                topLevelTree.Items.Add(new TreeViewItem()
+                topLevelTree.Items.Add(new TreeViewItem
                 {
                     Header = $"0x{offset:X5} Unknown2: {unk2}",
                     Name = "_" + offset,
@@ -286,56 +308,43 @@ namespace ME3Explorer
                 });
                 offset += 4; //
 
-                if (CurrentLoadedExport.ClassName == "ObjectProperty")
+                switch (CurrentLoadedExport.ClassName)
                 {
-                    //has listed outerclass
-                    int outer = BitConverter.ToInt32(data, offset);
-                    topLevelTree.Items.Add(new TreeViewItem()
+                    case "ObjectProperty":
                     {
-                        Header = $"0x{offset:X5} OuterClass: {outer} {getEntryFullPath(outer)}",
-                        Name = "_" + offset,
-                        Tag = NodeType.StructLeafInt
-                    });
-                    offset += 4;
-                }
-                else if (CurrentLoadedExport.ClassName == "ArrayProperty")
-                {
-                    //has listed outerclass
-                    int outer = BitConverter.ToInt32(data, offset);
-                    topLevelTree.Items.Add(new TreeViewItem()
+                        //has listed outerclass
+                        int outer = BitConverter.ToInt32(data, offset);
+                        topLevelTree.Items.Add(new TreeViewItem
+                        {
+                            Header = $"0x{offset:X5} OuterClass: {outer} {getEntryFullPath(outer)}",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafInt
+                        });
+                        offset += 4;
+                        break;
+                    }
+                    case "ArrayProperty":
                     {
-                        Header = $"0x{offset:X5} Array can hold objects of type: {outer} {getEntryFullPath(outer)}",
-                        Name = "_" + offset,
-                        Tag = NodeType.StructLeafInt
-                    });
-                    offset += 4;
+                        //has listed outerclass
+                        int outer = BitConverter.ToInt32(data, offset);
+                        topLevelTree.Items.Add(new TreeViewItem
+                        {
+                            Header = $"0x{offset:X5} Array can hold objects of type: {outer} {getEntryFullPath(outer)}",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafInt
+                        });
+                        offset += 4;
+                        break;
+                    }
                 }
             }
             catch (Exception ex)
             {
                 topLevelTree.Items.Add($"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}");
             }
-
-            /*treeView1.Nodes.Add(topLevelTree);
-            treeView1.CollapseAll();
-            treeView1.Nodes[0].Expand();
-            TreeViewItem[] nodes;
-
-            if (nodeNameToSelect != null)
-            {
-                nodes = treeView1.Nodes.Find(nodeNameToSelect, true);
-                if (nodes.Length > 0)
-                {
-                    treeView1.SelectedNode = nodes[0];
-                }
-                else
-                {
-                    treeView1.SelectedNode = treeView1.Nodes[0];
-                }
-            }*/
         }
 
-        private void Scan_WwiseStreamBank(TreeViewItem topLevelTree, byte[] data, int binaryStart)
+        private void Scan_WwiseStreamBank(TreeViewItem topLevelTree, byte[] data)
         {
             /*
              * int32 0?
@@ -348,107 +357,103 @@ namespace ME3Explorer
             try
             {
                 int pos = 0;
-                if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
+                switch (CurrentLoadedExport.FileRef.Game)
                 {
-                    pos = CurrentLoadedExport.propsEnd();
+                    case MEGame.ME3:
+                        pos = CurrentLoadedExport.propsEnd();
+                        break;
+                    case MEGame.ME2:
+                        pos = CurrentLoadedExport.propsEnd() + 0x20;
+                        break;
                 }
-                else if (CurrentLoadedExport.FileRef.Game == MEGame.ME2)
-                {
-                    pos = CurrentLoadedExport.propsEnd() + 0x20;
-                }
-
-                int Unk1 = BitConverter.ToInt32(data, pos);
-                int DataSize = BitConverter.ToInt32(data, pos + 4);
-                int DataSize2 = BitConverter.ToInt32(data, pos + 8);
-                int DataOffset = BitConverter.ToInt32(data, pos + +0xC);
 
                 int unk1 = BitConverter.ToInt32(data, pos);
-                topLevelTree.Items.Add(new TreeViewItem()
+                int DataSize = BitConverter.ToInt32(data, pos + 4);
+                int DataSize2 = BitConverter.ToInt32(data, pos + 8);
+                int DataOffset = BitConverter.ToInt32(data, pos + 0xC);
+
+                topLevelTree.Items.Add(new TreeViewItem
                 {
                     Header = $"{pos:X4} Unknown: {unk1}",
                     Name = "_" + pos,
                 });
                 pos += 4;
                 string dataset1type = CurrentLoadedExport.ClassName == "WwiseStream" ? "Stream length" : "Bank size";
-                topLevelTree.Items.Add(new TreeViewItem()
+                topLevelTree.Items.Add(new TreeViewItem
                 {
                     Header = $"{DataSize:X4} : {dataset1type} {DataSize} (0x{DataSize:X})",
                     Name = "_" + pos,
-                    Tag = nodeType.StructLeafInt
+                    Tag = NodeType.StructLeafInt
                 });
                 pos += 4;
-                topLevelTree.Items.Add(new TreeViewItem()
+                topLevelTree.Items.Add(new TreeViewItem
                 {
                     Header = $"{ pos:X4} {dataset1type}: {DataSize2} (0x{ DataSize2:X})",
                     Name = "_" + pos,
-                    Tag = nodeType.StructLeafInt
+                    Tag = NodeType.StructLeafInt
                 });
                 pos += 4;
                 string dataset2type = CurrentLoadedExport.ClassName == "WwiseStream" ? "Stream offset" : "Bank offset";
-                topLevelTree.Items.Add(new TreeViewItem()
+                topLevelTree.Items.Add(new TreeViewItem
                 {
                     Header = $"{pos:X4} {dataset2type} in file: {DataOffset} (0x{DataOffset:X})",
                     Name = "_" + pos,
-                    Tag = nodeType.StructLeafInt
+                    Tag = NodeType.StructLeafInt
                 });
 
                 if (CurrentLoadedExport.ClassName == "WwiseBank")
                 {
                     //if (CurrentLoadedExport.DataOffset < DataOffset && (CurrentLoadedExport.DataOffset + CurrentLoadedExport.DataSize) < DataOffset)
                     //{
-                    topLevelTree.Items.Add(new TreeViewItem()
+                    topLevelTree.Items.Add(new TreeViewItem
                     {
                         Header = "Click here to jump to the calculated end offset of wwisebank in this export",
                         Name = "_" + (DataSize2 + CurrentLoadedExport.propsEnd() + 16),
-                        Tag = nodeType.Unknown
+                        Tag = NodeType.Unknown
                     });
                     //}
                 }
 
                 pos += 4;
-                if (CurrentLoadedExport.ClassName == "WwiseStream")
+                switch (CurrentLoadedExport.ClassName)
                 {
-                    if (pos < data.Length && CurrentLoadedExport.GetProperty<NameProperty>("Filename") == null)
+                    case "WwiseStream" when pos < data.Length && CurrentLoadedExport.GetProperty<NameProperty>("Filename") == null:
                     {
-                        topLevelTree.Items.Add(new TreeViewItem()
+                        topLevelTree.Items.Add(new TreeViewItem
                         {
                             Header = $"{pos:X4} Embedded sound data. Use Soundplorer to modify this data.",
                             Name = "_" + pos,
-                            Tag = nodeType.Unknown
+                            Tag = NodeType.Unknown
                         });
-                        topLevelTree.Items.Add(new TreeViewItem()
+                        topLevelTree.Items.Add(new TreeViewItem
                         {
                             Header = "The stream offset to this data will be automatically updated when this file is saved.",
-                            Tag = nodeType.Unknown
+                            Tag = NodeType.Unknown
                         });
-
+                        break;
                     }
-                }
-                else if (CurrentLoadedExport.ClassName == "WwiseBank")
-                {
-                    topLevelTree.Items.Add(new TreeViewItem()
-                    {
-                        Header = $"{pos:X4} Embedded soundbank. Use Soundplorer WPF to view data.",
-                        Name = "_" + pos,
-                        Tag = nodeType.Unknown
-                    });
-                    topLevelTree.Items.Add(new TreeViewItem()
-                    {
-                        Header = "The bank offset to this data will be automatically updated when this file is saved.",
-                        Tag = nodeType.Unknown
-                    });
+                    case "WwiseBank":
+                        topLevelTree.Items.Add(new TreeViewItem
+                        {
+                            Header = $"{pos:X4} Embedded soundbank. Use Soundplorer WPF to view data.",
+                            Name = "_" + pos,
+                            Tag = NodeType.Unknown
+                        });
+                        topLevelTree.Items.Add(new TreeViewItem
+                        {
+                            Header = "The bank offset to this data will be automatically updated when this file is saved.",
+                            Tag = NodeType.Unknown
+                        });
+                        break;
                 }
             }
             catch (Exception ex)
             {
-                topLevelTree.Items.Add(new TreeViewItem()
+                topLevelTree.Items.Add(new TreeViewItem
                 {
                     Header = $"Error reading binary data: {ex}"
                 });
             }
-
-            //topLevelTree.Expand();
-            //treeView1.Nodes[0].Expand();
         }
 
         private void Scan_WwiseEvent(TreeViewItem topLevelTree, byte[] data, int binarystart)
@@ -456,9 +461,9 @@ namespace ME3Explorer
             try
             {
                 int binarypos = binarystart;
-                List<TreeViewItem> subnodes = new List<TreeViewItem>();
+                var subnodes = new List<TreeViewItem>();
                 int count = BitConverter.ToInt32(data, binarypos);
-                subnodes.Add(new TreeViewItem() { Header = $"0x{binarypos:X4} Count: {count.ToString()}" });
+                subnodes.Add(new TreeViewItem { Header = $"0x{binarypos:X4} Count: {count.ToString()}" });
                 binarypos += 4; //+ int
                 if (count > 0)
                 {
@@ -477,10 +482,10 @@ namespace ME3Explorer
                         nodeText += $"{name} {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
                     }
 
-                    subnodes.Add(new TreeViewItem()
+                    subnodes.Add(new TreeViewItem
                     {
                         Header = nodeText,
-                        Tag = nodeType.StructLeafObject,
+                        Tag = NodeType.StructLeafObject,
                         Name = "_" + binarypos
                     });
                     /*
@@ -504,9 +509,9 @@ namespace ME3Explorer
             try
             {
                 int binarypos = binarystart;
-                List<TreeViewItem> subnodes = new List<TreeViewItem>();
+                var subnodes = new List<TreeViewItem>();
                 int count = BitConverter.ToInt32(data, binarypos);
-                subnodes.Add(new TreeViewItem()
+                subnodes.Add(new TreeViewItem
                 {
                     Header = $"0x{binarypos:X4} Count: {count.ToString()}"
                 });
@@ -523,7 +528,7 @@ namespace ME3Explorer
                         nodeValue += " - Not followed by 1 (integer)!";
                     }
 
-                    subnodes.Add(new TreeViewItem()
+                    subnodes.Add(new TreeViewItem
                     {
                         Header = $"0x{binarypos:X4} Name: {nodeValue}",
                         Tag = NodeType.StructLeafName,
@@ -552,11 +557,11 @@ namespace ME3Explorer
 
             if ((CurrentLoadedExport.Header[0x1f] & 0x2) != 0)
             {
-                List<TreeViewItem> subnodes = new List<TreeViewItem>();
+                var subnodes = new List<TreeViewItem>();
 
                 int pos = binarystart;
                 int length = BitConverter.ToInt32(data, binarystart);
-                subnodes.Add(new TreeViewItem()
+                subnodes.Add(new TreeViewItem
                 {
                     Header = $"{binarystart:X4} Length: {length}",
                     Name = $"_{pos.ToString()}"
@@ -628,7 +633,7 @@ namespace ME3Explorer
             }
         }
 
-        private void StartClassScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        private void StartClassScan(TreeViewItem topLevelTree, byte[] data)
         {
             //const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
             var subnodes = new List<TreeViewItem>();
@@ -681,7 +686,7 @@ namespace ME3Explorer
 
 
                 //I am not sure what these mean. However if Pt1&2 are 33/25, the following bytes that follow are extended.
-                int headerUnknown1 = BitConverter.ToInt32(data, offset);
+                //int headerUnknown1 = BitConverter.ToInt32(data, offset);
                 Int64 ignoreMask = BitConverter.ToInt64(data, offset);
                 subnodes.Add(new TreeViewItem
                 {
@@ -720,10 +725,7 @@ namespace ME3Explorer
                     {
                         break;
                     }
-                    else
-                    {
-                        skipAmount++;
-                    }
+                    skipAmount++;
                 }
                 //if (headerUnknown1 == 33 && headerUnknown2 == 25)
                 //{
@@ -770,7 +772,7 @@ namespace ME3Explorer
                 for (int i = 0; i < localFunctionsTableCount; i++)
                 {
                     int nameTableIndex = BitConverter.ToInt32(data, offset);
-                    int nameIndex = BitConverter.ToInt32(data, offset + 4);
+                    //int nameIndex = BitConverter.ToInt32(data, offset + 4);
                     offset += 8;
                     int functionObjectIndex = BitConverter.ToInt32(data, offset);
                     offset += 4;
@@ -815,7 +817,7 @@ namespace ME3Explorer
                     offset = ClassParser_ReadComponentsTable(subnodes, data, offset);
                     offset = ClassParser_ReadImplementsTable(subnodes, data, offset);
                     int postComponentsNoneNameIndex = BitConverter.ToInt32(data, offset);
-                    int postComponentNoneIndex = BitConverter.ToInt32(data, offset + 4);
+                    //int postComponentNoneIndex = BitConverter.ToInt32(data, offset + 4);
                     string postCompName = CurrentLoadedExport.FileRef.getNameEntry(postComponentsNoneNameIndex); //This appears to be unused in ME#, it is always None it seems.
                                                                                                                  /*if (postCompName != "None")
                                                                                                                  {
@@ -928,7 +930,7 @@ namespace ME3Explorer
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
             {
                 int componentTableNameIndex = BitConverter.ToInt32(data, offset);
-                int componentTableIndex = BitConverter.ToInt32(data, offset + 4);
+                //int componentTableIndex = BitConverter.ToInt32(data, offset + 4);
                 offset += 8;
 
                 subnodes.Add(new TreeViewItem
@@ -944,7 +946,7 @@ namespace ME3Explorer
                 for (int i = 0; i < componentTableCount; i++)
                 {
                     int nameTableIndex = BitConverter.ToInt32(data, offset);
-                    int nameIndex = BitConverter.ToInt32(data, offset + 4);
+                    //int nameIndex = BitConverter.ToInt32(data, offset + 4);
                     offset += 8;
                     int componentObjectIndex = BitConverter.ToInt32(data, offset);
                     offset += 4;
@@ -973,7 +975,7 @@ namespace ME3Explorer
                 for (int i = 0; i < componentTableCount; i++)
                 {
                     int nameTableIndex = BitConverter.ToInt32(data, offset);
-                    int nameIndex = BitConverter.ToInt32(data, offset + 4);
+                    //int nameIndex = BitConverter.ToInt32(data, offset + 4);
                     offset += 8;
                     int componentObjectIndex = BitConverter.ToInt32(data, offset);
 
@@ -1080,7 +1082,7 @@ namespace ME3Explorer
             return offset;
         }
 
-        private void StartEnumScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        private void StartEnumScan(TreeViewItem topLevelTree, byte[] data)
         {
             try
             {
@@ -1096,7 +1098,7 @@ namespace ME3Explorer
                 offset += 4;
 
                 int noneUnrealProperty = BitConverter.ToInt32(data, offset);
-                int noneUnrealPropertyIndex = BitConverter.ToInt32(data, offset + 4);
+                //int noneUnrealPropertyIndex = BitConverter.ToInt32(data, offset + 4);
                 subnodes.Add(new TreeViewItem
                 {
                     Header = $"0x{offset:X5} Unreal property None Name: {CurrentLoadedExport.FileRef.getNameEntry(noneUnrealProperty)}",
@@ -1139,7 +1141,7 @@ namespace ME3Explorer
                     for (int i = 0; i < enumSize; i++)
                     {
                         int enumName = BitConverter.ToInt32(data, offset);
-                        int enumNameIndex = BitConverter.ToInt32(data, offset + 4);
+                        //int enumNameIndex = BitConverter.ToInt32(data, offset + 4);
                         subnodes.Add(new TreeViewItem
                         {
                             Header = $"0x{offset:X5} EnumName[{i}]: {CurrentLoadedExport.FileRef.getNameEntry(enumName)}",
@@ -1226,7 +1228,7 @@ namespace ME3Explorer
             }
         }
 
-        private void StartLevelScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        private void StartLevelScan(TreeViewItem topLevelTree, byte[] data)
         {
             try
             {
@@ -1242,18 +1244,15 @@ namespace ME3Explorer
                         start += 8;
                         break;
                     }
-                    else
-                    {
-                        start += 4;
-                    }
+                    start += 4;
                 }
 
                 //Console.WriteLine("Found start of binary at {start.ToString("X8"));
 
-                uint exportid = BitConverter.ToUInt32(data, start);
+                //uint exportid = BitConverter.ToUInt32(data, start);
                 start += 4;
                 uint numberofitems = BitConverter.ToUInt32(data, start);
-                int countoffset = start;
+                //int countoffset = start;
                 TreeViewItem countnode = new TreeViewItem
                 {
                     Tag = NodeType.Unknown,
@@ -1354,7 +1353,7 @@ namespace ME3Explorer
 
         private void StartMaterialScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
         {
-            const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
+            //const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
 
             if (binarystart >= data.Length)
             {
@@ -1748,7 +1747,7 @@ namespace ME3Explorer
             }
         }
 
-        private void StartTextureBinaryScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        private void StartTextureBinaryScan(TreeViewItem topLevelTree, byte[] data)
         {
             try
             {
@@ -1816,7 +1815,7 @@ namespace ME3Explorer
                     var dataOffset = ReadInt32(textureData);
                     mipMapNode.Items.Add(new TreeViewItem
                     {
-                        Header = $"0x{textureData.Position - 4} Data Offset: 0x{dataOffset.ToString("X8")}",
+                        Header = $"0x{textureData.Position - 4} Data Offset: 0x{dataOffset:X8}",
                         Name = "_" + (textureData.Position - 4)
 
                     });
@@ -2052,6 +2051,104 @@ namespace ME3Explorer
                 topLevelTree.Items.Add($"Error reading binary data: {ex}");
             }
         }
+
+        private void StartGenericScan(TreeViewItem topLevelTree, byte[] data, int binarystart)
+        {
+            if (binarystart == data.Length)
+            {
+                return;
+            }
+            try
+            {
+                viewModeComboBox.Visibility = Visibility.Visible;
+                var subnodes = new List<TreeViewItem>();
+                int binarypos = binarystart;
+
+                //binarypos += 0x1C; //Skip ??? and GUID
+                //int guid = BitConverter.ToInt32(data, binarypos);
+                /*int num1 = BitConverter.ToInt32(data, binarypos);
+                TreeNode node = new TreeNode($"0x{binarypos:X4} ???: {num1.ToString());
+                subnodes.Add(node);
+                binarypos += 4;
+                int num2 = BitConverter.ToInt32(data, binarypos);
+                node = new TreeNode($"0x{binarypos:X4} Count: {num2.ToString());
+                subnodes.Add(node);
+                binarypos += 4;
+                */
+                int datasize = 4;
+                if (interpreterMode == InterpreterMode.Names)
+                {
+                    datasize = 8;
+                }
+
+                while (binarypos <= data.Length - datasize)
+                {
+
+                    string nodeText = $"0x{binarypos:X4} : ";
+                    var node = new TreeViewItem();
+
+                    switch (interpreterMode)
+                    {
+                        case InterpreterMode.Objects:
+                            {
+                                int val = BitConverter.ToInt32(data, binarypos);
+                                string name = val.ToString();
+                                if (val > 0 && val <= CurrentLoadedExport.FileRef.ExportCount)
+                                {
+                                    IExportEntry exp = CurrentLoadedExport.FileRef.Exports[val - 1];
+                                    nodeText += $"{name} {exp.PackageFullName}.{exp.ObjectName} ({exp.ClassName})";
+                                }
+                                else if (val < 0 && val != int.MinValue && Math.Abs(val) <= CurrentLoadedExport.FileRef.ImportCount)
+                                {
+                                    int csImportVal = Math.Abs(val) - 1;
+                                    ImportEntry imp = CurrentLoadedExport.FileRef.Imports[csImportVal];
+                                    nodeText += $"{name} {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
+                                }
+                                node.Tag = NodeType.StructLeafObject;
+                                break;
+                            }
+                        case InterpreterMode.Names:
+                            {
+                                int val = BitConverter.ToInt32(data, binarypos);
+                                if (val > 0 && val <= CurrentLoadedExport.FileRef.NameCount)
+                                {
+                                    nodeText += $"{val} \t{CurrentLoadedExport.FileRef.getNameEntry(val)}";
+                                }
+                                else
+                                {
+                                    nodeText += $"\t{val}";
+                                }
+                                node.Tag = NodeType.StructLeafName;
+                                break;
+                            }
+                        case InterpreterMode.Floats:
+                            {
+                                float val = BitConverter.ToSingle(data, binarypos);
+                                nodeText += val.ToString();
+                                node.Tag = NodeType.StructLeafFloat;
+                                break;
+                            }
+                        case InterpreterMode.Integers:
+                            {
+                                int val = BitConverter.ToInt32(data, binarypos);
+                                nodeText += val.ToString();
+                                node.Tag = NodeType.StructLeafInt;
+                                break;
+                            }
+                    }
+                    node.Header = nodeText;
+                    node.Name = "_" + binarypos;
+                    subnodes.Add(node);
+                    binarypos += 4;
+                }
+
+                topLevelTree.ItemsSource = subnodes;
+            }
+            catch (Exception ex)
+            {
+                topLevelTree.Items.Add($"An error occured parsing the staticmesh: {ex.Message}");
+            }
+        }
         #endregion
 
         public override void UnloadExport()
@@ -2139,8 +2236,9 @@ namespace ME3Explorer
                     StatusBar_LeftMostText.Text = "Nothing Selected";
                 }
             }
-            catch (Exception)
+            catch
             {
+                // ignored
             }
         }
 
@@ -2158,6 +2256,12 @@ namespace ME3Explorer
                 retStr += coreRefEntry.GetFullPath;
             }
             return retStr;
+        }
+
+        private void viewModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            interpreterMode = (InterpreterMode) viewModeComboBox.SelectedValue;
+            StartBinaryScan();
         }
     }
 }

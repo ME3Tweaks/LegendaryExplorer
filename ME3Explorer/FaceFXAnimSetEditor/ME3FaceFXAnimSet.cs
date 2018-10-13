@@ -14,15 +14,9 @@ namespace ME3Explorer.FaceFX
     {
         IMEPackage pcc;
         public IExportEntry export;
-        public IExportEntry Export { get { return export; } }
+        public IExportEntry Export => export;
         ME3HeaderStruct header;
-        public HeaderStruct Header
-        {
-            get
-            {
-                return header;
-            }
-        }
+        public HeaderStruct Header => header;
         public ME3DataAnimSetStruct Data { get; private set; }
 
         public ME3FaceFXAnimSet()

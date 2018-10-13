@@ -50,6 +50,7 @@ namespace ME3Explorer.Packages
         bool IsCompressed { get; }
         bool CanReconstruct { get; }
         bool IsModified { get; }
+        int NameCount { get; }
         int ExportCount { get; }
         int ImportCount { get; }
         int ImportOffset { get; }

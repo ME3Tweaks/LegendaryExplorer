@@ -11,19 +11,18 @@ using System.Windows.Shapes;
 
 namespace ME3Explorer.CurveEd
 {
-
-    class Handle : Thumb
+    internal class Handle : Thumb
     {
         public const double HANDLE_LENGTH = 30f;
         private const double angleCutoff = 90 * (Math.PI / 180);
         public Anchor anchor;
 
-        private bool Left;
+        private readonly bool Left;
 
         public double Y
         {
-            get { return (double)GetValue(YProperty); }
-            set { SetValue(YProperty, value); }
+            get => (double)GetValue(YProperty);
+            set => SetValue(YProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Y.  This enables animation, styling, binding, etc...
@@ -32,8 +31,8 @@ namespace ME3Explorer.CurveEd
 
         public double X
         {
-            get { return (double)GetValue(XProperty); }
-            set { SetValue(XProperty, value); }
+            get => (double)GetValue(XProperty);
+            set => SetValue(XProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for X.  This enables animation, styling, binding, etc...
@@ -42,8 +41,8 @@ namespace ME3Explorer.CurveEd
 
         public double Slope
         {
-            get { return (double)GetValue(SlopeProperty); }
-            set { SetValue(SlopeProperty, value); }
+            get => (double)GetValue(SlopeProperty);
+            set => SetValue(SlopeProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Slope.  This enables animation, styling, binding, etc...
@@ -52,8 +51,7 @@ namespace ME3Explorer.CurveEd
 
         private static void OnSlopeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            Handle h = sender as Handle;
-            if (h != null)
+            if (sender is Handle h)
             {
                 if (h.Left)
                 {
