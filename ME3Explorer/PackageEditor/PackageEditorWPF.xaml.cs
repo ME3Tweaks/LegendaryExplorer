@@ -83,22 +83,9 @@ namespace ME3Explorer
         private string currentFile;
         private List<int> ClassNames;
         //private HexBox Header_Hexbox;
-        private bool loadingNewData = false;
-        private HexBox Header_Hexbox;
         private IEntry CurrentlyLoadedEntry;
 
-        private const int HEADER_OFFSET_EXP_IDXCLASS = 0;
-        private const int HEADER_OFFSET_EXP_IDXSUPERCLASS = 4;
-        private const int HEADER_OFFSET_EXP_IDXLINK = 8;
-        private const int HEADER_OFFSET_EXP_IDXOBJECTNAME = 12;
-        private const int HEADER_OFFSET_EXP_INDEXVALUE = 16;
-        private const int HEADER_OFFSET_EXP_IDXARCHETYPE = 20;
-        private const int HEADER_OFFSET_EXP_OBJECTFLAGS = 24;
 
-        private const int HEADER_OFFSET_IMP_IDXCLASSNAME = 8;
-        private const int HEADER_OFFSET_IMP_IDXLINK = 12;
-        private const int HEADER_OFFSET_IMP_IDXOBJECTNAME = 20;
-        private const int HEADER_OFFSET_IMP_IDXPACKAGEFILE = 0;
         private bool Visible_ObjectNameRow { get; set; }
         //private List<AdvancedTreeViewItem<TreeViewItem>> AllTreeViewNodes = new List<AdvancedTreeViewItem<TreeViewItem>>();
         public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; set; } = new ObservableCollectionExtended<TreeViewEntry>();
@@ -126,7 +113,6 @@ namespace ME3Explorer
         }
 
         private string _busyText;
-        private List<string> Classes;
 
         public string BusyText
         {
@@ -478,6 +464,7 @@ namespace ME3Explorer
             InitializeComponent();
             //map export loaders to their tabs
             ExportLoaders[InterpreterTab_Interpreter] = Interpreter_Tab;
+            ExportLoaders[MetadataTab_MetadataEditor] = Metadata_Tab;
             ExportLoaders[SoundTab_Soundpanel] = Sound_Tab;
             ExportLoaders[CurveTab_CurveEditor] = CurveEditor_Tab;
             ExportLoaders[Bio2DATab_Bio2DAEditor] = Bio2DAViewer_Tab;
@@ -896,15 +883,13 @@ namespace ME3Explorer
                 ClassNames.Add(Exports[i].idxClass); //This can probably be linq'd
             }
 
-            ReloadClassesListForMetadata(); //can be optimized with above statement
 
             List<string> names = ClassNames.Distinct().Select(Pcc.getObjectName).ToList();
             names.Sort();
             ClearList(ClassDropdown_Combobox);
             ClassDropdown_Combobox.ItemsSource = names.ToArray();
-            InfoTab_Objectname_ComboBox.ItemsSource = Pcc.Names;
-            InfoTab_ImpClass_ComboBox.ItemsSource = Pcc.Names;
-            InfoTab_PackageFile_ComboBox.ItemsSource = Pcc.Names;
+            MetadataTab_MetadataEditor.LoadPccData(Pcc);
+
         }
 
         /// <summary>
@@ -977,23 +962,7 @@ namespace ME3Explorer
             }*/
         }
 
-        private void ReloadClassesListForMetadata()
-        {
-            IReadOnlyList<ImportEntry> imports = Pcc.Imports;
-            Classes = new List<string>();
-            for (int i = imports.Count - 1; i >= 0; i--)
-            {
-                Classes.Add($"{-i + 1}: {imports[i].GetFullPath}");
-            }
-            Classes.Add("0 : Class");
-            int count = 1;
-            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
-            foreach (IExportEntry exp in Exports)
-            {
-                Classes.Add($"{count++}: {exp.GetFullPath}");
-            }
-            InfoTab_PackageLink_ComboBox.ItemsSource = Classes;
-        }
+
 
         public void PreviewInfo(int n)
         {
@@ -1001,123 +970,12 @@ namespace ME3Explorer
 
             if (n > 0)
             {
-                n--; //convert to 0 based indexing
-                try
-                {
-                    Row_Archetype.Height = new GridLength(24);
-                    Row_ExpClass.Height = new GridLength(24);
-                    Row_Superclass.Height = new GridLength(24);
-                    Row_ImpClass.Height = new GridLength(0);
-                    Row_ExpClass.Height = new GridLength(24);
-                    Row_Packagefile.Height = new GridLength(0);
-                    Row_ObjectFlags.Height = new GridLength(24);
-                    Row_ExportDataSize.Height = new GridLength(24);
-                    Row_ExportDataOffsetDec.Height = new GridLength(24);
-                    Row_ExportDataOffsetHex.Height = new GridLength(24);
-                    InfoTab_Link_TextBlock.Text = "0x08 Link:";
-                    InfoTab_ObjectName_TextBlock.Text = "0x0C Object name:";
-
-                    IExportEntry exportEntry = Pcc.getExport(n);
-                    InfoTab_Objectname_ComboBox.SelectedItem = exportEntry.ObjectName;
-
-                    if (exportEntry.idxClass != 0)
-                    {
-                        //IEntry _class = pcc.getEntry(exportEntry.idxClass);
-                        InfoTab_Class_ComboBox.ItemsSource = Classes;
-                        InfoTab_Class_ComboBox.SelectedIndex = exportEntry.idxClass + exportEntry.FileRef.Imports.Count; //make positive
-                    }
-                    else
-                    {
-                        InfoTab_Class_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
-                    }
-                    InfoTab_Superclass_ComboBox.ItemsSource = Classes;
-                    if (exportEntry.idxClassParent != 0)
-                    {
-                        InfoTab_Superclass_ComboBox.SelectedIndex = exportEntry.idxClassParent + exportEntry.FileRef.Imports.Count; //make positive
-                    }
-                    else
-                    {
-                        InfoTab_Superclass_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
-                    }
-
-                    if (exportEntry.idxLink != 0)
-                    {
-                        InfoTab_PackageLink_ComboBox.SelectedIndex = exportEntry.idxLink + exportEntry.FileRef.Imports.Count; //make positive
-                    }
-                    else
-                    {
-                        InfoTab_PackageLink_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
-                    }
-                    InfoTab_Headersize_TextBox.Text = exportEntry.Header.Length + " bytes";
-                    InfoTab_ObjectnameIndex_TextBox.Text = BitConverter.ToInt32(exportEntry.Header, HEADER_OFFSET_EXP_IDXOBJECTNAME + 4).ToString();
-                    InfoTab_Archetype_ComboBox.ItemsSource = Classes;
-                    if (exportEntry.idxArchtype != 0)
-                    {
-                        InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.idxArchtype + exportEntry.FileRef.Imports.Count; //make positive
-                    }
-                    else
-                    {
-                        InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
-                    }
-                    var flagsList = GetValues<EObjectFlags>().Distinct().ToList();
-                    //Don't even get me started on how dumb it is that SelectedItems is read only...
-                    string selectedFlags = "";
-                    foreach (EObjectFlags flag in flagsList)
-                    {
-                        bool selected = (exportEntry.ObjectFlags & (ulong)flag) != 0;
-                        if (selected)
-                        {
-                            if (selectedFlags != "")
-                            {
-                                selectedFlags += " ";
-                            }
-                            selectedFlags += flag;
-                        }
-                    }
-
-                    InfoTab_Flags_ComboBox.ItemsSource = flagsList;
-                    InfoTab_Flags_ComboBox.SelectedValue = selectedFlags;
-
-                    InfoTab_ExportDataSize_TextBox.Text = exportEntry.DataSize + " bytes";
-                    InfoTab_ExportOffsetHex_TextBox.Text = "0x" + exportEntry.DataOffset.ToString("X8");
-                    InfoTab_ExportOffsetDec_TextBox.Text = exportEntry.DataOffset.ToString();
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show("An error occured while attempting to read the header for this export. This indicates there is likely something wrong with the header or its parent header.\n\n" + e.Message);
-                }
             }
             else
             {
                 n = -n - 1; //convert to 0 based indexing (imports list)
                 ImportEntry importEntry = Pcc.getImport(n);
-                InfoTab_Headersize_TextBox.Text = importEntry.Header.Length + " bytes";
-                Row_Archetype.Height = new GridLength(0);
-                Row_ExpClass.Height = new GridLength(0);
-                Row_ImpClass.Height = new GridLength(24);
-                Row_ExportDataSize.Height = new GridLength(0);
-                Row_ExportDataOffsetDec.Height = new GridLength(0);
-                Row_ExportDataOffsetHex.Height = new GridLength(0);
 
-                Row_Superclass.Height = new GridLength(0);
-                Row_ObjectFlags.Height = new GridLength(0);
-                Row_Packagefile.Height = new GridLength(24);
-                InfoTab_Link_TextBlock.Text = "0x0C Link:";
-                InfoTab_ObjectName_TextBlock.Text = "0x14 Object name:";
-
-                InfoTab_Objectname_ComboBox.SelectedItem = importEntry.ObjectName;
-                InfoTab_ImpClass_ComboBox.SelectedItem = importEntry.ClassName;
-                if (importEntry.idxLink != 0)
-                {
-                    InfoTab_PackageLink_ComboBox.SelectedIndex = importEntry.idxLink + importEntry.FileRef.Imports.Count; //make positive
-                }
-                else
-                {
-                    InfoTab_PackageLink_ComboBox.SelectedIndex = importEntry.FileRef.Imports.Count; //Class, 0
-                }
-
-                InfoTab_PackageFile_ComboBox.SelectedItem = System.IO.Path.GetFileNameWithoutExtension(importEntry.PackageFile);
-                InfoTab_ObjectnameIndex_TextBox.Text = BitConverter.ToInt32(importEntry.Header, HEADER_OFFSET_IMP_IDXOBJECTNAME + 4).ToString();
                 /*infoHeaderBox.Text = "Import Header";
                  superclassTextBox.Visible = superclassLabel.Visible = false;
                  archetypeBox.Visible = label6.Visible = false;
@@ -1202,10 +1060,7 @@ namespace ME3Explorer
                      hasSelection &&
                      updates.Contains(new PackageUpdate { index = n - 1, change = PackageChange.ExportData }))
             {
-                //interpreterControl.memory = pcc.getExport(n).Data;
-                //interpreterControl.RefreshMem();
-                //binaryInterpreterControl.memory = pcc.getExport(n).Data;
-                //binaryInterpreterControl.RefreshMem();
+                //GetTreeViewEntryByUIndex(n).RefreshDisplayName();
                 Preview(true);
             }
         }
@@ -1221,20 +1076,7 @@ namespace ME3Explorer
         /// <param name="e"></param>
         private void LeftSide_SelectedItemChanged(object sender, RoutedEventArgs e)
         {
-            /* Dispatcher.BeginInvoke(DispatcherPriority.Background,
-         (NoArgDelegate)delegate
-         {*/
-            loadingNewData = true;
             Preview();
-            //TreeViewItem item = LeftSide_TreeView.ItemContainerGenerator.ContainerFromItem(sender as TreeViewItem) as TreeViewItem;
-
-            //if (item != null)
-            //{
-            //    item.BringIntoView();
-            //    e.Handled = true;
-            //}
-            loadingNewData = false;
-            //});
         }
 
         /// <summary>
@@ -1244,10 +1086,8 @@ namespace ME3Explorer
         /// <param name="e"></param>
         private void LeftSide_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
-            loadingNewData = true;
             Preview();
             e.Handled = true;
-            loadingNewData = false;
         }
 
         /// <summary>
@@ -1257,7 +1097,6 @@ namespace ME3Explorer
         /// <param name="isRefresh">(needs testing what this does)/param>
         private void Preview(bool isRefresh = false)
         {
-            Info_Header_UnsavedChanges.Visibility = Visibility.Collapsed;
             if (!GetSelected(out int n))
             {
                 InterpreterTab_Interpreter.UnloadExport();
@@ -1272,10 +1111,9 @@ namespace ME3Explorer
                 }
                 EditorTabs.IsEnabled = false;
                 Metadata_Tab.Visibility = Visibility.Collapsed;
-                ClearMetadataPane();
+                MetadataTab_MetadataEditor.ClearMetadataPane();
                 Intro_Tab.Visibility = Visibility.Visible;
                 Intro_Tab.IsSelected = true;
-
                 return;
             }
             EditorTabs.IsEnabled = true;
@@ -1285,60 +1123,13 @@ namespace ME3Explorer
 
             if (CurrentView == View.Imports || CurrentView == View.Exports || CurrentView == View.Tree)
             {
-                //tabControl1_SelectedIndexChanged(null, null);
                 PreviewInfo(n);
-                //Info_HeaderRaw_Hexbox.Stream = new System.IO.MemoryStream(Pcc.getEntry(n.ToUnrealIdx()).header);
-                //RefreshMetaData();
-                //export
                 Interpreter_Tab.IsEnabled = n >= 0;
                 if (n >= 0)
                 {
 
-                    /*PreviewProps(n);
-                     if (!packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
-                     {
-                         packageEditorTabPane.TabPages.Insert(0, propertiesTab);
-                     }
-                     if (!packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
-                     {
-                         packageEditorTabPane.TabPages.Insert(1, interpreterTab);
-                     }*/
-
                     IExportEntry exportEntry = Pcc.getExport(n - 1);
                     CurrentlyLoadedEntry = exportEntry;
-                    Header_Hexbox.ByteProvider = new DynamicByteProvider(CurrentlyLoadedEntry.Header);
-                    Header_Hexbox.ByteProvider.Changed += InfoTab_Header_ByteProvider_InternalChanged;
-                    Info_Header_UnsavedChanges.Visibility = Visibility.Hidden;
-                    /*Script_Tab.Visibility = exportEntry.ClassName == "Function" ? Visibility.Visible : Visibility.Collapsed;
-                    if (exportEntry.ClassName == "Function")
-                    {
-                        /*
-                                                if (!Script_Tab.TabPages.ContainsKey(nameof(scriptTab)))
-                                                {
-                                                    packageEditorTabPane.TabPages.Add(scriptTab);
-                                                }
-                        if (Pcc.Game == MEGame.ME3)
-                        {
-                            Function func = new Function(exportEntry.Data, pcc);
-                            Script_TextBox.Text = func.ToRawText();
-                        }
-                        else if (Pcc.Game == MEGame.ME1)
-                        {
-                            ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(exportEntry.Data, pcc as ME1Package);
-                            try
-                            {
-                                Script_TextBox.Text = func.ToRawText();
-                            }
-                            catch (Exception e)
-                            {
-                                Script_TextBox.Text = "Error parsing function: " + e.Message;
-                            }
-                        }
-                        else
-                        {
-                            Script_TextBox.Text = "Parsing UnrealScript Functions for this game is not supported.";
-                        }
-                    }*/
 
                     foreach (KeyValuePair<ExportLoaderControl, TabItem> entry in ExportLoaders)
                     {
@@ -1354,125 +1145,42 @@ namespace ME3Explorer
                             entry.Key.UnloadExport();
                         }
                     }
-
-
                 }
 
 
-                /*
-                else if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
-                {
-                    packageEditorTabPane.TabPages.Remove(scriptTab);
-                }
-
-                if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName))
-                {
-                    if (!packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
-                    {
-                        packageEditorTabPane.TabPages.Add(binaryEditorTab);
-                    }
-                }
+                //import
                 else
                 {
-                    removeBinaryTabPane();
-                }*/
-
-                //if (Bio2DAEditorWPF.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
-                //{
-                //    Bio2DAViewer_Tab.Visibility = Visibility.Visible;
-                //    Bio2DATab_Bio2DAEditor.LoadExport(exportEntry);
-                //}
-                //else
-                //{
-                //    Bio2DAViewer_Tab.Visibility = Visibility.Collapsed;
-                //    Bio2DATab_Bio2DAEditor.UnloadExport();
-                //}
-
-                /*
-
-                headerRawHexBox.ByteProvider = new DynamicByteProvider(exportEntry.header);*/
-                /*if (!isRefresh)
-                {
-                    //InterpreterTab_Interpreter.LoadExport(exportEntry);
-                    Interpreter_Tab.Visibility = Visibility.Visible;
-
-                    //interpreterControl.export = exportEntry;
-                    //interpreterControl.InitInterpreter();
-
-                    if (BinaryInterpreter.ParsableBinaryClasses.Contains(exportEntry.ClassName))
+                    Visible_ObjectNameRow = false;
+                    ImportEntry importEntry = Pcc.getImport(-n - 1);
+                    MetadataTab_MetadataEditor.LoadImport(importEntry);
+                    CurrentlyLoadedEntry = importEntry;
+                    foreach (KeyValuePair<ExportLoaderControl, TabItem> entry in ExportLoaders)
                     {
-                        if (exportEntry.ClassName == "Class" && exportEntry.ObjectName.StartsWith("Default__"))
+                        if (entry.Key != MetadataTab_MetadataEditor)
                         {
-                            //do nothing, this class is not actually a class.
-                            BinaryInterpreter_Tab.Visibility = Visibility.Visible;
-                        }
-                        else
-                        {
-                            //binaryInterpreterControl.export = exportEntry;
-                            //binaryInterpreterControl.InitInterpreter();
-                            BinaryInterpreter_Tab.Visibility = Visibility.Collapsed;
-
+                            entry.Value.Visibility = Visibility.Collapsed;
+                            entry.Key.UnloadExport();
                         }
                     }
-                    if (Bio2DAEditor.ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__"))
-                    {
-                        Bio2DAViewer_Tab.Visibility = Visibility.Visible;
-                        //bio2DAEditor1.export = exportEntry;
-                        //bio2DAEditor1.InitInterpreter();
-                    }
-                    else
-                    {
-                        Bio2DAViewer_Tab.Visibility = Visibility.Collapsed;
-                    }
-                }*/
-            }
-            //import
-            else
-            {
-                Visible_ObjectNameRow = false;
-                ImportEntry importEntry = Pcc.getImport(-n - 1);
-                CurrentlyLoadedEntry = importEntry;
-                Header_Hexbox.ByteProvider = new DynamicByteProvider(CurrentlyLoadedEntry.Header);
-                Header_Hexbox.ByteProvider.Changed += InfoTab_Header_ByteProvider_InternalChanged;
-                Script_Tab.Visibility = BinaryInterpreter_Tab.Visibility = Bio2DAViewer_Tab.Visibility = Sound_Tab.Visibility = Visibility.Collapsed;
-                Metadata_Tab.IsSelected = true;
-                PreviewInfo(n);
-                /*   n = -n - 1;
-                   headerRawHexBox.ByteProvider = new DynamicByteProvider(Pcc.getImport(n).header);
-                   UpdateStatusIm(n);
-                   if (packageEditorTabPane.TabPages.ContainsKey(nameof(interpreterTab)))
-                   {
-                       packageEditorTabPane.TabPages.Remove(interpreterTab);
-                   }
-                   if (packageEditorTabPane.TabPages.ContainsKey(nameof(propertiesTab)))
-                   {
-                       packageEditorTabPane.TabPages.Remove(propertiesTab);
-                   }
-                   if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
-                   {
-                       packageEditorTabPane.TabPages.Remove(scriptTab);
-                   }
-                   if (packageEditorTabPane.TabPages.ContainsKey(nameof(binaryEditorTab)))
-                   {
-                       packageEditorTabPane.TabPages.Remove(binaryEditorTab);
-                   }
-               }
-               */
-            }
-            //CHECK THE CURRENT TAB IS VISIBLE/ENABLED. IF NOT, CHOOSE FIRST TAB THAT IS 
-            TabItem currentTab = (TabItem)EditorTabs.Items[EditorTabs.SelectedIndex];
-            if (!currentTab.IsEnabled || !currentTab.IsVisible)
-            {
-                int index = 0;
-                while (index < EditorTabs.Items.Count)
+                    Metadata_Tab.IsSelected = true;
+                    PreviewInfo(n);
+                }
+                //CHECK THE CURRENT TAB IS VISIBLE/ENABLED. IF NOT, CHOOSE FIRST TAB THAT IS 
+                TabItem currentTab = (TabItem)EditorTabs.Items[EditorTabs.SelectedIndex];
+                if (!currentTab.IsEnabled || !currentTab.IsVisible)
                 {
-                    TabItem ti = (TabItem)EditorTabs.Items[index];
-                    if (ti.IsEnabled && ti.IsVisible)
+                    int index = 0;
+                    while (index < EditorTabs.Items.Count)
                     {
-                        EditorTabs.SelectedIndex = index;
-                        break;
+                        TabItem ti = (TabItem)EditorTabs.Items[index];
+                        if (ti.IsEnabled && ti.IsVisible)
+                        {
+                            EditorTabs.SelectedIndex = index;
+                            break;
+                        }
+                        index++;
                     }
-                    index++;
                 }
             }
         }
@@ -1515,170 +1223,7 @@ namespace ME3Explorer
             }
         }
 
-        private void PackageEditorWPF_Loaded(object sender, RoutedEventArgs e)
-        {
-            // Get reference to hexbox winforms control
-            Header_Hexbox = (HexBox)Header_Hexbox_Host.Child;
-        }
-
-        private void Info_ClassComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!loadingNewData)
-            {
-                var selectedClassIndex = InfoTab_Class_ComboBox.SelectedIndex;
-                var unrealIndex = selectedClassIndex - Pcc.ImportCount;
-                Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXCLASS, BitConverter.GetBytes(unrealIndex));
-            }
-        }
-
-        private void InfoTab_Header_ByteProvider_InternalChanged(object sender, EventArgs e)
-        {
-            Info_Header_UnsavedChanges.Visibility = Header_Hexbox.ByteProvider.HasChanges() ? Visibility.Visible : Visibility.Hidden;
-            Header_Hexbox.Refresh();
-        }
-
-        private void Info_HeaderHexSaveChanges_Click(object sender, RoutedEventArgs e)
-        {
-            MemoryStream m = new MemoryStream();
-            IByteProvider provider = Header_Hexbox.ByteProvider;
-            for (int i = 0; i < provider.Length; i++)
-                m.WriteByte(provider.ReadByte(i));
-            CurrentlyLoadedEntry.Header = m.ToArray();
-            TreeViewEntry tve = GetTreeViewEntryByUIndex(CurrentlyLoadedEntry.UIndex);
-            if (tve != null)
-            {
-                tve.RefreshDisplayName();
-            }
-            //todo: mvvm-ize this
-            if (Header_Hexbox.ByteProvider != null)
-            {
-                Header_Hexbox.ByteProvider.ApplyChanges();
-            }
-            Info_Header_UnsavedChanges.Visibility = Header_Hexbox.ByteProvider.HasChanges() ? Visibility.Visible : Visibility.Hidden;
-        }
-
-        private void Info_PackageLinkClassComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!loadingNewData)
-            {
-                var selectedImpExp = InfoTab_PackageLink_ComboBox.SelectedIndex;
-                var unrealIndex = selectedImpExp - Pcc.ImportCount;
-                Header_Hexbox.ByteProvider.WriteBytes(CurrentlyLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXLINK : HEADER_OFFSET_IMP_IDXLINK, BitConverter.GetBytes(unrealIndex));
-            }
-        }
-
-        private void Info_SuperClassComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!loadingNewData)
-            {
-                var selectedClassIndex = InfoTab_Superclass_ComboBox.SelectedIndex;
-                var unrealIndex = selectedClassIndex - Pcc.ImportCount;
-                Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXSUPERCLASS, BitConverter.GetBytes(unrealIndex));
-            }
-        }
-
-        private void Info_ObjectNameComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!loadingNewData)
-            {
-                var selectedNameIndex = InfoTab_Objectname_ComboBox.SelectedIndex;
-                Header_Hexbox.ByteProvider.WriteBytes(CurrentlyLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXOBJECTNAME : HEADER_OFFSET_IMP_IDXOBJECTNAME, BitConverter.GetBytes(selectedNameIndex));
-            }
-        }
-
-        private void Info_IndexTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (!loadingNewData)
-            {
-                int x;
-                if (int.TryParse(InfoTab_ObjectnameIndex_TextBox.Text, out x))
-                {
-                    Header_Hexbox.ByteProvider.WriteBytes(CurrentlyLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXOBJECTNAME + 4 : HEADER_OFFSET_IMP_IDXOBJECTNAME + 4, BitConverter.GetBytes(x));
-                }
-            }
-        }
-
-        private void Info_ArchetypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!loadingNewData)
-            {
-                var selectedArchetTypeIndex = InfoTab_Archetype_ComboBox.SelectedIndex;
-                var unrealIndex = selectedArchetTypeIndex - Pcc.ImportCount;
-                Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXARCHETYPE, BitConverter.GetBytes(selectedArchetTypeIndex));
-            }
-        }
-
-        private void Info_PackageFileComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!loadingNewData)
-            {
-                var selectedNameIndex = InfoTab_PackageFile_ComboBox.SelectedIndex;
-                Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_IMP_IDXOBJECTNAME, BitConverter.GetBytes(selectedNameIndex));
-            }
-        }
-
-        private void Info_ImpClassComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!loadingNewData)
-            {
-                var selectedNameIndex = InfoTab_PackageFile_ComboBox.SelectedIndex;
-                Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_IMP_IDXCLASSNAME, BitConverter.GetBytes(selectedNameIndex));
-            }
-        }
-
-        private void InfoTab_Objectname_ComboBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            Header_Hexbox.SelectionStart = CurrentlyLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXOBJECTNAME : HEADER_OFFSET_IMP_IDXOBJECTNAME;
-            Header_Hexbox.SelectionLength = 4;
-        }
-
-        private void InfoTab_Class_ComboBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            Header_Hexbox.SelectionStart = HEADER_OFFSET_EXP_IDXCLASS;
-            Header_Hexbox.SelectionLength = 4;
-        }
-
-        private void InfoTab_ImpClass_ComboBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            Header_Hexbox.SelectionStart = HEADER_OFFSET_IMP_IDXCLASSNAME;
-            Header_Hexbox.SelectionLength = 4;
-        }
-
-        private void InfoTab_Superclass_ComboBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            Header_Hexbox.SelectionStart = HEADER_OFFSET_EXP_IDXSUPERCLASS;
-            Header_Hexbox.SelectionLength = 4;
-        }
-
-        private void InfoTab_PackageLink_ComboBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            Header_Hexbox.SelectionStart = CurrentlyLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXLINK : HEADER_OFFSET_IMP_IDXLINK;
-            Header_Hexbox.SelectionLength = 4;
-        }
-
-        private void InfoTab_PackageFile_ComboBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            Header_Hexbox.SelectionStart = HEADER_OFFSET_IMP_IDXPACKAGEFILE;
-            Header_Hexbox.SelectionLength = 4;
-        }
-
-        private void InfoTab_Archetype_ComboBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            Header_Hexbox.SelectionStart = HEADER_OFFSET_EXP_IDXARCHETYPE;
-            Header_Hexbox.SelectionLength = 4;
-        }
-
-        private void InfoTab_Flags_ComboBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            Header_Hexbox.SelectionStart = HEADER_OFFSET_EXP_OBJECTFLAGS;
-            Header_Hexbox.SelectionLength = 8;
-        }
-
-        private void InfoTab_ObjectNameIndex_ComboBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            Header_Hexbox.SelectionStart = CurrentlyLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXOBJECTNAME + 4 : HEADER_OFFSET_IMP_IDXOBJECTNAME + 4;
-            Header_Hexbox.SelectionLength = 4;
-        }
+        
 
         /// <summary>
         /// Handler for when the Goto button is clicked
@@ -1812,28 +1357,7 @@ namespace ME3Explorer
             Goto_TextBox.SelectAll();
         }
 
-        /// <summary>
-        /// Handler for when the flags combobox item changes values in the metadata tab
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void InfoTab_Flags_ComboBox_ItemSelectionChanged(object sender, Xceed.Wpf.Toolkit.Primitives.ItemSelectionChangedEventArgs e)
-        {
-            if (!loadingNewData)
-            {
-                EPropertyFlags newFlags = 0U;
-                foreach (var flag in InfoTab_Flags_ComboBox.Items)
-                {
-                    var selectorItem = InfoTab_Flags_ComboBox.ItemContainerGenerator.ContainerFromItem(flag) as SelectorItem;
-                    if ((selectorItem != null) && !selectorItem.IsSelected.Value)
-                    {
-                        newFlags |= (EPropertyFlags)flag;
-                    }
-                }
-                Debug.WriteLine(newFlags);
-                Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_EXP_OBJECTFLAGS, BitConverter.GetBytes((UInt64)newFlags));
-            }
-        }
+        
 
         /// <summary>
         /// Command binding for opening the ComparePackage tool
@@ -2523,25 +2047,7 @@ namespace ME3Explorer
             }
         }
 
-        internal void ClearMetadataPane()
-        {
-            InfoTab_Objectname_ComboBox.SelectedItem = null;
-            InfoTab_Class_ComboBox.SelectedItem = null;
-            InfoTab_Superclass_ComboBox.SelectedItem = null;
-            InfoTab_PackageLink_ComboBox.SelectedItem = null;
-            InfoTab_Headersize_TextBox.Text = null;
-            InfoTab_ObjectnameIndex_TextBox.Text = null;
-            InfoTab_Archetype_ComboBox.ItemsSource = null;
-            InfoTab_Archetype_ComboBox.Items.Clear();
-            InfoTab_Archetype_ComboBox.SelectedItem = null;
-            InfoTab_Flags_ComboBox.ItemsSource = null;
-            InfoTab_Flags_ComboBox.SelectedItem = null;
-            InfoTab_ExportDataSize_TextBox.Text = null;
-            InfoTab_ExportOffsetHex_TextBox.Text = null;
-            InfoTab_ExportOffsetDec_TextBox.Text = null;
-            Header_Hexbox.ByteProvider = new DynamicByteProvider(new byte[] { });
 
-        }
 
         private void BuildME1ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {

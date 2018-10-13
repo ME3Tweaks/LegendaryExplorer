@@ -408,6 +408,9 @@
       <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="FaceFXAnimSetEditor\ME2FaceFXAnimSet.cs" />
+    <Compile Include="MetadataEditor\MetadataEditorWPF.xaml.cs">
+      <DependentUpon>MetadataEditorWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NativesEditor\CodexMapCommands.cs" />
     <Compile Include="NativesEditor\Commands.cs" />
     <Compile Include="NativesEditor\Dialogs\ChangeObjectIdDialog.xaml.cs">
@@ -944,6 +947,10 @@
     <Page Include="Main Window\TaskPaneInfoPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MetadataEditor\MetadataEditorWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Modmaker\CreateJobFromPCCDiff.xaml">
       <Generator>MSBuild:Compile</Generator>
