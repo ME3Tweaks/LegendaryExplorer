@@ -526,6 +526,7 @@
     <Compile Include="SharedUI\Converters\FriendlyTimeConverter.cs" />
     <Compile Include="SharedUI\Converters\WwiseDataExchangeEnabledConverter.cs" />
     <Compile Include="SharedUI\Converters\NullEnabledConverter.cs" />
+    <Compile Include="SharedUI\Converters\PackageEditorWPFConverters.cs" />
     <Compile Include="SharedUI\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="SharedUI\EditableComboBox.cs" />
     <Compile Include="SharedUI\EditableTextBlock.cs" />
