@@ -147,9 +147,8 @@ namespace ME3Explorer
             if (tvi != null && tvi.Property != null)
             {
                 UProperty tag = tvi.Property;
-                PropertyCollection props = CurrentLoadedExport.GetProperties();
-                props.Remove(tag);
-                CurrentLoadedExport.WriteProperties(props);
+                CurrentLoadedProperties.Remove(tag);
+                CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
                 StartScan();
             }
         }
@@ -159,7 +158,7 @@ namespace ME3Explorer
             UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
             if (tvi != null)
             {
-                return tvi.Parent != null && tvi.Parent.Parent == null; //only items with a single parent (root nodes)
+                return tvi.Parent != null && tvi.Parent.Parent == null && !(tvi.Property is NoneProperty); //only items with a single parent (root nodes)
             }
             return false;
         }
@@ -918,9 +917,9 @@ namespace ME3Explorer
                         }
                         //otherwise use the default
                         break;
-                    //case EnumProperty ep:
-                    //    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 32, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
-                    //    return;
+                        //case EnumProperty ep:
+                        //    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 32, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
+                        //    return;
                 }
 
                 Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
