@@ -22,7 +22,7 @@ namespace ME3Explorer.SharedUI.Converters
             {
                 return Brushes.Transparent;
             }
-            if ((string)value == (string)parameter)
+            if (value.ToString() == (string)parameter)
             {
                 return Brushes.LightBlue;
             }
