@@ -139,12 +139,49 @@ namespace ME3Explorer
         #region Commands
         public ICommand RemovePropertyCommand { get; set; }
         public ICommand AddPropertyCommand { get; set; }
+        public ICommand CollapseChildrenCommand { get; set; }
+        public ICommand ExpandChildrenCommand { get; set; }
+
 
         private void LoadCommands()
         {
             // Player commands
             RemovePropertyCommand = new RelayCommand(RemoveProperty, CanRemoveProperty);
             AddPropertyCommand = new RelayCommand(AddProperty, CanAddProperty);
+            CollapseChildrenCommand = new RelayCommand(CollapseChildren, CanExpandOrCollapseChildren);
+            ExpandChildrenCommand = new RelayCommand(ExpandChildren, CanExpandOrCollapseChildren);
+        }
+
+        private void ExpandChildren(object obj)
+        {
+            UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
+            if (tvi != null)
+            {
+                SetChildrenExpandedStateRecursive(tvi, true);
+            }
+        }
+
+        private void SetChildrenExpandedStateRecursive(UPropertyTreeViewEntry root, bool IsExpanded)
+        {
+            root.IsExpanded = IsExpanded;
+            foreach (UPropertyTreeViewEntry tvi in root.ChildrenProperties) {
+                SetChildrenExpandedStateRecursive(tvi, IsExpanded);
+            }
+        }
+
+        private bool CanExpandOrCollapseChildren(object obj)
+        {
+            UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
+            return tvi != null && tvi.ChildrenProperties.Count > 0;
+        }
+
+        private void CollapseChildren(object obj)
+        {
+            UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
+            if (tvi != null)
+            {
+                SetChildrenExpandedStateRecursive(tvi, false);
+            }
         }
 
         private bool CanAddProperty(object obj)
