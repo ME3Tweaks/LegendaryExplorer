@@ -128,6 +128,7 @@ namespace ME3Explorer
             EditorSetElements.Add(NameIndexPrefix_TextBlock); //nameindex
             EditorSetElements.Add(NameIndex_TextBox); //nameindex
             EditorSetElements.Add(ParsedValue_TextBlock);
+            EditorSetElements.Add(AddArrayElement_Button);
             Set_Button.Visibility = Visibility.Collapsed;
             EditorSet_Separator.Visibility = Visibility.Collapsed;
             defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
@@ -810,14 +811,21 @@ namespace ME3Explorer
                         break;
                 }
 
+                Set_Button.Visibility = SupportedEditorSetElements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+
+                if ((newSelectedItem.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)) || (newSelectedItem.Parent.Property != null && newSelectedItem.Parent.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)))))
+                {
+                    //The selected property is a child of an array property or is an array property
+                    SupportedEditorSetElements.Add(AddArrayElement_Button);
+                }
+
                 //Hide the non-used controls
                 foreach (FrameworkElement fe in EditorSetElements)
                 {
                     fe.Visibility = SupportedEditorSetElements.Contains(fe) ? Visibility.Visible : Visibility.Collapsed;
                 }
-
-                Set_Button.Visibility = SupportedEditorSetElements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
                 EditorSet_Separator.Visibility = SupportedEditorSetElements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+
             }
         }
 
@@ -1347,6 +1355,11 @@ namespace ME3Explorer
         private void Value_TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             UpdateParsedEditorValue();
+        }
+
+        private void AddArrayElement_Button_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 

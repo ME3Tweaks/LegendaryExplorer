@@ -12,7 +12,7 @@
         xmlns:CurveEd="clr-namespace:ME3Explorer.CurveEd"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:dd="urn:gong-wpf-dragdrop"
-        xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"        
+        xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
         Closing="PackageEditorWPF_Closing"
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
@@ -27,6 +27,8 @@
             <VirtualizingStackPanel/>
         </ItemsPanelTemplate>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+        <Converters:PackageEditorWPFActiveViewHighlightConverter x:Key="PackageEditorWPFActiveViewHighlightConverter"/>
+
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"/>
@@ -112,10 +114,10 @@
                     <ColumnDefinition Width="6*" />
                 </Grid.ColumnDefinitions>
                 <ToolBar ToolBarTray.IsLocked="True" Grid.Row="0" Grid.ColumnSpan="3">
-                    <Button Content="Names" Height="22" Margin="3" Click="NamesView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                    <Button Content="Imports" Height="22" Click="ImportsView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                    <Button Content="Exports" Height="22" Margin="3" Click="ExportsView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                    <Button Content="Tree View"  Height="22" Click="TreeView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <Button Content="Names" Height="22" Margin="3" Click="NamesView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Names'}"/>
+                    <Button Content="Imports" Height="22" Click="ImportsView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Imports'}"/>
+                    <Button Content="Exports" Height="22" Margin="3" Click="ExportsView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Exports'}"/>
+                    <Button Content="Tree View"  Height="22" Click="TreeView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Tree'}"/>
                     <ComboBox Name="ClassDropdown_Combobox" Width="140" ItemsPanel="{StaticResource VSP}" IsTextSearchEnabled="True" KeyUp="ClassDropdown_Combobox_OnKeyUpHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <Button Content="Find object by class" Click="FindObjectByClass_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <TextBox Name="Search_TextBox" Width="70" KeyUp="Searchbox_OnKeyUpHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>

@@ -42,7 +42,7 @@ namespace ME3Explorer
     /// </summary>
     public partial class PackageEditorWPF : WPFBase, GongSolutions.Wpf.DragDrop.IDropTarget
     {
-        enum View
+        public enum CurrentViewMode
         {
             Names,
             Imports,
@@ -73,7 +73,12 @@ namespace ME3Explorer
         List<string> AllEntriesList;
 
         Dictionary<ExportLoaderControl, TabItem> ExportLoaders = new Dictionary<ExportLoaderControl, TabItem>();
-        View CurrentView;
+        private CurrentViewMode _currentView;
+        public CurrentViewMode CurrentView
+        {
+            get { return _currentView; }
+            set { _currentView = value; OnPropertyChanged(); }
+        }
         public PropGrid pg;
 
         public static readonly string PackageEditorDataFolder = System.IO.Path.Combine(App.AppDataFolder, @"PackageEditor\");
@@ -458,7 +463,7 @@ namespace ME3Explorer
         public PackageEditorWPF()
         {
             //ME3UnrealObjectInfo.generateInfo();
-            CurrentView = View.Tree;
+            CurrentView = CurrentViewMode.Tree;
             LoadCommands();
 
             InitializeComponent();
@@ -800,12 +805,12 @@ namespace ME3Explorer
                 }
             }
 
-            if (CurrentView == View.Names)
+            if (CurrentView == CurrentViewMode.Names)
             {
                 LeftSide_ListView.ItemsSource = Pcc.Names;
             }
 
-            if (CurrentView == View.Imports)
+            if (CurrentView == CurrentViewMode.Imports)
             {
                 List<string> importsList = new List<string>();
                 int padding = imports.Count.ToString().Length;
@@ -824,7 +829,7 @@ namespace ME3Explorer
                 LeftSide_ListView.ItemsSource = importsList;
             }
 
-            if (CurrentView == View.Exports)
+            if (CurrentView == CurrentViewMode.Exports)
             {
                 List<string> exps = new List<string>(Exports.Count);
                 int padding = Exports.Count.ToString().Length;
@@ -866,9 +871,9 @@ namespace ME3Explorer
                 }
                 LeftSide_ListView.ItemsSource = exps;
             }
-            if (CurrentView == View.Tree)
+            if (CurrentView == CurrentViewMode.Tree)
             {
-                
+
                 LeftSide_ListView.Visibility = Visibility.Collapsed;
                 LeftSide_TreeView.Visibility = Visibility.Visible;
             }
@@ -919,26 +924,26 @@ namespace ME3Explorer
 
         private void TreeView_Click(object sender, RoutedEventArgs e)
         {
-            SetView(View.Tree);
+            SetView(CurrentViewMode.Tree);
             RefreshView();
         }
         private void NamesView_Click(object sender, RoutedEventArgs e)
         {
-            SetView(View.Names);
+            SetView(CurrentViewMode.Names);
             RefreshView();
         }
         private void ImportsView_Click(object sender, RoutedEventArgs e)
         {
-            SetView(View.Imports);
+            SetView(CurrentViewMode.Imports);
             RefreshView();
         }
         private void ExportsView_Click(object sender, RoutedEventArgs e)
         {
-            SetView(View.Exports);
+            SetView(CurrentViewMode.Exports);
             RefreshView();
         }
 
-        void SetView(View n)
+        void SetView(CurrentViewMode n)
         {
             CurrentView = n;
             /*switch (n)
@@ -1017,18 +1022,18 @@ namespace ME3Explorer
                 n = Convert.ToInt32(name);
                 return true;
             }*/
-            if (CurrentView == View.Tree && LeftSide_TreeView.SelectedItem != null)
+            if (CurrentView == CurrentViewMode.Tree && LeftSide_TreeView.SelectedItem != null)
             {
                 TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
                 n = Convert.ToInt32(selected.UIndex);
                 return true;
             }
-            else if (CurrentView == View.Exports && LeftSide_ListView.SelectedItem != null)
+            else if (CurrentView == CurrentViewMode.Exports && LeftSide_ListView.SelectedItem != null)
             {
                 n = LeftSide_ListView.SelectedIndex + 1; //to unreal indexing
                 return true;
             }
-            else if (CurrentView == View.Imports && LeftSide_ListView.SelectedItem != null)
+            else if (CurrentView == CurrentViewMode.Imports && LeftSide_ListView.SelectedItem != null)
             {
                 n = -LeftSide_ListView.SelectedIndex - 1;
                 return true;
@@ -1047,7 +1052,7 @@ namespace ME3Explorer
             bool exportNonDataChanges = changes.Contains(PackageChange.ExportHeader) || changes.Contains(PackageChange.ExportAdd);
             int n = 0;
             bool hasSelection = GetSelected(out n);
-            if (CurrentView == View.Names && changes.Contains(PackageChange.Names))
+            if (CurrentView == CurrentViewMode.Names && changes.Contains(PackageChange.Names))
             {
                 //int scrollTo = LeftSide_ListView..TopIndex + 1;
                 //int selected = listBox1.SelectedIndex;
@@ -1055,9 +1060,9 @@ namespace ME3Explorer
                 //listBox1.SelectedIndex = selected;
                 //listBox1.TopIndex = scrollTo;
             }
-            else if (CurrentView == View.Imports && importChanges ||
-                     CurrentView == View.Exports && exportNonDataChanges ||
-                     CurrentView == View.Tree && (importChanges || exportNonDataChanges))
+            else if (CurrentView == CurrentViewMode.Imports && importChanges ||
+                     CurrentView == CurrentViewMode.Exports && exportNonDataChanges ||
+                     CurrentView == CurrentViewMode.Tree && (importChanges || exportNonDataChanges))
             {
                 RefreshView();
                 if (hasSelection)
@@ -1065,7 +1070,7 @@ namespace ME3Explorer
                     goToNumber(n);
                 }
             }
-            else if ((CurrentView == View.Exports || CurrentView == View.Tree) &&
+            else if ((CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Tree) &&
                      hasSelection &&
                      updates.Contains(new PackageUpdate { index = n - 1, change = PackageChange.ExportData }))
             {
@@ -1130,7 +1135,7 @@ namespace ME3Explorer
             Intro_Tab.Visibility = Visibility.Collapsed;
             //Debug.WriteLine("New selection: " + n);
 
-            if (CurrentView == View.Imports || CurrentView == View.Exports || CurrentView == View.Tree)
+            if (CurrentView == CurrentViewMode.Imports || CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Tree)
             {
                 PreviewInfo(n);
                 Interpreter_Tab.IsEnabled = n >= 0;
@@ -1232,7 +1237,7 @@ namespace ME3Explorer
             }
         }
 
-        
+
 
         /// <summary>
         /// Handler for when the Goto button is clicked
@@ -1259,7 +1264,7 @@ namespace ME3Explorer
             {
                 return; //PackageEditorWPF uses Unreal Indexing for entries
             }
-            if (CurrentView == View.Tree)
+            if (CurrentView == CurrentViewMode.Tree)
             {
                 /*if (entryIndex >= -pcc.ImportCount && entryIndex < pcc.ExportCount)
                 {
@@ -1366,7 +1371,7 @@ namespace ME3Explorer
             Goto_TextBox.SelectAll();
         }
 
-        
+
 
         /// <summary>
         /// Command binding for opening the ComparePackage tool
@@ -1767,7 +1772,7 @@ namespace ME3Explorer
                         break;
                     }
             }*/
-            if (CurrentView == View.Tree)
+            if (CurrentView == CurrentViewMode.Tree)
             {
                 //this needs fixed as for some rason its way out of order...
                 TreeViewEntry selectedNode = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
@@ -1867,7 +1872,7 @@ namespace ME3Explorer
                     }
             }
             */
-            if (CurrentView == View.Exports)
+            if (CurrentView == CurrentViewMode.Exports)
             {
                 IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
                 for (int i = start; i < Exports.Count; i++)
@@ -1879,7 +1884,7 @@ namespace ME3Explorer
                     }
                 }
             }
-            if (CurrentView == View.Tree)
+            if (CurrentView == CurrentViewMode.Tree)
             {
                 //this needs fixed as for some rason its way out of order...
                 TreeViewEntry selectedNode = (TreeViewEntry)LeftSide_TreeView.SelectedItem;

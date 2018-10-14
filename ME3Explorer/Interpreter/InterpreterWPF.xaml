@@ -27,14 +27,14 @@
             <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
             <Button Content="Toggle Hexbox Width" Click="Interpreter_ToggleHexboxWidth_Click"/>
             <Button Content="Add Property" Click="Interpreter_AddProperty_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
-            <TextBlock Name="EditorSet_Separator" Text="|" VerticalAlignment="Center"/>
-            <TextBox Width="80" Name="Value_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" TextChanged="Value_TextBox_TextChanged" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
+            <Separator Name="EditorSet_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            <TextBox Width="80" Name="Value_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" TextChanged="Value_TextBox_TextChanged" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Margin="0"/>
             <TextBlock Text="_" Name="NameIndexPrefix_TextBlock" VerticalAlignment="Center"/>
             <TextBox Width="30" Name="NameIndex_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
             <ComboBox Name="Value_ComboBox" MinWidth="80" VerticalAlignment="Center"  ToolTip="Value for this property"/>
-
             <Button Name="Set_Button" Content="Set" Click="SetValue_Click" VerticalAlignment="Center"/>
             <TextBlock Name="ParsedValue_TextBlock" VerticalAlignment="Center" Foreground="Gray" Margin="5,0,0,0"/>
+            <Button Name="AddArrayElement_Button" Content="Add Array Element" Click="AddArrayElement_Button_Click" VerticalAlignment="Center"/>
         </ToolBar>
 
         <StatusBar Height="23" DockPanel.Dock="Bottom">
