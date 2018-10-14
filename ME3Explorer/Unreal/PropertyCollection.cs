@@ -424,10 +424,12 @@ namespace ME3Explorer.Unreal
                         var props = new List<ObjectProperty>();
                         for (int i = 0; i < count; i++)
                         {
-                            props.Add(new ObjectProperty(stream));
+                            long startPos = stream.Position;
+                            props.Add(new ObjectProperty(stream) { StartOffset = startPos});
                         }
                         return new ArrayProperty<ObjectProperty>(arrayOffset, props, arrayType, name);
                     }
+                //TODO: Add property StartOffset to these properties
                 case ArrayType.Name:
                     {
                         var props = new List<NameProperty>();

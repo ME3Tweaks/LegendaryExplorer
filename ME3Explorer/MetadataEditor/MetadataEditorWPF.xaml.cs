@@ -211,6 +211,7 @@ namespace ME3Explorer.MetadataEditor
 
         internal void ClearMetadataPane()
         {
+            loadingNewData = true;
             InfoTab_Objectname_ComboBox.SelectedItem = null;
             InfoTab_Class_ComboBox.SelectedItem = null;
             InfoTab_Superclass_ComboBox.SelectedItem = null;
@@ -226,7 +227,7 @@ namespace ME3Explorer.MetadataEditor
             InfoTab_ExportOffsetHex_TextBox.Text = null;
             InfoTab_ExportOffsetDec_TextBox.Text = null;
             Header_Hexbox.ByteProvider = new DynamicByteProvider(new byte[] { });
-
+            loadingNewData = false;
         }
 
 

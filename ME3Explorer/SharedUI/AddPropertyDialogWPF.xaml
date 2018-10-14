@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ME3Explorer.SharedUI"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
         Title="Add Property" Height="400" Width="650">
     <Grid Margin="5">
         <Grid.ColumnDefinitions>

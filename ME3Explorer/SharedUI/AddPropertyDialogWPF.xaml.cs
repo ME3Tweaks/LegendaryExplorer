@@ -35,7 +35,7 @@ namespace ME3Explorer.SharedUI
             Close();
         }
 
-        public static Tuple<string, PropertyInfo> GetProperty(IExportEntry export, List<string> _existingProperties, MEGame game)
+        public static Tuple<string, PropertyInfo> GetProperty(IExportEntry export, List<string> _existingProperties, MEGame game, Window callingWindow = null)
         {
             string origname = export.ClassName;
             string temp = export.ClassName;
@@ -97,6 +97,10 @@ namespace ME3Explorer.SharedUI
             }
             classes.Reverse();
             AddPropertyDialogWPF prompt = new AddPropertyDialogWPF();
+            if (callingWindow != null)
+            {
+                prompt.Owner = callingWindow;
+            }
             prompt.classList = classList;
             prompt.existingProperties = _existingProperties;
             prompt.ClassesListView.ItemsSource = classes;

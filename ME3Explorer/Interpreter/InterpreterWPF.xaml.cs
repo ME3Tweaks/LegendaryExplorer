@@ -129,6 +129,8 @@ namespace ME3Explorer
             EditorSetElements.Add(NameIndex_TextBox); //nameindex
             EditorSetElements.Add(ParsedValue_TextBlock);
             EditorSetElements.Add(AddArrayElement_Button);
+            EditorSetElements.Add(RemoveArrayElement_Button);
+            EditorSetElements.Add(EditorSet_ArraySetSeparator);
             Set_Button.Visibility = Visibility.Collapsed;
             EditorSet_Separator.Visibility = Visibility.Collapsed;
             defaultStructValues = new Dictionary<string, List<PropertyReader.Property>>();
@@ -345,13 +347,13 @@ namespace ME3Explorer
 
         private void GenerateTreeForProperty(UProperty prop, UPropertyTreeViewEntry parent, string displayPrefix = "")
         {
-            var upropertyEntry = GenerateUPropertyTreeViewEntry(prop, parent);
+            var upropertyEntry = GenerateUPropertyTreeViewEntry(prop, parent, displayPrefix);
             if (prop.PropType == PropertyType.ArrayProperty)
             {
                 int i = 0;
                 foreach (UProperty listProp in (prop as ArrayPropertyBase).ValuesAsProperties)
                 {
-                    GenerateTreeForProperty(listProp, upropertyEntry, " Item " + (i++));
+                    GenerateTreeForProperty(listProp, upropertyEntry, $" Item {i++}:");
                 }
             }
             if (prop.PropType == PropertyType.StructProperty)
@@ -366,7 +368,11 @@ namespace ME3Explorer
 
         private UPropertyTreeViewEntry GenerateUPropertyTreeViewEntry(UProperty prop, UPropertyTreeViewEntry parent, string displayPrefix = "")
         {
-            string displayName = $"{prop.StartOffset.ToString("X4")}{displayPrefix}: {prop.Name}:";
+            string displayName = $"{prop.StartOffset.ToString("X4")}{displayPrefix}";
+            if (parent.Property == null || !parent.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)))
+            {
+                displayName += $": { prop.Name}:";
+            }
             string editableValue = ""; //editable value
             string parsedValue = ""; //human formatted item. Will most times be blank
             switch (prop)
@@ -514,79 +520,7 @@ namespace ME3Explorer
             }
             return "";
         }
-
-        private void GenerateTreeForArrayProperty(UProperty prop, UPropertyTreeViewEntry parent, int index)
-        {
-            string displayPrefix = prop.ValueOffset.ToString("X4") + " Item " + index + ": ";
-            string displayValue = "";
-            switch (prop.PropType)
-            {
-                case PropertyType.ObjectProperty:
-                    int oIndex = (prop as ObjectProperty).Value;
-                    displayValue = ": [" + oIndex + "] ";
-                    if (oIndex > 0 || oIndex < 0)
-                    {
-                        if (oIndex <= CurrentLoadedExport.FileRef.ExportCount && oIndex > CurrentLoadedExport.FileRef.ImportCount * -1)
-                        {
-                            displayValue = CurrentLoadedExport.FileRef.getEntry(oIndex).GetFullPath;
-                            if (oIndex > 0 && ExportToStringConverters.Contains(CurrentLoadedExport.FileRef.Exports[oIndex - 1].ClassName))
-                            {
-                                displayValue += " " + ExportToString(CurrentLoadedExport.FileRef.Exports[oIndex - 1]);
-                            }
-                        }
-                        else
-                        {
-                            displayValue = "Object index out of bounds of PCC imports/exports";
-                        }
-                    }
-                    else
-                    {
-                        displayValue = "Null";
-                    }
-                    break;
-                case PropertyType.StructProperty:
-                    //TODO
-                    break;
-                case PropertyType.BoolProperty:
-                    displayValue = (prop as BoolProperty).Value.ToString();
-                    break;
-                case PropertyType.IntProperty:
-                    displayValue = (prop as IntProperty).Value.ToString();
-                    break;
-                case PropertyType.NameProperty:
-                    displayValue = (prop as NameProperty).NameTableIndex + " " + (prop as NameProperty).Value;
-
-                    break;
-            }
-
-
-            UPropertyTreeViewEntry item = new UPropertyTreeViewEntry()
-            {
-                DisplayName = displayPrefix,
-                EditableValue = displayValue,
-                Property = prop,
-                Parent = parent
-            };
-
-            parent.ChildrenProperties.Add(item);
-            if (prop.PropType == PropertyType.ArrayProperty)
-            {
-                int i = 0;
-                foreach (UProperty listProp in (prop as ArrayPropertyBase).ValuesAsProperties)
-                {
-                    GenerateTreeForArrayProperty(listProp, item, i++);
-                }
-            }
-            if (prop.PropType == PropertyType.StructProperty)
-            {
-                var sProp = prop as StructProperty;
-                foreach (var subProp in sProp.Properties)
-                {
-                    GenerateTreeForProperty(subProp, item);
-                }
-            }
-        }
-
+        
         private string ExportToString(IExportEntry exportEntry)
         {
             switch (exportEntry.ObjectName)
@@ -816,7 +750,13 @@ namespace ME3Explorer
                 if ((newSelectedItem.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)) || (newSelectedItem.Parent.Property != null && newSelectedItem.Parent.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)))))
                 {
                     //The selected property is a child of an array property or is an array property
+                    SupportedEditorSetElements.Add(EditorSet_ArraySetSeparator);
                     SupportedEditorSetElements.Add(AddArrayElement_Button);
+                    if ((newSelectedItem.Parent.Property != null && newSelectedItem.Parent.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>))))
+                    {
+                        //only allow remove on children
+                        SupportedEditorSetElements.Add(RemoveArrayElement_Button);
+                    }
                 }
 
                 //Hide the non-used controls
@@ -1136,7 +1076,7 @@ namespace ME3Explorer
                 props.Add(cProp.Name);
             }
 
-            Tuple<string, PropertyInfo> prop = AddPropertyDialogWPF.GetProperty(CurrentLoadedExport, props, CurrentLoadedExport.FileRef.Game);
+            Tuple<string, PropertyInfo> prop = AddPropertyDialogWPF.GetProperty(CurrentLoadedExport, props, CurrentLoadedExport.FileRef.Game, Window.GetWindow(this));
 
             if (prop != null)
             {
@@ -1358,6 +1298,11 @@ namespace ME3Explorer
         }
 
         private void AddArrayElement_Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void RemoveArrayElement_Button_Click(object sender, RoutedEventArgs e)
         {
 
         }
