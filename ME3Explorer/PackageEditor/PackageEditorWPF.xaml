@@ -202,10 +202,15 @@
                             <LineBreak/>
                                 -  Import references will remain the same
                              <LineBreak/>
+                             <LineBreak/>
+                            Additionally the order of entries will appear different as they now reflect
+                            <LineBreak/>
+                            the order of the data stored in game files.
+                            <LineBreak/>
                             <LineBreak/>
                             Package Editor WPF is still in development - the tool is very complex,
-                                <LineBreak/>
-                                and will take some time for development to complete.
+                            <LineBreak/>
+                            and will take some time for development to complete.
                             </TextBlock>
                         </StackPanel>
                     </TabItem>

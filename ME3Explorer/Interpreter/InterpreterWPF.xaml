@@ -27,7 +27,7 @@
             <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
             <Button Content="Toggle Hexbox Width" Click="Interpreter_ToggleHexboxWidth_Click"/>
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-            <Button Content="Add Property" Click="Interpreter_AddProperty_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
+            <Button Content="Add Property" Click="Interpreter_AddProperty_Click" Command="{Binding AddPropertyCommand}"/>
             <Separator Name="EditorSet_ArraySetSeparator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
             <Button Name="AddArrayElement_Button" Content="Add Array Element" Click="AddArrayElement_Button_Click" VerticalAlignment="Center"/>
             <Button Name="RemoveArrayElement_Button" Content="Remove Array Element" Click="RemoveArrayElement_Button_Click" VerticalAlignment="Center"/>

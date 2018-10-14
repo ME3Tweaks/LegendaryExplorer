@@ -138,10 +138,151 @@ namespace ME3Explorer
 
         #region Commands
         public ICommand RemovePropertyCommand { get; set; }
+        public ICommand AddPropertyCommand { get; set; }
+
         private void LoadCommands()
         {
             // Player commands
             RemovePropertyCommand = new RelayCommand(RemoveProperty, CanRemoveProperty);
+            AddPropertyCommand = new RelayCommand(AddProperty, CanAddProperty);
+        }
+
+        private bool CanAddProperty(object obj)
+        {
+            if (CurrentLoadedExport == null)
+            {
+                return false;
+            }
+            if (CurrentLoadedExport.FileRef.Game == MEGame.UDK)
+            {
+                //MessageBox.Show("Cannot add properties to UDK UPK files.", "Unsupported operation");
+                return false;
+            }
+            if (CurrentLoadedExport.ClassName == "Class")
+            {
+                return false; //you can't add properties to class objects.
+                //we might want to see if the export has a NoneProperty - if it doesn't, adding properties won't work either.
+                //TODO
+            }
+
+            return true;
+        }
+
+        private void AddProperty(object obj)
+        {
+            if (CurrentLoadedExport.FileRef.Game == MEGame.UDK)
+            {
+                MessageBox.Show("Cannot add properties to UDK UPK files.", "Unsupported operation");
+                return;
+            }
+
+            List<string> props = new List<string>();
+            foreach (UProperty cProp in CurrentLoadedProperties)
+            {
+                //build a list we are going to the add dialog
+                props.Add(cProp.Name);
+            }
+
+            Tuple<string, PropertyInfo> prop = AddPropertyDialogWPF.GetProperty(CurrentLoadedExport, props, CurrentLoadedExport.FileRef.Game, Window.GetWindow(this));
+
+            if (prop != null)
+            {
+                /*string origname = CurrentLoadedExport.ClassName;
+                string temp = CurrentLoadedExport.ClassName;
+                List<string> classes = new List<string>();
+                Dictionary<string, ClassInfo> classList;
+                switch (CurrentLoadedExport.FileRef.Game)
+                {
+                    case MEGame.ME1:
+                        classList = ME1Explorer.Unreal.ME1UnrealObjectInfo.Classes;
+                        break;
+                    case MEGame.ME2:
+                        classList = ME2Explorer.Unreal.ME2UnrealObjectInfo.Classes;
+                        break;
+                    case MEGame.ME3:
+                    default:
+                        classList = ME3UnrealObjectInfo.Classes;
+                        break;
+                }
+                ClassInfo currentInfo = null;
+                if (!classList.ContainsKey(temp))
+                {
+                    IExportEntry exportTemp = CurrentLoadedExport.FileRef.Exports[CurrentLoadedExport.idxClass - 1];
+                    //current object is not in classes db, temporarily add it to the list
+                    switch (CurrentLoadedExport.FileRef.Game)
+                    {
+                        case MEGame.ME1:
+                            currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(exportTemp);
+                            break;
+                        case MEGame.ME2:
+                            currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(exportTemp);
+                            break;
+                        case MEGame.ME3:
+                        default:
+                            currentInfo = ME3UnrealObjectInfo.generateClassInfo(exportTemp);
+                            break;
+                    }
+                    currentInfo.baseClass = exportTemp.ClassParent;
+                }*/
+
+                UProperty newProperty = null;
+                //Todo: Maybe lookup the default value?
+                switch (prop.Item2.type)
+                {
+                    case PropertyType.IntProperty:
+                        newProperty = new IntProperty(0, prop.Item1);
+                        break;
+                    case PropertyType.BoolProperty:
+                        newProperty = new BoolProperty(false, prop.Item1);
+                        break;
+                    case PropertyType.FloatProperty:
+                        newProperty = new FloatProperty(0.0f, prop.Item1);
+                        break;
+                    case PropertyType.StringRefProperty:
+                        newProperty = new StringRefProperty(prop.Item1);
+                        break;
+                    case PropertyType.StrProperty:
+                        newProperty = new StrProperty("", prop.Item1);
+                        break;
+                    case PropertyType.ArrayProperty:
+                        newProperty = new ArrayProperty<IntProperty>(ArrayType.Int, prop.Item1); //We can just set it to int as it will be reparsed and resolved.
+                        break;
+                    case PropertyType.StructProperty:
+                        // Generate the bytecode and then read it as a prop.
+                        // This is effectively have default interpreter does it
+                        // and I have to use it since I dno't have a way to just
+                        // get UProperty struct
+                        List<byte> buff = new List<byte>();
+                        //name
+                        buff.AddRange(BitConverter.GetBytes(CurrentLoadedExport.FileRef.FindNameOrAdd(prop.Item1)));
+                        buff.AddRange(new byte[4]);
+                        //type
+                        buff.AddRange(BitConverter.GetBytes(CurrentLoadedExport.FileRef.FindNameOrAdd(prop.Item2.type.ToString())));
+                        buff.AddRange(new byte[4]);
+                        byte[] structBuff = ME3UnrealObjectInfo.getDefaultClassValue(CurrentLoadedExport.FileRef as ME3Package, prop.Item2.reference);
+                        //struct length
+                        buff.AddRange(BitConverter.GetBytes(structBuff.Length));
+                        buff.AddRange(new byte[4]);
+                        //struct Type
+                        buff.AddRange(BitConverter.GetBytes(CurrentLoadedExport.FileRef.FindNameOrAdd(prop.Item2.reference)));
+                        buff.AddRange(new byte[4]);
+                        buff.AddRange(structBuff);
+                        structBuff = buff.ToArray();
+                        //read data to get property. We set includeNonePRoperty because this buff only has one property - true ones will have at least 2 (the single prop, and None). So we don't want to clip off our property
+                        var structPropertyGenerated = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, new MemoryStream(structBuff), CurrentLoadedExport.ClassName, includeNoneProperty: true, requireNoneAtEnd: false);
+                        newProperty = structPropertyGenerated[0]; //i'm sure i won't regret this later
+                        break;
+                }
+
+                //UProperty property = generateNewProperty(prop.Item1, currentInfo);
+                if (newProperty != null)
+                {
+                    CurrentLoadedProperties.Insert(CurrentLoadedProperties.Count - 1, newProperty); //insert before noneproperty
+                }
+                //Todo: Create new node, prevent refresh of this instance.
+                CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
+                //End Todo
+            }
         }
 
         private void RemoveProperty(object obj)
@@ -520,7 +661,7 @@ namespace ME3Explorer
             }
             return "";
         }
-        
+
         private string ExportToString(IExportEntry exportEntry)
         {
             switch (exportEntry.ObjectName)
@@ -1063,119 +1204,7 @@ namespace ME3Explorer
 
         private void Interpreter_AddProperty_Click(object sender, RoutedEventArgs e)
         {
-            if (CurrentLoadedExport.FileRef.Game == MEGame.UDK)
-            {
-                MessageBox.Show("Cannot add properties to UDK UPK files.", "Unsupported operation");
-                return;
-            }
 
-            List<string> props = new List<string>();
-            foreach (UProperty cProp in CurrentLoadedProperties)
-            {
-                //build a list we are going to the add dialog
-                props.Add(cProp.Name);
-            }
-
-            Tuple<string, PropertyInfo> prop = AddPropertyDialogWPF.GetProperty(CurrentLoadedExport, props, CurrentLoadedExport.FileRef.Game, Window.GetWindow(this));
-
-            if (prop != null)
-            {
-                /*string origname = CurrentLoadedExport.ClassName;
-                string temp = CurrentLoadedExport.ClassName;
-                List<string> classes = new List<string>();
-                Dictionary<string, ClassInfo> classList;
-                switch (CurrentLoadedExport.FileRef.Game)
-                {
-                    case MEGame.ME1:
-                        classList = ME1Explorer.Unreal.ME1UnrealObjectInfo.Classes;
-                        break;
-                    case MEGame.ME2:
-                        classList = ME2Explorer.Unreal.ME2UnrealObjectInfo.Classes;
-                        break;
-                    case MEGame.ME3:
-                    default:
-                        classList = ME3UnrealObjectInfo.Classes;
-                        break;
-                }
-                ClassInfo currentInfo = null;
-                if (!classList.ContainsKey(temp))
-                {
-                    IExportEntry exportTemp = CurrentLoadedExport.FileRef.Exports[CurrentLoadedExport.idxClass - 1];
-                    //current object is not in classes db, temporarily add it to the list
-                    switch (CurrentLoadedExport.FileRef.Game)
-                    {
-                        case MEGame.ME1:
-                            currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(exportTemp);
-                            break;
-                        case MEGame.ME2:
-                            currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(exportTemp);
-                            break;
-                        case MEGame.ME3:
-                        default:
-                            currentInfo = ME3UnrealObjectInfo.generateClassInfo(exportTemp);
-                            break;
-                    }
-                    currentInfo.baseClass = exportTemp.ClassParent;
-                }*/
-
-                UProperty newProperty = null;
-                //Todo: Maybe lookup the default value?
-                switch (prop.Item2.type)
-                {
-                    case PropertyType.IntProperty:
-                        newProperty = new IntProperty(0, prop.Item1);
-                        break;
-                    case PropertyType.BoolProperty:
-                        newProperty = new BoolProperty(false, prop.Item1);
-                        break;
-                    case PropertyType.FloatProperty:
-                        newProperty = new FloatProperty(0.0f, prop.Item1);
-                        break;
-                    case PropertyType.StringRefProperty:
-                        newProperty = new StringRefProperty(prop.Item1);
-                        break;
-                    case PropertyType.StrProperty:
-                        newProperty = new StrProperty("", prop.Item1);
-                        break;
-                    case PropertyType.ArrayProperty:
-                        newProperty = new ArrayProperty<IntProperty>(ArrayType.Int, prop.Item1); //We can just set it to int as it will be reparsed and resolved.
-                        break;
-                    case PropertyType.StructProperty:
-                        // Generate the bytecode and then read it as a prop.
-                        // This is effectively have default interpreter does it
-                        // and I have to use it since I dno't have a way to just
-                        // get UProperty struct
-                        List<byte> buff = new List<byte>();
-                        //name
-                        buff.AddRange(BitConverter.GetBytes(CurrentLoadedExport.FileRef.FindNameOrAdd(prop.Item1)));
-                        buff.AddRange(new byte[4]);
-                        //type
-                        buff.AddRange(BitConverter.GetBytes(CurrentLoadedExport.FileRef.FindNameOrAdd(prop.Item2.type.ToString())));
-                        buff.AddRange(new byte[4]);
-                        byte[] structBuff = ME3UnrealObjectInfo.getDefaultClassValue(CurrentLoadedExport.FileRef as ME3Package, prop.Item2.reference);
-                        //struct length
-                        buff.AddRange(BitConverter.GetBytes(structBuff.Length));
-                        buff.AddRange(new byte[4]);
-                        //struct Type
-                        buff.AddRange(BitConverter.GetBytes(CurrentLoadedExport.FileRef.FindNameOrAdd(prop.Item2.reference)));
-                        buff.AddRange(new byte[4]);
-                        buff.AddRange(structBuff);
-                        structBuff = buff.ToArray();
-                        //read data to get property. We set includeNonePRoperty because this buff only has one property - true ones will have at least 2 (the single prop, and None). So we don't want to clip off our property
-                        var structPropertyGenerated = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, new MemoryStream(structBuff), CurrentLoadedExport.ClassName, includeNoneProperty: true, requireNoneAtEnd: false);
-                        newProperty = structPropertyGenerated[0]; //i'm sure i won't regret this later
-                        break;
-                }
-
-                //UProperty property = generateNewProperty(prop.Item1, currentInfo);
-                if (newProperty != null)
-                {
-                    CurrentLoadedProperties.Insert(CurrentLoadedProperties.Count - 1, newProperty); //insert before noneproperty
-                }
-                //Todo: Create new node, prevent refresh of this instance.
-                CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
-                //End Todo
-            }
         }
 
         private UProperty generateNewProperty(string prop, ClassInfo nonVanillaClassInfo)
