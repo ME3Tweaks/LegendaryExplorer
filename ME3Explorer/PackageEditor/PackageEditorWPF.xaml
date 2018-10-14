@@ -86,6 +86,7 @@
                 </MenuItem>
 
                 <MenuItem Header="Options" Padding="4">
+                    <MenuItem Name="TLKManager_MenuItem" Header="TLK Manager" Click="TLKManager_MenuItem_Click"/>
                     <MenuItem Name="TouchComfyMode_MenuItem" Header="Touch Comfy Mode" Click="TouchComfyMode_Clicked"/>
                 </MenuItem>
                 <MenuItem Header="Experiments" Padding="4">

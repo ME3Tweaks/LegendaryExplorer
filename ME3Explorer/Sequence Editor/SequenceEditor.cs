@@ -1174,7 +1174,6 @@ namespace ME3Explorer
                     case MEGame.ME3:
                     {
                         TlkManager tm = new TlkManager();
-                        tm.InitTlkManager();
                         tm.Show();
                         break;
                     }

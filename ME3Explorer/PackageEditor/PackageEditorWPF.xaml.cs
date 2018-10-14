@@ -2236,6 +2236,12 @@ namespace ME3Explorer
                     break;
             }
         }
+
+        private void TLKManager_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            TlkManager tlk = new TlkManager();
+            tlk.Show();
+        }
     }
     [DebuggerDisplay("TreeViewEntry {DisplayName}")]
     public class TreeViewEntry : INotifyPropertyChanged
