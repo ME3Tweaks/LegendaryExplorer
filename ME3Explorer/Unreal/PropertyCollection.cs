@@ -240,7 +240,8 @@ namespace ME3Explorer.Unreal
                         defaultProps = ME3UnrealObjectInfo.getDefaultStructValue(structType);
                         if (defaultProps == null)
                         {
-                            props.Add(new UnknownProperty(stream, size));
+                            long startPos = stream.Position;
+                            props.Add(new UnknownProperty(stream, size) { StartOffset = startPos });
                             return props;
                         }
                         defaultStructValues.Add(structType, defaultProps);
@@ -262,7 +263,8 @@ namespace ME3Explorer.Unreal
                 string[] labels = { "Pitch", "Yaw", "Roll" };
                 for (int i = 0; i < 3; i++)
                 {
-                    props.Add(new IntProperty(stream, labels[i]));
+                    long startPos = stream.Position;
+                    props.Add(new IntProperty(stream, labels[i]) { StartOffset = startPos });
                 }
             }
             else if (structType == "Vector2d" || structType == "RwVector2")
@@ -270,7 +272,8 @@ namespace ME3Explorer.Unreal
                 string[] labels = { "X", "Y" };
                 for (int i = 0; i < 2; i++)
                 {
-                    props.Add(new FloatProperty(stream, labels[i]));
+                    long startPos = stream.Position;
+                    props.Add(new FloatProperty(stream, labels[i]) { StartOffset = startPos });
                 }
             }
             else if (structType == "Vector" || structType == "RwVector3")
@@ -278,7 +281,8 @@ namespace ME3Explorer.Unreal
                 string[] labels = { "X", "Y", "Z" };
                 for (int i = 0; i < 3; i++)
                 {
-                    props.Add(new FloatProperty(stream, labels[i]));
+                    long startPos = stream.Position;
+                    props.Add(new FloatProperty(stream, labels[i]) { StartOffset = startPos });
                 }
             }
             else if (structType == "Color")
@@ -286,7 +290,8 @@ namespace ME3Explorer.Unreal
                 string[] labels = { "B", "G", "R", "A" };
                 for (int i = 0; i < 4; i++)
                 {
-                    props.Add(new ByteProperty(stream, labels[i]));
+                    long startPos = stream.Position;
+                    props.Add(new ByteProperty(stream, labels[i]) { StartOffset = startPos });
                 }
             }
             else if (structType == "LinearColor")
@@ -294,7 +299,8 @@ namespace ME3Explorer.Unreal
                 string[] labels = { "R", "G", "B", "A" };
                 for (int i = 0; i < 4; i++)
                 {
-                    props.Add(new FloatProperty(stream, labels[i]));
+                    long startPos = stream.Position;
+                    props.Add(new FloatProperty(stream, labels[i]) { StartOffset = startPos });
                 }
             }
             //uses EndsWith to support RwQuat, RwVector4, and RwPlane
@@ -303,7 +309,8 @@ namespace ME3Explorer.Unreal
                 string[] labels = { "X", "Y", "Z", "W" };
                 for (int i = 0; i < 4; i++)
                 {
-                    props.Add(new FloatProperty(stream, labels[i]));
+                    long startPos = stream.Position;
+                    props.Add(new FloatProperty(stream, labels[i]) { StartOffset = startPos });
                 }
             }
             else if (structType == "TwoVectors")
@@ -311,7 +318,8 @@ namespace ME3Explorer.Unreal
                 string[] labels = { "X", "Y", "Z", "X", "Y", "Z" };
                 for (int i = 0; i < 6; i++)
                 {
-                    props.Add(new FloatProperty(stream, labels[i]));
+                    long startPos = stream.Position;
+                    props.Add(new FloatProperty(stream, labels[i]) { StartOffset = startPos });
                 }
             }
             else if (structType == "Matrix" || structType == "RwMatrix44")
@@ -320,12 +328,14 @@ namespace ME3Explorer.Unreal
                 string[] labels2 = { "X", "Y", "Z", "W" };
                 for (int i = 0; i < 4; i++)
                 {
+                    long planePos = stream.Position;
                     PropertyCollection structProps = new PropertyCollection();
                     for (int j = 0; j < 4; j++)
                     {
-                        structProps.Add(new FloatProperty(stream, labels2[j]));
+                        long startPos = stream.Position;
+                        structProps.Add(new FloatProperty(stream, labels2[j]) { StartOffset = startPos });
                     }
-                    props.Add(new StructProperty("Plane", structProps, labels[i], true));
+                    props.Add(new StructProperty("Plane", structProps, labels[i], true) { StartOffset = planePos });
                 }
             }
             else if (structType == "Guid")
@@ -333,7 +343,8 @@ namespace ME3Explorer.Unreal
                 string[] labels = { "A", "B", "C", "D" };
                 for (int i = 0; i < 4; i++)
                 {
-                    props.Add(new IntProperty(stream, labels[i]));
+                    long startPos = stream.Position;
+                    props.Add(new IntProperty(stream, labels[i]) { StartOffset = startPos });
                 }
             }
             else if (structType == "IntPoint")
@@ -341,7 +352,8 @@ namespace ME3Explorer.Unreal
                 string[] labels = { "X", "Y" };
                 for (int i = 0; i < 2; i++)
                 {
-                    props.Add(new IntProperty(stream, labels[i]));
+                    long startPos = stream.Position;
+                    props.Add(new IntProperty(stream, labels[i]) { StartOffset = startPos });
                 }
             }
             else if (structType == "Box" || structType == "BioRwBox")
@@ -350,18 +362,22 @@ namespace ME3Explorer.Unreal
                 string[] labels2 = { "X", "Y", "Z" };
                 for (int i = 0; i < 2; i++)
                 {
+                    long vectorPos = stream.Position;
                     PropertyCollection structProps = new PropertyCollection();
                     for (int j = 0; j < 3; j++)
                     {
-                        structProps.Add(new FloatProperty(stream, labels2[j]));
+                        long startPos = stream.Position;
+                        structProps.Add(new FloatProperty(stream, labels2[j]) { StartOffset = startPos });
                     }
-                    props.Add(new StructProperty("Vector", structProps, labels[i], true));
+                    props.Add(new StructProperty("Vector", structProps, labels[i], true) { StartOffset = vectorPos });
                 }
-                props.Add(new ByteProperty(stream, "IsValid"));
+                long validPos = stream.Position;
+                props.Add(new ByteProperty(stream, "IsValid") { StartOffset = validPos });
             }
             else
             {
-                props.Add(new UnknownProperty(stream, size));
+                long startPos = stream.Position;
+                props.Add(new UnknownProperty(stream, size) { StartOffset = startPos });
             }
             return props;
         }
@@ -372,6 +388,8 @@ namespace ME3Explorer.Unreal
             {
                 throw new EndOfStreamException("tried to read past bounds of Export Data");
             }
+            long startPos = stream.Position;
+
             switch (template.PropType)
             {
                 case PropertyType.FloatProperty:
@@ -398,10 +416,14 @@ namespace ME3Explorer.Unreal
                 case PropertyType.StrProperty:
                     return new StrProperty(stream, template.Name) { StartOffset = stream.Position };
                 case PropertyType.ArrayProperty:
-                    return ReadArrayProperty(stream, pcc, structType, template.Name, true); //todo
+                    var arrayProperty = ReadArrayProperty(stream, pcc, structType, template.Name, true);
+                    arrayProperty.StartOffset = startPos;
+                    return arrayProperty;//this implementation needs checked, as I am not 100% sure of it's validity.
                 case PropertyType.StructProperty:
                     PropertyCollection structProps = ReadSpecialStruct(pcc, stream, UnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType).reference, 0);
-                    return new StructProperty(structType, structProps, template.Name, true); //todo
+                    var structProp = new StructProperty(structType, structProps, template.Name, true);
+                    structProp.StartOffset = startPos;
+                    return structProp;//this implementation needs checked, as I am not 100% sure of it's validity.
                 case PropertyType.None:
                     return new NoneProperty(template.Name) { StartOffset = stream.Position };
                 case PropertyType.DelegateProperty:
@@ -435,7 +457,8 @@ namespace ME3Explorer.Unreal
                         var props = new List<NameProperty>();
                         for (int i = 0; i < count; i++)
                         {
-                            props.Add(new NameProperty(stream, pcc));
+                            long startPos = stream.Position;
+                            props.Add(new NameProperty(stream, pcc) { StartOffset = startPos });
                         }
                         return new ArrayProperty<NameProperty>(arrayOffset, props, arrayType, name);
                     }
@@ -445,12 +468,15 @@ namespace ME3Explorer.Unreal
                         NameReference enumType = new NameReference { Name = UnrealObjectInfo.GetEnumType(pcc.Game, name, enclosingType) };
                         for (int i = 0; i < count; i++)
                         {
-                            props.Add(new EnumProperty(stream, pcc, enumType));
+                            long startPos = stream.Position;
+                            props.Add(new EnumProperty(stream, pcc, enumType) { StartOffset = startPos });
                         }
                         return new ArrayProperty<EnumProperty>(arrayOffset, props, arrayType, name);
                     }
                 case ArrayType.Struct:
                     {
+                        long startPos = stream.Position;
+
                         var props = new List<StructProperty>();
                         string arrayStructType = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType)?.reference;
                         if (IsInImmutable || ME3UnrealObjectInfo.isImmutable(arrayStructType))
@@ -466,7 +492,7 @@ namespace ME3Explorer.Unreal
                             {
                                 long offset = stream.Position;
                                 PropertyCollection structProps = ReadSpecialStruct(pcc, stream, arrayStructType, arraySize / count);
-                                StructProperty structP = new StructProperty(arrayStructType, structProps, isImmutable: true);
+                                StructProperty structP = new StructProperty(arrayStructType, structProps, isImmutable: true) { StartOffset = startPos };
                                 structP.ValueOffset = offset;
                                 props.Add(structP);
                             }
@@ -477,7 +503,7 @@ namespace ME3Explorer.Unreal
                             {
                                 long structOffset = stream.Position;
                                 PropertyCollection structProps = ReadProps(pcc, stream, arrayStructType, includeNoneProperty: IncludeNoneProperties);
-                                StructProperty structP = new StructProperty(arrayStructType, structProps);
+                                StructProperty structP = new StructProperty(arrayStructType, structProps) { StartOffset = startPos };
                                 structP.ValueOffset = structOffset;
                                 props.Add(structP);
                             }
@@ -489,7 +515,8 @@ namespace ME3Explorer.Unreal
                         var props = new List<BoolProperty>();
                         for (int i = 0; i < count; i++)
                         {
-                            props.Add(new BoolProperty(stream, pcc.Game));
+                            long startPos = stream.Position;
+                            props.Add(new BoolProperty(stream, pcc.Game) { StartOffset = startPos });
                         }
                         return new ArrayProperty<BoolProperty>(arrayOffset, props, arrayType, name);
                     }
@@ -498,7 +525,8 @@ namespace ME3Explorer.Unreal
                         var props = new List<StrProperty>();
                         for (int i = 0; i < count; i++)
                         {
-                            props.Add(new StrProperty(stream));
+                            long startPos = stream.Position;
+                            props.Add(new StrProperty(stream) { StartOffset = startPos });
                         }
                         return new ArrayProperty<StrProperty>(arrayOffset, props, arrayType, name);
                     }
@@ -507,7 +535,8 @@ namespace ME3Explorer.Unreal
                         var props = new List<FloatProperty>();
                         for (int i = 0; i < count; i++)
                         {
-                            props.Add(new FloatProperty(stream));
+                            long startPos = stream.Position;
+                            props.Add(new FloatProperty(stream) { StartOffset = startPos });
                         }
                         return new ArrayProperty<FloatProperty>(arrayOffset, props, arrayType, name);
                     }
@@ -516,7 +545,8 @@ namespace ME3Explorer.Unreal
                         var props = new List<ByteProperty>();
                         for (int i = 0; i < count; i++)
                         {
-                            props.Add(new ByteProperty(stream));
+                            long startPos = stream.Position;
+                            props.Add(new ByteProperty(stream) { StartOffset = startPos });
                         }
                         return new ArrayProperty<ByteProperty>(arrayOffset, props, arrayType, name);
                     }
@@ -526,7 +556,8 @@ namespace ME3Explorer.Unreal
                         var props = new List<IntProperty>();
                         for (int i = 0; i < count; i++)
                         {
-                            props.Add(new IntProperty(stream));
+                            long startPos = stream.Position;
+                            props.Add(new IntProperty(stream) { StartOffset = startPos });
                         }
                         return new ArrayProperty<IntProperty>(arrayOffset, props, arrayType, name);
                     }
