@@ -1417,7 +1417,13 @@ namespace ME3Explorer
                 }
                 var portingOption = TreeMergeDialog.GetMergeType(this, sourceItem, targetItem);
 
-                //Debug.WriteLine("Adding source item: " + sourceItem.Tag.ToString());
+                if (portingOption == TreeMergeDialog.PortingOption.Cancel)
+                {
+                    return;
+                }
+
+
+                //Debug.WriteLine("Adding source item: " + sourceItem.TagzToString());
 
                 //if (DestinationNode.TreeView != sourceNode.TreeView)
                 //{
@@ -1430,7 +1436,15 @@ namespace ME3Explorer
                     return;
                 }
 
-
+                if (portingOption == TreeMergeDialog.PortingOption.ReplaceSingular)
+                {
+                    //replace data only
+                    if (entry is IExportEntry)
+                    {
+                        ReplaceExportDataWithAnother(entry as IExportEntry, targetLinkEntry as IExportEntry);
+                    }
+                    return;
+                }
 
                 int n = entry.UIndex;
                 int link;
@@ -1493,6 +1507,50 @@ namespace ME3Explorer
                 }
             }
         }
+
+        private void ReplaceExportDataWithAnother(IExportEntry ex, IExportEntry targetLinkEntry)
+        {
+            byte[] idata = ex.Data;
+            PropertyCollection props = ex.GetProperties();
+            int start = ex.GetPropertyStart();
+            int end = props.endOffset;
+
+            MemoryStream res = new MemoryStream();
+            if ((ex.ObjectFlags & (ulong)EObjectFlags.HasStack) != 0)
+            {
+                //ME1, ME2 stack
+                byte[] stackdummy =        { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //Lets hope for the best :D
+                                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
+
+                if (Pcc.Game != MEGame.ME3)
+                {
+                    stackdummy = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+                                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
+                }
+                res.Write(stackdummy, 0, stackdummy.Length);
+            }
+            else
+            {
+                res.Write(new byte[start], 0, start);
+            }
+            //store copy of names list in case something goes wrong
+            List<string> names = Pcc.Names.ToList();
+            try
+            {
+                props.WriteTo(res, Pcc);
+            }
+            catch (Exception exception)
+            {
+                //restore namelist in event of failure.
+                Pcc.setNames(names);
+                MessageBox.Show("Error occured while replace data in " + ex.ObjectName + " : " + exception.Message);
+                return;
+            }
+            res.Write(idata, end, idata.Length - end);
+            targetLinkEntry.Data = res.ToArray();
+            MessageBox.Show("Done. Check the resulting export to ensure accuracy of this experimental feature.");
+        }
+
 
         /// <summary>
         /// Recursive importing function for importing items from another PCC.
@@ -1597,7 +1655,7 @@ namespace ME3Explorer
             }
             catch (Exception exception)
             {
-                //restore namelist
+                //restore namelist in event of failure.
                 Pcc.setNames(names);
                 MessageBox.Show("Error occured while trying to import " + ex.ObjectName + " : " + exception.Message);
                 return false;

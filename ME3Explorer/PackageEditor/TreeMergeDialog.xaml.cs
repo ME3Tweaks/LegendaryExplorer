@@ -1,6 +1,9 @@
-﻿using System;
+﻿using ME3Explorer.Packages;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,7 +20,7 @@ namespace ME3Explorer.PackageEditorWPFControls
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class TreeMergeDialog : Window
+    public partial class TreeMergeDialog : Window, INotifyPropertyChanged
     {
         public enum PortingOption
         {
@@ -28,15 +31,66 @@ namespace ME3Explorer.PackageEditorWPFControls
             Cancel
         }
         public PortingOption PortingOptionChosen;
+        private IEntry sourceEntry;
+        private IEntry targetEntry;
 
-        public TreeMergeDialog()
+        #region propertychangedhandling
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
-            InitializeComponent();
+            if (Equals(storage, value))
+            {
+                return false;
+            }
+
+            storage = value;
+
+            if (propertyName != null)
+            {
+                OnPropertyChanged(propertyName);
+            }
+
+            return true;
         }
 
-        public static object GetMergeType(Window w, TreeViewEntry sourceItem, TreeViewEntry targetItem)
+        protected void OnPropertyChanged(string propertyName)
         {
-            TreeMergeDialog tmd = new TreeMergeDialog();
+            var handler = PropertyChanged;
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
+
+        public string TargetEntryObjectName { get { return targetEntry.ObjectName; } }
+        public string SourceEntryObjectName { get { return sourceEntry.ObjectName; } }
+
+        public ICommand ReplaceDataCommand { get; set; }
+        public TreeMergeDialog(IEntry sourceEntry, IEntry targetEntry)
+        {
+            this.sourceEntry = sourceEntry;
+            this.targetEntry = targetEntry;
+            InitializeComponent();
+            LoadCommands();
+        }
+
+        private void LoadCommands()
+        {
+            ReplaceDataCommand = new RelayCommand(ReplaceData, CanReplaceData);
+        }
+
+        private void ReplaceData(object obj)
+        {
+            PortingOptionChosen = PortingOption.ReplaceSingular;
+            Close();
+        }
+
+        private bool CanReplaceData(object obj)
+        {
+            return (sourceEntry is IExportEntry && targetEntry is IExportEntry && sourceEntry.ClassName == targetEntry.ClassName);
+        }
+
+        public static PortingOption GetMergeType(Window w, TreeViewEntry sourceItem, TreeViewEntry targetItem)
+        {
+            TreeMergeDialog tmd = new TreeMergeDialog(sourceItem.Entry, targetItem.Entry);
             tmd.Owner = w;
             tmd.ShowDialog(); //modal
 
@@ -65,12 +119,6 @@ namespace ME3Explorer.PackageEditorWPFControls
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             PortingOptionChosen = PortingOption.Cancel;
-            Close();
-        }
-
-        private void ReplaceButton_Click(object sender, RoutedEventArgs e)
-        {
-            PortingOptionChosen = PortingOption.ReplaceSingular;
             Close();
         }
     }

@@ -639,6 +639,10 @@ namespace ME3Explorer
                         {
                             parsedValue = IntToString(prop.Name, ip.Value);
                         }
+                        if (parent.Property is StructProperty && (parent.Property as StructProperty).StructType == "Rotator")
+                        {
+                            parsedValue = "(" + (ip.Value * 360f / 65536f).ToString("0.0######") + " degrees)";
+                        }
                     }
                     break;
                 case FloatProperty fp:
@@ -746,6 +750,7 @@ namespace ME3Explorer
                             return " (0x" + value.ToString("X8") + ")";
                     }
                     break;
+
             }
             return "";
         }

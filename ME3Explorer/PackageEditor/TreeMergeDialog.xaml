@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:ME3Explorer.PackageEditorWPFControls"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        Title="Package porting options" Height="240" Width="450">
+        Title="Package porting options" Height="240" Width="450"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <StackPanel Margin="5">
         <TextBlock HorizontalAlignment="Center" Text="Select what you'd like to do for this porting operation."/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -28,11 +29,11 @@
             </Button>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button  Width="200" Height="60"  Margin="5" Click="ReplaceButton_Click">
+            <Button Width="200" Height="60"  Margin="5" Command="{Binding ReplaceDataCommand}">
                 <Button.Content>
                     <StackPanel HorizontalAlignment="Center">
                         <TextBlock Text="Replace export data of X" HorizontalAlignment="Center" FontWeight="Bold"/>
-                        <TextBlock Text="with export data from Y" Foreground="Gray" FontSize="9"  HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding Path=TargetEntryObjectName, StringFormat='with export data from {0}'}" Foreground="Gray" FontSize="9"  HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Button.Content>
             </Button>
