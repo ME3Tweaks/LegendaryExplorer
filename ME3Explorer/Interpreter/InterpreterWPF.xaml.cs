@@ -142,15 +142,112 @@ namespace ME3Explorer
         public ICommand CollapseChildrenCommand { get; set; }
         public ICommand ExpandChildrenCommand { get; set; }
         public ICommand SortChildrenCommand { get; set; }
+        public ICommand SortParsedArrayAscendingCommand { get; set; } //obj, name only
+        public ICommand SortParsedArrayDescendingCommand { get; set; } //obj, name only
+        public ICommand SortValueArrayAscendingCommand { get; set; }
+        public ICommand SortValueArrayDescendingCommand { get; set; }
 
         private void LoadCommands()
         {
-            // Player commands
             RemovePropertyCommand = new RelayCommand(RemoveProperty, CanRemoveProperty);
             AddPropertyCommand = new RelayCommand(AddProperty, CanAddProperty);
             CollapseChildrenCommand = new RelayCommand(CollapseChildren, CanExpandOrCollapseChildren);
             ExpandChildrenCommand = new RelayCommand(ExpandChildren, CanExpandOrCollapseChildren);
             SortChildrenCommand = new RelayCommand(SortChildren, CanExpandOrCollapseChildren);
+
+            SortParsedArrayAscendingCommand = new RelayCommand(SortParsedArrayAscending, CanSortArrayPropByParsedValue);
+            SortParsedArrayDescendingCommand = new RelayCommand(SortParsedArrayDescending, CanSortArrayPropByParsedValue);
+            SortValueArrayAscendingCommand = new RelayCommand(SortValueArrayAscending, CanSortArrayPropByValue);
+            SortValueArrayDescendingCommand = new RelayCommand(SortValueArrayDescending, CanSortArrayPropByValue);
+
+        }
+
+        private void SortParsedArrayAscending(object obj)
+        {
+            UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
+            if (tvi != null && tvi.Property != null)
+            {
+                SortArrayPropertyParsed(tvi.Property, true);
+            }
+        }
+
+        private void SortValueArrayAscending(object obj)
+        {
+            UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
+            if (tvi != null && tvi.Property != null)
+            {
+                SortArrayPropertyValue(tvi.Property, true);
+            }
+        }
+
+        private void SortValueArrayDescending(object obj)
+        {
+            UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
+            if (tvi != null && tvi.Property != null)
+            {
+                SortArrayPropertyValue(tvi.Property, false);
+            }
+        }
+
+        private void SortParsedArrayDescending(object obj)
+        {
+            UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
+            if (tvi != null && tvi.Property != null)
+            {
+                SortArrayPropertyParsed(tvi.Property, false);
+            }
+        }
+
+        private void SortArrayPropertyValue(UProperty property, bool ascending)
+        {
+            switch (property)
+            {
+                case ArrayProperty<ObjectProperty> aop:
+                    aop.Values = ascending ? aop.OrderBy(x => x.Value).ToList() : aop.OrderByDescending(x => x.Value).ToList();
+                    break;
+                case ArrayProperty<IntProperty> aip:
+                    aip.Values = ascending ? aip.OrderBy(x => x.Value).ToList() : aip.OrderByDescending(x => x.Value).ToList();
+                    break;
+                case ArrayProperty<FloatProperty> afp:
+                    afp.Values = ascending ? afp.OrderBy(x => x.Value).ToList() : afp.OrderByDescending(x => x.Value).ToList();
+                    break;
+            }
+            CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
+        }
+
+        private void SortArrayPropertyParsed(UProperty property, bool ascending)
+        {
+            switch (property)
+            {
+                case ArrayProperty<ObjectProperty> aop:
+                    //todo: order by index too in thenby()
+                    aop.Values = ascending ? aop.OrderBy(x => CurrentLoadedExport.FileRef.getEntry(x.Value).GetFullPath).ToList() : aop.OrderByDescending(x => CurrentLoadedExport.FileRef.getEntry(x.Value).GetFullPath).ToList();
+                    break;
+                case ArrayProperty<NameProperty> anp:
+                    anp.Values = ascending ? anp.OrderBy(x => x.Value.Name).ThenBy(x => x.Value.Number).ToList() : anp.OrderByDescending(x => x.Value.Name).ThenBy(x => x.Value.Number).ToList();
+                    break;
+            }
+            CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
+        }
+
+        private bool CanSortArrayPropByParsedValue(object obj)
+        {
+            UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
+            return tvi != null && tvi.Property != null && (
+                tvi.Property is ArrayProperty<NameProperty> ||
+                tvi.Property is ArrayProperty<ObjectProperty>
+                );
+        }
+
+        private bool CanSortArrayPropByValue(object obj)
+        {
+            UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
+            return tvi != null && tvi.Property != null && (
+                tvi.Property is ArrayProperty<NameProperty> ||
+                tvi.Property is ArrayProperty<ObjectProperty> ||
+                tvi.Property is ArrayProperty<IntProperty> ||
+                tvi.Property is ArrayProperty<FloatProperty>
+                );
         }
 
         private void SortChildren(object obj)
@@ -1326,8 +1423,33 @@ namespace ME3Explorer
                             Number = 0
                         };
                         NameProperty np = new NameProperty() { Value = nameRef };
-                        (propertyToAddItemTo as ArrayProperty<NameProperty>).Add(np);
+                        anp.Add(np);
                         break;
+                    case ArrayProperty<ObjectProperty> aop:
+                        ObjectProperty op = new ObjectProperty(0);
+                        aop.Add(op);
+                        break;
+                    case ArrayProperty<IntProperty> aip:
+                        IntProperty ip = new IntProperty(0);
+                        aip.Add(ip);
+                        break;
+                    case ArrayProperty<FloatProperty> afp:
+                        FloatProperty fp = new FloatProperty(0);
+                        afp.Add(fp);
+                        break;
+
+                        //TODO: Figure out how to do these
+                        /*
+                        case ArrayProperty<EnumProperty> aep:
+                            EnumProperty ep = new EnumProperty()
+                            break;
+                        case ArrayProperty<StructProperty> asp:
+                            //TODO: Figure out how to do this
+                            break;
+                            case ArrayProperty<ArrayProperty> aap:
+                            //uh...
+                                break;
+                            */
                 }
                 CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
             }
@@ -1335,7 +1457,16 @@ namespace ME3Explorer
 
         private void RemoveArrayElement_Button_Click(object sender, RoutedEventArgs e)
         {
-
+            UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
+            if (tvi != null)
+            {
+                if (tvi.Parent.Property != null && tvi.Parent.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)))
+                {
+                    bool removed = tvi.ChildrenProperties.Remove(tvi);
+                    Debug.WriteLine("removed: " + removed);
+                }
+                CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
+            }
         }
     }
 

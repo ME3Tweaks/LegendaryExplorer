@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
              xmlns:global="clr-namespace:ME3Explorer"
              xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
              xmlns:Commands="clr-namespace:ME3Explorer.Commands"
@@ -75,6 +77,11 @@
                                     <TextBlock x:Name="PropertyItem_ParsedValue" Margin="5,0,0,0" Text="{Binding ParsedValue}" VerticalAlignment="Center" FontStyle="Italic"/>
                                 </StackPanel>
                                 <TextBlock x:Name="PropertyItem_DisplayType" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                        <ei:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                             </StackPanel>
                         </StackPanel>
                         <HierarchicalDataTemplate.Triggers>
@@ -127,16 +134,6 @@
 
                         </HierarchicalDataTemplate.Triggers>
                     </HierarchicalDataTemplate>
-                    <ContextMenu x:Key ="ArrayPropertyContext"  StaysOpen="true">
-                        <MenuItem Header="Order by">
-                            <MenuItem Header="Value" Command="Commands:InterpreterWPFCommands.ArrayOrderByValueCommand"/>
-                            <MenuItem Header="Other" ToolTip="Not yet implemented"/>
-                        </MenuItem>
-                        <MenuItem Header="RemoveProperty" Command="Commands:InterpreterWPFCommands.RemovePropertyCommand"/>
-                    </ContextMenu>
-                    <ContextMenu x:Key="StandardPropertContext"  StaysOpen="true">
-                        <MenuItem Header="RemoveProperty" Command="Commands:InterpreterWPFCommands.RemovePropertyCommand"/>
-                    </ContextMenu>
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
                       Color="LightBlue" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
@@ -151,10 +148,17 @@
                         <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
                         <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
                     </Style>
+                    
                 </SharedUI:StretchingTreeView.ItemContainerStyle>
                 <SharedUI:StretchingTreeView.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Sort properties alphabetically" ToolTip="Sorts properties alphabetically. This is a cosmetic only change." Command="{Binding SortChildrenCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <MenuItem Header="Sort children properties alphabetically" ToolTip="Sorts properties alphabetically. This is a cosmetic only change." Command="{Binding SortChildrenCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <MenuItem Header="Array sorting: By ascending parsed value" ToolTip="Sorts an array property by its parsed value, in ascending order." Command="{Binding SortParsedArrayAscendingCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <MenuItem Header="Array sorting: By descending parsed value" ToolTip="Sorts an array property by its parsed value, in descending order." Command="{Binding SortParsedArrayDescendingCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <MenuItem Header="Array sorting: By ascending value" ToolTip="Sorts an array property by its value, in ascending order." Command="{Binding SortValueArrayAscendingCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <MenuItem Header="Array sorting: By descending value" ToolTip="Sorts an array property by its value, in descending order." Command="{Binding SortValueArrayDescendingCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+
                         <MenuItem Header="Expand children" ToolTip="Expands all children of this property" Command="{Binding ExpandChildrenCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <MenuItem Header="Collapse children" ToolTip="Collapses all children of this property" Command="{Binding CollapseChildrenCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
 

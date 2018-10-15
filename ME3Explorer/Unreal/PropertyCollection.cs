@@ -451,7 +451,6 @@ namespace ME3Explorer.Unreal
                         }
                         return new ArrayProperty<ObjectProperty>(arrayOffset, props, arrayType, name);
                     }
-                //TODO: Add property StartOffset to these properties
                 case ArrayType.Name:
                     {
                         var props = new List<NameProperty>();
@@ -1115,7 +1114,7 @@ namespace ME3Explorer.Unreal
     [DebuggerDisplay("ArrayProperty<{arrayType}> | {Name}, Length = {Values.Count}")]
     public class ArrayProperty<T> : ArrayPropertyBase, IList<T> where T : UProperty
     {
-        public List<T> Values { get; }
+        public List<T> Values { get; set; }
         public override IEnumerable<UProperty> ValuesAsProperties => Values;
         public readonly ArrayType arrayType;
 
