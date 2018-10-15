@@ -141,7 +141,7 @@ namespace ME3Explorer
         public ICommand AddPropertyCommand { get; set; }
         public ICommand CollapseChildrenCommand { get; set; }
         public ICommand ExpandChildrenCommand { get; set; }
-
+        public ICommand SortChildrenCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -150,6 +150,13 @@ namespace ME3Explorer
             AddPropertyCommand = new RelayCommand(AddProperty, CanAddProperty);
             CollapseChildrenCommand = new RelayCommand(CollapseChildren, CanExpandOrCollapseChildren);
             ExpandChildrenCommand = new RelayCommand(ExpandChildren, CanExpandOrCollapseChildren);
+            SortChildrenCommand = new RelayCommand(SortChildren, CanExpandOrCollapseChildren);
+        }
+
+        private void SortChildren(object obj)
+        {
+            UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
+            tvi.ChildrenProperties.Sort(x => x.Property.Name.Name);
         }
 
         private void ExpandChildren(object obj)
@@ -164,7 +171,8 @@ namespace ME3Explorer
         private void SetChildrenExpandedStateRecursive(UPropertyTreeViewEntry root, bool IsExpanded)
         {
             root.IsExpanded = IsExpanded;
-            foreach (UPropertyTreeViewEntry tvi in root.ChildrenProperties) {
+            foreach (UPropertyTreeViewEntry tvi in root.ChildrenProperties)
+            {
                 SetChildrenExpandedStateRecursive(tvi, IsExpanded);
             }
         }
@@ -224,6 +232,8 @@ namespace ME3Explorer
 
             if (prop != null)
             {
+                //not sure if the following is actually needed anymore from interpreter classic
+
                 /*string origname = CurrentLoadedExport.ClassName;
                 string temp = CurrentLoadedExport.ClassName;
                 List<string> classes = new List<string>();
@@ -286,8 +296,8 @@ namespace ME3Explorer
                         break;
                     case PropertyType.StructProperty:
                         // Generate the bytecode and then read it as a prop.
-                        // This is effectively have default interpreter does it
-                        // and I have to use it since I dno't have a way to just
+                        // This is effectively the way classic interpreter does it
+                        // and I have to use it since I don't have a way to just
                         // get UProperty struct
                         List<byte> buff = new List<byte>();
                         //name
@@ -367,7 +377,7 @@ namespace ME3Explorer
         {
             EditorSetElements.ForEach(x => x.Visibility = Visibility.Collapsed);
 
-            //check rescan
+            //set rescan offset
             //TODO: Make this more reliable because it is recycling virtualization
             if (CurrentLoadedExport != null && export.FileRef == CurrentLoadedExport.FileRef && export.UIndex == CurrentLoadedExport.UIndex)
             {
@@ -382,9 +392,6 @@ namespace ME3Explorer
                 RescanSelectionOffset = 0;
             }
             CurrentLoadedExport = export;
-            //List<byte> bytes = export.Data.ToList();
-            //MemoryStream ms = new MemoryStream(); //initializing memorystream directly with byte[] does not allow it to expand.
-            //ms.Write(export.Data, 0, export.Data.Length); //write the data into the memorystream.
             Interpreter_Hexbox.ByteProvider = new DynamicByteProvider(export.Data);
             className = export.ClassName;
 
@@ -460,65 +467,12 @@ namespace ME3Explorer
                 var itemToSelect = flattenedTree.FirstOrDefault(x => x.Property != null && x.Property.ValueOffset == RescanSelectionOffset);
                 if (itemToSelect != null)
                 {
+                    //todo: select node using parent-first selection (from packageeditorwpf)
+                    //due to tree view virtualization
                     itemToSelect.ExpandParents();
                     itemToSelect.IsSelected = true;
                 }
             }
-            /*try
-            {
-                List<PropHeader> topLevelHeaders = ReadHeadersTillNone();
-                GenerateTree(topLevelTree, topLevelHeaders);
-            }
-            catch (Exception ex)
-            {
-                TreeViewItem errorNode = new TreeViewItem()
-                {
-                    Header = $"PARSE ERROR {ex.Message}"
-                };
-                topLevelTree.Items.Add(errorNode);
-                //addPropButton.Visible = false;
-                //removePropertyButton.Visible = false;
-            }*/
-            //Interpreter_TreeView.CollapseAll();
-            //Interpreter_TreeView.Items[0].Expand();
-
-            /*TreeViewItem[] Items;
-            if (expandedItems != null)
-            {
-                int memDiff = memory.Length - memsize;
-                int selectedPos = getPosFromNode(selectedNodeName);
-                int curPos = 0;
-                foreach (string item in expandedItems)
-                {
-                    curPos = getPosFromNode(item);
-                    if (curPos > selectedPos)
-                    {
-                        curPos += memDiff;
-                    }
-                    Items = Interpreter_TreeView.Items.Find((item[0] == '-' ? -curPos : curPos).ToString(), true);
-                    if (Items.Length > 0)
-                    {
-                        foreach (var node in Items)
-                        {
-                            node.Expand();
-                        }
-                    }
-                }
-            }
-            Items = Interpreter_TreeView.Items.Find(topNodeName, true);
-            if (Items.Length > 0)
-            {
-                Interpreter_TreeView.TopNode = Items[0];
-            }
-            Items = Interpreter_TreeView.Items.Find(selectedNodeName, true);
-            if (Items.Length > 0)
-            {
-                Interpreter_TreeView.SelectedNode = Items[0];
-            }
-            else
-            {
-                Interpreter_TreeView.S = Interpreter_TreeView.Items[0];
-            }*/
         }
 
 
@@ -608,8 +562,8 @@ namespace ME3Explorer
                     }
                     break;
                 case NameProperty np:
-                    editableValue = np.NameTableIndex.ToString() + "_" + np.Name.Number.ToString();
-                    parsedValue = np.Value + "_" + np.Name.Number.ToString(); //will require special 2-box setup
+                    editableValue = CurrentLoadedExport.FileRef.findName(np.Value.Name.ToString()) + "_" + np.Value.Number.ToString();
+                    parsedValue = np.Value + "_" + np.Value.Number.ToString(); //will require special 2-box setup
                     break;
                 case ByteProperty bp:
                     editableValue = (prop as ByteProperty).Value.ToString();
@@ -1031,17 +985,33 @@ namespace ME3Explorer
                     case ObjectProperty op:
                     case FloatProperty fp:
                     case IntProperty ip:
-                        if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable && (newSelectedItem.Property is IntProperty || newSelectedItem.Property is FloatProperty || newSelectedItem.Property is ObjectProperty))
                         {
-                            Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
-                            return;
-                        }
-                        else if (newSelectedItem.Parent.Property is ArrayProperty<IntProperty> || newSelectedItem.Parent.Property is ArrayProperty<FloatProperty> || newSelectedItem.Parent.Property is ArrayProperty<ObjectProperty>)
-                        {
-                            Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
-                            return;
+                            if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
+                            {
+                                Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
+                                return;
+                            }
+                            else if (newSelectedItem.Parent.Property is ArrayProperty<IntProperty> || newSelectedItem.Parent.Property is ArrayProperty<FloatProperty> || newSelectedItem.Parent.Property is ArrayProperty<ObjectProperty>)
+                            {
+                                Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
+                                return;
+                            }
                         }
                         //otherwise use the default
+                        break;
+                    case NameProperty np:
+                        {
+                            if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
+                            {
+                                Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 8);
+                                return;
+                            }
+                            else if (newSelectedItem.Parent.Property is ArrayProperty<NameProperty>)
+                            {
+                                Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 8);
+                                return;
+                            }
+                        }
                         break;
                         //case EnumProperty ep:
                         //    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 32, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
@@ -1118,51 +1088,21 @@ namespace ME3Explorer
             }
         }
 
-        private void Interpreter_TreeView_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            TreeViewItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
-
-            if (treeViewItem != null)
-            {
-                treeViewItem.Focus();
-                e.Handled = true;
-
-                if (treeViewItem.Tag != null)
-                {
-                    if (treeViewItem.Tag is ArrayPropertyBase)
-                    {
-                        Interpreter_TreeView.ContextMenu = Interpreter_TreeView.Resources["ArrayPropertyContext"] as System.Windows.Controls.ContextMenu;
-                    }
-                    else
-                    {
-                        Interpreter_TreeView.ContextMenu = Interpreter_TreeView.Resources["FolderContext"] as System.Windows.Controls.ContextMenu;
-                    }
-                }
-            }
-        }
-
-        static TreeViewItem VisualUpwardSearch(DependencyObject source)
-        {
-            while (source != null && !(source is TreeViewItem))
-                source = VisualTreeHelper.GetParent(source);
-
-            return source as TreeViewItem;
-        }
-
         private void RemovePropertyCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
-            TreeViewItem tvi = (TreeViewItem)Interpreter_TreeView.SelectedItem;
-            if (tvi != null)
+            UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
+            if (tvi != null && tvi.Property != null)
             {
-                UProperty tag = (UProperty)tvi.Tag;
-                CurrentLoadedProperties.Remove(tag);
+                CurrentLoadedProperties.Remove(tvi.Property);
                 CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
-                StartScan();
+                StartScan(); //may not be required as export will rescan
             }
         }
 
         private void ArrayOrderByValueCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
+            //outdated. Will replace later
+            //TODO
             TreeViewItem tvi = (TreeViewItem)Interpreter_TreeView.SelectedItem;
             if (tvi != null)
             {
@@ -1239,31 +1179,6 @@ namespace ME3Explorer
             return parent as ItemsControl;
         }
 
-        private void Interpreter_AddProperty_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private UProperty generateNewProperty(string prop, ClassInfo nonVanillaClassInfo)
-        {
-            if (prop != null)
-            {
-                PropertyInfo info = GetPropertyInfo(prop, className, nonVanillaClassInfo: nonVanillaClassInfo);
-                if (info == null)
-                {
-                    MessageBox.Show("Error reading property.", "Error");
-                    return null;
-                }
-                //TODO: Implement code to generate a new StructProperty UProperty
-                if (info.type == PropertyType.StructProperty /* &&CurrentLoadedExport.FileRef.Game != MEGame.ME3*/)
-                {
-                    MessageBox.Show("Cannot add StructProperties when editing ME1 or ME2 files (or ME3 currently).", "Sorry :(");
-                    return null;
-                }
-            }
-            return null;
-        }
-
         public override bool CanParse(IExportEntry exportEntry)
         {
             return true;
@@ -1325,6 +1240,7 @@ namespace ME3Explorer
                         {
                             if (int.TryParse(Value_TextBox.Text, out int o) && o != op.Value)
                             {
+                                //Todo: Check if value is in bounds. We should never set an out of bounds item here
                                 op.Value = o;
                                 updated = true;
                             }
@@ -1335,6 +1251,28 @@ namespace ME3Explorer
                         {
                             ep.Value = (string)Value_ComboBox.SelectedItem; //0 = true
                             updated = true;
+                        }
+                        break;
+                    case ByteProperty bytep:
+                        if (byte.TryParse(Value_TextBox.Text, out byte b) && b != bytep.Value)
+                        {
+                            bytep.Value = b;
+                            updated = true;
+                        }
+                        break;
+                    case NameProperty namep:
+                        //Todo: Check name values are in range
+                        bool nametableindexok = int.TryParse(Value_TextBox.Text, out int nameTableIndex);
+                        bool nameindexok = int.TryParse(NameIndex_TextBox.Text, out int nameIndex);
+
+                        if (nametableindexok && nameindexok)
+                        {
+                            NameReference nameRef = new NameReference
+                            {
+                                Name = CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex),
+                                Number = nameIndex
+                            };
+                            namep.Value = nameRef;
                         }
                         break;
                 }
@@ -1365,7 +1303,34 @@ namespace ME3Explorer
 
         private void AddArrayElement_Button_Click(object sender, RoutedEventArgs e)
         {
+            UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
+            if (tvi != null)
+            {
+                UProperty propertyToAddItemTo = null;
 
+                if (tvi.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)))
+                {
+                    propertyToAddItemTo = tvi.Property;
+                }
+                if (tvi.Parent.Property != null && tvi.Parent.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)))
+                {
+                    propertyToAddItemTo = tvi.Parent.Property;
+                }
+
+                switch (propertyToAddItemTo)
+                {
+                    case ArrayProperty<NameProperty> anp:
+                        NameReference nameRef = new NameReference
+                        {
+                            Name = CurrentLoadedExport.FileRef.getNameEntry(0),
+                            Number = 0
+                        };
+                        NameProperty np = new NameProperty() { Value = nameRef };
+                        (propertyToAddItemTo as ArrayProperty<NameProperty>).Add(np);
+                        break;
+                }
+                CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
+            }
         }
 
         private void RemoveArrayElement_Button_Click(object sender, RoutedEventArgs e)

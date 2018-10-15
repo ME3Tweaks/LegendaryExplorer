@@ -866,7 +866,6 @@ namespace ME3Explorer.Unreal
     [DebuggerDisplay("NameProperty | {Name} = {Value}")]
     public class NameProperty : UProperty
     {
-        public int NameTableIndex;
         NameReference _value;
         public NameReference Value
         {
@@ -874,13 +873,17 @@ namespace ME3Explorer.Unreal
             set => SetProperty(ref _value, value);
         }
 
+        public NameProperty(NameReference? name = null) : base(name)
+        {
+            PropType = PropertyType.NameProperty;
+        }
+
         public NameProperty(MemoryStream stream, IMEPackage pcc, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            NameTableIndex = stream.ReadValueS32();
             NameReference nameRef = new NameReference
             {
-                Name = pcc.getNameEntry(NameTableIndex),
+                Name = pcc.getNameEntry(stream.ReadValueS32()),
                 Number = stream.ReadValueS32()
             };
             Value = nameRef;
