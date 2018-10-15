@@ -512,9 +512,9 @@ namespace ME3Explorer
             {
                 int binarypos = binarystart;
                 int count = BitConverter.ToInt32(data, binarypos);
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem { Header = $"0x{binarypos:X4} Count: {count.ToString()}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem { Header = $"0x{binarypos:X4} Count: {count.ToString()}", Name = "_" + binarypos });
                 binarypos += 4; //+ int
-                if (count > 0)
+                for (int i = 0; i < count; i++)
                 {
                     string nodeText = $"0x{binarypos:X4} ";
                     int val = BitConverter.ToInt32(data, binarypos);
@@ -522,13 +522,13 @@ namespace ME3Explorer
                     if (val > 0 && val <= CurrentLoadedExport.FileRef.Exports.Count)
                     {
                         IExportEntry exp = CurrentLoadedExport.FileRef.Exports[val - 1];
-                        nodeText += $"{name} {exp.PackageFullName}.{exp.ObjectName} ({exp.ClassName})";
+                        nodeText += $"{i}: {name} {exp.PackageFullName}.{exp.ObjectName} ({exp.ClassName})";
                     }
                     else if (val < 0 && val != int.MinValue && Math.Abs(val) <= CurrentLoadedExport.FileRef.Imports.Count)
                     {
                         int csImportVal = Math.Abs(val) - 1;
                         ImportEntry imp = CurrentLoadedExport.FileRef.Imports[csImportVal];
-                        nodeText += $"{name} {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
+                        nodeText += $"{i}: {name} {imp.PackageFullName}.{imp.ObjectName} ({imp.ClassName})";
                     }
 
                     subnodes.Add(new BinaryInterpreterWPFTreeViewItem
@@ -537,6 +537,7 @@ namespace ME3Explorer
                         Tag = NodeType.StructLeafObject,
                         Name = "_" + binarypos
                     });
+                    binarypos += 4;
                     /*
                     int objectindex = BitConverter.ToInt32(data, binarypos);
                     IEntry obj = pcc.getEntry(objectindex);
