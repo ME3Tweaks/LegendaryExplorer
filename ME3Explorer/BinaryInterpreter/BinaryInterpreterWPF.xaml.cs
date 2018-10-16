@@ -35,6 +35,21 @@ namespace ME3Explorer
     {
         private HexBox BinaryInterpreter_Hexbox;
         BackgroundWorker ScanWorker;
+
+        private string _selectedFileOffset;
+        public string SelectedFileOffset
+        {
+            get { return _selectedFileOffset; }
+            set
+            {
+                if (_selectedFileOffset != value)
+                {
+                    _selectedFileOffset = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public enum InterpreterMode
         {
             Objects,
@@ -48,9 +63,31 @@ namespace ME3Explorer
         public BinaryInterpreterWPF()
         {
             InitializeComponent();
+            LoadCommands();
             viewModeComboBox.ItemsSource = Enum.GetValues(typeof(InterpreterMode)).Cast<InterpreterMode>();
             viewModeComboBox.SelectedItem = InterpreterMode.Objects;
         }
+
+
+
+        #region Commands
+        public ICommand CopyOffsetCommand { get; set; }
+
+        private void LoadCommands()
+        {
+            CopyOffsetCommand = new RelayCommand(CopyFileOffsetToClipboard, OffsetIsSelected);
+        }
+
+        private void CopyFileOffsetToClipboard(object obj)
+        {
+            Clipboard.SetText(SelectedFileOffset);
+        }
+
+        private bool OffsetIsSelected(object obj)
+        {
+            return BinaryInterpreter_Hexbox.SelectionStart >= 0;
+        }
+        #endregion
 
         static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "ShaderCache", "Class", "BioStage", "ObjectProperty", "Const",
             "Enum", "ArrayProperty","FloatProperty", "IntProperty", "BoolProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
@@ -243,6 +280,15 @@ namespace ME3Explorer
 
             arguments.Item1.Items = subNodes;
             e.Result = arguments.Item1; //return topLevelTree
+        }
+
+        internal void SetHexboxSelectedOffset(int v)
+        {
+            if (BinaryInterpreter_Hexbox != null)
+            {
+                BinaryInterpreter_Hexbox.SelectionStart = v;
+                BinaryInterpreter_Hexbox.SelectionLength = 1;
+            }
         }
 
         #region scans
@@ -2299,8 +2345,8 @@ namespace ME3Explorer
                         s += $"Length=0x{len:X8} ";
                         s += $"End=0x{(start + len - 1):X8}";
                     }
-                    s += $" | File offset: {(CurrentLoadedExport.DataOffset + start):X8}";
                     StatusBar_LeftMostText.Text = s;
+                    SelectedFileOffset = $"{(CurrentLoadedExport.DataOffset + start):X8}";
                 }
                 else
                 {
@@ -2338,6 +2384,11 @@ namespace ME3Explorer
         private void ParseBinary_Button_Click(object sender, RoutedEventArgs e)
         {
             StartBinaryScan();
+        }
+
+        private void FileOffsetStatusbar_RightMouseUp(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 

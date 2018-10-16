@@ -230,6 +230,15 @@ namespace ME3Explorer
             CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
         }
 
+        internal void SetHexboxSelectedOffset(int v)
+        {
+            if (Interpreter_Hexbox != null)
+            {
+                Interpreter_Hexbox.SelectionStart = v;
+                Interpreter_Hexbox.SelectionLength = 1;
+            }
+        }
+
         private bool CanSortArrayPropByParsedValue(object obj)
         {
             UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;

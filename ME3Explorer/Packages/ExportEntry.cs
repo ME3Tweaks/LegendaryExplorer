@@ -44,7 +44,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public uint headerOffset { get; set; }
+        public uint HeaderOffset { get; set; }
 
         public int idxClass { get { return BitConverter.ToInt32(Header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 0, sizeof(int)); HeaderChanged = true; } }
         public int idxClassParent { get { return BitConverter.ToInt32(Header, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 4, sizeof(int)); HeaderChanged = true; } }
@@ -298,7 +298,7 @@ namespace ME3Explorer.Packages
     {
         public UDKExportEntry(UDKPackage udkFile, Stream stream) : base(udkFile)
         {
-            headerOffset = (uint)stream.Position;
+            HeaderOffset = (uint)stream.Position;
             stream.Seek(44, SeekOrigin.Current);
             int count = stream.ReadValueS32();
             stream.Seek(-48, SeekOrigin.Current);
@@ -330,7 +330,7 @@ namespace ME3Explorer.Packages
             UDKExportEntry newExport = new UDKExportEntry(FileRef as UDKPackage)
             {
                 Header = this.Header.TypedClone(),
-                headerOffset = 0,
+                HeaderOffset = 0,
                 Data = this.Data
             };
             int index = 0;
@@ -353,7 +353,7 @@ namespace ME3Explorer.Packages
     {
         public ME3ExportEntry(ME3Package pccFile, Stream stream) : base(pccFile)
         {
-            headerOffset = (uint)stream.Position;
+            HeaderOffset = (uint)stream.Position;
             stream.Seek(44, SeekOrigin.Current);
             int count = stream.ReadValueS32();
             stream.Seek(-48, SeekOrigin.Current);
@@ -385,7 +385,7 @@ namespace ME3Explorer.Packages
             ME3ExportEntry newExport = new ME3ExportEntry(FileRef as ME3Package)
             {
                 Header = this.Header.TypedClone(),
-                headerOffset = 0,
+                HeaderOffset = 0,
                 Data = this.Data
             };
             int index = 0;
@@ -421,7 +421,7 @@ namespace ME3Explorer.Packages
 
             //read header
             Header = stream.ReadBytes((int)(end - start));
-            headerOffset = (uint)start;
+            HeaderOffset = (uint)start;
             OriginalDataSize = DataSize;
 
             //read data
@@ -447,7 +447,7 @@ namespace ME3Explorer.Packages
             ME2ExportEntry newExport = new ME2ExportEntry(FileRef as ME2Package)
             {
                 Header = this.Header.TypedClone(),
-                headerOffset = 0,
+                HeaderOffset = 0,
                 Data = this.Data
             };
             int index = 0;
@@ -483,7 +483,7 @@ namespace ME3Explorer.Packages
 
             //read header
             Header = stream.ReadBytes((int)(end - start));
-            headerOffset = (uint)start;
+            HeaderOffset = (uint)start;
             OriginalDataSize = DataSize;
 
             //read data
@@ -509,7 +509,7 @@ namespace ME3Explorer.Packages
             ME1ExportEntry newExport = new ME1ExportEntry(FileRef as ME1Package)
             {
                 Header = this.Header.TypedClone(),
-                headerOffset = 0,
+                HeaderOffset = 0,
                 Data = this.Data
             };
             int index = 0;

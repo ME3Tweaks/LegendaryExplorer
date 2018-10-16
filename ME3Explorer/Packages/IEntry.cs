@@ -37,7 +37,7 @@ namespace ME3Explorer.Packages
         int indexValue { get; set; }
         string ArchtypeName { get; }
         string ClassParent { get; }
-        uint headerOffset { get; set; }
+        uint HeaderOffset { get; set; }
         ulong ObjectFlags { get; set; }
         int OriginalDataSize { get; }
         bool ReadsFromConfig { get; }

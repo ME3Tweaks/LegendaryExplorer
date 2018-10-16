@@ -209,6 +209,15 @@ namespace ME3Explorer.MetadataEditor
             loadingNewData = false;
         }
 
+        internal void SetHexboxSelectedOffset(long v)
+        {
+            if (Header_Hexbox != null)
+            {
+                Header_Hexbox.SelectionStart = v;
+                Header_Hexbox.SelectionLength = 1;
+            }
+        }
+
         internal void ClearMetadataPane()
         {
             loadingNewData = true;

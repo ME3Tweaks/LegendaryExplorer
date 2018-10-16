@@ -196,7 +196,7 @@ namespace ME3Explorer.Packages
                 ExportCount = exports.Count;
                 foreach (IExportEntry e in exports)
                 {
-                    e.headerOffset = (uint)m.Position;
+                    e.HeaderOffset = (uint)m.Position;
                     m.WriteBytes(e.Header);
                 }
                 //freezone
@@ -215,7 +215,7 @@ namespace ME3Explorer.Packages
                     m.WriteBytes(e.Data);
                     //update size and offset in already-written header
                     long pos = m.Position;
-                    m.Seek(e.headerOffset + 32, SeekOrigin.Begin);
+                    m.Seek(e.HeaderOffset + 32, SeekOrigin.Begin);
                     m.WriteValueS32(e.DataSize);
                     m.WriteValueS32(e.DataOffset);
                     m.Seek(pos, SeekOrigin.Begin);

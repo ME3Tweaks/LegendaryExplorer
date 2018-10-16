@@ -10,6 +10,7 @@ namespace ME3Explorer.Packages
     {
         public ImportEntry(IMEPackage pccFile, Stream importData)
         {
+            HeaderOffset = importData.Position;
             FileRef = pccFile;
             Header = new byte[byteSize];
             importData.Read(Header, 0, Header.Length);
@@ -20,6 +21,8 @@ namespace ME3Explorer.Packages
             FileRef = pccFile;
             Header = new byte[byteSize];
         }
+
+        public long HeaderOffset { get; set; }
 
         public int Index { get; set; }
         public int UIndex { get { return -Index - 1; } }

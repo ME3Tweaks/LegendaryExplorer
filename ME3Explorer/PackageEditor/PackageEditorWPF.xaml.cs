@@ -102,6 +102,8 @@ namespace ME3Explorer
         public ICommand ImportBinaryDataCommand { get; set; }
         public ICommand CloneCommand { get; set; }
         public ICommand CloneTreeCommand { get; set; }
+        public ICommand FindEntryViaOffsetCommand { get; set; }
+        public ICommand CheckForDuplicateIndexesCommand { get; set; }
 
         private bool _isBusy;
         public bool IsBusy
@@ -134,6 +136,123 @@ namespace ME3Explorer
             ImportBinaryDataCommand = new RelayCommand(ImportBinaryData, ExportIsSelected);
             CloneCommand = new RelayCommand(CloneEntry, EntryIsSelected);
             CloneTreeCommand = new RelayCommand(CloneTree, EntryIsSelected);
+            FindEntryViaOffsetCommand = new RelayCommand(FindEntryViaOffset, PackageIsLoaded);
+            CheckForDuplicateIndexesCommand = new RelayCommand(CheckForDuplicateIndexes, PackageIsLoaded);
+        }
+
+        private void CheckForDuplicateIndexes(object obj)
+        {
+            if (Pcc == null)
+            {
+                return;
+            }
+            List<string> duplicates = new List<string>();
+            Dictionary<string, List<int>> nameIndexDictionary = new Dictionary<string, List<int>>();
+            foreach (IExportEntry exp in Pcc.Exports)
+            {
+                string key = exp.GetFullPath;
+                List<int> indexList;
+                bool hasExistingList = nameIndexDictionary.TryGetValue(key, out indexList);
+                if (!hasExistingList)
+                {
+                    indexList = new List<int>();
+                    nameIndexDictionary[key] = indexList;
+                }
+                bool isDuplicate = indexList.Contains(exp.indexValue);
+                if (isDuplicate)
+                {
+                    duplicates.Add(exp.Index + " " + exp.GetFullPath + " has duplicate index (index value " + exp.indexValue + ")");
+                }
+                else
+                {
+                    indexList.Add(exp.indexValue);
+                }
+            }
+
+            if (duplicates.Count > 0)
+            {
+                string copy = "";
+                foreach (string str in duplicates)
+                {
+
+                    copy += str + "\n";
+                }
+                //Clipboard.SetText(copy);
+                MessageBox.Show(duplicates.Count + " duplicate indexes were found.", "BAD INDEXING");
+                ListDialog lw = new ListDialog(duplicates, "Duplicate indexes", "The following items have duplicate indexes.");
+                lw.Show();
+            }
+            else
+            {
+                MessageBox.Show("No duplicate indexes were found.", "Indexing OK");
+            }
+        }
+
+        private void FindEntryViaOffset(object obj)
+        {
+            if (Pcc == null)
+            {
+                return;
+            }
+            string input = "Enter an offset (in hex, e.g. 2FA360) to find what entry contains that offset.";
+            string result = PromptDialog.Prompt(input, "Enter offset");
+            if (result != null)
+            {
+                try
+                {
+                    int offsetDec = int.Parse(result, System.Globalization.NumberStyles.HexNumber);
+
+                    //TODO: Fix offset selection code, it seems off by a bit, not sure why yet
+                    for (int i = 0; i < Pcc.ImportCount; i++)
+                    {
+                        ImportEntry imp = Pcc.Imports[i];
+                        if (offsetDec >= imp.HeaderOffset && offsetDec < imp.HeaderOffset + imp.Header.Length)
+                        {
+                            goToNumber(imp.UIndex);
+                            Metadata_Tab.IsSelected = true;
+                            MetadataTab_MetadataEditor.SetHexboxSelectedOffset(imp.HeaderOffset + imp.Header.Length - offsetDec);
+                            return;
+                        }
+                    }
+                    for (int i = 0; i < Pcc.ExportCount; i++)
+                    {
+                        IExportEntry exp = Pcc.Exports[i];
+                        //header
+                        if (offsetDec >= exp.HeaderOffset && offsetDec < exp.HeaderOffset + exp.Header.Length)
+                        {
+                            goToNumber(exp.UIndex);
+                            Metadata_Tab.IsSelected = true;
+                            MetadataTab_MetadataEditor.SetHexboxSelectedOffset(exp.HeaderOffset + exp.Header.Length - offsetDec);
+                            return;
+                        }
+
+                        //data
+                        if (offsetDec >= exp.DataOffset && offsetDec < exp.DataOffset + exp.DataSize)
+                        {
+                            goToNumber(exp.UIndex);
+                            int inExportDataOffset = exp.DataOffset + exp.DataSize - offsetDec;
+                            int propsEnd = exp.propsEnd();
+
+                            if (inExportDataOffset > propsEnd && exp.DataSize > propsEnd && BinaryInterpreterTab_BinaryInterpreter.CanParse(exp))
+                            {
+                                BinaryInterpreterTab_BinaryInterpreter.SetHexboxSelectedOffset(inExportDataOffset);
+                                BinaryInterpreter_Tab.IsSelected = true;
+                            }
+                            else
+                            {
+                                InterpreterTab_Interpreter.SetHexboxSelectedOffset(inExportDataOffset);
+                                Interpreter_Tab.IsSelected = true;
+                            }
+                            return;
+                        }
+                    }
+                    MessageBox.Show($"No entry or header containing offset 0x{result} was found.");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message);
+                }
+            }
         }
 
         private void CloneTree(object obj)
@@ -2299,6 +2418,16 @@ namespace ME3Explorer
         {
             TlkManager tlk = new TlkManager();
             tlk.Show();
+        }
+
+        private void HexConverterMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            string loc =
+                System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+            if (File.Exists(loc + @"\HexConverter.exe"))
+            {
+                Process.Start(loc + @"\HexConverter.exe");
+            }
         }
     }
     [DebuggerDisplay("TreeViewEntry {DisplayName}")]

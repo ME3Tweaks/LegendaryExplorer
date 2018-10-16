@@ -1,0 +1,33 @@
+﻿<Window x:Class="HexConverterWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HexConverterWPF"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="262.952" Width="500.904">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Hex Little Endian" Grid.Row="0" Grid.Column="0"/>
+        <TextBlock Text="Hex Big Endian" Grid.Row="1" Grid.Column="0"/>
+        <TextBlock Text="Signed Integer" Grid.Row="2" Grid.Column="0"/>
+        <TextBlock Text="Unsigned Integer" Grid.Row="3" Grid.Column="0"/>
+        <TextBlock Text="Float" Grid.Row="4" Grid.Column="0"/>
+        <CheckBox Content="Always on top" Grid.Row="5" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding AlwaysOnTop}"/>
+    </Grid>
+</Window>

@@ -14,6 +14,7 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <UserControl.Resources>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </UserControl.Resources>
     <!--<UserControl.CommandBindings>
         <CommandBinding Command="Commands:InterpreterWPFCommands.ArrayOrderByValueCommand" Executed="ArrayOrderByValueCommand_Executed"/>
@@ -37,6 +38,15 @@
             <StatusBar Height="23" DockPanel.Dock="Bottom" Name="BinaryInterpreter_StatusBar">
                 <StatusBarItem>
                     <TextBlock Name="StatusBar_LeftMostText" Text="Nothing selected"/>
+                </StatusBarItem>
+                <StatusBarItem>
+                    <TextBlock Foreground="Brown" Text="{Binding SelectedFileOffset, StringFormat='File Offset: {0}'}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <TextBlock.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Copy offset" ToolTip="Copy the current file offset to the clipboard" Command="{Binding CopyOffsetCommand}"/>
+                            </ContextMenu>
+                        </TextBlock.ContextMenu>
+                    </TextBlock>
                 </StatusBarItem>
             </StatusBar>
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">

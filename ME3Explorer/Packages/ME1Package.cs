@@ -224,7 +224,7 @@ namespace ME3Explorer.Packages
                 for (int i = 0; i < exports.Count; i++)
                 {
                     IExportEntry e = exports[i];
-                    e.headerOffset = (uint)m.Position;
+                    e.HeaderOffset = (uint)m.Position;
                     m.WriteBytes(e.Header);
                 }
                 //freezone
@@ -240,7 +240,7 @@ namespace ME3Explorer.Packages
                     e.DataSize = e.Data.Length;
                     m.WriteBytes(e.Data);
                     long pos = m.Position;
-                    m.Seek(e.headerOffset + 32, SeekOrigin.Begin);
+                    m.Seek(e.HeaderOffset + 32, SeekOrigin.Begin);
                     m.WriteValueS32(e.DataSize);
                     m.WriteValueS32(e.DataOffset);
                     m.Seek(pos, SeekOrigin.Begin);

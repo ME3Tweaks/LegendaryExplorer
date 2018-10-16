@@ -59,19 +59,36 @@
                     <MenuItem Header="_Save"  Command="Save" InputGestureText="Ctrl+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <MenuItem Header="Save as" Command="SaveAs" InputGestureText="Ctrl+Shift+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <MenuItem Header="Open in...">
-                        <MenuItem Header="Dialogue Editor" Tag="DialogueEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                        <MenuItem Header="FaceFX Editor" Tag="FaceFXEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                        <MenuItem Header="Pathfinding Editor" Tag="PathfindingEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                        <MenuItem Header="Soundplorer WPF" Tag="SoundplorerWPF" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                        <MenuItem Header="Sequence Editor" Tag="SequenceEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                        <MenuItem Header="Dialogue Editor" Tag="DialogueEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                            <MenuItem.Icon>
+                                <Image Source="/Resources/dialogue_editor_64x64.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="FaceFX Editor" Tag="FaceFXEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                            <MenuItem.Icon>
+                                <Image Source="/Resources/facefx_editor_icon.ico"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Pathfinding Editor" Tag="PathfindingEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                            <MenuItem.Icon>
+                                <Image Source="/Resources/path_editor_64.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Soundplorer WPF" Tag="SoundplorerWPF" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                            <MenuItem.Icon>
+                                <Image Source="/Resources/soundplorer_64x64.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Sequence Editor" Tag="SequenceEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                            <MenuItem.Icon>
+                                <Image Source="/Resources/sequence_editor_64x64.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </MenuItem>
                     <Separator />
                     <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
                 </MenuItem>
-                <MenuItem Header="Edit" Padding="4">
-                    <MenuItem Header="Open"/>
-                    <MenuItem Header="Save"/>
-                </MenuItem>
+
                 <MenuItem Header="Tools" Padding="4">
                     <MenuItem Name="ComparePackageMenuItem" Header="Compare with another package" Command="{Binding ComparePackagesCommand}"/>
                     <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
@@ -82,6 +99,12 @@
                         <MenuItem Header="Complete export data"  Command="{Binding ImportAllDataCommand}" ToolTip="Import a .bin file and replace the contents of this export"/>
                         <MenuItem Header="Binary data only"  Command="{Binding ImportBinaryDataCommand}" ToolTip="Import a .bin file and replace only the binary section of this export"/>
                     </MenuItem>
+                    <Separator/>
+                    <MenuItem Name="HexConverterMenuItem" Header="Hex Converter" Click="HexConverterMenuItem_Click" >
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/hexconverter_icon64x64.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
 
                 </MenuItem>
 
@@ -89,7 +112,12 @@
                     <MenuItem Name="TLKManager_MenuItem" Header="TLK Manager" Click="TLKManager_MenuItem_Click"/>
                     <MenuItem Name="TouchComfyMode_MenuItem" Header="Touch Comfy Mode" Click="TouchComfyMode_Clicked"/>
                 </MenuItem>
+                <MenuItem Header="Debugging" Padding="4">
+                    <MenuItem Header="Find entry via File Offset" ToolTip="Find which entry contains the offset you put in.&#x0a;This is typically useful when trying to locate a bad index. You can do this by:&#x0a;Looking at ME3Logger output, searching for the value in the file's binary via a hex editor like HxD, and then looking up that offset with this tool." Command="{Binding FindEntryViaOffsetCommand}"/>
+                    <MenuItem Header="Check for duplicate indexes" ToolTip="Tries to find duplicate indexes in this file" Command="{Binding CheckForDuplicateIndexesCommand}"/>
+                </MenuItem>
                 <MenuItem Header="Experiments" Padding="4">
+                    <MenuItem Header="Items in this list are for toolset developers only" IsEnabled="False"/>
                     <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
                     <MenuItem Header="Build ME1 Object Info" Click="BuildME1ObjectInfo_Clicked"/>
                 </MenuItem>
