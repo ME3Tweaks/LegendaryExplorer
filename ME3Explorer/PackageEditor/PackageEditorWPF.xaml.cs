@@ -2423,7 +2423,7 @@ namespace ME3Explorer
         private void HexConverterMenuItem_Click(object sender, RoutedEventArgs e)
         {
             string loc =
-                System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+                System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
             if (File.Exists(loc + @"\HexConverter.exe"))
             {
                 Process.Start(loc + @"\HexConverter.exe");
