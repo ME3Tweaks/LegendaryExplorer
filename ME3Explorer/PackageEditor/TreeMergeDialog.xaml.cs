@@ -60,7 +60,7 @@ namespace ME3Explorer.PackageEditorWPFControls
         }
         #endregion
 
-        public string TargetEntryObjectName { get { return targetEntry.ObjectName; } }
+        public string TargetEntryObjectName { get { return targetEntry == null ? "Root" : targetEntry.ObjectName; } }
         public string SourceEntryObjectName { get { return sourceEntry.ObjectName; } }
 
         public ICommand ReplaceDataCommand { get; set; }

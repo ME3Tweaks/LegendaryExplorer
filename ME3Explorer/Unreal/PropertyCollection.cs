@@ -57,7 +57,7 @@ namespace ME3Explorer.Unreal
             {
                 prop.WriteTo(stream, pcc);
             }
-            if (!(this.Last() is NoneProperty))
+            if (Count > 0 && !(this.Last() is NoneProperty))
             {
                 stream.WriteNoneProperty(pcc);
             }
