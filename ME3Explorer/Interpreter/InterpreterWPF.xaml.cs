@@ -960,6 +960,16 @@ namespace ME3Explorer
                         SupportedEditorSetElements.Add(Value_TextBox);
                         SupportedEditorSetElements.Add(ParsedValue_TextBlock);
                         break;
+                    case NameProperty np:
+                        Value_TextBox.Text = CurrentLoadedExport.FileRef.findName(np.Value.Name).ToString();
+                        NameIndex_TextBox.Text = np.Value.Number.ToString();
+
+                        UpdateParsedEditorValue();
+                        SupportedEditorSetElements.Add(Value_TextBox);
+                        SupportedEditorSetElements.Add(NameIndexPrefix_TextBlock);
+                        SupportedEditorSetElements.Add(NameIndex_TextBox);
+                        SupportedEditorSetElements.Add(ParsedValue_TextBlock);
+                        break;
                     case EnumProperty ep:
                         {
                             SupportedEditorSetElements.Add(Value_ComboBox);
@@ -1055,6 +1065,25 @@ namespace ME3Explorer
                             else
                             {
                                 ParsedValue_TextBlock.Text = "Invalid value";
+                            }
+                        }
+                        break;
+                    case NameProperty np:
+                        {
+                            if (int.TryParse(Value_TextBox.Text, out int index) && int.TryParse(NameIndex_TextBox.Text, out int number))
+                            {
+                                if (index >= 0 && index < CurrentLoadedExport.FileRef.Names.Count)
+                                {
+                                    ParsedValue_TextBlock.Text = CurrentLoadedExport.FileRef.getNameEntry(index) + "_" + number;
+                                }
+                                else
+                                {
+                                    ParsedValue_TextBlock.Text = "Name index out of range";
+                                }
+                            }
+                            else
+                            {
+                                ParsedValue_TextBlock.Text = "Invalid value(s)";
                             }
                         }
                         break;
@@ -1375,6 +1404,7 @@ namespace ME3Explorer
                                 Number = nameIndex
                             };
                             namep.Value = nameRef;
+                            updated = true;
                         }
                         break;
                 }
