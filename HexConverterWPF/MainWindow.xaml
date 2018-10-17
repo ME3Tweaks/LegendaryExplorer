@@ -26,6 +26,8 @@
         <TextBlock Text="Unsigned Integer" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
         <TextBlock Text="Float" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
         <CheckBox Content="Always on top" Grid.Row="5" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding AlwaysOnTop}"/>
+        <TextBlock Text="Press enter to convert" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" FontSize="11" Foreground="Gray"/>
+
 
         <TextBox Name="LittleEndian_TextBox" Text="{Binding LittleEndianText}" MaxLength="8" Grid.Row="0" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
         <TextBox Name="BigEndian_TextBox" Text="{Binding BigEndianText}" MaxLength="8" Grid.Row="1" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>

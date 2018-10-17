@@ -1423,9 +1423,9 @@ namespace ME3Explorer
         private void hexConverterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string loc = Path.GetDirectoryName(Application.ExecutablePath);
-            if (File.Exists(loc + @"\HexConverter.exe"))
+            if (File.Exists(loc + @"\HexConverterWPF.exe"))
             {
-                Process.Start(loc + @"\HexConverter.exe");
+                Process.Start(loc + @"\HexConverterWPF.exe");
             }
         }
 

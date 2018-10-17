@@ -2456,9 +2456,9 @@ namespace ME3Explorer
         {
             string loc =
                 System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-            if (File.Exists(loc + @"\HexConverter.exe"))
+            if (File.Exists(loc + @"\HexConverterWPF.exe"))
             {
-                Process.Start(loc + @"\HexConverter.exe");
+                Process.Start(loc + @"\HexConverterWPF.exe");
             }
         }
 

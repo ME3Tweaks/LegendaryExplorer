@@ -181,13 +181,13 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Hex Converter",
-                type = typeof(HexConverter.Hexconverter),
+                //type = typeof(HexConverter.Hexconverter),
                 icon = Application.Current.FindResource("iconHexConverter") as ImageSource,
                 open = () =>
                 {
                     string loc = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                    if (File.Exists(loc + "\\HexConverter.exe"))
-                        Process.Start(loc + "\\HexConverter.exe");
+                    if (File.Exists(loc + "\\HexConverterWPF.exe"))
+                        Process.Start(loc + "\\HexConverterWPF.exe");
                 },
                 tags = new List<string> { "utility", "code", "endian", "convert", "integer", "float" },
                 subCategory = "Converters",

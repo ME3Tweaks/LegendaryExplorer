@@ -237,6 +237,24 @@ namespace ME3Explorer.WwiseBankEditor
             saveHIRCHexEdits();
         }
 
+        public static bool isHexString(string s)
+        {
+            string hexChars = "0123456789abcdefABCDEF";
+            for (int i = 0; i < s.Length; i++)
+            {
+                int f = -1;
+                for (int j = 0; j < hexChars.Length; j++)
+                    if (s[i] == hexChars[j])
+                    {
+                        f = j;
+                        break;
+                    }
+                if (f == -1)
+                    return false;
+            }
+            return true;
+        }
+
         private void searchHexButton_Click(object sender, EventArgs e)
         {
             if (bank == null)
@@ -247,7 +265,7 @@ namespace ME3Explorer.WwiseBankEditor
             string hexString = searchHexTextBox.Text.Replace(" ", string.Empty);
             if (hexString.Length == 0)
                 return;
-            if (!HexConverter.Hexconverter.isHexString(hexString))
+            if (isHexString(hexString))
             {
                 searchHexStatus.Text = "Illegal characters in Hex String";
                 return;

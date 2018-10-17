@@ -1411,10 +1411,6 @@
       <Project>{9f364d6b-5046-4186-b684-968b52afcb81}</Project>
       <Name>Gammtek.Conduit.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HexConverter\HexConverter.csproj">
-      <Project>{bc67f053-755a-45e9-b157-8b063f1f6509}</Project>
-      <Name>HexConverter</Name>
-    </ProjectReference>
     <ProjectReference Include="..\KFreonLib\KFreonLib.csproj">
       <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
       <Name>KFreonLib</Name>
