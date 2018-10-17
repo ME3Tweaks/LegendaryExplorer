@@ -29,14 +29,15 @@
         </ItemsPanelTemplate>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:PackageEditorWPFActiveViewHighlightConverter x:Key="PackageEditorWPFActiveViewHighlightConverter"/>
+        <Converters:ObjectStructPropertyTypeConverter x:Key="ObjectStructPropertyTypeConverter"/>
         <!-- I don't know why this can't just be in listbox-->
         <Style  TargetType="{x:Type ListBoxItem}">
             <Style.Triggers>
                 <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                    <Setter Property="Background" Value="#19f35611"></Setter>
+                    <Setter Property="Background" Value="#20001144"/>
                 </Trigger>
                 <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                    <Setter Property="Background" Value="#19000000"></Setter>
+                    <Setter Property="Background" Value="#200000CC"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -186,7 +187,7 @@
                         <DataTemplate DataType="{x:Type Packages:ImportEntry}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding Path=UIndex}" Foreground="Gray"/>
-                                <TextBlock Text="{Binding Path=ObjectName}" Foreground="Black" Margin="5,0,0,0"/>
+                                <TextBlock Text="{Binding Path=GetFullPath}" Foreground="Black" Margin="5,0,0,0"/>
                             </StackPanel>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type Packages:ExportEntry}">
@@ -198,11 +199,25 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Text="{Binding Path=UIndex}" Foreground="Maroon" VerticalAlignment="Center"/>
-                                <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Path=GetFullPath}" Foreground="Black" Margin="5,0,0,0"/>
-                                <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Path=ClassName}" Foreground="Gray" Margin="5,0,0,0"/>
-
+                                <TextBlock Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Foreground="Black" Margin="5,0,0,0">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0}_{1}">
+                                            <Binding Path="GetFullPath" />
+                                            <Binding Path="indexValue"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                <TextBlock Grid.Column="1" Grid.Row="1" Foreground="BlueViolet" Margin="5,0,0,0" FontWeight="Bold" FontFamily="Consolas">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0}{1}">
+                                            <Binding Path="ClassName" />
+                                            <Binding Path="." Converter="{StaticResource ObjectStructPropertyTypeConverter}" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
                             </Grid>
                         </DataTemplate>
                     </SharedUI:ListBoxScroll.Resources>

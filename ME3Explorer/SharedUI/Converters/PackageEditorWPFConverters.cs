@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ME3Explorer.Packages;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -27,6 +28,53 @@ namespace ME3Explorer.SharedUI.Converters
                 return Brushes.LightBlue;
             }
             return Brushes.Transparent;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {    // Don't need any convert back
+            return null;
+        }
+    }
+
+    [ValueConversion(typeof(IExportEntry), typeof(string))]
+    public class ObjectStructPropertyTypeConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is IExportEntry))
+            {
+                return "";
+            }
+            IExportEntry export = (IExportEntry)value;
+            if (export.ClassName != "StructProperty" && export.ClassName != "ObjectProperty")
+            {
+                return "";
+            }
+
+            //attempt to find type
+            string s = "";
+            byte[] data = export.Data;
+            int importindex = BitConverter.ToInt32(data, data.Length - 4);
+            if (importindex < 0)
+            {
+                //import
+                importindex *= -1;
+                if (importindex > 0) importindex--;
+                if (importindex <= export.FileRef.Imports.Count)
+                {
+                    s += " (" + export.FileRef.Imports[importindex].ObjectName + ")";
+                }
+            }
+            else
+            {
+                //export
+                if (importindex > 0) importindex--;
+                if (importindex <= export.FileRef.Exports.Count)
+                {
+                    s += " [" + export.FileRef.Exports[importindex].ObjectName + "]";
+                }
+            }
+            return s;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

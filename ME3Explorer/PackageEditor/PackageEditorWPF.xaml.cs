@@ -50,6 +50,7 @@ namespace ME3Explorer
             Tree
         }
 
+        #region TouchComfyMode
         int _treeViewMargin = 2;
         public int TreeViewMargin
         {
@@ -66,6 +67,7 @@ namespace ME3Explorer
                 }
             }
         }
+        #endregion
 
         /// <summary>
         /// Used to populate the metadata editor values so the list does not constantly need to rebuilt, which can slow down the program on large files like SFXGame or BIOC_Base.
@@ -1026,7 +1028,6 @@ namespace ME3Explorer
             }
             if (CurrentView == CurrentViewMode.Tree)
             {
-
                 LeftSide_ListView.Visibility = Visibility.Collapsed;
                 LeftSide_TreeView.Visibility = Visibility.Visible;
             }
@@ -1050,13 +1051,11 @@ namespace ME3Explorer
                 ClassNames.Add(Exports[i].idxClass); //This can probably be linq'd
             }
 
-
             List<string> names = ClassNames.Distinct().Select(Pcc.getObjectName).ToList();
             names.Sort();
             ClearList(ClassDropdown_Combobox);
             ClassDropdown_Combobox.ItemsSource = names.ToArray();
             MetadataTab_MetadataEditor.LoadPccData(Pcc);
-
         }
 
         /// <summary>
