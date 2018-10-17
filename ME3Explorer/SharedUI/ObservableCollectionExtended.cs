@@ -13,7 +13,7 @@ namespace ME3Explorer.SharedUI
 {
     public class ObservableCollectionExtended<T> : ObservableCollection<T>
     {
-        //INotifyPropertyChanged interited from ObservableCollection<T>
+        //INotifyPropertyChanged inherited from ObservableCollection<T>
         #region INotifyPropertyChanged
 
         protected override event PropertyChangedEventHandler PropertyChanged;
@@ -62,13 +62,13 @@ namespace ME3Explorer.SharedUI
         /// </summary> 
         public void Replace(T item)
         {
-            Replace(new T[] { item });
+            ReplaceAll(new T[] { item });
         }
 
         /// <summary> 
         /// Replaces all elements in existing collection with specified collection of the ObservableCollection(Of T). 
         /// </summary> 
-        public void Replace(IEnumerable<T> collection)
+        public void ReplaceAll(IEnumerable<T> collection)
         {
             if (collection == null) throw new ArgumentNullException(nameof(collection));
 

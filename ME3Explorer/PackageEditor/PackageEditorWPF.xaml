@@ -11,13 +11,14 @@
         xmlns:Commands="clr-namespace:ME3Explorer.Commands"
         xmlns:CurveEd="clr-namespace:ME3Explorer.CurveEd"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+        xmlns:Packages="clr-namespace:ME3Explorer.Packages"
         xmlns:dd="urn:gong-wpf-dragdrop"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
         Closing="PackageEditorWPF_Closing"
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-                xmlns:metadataeditor="clr-namespace:ME3Explorer.MetadataEditor"
-                Title="Package Editor WPF" Height="650" Width="970"
+        xmlns:metadataeditor="clr-namespace:ME3Explorer.MetadataEditor"
+        Title="Package Editor WPF" Height="650" Width="970"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         AllowDrop="True"
@@ -28,7 +29,17 @@
         </ItemsPanelTemplate>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:PackageEditorWPFActiveViewHighlightConverter x:Key="PackageEditorWPFActiveViewHighlightConverter"/>
-
+        <!-- I don't know why this can't just be in listbox-->
+        <Style  TargetType="{x:Type ListBoxItem}">
+            <Style.Triggers>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                    <Setter Property="Background" Value="#19f35611"></Setter>
+                </Trigger>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                    <Setter Property="Background" Value="#19000000"></Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"/>
@@ -163,7 +174,44 @@
                     </StackPanel>
 
                 </ToolBar>
-                <SharedUI:ListBoxScroll x:Name="LeftSide_ListView" Grid.Column="0" Grid.Row="1"  SelectionChanged="LeftSide_SelectedItemChanged"/>
+                <SharedUI:ListBoxScroll x:Name="LeftSide_ListView" Grid.Column="0" Grid.Row="1" IsTextSearchEnabled="True" SelectionChanged="LeftSide_SelectedItemChanged" ItemsSource="{Binding LeftSideList_ItemsSource}" VirtualizingStackPanel.IsVirtualizing="True"
+    VirtualizingStackPanel.VirtualizationMode="Recycling" AlternationCount="2">
+                    <SharedUI:ListBoxScroll.Resources>
+                        <DataTemplate DataType="{x:Type global:PackageEditorWPF+IndexedName}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
+                                <TextBlock Text="{Binding Path=Name.Name}" Foreground="Black" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type Packages:ImportEntry}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=UIndex}" Foreground="Gray"/>
+                                <TextBlock Text="{Binding Path=ObjectName}" Foreground="Black" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type Packages:ExportEntry}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Text="{Binding Path=UIndex}" Foreground="Maroon" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Path=GetFullPath}" Foreground="Black" Margin="5,0,0,0"/>
+                                <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Path=ClassName}" Foreground="Gray" Margin="5,0,0,0"/>
+
+                            </Grid>
+                        </DataTemplate>
+                    </SharedUI:ListBoxScroll.Resources>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </SharedUI:ListBoxScroll>
                 <!-- VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" -->
                 <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" TreeViewItem.Selected="LeftSide_SelectedItemChanged" FontFamily="Consolas" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" ItemsSource="{Binding AllTreeViewNodesX}" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                     <TreeView.Resources>

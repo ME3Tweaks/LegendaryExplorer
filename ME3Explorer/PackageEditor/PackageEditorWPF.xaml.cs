@@ -72,12 +72,35 @@ namespace ME3Explorer
         /// </summary>
         List<string> AllEntriesList;
 
+        //Objects in this collection are displayed on the left list view (names, imports, exports)
+        public ObservableCollectionExtended<object> LeftSideList_ItemsSource { get; set; }
+            = new ObservableCollectionExtended<object>();
+
         Dictionary<ExportLoaderControl, TabItem> ExportLoaders = new Dictionary<ExportLoaderControl, TabItem>();
         private CurrentViewMode _currentView;
         public CurrentViewMode CurrentView
         {
             get { return _currentView; }
-            set { _currentView = value; OnPropertyChanged(); }
+            set
+            {
+                if (_currentView != value)
+                {
+                    _currentView = value;
+                    OnPropertyChanged();
+                    switch (value)
+                    {
+                        case CurrentViewMode.Names:
+                            TextSearch.SetTextPath(LeftSide_ListView, "Name");
+                            break;
+                        case CurrentViewMode.Imports:
+                            TextSearch.SetTextPath(LeftSide_ListView, "ObjectName");
+                            break;
+                        case CurrentViewMode.Exports:
+                            TextSearch.SetTextPath(LeftSide_ListView, "ObjectName");
+                            break;
+                    }
+                }
+            }
         }
         public PropGrid pg;
 
@@ -195,7 +218,7 @@ namespace ME3Explorer
                 return;
             }
             string input = "Enter an offset (in hex, e.g. 2FA360) to find what entry contains that offset.";
-            string result = PromptDialog.Prompt(this,input, "Enter offset");
+            string result = PromptDialog.Prompt(this, input, "Enter offset");
             if (result != null)
             {
                 try
@@ -913,7 +936,7 @@ namespace ME3Explorer
             {
                 return;
             }
-            ClearList(LeftSide_ListView);
+            //ClearList(LeftSide_ListView);
             IReadOnlyList<ImportEntry> imports = Pcc.Imports;
             IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
             if (AllTreeViewNodesX.Count > 0)
@@ -926,11 +949,20 @@ namespace ME3Explorer
 
             if (CurrentView == CurrentViewMode.Names)
             {
-                LeftSide_ListView.ItemsSource = Pcc.Names;
+                //this doesn't seem possible with LINQ as index is missing
+                var indexedList = new List<object>();
+                for (int i = 0; i < Pcc.Names.Count; i++)
+                {
+                    NameReference nr = Pcc.Names[i];
+                    indexedList.Add(new IndexedName(i, nr));
+                }
+                LeftSideList_ItemsSource.ReplaceAll(indexedList);
             }
 
             if (CurrentView == CurrentViewMode.Imports)
             {
+                LeftSideList_ItemsSource.ReplaceAll(imports);
+                /*
                 List<string> importsList = new List<string>();
                 int padding = imports.Count.ToString().Length;
 
@@ -942,15 +974,17 @@ namespace ME3Explorer
                     {
                         importStr += imports[i].PackageFullName + ".";
                     }
-                    importStr += imports[i].ObjectName;*/
+                    importStr += imports[i].ObjectName;
                     importsList.Add(importStr);
-                }
-                LeftSide_ListView.ItemsSource = importsList;
+                }*/
+                //LeftSide_ListView.ItemsSource = importsList;
             }
 
             if (CurrentView == CurrentViewMode.Exports)
             {
-                List<string> exps = new List<string>(Exports.Count);
+                LeftSideList_ItemsSource.ReplaceAll(Exports);
+
+                /*List<string> exps = new List<string>(Exports.Count);
                 int padding = Exports.Count.ToString().Length;
                 for (int i = 0; i < Exports.Count; i++)
                 {
@@ -987,8 +1021,8 @@ namespace ME3Explorer
                         }
                     }
                     exps.Add(s);
-                }
-                LeftSide_ListView.ItemsSource = exps;
+                }*/
+                //LeftSide_ListView.ItemsSource = exps;
             }
             if (CurrentView == CurrentViewMode.Tree)
             {
@@ -1189,11 +1223,9 @@ namespace ME3Explorer
                     goToNumber(n);
                 }
             }
-            else if ((CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Tree) &&
-                     hasSelection &&
+            else if ((CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Tree) && hasSelection &&
                      updates.Contains(new PackageUpdate { index = n - 1, change = PackageChange.ExportData }))
             {
-                //GetTreeViewEntryByUIndex(n).RefreshDisplayName();
                 Preview(true);
             }
         }
@@ -2429,6 +2461,18 @@ namespace ME3Explorer
                 Process.Start(loc + @"\HexConverter.exe");
             }
         }
+
+        public class IndexedName
+        {
+            public int Index { get; set; }
+            public NameReference Name { get; set; }
+
+            public IndexedName(int index, NameReference name)
+            {
+                Index = index;
+                Name = name;
+            }
+        }
     }
     [DebuggerDisplay("TreeViewEntry {DisplayName}")]
     public class TreeViewEntry : INotifyPropertyChanged
@@ -2554,4 +2598,5 @@ namespace ME3Explorer
             Sublinks.AddRange(exportNodes);
         }
     }
+
 }
