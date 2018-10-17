@@ -1110,11 +1110,6 @@ namespace Be.Windows.Forms
             }
             #endregion
         }
-
-        public void RemoveHighlights()
-        {
-            throw new NotImplementedException();
-        }
         #endregion
 
         #region Fields

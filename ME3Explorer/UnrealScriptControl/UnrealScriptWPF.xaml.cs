@@ -29,6 +29,10 @@ namespace ME3Explorer
         private HexBox ScriptEditor_Hexbox;
         public ObservableCollectionExtended<BytecodeSingularToken> TokenList { get; private set; } = new ObservableCollectionExtended<BytecodeSingularToken>();
         public ObservableCollectionExtended<Token> DecompiledScriptBlocks { get; private set; } = new ObservableCollectionExtended<Token>();
+        public ObservableCollectionExtended<ScriptHeaderItem> ScriptHeaderBlocks { get; private set; } = new ObservableCollectionExtended<ScriptHeaderItem>();
+        public ObservableCollectionExtended<ScriptHeaderItem> ScriptFooterBlocks { get; private set; } = new ObservableCollectionExtended<ScriptHeaderItem>();
+
+        private bool TokenChanging = false;
 
         private bool _bytesHaveChanged { get; set; }
         public bool BytesHaveChanged
@@ -58,6 +62,17 @@ namespace ME3Explorer
             CurrentLoadedExport = exportEntry;
             ScriptEditor_Hexbox.ByteProvider = new DynamicByteProvider(CurrentLoadedExport.Data);
             ScriptEditor_Hexbox.ByteProvider.Changed += ByteProviderBytesChanged;
+
+            if (exportEntry.ClassName == "Function")
+            {
+                StartOffset_Changer.Value = 32;
+                StartOffset_Changer.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                StartOffset_Changer.Visibility = Visibility.Visible;
+            }
+
             StartFunctionScan(CurrentLoadedExport.Data);
         }
 
@@ -73,7 +88,25 @@ namespace ME3Explorer
                 TokenList.Clear();
                 TokenList.AddRange(func.SingularTokenList);
 
-                Function_Header.Text = func.HeaderText;
+                ScriptHeaderBlocks.Clear();
+                int pos = 16;
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Child", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
+
+                pos += 4;
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 1", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
+
+                pos += 4;
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 2 (Memory size?)", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
+
+                pos += 4;
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Size", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
+
+                ScriptFooterBlocks.Clear();
+                pos = CurrentLoadedExport.Data.Length - 6;
+                string flagStr = func.GetFlags();
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", BitConverter.ToInt16(CurrentLoadedExport.Data, pos), pos));
+                pos += 2;
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{BitConverter.ToInt32(CurrentLoadedExport.Data, pos).ToString("X8")} {func.GetFlags().Substring(6)}", pos));
             }
             else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
             {
@@ -100,76 +133,100 @@ namespace ME3Explorer
 
         private void hb1_SelectionChanged(object sender, EventArgs e)
         {
-            int start = (int)ScriptEditor_Hexbox.SelectionStart;
-            int len = (int)ScriptEditor_Hexbox.SelectionLength;
-            int size = (int)ScriptEditor_Hexbox.ByteProvider.Length;
-            //TODO: Optimize this so this is only called when data has changed
-            byte[] currentData = (ScriptEditor_Hexbox.ByteProvider as DynamicByteProvider).Bytes.ToArray();
-            try
+            if (TokenChanging)
             {
-                if (currentData != null && start != -1 && start < size)
+                System.Diagnostics.Debug.WriteLine("hb1 updated");
+                int start = (int)ScriptEditor_Hexbox.SelectionStart;
+                int len = (int)ScriptEditor_Hexbox.SelectionLength;
+                int size = (int)ScriptEditor_Hexbox.ByteProvider.Length;
+                //TODO: Optimize this so this is only called when data has changed
+                byte[] currentData = (ScriptEditor_Hexbox.ByteProvider as DynamicByteProvider).Bytes.ToArray();
+                try
                 {
-                    string s = $"Byte: {currentData[start]}"; //if selection is same as size this will crash.
-                    if (start <= currentData.Length - 4)
+                    if (currentData != null && start != -1 && start < size)
                     {
-                        int val = BitConverter.ToInt32(currentData, start);
-                        s += $", Int: {val}";
-                        if (CurrentLoadedExport.FileRef.isName(val))
+                        string s = $"Byte: {currentData[start]}"; //if selection is same as size this will crash.
+                        if (start <= currentData.Length - 4)
                         {
-                            s += $", Name: {CurrentLoadedExport.FileRef.getNameEntry(val)}";
+                            int val = BitConverter.ToInt32(currentData, start);
+                            s += $", Int: {val}";
+                            if (CurrentLoadedExport.FileRef.isName(val))
+                            {
+                                s += $", Name: {CurrentLoadedExport.FileRef.getNameEntry(val)}";
+                            }
+                            if (CurrentLoadedExport.FileRef.getEntry(val) is IExportEntry exp)
+                            {
+                                s += $", Export: {exp.ObjectName}";
+                            }
+                            else if (CurrentLoadedExport.FileRef.getEntry(val) is ImportEntry imp)
+                            {
+                                s += $", Import: {imp.ObjectName}";
+                            }
                         }
-                        if (CurrentLoadedExport.FileRef.getEntry(val) is IExportEntry exp)
+                        s += $" | Start=0x{start.ToString("X8")} ";
+                        if (len > 0)
                         {
-                            s += $", Export: {exp.ObjectName}";
+                            s += $"Length=0x{len.ToString("X8")} ";
+                            s += $"End=0x{(start + len - 1).ToString("X8")}";
                         }
-                        else if (CurrentLoadedExport.FileRef.getEntry(val) is ImportEntry imp)
-                        {
-                            s += $", Import: {imp.ObjectName}";
-                        }
+                        StatusBar_LeftMostText.Text = s;
                     }
-                    s += $" | Start=0x{start.ToString("X8")} ";
-                    if (len > 0)
+                    else
                     {
-                        s += $"Length=0x{len.ToString("X8")} ";
-                        s += $"End=0x{(start + len - 1).ToString("X8")}";
+                        StatusBar_LeftMostText.Text = "Nothing Selected";
                     }
-                    StatusBar_LeftMostText.Text = s;
                 }
-                else
+                catch (Exception)
                 {
-                    StatusBar_LeftMostText.Text = "Nothing Selected";
                 }
-            }
-            catch (Exception)
-            {
-            }
 
-            //Find which decompiled script block the cursor belongs to
-            if (start >= 0x20)
-            {
-
-                //int index = -1;
-                //foreach (Token x in DecompiledScriptBlocks)
-                //{
-                //    index++;
-                //    if (start >= x.pos && start < (x.pos + x.raw.Length))
-                //    {
-                //        break;
-                //    }
-                //}
-                //Tokens_ListBox.SelectedIndex = index;
-
-                Token token = DecompiledScriptBlocks.FirstOrDefault(x => start >= x.pos && start < (x.pos + x.raw.Length));
-                if (token != null)
+                //Find which decompiled script block the cursor belongs to
+                ListBox selectedBox = null;
+                List<ListBox> allBoxesToUpdate = new List<ListBox>(new ListBox[] { Function_ListBox, Function_Header, Function_Footer });
+                if (start >= 0x20 && start < CurrentLoadedExport.DataSize - 6)
                 {
-                    Function_ListBox.SelectedItem = token;
+                    Token token = DecompiledScriptBlocks.FirstOrDefault(x => start >= x.pos && start < (x.pos + x.raw.Length));
+                    if (token != null)
+                    {
+                        Function_ListBox.SelectedItem = token;
+                    }
+
+                    BytecodeSingularToken bst = TokenList.FirstOrDefault(x => x.startPos == start);
+                    if (bst != null)
+                    {
+                        Tokens_ListBox.SelectedItem = bst;
+                    }
+                    selectedBox = Function_ListBox;
+                }
+                if (start >= 0x0C && start < 0x20)
+                {
+                    //header
+                    int index = (start - 0xC) / 4;
+                    Function_Header.SelectedIndex = index;
+                    selectedBox = Function_Header;
+
+                }
+                if (start > CurrentLoadedExport.DataSize - 6)
+                {
+                    //footer
+                    //yeah yeah I know this is very specific code.
+                    if (start == CurrentLoadedExport.DataSize - 6 || start == CurrentLoadedExport.DataSize - 5)
+                    {
+                        Function_Footer.SelectedIndex = 0;
+                    }
+                    else
+                    {
+                        Function_Footer.SelectedIndex = 1;
+                    }
+                    selectedBox = Function_Footer;
                 }
 
-                BytecodeSingularToken bst = TokenList.FirstOrDefault(x => x.startPos == start);
-                if (bst != null)
+                //deselect the other boxes
+                if (selectedBox != null)
                 {
-                    Tokens_ListBox.SelectedItem = bst;
+                    allBoxesToUpdate.Remove(selectedBox);
                 }
+                allBoxesToUpdate.ForEach(x => x.SelectedIndex = -1);
             }
         }
 
@@ -200,8 +257,76 @@ namespace ME3Explorer
             BytecodeSingularToken selectedToken = Tokens_ListBox.SelectedItem as BytecodeSingularToken;
             if (selectedToken != null)
             {
+                TokenChanging = true;
                 ScriptEditor_Hexbox.SelectionStart = selectedToken.startPos;
                 ScriptEditor_Hexbox.SelectionLength = 1;
+                TokenChanging = false;
+            }
+        }
+
+
+        public class ScriptHeaderItem
+        {
+            public string id { get; set; }
+            public string value { get; set; }
+            public int offset { get; set; }
+            public int length { get; set; }
+            public ScriptHeaderItem(string id, int value, int offset)
+            {
+                this.id = id;
+                this.value = $"{value} ({value.ToString("X8")})";
+                this.offset = offset;
+                length = 4;
+            }
+            public ScriptHeaderItem(string id, string value, int offset)
+            {
+                this.id = id;
+                this.value = value;
+                this.offset = offset;
+                length = 4;
+            }
+            public ScriptHeaderItem(string id, short value, int offset)
+            {
+                this.id = id;
+                this.value = $"{value} ({value.ToString("X4")})";
+                this.offset = offset;
+                length = 2;
+            }
+        }
+
+        private void Function_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Token token = Function_ListBox.SelectedItem as Token;
+            ScriptEditor_Hexbox.UnhighlightAll();
+            if (token != null)
+            {
+                ScriptEditor_Hexbox.Highlight(token.pos, token.raw.Length);
+            }
+        }
+
+        private void FunctionHeader_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ScriptHeaderItem token = Function_Header.SelectedItem as ScriptHeaderItem;
+            ScriptEditor_Hexbox.UnhighlightAll();
+            if (token != null && !TokenChanging)
+            {
+                TokenChanging = true;
+                ScriptEditor_Hexbox.SelectionStart = token.offset;
+                ScriptEditor_Hexbox.SelectionLength = token.length;
+                TokenChanging = false;
+            }
+        }
+
+        private void FunctionFooter_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ScriptHeaderItem token = Function_Footer.SelectedItem as ScriptHeaderItem;
+            ScriptEditor_Hexbox.UnhighlightAll();
+            if (token != null && !TokenChanging)
+            {
+                TokenChanging = true;
+                ScriptEditor_Hexbox.SelectionStart = token.offset;
+                ScriptEditor_Hexbox.SelectionLength = token.length;
+                TokenChanging = false;
             }
         }
     }

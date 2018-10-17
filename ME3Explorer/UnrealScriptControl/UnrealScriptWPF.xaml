@@ -28,15 +28,83 @@
         <DockPanel Grid.Row="0" Grid.Column="0">
             <DockPanel DockPanel.Dock="Top">
                 <TextBlock Text="Script header" DockPanel.Dock="Top" FontWeight="Bold"/>
-                <TextBox Name="Function_Header" Text="Script Header\nGoes here" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" IsReadOnly="True"/>
-            </DockPanel>
-            <DockPanel>
-                <TextBlock Text="Decompiled script" DockPanel.Dock="Top" FontWeight="Bold"/>
-                <ListBox Name="Function_ListBox" HorizontalAlignment="Stretch" ItemsSource="{Binding DecompiledScriptBlocks}">
+                <ListBox Name="Function_Header" HorizontalAlignment="Stretch" MinHeight="60" ItemsSource="{Binding ScriptHeaderBlocks}" SelectionChanged="FunctionHeader_ListBox_SelectionChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock x:Name="PosBlock" Text="{Binding Path=posStr}" />
+                                <TextBlock Text="{Binding Path=offset, StringFormat='{}0x{0:X2}'}"/>
+                                <TextBlock Margin="4,0,0,0" Text="{Binding Path=id, StringFormat='{}{0}:'}">
+                                    <TextBlock.Style>
+                                        <Style>
+                                            <Setter Property="TextBlock.FontWeight" Value="Regular"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem }}}" Value="True">
+                                                    <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Margin="4,0,0,0" Text="{Binding Path=value}">
+                                        <TextBlock.Style>
+                                            <Style>
+                                                <Setter Property="TextBlock.FontWeight" Value="Regular"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem }}}" Value="True">
+                                                        <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Bottom">
+                <TextBlock Text="Script footer" DockPanel.Dock="Top" FontWeight="Bold"/>
+                <ListBox Name="Function_Footer" HorizontalAlignment="Stretch" MinHeight="60" ItemsSource="{Binding ScriptFooterBlocks}" SelectionChanged="FunctionFooter_ListBox_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=offset, StringFormat='{}0x{0:X2}'}"/>
+                                <TextBlock Margin="4,0,0,0" Text="{Binding Path=id, StringFormat='{}{0}:'}">
+                                    <TextBlock.Style>
+                                        <Style>
+                                            <Setter Property="TextBlock.FontWeight" Value="Regular"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem }}}" Value="True">
+                                                    <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Margin="4,0,0,0" Text="{Binding Path=value}">
+                                    <TextBlock.Style>
+                                        <Style>
+                                            <Setter Property="TextBlock.FontWeight" Value="Regular"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem }}}" Value="True">
+                                                    <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+            <DockPanel>
+                <TextBlock Text="Decompiled script" DockPanel.Dock="Top" FontWeight="Bold"/>
+                <ListBox Name="Function_ListBox" HorizontalAlignment="Stretch" ItemsSource="{Binding DecompiledScriptBlocks}" SelectionChanged="Function_ListBox_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="PosBlock" Text="{Binding Path=posStr, StringFormat='{}0x{0}:'}" />
                                 <TextBlock x:Name="ScriptBlock" Margin="4,0,0,0" Text="{Binding Path=text}">
                                     <TextBlock.Style>
                                         <Style>
