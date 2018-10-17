@@ -151,7 +151,7 @@ namespace ME3Explorer
                 LoadMEPackage(s);
                 interpreterControl.Pcc = pcc;
                 binaryInterpreterControl.Pcc = pcc;
-               // bio2DAEditor1.Pcc = pcc;
+                // bio2DAEditor1.Pcc = pcc;
                 treeView1.Tag = pcc;
                 RefreshView();
                 InitStuff();
@@ -2093,7 +2093,7 @@ namespace ME3Explorer
                 return;
             }
             string input = "Enter an offset (in hex, e.g. 2fa360) to find what export contains that offset.";
-            string result = PromptDialog.Prompt(input, "Enter offset");
+            string result = PromptDialog.Prompt(null, input, "Enter offset");
             if (result != null)
             {
                 try

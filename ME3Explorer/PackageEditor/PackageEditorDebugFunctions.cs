@@ -96,7 +96,7 @@ namespace ME3Explorer
                 if (pccs.Count() > 0)
                 {
                     string input = "Enter a name. This name will be added to every PCC in this folder if it does not already exist.";
-                    string name = PromptDialog.Prompt(input, "Enter name");
+                    string name = PromptDialog.Prompt(null,input, "Enter name");
                     if (name != null)
                     {
                         foreach (string pccPath in pccs)

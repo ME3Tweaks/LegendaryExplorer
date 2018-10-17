@@ -42,9 +42,10 @@ namespace ME3Explorer.SharedUI
             txtResponse.Focus();
         }
 
-        public static string Prompt(string question, string title, string defaultValue = "", InputType inputType = InputType.Text)
+        public static string Prompt(Window owner, string question, string title, string defaultValue = "", InputType inputType = InputType.Text)
         {
             PromptDialog inst = new PromptDialog(question, title, defaultValue, inputType);
+            inst.Owner = owner;
             inst.ShowDialog();
             if (inst.DialogResult == true)
                 return inst.ResponseText;

@@ -195,7 +195,7 @@ namespace ME3Explorer
                 return;
             }
             string input = "Enter an offset (in hex, e.g. 2FA360) to find what entry contains that offset.";
-            string result = PromptDialog.Prompt(input, "Enter offset");
+            string result = PromptDialog.Prompt(this,input, "Enter offset");
             if (result != null)
             {
                 try
