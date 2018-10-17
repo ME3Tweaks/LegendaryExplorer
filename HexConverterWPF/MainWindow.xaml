@@ -5,29 +5,50 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HexConverterWPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="262.952" Width="500.904">
-    <Grid>
+        Title="Hex Converter" Height="185" Width="300">
+    <Grid Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="22"/>
+            <RowDefinition Height="22"/>
+            <RowDefinition Height="22"/>
+            <RowDefinition Height="22"/>
+            <RowDefinition Height="22"/>
+            <RowDefinition Height="22"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="20"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Text="Hex Little Endian" Grid.Row="0" Grid.Column="0"/>
-        <TextBlock Text="Hex Big Endian" Grid.Row="1" Grid.Column="0"/>
-        <TextBlock Text="Signed Integer" Grid.Row="2" Grid.Column="0"/>
-        <TextBlock Text="Unsigned Integer" Grid.Row="3" Grid.Column="0"/>
-        <TextBlock Text="Float" Grid.Row="4" Grid.Column="0"/>
+        <TextBlock Text="Hex Little Endian" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+        <TextBlock Text="Hex Big Endian" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+        <TextBlock Text="Signed Integer" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+        <TextBlock Text="Unsigned Integer" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
+        <TextBlock Text="Float" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
         <CheckBox Content="Always on top" Grid.Row="5" Grid.Column="0" VerticalContentAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding AlwaysOnTop}"/>
+
+        <TextBox Name="LittleEndian_TextBox" Text="{Binding LittleEndianText}" Grid.Row="0" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
+        <TextBox Name="BigEndian_TextBox" Text="{Binding BigEndianText}" Grid.Row="1" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
+        <TextBox Name="Signed_TextBox" Text="{Binding SignedIntegerText}" Grid.Row="2" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
+        <TextBox Name="Unsigned_TextBox" Text="{Binding UnsignedIntegerText}" Grid.Row="3" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
+        <TextBox Name="Float_TextBox" Text="{Binding FloatText}" Grid.Row="4" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
+
+        <Button Name="LittleEndian_Convert_Button" Content="C" Grid.Row="0" Grid.Column="2"/>
+        <Button Name="BigEndian_Convert_Button" Content="C" Grid.Row="1" Grid.Column="2"/>
+        <Button Name="Signed_Convert_Button" Content="C" Grid.Row="2" Grid.Column="2"/>
+        <Button Name="Unsigned_Convert_Button" Content="C" Grid.Row="3" Grid.Column="2"/>
+        <Button Name="Float_Convert_Button" Content="C" Grid.Row="4" Grid.Column="2"/>
+        <Grid.Resources>
+            <Style TargetType="{x:Type TextBox}">
+                <Setter Property="Margin" Value="2" />
+            </Style>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Margin" Value="2" />
+            </Style>
+            <Style TargetType="{x:Type CheckBox}">
+                <Setter Property="Margin" Value="2" />
+            </Style>
+        </Grid.Resources>
     </Grid>
 </Window>
