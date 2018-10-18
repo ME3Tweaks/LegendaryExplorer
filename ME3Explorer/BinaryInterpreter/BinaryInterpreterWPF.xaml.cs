@@ -92,7 +92,7 @@ namespace ME3Explorer
         static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "ShaderCache", "Class", "BioStage", "ObjectProperty", "Const",
             "Enum", "ArrayProperty","FloatProperty", "IntProperty", "BoolProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
             "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "PrefabInstance",
-            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D", "State"};
+            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D", "State", "BioGestureRuntimeData"};
 
         public override bool CanParse(IExportEntry exportEntry)
         {
@@ -273,6 +273,9 @@ namespace ME3Explorer
                 case "TextureMovie":
                     subNodes = StartTextureMovieScan(data, binarystart);
                     break;
+                case "BioGestureRuntimeData":
+                    subNodes = StartBioGestureRuntimeDataScan(data, binarystart);
+                    break;
                 default:
                     subNodes = StartGenericScan(data, binarystart);
                     break;
@@ -290,8 +293,93 @@ namespace ME3Explorer
                 BinaryInterpreter_Hexbox.SelectionLength = 1;
             }
         }
-
         #region scans
+
+        private List<BinaryInterpreterWPFTreeViewItem> StartBioGestureRuntimeDataScan(byte[] data, int binarystart)
+        {
+            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            try
+            {
+                int offset = binarystart;
+                int count = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"{offset:X4} Count: {count}",
+                    Name = "_" + offset.ToString()
+                });
+                offset += 4;
+                for (int i = 0; i < count; i++)
+                {
+                    int name1 = BitConverter.ToInt32(data, offset);
+                    int name2 = BitConverter.ToInt32(data, offset + 8);
+                    string text = $"{offset:X4} Item {i}: {CurrentLoadedExport.FileRef.getNameEntry(name1)} => {CurrentLoadedExport.FileRef.getNameEntry(name2)}";
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = text,
+                        Name = "_" + offset.ToString()
+                    });
+                    offset += 16;
+                }
+
+                int idx = 0;
+                MemoryStream dataAsStream = new MemoryStream(data);
+                while (offset < data.Length)
+                {
+                    var node = new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"{offset:X4} Item {idx}",
+                        Name = "_" + offset.ToString()
+                    };
+                    subnodes.Add(node);
+
+                    int unk1 = BitConverter.ToInt32(data, offset);
+                    node.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"{offset:X4} Unk1: {unk1}",
+                        Name = "_" + offset.ToString()
+                    });
+                    offset += 4;
+                    int unk2 = BitConverter.ToInt32(data, offset);
+                    node.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"{offset:X4} Name Unk2: {unk2} {CurrentLoadedExport.FileRef.getNameEntry(unk2)}",
+                        Name = "_" + offset.ToString()
+                    });
+                    offset +=8;
+                    int unk3 = BitConverter.ToInt32(data, offset);
+                    node.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"{offset:X4} Name Unk3: {unk3} {CurrentLoadedExport.FileRef.getNameEntry(unk3)}",
+                        Name = "_" + offset.ToString()
+                    });
+                    offset += 8;
+
+                    dataAsStream.Position = offset;
+                    int strLength = dataAsStream.ReadValueS32();
+                    string str = dataAsStream.ReadString(strLength * -2, true, Encoding.Unicode);
+                    node.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"{offset:X4}: {str}",
+                        Name = "_" + offset.ToString()
+                    });
+                    offset = (int) dataAsStream.Position;
+                    int unk4 = BitConverter.ToInt32(data, offset);
+                    node.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"{offset:X4} Name Unk4: {unk4} {CurrentLoadedExport.FileRef.getNameEntry(unk4)}",
+                        Name = "_" + offset.ToString()
+                    });
+                    offset += 8;
+                    idx++;
+                    break;
+                }
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}" });
+            }
+            return subnodes;
+        }
         private List<BinaryInterpreterWPFTreeViewItem> StartObjectRedirectorScan(byte[] data, int binarystart)
         {
             var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
@@ -300,7 +388,7 @@ namespace ME3Explorer
             subnodes.Add(new BinaryInterpreterWPFTreeViewItem
             {
                 Header = $"{binarystart:X4} Redirect references to this export to: {redirnum} {CurrentLoadedExport.FileRef.getEntry(redirnum).GetFullPath}",
-                Name = binarystart.ToString()
+                Name = "_" + binarystart.ToString()
             });
             return subnodes;
         }
@@ -2302,7 +2390,15 @@ namespace ME3Explorer
 
         private void BinaryInterpreter_ToggleHexboxWidth_Click(object sender, RoutedEventArgs e)
         {
-
+            GridLength len = HexboxColumnDefinition.Width;
+            if (len.Value < HexboxColumnDefinition.MaxWidth)
+            {
+                HexboxColumnDefinition.Width = new GridLength(HexboxColumnDefinition.MaxWidth);
+            }
+            else
+            {
+                HexboxColumnDefinition.Width = new GridLength(HexboxColumnDefinition.MinWidth);
+            }
         }
 
         private void BinaryInterpreter_Loaded(object sender, RoutedEventArgs e)
