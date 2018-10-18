@@ -138,12 +138,12 @@ namespace HexConverterWPF
 
         private void RunConversions(TextBox sourceTextBox)
         {
-            string sourceStr = sourceTextBox.Text.Trim().ToUpper();
+            string sourceStr = sourceTextBox.Text.Trim().ToUpper().Replace(" ","");
             sourceTextBox.Text = sourceStr; //force uppercase
 
             if (sourceTextBox == BigEndian_TextBox || sourceTextBox == LittleEndian_TextBox)
             {
-                sourceStr = sourceStr.PadLeft(8, '0');
+                sourceStr = sourceStr.PadLeft(8, '0').Substring(0,8); //only 8 long supported
                 sourceTextBox.Text = sourceStr;
 
                 byte[] asCurrentEndian = new byte[4];
