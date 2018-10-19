@@ -51,13 +51,13 @@ namespace ME3Explorer.Unreal
             this.Add(prop);
         }
 
-        public void WriteTo(Stream stream, IMEPackage pcc)
+        public void WriteTo(Stream stream, IMEPackage pcc, bool requireNoneAtEnd = true)
         {
             foreach (var prop in this)
             {
                 prop.WriteTo(stream, pcc);
             }
-            if (Count > 0 && !(this.Last() is NoneProperty))
+            if (requireNoneAtEnd && (Count == 0 || !(this.Last() is NoneProperty)))
             {
                 stream.WriteNoneProperty(pcc);
             }
