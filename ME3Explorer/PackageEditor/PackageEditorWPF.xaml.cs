@@ -573,11 +573,11 @@ namespace ME3Explorer
                                 Debug.Write(" " + b.ToString("X2"));
                             }
                             Debug.WriteLine("");
-                            changedExports.Add("Export header has changed: " + i + " " + exp1.GetFullPath);
+                            changedExports.Add("Export header has changed: " + exp1.UIndex + " " + exp1.GetFullPath);
                         }
                         if (!exp1.Data.SequenceEqual(exp2.Data))
                         {
-                            changedExports.Add("Export data has changed: " + i + " " + exp1.GetFullPath);
+                            changedExports.Add("Export data has changed: " + exp1.UIndex + " " + exp1.GetFullPath);
                         }
                     }
 
