@@ -13,6 +13,7 @@
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:Packages="clr-namespace:ME3Explorer.Packages"
         xmlns:dd="urn:gong-wpf-dragdrop"
+        xmlns:properties="clr-namespace:ME3Explorer.Properties"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
         Closing="PackageEditorWPF_Closing"
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
@@ -31,7 +32,7 @@
         <Converters:PackageEditorWPFActiveViewHighlightConverter x:Key="PackageEditorWPFActiveViewHighlightConverter"/>
         <Converters:ObjectStructPropertyTypeConverter x:Key="ObjectStructPropertyTypeConverter"/>
         <!-- I don't know why this can't just be in listbox-->
-        <Style  TargetType="{x:Type ListBoxItem}">
+        <Style x:Key="AlternatingListBoxStyle" TargetType="{x:Type SharedUI:ListBoxScroll}">
             <Style.Triggers>
                 <Trigger Property="ItemsControl.AlternationIndex" Value="0">
                     <Setter Property="Background" Value="#20001144"/>
@@ -123,6 +124,11 @@
                 <MenuItem Header="Options" Padding="4">
                     <MenuItem Name="TLKManager_MenuItem" Header="TLK Manager" Click="TLKManager_MenuItem_Click"/>
                     <MenuItem Name="TouchComfyMode_MenuItem" Header="Touch Comfy Mode" Click="TouchComfyMode_Clicked"/>
+                    <Separator/>
+                    <MenuItem Header="Binary Interpreter">
+                        <MenuItem Name="BinaryInterpreterWPF_AlwaysAutoParse_MenuItem" Header="Auto-parse generic scans > 20KB" Click="BinaryInterpreterWPF_AlwaysAutoParse_Click" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=BinaryInterpreterWPFAutoScanAlways, Mode=TwoWay}" ToolTip="Automatically parse exports that use Generic Scan that are larger than 20KB.&#10;By default, this is disabled to improve performance."/>
+                    </MenuItem>
+
                 </MenuItem>
                 <MenuItem Header="Debugging" Padding="4">
                     <MenuItem Header="Find entry via File Offset" ToolTip="Find which entry contains the offset you put in.&#x0a;This is typically useful when trying to locate a bad index. You can do this by:&#x0a;Looking at ME3Logger output, searching for the value in the file's binary via a hex editor like HxD, and then looking up that offset with this tool." Command="{Binding FindEntryViaOffsetCommand}"/>
@@ -176,7 +182,7 @@
 
                 </ToolBar>
                 <SharedUI:ListBoxScroll x:Name="LeftSide_ListView" Grid.Column="0" Grid.Row="1" IsTextSearchEnabled="True" SelectionChanged="LeftSide_SelectedItemChanged" ItemsSource="{Binding LeftSideList_ItemsSource}" VirtualizingStackPanel.IsVirtualizing="True"
-    VirtualizingStackPanel.VirtualizationMode="Recycling" AlternationCount="2">
+    VirtualizingStackPanel.VirtualizationMode="Recycling" AlternationCount="2" Style="{StaticResource AlternatingListBoxStyle}">
                     <SharedUI:ListBoxScroll.Resources>
                         <DataTemplate DataType="{x:Type global:PackageEditorWPF+IndexedName}">
                             <StackPanel Orientation="Horizontal">
@@ -233,7 +239,7 @@
                         <HierarchicalDataTemplate DataType="{x:Type global:TreeViewEntry}" ItemsSource="{Binding Sublinks}">
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Margin="{Binding Path=TreeViewMargin,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Text="{Binding DisplayName}" Foreground="{Binding Path=ForegroundColor}">
+                                    <TextBlock Margin="{Binding Path=TreeViewMargin,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=global:PackageEditorWPF}}" Text="{Binding DisplayName}" Foreground="{Binding Path=ForegroundColor}">
                                         <TextBlock.Style>
                                             <Style TargetType="{x:Type TextBlock}">
                                                 <Style.Triggers>

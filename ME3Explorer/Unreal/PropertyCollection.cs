@@ -1054,6 +1054,7 @@ namespace ME3Explorer.Unreal
         }
     }
 
+    [DebuggerDisplay("EnumProperty | {Name} = {Value.Name}")]
     public class EnumProperty : UProperty
     {
         public NameReference EnumType { get; }
@@ -1390,6 +1391,11 @@ namespace ME3Explorer.Unreal
     {
         public byte[] raw;
         public readonly string TypeName;
+
+        public UnknownProperty(NameReference? name = null) : base(name)
+        {
+            raw = new byte[0];
+        }
 
         public UnknownProperty(MemoryStream stream, int size, string typeName = null, NameReference? name = null) : base(name)
         {

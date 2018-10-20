@@ -2302,7 +2302,10 @@ namespace ME3Explorer
                 TreeViewItem treeViewItem = generator.ContainerFromIndex(index) as TreeViewItem;
                 if (treeViewItem == null && container != null) treeViewItem = GetTreeViewItem(container, dequeue);
                 Action action = () => { treeViewItem?.BringIntoView(); };
-                Dispatcher.Invoke(action, DispatcherPriority.ContextIdle);
+                //This needs to be stress tested - this can cause deadlock, but if it doesn't return fast enough the code
+                //may continue to null and not work.
+                //Sigh, treeview.
+                Dispatcher.BeginInvoke(action, DispatcherPriority.ContextIdle);
                 if (treeViewItem == null)
                 {
                     Debug.WriteLine("This shoudln't be null");
@@ -2475,6 +2478,13 @@ namespace ME3Explorer
                 Index = index;
                 Name = name;
             }
+        }
+
+        private void BinaryInterpreterWPF_AlwaysAutoParse_Click(object sender, RoutedEventArgs e)
+        {
+            //BinaryInterpreterWPF_AlwaysAutoParse_MenuItem.IsChecked = !BinaryInterpreterWPF_AlwaysAutoParse_MenuItem.IsChecked;
+            Properties.Settings.Default.BinaryInterpreterWPFAutoScanAlways = !Properties.Settings.Default.BinaryInterpreterWPFAutoScanAlways;
+            Properties.Settings.Default.Save();
         }
     }
     [DebuggerDisplay("TreeViewEntry {DisplayName}")]
