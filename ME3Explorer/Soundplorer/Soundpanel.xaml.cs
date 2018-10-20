@@ -25,11 +25,13 @@ using System.Xml.Linq;
 using FontAwesome.WPF;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
 using NAudio.Wave;
+using static ME3Explorer.Unreal.Classes.WwiseBank;
 
 namespace ME3Explorer
 {
@@ -52,6 +54,8 @@ namespace ME3Explorer
             get { return _quickScanText; }
             set { if (_quickScanText != value) { _quickScanText = value; OnPropertyChanged(); } }
         }
+
+        public ObservableCollectionExtended<HIRCObject> HIRCObjects { get; set; } = new ObservableCollectionExtended<HIRCObject>();
 
 
         //IMEPackage CurrentPackage; //used to tell when to update WwiseEvents list
@@ -132,7 +136,10 @@ namespace ME3Explorer
 
                     if (exportEntry.FileRef.Game == MEGame.ME3)
                     {
-                        QuickScanText = wb.GetQuickScan();
+                        QuickScanText = wb.QuickScanHirc(wb.GetChunk("HIRC"));
+                        List<HIRCObject> hircObjects = wb.ParseHIRCObjects(wb.GetChunk("HIRC"));
+                        HIRCObjects.Clear();
+                        HIRCObjects.AddRange(hircObjects);
                     }
                     else
                     {
