@@ -92,7 +92,7 @@ namespace ME3Explorer
         static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "ShaderCache", "Class", "BioStage", "ObjectProperty", "Const",
             "Enum", "ArrayProperty","FloatProperty", "IntProperty", "BoolProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
             "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "PrefabInstance",
-            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D", "State", "BioGestureRuntimeData", "ScriptStruct"};
+            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D", "State", "BioGestureRuntimeData", "ScriptStruct", "SoundCue"};
 
         public override bool CanParse(IExportEntry exportEntry)
         {
@@ -184,7 +184,7 @@ namespace ME3Explorer
             {
                 Header = $"{binarystart:X4} : {CurrentLoadedExport.ObjectName} - Binary start",
                 Tag = NodeType.Root,
-                Name = "_"+ binarystart,
+                Name = "_" + binarystart,
                 IsExpanded = true
             };
             //BinaryInterpreter_TreeView.Items.Add(topLevelTree);
@@ -281,6 +281,9 @@ namespace ME3Explorer
                 case "ScriptStruct":
                     subNodes = StartScriptStructScan(data, binarystart);
                     break;
+                case "SoundCue":
+                    subNodes = StartSoundCueScan(data, binarystart);
+                    break;
                 default:
                     subNodes = StartGenericScan(data, binarystart);
                     break;
@@ -288,6 +291,42 @@ namespace ME3Explorer
 
             arguments.Item1.Items = subNodes;
             e.Result = arguments.Item1; //return topLevelTree
+        }
+
+        private List<object> StartSoundCueScan(byte[] data, int binarystart)
+        {
+            var subnodes = new List<object>();
+            try
+            {
+                int offset = binarystart;
+
+
+                int classObjTree = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {getEntryFullPath(classObjTree)}",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+                /*
+                offset = binarystart + 0x18;
+
+                MemoryStream ms = new MemoryStream(data);
+                ms.Position = offset;
+                var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, ms, "ScriptStruct", includeNoneProperty: true);
+
+                UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
+                foreach (UProperty prop in scriptStructProperties)
+                {
+                    InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
+                }*/
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}" });
+            }
+            return subnodes;
         }
 
         internal void SetHexboxSelectedOffset(int v)

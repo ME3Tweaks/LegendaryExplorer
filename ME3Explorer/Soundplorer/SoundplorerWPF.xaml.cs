@@ -993,6 +993,11 @@ namespace ME3Explorer.Soundplorer
                 }
             }
         }
+
+        private void OpenME1ISB_Clicked(object sender, RoutedEventArgs e)
+        {
+            ISACT_Parser.ReadFile(@"D:\Origin Games\Mass Effect\BioGame\CookedPC\Packages\ISACT\codex.isb");
+        }
     }
 
     public class SoundplorerExport : INotifyPropertyChanged

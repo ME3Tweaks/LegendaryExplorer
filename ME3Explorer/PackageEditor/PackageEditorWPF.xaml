@@ -31,17 +31,6 @@
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:PackageEditorWPFActiveViewHighlightConverter x:Key="PackageEditorWPFActiveViewHighlightConverter"/>
         <Converters:ObjectStructPropertyTypeConverter x:Key="ObjectStructPropertyTypeConverter"/>
-        <!-- I don't know why this can't just be in listbox-->
-        <Style x:Key="AlternatingListBoxStyle" TargetType="{x:Type SharedUI:ListBoxScroll}">
-            <Style.Triggers>
-                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                    <Setter Property="Background" Value="#20001144"/>
-                </Trigger>
-                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                    <Setter Property="Background" Value="#200000CC"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"/>
@@ -182,7 +171,7 @@
 
                 </ToolBar>
                 <SharedUI:ListBoxScroll x:Name="LeftSide_ListView" Grid.Column="0" Grid.Row="1" IsTextSearchEnabled="True" SelectionChanged="LeftSide_SelectedItemChanged" ItemsSource="{Binding LeftSideList_ItemsSource}" VirtualizingStackPanel.IsVirtualizing="True"
-    VirtualizingStackPanel.VirtualizationMode="Recycling" AlternationCount="2" Style="{StaticResource AlternatingListBoxStyle}">
+    VirtualizingStackPanel.VirtualizationMode="Recycling" AlternationCount="2">
                     <SharedUI:ListBoxScroll.Resources>
                         <DataTemplate DataType="{x:Type global:PackageEditorWPF+IndexedName}">
                             <StackPanel Orientation="Horizontal">
