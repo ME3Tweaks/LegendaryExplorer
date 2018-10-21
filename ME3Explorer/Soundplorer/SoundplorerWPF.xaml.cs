@@ -366,9 +366,10 @@ namespace ME3Explorer.Soundplorer
                         soundPanel.FreeAudioResources(); //unload the current export
                     }
                 }
-                else
+                LoadObjects(exportsRequiringReload);
+
+                if (spExport != null)
                 {
-                    LoadObjects(exportsRequiringReload);
                     soundPanel.LoadExport(spExport.Export); //reload
                 }
             }
@@ -502,7 +503,7 @@ namespace ME3Explorer.Soundplorer
                 {
                     foldername = System.IO.Path.GetFileName(System.IO.Directory.GetParent(dlg.FileName).FullName);
                 }
-                string result = PromptDialog.Prompt(this,"Enter an AFC filename that all mod referenced items will be repointed to.\n\nCompacting AFC folder: " + foldername, "Enter an AFC filename");
+                string result = PromptDialog.Prompt(this, "Enter an AFC filename that all mod referenced items will be repointed to.\n\nCompacting AFC folder: " + foldername, "Enter an AFC filename");
                 if (result != null)
                 {
                     var regex = new Regex(@"^[a-zA-Z0-9_]+$");
@@ -784,7 +785,7 @@ namespace ME3Explorer.Soundplorer
 
         private void CloneAndReplace(bool fromWave)
         {
-            string result = PromptDialog.Prompt(this,"Enter a new object name for the cloned item.", "Cloned export name");
+            string result = PromptDialog.Prompt(this, "Enter a new object name for the cloned item.", "Cloned export name");
             if (result != null)
             {
                 SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
