@@ -591,7 +591,7 @@ namespace ME3Explorer
 
                     for (int i = numExportsToEnumerate; i < compareFile.ExportCount; i++)
                     {
-                        changedExports.Add("Export only exists in " + file + ": " + i + " " + enumerateExtras.Exports[i].GetFullPath);
+                        changedExports.Add("Export only exists in " + file + ": " + (i+1) + " " + enumerateExtras.Exports[i].GetFullPath);
                     }
 
                     sw.Stop();
