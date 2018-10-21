@@ -669,6 +669,8 @@
     <Compile Include="SharedUI\StretchingTreeView.cs" />
     <Compile Include="SingleInstance.cs" />
     <Compile Include="Soundplorer\ISACT_Parser.cs" />
+    <Compile Include="Soundplorer\ISBank.cs" />
+    <Compile Include="Soundplorer\ISBankEntry.cs" />
     <Compile Include="Soundplorer\SoundplorerWPFCommands.cs" />
     <Compile Include="Soundplorer\SoundpanelAudioPlayer.cs" />
     <Compile Include="Soundplorer\DirectReplace.cs">

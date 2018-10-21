@@ -9,41 +9,22 @@ using System.Threading.Tasks;
 
 namespace ME3Explorer.Soundplorer
 {
-    class ISACT_Parser
+    class ISBank
     {
-        public static void ReadFile(string file)
+        private string Filepath;
+        public List<ISBankEntry> BankEntries = new List<ISBankEntry>();
+        public ISBank(string isbPath)
         {
-            byte[] inMemoryFile = File.ReadAllBytes(file);
-            MemoryStream ms = new MemoryStream(inMemoryFile);
-            ReadStream(ms);
-            ms.Close();
+            Filepath = isbPath;
+            List<ISBankEntry> BankEntries = new List<ISBankEntry>();
+            ParseBank(isbPath);
         }
 
-        public static void ReadStream(MemoryStream ms)
+        private void ParseBank(string isbPath)
         {
-            /*
-             * var
-  IsOgg, IsPcm: boolean;
-  PcChannels, samplerate, i, blocksize, counter: integer;
-  BlockName, TempString: string;
-begin
-  IsPcm:=false;
-  PcChannels:=0;
-  SampleRate:=0;
-  Counter:=-1;
+            MemoryStream ms = new MemoryStream(File.ReadAllBytes(isbPath));
 
-  AudioFile.Position:=0;
-  AudioFile.Seek(16, sofromcurrent);
-
-  blocksize:=Audiofile.ReadDWord; //text block
-  AudioFile.Seek(blocksize, sofromcurrent); //seek past*/
-
-            bool isPCM = false;
-            bool isOgg = false;
-            uint pcChannels = 0;
-            uint sampleRate = 0;
             int counter = 1;
-            string currentFileName = "";
             //Skip RIFF, isbftitl
             long dataStartPosition = ms.Position;
             ms.Position += 16;
@@ -52,22 +33,30 @@ begin
 
             int currentCounter = counter;
             bool endOfFile = false;
+            ISBankEntry isbEntry = new ISBankEntry();
+            isbEntry.HeaderOffset = (uint)ms.Position;
             //todo change to this
             //  while AudioFile.Position <> BundleReader.OffsetsArray[FileNo] + BundleReader.FileSizesArray[FileNo] do
             while (ms.Position < ms.Length && !endOfFile)
             {
+
                 if (currentCounter != counter)
                 {
-                    Debug.WriteLine("Sound #" + currentCounter);
-                    Debug.WriteLine(currentFileName);
-                    Debug.WriteLine("Sample Rate: " + sampleRate);
-                    Debug.WriteLine("Channels: " + pcChannels);
-                    Debug.WriteLine("Is Ogg: " + isOgg);
-                    Debug.WriteLine("Is PCM: " + isPCM);
+                    //Debug.WriteLine("Sound #" + currentCounter);
+                    //Debug.WriteLine(currentFileName);
+                    //Debug.WriteLine("Sample Rate: " + sampleRate);
+                    //Debug.WriteLine("Channels: " + pcChannels);
+                    //Debug.WriteLine("Is Ogg: " + isOgg);
+                    //Debug.WriteLine("Is PCM: " + isPCM);
+                    BankEntries.Add(isbEntry);
+                    //Debug.WriteLine(isbEntry.GetTextSummary());
+                    //Debug.WriteLine("=======================");
+                    isbEntry = new ISBankEntry();
+                    isbEntry.HeaderOffset = (uint)ms.Position;
                     currentCounter = counter;
                 }
                 string blockName = ms.ReadString(4);
-                Debug.WriteLine(blockName + " at " + (ms.Position - 4).ToString("X8"));
+                //Debug.WriteLine(blockName + " at " + (ms.Position - 4).ToString("X8"));
 
                 switch (blockName)
                 {
@@ -91,17 +80,22 @@ begin
                         ms.Seek(8, SeekOrigin.Current); //Seek past ''isbftitl'' bytes
                         blocksize = ms.ReadUInt32(); //size of block
                         string tempStr = ""; //we have to build it manually because of how they chose to store it in a weird non-ASCII/unicode way
+                        bool endOfStr = false;
                         for (int i = 0; i < blocksize / 2; i++)
                         {
                             short value = ms.ReadInt16();
-                            if (value != 0)
+                            if (value != 0 && !endOfStr)
                             {
                                 tempStr += (char)value;
                             }
+                            else
+                            {
+                                //used to skip the rest of the block
+                                endOfStr = true;
+                            }
                         }
                         //string str = ms.ReadString(blocksize);
-                        currentFileName = tempStr;
-
+                        isbEntry.FileName = tempStr;
                         break;
                     case "sinf":
                         /*    if blockname='sinf' then
@@ -112,7 +106,7 @@ begin
       continue;
     end;*/
                         ms.Seek(12, SeekOrigin.Current);
-                        sampleRate = ms.ReadUInt32();
+                        isbEntry.sampleRate = ms.ReadUInt32();
                         ms.Seek(8, SeekOrigin.Current);
                         break;
                     case "chnk":
@@ -124,7 +118,7 @@ begin
       continue;
     end;*/
                         ms.Seek(4, SeekOrigin.Current);
-                        pcChannels = ms.ReadUInt32();
+                        isbEntry.pcChannels = ms.ReadUInt32();
                         break;
                     case "cmpi":
                         /*
@@ -139,18 +133,28 @@ begin
     end;*/
                         ms.Seek(24, SeekOrigin.Current);
                         int pcmSignature = ms.ReadInt32();
-                        isPCM = pcmSignature == 1053609165;
+                        isbEntry.isPCM = pcmSignature == 1053609165;
                         break;
                     case "data":
                         counter++;
+
+                        //Debug.WriteLine(counter + " Data for " + isbEntry.FileName);
                         blocksize = ms.ReadUInt32(); //size of block
-                        if (blocksize % 2 != 0) ms.Seek(1, SeekOrigin.Current); //byte align
-                        string encodedType = ms.ReadString(4);
-                        isOgg = encodedType == "OggS";
+
+                        string encodedType = ms.ReadString(4, false);
+                        isbEntry.isOgg = encodedType == "OggS";
                         ms.Seek(-4, SeekOrigin.Current); //go to block start
+                        isbEntry.DataOffset = (uint)ms.Position;
+
                         MemoryStream data = new MemoryStream();
                         ms.CopyToEx(data, (int)blocksize);
-                        SavePcFile(currentFileName, @"C:\users\public\isbout", blocksize, isOgg, isPCM, pcChannels, sampleRate, data);
+                        data.Position = 0;
+                        var str = data.ReadString(4, false);
+                        isbEntry.DataAsStored = data.ToArray();
+                        if (blocksize % 2 != 0)
+                        {
+                            ms.Seek(1, SeekOrigin.Current); //byte align
+                        }
                         //ms.Seek(blocksize, SeekOrigin.Current); //go to next block
 
                         /*
@@ -182,11 +186,6 @@ begin
       end;
     end;*/
                         break;
-                    case "RIFF":
-                        //this is the start of a new file.
-                        endOfFile = true;
-                        ms.Seek(-4, SeekOrigin.Current);
-                        break;
                     default:
                         //skip the block
                         blocksize = ms.ReadUInt32(); //size of block
@@ -194,72 +193,8 @@ begin
                         break;
                 }
             }
-            //while (fs.Position != )
-            System.Diagnostics.Debug.WriteLine("Found " + counter + " files");
+            BankEntries.Add(isbEntry);
+            isbEntry = new ISBankEntry();
         }
-
-        private static void SavePcFile(string currentFileName, string path, uint blocksize, bool isOgg, bool isPCM, uint pcChannels, uint sampleRate, MemoryStream inData)
-        {
-            string outPath = Path.Combine(path, currentFileName);
-            if (isPCM)
-            {
-
-            }
-            else if (isOgg)
-            {
-                outPath = Path.GetFileNameWithoutExtension(outPath) + ".ogg";
-                outPath = Path.Combine(path, currentFileName);
-                File.WriteAllBytes(outPath, inData.ToArray());
-            }
-            else
-            {
-                int headerSize = 52;
-                MemoryStream ms = new MemoryStream();
-                //WAVE HEADER
-                ms.WriteBytes(Encoding.ASCII.GetBytes("RIFF"));
-                ms.WriteInt32(headerSize - 8); //size - header is 52 bytes, - 8 for RIFF and this part.
-                ms.WriteBytes(Encoding.ASCII.GetBytes("WAVE"));
-                ms.WriteBytes(Encoding.ASCII.GetBytes("fmt "));
-                ms.WriteInt32(16); //wavelen
-                ms.WriteInt32(1); //Wave Format PCM
-                ms.WriteUInt32(pcChannels);
-                ms.WriteUInt32(sampleRate);
-                ms.WriteUInt32(pcChannels * 2); //originally is value / 8, but the input was 16 so this will always be * 2
-                ms.WriteUInt32(pcChannels * 2 * sampleRate);
-                ms.WriteBytes(Encoding.ASCII.GetBytes("data"));
-                ms.WriteUInt32(0); //data len = this will have to be updated later, i think
-
-                XboxADPCMDecoder decoder = new XboxADPCMDecoder(pcChannels);
-                MemoryStream decodedStream = decoder.Decode(inData, 0, (int)blocksize);
-                decodedStream.CopyTo(ms);
-                decodedStream.Dispose();
-                File.WriteAllBytes(outPath, ms.ToArray());
-            }
-        }
-        //From Psychonauts Explorer
-        /*
-         * procedure TPsychoAudioDumper.ParsePcFile(FileNo: integer; Destdir, FileName: string);
-
-
-
-  while AudioFile.Position <> BundleReader.OffsetsArray[FileNo] + BundleReader.FileSizesArray[FileNo] do
-  begin
-    if assigned(FOnProgress) then FOnProgress(audiofile.Size, audiofile.Position);
-    blockname:=Audiofile.ReadBlockName;
-
-
-
-
-
-
-
-
-
-
-    blocksize:=Audiofile.ReadDWord;
-    AudioFile.Seek(blocksize, sofromcurrent);
-  end;
-
-end;*/
     }
 }

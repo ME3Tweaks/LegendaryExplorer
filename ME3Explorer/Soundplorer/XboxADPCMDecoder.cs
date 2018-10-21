@@ -50,7 +50,7 @@ namespace ME3Explorer.Soundplorer
         public MemoryStream Decode(Stream inStream, int sourcePos, int sourceSize)
         {
             MemoryStream decodedStream = new MemoryStream();
-            UInt32 codeBuf;
+            uint codeBuf;
             short[,] Buffers = new short[2, 8];
             List<ADPCMState> adpcmStates = new List<ADPCMState>();
             adpcmStates.Add(new ADPCMState()); //channel 1
@@ -82,7 +82,7 @@ namespace ME3Explorer.Soundplorer
                         }
                     }
                     //Write the decoded samples
-                    for (int bufferIndex = 0; bufferIndex < 8; i++)
+                    for (int bufferIndex = 0; bufferIndex < 8; bufferIndex++)
                     {
                         decodedStream.WriteInt16(Buffers[0, bufferIndex]);
                         if (FChannels == 2)
@@ -137,6 +137,8 @@ namespace ME3Explorer.Soundplorer
         {
             pc.Predictor = inStream.ReadUInt16();
             pc.Index = inStream.ReadUInt8();
+            inStream.ReadUInt8(); //advance by 1
+            //if (pc.Index > StepTable.Count() - 1) pc.Index = StepTable.Count() - 1;
             pc.StepSize = StepTable[pc.Index];
             decodedStream.WriteUInt16(pc.Predictor);
         }

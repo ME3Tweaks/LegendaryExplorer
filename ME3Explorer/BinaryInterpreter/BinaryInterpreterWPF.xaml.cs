@@ -22,6 +22,7 @@ using Gammtek.Conduit.Extensions;
 using Gibbed.IO;
 using ME3Explorer;
 using ME3Explorer.Packages;
+using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
 using static ME3Explorer.BinaryInterpreter;
 using static ME3Explorer.EnumExtensions;
@@ -92,7 +93,7 @@ namespace ME3Explorer
         static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "ShaderCache", "Class", "BioStage", "ObjectProperty", "Const",
             "Enum", "ArrayProperty","FloatProperty", "IntProperty", "BoolProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
             "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "PrefabInstance",
-            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D", "State", "BioGestureRuntimeData", "ScriptStruct", "SoundCue"};
+            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D", "State", "BioGestureRuntimeData", "ScriptStruct", "SoundCue", "BioSoundNodeWaveStreamingData"};
 
         public override bool CanParse(IExportEntry exportEntry)
         {
@@ -284,6 +285,9 @@ namespace ME3Explorer
                 case "SoundCue":
                     subNodes = StartSoundCueScan(data, binarystart);
                     break;
+                case "BioSoundNodeWaveStreamingData":
+                    subNodes = StartBioSoundNodeWaveStreamingDataScan(data, binarystart);
+                    break;
                 default:
                     subNodes = StartGenericScan(data, binarystart);
                     break;
@@ -291,6 +295,69 @@ namespace ME3Explorer
 
             arguments.Item1.Items = subNodes;
             e.Result = arguments.Item1; //return topLevelTree
+        }
+
+        private List<object> StartBioSoundNodeWaveStreamingDataScan(byte[] data, int binarystart)
+        {
+            var subnodes = new List<object>();
+            try
+            {
+                int offset = binarystart;
+
+
+                int numBytesOfStreamingData = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X5} Streaming Data Size: {numBytesOfStreamingData}",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafInt
+                });
+                offset += 4;
+
+                var nextFileOffset = BitConverter.ToInt32(data, offset);
+                var node = new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X5} Next file offset: {nextFileOffset}",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafInt
+                };
+
+                var clickToGotoOffset = new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X5} Click to go to referenced offset 0x{nextFileOffset:X5}",
+                    Name = "_" + nextFileOffset
+                };
+                node.Items.Add(clickToGotoOffset);
+
+                subnodes.Add(node);
+                offset += 4;
+
+                MemoryStream asStream = new MemoryStream(data);
+                asStream.Position = offset;
+
+                while (asStream.Position < asStream.Length)
+                {
+                    Debug.WriteLine("Reading at " + asStream.Position);
+                    ISACT_Parser.ReadStream(asStream);
+                }
+                /*
+                offset = binarystart + 0x18;
+
+                MemoryStream ms = new MemoryStream(data);
+                ms.Position = offset;
+                var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, ms, "ScriptStruct", includeNoneProperty: true);
+
+                UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
+                foreach (UProperty prop in scriptStructProperties)
+                {
+                    InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
+                }*/
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}" });
+            }
+            return subnodes;
         }
 
         private List<object> StartSoundCueScan(byte[] data, int binarystart)

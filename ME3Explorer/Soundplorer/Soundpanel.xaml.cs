@@ -233,12 +233,6 @@ namespace ME3Explorer
             return ((exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
         }
 
-        private void Pause_Clicked(object sender, RoutedEventArgs e)
-        {
-            WwiseStream w = new WwiseStream(CurrentLoadedExport.FileRef as ME3Package, CurrentLoadedExport.Index);
-
-        }
-
         /// <summary>
         /// Gets a PCM stream of data (WAV) from either teh currently loaded export or selected WEM
         /// </summary>
@@ -246,37 +240,44 @@ namespace ME3Explorer
         /// <returns></returns>
         public Stream getPCMStream(IExportEntry forcedWwiseStreamExport = null, EmbeddedWEMFile forcedWemFile = null)
         {
-            IExportEntry localCurrentExport = forcedWwiseStreamExport ?? CurrentLoadedExport;
-            if (localCurrentExport != null || forcedWemFile != null)
+            if (CurrentLoadedISACTEntry != null)
             {
-                if (localCurrentExport != null && localCurrentExport.ClassName == "WwiseStream")
+                return CurrentLoadedISACTEntry.GetWaveStream();
+            }
+            else
+            {
+                IExportEntry localCurrentExport = forcedWwiseStreamExport ?? CurrentLoadedExport;
+                if (localCurrentExport != null || forcedWemFile != null)
                 {
-                    wwiseStream = new WwiseStream(localCurrentExport);
-                    string path;
-                    if (wwiseStream.IsPCCStored)
+                    if (localCurrentExport != null && localCurrentExport.ClassName == "WwiseStream")
                     {
-                        path = localCurrentExport.FileRef.FileName;
+                        wwiseStream = new WwiseStream(localCurrentExport);
+                        string path;
+                        if (wwiseStream.IsPCCStored)
+                        {
+                            path = localCurrentExport.FileRef.FileName;
+                        }
+                        else
+                        {
+                            path = wwiseStream.getPathToAFC(); // only to check if AFC exists.
+                        }
+                        if (path != "")
+                        {
+                            return wwiseStream.CreateWaveStream(path);
+                        }
                     }
-                    else
+                    if (forcedWemFile != null || (localCurrentExport != null && localCurrentExport.ClassName == "WwiseBank"))
                     {
-                        path = wwiseStream.getPathToAFC(); // only to check if AFC exists.
+                        object currentWEMItem = forcedWemFile ?? ExportInfoListBox.SelectedItem;
+                        if (currentWEMItem == null || currentWEMItem is string)
+                        {
+                            return null; //nothing selected, or current wem is not playable
+                        }
+                        var wemObject = (EmbeddedWEMFile)currentWEMItem;
+                        string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
+                        File.WriteAllBytes(basePath + ".dat", wemObject.WemData);
+                        return WwiseStream.ConvertRiffToWav(basePath + ".dat", wemObject.Game == MEGame.ME2);
                     }
-                    if (path != "")
-                    {
-                        return wwiseStream.CreateWaveStream(path);
-                    }
-                }
-                if (forcedWemFile != null || (localCurrentExport != null && localCurrentExport.ClassName == "WwiseBank"))
-                {
-                    object currentWEMItem = forcedWemFile ?? ExportInfoListBox.SelectedItem;
-                    if (currentWEMItem == null || currentWEMItem is string)
-                    {
-                        return null; //nothing selected, or current wem is not playable
-                    }
-                    var wemObject = (EmbeddedWEMFile)currentWEMItem;
-                    string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
-                    File.WriteAllBytes(basePath + ".dat", wemObject.WemData);
-                    return WwiseStream.ConvertRiffToWav(basePath + ".dat", wemObject.Game == MEGame.ME2);
                 }
             }
             return null;
@@ -376,6 +377,7 @@ namespace ME3Explorer
         /// when pressing play again after playback has been stopped.
         /// </summary>
         private object CachedStreamSource { get; set; }
+        public ISBankEntry CurrentLoadedISACTEntry { get; private set; }
 
         private enum PlaybackState
         {
@@ -397,6 +399,35 @@ namespace ME3Explorer
             TrackControlMouseDownCommand = new RelayCommand(TrackControlMouseDown, CanTrackControlMouseDown);
             TrackControlMouseUpCommand = new RelayCommand(TrackControlMouseUp, CanTrackControlMouseUp);
             VolumeControlValueChangedCommand = new RelayCommand(VolumeControlValueChanged, CanVolumeControlValueChanged);
+        }
+
+        internal void LoadISACTEntry(ISBankEntry entry)
+        {
+            try
+            {
+                ExportInformationList.Clear();
+                AllWems.Clear();
+
+                ExportInformationList.Add(entry.FileName);
+                ExportInformationList.Add($"Ogg encoded: {entry.isOgg}");
+                ExportInformationList.Add($"PCM encoded: {entry.isPCM}");
+                ExportInformationList.Add($"ADPCM encoded: {!entry.isOgg && !entry.isPCM}");
+                ExportInformationList.Add($"Header offset: 0x{entry.HeaderOffset:X8}");
+                ExportInformationList.Add($"Datastream size: {entry.DataAsStored.Length} bytes");
+                ExportInformationList.Add($"Datastream offset: 0x{entry.DataOffset:X8}");
+
+                CurrentLoadedISACTEntry = entry;
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        internal void UnloadISACTEntry()
+        {
+            CurrentLoadedISACTEntry = null;
+            //throw new NotImplementedException();
         }
 
         private bool CanReplaceAudio(object obj)
@@ -705,50 +736,75 @@ namespace ME3Explorer
         // Player commands
         private void ExportAudio(object p)
         {
-            if (CurrentLoadedExport.ClassName == "WwiseStream")
+            if (CurrentLoadedExport != null)
+            {
+                if (CurrentLoadedExport.ClassName == "WwiseStream")
+                {
+                    SaveFileDialog d = new SaveFileDialog();
+                    d.Filter = "Wave PCM File|*.wav";
+                    d.FileName = CurrentLoadedExport.ObjectName + ".wav";
+                    if (d.ShowDialog().Value)
+                    {
+                        WwiseStream w = new WwiseStream(CurrentLoadedExport);
+                        string wavPath = w.CreateWave(w.getPathToAFC());
+                        if (wavPath != null && File.Exists(wavPath))
+                        {
+                            File.Copy(wavPath, d.FileName, true);
+                        }
+                        MessageBox.Show("Done.");
+                    }
+                }
+
+                if (CurrentLoadedExport.ClassName == "WwiseBank")
+                {
+                    EmbeddedWEMFile currentWEMItem = (EmbeddedWEMFile)ExportInfoListBox.SelectedItem;
+                    SaveFileDialog d = new SaveFileDialog();
+                    d.Filter = "Wave PCM|*.wav";
+                    d.FileName = CurrentLoadedExport.ObjectName + "_0x" + currentWEMItem.Id.ToString("X8") + ".wav";
+                    if (d.ShowDialog().Value)
+                    {
+                        Stream ms = getPCMStream();
+                        ms.Seek(0, SeekOrigin.Begin);
+                        using (FileStream fs = new FileStream(d.FileName, FileMode.OpenOrCreate))
+                        {
+                            ms.CopyTo(fs);
+                            fs.Flush();
+                        }
+                        MessageBox.Show("Done.");
+                    }
+                }
+            }
+            if (CurrentLoadedISACTEntry != null)
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "Wave PCM File|*.wav";
-                d.FileName = CurrentLoadedExport.ObjectName + ".wav";
+                d.FileName = CurrentLoadedISACTEntry.FileName;
                 if (d.ShowDialog().Value)
                 {
-                    WwiseStream w = new WwiseStream(CurrentLoadedExport);
-                    string wavPath = w.CreateWave(w.getPathToAFC());
-                    if (wavPath != null && File.Exists(wavPath))
-                    {
-                        File.Copy(wavPath, d.FileName, true);
-                    }
-                    MessageBox.Show("Done.");
-                }
-            }
-
-            if (CurrentLoadedExport.ClassName == "WwiseBank")
-            {
-                EmbeddedWEMFile currentWEMItem = (EmbeddedWEMFile)ExportInfoListBox.SelectedItem;
-                SaveFileDialog d = new SaveFileDialog();
-                d.Filter = "Wave PCM|*.wav";
-                d.FileName = CurrentLoadedExport.ObjectName + "_0x" + currentWEMItem.Id.ToString("X8") + ".wav";
-                if (d.ShowDialog().Value)
-                {
-                    Stream ms = getPCMStream();
-                    ms.Seek(0, SeekOrigin.Begin);
+                    MemoryStream waveStream = CurrentLoadedISACTEntry.GetWaveStream();
+                    waveStream.Seek(0, SeekOrigin.Begin);
                     using (FileStream fs = new FileStream(d.FileName, FileMode.OpenOrCreate))
                     {
-                        ms.CopyTo(fs);
+                        waveStream.CopyTo(fs);
                         fs.Flush();
                     }
                     MessageBox.Show("Done.");
                 }
             }
         }
+
         private bool CanExportAudio(object p)
         {
-            if (CurrentLoadedExport == null) return false;
-            if (CurrentLoadedExport.ClassName == "WwiseStream") return true;
-            if (CurrentLoadedExport.ClassName == "WwiseBank")
+            if (CurrentLoadedExport == null && CurrentLoadedISACTEntry == null) return false;
+            if (CurrentLoadedISACTEntry != null) return true;
+            if (CurrentLoadedExport != null)
             {
-                object currentWEMItem = ExportInfoListBox.SelectedItem;
-                return currentWEMItem != null && currentWEMItem is EmbeddedWEMFile;
+                if (CurrentLoadedExport.ClassName == "WwiseStream") return true;
+                if (CurrentLoadedExport.ClassName == "WwiseBank")
+                {
+                    object currentWEMItem = ExportInfoListBox.SelectedItem;
+                    return currentWEMItem != null && currentWEMItem is EmbeddedWEMFile;
+                }
             }
             return false;
         }
@@ -771,16 +827,24 @@ namespace ME3Explorer
                 {
                     if (!RestartingDueToLoop)
                     {
-                        //check if cached is the same as what we want to play
-                        if (CurrentLoadedExport.ClassName == "WwiseStream" && CachedStreamSource != CurrentLoadedExport)
+                        if (CurrentLoadedISACTEntry != null && CachedStreamSource != CurrentLoadedISACTEntry)
                         {
                             //invalidate the cache
                             UpdateVorbisStream();
                         }
-                        else if (CurrentLoadedExport.ClassName == "WwiseBank" && CachedStreamSource != ExportInfoListBox.SelectedItem)
+                        if (CurrentLoadedExport != null)
                         {
-                            //Invalidate the cache
-                            UpdateVorbisStream();
+                            //check if cached is the same as what we want to play
+                            if (CurrentLoadedExport.ClassName == "WwiseStream" && CachedStreamSource != CurrentLoadedExport)
+                            {
+                                //invalidate the cache
+                                UpdateVorbisStream();
+                            }
+                            else if (CurrentLoadedExport.ClassName == "WwiseBank" && CachedStreamSource != ExportInfoListBox.SelectedItem)
+                            {
+                                //Invalidate the cache
+                                UpdateVorbisStream();
+                            }
                         }
                     }
                 }
@@ -827,13 +891,20 @@ namespace ME3Explorer
         private void UpdateVorbisStream()
         {
             vorbisStream = getPCMStream();
-            if (CurrentLoadedExport.ClassName == "WwiseStream")
+            if (CurrentLoadedISACTEntry != null)
             {
-                CachedStreamSource = CurrentLoadedExport;
+                CachedStreamSource = CurrentLoadedISACTEntry;
             }
-            else if (CurrentLoadedExport.ClassName == "WwiseBank")
+            if (CurrentLoadedExport != null)
             {
-                CachedStreamSource = ExportInfoListBox.SelectedItem;
+                if (CurrentLoadedExport.ClassName == "WwiseStream")
+                {
+                    CachedStreamSource = CurrentLoadedExport;
+                }
+                else if (CurrentLoadedExport.ClassName == "WwiseBank")
+                {
+                    CachedStreamSource = ExportInfoListBox.SelectedItem;
+                }
             }
         }
 
@@ -849,7 +920,8 @@ namespace ME3Explorer
         public bool CanStartPlayback(object p)
         {
             if (vorbisStream != null) return true; //looping
-            if (CurrentLoadedExport == null) return false;
+            if (CurrentLoadedExport == null && CurrentLoadedISACTEntry == null) return false;
+            if (CurrentLoadedISACTEntry != null) return true;
             if (CurrentLoadedExport.ClassName == "WwiseStream") return true;
             if (CurrentLoadedExport.ClassName == "WwiseBank")
             {
