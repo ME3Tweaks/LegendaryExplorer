@@ -366,8 +366,11 @@ namespace ME3Explorer.Soundplorer
                         soundPanel.FreeAudioResources(); //unload the current export
                     }
                 }
-                LoadObjects(exportsRequiringReload);
-                soundPanel.LoadExport(spExport.Export); //reload
+                else
+                {
+                    LoadObjects(exportsRequiringReload);
+                    soundPanel.LoadExport(spExport.Export); //reload
+                }
             }
         }
 
