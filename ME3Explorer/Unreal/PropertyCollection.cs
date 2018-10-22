@@ -393,28 +393,28 @@ namespace ME3Explorer.Unreal
             switch (template.PropType)
             {
                 case PropertyType.FloatProperty:
-                    return new FloatProperty(stream, template.Name) { StartOffset = stream.Position };
+                    return new FloatProperty(stream, template.Name) { StartOffset = startPos };
                 case PropertyType.IntProperty:
-                    return new IntProperty(stream, template.Name) { StartOffset = stream.Position };
+                    return new IntProperty(stream, template.Name) { StartOffset = startPos };
                 case PropertyType.ObjectProperty:
-                    return new ObjectProperty(stream, template.Name) { StartOffset = stream.Position };
+                    return new ObjectProperty(stream, template.Name) { StartOffset = startPos };
                 case PropertyType.StringRefProperty:
-                    return new StringRefProperty(stream, template.Name) { StartOffset = stream.Position };
+                    return new StringRefProperty(stream, template.Name) { StartOffset = startPos };
                 case PropertyType.NameProperty:
-                    return new NameProperty(stream, pcc, template.Name) { StartOffset = stream.Position };
+                    return new NameProperty(stream, pcc, template.Name) { StartOffset = startPos };
                 case PropertyType.BoolProperty:
-                    return new BoolProperty(stream, pcc.Game, template.Name) { StartOffset = stream.Position };
+                    return new BoolProperty(stream, pcc.Game, template.Name) { StartOffset = startPos };
                 case PropertyType.ByteProperty:
                     if (template is EnumProperty)
                     {
                         string enumType = UnrealObjectInfo.GetEnumType(pcc.Game, template.Name, structType);
-                        return new EnumProperty(stream, pcc, enumType, template.Name) { StartOffset = stream.Position };
+                        return new EnumProperty(stream, pcc, enumType, template.Name) { StartOffset = startPos };
                     }
-                    return new ByteProperty(stream, template.Name);
+                    return new ByteProperty(stream, template.Name) { StartOffset = startPos };
                 case PropertyType.BioMask4Property:
-                    return new BioMask4Property(stream, template.Name) { StartOffset = stream.Position };
+                    return new BioMask4Property(stream, template.Name) { StartOffset = startPos };
                 case PropertyType.StrProperty:
-                    return new StrProperty(stream, template.Name) { StartOffset = stream.Position };
+                    return new StrProperty(stream, template.Name) { StartOffset = startPos };
                 case PropertyType.ArrayProperty:
                     var arrayProperty = ReadArrayProperty(stream, pcc, structType, template.Name, true);
                     arrayProperty.StartOffset = startPos;
@@ -425,7 +425,7 @@ namespace ME3Explorer.Unreal
                     structProp.StartOffset = startPos;
                     return structProp;//this implementation needs checked, as I am not 100% sure of it's validity.
                 case PropertyType.None:
-                    return new NoneProperty(template.Name) { StartOffset = stream.Position };
+                    return new NoneProperty(template.Name) { StartOffset = startPos };
                 case PropertyType.DelegateProperty:
                     throw new NotImplementedException("cannot read Delegate property of Immutable struct");
                 case PropertyType.Unknown:

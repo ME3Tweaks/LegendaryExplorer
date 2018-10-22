@@ -18,6 +18,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using ME3Explorer.SharedUI;
 using System.Windows.Input;
+using Xceed.Wpf.Toolkit;
 
 namespace ME3Explorer
 {
@@ -323,7 +324,7 @@ namespace ME3Explorer
         {
             if (CurrentLoadedExport.FileRef.Game == MEGame.UDK)
             {
-                MessageBox.Show("Cannot add properties to UDK UPK files.", "Unsupported operation");
+                System.Windows.Forms.MessageBox.Show("Cannot add properties to UDK UPK files.", "Unsupported operation");
                 return;
             }
 
@@ -1532,6 +1533,44 @@ namespace ME3Explorer
                 }
                 CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
             }
+        }
+
+        private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+            var tb = (ColorPicker)e.OriginalSource;
+            if (tb.IsOpen)
+            {
+                var dataCxtx = tb.DataContext as UPropertyTreeViewEntry;
+                if (dataCxtx.Property != null)
+                {
+                    dataCxtx.ChildrenProperties.ClearEx();
+
+                    var colorStruct = dataCxtx.Property as StructProperty;
+                    var a = colorStruct.GetProp<ByteProperty>("A");
+                    var r = colorStruct.GetProp<ByteProperty>("R");
+                    var g = colorStruct.GetProp<ByteProperty>("G");
+                    var b = colorStruct.GetProp<ByteProperty>("B");
+
+                    a.Value = tb.SelectedColor.Value.A;
+                    r.Value = tb.SelectedColor.Value.R;
+                    g.Value = tb.SelectedColor.Value.G;
+                    b.Value = tb.SelectedColor.Value.B;
+
+                    DynamicByteProvider byteProvider = Interpreter_Hexbox.ByteProvider as DynamicByteProvider;
+                    byteProvider.WriteByte(a.ValueOffset, a.Value);
+                    byteProvider.WriteByte(r.ValueOffset, r.Value);
+                    byteProvider.WriteByte(g.ValueOffset, g.Value);
+                    byteProvider.WriteByte(b.ValueOffset, b.Value);
+
+                    //Regenerate children nodes
+                    foreach (var subProp in colorStruct.Properties)
+                    {
+                        GenerateUPropertyTreeForProperty(subProp, dataCxtx, CurrentLoadedExport);
+                    }
+                    Debug.WriteLine("Updating");
+                }
+            }
+            // var dataSource = (U)dataCxtx;
         }
     }
 
