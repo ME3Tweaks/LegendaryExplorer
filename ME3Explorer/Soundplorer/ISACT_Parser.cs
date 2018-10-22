@@ -183,7 +183,7 @@ begin
     end;*/
                         break;
                     case "RIFF":
-                        //this is the start of a new file.
+                        //this is the start of a new file in the bank. This is only used in embedded data
                         endOfFile = true;
                         ms.Seek(-4, SeekOrigin.Current);
                         break;

@@ -44,6 +44,10 @@
                             <!-- Do not remove transparent background. It is required for mouse hit testing.-->
                             <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue"/>
                         </DataTemplate>
+                        <DataTemplate DataType="{x:Type soundplorer:ISBankEntry}">
+                            <!-- Do not remove transparent background. It is required for mouse hit testing.-->
+                            <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue"/>
+                        </DataTemplate>
                     </ListBox.Resources>
                 </ListBox>
                 <DockPanel Grid.Column="0" Grid.Row="1" Margin="0,0,5,0">

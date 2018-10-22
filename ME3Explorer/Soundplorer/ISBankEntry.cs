@@ -13,7 +13,7 @@ namespace ME3Explorer.Soundplorer
 {
     public class ISBankEntry
     {
-        public string FileName;
+        public string FileName { get; set; }
         public bool isPCM = false;
         public bool isOgg = false;
         public uint pcChannels = 0;
@@ -30,6 +30,14 @@ namespace ME3Explorer.Soundplorer
             set
             {
                 dataAsStored = value;
+            }
+        }
+
+        public string DisplayString
+        {
+            get
+            {
+                return FileName + " Has Data: " + (DataAsStored != null);
             }
         }
 
@@ -90,12 +98,20 @@ namespace ME3Explorer.Soundplorer
 
         }
 
-        public TimeSpan GetLength()
+        public TimeSpan? GetLength()
         {
             if (!isOgg && !isPCM)
             {
-                WaveFileReader wf = new WaveFileReader(GetWaveStream(new MemoryStream(DataAsStored)));
-                return wf.TotalTime;
+                try
+                {
+                    MemoryStream ms = GetWaveStream(new MemoryStream(DataAsStored));
+                    ms.Position = 0;
+                    WaveFileReader wf = new WaveFileReader(ms);
+                    return wf.TotalTime;
+                } catch
+                {
+                    return null;
+                }
             }
             if (isOgg)
             {

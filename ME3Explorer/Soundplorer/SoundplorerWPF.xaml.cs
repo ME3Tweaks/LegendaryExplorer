@@ -297,7 +297,7 @@ namespace ME3Explorer.Soundplorer
             ISBank result = (ISBank)e.Result;
             if (result != null)
             {
-                List<ISACTFileEntry> entries = new List<ISACTFileEntry>(result.BankEntries.Where(x => x.DataAsStored != null && x.isOgg).Select(x => new ISACTFileEntry(x)).ToList());
+                List<ISACTFileEntry> entries = new List<ISACTFileEntry>(result.BankEntries.Where(x => x.DataAsStored != null).Select(x => new ISACTFileEntry(x)).ToList());
                 BindedItemsList.AddRange(entries);
                 backgroundScanner = new BackgroundWorker();
                 backgroundScanner.DoWork += GetStreamTimes;

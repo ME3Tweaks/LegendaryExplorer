@@ -17,17 +17,26 @@ namespace ME3Explorer.Soundplorer
         {
             Filepath = isbPath;
             List<ISBankEntry> BankEntries = new List<ISBankEntry>();
-            ParseBank(isbPath);
+            ParseBank(new MemoryStream(File.ReadAllBytes(isbPath)));
         }
 
-        private void ParseBank(string isbPath)
+        public ISBank(byte[] binData)
         {
-            MemoryStream ms = new MemoryStream(File.ReadAllBytes(isbPath));
+            MemoryStream ms = new MemoryStream(binData);
+            ParseBank(ms);
+        }
 
+        private void ParseBank(MemoryStream ms)
+        {
             int counter = 1;
             //Skip RIFF, isbftitl
             long dataStartPosition = ms.Position;
-            ms.Position += 16;
+            string shouldBeRiff = ms.ReadString(4, false);
+            if (shouldBeRiff != "RIFF")
+            {
+                Debug.WriteLine("Not a RIFF!");
+            }
+            ms.Position += 12;
             uint blocksize = ms.ReadUInt32(); //size of isfbtitl chunk
             ms.Seek(blocksize, SeekOrigin.Current); //skip it
 
@@ -39,7 +48,7 @@ namespace ME3Explorer.Soundplorer
             //  while AudioFile.Position <> BundleReader.OffsetsArray[FileNo] + BundleReader.FileSizesArray[FileNo] do
             while (ms.Position < ms.Length && !endOfFile)
             {
-
+                blocksize = 0; //reset
                 if (currentCounter != counter)
                 {
                     //Debug.WriteLine("Sound #" + currentCounter);
@@ -55,9 +64,13 @@ namespace ME3Explorer.Soundplorer
                     isbEntry.HeaderOffset = (uint)ms.Position;
                     currentCounter = counter;
                 }
-                string blockName = ms.ReadString(4);
-                //Debug.WriteLine(blockName + " at " + (ms.Position - 4).ToString("X8"));
 
+                string blockName = ms.ReadString(4);
+                Debug.WriteLine(blockName + " at " + (ms.Position - 4).ToString("X8"));
+                if (blockName == "data")
+                {
+                    Debug.WriteLine("DATA");
+                }
                 switch (blockName)
                 {
                     case "LIST":
@@ -151,10 +164,6 @@ namespace ME3Explorer.Soundplorer
                         data.Position = 0;
                         var str = data.ReadString(4, false);
                         isbEntry.DataAsStored = data.ToArray();
-                        if (blocksize % 2 != 0)
-                        {
-                            ms.Seek(1, SeekOrigin.Current); //byte align
-                        }
                         //ms.Seek(blocksize, SeekOrigin.Current); //go to next block
 
                         /*
@@ -186,11 +195,23 @@ namespace ME3Explorer.Soundplorer
       end;
     end;*/
                         break;
+                    case "RIFF":
+                        //this is the start of a new file.
+                        counter++;
+                        ms.Position += 12;
+                        blocksize = ms.ReadUInt32(); //size of isfbtitl chunk
+                        ms.Seek(blocksize, SeekOrigin.Current); //skip it
+                        break;
                     default:
                         //skip the block
                         blocksize = ms.ReadUInt32(); //size of block
+                        Debug.WriteLine("Skipping block of size " + blocksize + " at 0x" + ms.Position.ToString("X5"));
                         ms.Seek(blocksize, SeekOrigin.Current); //skip it
                         break;
+                }
+                if (blocksize % 2 != 0)
+                {
+                    ms.Seek(1, SeekOrigin.Current); //byte align
                 }
             }
             BankEntries.Add(isbEntry);

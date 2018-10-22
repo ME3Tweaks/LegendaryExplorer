@@ -40,7 +40,7 @@ namespace ME3Explorer
     /// </summary>
     public partial class Soundpanel : ExportLoaderControl
     {
-        public BindingList<object> ExportInformationList { get; set; }
+        public ObservableCollectionExtended<object> ExportInformationList { get; set; } = new ObservableCollectionExtended<object>();
         private List<EmbeddedWEMFile> AllWems = new List<EmbeddedWEMFile>(); //used only for rebuilding soundbank
         WwiseStream wwiseStream;
         public string afcPath = "";
@@ -64,7 +64,6 @@ namespace ME3Explorer
         public Soundpanel()
         {
             PlayPauseIcon = FontAwesomeIcon.Play;
-            ExportInformationList = new BindingList<object>();
             LoadCommands();
             CurrentVolume = 1;
             _playbackState = PlaybackState.Stopped;
@@ -77,7 +76,7 @@ namespace ME3Explorer
         {
             try
             {
-                ExportInformationList.Clear();
+                ExportInformationList.ClearEx();
                 AllWems.Clear();
                 //Check if we need to first gather wwiseevents for wem IDing
                 //Uncomment when HIRC stuff is implemented, if ever...
@@ -195,6 +194,27 @@ namespace ME3Explorer
                     }
                     CurrentLoadedExport = exportEntry;
                 }
+                if (exportEntry.ClassName == "SoundNodeWave")
+                {
+                    byte[] binData = exportEntry.Data.Skip(exportEntry.propsEnd() + 20).ToArray();
+
+                    ISBank isb = new ISBank(binData);
+
+                    /*WwiseStream w = new WwiseStream(exportEntry);
+                    ExportInformationList.Add("Filename : " + (w.FileName ?? "Stored in this PCC"));
+                    ExportInformationList.Add("Data size: " + w.DataSize + " bytes");
+                    ExportInformationList.Add("Data offset: 0x" + w.DataOffset.ToString("X8"));
+                    string wemId = "ID: 0x" + w.Id.ToString("X8");
+                    if (Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness)
+                    {
+                        wemId += $" | 0x{ReverseBytes((uint)w.Id).ToString("X8")} (Reversed)";
+                    }
+                    ExportInformationList.Add(wemId);*/
+                    List<ISBankEntry> audios = isb.BankEntries;
+                    ExportInformationList.AddRange(audios);
+
+                    CurrentLoadedExport = exportEntry;
+                }
             }
             catch (Exception e)
             {
@@ -230,7 +250,7 @@ namespace ME3Explorer
 
         public override bool CanParse(IExportEntry exportEntry)
         {
-            return ((exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
+            return ((exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "SoundNodeWave") || (exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
         }
 
         /// <summary>
@@ -265,6 +285,16 @@ namespace ME3Explorer
                         {
                             return wwiseStream.CreateWaveStream(path);
                         }
+                    }
+                    if (localCurrentExport != null && localCurrentExport.ClassName == "SoundNodeWave")
+                    {
+                        object currentSelectedItem =  ExportInfoListBox.SelectedItem;
+                        if (currentSelectedItem == null || !(currentSelectedItem is ISBankEntry))
+                        {
+                            return null; //nothing selected, or current item is not playable
+                        }
+                        var bankEntry = (ISBankEntry)currentSelectedItem;
+                        return bankEntry.GetWaveStream();
                     }
                     if (forcedWemFile != null || (localCurrentExport != null && localCurrentExport.ClassName == "WwiseBank"))
                     {
@@ -845,6 +875,11 @@ namespace ME3Explorer
                                 //Invalidate the cache
                                 UpdateVorbisStream();
                             }
+                            else if (CurrentLoadedExport.ClassName == "SoundNodeWave" && CachedStreamSource != ExportInfoListBox.SelectedItem)
+                            {
+                                //Invalidate the cache
+                                UpdateVorbisStream();
+                            }
                         }
                     }
                 }
@@ -905,6 +940,10 @@ namespace ME3Explorer
                 {
                     CachedStreamSource = ExportInfoListBox.SelectedItem;
                 }
+                else if (CurrentLoadedExport.ClassName == "SoundNodeWave")
+                {
+                    CachedStreamSource = ExportInfoListBox.SelectedItem;
+                }
             }
         }
 
@@ -931,6 +970,16 @@ namespace ME3Explorer
                     return false; //nothing selected, or current wem is not playable
                 }
                 if (currentWEMItem is EmbeddedWEMFile) return true;
+            }
+            if (CurrentLoadedExport.ClassName == "SoundNodeWave")
+            {
+                object currentNodeWaveItem = ExportInfoListBox.SelectedItem;
+                if (currentNodeWaveItem == null) return false;
+                if (currentNodeWaveItem is ISBankEntry isbe)
+                {
+                    return isbe.DataAsStored != null;
+                }
+                if (currentNodeWaveItem is EmbeddedWEMFile) return true;
             }
 
             return false;
@@ -1153,8 +1202,13 @@ namespace ME3Explorer
 
         private void ExportInfoListBox_DoubleClick(object sender, MouseButtonEventArgs e)
         {
-            object currentWEMItem = ExportInfoListBox.SelectedItem;
-            if (currentWEMItem != null && currentWEMItem is EmbeddedWEMFile)
+            object currentSelectedItem = ExportInfoListBox.SelectedItem;
+            if (currentSelectedItem != null && currentSelectedItem is EmbeddedWEMFile)
+            {
+                StopPlaying();
+                StartOrPausePlaying();
+            }
+            if (currentSelectedItem != null && currentSelectedItem is ISBankEntry && (currentSelectedItem as ISBankEntry).DataAsStored != null)
             {
                 StopPlaying();
                 StartOrPausePlaying();
