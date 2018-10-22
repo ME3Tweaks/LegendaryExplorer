@@ -197,22 +197,19 @@ namespace ME3Explorer
                 if (exportEntry.ClassName == "SoundNodeWave")
                 {
                     byte[] binData = exportEntry.Data.Skip(exportEntry.propsEnd() + 20).ToArray();
-
                     ISBank isb = new ISBank(binData);
-
-                    /*WwiseStream w = new WwiseStream(exportEntry);
-                    ExportInformationList.Add("Filename : " + (w.FileName ?? "Stored in this PCC"));
-                    ExportInformationList.Add("Data size: " + w.DataSize + " bytes");
-                    ExportInformationList.Add("Data offset: 0x" + w.DataOffset.ToString("X8"));
-                    string wemId = "ID: 0x" + w.Id.ToString("X8");
-                    if (Properties.Settings.Default.SoundplorerReverseIDDisplayEndianness)
-                    {
-                        wemId += $" | 0x{ReverseBytes((uint)w.Id).ToString("X8")} (Reversed)";
-                    }
-                    ExportInformationList.Add(wemId);*/
                     List<ISBankEntry> audios = isb.BankEntries;
-                    ExportInformationList.AddRange(audios);
-
+                    foreach (ISBankEntry isbe in isb.BankEntries)
+                    {
+                        if (isbe.DataAsStored != null)
+                        {
+                            ExportInformationList.Add(isbe);
+                        }
+                        else
+                        {
+                            ExportInformationList.Add($"{isbe.FileName} - No data - Data Location: 0x{isbe.DataOffset:X8}");
+                        }
+                    }
                     CurrentLoadedExport = exportEntry;
                 }
             }

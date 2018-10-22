@@ -197,8 +197,10 @@ namespace ME3Explorer.Soundplorer
                         break;
                     case "RIFF":
                         //this is the start of a new file.
+                        uint riffSize = ms.ReadUInt32(); //size of isfbtitl chunk
+
                         counter++;
-                        ms.Position += 12;
+                        ms.Position += 8; //skip isfbtitl
                         blocksize = ms.ReadUInt32(); //size of isfbtitl chunk
                         ms.Seek(blocksize, SeekOrigin.Current); //skip it
                         break;

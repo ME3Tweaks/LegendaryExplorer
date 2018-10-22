@@ -37,7 +37,7 @@ namespace ME3Explorer.Soundplorer
         {
             get
             {
-                return FileName + " Has Data: " + (DataAsStored != null);
+                return FileName + " - Data offset: 0x" + DataOffset.ToString("X8");
             }
         }
 

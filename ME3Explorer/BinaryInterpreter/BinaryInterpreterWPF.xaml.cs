@@ -93,11 +93,11 @@ namespace ME3Explorer
         static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "ShaderCache", "Class", "BioStage", "ObjectProperty", "Const",
             "Enum", "ArrayProperty","FloatProperty", "IntProperty", "BoolProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
             "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "PrefabInstance",
-            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D", "State", "BioGestureRuntimeData", "ScriptStruct", "SoundCue", "BioSoundNodeWaveStreamingData"};
+            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D", "State", "BioGestureRuntimeData", "ScriptStruct", "SoundCue", "SoundNodeWave","BioSoundNodeWaveStreamingData"};
 
         public override bool CanParse(IExportEntry exportEntry)
         {
-            return ParsableBinaryClasses.Contains(exportEntry.ClassName);
+            return ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__");
         }
 
         public override void LoadExport(IExportEntry exportEntry)
@@ -288,6 +288,9 @@ namespace ME3Explorer
                 case "BioSoundNodeWaveStreamingData":
                     subNodes = StartBioSoundNodeWaveStreamingDataScan(data, binarystart);
                     break;
+                case "SoundNodeWave":
+                    subNodes = StartSoundNodeWaveScan(data, binarystart);
+                    break;
                 default:
                     subNodes = StartGenericScan(data, binarystart);
                     break;
@@ -295,6 +298,69 @@ namespace ME3Explorer
 
             arguments.Item1.Items = subNodes;
             e.Result = arguments.Item1; //return topLevelTree
+        }
+
+        private List<object> StartSoundNodeWaveScan(byte[] data, int binarystart)
+        {
+            var subnodes = new List<object>();
+            try
+            {
+                int offset = binarystart;
+
+
+                int classObjTree = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X8} Item1: {classObjTree} (0x{classObjTree:X8})",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+
+                classObjTree = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X8} Data length: {classObjTree} (0x{classObjTree:X8})",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+
+                classObjTree = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X8} Data length: {classObjTree} (0x{classObjTree:X8})",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+
+                classObjTree = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X8} Item4: {classObjTree} (0x{classObjTree:X8})",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+                /*
+                offset = binarystart + 0x18;
+
+                MemoryStream ms = new MemoryStream(data);
+                ms.Position = offset;
+                var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, ms, "ScriptStruct", includeNoneProperty: true);
+
+                UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
+                foreach (UProperty prop in scriptStructProperties)
+                {
+                    InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
+                }*/
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}" });
+            }
+            return subnodes;
         }
 
         private List<object> StartBioSoundNodeWaveStreamingDataScan(byte[] data, int binarystart)
