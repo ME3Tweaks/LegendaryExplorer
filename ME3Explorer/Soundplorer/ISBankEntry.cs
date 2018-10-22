@@ -16,7 +16,7 @@ namespace ME3Explorer.Soundplorer
         public string FileName { get; set; }
         public bool isPCM = false;
         public bool isOgg = false;
-        public uint pcChannels = 0;
+        public uint numberOfChannels = 0;
         public uint sampleRate = 0;
         public uint DataOffset;
         public uint HeaderOffset;
@@ -41,7 +41,7 @@ namespace ME3Explorer.Soundplorer
             }
         }
 
-        internal MemoryStream GetWaveStream(MemoryStream xboxADPCMStream = null)
+        internal MemoryStream GetWaveStream()
         {
             //string outPath = Path.Combine(path, currentFileName);
 
@@ -67,18 +67,36 @@ namespace ME3Explorer.Soundplorer
                 ms.WriteInt32(headerSize - 8); //size - header is 52 bytes, - 8 for RIFF and this part.
                 ms.WriteBytes(Encoding.ASCII.GetBytes("WAVE"));
                 ms.WriteBytes(Encoding.ASCII.GetBytes("fmt "));
-                ms.WriteInt32(16); //wavelen
-                ms.WriteInt32(1); //Wave Format PCM
-                ms.WriteUInt32(pcChannels);
+                ms.WriteUInt32(16); //Chunk size
+
+                ms.WriteUInt16(1); //Wave Format PCM
+                ms.WriteUInt16((ushort)numberOfChannels);
+
                 ms.WriteUInt32(sampleRate);
-                ms.WriteUInt32(pcChannels * 2); //originally is value / 8, but the input was 16 so this will always be * 2
-                ms.WriteUInt32(pcChannels * 2 * sampleRate);
+                ms.WriteUInt32(sampleRate * numberOfChannels * 2); //originally is value / 8, but the input was 16 so this will always be * 2 //byterate
+
+                ms.WriteUInt16((ushort)(numberOfChannels * 2)); //BlockAlign (channels * bitrate/8, so 16/2 = 2) (2 bytes)
+                ms.WriteUInt16((ushort)(16)); //16 bits per sample 
+
+
                 ms.WriteBytes(Encoding.ASCII.GetBytes("data"));
+                long dataSizePosition = ms.Position;
                 ms.WriteUInt32(0); //data len = this will have to be updated later, i think
 
-                XboxADPCMDecoder decoder = new XboxADPCMDecoder(pcChannels);
-                MemoryStream decodedStream = decoder.Decode(xboxADPCMStream, 0, (int)xboxADPCMStream.Length);
+                //XboxADPCMDecoder decoder = new XboxADPCMDecoder(numberOfChannels);
+                MemoryStream xboxADPCMStream = new MemoryStream(DataAsStored);
+                MemoryStream decodedStream = KoopsAudioDecoder.Decode(xboxADPCMStream);
+                decodedStream.Position = 0;
                 decodedStream.CopyTo(ms);
+
+                File.WriteAllBytes(@"C:\users\public\xbox_decodeddata.wav", decodedStream.ToArray());
+
+                //update sizes
+                ms.Seek(dataSizePosition, SeekOrigin.Begin);
+                ms.WriteUInt32((uint)decodedStream.Length);
+
+                ms.Seek(4, SeekOrigin.Begin);
+                ms.WriteUInt32((uint)ms.Length - 8);
                 decodedStream.Dispose();
                 return ms;
             }
@@ -90,7 +108,7 @@ namespace ME3Explorer.Soundplorer
             //Debug.WriteLine("Sound #" + currentCounter);
             str += FileName + "\n";
             str += "Sample Rate: " + sampleRate + "\n";
-            str += "Channels: " + pcChannels + "\n";
+            str += "Channels: " + numberOfChannels + "\n";
             str += "Is Ogg: " + isOgg + "\n";
             str += "Is PCM: " + isPCM + "\n";
             str += "Has Data: " + (DataAsStored != null);
@@ -104,11 +122,12 @@ namespace ME3Explorer.Soundplorer
             {
                 try
                 {
-                    MemoryStream ms = GetWaveStream(new MemoryStream(DataAsStored));
+                    MemoryStream ms = GetWaveStream();
                     ms.Position = 0;
                     WaveFileReader wf = new WaveFileReader(ms);
                     return wf.TotalTime;
-                } catch
+                }
+                catch
                 {
                     return null;
                 }

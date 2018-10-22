@@ -131,7 +131,7 @@ namespace ME3Explorer.Soundplorer
       continue;
     end;*/
                         ms.Seek(4, SeekOrigin.Current);
-                        isbEntry.pcChannels = ms.ReadUInt32();
+                        isbEntry.numberOfChannels = ms.ReadUInt32();
                         break;
                     case "cmpi":
                         /*

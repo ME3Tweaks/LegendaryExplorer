@@ -126,9 +126,6 @@
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
     </Reference>
-    <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NAudio.1.8.4\lib\net35\NAudio.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -671,6 +668,7 @@
     <Compile Include="Soundplorer\ISACT_Parser.cs" />
     <Compile Include="Soundplorer\ISBank.cs" />
     <Compile Include="Soundplorer\ISBankEntry.cs" />
+    <Compile Include="Soundplorer\KoopsAudioDecoder.cs" />
     <Compile Include="Soundplorer\SoundplorerWPFCommands.cs" />
     <Compile Include="Soundplorer\SoundpanelAudioPlayer.cs" />
     <Compile Include="Soundplorer\DirectReplace.cs">
@@ -1423,6 +1421,10 @@
     <ProjectReference Include="..\ME3LibWV\ME3LibWV.csproj">
       <Project>{a8e1981a-0a8c-4c7a-9175-b5f0c085f639}</Project>
       <Name>ME3LibWV</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NAudio\NAudio.csproj">
+      <Project>{da4f02e3-0b5e-42cd-b8d9-5583fa51d66e}</Project>
+      <Name>NAudio</Name>
     </ProjectReference>
     <ProjectReference Include="..\Piccolo\Piccolo.csproj">
       <Project>{daf03684-bb0b-4528-bfee-8a3fbfc9fc4a}</Project>

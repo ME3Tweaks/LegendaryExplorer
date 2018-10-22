@@ -288,7 +288,7 @@ namespace ME3Explorer
                     }
                     if (localCurrentExport != null && localCurrentExport.ClassName == "SoundNodeWave")
                     {
-                        object currentSelectedItem =  ExportInfoListBox.SelectedItem;
+                        object currentSelectedItem = ExportInfoListBox.SelectedItem;
                         if (currentSelectedItem == null || !(currentSelectedItem is ISBankEntry))
                         {
                             return null; //nothing selected, or current item is not playable
@@ -926,6 +926,10 @@ namespace ME3Explorer
         private void UpdateVorbisStream()
         {
             vorbisStream = getPCMStream();
+            if (vorbisStream is MemoryStream ms)
+            {
+                File.WriteAllBytes(@"C:\users\public\file.wav", ms.ToArray());
+            }
             if (CurrentLoadedISACTEntry != null)
             {
                 CachedStreamSource = CurrentLoadedISACTEntry;

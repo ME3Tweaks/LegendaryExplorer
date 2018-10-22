@@ -60,7 +60,7 @@ namespace ME3Explorer.Soundplorer
             {
                 // read the adpcm header
                 PrepareAdpcmState(adpcmStates[0], inStream, decodedStream);
-                if (FChannels == 2) PrepareAdpcmState(adpcmStates[0], inStream, decodedStream);
+                if (FChannels == 2) PrepareAdpcmState(adpcmStates[1], inStream, decodedStream);
                 for (int i = 0; i < 8; i++)
                 {
                     int channel = 0;

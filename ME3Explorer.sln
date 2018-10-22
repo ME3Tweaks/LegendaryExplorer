@@ -5,6 +5,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ME3Explorer", "ME3Explorer\ME3Explorer.csproj", "{60E91B60-FCEE-4B36-967E-4022D8A54F2F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{947A6918-AD71-4F61-BC63-8DA7997E10E6} = {947A6918-AD71-4F61-BC63-8DA7997E10E6}
+		{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E} = {DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenZip", "Tools\SevenZip\SevenZip.csproj", "{B6C4D3B4-1267-48D5-8C3B-C86FF3E517A9}"
@@ -34,6 +35,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gammtek.Conduit.Core", "Gammtek.Conduit.Core\Gammtek.Conduit.Core.csproj", "{9F364D6B-5046-4186-B684-968B52AFCB81}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexConverterWPF", "HexConverterWPF\HexConverterWPF.csproj", "{947A6918-AD71-4F61-BC63-8DA7997E10E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAudio", "NAudio\NAudio.csproj", "{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -161,6 +164,14 @@ Global
 		{947A6918-AD71-4F61-BC63-8DA7997E10E6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{947A6918-AD71-4F61-BC63-8DA7997E10E6}.Release|x64.ActiveCfg = Release|x64
 		{947A6918-AD71-4F61-BC63-8DA7997E10E6}.Release|x64.Build.0 = Release|x64
+		{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}.Debug|x64.Build.0 = Debug|Any CPU
+		{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}.Release|x64.ActiveCfg = Release|Any CPU
+		{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
