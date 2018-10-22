@@ -665,7 +665,7 @@ namespace ME3Explorer
         /// <summary>
         /// Adds an import from the importingPCC to the destinationPCC with the specified importFullName, or returns the existing one if it can be found. 
         /// This method will look at importingPCC's import upstream chain and check for the most downstream one's existence in destinationPCC, 
-        /// including if none can be founc (in which case the entire upstream is copied). It will then create new imports to match the remaining 
+        /// including if none can be found (in which case the entire upstream is copied). It will then create new imports to match the remaining 
         /// downstream ones and return the originally named import, however now located in destinationPCC.
         /// </summary>
         /// <param name="importFullName">GetFullPath() of an import from ImportingPCC</param>
