@@ -68,8 +68,8 @@ namespace ME3Explorer.PackageEditorWPFControls
         {
             this.sourceEntry = sourceEntry;
             this.targetEntry = targetEntry;
-            InitializeComponent();
             LoadCommands();
+            InitializeComponent();
         }
 
         private void LoadCommands()

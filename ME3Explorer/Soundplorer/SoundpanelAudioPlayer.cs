@@ -30,7 +30,6 @@ namespace ME3Explorer.Soundplorer
 
         public SoundpanelAudioPlayer(Stream audioBuffer, float volume)
         {
-
             _audioFileReader = new WaveFileReader(audioBuffer);
             _output = new WaveOutEvent();
             _output.PlaybackStopped += _output_PlaybackStopped;

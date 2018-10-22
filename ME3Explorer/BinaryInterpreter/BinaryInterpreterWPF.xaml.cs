@@ -22,6 +22,7 @@ using Gammtek.Conduit.Extensions;
 using Gibbed.IO;
 using ME3Explorer;
 using ME3Explorer.Packages;
+using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
 using static ME3Explorer.BinaryInterpreter;
 using static ME3Explorer.EnumExtensions;
@@ -92,11 +93,11 @@ namespace ME3Explorer
         static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "ShaderCache", "Class", "BioStage", "ObjectProperty", "Const",
             "Enum", "ArrayProperty","FloatProperty", "IntProperty", "BoolProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
             "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "PrefabInstance",
-            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D", "State", "BioGestureRuntimeData"};
+            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D", "State", "BioGestureRuntimeData", "ScriptStruct", "SoundCue", "SoundNodeWave","BioSoundNodeWaveStreamingData"};
 
         public override bool CanParse(IExportEntry exportEntry)
         {
-            return ParsableBinaryClasses.Contains(exportEntry.ClassName);
+            return ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__");
         }
 
         public override void LoadExport(IExportEntry exportEntry)
@@ -105,7 +106,7 @@ namespace ME3Explorer
 
             OnDemand_Panel.Visibility = Visibility.Visible;
             LoadedContent_Panel.Visibility = Visibility.Collapsed;
-            if (CurrentLoadedExport.Data.Length < 20480)
+            if (CurrentLoadedExport.Data.Length < 20480 || Properties.Settings.Default.BinaryInterpreterWPFAutoScanAlways)
             {
                 StartBinaryScan();
             }
@@ -178,11 +179,13 @@ namespace ME3Explorer
             viewModeComboBox.Visibility = Visibility.Hidden;
             byte[] data = CurrentLoadedExport.Data;
             int binarystart = CurrentLoadedExport.propsEnd();
+
+            //top node will always be of this element type.
             BinaryInterpreterWPFTreeViewItem topLevelTree = new BinaryInterpreterWPFTreeViewItem
             {
-                Header = $"{binarystart:X4} : {CurrentLoadedExport.ObjectName}",
+                Header = $"{binarystart:X4} : {CurrentLoadedExport.ObjectName} - Binary start",
                 Tag = NodeType.Root,
-                Name = "_0",
+                Name = "_" + binarystart,
                 IsExpanded = true
             };
             //BinaryInterpreter_TreeView.Items.Add(topLevelTree);
@@ -201,12 +204,12 @@ namespace ME3Explorer
             var result = (BinaryInterpreterWPFTreeViewItem)e.Result;
             OnDemand_Panel.Visibility = Visibility.Collapsed;
             LoadedContent_Panel.Visibility = Visibility.Visible;
-            BinaryInterpreter_TreeView.ItemsSource = new List<BinaryInterpreterWPFTreeViewItem>(new BinaryInterpreterWPFTreeViewItem[] { result });
+            BinaryInterpreter_TreeView.ItemsSource = new List<object>(new BinaryInterpreterWPFTreeViewItem[] { result });
         }
 
         private void PerformScanBackground(object sender, DoWorkEventArgs e)
         {
-            List<BinaryInterpreterWPFTreeViewItem> subNodes = null;
+            List<object> subNodes = null;
             Tuple<BinaryInterpreterWPFTreeViewItem, byte[], int> arguments = (Tuple<BinaryInterpreterWPFTreeViewItem, byte[], int>)e.Argument;
             byte[] data = arguments.Item2;
             int binarystart = arguments.Item3;
@@ -276,6 +279,18 @@ namespace ME3Explorer
                 case "BioGestureRuntimeData":
                     subNodes = StartBioGestureRuntimeDataScan(data, binarystart);
                     break;
+                case "ScriptStruct":
+                    subNodes = StartScriptStructScan(data, binarystart);
+                    break;
+                case "SoundCue":
+                    subNodes = StartSoundCueScan(data, binarystart);
+                    break;
+                case "BioSoundNodeWaveStreamingData":
+                    subNodes = StartBioSoundNodeWaveStreamingDataScan(data, binarystart);
+                    break;
+                case "SoundNodeWave":
+                    subNodes = StartSoundNodeWaveScan(data, binarystart);
+                    break;
                 default:
                     subNodes = StartGenericScan(data, binarystart);
                     break;
@@ -283,6 +298,168 @@ namespace ME3Explorer
 
             arguments.Item1.Items = subNodes;
             e.Result = arguments.Item1; //return topLevelTree
+        }
+
+        private List<object> StartSoundNodeWaveScan(byte[] data, int binarystart)
+        {
+            var subnodes = new List<object>();
+            try
+            {
+                int offset = binarystart;
+
+
+                int classObjTree = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X8} Item1: {classObjTree} (0x{classObjTree:X8})",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+
+                classObjTree = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X8} Data length: {classObjTree} (0x{classObjTree:X8})",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+
+                classObjTree = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X8} Data length: {classObjTree} (0x{classObjTree:X8})",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+
+                classObjTree = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X8} Item4: {classObjTree} (0x{classObjTree:X8})",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+                /*
+                offset = binarystart + 0x18;
+
+                MemoryStream ms = new MemoryStream(data);
+                ms.Position = offset;
+                var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, ms, "ScriptStruct", includeNoneProperty: true);
+
+                UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
+                foreach (UProperty prop in scriptStructProperties)
+                {
+                    InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
+                }*/
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}" });
+            }
+            return subnodes;
+        }
+
+        private List<object> StartBioSoundNodeWaveStreamingDataScan(byte[] data, int binarystart)
+        {
+            var subnodes = new List<object>();
+            try
+            {
+                int offset = binarystart;
+
+
+                int numBytesOfStreamingData = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X5} Streaming Data Size: {numBytesOfStreamingData}",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafInt
+                });
+                offset += 4;
+
+                var nextFileOffset = BitConverter.ToInt32(data, offset);
+                var node = new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X5} Next file offset: {nextFileOffset}",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafInt
+                };
+
+                var clickToGotoOffset = new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X5} Click to go to referenced offset 0x{nextFileOffset:X5}",
+                    Name = "_" + nextFileOffset
+                };
+                node.Items.Add(clickToGotoOffset);
+
+                subnodes.Add(node);
+                offset += 4;
+
+                MemoryStream asStream = new MemoryStream(data);
+                asStream.Position = offset;
+
+                while (asStream.Position < asStream.Length)
+                {
+                    Debug.WriteLine("Reading at " + asStream.Position);
+                    ISACT_Parser.ReadStream(asStream);
+                }
+                /*
+                offset = binarystart + 0x18;
+
+                MemoryStream ms = new MemoryStream(data);
+                ms.Position = offset;
+                var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, ms, "ScriptStruct", includeNoneProperty: true);
+
+                UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
+                foreach (UProperty prop in scriptStructProperties)
+                {
+                    InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
+                }*/
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}" });
+            }
+            return subnodes;
+        }
+
+        private List<object> StartSoundCueScan(byte[] data, int binarystart)
+        {
+            var subnodes = new List<object>();
+            try
+            {
+                int offset = binarystart;
+
+
+                int classObjTree = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {getEntryFullPath(classObjTree)}",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+                /*
+                offset = binarystart + 0x18;
+
+                MemoryStream ms = new MemoryStream(data);
+                ms.Position = offset;
+                var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, ms, "ScriptStruct", includeNoneProperty: true);
+
+                UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
+                foreach (UProperty prop in scriptStructProperties)
+                {
+                    InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
+                }*/
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}" });
+            }
+            return subnodes;
         }
 
         internal void SetHexboxSelectedOffset(int v)
@@ -294,10 +471,67 @@ namespace ME3Explorer
             }
         }
         #region scans
-
-        private List<BinaryInterpreterWPFTreeViewItem> StartBioGestureRuntimeDataScan(byte[] data, int binarystart)
+        private List<object> StartScriptStructScan(byte[] data, int binarystart)
         {
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
+            try
+            {
+                int offset = binarystart + 0x8;
+
+                int classObjTree = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {getEntryFullPath(classObjTree)}",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+
+                offset = binarystart + 0x18;
+
+                MemoryStream ms = new MemoryStream(data);
+                ms.Position = offset;
+                var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, ms, "ScriptStruct", includeNoneProperty: true);
+
+                UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
+                foreach (UProperty prop in scriptStructProperties)
+                {
+                    InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
+                }
+                subnodes.AddRange(topLevelTree.ChildrenProperties.Cast<object>().ToList());
+
+                //subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                //{
+                //    Header = $"{offset:X4} Name: {CurrentLoadedExport.FileRef.getNameEntry(entryUIndex)}",
+                //    Name = "_" + offset.ToString()
+                //});
+                //offset += 12;
+
+
+                /*
+                for (int i = 0; i < count; i++)
+                {
+                    int name1 = BitConverter.ToInt32(data, offset);
+                    int name2 = BitConverter.ToInt32(data, offset + 8);
+                    string text = $"{offset:X4} Item {i}: {CurrentLoadedExport.FileRef.getNameEntry(name1)} => {CurrentLoadedExport.FileRef.getNameEntry(name2)}";
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = text,
+                        Name = "_" + offset.ToString()
+                    });
+                    offset += 16;
+                }*/
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}" });
+            }
+            return subnodes;
+        }
+
+        private List<object> StartBioGestureRuntimeDataScan(byte[] data, int binarystart)
+        {
+            var subnodes = new List<object>();
             try
             {
                 int offset = binarystart;
@@ -345,7 +579,7 @@ namespace ME3Explorer
                         Header = $"{offset:X4} Name Unk2: {unk2} {CurrentLoadedExport.FileRef.getNameEntry(unk2)}",
                         Name = "_" + offset.ToString()
                     });
-                    offset +=8;
+                    offset += 8;
                     int unk3 = BitConverter.ToInt32(data, offset);
                     node.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
@@ -362,7 +596,7 @@ namespace ME3Explorer
                         Header = $"{offset:X4}: {str}",
                         Name = "_" + offset.ToString()
                     });
-                    offset = (int) dataAsStream.Position;
+                    offset = (int)dataAsStream.Position;
                     int unk4 = BitConverter.ToInt32(data, offset);
                     node.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
@@ -380,9 +614,9 @@ namespace ME3Explorer
             }
             return subnodes;
         }
-        private List<BinaryInterpreterWPFTreeViewItem> StartObjectRedirectorScan(byte[] data, int binarystart)
+        private List<object> StartObjectRedirectorScan(byte[] data, int binarystart)
         {
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
 
             int redirnum = BitConverter.ToInt32(data, binarystart);
             subnodes.Add(new BinaryInterpreterWPFTreeViewItem
@@ -393,9 +627,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<BinaryInterpreterWPFTreeViewItem> StartObjectScan(byte[] data)
+        private List<object> StartObjectScan(byte[] data)
         {
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
             try
             {
                 int offset = 0; //this property starts at 0 for parsing
@@ -527,7 +761,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<BinaryInterpreterWPFTreeViewItem> Scan_WwiseStreamBank(byte[] data)
+        private List<object> Scan_WwiseStreamBank(byte[] data)
         {
             /*
              * int32 0?
@@ -535,7 +769,7 @@ namespace ME3Explorer
              * stream length in AFC +4 | (repeat) (bank size)
              * stream offset in AFC +4 | (bank offset in file)
              */
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
             try
             {
                 int pos = 0;
@@ -639,9 +873,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<BinaryInterpreterWPFTreeViewItem> Scan_WwiseEvent(byte[] data, int binarystart)
+        private List<object> Scan_WwiseEvent(byte[] data, int binarystart)
         {
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
             try
             {
                 int binarypos = binarystart;
@@ -687,9 +921,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<BinaryInterpreterWPFTreeViewItem> StartBioDynamicAnimSetScan(byte[] data, int binarystart)
+        private List<object> StartBioDynamicAnimSetScan(byte[] data, int binarystart)
         {
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
 
             try
             {
@@ -729,7 +963,7 @@ namespace ME3Explorer
         }
 
         //TODO: unfinished. currently does not display the properties for the list of BioStageCamera objects at the end
-        private List<BinaryInterpreterWPFTreeViewItem> StartBioStageScan(byte[] data, int binarystart)
+        private List<object> StartBioStageScan(byte[] data, int binarystart)
         {
             /*
              * Length (int)
@@ -738,8 +972,8 @@ namespace ME3Explorer
                 Count + int unknown
                 [Camera name
                     unreal property data]*/
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
-            if ((CurrentLoadedExport.Header[0x1f] & 0x2) != 0)
+            var subnodes = new List<object>();
+            //if ((CurrentLoadedExport.Header[0x1f] & 0x2) != 0)
             {
 
                 int pos = binarystart;
@@ -801,7 +1035,15 @@ namespace ME3Explorer
                             subnodes.Add(parentnode);
                             pos += 8;
                             stream.Seek(pos, SeekOrigin.Begin);
-                            var props = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, stream, "BioStageCamera");
+                            var props = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, stream, "BioStageCamera", includeNoneProperty: true);
+
+                            UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
+                            foreach (UProperty prop in props)
+                            {
+                                InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
+                            }
+                            subnodes.AddRange(topLevelTree.ChildrenProperties.Cast<object>().ToList());
+
                             //finish writing function here
                             pos = props.endOffset;
 
@@ -816,10 +1058,10 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<BinaryInterpreterWPFTreeViewItem> StartClassScan(byte[] data)
+        private List<object> StartClassScan(byte[] data)
         {
             //const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
             try
             {
                 int offset = 0;
@@ -958,7 +1200,7 @@ namespace ME3Explorer
                     offset += 8;
                     int functionObjectIndex = BitConverter.ToInt32(data, offset);
                     offset += 4;
-                    subnodes.Last().Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    (subnodes.Last() as BinaryInterpreterWPFTreeViewItem).Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset - 12:X5}  {CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex)}() = {functionObjectIndex} ({getEntryFullPath(functionObjectIndex)})",
                         Name = "_" + (offset - 12),
@@ -1088,7 +1330,7 @@ namespace ME3Explorer
                     {
                         int functionsTableIndex = BitConverter.ToInt32(data, offset);
                         string impexpName = getEntryFullPath(functionsTableIndex);
-                        subnodes.Last().Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        (subnodes.Last() as BinaryInterpreterWPFTreeViewItem).Items.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = $"0x{offset:X5} {impexpName}",
                             Tag = NodeType.StructLeafObject,
@@ -1106,7 +1348,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private int ClassParser_ReadComponentsTable(List<BinaryInterpreterWPFTreeViewItem> subnodes, byte[] data, int offset)
+        private int ClassParser_ReadComponentsTable(List<object> subnodes, byte[] data, int offset)
         {
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
             {
@@ -1132,7 +1374,7 @@ namespace ME3Explorer
                     int componentObjectIndex = BitConverter.ToInt32(data, offset);
                     offset += 4;
                     string objectName = getEntryFullPath(componentObjectIndex);
-                    subnodes.Last().Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    (subnodes.Last() as BinaryInterpreterWPFTreeViewItem).Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset - 12:X5}  {CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex)}({objectName})",
                         Name = "_" + (offset - 12),
@@ -1165,7 +1407,7 @@ namespace ME3Explorer
                     {
                         objName = getEntryFullPath(componentObjectIndex);
                     }
-                    subnodes.Last().Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    (subnodes.Last() as BinaryInterpreterWPFTreeViewItem).Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset - 8:X5}  {CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex)}({objName})",
                         Name = "_" + (offset - 8),
@@ -1179,7 +1421,7 @@ namespace ME3Explorer
             return offset;
         }
 
-        private int ClassParser_ReadImplementsTable(List<BinaryInterpreterWPFTreeViewItem> subnodes, byte[] data, int offset)
+        private int ClassParser_ReadImplementsTable(List<object> subnodes, byte[] data, int offset)
         {
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
             {
@@ -1204,7 +1446,7 @@ namespace ME3Explorer
                         Name = "_" + (offset - 4),
                         Tag = NodeType.StructLeafName
                     };
-                    subnodes.Last().Items.Add(subnode);
+                    (subnodes.Last() as BinaryInterpreterWPFTreeViewItem).Items.Add(subnode);
 
                     //propertypointer
                     interfaceIndex = BitConverter.ToInt32(data, offset);
@@ -1246,7 +1488,7 @@ namespace ME3Explorer
 
                         Tag = NodeType.StructLeafName
                     };
-                    subnodes.Last().Items.Add(subnode);
+                    (subnodes.Last() as BinaryInterpreterWPFTreeViewItem).Items.Add(subnode);
 
                     //propertypointer
                     /* interfaceIndex = BitConverter.ToInt32(data, offset);
@@ -1263,9 +1505,9 @@ namespace ME3Explorer
             return offset;
         }
 
-        private List<BinaryInterpreterWPFTreeViewItem> StartEnumScan(byte[] data)
+        private List<object> StartEnumScan(byte[] data)
         {
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
 
             try
             {
@@ -1366,7 +1608,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<BinaryInterpreterWPFTreeViewItem> StartGuidCacheScan(byte[] data, int binarystart)
+        private List<object> StartGuidCacheScan(byte[] data, int binarystart)
         {
             /*
              *  
@@ -1375,7 +1617,7 @@ namespace ME3Explorer
              *      guid +16
              *      
              */
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
 
             try
             {
@@ -1410,9 +1652,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<BinaryInterpreterWPFTreeViewItem> StartLevelScan(byte[] data)
+        private List<object> StartLevelScan(byte[] data)
         {
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
 
             try
             {
@@ -1532,10 +1774,10 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<BinaryInterpreterWPFTreeViewItem> StartMaterialScan(byte[] data, int binarystart)
+        private List<object> StartMaterialScan(byte[] data, int binarystart)
         {
             //const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
 
             if (binarystart >= data.Length)
             {
@@ -1596,7 +1838,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<BinaryInterpreterWPFTreeViewItem> StartPrefabInstanceScan(byte[] data, int binarystart)
+        private List<object> StartPrefabInstanceScan(byte[] data, int binarystart)
         {
             /*
              *  count: 4 bytes 
@@ -1605,7 +1847,7 @@ namespace ME3Explorer
              *  0: 4 bytes
              *  
              */
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
             if ((CurrentLoadedExport.Header[0x1f] & 0x2) == 0)
             {
                 return subnodes;
@@ -1636,7 +1878,7 @@ namespace ME3Explorer
                     exportRef = BitConverter.ToInt32(data, pos);
                     if (exportRef == 0)
                     {
-                        subnodes.Last().Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        (subnodes.Last() as BinaryInterpreterWPFTreeViewItem).Items.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = $"{pos:X4}: {exportRef} Level Object: Null",
                             Name = "_" + pos,
@@ -1646,7 +1888,7 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        subnodes.Last().Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        (subnodes.Last() as BinaryInterpreterWPFTreeViewItem).Items.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = $"{pos:X4}: {exportRef} Level Object: {CurrentLoadedExport.FileRef.getEntry(exportRef).GetFullPath}",
                             Name = "_" + pos,
@@ -1667,7 +1909,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<BinaryInterpreterWPFTreeViewItem> StartSkeletalMeshScan(byte[] data, int binarystart)
+        private List<object> StartSkeletalMeshScan(byte[] data, int binarystart)
         {
             /*
              *  
@@ -1676,7 +1918,7 @@ namespace ME3Explorer
              *      materials
              *  
              */
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
 
             try
             {
@@ -1710,9 +1952,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<BinaryInterpreterWPFTreeViewItem> StartStaticMeshCollectionActorScan(byte[] data, int binarystart)
+        private List<object> StartStaticMeshCollectionActorScan(byte[] data, int binarystart)
         {
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
             try
             {
                 //get a list of staticmesh stuff from the props.
@@ -1847,7 +2089,7 @@ namespace ME3Explorer
 
         }
 
-        private List<BinaryInterpreterWPFTreeViewItem> StartStaticMeshScan(byte[] data, int binarystart)
+        private List<object> StartStaticMeshScan(byte[] data, int binarystart)
         {
             /*
              *  
@@ -1870,7 +2112,7 @@ namespace ME3Explorer
              *          +13
              *      section[0].unk5 == 1 ? +12 : +4
              */
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
             try
             {
                 int pos = binarystart;
@@ -1927,9 +2169,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<BinaryInterpreterWPFTreeViewItem> StartTextureBinaryScan(byte[] data)
+        private List<object> StartTextureBinaryScan(byte[] data)
         {
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
 
             try
             {
@@ -2086,7 +2328,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<BinaryInterpreterWPFTreeViewItem> StartTextureMovieScan(byte[] data, int binarystart)
+        private List<object> StartTextureMovieScan(byte[] data, int binarystart)
         {
             /*
              *  
@@ -2096,7 +2338,7 @@ namespace ME3Explorer
              *      stream offset in TFC +4
              *  
              */
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
             try
             {
                 int pos = binarystart;
@@ -2158,7 +2400,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<BinaryInterpreterWPFTreeViewItem> StartStateScan(byte[] data, int binarystart)
+        private List<object> StartStateScan(byte[] data, int binarystart)
         {
             /*
              *  
@@ -2168,7 +2410,7 @@ namespace ME3Explorer
              *      stream offset in TFC +4
              *  
              */
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
 
             try
             {
@@ -2233,9 +2475,9 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<BinaryInterpreterWPFTreeViewItem> StartGenericScan(byte[] data, int binarystart)
+        private List<object> StartGenericScan(byte[] data, int binarystart)
         {
-            var subnodes = new List<BinaryInterpreterWPFTreeViewItem>();
+            var subnodes = new List<object>();
 
             if (binarystart == data.Length)
             {
@@ -2370,16 +2612,73 @@ namespace ME3Explorer
 
         private void BinaryInterpreter_TreeViewSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (BinaryInterpreter_TreeView.SelectedItem is BinaryInterpreterWPFTreeViewItem tvi
-                && tvi.Name is string tag
-                && tag.StartsWith("_"))
+            BinaryInterpreter_Hexbox.UnhighlightAll();
+
+            switch (BinaryInterpreter_TreeView.SelectedItem)
             {
-                tag = tag.Substring(1); //remove _
-                if (int.TryParse(tag, out int result))
-                {
-                    BinaryInterpreter_Hexbox.SelectionStart = result;
-                    BinaryInterpreter_Hexbox.SelectionLength = 1;
-                }
+                case BinaryInterpreterWPFTreeViewItem bitve:
+                    if (bitve.Name is string tag && tag.StartsWith("_"))
+                    {
+                        tag = tag.Substring(1); //remove _
+                        if (int.TryParse(tag, out int result))
+                        {
+                            BinaryInterpreter_Hexbox.SelectionStart = result;
+                            BinaryInterpreter_Hexbox.SelectionLength = 1;
+                        }
+                    }
+                    break;
+                case UPropertyTreeViewEntry uptve:
+                    if (uptve.Property != null)
+                    {
+                        var hexPos = uptve.Property.ValueOffset;
+                        BinaryInterpreter_Hexbox.SelectionStart = hexPos;
+                        BinaryInterpreter_Hexbox.SelectionLength = 1; //maybe change
+                        switch (uptve.Property)
+                        {
+                            //case NoneProperty np:
+                            //    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 4, 8);
+                            //    return;
+                            //case StructProperty sp:
+                            //    break;
+                            case ObjectProperty op:
+                            case FloatProperty fp:
+                            case IntProperty ip:
+                                {
+                                    if (uptve.Parent.Property is StructProperty p && p.IsImmutable)
+                                    {
+                                        BinaryInterpreter_Hexbox.Highlight(uptve.Property.ValueOffset, 4);
+                                        return;
+                                    }
+                                    else if (uptve.Parent.Property is ArrayProperty<IntProperty> || uptve.Parent.Property is ArrayProperty<FloatProperty> || uptve.Parent.Property is ArrayProperty<ObjectProperty>)
+                                    {
+                                        BinaryInterpreter_Hexbox.Highlight(uptve.Property.ValueOffset, 4);
+                                        return;
+                                    }
+                                }
+                                //otherwise use the default
+                                break;
+                            case NameProperty np:
+                                {
+                                    if (uptve.Parent.Property is StructProperty p && p.IsImmutable)
+                                    {
+                                        BinaryInterpreter_Hexbox.Highlight(uptve.Property.ValueOffset, 8);
+                                        return;
+                                    }
+                                    else if (uptve.Parent.Property is ArrayProperty<NameProperty>)
+                                    {
+                                        BinaryInterpreter_Hexbox.Highlight(uptve.Property.ValueOffset, 8);
+                                        return;
+                                    }
+                                }
+                                break;
+                                //case EnumProperty ep:
+                                //    BinaryInterpreter_Hexbox.Highlight(uptve.Property.ValueOffset - 32, uptve.Property.GetLength(CurrentLoadedExport.FileRef));
+                                //    return;
+                        }
+
+                        BinaryInterpreter_Hexbox.Highlight(uptve.Property.StartOffset, uptve.Property.GetLength(CurrentLoadedExport.FileRef));
+                    }
+                    break;
             }
         }
 
@@ -2495,15 +2794,18 @@ namespace ME3Explorer
         public object Tag { get; set; }
         public bool IsExpanded { get; set; }
 
-        public List<BinaryInterpreterWPFTreeViewItem> Items { get; set; }
+        /// <summary>
+        /// Children nodes of this item. They can be of different types (like UPropertyTreeViewEntry).
+        /// </summary>
+        public List<object> Items { get; set; }
         public BinaryInterpreterWPFTreeViewItem()
         {
-            Items = new List<BinaryInterpreterWPFTreeViewItem>();
+            Items = new List<object>();
         }
 
         public BinaryInterpreterWPFTreeViewItem(string header)
         {
-            Items = new List<BinaryInterpreterWPFTreeViewItem>();
+            Items = new List<object>();
             Header = header;
         }
     }

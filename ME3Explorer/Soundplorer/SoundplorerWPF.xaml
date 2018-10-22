@@ -22,6 +22,9 @@
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <local:WwiseMenuItemVisibilityConverter x:Key="WwiseMenuItemVisibilityConverter"/>
         <ContextMenu x:Key="MyMenu">
+            <MenuItem Header="Export ISACT entry as raw" ToolTip="Exports the binary data of this ISACT entry to disk" Click="ExtractISACTAsRaw_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='ISACTFileEntry'}"/>
+            <MenuItem Header="Export ISACT entry as wave" ToolTip="Exports the ISACT entry data to playable wave file" Click="ExtractISACTAsWave_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='ISACTFileEntry'}"/>
+
             <MenuItem Header="Export bank to file" ToolTip="Exports the binary data of this export (embedded soundbank) to disk" Click="ExtractBank_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseBank'}"/>
             <MenuItem Header="Extract all bank audio to wave" Click="ExtractWEMAsWaveFromBank_Clicked" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseBank'}"/>
             <MenuItem Header="Export to..." Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}">
@@ -42,11 +45,6 @@
         <Style x:Key="SoundExports_ListboxItemStyle" TargetType="{x:Type ListBoxItem}">
             <Setter Property="ContextMenu" Value="{StaticResource MyMenu}"/>
             <Setter Property="Padding" Value="0"/>
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Path=Export.EntryHasPendingChanges}" Value="true">
-                    <Setter Property="Background" Value="Yellow"/>
-                </DataTrigger>
-            </Style.Triggers>
         </Style>
     </Window.Resources>
     <Window.CommandBindings>
@@ -80,6 +78,7 @@
                 <MenuItem Header="_Options" Padding="4">
                     <MenuItem Name="ReverseEndianDisplayOfIDs_MenuItem" Header="Reverse endianness of displayed ID's" Click="ReverseEndiannessOfIDs_Clicked" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=SoundplorerReverseIDDisplayEndianness, Mode=TwoWay}"/>
                     <MenuItem Name="RebuildWwiseBankToFile_MenuItem" Header="Debugging: Rebuild wwisebank to file" Click="DebugWriteBankToFileRebuild_Clicked" />
+                    <MenuItem Header="Debugging: Open ME1 ISB" Click="OpenME1ISB_Clicked" />
 
                 </MenuItem>
             </Menu>
@@ -100,10 +99,10 @@
                     <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <ListBox Name="SoundExports_ListBox" Margin="0" Padding="0" Grid.Column="0" SelectionChanged="SoundExports_ListBox_SelectionChanged" ItemsSource="{Binding BindedExportsList}" ItemContainerStyle="{StaticResource SoundExports_ListboxItemStyle}" PreviewKeyDown="SoundExportItem_KeyDown" MouseDoubleClick="SoundExports_ListBox_MouseDoubleClick">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0">
+                <ListBox Name="SoundExports_ListBox" Margin="0" Padding="0" Grid.Column="0" SelectionChanged="SoundExports_ListBox_SelectionChanged" ItemsSource="{Binding BindedItemsList}" ItemContainerStyle="{StaticResource SoundExports_ListboxItemStyle}" PreviewKeyDown="SoundExportItem_KeyDown" MouseDoubleClick="SoundExports_ListBox_MouseDoubleClick">
+                    <ListBox.Resources>
+                        <DataTemplate DataType="{x:Type local:SoundplorerExport}">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
 
                                 <fa:ImageAwesome  Grid.Column="7" Icon="{Binding Icon}" Spin="{Binding NeedsLoading}" SpinDuration="1.2" Width="18" Height="18" Margin="2,0,4,0"/>
                                 <StackPanel>
@@ -111,17 +110,22 @@
                                     <TextBlock Text="{Binding SubText}" VerticalAlignment="Center" Foreground="Gray"/>
                                 </StackPanel>
                             </StackPanel>
-
-                            <!--
-                        <Grid Margin="0,2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="18" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="1" Text="{Binding DisplayString}" />
-                        </Grid>-->
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=Export.EntryHasPendingChanges}" Value="true">
+                                    <Setter Property="Background" Value="Yellow" TargetName="ExportContainer"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
                         </DataTemplate>
-                    </ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type local:ISACTFileEntry}">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0">
+                                <fa:ImageAwesome  Grid.Column="7" Icon="{Binding Icon}" Spin="{Binding NeedsLoading}" SpinDuration="1.2" Width="18" Height="18" Margin="2,0,4,0"/>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding DisplayString}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding SubText}" VerticalAlignment="Center" Foreground="Gray"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.Resources>
                 </ListBox>
                 <GridSplitter Grid.Column="1"
                   Margin="-3,0"

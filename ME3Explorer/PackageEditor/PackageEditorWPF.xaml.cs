@@ -467,7 +467,7 @@ namespace ME3Explorer
             {
                 return;
             }
-            IExportEntry export = Pcc.getExport(n);
+            IExportEntry export = Pcc.getEntry(n) as IExportEntry;
             SaveFileDialog d = new SaveFileDialog
             {
                 Filter = "*.bin|*.bin",
@@ -573,11 +573,11 @@ namespace ME3Explorer
                                 Debug.Write(" " + b.ToString("X2"));
                             }
                             Debug.WriteLine("");
-                            changedExports.Add("Export header has changed: " + i + " " + exp1.GetFullPath);
+                            changedExports.Add("Export header has changed: " + exp1.UIndex + " " + exp1.GetFullPath);
                         }
                         if (!exp1.Data.SequenceEqual(exp2.Data))
                         {
-                            changedExports.Add("Export data has changed: " + i + " " + exp1.GetFullPath);
+                            changedExports.Add("Export data has changed: " + exp1.UIndex + " " + exp1.GetFullPath);
                         }
                     }
 
@@ -591,7 +591,7 @@ namespace ME3Explorer
 
                     for (int i = numExportsToEnumerate; i < compareFile.ExportCount; i++)
                     {
-                        changedExports.Add("Export only exists in " + file + ": " + i + " " + enumerateExtras.Exports[i].GetFullPath);
+                        changedExports.Add("Export only exists in " + file + ": " + (i+1) + " " + enumerateExtras.Exports[i].GetFullPath);
                     }
 
                     sw.Stop();
@@ -1607,24 +1607,24 @@ namespace ME3Explorer
                     link = targetLinkEntry.UIndex;
                     //link = link >= 0 ? link + 1 : link;
                 }
-                int nextIndex;
                 TreeViewEntry newItem = null;
                 if (n >= 0)
                 {
-                    if (!importExport(entry as IExportEntry, link))
+                    IExportEntry newExport;
+                    if (importExport(entry as IExportEntry, link, out newExport))
+                    {
+                        newItem = new TreeViewEntry(newExport);
+
+                        return;
+                    }
+                    else
                     {
                         return;
                     }
-                    nextIndex = Pcc.ExportCount;
-                    IExportEntry newExport = Pcc.Exports[nextIndex - 1]; //0 based
-                    newItem = new TreeViewEntry(newExport);
                 }
                 else
                 {
-                    getOrAddCrossImport(importpcc.getImport(Math.Abs(n) - 1).GetFullPath, importpcc, Pcc, sourceItem.Sublinks.Count == 0 ? link : (int?)null);
-                    //importImport(importpcc, -n - 1, link);
-                    nextIndex = -Pcc.ImportCount;
-                    ImportEntry newImport = Pcc.Imports[nextIndex - 1]; //0 based
+                    ImportEntry newImport = getOrAddCrossImport(importpcc.getImport(Math.Abs(n) - 1).GetFullPath, importpcc, Pcc, sourceItem.Sublinks.Count == 0 ? link : (int?)null);
                     newItem = new TreeViewEntry(newImport);
                 }
                 newItem.Parent = targetItem;
@@ -1711,7 +1711,6 @@ namespace ME3Explorer
         /// <returns></returns>
         private bool importTree(TreeViewEntry sourceNode, IMEPackage importpcc, TreeViewEntry newItemParent)
         {
-            int nextIndex;
             int index;
             foreach (TreeViewEntry node in sourceNode.Sublinks)
             {
@@ -1720,20 +1719,24 @@ namespace ME3Explorer
                 if (index >= 0)
                 {
                     index--; //code is written for 0-based indexing, while UIndex is not 0 based
-                    if (!importExport(node.Entry as IExportEntry, newItemParent.UIndex))
+                    IExportEntry importedEntry;
+                    if (importExport(node.Entry as IExportEntry, newItemParent.UIndex, out importedEntry))
+                    {
+                        newEntry = new TreeViewEntry(importedEntry);
+                    }
+                    else
                     {
                         return false;
                     }
-                    nextIndex = Pcc.ExportCount;
-                    IExportEntry newExport = Pcc.Exports[nextIndex - 1]; //0 based
-                    newEntry = new TreeViewEntry(newExport);
                 }
                 else
                 {
-                    getOrAddCrossImport(importpcc.getImport(Math.Abs(index) - 1).GetFullPath, importpcc, Pcc);
-                    nextIndex = -Pcc.ImportCount;
+                    //todo: ensure relink works with this
+                    ImportEntry newImport = getOrAddCrossImport(importpcc.getImport(Math.Abs(index) - 1).GetFullPath, importpcc, Pcc);
 
-                    ImportEntry newImport = Pcc.Imports[nextIndex - 1]; //0 based
+                    //nextIndex = -Pcc.ImportCount;
+
+                    //ImportEntry newImport = Pcc.Imports[nextIndex - 1]; //0 based
                     newEntry = new TreeViewEntry(newImport);
                 }
                 newEntry.Parent = newItemParent;
@@ -1751,28 +1754,28 @@ namespace ME3Explorer
         }
 
         /// <summary>
-        /// Imports an export from another PCC into this editor's active one.
+        /// Imports an export from another package file.
         /// </summary>
-        /// <param name="importpcc">PCC to import from</param>
-        /// <param name="n">Export index in the importing PCC</param>
-        /// <param name="link">Export/Import index in the local PCC that will be used as the parent to attach to.</param>
+        /// <param name="ex">Export object from the other package to import</param>
+        /// <param name="link">Local parent node UIndex</param>
+        /// <param name="outputEntry">Newly generated export entry reference</param>
         /// <returns></returns>
-        private bool importExport(IExportEntry ex, int link)
+        private bool importExport(IExportEntry ex, int link, out IExportEntry outputEntry)
         {
-            IExportEntry nex = null;
+            outputEntry = null; //required assignemnt
             switch (Pcc.Game)
             {
                 case MEGame.ME1:
-                    nex = new ME1ExportEntry(Pcc as ME1Package);
+                    outputEntry = new ME1ExportEntry(Pcc as ME1Package);
                     break;
                 case MEGame.ME2:
-                    nex = new ME2ExportEntry(Pcc as ME2Package);
+                    outputEntry = new ME2ExportEntry(Pcc as ME2Package);
                     break;
                 case MEGame.ME3:
-                    nex = new ME3ExportEntry(Pcc as ME3Package);
+                    outputEntry = new ME3ExportEntry(Pcc as ME3Package);
                     break;
                 case MEGame.UDK:
-                    nex = new UDKExportEntry(Pcc as UDKPackage);
+                    outputEntry = new UDKExportEntry(Pcc as UDKPackage);
                     break;
             }
             byte[] idata = ex.Data;
@@ -1808,6 +1811,7 @@ namespace ME3Explorer
                 //restore namelist in event of failure.
                 Pcc.setNames(names);
                 MessageBox.Show("Error occured while trying to import " + ex.ObjectName + " : " + exception.Message);
+                outputEntry = null;
                 return false;
             }
 
@@ -1822,7 +1826,7 @@ namespace ME3Explorer
 
                 header = clippedHeader;
             }
-            nex.Header = header;
+            outputEntry.Header = header;
             bool dataAlreadySet = false;
             if (ex.FileRef.Game == MEGame.ME3)
             {
@@ -1867,9 +1871,9 @@ namespace ME3Explorer
                         {
                             //res.Write(idata, end, idata.Length - end);
                             //rewrite data
-                            nex.Data = res.ToArray();
+                            outputEntry.Data = res.ToArray();
                             UDKStaticMesh usm = new UDKStaticMesh(ex.FileRef as UDKPackage, ex.Index);
-                            usm.PortToME3Export(nex);
+                            usm.PortToME3Export(outputEntry);
                             dataAlreadySet = true;
                             break;
                         }
@@ -1907,14 +1911,14 @@ namespace ME3Explorer
 
             if (!dataAlreadySet)
             {
-                nex.Data = res.ToArray();
+                outputEntry.Data = res.ToArray();
             }
-            nex.idxClass = classValue;
-            nex.idxObjectName = Pcc.FindNameOrAdd(ex.FileRef.getNameEntry(ex.idxObjectName));
-            nex.idxLink = link;
-            nex.idxArchtype = archetype;
-            nex.idxClassParent = 0;
-            Pcc.addExport(nex);
+            outputEntry.idxClass = classValue;
+            outputEntry.idxObjectName = Pcc.FindNameOrAdd(ex.FileRef.getNameEntry(ex.idxObjectName));
+            outputEntry.idxLink = link;
+            outputEntry.idxArchtype = archetype;
+            outputEntry.idxClassParent = 0;
+            Pcc.addExport(outputEntry);
 
             crossPCCObjectMap[ex.Index] = Pcc.ExportCount - 1; //0 based.
             return true;
@@ -2298,7 +2302,10 @@ namespace ME3Explorer
                 TreeViewItem treeViewItem = generator.ContainerFromIndex(index) as TreeViewItem;
                 if (treeViewItem == null && container != null) treeViewItem = GetTreeViewItem(container, dequeue);
                 Action action = () => { treeViewItem?.BringIntoView(); };
-                Dispatcher.Invoke(action, DispatcherPriority.ContextIdle);
+                //This needs to be stress tested - this can cause deadlock, but if it doesn't return fast enough the code
+                //may continue to null and not work.
+                //Sigh, treeview.
+                Dispatcher.BeginInvoke(action, DispatcherPriority.ContextIdle);
                 if (treeViewItem == null)
                 {
                     Debug.WriteLine("This shoudln't be null");
@@ -2471,6 +2478,13 @@ namespace ME3Explorer
                 Index = index;
                 Name = name;
             }
+        }
+
+        private void BinaryInterpreterWPF_AlwaysAutoParse_Click(object sender, RoutedEventArgs e)
+        {
+            //BinaryInterpreterWPF_AlwaysAutoParse_MenuItem.IsChecked = !BinaryInterpreterWPF_AlwaysAutoParse_MenuItem.IsChecked;
+            Properties.Settings.Default.BinaryInterpreterWPFAutoScanAlways = !Properties.Settings.Default.BinaryInterpreterWPFAutoScanAlways;
+            Properties.Settings.Default.Save();
         }
     }
     [DebuggerDisplay("TreeViewEntry {DisplayName}")]

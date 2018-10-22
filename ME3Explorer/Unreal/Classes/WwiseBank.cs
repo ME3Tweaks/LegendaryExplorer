@@ -155,46 +155,46 @@ namespace ME3Explorer.Unreal.Classes
             return null;
         }
 
-        public string GetHircObjType(byte b)
+        public static string GetHircObjType(byte b)
         {
             string res = "";
             switch (b)
             {
                 case 0x2:
-                    res = "*Sound SFX/Sound Voice";
+                    res = "Sound SFX/Sound Voice";
                     break;
                 case 0x3:
-                    res = "*Event Action";
+                    res = "Event Action";
                     break;
                 case 0x4:
-                    res = "*Event";
+                    res = "Event";
                     break;
                 case 0x5:
-                    res = "*Random Container or Sequence Container";
+                    res = "Random Container or Sequence Container";
                     break;
                 case 0x7:
-                    res = "*Actor-Mixer";
+                    res = "Actor-Mixer";
                     break;
                 case 0xA:
-                    res = "*Music Segment";
+                    res = "Music Segment";
                     break;
                 case 0xB:
-                    res = "*Music Track";
+                    res = "Music Track";
                     break;
                 case 0xC:
-                    res = "*Music Switch Container";
+                    res = "Music Switch Container";
                     break;
                 case 0xD:
-                    res = "*Music Playlist Container";
+                    res = "Music Playlist Container";
                     break;
                 case 0xE:
-                    res = "*Attenuation";
+                    res = "Attenuation";
                     break;
                 case 0x12:
-                    res = "*Effect";
+                    res = "Effect";
                     break;
                 case 0x13:
-                    res = "*Auxiliary Bus";
+                    res = "Auxiliary Bus";
                     break;
             }
             return res;
@@ -207,8 +207,108 @@ namespace ME3Explorer.Unreal.Classes
         {
             string res = "";
             res += "ID(" + buff[0].ToString("X2") + ") Size = " + BitConverter.ToInt32(buff, 1).ToString("X8") + " ";
-            res += GetHircObjType(buff[0]);
+            res += "*" + GetHircObjType(buff[0]);
             return res;
+        }
+
+        public class HIRCObject
+        {
+            private int index;
+            public int Index { get { return index; } set { index = value; } }
+
+            private int offset;
+            public int Offset { get { return offset; } set { offset = value; } }
+
+            private byte objtype;
+            public byte ObjType { get { return objtype; } set { objtype = value; } }
+
+            private int size;
+            public int Size { get { return size; } set { size = value; } }
+
+            private int id;
+            public int ID { get { return id; } set { id = value; } }
+
+
+            private byte stype;
+            public byte SoundType { get { return stype; } set { stype = value; } }
+
+            private int state;
+            public int State { get { return state; } set { state = value; } }
+
+            //typeinfo
+            public int cnt, unk1, IDaudio, IDsource;//scope,atype;
+            public List<int> eventIDs { get; set; }
+        }
+
+        public List<HIRCObject> ParseHIRCObjects(byte[] buff)
+        {
+            int count = BitConverter.ToInt32(buff, 0x8);
+            List<HIRCObject> hircObjects = new List<HIRCObject>(count);
+
+            //string res = "...Count = " + count + "\n";
+            int pos = 0xC;
+            HIRCObjects = new List<byte[]>();
+            for (int i = 0; i < count; i++)
+            {
+                HIRCObject ho = new HIRCObject();
+                ho.Index = i;
+                ho.Offset = pos;
+                ho.ObjType = buff[pos];
+                //for each HIRC object
+                //res += "......" + i.ToString("D4") + " : @0x" + pos.ToString("X8") + " ";
+                //byte type = buff[pos];
+                //int size = 
+                ho.Size = BitConverter.ToInt32(buff, pos + 1);
+                //Console.WriteLine("QSH: " + size.ToString("X4"));
+                ho.ID = BitConverter.ToInt32(buff, pos + 5);
+                //int ID = BitConverter.ToInt32(buff, pos + 5);
+                //res += "Type = 0x" + type.ToString("X2") + " ID(" + ID.ToString("X8") + ") Size = 0x" + size.ToString("X8") + " " + GetHircObjType(type) + "\n";
+                //int cnt, unk1, state, IDaudio, IDsource, stype;//scope,atype;
+                switch (ho.ObjType)
+                {
+                    case 0x2:   //*Sound SFX/Sound Voice
+                        ho.unk1 = BitConverter.ToInt32(buff, pos + 9);
+                        ho.State = BitConverter.ToInt32(buff, pos + 13);
+                        ho.IDaudio = BitConverter.ToInt32(buff, pos + 17);
+                        ho.IDsource = BitConverter.ToInt32(buff, pos + 21);
+                        ho.SoundType = buff[pos + 25];
+                        /*res += ".........Unk1  = " + unk1.ToString("X8") + "\n";
+                        res += ".........State = " + state.ToString("X8") + " (0=embed, 1=streamed, 2=stream/prefetched)\n";
+                        res += ".........ID Audio  = " + IDaudio.ToString("X8") + "\n";
+                        res += ".........ID Source = " + IDsource.ToString("X8") + "\n";
+                        if (stype == 0)
+                            res += ".........Sound Type = Sound SFX\n";
+                        else
+                            res += ".........Sound Type = Sound Voice\n";*/
+                        break;
+                    //case 0x3:
+                    //    scope = buff[pos + 9];
+                    //    res += ".........Scope = " + scope + "\n";
+                    //    atype = buff[pos + 10];
+                    //    res += ".........Action Type = " + atype + "\n";
+                    //    res += ".........ref ID = " + BitConverter.ToInt32(buff, pos + 11).ToString("X8") + "\n";
+                    //    cnt = buff[pos + 16];
+                    //    res += ".........Parameter Count = " + cnt + "\n";
+                    //    break;
+                    case 0x4:   //*Event
+                        ho.cnt = BitConverter.ToInt32(buff, pos + 9);
+                        ho.eventIDs = new List<int>();
+                        //res += ".........Count = " + cnt + "\n";
+                        for (int j = 0; j < ho.cnt; j++)
+                            ho.eventIDs.Add(BitConverter.ToInt32(buff, pos + j * 4 + 13));
+                        //res += ".........ID = 0x" + .ToString("X8") + "\n";
+                        break;
+                }
+                //byte[] tmp = new byte[size + 5];
+
+                //could be block copied
+                /*for (int j = 0; j < size + 5; j++)
+                    tmp[j] = buff[pos + j];
+                HIRCObjects.Add(tmp);*/
+                hircObjects.Add(ho);
+                pos += 5 + ho.Size;
+            }
+            return hircObjects;
         }
 
         public string QuickScanHirc(byte[] buff)
@@ -223,9 +323,9 @@ namespace ME3Explorer.Unreal.Classes
                 res += "......" + i.ToString("D4") + " : @0x" + pos.ToString("X8") + " ";
                 byte type = buff[pos];
                 int size = BitConverter.ToInt32(buff, pos + 1);
-                Console.WriteLine("QSH: " + size.ToString("X4"));
+                //Console.WriteLine("QSH: " + size.ToString("X4"));
                 int ID = BitConverter.ToInt32(buff, pos + 5);
-                res += "Type = 0x" + type.ToString("X2") + " ID(" + ID.ToString("X8") + ") Size = 0x" + size.ToString("X8") + " " + GetHircObjType(type) + "\n";
+                res += "Type = 0x" + type.ToString("X2") + " ID(" + ID.ToString("X8") + ") Size = 0x" + size.ToString("X8") + " " + "*" + GetHircObjType(type) + "\n";
                 int cnt, unk1, state, IDaudio, IDsource, stype;//scope,atype;
                 switch (type)
                 {
@@ -261,6 +361,8 @@ namespace ME3Explorer.Unreal.Classes
                         break;
                 }
                 byte[] tmp = new byte[size + 5];
+
+                //could be block copied
                 for (int j = 0; j < size + 5; j++)
                     tmp[j] = buff[pos + j];
                 HIRCObjects.Add(tmp);

@@ -6,9 +6,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:s="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:ME3Explorer"
+             xmlns:unrealclasses="clr-namespace:ME3Explorer.Unreal.Classes"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:properties="clr-namespace:ME3Explorer.Properties"
              xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+             xmlns:soundplorer="clr-namespace:ME3Explorer.Soundplorer"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -16,10 +18,13 @@
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:FriendlyTimeConverter x:Key="FriendlyTimeConverter"/>
         <Converters:WwiseDataExchangeEnabledConverter x:Key="WwiseDataExchangeEnabledConverter"/>
+        <soundplorer:HIRCObjectTypeConverter x:Key="HIRCObjectTypeConverter"/>
+        <soundplorer:HIRCSoundTypeConverter x:Key="HIRCSoundTypeConverter"/>
+        <soundplorer:HIRCMediaFetchTypeConverter x:Key="HIRCMediaFetchTypeConverter"/>
         <Converters:FontAwesomeStateColorConverter x:Key="FontAwesomeStateColorConverter"/>
     </UserControl.Resources>
     <TabControl>
-        <TabItem Header="SoundControl">
+        <TabItem Header="Player">
             <Grid Margin="0,0,0,8">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
@@ -36,6 +41,10 @@
                             <TextBlock Text="{Binding}" Foreground="Gray"/>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type local:EmbeddedWEMFile}">
+                            <!-- Do not remove transparent background. It is required for mouse hit testing.-->
+                            <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue"/>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type soundplorer:ISBankEntry}">
                             <!-- Do not remove transparent background. It is required for mouse hit testing.-->
                             <TextBlock Text="{Binding DisplayString}" Foreground="DarkBlue"/>
                         </DataTemplate>
@@ -75,10 +84,10 @@
                         <Button Content="Replace" ToolTip="Change audio by importing a Wave file" Command="{Binding ReplaceAudioCommand}" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="0,0,5,0"/>
                         <Button Content="Export" ToolTip="Export audio to Wave file" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="0,8,5,0" Command="{Binding ExportAudioCommand}"/>
                     </StackPanel>
-                    <Button Grid.Column="3" ToolTip="Start or pause playback" Command="{Binding StartPlaybackCommand}" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}">
+                    <Button Grid.Column="3" ToolTip="Start or pause playback" Command="{Binding StartPlaybackCommand}">
                         <fa:ImageAwesome Icon="{Binding PlayPauseIcon}" Height="24" Width="24"/>
                     </Button>
-                    <Button Grid.Column="5" ToolTip="Stop playback" Command="{Binding StopPlaybackCommand}" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}">
+                    <Button Grid.Column="5" ToolTip="Stop playback" Command="{Binding StopPlaybackCommand}">
                         <fa:ImageAwesome Icon="Stop" Height="24" Width="24"/>
                     </Button>
 
@@ -109,8 +118,23 @@
         <TabItem Header="Bank Info">
             <TextBox Text="{Binding QuickScanText}" IsReadOnly="True" VerticalScrollBarVisibility="Auto"/>
         </TabItem>
-        <TabItem Header="HIRC"/>
-        <TabItem Header="HIRC"/>
-        <TabItem Header="HIRC"/>
+        <TabItem Header="HIRCs">
+            <ListBox ItemsSource="{Binding HIRCObjects}">
+                <ListBox.Resources>
+                    <DataTemplate DataType="{x:Type unrealclasses:WwiseBank+HIRCObject}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Index}" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <StackPanel>
+                                <TextBlock Text="{Binding ID,StringFormat='HIRC 0x{0:X8}'}"/>
+                                <TextBlock Text="{Binding Path=ObjType, Converter={StaticResource HIRCObjectTypeConverter}}" FontStyle="Italic"/>
+                                <Border Margin="0" Padding="2,0,2,0" BorderThickness="1" BorderBrush="Red" Background="AntiqueWhite" CornerRadius="2" HorizontalAlignment="Left">
+                                    <TextBlock Text="{Binding State,Converter={StaticResource HIRCMediaFetchTypeConverter}}" FontWeight="Bold"/>
+                                </Border>
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.Resources>
+            </ListBox>
+        </TabItem>
     </TabControl>
 </local:ExportLoaderControl>

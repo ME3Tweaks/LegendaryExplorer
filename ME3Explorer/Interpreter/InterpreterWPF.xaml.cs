@@ -31,7 +31,9 @@ namespace ME3Explorer
         //Values in this list will cause the ExportToString() method to be called on an objectproperty in InterpreterWPF.
         //This is useful for end user when they want to view things in a list for example, but all of the items are of the 
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
-        public readonly string[] ExportToStringConverters = { "LevelStreamingKismet" };
+        public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet" };
+        public static readonly string[] IntToStringConverters = { "WwiseEvent" };
+
         /// <summary>
         /// The current list of loaded properties that back the property tree.
         /// This is used so we can do direct object reference comparisons for things like removal
@@ -39,12 +41,10 @@ namespace ME3Explorer
         private PropertyCollection CurrentLoadedProperties;
         //Values in this list will cause custom code to be fired to modify what the displayed string is for IntProperties
         //when the class matches.
-        public readonly string[] IntToStringConverters = { "WwiseEvent" };
 
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
         //private byte[] memory;
         //private int memsize;
-        private string className;
         private BioTlkFileSet tlkset;
         private BioTlkFileSet editorTlkSet;
         int readerpos;
@@ -499,7 +499,6 @@ namespace ME3Explorer
             }
             CurrentLoadedExport = export;
             Interpreter_Hexbox.ByteProvider = new DynamicByteProvider(export.Data);
-            className = export.ClassName;
 
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
             {
@@ -542,56 +541,77 @@ namespace ME3Explorer
             PropertyNodes.Clear();
             readerpos = CurrentLoadedExport.GetPropertyStart();
 
-            UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry()
+            if (CurrentLoadedExport.ClassName == "Class")
             {
-                DisplayName = $"Export {CurrentLoadedExport.UIndex }: { CurrentLoadedExport.ObjectName} ({CurrentLoadedExport.ClassName})",
-                IsExpanded = true
-            };
-
-            PropertyNodes.Add(topLevelTree);
-
-            try
-            {
-                CurrentLoadedProperties = CurrentLoadedExport.GetProperties(includeNoneProperties: true);
-                foreach (UProperty prop in CurrentLoadedProperties)
+                UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry()
                 {
-                    GenerateTreeForProperty(prop, topLevelTree);
-                }
-            }
-            catch (Exception ex)
-            {
-                UPropertyTreeViewEntry errorNode = new UPropertyTreeViewEntry()
-                {
-                    DisplayName = $"PARSE ERROR {ex.Message}"
+                    DisplayName = $"Export {CurrentLoadedExport.UIndex }: { CurrentLoadedExport.ObjectName} ({CurrentLoadedExport.ClassName})",
+                    IsExpanded = true
                 };
-                topLevelTree.ChildrenProperties.Add(errorNode);
-            }
 
-            if (RescanSelectionOffset != 0)
-            {
-                var flattenedTree = topLevelTree.FlattenTree();
-                var itemToSelect = flattenedTree.FirstOrDefault(x => x.Property != null && x.Property.ValueOffset == RescanSelectionOffset);
-                if (itemToSelect != null)
+                topLevelTree.ChildrenProperties.Add(new UPropertyTreeViewEntry()
                 {
-                    //todo: select node using parent-first selection (from packageeditorwpf)
-                    //due to tree view virtualization
-                    itemToSelect.ExpandParents();
-                    itemToSelect.IsSelected = true;
+                    DisplayName = "Class objects do not have properties",
+                    Property = new UnknownProperty(),
+                    Parent = topLevelTree
+                });
+
+                PropertyNodes.Add(topLevelTree);
+            }
+            else
+            {
+
+                UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry()
+                {
+                    DisplayName = $"Export {CurrentLoadedExport.UIndex }: { CurrentLoadedExport.ObjectName} ({CurrentLoadedExport.ClassName})",
+                    IsExpanded = true
+                };
+
+                PropertyNodes.Add(topLevelTree);
+
+                try
+                {
+                    CurrentLoadedProperties = CurrentLoadedExport.GetProperties(includeNoneProperties: true);
+                    foreach (UProperty prop in CurrentLoadedProperties)
+                    {
+                        GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    UPropertyTreeViewEntry errorNode = new UPropertyTreeViewEntry()
+                    {
+                        DisplayName = $"PARSE ERROR {ex.Message}"
+                    };
+                    topLevelTree.ChildrenProperties.Add(errorNode);
+                }
+
+                if (RescanSelectionOffset != 0)
+                {
+                    var flattenedTree = topLevelTree.FlattenTree();
+                    var itemToSelect = flattenedTree.FirstOrDefault(x => x.Property != null && x.Property.ValueOffset == RescanSelectionOffset);
+                    if (itemToSelect != null)
+                    {
+                        //todo: select node using parent-first selection (from packageeditorwpf)
+                        //due to tree view virtualization
+                        itemToSelect.ExpandParents();
+                        itemToSelect.IsSelected = true;
+                    }
                 }
             }
         }
 
 
-
-        private void GenerateTreeForProperty(UProperty prop, UPropertyTreeViewEntry parent, string displayPrefix = "")
+        #region Static tree generating code (shared with BinaryInterpreterWPF)
+        public static void GenerateUPropertyTreeForProperty(UProperty prop, UPropertyTreeViewEntry parent, IExportEntry export, string displayPrefix = "")
         {
-            var upropertyEntry = GenerateUPropertyTreeViewEntry(prop, parent, displayPrefix);
+            var upropertyEntry = GenerateUPropertyTreeViewEntry(prop, parent, export, displayPrefix);
             if (prop.PropType == PropertyType.ArrayProperty)
             {
                 int i = 0;
                 foreach (UProperty listProp in (prop as ArrayPropertyBase).ValuesAsProperties)
                 {
-                    GenerateTreeForProperty(listProp, upropertyEntry, $" Item {i++}:");
+                    GenerateUPropertyTreeForProperty(listProp, upropertyEntry, export, $" Item {i++}:");
                 }
             }
             if (prop.PropType == PropertyType.StructProperty)
@@ -599,12 +619,12 @@ namespace ME3Explorer
                 var sProp = prop as StructProperty;
                 foreach (var subProp in sProp.Properties)
                 {
-                    GenerateTreeForProperty(subProp, upropertyEntry);
+                    GenerateUPropertyTreeForProperty(subProp, upropertyEntry, export);
                 }
             }
         }
 
-        private UPropertyTreeViewEntry GenerateUPropertyTreeViewEntry(UProperty prop, UPropertyTreeViewEntry parent, string displayPrefix = "")
+        public static UPropertyTreeViewEntry GenerateUPropertyTreeViewEntry(UProperty prop, UPropertyTreeViewEntry parent, IExportEntry parsingExport, string displayPrefix = "")
         {
             string displayName = $"{prop.StartOffset.ToString("X4")}{displayPrefix}";
             if (parent.Property == null || !parent.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)))
@@ -618,14 +638,14 @@ namespace ME3Explorer
                 case ObjectProperty op:
                     {
                         int index = op.Value;
-                        var entry = CurrentLoadedExport.FileRef.getEntry(index);
+                        var entry = parsingExport.FileRef.getEntry(index);
                         if (entry != null)
                         {
                             editableValue = index.ToString();
                             parsedValue = entry.GetFullPath;
                             if (index > 0 && ExportToStringConverters.Contains(entry.ClassName))
                             {
-                                editableValue += " " + ExportToString(CurrentLoadedExport.FileRef.Exports[index - 1]);
+                                editableValue += " " + ExportToString(parsingExport.FileRef.Exports[index - 1]);
                             }
                         }
                         else if (index == 0)
@@ -644,9 +664,9 @@ namespace ME3Explorer
                 case IntProperty ip:
                     {
                         editableValue = ip.Value.ToString();
-                        if (IntToStringConverters.Contains(CurrentLoadedExport.ClassName))
+                        if (IntToStringConverters.Contains(parsingExport.ClassName))
                         {
-                            parsedValue = IntToString(prop.Name, ip.Value);
+                            parsedValue = IntToString(prop.Name, ip.Value, parsingExport);
                         }
                         if (parent.Property is StructProperty && (parent.Property as StructProperty).StructType == "Rotator")
                         {
@@ -667,12 +687,12 @@ namespace ME3Explorer
                 case ArrayPropertyBase ap:
                     {
                         //todo - assign bottom text to show array type.
-                        ArrayType at = GetArrayType(prop.Name.Name);
+                        ArrayType at = GetArrayType(prop.Name.Name, parsingExport);
                         editableValue = $"{at.ToString()} array";
                     }
                     break;
                 case NameProperty np:
-                    editableValue = CurrentLoadedExport.FileRef.findName(np.Value.Name.ToString()) + "_" + np.Value.Number.ToString();
+                    editableValue = parsingExport.FileRef.findName(np.Value.Name.ToString()) + "_" + np.Value.Number.ToString();
                     parsedValue = np.Value + "_" + np.Value.Number.ToString(); //will require special 2-box setup
                     break;
                 case ByteProperty bp:
@@ -686,7 +706,7 @@ namespace ME3Explorer
                     break;
                 case StringRefProperty strrefp:
                     editableValue = strrefp.Value.ToString();
-                    if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
+                    if (parsingExport.FileRef.Game == MEGame.ME3)
                     {
                         parsedValue = ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(strrefp.Value);
                     }
@@ -709,11 +729,46 @@ namespace ME3Explorer
                 DisplayName = displayName,
                 Parent = parent,
             };
-            item.PropertyUpdated += OnPropertyUpdated;
+            //item.PropertyUpdated += OnPropertyUpdated;
             parent.ChildrenProperties.Add(item);
             return item;
         }
 
+        /// <summary>
+        /// Converts a value of a property into a more human readable string.
+        /// This is for IntProperty.
+        /// </summary>
+        /// <param name="name">Name of the property</param>
+        /// <param name="value">Value of the property to transform</param>
+        /// <returns></returns>
+        private static string IntToString(NameReference name, int value, IExportEntry export)
+        {
+            switch (export.ClassName)
+            {
+                case "WwiseEvent":
+                    switch (name)
+                    {
+                        case "Id":
+                            return " (0x" + value.ToString("X8") + ")";
+                    }
+                    break;
+
+            }
+            return "";
+        }
+
+        private static string ExportToString(IExportEntry exportEntry)
+        {
+            switch (exportEntry.ObjectName)
+            {
+                case "LevelStreamingKismet":
+                    NameProperty prop = exportEntry.GetProperty<NameProperty>("PackageName");
+                    return "(" + prop.Value.Name + "_" + prop.Value.Number + ")";
+            }
+            return "";
+        }
+
+        #endregion
         /// <summary>
         /// This handler is assigned to UPropertyTreeViewEntry and is called
         /// when the value stored by the entry is updated.
@@ -739,40 +794,6 @@ namespace ME3Explorer
                 }
                 Interpreter_Hexbox.Refresh();
             }
-        }
-
-        /// <summary>
-        /// Converts a value of a property into a more human readable string.
-        /// This is for IntProperty.
-        /// </summary>
-        /// <param name="name">Name of the property</param>
-        /// <param name="value">Value of the property to transform</param>
-        /// <returns></returns>
-        private string IntToString(NameReference name, int value)
-        {
-            switch (CurrentLoadedExport.ClassName)
-            {
-                case "WwiseEvent":
-                    switch (name)
-                    {
-                        case "Id":
-                            return " (0x" + value.ToString("X8") + ")";
-                    }
-                    break;
-
-            }
-            return "";
-        }
-
-        private string ExportToString(IExportEntry exportEntry)
-        {
-            switch (exportEntry.ObjectName)
-            {
-                case "LevelStreamingKismet":
-                    NameProperty prop = exportEntry.GetProperty<NameProperty>("PackageName");
-                    return "(" + prop.Value.Name + "_" + prop.Value.Number + ")";
-            }
-            return "";
         }
 
         private void hb1_SelectionChanged(object sender, EventArgs e)
@@ -828,12 +849,12 @@ namespace ME3Explorer
             switch (CurrentLoadedExport.FileRef.Game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getPropertyInfo(className, CurrentLoadedExport.FileRef.getNameEntry(propName));
+                    return ME1UnrealObjectInfo.getPropertyInfo(CurrentLoadedExport.ClassName, CurrentLoadedExport.FileRef.getNameEntry(propName));
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getPropertyInfo(className, CurrentLoadedExport.FileRef.getNameEntry(propName));
+                    return ME2UnrealObjectInfo.getPropertyInfo(CurrentLoadedExport.ClassName, CurrentLoadedExport.FileRef.getNameEntry(propName));
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getPropertyInfo(className, CurrentLoadedExport.FileRef.getNameEntry(propName));
+                    return ME3UnrealObjectInfo.getPropertyInfo(CurrentLoadedExport.ClassName, CurrentLoadedExport.FileRef.getNameEntry(propName));
             }
             return null;
         }
@@ -868,21 +889,21 @@ namespace ME3Explorer
             return ArrayType.Int;
         }
 
-        private ArrayType GetArrayType(string propName, string typeName = null)
+        private static ArrayType GetArrayType(string propName, IExportEntry parsingExport, string typeName = null)
         {
             if (typeName == null)
             {
-                typeName = className;
+                typeName = parsingExport.ClassName;
             }
-            switch (CurrentLoadedExport.FileRef.Game)
+            switch (parsingExport.FileRef.Game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getArrayType(typeName, propName, export: CurrentLoadedExport);
+                    return ME1UnrealObjectInfo.getArrayType(typeName, propName, export: parsingExport);
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getArrayType(typeName, propName, export: CurrentLoadedExport);
+                    return ME2UnrealObjectInfo.getArrayType(typeName, propName, export: parsingExport);
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getArrayType(typeName, propName, export: CurrentLoadedExport);
+                    return ME3UnrealObjectInfo.getArrayType(typeName, propName, export: parsingExport);
             }
             return ArrayType.Int;
         }
@@ -891,7 +912,7 @@ namespace ME3Explorer
         {
             if (typeName == null)
             {
-                typeName = className;
+                typeName = CurrentLoadedExport.ClassName;
             }
             switch (CurrentLoadedExport.FileRef.Game)
             {
@@ -912,9 +933,9 @@ namespace ME3Explorer
             switch (CurrentLoadedExport.FileRef.Game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getEnumfromProp(className, propName);
+                    return ME1UnrealObjectInfo.getEnumfromProp(CurrentLoadedExport.ClassName, propName);
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getEnumfromProp(className, propName);
+                    return ME2UnrealObjectInfo.getEnumfromProp(CurrentLoadedExport.ClassName, propName);
                 case MEGame.ME3:
                 case MEGame.UDK:
                     return ME3UnrealObjectInfo.getEnumValues(enumName, true);
@@ -1105,8 +1126,6 @@ namespace ME3Explorer
         /// </summary>
         private delegate void NoArgDelegate();
 
-
-
         private void UpdateHexboxPosition(UPropertyTreeViewEntry newSelectedItem)
         {
             if (newSelectedItem != null && newSelectedItem.Property != null)
@@ -1158,8 +1177,10 @@ namespace ME3Explorer
                         //    return;
                 }
 
-                Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
-
+                if (CurrentLoadedExport.ClassName != "Class")
+                {
+                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
+                }
                 //else if (newSelectedItem.Parent.Property is ArrayProperty<IntProperty> || newSelectedItem.Parent.Property is ArrayProperty<FloatProperty> || newSelectedItem.Parent.Property is ArrayProperty<ObjectProperty>)
                 //{
                 //    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
@@ -1247,7 +1268,7 @@ namespace ME3Explorer
             if (tvi != null)
             {
                 UProperty tag = (UProperty)tvi.Tag;
-                ArrayType at = GetArrayType(tag.Name); //we may need to account for substructs
+                ArrayType at = GetArrayType(tag.Name, CurrentLoadedExport); //we may need to account for substructs
                 bool sorted = false;
                 switch (at)
                 {
@@ -1738,6 +1759,7 @@ namespace ME3Explorer
                         return Property.PropType.ToString();
                     }
                 }
+
                 return "Currently loaded export";
                 //string type = UIndex < 0 ? "Imp" : "Exp";
                 //return $"({type}) {UIndex} {Entry.ObjectName}({Entry.ClassName})"; */
