@@ -467,7 +467,7 @@ namespace ME3Explorer
             {
                 return;
             }
-            IExportEntry export = Pcc.getExport(n);
+            IExportEntry export = Pcc.getEntry(n) as IExportEntry;
             SaveFileDialog d = new SaveFileDialog
             {
                 Filter = "*.bin|*.bin",
