@@ -1565,35 +1565,6 @@ namespace ME3Explorer
                 CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
             }
         }
-
-        private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
-        {
-            var tb = (ColorPicker)e.OriginalSource;
-            if (tb.IsOpen)
-            {
-                var dataCxtx = tb.DataContext as UPropertyTreeViewEntry;
-                if (dataCxtx.Property != null)
-                {
-
-                    var colorStruct = dataCxtx.Property as StructProperty;
-                    var a = colorStruct.GetProp<ByteProperty>("A");
-                    var r = colorStruct.GetProp<ByteProperty>("R");
-                    var g = colorStruct.GetProp<ByteProperty>("G");
-                    var b = colorStruct.GetProp<ByteProperty>("B");
-
-                    DynamicByteProvider byteProvider = Interpreter_Hexbox.ByteProvider as DynamicByteProvider;
-                    byteProvider.WriteByte(a.ValueOffset, a.Value);
-                    byteProvider.WriteByte(r.ValueOffset, r.Value);
-                    byteProvider.WriteByte(g.ValueOffset, g.Value);
-                    byteProvider.WriteByte(b.ValueOffset, b.Value);
-
-                    //Regenerate children nodes
-
-                    Debug.WriteLine("Updating");
-                }
-            }
-            // var dataSource = (U)dataCxtx;
-        }
     }
 
     [DebuggerDisplay("UPropertyTreeViewEntry | {DisplayName}")]
