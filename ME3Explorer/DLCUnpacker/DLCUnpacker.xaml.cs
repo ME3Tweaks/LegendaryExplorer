@@ -1,4 +1,22 @@
-﻿using ByteSizeLib;
+﻿/*
+    Copyright (C) 2018 Pawel Kolodziejski
+    Copyright (C) 2018 Mgamerz
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with program.  If not, see<https://www.gnu.org/licenses/>.
+*/
+
+using ByteSizeLib;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
@@ -8,17 +26,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ME3Explorer.DLCUnpacker
 {
@@ -128,7 +136,7 @@ namespace ME3Explorer.DLCUnpacker
             }
         }
         #endregion
-        List<DLCPackage> sfarsToUnpack = new List<DLCPackage>();
+        List<ME3DLC> sfarsToUnpack = new List<ME3DLC>();
 
         public DLCUnpacker()
         {
@@ -139,8 +147,6 @@ namespace ME3Explorer.DLCUnpacker
             bg.DoWork += CalculateUnpackRequirements;
             bg.RunWorkerCompleted += CalculateUnpackRequirements_Completed;
             bg.RunWorkerAsync();
-
-            //prepDLCUnpacking();
         }
 
         private void CalculateUnpackRequirements_Completed(object sender, RunWorkerCompletedEventArgs e)
@@ -195,7 +201,7 @@ namespace ME3Explorer.DLCUnpacker
             double temp;
             foreach (var folder in unextracted)
             {
-                if (!System.IO.Path.GetFileName(folder).StartsWith("DLC"))
+                if (!Path.GetFileName(folder).StartsWith("DLC"))
                     continue;
 
                 try
@@ -203,8 +209,7 @@ namespace ME3Explorer.DLCUnpacker
                     FileInfo info = new FileInfo(Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).First(file => file.EndsWith(".sfar", StringComparison.OrdinalIgnoreCase)));
                     compressedSize += info.Length;
 
-                    //This can be changed to MEM code
-                    DLCPackage sfar = new DLCPackage(info.FullName);
+                    ME3DLC sfar = new ME3DLC(info.FullName);
                     sfarsToUnpack.Add(sfar);
 
                     temp = sfar.UncompressedSize;
@@ -221,9 +226,7 @@ namespace ME3Explorer.DLCUnpacker
             }
             totalUncompressedSize = uncompressedSize;
 
-            //This can probably be changed (original code comment is as follows)
-
-            //each SFAR is stripped of all its files after unpacking, so the maximum space needed on the drive is 
+            //each SFAR is stripped of all its files after unpacking, so the maximum space needed on the drive is
             //the difference between the uncompressed size and compressed size of all SFARS, plus the compressed size
             //of the largest SFAR. I'm using the uncompressed size instead as a fudge factor.
             return (uncompressedSize - compressedSize) + largestUncompressedSize;
@@ -257,10 +260,12 @@ namespace ME3Explorer.DLCUnpacker
 
         private void UnpackAllDLC(object sender, DoWorkEventArgs e)
         {
-            //Post completion stuff here
-
-            // ... 
-            CalculateUnpackRequirements(); //Will lock the unpack button and update UI for user
+            foreach (var sfar in sfarsToUnpack)
+            {
+                string DLCname = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(sfar.filePath)));
+                string outPath = Path.Combine(ME3Directory.DLCPath, DLCname);
+                sfar.Extract(sfar.filePath, outPath);
+            }
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)
