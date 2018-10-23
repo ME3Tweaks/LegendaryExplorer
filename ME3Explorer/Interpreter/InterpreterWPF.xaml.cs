@@ -19,6 +19,7 @@ using System.Runtime.CompilerServices;
 using ME3Explorer.SharedUI;
 using System.Windows.Input;
 using Xceed.Wpf.Toolkit;
+using static ME3Explorer.PackageEditorWPF;
 
 namespace ME3Explorer
 {
@@ -34,7 +35,16 @@ namespace ME3Explorer
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
         public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet" };
         public static readonly string[] IntToStringConverters = { "WwiseEvent" };
-
+        private bool _hasUnsavedChanges;
+        public bool HasUnsavedChanges
+        {
+            get { return _hasUnsavedChanges; }
+            set
+            {
+                _hasUnsavedChanges = value;
+                OnPropertyChanged();
+            }
+        }
         /// <summary>
         /// The current list of loaded properties that back the property tree.
         /// This is used so we can do direct object reference comparisons for things like removal
@@ -77,6 +87,7 @@ namespace ME3Explorer
             "BioMask4Property",
         };
         private HexBox Interpreter_Hexbox;
+        private bool isLoadingNewData;
 
         public enum nodeType
         {
@@ -472,7 +483,8 @@ namespace ME3Explorer
             EditorSetElements.ForEach(x => x.Visibility = Visibility.Collapsed);
             Set_Button.Visibility = Visibility.Collapsed;
             EditorSet_Separator.Visibility = Visibility.Collapsed;
-            Interpreter_Hexbox.ByteProvider = new DynamicByteProvider(new byte[] { });
+            (Interpreter_Hexbox.ByteProvider as DynamicByteProvider).Bytes.Clear();
+            HasUnsavedChanges = false;
             PropertyNodes.Clear();
         }
 
@@ -483,7 +495,8 @@ namespace ME3Explorer
         public override void LoadExport(IExportEntry export)
         {
             EditorSetElements.ForEach(x => x.Visibility = Visibility.Collapsed);
-
+            HasUnsavedChanges = false;
+            Interpreter_Hexbox.UnhighlightAll();
             //set rescan offset
             //TODO: Make this more reliable because it is recycling virtualization
             if (CurrentLoadedExport != null && export.FileRef == CurrentLoadedExport.FileRef && export.UIndex == CurrentLoadedExport.UIndex)
@@ -499,8 +512,10 @@ namespace ME3Explorer
                 RescanSelectionOffset = 0;
             }
             CurrentLoadedExport = export;
-            Interpreter_Hexbox.ByteProvider = new DynamicByteProvider(export.Data);
-
+            isLoadingNewData = true;
+            (Interpreter_Hexbox.ByteProvider as DynamicByteProvider).Bytes.Clear();
+            (Interpreter_Hexbox.ByteProvider as DynamicByteProvider).Bytes.AddRange(export.Data);
+            isLoadingNewData = false;
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
             {
                 // attempt to find a TlkFileSet associated with the object, else just pick the first one and hope it's correct
@@ -1023,14 +1038,21 @@ namespace ME3Explorer
                         SupportedEditorSetElements.Add(ParsedValue_TextBlock);
                         break;
                     case NameProperty np:
-                        Value_TextBox.Text = CurrentLoadedExport.FileRef.findName(np.Value.Name).ToString();
+                        TextSearch.SetTextPath(Value_ComboBox, "Name");
+                        Value_ComboBox.IsEditable = true;
+                        var indexedList = new List<object>();
+                        for (int i = 0; i < CurrentLoadedExport.FileRef.Names.Count; i++)
+                        {
+                            NameReference nr = CurrentLoadedExport.FileRef.Names[i];
+                            indexedList.Add(new IndexedName(i, nr));
+                        }
+                        Value_ComboBox.ItemsSource = indexedList;
+                        Value_ComboBox.SelectedIndex = CurrentLoadedExport.FileRef.findName(np.Value.Name);
                         NameIndex_TextBox.Text = np.Value.Number.ToString();
 
-                        UpdateParsedEditorValue();
-                        SupportedEditorSetElements.Add(Value_TextBox);
+                        SupportedEditorSetElements.Add(Value_ComboBox);
                         SupportedEditorSetElements.Add(NameIndexPrefix_TextBlock);
                         SupportedEditorSetElements.Add(NameIndex_TextBox);
-                        SupportedEditorSetElements.Add(ParsedValue_TextBlock);
                         break;
                     case EnumProperty ep:
                         {
@@ -1190,6 +1212,20 @@ namespace ME3Explorer
                         }
                         //otherwise use the default
                         break;
+                    case ByteProperty bp:
+                        {
+                            if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
+                            {
+                                Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 1);
+                                return;
+                            }
+                            else if (newSelectedItem.Parent.Property is ArrayProperty<ByteProperty>)
+                            {
+                                Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 1);
+                                return;
+                            }
+                        }
+                        break;
                     case NameProperty np:
                         {
                             if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
@@ -1267,9 +1303,24 @@ namespace ME3Explorer
         private void Interpreter_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             Interpreter_Hexbox = (HexBox)Interpreter_Hexbox_Host.Child;
+            if (Interpreter_Hexbox.ByteProvider == null)
+            {
+                Interpreter_Hexbox.ByteProvider = new DynamicByteProvider(new byte[] { });
+            }
+            //remove in the event this object is reloaded again
+            Interpreter_Hexbox.ByteProvider.Changed -= Interpreter_Hexbox_BytesChanged;
+            Interpreter_Hexbox.ByteProvider.Changed += Interpreter_Hexbox_BytesChanged;
         }
 
-        private void Interpreter_SaveHexChanged_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void Interpreter_Hexbox_BytesChanged(object sender, EventArgs e)
+        {
+            if (!isLoadingNewData)
+            {
+                HasUnsavedChanges = true;
+            }
+        }
+
+        private void Interpreter_SaveHexChanges_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             IByteProvider provider = Interpreter_Hexbox.ByteProvider;
             if (provider != null)
@@ -1455,14 +1506,32 @@ namespace ME3Explorer
                         break;
                     case NameProperty namep:
                         //Todo: Check name values are in range
-                        bool nametableindexok = int.TryParse(Value_TextBox.Text, out int nameTableIndex);
-                        bool nameindexok = int.TryParse(NameIndex_TextBox.Text, out int nameIndex);
+                        //bool nametableindexok = int.TryParse(Value_TextBox.Text, out int nameTableIndex);
 
-                        if (nametableindexok && nameindexok)
+                        //get string
+                        string input = Value_ComboBox.Text;
+                        var index = CurrentLoadedExport.FileRef.findName(input);
+                        if (index == -1)
+                        {
+                            //couldn't find name
+                            //Todo: WPFize this dialog so it matches visual style and can center
+                            if (MessageBoxResult.No == System.Windows.MessageBox.Show($"{Path.GetFileName(CurrentLoadedExport.FileRef.FileName)} does not contain the Name: {input}\nWould you like to add it to the Name list?", "Name not found", MessageBoxButton.YesNo))
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                index = CurrentLoadedExport.FileRef.FindNameOrAdd(input);
+                            }
+                        }
+
+                        bool nameindexok = int.TryParse(NameIndex_TextBox.Text, out int nameIndex);
+                        nameindexok &= nameIndex >= 0;
+                        if (index >= 0 && nameindexok)
                         {
                             NameReference nameRef = new NameReference
                             {
-                                Name = CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex),
+                                Name = input,
                                 Number = nameIndex
                             };
                             namep.Value = nameRef;

@@ -22,6 +22,7 @@
         <Converters:UPropertyColorPickerVisibilityConverter x:Key="UPropertyColorPickerVisibilityConverter"/>
         <Converters:NullOrEmptyStringVisibilityConverter x:Key="NullOrEmptyStringVisibilityConverter"/>
         <Converters:ColorCodeConverter x:Key="ColorCodeConverter"/>
+        <Converters:UnsavedChangesForegroundConverter x:Key="UnsavedChangesForegroundConverter"/>
     </UserControl.Resources>
     <UserControl.CommandBindings>
         <CommandBinding Command="Commands:InterpreterWPFCommands.ArrayOrderByValueCommand" Executed="ArrayOrderByValueCommand_Executed"/>
@@ -29,8 +30,7 @@
     </UserControl.CommandBindings>
     <DockPanel>
         <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
-            <Button Name="SaveHexChange_Button" Content="Save Hex Changes" Click="Interpreter_SaveHexChanged_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
-            <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
+            <Button Name="SaveHexChange_Button" Content="Save Hex Changes" Foreground="{Binding HasUnsavedChanges, Converter={StaticResource UnsavedChangesForegroundConverter}}" Click="Interpreter_SaveHexChanges_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
             <Button Content="Toggle Hexbox Width" Click="Interpreter_ToggleHexboxWidth_Click"/>
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
             <Button Content="Add Property" Command="{Binding AddPropertyCommand}"/>
@@ -38,11 +38,25 @@
             <Button Name="AddArrayElement_Button" Content="Add Array Element" Click="AddArrayElement_Button_Click" VerticalAlignment="Center"/>
             <Button Name="RemoveArrayElement_Button" Content="Remove Array Element" Click="RemoveArrayElement_Button_Click" VerticalAlignment="Center"/>
             <Separator Name="EditorSet_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-            <TextBox Width="80" Name="Value_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" TextChanged="Value_TextBox_TextChanged" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Margin="0"/>
-            <TextBlock Text="_" Name="NameIndexPrefix_TextBlock" VerticalAlignment="Center"/>
-            <TextBox Width="30" Name="NameIndex_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
-            <ComboBox Name="Value_ComboBox" MinWidth="80" VerticalAlignment="Center"  ToolTip="Value for this property"/>
-            <Button Name="Set_Button" Content="Set" Click="SetValue_Click" VerticalAlignment="Center"/>
+            <TextBox Width="80" Name="Value_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" TextChanged="Value_TextBox_TextChanged" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Margin="0" Style="{StaticResource {x:Type TextBox}}"/>
+            <ComboBox Name="Value_ComboBox" MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True">
+                <ComboBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ComboBox.ItemsPanel>
+                <ComboBox.Resources>
+                    <DataTemplate DataType="{x:Type global:PackageEditorWPF+IndexedName}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
+                            <TextBlock Text="{Binding Path=Name.Name}" Foreground="Black" Margin="5,0,0,0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.Resources>
+            </ComboBox>
+            <TextBlock Text="Index:" Name="NameIndexPrefix_TextBlock" VerticalAlignment="Center"/>
+            <TextBox Width="30" Name="NameIndex_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type TextBox}}"/>
+            <Button Name="Set_Button" Content="Set" Click="SetValue_Click" VerticalAlignment="Stretch" Padding="10,0,10,0" Style="{StaticResource {x:Type Button}}"/>
             <TextBlock Name="ParsedValue_TextBlock" VerticalAlignment="Center" Foreground="Gray" Margin="5,0,0,0"/>
         </ToolBar>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
