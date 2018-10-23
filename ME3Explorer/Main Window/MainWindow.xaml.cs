@@ -656,13 +656,16 @@ namespace ME3Explorer
             {
                 System.Diagnostics.Process.Start(link);
             }
-            catch (Exception other)
+            catch (Exception)
             {
                 try
                 {
                     System.Windows.Clipboard.SetText(link);
                 }
-                catch { }
+                catch
+                {
+                    //RIP
+                }
             }
         }
     }
