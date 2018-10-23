@@ -8,43 +8,40 @@
         mc:Ignorable="d"
         Title="DLC Unpacker" Height="193.539" Width="553.072"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
-    <Grid Margin="5">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="150"/>
-        </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" Grid.ColumnSpan="5"  Text="This tool allows you to unpack your Mass Effect 3 DLC into loose files that you can use for modding."/>
-        <TextBlock Grid.Row="2" Text="Required space:"/>
-        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding RequiredSpaceText}"/>
-        <TextBlock Grid.Row="3" Text="Available space:"/>
-        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding AvailableSpaceText}"/>
+    <StackPanel Margin="5" >
+        <TextBlock  Text="This tool allows you to unpack your Mass Effect 3 DLC into loose files that you can use for modding."/>
+        <Grid Margin="0,5,0,5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Text="Required space:"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding RequiredSpaceText}"/>
+            <TextBlock Grid.Row="1" Text="Available space:"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding AvailableSpaceText}"/>
 
-        <TextBlock Grid.Row="5" Grid.ColumnSpan="5" Text="{Binding CurrentOperationText}">
             <!--<TextBlock.Text>
                 <MultiBinding StringFormat="{}{0} ({1}%)">
                     <Binding Path="CurrentOperationText" />
                     <Binding Path="CurrentOperationPercentValue" />
                 </MultiBinding>
             </TextBlock.Text>-->
-        </TextBlock>
 
 
-
-        <Button Grid.Row="6" Grid.Column="0"  Command="{Binding UnpackDLCCommand}" Content="Unpack DLC"/>
-        <StackPanel  Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="4" VerticalAlignment="Center">
-            <ProgressBar Value="{Binding OverallProgressValue}" Height="23"/>
-            <ProgressBar Value="{Binding CurrentOverallProgressValue}" IsIndeterminate="{Binding ProgressBarIndeterminate}" Height="23"/>
+        </Grid>
+        <TextBlock Grid.Row="5" Grid.ColumnSpan="5" Text="{Binding CurrentOperationText}"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+            <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                <ProgressBar Value="{Binding OverallProgressValue}" Height="23" HorizontalAlignment="Stretch" Width="456"/>
+                <ProgressBar Value="{Binding CurrentOverallProgressValue}" IsIndeterminate="{Binding ProgressBarIndeterminate}" Height="23" HorizontalAlignment="Stretch"/>
+            </StackPanel>
+            <Button Command="{Binding UnpackDLCCommand}" Content="Unpack DLC" Width="79"/>
         </StackPanel>
-    </Grid>
+    </StackPanel>
 </global:WPFBase>
