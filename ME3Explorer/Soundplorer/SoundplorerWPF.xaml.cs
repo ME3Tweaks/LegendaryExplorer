@@ -1084,7 +1084,25 @@ namespace ME3Explorer.Soundplorer
 
         private void OpenME1ISB_Clicked(object sender, RoutedEventArgs e)
         {
-            ISACT_Parser.ReadFile(@"D:\Origin Games\Mass Effect\BioGame\CookedPC\Packages\ISACT\codex.isb");
+            var package = MEPackageHandler.OpenMEPackage(@"D:\Origin Games\Mass Effect\BioGame\CookedPC\Packages\Audio_Content\snd_cinematic_amb.upk");
+            foreach (IExportEntry export in package.Exports)
+            {
+                if (export.ClassName == "SoundNodeWave")
+                {
+                    Debug.WriteLine(export.ObjectName);
+                    byte[] binData = export.Data.Skip(export.propsEnd() + 20).ToArray();
+                    ISBank isb = new ISBank(binData, true);
+                    Debug.WriteLine("PCM SIG " + 1053609165.ToString("X8"));
+                    foreach (ISBankEntry isbe in isb.BankEntries)
+                    {
+                        if (isbe.DataAsStored == null) continue;
+                        Debug.WriteLine("+++" + isbe.FileName);
+                        Debug.WriteLine("Type signature1: " + isbe.CodecID + " " + isbe.CodecID.ToString("X8"));
+                        Debug.WriteLine("Type signature2: " + isbe.CodecID2 + " " + isbe.CodecID2.ToString("X8"));
+
+                    }
+                }
+            }
         }
 
         private void ExtractISACTAsRaw_Clicked(object sender, RoutedEventArgs e)

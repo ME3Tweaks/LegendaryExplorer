@@ -522,7 +522,7 @@
       <DependentUpon>AddPropertyDialogWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\Converters\NullOrEmptyStringVisibilityConverter.cs" />
-    <Compile Include="SharedUI\Converters\ColorStructToCSColorConverter.cs" />
+    <Compile Include="SharedUI\Converters\ColorCodeConverter.cs" />
     <Compile Include="SharedUI\Converters\UPropertyColorPickerVisibilityConverter.cs" />
     <Compile Include="SharedUI\Converters\FriendlyTimeConverter.cs" />
     <Compile Include="SharedUI\Converters\WwiseDataExchangeEnabledConverter.cs" />

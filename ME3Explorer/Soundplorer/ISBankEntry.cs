@@ -20,7 +20,10 @@ namespace ME3Explorer.Soundplorer
         public uint sampleRate = 0;
         public uint DataOffset;
         public uint HeaderOffset;
+        public int CodecID;
         private byte[] dataAsStored;
+        internal int CodecID2;
+
         public byte[] DataAsStored
         {
             get
@@ -37,7 +40,7 @@ namespace ME3Explorer.Soundplorer
         {
             get
             {
-                return FileName + " - Data offset: 0x" + DataOffset.ToString("X8");
+                return FileName + " - Data offset: 0x" + DataOffset.ToString("X8") + " - cmpi signature: 0x" + CodecID2.ToString("X8");
             }
         }
 
@@ -60,46 +63,92 @@ namespace ME3Explorer.Soundplorer
             }
             else
             {
-                int headerSize = 52;
-                MemoryStream ms = new MemoryStream();
-                //WAVE HEADER
-                ms.WriteBytes(Encoding.ASCII.GetBytes("RIFF"));
-                ms.WriteInt32(headerSize - 8); //size - header is 52 bytes, - 8 for RIFF and this part.
-                ms.WriteBytes(Encoding.ASCII.GetBytes("WAVE"));
-                ms.WriteBytes(Encoding.ASCII.GetBytes("fmt "));
-                ms.WriteUInt32(16); //Chunk size
+                switch (CodecID2)
+                {
+                    case 0x3F4CCCCD:
+                        int headerSize = 52;
+                        MemoryStream ms = new MemoryStream();
+                        //WAVE HEADER
+                        ms.WriteBytes(Encoding.ASCII.GetBytes("RIFF"));
+                        ms.WriteInt32(headerSize - 8); //size - header is 52 bytes, - 8 for RIFF and this part. we will update this later though.
+                        ms.WriteBytes(Encoding.ASCII.GetBytes("WAVE"));
+                        ms.WriteBytes(Encoding.ASCII.GetBytes("fmt "));
+                        ms.WriteUInt32(16); //Chunk size
 
-                ms.WriteUInt16(1); //Wave Format PCM
-                ms.WriteUInt16((ushort)numberOfChannels);
+                        ms.WriteUInt16(1); //Wave Format PCM
+                        ms.WriteUInt16((ushort)numberOfChannels);
 
-                ms.WriteUInt32(sampleRate);
-                ms.WriteUInt32(sampleRate * numberOfChannels * 2); //originally is value / 8, but the input was 16 so this will always be * 2 //byterate
+                        ms.WriteUInt32(sampleRate);
+                        ms.WriteUInt32(sampleRate * numberOfChannels * 2); //originally is value / 8, but the input was 16 so this will always be * 2 //byterate
 
-                ms.WriteUInt16((ushort)(numberOfChannels * 2)); //BlockAlign (channels * bitrate/8, so 16/2 = 2) (2 bytes)
-                ms.WriteUInt16((ushort)(16)); //16 bits per sample 
+                        ms.WriteUInt16((ushort)(numberOfChannels * 2)); //BlockAlign (channels * bitrate/8, so 16/2 = 2) (2 bytes)
+                        ms.WriteUInt16((ushort)(16)); //16 bits per sample 
 
 
-                ms.WriteBytes(Encoding.ASCII.GetBytes("data"));
-                long dataSizePosition = ms.Position;
-                ms.WriteUInt32(0); //data len = this will have to be updated later, i think
+                        ms.WriteBytes(Encoding.ASCII.GetBytes("data"));
+                        long dataSizePosition = ms.Position;
+                        ms.WriteUInt32(0); //data len = this will have to be updated later, i think
+                        ms.Write(DataAsStored, 0, DataAsStored.Length);
+                        //XboxADPCMDecoder decoder = new XboxADPCMDecoder(numberOfChannels);
+/*                        MemoryStream xboxADPCMStream = new MemoryStream(DataAsStored);
+                        MemoryStream decodedStream = KoopsAudioDecoder.Decode(xboxADPCMStream);
+                        decodedStream.Position = 0;
+                        decodedStream.CopyTo(ms);
 
-                //XboxADPCMDecoder decoder = new XboxADPCMDecoder(numberOfChannels);
-                MemoryStream xboxADPCMStream = new MemoryStream(DataAsStored);
-                MemoryStream decodedStream = KoopsAudioDecoder.Decode(xboxADPCMStream);
-                decodedStream.Position = 0;
-                decodedStream.CopyTo(ms);
+                        File.WriteAllBytes(@"C:\users\public\xbox_decodeddata.wav", decodedStream.ToArray());
+                        */
+                        //update sizes
+                        ms.Seek(dataSizePosition, SeekOrigin.Begin);
+                        ms.WriteUInt32((uint)DataAsStored.Length);
 
-                File.WriteAllBytes(@"C:\users\public\xbox_decodeddata.wav", decodedStream.ToArray());
-
-                //update sizes
-                ms.Seek(dataSizePosition, SeekOrigin.Begin);
-                ms.WriteUInt32((uint)decodedStream.Length);
-
-                ms.Seek(4, SeekOrigin.Begin);
-                ms.WriteUInt32((uint)ms.Length - 8);
-                decodedStream.Dispose();
-                return ms;
+                        ms.Seek(4, SeekOrigin.Begin);
+                        ms.WriteUInt32((uint)ms.Length - 8);
+                        return ms;
+                }
+                return null;
             }
+
+
+            /* OLD XBOX CODE (doesn't work for this game)
+            int headerSize = 52;
+            MemoryStream ms = new MemoryStream();
+            //WAVE HEADER
+            ms.WriteBytes(Encoding.ASCII.GetBytes("RIFF"));
+            ms.WriteInt32(headerSize - 8); //size - header is 52 bytes, - 8 for RIFF and this part.
+            ms.WriteBytes(Encoding.ASCII.GetBytes("WAVE"));
+            ms.WriteBytes(Encoding.ASCII.GetBytes("fmt "));
+            ms.WriteUInt32(16); //Chunk size
+
+            ms.WriteUInt16(1); //Wave Format PCM
+            ms.WriteUInt16((ushort)numberOfChannels);
+
+            ms.WriteUInt32(sampleRate);
+            ms.WriteUInt32(sampleRate * numberOfChannels * 2); //originally is value / 8, but the input was 16 so this will always be * 2 //byterate
+
+            ms.WriteUInt16((ushort)(numberOfChannels * 2)); //BlockAlign (channels * bitrate/8, so 16/2 = 2) (2 bytes)
+            ms.WriteUInt16((ushort)(16)); //16 bits per sample 
+
+
+            ms.WriteBytes(Encoding.ASCII.GetBytes("data"));
+            long dataSizePosition = ms.Position;
+            ms.WriteUInt32(0); //data len = this will have to be updated later, i think
+
+            //XboxADPCMDecoder decoder = new XboxADPCMDecoder(numberOfChannels);
+            MemoryStream xboxADPCMStream = new MemoryStream(DataAsStored);
+            MemoryStream decodedStream = KoopsAudioDecoder.Decode(xboxADPCMStream);
+            decodedStream.Position = 0;
+            decodedStream.CopyTo(ms);
+
+            File.WriteAllBytes(@"C:\users\public\xbox_decodeddata.wav", decodedStream.ToArray());
+
+            //update sizes
+            ms.Seek(dataSizePosition, SeekOrigin.Begin);
+            ms.WriteUInt32((uint)decodedStream.Length);
+
+            ms.Seek(4, SeekOrigin.Begin);
+            ms.WriteUInt32((uint)ms.Length - 8);
+            decodedStream.Dispose();
+            return ms;*/
         }
 
         internal string GetTextSummary()

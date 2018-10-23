@@ -21,7 +21,7 @@
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:UPropertyColorPickerVisibilityConverter x:Key="UPropertyColorPickerVisibilityConverter"/>
         <Converters:NullOrEmptyStringVisibilityConverter x:Key="NullOrEmptyStringVisibilityConverter"/>
-        <Converters:ColorStructToCSColorConverter x:Key="ColorStructToCSColorConverter"/>
+        <Converters:ColorCodeConverter x:Key="ColorCodeConverter"/>
     </UserControl.Resources>
     <UserControl.CommandBindings>
         <CommandBinding Command="Commands:InterpreterWPFCommands.ArrayOrderByValueCommand" Executed="ArrayOrderByValueCommand_Executed"/>
@@ -79,7 +79,7 @@
                                     <TextBlock x:Name="PropertyItem_DisplayName" Text="{Binding DisplayName}" VerticalAlignment="Center" FontStyle="Italic"/>
                                     <TextBlock x:Name="PropertyItem_EditableValue" Margin="5,0,0,0" Text="{Binding EditableValue}" VerticalAlignment="Center" FontWeight="Bold" Visibility="{Binding EditableValue, Converter={StaticResource NullOrEmptyStringVisibilityConverter}}"/>
                                     <TextBlock x:Name="PropertyItem_ParsedValue" Margin="5,0,0,0" Text="{Binding ParsedValue}" VerticalAlignment="Center" FontStyle="Italic"/>
-                                    <xctk:ColorPicker Margin="5,0,0,0" Visibility="{Binding Property, Converter={StaticResource UPropertyColorPickerVisibilityConverter}}" SelectedColor="{Binding Property,Converter={StaticResource ColorStructToCSColorConverter}, Mode=OneWay}" SelectedColorChanged="ColorPicker_SelectedColorChanged" Width="60"/>
+                                    <xctk:ColorPicker Margin="5,0,0,0" Visibility="{Binding Property, Converter={StaticResource UPropertyColorPickerVisibilityConverter}}" SelectedColor="{Binding ColorStructCode,Converter={StaticResource ColorCodeConverter}}" SelectedColorChanged="ColorPicker_SelectedColorChanged" Width="60"/>
                                 </StackPanel>
                                 <TextBlock x:Name="PropertyItem_DisplayType" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0"/>
                                 <i:Interaction.Triggers>

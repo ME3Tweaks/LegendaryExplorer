@@ -196,19 +196,27 @@ namespace ME3Explorer
                 }
                 if (exportEntry.ClassName == "SoundNodeWave")
                 {
-                    byte[] binData = exportEntry.Data.Skip(exportEntry.propsEnd() + 20).ToArray();
-                    ISBank isb = new ISBank(binData);
-                    List<ISBankEntry> audios = isb.BankEntries;
-                    foreach (ISBankEntry isbe in isb.BankEntries)
+                    int dataSizeOffset = exportEntry.propsEnd() + 4;
+                    int dataLength = BitConverter.ToInt32(exportEntry.Data, dataSizeOffset);
+                    if (dataLength > 0)
                     {
-                        if (isbe.DataAsStored != null)
+                        byte[] binData = exportEntry.Data.Skip(exportEntry.propsEnd() + 20).ToArray();
+                        ISBank isb = new ISBank(binData, true);
+                        List<ISBankEntry> audios = isb.BankEntries;
+                        foreach (ISBankEntry isbe in isb.BankEntries)
                         {
-                            ExportInformationList.Add(isbe);
+                            if (isbe.DataAsStored != null)
+                            {
+                                ExportInformationList.Add(isbe);
+                            }
+                            else
+                            {
+                                ExportInformationList.Add($"{isbe.FileName} - No data - Data Location: 0x{isbe.DataOffset:X8}");
+                            }
                         }
-                        else
-                        {
-                            ExportInformationList.Add($"{isbe.FileName} - No data - Data Location: 0x{isbe.DataOffset:X8}");
-                        }
+                    } else
+                    {
+                        ExportInformationList.Add("This export contains no embedded audio");
                     }
                     CurrentLoadedExport = exportEntry;
                 }

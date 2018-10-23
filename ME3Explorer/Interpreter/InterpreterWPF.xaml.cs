@@ -575,7 +575,7 @@ namespace ME3Explorer
                     CurrentLoadedProperties = CurrentLoadedExport.GetProperties(includeNoneProperties: true);
                     foreach (UProperty prop in CurrentLoadedProperties)
                     {
-                        GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
+                        GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport, PropertyChangedHandler: OnUPropertyTreeViewEntry_PropertyChanged);
                     }
                 }
                 catch (Exception ex)
@@ -604,15 +604,15 @@ namespace ME3Explorer
 
 
         #region Static tree generating code (shared with BinaryInterpreterWPF)
-        public static void GenerateUPropertyTreeForProperty(UProperty prop, UPropertyTreeViewEntry parent, IExportEntry export, string displayPrefix = "")
+        public static void GenerateUPropertyTreeForProperty(UProperty prop, UPropertyTreeViewEntry parent, IExportEntry export, string displayPrefix = "", PropertyChangedEventHandler PropertyChangedHandler = null)
         {
-            var upropertyEntry = GenerateUPropertyTreeViewEntry(prop, parent, export, displayPrefix);
+            var upropertyEntry = GenerateUPropertyTreeViewEntry(prop, parent, export, displayPrefix, PropertyChangedHandler);
             if (prop.PropType == PropertyType.ArrayProperty)
             {
                 int i = 0;
                 foreach (UProperty listProp in (prop as ArrayPropertyBase).ValuesAsProperties)
                 {
-                    GenerateUPropertyTreeForProperty(listProp, upropertyEntry, export, $" Item {i++}:");
+                    GenerateUPropertyTreeForProperty(listProp, upropertyEntry, export, $" Item {i++}:", PropertyChangedHandler);
                 }
             }
             if (prop.PropType == PropertyType.StructProperty)
@@ -620,12 +620,12 @@ namespace ME3Explorer
                 var sProp = prop as StructProperty;
                 foreach (var subProp in sProp.Properties)
                 {
-                    GenerateUPropertyTreeForProperty(subProp, upropertyEntry, export);
+                    GenerateUPropertyTreeForProperty(subProp, upropertyEntry, export, PropertyChangedHandler: PropertyChangedHandler);
                 }
             }
         }
 
-        public static UPropertyTreeViewEntry GenerateUPropertyTreeViewEntry(UProperty prop, UPropertyTreeViewEntry parent, IExportEntry parsingExport, string displayPrefix = "")
+        public static UPropertyTreeViewEntry GenerateUPropertyTreeViewEntry(UProperty prop, UPropertyTreeViewEntry parent, IExportEntry parsingExport, string displayPrefix = "", PropertyChangedEventHandler PropertyChangedHandler = null)
         {
             string displayName = $"{prop.StartOffset.ToString("X4")}{displayPrefix}";
             if (parent.Property == null || !parent.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)))
@@ -729,10 +729,41 @@ namespace ME3Explorer
                 ParsedValue = parsedValue,
                 DisplayName = displayName,
                 Parent = parent,
+                AttachedExport = parsingExport
             };
-            //item.PropertyUpdated += OnPropertyUpdated;
+            if (PropertyChangedHandler != null)
+            {
+                item.PropertyChanged += PropertyChangedHandler;
+            }
             parent.ChildrenProperties.Add(item);
             return item;
+        }
+
+        private void OnUPropertyTreeViewEntry_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var uptvi = (UPropertyTreeViewEntry)sender;
+            switch (e.PropertyName)
+            {
+                case "ColorStructCode":
+                    var colorStruct = uptvi.Property as StructProperty;
+                    uptvi.ChildrenProperties.ClearEx();
+                    foreach (var subProp in colorStruct.Properties)
+                    {
+                        InterpreterWPF.GenerateUPropertyTreeForProperty(subProp, uptvi, uptvi.AttachedExport, PropertyChangedHandler: OnUPropertyTreeViewEntry_PropertyChanged);
+                    }
+                    var a = colorStruct.GetProp<ByteProperty>("A");
+                    var r = colorStruct.GetProp<ByteProperty>("R");
+                    var g = colorStruct.GetProp<ByteProperty>("G");
+                    var b = colorStruct.GetProp<ByteProperty>("B");
+
+                    DynamicByteProvider byteProvider = Interpreter_Hexbox.ByteProvider as DynamicByteProvider;
+                    byteProvider.WriteByte(a.ValueOffset, a.Value);
+                    byteProvider.WriteByte(r.ValueOffset, r.Value);
+                    byteProvider.WriteByte(g.ValueOffset, g.Value);
+                    byteProvider.WriteByte(b.ValueOffset, b.Value);
+                    Interpreter_Hexbox.Refresh();
+                    break;
+            }
         }
 
         /// <summary>
@@ -1543,18 +1574,12 @@ namespace ME3Explorer
                 var dataCxtx = tb.DataContext as UPropertyTreeViewEntry;
                 if (dataCxtx.Property != null)
                 {
-                    dataCxtx.ChildrenProperties.ClearEx();
 
                     var colorStruct = dataCxtx.Property as StructProperty;
                     var a = colorStruct.GetProp<ByteProperty>("A");
                     var r = colorStruct.GetProp<ByteProperty>("R");
                     var g = colorStruct.GetProp<ByteProperty>("G");
                     var b = colorStruct.GetProp<ByteProperty>("B");
-
-                    a.Value = tb.SelectedColor.Value.A;
-                    r.Value = tb.SelectedColor.Value.R;
-                    g.Value = tb.SelectedColor.Value.G;
-                    b.Value = tb.SelectedColor.Value.B;
 
                     DynamicByteProvider byteProvider = Interpreter_Hexbox.ByteProvider as DynamicByteProvider;
                     byteProvider.WriteByte(a.ValueOffset, a.Value);
@@ -1563,10 +1588,7 @@ namespace ME3Explorer
                     byteProvider.WriteByte(b.ValueOffset, b.Value);
 
                     //Regenerate children nodes
-                    foreach (var subProp in colorStruct.Properties)
-                    {
-                        GenerateUPropertyTreeForProperty(subProp, dataCxtx, CurrentLoadedExport);
-                    }
+
                     Debug.WriteLine("Updating");
                 }
             }
@@ -1583,6 +1605,54 @@ namespace ME3Explorer
         }
         public event PropertyChangedEventHandler PropertyChanged;
         private Brush _foregroundColor = Brushes.DarkSeaGreen;
+
+        public IExportEntry AttachedExport;
+        private string _colorStructCode;
+        /// <summary>
+        /// This property is used as a databinding workaround for when colorpicker is used as we can't convert back with a reference to the struct.
+        /// </summary>
+        public string ColorStructCode
+        {
+            get
+            {
+                if (Property is StructProperty colorStruct)
+                {
+                    if (colorStruct.StructType == "Color" || colorStruct.StructType == "LinearColor")
+                    {
+                        if (_colorStructCode != null) return _colorStructCode;
+
+                        var a = colorStruct.GetProp<ByteProperty>("A").Value;
+                        var r = colorStruct.GetProp<ByteProperty>("R").Value;
+                        var g = colorStruct.GetProp<ByteProperty>("G").Value;
+                        var b = colorStruct.GetProp<ByteProperty>("B").Value;
+
+                        _colorStructCode = $"#{a:X2}{r:X2}{g:X2}{b:X2}";
+                        return _colorStructCode;
+                    }
+                }
+                return null;
+            }
+            set
+            {
+                if (_colorStructCode != value)
+                {
+                    var colorStruct = Property as StructProperty;
+                    var a = colorStruct.GetProp<ByteProperty>("A");
+                    var r = colorStruct.GetProp<ByteProperty>("R");
+                    var g = colorStruct.GetProp<ByteProperty>("G");
+                    var b = colorStruct.GetProp<ByteProperty>("B");
+                    var newColor = (Color)ColorConverter.ConvertFromString(value);
+                    a.Value = newColor.A;
+                    r.Value = newColor.R;
+                    g.Value = newColor.G;
+                    b.Value = newColor.B;
+
+                    _colorStructCode = value;
+                    OnPropertyChanged("ColorStructCode");
+                }
+            }
+        }
+
         private bool isSelected;
         public bool IsSelected
         {
