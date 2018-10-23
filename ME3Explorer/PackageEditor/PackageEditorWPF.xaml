@@ -29,6 +29,7 @@
             <VirtualizingStackPanel/>
         </ItemsPanelTemplate>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+        <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <Converters:PackageEditorWPFActiveViewHighlightConverter x:Key="PackageEditorWPFActiveViewHighlightConverter"/>
         <Converters:ObjectStructPropertyTypeConverter x:Key="ObjectStructPropertyTypeConverter"/>
     </Window.Resources>
@@ -280,7 +281,7 @@
                     </TreeView.ContextMenu>
                 </TreeView>
                 <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Grid.Row="1"/>
-                <TabControl Name="EditorTabs" Grid.Column="2" Grid.Row="1" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                <TabControl Name="EditorTabs" Grid.Column="2" Grid.Row="1">
                     <TabItem Name="Intro_Tab" Header="Welcome">
                         <StackPanel>
                             <TextBlock Margin="5" Text="Welcome to Package Editor WPF, the rewritten version of Package Editor" FontWeight="Bold"/>
@@ -306,28 +307,54 @@
                             <LineBreak/>
                             and will take some time for development to complete.
                             </TextBlock>
+
+                            <Grid HorizontalAlignment="Center" Margin="20" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="280"/>
+                                    <ColumnDefinition Width="280"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Recently opened items" Grid.Row="0" Grid.ColumnSpan="5" TextAlignment="Center" FontSize="20" FontWeight="Light" Margin="10"/>
+                                <Button Name="RecentButton1" Content="Item" Grid.Row="1" Grid.Column="0" Margin="3" Padding="3"/>
+                                <Button Name="RecentButton2" Content="Item" Grid.Row="1" Grid.Column="1" Margin="3" Padding="3"/>
+                                <Button Name="RecentButton3" Content="Item" Grid.Row="2" Grid.Column="0" Margin="3" Padding="3"/>
+                                <Button Name="RecentButton4" Content="Item" Grid.Row="2" Grid.Column="1" Margin="3" Padding="3"/>
+                                <Button Name="RecentButton5" Content="Item" Grid.Row="3" Grid.Column="0" Margin="3" Padding="3"/>
+                                <Button Name="RecentButton6" Content="Item" Grid.Row="3" Grid.Column="1" Margin="3" Padding="3"/>
+                                <Button Name="RecentButton7" Content="Item" Grid.Row="4" Grid.Column="0" Margin="3" Padding="3"/>
+                                <Button Name="RecentButton8" Content="Item" Grid.Row="4" Grid.Column="1" Margin="3" Padding="3"/>
+                                <Button Name="RecentButton9" Content="Item" Grid.Row="5" Grid.Column="0" Margin="3" Padding="3"/>
+                                <Button Name="RecentButton10" Content="Item" Grid.Row="5" Grid.Column="1" Margin="3" Padding="3"/>
+                            </Grid>
                         </StackPanel>
                     </TabItem>
                     <!--<TabItem Name="Properties_Tab" Header="Properties"/>-->
-                    <TabItem Name="Interpreter_Tab" Header="Interpreter">
+                    <TabItem Name="Interpreter_Tab" Header="Interpreter" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <global:InterpreterWPF x:Name="InterpreterTab_Interpreter"/>
                     </TabItem>
-                    <TabItem Name="Metadata_Tab" Header="Metadata">
+                    <TabItem Name="Metadata_Tab" Header="Metadata" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <metadataeditor:MetadataEditorWPF x:Name="MetadataTab_MetadataEditor"/>
                     </TabItem>
-                    <TabItem Name="Bio2DAViewer_Tab" Header="Bio2DA Editor">
+                    <TabItem Name="Bio2DAViewer_Tab" Header="Bio2DA Editor" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <global:Bio2DAEditorWPF x:Name="Bio2DATab_Bio2DAEditor"/>
                     </TabItem>
-                    <TabItem Name="BinaryInterpreter_Tab" Header="Binary Interpreter">
+                    <TabItem Name="BinaryInterpreter_Tab" Header="Binary Interpreter" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <global:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter"/>
                     </TabItem>
-                    <TabItem Name="Script_Tab" Header="Script">
+                    <TabItem Name="Script_Tab" Header="Script" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <global:UnrealScriptWPF x:Name="ScriptTab_UnrealScriptEditor"/>
                     </TabItem>
-                    <TabItem Name="CurveEditor_Tab" Header="Curve Editor">
+                    <TabItem Name="CurveEditor_Tab" Header="Curve Editor" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <CurveEd:CurveEditor x:Name="CurveTab_CurveEditor"/>
                     </TabItem>
-                    <TabItem Name="Sound_Tab" Header="Sound">
+                    <TabItem Name="Sound_Tab" Header="Sound" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <global:Soundpanel x:Name="SoundTab_Soundpanel"/>
                     </TabItem>
                 </TabControl>

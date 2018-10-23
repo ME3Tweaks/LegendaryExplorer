@@ -521,6 +521,7 @@
     <Compile Include="SharedUI\AddPropertyDialogWPF.xaml.cs">
       <DependentUpon>AddPropertyDialogWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\Converters\NullVisibilityConverter.cs" />
     <Compile Include="SharedUI\Converters\NullOrEmptyStringVisibilityConverter.cs" />
     <Compile Include="SharedUI\Converters\ColorCodeConverter.cs" />
     <Compile Include="SharedUI\Converters\UPropertyColorPickerVisibilityConverter.cs" />

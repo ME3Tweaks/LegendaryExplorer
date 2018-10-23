@@ -73,7 +73,7 @@ namespace ME3Explorer
         /// Used to populate the metadata editor values so the list does not constantly need to rebuilt, which can slow down the program on large files like SFXGame or BIOC_Base.
         /// </summary>
         List<string> AllEntriesList;
-
+        List<Button> RecentButtons = new List<Button>();
         //Objects in this collection are displayed on the left list view (names, imports, exports)
         public ObservableCollectionExtended<object> LeftSideList_ItemsSource { get; set; }
             = new ObservableCollectionExtended<object>();
@@ -591,7 +591,7 @@ namespace ME3Explorer
 
                     for (int i = numExportsToEnumerate; i < compareFile.ExportCount; i++)
                     {
-                        changedExports.Add("Export only exists in " + file + ": " + (i+1) + " " + enumerateExtras.Exports[i].GetFullPath);
+                        changedExports.Add("Export only exists in " + file + ": " + (i + 1) + " " + enumerateExtras.Exports[i].GetFullPath);
                     }
 
                     sw.Stop();
@@ -619,7 +619,7 @@ namespace ME3Explorer
             ExportLoaders[Bio2DATab_Bio2DAEditor] = Bio2DAViewer_Tab;
             ExportLoaders[ScriptTab_UnrealScriptEditor] = Script_Tab;
             ExportLoaders[BinaryInterpreterTab_BinaryInterpreter] = BinaryInterpreter_Tab;
-
+            RecentButtons.AddRange(new Button[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10, });
             LoadRecentList();
             RefreshRecent(false);
         }
@@ -883,7 +883,7 @@ namespace ME3Explorer
             }
             Recents_MenuItem.IsEnabled = true;
 
-
+            int i = 0;
             foreach (string filepath in RFiles)
             {
                 MenuItem fr = new MenuItem()
@@ -891,14 +891,26 @@ namespace ME3Explorer
                     Header = filepath.Replace("_", "__"),
                     Tag = filepath
                 };
+                RecentButtons[i].Visibility = Visibility.Visible;
+                RecentButtons[i].Content = System.IO.Path.GetFileName(filepath);
+                RecentButtons[i].Click -= RecentFile_click;
+                RecentButtons[i].Click += RecentFile_click;
+                RecentButtons[i].Tag = filepath;
+
                 fr.Click += RecentFile_click;
                 Recents_MenuItem.Items.Add(fr);
+                i++;
+            }
+            while (i < 10)
+            {
+                RecentButtons[i].Visibility = Visibility.Collapsed;
+                i++;
             }
         }
 
         private void RecentFile_click(object sender, EventArgs e)
         {
-            string s = ((MenuItem)sender).Tag.ToString();
+            string s = ((FrameworkElement)sender).Tag.ToString();
             if (File.Exists(s))
             {
                 LoadFile(s);
