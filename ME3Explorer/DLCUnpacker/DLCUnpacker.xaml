@@ -15,8 +15,7 @@
             <RowDefinition Height="20"/>
             <RowDefinition Height="20"/>
             <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"/>
@@ -31,16 +30,21 @@
         <TextBlock Grid.Row="3" Text="Available space:"/>
         <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding AvailableSpaceText}"/>
 
-        <TextBlock Grid.Row="5" Grid.ColumnSpan="5">
-            <TextBlock.Text>
+        <TextBlock Grid.Row="5" Grid.ColumnSpan="5" Text="{Binding CurrentOperationText}">
+            <!--<TextBlock.Text>
                 <MultiBinding StringFormat="{}{0} ({1}%)">
                     <Binding Path="CurrentOperationText" />
                     <Binding Path="CurrentOperationPercentValue" />
                 </MultiBinding>
-            </TextBlock.Text>
+            </TextBlock.Text>-->
         </TextBlock>
 
-        <Button Grid.Row="6" Command="{Binding UnpackDLCCommand}" Content="Unpack DLC"/>
-        <ProgressBar Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="4" Value="{Binding CurrentOverallProgressValue}" IsIndeterminate="{Binding ProgressBarIndeterminate}"/>
+
+
+        <Button Grid.Row="6" Grid.Column="0"  Command="{Binding UnpackDLCCommand}" Content="Unpack DLC"/>
+        <StackPanel  Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="4" VerticalAlignment="Center">
+            <ProgressBar Value="{Binding OverallProgressValue}" Height="23"/>
+            <ProgressBar Value="{Binding CurrentOverallProgressValue}" IsIndeterminate="{Binding ProgressBarIndeterminate}" Height="23"/>
+        </StackPanel>
     </Grid>
 </global:WPFBase>

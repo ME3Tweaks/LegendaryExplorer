@@ -94,6 +94,20 @@ namespace ME3Explorer.DLCUnpacker
             }
         }
 
+        private int _overallProgressValue;
+        public int OverallProgressValue
+        {
+            get { return _overallProgressValue; }
+            set
+            {
+                if (value != _overallProgressValue)
+                {
+                    _overallProgressValue = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         //Used for the current operation (e.g. which DLC is being unpacked, it's %)
         private int _currentOperationProgressValue;
         public int CurrentOperationPercentValue
@@ -262,10 +276,38 @@ namespace ME3Explorer.DLCUnpacker
         {
             foreach (var sfar in sfarsToUnpack)
             {
+                sfar.PropertyChanged += SFAR_PropertyChanged;
                 string DLCname = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(sfar.filePath)));
                 string outPath = Path.Combine(ME3Directory.DLCPath, DLCname);
                 sfar.Extract(sfar.filePath, outPath);
             }
+        }
+
+        private void SFAR_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            Debug.WriteLine("Prop change " + e.PropertyName);
+            switch (e.PropertyName)
+            {
+                case "CurrentStatus":
+                    CurrentOperationText = (sender as ME3DLC).CurrentStatus;
+                    break;
+                case "CurrentProgress":
+                    CurrentOverallProgressValue = (sender as ME3DLC).CurrentProgress;
+                    break;
+                case "CurrentFilesProcessed":
+                    RecalculateOverallProgress();
+                    break;
+                case "LoadingFileIntoRAM":
+                    ProgressBarIndeterminate = (sender as ME3DLC).LoadingFileIntoRAM;
+                    break;
+            }
+        }
+
+        private void RecalculateOverallProgress()
+        {
+            int totalFiles = (int) sfarsToUnpack.Sum(x => x.TotalFilesInDLC);
+            int processedFiles = sfarsToUnpack.Sum(x => x.CurrentFilesProcessed);
+            OverallProgressValue = (int) (100.0 * processedFiles) / totalFiles;
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)

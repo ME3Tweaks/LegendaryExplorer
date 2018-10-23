@@ -27,11 +27,15 @@ using System.Security.Cryptography;
 using System.Text;
 using StreamHelpers;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace ME3Explorer.Unreal
 {
-    class ME3DLC
+    class ME3DLC : INotifyPropertyChanged
     {
+
+
         const uint SfarTag = 0x53464152; // 'SFAR'
         const uint SfarVersion = 0x00010000;
         const uint LZMATag = 0x6c7a6d61; // 'lzma'
@@ -45,8 +49,60 @@ namespace ME3Explorer.Unreal
         uint maxBlockSize;
         List<ushort> blockSizes;
         public string filePath;
+
+        /// <summary>
+        /// Assign a handler to this to subscribe to progress changes in this class.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public long UncompressedSize { get; private set; }
         public int GetNumberOfFiles => (int)filesCount;
+
+        private string _currentStatus;
+        /// <summary>
+        /// Current text describing what is currently going on with this DLC.
+        /// </summary>
+        public string CurrentStatus
+        {
+            get { return _currentStatus; }
+            set { SetProperty(ref _currentStatus, value); }
+        }
+
+        private bool _loadingFileIntoRAM;
+        public bool LoadingFileIntoRAM
+        {
+            get { return _loadingFileIntoRAM; }
+            set { SetProperty(ref _loadingFileIntoRAM, value); }
+        }
+
+        /// <summary>
+        /// The total number of files in this DLC
+        /// </summary>
+        public uint TotalFilesInDLC
+        {
+            get { return filesCount; }
+            //set { SetProperty(ref _totalFilesInDLC, value); }
+        }
+
+        private int _currentFilesProcessed;
+        /// <summary>
+        /// Current number of files that have been extracted from this DLC
+        /// </summary>
+        public int CurrentFilesProcessed
+        {
+            get { return _currentFilesProcessed; }
+            set { SetProperty(ref _currentFilesProcessed, value); }
+        }
+
+        private int _currentProgress;
+        /// <summary>
+        /// Current over progress percent for this DLC's extraction
+        /// </summary>
+        public int CurrentProgress
+        {
+            get { return _currentProgress; }
+            set { SetProperty(ref _currentProgress, value); }
+        }
 
         public struct FileEntry
         {
@@ -144,6 +200,8 @@ namespace ME3Explorer.Unreal
                     break;
                 }
             }
+
+            //Exception thrown when DLC is already unpacked it seems (or was interrupted)
             if (filenamesIndex == -1)
                 throw new Exception("filenames entry not found");
         }
@@ -153,8 +211,10 @@ namespace ME3Explorer.Unreal
             if (!File.Exists(SFARfilename))
                 throw new Exception("filename missing");
 
+            LoadingFileIntoRAM = true;
+            CurrentStatus = "Loading [DLCNAMEHERE] into memory";
             byte[] buffer = File.ReadAllBytes(SFARfilename);
-
+            LoadingFileIntoRAM = false;
             File.Delete(SFARfilename);
             using (FileStream outputFile = new FileStream(SFARfilename, FileMode.Create, FileAccess.Write))
             {
@@ -171,27 +231,33 @@ namespace ME3Explorer.Unreal
             using (MemoryStream stream = new MemoryStream(buffer))
             {
                 int lastProgress = -1;
-                for (int i = 0; i < filesCount; i++, currentProgress++)
+                for (int i = 0; i < filesCount; i++, CurrentFilesProcessed++)
                 {
                     if (filenamesIndex == i)
                         continue;
                     if (filesList[i].filenamePath == null)
                         throw new Exception("filename missing");
 
-                    if (mainWindow != null)
-                        mainWindow.updateStatusLabel2("File " + (i + 1) + " of " + filesList.Count() + " - " + Path.GetFileName(filesList[i].filenamePath));
-                    if (installer != null)
-                        installer.updateStatusPrepare("Unpacking DLC " + ((currentProgress + 1) * 100 / totalNumber) + "%");
-                    if (ipc)
-                    {
-                        int newProgress = (100 * currentProgress) / totalNumber;
-                        if (lastProgress != newProgress)
-                        {
-                            Console.WriteLine("[IPC]TASK_PROGRESS " + newProgress);
-                            Console.Out.Flush();
-                            lastProgress = newProgress;
-                        }
-                    }
+                    CurrentStatus = "File " + (i + 1) + " of " + filesList.Count() + " - " + Path.GetFileName(filesList[i].filenamePath);
+                    CurrentProgress = (int)(100.0 * CurrentFilesProcessed) / (int)TotalFilesInDLC;
+
+                    //if (mainWindow != null)
+                    //    mainWindow.updateStatusLabel2("File " + (i + 1) + " of " + filesList.Count() + " - " + Path.GetFileName(filesList[i].filenamePath));
+                    //if (installer != null)
+                    //    installer.updateStatusPrepare("Unpacking DLC " + ((currentProgress + 1) * 100 / totalNumber) + "%");
+
+                    //The following code will have to be handled in the UI sectionas only it knows the total number of files.
+                    //It also decouples the code
+                    //if (ipc)
+                    //{
+                    //    int newProgress = (100 * currentProgress) / totalNumber;
+                    //    if (lastProgress != newProgress)
+                    //    {
+                    //        Console.WriteLine("[IPC]TASK_PROGRESS " + newProgress);
+                    //        Console.Out.Flush();
+                    //        lastProgress = newProgress;
+                    //    }
+                    //}
 
                     int pos = filesList[i].filenamePath.IndexOf("\\BIOGame\\DLC\\", StringComparison.OrdinalIgnoreCase);
                     string filename = filesList[i].filenamePath.Substring(pos + ("\\BIOGame\\DLC\\").Length).Replace('/', '\\');
@@ -249,5 +315,32 @@ namespace ME3Explorer.Unreal
                 }
             }
         }
+
+        #region PropertyChanged stuff
+        protected virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (Equals(storage, value))
+            {
+                return false;
+            }
+
+            storage = value;
+
+            if (propertyName != null)
+            {
+                OnPropertyChanged(propertyName);
+            }
+
+            return true;
+        }
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            var handler = PropertyChanged;
+
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
+
     }
 }
