@@ -412,6 +412,9 @@ namespace ME3Explorer
                     case PropertyType.ArrayProperty:
                         newProperty = new ArrayProperty<IntProperty>(ArrayType.Int, prop.Item1); //We can just set it to int as it will be reparsed and resolved.
                         break;
+                    case PropertyType.NameProperty:
+                        newProperty = new NameProperty(prop.Item1) { Value = "None" };
+                        break;
                     case PropertyType.StructProperty:
                         // Generate the bytecode and then read it as a prop.
                         // This is effectively the way classic interpreter does it
@@ -1158,7 +1161,7 @@ namespace ME3Explorer
                             {
                                 if (index >= 0 && index < CurrentLoadedExport.FileRef.Names.Count)
                                 {
-                                    ParsedValue_TextBlock.Text = CurrentLoadedExport.FileRef.getNameEntry(index) + "_" + number;
+                                    //ParsedValue_TextBlock.Text = CurrentLoadedExport.FileRef.getNameEntry(index) + "_" + number;
                                 }
                                 else
                                 {
