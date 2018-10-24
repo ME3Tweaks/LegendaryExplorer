@@ -6,46 +6,65 @@
         xmlns:local="clr-namespace:ME3Explorer.PackageEditorWPFControls"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        Title="Package porting options" Height="240" Width="450"
+        SizeToContent="WidthAndHeight"
+        Title="Package porting options"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <StackPanel Margin="5">
         <TextBlock HorizontalAlignment="Center" Text="Select what you'd like to do for this porting operation."/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button  Width="200" Height="60" Margin="5" Click="MergeButton_Click">
+            <Button  Width="300" Height="60" Margin="5" Click="MergeButton_Click"  Command="{Binding MergeTreeCommand}">
                 <Button.Content>
                     <StackPanel HorizontalAlignment="Center">
                         <TextBlock Text="Merge" HorizontalAlignment="Center" FontWeight="Bold"/>
-                        <TextBlock Text="children of X into Y" Foreground="Gray" FontSize="9"  HorizontalAlignment="Center"/>
+                        <TextBlock Foreground="Gray" FontSize="9"  HorizontalAlignment="Center">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="children of {0} into {1}">
+                                    <Binding Path="SourceEntryObjectName" />
+                                    <Binding Path="TargetEntryObjectName" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
                     </StackPanel>
                 </Button.Content>
             </Button>
-            <Button Width="200" Height="60" Margin="5" Click="CloneTreeButton_Click">
+            <Button Width="300" Height="60" Margin="5" Click="CloneTreeButton_Click"  Command="{Binding CloneTreeCommand}">
                 <Button.Content>
                     <StackPanel HorizontalAlignment="Center">
                         <TextBlock Text="Clone" HorizontalAlignment="Center" FontWeight="Bold"/>
-                        <TextBlock Text="Clone X's tree as a child of Y" Foreground="Gray" FontSize="9"  HorizontalAlignment="Center"/>
+                        <TextBlock Foreground="Gray" FontSize="9" HorizontalAlignment="Center">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="Clone {0}'s tree as a child of {1}">
+                                    <Binding Path="SourceEntryObjectName" />
+                                    <Binding Path="TargetEntryObjectName" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
                     </StackPanel>
                 </Button.Content>
             </Button>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Width="200" Height="60"  Margin="5" Command="{Binding ReplaceDataCommand}">
+            <Button Width="300" Height="60"  Margin="5" Command="{Binding ReplaceDataCommand}">
                 <Button.Content>
-                    <StackPanel HorizontalAlignment="Center">
-                        <TextBlock Text="Replace export data of X" HorizontalAlignment="Center" FontWeight="Bold"/>
-                        <TextBlock Text="{Binding Path=TargetEntryObjectName, StringFormat='with export data from {0}'}" Foreground="Gray" FontSize="9"  HorizontalAlignment="Center"/>
-                    </StackPanel>
+                    <Grid HorizontalAlignment="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="{Binding Path=SourceEntryObjectName, StringFormat='Replace export data of {0}'}" TextWrapping="Wrap" HorizontalAlignment="Center" FontWeight="Bold"/>
+                        <TextBlock Grid.Row="1" Text="{Binding Path=TargetEntryObjectName, StringFormat='with export data from {0}'}" TextWrapping="Wrap" Foreground="Gray" FontSize="9"  HorizontalAlignment="Center"/>
+                    </Grid>
                 </Button.Content>
             </Button>
-            <Button  Width="200" Height="60" Margin="5" Click="AddSingularButton_Click">
+            <Button  Width="300" Height="60" Margin="5" Click="AddSingularButton_Click"  Command="{Binding AddSingularCommand}">
                 <Button.Content>
                     <StackPanel HorizontalAlignment="Center">
-                        <TextBlock Text="Add only X" HorizontalAlignment="Center" FontWeight="Bold"/>
-                        <TextBlock Text="as child of Y" Foreground="Gray" FontSize="9"  HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding Path=SourceEntryObjectName, StringFormat='Add only {0}'}" HorizontalAlignment="Center" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding Path=TargetEntryObjectName, StringFormat='as child of {0}'}" Foreground="Gray" FontSize="9"  HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Button.Content>
             </Button>
         </StackPanel>
-        <Button Content="Cancel" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="5" Padding="3" Click="CancelButton_Click"/>
+        <Button Content="Cancel" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="5,5,5,0" Padding="8" Click="CancelButton_Click"/>
     </StackPanel>
 </Window>

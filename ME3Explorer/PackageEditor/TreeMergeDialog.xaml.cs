@@ -33,7 +33,8 @@ namespace ME3Explorer.PackageEditorWPFControls
         public PortingOption PortingOptionChosen;
         private IEntry sourceEntry;
         private IEntry targetEntry;
-
+        private bool sourceHasChildren;
+        private bool targetHasChildren;
         #region propertychangedhandling
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
@@ -64,10 +65,21 @@ namespace ME3Explorer.PackageEditorWPFControls
         public string SourceEntryObjectName { get { return sourceEntry.ObjectName; } }
 
         public ICommand ReplaceDataCommand { get; set; }
+        public ICommand AddSingularCommand { get; set; }
+        public ICommand MergeTreeCommand { get; set; }
+        public ICommand CloneTreeCommand { get; set; }
+
         public TreeMergeDialog(IEntry sourceEntry, IEntry targetEntry)
         {
             this.sourceEntry = sourceEntry;
             this.targetEntry = targetEntry;
+
+            //target can be null, which means root node
+            sourceHasChildren = sourceEntry.FileRef.Exports.Any(x => x.idxLink == sourceEntry.UIndex);
+            targetHasChildren = targetEntry == null || targetEntry.FileRef.Exports.Any(x => x.idxLink == targetEntry.UIndex);
+            sourceHasChildren |= sourceEntry.FileRef.Imports.Any(x => x.idxLink == sourceEntry.UIndex);
+            targetHasChildren |= targetEntry == null || targetEntry.FileRef.Imports.Any(x => x.idxLink == targetEntry.UIndex);
+
             LoadCommands();
             InitializeComponent();
         }
@@ -75,6 +87,47 @@ namespace ME3Explorer.PackageEditorWPFControls
         private void LoadCommands()
         {
             ReplaceDataCommand = new RelayCommand(ReplaceData, CanReplaceData);
+            MergeTreeCommand = new RelayCommand(MergeTree, CanMergeTree);
+            AddSingularCommand = new RelayCommand(AddSingular, CanAddSingular);
+            CloneTreeCommand = new RelayCommand(CloneTree, CanCloneTree);
+        }
+
+        private void CloneTree(object obj)
+        {
+            PortingOptionChosen = PortingOption.AddTreeAsChild;
+            Close();
+        }
+
+        private void AddSingular(object obj)
+        {
+            PortingOptionChosen = PortingOption.AddSingularAsChild;
+            Close();
+        }
+
+        private void MergeTree(object obj)
+        {
+            PortingOptionChosen = PortingOption.MergeTreeChildren;
+            Close();
+        }
+
+        private bool CanMergeTree(object obj)
+        {
+            return /*EntryTypesMatch() &&*/ sourceHasChildren && targetHasChildren;
+        }
+
+        private bool CanAddSingular(object obj)
+        {
+            return true; //this is always allowed
+        }
+
+        private bool CanCloneTree(object obj)
+        {
+            return sourceHasChildren;
+        }
+
+        private bool EntryTypesMatch()
+        {
+            return (sourceEntry is IExportEntry && targetEntry is IExportEntry) || (sourceEntry is ImportEntry && targetEntry is ImportEntry);
         }
 
         private void ReplaceData(object obj)
