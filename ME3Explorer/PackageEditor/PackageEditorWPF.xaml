@@ -28,6 +28,7 @@
         <ItemsPanelTemplate x:Key="VSP">
             <VirtualizingStackPanel/>
         </ItemsPanelTemplate>
+        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <Converters:PackageEditorWPFActiveViewHighlightConverter x:Key="PackageEditorWPFActiveViewHighlightConverter"/>
@@ -93,7 +94,8 @@
                 </MenuItem>
 
                 <MenuItem Header="Tools" Padding="4">
-                    <MenuItem Name="ComparePackageMenuItem" Header="Compare with another package" Command="{Binding ComparePackagesCommand}"/>
+                    <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}"/>
+                    <MenuItem Header="Compare with another package" ToolTip="Compare another version of this package to see what exports and imports have changed" Command="{Binding ComparePackagesCommand}"/>
                     <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <MenuItem Header="Complete export data"  Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file"/>
                         <MenuItem Header="Binary data only"   Command="{Binding ExportBinaryDataCommand}" ToolTip="Export only binary data (bytes after properties) to a .bin file"/>
@@ -103,7 +105,7 @@
                         <MenuItem Header="Binary data only"  Command="{Binding ImportBinaryDataCommand}" ToolTip="Import a .bin file and replace only the binary section of this export"/>
                     </MenuItem>
                     <Separator/>
-                    <MenuItem Name="HexConverterMenuItem" Header="Hex Converter" Click="HexConverterMenuItem_Click" >
+                    <MenuItem Name="HexConverterMenuItem" Header="Hex Converter" Click="HexConverterMenuItem_Click" ToolTip="Open the HexConverter application">
                         <MenuItem.Icon>
                             <Image Source="/Resources/hexconverter_icon64x64.png"/>
                         </MenuItem.Icon>
@@ -112,8 +114,8 @@
                 </MenuItem>
 
                 <MenuItem Header="Options" Padding="4">
-                    <MenuItem Name="TLKManager_MenuItem" Header="TLK Manager" Click="TLKManager_MenuItem_Click"/>
-                    <MenuItem Name="TouchComfyMode_MenuItem" Header="Touch Comfy Mode" Click="TouchComfyMode_Clicked"/>
+                    <MenuItem Name="TLKManager_MenuItem" Header="TLK Manager" Click="TLKManager_MenuItem_Click" ToolTip="Open TLK Manager"/>
+                    <MenuItem Name="TouchComfyMode_MenuItem" Header="Touch Comfy Mode" Click="TouchComfyMode_Clicked" ToolTip="Makes Package Editor WPF a bit easier to use on touch devices"/>
                     <Separator/>
                     <MenuItem Header="Binary Interpreter">
                         <MenuItem Name="BinaryInterpreterWPF_AlwaysAutoParse_MenuItem" Header="Auto-parse generic scans > 20KB" Click="BinaryInterpreterWPF_AlwaysAutoParse_Click" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=BinaryInterpreterWPFAutoScanAlways, Mode=TwoWay}" ToolTip="Automatically parse exports that use Generic Scan that are larger than 20KB.&#10;By default, this is disabled to improve performance."/>
@@ -222,6 +224,23 @@
                             <VirtualizingStackPanel />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" CommandParameter="FromNameView"/>
+                            <MenuItem Header="Edit name" ToolTip="Edits the string this name represents" Command="{Binding EditNameCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                            <MenuItem Header="Clone" Command="{Binding CloneCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            <MenuItem Header="Clone Tree" Command="{Binding CloneTreeCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            <MenuItem Header="Export..." Command="{Binding ExportImportDataVisibilityCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <MenuItem Header="Complete export data" Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                <MenuItem Header="Binary data only" Command="{Binding ExportBinaryDataCommand}" ToolTip="Export only binary data (bytes after properties) to a .bin file" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            </MenuItem>
+                            <MenuItem Header="Import..." Command="{Binding ExportImportDataVisibilityCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <MenuItem Header="Complete export data"  Command="{Binding ImportAllDataCommand}" ToolTip="Import a .bin file and replace the contents of this export" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                <MenuItem Header="Binary data only"  Command="{Binding ImportBinaryDataCommand}" ToolTip="Import a .bin file and replace only the binary section of this export" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            </MenuItem>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
                 </SharedUI:ListBoxScroll>
                 <!-- VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" -->
                 <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" TreeViewItem.Selected="LeftSide_SelectedItemChanged" FontFamily="Consolas" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" ItemsSource="{Binding AllTreeViewNodesX}" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">

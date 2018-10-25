@@ -119,17 +119,8 @@ namespace ME3Explorer
         private bool Visible_ObjectNameRow { get; set; }
         //private List<AdvancedTreeViewItem<TreeViewItem>> AllTreeViewNodes = new List<AdvancedTreeViewItem<TreeViewItem>>();
         public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; set; } = new ObservableCollectionExtended<TreeViewEntry>();
-        #region Commands
-        public ICommand ComparePackagesCommand { get; set; }
-        public ICommand ExportAllDataCommand { get; set; }
-        public ICommand ExportBinaryDataCommand { get; set; }
-        public ICommand ImportAllDataCommand { get; set; }
-        public ICommand ImportBinaryDataCommand { get; set; }
-        public ICommand CloneCommand { get; set; }
-        public ICommand CloneTreeCommand { get; set; }
-        public ICommand FindEntryViaOffsetCommand { get; set; }
-        public ICommand CheckForDuplicateIndexesCommand { get; set; }
 
+        #region Busy variables
         private bool _isBusy;
         public bool IsBusy
         {
@@ -151,6 +142,21 @@ namespace ME3Explorer
             get { return _busyText; }
             set { if (_busyText != value) { _busyText = value; OnPropertyChanged(); } }
         }
+        #endregion
+
+        #region Commands
+        public ICommand ComparePackagesCommand { get; set; }
+        public ICommand ExportAllDataCommand { get; set; }
+        public ICommand ExportBinaryDataCommand { get; set; }
+        public ICommand ImportAllDataCommand { get; set; }
+        public ICommand ImportBinaryDataCommand { get; set; }
+        public ICommand CloneCommand { get; set; }
+        public ICommand CloneTreeCommand { get; set; }
+        public ICommand FindEntryViaOffsetCommand { get; set; }
+        public ICommand CheckForDuplicateIndexesCommand { get; set; }
+        public ICommand EditNameCommand { get; set; }
+        public ICommand ExportImportDataVisibilityCommand { get; set; }
+        public ICommand AddNameCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -160,9 +166,72 @@ namespace ME3Explorer
             ImportAllDataCommand = new RelayCommand(ImportAllData, ExportIsSelected);
             ImportBinaryDataCommand = new RelayCommand(ImportBinaryData, ExportIsSelected);
             CloneCommand = new RelayCommand(CloneEntry, EntryIsSelected);
-            CloneTreeCommand = new RelayCommand(CloneTree, EntryIsSelected);
+            CloneTreeCommand = new RelayCommand(CloneTree, TreeEntryIsSelected);
             FindEntryViaOffsetCommand = new RelayCommand(FindEntryViaOffset, PackageIsLoaded);
             CheckForDuplicateIndexesCommand = new RelayCommand(CheckForDuplicateIndexes, PackageIsLoaded);
+            EditNameCommand = new RelayCommand(EditName, NameIsSelected);
+            AddNameCommand = new RelayCommand(AddName, CanAddName);
+            ExportImportDataVisibilityCommand = new RelayCommand((o)=> { }, ExportIsSelected); //no execution command
+        }
+
+        private void AddName(object obj)
+        {
+            string input = "Enter a new name.";
+            string result = PromptDialog.Prompt(this, input, "Enter new name");
+            if (result != null && result != "")
+            {
+                int idx = Pcc.FindNameOrAdd(result);
+                if (idx != Pcc.Names.Count - 1)
+                {
+                    //not the last
+                    if (CurrentView == CurrentViewMode.Names)
+                    {
+                        LeftSide_ListView.SelectedIndex = idx;
+                    }
+                    MessageBox.Show($"{result} already exists in this package file.\nName index: {idx} (0x{idx:X8})", "Name already exists");
+                }
+                else
+                {
+                    if (CurrentView == CurrentViewMode.Names)
+                    {
+                        LeftSide_ListView.SelectedIndex = idx;
+                    }
+                    MessageBox.Show($"{result} has been added as a name.\nName index: {idx} (0x{idx:X8})", "Name added");
+                }
+            }
+        }
+
+        private bool CanAddName(object obj)
+        {
+            if (obj is string parameter)
+            {
+                if (parameter == "FromTreeView")
+                {
+                    //Ensure we are on names view - used for menu item
+                    return PackageIsLoaded(null) && CurrentView == CurrentViewMode.Names;
+                }
+            }
+            return PackageIsLoaded(null);
+        }
+
+        private bool TreeEntryIsSelected(object obj)
+        {
+            return CurrentView == CurrentViewMode.Tree && EntryIsSelected(null);
+        }
+
+        private bool NameIsSelected(object obj)
+        {
+            return (CurrentView == CurrentViewMode.Names && LeftSide_ListView.SelectedItem is IndexedName);
+        }
+
+        private void EditName(object obj)
+        {
+            string input = $"Enter a new name to replace this name ({(LeftSide_ListView.SelectedItem as IndexedName).Name.Name}) with.";
+            string result = PromptDialog.Prompt(this, input, "Enter new name");
+            if (result != null && result != "")
+            {
+                Pcc.replaceName(LeftSide_ListView.SelectedIndex, result);
+            }
         }
 
         private void CheckForDuplicateIndexes(object obj)
@@ -495,7 +564,7 @@ namespace ME3Explorer
             {
                 return n > 0;
             }
-            else return false;
+            return false;
         }
 
         private bool ImportIsSelected(object obj)
@@ -505,7 +574,7 @@ namespace ME3Explorer
             {
                 return n < 0;
             }
-            else return false;
+            return false;
         }
 
         private bool EntryIsSelected(object obj)
@@ -515,7 +584,7 @@ namespace ME3Explorer
             {
                 return n != 0;
             }
-            else return false;
+            return false;
         }
 
         private bool PackageIsLoaded(object obj)
@@ -892,7 +961,7 @@ namespace ME3Explorer
                     Tag = filepath
                 };
                 RecentButtons[i].Visibility = Visibility.Visible;
-                RecentButtons[i].Content = System.IO.Path.GetFileName(filepath);
+                RecentButtons[i].Content = System.IO.Path.GetFileName(filepath.Replace("_", "__"));
                 RecentButtons[i].Click -= RecentFile_click;
                 RecentButtons[i].Click += RecentFile_click;
                 RecentButtons[i].Tag = filepath;
@@ -1055,7 +1124,6 @@ namespace ME3Explorer
         {
             if (Pcc == null)
                 return;
-            ComparePackageMenuItem.IsEnabled = true;
             ClassNames = new List<int>();
             IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
             for (int i = 0; i < Exports.Count; i++)
