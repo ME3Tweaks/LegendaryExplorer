@@ -965,7 +965,7 @@ namespace ME3Explorer
                 RecentButtons[i].Click -= RecentFile_click;
                 RecentButtons[i].Click += RecentFile_click;
                 RecentButtons[i].Tag = filepath;
-
+                RecentButtons[i].ToolTip = filepath;
                 fr.Click += RecentFile_click;
                 Recents_MenuItem.Items.Add(fr);
                 i++;

@@ -1020,8 +1020,14 @@ namespace ME3Explorer
                     case IntProperty ip:
                         Value_TextBox.Text = ip.Value.ToString();
                         SupportedEditorSetElements.Add(Value_TextBox);
+                        if (newSelectedItem.Parent != null && newSelectedItem.Parent.Property is StructProperty && (newSelectedItem.Parent.Property as StructProperty).StructType == "Rotator")
+                        {
+                            //we support editing rotators as degrees. We will preview the raw value and enter data in degrees instead.
+                            SupportedEditorSetElements.Add(ParsedValue_TextBlock);
+                            Value_TextBox.Text = (ip.Value * 360f / 65536f).ToString("0.0######");
+                            ParsedValue_TextBlock.Text = ip.Value.ToString() + " (raw value)"; //raw
+                        }
                         break;
-
                     case FloatProperty fp:
                         Value_TextBox.Text = fp.Value.ToString();
                         SupportedEditorSetElements.Add(Value_TextBox);
@@ -1107,6 +1113,20 @@ namespace ME3Explorer
 
                 switch (tvi.Property)
                 {
+                    case IntProperty ip:
+                        if (tvi.Parent != null && tvi.Parent.Property is StructProperty && (tvi.Parent.Property as StructProperty).StructType == "Rotator")
+                        {
+                            //yes it is a float - we convert raw value to floating point degrees so we use float to raw int
+                            if (float.TryParse(Value_TextBox.Text, out float degrees))
+                            {
+                                ParsedValue_TextBlock.Text = ((int)(degrees * 65535 / 360)) + " (raw value)";
+                            }
+                            else
+                            {
+                                ParsedValue_TextBlock.Text = "Invalid value";
+                            }
+                        }
+                        break;
                     case ObjectProperty op:
                         {
                             if (int.TryParse(Value_TextBox.Text, out int index))
@@ -1438,12 +1458,24 @@ namespace ME3Explorer
             UPropertyTreeViewEntry tvi = (UPropertyTreeViewEntry)Interpreter_TreeView.SelectedItem;
             if (tvi != null && tvi.Property != null)
             {
-                UProperty tag = tvi.Property;
-                switch (tag)
+                UProperty property = tvi.Property;
+                switch (property)
                 {
                     case IntProperty ip:
                         {
                             //scoped for variable re-use
+
+                            //ROTATORS
+                            if (tvi.Parent != null && tvi.Parent.Property is StructProperty && (tvi.Parent.Property as StructProperty).StructType == "Rotator")
+                            {
+                                //yes it is a float - we convert raw value to floating point degrees so we use float to raw int
+                                if (float.TryParse(Value_TextBox.Text, out float degrees))
+                                {
+                                    ip.Value = (int)(degrees * 65535 / 360);
+                                    updated = true;
+                                }
+                            }
+                            else
                             if (int.TryParse(Value_TextBox.Text, out int i) && i != ip.Value)
                             {
                                 ip.Value = i;
