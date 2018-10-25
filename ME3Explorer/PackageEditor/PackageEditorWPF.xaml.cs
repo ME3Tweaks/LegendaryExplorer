@@ -104,14 +104,15 @@ namespace ME3Explorer
                 }
             }
         }
-        public PropGrid pg;
+
+        public ObservableCollectionExtended<IndexedName> NamesList { get; set; } = new ObservableCollectionExtended<IndexedName>();
+        public ObservableCollectionExtended<string> ClassDropdownList { get; set; } = new ObservableCollectionExtended<string>();
 
         public static readonly string PackageEditorDataFolder = System.IO.Path.Combine(App.AppDataFolder, @"PackageEditor\");
         private readonly string RECENTFILES_FILE = "RECENTFILES";
         public List<string> RFiles;
         private SortedDictionary<int, int> crossPCCObjectMap;
         private string currentFile;
-        private List<int> ClassNames;
         //private HexBox Header_Hexbox;
         private IEntry CurrentlyLoadedEntry;
 
@@ -171,7 +172,7 @@ namespace ME3Explorer
             CheckForDuplicateIndexesCommand = new RelayCommand(CheckForDuplicateIndexes, PackageIsLoaded);
             EditNameCommand = new RelayCommand(EditName, NameIsSelected);
             AddNameCommand = new RelayCommand(AddName, CanAddName);
-            ExportImportDataVisibilityCommand = new RelayCommand((o)=> { }, ExportIsSelected); //no execution command
+            ExportImportDataVisibilityCommand = new RelayCommand((o) => { }, ExportIsSelected); //no execution command
         }
 
         private void AddName(object obj)
@@ -688,6 +689,7 @@ namespace ME3Explorer
             ExportLoaders[Bio2DATab_Bio2DAEditor] = Bio2DAViewer_Tab;
             ExportLoaders[ScriptTab_UnrealScriptEditor] = Script_Tab;
             ExportLoaders[BinaryInterpreterTab_BinaryInterpreter] = BinaryInterpreter_Tab;
+            InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
             RecentButtons.AddRange(new Button[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10, });
             LoadRecentList();
             RefreshRecent(false);
@@ -1013,102 +1015,40 @@ namespace ME3Explorer
 
         #endregion
 
+        /// <summary>
+        /// Updates the data bindings for tree/list view and chagnes visibility of the tree/list view depending on what the currentview mode is. Also forces refresh of all treeview display names
+        /// </summary>
         private void RefreshView()
         {
             if (Pcc == null)
             {
                 return;
             }
-            //ClearList(LeftSide_ListView);
-            IReadOnlyList<ImportEntry> imports = Pcc.Imports;
-            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
-            if (AllTreeViewNodesX.Count > 0)
-            {
-                foreach (TreeViewEntry tv in AllTreeViewNodesX[0].FlattenTree())
-                {
-                    tv.RefreshDisplayName();
-                }
-            }
 
             if (CurrentView == CurrentViewMode.Names)
             {
-                //this doesn't seem possible with LINQ as index is missing
-                var indexedList = new List<object>();
-                for (int i = 0; i < Pcc.Names.Count; i++)
-                {
-                    NameReference nr = Pcc.Names[i];
-                    indexedList.Add(new IndexedName(i, nr));
-                }
-                LeftSideList_ItemsSource.ReplaceAll(indexedList);
+                LeftSideList_ItemsSource.ReplaceAll(NamesList);
             }
 
             if (CurrentView == CurrentViewMode.Imports)
             {
-                LeftSideList_ItemsSource.ReplaceAll(imports);
-                /*
-                List<string> importsList = new List<string>();
-                int padding = imports.Count.ToString().Length;
-
-                for (int i = 0; i < imports.Count; i++)
-                {
-                    //" (0x" + (Pcc.ImportOffset + (i * ImportEntry.byteSize)).ToString("X4") + ")\
-                    string importStr = $"{ i.ToString().PadLeft(padding, '0')}: {imports[i].GetFullPath}";
-                    /*if (imports[i].PackageFullName != "Class" && imports[i].PackageFullName != "Package")
-                    {
-                        importStr += imports[i].PackageFullName + ".";
-                    }
-                    importStr += imports[i].ObjectName;
-                    importsList.Add(importStr);
-                }*/
-                //LeftSide_ListView.ItemsSource = importsList;
+                LeftSideList_ItemsSource.ReplaceAll(Pcc.Imports);
             }
 
             if (CurrentView == CurrentViewMode.Exports)
             {
-                LeftSideList_ItemsSource.ReplaceAll(Exports);
-
-                /*List<string> exps = new List<string>(Exports.Count);
-                int padding = Exports.Count.ToString().Length;
-                for (int i = 0; i < Exports.Count; i++)
-                {
-                    string s = $"{i.ToString().PadLeft(padding, '0')}: ";
-                    IExportEntry exp = Pcc.getExport(i);
-                    string PackageFullName = exp.PackageFullName;
-                    if (PackageFullName != "Class" && PackageFullName != "Package")
-                        s += PackageFullName + ".";
-                    s += exp.ObjectName;
-                    string ClassName = exp.ClassName;
-                    if (ClassName == "ObjectProperty" || ClassName == "StructProperty")
-                    {
-                        //attempt to find type
-                        byte[] data = exp.Data;
-                        int importindex = BitConverter.ToInt32(data, data.Length - 4);
-                        if (importindex < 0)
-                        {
-                            //import
-                            importindex *= -1;
-                            if (importindex > 0) importindex--;
-                            if (importindex <= imports.Count)
-                            {
-                                s += " (" + imports[importindex].ObjectName + ")";
-                            }
-                        }
-                        else
-                        {
-                            //export
-                            if (importindex > 0) importindex--;
-                            if (importindex <= Exports.Count)
-                            {
-                                s += " [" + Exports[importindex].ObjectName + "]";
-                            }
-                        }
-                    }
-                    exps.Add(s);
-                }*/
-                //LeftSide_ListView.ItemsSource = exps;
+                LeftSideList_ItemsSource.ReplaceAll(Pcc.Exports);
             }
+
             if (CurrentView == CurrentViewMode.Tree)
             {
+                if (AllTreeViewNodesX.Count > 0)
+                {
+                    foreach (TreeViewEntry tv in AllTreeViewNodesX[0].FlattenTree())
+                    {
+                        tv.RefreshDisplayName();
+                    }
+                }
                 LeftSide_ListView.Visibility = Visibility.Collapsed;
                 LeftSide_TreeView.Visibility = Visibility.Visible;
             }
@@ -1117,25 +1057,20 @@ namespace ME3Explorer
                 LeftSide_ListView.Visibility = Visibility.Visible;
                 LeftSide_TreeView.Visibility = Visibility.Collapsed;
             }
-
         }
 
         public void InitStuff()
         {
             if (Pcc == null)
                 return;
-            ClassNames = new List<int>();
-            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
-            for (int i = 0; i < Exports.Count; i++)
-            {
-                ClassNames.Add(Exports[i].idxClass); //This can probably be linq'd
-            }
 
-            List<string> names = ClassNames.Distinct().Select(Pcc.getObjectName).ToList();
-            names.Sort();
-            ClearList(ClassDropdown_Combobox);
-            ClassDropdown_Combobox.ItemsSource = names.ToArray();
+            //Get a list of all classes for objects
+            //Filter out duplicates
+            //Get their objectnames from the name list
+            //Order it ascending
+            ClassDropdownList.ReplaceAll(Pcc.Exports.Select(x => x.idxClass).Distinct().Select(Pcc.getObjectName).ToList().OrderBy(p => p));
             MetadataTab_MetadataEditor.LoadPccData(Pcc);
+            RefreshNames();
         }
 
         /// <summary>
@@ -1284,13 +1219,17 @@ namespace ME3Explorer
             bool exportNonDataChanges = changes.Contains(PackageChange.ExportHeader) || changes.Contains(PackageChange.ExportAdd);
             int n = 0;
             bool hasSelection = GetSelected(out n);
+
+            if (changes.Contains(PackageChange.Names))
+            {
+                //reloads names - used by metadata editor control as well as names list
+                RefreshNames(updates.Where(x => x.change == PackageChange.Names).ToList());
+                //MetadataTab_MetadataEditor.ResetNameDropdownIndexes(); //this will force nameslist to update now.
+            }
+
             if (CurrentView == CurrentViewMode.Names && changes.Contains(PackageChange.Names))
             {
-                //int scrollTo = LeftSide_ListView..TopIndex + 1;
-                //int selected = listBox1.SelectedIndex;
                 RefreshView();
-                //listBox1.SelectedIndex = selected;
-                //listBox1.TopIndex = scrollTo;
             }
             else if (CurrentView == CurrentViewMode.Imports && importChanges ||
                      CurrentView == CurrentViewMode.Exports && exportNonDataChanges ||
@@ -1307,8 +1246,40 @@ namespace ME3Explorer
             {
                 Preview(true);
             }
+
+
         }
 
+        private void RefreshNames(List<PackageUpdate> updates = null)
+        {
+            if (updates == null)
+            {
+                var indexedList = new List<IndexedName>();
+                for (int i = 0; i < Pcc.Names.Count; i++)
+                {
+                    NameReference nr = Pcc.Names[i];
+                    indexedList.Add(new IndexedName(i, nr));
+                }
+                NamesList.ReplaceAll(indexedList); //we replaceall so we don't add one by one and trigger tons of notifications
+            }
+            else
+            {
+                //only modify the list
+                updates = updates.OrderBy(x => x.index).ToList(); //ensure ascending order
+                foreach (PackageUpdate update in updates)
+                {
+                    if (update.index > NamesList.Count - 1) //names are 0 indexed
+                    {
+                        NameReference nr = Pcc.Names[update.index];
+                        NamesList.Add(new IndexedName(update.index, nr));
+                    }
+                    else
+                    {
+                        NamesList[update.index] = new IndexedName(update.index - 1, Pcc.Names[update.index]);
+                    }
+                }
+            }
+        }
 
         private delegate void NoArgDelegate();
         /// <summary>
@@ -1709,7 +1680,7 @@ namespace ME3Explorer
                     newItem = new TreeViewEntry(newImport);
                 }
                 newItem.Parent = targetItem;
-                targetItem.Sublinks.Add(newItem); 
+                targetItem.Sublinks.Add(newItem);
 
                 //if this node has children
                 if (sourceItem.Sublinks.Count > 0 && portingOption == TreeMergeDialog.PortingOption.CloneTreeAsChild || portingOption == TreeMergeDialog.PortingOption.MergeTreeChildren)

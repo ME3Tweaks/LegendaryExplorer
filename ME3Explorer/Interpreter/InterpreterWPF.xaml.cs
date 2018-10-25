@@ -35,6 +35,8 @@ namespace ME3Explorer
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
         public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet" };
         public static readonly string[] IntToStringConverters = { "WwiseEvent" };
+        public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
+
         private bool _hasUnsavedChanges;
         public bool HasUnsavedChanges
         {
@@ -70,66 +72,24 @@ namespace ME3Explorer
             public int offset;
         }
 
-        public string[] Types =
-        {
-            "StructProperty", //0
-            "IntProperty",
-            "FloatProperty",
-            "ObjectProperty",
-            "NameProperty",
-            "BoolProperty",  //5
-            "ByteProperty",
-            "ArrayProperty",
-            "StrProperty",
-            "StringRefProperty",
-            "DelegateProperty",//10
-            "None",
-            "BioMask4Property",
-        };
+        //public string[] Types =
+        //{
+        //    "StructProperty", //0
+        //    "IntProperty",
+        //    "FloatProperty",
+        //    "ObjectProperty",
+        //    "NameProperty",
+        //    "BoolProperty",  //5
+        //    "ByteProperty",
+        //    "ArrayProperty",
+        //    "StrProperty",
+        //    "StringRefProperty",
+        //    "DelegateProperty",//10
+        //    "None",
+        //    "BioMask4Property",
+        //};
         private HexBox Interpreter_Hexbox;
         private bool isLoadingNewData;
-
-        public enum nodeType
-        {
-            Unknown = -1,
-            StructProperty = 0,
-            IntProperty = 1,
-            FloatProperty = 2,
-            ObjectProperty = 3,
-            NameProperty = 4,
-            BoolProperty = 5,
-            ByteProperty = 6,
-            ArrayProperty = 7,
-            StrProperty = 8,
-            StringRefProperty = 9,
-            DelegateProperty = 10,
-            None,
-            BioMask4Property,
-
-            ArrayLeafObject,
-            ArrayLeafName,
-            ArrayLeafEnum,
-            ArrayLeafStruct,
-            ArrayLeafBool,
-            ArrayLeafString,
-            ArrayLeafFloat,
-            ArrayLeafInt,
-            ArrayLeafByte,
-
-            StructLeafByte,
-            StructLeafFloat,
-            StructLeafDeg, //indicates this is a StructProperty leaf that is in degrees (actually unreal rotation units)
-            StructLeafInt,
-            StructLeafObject,
-            StructLeafName,
-            StructLeafBool,
-            StructLeafStr,
-            StructLeafArray,
-            StructLeafEnum,
-            StructLeafStruct,
-
-            Root,
-        }
 
         public InterpreterWPF()
         {
@@ -643,6 +603,11 @@ namespace ME3Explorer
             }
         }
 
+        internal void SetParentNameList(ObservableCollectionExtended<IndexedName> namesList)
+        {
+            ParentNameList = namesList;
+        }
+
         public static UPropertyTreeViewEntry GenerateUPropertyTreeViewEntry(UProperty prop, UPropertyTreeViewEntry parent, IExportEntry parsingExport, string displayPrefix = "", PropertyChangedEventHandler PropertyChangedHandler = null)
         {
             string displayName = $"{prop.StartOffset.ToString("X4")}{displayPrefix}";
@@ -1049,13 +1014,20 @@ namespace ME3Explorer
                     case NameProperty np:
                         TextSearch.SetTextPath(Value_ComboBox, "Name");
                         Value_ComboBox.IsEditable = true;
-                        var indexedList = new List<object>();
-                        for (int i = 0; i < CurrentLoadedExport.FileRef.Names.Count; i++)
+
+                        if (ParentNameList == null)
                         {
-                            NameReference nr = CurrentLoadedExport.FileRef.Names[i];
-                            indexedList.Add(new IndexedName(i, nr));
+                            var indexedList = new List<object>();
+                            for (int i = 0; i < CurrentLoadedExport.FileRef.Names.Count; i++)
+                            {
+                                NameReference nr = CurrentLoadedExport.FileRef.Names[i];
+                                indexedList.Add(new IndexedName(i, nr));
+                            }
+                            Value_ComboBox.ItemsSource = indexedList;
+                        } else
+                        {
+                            Value_ComboBox.ItemsSource = ParentNameList;
                         }
-                        Value_ComboBox.ItemsSource = indexedList;
                         Value_ComboBox.SelectedIndex = CurrentLoadedExport.FileRef.findName(np.Value.Name);
                         NameIndex_TextBox.Text = np.Value.Number.ToString();
 
@@ -1366,85 +1338,85 @@ namespace ME3Explorer
             }
         }
 
-        private void ArrayOrderByValueCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
-        {
-            //outdated. Will replace later
-            //TODO
-            TreeViewItem tvi = (TreeViewItem)Interpreter_TreeView.SelectedItem;
-            if (tvi != null)
-            {
-                UProperty tag = (UProperty)tvi.Tag;
-                ArrayType at = GetArrayType(tag.Name, CurrentLoadedExport); //we may need to account for substructs
-                bool sorted = false;
-                switch (at)
-                {
-                    case ArrayType.Object:
-                        {
-                            ArrayProperty<ObjectProperty> list = (ArrayProperty<ObjectProperty>)tag;
-                            List<ObjectProperty> sortedList = list.ToList();
-                            sortedList.Sort();
-                            list.Values.Clear();
-                            list.Values.AddRange(sortedList);
-                            sorted = true;
-                        }
-                        break;
-                    case ArrayType.Int:
-                        {
-                            ArrayProperty<IntProperty> list = (ArrayProperty<IntProperty>)tag;
-                            List<IntProperty> sortedList = list.ToList();
-                            sortedList.Sort();
-                            list.Values.Clear();
-                            list.Values.AddRange(sortedList);
-                            sorted = true;
-                        }
-                        break;
-                    case ArrayType.Float:
-                        {
-                            ArrayProperty<FloatProperty> list = (ArrayProperty<FloatProperty>)tag;
-                            List<FloatProperty> sortedList = list.ToList();
-                            sortedList.Sort();
-                            list.Values.Clear();
-                            list.Values.AddRange(sortedList);
-                            sorted = true;
-                        }
-                        break;
-                }
-                if (sorted)
-                {
-                    ItemsControl i = GetSelectedTreeViewItemParent(tvi);
-                    //write at root node level
-                    if (i.Tag is nodeType && (nodeType)i.Tag == nodeType.Root)
-                    {
-                        CurrentLoadedExport.WriteProperty(tag);
-                        StartScan();
-                    }
+        //private void ArrayOrderByValueCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        //{
+        //    //outdated. Will replace later
+        //    //TODO
+        //    TreeViewItem tvi = (TreeViewItem)Interpreter_TreeView.SelectedItem;
+        //    if (tvi != null)
+        //    {
+        //        UProperty tag = (UProperty)tvi.Tag;
+        //        ArrayType at = GetArrayType(tag.Name, CurrentLoadedExport); //we may need to account for substructs
+        //        bool sorted = false;
+        //        switch (at)
+        //        {
+        //            case ArrayType.Object:
+        //                {
+        //                    ArrayProperty<ObjectProperty> list = (ArrayProperty<ObjectProperty>)tag;
+        //                    List<ObjectProperty> sortedList = list.ToList();
+        //                    sortedList.Sort();
+        //                    list.Values.Clear();
+        //                    list.Values.AddRange(sortedList);
+        //                    sorted = true;
+        //                }
+        //                break;
+        //            case ArrayType.Int:
+        //                {
+        //                    ArrayProperty<IntProperty> list = (ArrayProperty<IntProperty>)tag;
+        //                    List<IntProperty> sortedList = list.ToList();
+        //                    sortedList.Sort();
+        //                    list.Values.Clear();
+        //                    list.Values.AddRange(sortedList);
+        //                    sorted = true;
+        //                }
+        //                break;
+        //            case ArrayType.Float:
+        //                {
+        //                    ArrayProperty<FloatProperty> list = (ArrayProperty<FloatProperty>)tag;
+        //                    List<FloatProperty> sortedList = list.ToList();
+        //                    sortedList.Sort();
+        //                    list.Values.Clear();
+        //                    list.Values.AddRange(sortedList);
+        //                    sorted = true;
+        //                }
+        //                break;
+        //        }
+        //        if (sorted)
+        //        {
+        //            ItemsControl i = GetSelectedTreeViewItemParent(tvi);
+        //            //write at root node level
+        //            if (i.Tag is nodeType && (nodeType)i.Tag == nodeType.Root)
+        //            {
+        //                CurrentLoadedExport.WriteProperty(tag);
+        //                StartScan();
+        //            }
 
-                    //have to figure out how to deal with structproperties or array of array propertie
-                    /*if (tvi.Tag is StructProperty)
-                    {
-                        StructProperty sp = tvi.Tag as StructProperty;
-                        sp.Properties.
-                        CurrentLoadedExport.WriteProperty(tag);
-                        StartScan();
-                    }*/
-                }
-                //PropertyCollection props = CurrentLoadedExport.GetProperties();
-                //props.Remove(tag);
-                //CurrentLoadedExport.WriteProperties(props);
-                //
-            }
-        }
+        //            //have to figure out how to deal with structproperties or array of array propertie
+        //            /*if (tvi.Tag is StructProperty)
+        //            {
+        //                StructProperty sp = tvi.Tag as StructProperty;
+        //                sp.Properties.
+        //                CurrentLoadedExport.WriteProperty(tag);
+        //                StartScan();
+        //            }*/
+        //        }
+        //        //PropertyCollection props = CurrentLoadedExport.GetProperties();
+        //        //props.Remove(tag);
+        //        //CurrentLoadedExport.WriteProperties(props);
+        //        //
+        //    }
+        //}
 
-        public ItemsControl GetSelectedTreeViewItemParent(TreeViewItem item)
-        {
-            DependencyObject parent = VisualTreeHelper.GetParent(item);
-            while (!(parent is TreeViewItem || parent is TreeView))
-            {
-                parent = VisualTreeHelper.GetParent(parent);
-            }
+        //public ItemsControl GetSelectedTreeViewItemParent(TreeViewItem item)
+        //{
+        //    DependencyObject parent = VisualTreeHelper.GetParent(item);
+        //    while (!(parent is TreeViewItem || parent is TreeView))
+        //    {
+        //        parent = VisualTreeHelper.GetParent(parent);
+        //    }
 
-            return parent as ItemsControl;
-        }
+        //    return parent as ItemsControl;
+        //}
 
         public override bool CanParse(IExportEntry exportEntry)
         {

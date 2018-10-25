@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using UsefulThings.WPF;
 
 namespace ME3Explorer.Packages
@@ -38,10 +39,15 @@ namespace ME3Explorer.Packages
             set
             {
                 bool isFirstLoad = _header == null;
+                if (_header != null && value != null && _header.SequenceEqual(value))
+                {
+                    return; //if the data is the same don't write it and trigger the side effects
+                }
                 _header = value;
                 if (!isFirstLoad)
                 {
                     HeaderChanged = true;
+                    EntryHasPendingChanges = true;
                 }
             }
         }

@@ -13,8 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using Be.Windows.Forms;
 using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using Xceed.Wpf.Toolkit.Primitives;
 using static ME3Explorer.EnumExtensions;
@@ -43,12 +45,10 @@ namespace ME3Explorer.MetadataEditor
         private const int HEADER_OFFSET_IMP_IDXLINK = 12;
         private const int HEADER_OFFSET_IMP_IDXOBJECTNAME = 20;
         private const int HEADER_OFFSET_IMP_IDXPACKAGEFILE = 0;
-
         private IEntry CurrentLoadedEntry;
         private List<object> AllEntriesList;
         private HexBox Header_Hexbox;
         private bool loadingNewData = false;
-
 
         public MetadataEditorWPF()
         {
@@ -60,7 +60,7 @@ namespace ME3Explorer.MetadataEditor
             return true;
         }
 
-        private void RefreshClassesList(IMEPackage Pcc)
+        private void RefreshAllEntriesList(IMEPackage Pcc)
         {
             AllEntriesList = new List<object>();
             for (int i = Pcc.Imports.Count - 1; i >= 0; i--)
@@ -189,8 +189,8 @@ namespace ME3Explorer.MetadataEditor
             InfoTab_Link_TextBlock.Text = "0x0C Link:";
             InfoTab_ObjectName_TextBlock.Text = "0x14 Object name:";
 
-            InfoTab_Objectname_ComboBox.SelectedItem = importEntry.ObjectName;
-            InfoTab_ImpClass_ComboBox.SelectedItem = importEntry.ClassName;
+            InfoTab_Objectname_ComboBox.SelectedIndex = importEntry.FileRef.findName(importEntry.ObjectName);
+            InfoTab_ImpClass_ComboBox.SelectedIndex = importEntry.FileRef.findName(importEntry.ClassName);
             if (importEntry.idxLink != 0)
             {
                 InfoTab_PackageLink_ComboBox.SelectedIndex = importEntry.idxLink + importEntry.FileRef.Imports.Count; //make positive
@@ -200,7 +200,7 @@ namespace ME3Explorer.MetadataEditor
                 InfoTab_PackageLink_ComboBox.SelectedIndex = importEntry.FileRef.Imports.Count; //Class, 0
             }
 
-            InfoTab_PackageFile_ComboBox.SelectedItem = System.IO.Path.GetFileNameWithoutExtension(importEntry.PackageFile);
+            InfoTab_PackageFile_ComboBox.SelectedIndex = importEntry.FileRef.findName(System.IO.Path.GetFileNameWithoutExtension(importEntry.PackageFile));
             InfoTab_ObjectnameIndex_TextBox.Text = BitConverter.ToInt32(importEntry.Header, HEADER_OFFSET_IMP_IDXOBJECTNAME + 4).ToString();
             CurrentLoadedEntry = importEntry;
             Header_Hexbox.ByteProvider = new DynamicByteProvider(CurrentLoadedEntry.Header);
@@ -253,17 +253,7 @@ namespace ME3Explorer.MetadataEditor
 
         internal void LoadPccData(IMEPackage pcc)
         {
-            var indexedList = new List<object>();
-            for (int i = 0; i < pcc.Names.Count; i++)
-            {
-                NameReference nr = pcc.Names[i];
-                indexedList.Add(new IndexedName(i, nr));
-            }
-
-            InfoTab_Objectname_ComboBox.ItemsSource = indexedList;
-            InfoTab_ImpClass_ComboBox.ItemsSource = indexedList;
-            InfoTab_PackageFile_ComboBox.ItemsSource = indexedList;
-            RefreshClassesList(pcc);
+            RefreshAllEntriesList(pcc);
         }
 
         private void PackageEditorWPF_Loaded(object sender, RoutedEventArgs e)
@@ -334,7 +324,10 @@ namespace ME3Explorer.MetadataEditor
             if (!loadingNewData)
             {
                 var selectedNameIndex = InfoTab_Objectname_ComboBox.SelectedIndex;
-                Header_Hexbox.ByteProvider.WriteBytes(CurrentLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXOBJECTNAME : HEADER_OFFSET_IMP_IDXOBJECTNAME, BitConverter.GetBytes(selectedNameIndex));
+                if (selectedNameIndex >= 0)
+                {
+                    Header_Hexbox.ByteProvider.WriteBytes(CurrentLoadedEntry is ExportEntry ? HEADER_OFFSET_EXP_IDXOBJECTNAME : HEADER_OFFSET_IMP_IDXOBJECTNAME, BitConverter.GetBytes(selectedNameIndex));
+                }
             }
         }
 
@@ -458,6 +451,44 @@ namespace ME3Explorer.MetadataEditor
         private void MetadataEditor_Loaded(object sender, RoutedEventArgs e)
         {
             Header_Hexbox = (HexBox)Header_Hexbox_Host.Child;
+        }
+
+        /// <summary>
+        /// Handles pressing the enter key when the class dropdown is active. Automatically will attempt to find the next object by class.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void InfoTab_Objectname_ComboBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                //Check name
+                var text = InfoTab_Objectname_ComboBox.Text;
+                int index = CurrentLoadedEntry.FileRef.findName(text);
+                if (index < 0)
+                {
+                    string input = $"The name \"{text}\" does not exist in the current loaded package.\nIf you'd like to add this name, press enter below, or change the name to what you would like it to be.";
+                    string result = PromptDialog.Prompt(Window.GetWindow(this), input, "Enter new name", text);
+                    if (result != null && result != "")
+                    {
+                        int idx = CurrentLoadedEntry.FileRef.FindNameOrAdd(result);
+                        if (idx != CurrentLoadedEntry.FileRef.Names.Count - 1)
+                        {
+                            //not the last
+                            MessageBox.Show($"{result} already exists in this package file.\nName index: {idx} (0x{idx:X8})", "Name already exists");
+                        }
+                        else
+                        {
+                            //CurrentLoadedEntry.idxObjectName = idx;
+                            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => { })).Wait();
+                            InfoTab_Objectname_ComboBox.SelectedIndex = idx; //This may need to be deferred as the handleUpdate() may not have fired yet.
+                            //MessageBox.Show($"{result} has been added as a name.\nName index: {idx} (0x{idx:X8})", "Name added");
+                            //.SelectedIndex = idx; //This may need to be deferred as the handleUpdate() may not have fired yet.
+                        }
+                        //refresh should be triggered by hosting window
+                    }
+                }
+            }
         }
     }
 }

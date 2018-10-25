@@ -24,10 +24,6 @@
         <Converters:ColorCodeConverter x:Key="ColorCodeConverter"/>
         <Converters:UnsavedChangesForegroundConverter x:Key="UnsavedChangesForegroundConverter"/>
     </UserControl.Resources>
-    <UserControl.CommandBindings>
-        <CommandBinding Command="Commands:InterpreterWPFCommands.ArrayOrderByValueCommand" Executed="ArrayOrderByValueCommand_Executed"/>
-        <CommandBinding Command="Commands:InterpreterWPFCommands.RemovePropertyCommand" Executed="RemovePropertyCommand_Executed"/>
-    </UserControl.CommandBindings>
     <DockPanel>
         <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
             <Button Name="SaveHexChange_Button" Content="Save Hex Changes" Foreground="{Binding HasUnsavedChanges, Converter={StaticResource UnsavedChangesForegroundConverter}}" Click="Interpreter_SaveHexChanges_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
