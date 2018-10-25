@@ -15,8 +15,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Be.Windows.Forms;
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
 using Xceed.Wpf.Toolkit.Primitives;
 using static ME3Explorer.EnumExtensions;
+using static ME3Explorer.PackageEditorWPF;
 using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer.MetadataEditor
@@ -43,7 +45,7 @@ namespace ME3Explorer.MetadataEditor
         private const int HEADER_OFFSET_IMP_IDXPACKAGEFILE = 0;
 
         private IEntry CurrentLoadedEntry;
-        private List<string> Classes;
+        private List<object> AllEntriesList;
         private HexBox Header_Hexbox;
         private bool loadingNewData = false;
 
@@ -60,20 +62,17 @@ namespace ME3Explorer.MetadataEditor
 
         private void RefreshClassesList(IMEPackage Pcc)
         {
-            IReadOnlyList<ImportEntry> imports = Pcc.Imports;
-            Classes = new List<string>();
-            for (int i = imports.Count - 1; i >= 0; i--)
+            AllEntriesList = new List<object>();
+            for (int i = Pcc.Imports.Count - 1; i >= 0; i--)
             {
-                Classes.Add($"{-i + 1}: {imports[i].GetFullPath}");
+                AllEntriesList.Add(Pcc.Imports[i]);
             }
-            Classes.Add("0 : Class");
-            int count = 1;
-            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
-            foreach (IExportEntry exp in Exports)
+            AllEntriesList.Add("0 : Class");
+            foreach (IExportEntry exp in Pcc.Exports)
             {
-                Classes.Add($"{count++}: {exp.GetFullPath}");
+                AllEntriesList.Add(exp);
             }
-            InfoTab_PackageLink_ComboBox.ItemsSource = Classes;
+            InfoTab_PackageLink_ComboBox.ItemsSource = AllEntriesList;
         }
 
         public override void LoadExport(IExportEntry exportEntry)
@@ -95,19 +94,19 @@ namespace ME3Explorer.MetadataEditor
                 InfoTab_Link_TextBlock.Text = "0x08 Link:";
                 InfoTab_ObjectName_TextBlock.Text = "0x0C Object name:";
 
-                InfoTab_Objectname_ComboBox.SelectedItem = exportEntry.ObjectName;
+                InfoTab_Objectname_ComboBox.SelectedIndex = exportEntry.FileRef.findName(exportEntry.ObjectName);
 
                 if (exportEntry.idxClass != 0)
                 {
                     //IEntry _class = pcc.getEntry(exportEntry.idxClass);
-                    InfoTab_Class_ComboBox.ItemsSource = Classes;
+                    InfoTab_Class_ComboBox.ItemsSource = AllEntriesList;
                     InfoTab_Class_ComboBox.SelectedIndex = exportEntry.idxClass + exportEntry.FileRef.Imports.Count; //make positive
                 }
                 else
                 {
                     InfoTab_Class_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
                 }
-                InfoTab_Superclass_ComboBox.ItemsSource = Classes;
+                InfoTab_Superclass_ComboBox.ItemsSource = AllEntriesList;
                 if (exportEntry.idxClassParent != 0)
                 {
                     InfoTab_Superclass_ComboBox.SelectedIndex = exportEntry.idxClassParent + exportEntry.FileRef.Imports.Count; //make positive
@@ -127,7 +126,7 @@ namespace ME3Explorer.MetadataEditor
                 }
                 InfoTab_Headersize_TextBox.Text = exportEntry.Header.Length + " bytes";
                 InfoTab_ObjectnameIndex_TextBox.Text = BitConverter.ToInt32(exportEntry.Header, HEADER_OFFSET_EXP_IDXOBJECTNAME + 4).ToString();
-                InfoTab_Archetype_ComboBox.ItemsSource = Classes;
+                InfoTab_Archetype_ComboBox.ItemsSource = AllEntriesList;
                 if (exportEntry.idxArchtype != 0)
                 {
                     InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.idxArchtype + exportEntry.FileRef.Imports.Count; //make positive
@@ -254,9 +253,16 @@ namespace ME3Explorer.MetadataEditor
 
         internal void LoadPccData(IMEPackage pcc)
         {
-            InfoTab_Objectname_ComboBox.ItemsSource = pcc.Names;
-            InfoTab_ImpClass_ComboBox.ItemsSource = pcc.Names;
-            InfoTab_PackageFile_ComboBox.ItemsSource = pcc.Names;
+            var indexedList = new List<object>();
+            for (int i = 0; i < pcc.Names.Count; i++)
+            {
+                NameReference nr = pcc.Names[i];
+                indexedList.Add(new IndexedName(i, nr));
+            }
+
+            InfoTab_Objectname_ComboBox.ItemsSource = indexedList;
+            InfoTab_ImpClass_ComboBox.ItemsSource = indexedList;
+            InfoTab_PackageFile_ComboBox.ItemsSource = indexedList;
             RefreshClassesList(pcc);
         }
 

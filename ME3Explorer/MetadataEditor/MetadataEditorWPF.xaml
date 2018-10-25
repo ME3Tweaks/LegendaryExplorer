@@ -9,11 +9,30 @@
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     mc:Ignorable="d" 
-    Loaded="MetadataEditor_Loaded"
-             d:DesignHeight="450" d:DesignWidth="800">
+    Loaded="MetadataEditor_Loaded"   
+    xmlns:Packages="clr-namespace:ME3Explorer.Packages"
+    d:DesignHeight="450" d:DesignWidth="800">
     <global:ExportLoaderControl.Resources>
         <System:Int32 x:Key="InfoTab_TopMargins">24</System:Int32>
         <System:Int32 x:Key="InfoTab_MaxWidth">700</System:Int32>
+        <DataTemplate DataType="{x:Type global:PackageEditorWPF+IndexedName}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
+                <TextBlock Text="{Binding Path=Name.Name}" Foreground="Black" Margin="5,0,0,0"/>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type Packages:ImportEntry}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Path=UIndex}" Foreground="Gray"/>
+                <TextBlock Text="{Binding Path=GetFullPath}" Margin="5,0,0,0" Foreground="Gray"/>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type Packages:ExportEntry}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Path=UIndex}" Foreground="Gray"/>
+                <TextBlock Text="{Binding Path=GetFullPath}" Foreground="Black" Margin="5,0,0,0"/>
+            </StackPanel>
+        </DataTemplate>
     </global:ExportLoaderControl.Resources>
     <Grid Margin="5" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
@@ -76,7 +95,7 @@
         <TextBlock VerticalAlignment="Center" Text="Export data offset (dec):" Grid.Row="13" Grid.Column="0"/>
 
         <!--rightside-->
-        <ComboBox Name="InfoTab_Objectname_ComboBox" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Objectname_ComboBox_GotFocus" SelectionChanged="Info_ObjectNameComboBox_SelectionChanged"/>
+        <ComboBox Name="InfoTab_Objectname_ComboBox" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Objectname_ComboBox_GotFocus" SelectionChanged="Info_ObjectNameComboBox_SelectionChanged" IsTextSearchEnabled="True" TextSearch.TextPath="Name"/>
         <TextBox Name="InfoTab_ObjectnameIndex_TextBox"  VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" TextChanged="Info_IndexTextBox_TextChanged" GotFocus="InfoTab_ObjectNameIndex_ComboBox_GotFocus"/>
 
         <ComboBox Name="InfoTab_Class_ComboBox" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Class_ComboBox_GotFocus" SelectionChanged="Info_ClassComboBox_SelectionChanged"/>
