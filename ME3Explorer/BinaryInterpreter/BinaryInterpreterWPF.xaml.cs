@@ -487,7 +487,7 @@ namespace ME3Explorer
                 });
                 offset += 4;
 
-                offset = binarystart + 0x18;
+                offset = binarystart + (CurrentLoadedExport.FileRef.Game == MEGame.ME3 ? 0x18 : 0x24);
 
                 MemoryStream ms = new MemoryStream(data);
                 ms.Position = offset;
@@ -939,7 +939,10 @@ namespace ME3Explorer
                     int nameIndex = BitConverter.ToInt32(data, binarypos);
                     int nameIndexNum = BitConverter.ToInt32(data, binarypos + 4);
                     int shouldBe1 = BitConverter.ToInt32(data, binarypos + 8);
-                    string nodeValue = $"{CurrentLoadedExport.FileRef.Names[nameIndex]}_{nameIndexNum}";
+
+                    //TODO: Relink this property on package porting!
+                    var name = CurrentLoadedExport.FileRef.getNameEntry(nameIndex);
+                    string nodeValue = $"{(name == "INVALID NAME VALUE " + nameIndex ? "" : name)}_{nameIndexNum}";
                     if (shouldBe1 != 1)
                     {
                         //ERROR

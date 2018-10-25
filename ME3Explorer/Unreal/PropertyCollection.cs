@@ -85,7 +85,7 @@ namespace ME3Explorer.Unreal
                 string name = pcc.getNameEntry(nameIdx);
                 if (name == "None")
                 {
-                    props.Add(new NoneProperty(stream, "None") { StartOffset = propertyStartPosition});
+                    props.Add(new NoneProperty(stream, "None") { StartOffset = propertyStartPosition });
                     stream.Seek(4, SeekOrigin.Current);
                     break;
                 }
@@ -447,7 +447,7 @@ namespace ME3Explorer.Unreal
                         for (int i = 0; i < count; i++)
                         {
                             long startPos = stream.Position;
-                            props.Add(new ObjectProperty(stream) { StartOffset = startPos});
+                            props.Add(new ObjectProperty(stream) { StartOffset = startPos });
                         }
                         return new ArrayProperty<ObjectProperty>(arrayOffset, props, arrayType, name);
                     }

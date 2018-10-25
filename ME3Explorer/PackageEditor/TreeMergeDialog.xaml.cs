@@ -24,7 +24,7 @@ namespace ME3Explorer.PackageEditorWPFControls
     {
         public enum PortingOption
         {
-            AddTreeAsChild,
+            CloneTreeAsChild,
             AddSingularAsChild,
             ReplaceSingular,
             MergeTreeChildren,
@@ -94,7 +94,7 @@ namespace ME3Explorer.PackageEditorWPFControls
 
         private void CloneTree(object obj)
         {
-            PortingOptionChosen = PortingOption.AddTreeAsChild;
+            PortingOptionChosen = PortingOption.CloneTreeAsChild;
             Close();
         }
 
@@ -158,7 +158,7 @@ namespace ME3Explorer.PackageEditorWPFControls
 
         private void CloneTreeButton_Click(object sender, RoutedEventArgs e)
         {
-            PortingOptionChosen = PortingOption.AddTreeAsChild;
+            PortingOptionChosen = PortingOption.CloneTreeAsChild;
             Close();
 
         }

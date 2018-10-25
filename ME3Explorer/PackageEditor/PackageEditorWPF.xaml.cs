@@ -1589,10 +1589,10 @@ namespace ME3Explorer
 
                 //if (DestinationNode.TreeView != sourceNode.TreeView)
                 //{
-                IEntry entry = sourceItem.Entry;
+                IEntry sourceEntry = sourceItem.Entry;
                 IEntry targetLinkEntry = targetItem.Entry;
 
-                IMEPackage importpcc = entry.FileRef;
+                IMEPackage importpcc = sourceEntry.FileRef;
                 if (importpcc == null)
                 {
                     return;
@@ -1601,16 +1601,16 @@ namespace ME3Explorer
                 if (portingOption == TreeMergeDialog.PortingOption.ReplaceSingular)
                 {
                     //replace data only
-                    if (entry is IExportEntry)
+                    if (sourceEntry is IExportEntry)
                     {
-                        ReplaceExportDataWithAnother(entry as IExportEntry, targetLinkEntry as IExportEntry);
+                        ReplaceExportDataWithAnother(sourceEntry as IExportEntry, targetLinkEntry as IExportEntry);
                     }
                     return;
                 }
 
-                int n = entry.UIndex;
+                int n = sourceEntry.UIndex;
                 int link;
-                if (targetItem.Parent == null) //dropped on a first level node
+                if (targetItem.Parent == null) //dropped on a first level node (root)
                 {
                     link = 0;
                 }
@@ -1622,15 +1622,16 @@ namespace ME3Explorer
                 TreeViewEntry newItem = null;
                 if (n >= 0)
                 {
+                    //importing an export
                     IExportEntry newExport;
-                    if (importExport(entry as IExportEntry, link, out newExport))
+                    if (importExport(sourceEntry as IExportEntry, link, out newExport))
                     {
                         newItem = new TreeViewEntry(newExport);
-
-                        return;
                     }
                     else
                     {
+                        //import failed!
+                        //Todo: Throw error message or something
                         return;
                     }
                 }
@@ -1643,9 +1644,9 @@ namespace ME3Explorer
                 targetItem.Sublinks.Add(newItem); //TODO: Resort the children so they display in the proper order
 
                 //if this node has children
-                if (sourceItem.Sublinks.Count > 0)
+                if (sourceItem.Sublinks.Count > 0 && portingOption == TreeMergeDialog.PortingOption.CloneTreeAsChild || portingOption == TreeMergeDialog.PortingOption.MergeTreeChildren)
                 {
-                    importTree(sourceItem, importpcc, newItem);
+                    importTree(sourceItem, importpcc, newItem, portingOption);
                 }
 
                 targetItem.SortChildren();
@@ -1705,7 +1706,7 @@ namespace ME3Explorer
             {
                 //restore namelist in event of failure.
                 Pcc.setNames(names);
-                MessageBox.Show("Error occured while replace data in " + ex.ObjectName + " : " + exception.Message);
+                MessageBox.Show("Error occured while replacing data in " + ex.ObjectName + " : " + exception.Message);
                 return;
             }
             res.Write(idata, end, idata.Length - end);
@@ -1721,13 +1722,36 @@ namespace ME3Explorer
         /// <param name="importpcc">PCC to import from</param>
         /// <param name="link">The entry link the tree will be imported under</param>
         /// <returns></returns>
-        private bool importTree(TreeViewEntry sourceNode, IMEPackage importpcc, TreeViewEntry newItemParent)
+        private bool importTree(TreeViewEntry sourceNode, IMEPackage importpcc, TreeViewEntry newItemParent, TreeMergeDialog.PortingOption portingOption)
         {
             int index;
             foreach (TreeViewEntry node in sourceNode.Sublinks)
             {
                 index = node.Entry.UIndex;
                 TreeViewEntry newEntry = null;
+
+                if (portingOption == TreeMergeDialog.PortingOption.MergeTreeChildren)
+                {
+                    //we must check to see if there is an item already matching what we are trying to port.
+
+                    //Todo: We may need to enhance target checking here as getfullpath may not be reliable enough. Maybe have to do indexing, or something.
+                    TreeViewEntry sameObjInTarget = newItemParent.Sublinks.FirstOrDefault(x => node.Entry.GetFullPath == x.Entry.GetFullPath);
+                    if (sameObjInTarget != null)
+                    {
+                        crossPCCObjectMap[node.Entry.Index] = sameObjInTarget.Entry.Index; //0 based. Make the relink map know about this entry
+
+                        //merge children to this node instead
+                        if (node.Sublinks.Count > 0)
+                        {
+                            if (!importTree(node, importpcc, sameObjInTarget, portingOption))
+                            {
+                                return false;
+                            }
+                        }
+                        continue;
+                    }
+                }
+
                 if (index >= 0)
                 {
                     index--; //code is written for 0-based indexing, while UIndex is not 0 based
@@ -1756,7 +1780,7 @@ namespace ME3Explorer
 
                 if (node.Sublinks.Count > 0)
                 {
-                    if (!importTree(node, importpcc, newEntry))
+                    if (!importTree(node, importpcc, newEntry, portingOption))
                     {
                         return false;
                     }
@@ -1844,7 +1868,7 @@ namespace ME3Explorer
             {
                 switch (ex.FileRef.getObjectName(ex.idxClass))
                 {
-                    //Todo: Figure out how to fix this for orikon.
+                    //Todo: Move this to binary relinker
                     case "SkeletalMesh":
                         {
                             SkeletalMesh skl = new SkeletalMesh(ex);
@@ -1877,6 +1901,7 @@ namespace ME3Explorer
             }
             else if (ex.FileRef.Game == MEGame.UDK)
             {
+                //todo: move to binary relinker
                 switch (ex.FileRef.getObjectName(ex.idxClass))
                 {
                     case "StaticMesh":
@@ -1932,7 +1957,6 @@ namespace ME3Explorer
             outputEntry.idxClassParent = 0;
             Pcc.addExport(outputEntry);
 
-            crossPCCObjectMap[ex.Index] = Pcc.ExportCount - 1; //0 based.
             return true;
         }
 
