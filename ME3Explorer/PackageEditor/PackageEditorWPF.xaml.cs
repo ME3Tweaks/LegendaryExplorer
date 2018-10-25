@@ -1709,7 +1709,7 @@ namespace ME3Explorer
                     newItem = new TreeViewEntry(newImport);
                 }
                 newItem.Parent = targetItem;
-                targetItem.Sublinks.Add(newItem); //TODO: Resort the children so they display in the proper order
+                targetItem.Sublinks.Add(newItem); 
 
                 //if this node has children
                 if (sourceItem.Sublinks.Count > 0 && portingOption == TreeMergeDialog.PortingOption.CloneTreeAsChild || portingOption == TreeMergeDialog.PortingOption.MergeTreeChildren)
