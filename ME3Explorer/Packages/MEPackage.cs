@@ -119,7 +119,7 @@ namespace ME3Explorer.Packages
                 namesAdded++;
                 NameCount = names.Count;
 
-                updateTools(PackageChange.Names, NameCount);
+                updateTools(PackageChange.Names, NameCount - 1);
                 OnPropertyChanged(nameof(NameCount));
             }
         }
