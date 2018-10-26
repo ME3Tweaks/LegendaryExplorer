@@ -344,13 +344,27 @@ namespace ME3Explorer.Packages
         {
             if (wpfWindow != null)
             {
-                GenericWindow gen = Tools.First(x => x == wpfWindow);
-                ReleaseGenericWindow(gen);
+                GenericWindow gen = Tools.FirstOrDefault(x => x == wpfWindow);
+                if (gen is GenericWindow) //can't use != due to ambiguity apparently
+                {
+                    ReleaseGenericWindow(gen);
+                }
+                else
+                {
+                    Debug.WriteLine("Releasing pcc that isn't in use by any window");
+                }
             }
             else if (winForm != null)
             {
-                GenericWindow gen = Tools.First(x => x == winForm);
-                ReleaseGenericWindow(gen);
+                GenericWindow gen = Tools.FirstOrDefault(x => x == winForm);
+                if (gen is GenericWindow) //can't use != due to ambiguity apparently
+                {
+                    ReleaseGenericWindow(gen);
+                }
+                else
+                {
+                    Debug.WriteLine("Releasing pcc that isn't in use by any window");
+                }
             }
             Dispose();
         }
