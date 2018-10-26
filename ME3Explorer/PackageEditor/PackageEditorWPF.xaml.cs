@@ -1,8 +1,6 @@
-﻿using Be.Windows.Forms;
-using ByteSizeLib;
+﻿using ByteSizeLib;
 using GongSolutions.Wpf.DragDrop;
 using ME1Explorer.Unreal;
-using ME3Explorer.CurveEd;
 using ME3Explorer.PackageEditorWPFControls;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
@@ -11,28 +9,18 @@ using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using Xceed.Wpf.Toolkit.Primitives;
-using static ME3Explorer.EnumExtensions;
 using static ME3Explorer.Unreal.UnrealFlags;
 
 namespace ME3Explorer
@@ -75,8 +63,6 @@ namespace ME3Explorer
         List<string> AllEntriesList;
         List<Button> RecentButtons = new List<Button>();
         //Objects in this collection are displayed on the left list view (names, imports, exports)
-        public ObservableCollectionExtended<object> LeftSideList_ItemsSource { get; set; }
-            = new ObservableCollectionExtended<object>();
 
         Dictionary<ExportLoaderControl, TabItem> ExportLoaders = new Dictionary<ExportLoaderControl, TabItem>();
         private CurrentViewMode _currentView;
@@ -105,21 +91,16 @@ namespace ME3Explorer
             }
         }
 
+        public ObservableCollectionExtended<object> LeftSideList_ItemsSource { get; set; } = new ObservableCollectionExtended<object>();
         public ObservableCollectionExtended<IndexedName> NamesList { get; set; } = new ObservableCollectionExtended<IndexedName>();
         public ObservableCollectionExtended<string> ClassDropdownList { get; set; } = new ObservableCollectionExtended<string>();
+        public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; set; } = new ObservableCollectionExtended<TreeViewEntry>();
 
         public static readonly string PackageEditorDataFolder = System.IO.Path.Combine(App.AppDataFolder, @"PackageEditor\");
         private readonly string RECENTFILES_FILE = "RECENTFILES";
         public List<string> RFiles;
         private SortedDictionary<int, int> crossPCCObjectMap;
         private string currentFile;
-        //private HexBox Header_Hexbox;
-        private IEntry CurrentlyLoadedEntry;
-
-
-        private bool Visible_ObjectNameRow { get; set; }
-        //private List<AdvancedTreeViewItem<TreeViewItem>> AllTreeViewNodes = new List<AdvancedTreeViewItem<TreeViewItem>>();
-        public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; set; } = new ObservableCollectionExtended<TreeViewEntry>();
 
         #region Busy variables
         private bool _isBusy;
@@ -173,6 +154,28 @@ namespace ME3Explorer
             EditNameCommand = new RelayCommand(EditName, NameIsSelected);
             AddNameCommand = new RelayCommand(AddName, CanAddName);
             ExportImportDataVisibilityCommand = new RelayCommand((o) => { }, ExportIsSelected); //no execution command
+        }
+
+        /// <summary>
+        /// Command binding for when the Find command binding is issued (CTRL F)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FindCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Search_TextBox.Focus();
+            Search_TextBox.SelectAll();
+        }
+
+        /// <summary>
+        /// Command binding for when the Goto command is issued (CTRL G)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GotoCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Goto_TextBox.Focus();
+            Goto_TextBox.SelectAll();
         }
 
         private void AddName(object obj)
@@ -710,7 +713,7 @@ namespace ME3Explorer
             Intro_Tab.Visibility = Visibility.Visible;
             Intro_Tab.IsSelected = true;
 
-            AllTreeViewNodesX.Clear();
+            AllTreeViewNodesX.ClearEx();
             currentFile = s;
             StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
             StatusBar_LeftMostText.Text = "Loading " + System.IO.Path.GetFileName(s) + " (" + ByteSize.FromBytes(new System.IO.FileInfo(s).Length) + ")";
@@ -767,7 +770,7 @@ namespace ME3Explorer
         {
             if (e.Result != null)
             {
-                AllTreeViewNodesX.Clear();
+                AllTreeViewNodesX.ClearEx();
                 AllTreeViewNodesX.AddRange(e.Result as ObservableCollectionExtended<TreeViewEntry>);
             }
             IsBusy = false;
@@ -1073,102 +1076,25 @@ namespace ME3Explorer
             RefreshNames();
         }
 
-        /// <summary>
-        /// Clears the itemsource or items property of the passed in control.
-        /// </summary>
-        /// <param name="control">ItemsControl to clear all entries from.</param>
-        private void ClearList(ItemsControl control)
-        {
-            if (control.ItemsSource != null)
-            {
-                control.ItemsSource = null;
-            }
-            else
-            {
-                control.Items.Clear();
-            }
-        }
-
         private void TreeView_Click(object sender, RoutedEventArgs e)
         {
-            SetView(CurrentViewMode.Tree);
+            CurrentView = CurrentViewMode.Tree;
             RefreshView();
         }
         private void NamesView_Click(object sender, RoutedEventArgs e)
         {
-            SetView(CurrentViewMode.Names);
+            CurrentView = CurrentViewMode.Names;
             RefreshView();
         }
         private void ImportsView_Click(object sender, RoutedEventArgs e)
         {
-            SetView(CurrentViewMode.Imports);
+            CurrentView = CurrentViewMode.Imports;
             RefreshView();
         }
         private void ExportsView_Click(object sender, RoutedEventArgs e)
         {
-            SetView(CurrentViewMode.Exports);
+            CurrentView = CurrentViewMode.Exports;
             RefreshView();
-        }
-
-        void SetView(CurrentViewMode n)
-        {
-            CurrentView = n;
-            /*switch (n)
-            {
-                case View.Names:
-                    Names_Button.Checked = true;
-                    Button2.Checked = false;
-                    Button3.Checked = false;
-                    Button5.Checked = false;
-                    break;
-                case View.Imports:
-                    Button1.Checked = false;
-                    Button2.Checked = true;
-                    Button3.Checked = false;
-                    Button5.Checked = false;
-                    break;
-                case View.Tree:
-                    Button1.Checked = false;
-                    Button2.Checked = false;
-                    Button3.Checked = false;
-                    Button5.Checked = true;
-                    break;
-                case View.Exports:
-                default:
-                    Button1.Checked = false;
-                    Button2.Checked = false;
-                    Button3.Checked = true;
-                    Button5.Checked = false;
-                    break;
-            }*/
-        }
-
-
-
-        public void PreviewInfo(int n)
-        {
-
-
-            if (n > 0)
-            {
-            }
-            else
-            {
-                n = -n - 1; //convert to 0 based indexing (imports list)
-                ImportEntry importEntry = Pcc.getImport(n);
-
-                /*infoHeaderBox.Text = "Import Header";
-                 superclassTextBox.Visible = superclassLabel.Visible = false;
-                 archetypeBox.Visible = label6.Visible = false;
-                 indexBox.Visible = label5.Visible = false;
-                 flagsBox.Visible = label11.Visible = false;
-                 infoExportDataBox.Visible = false;
-                 ImportEntry importEntry = pcc.getImport(n);
-                 objectNameBox.Text = importEntry.ObjectName;
-                 classNameBox.Text = importEntry.ClassName;
-                 packageNameBox.Text = importEntry.PackageFullName;
-                 headerSizeBox.Text = ImportEntry.byteSize + " bytes";*/
-            }
         }
 
         /// <summary>
@@ -1220,17 +1146,78 @@ namespace ME3Explorer
             int n = 0;
             bool hasSelection = GetSelected(out n);
 
+            //we might need to identify parent depths and add those first
+            List<PackageUpdate> addedChanges = updates.Where(x => x.change == PackageChange.ExportAdd || x.change == PackageChange.ImportAdd).OrderBy(x => x.index).ToList();
+            if (addedChanges.Count > 0)
+            {
+                //Find nodes that haven't been generated and added yet
+                List<PackageUpdate> addedChangesByUIndex = new List<PackageUpdate>();
+                foreach (PackageUpdate u in addedChanges)
+                {
+                    //convert to uindex
+                    addedChangesByUIndex.Add(new PackageUpdate { change = u.change, index = u.index >= 0 ? u.index + 1 : u.index });
+                }
+                var treeViewItems = AllTreeViewNodesX[0].FlattenTree();
+
+                //filter to only nodes that don't exist yet (created by external tools)
+                foreach (TreeViewEntry tvi in treeViewItems)
+                {
+                    addedChangesByUIndex.RemoveAll(x => x.index == tvi.UIndex);
+                }
+
+                //Generate new nodes
+                var nodesToSortChildrenFor = new HashSet<TreeViewEntry>();
+                foreach (PackageUpdate newItem in addedChangesByUIndex)
+                {
+                    int idx = newItem.index >= 0 ? newItem.index : newItem.index; //make UIndex based
+                    IEntry entry = Pcc.getEntry(idx);
+
+                    //TreeViewEntry parent = null;
+                    //foreach (TreeViewEntry tve in treeViewItems)
+                    //{
+                    //    Debug.WriteLine(tve.UIndex + " vs " + entry.idxLink);
+                    //    if (tve.UIndex == entry.idxLink)
+                    //    {
+                    //        Debug.WriteLine("FOUND!");
+                    //        parent = tve;
+                    //        break;
+                    //    }
+                    //}
+                    TreeViewEntry parent = treeViewItems.First(x => x.UIndex == entry.idxLink);
+                    TreeViewEntry newEntry = new TreeViewEntry(entry);
+                    newEntry.Parent = parent;
+                    parent.Sublinks.Add(newEntry);
+                    treeViewItems.Add(newEntry); //used to find parents
+                    nodesToSortChildrenFor.Add(parent);
+                    //newItem.Parent = targetItem;
+                    //targetItem.Sublinks.Add(newItem);
+                }
+
+                nodesToSortChildrenFor.ToList().ForEach(x => x.SortChildren());
+
+                int currentLeftSideListMaxCount = LeftSideList_ItemsSource.Count - 1;
+                if (CurrentView == CurrentViewMode.Imports)
+                {
+                    //TODO: Add importentries
+                    //LeftSideList_ItemsSource.ReplaceAll(Pcc.Imports);
+                }
+
+                if (CurrentView == CurrentViewMode.Exports)
+                {
+                    //TODO: Add exportentries
+                    //LeftSideList_ItemsSource.ReplaceAll(Pcc.Exports);
+                }
+            }
+
+
             if (changes.Contains(PackageChange.Names))
             {
                 //reloads names - used by metadata editor control as well as names list
                 RefreshNames(updates.Where(x => x.change == PackageChange.Names).ToList());
-                //MetadataTab_MetadataEditor.ResetNameDropdownIndexes(); //this will force nameslist to update now.
+
+                //TODO: Add new names to current UI
             }
 
-            if (CurrentView == CurrentViewMode.Names && changes.Contains(PackageChange.Names))
-            {
-                RefreshView();
-            }
             else if (CurrentView == CurrentViewMode.Imports && importChanges ||
                      CurrentView == CurrentViewMode.Exports && exportNonDataChanges ||
                      CurrentView == CurrentViewMode.Tree && (importChanges || exportNonDataChanges))
@@ -1246,8 +1233,6 @@ namespace ME3Explorer
             {
                 Preview(true);
             }
-
-
         }
 
         private void RefreshNames(List<PackageUpdate> updates = null)
@@ -1338,14 +1323,10 @@ namespace ME3Explorer
 
             if (CurrentView == CurrentViewMode.Imports || CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Tree)
             {
-                PreviewInfo(n);
                 Interpreter_Tab.IsEnabled = n >= 0;
                 if (n >= 0)
                 {
-
                     IExportEntry exportEntry = Pcc.getExport(n - 1);
-                    CurrentlyLoadedEntry = exportEntry;
-
                     foreach (KeyValuePair<ExportLoaderControl, TabItem> entry in ExportLoaders)
                     {
                         if (entry.Key.CanParse(exportEntry))
@@ -1366,10 +1347,8 @@ namespace ME3Explorer
                 //import
                 else
                 {
-                    Visible_ObjectNameRow = false;
                     ImportEntry importEntry = Pcc.getImport(-n - 1);
                     MetadataTab_MetadataEditor.LoadImport(importEntry);
-                    CurrentlyLoadedEntry = importEntry;
                     foreach (KeyValuePair<ExportLoaderControl, TabItem> entry in ExportLoaders)
                     {
                         if (entry.Key != MetadataTab_MetadataEditor)
@@ -1379,7 +1358,6 @@ namespace ME3Explorer
                         }
                     }
                     Metadata_Tab.IsSelected = true;
-                    PreviewInfo(n);
                 }
                 //CHECK THE CURRENT TAB IS VISIBLE/ENABLED. IF NOT, CHOOSE FIRST TAB THAT IS 
                 TabItem currentTab = (TabItem)EditorTabs.Items[EditorTabs.SelectedIndex];
@@ -1549,40 +1527,6 @@ namespace ME3Explorer
         }
 
 
-
-        /// <summary>
-        /// Command binding for when the Find command binding is issued (CTRL F)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void FindCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            Search_TextBox.Focus();
-            Search_TextBox.SelectAll();
-        }
-
-        /// <summary>
-        /// Command binding for when the Goto command is issued (CTRL G)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void GotoCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            Goto_TextBox.Focus();
-            Goto_TextBox.SelectAll();
-        }
-
-
-
-        /// <summary>
-        /// Command binding for opening the ComparePackage tool
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ComparePackageBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-
-        }
 
         /// <summary>
         /// Drag/drop dragover handler for the entry list treeview
@@ -2682,7 +2626,7 @@ namespace ME3Explorer
             var importNodes = Sublinks.Where(x => x.Entry.UIndex < 0).OrderBy(x => x.UIndex).Reverse().ToList(); //we want this in descending order
 
             exportNodes.AddRange(importNodes);
-            Sublinks.Clear();
+            Sublinks.ClearEx();
             Sublinks.AddRange(exportNodes);
         }
     }

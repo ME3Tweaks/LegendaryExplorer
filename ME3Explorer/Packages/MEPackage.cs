@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,7 @@ namespace ME3Explorer.Packages
         ImportAdd,
     }
 
+    [DebuggerDisplay("PackageUpdate | {change} on index {index}")]
     public struct PackageUpdate
     {
         /// <summary>
