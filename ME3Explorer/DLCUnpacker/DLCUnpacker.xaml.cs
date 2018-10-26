@@ -39,7 +39,7 @@ namespace ME3Explorer.DLCUnpacker
         private BackgroundWorker UnpackDLCWorker;
         private double RequiredSpace;
         private double AvailableSpace;
-
+        public string ME3DLCPath { get; set; }
         #region MVVM Databindings
         private string _unpackingPercentString;
         public string UnpackingPercentString
@@ -55,6 +55,40 @@ namespace ME3Explorer.DLCUnpacker
             }
         }
         private string _requiredSpaceText;
+        private static Dictionary<string, string> _cachedPrettyDLCNames;
+        public static Dictionary<string, string> PrettyDLCNames
+        {
+            get
+            {
+                if (_cachedPrettyDLCNames != null) return _cachedPrettyDLCNames;
+                _cachedPrettyDLCNames = new Dictionary<string, string>
+                {
+                    ["DLC_OnlinePassHidCE"] = "Collector's Edition Bonus Content",
+                    ["DLC_HEN_PR"] = "From Ashes",
+                    ["DLC_CON_END"] = "Extended Cut",
+                    ["DLC_EXP_Pack001"] = "Leviathan",
+                    ["DLC_EXP_Pack002"] = "Omega",
+                    ["DLC_EXP_Pack003"] = "Citadel",
+                    ["DLC_EXP_Pack003_Base"] = "Citadel Base",
+                    ["DLC_CON_DH1"] = "Mass Effect: Genesis 2",
+
+                    ["DLC_CON_APP01"] = "Alternate Appearance Pack 1",
+                    ["DLC_CON_GUN01"] = "Firefight Pack",
+                    ["DLC_CON_GUN02"] = "Groundside Resistance Pack",
+
+                    ["DLC_CON_MP1"] = "Resurgence",
+                    ["DLC_CON_MP2"] = "Rebellion",
+                    ["DLC_CON_MP3"] = "Earth",
+                    ["DLC_CON_MP4"] = "Retaliation",
+                    ["DLC_CON_MP5"] = "Reckoning",
+                    ["DLC_UPD_Patch01"] = "Patch01",
+                    ["DLC_UPD_Patch02"] = "Patch02",
+                    ["DLC_TestPatch"] = "TestPatch"
+                };
+                return _cachedPrettyDLCNames;
+            }
+        }
+
         public string RequiredSpaceText
         {
             get { return _requiredSpaceText; }
@@ -149,6 +183,21 @@ namespace ME3Explorer.DLCUnpacker
                 }
             }
         }
+
+        private string _currentOverallOperationText;
+        public string CurrentOverallOperationText
+        {
+            get { return _currentOverallOperationText; }
+            set
+            {
+                if (value != _currentOverallOperationText)
+                {
+                    _currentOverallOperationText = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
         #endregion
         List<ME3DLC> sfarsToUnpack = new List<ME3DLC>();
 
@@ -201,6 +250,12 @@ namespace ME3Explorer.DLCUnpacker
             }
         }
 
+        public static string GetPrettyDLCNameFromPath(string sfarPath)
+        {
+            var path = Path.GetFileName(Directory.GetParent(Directory.GetParent(sfarPath).FullName).FullName);
+            return PrettyDLCNames[path];
+        }
+
         private double GetRequiredSize()
         {
             double totalUncompressedSize;
@@ -239,7 +294,10 @@ namespace ME3Explorer.DLCUnpacker
                 }
             }
             totalUncompressedSize = uncompressedSize;
-
+            if (sfarsToUnpack.Count == 0)
+            {
+                CurrentOverallOperationText = "All installed DLC is currently unpacked.";
+            }
             //each SFAR is stripped of all its files after unpacking, so the maximum space needed on the drive is
             //the difference between the uncompressed size and compressed size of all SFARS, plus the compressed size
             //of the largest SFAR. I'm using the uncompressed size instead as a fudge factor.
@@ -254,7 +312,7 @@ namespace ME3Explorer.DLCUnpacker
 
         private bool CanUnpackDLC(object obj)
         {
-            return AvailableSpace > RequiredSpace && RequiredSpace > 0 && UnpackDLCWorker == null;
+            return AvailableSpace > RequiredSpace && RequiredSpace > 0 && sfarsToUnpack.Count > 0 && UnpackDLCWorker == null;
         }
 
         private void UnpackDLC(object obj)
@@ -281,15 +339,27 @@ namespace ME3Explorer.DLCUnpacker
                 string outPath = Path.Combine(ME3Directory.DLCPath, DLCname);
                 sfar.Extract(sfar.filePath, outPath);
             }
+            CurrentOverallProgressValue = 100;
+            OverallProgressValue = 100;
+            CurrentOverallOperationText = "DLC has been unpacked";
+            CurrentOperationText = "";
+
+            RequiredSpaceText = "Calculating...";
+            BackgroundWorker bg = new BackgroundWorker();
+            bg.DoWork += CalculateUnpackRequirements;
+            bg.RunWorkerCompleted += CalculateUnpackRequirements_Completed;
+            bg.RunWorkerAsync();
         }
 
         private void SFAR_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            Debug.WriteLine("Prop change " + e.PropertyName);
             switch (e.PropertyName)
             {
                 case "CurrentStatus":
                     CurrentOperationText = (sender as ME3DLC).CurrentStatus;
+                    break;
+                case "CurrentOverallStatus":
+                    CurrentOverallOperationText = (sender as ME3DLC).CurrentOverallStatus;
                     break;
                 case "CurrentProgress":
                     CurrentOverallProgressValue = (sender as ME3DLC).CurrentProgress;

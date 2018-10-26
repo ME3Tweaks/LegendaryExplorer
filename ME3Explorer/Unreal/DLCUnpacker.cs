@@ -29,6 +29,7 @@ using StreamHelpers;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using ByteSizeLib;
 
 namespace ME3Explorer.Unreal
 {
@@ -57,6 +58,16 @@ namespace ME3Explorer.Unreal
 
         public long UncompressedSize { get; private set; }
         public int GetNumberOfFiles => (int)filesCount;
+
+        private string _currentOverallStatus;
+        /// <summary>
+        /// Current text describing what the overall status is for this DLC
+        /// </summary>
+        public string CurrentOverallStatus
+        {
+            get { return _currentOverallStatus; }
+            set { SetProperty(ref _currentOverallStatus, value); }
+        }
 
         private string _currentStatus;
         /// <summary>
@@ -212,9 +223,12 @@ namespace ME3Explorer.Unreal
                 throw new Exception("filename missing");
 
             LoadingFileIntoRAM = true;
-            CurrentStatus = "Loading [DLCNAMEHERE] into memory";
+            CurrentOverallStatus = $"Extracting {DLCUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(SFARfilename)}";
+            CurrentStatus = $"Loading {DLCUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(SFARfilename)} into memory ({ByteSize.FromBytes(new FileInfo(SFARfilename).Length)})";
             byte[] buffer = File.ReadAllBytes(SFARfilename);
+            CurrentFilesProcessed = 0;
             LoadingFileIntoRAM = false;
+
             File.Delete(SFARfilename);
             using (FileStream outputFile = new FileStream(SFARfilename, FileMode.Create, FileAccess.Write))
             {
@@ -228,6 +242,7 @@ namespace ME3Explorer.Unreal
                 outputFile.WriteUInt32(LZMATag);
             }
 
+            CurrentOverallStatus = $"Extracting {DLCUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(SFARfilename)}";
             using (MemoryStream stream = new MemoryStream(buffer))
             {
                 int lastProgress = -1;
