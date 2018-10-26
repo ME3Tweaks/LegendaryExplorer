@@ -101,6 +101,8 @@ namespace ME3Explorer
         public List<string> RFiles;
         private SortedDictionary<int, int> crossPCCObjectMap;
         private string currentFile;
+        private int QueuedGotoNumber;
+        private bool IsLoadingFile;
 
         #region Busy variables
         private bool _isBusy;
@@ -139,7 +141,7 @@ namespace ME3Explorer
         public ICommand EditNameCommand { get; set; }
         public ICommand ExportImportDataVisibilityCommand { get; set; }
         public ICommand AddNameCommand { get; set; }
-
+        public ICommand RebuildStreamingLevelsCommand { get; set; }
         private void LoadCommands()
         {
             ComparePackagesCommand = new RelayCommand(ComparePackages, PackageIsLoaded);
@@ -154,6 +156,54 @@ namespace ME3Explorer
             EditNameCommand = new RelayCommand(EditName, NameIsSelected);
             AddNameCommand = new RelayCommand(AddName, CanAddName);
             ExportImportDataVisibilityCommand = new RelayCommand((o) => { }, ExportIsSelected); //no execution command
+            RebuildStreamingLevelsCommand = new RelayCommand(RebuildStreamingLevels, PackageIsLoaded);
+        }
+
+        private void RebuildStreamingLevels(object obj)
+        {
+            try
+            {
+                var levelStreamingKismets = new List<IExportEntry>();
+                IExportEntry bioworldinfo = null;
+                foreach (IExportEntry exp in Pcc.Exports)
+                {
+                    if (exp.ClassName == "BioWorldInfo" && exp.ObjectName == "BioWorldInfo")
+                    {
+                        bioworldinfo = exp;
+                        continue;
+                    }
+                    if (exp.ClassName == "LevelStreamingKismet" && exp.ObjectName == "LevelStreamingKismet")
+                    {
+                        levelStreamingKismets.Add(exp);
+                        continue;
+                    }
+                }
+                levelStreamingKismets = levelStreamingKismets.OrderBy(o => o.GetProperty<NameProperty>("PackageName").ToString()).ToList();
+                if (bioworldinfo != null)
+                {
+                    var streamingLevelsProp = bioworldinfo.GetProperty<ArrayProperty<ObjectProperty>>("StreamingLevels");
+                    if (streamingLevelsProp == null)
+                    {
+                        //couldn't find...
+                        streamingLevelsProp = new ArrayProperty<ObjectProperty>(ArrayType.Object, "StreamingLevels");
+                    }
+                    streamingLevelsProp.Clear();
+                    foreach (IExportEntry exp in levelStreamingKismets)
+                    {
+                        streamingLevelsProp.Add(new ObjectProperty(exp.UIndex));
+                    }
+                    bioworldinfo.WriteProperty(streamingLevelsProp);
+                    MessageBox.Show("Done.");
+                }
+                else
+                {
+                    MessageBox.Show("No BioWorldInfo object found in this file.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error setting streaming levels:\n" + ex.Message);
+            }
         }
 
         /// <summary>
@@ -306,7 +356,7 @@ namespace ME3Explorer
                         ImportEntry imp = Pcc.Imports[i];
                         if (offsetDec >= imp.HeaderOffset && offsetDec < imp.HeaderOffset + imp.Header.Length)
                         {
-                            goToNumber(imp.UIndex);
+                            GoToNumber(imp.UIndex);
                             Metadata_Tab.IsSelected = true;
                             MetadataTab_MetadataEditor.SetHexboxSelectedOffset(imp.HeaderOffset + imp.Header.Length - offsetDec);
                             return;
@@ -318,7 +368,7 @@ namespace ME3Explorer
                         //header
                         if (offsetDec >= exp.HeaderOffset && offsetDec < exp.HeaderOffset + exp.Header.Length)
                         {
-                            goToNumber(exp.UIndex);
+                            GoToNumber(exp.UIndex);
                             Metadata_Tab.IsSelected = true;
                             MetadataTab_MetadataEditor.SetHexboxSelectedOffset(exp.HeaderOffset + exp.Header.Length - offsetDec);
                             return;
@@ -327,7 +377,7 @@ namespace ME3Explorer
                         //data
                         if (offsetDec >= exp.DataOffset && offsetDec < exp.DataOffset + exp.DataSize)
                         {
-                            goToNumber(exp.UIndex);
+                            GoToNumber(exp.UIndex);
                             int inExportDataOffset = exp.DataOffset + exp.DataSize - offsetDec;
                             int propsEnd = exp.propsEnd();
 
@@ -406,7 +456,7 @@ namespace ME3Explorer
                 relinkBinaryObjects(Pcc);
                 crossPCCObjectMap = null;
                 RefreshView();
-                goToNumber(nextIndex);
+                GoToNumber(nextIndex);
             }
         }
 
@@ -432,7 +482,7 @@ namespace ME3Explorer
                 newEntry.Parent = selected.Parent;
                 selected.Parent.Sublinks.Add(newEntry);
                 selected.Parent.SortChildren();
-                goToNumber(newEntry.UIndex);
+                GoToNumber(newEntry.UIndex);
 
             }
         }
@@ -698,72 +748,71 @@ namespace ME3Explorer
             RefreshRecent(false);
         }
 
-        private void LoadFile(string s)
+        public void LoadFile(string s)
         {
-            //  try
-            //{
-            GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
-            GC.Collect();
-            IsBusy = true;
-            foreach (KeyValuePair<ExportLoaderControl, TabItem> entry in ExportLoaders)
+            try
             {
-                entry.Value.Visibility = Visibility.Collapsed;
-            }
-            Metadata_Tab.Visibility = Visibility.Collapsed;
-            Intro_Tab.Visibility = Visibility.Visible;
-            Intro_Tab.IsSelected = true;
+                BusyText = "Loading " + System.IO.Path.GetFileName(s);
+                IsBusy = true;
+                IsLoadingFile = true;
+                foreach (KeyValuePair<ExportLoaderControl, TabItem> entry in ExportLoaders)
+                {
+                    entry.Value.Visibility = Visibility.Collapsed;
+                }
+                Metadata_Tab.Visibility = Visibility.Collapsed;
+                Intro_Tab.Visibility = Visibility.Visible;
+                Intro_Tab.IsSelected = true;
 
-            AllTreeViewNodesX.ClearEx();
-            currentFile = s;
-            StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
-            StatusBar_LeftMostText.Text = "Loading " + System.IO.Path.GetFileName(s) + " (" + ByteSize.FromBytes(new System.IO.FileInfo(s).Length) + ")";
-            Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
-            LoadMEPackage(s);
-            StatusBar_GameID_Container.Visibility = Visibility.Visible;
-            //Metadata_Tab.IsSelected = true; //due to winforms interop thread issues
-            switch (Pcc.Game)
+                AllTreeViewNodesX.ClearEx();
+                NamesList.ClearEx();
+                ClassDropdownList.ClearEx();
+
+                currentFile = s;
+                StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
+                StatusBar_LeftMostText.Text = "Loading " + System.IO.Path.GetFileName(s) + " (" + ByteSize.FromBytes(new System.IO.FileInfo(s).Length) + ")";
+                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
+                LoadMEPackage(s);
+                StatusBar_GameID_Container.Visibility = Visibility.Visible;
+                switch (Pcc.Game)
+                {
+                    case MEGame.ME1:
+                        StatusBar_GameID_Text.Text = "ME1";
+                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
+                        break;
+                    case MEGame.ME2:
+                        StatusBar_GameID_Text.Text = "ME2";
+                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Maroon);
+                        break;
+                    case MEGame.ME3:
+                        StatusBar_GameID_Text.Text = "ME3";
+                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.DarkSeaGreen);
+                        break;
+                    case MEGame.UDK:
+                        StatusBar_GameID_Text.Text = "UDK";
+                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.IndianRed);
+                        break;
+                }
+
+                RefreshView();
+                InitStuff();
+                StatusBar_LeftMostText.Text = System.IO.Path.GetFileName(s);
+                Title = "Package Editor WPF - " + System.IO.Path.GetFileName(s);
+                InterpreterTab_Interpreter.UnloadExport();
+                //InitializeTreeView();
+
+                BackgroundWorker bg = new BackgroundWorker();
+                bg.DoWork += InitializeTreeViewBackground;
+                bg.RunWorkerCompleted += InitializeTreeViewBackground_Completed;
+                bg.RunWorkerAsync();
+            }
+            catch (Exception e)
             {
-                case MEGame.ME1:
-                    StatusBar_GameID_Text.Text = "ME1";
-                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
-                    break;
-                case MEGame.ME2:
-                    StatusBar_GameID_Text.Text = "ME2";
-                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Maroon);
-                    break;
-                case MEGame.ME3:
-                    StatusBar_GameID_Text.Text = "ME3";
-                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.DarkSeaGreen);
-                    break;
-                case MEGame.UDK:
-                    StatusBar_GameID_Text.Text = "UDK";
-                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.IndianRed);
-                    break;
+                StatusBar_LeftMostText.Text = "Failed to load " + System.IO.Path.GetFileName(s);
+                MessageBox.Show("Error loading " + System.IO.Path.GetFileName(s) + ":\n" + e.Message);
+                IsBusy = false;
+                IsBusyTaskbar = false;
+                //throw e;
             }
-            /*interpreterControl.Pcc = pcc;
-            binaryInterpreterControl.Pcc = pcc;
-            bio2DAEditor1.Pcc = pcc;
-            treeView1.Tag = pcc;*/
-            RefreshView();
-            InitStuff();
-            StatusBar_LeftMostText.Text = System.IO.Path.GetFileName(s);
-            Title = "Package Editor WPF - " + System.IO.Path.GetFileName(s);
-            InterpreterTab_Interpreter.UnloadExport();
-            //InitializeTreeView();
-
-            BackgroundWorker bg = new BackgroundWorker();
-            bg.DoWork += InitializeTreeViewBackground;
-            bg.RunWorkerCompleted += InitializeTreeViewBackground_Completed;
-            bg.RunWorkerAsync();
-            ////            InitializeTreeView();
-
-            //}
-            //catch (Exception e)
-            //{
-            //StatusBar_LeftMostText.Text = "Failed to load " + System.IO.Path.GetFileName(s);
-            //MessageBox.Show("Error loading " + System.IO.Path.GetFileName(s) + ":\n" + e.Message);
-            //  throw e;
-            //}
         }
 
         private void InitializeTreeViewBackground_Completed(object sender, RunWorkerCompletedEventArgs e)
@@ -773,8 +822,20 @@ namespace ME3Explorer
                 AllTreeViewNodesX.ClearEx();
                 AllTreeViewNodesX.AddRange(e.Result as ObservableCollectionExtended<TreeViewEntry>);
             }
+            IsLoadingFile = false;
+            if (QueuedGotoNumber != 0)
+            {
+                //Wait for UI to render
+                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
+                BusyText = $"Navigating to {QueuedGotoNumber}";
+                GoToNumber(QueuedGotoNumber);
+                if (QueuedGotoNumber > 0)
+                {
+                    Interpreter_Tab.IsSelected = true;
+                }
+                QueuedGotoNumber = 0;
+            }
             IsBusy = false;
-
         }
 
         private void InitializeTreeViewBackground(object sender, DoWorkEventArgs e)
@@ -1200,12 +1261,26 @@ namespace ME3Explorer
                 {
                     //TODO: Add importentries
                     //LeftSideList_ItemsSource.ReplaceAll(Pcc.Imports);
+                    foreach (PackageUpdate update in addedChangesByUIndex)
+                    {
+                        if (update.index < 0)
+                        {
+                            LeftSideList_ItemsSource.Add(Pcc.getEntry(update.index));
+                        }
+                    }
                 }
 
                 if (CurrentView == CurrentViewMode.Exports)
                 {
                     //TODO: Add exportentries
                     //LeftSideList_ItemsSource.ReplaceAll(Pcc.Exports);
+                    foreach (PackageUpdate update in addedChangesByUIndex)
+                    {
+                        if (update.index > 0)
+                        {
+                            LeftSideList_ItemsSource.Add(Pcc.getEntry(update.index));
+                        }
+                    }
                 }
             }
 
@@ -1225,7 +1300,7 @@ namespace ME3Explorer
                 RefreshView();
                 if (hasSelection)
                 {
-                    goToNumber(n);
+                    GoToNumber(n);
                 }
             }
             else if ((CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Tree) && hasSelection &&
@@ -1428,8 +1503,7 @@ namespace ME3Explorer
             int n;
             if (int.TryParse(Goto_TextBox.Text, out n))
             {
-                Debug.WriteLine("Goto");
-                goToNumber(n);
+                GoToNumber(n);
             }
         }
 
@@ -1437,11 +1511,16 @@ namespace ME3Explorer
         /// Selects the entry that corresponds to the given index
         /// </summary>
         /// <param name="entryIndex">Unreal-indexed entry number</param>
-        private void goToNumber(int entryIndex)
+        public void GoToNumber(int entryIndex)
         {
             if (entryIndex == 0)
             {
                 return; //PackageEditorWPF uses Unreal Indexing for entries
+            }
+            if (IsLoadingFile)
+            {
+                QueuedGotoNumber = entryIndex;
+                return;
             }
             if (CurrentView == CurrentViewMode.Tree)
             {
@@ -1641,7 +1720,7 @@ namespace ME3Explorer
                 crossPCCObjectMap = null;
 
                 RefreshView();
-                goToNumber(n >= 0 ? Pcc.ExportCount : -Pcc.ImportCount);
+                GoToNumber(n >= 0 ? Pcc.ExportCount : -Pcc.ImportCount);
                 if (relinkResults.Count > 0)
                 {
                     ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.");

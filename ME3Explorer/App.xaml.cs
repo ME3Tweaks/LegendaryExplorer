@@ -10,6 +10,7 @@ using KFreonLib.MEDirectories;
 using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
 using ME3Explorer.Packages;
+using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
 
 namespace ME3Explorer
@@ -86,9 +87,9 @@ namespace ME3Explorer
             string arg = args[1];
             if (arg == "JUMPLIST_PACKAGE_EDITOR")
             {
-                PackageEditor editor = new PackageEditor();
-                editor.BringToFront();
+                PackageEditorWPF editor = new PackageEditorWPF();
                 editor.Show();
+                editor.Focus();
                 exitCode = 0;
                 return 0;
             }
@@ -108,12 +109,20 @@ namespace ME3Explorer
                 exitCode = 0;
                 return 0;
             }
+            if (arg == "JUMPLIST_SOUNDPLORER")
+            {
+                SoundplorerWPF editor = new SoundplorerWPF();
+                editor.Show();
+                editor.Focus();
+                exitCode = 0;
+                return 0;
+            }
 
             string ending = Path.GetExtension(args[1]).ToLower();
             switch (ending)
             {
                 case ".pcc":
-                    PackageEditor editor = new PackageEditor();
+                    PackageEditorWPF editor = new PackageEditorWPF();
                     editor.Show();
                     editor.LoadFile(args[1]);
                     exitCode = 0;

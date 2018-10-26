@@ -96,6 +96,11 @@
                 <MenuItem Header="Tools" Padding="4">
                     <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}"/>
                     <MenuItem Header="Compare with another package" ToolTip="Compare another version of this package to see what exports and imports have changed" Command="{Binding ComparePackagesCommand}"/>
+                    <MenuItem Header="Convenience tools" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <MenuItem Header="Rebuild BioWorld StreamingLevels"  Command="{Binding RebuildStreamingLevelsCommand}" ToolTip="Updates BioWorldInfo's list of StreamingLevels to include all LevelStreamingKismet"/>
+
+                    </MenuItem>
+
                     <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <MenuItem Header="Complete export data"  Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file"/>
                         <MenuItem Header="Binary data only"   Command="{Binding ExportBinaryDataCommand}" ToolTip="Export only binary data (bytes after properties) to a .bin file"/>
@@ -327,7 +332,7 @@
                             and will take some time for development to complete.
                             </TextBlock>
 
-                            <Grid HorizontalAlignment="Center" Margin="20" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
+                            <Grid HorizontalAlignment="Left" Margin="20" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>

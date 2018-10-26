@@ -194,7 +194,7 @@
         <JumpList >
             
             <JumpTask Title="Package Editor" 
-                      Description="Opens a new instance of Package Editor" 
+                      Description="Opens a new instance of Package Editor WPF" 
                       Arguments="JUMPLIST_PACKAGE_EDITOR"/>
             <JumpTask Title="Pathfinding Editor" 
                       Description="Opens a new instance of Pathfinding Editor" 
@@ -202,6 +202,9 @@
             <JumpTask Title="Sequence Editor" 
                       Description="Opens a new instance of Sequence Editor" 
                       Arguments="JUMPLIST_SEQUENCE_EDITOR"/>
+            <JumpTask Title="Soundplorer" 
+                      Description="Opens a new instance of Soundplorer WPF" 
+                      Arguments="JUMPLIST_SOUNDPLORER"/>
         </JumpList>
     </JumpList.JumpList>
 </Application>

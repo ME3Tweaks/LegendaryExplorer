@@ -1024,10 +1024,10 @@ namespace ME3Explorer
             int l = CurrentObjects[listBox1.SelectedIndex];
             if (l == -1)
                 return;
-            PackageEditor p = new PackageEditor();
+            PackageEditorWPF p = new PackageEditorWPF();
             p.Show();
             p.LoadFile(CurrentFile);
-            p.goToNumber(l);
+            p.GoToNumber(l);
         }
 
         private void addObjectsToolStripMenuItem_Click(object sender, EventArgs e)
