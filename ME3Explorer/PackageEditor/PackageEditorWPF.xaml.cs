@@ -1365,7 +1365,6 @@ namespace ME3Explorer
         /// <param name="e"></param>
         private void LeftSide_SelectedItemChanged(object sender, RoutedEventArgs e)
         {
-            e.Handled = true;
             Preview();
         }
 
@@ -1555,8 +1554,9 @@ namespace ME3Explorer
                 if (selectNode.Count() > 0)
                 {
                     //selectNode[0].ExpandParents();
+                    selectNode[0].ExpandParents();
                     selectNode[0].IsSelected = true;
-                    //FocusTreeViewNodeOld(selectNode[0]);
+                    FocusTreeViewNodeOld(selectNode[0]);
 
                     //selectNode[0].Focus(LeftSide_TreeView);
                 }
@@ -2392,67 +2392,68 @@ namespace ME3Explorer
         {
             ME1UnrealObjectInfo.generateInfo();
         }
-        /*
-                private void FocusTreeViewNodeOld(TreeViewEntry node)
+
+        private void FocusTreeViewNodeOld(TreeViewEntry node)
+        {
+            if (node == null) return;
+            var nodes = (IEnumerable<TreeViewEntry>)LeftSide_TreeView.ItemsSource;
+            if (nodes == null) return;
+
+            var stack = new Stack<TreeViewEntry>();
+            stack.Push(node);
+            var parent = node.Parent;
+            while (parent != null)
+            {
+                stack.Push(parent);
+                parent = parent.Parent;
+            }
+            TreeViewItem container = null;
+            var generator = LeftSide_TreeView.ItemContainerGenerator;
+            while (stack.Count > 0)
+            {
+                //pop the next child off the stack
+                var dequeue = stack.Pop();
+                var index = generator.Items.IndexOf(dequeue);
+
+                //see if the container is already loaded. If not, we will have to generate them until we get it (why microsoft...)
+                TreeViewItem treeViewItem = generator.ContainerFromIndex(index) as TreeViewItem;
+                //if (treeViewItem == null && container != null) treeViewItem = GetTreeViewItem(container, dequeue);
+                Action action = () => { treeViewItem?.BringIntoView(); };
+                //This needs to be stress tested - this can cause deadlock, but if it doesn't return fast enough the code
+                //may continue to null and not work.
+                //Sigh, treeview.
+                Dispatcher.BeginInvoke(action, DispatcherPriority.Background);
+                if (treeViewItem == null)
                 {
-                    if (node == null) return;
-                    var nodes = (IEnumerable<TreeViewEntry>)LeftSide_TreeView.ItemsSource;
-                    if (nodes == null) return;
+                    Debug.WriteLine("This shoudln't be null");
+                }
 
-                    var stack = new Stack<TreeViewEntry>();
-                    stack.Push(node);
-                    var parent = node.Parent;
-                    while (parent != null)
+                if (stack.Count > 0)
+                {
+                    action = () => { if (treeViewItem != null) treeViewItem.IsExpanded = true; };
+                    Dispatcher.Invoke(action, DispatcherPriority.ContextIdle);
+                }
+                else
+                {
+                    if (treeViewItem == null)
                     {
-                        stack.Push(parent);
-                        parent = parent.Parent;
+                        //Hope this doesn't happen anymore.
+                        Debug.WriteLine("FocusNode has triggered null item - CANNOT FOCUS!");
+                        //Debugger.Break();
                     }
-                    TreeViewItem container = null;
-                    var generator = LeftSide_TreeView.ItemContainerGenerator;
-                    while (stack.Count > 0)
+                    else
                     {
-                        //pop the next child off the stack
-                        var dequeue = stack.Pop();
-                        var index = generator.Items.IndexOf(dequeue);
-
-                        //see if the container is already loaded. If not, we will have to generate them until we get it (why microsoft...)
-                        TreeViewItem treeViewItem = generator.ContainerFromIndex(index) as TreeViewItem;
-                        if (treeViewItem == null && container != null) treeViewItem = GetTreeViewItem(container, dequeue);
-                        Action action = () => { treeViewItem?.BringIntoView(); };
-                        //This needs to be stress tested - this can cause deadlock, but if it doesn't return fast enough the code
-                        //may continue to null and not work.
-                        //Sigh, treeview.
-                        Dispatcher.BeginInvoke(action, DispatcherPriority.Background);
-                        if (treeViewItem == null)
-                        {
-                            Debug.WriteLine("This shoudln't be null");
-                        }
-
-                        if (stack.Count > 0)
-                        {
-                            action = () => { if (treeViewItem != null) treeViewItem.IsExpanded = true; };
-                            Dispatcher.Invoke(action, DispatcherPriority.ContextIdle);
-                        }
-                        else
-                        {
-                            if (treeViewItem == null)
-                            {
-                                //Hope this doesn't happen anymore.
-                                Debug.WriteLine("FocusNode has triggered null item - CANNOT FOCUS!");
-                                //Debugger.Break();
-                            }
-                            else
-                            {
-                                treeViewItem.IsSelected = true;
-                            }
-                        }
-                        if (treeViewItem != null)
-                        {
-                            container = treeViewItem;
-                            generator = treeViewItem.ItemContainerGenerator;
-                        }
+                        treeViewItem.BringIntoView();
                     }
                 }
+                if (treeViewItem != null)
+                {
+                    container = treeViewItem;
+                    generator = treeViewItem.ItemContainerGenerator;
+                }
+            }
+        }
+        /*
 
                 public static TreeViewItem GetTreeViewItem(ItemsControl container, object item)
                 {
@@ -2613,79 +2614,80 @@ namespace ME3Explorer
         }
         public event PropertyChangedEventHandler PropertyChanged;
         private System.Windows.Media.Brush _foregroundColor = System.Windows.Media.Brushes.DarkSeaGreen;
-        private bool _isSelected;
-        /*public bool IsSelected
+        private bool isSelected;
+        //public bool IsSelected
+        //{
+        //    get { return this.isSelected; }
+        //    set
+        //    {
+        //        if (value != this.isSelected)
+        //        {
+        //            this.isSelected = value;
+        //            OnPropertyChanged("IsSelected");
+        //        }
+        //    }
+        //}
+
+        
+    public bool IsSelected
+    {
+        get => isSelected;
+        set
         {
-            get { return this.isSelected; }
-            set
+            // build a priority queue of dispatcher operations
+
+            // All operations relating to tree item expansion are added with priority = DispatcherPriority.ContextIdle, so that they are
+            // sorted before any operations relating to selection (which have priority = DispatcherPriority.ApplicationIdle).
+            // This ensures that the visual container for all items are created before any selection operation is carried out.
+            // First expand all ancestors of the selected item - those closest to the root first
+            // Expanding a node will scroll as many of its children as possible into view - see perTreeViewItemHelper, but these scrolling
+            // operations will be added to the queue after all of the parent expansions.
+            if (value)
             {
-                if (value != this.isSelected)
+                var ancestorsToExpand = new Stack<TreeViewEntry>();
+
+                var parent = Parent;
+                while (parent != null)
                 {
-                    this.isSelected = value;
+                    if (!parent.IsExpanded)
+                        ancestorsToExpand.Push(parent);
+
+                    parent = parent.Parent;
+                }
+
+                while (ancestorsToExpand.Any())
+                {
+                    var parentToExpand = ancestorsToExpand.Pop();
+                    DispatcherHelper.AddToQueue(() => parentToExpand.IsExpanded = true, DispatcherPriority.ContextIdle);
+                }
+            }
+
+            //cancel if we're currently selected.
+            Debug.WriteLine(DisplayName + " ISSELECTED: " + isSelected);
+
+            if (isSelected == value)
+                return;
+
+            // Set the item's selected state - use DispatcherPriority.ApplicationIdle so this operation is executed after all
+            // expansion operations, no matter when they were added to the queue.
+            // Selecting a node will also scroll it into view - see perTreeViewItemHelper
+            DispatcherHelper.AddToQueue(() =>
+            {
+                if (value != isSelected)
+                {
+                    Debug.WriteLine("SELECTING...");
+                    isSelected = value;
                     OnPropertyChanged("IsSelected");
                 }
-            }
-        }*/
+            }, DispatcherPriority.ApplicationIdle);
 
-        public bool IsSelected
-        {
-            get => _isSelected;
-            set
-            {
-                // build a priority queue of dispatcher operations
+            // note that by rule, a TreeView can only have one selected item, but this is handled automatically by 
+            // the control - we aren't required to manually unselect the previously selected item.
 
-                // All operations relating to tree item expansion are added with priority = DispatcherPriority.ContextIdle, so that they are
-                // sorted before any operations relating to selection (which have priority = DispatcherPriority.ApplicationIdle).
-                // This ensures that the visual container for all items are created before any selection operation is carried out.
-                // First expand all ancestors of the selected item - those closest to the root first
-                // Expanding a node will scroll as many of its children as possible into view - see perTreeViewItemHelper, but these scrolling
-                // operations will be added to the queue after all of the parent expansions.
-                if (value)
-                {
-                    var ancestorsToExpand = new Stack<TreeViewEntry>();
-
-                    var parent = Parent;
-                    while (parent != null)
-                    {
-                        if (!parent.IsExpanded)
-                            ancestorsToExpand.Push(parent);
-
-                        parent = parent.Parent;
-                    }
-
-                    while (ancestorsToExpand.Any())
-                    {
-                        var parentToExpand = ancestorsToExpand.Pop();
-                        DispatcherHelper.AddToQueue(() => parentToExpand.IsExpanded = true, DispatcherPriority.ContextIdle);
-                    }
-                }
-
-                //cancel if we're currently selected.
-                Debug.WriteLine(DisplayName + " ISSELECTED: " + _isSelected);
-
-                if (_isSelected == value)
-                    return;
-
-                // Set the item's selected state - use DispatcherPriority.ApplicationIdle so this operation is executed after all
-                // expansion operations, no matter when they were added to the queue.
-                // Selecting a node will also scroll it into view - see perTreeViewItemHelper
-                DispatcherHelper.AddToQueue(() =>
-                {
-                    if (value != _isSelected)
-                    {
-                        Debug.WriteLine("SELECTING...");
-                        _isSelected = value;
-                        OnPropertyChanged("IsSelected");
-                    }
-                }, DispatcherPriority.ApplicationIdle);
-
-                // note that by rule, a TreeView can only have one selected item, but this is handled automatically by 
-                // the control - we aren't required to manually unselect the previously selected item.
-
-                // execute all of the queued operations in descending DipatecherPriority order (expansion before selection)
-                var unused = DispatcherHelper.ProcessQueueAsync();
-            }
+            // execute all of the queued operations in descending DipatecherPriority order (expansion before selection)
+            var unused = DispatcherHelper.ProcessQueueAsync();
         }
+    }
 
         private bool isExpanded;
         public bool IsExpanded
