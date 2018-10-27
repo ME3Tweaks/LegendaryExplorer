@@ -56,6 +56,11 @@ namespace ME3Explorer.Unreal
         public long UncompressedSize { get; private set; }
         public int GetNumberOfFiles => (int)TotalFilesInDLC;
 
+        /// <summary>
+        /// Allow cancel unpack files from DLC and revert to state before unpack
+        /// </summary>
+        public bool UnpackCanceled;
+
         private string _currentOverallStatus;
         /// <summary>
         /// Current text describing what the overall status is for this DLC
@@ -265,6 +270,7 @@ namespace ME3Explorer.Unreal
             if (!File.Exists(filePath))
                 throw new Exception("filename missing");
 
+            UnpackCanceled = false;
             LoadingFileIntoRAM = true;
             CurrentOverallStatus = $"Extracting {DLCUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(filePath)}";
             CurrentStatus = $"Loading {DLCUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(filePath)} into memory ({ByteSize.FromBytes(new FileInfo(filePath).Length)})";
@@ -277,6 +283,9 @@ namespace ME3Explorer.Unreal
             {
                 for (int i = 0; i < TotalFilesInDLC; i++, CurrentFilesProcessed++)
                 {
+                    if (UnpackCanceled)
+                        break;
+
                     if (filenamesIndex == i)
                         continue;
                     if (filesList[i].filenamePath == null)
@@ -294,6 +303,21 @@ namespace ME3Explorer.Unreal
                         ExtractEntry(filesList[i], stream, outputFile);
                     }
                 }
+            }
+
+            if (UnpackCanceled)
+            {
+                string dir = Path.GetDirectoryName(outPath);
+                for (int i = 0; i < TotalFilesInDLC; i++)
+                {
+                    if (filenamesIndex == i)
+                        continue;
+                    int pos = filesList[i].filenamePath.IndexOf("\\BIOGame\\DLC\\", StringComparison.OrdinalIgnoreCase);
+                    string filename = filesList[i].filenamePath.Substring(pos + ("\\BIOGame\\DLC\\").Length);
+                    if (File.Exists(dir + filename))
+                        File.Delete(dir + filename);
+                }
+                return;
             }
 
             File.Delete(filePath);
