@@ -70,21 +70,21 @@ namespace ME3Explorer.Meshplorer2
                         if (!DLCpath.StartsWith("__") && !DLCpath.StartsWith("DLC_UPD"))
                         {
                             string path = DLCpath + "\\CookedPCConsole\\Default.sfar";
-                            DLCBase dlcbase;
+                            DLCUnpack dlcbase;
                             try
                             {
-                                dlcbase = new DLCBase(path);
+                                dlcbase = new DLCUnpack(path);
                                 count = 0;
-                                pbar1.Maximum = dlcbase.fileList.Count;
-                                foreach (sfarFile file in dlcbase.fileList)
+                                pbar1.Maximum = dlcbase.GetNumberOfFiles;
+                                foreach (DLCUnpack.DLCEntry file in dlcbase.filesList)
                                     try
                                     {
-                                        string filename = Path.GetFileName(file.fileName);
+                                        string filename = Path.GetFileName(file.filenamePath);
                                         if (Path.GetExtension(filename).ToLower().EndsWith(".pcc"))
                                         {
                                             using (Stream input = File.OpenRead(path), output = File.Create(loc + "temp\\" + filename))
                                             {
-                                                AmaroK86.MassEffect3.DLCUnpack.DecompressEntry(file, input, output, dlcbase.CompressionScheme);
+                                                dlcbase.ExtractEntry(file, input, output);
                                             }
                                             FileInfo f = new FileInfo(loc + "temp\\" + filename);
                                             DebugOutput.PrintLn("checking DLC: " + Path.GetFileName(DLCpath) + " File: " + filename + " Size: " + f.Length + " bytes", count % 3 == 0);
@@ -374,16 +374,16 @@ namespace ME3Explorer.Meshplorer2
                             string dirDLC = ME3Directory.DLCPath;
                             dirDLC += en.DLCName;
                             dirDLC += "\\CookedPCConsole\\Default.sfar";
-                            DLCBase dlc = new DLCBase(dirDLC);
-                            foreach (sfarFile file in dlc.fileList)
+                            DLCUnpack dlc = new DLCUnpack(dirDLC);
+                            foreach (DLCUnpack.DLCEntry file in dlc.filesList)
                                 try
                                 {
-                                    string filename = Path.GetFileName(file.fileName);
+                                    string filename = Path.GetFileName(file.filenamePath);
                                     if (Path.GetExtension(filename).ToLower().EndsWith(".pcc") && filename == en.Filename)
                                     {
                                         using (Stream input = File.OpenRead(dirDLC), output = File.Create(loc + filename))
                                         {
-                                            AmaroK86.MassEffect3.DLCUnpack.DecompressEntry(file, input, output, dlc.CompressionScheme);
+                                            dlc.ExtractEntry(file, input, output);
                                         }
                                         if (File.Exists(loc + filename))
                                         {
@@ -520,18 +520,18 @@ namespace ME3Explorer.Meshplorer2
                         string dirDLC = ME3Directory.DLCPath;
                         dirDLC += en.DLCName;
                         dirDLC += "\\CookedPCConsole\\Default.sfar";
-                        DLCBase dlc = new DLCBase(dirDLC);
-                        foreach (sfarFile file in dlc.fileList)
+                        DLCUnpack dlc = new DLCUnpack(dirDLC);
+                        foreach (DLCUnpack.DLCEntry file in dlc.filesList)
                             try
                             {
-                                string filename = Path.GetFileName(file.fileName);
+                                string filename = Path.GetFileName(file.filenamePath);
                                 if (Path.GetExtension(filename).ToLower().EndsWith(".pcc") && filename == en.Filename)
                                 {
                                     if (File.Exists(loc + "dlc.pcc"))
                                         File.Delete(loc + "dlc.pcc");
                                     using (Stream input = File.OpenRead(dirDLC), output = File.Create(loc + "dlc.pcc"))
                                     {
-                                        AmaroK86.MassEffect3.DLCUnpack.DecompressEntry(file, input, output, dlc.CompressionScheme);
+                                        dlc.ExtractEntry(file, input, output);
                                     }
                                     if (File.Exists(loc + "dlc.pcc"))
                                     {

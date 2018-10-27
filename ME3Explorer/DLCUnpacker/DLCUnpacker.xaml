@@ -5,42 +5,52 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ME3Explorer.DLCUnpacker"
         xmlns:global="clr-namespace:ME3Explorer"
+        WindowStartupLocation="CenterScreen"
+        xmlns:KFreonLib="clr-namespace:KFreonLib.MEDirectories;assembly=KFreonLib"
         mc:Ignorable="d"
-        Title="DLC Unpacker" Height="193.539" Width="553.072"
+        Title="DLC Unpacker" Height="300" Width="489"
+        Closing="DLCUnpacker_Closing"
+        ResizeMode="CanMinimize"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
-    <Grid Margin="5">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="150"/>
-        </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" Grid.ColumnSpan="5"  Text="This tool allows you to unpack your Mass Effect 3 DLC into loose files that you can use for modding."/>
-        <TextBlock Grid.Row="2" Text="Required space:"/>
-        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding RequiredSpaceText}"/>
-        <TextBlock Grid.Row="3" Text="Available space:"/>
-        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding AvailableSpaceText}"/>
+    <StackPanel >
+        <TextBlock Padding="5" Background="LightGray" TextWrapping="Wrap" Text="Unpacking Mass Effect 3 DLC allows you to access and modify the files contained within them. You can use these files as a base for a mod. Files unpacked with this unpacker are compatible with MassEffectModder and ALOT."/>
+        <Grid Margin="12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="4" Text="{Binding Path=(KFreonLib:ME3Directory.DLCPath),StringFormat='DLC path: {0}',Mode=OneWay}" />
+            <TextBlock Grid.Row="1" Text="Required space:"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding RequiredSpaceText}"/>
+            <TextBlock Grid.Row="2" Text="Available space:"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding AvailableSpaceText}"/>
 
-        <TextBlock Grid.Row="5" Grid.ColumnSpan="5">
-            <TextBlock.Text>
+            <!--<TextBlock.Text>
                 <MultiBinding StringFormat="{}{0} ({1}%)">
                     <Binding Path="CurrentOperationText" />
                     <Binding Path="CurrentOperationPercentValue" />
                 </MultiBinding>
-            </TextBlock.Text>
-        </TextBlock>
+            </TextBlock.Text>-->
 
-        <Button Grid.Row="6" Command="{Binding UnpackDLCCommand}" Content="Unpack DLC"/>
-        <ProgressBar Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="4" Value="{Binding CurrentOverallProgressValue}" IsIndeterminate="{Binding ProgressBarIndeterminate}"/>
-    </Grid>
+
+        </Grid>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="10,0,0,0" Width="456">
+            <TextBlock Text="{Binding CurrentOverallOperationText}"/>
+
+            <ProgressBar Value="{Binding OverallProgressValue}" Height="23" HorizontalAlignment="Stretch" Width="456"/>
+            
+            <TextBlock Text="{Binding CurrentOperationText}" Margin="0,5,0,0"/>
+            <ProgressBar Value="{Binding CurrentOverallProgressValue}" IsIndeterminate="{Binding ProgressBarIndeterminate}" Height="23" Width="456" HorizontalAlignment="Stretch"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Command="{Binding CancelUnpackCommand}" Content="Cancel" Width="79" Margin="5,5" HorizontalAlignment="Right"/>
+                <Button Command="{Binding UnpackDLCCommand}" Content="Unpack DLC" Width="79" Margin="0,5" HorizontalAlignment="Right"/>
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
 </global:WPFBase>

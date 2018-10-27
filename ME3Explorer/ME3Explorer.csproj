@@ -77,6 +77,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>DEBUG</DefineConstants>
     <LangVersion>latest</LangVersion>
+    <CodeAnalysisRuleSet>..\..\..\..\Desktop\UnreferencedMethods.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <PlatformTarget>x64</PlatformTarget>
@@ -331,6 +332,8 @@
       <DependentUpon>DLCUnpacker.xaml</DependentUpon>
     </Compile>
     <Compile Include="FaceFXAnimSetEditor\ME1FaceFXAnimSet.cs" />
+    <Compile Include="Helpers\SevenZipHelper.cs" />
+    <Compile Include="Helpers\StreamIO.cs" />
     <Compile Include="Interpreter\AltPropertyEditor.xaml.cs">
       <DependentUpon>AltPropertyEditor.xaml</DependentUpon>
     </Compile>
@@ -807,6 +810,7 @@
     <Compile Include="Unreal\Classes\WwiseEnvironmentVolume.cs" />
     <Compile Include="Unreal\Classes\WwiseStream.cs" />
     <Compile Include="Unreal\DLCPackage.cs" />
+    <Compile Include="Unreal\DLCUnpacker.cs" />
     <Compile Include="Unreal\Helper3DS.cs" />
     <Compile Include="Unreal\HuffmanCompression.cs" />
     <Compile Include="Packages\MEPackageHandler.cs" />
@@ -1447,10 +1451,6 @@
     <ProjectReference Include="..\Tools\Gibbed.MassEffect3.FileFormats\Gibbed.MassEffect3.FileFormats.csproj">
       <Project>{681db2ce-e3eb-4110-ac50-f53eaca66e99}</Project>
       <Name>Gibbed.MassEffect3.FileFormats</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tools\SevenZip\SevenZip.csproj">
-      <Project>{b6c4d3b4-1267-48d5-8c3b-c86ff3e517a9}</Project>
-      <Name>SevenZip</Name>
     </ProjectReference>
     <ProjectReference Include="..\UDKExplorer\UDKExplorer.csproj">
       <Project>{f660e850-da7a-41a6-ae77-4ab4f21d8f33}</Project>

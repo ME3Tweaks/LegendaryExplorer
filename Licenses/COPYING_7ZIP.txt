@@ -1,0 +1,7 @@
+LZMA SDK is written and placed in the public domain by Igor Pavlov.
+
+You can copy, modify, distribute and perform LZMA SDK code, even for
+commercial purposes, all without asking permission.
+
+LZMA SDK code is compatible with open source licenses, for example,
+you can include it to GNU GPL or GNU LGPL code.

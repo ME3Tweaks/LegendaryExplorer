@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
+using KFreonLib.MEDirectories;
 using Newtonsoft.Json;
 
 namespace ME3Explorer
@@ -172,7 +173,14 @@ namespace ME3Explorer
                 icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,
                 open = () =>
                 {
-                    (new DLCUnpacker.DLCUnpacker()).Show();
+                    if (ME3Directory.gamePath != null)
+                    {
+                        new DLCUnpacker.DLCUnpacker().Show();
+                    }
+                    else
+                    {
+                        MessageBox.Show("DLC Unpacker only works with Mass Effect 3.");
+                    }
                 },
                 tags = new List<string> { "utility", "dlc", "sfar", "unpack", "extract" },
                 subCategory = "Extractors + Repackers",
@@ -564,7 +572,7 @@ namespace ME3Explorer
                 {
                     (new PathfindingEditor()).Show();
                 },
-                tags = new List<string> { "user","developer", "path", "ai", "combat", "spline", "spawn", "map", "path", "node", "cover", "level" },
+                tags = new List<string> { "user", "developer", "path", "ai", "combat", "spline", "spawn", "map", "path", "node", "cover", "level" },
                 subCategory = "Core",
                 description = "Pathfinding Editor allows you to modify pathing nodes so squadmates and enemies can move around a map. You can also edit placement of several different types of level objects such as StaticMeshes, Splines, CoverSlots, and more.",
             });
