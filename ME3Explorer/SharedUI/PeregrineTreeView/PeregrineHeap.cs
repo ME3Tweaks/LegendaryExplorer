@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ME3Explorer.SharedUI.TreeView
+namespace ME3Explorer.SharedUI.PeregrineTreeView
 {
     // A Collection class where the Lowest / Highest sorting value is kept at the top of the heap
     // The remaining items are kept in an optimised manner without being precisely in sorted order

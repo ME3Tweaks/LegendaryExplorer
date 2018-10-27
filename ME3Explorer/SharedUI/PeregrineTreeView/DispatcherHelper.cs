@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Threading;
 
-namespace ME3Explorer.SharedUI.TreeView
+namespace ME3Explorer.SharedUI.PeregrineTreeView
 {
     using System.Threading.Tasks;
 
@@ -12,7 +12,7 @@ namespace ME3Explorer.SharedUI.TreeView
     {
         public static Dispatcher UIDispatcher { get; private set; }
 
-        public static void Initialise()
+        public static void Initialize()
         {
             if (UIDispatcher != null && UIDispatcher.Thread.IsAlive)
                 return;

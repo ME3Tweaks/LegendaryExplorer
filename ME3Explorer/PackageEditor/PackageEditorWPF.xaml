@@ -15,6 +15,7 @@
         xmlns:dd="urn:gong-wpf-dragdrop"
         xmlns:properties="clr-namespace:ME3Explorer.Properties"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
+        xmlns:vhelp="clr-namespace:ME3Explorer.SharedUI.PeregrineTreeView"
         Closing="PackageEditorWPF_Closing"
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
@@ -287,6 +288,8 @@
                         <Style TargetType="{x:Type TreeViewItem}">
                             <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
                             <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
+                            <Setter Property="vhelp:TreeViewHelper.BringSelectedItemIntoView" Value="True" />
+                            <Setter Property="vhelp:TreeViewHelper.BringExpandedChildrenIntoView" Value="True" />
                         </Style>
                     </TreeView.ItemContainerStyle>
                     <TreeView.ContextMenu>

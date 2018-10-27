@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
-namespace ME3Explorer.SharedUI.TreeView
+namespace ME3Explorer.SharedUI.PeregrineTreeView
 {
     public static class TreeViewHelper
     {
@@ -46,7 +46,11 @@ namespace ME3Explorer.SharedUI.TreeView
             if (sender is TreeViewItem item)
             {
                 // use DispatcherPriority.ApplicationIdle so this occurs after all operations related to tree item expansion
-                DispatcherHelper.AddToQueue(() => item.BringIntoView(), DispatcherPriority.ApplicationIdle);
+                DispatcherHelper.AddToQueue(() =>
+                {
+                    System.Diagnostics.Debug.WriteLine("BRINGING INTO VIEW - SELECTED NODE!");
+                    item.BringIntoView();
+                }, DispatcherPriority.ApplicationIdle);
             }
         }
 
@@ -76,7 +80,9 @@ namespace ME3Explorer.SharedUI.TreeView
                 return;
 
             if ((bool)args.NewValue)
+            {
                 item.Expanded += OnTreeViewItemExpanded;
+            }
             else
                 item.Expanded -= OnTreeViewItemExpanded;
         }
@@ -96,13 +102,17 @@ namespace ME3Explorer.SharedUI.TreeView
             Action action = () =>
             {
                 var lastChild = item.ItemContainerGenerator.ContainerFromIndex(item.Items.Count - 1) as TreeViewItem;
+                if (lastChild == null) { System.Diagnostics.Debug.WriteLine("FAIL!"); }
                 lastChild?.BringIntoView();
             };
 
             DispatcherHelper.AddToQueue(action, DispatcherPriority.ContextIdle);
 
             // then bring the expanded item (back) into view
-            action = () => { item.BringIntoView(); };
+            action = () => {
+                System.Diagnostics.Debug.WriteLine("BRINGING INTO VIEW - EXPANDED NODE FIRST: " + item.DataContext);
+                item.BringIntoView();
+            };
 
             DispatcherHelper.AddToQueue(action, DispatcherPriority.ContextIdle);
         }

@@ -670,9 +670,9 @@
       <DependentUpon>PromptDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\StretchingTreeView.cs" />
-    <Compile Include="SharedUI\TreeView\DispatcherHelper.cs" />
-    <Compile Include="SharedUI\TreeView\PeregrineHeap.cs" />
-    <Compile Include="SharedUI\TreeView\TreeViewHelper.cs" />
+    <Compile Include="SharedUI\PeregrineTreeView\DispatcherHelper.cs" />
+    <Compile Include="SharedUI\PeregrineTreeView\PeregrineHeap.cs" />
+    <Compile Include="SharedUI\PeregrineTreeView\TreeViewHelper.cs" />
     <Compile Include="SingleInstance.cs" />
     <Compile Include="Soundplorer\ISACT_Parser.cs" />
     <Compile Include="Soundplorer\ISBank.cs" />

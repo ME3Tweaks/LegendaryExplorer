@@ -10,6 +10,7 @@ using KFreonLib.MEDirectories;
 using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
 using ME3Explorer.Packages;
+using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
 
@@ -34,6 +35,9 @@ namespace ME3Explorer
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            //Peregrine's Dispatcher (for WPF Treeview selecting on virtualized lists)
+            DispatcherHelper.Initialize();
+
             //Winforms interop
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);

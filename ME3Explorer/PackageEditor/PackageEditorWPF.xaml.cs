@@ -4,7 +4,7 @@ using ME1Explorer.Unreal;
 using ME3Explorer.PackageEditorWPFControls;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
-using ME3Explorer.SharedUI.TreeView;
+using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
@@ -14,7 +14,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows;
@@ -1352,6 +1351,7 @@ namespace ME3Explorer
         /// <param name="e"></param>
         private void LeftSide_SelectedItemChanged(object sender, RoutedEventArgs e)
         {
+            e.Handled = true;
             Preview();
         }
 
@@ -1362,8 +1362,8 @@ namespace ME3Explorer
         /// <param name="e"></param>
         private void LeftSide_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
-            Preview();
             e.Handled = true;
+            Preview();
         }
 
         /// <summary>
@@ -1542,9 +1542,12 @@ namespace ME3Explorer
                 {
                     //selectNode[0].ExpandParents();
                     selectNode[0].IsSelected = true;
-                    FocusTreeViewNodeOld(selectNode[0]);
+                    //FocusTreeViewNodeOld(selectNode[0]);
 
                     //selectNode[0].Focus(LeftSide_TreeView);
+                } else
+                {
+                    Debug.WriteLine("Could not find node");
                 }
             }
             else
@@ -2104,7 +2107,7 @@ namespace ME3Explorer
                     {
                         //node.ExpandParents();
                         node.IsSelected = true;
-                        FocusTreeViewNodeOld(node);
+                        //FocusTreeViewNodeOld(node);
                         //                        node.Focus(LeftSide_TreeView);
                         break;
                     }
@@ -2215,7 +2218,7 @@ namespace ME3Explorer
                     {
                         //node.ExpandParents();
                         node.IsSelected = true;
-                        FocusTreeViewNodeOld(node);
+                        //FocusTreeViewNodeOld(node);
                         //                        node.Focus(LeftSide_TreeView);
                         break;
                     }
@@ -2374,137 +2377,137 @@ namespace ME3Explorer
         {
             ME1UnrealObjectInfo.generateInfo();
         }
-
-        private void FocusTreeViewNodeOld(TreeViewEntry node)
-        {
-            if (node == null) return;
-            var nodes = (IEnumerable<TreeViewEntry>)LeftSide_TreeView.ItemsSource;
-            if (nodes == null) return;
-
-            var stack = new Stack<TreeViewEntry>();
-            stack.Push(node);
-            var parent = node.Parent;
-            while (parent != null)
-            {
-                stack.Push(parent);
-                parent = parent.Parent;
-            }
-            TreeViewItem container = null;
-            var generator = LeftSide_TreeView.ItemContainerGenerator;
-            while (stack.Count > 0)
-            {
-                //pop the next child off the stack
-                var dequeue = stack.Pop();
-                var index = generator.Items.IndexOf(dequeue);
-
-                //see if the container is already loaded. If not, we will have to generate them until we get it (why microsoft...)
-                TreeViewItem treeViewItem = generator.ContainerFromIndex(index) as TreeViewItem;
-                if (treeViewItem == null && container != null) treeViewItem = GetTreeViewItem(container, dequeue);
-                Action action = () => { treeViewItem?.BringIntoView(); };
-                //This needs to be stress tested - this can cause deadlock, but if it doesn't return fast enough the code
-                //may continue to null and not work.
-                //Sigh, treeview.
-                Dispatcher.BeginInvoke(action, DispatcherPriority.Background);
-                if (treeViewItem == null)
+        /*
+                private void FocusTreeViewNodeOld(TreeViewEntry node)
                 {
-                    Debug.WriteLine("This shoudln't be null");
-                }
+                    if (node == null) return;
+                    var nodes = (IEnumerable<TreeViewEntry>)LeftSide_TreeView.ItemsSource;
+                    if (nodes == null) return;
 
-                if (stack.Count > 0)
-                {
-                    action = () => { if (treeViewItem != null) treeViewItem.IsExpanded = true; };
-                    Dispatcher.Invoke(action, DispatcherPriority.ContextIdle);
-                }
-                else
-                {
-                    if (treeViewItem == null)
+                    var stack = new Stack<TreeViewEntry>();
+                    stack.Push(node);
+                    var parent = node.Parent;
+                    while (parent != null)
                     {
-                        //Hope this doesn't happen anymore.
-                        Debug.WriteLine("FocusNode has triggered null item - CANNOT FOCUS!");
-                        //Debugger.Break();
+                        stack.Push(parent);
+                        parent = parent.Parent;
+                    }
+                    TreeViewItem container = null;
+                    var generator = LeftSide_TreeView.ItemContainerGenerator;
+                    while (stack.Count > 0)
+                    {
+                        //pop the next child off the stack
+                        var dequeue = stack.Pop();
+                        var index = generator.Items.IndexOf(dequeue);
+
+                        //see if the container is already loaded. If not, we will have to generate them until we get it (why microsoft...)
+                        TreeViewItem treeViewItem = generator.ContainerFromIndex(index) as TreeViewItem;
+                        if (treeViewItem == null && container != null) treeViewItem = GetTreeViewItem(container, dequeue);
+                        Action action = () => { treeViewItem?.BringIntoView(); };
+                        //This needs to be stress tested - this can cause deadlock, but if it doesn't return fast enough the code
+                        //may continue to null and not work.
+                        //Sigh, treeview.
+                        Dispatcher.BeginInvoke(action, DispatcherPriority.Background);
+                        if (treeViewItem == null)
+                        {
+                            Debug.WriteLine("This shoudln't be null");
+                        }
+
+                        if (stack.Count > 0)
+                        {
+                            action = () => { if (treeViewItem != null) treeViewItem.IsExpanded = true; };
+                            Dispatcher.Invoke(action, DispatcherPriority.ContextIdle);
+                        }
+                        else
+                        {
+                            if (treeViewItem == null)
+                            {
+                                //Hope this doesn't happen anymore.
+                                Debug.WriteLine("FocusNode has triggered null item - CANNOT FOCUS!");
+                                //Debugger.Break();
+                            }
+                            else
+                            {
+                                treeViewItem.IsSelected = true;
+                            }
+                        }
+                        if (treeViewItem != null)
+                        {
+                            container = treeViewItem;
+                            generator = treeViewItem.ItemContainerGenerator;
+                        }
+                    }
+                }
+
+                public static TreeViewItem GetTreeViewItem(ItemsControl container, object item)
+                {
+                    if (container == null)
+                        throw new ArgumentNullException(nameof(container));
+
+                    if (item == null)
+                        throw new ArgumentNullException(nameof(item));
+
+                    if (container.DataContext == item)
+                        return container as TreeViewItem;
+
+                    if (container is TreeViewItem && !((TreeViewItem)container).IsExpanded)
+                    {
+                        container.SetValue(TreeViewItem.IsExpandedProperty, true);
+                    }
+
+                    container.ApplyTemplate();
+                    if (container.Template.FindName("ItemsHost", container) is ItemsPresenter itemsPresenter)
+                    {
+                        itemsPresenter.ApplyTemplate();
                     }
                     else
                     {
-                        treeViewItem.IsSelected = true;
+                        itemsPresenter = FindVisualChild<ItemsPresenter>(container);
+                        if (itemsPresenter == null)
+                        {
+                            container.UpdateLayout();
+                            itemsPresenter = FindVisualChild<ItemsPresenter>(container);
+                        }
                     }
+
+                    var itemsHostPanel = (Panel)VisualTreeHelper.GetChild(itemsPresenter, 0);
+                    var children = itemsHostPanel.Children;
+                    var virtualizingPanel = itemsHostPanel as VirtualizingPanel;
+                    for (int i = 0, count = container.Items.Count; i < count; i++)
+                    {
+                        TreeViewItem subContainer;
+                        if (virtualizingPanel != null)
+                        {
+                            // this is the part that requires .NET 4.5+
+                            virtualizingPanel.BringIndexIntoViewPublic(i);
+                            subContainer = (TreeViewItem)container.ItemContainerGenerator.ContainerFromIndex(i); //find item
+                            if (subContainer.DataContext == item) return subContainer;
+                        }
+                        else
+                        {
+                            subContainer = (TreeViewItem)container.ItemContainerGenerator.ContainerFromIndex(i);
+                            subContainer.BringIntoView();
+                        }
+                    }
+                    return null;
                 }
-                if (treeViewItem != null)
+
+                private static T FindVisualChild<T>(Visual visual) where T : Visual
                 {
-                    container = treeViewItem;
-                    generator = treeViewItem.ItemContainerGenerator;
-                }
-            }
-        }
+                    for (int i = 0; i < VisualTreeHelper.GetChildrenCount(visual); i++)
+                    {
+                        if (VisualTreeHelper.GetChild(visual, i) is Visual child)
+                        {
+                            if (child is T item)
+                                return item;
 
-        public static TreeViewItem GetTreeViewItem(ItemsControl container, object item)
-        {
-            if (container == null)
-                throw new ArgumentNullException(nameof(container));
-
-            if (item == null)
-                throw new ArgumentNullException(nameof(item));
-
-            if (container.DataContext == item)
-                return container as TreeViewItem;
-
-            if (container is TreeViewItem && !((TreeViewItem)container).IsExpanded)
-            {
-                container.SetValue(TreeViewItem.IsExpandedProperty, true);
-            }
-
-            container.ApplyTemplate();
-            if (container.Template.FindName("ItemsHost", container) is ItemsPresenter itemsPresenter)
-            {
-                itemsPresenter.ApplyTemplate();
-            }
-            else
-            {
-                itemsPresenter = FindVisualChild<ItemsPresenter>(container);
-                if (itemsPresenter == null)
-                {
-                    container.UpdateLayout();
-                    itemsPresenter = FindVisualChild<ItemsPresenter>(container);
-                }
-            }
-
-            var itemsHostPanel = (Panel)VisualTreeHelper.GetChild(itemsPresenter, 0);
-            var children = itemsHostPanel.Children;
-            var virtualizingPanel = itemsHostPanel as VirtualizingPanel;
-            for (int i = 0, count = container.Items.Count; i < count; i++)
-            {
-                TreeViewItem subContainer;
-                if (virtualizingPanel != null)
-                {
-                    // this is the part that requires .NET 4.5+
-                    virtualizingPanel.BringIndexIntoViewPublic(i);
-                    subContainer = (TreeViewItem)container.ItemContainerGenerator.ContainerFromIndex(i); //find item
-                    if (subContainer.DataContext == item) return subContainer;
-                }
-                else
-                {
-                    subContainer = (TreeViewItem)container.ItemContainerGenerator.ContainerFromIndex(i);
-                    subContainer.BringIntoView();
-                }
-            }
-            return null;
-        }
-
-        private static T FindVisualChild<T>(Visual visual) where T : Visual
-        {
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(visual); i++)
-            {
-                if (VisualTreeHelper.GetChild(visual, i) is Visual child)
-                {
-                    if (child is T item)
-                        return item;
-
-                    item = FindVisualChild<T>(child);
-                    if (item != null)
-                        return item;
-                }
-            }
-            return null;
-        }
+                            item = FindVisualChild<T>(child);
+                            if (item != null)
+                                return item;
+                        }
+                    }
+                    return null;
+                } */
 
         private void TouchComfyMode_Clicked(object sender, RoutedEventArgs e)
         {
@@ -2642,13 +2645,24 @@ namespace ME3Explorer
                     }
                 }
 
+                //cancel if we're currently selected.
+                Debug.WriteLine(DisplayName + " ISSELECTED: " + _isSelected);
+
                 if (_isSelected == value)
                     return;
 
                 // Set the item's selected state - use DispatcherPriority.ApplicationIdle so this operation is executed after all
                 // expansion operations, no matter when they were added to the queue.
                 // Selecting a node will also scroll it into view - see perTreeViewItemHelper
-                DispatcherHelper.AddToQueue(() => Set(nameof(IsSelected), ref _isSelected, value), DispatcherPriority.ApplicationIdle);
+                DispatcherHelper.AddToQueue(() =>
+                {
+                    if (value != _isSelected)
+                    {
+                        Debug.WriteLine("SELECTING...");
+                        _isSelected = value;
+                        OnPropertyChanged("IsSelected");
+                    }
+                }, DispatcherPriority.ApplicationIdle);
 
                 // note that by rule, a TreeView can only have one selected item, but this is handled automatically by 
                 // the control - we aren't required to manually unselect the previously selected item.
