@@ -40,6 +40,12 @@ namespace ME3Explorer.DLCUnpacker
         private double RequiredSpace;
         private double AvailableSpace;
         public string ME3DLCPath { get; set; }
+
+        /// <summary>
+        /// Allow cancel DLCs and revert to state before unpack
+        /// </summary>
+        public bool UnpackCanceled;
+        
         #region MVVM Databindings
         private string _unpackingPercentString;
         public string UnpackingPercentString
@@ -339,16 +345,30 @@ namespace ME3Explorer.DLCUnpacker
 
         private void UnpackAllDLC(object sender, DoWorkEventArgs e)
         {
+            UnpackCanceled = false;
+
             foreach (var sfar in sfarsToUnpack)
             {
                 sfar.PropertyChanged += SFAR_PropertyChanged;
                 string DLCname = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(sfar.filePath)));
                 string outPath = Path.Combine(ME3Directory.DLCPath, DLCname);
                 sfar.Extract(outPath);
+                if (UnpackCanceled)
+                    sfar.UnpackCanceled = true;
             }
-            CurrentOverallProgressValue = 100;
-            OverallProgressValue = 100;
-            CurrentOverallOperationText = "DLC has been unpacked";
+
+            if (UnpackCanceled)
+            {
+                CurrentOverallProgressValue = 0;
+                OverallProgressValue = 0;
+                CurrentOverallOperationText = "DLC unpacking cancelled";
+            }
+            else
+            {
+                CurrentOverallOperationText = "DLC has been unpacked";
+                CurrentOverallProgressValue = 100;
+                OverallProgressValue = 100;
+            }
             CurrentOperationText = "";
 
             RequiredSpaceText = "Calculating...";
