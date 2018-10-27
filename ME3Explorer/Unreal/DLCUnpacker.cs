@@ -59,7 +59,7 @@ namespace ME3Explorer.Unreal
         /// <summary>
         /// Allow cancel unpack files from DLC and revert to state before unpack
         /// </summary>
-        public bool UnpackCanceled;
+        public volatile bool UnpackCanceled;
 
         private string _currentOverallStatus;
         /// <summary>

@@ -45,7 +45,10 @@
             
             <TextBlock Text="{Binding CurrentOperationText}" Margin="0,5,0,0"/>
             <ProgressBar Value="{Binding CurrentOverallProgressValue}" IsIndeterminate="{Binding ProgressBarIndeterminate}" Height="23" Width="456" HorizontalAlignment="Stretch"/>
-            <Button Command="{Binding UnpackDLCCommand}" Content="Unpack DLC" Width="79" Margin="0,5" HorizontalAlignment="Right"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Command="{Binding CancelUnpackCommand}" Content="Cancel" Width="79" Margin="5,5" HorizontalAlignment="Right"/>
+                <Button Command="{Binding UnpackDLCCommand}" Content="Unpack DLC" Width="79" Margin="0,5" HorizontalAlignment="Right"/>
+            </StackPanel>
         </StackPanel>
     </StackPanel>
 </global:WPFBase>

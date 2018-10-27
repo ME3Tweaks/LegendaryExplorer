@@ -36,6 +36,7 @@ namespace ME3Explorer.DLCUnpacker
     public partial class DLCUnpacker : WPFBase
     {
         public ICommand UnpackDLCCommand { get; set; }
+        public ICommand CancelUnpackCommand { get; set; }
         private BackgroundWorker UnpackDLCWorker;
         private double RequiredSpace;
         private double AvailableSpace;
@@ -220,6 +221,7 @@ namespace ME3Explorer.DLCUnpacker
 
         private void CalculateUnpackRequirements_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
+            UnpackCanceled = false;
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
         }
 
@@ -275,6 +277,7 @@ namespace ME3Explorer.DLCUnpacker
             double uncompressedSize = 0;
             double largestUncompressedSize = 0;
             double largestCompressedSize = 0;
+            sfarsToUnpack = new List<DLCUnpack>();
             foreach (var folder in unextracted)
             {
                 if (!Path.GetFileName(folder).StartsWith("DLC"))
@@ -321,6 +324,21 @@ namespace ME3Explorer.DLCUnpacker
         {
             // Player commands
             UnpackDLCCommand = new RelayCommand(UnpackDLC, CanUnpackDLC);
+            CancelUnpackCommand = new RelayCommand(CancelUnpacking, CanCancelUnpack);
+        }
+
+        private bool CanCancelUnpack(object obj)
+        {
+            return UnpackDLCWorker != null && UnpackDLCWorker.IsBusy && !UnpackCanceled;
+        }
+
+        private void CancelUnpacking(object obj)
+        {
+            UnpackCanceled = true;
+            foreach(DLCUnpack dlc in sfarsToUnpack)
+            {
+                dlc.UnpackCanceled = true;
+            }
         }
 
         private bool CanUnpackDLC(object obj)
@@ -345,16 +363,17 @@ namespace ME3Explorer.DLCUnpacker
 
         private void UnpackAllDLC(object sender, DoWorkEventArgs e)
         {
-            UnpackCanceled = false;
-
             foreach (var sfar in sfarsToUnpack)
             {
-                sfar.PropertyChanged += SFAR_PropertyChanged;
-                string DLCname = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(sfar.filePath)));
-                string outPath = Path.Combine(ME3Directory.DLCPath, DLCname);
-                sfar.Extract(outPath);
-                if (UnpackCanceled)
-                    sfar.UnpackCanceled = true;
+                if (!UnpackCanceled)
+                {
+                    sfar.PropertyChanged += SFAR_PropertyChanged;
+                    string DLCname = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(sfar.filePath)));
+                    string outPath = Path.Combine(ME3Directory.DLCPath, DLCname);
+                    sfar.Extract(outPath);
+                    //if (UnpackCanceled)
+                    //    sfar.UnpackCanceled = true;
+                }
             }
 
             if (UnpackCanceled)
