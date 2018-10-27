@@ -32,19 +32,14 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSFARToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.rebuildSFARToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.unpackSFARToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.replaceSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unpackAllDLCsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.treeView1 = new System.Windows.Forms.TreeView();
             this.tOCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateTOCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.updateTOCAndRebuildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.treeView1 = new System.Windows.Forms.TreeView();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -65,10 +60,6 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openSFARToolStripMenuItem,
-            this.rebuildSFARToolStripMenuItem,
-            this.unpackSFARToolStripMenuItem,
-            this.addFileToolStripMenuItem,
-            this.deleteSelectedToolStripMenuItem,
             this.extractSelectedToolStripMenuItem,
             this.replaceSelectedToolStripMenuItem,
             this.unpackAllDLCsToolStripMenuItem});
@@ -79,56 +70,28 @@
             // openSFARToolStripMenuItem
             // 
             this.openSFARToolStripMenuItem.Name = "openSFARToolStripMenuItem";
-            this.openSFARToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.openSFARToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openSFARToolStripMenuItem.Text = "Open SFAR";
             this.openSFARToolStripMenuItem.Click += new System.EventHandler(this.openSFARToolStripMenuItem_Click);
-            // 
-            // rebuildSFARToolStripMenuItem
-            // 
-            this.rebuildSFARToolStripMenuItem.Name = "rebuildSFARToolStripMenuItem";
-            this.rebuildSFARToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
-            this.rebuildSFARToolStripMenuItem.Text = "Rebuild SFAR";
-            this.rebuildSFARToolStripMenuItem.Click += new System.EventHandler(this.rebuildSFARToolStripMenuItem_Click);
-            // 
-            // unpackSFARToolStripMenuItem
-            // 
-            this.unpackSFARToolStripMenuItem.Name = "unpackSFARToolStripMenuItem";
-            this.unpackSFARToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
-            this.unpackSFARToolStripMenuItem.Text = "Unpack SFAR";
-            this.unpackSFARToolStripMenuItem.Click += new System.EventHandler(this.unpackSFARToolStripMenuItem_Click);
-            // 
-            // addFileToolStripMenuItem
-            // 
-            this.addFileToolStripMenuItem.Name = "addFileToolStripMenuItem";
-            this.addFileToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
-            this.addFileToolStripMenuItem.Text = "Add File";
-            this.addFileToolStripMenuItem.Click += new System.EventHandler(this.addFileToolStripMenuItem_Click);
-            // 
-            // deleteSelectedToolStripMenuItem
-            // 
-            this.deleteSelectedToolStripMenuItem.Name = "deleteSelectedToolStripMenuItem";
-            this.deleteSelectedToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
-            this.deleteSelectedToolStripMenuItem.Text = "Delete Selected";
-            this.deleteSelectedToolStripMenuItem.Click += new System.EventHandler(this.deleteSelectedToolStripMenuItem_Click);
             // 
             // extractSelectedToolStripMenuItem
             // 
             this.extractSelectedToolStripMenuItem.Name = "extractSelectedToolStripMenuItem";
-            this.extractSelectedToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.extractSelectedToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.extractSelectedToolStripMenuItem.Text = "Extract Selected";
             this.extractSelectedToolStripMenuItem.Click += new System.EventHandler(this.extractSelectedToolStripMenuItem_Click);
             // 
             // replaceSelectedToolStripMenuItem
             // 
             this.replaceSelectedToolStripMenuItem.Name = "replaceSelectedToolStripMenuItem";
-            this.replaceSelectedToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.replaceSelectedToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.replaceSelectedToolStripMenuItem.Text = "Replace Selected";
             this.replaceSelectedToolStripMenuItem.Click += new System.EventHandler(this.replaceSelectedToolStripMenuItem_Click);
             // 
             // unpackAllDLCsToolStripMenuItem
             // 
             this.unpackAllDLCsToolStripMenuItem.Name = "unpackAllDLCsToolStripMenuItem";
-            this.unpackAllDLCsToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.unpackAllDLCsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.unpackAllDLCsToolStripMenuItem.Text = "Unpack all DLCs";
             this.unpackAllDLCsToolStripMenuItem.Click += new System.EventHandler(this.unpackAllDLCsToolStripMenuItem_Click);
             // 
@@ -138,6 +101,21 @@
             this.searchToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.searchToolStripMenuItem.Text = "Search";
             this.searchToolStripMenuItem.Click += new System.EventHandler(this.searchToolStripMenuItem_Click);
+            // 
+            // tOCToolStripMenuItem
+            // 
+            this.tOCToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.updateTOCToolStripMenuItem});
+            this.tOCToolStripMenuItem.Name = "tOCToolStripMenuItem";
+            this.tOCToolStripMenuItem.Size = new System.Drawing.Size(42, 20);
+            this.tOCToolStripMenuItem.Text = "TOC";
+            // 
+            // updateTOCToolStripMenuItem
+            // 
+            this.updateTOCToolStripMenuItem.Name = "updateTOCToolStripMenuItem";
+            this.updateTOCToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.updateTOCToolStripMenuItem.Text = "Update TOC";
+            this.updateTOCToolStripMenuItem.Click += new System.EventHandler(this.updateTOCToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -157,29 +135,6 @@
             this.treeView1.Size = new System.Drawing.Size(614, 340);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
-            // 
-            // tOCToolStripMenuItem
-            // 
-            this.tOCToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.updateTOCToolStripMenuItem,
-            this.updateTOCAndRebuildToolStripMenuItem});
-            this.tOCToolStripMenuItem.Name = "tOCToolStripMenuItem";
-            this.tOCToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
-            this.tOCToolStripMenuItem.Text = "TOC";
-            // 
-            // updateTOCToolStripMenuItem
-            // 
-            this.updateTOCToolStripMenuItem.Name = "updateTOCToolStripMenuItem";
-            this.updateTOCToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.updateTOCToolStripMenuItem.Text = "Update TOC";
-            this.updateTOCToolStripMenuItem.Click += new System.EventHandler(this.updateTOCToolStripMenuItem_Click);
-            // 
-            // updateTOCAndRebuildToolStripMenuItem
-            // 
-            this.updateTOCAndRebuildToolStripMenuItem.Name = "updateTOCAndRebuildToolStripMenuItem";
-            this.updateTOCAndRebuildToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.updateTOCAndRebuildToolStripMenuItem.Text = "Update TOC and rebuild";
-            this.updateTOCAndRebuildToolStripMenuItem.Click += new System.EventHandler(this.updateTOCAndRebuildToolStripMenuItem_Click);
             // 
             // SFAREditor2
             // 
@@ -208,15 +163,10 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addFileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem rebuildSFARToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem extractSelectedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem replaceSelectedToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem deleteSelectedToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem unpackSFARToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unpackAllDLCsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tOCToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem updateTOCToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem updateTOCAndRebuildToolStripMenuItem;
     }
 }
