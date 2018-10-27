@@ -82,7 +82,7 @@ namespace ME3Explorer.Unreal
         }
 
         private bool _loadingFileIntoRAM;
-        public bool LoadingFileIntoRAM
+        public bool IndeterminateState
         {
             get { return _loadingFileIntoRAM; }
             set { SetProperty(ref _loadingFileIntoRAM, value); }
@@ -271,12 +271,12 @@ namespace ME3Explorer.Unreal
                 throw new Exception("filename missing");
 
             UnpackCanceled = false;
-            LoadingFileIntoRAM = true;
+            IndeterminateState = true;
             CurrentOverallStatus = $"Extracting {DLCUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(filePath)}";
             CurrentStatus = $"Loading {DLCUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(filePath)} into memory ({ByteSize.FromBytes(new FileInfo(filePath).Length)})";
             byte[] buffer = File.ReadAllBytes(filePath);
             CurrentFilesProcessed = 0;
-            LoadingFileIntoRAM = false;
+            IndeterminateState = false;
 
             CurrentOverallStatus = $"Extracting {DLCUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(filePath)}";
             using (MemoryStream stream = new MemoryStream(buffer))
@@ -307,6 +307,8 @@ namespace ME3Explorer.Unreal
 
             if (UnpackCanceled)
             {
+                CurrentStatus = "Canceling, cleaning up...";
+                IndeterminateState = true;
                 string dir = Path.GetDirectoryName(outPath);
                 for (int i = 0; i < TotalFilesInDLC; i++)
                 {
@@ -317,6 +319,7 @@ namespace ME3Explorer.Unreal
                     if (File.Exists(Path.Combine(dir, filename)))
                         File.Delete(Path.Combine(dir, filename));
                 }
+                IndeterminateState = false;
                 return;
             }
 

@@ -27,6 +27,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace ME3Explorer.DLCUnpacker
 {
@@ -46,7 +47,7 @@ namespace ME3Explorer.DLCUnpacker
         /// Allow cancel DLCs and revert to state before unpack
         /// </summary>
         public bool UnpackCanceled;
-        
+
         #region MVVM Databindings
         private string _unpackingPercentString;
         public string UnpackingPercentString
@@ -95,6 +96,8 @@ namespace ME3Explorer.DLCUnpacker
                 return _cachedPrettyDLCNames;
             }
         }
+
+        private const string NotEnoughSpaceStr = "Not enough free space to unpack DLC.";
 
         public string RequiredSpaceText
         {
@@ -204,9 +207,10 @@ namespace ME3Explorer.DLCUnpacker
                 }
             }
         }
-        
+
         #endregion
         List<DLCUnpack> sfarsToUnpack = new List<DLCUnpack>();
+        private DispatcherTimer backgroundticker;
 
         public DLCUnpacker()
         {
@@ -217,6 +221,37 @@ namespace ME3Explorer.DLCUnpacker
             bg.DoWork += CalculateUnpackRequirements;
             bg.RunWorkerCompleted += CalculateUnpackRequirements_Completed;
             bg.RunWorkerAsync();
+
+            //Drive space calculations
+            if (backgroundticker == null)
+            {
+                backgroundticker = new DispatcherTimer();
+                backgroundticker.Tick += new EventHandler(DriveSpaceUpdater_Tick);
+                backgroundticker.Interval = new TimeSpan(0, 0, 3); // execute every 5s
+                backgroundticker.Start();
+            }
+            DriveSpaceUpdater_Tick(null, null);
+        }
+
+        private void DriveSpaceUpdater_Tick(object sender, EventArgs e)
+        {
+            if (UnpackDLCWorker == null || !UnpackDLCWorker.IsBusy)
+            {
+                var parts = ME3Directory.gamePath.Split(':');
+                DriveInfo info = new DriveInfo(parts[0]);
+                AvailableSpace = info.AvailableFreeSpace;
+                AvailableSpaceText = ByteSize.FromBytes(AvailableSpace).ToString();
+                if (AvailableSpace < RequiredSpace)
+                {
+                    CurrentOverallOperationText = NotEnoughSpaceStr;
+                }
+                else if (CurrentOverallOperationText == NotEnoughSpaceStr)
+                {
+                    //clear the message
+                    CurrentOverallOperationText = "";
+                }
+                CommandManager.InvalidateRequerySuggested(); //Refresh commands
+            }
         }
 
         private void CalculateUnpackRequirements_Completed(object sender, RunWorkerCompletedEventArgs e)
@@ -240,10 +275,6 @@ namespace ME3Explorer.DLCUnpacker
             if (ME3Directory.gamePath != null)
             {
                 ProgressBarIndeterminate = true;
-                var parts = ME3Directory.gamePath.Split(':');
-                DriveInfo info = new DriveInfo(parts[0]);
-                AvailableSpace = info.AvailableFreeSpace;
-                AvailableSpaceText = ByteSize.FromBytes(AvailableSpace).ToString();
                 Debug.WriteLine("Available space set");
                 RequiredSpace = GetRequiredSize();
                 if (RequiredSpace >= 0)
@@ -335,7 +366,7 @@ namespace ME3Explorer.DLCUnpacker
         private void CancelUnpacking(object obj)
         {
             UnpackCanceled = true;
-            foreach(DLCUnpack dlc in sfarsToUnpack)
+            foreach (DLCUnpack dlc in sfarsToUnpack)
             {
                 dlc.UnpackCanceled = true;
             }
@@ -411,17 +442,17 @@ namespace ME3Explorer.DLCUnpacker
                 case "CurrentFilesProcessed":
                     RecalculateOverallProgress();
                     break;
-                case "LoadingFileIntoRAM":
-                    ProgressBarIndeterminate = (sender as DLCUnpack).LoadingFileIntoRAM;
+                case "IndeterminateState":
+                    ProgressBarIndeterminate = (sender as DLCUnpack).IndeterminateState;
                     break;
             }
         }
 
         private void RecalculateOverallProgress()
         {
-            int totalFiles = (int) sfarsToUnpack.Sum(x => x.TotalFilesInDLC);
+            int totalFiles = (int)sfarsToUnpack.Sum(x => x.TotalFilesInDLC);
             int processedFiles = sfarsToUnpack.Sum(x => x.CurrentFilesProcessed);
-            OverallProgressValue = (int) (100.0 * processedFiles) / totalFiles;
+            OverallProgressValue = (int)(100.0 * processedFiles) / totalFiles;
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)
@@ -431,6 +462,7 @@ namespace ME3Explorer.DLCUnpacker
 
         private void DLCUnpacker_Closing(object sender, CancelEventArgs e)
         {
+            backgroundticker.Stop();
             CancelUnpacking(null);
         }
     }
