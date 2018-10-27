@@ -95,6 +95,20 @@ namespace ME3Explorer
         public ObservableCollectionExtended<IndexedName> NamesList { get; set; } = new ObservableCollectionExtended<IndexedName>();
         public ObservableCollectionExtended<string> ClassDropdownList { get; set; } = new ObservableCollectionExtended<string>();
         public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; set; } = new ObservableCollectionExtended<TreeViewEntry>();
+        private TreeViewEntry _selectedItem;
+        public TreeViewEntry SelectedItem
+        {
+            get => _selectedItem;
+            set
+            {
+                if (_selectedItem != value)
+                {
+                    _selectedItem = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
 
         public static readonly string PackageEditorDataFolder = System.IO.Path.Combine(App.AppDataFolder, @"PackageEditor\");
         private readonly string RECENTFILES_FILE = "RECENTFILES";
@@ -1545,7 +1559,8 @@ namespace ME3Explorer
                     //FocusTreeViewNodeOld(selectNode[0]);
 
                     //selectNode[0].Focus(LeftSide_TreeView);
-                } else
+                }
+                else
                 {
                     Debug.WriteLine("Could not find node");
                 }
