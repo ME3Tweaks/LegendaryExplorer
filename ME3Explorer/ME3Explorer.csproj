@@ -1451,10 +1451,6 @@
       <Project>{681db2ce-e3eb-4110-ac50-f53eaca66e99}</Project>
       <Name>Gibbed.MassEffect3.FileFormats</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tools\SevenZip\SevenZip.csproj">
-      <Project>{b6c4d3b4-1267-48d5-8c3b-c86ff3e517a9}</Project>
-      <Name>SevenZip</Name>
-    </ProjectReference>
     <ProjectReference Include="..\UDKExplorer\UDKExplorer.csproj">
       <Project>{f660e850-da7a-41a6-ae77-4ab4f21d8f33}</Project>
       <Name>UDKExplorer</Name>

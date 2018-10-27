@@ -60,8 +60,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DLCBase\DLCBase.cs" />
-    <Compile Include="DLCBase\SortedKeyedCollection.cs" />
     <Compile Include="ImageFormat\DDSImage.cs" />
     <Compile Include="ImageFormat\ImageFormat.cs" />
     <Compile Include="ImageMipMapHandler\ImageMipMapHandler.cs" />
@@ -76,10 +74,6 @@
     <ProjectReference Include="..\Tools\Gibbed.MassEffect3.FileFormats\Gibbed.MassEffect3.FileFormats.csproj">
       <Project>{681db2ce-e3eb-4110-ac50-f53eaca66e99}</Project>
       <Name>Gibbed.MassEffect3.FileFormats</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tools\SevenZip\SevenZip.csproj">
-      <Project>{b6c4d3b4-1267-48d5-8c3b-c86ff3e517a9}</Project>
-      <Name>SevenZip</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

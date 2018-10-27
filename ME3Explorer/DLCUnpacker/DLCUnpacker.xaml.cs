@@ -199,7 +199,7 @@ namespace ME3Explorer.DLCUnpacker
         }
         
         #endregion
-        List<ME3DLC> sfarsToUnpack = new List<ME3DLC>();
+        List<DLCUnpack> sfarsToUnpack = new List<DLCUnpack>();
 
         public DLCUnpacker()
         {
@@ -283,7 +283,7 @@ namespace ME3Explorer.DLCUnpacker
                     if (info.Length < 64000)
                         continue;
 
-                    ME3DLC sfar = new ME3DLC(info.FullName);
+                    DLCUnpack sfar = new DLCUnpack(info.FullName);
                     sfarsToUnpack.Add(sfar);
 
                     compressedSize += info.Length;
@@ -363,19 +363,19 @@ namespace ME3Explorer.DLCUnpacker
             switch (e.PropertyName)
             {
                 case "CurrentStatus":
-                    CurrentOperationText = (sender as ME3DLC).CurrentStatus;
+                    CurrentOperationText = (sender as DLCUnpack).CurrentStatus;
                     break;
                 case "CurrentOverallStatus":
-                    CurrentOverallOperationText = (sender as ME3DLC).CurrentOverallStatus;
+                    CurrentOverallOperationText = (sender as DLCUnpack).CurrentOverallStatus;
                     break;
                 case "CurrentProgress":
-                    CurrentOverallProgressValue = (sender as ME3DLC).CurrentProgress;
+                    CurrentOverallProgressValue = (sender as DLCUnpack).CurrentProgress;
                     break;
                 case "CurrentFilesProcessed":
                     RecalculateOverallProgress();
                     break;
                 case "LoadingFileIntoRAM":
-                    ProgressBarIndeterminate = (sender as ME3DLC).LoadingFileIntoRAM;
+                    ProgressBarIndeterminate = (sender as DLCUnpack).LoadingFileIntoRAM;
                     break;
             }
         }

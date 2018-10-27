@@ -33,10 +33,8 @@ using ByteSizeLib;
 
 namespace ME3Explorer.Unreal
 {
-    class ME3DLC : INotifyPropertyChanged
+    class DLCUnpack : INotifyPropertyChanged
     {
-
-
         const uint SfarTag = 0x53464152; // 'SFAR'
         const uint SfarVersion = 0x00010000;
         const uint LZMATag = 0x6c7a6d61; // 'lzma'
@@ -45,7 +43,7 @@ namespace ME3Explorer.Unreal
         readonly byte[] FileListHash = new byte[] { 0xb5, 0x50, 0x19, 0xcb, 0xf9, 0xd3, 0xda, 0x65, 0xd5, 0x5b, 0x32, 0x1c, 0x00, 0x19, 0x69, 0x7c };
         const long MaxBlockSize = 0x00010000;
         int filenamesIndex;
-        public List<FileEntry> filesList { get; private set; }
+        public List<DLCEntry> filesList { get; private set; }
         uint maxBlockSize;
         List<ushort> blockSizes;
         public string filePath;
@@ -110,7 +108,7 @@ namespace ME3Explorer.Unreal
             set { SetProperty(ref _currentProgress, value); }
         }
 
-        public struct FileEntry
+        public struct DLCEntry
         {
             public byte[] filenameHash;
             public string filenamePath;
@@ -120,7 +118,7 @@ namespace ME3Explorer.Unreal
             public long dataOffset;
         }
 
-        public ME3DLC(string path)
+        public DLCUnpack(string path)
         {
             if (!File.Exists(path))
                 throw new Exception("filename missing");
@@ -151,10 +149,10 @@ namespace ME3Explorer.Unreal
 
             uint numBlockSizes = 0;
             stream.JumpTo(entriesOffset);
-            filesList = new List<FileEntry>();
+            filesList = new List<DLCEntry>();
             for (int i = 0; i < TotalFilesInDLC; i++)
             {
-                FileEntry file = new FileEntry
+                DLCEntry file = new DLCEntry
                 {
                     filenameHash = stream.ReadToBuffer(16),
                     compressedBlockSizesIndex = stream.ReadInt32(),
@@ -196,8 +194,8 @@ namespace ME3Explorer.Unreal
                         {
                             if (StructuralComparisons.StructuralEqualityComparer.Equals(filesList[l].filenameHash, hash))
                             {
-                                FileEntry f = filesList[l];
-                                f.filenamePath = name;
+                                DLCEntry f = filesList[l];
+                                f.filenamePath = name.Replace('/', '\\');
                                 filesList[l] = f;
                             }
                         }
@@ -210,6 +208,56 @@ namespace ME3Explorer.Unreal
             //Exception thrown when DLC is already unpacked it seems (or was interrupted)
             if (filenamesIndex == -1)
                 throw new Exception("filenames entry not found");
+        }
+
+        public void ExtractEntry(DLCEntry entry, Stream input, Stream output)
+        {
+            input.JumpTo(entry.dataOffset);
+            if (entry.compressedBlockSizesIndex == -1)
+            {
+                output.WriteFromStream(input, entry.uncomprSize);
+            }
+            else
+            {
+                List<byte[]> uncompressedBlockBuffers = new List<byte[]>();
+                List<byte[]> compressedBlockBuffers = new List<byte[]>();
+                List<long> blockBytesLeft = new List<long>();
+                long bytesLeft = entry.uncomprSize;
+                for (int j = 0; j < entry.numBlocks; j++)
+                {
+                    blockBytesLeft.Add(bytesLeft);
+                    int compressedBlockSize = blockSizes[entry.compressedBlockSizesIndex + j];
+                    int uncompressedBlockSize = (int)Math.Min(bytesLeft, maxBlockSize);
+                    if (compressedBlockSize == 0)
+                    {
+                        compressedBlockSize = (int)maxBlockSize;
+                    }
+                    compressedBlockBuffers.Add(input.ReadToBuffer(compressedBlockSize));
+                    uncompressedBlockBuffers.Add(null);
+                    bytesLeft -= uncompressedBlockSize;
+                }
+
+                Parallel.For(0, entry.numBlocks, j =>
+                {
+                    int compressedBlockSize = blockSizes[entry.compressedBlockSizesIndex + (int)j];
+                    int uncompressedBlockSize = (int)Math.Min(blockBytesLeft[(int)j], maxBlockSize);
+                    if (compressedBlockSize == 0 || compressedBlockSize == blockBytesLeft[(int)j])
+                    {
+                        uncompressedBlockBuffers[(int)j] = compressedBlockBuffers[(int)j];
+                    }
+                    else
+                    {
+                        uncompressedBlockBuffers[(int)j] = new SevenZipHelper.LZMA().Decompress(compressedBlockBuffers[(int)j], (uint)uncompressedBlockSize);
+                        if (uncompressedBlockBuffers[(int)j].Length == 0)
+                            throw new Exception();
+                    }
+                });
+
+                for (int j = 0; j < entry.numBlocks; j++)
+                {
+                    output.WriteFromBuffer(uncompressedBlockBuffers[j]);
+                }
+            }
         }
 
         public void Extract(string outPath)
@@ -238,57 +286,12 @@ namespace ME3Explorer.Unreal
                     CurrentProgress = (int)(100.0 * CurrentFilesProcessed) / (int)TotalFilesInDLC;
 
                     int pos = filesList[i].filenamePath.IndexOf("\\BIOGame\\DLC\\", StringComparison.OrdinalIgnoreCase);
-                    string filename = filesList[i].filenamePath.Substring(pos + ("\\BIOGame\\DLC\\").Length).Replace('/', '\\');
+                    string filename = filesList[i].filenamePath.Substring(pos + ("\\BIOGame\\DLC\\").Length);
                     string dir = Path.GetDirectoryName(outPath);
                     Directory.CreateDirectory(Path.GetDirectoryName(dir + filename));
                     using (FileStream outputFile = new FileStream(dir + filename, FileMode.Create, FileAccess.Write))
                     {
-                        stream.JumpTo(filesList[i].dataOffset);
-                        if (filesList[i].compressedBlockSizesIndex == -1)
-                        {
-                            outputFile.WriteFromStream(stream, filesList[i].uncomprSize);
-                        }
-                        else
-                        {
-                            List<byte[]> uncompressedBlockBuffers = new List<byte[]>();
-                            List<byte[]> compressedBlockBuffers = new List<byte[]>();
-                            List<long> blockBytesLeft = new List<long>();
-                            long bytesLeft = filesList[i].uncomprSize;
-                            for (int j = 0; j < filesList[i].numBlocks; j++)
-                            {
-                                blockBytesLeft.Add(bytesLeft);
-                                int compressedBlockSize = blockSizes[filesList[i].compressedBlockSizesIndex + j];
-                                int uncompressedBlockSize = (int)Math.Min(bytesLeft, maxBlockSize);
-                                if (compressedBlockSize == 0)
-                                {
-                                    compressedBlockSize = (int)maxBlockSize;
-                                }
-                                compressedBlockBuffers.Add(stream.ReadToBuffer(compressedBlockSize));
-                                uncompressedBlockBuffers.Add(null);
-                                bytesLeft -= uncompressedBlockSize;
-                            }
-
-                            Parallel.For(0, filesList[i].numBlocks, j =>
-                            {
-                                int compressedBlockSize = blockSizes[filesList[i].compressedBlockSizesIndex + (int)j];
-                                int uncompressedBlockSize = (int)Math.Min(blockBytesLeft[(int)j], maxBlockSize);
-                                if (compressedBlockSize == 0 || compressedBlockSize == blockBytesLeft[(int)j])
-                                {
-                                    uncompressedBlockBuffers[(int)j] = compressedBlockBuffers[(int)j];
-                                }
-                                else
-                                {
-                                    uncompressedBlockBuffers[(int)j] = new SevenZipHelper.LZMA().Decompress(compressedBlockBuffers[(int)j], (uint)uncompressedBlockSize);
-                                    if (uncompressedBlockBuffers[(int)j].Length == 0)
-                                        throw new Exception();
-                                }
-                            });
-
-                            for (int j = 0; j < filesList[i].numBlocks; j++)
-                            {
-                                outputFile.WriteFromBuffer(uncompressedBlockBuffers[j]);
-                            }
-                        }
+                        ExtractEntry(filesList[i], stream, outputFile);
                     }
                 }
             }
