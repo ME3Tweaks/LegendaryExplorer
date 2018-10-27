@@ -297,8 +297,8 @@ namespace ME3Explorer.Unreal
                     int pos = filesList[i].filenamePath.IndexOf("\\BIOGame\\DLC\\", StringComparison.OrdinalIgnoreCase);
                     string filename = filesList[i].filenamePath.Substring(pos + ("\\BIOGame\\DLC\\").Length);
                     string dir = Path.GetDirectoryName(outPath);
-                    Directory.CreateDirectory(Path.GetDirectoryName(dir + filename));
-                    using (FileStream outputFile = new FileStream(dir + filename, FileMode.Create, FileAccess.Write))
+                    Directory.CreateDirectory(Path.GetDirectoryName(Path.Combine(dir, filename)));
+                    using (FileStream outputFile = new FileStream(Path.Combine(dir, filename), FileMode.Create, FileAccess.Write))
                     {
                         ExtractEntry(filesList[i], stream, outputFile);
                     }
@@ -314,8 +314,8 @@ namespace ME3Explorer.Unreal
                         continue;
                     int pos = filesList[i].filenamePath.IndexOf("\\BIOGame\\DLC\\", StringComparison.OrdinalIgnoreCase);
                     string filename = filesList[i].filenamePath.Substring(pos + ("\\BIOGame\\DLC\\").Length);
-                    if (File.Exists(dir + filename))
-                        File.Delete(dir + filename);
+                    if (File.Exists(Path.Combine(dir, filename)))
+                        File.Delete(Path.Combine(dir, filename));
                 }
                 return;
             }
