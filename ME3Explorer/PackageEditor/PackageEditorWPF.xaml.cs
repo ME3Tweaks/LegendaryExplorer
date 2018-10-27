@@ -2182,15 +2182,50 @@ namespace ME3Explorer
                     }
             }
             */
+            if (CurrentView == CurrentViewMode.Names)
+            {
+                for (int i = start, numSearched = 0; numSearched < Pcc.Names.Count; i++, numSearched++)
+                {
+                    if (Pcc.Names[i].ToLower().Contains(searchTerm))
+                    {
+                        LeftSide_ListView.SelectedIndex = i;
+                        break;
+                    }
+                    if (i >= Pcc.Names.Count - 1)
+                    {
+                        i = -1;
+                    }
+                }
+            }
+            if (CurrentView == CurrentViewMode.Imports)
+            {
+                IReadOnlyList<ImportEntry> Imports = Pcc.Imports;
+                for (int i = start, numSearched = 0; numSearched < Imports.Count; i++, numSearched++)
+                {
+                    if (Imports[i].ObjectName.ToLower().Contains(searchTerm))
+                    {
+                        LeftSide_ListView.SelectedIndex = i;
+                        break;
+                    }
+                    if (i >= Imports.Count - 1)
+                    {
+                        i = -1;
+                    }
+                }
+            }
             if (CurrentView == CurrentViewMode.Exports)
             {
                 IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
-                for (int i = start; i < Exports.Count; i++)
+                for (int i = start, numSearched = 0; numSearched < Exports.Count; i++, numSearched++)
                 {
                     if (Exports[i].ObjectName.ToLower().Contains(searchTerm))
                     {
                         LeftSide_ListView.SelectedIndex = i;
                         break;
+                    }
+                    if (i >= Exports.Count - 1)
+                    {
+                        i = -1;
                     }
                 }
             }
