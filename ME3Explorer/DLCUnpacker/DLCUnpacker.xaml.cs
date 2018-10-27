@@ -261,13 +261,14 @@ namespace ME3Explorer.DLCUnpacker
             double totalUncompressedSize;
 
             var folders = Directory.EnumerateDirectories(ME3Directory.DLCPath);
-            var extracted = folders.Where(folder => Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).Any(file => file.EndsWith("mount.dlc", StringComparison.OrdinalIgnoreCase)));
+            var extracted = folders.Where(folder => Directory.EnumerateFiles(folder, "*",
+                SearchOption.AllDirectories).Any(file => file.EndsWith("mount.dlc", StringComparison.OrdinalIgnoreCase)));
             var unextracted = folders.Except(extracted);
 
             double compressedSize = 0;
             double uncompressedSize = 0;
             double largestUncompressedSize = 0;
-            double temp;
+            double largestCompressedSize = 0;
             foreach (var folder in unextracted)
             {
                 if (!Path.GetFileName(folder).StartsWith("DLC"))
@@ -275,33 +276,39 @@ namespace ME3Explorer.DLCUnpacker
 
                 try
                 {
-                    FileInfo info = new FileInfo(Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories).First(file => file.EndsWith(".sfar", StringComparison.OrdinalIgnoreCase)));
-                    compressedSize += info.Length;
+                    FileInfo info = new FileInfo(Directory.EnumerateFiles(folder, "*",
+                        SearchOption.AllDirectories).First(file => file.EndsWith(".sfar", StringComparison.OrdinalIgnoreCase)));
+
+                    // Skip sfar files which are already unpacked
+                    if (info.Length < 64000)
+                        continue;
 
                     ME3DLC sfar = new ME3DLC(info.FullName);
                     sfarsToUnpack.Add(sfar);
 
-                    temp = sfar.UncompressedSize;
-                    uncompressedSize += temp;
-                    if (temp > largestUncompressedSize)
-                    {
-                        largestUncompressedSize = temp;
-                    }
+                    compressedSize += info.Length;
+                    largestCompressedSize = Math.Max(largestCompressedSize, info.Length);
+
+                    uncompressedSize += sfar.UncompressedSize;
+                    largestUncompressedSize = Math.Max(largestUncompressedSize, sfar.UncompressedSize);
                 }
                 catch (Exception)
                 {
                     return -1;
                 }
             }
+
             totalUncompressedSize = uncompressedSize;
+
             if (sfarsToUnpack.Count == 0)
             {
                 CurrentOverallOperationText = "All installed DLC is currently unpacked.";
             }
-            //each SFAR is stripped of all its files after unpacking, so the maximum space needed on the drive is
-            //the difference between the uncompressed size and compressed size of all SFARS, plus the compressed size
-            //of the largest SFAR. I'm using the uncompressed size instead as a fudge factor.
-            return (uncompressedSize - compressedSize) + largestUncompressedSize;
+
+            // each SFAR is stripped of all its files after unpacking, so the maximum space needed on the drive is
+            // the difference between the uncompressed size and compressed size of all SFARS, plus the compressed and 
+            // uncompressed of the largest SFAR.
+            return (uncompressedSize - compressedSize) + largestUncompressedSize + largestCompressedSize;
         }
 
         private void LoadCommands()

@@ -229,19 +229,6 @@ namespace ME3Explorer.Unreal
             CurrentFilesProcessed = 0;
             LoadingFileIntoRAM = false;
 
-            File.Delete(SFARfilename);
-            using (FileStream outputFile = new FileStream(SFARfilename, FileMode.Create, FileAccess.Write))
-            {
-                outputFile.WriteUInt32(SfarTag);
-                outputFile.WriteUInt32(SfarVersion);
-                outputFile.WriteUInt32(HeaderSize);
-                outputFile.WriteUInt32(HeaderSize);
-                outputFile.WriteUInt32(0);
-                outputFile.WriteUInt32(HeaderSize);
-                outputFile.WriteUInt32((uint)MaxBlockSize);
-                outputFile.WriteUInt32(LZMATag);
-            }
-
             CurrentOverallStatus = $"Extracting {DLCUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(SFARfilename)}";
             using (MemoryStream stream = new MemoryStream(buffer))
             {
@@ -309,6 +296,19 @@ namespace ME3Explorer.Unreal
                         }
                     }
                 }
+            }
+
+            File.Delete(SFARfilename);
+            using (FileStream outputFile = new FileStream(SFARfilename, FileMode.Create, FileAccess.Write))
+            {
+                outputFile.WriteUInt32(SfarTag);
+                outputFile.WriteUInt32(SfarVersion);
+                outputFile.WriteUInt32(HeaderSize);
+                outputFile.WriteUInt32(HeaderSize);
+                outputFile.WriteUInt32(0);
+                outputFile.WriteUInt32(HeaderSize);
+                outputFile.WriteUInt32((uint)MaxBlockSize);
+                outputFile.WriteUInt32(LZMATag);
             }
         }
 
