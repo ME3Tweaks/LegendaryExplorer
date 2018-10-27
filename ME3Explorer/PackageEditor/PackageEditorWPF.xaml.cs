@@ -4,6 +4,7 @@ using ME1Explorer.Unreal;
 using ME3Explorer.PackageEditorWPFControls;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3Explorer.SharedUI.TreeView;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
@@ -826,7 +827,7 @@ namespace ME3Explorer
             if (QueuedGotoNumber != 0)
             {
                 //Wait for UI to render
-                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
+                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.Background, null);
                 BusyText = $"Navigating to {QueuedGotoNumber}";
                 GoToNumber(QueuedGotoNumber);
                 if (QueuedGotoNumber > 0)
@@ -2403,7 +2404,7 @@ namespace ME3Explorer
                 //This needs to be stress tested - this can cause deadlock, but if it doesn't return fast enough the code
                 //may continue to null and not work.
                 //Sigh, treeview.
-                Dispatcher.BeginInvoke(action, DispatcherPriority.ContextIdle);
+                Dispatcher.BeginInvoke(action, DispatcherPriority.Background);
                 if (treeViewItem == null)
                 {
                     Debug.WriteLine("This shoudln't be null");
@@ -2594,8 +2595,8 @@ namespace ME3Explorer
         }
         public event PropertyChangedEventHandler PropertyChanged;
         private System.Windows.Media.Brush _foregroundColor = System.Windows.Media.Brushes.DarkSeaGreen;
-        private bool isSelected;
-        public bool IsSelected
+        private bool _isSelected;
+        /*public bool IsSelected
         {
             get { return this.isSelected; }
             set
@@ -2605,6 +2606,55 @@ namespace ME3Explorer
                     this.isSelected = value;
                     OnPropertyChanged("IsSelected");
                 }
+            }
+        }*/
+
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                // build a priority queue of dispatcher operations
+
+                // All operations relating to tree item expansion are added with priority = DispatcherPriority.ContextIdle, so that they are
+                // sorted before any operations relating to selection (which have priority = DispatcherPriority.ApplicationIdle).
+                // This ensures that the visual container for all items are created before any selection operation is carried out.
+                // First expand all ancestors of the selected item - those closest to the root first
+                // Expanding a node will scroll as many of its children as possible into view - see perTreeViewItemHelper, but these scrolling
+                // operations will be added to the queue after all of the parent expansions.
+                if (value)
+                {
+                    var ancestorsToExpand = new Stack<TreeViewEntry>();
+
+                    var parent = Parent;
+                    while (parent != null)
+                    {
+                        if (!parent.IsExpanded)
+                            ancestorsToExpand.Push(parent);
+
+                        parent = parent.Parent;
+                    }
+
+                    while (ancestorsToExpand.Any())
+                    {
+                        var parentToExpand = ancestorsToExpand.Pop();
+                        DispatcherHelper.AddToQueue(() => parentToExpand.IsExpanded = true, DispatcherPriority.ContextIdle);
+                    }
+                }
+
+                if (_isSelected == value)
+                    return;
+
+                // Set the item's selected state - use DispatcherPriority.ApplicationIdle so this operation is executed after all
+                // expansion operations, no matter when they were added to the queue.
+                // Selecting a node will also scroll it into view - see perTreeViewItemHelper
+                DispatcherHelper.AddToQueue(() => Set(nameof(IsSelected), ref _isSelected, value), DispatcherPriority.ApplicationIdle);
+
+                // note that by rule, a TreeView can only have one selected item, but this is handled automatically by 
+                // the control - we aren't required to manually unselect the previously selected item.
+
+                // execute all of the queued operations in descending DipatecherPriority order (expansion before selection)
+                var unused = DispatcherHelper.ProcessQueueAsync();
             }
         }
 
