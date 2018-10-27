@@ -99,6 +99,8 @@ namespace ME3Explorer.SharedUI.PeregrineTreeView
             // this ensures that all UI elements for any newly visible children are created before any selection operation
 
             // first bring the last child into view
+
+            //left here due to the fact it might need to be re-implemented
             //Action action = () =>
             //{
             //    item.UpdateLayout();

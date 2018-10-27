@@ -1356,19 +1356,6 @@ namespace ME3Explorer
             }
         }
 
-        private delegate void NoArgDelegate();
-        ///// <summary>
-        ///// Tree view selected item changed. This runs in a delegate due to how multithread bubble-up items work with treeview.
-        ///// Without this delegate, the item selected will randomly be a parent item instead.
-        ///// From https://www.codeproject.com/Tips/208896/WPF-TreeView-SelectedItemChanged-called-twice
-        ///// </summary>
-        ///// <param name="sender"></param>
-        ///// <param name="e"></param>
-        //private void LeftSide_SelectedItemChanged(object sender, RoutedEventArgs e)
-        //{
-        //    Preview();
-        //}
-
         /// <summary>
         /// Listbox selected item changed
         /// </summary>
@@ -1474,17 +1461,21 @@ namespace ME3Explorer
             bool? result = d.ShowDialog();
             if (result.HasValue && result.Value)
             {
-                //try
-                // {
-                LoadFile(d.FileName);
-                AddRecent(d.FileName, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
-                //}
-                //catch (Exception ex)
-                //{
-                //    MessageBox.Show("Unable to open file:\n" + ex.Message);
-                // }
+#if !DEBUG
+                try
+                {
+#endif
+                    LoadFile(d.FileName);
+                    AddRecent(d.FileName, false);
+                    SaveRecentList();
+                    RefreshRecent(true, RFiles);
+#if !DEBUG
+            }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to open file:\n" + ex.Message);
+                }
+#endif
             }
         }
 
@@ -2073,38 +2064,10 @@ namespace ME3Explorer
 
 
             string searchClass = ClassDropdown_Combobox.SelectedItem.ToString();
-            /*if (CurrentView == View.Names)
-            {
-                for (int i = start; i < pcc.Names.Count; i++)
-                    if (Pcc.getNameEntry(i).ToLower().Contains(searchTerm))
-                    {
-                        listBox1.SelectedIndex = i;
-                        break;
-                    }
-            }
-            if (CurrentView == View.Imports)
-            {
-                IReadOnlyList<ImportEntry> imports = pcc.Imports;
-                for (int i = start; i < imports.Count; i++)
-                    if (imports[i].ObjectName.ToLower().Contains(searchTerm))
-                    {
-                        listBox1.SelectedIndex = i;
-                        break;
-                    }
-            }
-            if (CurrentView == View.Exports)
-            {
-                IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                for (int i = start; i < Exports.Count; i++)
-                    if (Exports[i].ObjectName.ToLower().Contains(searchTerm))
-                    {
-                        listBox1.SelectedIndex = i;
-                        break;
-                    }
-            }*/
+            //TODO: Implement for Imports, Exports
+
             if (CurrentView == CurrentViewMode.Tree)
             {
-                //this needs fixed as for some rason its way out of order...
                 TreeViewEntry selectedNode = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
                 var items = AllTreeViewNodesX[0].FlattenTree();
                 int pos = selectedNode == null ? 0 : items.IndexOf(selectedNode);
@@ -2117,14 +2080,10 @@ namespace ME3Explorer
                     {
                         continue;
                     }
-                    //Debug.WriteLine(curIndex + " " + node.Entry.ObjectName);
 
                     if (node.Entry.ClassName.Equals(searchClass))
                     {
-                        //node.ExpandParents();
                         node.IsSelected = true;
-                        //FocusTreeViewNodeOld(node);
-                        //                        node.Focus(LeftSide_TreeView);
                         break;
                     }
                 }
@@ -2216,7 +2175,6 @@ namespace ME3Explorer
             }
             if (CurrentView == CurrentViewMode.Tree)
             {
-                //this needs fixed as for some rason its way out of order...
                 TreeViewEntry selectedNode = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
                 var items = AllTreeViewNodesX[0].FlattenTree();
                 int pos = selectedNode == null ? -1 : items.IndexOf(selectedNode);
@@ -2229,13 +2187,9 @@ namespace ME3Explorer
                     {
                         continue;
                     }
-                    //Debug.WriteLine(curIndex + " " + node.Entry.ObjectName);
                     if (node.Entry.ObjectName.ToLower().Contains(searchTerm))
                     {
-                        //node.ExpandParents();
                         node.IsSelected = true;
-                        //FocusTreeViewNodeOld(node);
-                        //                        node.Focus(LeftSide_TreeView);
                         break;
                     }
                 }
@@ -2664,8 +2618,6 @@ namespace ME3Explorer
                 }
 
                 //cancel if we're currently selected.
-                Debug.WriteLine(DisplayName + " ISSELECTED: " + isSelected);
-
                 if (isSelected == value)
                     return;
 
