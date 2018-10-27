@@ -430,5 +430,10 @@ namespace ME3Explorer.DLCUnpacker
         {
             //This tool does not handle updates.
         }
+
+        private void DLCUnpacker_Closing(object sender, CancelEventArgs e)
+        {
+            CancelUnpacking(null);
+        }
     }
 }

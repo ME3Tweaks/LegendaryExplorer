@@ -9,6 +9,7 @@
                 xmlns:KFreonLib="clr-namespace:KFreonLib.MEDirectories;assembly=KFreonLib"
                 mc:Ignorable="d"
         Title="DLC Unpacker" Height="300" Width="489"
+                Closing="DLCUnpacker_Closing"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <StackPanel >
         <TextBlock Padding="5" Background="LightGray" TextWrapping="Wrap" Text="Unpacking Mass Effect 3 DLC allows you to access and modify the files contained within them. You can use these files as a base for a mod. Files unpacked with this unpacker are compatible with MassEffectModder and ALOT."/>
