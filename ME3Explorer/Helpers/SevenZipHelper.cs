@@ -1,7 +1,7 @@
 /*
  * SevenZip Helper
  *
- * Copyright (C) 2015 Pawel Kolodziejski <aquadran at users.sourceforge.net>
+ * Copyright (C) 2015-2018 Pawel Kolodziejski
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +18,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+
+ /*
+  * This code use sevenzipwrapper.dll copied from MassEffectModder:
+  * https://github.com/MassEffectModder/MassEffectModder/tree/master/MassEffectModder/Dlls
+  *
+  * The dll is created using LZMA SDK and MassEffectModder helper code:
+  * https://github.com/MassEffectModder/MassEffectModder/tree/master/MassEffectModder/Helpers/7Zip
+  *
+  */
 
 using System;
 using System.Runtime.InteropServices;
