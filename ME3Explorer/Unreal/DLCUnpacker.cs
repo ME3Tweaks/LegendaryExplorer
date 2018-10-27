@@ -45,8 +45,7 @@ namespace ME3Explorer.Unreal
         readonly byte[] FileListHash = new byte[] { 0xb5, 0x50, 0x19, 0xcb, 0xf9, 0xd3, 0xda, 0x65, 0xd5, 0x5b, 0x32, 0x1c, 0x00, 0x19, 0x69, 0x7c };
         const long MaxBlockSize = 0x00010000;
         int filenamesIndex;
-        uint filesCount;
-        List<FileEntry> filesList;
+        public List<FileEntry> filesList { get; private set; }
         uint maxBlockSize;
         List<ushort> blockSizes;
         public string filePath;
@@ -57,7 +56,7 @@ namespace ME3Explorer.Unreal
         public event PropertyChangedEventHandler PropertyChanged;
 
         public long UncompressedSize { get; private set; }
-        public int GetNumberOfFiles => (int)filesCount;
+        public int GetNumberOfFiles => (int)TotalFilesInDLC;
 
         private string _currentOverallStatus;
         /// <summary>
@@ -89,11 +88,7 @@ namespace ME3Explorer.Unreal
         /// <summary>
         /// The total number of files in this DLC
         /// </summary>
-        public uint TotalFilesInDLC
-        {
-            get { return filesCount; }
-            //set { SetProperty(ref _totalFilesInDLC, value); }
-        }
+        public uint TotalFilesInDLC { get; private set; }
 
         private int _currentFilesProcessed;
         /// <summary>
@@ -147,7 +142,7 @@ namespace ME3Explorer.Unreal
 
             uint dataOffset = stream.ReadUInt32();
             uint entriesOffset = stream.ReadUInt32();
-            filesCount = stream.ReadUInt32();
+            TotalFilesInDLC = stream.ReadUInt32();
             uint sizesArrayOffset = stream.ReadUInt32();
             maxBlockSize = stream.ReadUInt32();
             uint compressionTag = stream.ReadUInt32();
@@ -157,7 +152,7 @@ namespace ME3Explorer.Unreal
             uint numBlockSizes = 0;
             stream.JumpTo(entriesOffset);
             filesList = new List<FileEntry>();
-            for (int i = 0; i < filesCount; i++)
+            for (int i = 0; i < TotalFilesInDLC; i++)
             {
                 FileEntry file = new FileEntry
                 {
@@ -182,7 +177,7 @@ namespace ME3Explorer.Unreal
             }
 
             filenamesIndex = -1;
-            for (int i = 0; i < filesCount; i++)
+            for (int i = 0; i < TotalFilesInDLC; i++)
             {
                 if (StructuralComparisons.StructuralEqualityComparer.Equals(filesList[i].filenameHash, FileListHash))
                 {
@@ -197,7 +192,7 @@ namespace ME3Explorer.Unreal
                     {
                         string name = filenamesStream.ReadLine();
                         byte[] hash = MD5.Create().ComputeHash(Encoding.ASCII.GetBytes(name.ToLowerInvariant()));
-                        for (int l = 0; l < filesCount; l++)
+                        for (int l = 0; l < TotalFilesInDLC; l++)
                         {
                             if (StructuralComparisons.StructuralEqualityComparer.Equals(filesList[l].filenameHash, hash))
                             {
@@ -232,7 +227,7 @@ namespace ME3Explorer.Unreal
             CurrentOverallStatus = $"Extracting {DLCUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(filePath)}";
             using (MemoryStream stream = new MemoryStream(buffer))
             {
-                for (int i = 0; i < filesCount; i++, CurrentFilesProcessed++)
+                for (int i = 0; i < TotalFilesInDLC; i++, CurrentFilesProcessed++)
                 {
                     if (filenamesIndex == i)
                         continue;
