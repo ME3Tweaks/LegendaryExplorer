@@ -245,7 +245,6 @@ namespace ME3Explorer.Unreal
             CurrentOverallStatus = $"Extracting {DLCUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(SFARfilename)}";
             using (MemoryStream stream = new MemoryStream(buffer))
             {
-                int lastProgress = -1;
                 for (int i = 0; i < filesCount; i++, CurrentFilesProcessed++)
                 {
                     if (filenamesIndex == i)
@@ -255,24 +254,6 @@ namespace ME3Explorer.Unreal
 
                     CurrentStatus = "File " + (i + 1) + " of " + filesList.Count() + " - " + Path.GetFileName(filesList[i].filenamePath);
                     CurrentProgress = (int)(100.0 * CurrentFilesProcessed) / (int)TotalFilesInDLC;
-
-                    //if (mainWindow != null)
-                    //    mainWindow.updateStatusLabel2("File " + (i + 1) + " of " + filesList.Count() + " - " + Path.GetFileName(filesList[i].filenamePath));
-                    //if (installer != null)
-                    //    installer.updateStatusPrepare("Unpacking DLC " + ((currentProgress + 1) * 100 / totalNumber) + "%");
-
-                    //The following code will have to be handled in the UI sectionas only it knows the total number of files.
-                    //It also decouples the code
-                    //if (ipc)
-                    //{
-                    //    int newProgress = (100 * currentProgress) / totalNumber;
-                    //    if (lastProgress != newProgress)
-                    //    {
-                    //        Console.WriteLine("[IPC]TASK_PROGRESS " + newProgress);
-                    //        Console.Out.Flush();
-                    //        lastProgress = newProgress;
-                    //    }
-                    //}
 
                     int pos = filesList[i].filenamePath.IndexOf("\\BIOGame\\DLC\\", StringComparison.OrdinalIgnoreCase);
                     string filename = filesList[i].filenamePath.Substring(pos + ("\\BIOGame\\DLC\\").Length).Replace('/', '\\');
