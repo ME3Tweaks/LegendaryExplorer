@@ -344,7 +344,7 @@ namespace ME3Explorer.DLCUnpacker
                 sfar.PropertyChanged += SFAR_PropertyChanged;
                 string DLCname = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(sfar.filePath)));
                 string outPath = Path.Combine(ME3Directory.DLCPath, DLCname);
-                sfar.Extract(sfar.filePath, outPath);
+                sfar.Extract(outPath);
             }
             CurrentOverallProgressValue = 100;
             OverallProgressValue = 100;

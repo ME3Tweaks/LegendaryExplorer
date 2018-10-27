@@ -217,19 +217,19 @@ namespace ME3Explorer.Unreal
                 throw new Exception("filenames entry not found");
         }
 
-        public void Extract(string SFARfilename, string outPath)
+        public void Extract(string outPath)
         {
-            if (!File.Exists(SFARfilename))
+            if (!File.Exists(filePath))
                 throw new Exception("filename missing");
 
             LoadingFileIntoRAM = true;
-            CurrentOverallStatus = $"Extracting {DLCUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(SFARfilename)}";
-            CurrentStatus = $"Loading {DLCUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(SFARfilename)} into memory ({ByteSize.FromBytes(new FileInfo(SFARfilename).Length)})";
-            byte[] buffer = File.ReadAllBytes(SFARfilename);
+            CurrentOverallStatus = $"Extracting {DLCUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(filePath)}";
+            CurrentStatus = $"Loading {DLCUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(filePath)} into memory ({ByteSize.FromBytes(new FileInfo(filePath).Length)})";
+            byte[] buffer = File.ReadAllBytes(filePath);
             CurrentFilesProcessed = 0;
             LoadingFileIntoRAM = false;
 
-            CurrentOverallStatus = $"Extracting {DLCUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(SFARfilename)}";
+            CurrentOverallStatus = $"Extracting {DLCUnpacker.DLCUnpacker.GetPrettyDLCNameFromPath(filePath)}";
             using (MemoryStream stream = new MemoryStream(buffer))
             {
                 for (int i = 0; i < filesCount; i++, CurrentFilesProcessed++)
@@ -298,8 +298,8 @@ namespace ME3Explorer.Unreal
                 }
             }
 
-            File.Delete(SFARfilename);
-            using (FileStream outputFile = new FileStream(SFARfilename, FileMode.Create, FileAccess.Write))
+            File.Delete(filePath);
+            using (FileStream outputFile = new FileStream(filePath, FileMode.Create, FileAccess.Write))
             {
                 outputFile.WriteUInt32(SfarTag);
                 outputFile.WriteUInt32(SfarVersion);
