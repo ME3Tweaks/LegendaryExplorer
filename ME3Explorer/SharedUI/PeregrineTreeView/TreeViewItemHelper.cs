@@ -48,7 +48,7 @@ namespace ME3Explorer.SharedUI.PeregrineTreeView
                 // use DispatcherPriority.ApplicationIdle so this occurs after all operations related to tree item expansion
                 DispatcherHelper.AddToQueue(() =>
                 {
-                    System.Diagnostics.Debug.WriteLine("BRINGING INTO VIEW - SELECTED NODE!");
+                    //System.Diagnostics.Debug.WriteLine("BRINGING INTO VIEW - SELECTED NODE!");
                     item.BringIntoView();
                 }, DispatcherPriority.ApplicationIdle);
             }
@@ -99,19 +99,19 @@ namespace ME3Explorer.SharedUI.PeregrineTreeView
             // this ensures that all UI elements for any newly visible children are created before any selection operation
 
             // first bring the last child into view
-            Action action = () =>
-            {
-                item.UpdateLayout();
-                var lastChild = item.ItemContainerGenerator.ContainerFromIndex(item.Items.Count - 1) as TreeViewItem;
-                if (lastChild == null) { System.Diagnostics.Debug.WriteLine("FAIL!"); }
-                lastChild?.BringIntoView();
-            };
+            //Action action = () =>
+            //{
+            //    item.UpdateLayout();
+            //    var lastChild = item.ItemContainerGenerator.ContainerFromIndex(item.Items.Count - 1) as TreeViewItem;
+            //    //if (lastChild == null) { System.Diagnostics.Debug.WriteLine("FAIL!"); }
+            //    lastChild?.BringIntoView();
+            //};
 
-            DispatcherHelper.AddToQueue(action, DispatcherPriority.ContextIdle);
+            //DispatcherHelper.AddToQueue(action, DispatcherPriority.ContextIdle);
 
             // then bring the expanded item (back) into view
-            action = () => {
-                System.Diagnostics.Debug.WriteLine("BRINGING INTO VIEW - EXPANDED NODE FIRST: " + item.DataContext);
+            Action action = () => {
+                //System.Diagnostics.Debug.WriteLine("BRINGING INTO VIEW - EXPANDED NODE FIRST: " + item.DataContext);
                 item.BringIntoView();
             };
 

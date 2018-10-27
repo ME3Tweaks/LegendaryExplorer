@@ -249,7 +249,7 @@
                     </ListBox.ContextMenu>
                 </SharedUI:ListBoxScroll>
                 <!-- VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" -->
-                <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" FontFamily="Consolas" Visibility="Collapsed" TreeViewItem.Selected="LeftSide_SelectedItemChanged" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" ItemsSource="{Binding AllTreeViewNodesX}" >
+                <TreeView x:Name="LeftSide_TreeView" Grid.Column="0" Grid.Row="1" FontFamily="Consolas" Visibility="Collapsed" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" ItemsSource="{Binding AllTreeViewNodesX}" >
                     <TreeView.Resources>
                         <HierarchicalDataTemplate DataType="{x:Type global:TreeViewEntry}" ItemsSource="{Binding Sublinks}">
                             <StackPanel Orientation="Horizontal">
@@ -288,8 +288,8 @@
                         <Style TargetType="{x:Type TreeViewItem}">
                             <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
                             <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
-                            <!--<Setter Property="vhelp:TreeViewItemHelper.BringSelectedItemIntoView" Value="True" />
-                            <Setter Property="vhelp:TreeViewItemHelper.BringExpandedChildrenIntoView" Value="True" />-->
+                            <Setter Property="vhelp:TreeViewItemHelper.BringSelectedItemIntoView" Value="True" />
+                            <Setter Property="vhelp:TreeViewItemHelper.BringExpandedChildrenIntoView" Value="True" />
                         </Style>
                     </TreeView.ItemContainerStyle>
                     <TreeView.ContextMenu>
@@ -306,9 +306,9 @@
                             </MenuItem>
                         </ContextMenu>
                     </TreeView.ContextMenu>
-                    <!--<i:Interaction.Behaviors>
+                    <i:Interaction.Behaviors>
                         <vhelp:TreeViewHelper BoundSelectedItem="{Binding SelectedItem}" />
-                    </i:Interaction.Behaviors>-->
+                    </i:Interaction.Behaviors>
                 </TreeView>
                 <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Grid.Row="1"/>
                 <TabControl Name="EditorTabs" Grid.Column="2" Grid.Row="1">

@@ -105,6 +105,7 @@ namespace ME3Explorer
                 {
                     _selectedItem = value;
                     OnPropertyChanged();
+                    Preview();
                 }
             }
         }
@@ -1356,17 +1357,17 @@ namespace ME3Explorer
         }
 
         private delegate void NoArgDelegate();
-        /// <summary>
-        /// Tree view selected item changed. This runs in a delegate due to how multithread bubble-up items work with treeview.
-        /// Without this delegate, the item selected will randomly be a parent item instead.
-        /// From https://www.codeproject.com/Tips/208896/WPF-TreeView-SelectedItemChanged-called-twice
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void LeftSide_SelectedItemChanged(object sender, RoutedEventArgs e)
-        {
-            Preview();
-        }
+        ///// <summary>
+        ///// Tree view selected item changed. This runs in a delegate due to how multithread bubble-up items work with treeview.
+        ///// Without this delegate, the item selected will randomly be a parent item instead.
+        ///// From https://www.codeproject.com/Tips/208896/WPF-TreeView-SelectedItemChanged-called-twice
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void LeftSide_SelectedItemChanged(object sender, RoutedEventArgs e)
+        //{
+        //    Preview();
+        //}
 
         /// <summary>
         /// Listbox selected item changed
@@ -1556,7 +1557,7 @@ namespace ME3Explorer
                     //selectNode[0].ExpandParents();
                     selectNode[0].ExpandParents();
                     selectNode[0].IsSelected = true;
-                    FocusTreeViewNodeOld(selectNode[0]);
+                    //FocusTreeViewNodeOld(selectNode[0]);
 
                     //selectNode[0].Focus(LeftSide_TreeView);
                 }
@@ -2628,66 +2629,65 @@ namespace ME3Explorer
         //    }
         //}
 
-        
-    public bool IsSelected
-    {
-        get => isSelected;
-        set
+
+        public bool IsSelected
         {
-            // build a priority queue of dispatcher operations
-
-            // All operations relating to tree item expansion are added with priority = DispatcherPriority.ContextIdle, so that they are
-            // sorted before any operations relating to selection (which have priority = DispatcherPriority.ApplicationIdle).
-            // This ensures that the visual container for all items are created before any selection operation is carried out.
-            // First expand all ancestors of the selected item - those closest to the root first
-            // Expanding a node will scroll as many of its children as possible into view - see perTreeViewItemHelper, but these scrolling
-            // operations will be added to the queue after all of the parent expansions.
-            if (value)
+            get => isSelected;
+            set
             {
-                var ancestorsToExpand = new Stack<TreeViewEntry>();
+                // build a priority queue of dispatcher operations
 
-                var parent = Parent;
-                while (parent != null)
+                // All operations relating to tree item expansion are added with priority = DispatcherPriority.ContextIdle, so that they are
+                // sorted before any operations relating to selection (which have priority = DispatcherPriority.ApplicationIdle).
+                // This ensures that the visual container for all items are created before any selection operation is carried out.
+                // First expand all ancestors of the selected item - those closest to the root first
+                // Expanding a node will scroll as many of its children as possible into view - see perTreeViewItemHelper, but these scrolling
+                // operations will be added to the queue after all of the parent expansions.
+                if (value)
                 {
-                    if (!parent.IsExpanded)
-                        ancestorsToExpand.Push(parent);
+                    var ancestorsToExpand = new Stack<TreeViewEntry>();
 
-                    parent = parent.Parent;
+                    var parent = Parent;
+                    while (parent != null)
+                    {
+                        if (!parent.IsExpanded)
+                            ancestorsToExpand.Push(parent);
+
+                        parent = parent.Parent;
+                    }
+
+                    while (ancestorsToExpand.Any())
+                    {
+                        var parentToExpand = ancestorsToExpand.Pop();
+                        DispatcherHelper.AddToQueue(() => parentToExpand.IsExpanded = true, DispatcherPriority.ContextIdle);
+                    }
                 }
 
-                while (ancestorsToExpand.Any())
+                //cancel if we're currently selected.
+                Debug.WriteLine(DisplayName + " ISSELECTED: " + isSelected);
+
+                if (isSelected == value)
+                    return;
+
+                // Set the item's selected state - use DispatcherPriority.ApplicationIdle so this operation is executed after all
+                // expansion operations, no matter when they were added to the queue.
+                // Selecting a node will also scroll it into view - see perTreeViewItemHelper
+                DispatcherHelper.AddToQueue(() =>
                 {
-                    var parentToExpand = ancestorsToExpand.Pop();
-                    DispatcherHelper.AddToQueue(() => parentToExpand.IsExpanded = true, DispatcherPriority.ContextIdle);
-                }
+                    if (value != isSelected)
+                    {
+                        this.isSelected = value;
+                        OnPropertyChanged("IsSelected");
+                    }
+                }, DispatcherPriority.ApplicationIdle);
+
+                // note that by rule, a TreeView can only have one selected item, but this is handled automatically by 
+                // the control - we aren't required to manually unselect the previously selected item.
+
+                // execute all of the queued operations in descending DipatecherPriority order (expansion before selection)
+                var unused = DispatcherHelper.ProcessQueueAsync();
             }
-
-            //cancel if we're currently selected.
-            Debug.WriteLine(DisplayName + " ISSELECTED: " + isSelected);
-
-            if (isSelected == value)
-                return;
-
-            // Set the item's selected state - use DispatcherPriority.ApplicationIdle so this operation is executed after all
-            // expansion operations, no matter when they were added to the queue.
-            // Selecting a node will also scroll it into view - see perTreeViewItemHelper
-            DispatcherHelper.AddToQueue(() =>
-            {
-                if (value != isSelected)
-                {
-                    Debug.WriteLine("SELECTING...");
-                    isSelected = value;
-                    OnPropertyChanged("IsSelected");
-                }
-            }, DispatcherPriority.ApplicationIdle);
-
-            // note that by rule, a TreeView can only have one selected item, but this is handled automatically by 
-            // the control - we aren't required to manually unselect the previously selected item.
-
-            // execute all of the queued operations in descending DipatecherPriority order (expansion before selection)
-            var unused = DispatcherHelper.ProcessQueueAsync();
         }
-    }
 
         private bool isExpanded;
         public bool IsExpanded
