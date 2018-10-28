@@ -1630,6 +1630,8 @@
     <Resource Include="Resources\path_editor.ico" />
     <Resource Include="Resources\path_editor_64.png" />
     <Resource Include="Resources\me3tweaks_fork.png" />
+    <Resource Include="PackageEditor\EntryIcons\icon_swf.png" />
+    <Resource Include="PackageEditor\EntryIcons\icon_texture2d.png" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

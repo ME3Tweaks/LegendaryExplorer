@@ -33,6 +33,9 @@
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <Converters:PackageEditorWPFActiveViewHighlightConverter x:Key="PackageEditorWPFActiveViewHighlightConverter"/>
         <Converters:ObjectStructPropertyTypeConverter x:Key="ObjectStructPropertyTypeConverter"/>
+        <Converters:EntryFileTypeConverter x:Key="EntryFileTypeConverter"/>
+        <Converters:EntryFileTypeIconPathConverter x:Key="EntryFileTypeIconPathConverter"/>
+
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"/>
@@ -253,6 +256,7 @@
                         <HierarchicalDataTemplate DataType="{x:Type global:TreeViewEntry}" ItemsSource="{Binding Sublinks}">
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding Entry, Converter={StaticResource EntryFileTypeIconPathConverter}}" Visibility="{Binding Entry, Converter={StaticResource EntryFileTypeConverter}}" />
                                     <TextBlock Margin="{Binding Path=TreeViewMargin,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=global:PackageEditorWPF}}" Text="{Binding DisplayName}" Foreground="{Binding Path=ForegroundColor}">
                                         <TextBlock.Style>
                                             <Style TargetType="{x:Type TextBlock}">

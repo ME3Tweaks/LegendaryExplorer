@@ -37,6 +37,7 @@ namespace ME3Explorer
             Exports,
             Tree
         }
+        public static readonly string[] ExportFileTypes = { "GFxMovieInfo", "BioSWF"/*, "Texture2D"*/ };
 
         #region TouchComfyMode
         int _treeViewMargin = 2;
