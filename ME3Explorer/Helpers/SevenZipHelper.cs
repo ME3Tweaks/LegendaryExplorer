@@ -33,7 +33,7 @@ using System.Runtime.InteropServices;
 
 namespace SevenZipHelper
 {
-    public class LZMA
+    static public class LZMA
     {
         [DllImport("sevenzipwrapper.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int SevenZipDecompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
@@ -42,7 +42,7 @@ namespace SevenZipHelper
         private static extern int SevenZipCompress(int compressionLevel, [In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
 
-        public byte[] Decompress(byte[] src, uint dstLen)
+        static public byte[] Decompress(byte[] src, uint dstLen)
         {
             uint len = dstLen;
             byte[] dst = new byte[dstLen];
@@ -54,7 +54,7 @@ namespace SevenZipHelper
             return dst;
         }
 
-        public byte[] Compress(byte[] src, int compressionLevel = 9)
+        static public byte[] Compress(byte[] src, int compressionLevel = 9)
         {
             uint dstLen = (uint)(src.Length * 2 + 8);
             byte[] tmpbuf = new byte[dstLen];

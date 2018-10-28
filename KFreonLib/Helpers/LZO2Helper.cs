@@ -33,7 +33,7 @@ using System.Runtime.InteropServices;
 
 namespace LZO2Helper
 {
-    public class LZO2
+    static public class LZO2
     {
         [DllImport("lzo2wrapper.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int LZODecompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
@@ -41,7 +41,7 @@ namespace LZO2Helper
         [DllImport("lzo2wrapper.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int LZOCompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
 
-        public uint Decompress(byte[] src, uint srcLen, byte[] dst)
+        static public uint Decompress(byte[] src, uint srcLen, byte[] dst)
         {
             uint dstLen = (uint)dst.Length;
 
@@ -52,7 +52,7 @@ namespace LZO2Helper
             return dstLen;
         }
 
-        public byte[] Compress(byte[] src)
+        static public byte[] Compress(byte[] src)
         {
             byte[] tmpbuf = new byte[src.Length + src.Length / 16 + 64 + 3];
             uint dstLen = 0;

@@ -81,7 +81,7 @@ namespace KFreonLib.Helpers
             CompressedChunkBlock[] newChunks = new CompressedChunkBlock[noChunks];
             for (int i = 0; i < noChunks; i++)
             {
-                newChunks[i].rawData = new LZO2().Compress(chunks[i].rawData);
+                newChunks[i].rawData = LZO2.Compress(chunks[i].rawData);
                 if (newChunks[i].rawData.Length == 0)
                     throw new Exception("LZO compression failed!");
                 newChunks[i].cprSize = newChunks[i].rawData.Length;
@@ -176,7 +176,7 @@ namespace KFreonLib.Helpers
             {
                 CompressedChunkBlock chunk = chunks[i];
                 byte[] tempResult = new byte[chunk.uncSize];
-                if (new LZO2().Decompress(chunk.rawData, (uint)chunk.rawData.Length, tempResult) != chunk.uncSize)
+                if (LZO2.Decompress(chunk.rawData, (uint)chunk.rawData.Length, tempResult) != chunk.uncSize)
                 {
                     throw new Exception("LZO decompression failed!");
                 }
@@ -252,7 +252,7 @@ namespace KFreonLib.Helpers
                         datain[j] = c.Compressed[pos + j];
                     pos += b.compressedsize;
 
-                    if (new LZO2().Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                    if (LZO2.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
                         throw new Exception("LZO decompression failed!");
 
                     for (int j = 0; j < b.uncompressedsize; j++)
@@ -305,7 +305,7 @@ namespace KFreonLib.Helpers
                 }
 
                 Buffer.BlockCopy(chunk.Uncompressed, pos, temp, 0, temp.Length);
-                result = new LZO2().Compress(temp);
+                result = LZO2.Compress(temp);
                 if (result.Length == 0)
                     throw new Exception("LZO compression error!");
                 block.compressedsize = result.Length;
