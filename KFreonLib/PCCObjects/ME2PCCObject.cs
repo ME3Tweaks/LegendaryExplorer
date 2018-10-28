@@ -2,10 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Gibbed.IO;
-using AmaroK86.MassEffect3.ZlibBlock;
-using System.Diagnostics;
 using KFreonLib.Textures;
 using KFreonLib.Helpers;
 using BitConverter = KFreonLib.Misc.BitConverter;
@@ -15,6 +12,8 @@ namespace KFreonLib.PCCObjects
 {
     public class ME2PCCObject : IPCCObject
     {
+        const uint packageTag = 0x9E2A83C1;
+
         public struct NameEntry
         {
             public string name;
@@ -112,7 +111,7 @@ namespace KFreonLib.PCCObjects
             header = tempStream.ReadBytes(tempPos);
             tempStream.Seek(0, SeekOrigin.Begin);
 
-            if (magic != ZBlock.magic && magic.Swap() != ZBlock.magic)
+            if (magic != packageTag)
             {
                 DebugOutput.PrintLn("Magic number incorrect: " + magic);
                 throw new FormatException("This is not a pcc file. The magic number is incorrect.");

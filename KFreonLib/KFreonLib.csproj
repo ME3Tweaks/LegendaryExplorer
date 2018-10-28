@@ -85,6 +85,9 @@
     <Compile Include="GUI\VersionPickDialog.xaml.cs">
       <DependentUpon>VersionPickDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\LZO2Helper.cs" />
+    <Compile Include="Helpers\SaltLZOHelper.cs" />
+    <Compile Include="Helpers\ZlibHelper.cs" />
     <Compile Include="MEDirectories\MEExDirectories.cs" />
     <Compile Include="Misc\BitConverter.cs" />
     <Compile Include="Debugging\DebugOutput.cs" />
@@ -95,8 +98,6 @@
       <DependentUpon>DebugWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Scripting\ScriptCompiler.cs" />
-    <Compile Include="Helpers\MiniLZO.cs" />
-    <Compile Include="Helpers\SaltLZOHelper.cs" />
     <Compile Include="Helpers\UnrealFlags.cs" />
     <Compile Include="Misc\Ini.cs" />
     <Compile Include="Scripting\IScript.cs" />

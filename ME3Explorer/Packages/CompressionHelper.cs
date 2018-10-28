@@ -498,7 +498,7 @@ namespace ME3Explorer.Packages
 
                 byte[] inputBlock = new byte[currentUncBlockSize];
                 uncompressedPcc.Read(inputBlock, 0, currentUncBlockSize);
-                byte[] compressedBlock = ZBlock.Compress(inputBlock, 0, inputBlock.Length);
+                byte[] compressedBlock = ZBlock.Compress(inputBlock);
 
                 outputStream.WriteValueS32(compressedBlock.Length);
                 outOffsetBlockInfo = outputStream.Position;

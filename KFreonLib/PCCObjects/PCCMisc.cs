@@ -221,7 +221,7 @@ namespace KFreonLib.PCCObjects
                     input.Seek(compressedOffset, SeekOrigin.Begin);
                     input.Read(buff, 0, buff.Length);
 
-                    byte[] temp = ZBlock.Decompress(buff, 0, buff.Length);
+                    byte[] temp = ZBlock.Decompress(buff);
                     output.Seek(uncompressedOffset, SeekOrigin.Begin);
                     output.Write(temp, 0, temp.Length);
                 }
