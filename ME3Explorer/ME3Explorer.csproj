@@ -571,7 +571,6 @@
     </Compile>
     <Compile Include="ME1\Unreal\Bytecode.cs" />
     <Compile Include="ME1\Unreal\Function.cs" />
-    <Compile Include="Packages\MiniLZO.cs" />
     <Compile Include="Packages\ExportEntry.cs" />
     <Compile Include="Packages\IEntry.cs" />
     <Compile Include="Packages\IMEPackage.cs" />
