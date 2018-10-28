@@ -209,10 +209,6 @@ namespace ME3Explorer.Unreal
                     break;
                 }
             }
-
-            //Exception thrown when DLC is already unpacked it seems (or was interrupted)
-            if (filenamesIndex == -1)
-                throw new Exception("filenames entry not found");
         }
 
         public void ExtractEntry(DLCEntry entry, Stream input, Stream output)
