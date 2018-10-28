@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using Gibbed.IO;
-using System.Diagnostics;
 using KFreonLib.PCCObjects;
-using KFreonLib.Helpers.ManagedLZO;
-using System.Windows;
+using LZO2Helper;
 
 namespace KFreonLib.Helpers
 {
@@ -85,7 +81,7 @@ namespace KFreonLib.Helpers
             CompressedChunkBlock[] newChunks = new CompressedChunkBlock[noChunks];
             for (int i = 0; i < noChunks; i++)
             {
-                newChunks[i].rawData = LZO1X.Compress(chunks[i].rawData);
+                newChunks[i].rawData = LZO2.Compress(chunks[i].rawData);
                 if (newChunks[i].rawData.Length == 0)
                     throw new Exception("LZO compression failed!");
                 newChunks[i].cprSize = newChunks[i].rawData.Length;
@@ -180,11 +176,7 @@ namespace KFreonLib.Helpers
             {
                 CompressedChunkBlock chunk = chunks[i];
                 byte[] tempResult = new byte[chunk.uncSize];
-                try
-                {
-                    LZO1X.Decompress(chunk.rawData, tempResult);
-                }
-                catch
+                if (LZO2.Decompress(chunk.rawData, (uint)chunk.rawData.Length, tempResult) != chunk.uncSize)
                 {
                     throw new Exception("LZO decompression failed!");
                 }
@@ -260,20 +252,9 @@ namespace KFreonLib.Helpers
                         datain[j] = c.Compressed[pos + j];
                     pos += b.compressedsize;
 
-                    try
-                    {
-                        LZO1X.Decompress(datain, dataout);
-                    }
-                    catch (DllNotFoundException ex)
-                    {
-                        var mbResult = MessageBox.Show("Decompression failed! This may be the fault of a missing 2010 VC++ redistributable. Would you like to install this now?\n(make sure to restart ME3Explorer after installation.)",
-                            "", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
-                        if (mbResult == MessageBoxResult.Yes)
-                        {
-                            Process.Start("https://www.microsoft.com/en-us/download/details.aspx?id=5555");
-                        }
-                        throw new Exception("LZO decompression failed!", ex);
-                    }
+                    if (LZO2.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                        throw new Exception("LZO decompression failed!");
+
                     for (int j = 0; j < b.uncompressedsize; j++)
                         c.Uncompressed[outpos + j] = dataout[j];
                     outpos += b.uncompressedsize;
@@ -324,7 +305,7 @@ namespace KFreonLib.Helpers
                 }
 
                 Buffer.BlockCopy(chunk.Uncompressed, pos, temp, 0, temp.Length);
-                result = LZO1X.Compress(temp);
+                result = LZO2.Compress(temp);
                 if (result.Length == 0)
                     throw new Exception("LZO compression error!");
                 block.compressedsize = result.Length;

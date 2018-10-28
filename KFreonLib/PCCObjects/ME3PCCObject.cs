@@ -13,6 +13,8 @@ namespace KFreonLib.PCCObjects
 {
     public class ME3PCCObject : IPCCObject
     {
+        const uint packageTag = 0x9E2A83C1;
+
         List<IImportEntry> iimports;
         List<IExportEntry> iexports;
         public string pccFileName { get; set; }
@@ -190,8 +192,7 @@ namespace KFreonLib.PCCObjects
             Exports = new List<ME3ExportEntry>();
 
             header = tempStream.ReadBytes(headerSize);
-            if (magic != ZBlock.magic &&
-                    magic.Swap() != ZBlock.magic)
+            if (magic != packageTag)
                 throw new FormatException(filePath + " is not a pcc file");
 
             if (lowVers != 684 && highVers != 194)

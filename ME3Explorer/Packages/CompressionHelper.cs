@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ManagedLZO;
 using System.IO;
 using Gibbed.IO;
 using AmaroK86.MassEffect3.ZlibBlock;
 using System.Threading.Tasks;
-using System.Windows;
+using LZO2Helper;
 
 namespace ME3Explorer.Packages
 {
@@ -130,20 +129,9 @@ namespace ME3Explorer.Packages
                         datain[j] = c.Compressed[pos + j];
                     pos += b.compressedsize;
 
-                    try
-                    {
-                        LZO1X.Decompress(datain, dataout);
-                    }
-                    catch (DllNotFoundException ex)
-                    {
-                        var mbResult = MessageBox.Show("Decompression failed! This may be the fault of a missing 2010 VC++ redistributable. Would you like to install this now?\n(make sure to restart ME3Explorer after installation.)",
-                            "", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
-                        if (mbResult == MessageBoxResult.Yes)
-                        {
-                            System.Diagnostics.Process.Start("https://www.microsoft.com/en-us/download/details.aspx?id=5555");
-                        }
-                        throw new Exception("LZO decompression failed!", ex);
-                    }
+                    if (LZO2.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                        throw new Exception("LZO decompression failed!");
+
                     for (int j = 0; j < b.uncompressedsize; j++)
                         c.Uncompressed[outpos + j] = dataout[j];
                     outpos += b.uncompressedsize;
@@ -498,7 +486,7 @@ namespace ME3Explorer.Packages
 
                 byte[] inputBlock = new byte[currentUncBlockSize];
                 uncompressedPcc.Read(inputBlock, 0, currentUncBlockSize);
-                byte[] compressedBlock = ZBlock.Compress(inputBlock, 0, inputBlock.Length);
+                byte[] compressedBlock = ZBlock.Compress(inputBlock);
 
                 outputStream.WriteValueS32(compressedBlock.Length);
                 outOffsetBlockInfo = outputStream.Position;

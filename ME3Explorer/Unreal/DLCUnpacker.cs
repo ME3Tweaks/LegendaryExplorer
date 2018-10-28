@@ -187,7 +187,7 @@ namespace ME3Explorer.Unreal
                     stream.JumpTo(filesList[i].dataOffset);
                     int compressedBlockSize = blockSizes[filesList[i].compressedBlockSizesIndex];
                     byte[] inBuf = stream.ReadToBuffer(compressedBlockSize);
-                    byte[] outBuf = new SevenZipHelper.LZMA().Decompress(inBuf, (uint)filesList[i].uncomprSize);
+                    byte[] outBuf = SevenZipHelper.LZMA.Decompress(inBuf, (uint)filesList[i].uncomprSize);
                     if (outBuf.Length == 0)
                         throw new Exception();
                     StreamReader filenamesStream = new StreamReader(new MemoryStream(outBuf));
@@ -209,10 +209,6 @@ namespace ME3Explorer.Unreal
                     break;
                 }
             }
-
-            //Exception thrown when DLC is already unpacked it seems (or was interrupted)
-            if (filenamesIndex == -1)
-                throw new Exception("filenames entry not found");
         }
 
         public void ExtractEntry(DLCEntry entry, Stream input, Stream output)
@@ -252,7 +248,7 @@ namespace ME3Explorer.Unreal
                     }
                     else
                     {
-                        uncompressedBlockBuffers[(int)j] = new SevenZipHelper.LZMA().Decompress(compressedBlockBuffers[(int)j], (uint)uncompressedBlockSize);
+                        uncompressedBlockBuffers[(int)j] = SevenZipHelper.LZMA.Decompress(compressedBlockBuffers[(int)j], (uint)uncompressedBlockSize);
                         if (uncompressedBlockBuffers[(int)j].Length == 0)
                             throw new Exception();
                     }

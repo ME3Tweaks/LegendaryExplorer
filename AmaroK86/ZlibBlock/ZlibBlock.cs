@@ -1,11 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using Gibbed.IO;
 using System.Threading.Tasks;
+using ZlibHelper;
 
 namespace AmaroK86.MassEffect3.ZlibBlock
 {
@@ -18,8 +15,6 @@ namespace AmaroK86.MassEffect3.ZlibBlock
          * Name function: Compress
          * Purpose: compress a part of the byte array into a Zlib Block
          * Input: - buffer: byte array
-         *        - offset: starting offset inside the array
-         *        - count: num of bytes to compress starting from the offset
          * Output: compressed byte array block, the structure is:
          *         - magic word
          *         - max segment size
@@ -28,35 +23,35 @@ namespace AmaroK86.MassEffect3.ZlibBlock
          *         - segment list
          *         - compressed data list
          */
-        public static byte[] Compress(byte[] buffer, int offset, int count)
+        public static byte[] Compress(byte[] buffer)
         {
-            if(buffer == null)
+            if (buffer == null)
                 throw new ArgumentNullException();
-            if (count < 0)
-                throw new FormatException();
-            if (offset + count > buffer.Length)
-                throw new IndexOutOfRangeException();
 
             MemoryStream headBlock = new MemoryStream();
             MemoryStream dataBlock = new MemoryStream();
-            DeflaterOutputStream zipStream;
 
-            int numSeg = (int)Math.Ceiling(count / (double)maxSegmentSize);
+            int numSeg = (int)Math.Ceiling(buffer.Length / (double)maxSegmentSize);
 
             headBlock.WriteValueU32(magic);
             headBlock.WriteValueU32(maxSegmentSize);
             headBlock.WriteValueU32(0x0);            //total compressed size, still to calculate
-            headBlock.WriteValueS32(count);          //total uncompressed size
+            headBlock.WriteValueS32(buffer.Length);          //total uncompressed size
 
-            for (int i = count; i > 0; i -= (int)maxSegmentSize)
+            int offset = 0;
+            for (int i = buffer.Length; i > 0; i -= (int)maxSegmentSize)
             {
                 int copyBytes = Math.Min(i, (int)maxSegmentSize);
                 uint precCompSize = (uint)dataBlock.Length;
-                zipStream = new DeflaterOutputStream(dataBlock);
-                zipStream.Write(buffer, offset + (count - i), copyBytes);
-                zipStream.Flush();
-                zipStream.Finish();
-                headBlock.WriteValueU32((uint)dataBlock.Length - precCompSize); //compressed segment size
+                byte[] src = new byte[copyBytes];
+                Buffer.BlockCopy(buffer, offset, src, 0, copyBytes);
+                byte[] dst = Zlib.Compress(src);
+                if (dst.Length == 0)
+                    throw new Exception("Zlib compression failed!");
+
+                dataBlock.WriteBytes(dst);
+                offset += dst.Length;
+                headBlock.WriteValueU32((uint)dst.Length); //compressed segment size
                 headBlock.WriteValueS32(copyBytes); //uncompressed segment size
                 //Console.WriteLine("  Segment size: {0}, total read: {1}, compr size: {2}", maxSegmentSize, copyBytes, (uint)dataBlock.Length - precCompSize);
             }
@@ -71,27 +66,6 @@ namespace AmaroK86.MassEffect3.ZlibBlock
             dataBlock.Close();
 
             return finalBlock;
-        }
-
-        /*
-         * Name function: Compress
-         * Purpose: compress a part of the byte array into a Zlib Block
-         * Input: - buffer: byte array
-         *        - offset: starting offset inside the array
-         *        - count: num of bytes to compress starting from the offset
-         * Output: compressed byte array block, the structure is:
-         *         - magic word
-         *         - max segment size
-         *         - total compressed size
-         *         - total uncompressed size
-         *         - segment list
-         *         - compressed data list
-         */
-        public static byte[] Compress(byte[] buffer)
-        {
-            if (buffer == null)
-                throw new ArgumentNullException();
-            return Compress(buffer, 0, buffer.Length);
         }
 
         /*
@@ -115,7 +89,7 @@ namespace AmaroK86.MassEffect3.ZlibBlock
                 throw new ArgumentOutOfRangeException();
             byte[] buffer = new byte[count];
             inStream.Read(buffer, 0, count);
-            return Compress(buffer,0,count);
+            return Compress(buffer);
         }
 
         public static Task<byte[]> DecompressAsync(byte[] buffer)
@@ -124,22 +98,17 @@ namespace AmaroK86.MassEffect3.ZlibBlock
                 throw new ArgumentNullException();
             return Task.Run(() =>
             {
-                return Decompress(buffer, 0, buffer.Length);
+                return Decompress(buffer);
             });
         }
 
-        public static byte[] Decompress(byte[] buffer, int offset, int count)
+        public static byte[] Decompress(byte[] buffer)
         {
             if (buffer == null)
                 throw new ArgumentNullException();
-            if (count < 0)
-                throw new FormatException();
-            if (offset + count > buffer.Length)
-                throw new IndexOutOfRangeException();
 
-            using (MemoryStream buffStream = new MemoryStream(buffer, offset, count))
+            using (MemoryStream buffStream = new MemoryStream(buffer))
             {
-                InflaterInputStream zipStream;
                 uint magicStream = buffStream.ReadValueU32();
                 if (magicStream != magic && magicStream.Swap() != magic)
                 {
@@ -170,9 +139,13 @@ namespace AmaroK86.MassEffect3.ZlibBlock
 
                     buffStream.Seek(dataSegm, SeekOrigin.Begin);
                     //Console.WriteLine("compr size: {0}, uncompr size: {1}, data offset: 0x{2:X8}", comprSegm, uncomprSegm, dataSegm);
-                    zipStream = new InflaterInputStream(buffStream);
-                    zipStream.Read(outputBuffer, buffOff, uncomprSegm);
-                    zipStream.Flush();
+                    byte[] src = buffStream.ReadBytes(comprSegm);
+                    byte[] dst = new byte[uncomprSegm];
+                    if (Zlib.Decompress(src, (uint)src.Length, dst) != uncomprSegm)
+                        throw new Exception("Zlib decompression failed!");
+
+                    Buffer.BlockCopy(dst, 0, outputBuffer, buffOff, uncomprSegm);
+
                     buffOff += uncomprSegm;
                     dataSegm += comprSegm;
                 }
@@ -189,7 +162,7 @@ namespace AmaroK86.MassEffect3.ZlibBlock
                 return new byte[count];
             byte[] buffer = new byte[count];
             inStream.Read(buffer, 0, count);
-            return Decompress(buffer, 0, count);
+            return Decompress(buffer);
         }
     }
 }

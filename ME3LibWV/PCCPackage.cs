@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+using ZlibHelper;
 
 namespace ME3LibWV
 {
@@ -930,9 +928,10 @@ namespace ME3LibWV
             byte[] res = new byte[UnCompSize];
             try
             {
-                InflaterInputStream zipstream = new InflaterInputStream(s);
-                zipstream.Read(res, 0, (int)UnCompSize);
-                zipstream.Flush();         
+                s.Read(res, 0, (int)CompSize);
+                byte[] tmp = new byte[UnCompSize];
+                if (new Zlib().Decompress(res, (uint)CompSize, tmp) != UnCompSize)
+                    throw new Exception("Zlib decompression failed!");
             }
             catch (Exception ex)
             {

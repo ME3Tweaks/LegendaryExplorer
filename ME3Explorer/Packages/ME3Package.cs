@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Gibbed.IO;
-using AmaroK86.MassEffect3.ZlibBlock;
-using System.Diagnostics;
 using ME3Explorer.Unreal;
 using System.Windows;
 
@@ -13,6 +11,8 @@ namespace ME3Explorer.Packages
 {
     public sealed class ME3Package : MEPackage, IMEPackage
     {
+        const uint packageTag = 0x9E2A83C1;
+
         public MEGame Game { get { return MEGame.ME3; } }
 
         static int headerSize = 0x8E;
@@ -79,8 +79,7 @@ namespace ME3Explorer.Packages
             using (FileStream pccStream = File.OpenRead(FileName))
             {
                 header = pccStream.ReadBytes(headerSize);
-                if (magic != ZBlock.magic &&
-                    magic.Swap() != ZBlock.magic)
+                if (magic != packageTag)
                 {
                     throw new FormatException("Not an Unreal package!");
                 }

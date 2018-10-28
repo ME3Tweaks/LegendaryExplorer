@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using AmaroK86.MassEffect3.ZlibBlock;
 using Gibbed.IO;
 using KFreonLib.Debugging;
 
@@ -13,6 +10,8 @@ namespace ME3Explorer.Packages
 {
     public sealed class ME2Package : MEPackage, IMEPackage
     {
+        const uint packageTag = 0x9E2A83C1;
+
         public MEGame Game { get { return MEGame.ME2; } }
 
         public override int NameCount { get { return BitConverter.ToInt32(header, nameSize + 20); } protected set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 20, sizeof(int)); } }
@@ -67,7 +66,7 @@ namespace ME3Explorer.Packages
             header = tempStream.ReadBytes(tempPos);
             tempStream.Seek(0, SeekOrigin.Begin);
 
-            if (magic != ZBlock.magic && magic.Swap() != ZBlock.magic)
+            if (magic != packageTag)
             {
                 DebugOutput.PrintLn("Magic number incorrect: " + magic);
                 throw new FormatException("This is not a pcc file. The magic number is incorrect.");
