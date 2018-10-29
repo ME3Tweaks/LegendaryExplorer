@@ -51,6 +51,20 @@ namespace ME3Explorer
             }
         }
 
+        private int? _byteShiftUpDownValue;
+        public int? ByteShiftUpDownValue
+        {
+            get { return _byteShiftUpDownValue; }
+            set
+            {
+                if (_byteShiftUpDownValue != value)
+                {
+                    _byteShiftUpDownValue = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public enum InterpreterMode
         {
             Objects,
@@ -60,16 +74,16 @@ namespace ME3Explorer
         }
 
         private InterpreterMode interpreterMode = InterpreterMode.Objects;
+        private bool LoadingNewData;
 
         public BinaryInterpreterWPF()
         {
+            ByteShiftUpDownValue = 0;
             InitializeComponent();
             LoadCommands();
-            viewModeComboBox.ItemsSource = Enum.GetValues(typeof(InterpreterMode)).Cast<InterpreterMode>();
-            viewModeComboBox.SelectedItem = InterpreterMode.Objects;
+            GenericParsing_ComboBox.ItemsSource = Enum.GetValues(typeof(InterpreterMode)).Cast<InterpreterMode>();
+            GenericParsing_ComboBox.SelectedItem = InterpreterMode.Objects;
         }
-
-
 
         #region Commands
         public ICommand CopyOffsetCommand { get; set; }
@@ -102,6 +116,8 @@ namespace ME3Explorer
 
         public override void LoadExport(IExportEntry exportEntry)
         {
+            LoadingNewData = true;
+            ByteShift_UpDown.Value = 0;
             CurrentLoadedExport = exportEntry;
 
             OnDemand_Panel.Visibility = Visibility.Visible;
@@ -117,6 +133,7 @@ namespace ME3Explorer
                 OnDemand_Title_TextBlock.Text = "This export is larger than 20KB";
                 OnDemand_Subtext_TextBlock.Text = "Large exports are not automatically parsed to improve performance";
             }
+            LoadingNewData = false; //technically not true, since it's background thread. However, for the purposes of resetting controls, it is done loading.
         }
 
         #region static stuff
@@ -176,7 +193,7 @@ namespace ME3Explorer
             ParseBinary_Spinner.Visibility = Visibility.Visible;
             DynamicByteProvider db = new DynamicByteProvider(CurrentLoadedExport.Data);
             BinaryInterpreter_Hexbox.ByteProvider = db;
-            viewModeComboBox.Visibility = Visibility.Hidden;
+            GenericParsing_ComboBox.Visibility = Visibility.Collapsed;
             byte[] data = CurrentLoadedExport.Data;
             int binarystart = CurrentLoadedExport.propsEnd();
 
@@ -2480,9 +2497,10 @@ namespace ME3Explorer
 
         private List<object> StartGenericScan(byte[] data, int binarystart)
         {
+            binarystart = ByteShiftUpDownValue.Value + binarystart;
             var subnodes = new List<object>();
 
-            if (binarystart == data.Length)
+            if (binarystart >= data.Length)
             {
                 return subnodes;
             }
@@ -2775,7 +2793,7 @@ namespace ME3Explorer
 
         private void viewModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            interpreterMode = (InterpreterMode)viewModeComboBox.SelectedValue;
+            interpreterMode = (InterpreterMode)GenericParsing_ComboBox.SelectedValue;
             StartBinaryScan();
         }
 
@@ -2787,6 +2805,14 @@ namespace ME3Explorer
         private void FileOffsetStatusbar_RightMouseUp(object sender, MouseButtonEventArgs e)
         {
 
+        }
+
+        private void ByteShift_UpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (!LoadingNewData)
+            {
+                StartBinaryScan();
+            }
         }
     }
 

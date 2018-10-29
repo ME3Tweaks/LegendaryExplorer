@@ -19,7 +19,7 @@
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:metadataeditor="clr-namespace:ME3Explorer.MetadataEditor"
-        Title="Package Editor WPF" Height="650" Width="970"
+        Title="Package Editor WPF" Height="650" Width="1100"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         AllowDrop="True"
@@ -35,7 +35,7 @@
         <Converters:ObjectStructPropertyTypeConverter x:Key="ObjectStructPropertyTypeConverter"/>
         <Converters:EntryFileTypeConverter x:Key="EntryFileTypeConverter"/>
         <Converters:EntryFileTypeIconPathConverter x:Key="EntryFileTypeIconPathConverter"/>
-
+        <Converters:EmbeddedFileToolTipConverter x:Key="EmbeddedFileToolTipConverter"/>
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="OpenCommandBinding_Executed"/>
@@ -58,13 +58,12 @@
 
     </Window.InputBindings>
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
-
         <DockPanel>
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="File" Padding="4" >
-                    <MenuItem Header="_Open" Command="Open" InputGestureText="Ctrl+O"/>
-                    <MenuItem Header="_Save"  Command="Save" InputGestureText="Ctrl+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                    <MenuItem Header="Save as" Command="SaveAs" InputGestureText="Ctrl+Shift+S" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="_Open" Command="Open" InputGestureText="Ctrl+O" ToolTip="Open a package file"/>
+                    <MenuItem Header="_Save"  Command="Save" InputGestureText="Ctrl+S" ToolTip="Save package file in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="Save as" Command="SaveAs" InputGestureText="Ctrl+Shift+S" ToolTip="Save package file to another location" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                     <MenuItem Header="Open in...">
                         <MenuItem Header="Dialogue Editor" Tag="DialogueEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                             <MenuItem.Icon>
@@ -161,13 +160,14 @@
                     <ColumnDefinition Width="6*" />
                 </Grid.ColumnDefinitions>
                 <ToolBar ToolBarTray.IsLocked="True" Grid.Row="0" Grid.ColumnSpan="3">
-                    <Button Content="Names" Height="22" Margin="3" Click="NamesView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Names'}" />
-                    <Button Content="Imports" Height="22" Click="ImportsView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Imports'}"/>
-                    <Button Content="Exports" Height="22" Margin="3" Click="ExportsView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Exports'}"/>
-                    <Button Content="Tree View"  Height="22" Click="TreeView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Tree'}"/>
+                    <Button Content="Names" Height="22" Margin="3" ToolTip="View Name table" Click="NamesView_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Names'}" />
+                    <Button Content="Imports" Height="22" Click="ImportsView_Click" ToolTip="View Imports table" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Imports'}"/>
+                    <Button Content="Exports" Height="22" Margin="3" Click="ExportsView_Click" ToolTip="View Exports Table" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Exports'}"/>
+                    <Button Content="Tree View"  Height="22" Click="TreeView_Click" ToolTip="View imports and exports in package hierarchy" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Tree'}"/>
                     <Separator/>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0" Height="22">
-                        <ComboBox Name="ClassDropdown_Combobox" Width="140" ItemsPanel="{StaticResource VSP}" ItemsSource="{Binding ClassDropdownList}" IsTextSearchEnabled="True" KeyUp="ClassDropdown_Combobox_OnKeyUpHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type ComboBox}}" VerticalContentAlignment="Center"/>
+                        <xctk:WatermarkComboBox Watermark="Class Selector" Name="ClassDropdown_Combobox" Width="140" ItemsPanel="{StaticResource VSP}" ItemsSource="{Binding ClassDropdownList}" IsTextSearchEnabled="True" KeyUp="ClassDropdown_Combobox_OnKeyUpHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" VerticalContentAlignment="Center"/>
+                        <!--<ComboBox Name="ClassDropdown_Combobox" Width="140" ItemsPanel="{StaticResource VSP}" ItemsSource="{Binding ClassDropdownList}" IsTextSearchEnabled="True" KeyUp="ClassDropdown_Combobox_OnKeyUpHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type ComboBox}}" VerticalContentAlignment="Center"/>-->
                         <Button Content="Find object by class" Click="FindObjectByClass_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type Button}}" Padding="10,0"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0" Height="22">
@@ -177,12 +177,11 @@
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0" Height="22">
                         <TextBox Name="Goto_TextBox" Width="70" KeyUp="Goto_TextBox_KeyUp" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type TextBox}}"  VerticalContentAlignment="Center"/>
                         <Button Content="Goto #" Click="GotoButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type Button}}" Padding="7,0"/>
-                        <TextBlock Name="Goto_Preview_TextBox" VerticalAlignment="Center" Foreground="Gray" Margin="5,0,0,0"/>
                     </StackPanel>
-
+                    <!--This is outside so that it doesn't hide the whole box if it is too long to show -->
+                    <TextBlock Name="Goto_Preview_TextBox" VerticalAlignment="Center" Foreground="Gray" Margin="5,0,0,0"/>
                 </ToolBar>
-                <SharedUI:ListBoxScroll x:Name="LeftSide_ListView" Grid.Column="0" Grid.Row="1" IsTextSearchEnabled="True" SelectionChanged="LeftSide_SelectedItemChanged" ItemsSource="{Binding LeftSideList_ItemsSource}" VirtualizingStackPanel.IsVirtualizing="True"
-    VirtualizingStackPanel.VirtualizationMode="Recycling" AlternationCount="2">
+                <SharedUI:ListBoxScroll x:Name="LeftSide_ListView" Grid.Column="0" Grid.Row="1" IsTextSearchEnabled="True" SelectionChanged="LeftSide_SelectedItemChanged" ItemsSource="{Binding LeftSideList_ItemsSource}" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" AlternationCount="2">
                     <SharedUI:ListBoxScroll.Resources>
                         <DataTemplate DataType="{x:Type global:PackageEditorWPF+IndexedName}">
                             <StackPanel Orientation="Horizontal">
@@ -237,15 +236,17 @@
                             <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" CommandParameter="FromNameView"/>
                             <MenuItem Header="Edit name" ToolTip="Edits the string this name represents" Command="{Binding EditNameCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
-                            <MenuItem Header="Clone" Command="{Binding CloneCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                            <MenuItem Header="Clone Tree" Command="{Binding CloneTreeCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            <MenuItem Header="Clone" ToolTip="Clone only this entry" Command="{Binding CloneCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            <MenuItem Header="Clone Tree" ToolTip="Clone this entry and all children" Command="{Binding CloneTreeCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                             <MenuItem Header="Export..." Command="{Binding ExportImportDataVisibilityCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <MenuItem Header="Embedded file" Command="{Binding ExportEmbeddedFileCommand}" ToolTip="{Binding Converter={StaticResource EmbeddedFileToolTipConverter}, ConverterParameter='Export'}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                 <MenuItem Header="Complete export data" Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                 <MenuItem Header="Binary data only" Command="{Binding ExportBinaryDataCommand}" ToolTip="Export only binary data (bytes after properties) to a .bin file" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                             </MenuItem>
                             <MenuItem Header="Import..." Command="{Binding ExportImportDataVisibilityCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                                <MenuItem Header="Complete export data"  Command="{Binding ImportAllDataCommand}" ToolTip="Import a .bin file and replace the contents of this export" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                <MenuItem Header="Binary data only"  Command="{Binding ImportBinaryDataCommand}" ToolTip="Import a .bin file and replace only the binary section of this export" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                <MenuItem Header="Embedded file" Command="{Binding ExportEmbeddedFileCommand}" ToolTip="{Binding Converter={StaticResource EmbeddedFileToolTipConverter}, ConverterParameter='Export'}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                <MenuItem Header="Complete export data" Command="{Binding ImportAllDataCommand}" ToolTip="Import a .bin file and replace the contents of this export" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                <MenuItem Header="Binary data only" Command="{Binding ImportBinaryDataCommand}" ToolTip="Import a .bin file and replace only the binary section of this export" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                             </MenuItem>
                         </ContextMenu>
                     </ListBox.ContextMenu>
@@ -256,7 +257,7 @@
                         <HierarchicalDataTemplate DataType="{x:Type global:TreeViewEntry}" ItemsSource="{Binding Sublinks}">
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Source="{Binding Entry, Converter={StaticResource EntryFileTypeIconPathConverter}}" Visibility="{Binding Entry, Converter={StaticResource EntryFileTypeConverter}}" />
+                                    <Image Width="16" Height="16" Source="{Binding Entry, Converter={StaticResource EntryFileTypeIconPathConverter}}" Visibility="{Binding Entry, Converter={StaticResource EntryFileTypeConverter}}" />
                                     <TextBlock Margin="{Binding Path=TreeViewMargin,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=global:PackageEditorWPF}}" Text="{Binding DisplayName}" Foreground="{Binding Path=ForegroundColor}">
                                         <TextBlock.Style>
                                             <Style TargetType="{x:Type TextBlock}">
@@ -298,10 +299,12 @@
                             <MenuItem Header="Clone" Command="{Binding CloneCommand}"/>
                             <MenuItem Header="Clone Tree" Command="{Binding CloneTreeCommand}"/>
                             <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                                <MenuItem Header="Embedded file" Command="{Binding ExportEmbeddedFileCommand}" ToolTip="{Binding Converter={StaticResource EmbeddedFileToolTipConverter}, ConverterParameter='Export'}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                 <MenuItem Header="Complete export data"  Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file"/>
                                 <MenuItem Header="Binary data only"   Command="{Binding ExportBinaryDataCommand}" ToolTip="Export only binary data (bytes after properties) to a .bin file"/>
                             </MenuItem>
                             <MenuItem Header="Import..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                                <MenuItem Header="Embedded file" Command="{Binding ImportEmbeddedFileCommand}" ToolTip="{Binding Converter={StaticResource EmbeddedFileToolTipConverter}, ConverterParameter='Import'}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                 <MenuItem Header="Complete export data"  Command="{Binding ImportAllDataCommand}" ToolTip="Import a .bin file and replace the contents of this export"/>
                                 <MenuItem Header="Binary data only"  Command="{Binding ImportBinaryDataCommand}" ToolTip="Import a .bin file and replace only the binary section of this export"/>
                             </MenuItem>
@@ -364,25 +367,25 @@
                         </StackPanel>
                     </TabItem>
                     <!--<TabItem Name="Properties_Tab" Header="Properties"/>-->
-                    <TabItem Name="Interpreter_Tab" Header="Interpreter" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <TabItem Name="Interpreter_Tab" Header="Interpreter" ToolTip="Edit UnrealScript properties on exports" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <global:InterpreterWPF x:Name="InterpreterTab_Interpreter"/>
                     </TabItem>
-                    <TabItem Name="Metadata_Tab" Header="Metadata" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <TabItem Name="Metadata_Tab" Header="Metadata" ToolTip="Edit entry metadata such as class, object name, etc" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <metadataeditor:MetadataEditorWPF x:Name="MetadataTab_MetadataEditor"/>
                     </TabItem>
-                    <TabItem Name="Bio2DAViewer_Tab" Header="Bio2DA Editor" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <TabItem Name="Bio2DAViewer_Tab" Header="Bio2DA Editor" ToolTip="View (someday, edit) Bio2DA tables" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <global:Bio2DAEditorWPF x:Name="Bio2DATab_Bio2DAEditor"/>
                     </TabItem>
-                    <TabItem Name="BinaryInterpreter_Tab" Header="Binary Interpreter" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <TabItem Name="BinaryInterpreter_Tab" Header="Binary Interpreter" ToolTip="View and edit binary data for supported classes" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <global:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter"/>
                     </TabItem>
-                    <TabItem Name="Script_Tab" Header="Script" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <TabItem Name="Script_Tab" Header="Script" ToolTip="View and edit UnrealScript functions" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <global:UnrealScriptWPF x:Name="ScriptTab_UnrealScriptEditor"/>
                     </TabItem>
-                    <TabItem Name="CurveEditor_Tab" Header="Curve Editor" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <TabItem Name="CurveEditor_Tab" Header="Curve Editor" ToolTip="Edit curves" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <CurveEd:CurveEditor x:Name="CurveTab_CurveEditor"/>
                     </TabItem>
-                    <TabItem Name="Sound_Tab" Header="Sound" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <TabItem Name="Sound_Tab" Header="Sound" ToolTip="Edit and play audio" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <global:Soundpanel x:Name="SoundTab_Soundpanel"/>
                     </TabItem>
                 </TabControl>

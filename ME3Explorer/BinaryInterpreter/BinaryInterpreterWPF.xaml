@@ -35,9 +35,11 @@
                 <Button Name="SaveHexChange_Button" Content="Save Hex Changes" Click="BinaryInterpreter_SaveHexChanges_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
                 <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
                 <Button Content="Toggle Hexbox Width" Click="BinaryInterpreter_ToggleHexboxWidth_Click"/>
-                <ComboBox Name="viewModeComboBox" Height="22" Margin="0" VerticalAlignment="Top" Width="120" SelectionChanged="viewModeComboBox_SelectionChanged"/>
-                <TextBlock Name="ByteShifting_Textblock" Text="Byte shift:"/>
-                <xctk:ByteUpDown Name="ByteShift_UpDown" Width="40"/>
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                <TextBlock Name="GenericParsing_TextBlock" Text="Generic parsing type:" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                <ComboBox Name="GenericParsing_ComboBox" Height="22" VerticalAlignment="Top" Width="120" SelectionChanged="viewModeComboBox_SelectionChanged" Style="{StaticResource {x:Type ComboBox}}" Margin="5,0,0,0"/>
+                <TextBlock Name="ByteShift_Textblock" Text="Byte shift:" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                <xctk:ByteUpDown Name="ByteShift_UpDown" Width="40" VerticalAlignment="Stretch" Margin="5,0,0,0" Value="{Binding ByteShiftUpDownValue}" Minimum="0" Maximum="7" ValueChanged="ByteShift_UpDown_ValueChanged"/>
                 <!--<Button Content="Add Property" Click="Interpreter_AddProperty_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>-->
             </ToolBar>
             <StatusBar Height="23" DockPanel.Dock="Bottom" Name="BinaryInterpreter_StatusBar">

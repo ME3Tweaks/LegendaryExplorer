@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime;
@@ -37,7 +38,7 @@ namespace ME3Explorer
             Exports,
             Tree
         }
-        public static readonly string[] ExportFileTypes = { "GFxMovieInfo", "BioSWF"/*, "Texture2D"*/ };
+        public static readonly string[] ExportFileTypes = { "GFxMovieInfo", "BioSWF", "Texture2D", "WwiseStream" };
 
         #region TouchComfyMode
         int _treeViewMargin = 2;
@@ -143,6 +144,8 @@ namespace ME3Explorer
         public ICommand ExportImportDataVisibilityCommand { get; set; }
         public ICommand AddNameCommand { get; set; }
         public ICommand RebuildStreamingLevelsCommand { get; set; }
+        public ICommand ExportEmbeddedFileCommand { get; set; }
+        public ICommand ImportEmbeddedFileCommand { get; set; }
         private void LoadCommands()
         {
             ComparePackagesCommand = new RelayCommand(ComparePackages, PackageIsLoaded);
@@ -158,6 +161,154 @@ namespace ME3Explorer
             AddNameCommand = new RelayCommand(AddName, CanAddName);
             ExportImportDataVisibilityCommand = new RelayCommand((o) => { }, ExportIsSelected); //no execution command
             RebuildStreamingLevelsCommand = new RelayCommand(RebuildStreamingLevels, PackageIsLoaded);
+            ExportEmbeddedFileCommand = new RelayCommand(ExportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
+            ImportEmbeddedFileCommand = new RelayCommand(ImportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
+        }
+
+        private bool DoesSelectedItemHaveEmbeddedFile(object obj)
+        {
+            IExportEntry exp = null;
+            if (CurrentView == CurrentViewMode.Exports && LeftSide_ListView.SelectedItem is IExportEntry)
+            {
+                exp = LeftSide_ListView.SelectedItem as IExportEntry;
+            }
+            if (CurrentView == CurrentViewMode.Tree && LeftSide_TreeView.SelectedItem is TreeViewEntry tvi && tvi.Entry is IExportEntry)
+            {
+                exp = (LeftSide_TreeView.SelectedItem as TreeViewEntry).Entry as IExportEntry;
+            }
+
+            if (exp != null)
+            {
+                switch (exp.ClassName)
+                {
+                    case "BioSWF":
+                    case "GFxMovieInfo":
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        private void ExportEmbeddedFile(object obj)
+        {
+            IExportEntry exp = null;
+            if (CurrentView == CurrentViewMode.Exports && LeftSide_ListView.SelectedItem is IExportEntry)
+            {
+                exp = LeftSide_ListView.SelectedItem as IExportEntry;
+            }
+            if (CurrentView == CurrentViewMode.Tree && LeftSide_TreeView.SelectedItem is TreeViewEntry tvi && tvi.Entry is IExportEntry)
+            {
+                exp = (LeftSide_TreeView.SelectedItem as TreeViewEntry).Entry as IExportEntry;
+            }
+
+            if (exp != null)
+            {
+                switch (exp.ClassName)
+                {
+                    case "BioSWF":
+                    case "GFxMovieInfo":
+                        try
+                        {
+                            var props = exp.GetProperties();
+                            string dataPropName = exp.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
+                            ArrayProperty<ByteProperty> rawData = props.GetProp<ArrayProperty<ByteProperty>>(dataPropName);
+                            byte[] data = new byte[rawData.Count];
+                            for (int i = 0; i < rawData.Count; i++)
+                            {
+                                data[i] = rawData[i].Value;
+                            }
+                            SaveFileDialog d = new SaveFileDialog();
+                            d.Title = "Save SWF";
+                            d.FileName = exp.GetFullPath + ".swf";
+                            string extension = Path.GetExtension(".swf");
+                            d.Filter = $"*{extension}|*{extension}";
+                            var result = d.ShowDialog();
+                            if (result.HasValue && result.Value)
+                            {
+                                File.WriteAllBytes(d.FileName, data);
+                                MessageBox.Show("Done");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Error reading/saving SWF data:\n\n" + ExceptionHandlerDialogWPF.FlattenException(ex));
+                        }
+                        break;
+                }
+            }
+        }
+
+        private void ImportEmbeddedFile(object obj)
+        {
+
+            IExportEntry exp = null;
+            if (CurrentView == CurrentViewMode.Exports && LeftSide_ListView.SelectedItem is IExportEntry)
+            {
+                exp = LeftSide_ListView.SelectedItem as IExportEntry;
+            }
+            if (CurrentView == CurrentViewMode.Tree && LeftSide_TreeView.SelectedItem is TreeViewEntry tvi && tvi.Entry is IExportEntry)
+            {
+                exp = (LeftSide_TreeView.SelectedItem as TreeViewEntry).Entry as IExportEntry;
+            }
+
+            if (exp != null)
+            {
+                switch (exp.ClassName)
+                {
+                    case "BioSWF":
+                    case "GFxMovieInfo":
+                        try
+                        {
+                            OpenFileDialog d = new OpenFileDialog();
+                            d.Title = "Replace SWF";
+                            d.FileName = exp.GetFullPath + ".swf";
+                            string extension = Path.GetExtension(".swf");
+                            d.Filter = $"*{extension}|*{extension}";
+                            var result = d.ShowDialog();
+                            if (result.HasValue && result.Value)
+                            {
+                                var bytes = File.ReadAllBytes(d.FileName);
+                                var props = exp.GetProperties();
+
+                                string dataPropName = exp.FileRef.Game != MEGame.ME1 ? "RawData" : "Data";
+                                ArrayProperty<ByteProperty> rawData = props.GetProp<ArrayProperty<ByteProperty>>(dataPropName);
+                                rawData.Clear();
+
+                                //Write SWF data
+                                for (int i = 0; i < bytes.Count(); i++)
+                                {
+                                    rawData.Add(new ByteProperty(bytes[i])); //wonder if there is a faster way to do this - it seems kind of slow.
+                                }
+
+                                //Write SWF metadata
+                                if (exp.FileRef.Game == MEGame.ME1 || exp.FileRef.Game == MEGame.ME2)
+                                {
+                                    string sourceFilePropName = exp.FileRef.Game != MEGame.ME1 ? "SourceFile" : "SourceFilePath";
+                                    StrProperty sourceFilePath = props.GetProp<StrProperty>(sourceFilePropName);
+                                    if (sourceFilePath == null)
+                                    {
+                                        sourceFilePath = new StrProperty(d.FileName, sourceFilePropName);
+                                        props.Add(sourceFilePath);
+                                    }
+                                    sourceFilePath.Value = d.FileName;
+                                }
+
+                                if (exp.FileRef.Game == MEGame.ME1)
+                                {
+                                    StrProperty sourceFileTimestamp = props.GetProp<StrProperty>("SourceFileTimestamp");
+                                    sourceFileTimestamp = File.GetLastWriteTime(d.FileName).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                                }
+                                exp.WriteProperties(props);
+                                MessageBox.Show("Done");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Error reading/setting SWF data:\n\n" + ExceptionHandlerDialogWPF.FlattenException(ex));
+                        }
+                        break;
+                }
+            }
         }
 
         private void RebuildStreamingLevels(object obj)
@@ -409,24 +560,24 @@ namespace ME3Explorer
             if (GetSelected(out int n))
             {
                 int nextIndex; //used to select the final node
-                /*crossPCCObjectMap = new SortedDictionary<int, int>();
-                TreeViewEntry rootNode = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
-                if (n >= 0)
-                {
-                    nextIndex = Pcc.ExportCount;
-                    IExportEntry exp = Pcc.getExport(n).Clone();
-                    Pcc.addExport(exp);
-                    crossPCCObjectMap[n] = Pcc.ExportCount - 1; //0 based.
-                    n = ;
-                }
-                else
-                {
-                    nextIndex = -Pcc.ImportCount - 1;
-                    ImportEntry imp = Pcc.getImport(-n - 1).Clone();
-                    Pcc.addImport(imp);
-                    n = nextIndex;
-                    //We do not relink imports in same-pcc.
-                }*/
+                               /*crossPCCObjectMap = new SortedDictionary<int, int>();
+                               TreeViewEntry rootNode = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+                               if (n >= 0)
+                               {
+                                   nextIndex = Pcc.ExportCount;
+                                   IExportEntry exp = Pcc.getExport(n).Clone();
+                                   Pcc.addExport(exp);
+                                   crossPCCObjectMap[n] = Pcc.ExportCount - 1; //0 based.
+                                   n = ;
+                               }
+                               else
+                               {
+                                   nextIndex = -Pcc.ImportCount - 1;
+                                   ImportEntry imp = Pcc.getImport(-n - 1).Clone();
+                                   Pcc.addImport(imp);
+                                   n = nextIndex;
+                                   //We do not relink imports in same-pcc.
+                               }*/
 
                 crossPCCObjectMap = new SortedDictionary<int, int>();
                 TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;

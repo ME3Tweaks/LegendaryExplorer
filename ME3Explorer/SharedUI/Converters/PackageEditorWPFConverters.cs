@@ -98,6 +98,8 @@ namespace ME3Explorer.SharedUI.Converters
                         return "/PackageEditor/EntryIcons/icon_swf.png";
                     case "Texture2D":
                         return "/PackageEditor/EntryIcons/icon_texture2d.png";
+                    case "WwiseStream":
+                        return "/PackageEditor/EntryIcons/icon_sound.png";
                 }
             }
 
@@ -115,11 +117,11 @@ namespace ME3Explorer.SharedUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is IExportEntry exp && PackageEditorWPF.ExportFileTypes.Contains( exp.ClassName))
+            if (value is IExportEntry exp && PackageEditorWPF.ExportFileTypes.Contains(exp.ClassName))
             {
                 return Visibility.Visible;
             }
-            
+
             return Visibility.Collapsed;
         }
 
@@ -128,4 +130,29 @@ namespace ME3Explorer.SharedUI.Converters
             return null;
         }
     }
+
+    [ValueConversion(typeof(IEntry), typeof(string))]
+    public class EmbeddedFileToolTipConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is IExportEntry exp)
+            {
+                switch (exp.ClassName)
+                {
+                    case "BioSWF":
+                    case "GFxMovieInfo":
+                        return $"{(parameter as string)} shockwave flash file";
+                }
+            }
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {    // Don't need any convert back
+            return null;
+        }
+    }
+
+
 }
