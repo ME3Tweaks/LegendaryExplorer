@@ -1024,7 +1024,8 @@ namespace ME3Explorer
                                 indexedList.Add(new IndexedName(i, nr));
                             }
                             Value_ComboBox.ItemsSource = indexedList;
-                        } else
+                        }
+                        else
                         {
                             Value_ComboBox.ItemsSource = ParentNameList;
                         }
@@ -1664,7 +1665,7 @@ namespace ME3Explorer
             {
                 if (Property is StructProperty colorStruct)
                 {
-                    if (colorStruct.StructType == "Color" || colorStruct.StructType == "LinearColor")
+                    if (colorStruct.StructType == "Color")
                     {
                         if (_colorStructCode != null) return _colorStructCode;
 
@@ -1676,6 +1677,25 @@ namespace ME3Explorer
                         _colorStructCode = $"#{a:X2}{r:X2}{g:X2}{b:X2}";
                         return _colorStructCode;
                     }
+                    //if (colorStruct.StructType == "LinearColor")
+                    //{
+                    //    if (_colorStructCode != null) return _colorStructCode;
+
+                    //    var a = colorStruct.GetProp<FloatProperty>("A").Value;
+                    //    var r = colorStruct.GetProp<FloatProperty>("R").Value;
+                    //    var g = colorStruct.GetProp<FloatProperty>("G").Value;
+                    //    var b = colorStruct.GetProp<FloatProperty>("B").Value;
+
+                    //    if (a >= 0 && a <= 1 && r >= 0 && r <= 1 && g >= 0 && g <= 1 && b >= 0 && b <= 1)
+                    //    {
+                    //        var byteA = (byte)(255 * a);
+                    //        var byteR = (byte)(255 * r);
+                    //        var byteG = (byte)(255 * g);
+                    //        var byteB = (byte)(255 * b);
+                    //        _colorStructCode = $"#{byteA:X2}{byteR:X2}{byteG:X2}{byteB:X2}";
+                    //        return _colorStructCode;
+                    //    }
+                    //}
                 }
                 return null;
             }
@@ -1684,18 +1704,37 @@ namespace ME3Explorer
                 if (_colorStructCode != value)
                 {
                     var colorStruct = Property as StructProperty;
-                    var a = colorStruct.GetProp<ByteProperty>("A");
-                    var r = colorStruct.GetProp<ByteProperty>("R");
-                    var g = colorStruct.GetProp<ByteProperty>("G");
-                    var b = colorStruct.GetProp<ByteProperty>("B");
-                    var newColor = (Color)ColorConverter.ConvertFromString(value);
-                    a.Value = newColor.A;
-                    r.Value = newColor.R;
-                    g.Value = newColor.G;
-                    b.Value = newColor.B;
+                    if (colorStruct.StructType == "Color")
+                    {
+                        var a = colorStruct.GetProp<ByteProperty>("A");
+                        var r = colorStruct.GetProp<ByteProperty>("R");
+                        var g = colorStruct.GetProp<ByteProperty>("G");
+                        var b = colorStruct.GetProp<ByteProperty>("B");
+                        var newColor = (Color)ColorConverter.ConvertFromString(value);
+                        a.Value = newColor.A;
+                        r.Value = newColor.R;
+                        g.Value = newColor.G;
+                        b.Value = newColor.B;
 
-                    _colorStructCode = value;
-                    OnPropertyChanged("ColorStructCode");
+                        _colorStructCode = value;
+                        OnPropertyChanged("ColorStructCode");
+                    }
+                    //if (colorStruct.StructType == "LinearColor")
+                    //{
+                    //    var a = colorStruct.GetProp<FloatProperty>("A");
+                    //    var r = colorStruct.GetProp<FloatProperty>("R");
+                    //    var g = colorStruct.GetProp<FloatProperty>("G");
+                    //    var b = colorStruct.GetProp<FloatProperty>("B");
+                    //    var newColor = (Color)ColorConverter.ConvertFromString(value);
+                    //    //update values
+                    //    a.Value = newColor.A / 255.0f;
+                    //    r.Value = newColor.R / 255.0f;
+                    //    g.Value = newColor.G / 255.0f;
+                    //    b.Value = newColor.B / 255.0f;
+
+                    //    _colorStructCode = value;
+                    //    OnPropertyChanged("ColorStructCode");
+                    //}
                 }
             }
         }

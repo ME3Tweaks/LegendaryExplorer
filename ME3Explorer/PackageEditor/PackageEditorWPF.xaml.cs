@@ -161,6 +161,7 @@ namespace ME3Explorer
         public ICommand RebuildStreamingLevelsCommand { get; set; }
         public ICommand ExportEmbeddedFileCommand { get; set; }
         public ICommand ImportEmbeddedFileCommand { get; set; }
+
         private void LoadCommands()
         {
             ComparePackagesCommand = new RelayCommand(ComparePackages, PackageIsLoaded);
@@ -1698,7 +1699,7 @@ namespace ME3Explorer
                 if (selectNode.Count() > 0)
                 {
                     //selectNode[0].ExpandParents();
-                    selectNode[0].ExpandParents();
+                    selectNode[0].IsProgramaticallySelecting = true;
                     selectNode[0].IsSelected = true;
                     //FocusTreeViewNodeOld(selectNode[0]);
 
@@ -2235,6 +2236,7 @@ namespace ME3Explorer
 
                     if (node.Entry.ClassName.Equals(searchClass))
                     {
+                        node.IsProgramaticallySelecting = true;
                         node.IsSelected = true;
                         break;
                     }
@@ -2376,6 +2378,7 @@ namespace ME3Explorer
                     }
                     if (node.Entry.ObjectName.ToLower().Contains(searchTerm))
                     {
+                        node.IsProgramaticallySelecting = true;
                         node.IsSelected = true;
                         break;
                     }
@@ -2770,12 +2773,19 @@ namespace ME3Explorer
         //    }
         //}
 
-
+        public bool IsProgramaticallySelecting;
         public bool IsSelected
         {
             get => isSelected;
             set
             {
+                if (!IsProgramaticallySelecting && isSelected != value)
+                {
+                    //user is selecting
+                    isSelected = value;
+                    OnPropertyChanged();
+                    return;
+                }
                 // build a priority queue of dispatcher operations
 
                 // All operations relating to tree item expansion are added with priority = DispatcherPriority.ContextIdle, so that they are
@@ -2817,6 +2827,7 @@ namespace ME3Explorer
                     {
                         this.isSelected = value;
                         OnPropertyChanged("IsSelected");
+                        IsProgramaticallySelecting = false;
                     }
                 }, DispatcherPriority.ApplicationIdle);
 
