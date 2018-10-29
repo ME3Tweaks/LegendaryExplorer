@@ -65,6 +65,20 @@ namespace ME3Explorer
             }
         }
 
+        private Visibility _genericEditorSetVisibility;
+        public Visibility GenericEditorSetVisibility
+        {
+            get { return _genericEditorSetVisibility; }
+            set
+            {
+                if (_genericEditorSetVisibility != value)
+                {
+                    _genericEditorSetVisibility = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private List<FrameworkElement> EditorSetElements = new List<FrameworkElement>();
         public enum InterpreterMode
         {
             Objects,
@@ -81,6 +95,18 @@ namespace ME3Explorer
             ByteShiftUpDownValue = 0;
             InitializeComponent();
             LoadCommands();
+            EditorSetElements.Add(Value_TextBox); //str, strref, int, float, obj
+            EditorSetElements.Add(Value_ComboBox); //bool, name
+            EditorSetElements.Add(NameIndexPrefix_TextBlock); //nameindex
+            EditorSetElements.Add(NameIndex_TextBox); //nameindex
+            EditorSetElements.Add(ParsedValue_TextBlock);
+            EditorSetElements.Add(AddArrayElement_Button);
+            EditorSetElements.Add(RemoveArrayElement_Button);
+
+            //EditorSetElements.Add(EditorSet_ArraySetSeparator);
+            Set_Button.Visibility = Visibility.Collapsed;
+            EditorSet_Separator.Visibility = Visibility.Collapsed;
+            GenericEditorSetVisibility = Visibility.Collapsed;
             GenericParsing_ComboBox.ItemsSource = Enum.GetValues(typeof(InterpreterMode)).Cast<InterpreterMode>();
             GenericParsing_ComboBox.SelectedItem = InterpreterMode.Objects;
         }
@@ -193,7 +219,6 @@ namespace ME3Explorer
             ParseBinary_Spinner.Visibility = Visibility.Visible;
             DynamicByteProvider db = new DynamicByteProvider(CurrentLoadedExport.Data);
             BinaryInterpreter_Hexbox.ByteProvider = db;
-            GenericParsing_ComboBox.Visibility = Visibility.Collapsed;
             byte[] data = CurrentLoadedExport.Data;
             int binarystart = CurrentLoadedExport.propsEnd();
 
@@ -230,6 +255,7 @@ namespace ME3Explorer
             Tuple<BinaryInterpreterWPFTreeViewItem, byte[], int> arguments = (Tuple<BinaryInterpreterWPFTreeViewItem, byte[], int>)e.Argument;
             byte[] data = arguments.Item2;
             int binarystart = arguments.Item3;
+            bool isGenericScan = false;
             switch (CurrentLoadedExport.ClassName)
             {
                 case "IntProperty":
@@ -309,10 +335,11 @@ namespace ME3Explorer
                     subNodes = StartSoundNodeWaveScan(data, binarystart);
                     break;
                 default:
+                    isGenericScan = true;
                     subNodes = StartGenericScan(data, binarystart);
                     break;
             }
-
+            GenericEditorSetVisibility = isGenericScan ? Visibility.Visible : Visibility.Collapsed;
             arguments.Item1.Items = subNodes;
             e.Result = arguments.Item1; //return topLevelTree
         }
@@ -2066,6 +2093,7 @@ namespace ME3Explorer
                             Header = start.ToString("X4")
                         };
 
+                        //TODO: Figure out what the rest of these mean
                         string label = i.ToString();
                         switch (i)
                         {
@@ -2088,8 +2116,7 @@ namespace ME3Explorer
 
                         node.Header += $" {label} {smcadata}";
 
-                        //Lookup staticmeshcomponent so we can see what this actually is without flipping
-                        // export
+                        //TODO: Lookup staticmeshcomponent so we can see what this actually is without changing to the export
 
                         node.Name = "_" + start;
                         smcanode.Items.Add(node);
@@ -2103,7 +2130,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the staticmeshcollectionactor: {ex.Message}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the StaticMeshCollectionActor: {ex.Message}" });
             }
             return subnodes;
 
@@ -2218,11 +2245,9 @@ namespace ME3Explorer
                     textureData.Seek(4, SeekOrigin.Current); // position in the package
                 }
 
-                //mipMapsList = new List<MipMap>();
                 int numMipMaps = ReadInt32(textureData);
                 for (int l = 0; l < numMipMaps; l++)
                 {
-                    //MipMap mipmap = new MipMap();
                     var mipMapNode = new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{textureData.Position} MipMap #{l}",
@@ -2263,21 +2288,13 @@ namespace ME3Explorer
 
                     });
 
-                    //mipmap.storageType = (StorageTypes)
-                    //mipmap.uncompressedSize = textureData.ReadInt32();
-                    //mipmap.compressedSize = textureData.ReadInt32();
-                    //mipmap.dataOffset = textureData.ReadUInt32();
-
-
                     switch (storageType)
                     {
                         case StorageTypes.pccUnc:
-                            //mipmap.internalOffset = (uint)textureData.Position;
                             textureData.Seek(uncompressedSize, SeekOrigin.Current);
                             break;
                         case StorageTypes.pccLZO:
                         case StorageTypes.pccZlib:
-                            //mipmap.internalOffset = (uint)textureData.Position;
                             textureData.Seek(compressedSize, SeekOrigin.Current);
                             break;
                     }
@@ -2286,60 +2303,18 @@ namespace ME3Explorer
                     mipMapNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{textureData.Position - 4} Mip Width: {mipWidth}",
-                        Name = "_" + (textureData.Position - 4)
-
+                        Name = "_" + (textureData.Position - 4),
+                        Tag = NodeType.StructLeafInt
                     });
 
                     var mipHeight = ReadInt32(textureData);
                     mipMapNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{textureData.Position - 4} Mip Height: {mipHeight}",
-                        Name = "_" + (textureData.Position - 4)
-
+                        Name = "_" + (textureData.Position - 4),
+                        Tag = NodeType.StructLeafInt
                     });
-
-                    //if (fixDim)
-                    //{
-                    //    if (mipmap.width == 4 && mipMapsList.Exists(mip => mip.width == mipmap.width))
-                    //        mipmap.width = mipMapsList.Last().width / 2;
-                    //    if (mipmap.height == 4 && mipMapsList.Exists(mip => mip.height == mipmap.height))
-                    //        mipmap.height = mipMapsList.Last().height / 2;
-
-                    //    if (mipmap.width == 0)
-                    //        mipmap.width = 1;
-                    //    if (mipmap.height == 0)
-                    //        mipmap.height = 1;
-                    //}
-
-                    //mipMapsList.Add(mipmap);
                 }
-                /*
-                restOfData = textureData.ReadToBuffer(textureData.Length - textureData.Position);
-
-                packagePath = package.packagePath;
-                packageName = Path.GetFileNameWithoutExtension(packagePath).ToUpper();
-                if (GameData.gameType == MeType.ME1_TYPE)
-                {
-                    string baseName = package.resolvePackagePath(package.exportsTable[exportId].linkId).Split('.')[0].ToUpper();
-                    if (mipMapsList.Exists(s => s.storageType == StorageTypes.extLZO) ||
-                        mipMapsList.Exists(s => s.storageType == StorageTypes.extZlib) ||
-                        mipMapsList.Exists(s => s.storageType == StorageTypes.extUnc))
-                    {
-                        basePackageName = baseName;
-                        if (basePackageName == "")
-                            throw new Exception("");
-                        slave = true;
-                    }
-                    else
-                    {
-                        if (baseName != "" && !properties.exists("NeverStream") &&
-                            GameData.packageFiles.Exists(s => Path.GetFileNameWithoutExtension(s).Equals(baseName, StringComparison.OrdinalIgnoreCase)))
-                        {
-                            basePackageName = baseName;
-                            weakSlave = true;
-                        }
-                    }
-                }*/
             }
             catch (Exception e)
             {
@@ -2423,12 +2398,9 @@ namespace ME3Explorer
         private List<object> StartStateScan(byte[] data, int binarystart)
         {
             /*
-             *  
-             *      count +4
-             *      stream length in TFC +4
-             *      stream length in TFC +4 (repeat)
-             *      stream offset in TFC +4
-             *  
+             * Has UnrealScript Functions contained within, however 
+             * the exact format of the data has yet to be determined.
+             * Probably better in Script Editor
              */
             var subnodes = new List<object>();
 
@@ -2506,8 +2478,6 @@ namespace ME3Explorer
             }
             try
             {
-                //TODO: move this to UI thread
-                //viewModeComboBox.Visibility = Visibility.Visible;
                 int binarypos = binarystart;
 
                 //binarypos += 0x1C; //Skip ??? and GUID
@@ -2603,7 +2573,7 @@ namespace ME3Explorer
             if (CurrentLoadedExport != null && CurrentLoadedExport.Data.Length > 20480)
             {
                 //There was likely a large amount of nodes placed onto the UI
-                //Lets free that memory while this export unloads
+                //Lets free that memory once this export unloads
                 //but we wait a few seconds to let the UI release everything
                 //(Waiting for a render does not seem to release references)
 
@@ -2634,18 +2604,42 @@ namespace ME3Explorer
         private void BinaryInterpreter_TreeViewSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             BinaryInterpreter_Hexbox.UnhighlightAll();
+            List<FrameworkElement> SupportedEditorSetElements = new List<FrameworkElement>();
 
             switch (BinaryInterpreter_TreeView.SelectedItem)
             {
                 case BinaryInterpreterWPFTreeViewItem bitve:
-                    if (bitve.Name is string tag && tag.StartsWith("_"))
+                    int dataOffset = 0;
+                    if (bitve.Name is string offsetStr && offsetStr.StartsWith("_"))
                     {
-                        tag = tag.Substring(1); //remove _
-                        if (int.TryParse(tag, out int result))
+                        offsetStr = offsetStr.Substring(1); //remove _
+                        if (int.TryParse(offsetStr, out dataOffset))
                         {
-                            BinaryInterpreter_Hexbox.SelectionStart = result;
+                            BinaryInterpreter_Hexbox.SelectionStart = dataOffset;
                             BinaryInterpreter_Hexbox.SelectionLength = 1;
                         }
+                    }
+                    switch (bitve.Tag)
+                    {
+                        case NodeType.StructLeafObject:
+                            if (dataOffset != 0)
+                            {
+                                Value_TextBox.Text = BitConverter.ToInt32(CurrentLoadedExport.Data, dataOffset).ToString();
+                                SupportedEditorSetElements.Add(Value_TextBox);
+                                SupportedEditorSetElements.Add(ParsedValue_TextBlock);
+                            }
+                            break;
+                        case NodeType.StructLeafName:
+                            SupportedEditorSetElements.Add(Value_ComboBox);
+                            SupportedEditorSetElements.Add(NameIndexPrefix_TextBlock);
+                            SupportedEditorSetElements.Add(NameIndex_TextBox);
+                            break;
+                        case NodeType.StructLeafInt:
+                            //Todo: We can add different nodeTypes to trigger different ParsedValue parsers, 
+                            //such as IntOffset. Enter in int, parse as hex
+                            Value_TextBox.Text = BitConverter.ToInt32(CurrentLoadedExport.Data, dataOffset).ToString();
+                            SupportedEditorSetElements.Add(Value_TextBox);
+                            break;
                     }
                     break;
                 case UPropertyTreeViewEntry uptve:
@@ -2701,6 +2695,14 @@ namespace ME3Explorer
                     }
                     break;
             }
+
+            //Hide the non-used controls
+            foreach (FrameworkElement fe in EditorSetElements)
+            {
+                fe.Visibility = SupportedEditorSetElements.Contains(fe) ? Visibility.Visible : Visibility.Collapsed;
+            }
+            EditorSet_Separator.Visibility = SupportedEditorSetElements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            Set_Button.Visibility = SupportedEditorSetElements.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void BinaryInterpreter_TreeView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -2813,6 +2815,31 @@ namespace ME3Explorer
             {
                 StartBinaryScan();
             }
+        }
+
+        private void SetValue_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void RemoveArrayElement_Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AddArrayElement_Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Value_TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void ValueTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+
         }
     }
 
