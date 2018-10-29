@@ -322,7 +322,7 @@ namespace ME3Explorer
         {
             if (autoSaveViewToolStripMenuItem.Checked)
                 saveView();
-            OpenFileDialog d = new OpenFileDialog {Filter = App.FileFilter};
+            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
             if (d.ShowDialog() == DialogResult.OK)
             {
                 LoadFile(d.FileName);
@@ -481,7 +481,8 @@ namespace ME3Explorer
             try
             {
                 GenerateGraph();
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 MessageBox.Show($"Error loading sequences from file:\n{e.Message}");
             }
@@ -823,7 +824,7 @@ namespace ME3Explorer
         {
             if (CurrentObjects.Count == 0)
                 return;
-            SaveFileDialog d = new SaveFileDialog {Filter = "Bmp Files (*.bmp)|*.bmp"};
+            SaveFileDialog d = new SaveFileDialog { Filter = "Bmp Files (*.bmp)|*.bmp" };
             if (d.ShowDialog() == DialogResult.OK)
             {
                 PNode r = graphEditor.Root;
@@ -921,17 +922,17 @@ namespace ME3Explorer
                     }
                     if (varLinkMenu.Items.Count > 0)
                     {
-                        temp = new ToolStripMenuItem("Variable Links") {DropDown = varLinkMenu};
+                        temp = new ToolStripMenuItem("Variable Links") { DropDown = varLinkMenu };
                         submenu.Items.Add(temp);
                     }
                     if (outLinkMenu.Items.Count > 0)
                     {
-                        temp = new ToolStripMenuItem("Output Links") {DropDown = outLinkMenu};
+                        temp = new ToolStripMenuItem("Output Links") { DropDown = outLinkMenu };
                         submenu.Items.Add(temp);
                     }
                     if (submenu.Items.Count > 0)
                     {
-                        temp = new ToolStripMenuItem("Break all Links") {Tag = sender};
+                        temp = new ToolStripMenuItem("Break all Links") { Tag = sender };
                         temp.Click += removeAllLinks_handler;
                         submenu.Items.Add(temp);
                         breakLinksToolStripMenuItem.Enabled = true;
@@ -1027,7 +1028,7 @@ namespace ME3Explorer
             PackageEditorWPF p = new PackageEditorWPF();
             p.Show();
             p.LoadFile(CurrentFile);
-            p.GoToNumber(l);
+            p.GoToNumber(l + 1);
         }
 
         private void addObjectsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1172,25 +1173,25 @@ namespace ME3Explorer
                 switch (pcc.Game)
                 {
                     case MEGame.ME3:
-                    {
-                        TlkManager tm = new TlkManager();
-                        tm.Show();
-                        break;
-                    }
+                        {
+                            TlkManager tm = new TlkManager();
+                            tm.Show();
+                            break;
+                        }
                     case MEGame.ME2:
-                    {
-                        ME2Explorer.TlkManager tm = new ME2Explorer.TlkManager();
-                        tm.InitTlkManager();
-                        tm.Show();
-                        break;
-                    }
+                        {
+                            ME2Explorer.TlkManager tm = new ME2Explorer.TlkManager();
+                            tm.InitTlkManager();
+                            tm.Show();
+                            break;
+                        }
                     case MEGame.ME1:
-                    {
-                        ME1Explorer.TlkManager tm = new ME1Explorer.TlkManager();
-                        tm.InitTlkManager(talkFiles);
-                        tm.Show();
-                        break;
-                    }
+                        {
+                            ME1Explorer.TlkManager tm = new ME1Explorer.TlkManager();
+                            tm.InitTlkManager(talkFiles);
+                            tm.Show();
+                            break;
+                        }
                 }
             }
         }
@@ -1225,7 +1226,7 @@ namespace ME3Explorer
             if (pcc == null)
                 return;
             string extension = Path.GetExtension(pcc.FileName);
-            SaveFileDialog d = new SaveFileDialog {Filter = $"*{extension}|*{extension}"};
+            SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == DialogResult.OK)
             {
                 pcc.save(d.FileName);
