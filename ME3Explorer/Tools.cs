@@ -268,20 +268,6 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "PCC Repacker",
-                type = typeof(PCCRepack),
-                icon = Application.Current.FindResource("iconPCCRepacker") as ImageSource,
-                open = () =>
-                {
-                    (new PCCRepack()).Show();
-                },
-                tags = new List<string> { "utility", "compress", "decompress", "pack", "unpack" },
-                subCategory = "Extractors + Repackers",
-                description = "PCC Repacker allows you to compress and decompress PCC files.",
-
-            });
-            set.Add(new Tool
-            {
                 name = "Plot Database",
                 type = typeof(PlotVarDB.PlotVarDB),
                 icon = Application.Current.FindResource("iconPlotDatabase") as ImageSource,
