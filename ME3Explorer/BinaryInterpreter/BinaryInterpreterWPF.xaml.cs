@@ -22,10 +22,12 @@ using Gammtek.Conduit.Extensions;
 using Gibbed.IO;
 using ME3Explorer;
 using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
 using static ME3Explorer.BinaryInterpreter;
 using static ME3Explorer.EnumExtensions;
+using static ME3Explorer.PackageEditorWPF;
 
 namespace ME3Explorer
 {
@@ -113,6 +115,7 @@ namespace ME3Explorer
 
         #region Commands
         public ICommand CopyOffsetCommand { get; set; }
+        public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
 
         private void LoadCommands()
         {
@@ -2601,6 +2604,11 @@ namespace ME3Explorer
 
         }
 
+        internal void SetParentNameList(ObservableCollectionExtended<IndexedName> namesList)
+        {
+            ParentNameList = namesList;
+        }
+
         private void BinaryInterpreter_TreeViewSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             BinaryInterpreter_Hexbox.UnhighlightAll();
@@ -2630,6 +2638,31 @@ namespace ME3Explorer
                             }
                             break;
                         case NodeType.StructLeafName:
+                            TextSearch.SetTextPath(Value_ComboBox, "Name");
+                            Value_ComboBox.IsEditable = true;
+
+                            if (ParentNameList == null)
+                            {
+                                var indexedList = new List<object>();
+                                for (int i = 0; i < CurrentLoadedExport.FileRef.Names.Count; i++)
+                                {
+                                    NameReference nr = CurrentLoadedExport.FileRef.Names[i];
+                                    indexedList.Add(new IndexedName(i, nr));
+                                }
+                                Value_ComboBox.ItemsSource = indexedList;
+                            }
+                            else
+                            {
+                                Value_ComboBox.ItemsSource = ParentNameList;
+                            }
+                            int nameIdx = BitConverter.ToInt32(CurrentLoadedExport.Data, dataOffset);
+                            int nameValueIndex = BitConverter.ToInt32(CurrentLoadedExport.Data, dataOffset + 4);
+                            string nameStr = CurrentLoadedExport.FileRef.getNameEntry(nameIdx);
+                            if (nameStr != "")
+                            {
+                                Value_ComboBox.SelectedIndex = nameIdx;
+                                NameIndex_TextBox.Text = nameValueIndex.ToString();
+                            }
                             SupportedEditorSetElements.Add(Value_ComboBox);
                             SupportedEditorSetElements.Add(NameIndexPrefix_TextBlock);
                             SupportedEditorSetElements.Add(NameIndex_TextBox);

@@ -911,6 +911,7 @@ namespace ME3Explorer
             ExportLoaders[ScriptTab_UnrealScriptEditor] = Script_Tab;
             ExportLoaders[BinaryInterpreterTab_BinaryInterpreter] = BinaryInterpreter_Tab;
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
+            BinaryInterpreterTab_BinaryInterpreter.SetParentNameList(NamesList); //reference to this control for name editor set
             RecentButtons.AddRange(new Button[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10, });
             LoadRecentList();
             RefreshRecent(false);
