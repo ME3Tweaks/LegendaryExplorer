@@ -12,7 +12,8 @@
         d:DesignHeight="450" d:DesignWidth="800"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
-        Loaded="BinaryInterpreter_Loaded"
+                            xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                            Loaded="BinaryInterpreter_Loaded"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <UserControl.Resources>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
@@ -35,6 +36,8 @@
                 <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
                 <Button Content="Toggle Hexbox Width" Click="BinaryInterpreter_ToggleHexboxWidth_Click"/>
                 <ComboBox Name="viewModeComboBox" Height="22" Margin="0" VerticalAlignment="Top" Width="120" SelectionChanged="viewModeComboBox_SelectionChanged"/>
+                <TextBlock Name="ByteShifting_Textblock" Text="Byte shift:"/>
+                <xctk:ByteUpDown Name="ByteShift_UpDown" Width="40"/>
                 <!--<Button Content="Add Property" Click="Interpreter_AddProperty_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>-->
             </ToolBar>
             <StatusBar Height="23" DockPanel.Dock="Bottom" Name="BinaryInterpreter_StatusBar">
