@@ -373,25 +373,46 @@
                         </StackPanel>
                     </TabItem>
                     <!--<TabItem Name="Properties_Tab" Header="Properties"/>-->
-                    <TabItem Name="Interpreter_Tab" Header="Interpreter" ToolTip="Edit UnrealScript properties on exports" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <TabItem Name="Interpreter_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Interpreter" ToolTip="Edit UnrealScript properties on exports"/>
+                        </TabItem.Header>
                         <global:InterpreterWPF x:Name="InterpreterTab_Interpreter"/>
                     </TabItem>
-                    <TabItem Name="Metadata_Tab" Header="Metadata" ToolTip="Edit entry metadata such as class, object name, etc" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <TabItem Name="Metadata_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Metadata" ToolTip="Edit entry metadata such as class, object name, etc"/>
+                        </TabItem.Header>
                         <metadataeditor:MetadataEditorWPF x:Name="MetadataTab_MetadataEditor"/>
                     </TabItem>
-                    <TabItem Name="Bio2DAViewer_Tab" Header="Bio2DA Editor" ToolTip="View (someday, edit) Bio2DA tables" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <TabItem Name="Bio2DAViewer_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Bio2DA" ToolTip="View (someday, edit) Bio2DA tables"/>
+                        </TabItem.Header>
                         <global:Bio2DAEditorWPF x:Name="Bio2DATab_Bio2DAEditor"/>
                     </TabItem>
-                    <TabItem Name="BinaryInterpreter_Tab" Header="Binary Interpreter" ToolTip="View and edit binary data for supported classes" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <TabItem Name="BinaryInterpreter_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Binary Interpreter" ToolTip="View and edit binary data for supported classes"/>
+                        </TabItem.Header>
                         <global:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter"/>
                     </TabItem>
-                    <TabItem Name="Script_Tab" Header="Script" ToolTip="View and edit UnrealScript functions" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <TabItem Name="Script_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Script" ToolTip="View and edit UnrealScript functions"/>
+                        </TabItem.Header>
                         <global:UnrealScriptWPF x:Name="ScriptTab_UnrealScriptEditor"/>
                     </TabItem>
-                    <TabItem Name="CurveEditor_Tab" Header="Curve Editor" ToolTip="Edit curves" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <TabItem Name="CurveEditor_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Curve Editor" ToolTip="Edit curves"/>
+                        </TabItem.Header>
                         <CurveEd:CurveEditor x:Name="CurveTab_CurveEditor"/>
                     </TabItem>
-                    <TabItem Name="Sound_Tab" Header="Sound" ToolTip="Edit and play audio" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                    <TabItem Name="Sound_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Sound" ToolTip="Edit and play audio"/>
+                        </TabItem.Header>
                         <global:Soundpanel x:Name="SoundTab_Soundpanel"/>
                     </TabItem>
                 </TabControl>
