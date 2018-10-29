@@ -4,6 +4,7 @@ using ME1Explorer.Unreal;
 using ME3Explorer.PackageEditorWPFControls;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
@@ -14,7 +15,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows;
@@ -97,6 +97,21 @@ namespace ME3Explorer
         public ObservableCollectionExtended<IndexedName> NamesList { get; set; } = new ObservableCollectionExtended<IndexedName>();
         public ObservableCollectionExtended<string> ClassDropdownList { get; set; } = new ObservableCollectionExtended<string>();
         public ObservableCollectionExtended<TreeViewEntry> AllTreeViewNodesX { get; set; } = new ObservableCollectionExtended<TreeViewEntry>();
+        private TreeViewEntry _selectedItem;
+        public TreeViewEntry SelectedItem
+        {
+            get => _selectedItem;
+            set
+            {
+                if (_selectedItem != value)
+                {
+                    _selectedItem = value;
+                    OnPropertyChanged();
+                    Preview();
+                }
+            }
+        }
+
 
         public static readonly string PackageEditorDataFolder = System.IO.Path.Combine(App.AppDataFolder, @"PackageEditor\");
         private readonly string RECENTFILES_FILE = "RECENTFILES";
@@ -978,7 +993,7 @@ namespace ME3Explorer
             if (QueuedGotoNumber != 0)
             {
                 //Wait for UI to render
-                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
+                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.Background, null);
                 BusyText = $"Navigating to {QueuedGotoNumber}";
                 GoToNumber(QueuedGotoNumber);
                 if (QueuedGotoNumber > 0)
@@ -1493,19 +1508,6 @@ namespace ME3Explorer
             }
         }
 
-        private delegate void NoArgDelegate();
-        /// <summary>
-        /// Tree view selected item changed. This runs in a delegate due to how multithread bubble-up items work with treeview.
-        /// Without this delegate, the item selected will randomly be a parent item instead.
-        /// From https://www.codeproject.com/Tips/208896/WPF-TreeView-SelectedItemChanged-called-twice
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void LeftSide_SelectedItemChanged(object sender, RoutedEventArgs e)
-        {
-            Preview();
-        }
-
         /// <summary>
         /// Listbox selected item changed
         /// </summary>
@@ -1513,8 +1515,8 @@ namespace ME3Explorer
         /// <param name="e"></param>
         private void LeftSide_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
-            Preview();
             e.Handled = true;
+            Preview();
         }
 
         /// <summary>
@@ -1611,17 +1613,21 @@ namespace ME3Explorer
             bool? result = d.ShowDialog();
             if (result.HasValue && result.Value)
             {
-                //try
-                // {
-                LoadFile(d.FileName);
-                AddRecent(d.FileName, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
-                //}
-                //catch (Exception ex)
-                //{
-                //    MessageBox.Show("Unable to open file:\n" + ex.Message);
-                // }
+#if !DEBUG
+                try
+                {
+#endif
+                    LoadFile(d.FileName);
+                    AddRecent(d.FileName, false);
+                    SaveRecentList();
+                    RefreshRecent(true, RFiles);
+#if !DEBUG
+            }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to open file:\n" + ex.Message);
+                }
+#endif
             }
         }
 
@@ -1692,10 +1698,15 @@ namespace ME3Explorer
                 if (selectNode.Count() > 0)
                 {
                     //selectNode[0].ExpandParents();
+                    selectNode[0].ExpandParents();
                     selectNode[0].IsSelected = true;
-                    FocusTreeViewNodeOld(selectNode[0]);
+                    //FocusTreeViewNodeOld(selectNode[0]);
 
                     //selectNode[0].Focus(LeftSide_TreeView);
+                }
+                else
+                {
+                    Debug.WriteLine("Could not find node");
                 }
             }
             else
@@ -2205,38 +2216,10 @@ namespace ME3Explorer
 
 
             string searchClass = ClassDropdown_Combobox.SelectedItem.ToString();
-            /*if (CurrentView == View.Names)
-            {
-                for (int i = start; i < pcc.Names.Count; i++)
-                    if (Pcc.getNameEntry(i).ToLower().Contains(searchTerm))
-                    {
-                        listBox1.SelectedIndex = i;
-                        break;
-                    }
-            }
-            if (CurrentView == View.Imports)
-            {
-                IReadOnlyList<ImportEntry> imports = pcc.Imports;
-                for (int i = start; i < imports.Count; i++)
-                    if (imports[i].ObjectName.ToLower().Contains(searchTerm))
-                    {
-                        listBox1.SelectedIndex = i;
-                        break;
-                    }
-            }
-            if (CurrentView == View.Exports)
-            {
-                IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                for (int i = start; i < Exports.Count; i++)
-                    if (Exports[i].ObjectName.ToLower().Contains(searchTerm))
-                    {
-                        listBox1.SelectedIndex = i;
-                        break;
-                    }
-            }*/
+            //TODO: Implement for Imports, Exports
+
             if (CurrentView == CurrentViewMode.Tree)
             {
-                //this needs fixed as for some rason its way out of order...
                 TreeViewEntry selectedNode = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
                 var items = AllTreeViewNodesX[0].FlattenTree();
                 int pos = selectedNode == null ? 0 : items.IndexOf(selectedNode);
@@ -2249,14 +2232,10 @@ namespace ME3Explorer
                     {
                         continue;
                     }
-                    //Debug.WriteLine(curIndex + " " + node.Entry.ObjectName);
 
                     if (node.Entry.ClassName.Equals(searchClass))
                     {
-                        //node.ExpandParents();
                         node.IsSelected = true;
-                        FocusTreeViewNodeOld(node);
-                        //                        node.Focus(LeftSide_TreeView);
                         break;
                     }
                 }
@@ -2383,7 +2362,6 @@ namespace ME3Explorer
             }
             if (CurrentView == CurrentViewMode.Tree)
             {
-                //this needs fixed as for some rason its way out of order...
                 TreeViewEntry selectedNode = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
                 var items = AllTreeViewNodesX[0].FlattenTree();
                 int pos = selectedNode == null ? -1 : items.IndexOf(selectedNode);
@@ -2396,13 +2374,9 @@ namespace ME3Explorer
                     {
                         continue;
                     }
-                    //Debug.WriteLine(curIndex + " " + node.Entry.ObjectName);
                     if (node.Entry.ObjectName.ToLower().Contains(searchTerm))
                     {
-                        //node.ExpandParents();
                         node.IsSelected = true;
-                        FocusTreeViewNodeOld(node);
-                        //                        node.Focus(LeftSide_TreeView);
                         break;
                     }
                 }
@@ -2585,12 +2559,12 @@ namespace ME3Explorer
 
                 //see if the container is already loaded. If not, we will have to generate them until we get it (why microsoft...)
                 TreeViewItem treeViewItem = generator.ContainerFromIndex(index) as TreeViewItem;
-                if (treeViewItem == null && container != null) treeViewItem = GetTreeViewItem(container, dequeue);
+                //if (treeViewItem == null && container != null) treeViewItem = GetTreeViewItem(container, dequeue);
                 Action action = () => { treeViewItem?.BringIntoView(); };
                 //This needs to be stress tested - this can cause deadlock, but if it doesn't return fast enough the code
                 //may continue to null and not work.
                 //Sigh, treeview.
-                Dispatcher.BeginInvoke(action, DispatcherPriority.ContextIdle);
+                Dispatcher.BeginInvoke(action, DispatcherPriority.Background);
                 if (treeViewItem == null)
                 {
                     Debug.WriteLine("This shoudln't be null");
@@ -2611,7 +2585,7 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        treeViewItem.IsSelected = true;
+                        treeViewItem.BringIntoView();
                     }
                 }
                 if (treeViewItem != null)
@@ -2621,76 +2595,77 @@ namespace ME3Explorer
                 }
             }
         }
+        /*
 
-        public static TreeViewItem GetTreeViewItem(ItemsControl container, object item)
-        {
-            if (container == null)
-                throw new ArgumentNullException(nameof(container));
-
-            if (item == null)
-                throw new ArgumentNullException(nameof(item));
-
-            if (container.DataContext == item)
-                return container as TreeViewItem;
-
-            if (container is TreeViewItem && !((TreeViewItem)container).IsExpanded)
-            {
-                container.SetValue(TreeViewItem.IsExpandedProperty, true);
-            }
-
-            container.ApplyTemplate();
-            if (container.Template.FindName("ItemsHost", container) is ItemsPresenter itemsPresenter)
-            {
-                itemsPresenter.ApplyTemplate();
-            }
-            else
-            {
-                itemsPresenter = FindVisualChild<ItemsPresenter>(container);
-                if (itemsPresenter == null)
+                public static TreeViewItem GetTreeViewItem(ItemsControl container, object item)
                 {
-                    container.UpdateLayout();
-                    itemsPresenter = FindVisualChild<ItemsPresenter>(container);
-                }
-            }
+                    if (container == null)
+                        throw new ArgumentNullException(nameof(container));
 
-            var itemsHostPanel = (Panel)VisualTreeHelper.GetChild(itemsPresenter, 0);
-            var children = itemsHostPanel.Children;
-            var virtualizingPanel = itemsHostPanel as VirtualizingPanel;
-            for (int i = 0, count = container.Items.Count; i < count; i++)
-            {
-                TreeViewItem subContainer;
-                if (virtualizingPanel != null)
-                {
-                    // this is the part that requires .NET 4.5+
-                    virtualizingPanel.BringIndexIntoViewPublic(i);
-                    subContainer = (TreeViewItem)container.ItemContainerGenerator.ContainerFromIndex(i); //find item
-                    if (subContainer.DataContext == item) return subContainer;
-                }
-                else
-                {
-                    subContainer = (TreeViewItem)container.ItemContainerGenerator.ContainerFromIndex(i);
-                    subContainer.BringIntoView();
-                }
-            }
-            return null;
-        }
+                    if (item == null)
+                        throw new ArgumentNullException(nameof(item));
 
-        private static T FindVisualChild<T>(Visual visual) where T : Visual
-        {
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(visual); i++)
-            {
-                if (VisualTreeHelper.GetChild(visual, i) is Visual child)
-                {
-                    if (child is T item)
-                        return item;
+                    if (container.DataContext == item)
+                        return container as TreeViewItem;
 
-                    item = FindVisualChild<T>(child);
-                    if (item != null)
-                        return item;
+                    if (container is TreeViewItem && !((TreeViewItem)container).IsExpanded)
+                    {
+                        container.SetValue(TreeViewItem.IsExpandedProperty, true);
+                    }
+
+                    container.ApplyTemplate();
+                    if (container.Template.FindName("ItemsHost", container) is ItemsPresenter itemsPresenter)
+                    {
+                        itemsPresenter.ApplyTemplate();
+                    }
+                    else
+                    {
+                        itemsPresenter = FindVisualChild<ItemsPresenter>(container);
+                        if (itemsPresenter == null)
+                        {
+                            container.UpdateLayout();
+                            itemsPresenter = FindVisualChild<ItemsPresenter>(container);
+                        }
+                    }
+
+                    var itemsHostPanel = (Panel)VisualTreeHelper.GetChild(itemsPresenter, 0);
+                    var children = itemsHostPanel.Children;
+                    var virtualizingPanel = itemsHostPanel as VirtualizingPanel;
+                    for (int i = 0, count = container.Items.Count; i < count; i++)
+                    {
+                        TreeViewItem subContainer;
+                        if (virtualizingPanel != null)
+                        {
+                            // this is the part that requires .NET 4.5+
+                            virtualizingPanel.BringIndexIntoViewPublic(i);
+                            subContainer = (TreeViewItem)container.ItemContainerGenerator.ContainerFromIndex(i); //find item
+                            if (subContainer.DataContext == item) return subContainer;
+                        }
+                        else
+                        {
+                            subContainer = (TreeViewItem)container.ItemContainerGenerator.ContainerFromIndex(i);
+                            subContainer.BringIntoView();
+                        }
+                    }
+                    return null;
                 }
-            }
-            return null;
-        }
+
+                private static T FindVisualChild<T>(Visual visual) where T : Visual
+                {
+                    for (int i = 0; i < VisualTreeHelper.GetChildrenCount(visual); i++)
+                    {
+                        if (VisualTreeHelper.GetChild(visual, i) is Visual child)
+                        {
+                            if (child is T item)
+                                return item;
+
+                            item = FindVisualChild<T>(child);
+                            if (item != null)
+                                return item;
+                        }
+                    }
+                    return null;
+                } */
 
         private void TouchComfyMode_Clicked(object sender, RoutedEventArgs e)
         {
@@ -2782,16 +2757,74 @@ namespace ME3Explorer
         public event PropertyChangedEventHandler PropertyChanged;
         private System.Windows.Media.Brush _foregroundColor = System.Windows.Media.Brushes.DarkSeaGreen;
         private bool isSelected;
+        //public bool IsSelected
+        //{
+        //    get { return this.isSelected; }
+        //    set
+        //    {
+        //        if (value != this.isSelected)
+        //        {
+        //            this.isSelected = value;
+        //            OnPropertyChanged("IsSelected");
+        //        }
+        //    }
+        //}
+
+
         public bool IsSelected
         {
-            get { return this.isSelected; }
+            get => isSelected;
             set
             {
-                if (value != this.isSelected)
+                // build a priority queue of dispatcher operations
+
+                // All operations relating to tree item expansion are added with priority = DispatcherPriority.ContextIdle, so that they are
+                // sorted before any operations relating to selection (which have priority = DispatcherPriority.ApplicationIdle).
+                // This ensures that the visual container for all items are created before any selection operation is carried out.
+                // First expand all ancestors of the selected item - those closest to the root first
+                // Expanding a node will scroll as many of its children as possible into view - see perTreeViewItemHelper, but these scrolling
+                // operations will be added to the queue after all of the parent expansions.
+                if (value)
                 {
-                    this.isSelected = value;
-                    OnPropertyChanged("IsSelected");
+                    var ancestorsToExpand = new Stack<TreeViewEntry>();
+
+                    var parent = Parent;
+                    while (parent != null)
+                    {
+                        if (!parent.IsExpanded)
+                            ancestorsToExpand.Push(parent);
+
+                        parent = parent.Parent;
+                    }
+
+                    while (ancestorsToExpand.Any())
+                    {
+                        var parentToExpand = ancestorsToExpand.Pop();
+                        DispatcherHelper.AddToQueue(() => parentToExpand.IsExpanded = true, DispatcherPriority.ContextIdle);
+                    }
                 }
+
+                //cancel if we're currently selected.
+                if (isSelected == value)
+                    return;
+
+                // Set the item's selected state - use DispatcherPriority.ApplicationIdle so this operation is executed after all
+                // expansion operations, no matter when they were added to the queue.
+                // Selecting a node will also scroll it into view - see perTreeViewItemHelper
+                DispatcherHelper.AddToQueue(() =>
+                {
+                    if (value != isSelected)
+                    {
+                        this.isSelected = value;
+                        OnPropertyChanged("IsSelected");
+                    }
+                }, DispatcherPriority.ApplicationIdle);
+
+                // note that by rule, a TreeView can only have one selected item, but this is handled automatically by 
+                // the control - we aren't required to manually unselect the previously selected item.
+
+                // execute all of the queued operations in descending DipatecherPriority order (expansion before selection)
+                var unused = DispatcherHelper.ProcessQueueAsync();
             }
         }
 
