@@ -1,12 +1,14 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
 using Gibbed.IO;
-using AmaroK86.MassEffect3.ZlibBlock;
+//using AmaroK86.MassEffect3.ZlibBlock;
 using System.Threading.Tasks;
 using LZO2Helper;
+using static ME3Explorer.Packages.MEPackage;
 
 namespace ME3Explorer.Packages
 {
@@ -59,7 +61,9 @@ namespace ME3Explorer.Packages
             int tempNameSize = raw.ReadValueS32();
             raw.Seek(64 + tempNameSize, SeekOrigin.Begin);
             int tempGenerations = raw.ReadValueS32();
-            raw.Seek(36 + tempGenerations * 12, SeekOrigin.Current);
+            raw.Seek(32 + tempGenerations * 12, SeekOrigin.Current);
+            CompressionType compressionType = (CompressionType)raw.ReadValueU32();
+
 
             //if ME1
             if (versionLo == 491 && versionHi == 1008)
@@ -129,9 +133,21 @@ namespace ME3Explorer.Packages
                         datain[j] = c.Compressed[pos + j];
                     pos += b.compressedsize;
 
-                    if (LZO2.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
-                        throw new Exception("LZO decompression failed!");
-
+                    if (compressionType == CompressionType.LZO)
+                    {
+                        if (LZO2.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                            throw new Exception("LZO decompression failed!");
+                    }
+                    else
+                    if (compressionType == CompressionType.Zlib)
+                    {
+                        if (new ZlibHelper.Zlib().Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                            throw new Exception("Zlib decompression failed!");
+                    }
+                    else
+                    {
+                        throw new Exception("Unknown compression type for this package.");
+                    }
                     for (int j = 0; j < b.uncompressedsize; j++)
                         c.Uncompressed[outpos + j] = dataout[j];
                     outpos += b.uncompressedsize;
@@ -148,10 +164,10 @@ namespace ME3Explorer.Packages
                 result.Seek(c.uncompressedOffset, SeekOrigin.Begin);
                 result.WriteBytes(c.Uncompressed);
             }
-            
+
             return result;
         }
-        
+
         #region Decompression
         /// <summary>
         ///     decompress an entire ME3 pcc file.
@@ -175,7 +191,7 @@ namespace ME3Explorer.Packages
         {
             using (FileStream input = File.OpenRead(pccFileName))
             {
-                input.Seek(4, SeekOrigin.Begin);
+                input.Seek(4, SeekOrigin.Begin); //skip package tag
                 ushort versionLo = input.ReadValueU16();
                 ushort versionHi = input.ReadValueU16();
 
@@ -301,7 +317,7 @@ namespace ME3Explorer.Packages
                 input.Seek(compressedOffset, SeekOrigin.Begin);
                 input.Read(buff, 0, buff.Length);
 
-                tasks[i] = ZBlock.DecompressAsync(buff);
+                tasks[i] = AmaroK86.MassEffect3.ZlibBlock.ZBlock.DecompressAsync(buff);
             }
             Task.WaitAll(tasks);
             for (int i = 0; i < blockCount; i++)
@@ -486,7 +502,7 @@ namespace ME3Explorer.Packages
 
                 byte[] inputBlock = new byte[currentUncBlockSize];
                 uncompressedPcc.Read(inputBlock, 0, currentUncBlockSize);
-                byte[] compressedBlock = ZBlock.Compress(inputBlock);
+                byte[] compressedBlock = AmaroK86.MassEffect3.ZlibBlock.ZBlock.Compress(inputBlock);
 
                 outputStream.WriteValueS32(compressedBlock.Length);
                 outOffsetBlockInfo = outputStream.Position;
@@ -522,7 +538,7 @@ namespace ME3Explorer.Packages
                 Compress(uncompressedPcc).CopyTo(outputStream);
             }
         }
-        
+
         /// <summary>
         ///     compress an entire ME3 pcc into a file.
         /// </summary>

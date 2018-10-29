@@ -74,6 +74,16 @@ namespace ME3Explorer.Packages
                     Buffer.BlockCopy(BitConverter.GetBytes(flags & ~0x02000000), 0, header, 16 + nameSize, sizeof(int));
             }
         }
+
+        public enum CompressionType
+        {
+            None = 0,
+            Zlib,
+            LZO
+        }
+
+        public CompressionType PackageCompressionType { get; protected set; }
+
         //has been saved with the revised Append method
         public bool IsAppend
         {

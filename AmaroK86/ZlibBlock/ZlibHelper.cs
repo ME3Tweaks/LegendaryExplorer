@@ -34,7 +34,9 @@ using System.Text;
 
 namespace ZlibHelper
 {
-    static public class Zlib
+    //This is same as stuff from KFreonLib, will be merged... someday...
+    //Had to be renamed because same-name ambiguity
+    static public class ZlibAmarok
     {
         [DllImport("zlibwrapper.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int ZlibDecompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);

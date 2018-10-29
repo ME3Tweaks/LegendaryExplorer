@@ -60,7 +60,8 @@ namespace ME3Explorer.Packages
             int tempNameSize = tempStream.ReadValueS32();
             tempStream.Seek(64 + tempNameSize, SeekOrigin.Begin);
             int tempGenerations = tempStream.ReadValueS32();
-            tempStream.Seek(36 + tempGenerations * 12, SeekOrigin.Current);
+            tempStream.Seek(32 + tempGenerations * 12, SeekOrigin.Current);
+            PackageCompressionType = (CompressionType)tempStream.ReadValueU32();
             int tempPos = (int)tempStream.Position;
             tempStream.Seek(0, SeekOrigin.Begin);
             header = tempStream.ReadBytes(tempPos);
