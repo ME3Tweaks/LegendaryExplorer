@@ -973,6 +973,10 @@ namespace ME3Explorer
                 bg.DoWork += InitializeTreeViewBackground;
                 bg.RunWorkerCompleted += InitializeTreeViewBackground_Completed;
                 bg.RunWorkerAsync();
+
+                AddRecent(s, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
             }
             catch (Exception e)
             {
@@ -1218,9 +1222,7 @@ namespace ME3Explorer
             if (File.Exists(s))
             {
                 LoadFile(s);
-                AddRecent(s, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
+
             }
             else
             {

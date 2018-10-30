@@ -2596,7 +2596,14 @@ namespace ME3Explorer
 
         private void BinaryInterpreter_SaveHexChanges_Click(object sender, RoutedEventArgs e)
         {
-
+            IByteProvider provider = BinaryInterpreter_Hexbox.ByteProvider;
+            if (provider != null)
+            {
+                MemoryStream m = new MemoryStream();
+                for (int i = 0; i < provider.Length; i++)
+                    m.WriteByte(provider.ReadByte(i));
+                CurrentLoadedExport.Data = m.ToArray();
+            }
         }
 
         internal void SetParentNameList(ObservableCollectionExtended<IndexedName> namesList)
