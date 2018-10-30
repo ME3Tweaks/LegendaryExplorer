@@ -38,7 +38,7 @@
                 <Button Name="AddArrayElement_Button" ToolTip="Add a new element to the selected array" Content="Add Array Element" Click="AddArrayElement_Button_Click" VerticalAlignment="Center"/>
                 <Button Name="RemoveArrayElement_Button" ToolTip="Remove the selected element from the array" Content="Remove Array Element" Click="RemoveArrayElement_Button_Click" VerticalAlignment="Center"/>
                 <Separator Name="EditorSet_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                <TextBox Width="80" Margin="5,0,0,0" Name="Value_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" TextChanged="Value_TextBox_TextChanged" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type TextBox}}"/>
+                <TextBox Width="140" Margin="5,0,0,0" Name="Value_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" TextChanged="Value_TextBox_TextChanged" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type TextBox}}"/>
                 <ComboBox Margin="5,0,0,0" Name="Value_ComboBox" MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True">
                     <ComboBox.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -55,7 +55,7 @@
                     </ComboBox.Resources>
                 </ComboBox>
                 <TextBlock Margin="5,0,0,0" Text="Index:" Name="NameIndexPrefix_TextBlock" VerticalAlignment="Center"/>
-                <TextBox Margin="5,0,0,0" Width="30" Name="NameIndex_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type TextBox}}"/>
+                <TextBox Margin="5,0,0,0" Width="50" Name="NameIndex_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type TextBox}}"/>
                 <Button Name="Set_Button" Content=" Set" ToolTip="Sets the selected property to this value" Click="SetValue_Click" VerticalAlignment="Stretch" Padding="10,0,10,0" Style="{StaticResource {x:Type Button}}"/>
                 <TextBlock Name="ParsedValue_TextBlock" VerticalAlignment="Center" Foreground="Gray" Margin="5,0,0,0"/>
 

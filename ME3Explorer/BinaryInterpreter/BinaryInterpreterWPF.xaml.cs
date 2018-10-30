@@ -22,6 +22,7 @@ using Gammtek.Conduit.Extensions;
 using Gibbed.IO;
 using ME3Explorer;
 using ME3Explorer.Packages;
+using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
@@ -405,7 +406,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -468,7 +469,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -504,7 +505,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -571,7 +572,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -657,7 +658,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -803,7 +804,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -912,10 +913,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                {
-                    Header = $"Error reading binary data: {ex}"
-                });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -963,7 +961,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the wwiseevent: {ex.Message}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -1007,7 +1005,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the biodynamicanimset: {ex.Message}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -1393,7 +1391,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the class: {ex.Message}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -1653,7 +1651,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {ex.Message}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -1708,21 +1706,8 @@ namespace ME3Explorer
 
             try
             {
-                //find start of class binary (end of props)
-                int start = 0x4;
-                while (start < data.Length)
-                {
-                    uint nameindex = BitConverter.ToUInt32(data, start);
-                    if (nameindex < CurrentLoadedExport.FileRef.Names.Count && CurrentLoadedExport.FileRef.Names[(int)nameindex] == "None")
-                    {
-                        //found it
-                        start += 8;
-                        break;
-                    }
-                    start += 4;
-                }
+                int start = CurrentLoadedExport.propsEnd();
 
-                //Console.WriteLine("Found start of binary at {start.ToString("X8"));
 
                 //uint exportid = BitConverter.ToUInt32(data, start);
                 start += 4;
@@ -1730,72 +1715,82 @@ namespace ME3Explorer
                 //int countoffset = start;
                 BinaryInterpreterWPFTreeViewItem countnode = new BinaryInterpreterWPFTreeViewItem
                 {
-                    Tag = NodeType.Unknown,
+                    Tag = NodeType.StructLeafInt, //change to listlength or something.
                     Header = $"{start:X4} Level Items List Length: {numberofitems}",
                     Name = "_" + start
-
                 };
                 subnodes.Add(countnode);
 
 
                 start += 4;
-                uint bioworldinfoexportid = BitConverter.ToUInt32(data, start);
-                BinaryInterpreterWPFTreeViewItem bionode = new BinaryInterpreterWPFTreeViewItem
-                {
-                    Tag = NodeType.StructLeafObject,
-                    Header = $"{start:X4} BioWorldInfo Export: {bioworldinfoexportid}",
-                    Name = "_" + start
+                //uint bioworldinfoexportid = BitConverter.ToUInt32(data, start);
+                //BinaryInterpreterWPFTreeViewItem bionode = new BinaryInterpreterWPFTreeViewItem
+                //{
+                //    Tag = NodeType.StructLeafObject,
+                //    Header = $"{start:X4} BioWorldInfo Export: {bioworldinfoexportid}",
+                //    Name = "_" + start
 
-                };
-                if (bioworldinfoexportid < CurrentLoadedExport.FileRef.ExportCount && bioworldinfoexportid > 0)
-                {
-                    int me3expindex = (int)bioworldinfoexportid;
-                    IEntry exp = CurrentLoadedExport.FileRef.getEntry(me3expindex);
-                    bionode.Header += $" ({exp.PackageFullName}.{exp.ObjectName})";
-                }
-                subnodes.Add(bionode);
+                //};
+                //if (bioworldinfoexportid < CurrentLoadedExport.FileRef.ExportCount && bioworldinfoexportid > 0)
+                //{
+                //    int me3expindex = (int)bioworldinfoexportid;
+                //    IEntry exp = CurrentLoadedExport.FileRef.getEntry(me3expindex);
+                //    bionode.Header += $" ({exp.PackageFullName}.{exp.ObjectName})";
+                //}
+                //subnodes.Add(bionode);
 
-                IExportEntry bioworldinfo = CurrentLoadedExport.FileRef.Exports[(int)bioworldinfoexportid - 1];
-                if (bioworldinfo.ObjectName != "BioWorldInfo")
-                {
-                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                    {
-                        Tag = NodeType.Unknown,
-                        Header = $"{start:X4} Export pointer to bioworldinfo resolves to wrong export. Resolved to {bioworldinfo.ObjectName} as export {bioworldinfoexportid}",
-                        Name = "_" + start
+                //IExportEntry bioworldinfo = CurrentLoadedExport.FileRef.Exports[(int)bioworldinfoexportid - 1];
+                //if (bioworldinfo.ObjectName != "BioWorldInfo")
+                //{
+                //    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                //    {
+                //        Tag = NodeType.StructLeafObject,
+                //        Header = $"{start:X4} Export reference to bioworldinfo resolves to wrong export. Resolved to {bioworldinfo.ObjectName} as export {bioworldinfoexportid}",
+                //        Name = "_" + start
 
-                    });
-                    return subnodes;
-                }
+                //    });
+                //    return subnodes;
+                //}
 
-                start += 4;
-                uint shouldbezero = BitConverter.ToUInt32(data, start);
-                if (shouldbezero != 0)
-                {
-                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                    {
-                        Tag = NodeType.Unknown,
-                        Header = $"{start:X4} Export may have extra parameters not accounted for yet (did not find 0 at 0x{start:X5} )",
-                        Name = "_" + start
+                //start += 4;
+                //uint shouldbezero = BitConverter.ToUInt32(data, start);
+                //if (shouldbezero != 0)
+                //{
+                //    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                //    {
+                //        Tag = NodeType.Unknown,
+                //        Header = $"{start:X4} Export may have extra parameters not accounted for yet (did not find 0 at 0x{start:X5} )",
+                //        Name = "_" + start
 
-                    });
-                    return subnodes;
-                }
-                start += 4;
-                int itemcount = 2; //Skip bioworldinfo and Class
+                //    });
+                //    return subnodes;
+                //}
+                //start += 4;
+                int itemcount = 0;
 
                 while (itemcount < numberofitems)
                 {
                     //get header.
                     uint itemexportid = BitConverter.ToUInt32(data, start);
-                    if (itemexportid - 1 < CurrentLoadedExport.FileRef.Exports.Count)
+                    if (itemexportid == 0)
+                    {
+                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Tag = NodeType.ArrayLeafObject,
+                            Header = $"{start:X4}|{itemcount}: {0.ToString().PadRight(8, ' ')} Null/Class",
+                            Name = "_" + start
+                        });
+                        start += 4;
+                        itemcount++;
+                    }
+                    else if (itemexportid - 1 < CurrentLoadedExport.FileRef.Exports.Count)
                     {
                         IExportEntry locexp = CurrentLoadedExport.FileRef.Exports[(int)itemexportid - 1];
                         //Console.WriteLine($"0x{start:X5} \t0x{itemexportid:X5} \t{locexp.PackageFullName}.{locexp.ObjectName}_{locexp.indexValue} [{itemexportid - 1}]");
                         subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Tag = NodeType.ArrayLeafObject,
-                            Header = $"{start:X4}|{itemcount}: {locexp.PackageFullName}.{locexp.ObjectName}_{locexp.indexValue} [{itemexportid - 1}]",
+                            Header = $"{start:X4}|{itemcount}: {locexp.UIndex.ToString().PadRight(8, ' ')} {getEntryFullPath(locexp.UIndex)}_{locexp.indexValue}",
                             Name = "_" + start
 
                         });
@@ -1808,7 +1803,7 @@ namespace ME3Explorer
                         subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Tag = NodeType.ArrayLeafObject,
-                            Header = $"{start:X4} Invalid item.Ensure the list is the correct length. (Export {itemexportid})",
+                            Header = $"{start:X4} Invalid item. Ensure the list is the correct length. (Export {itemexportid})",
                             Name = "_" + start
 
                         });
@@ -1817,9 +1812,9 @@ namespace ME3Explorer
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error parsing level: {e.Message}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -1883,7 +1878,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the material: {ex.Message}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -2133,7 +2128,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the StaticMeshCollectionActor: {ex.Message}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
 
@@ -2319,9 +2314,9 @@ namespace ME3Explorer
                     });
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the {CurrentLoadedExport.ClassName} binary: {e.Message}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -2531,11 +2526,11 @@ namespace ME3Explorer
                                 int val = BitConverter.ToInt32(data, binarypos);
                                 if (val > 0 && val <= CurrentLoadedExport.FileRef.NameCount)
                                 {
-                                    nodeText += $"{val} \t{CurrentLoadedExport.FileRef.getNameEntry(val)}";
+                                    nodeText += $"{val.ToString().PadRight(14, ' ')}{CurrentLoadedExport.FileRef.getNameEntry(val)}";
                                 }
                                 else
                                 {
-                                    nodeText += $"\t{val}";
+                                    nodeText += $"              {val}"; //14 spaces
                                 }
                                 node.Tag = NodeType.StructLeafName;
                                 break;
@@ -2563,7 +2558,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"An error occured parsing the staticmesh: {ex.Message}" });
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
         }
@@ -2629,6 +2624,7 @@ namespace ME3Explorer
                     }
                     switch (bitve.Tag)
                     {
+                        case NodeType.ArrayLeafObject:
                         case NodeType.StructLeafObject:
                             if (dataOffset != 0)
                             {
@@ -2662,6 +2658,11 @@ namespace ME3Explorer
                             {
                                 Value_ComboBox.SelectedIndex = nameIdx;
                                 NameIndex_TextBox.Text = nameValueIndex.ToString();
+                            }
+                            else
+                            {
+                                Value_ComboBox.SelectedIndex = -1;
+                                NameIndex_TextBox.Text = "";
                             }
                             SupportedEditorSetElements.Add(Value_ComboBox);
                             SupportedEditorSetElements.Add(NameIndexPrefix_TextBlock);
@@ -2852,7 +2853,137 @@ namespace ME3Explorer
 
         private void SetValue_Click(object sender, RoutedEventArgs e)
         {
+            switch (BinaryInterpreter_TreeView.SelectedItem)
+            {
+                case BinaryInterpreterWPFTreeViewItem bitve:
+                    int dataOffset = 0;
+                    if (bitve.Name is string offsetStr && offsetStr.StartsWith("_"))
+                    {
+                        offsetStr = offsetStr.Substring(1); //remove _
+                        if (int.TryParse(offsetStr, out dataOffset))
+                        {
+                            BinaryInterpreter_Hexbox.SelectionStart = dataOffset;
+                            BinaryInterpreter_Hexbox.SelectionLength = 1;
+                        }
+                    }
+                    bool parsedValueSucceeded = int.TryParse(Value_TextBox.Text, out int parsedValue);
 
+
+                    switch (bitve.Tag)
+                    {
+                        case NodeType.ArrayLeafObject:
+                        case NodeType.StructLeafInt:
+                        case NodeType.StructLeafObject:
+                            if (dataOffset != 0 && parsedValueSucceeded)
+                            {
+                                byte[] data = CurrentLoadedExport.Data;
+                                SharedPathfinding.WriteMem(data, dataOffset, BitConverter.GetBytes(parsedValue));
+                                CurrentLoadedExport.Data = data;
+                            }
+                            break;
+                            /*case NodeType.StructLeafName:
+                                TextSearch.SetTextPath(Value_ComboBox, "Name");
+                                Value_ComboBox.IsEditable = true;
+
+                                if (ParentNameList == null)
+                                {
+                                    var indexedList = new List<object>();
+                                    for (int i = 0; i < CurrentLoadedExport.FileRef.Names.Count; i++)
+                                    {
+                                        NameReference nr = CurrentLoadedExport.FileRef.Names[i];
+                                        indexedList.Add(new IndexedName(i, nr));
+                                    }
+                                    Value_ComboBox.ItemsSource = indexedList;
+                                }
+                                else
+                                {
+                                    Value_ComboBox.ItemsSource = ParentNameList;
+                                }
+                                int nameIdx = BitConverter.ToInt32(CurrentLoadedExport.Data, dataOffset);
+                                int nameValueIndex = BitConverter.ToInt32(CurrentLoadedExport.Data, dataOffset + 4);
+                                string nameStr = CurrentLoadedExport.FileRef.getNameEntry(nameIdx);
+                                if (nameStr != "")
+                                {
+                                    Value_ComboBox.SelectedIndex = nameIdx;
+                                    NameIndex_TextBox.Text = nameValueIndex.ToString();
+                                }
+                                else
+                                {
+                                    Value_ComboBox.SelectedIndex = -1;
+                                    NameIndex_TextBox.Text = "";
+                                }
+                                SupportedEditorSetElements.Add(Value_ComboBox);
+                                SupportedEditorSetElements.Add(NameIndexPrefix_TextBlock);
+                                SupportedEditorSetElements.Add(NameIndex_TextBox);
+                                break;
+                                //Todo: We can add different nodeTypes to trigger different ParsedValue parsers, 
+                                //such as IntOffset. Enter in int, parse as hex
+                                Value_TextBox.Text = BitConverter.ToInt32(CurrentLoadedExport.Data, dataOffset).ToString();
+                                SupportedEditorSetElements.Add(Value_TextBox);
+                                break;*/
+                    }
+                    break;
+                case UPropertyTreeViewEntry uptve:
+                    if (uptve.Property != null)
+                    {
+                        var hexPos = uptve.Property.ValueOffset;
+
+                        /*
+                        BinaryInterpreter_Hexbox.SelectionStart = hexPos;
+                        BinaryInterpreter_Hexbox.SelectionLength = 1; //maybe change
+                        switch (uptve.Property)
+                        {
+                            //case NoneProperty np:
+                            //    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 4, 8);
+                            //    return;
+                            //case StructProperty sp:
+                            //    break;
+                            case ObjectProperty op:
+                            case FloatProperty fp:
+                            case IntProperty ip:
+                                {
+                                    if (uptve.Parent.Property is StructProperty p && p.IsImmutable)
+                                    {
+                                        BinaryInterpreter_Hexbox.Highlight(uptve.Property.ValueOffset, 4);
+                                        return;
+                                    }
+                                    else if (uptve.Parent.Property is ArrayProperty<IntProperty> || uptve.Parent.Property is ArrayProperty<FloatProperty> || uptve.Parent.Property is ArrayProperty<ObjectProperty>)
+                                    {
+                                        BinaryInterpreter_Hexbox.Highlight(uptve.Property.ValueOffset, 4);
+                                        return;
+                                    }
+                                }
+                                //otherwise use the default
+                                break;
+                            case NameProperty np:
+                                {
+                                    if (uptve.Parent.Property is StructProperty p && p.IsImmutable)
+                                    {
+                                        BinaryInterpreter_Hexbox.Highlight(uptve.Property.ValueOffset, 8);
+                                        return;
+                                    }
+                                    else if (uptve.Parent.Property is ArrayProperty<NameProperty>)
+                                    {
+                                        BinaryInterpreter_Hexbox.Highlight(uptve.Property.ValueOffset, 8);
+                                        return;
+                                    }
+                                }
+                                break;
+                                //case EnumProperty ep:
+                                //    BinaryInterpreter_Hexbox.Highlight(uptve.Property.ValueOffset - 32, uptve.Property.GetLength(CurrentLoadedExport.FileRef));
+                                //    return;
+                        }
+
+                        BinaryInterpreter_Hexbox.Highlight(uptve.Property.StartOffset, uptve.Property.GetLength(CurrentLoadedExport.FileRef));
+                        */
+                    }
+                    break;
+            }
+        }
+
+        private void RegenerateNode(object selectedItem)
+        {
+            throw new NotImplementedException();
         }
 
         private void RemoveArrayElement_Button_Click(object sender, RoutedEventArgs e)
