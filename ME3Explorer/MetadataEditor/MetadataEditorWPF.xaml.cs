@@ -67,7 +67,7 @@ namespace ME3Explorer.MetadataEditor
             {
                 AllEntriesList.Add(Pcc.Imports[i]);
             }
-            AllEntriesList.Add("0 : Class");
+            AllEntriesList.Add(new ZeroUIndexClassEntry());
             foreach (IExportEntry exp in Pcc.Exports)
             {
                 AllEntriesList.Add(exp);
@@ -489,6 +489,23 @@ namespace ME3Explorer.MetadataEditor
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// This class is used when stuffing into the list. It makes "0" searchable by having the UIndex property.
+        /// </summary>
+        private class ZeroUIndexClassEntry
+        {
+            public ZeroUIndexClassEntry()
+            {
+            }
+
+            public override string ToString()
+            {
+                return "0 : Class";
+            }
+
+            public int UIndex { get { return 0; } }
         }
     }
 }
