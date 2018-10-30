@@ -24,7 +24,7 @@ foreach ($item in $List) {
 
 $fileversion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("Release\ME3Explorer.exe").FileVersion
 $outputfile = "$($PSScriptRoot)\ME3Explorer_$($fileversion).7z"
-$exe = "$($PSScriptRoot)..\..\..\Deployment\7za.exe"
+$exe = "$($PSScriptRoot)..\..\..\..\Deployment\7za.exe"
 $arguments = "a", "`"$($outputfile)`"", "`"$($PSScriptRoot)\Release\*`"", "-mmt6"
 Write-Host "Running: $($exe) $($arguments)"
 Start-Process $exe -ArgumentList $arguments -Wait -NoNewWindow
