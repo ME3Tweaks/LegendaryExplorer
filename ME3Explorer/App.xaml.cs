@@ -147,9 +147,7 @@ namespace ME3Explorer
             Window wpfActiveWindow = Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive);
             eh.Owner = wpfActiveWindow;
             eh.ShowDialog();
-#if DEBUG
             e.Handled = eh.Handled;
-#endif
         }
     }
 }
