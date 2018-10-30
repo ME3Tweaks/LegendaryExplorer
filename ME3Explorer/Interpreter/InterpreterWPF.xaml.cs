@@ -699,7 +699,29 @@ namespace ME3Explorer
                     editableValue = strp.Value;
                     break;
                 case StructProperty sp:
-                    parsedValue = sp.StructType;
+                    if (sp.Name == "location" && sp.StructType == "Vector")
+                    {
+                        string loc = "(";
+                        bool isFirst = true;
+                        foreach (UProperty uprop in sp.Properties)
+                        {
+                            string val = (uprop as FloatProperty).Value.ToString();
+                            if (isFirst)
+                            {
+                                isFirst = false;
+                            } else
+                            {
+                                loc += ", ";
+                            }
+                            loc += val;
+                        }
+                        loc += ")";
+                        parsedValue = loc;
+                    }
+                    else
+                    {
+                        parsedValue = sp.StructType;
+                    }
                     break;
                 case NoneProperty np:
                     parsedValue = "End of properties";
@@ -995,6 +1017,10 @@ namespace ME3Explorer
                         break;
                     case FloatProperty fp:
                         Value_TextBox.Text = fp.Value.ToString();
+                        SupportedEditorSetElements.Add(Value_TextBox);
+                        break;
+                    case StrProperty strp:
+                        Value_TextBox.Text = strp.Value.ToString();
                         SupportedEditorSetElements.Add(Value_TextBox);
                         break;
                     case BoolProperty bp:

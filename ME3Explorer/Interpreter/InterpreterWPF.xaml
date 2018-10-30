@@ -105,6 +105,10 @@
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d6c3f"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88fffec4"/>
                             </DataTrigger>
+                            <DataTrigger Binding="{Binding PropertyType}" Value="FloatProperty">
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#004f46"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#4400ffaa"/>
+                            </DataTrigger>
                             <DataTrigger Binding="{Binding PropertyType}" Value="IntProperty">
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#664f46"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#AAffeae2"/>

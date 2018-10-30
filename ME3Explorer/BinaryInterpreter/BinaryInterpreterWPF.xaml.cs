@@ -2681,6 +2681,10 @@ namespace ME3Explorer
                             Value_TextBox.Text = BitConverter.ToInt32(CurrentLoadedExport.Data, dataOffset).ToString();
                             SupportedEditorSetElements.Add(Value_TextBox);
                             break;
+                        case NodeType.StructLeafFloat:
+                            Value_TextBox.Text = BitConverter.ToSingle(CurrentLoadedExport.Data, dataOffset).ToString();
+                            SupportedEditorSetElements.Add(Value_TextBox);
+                            break;
                     }
                     break;
                 case UPropertyTreeViewEntry uptve:
@@ -2874,7 +2878,7 @@ namespace ME3Explorer
                         }
                     }
                     bool parsedValueSucceeded = int.TryParse(Value_TextBox.Text, out int parsedValue);
-
+                    bool parsedFloatSucceeded = float.TryParse(Value_TextBox.Text, out float parsedFloatValue);
 
                     switch (bitve.Tag)
                     {
@@ -2885,6 +2889,14 @@ namespace ME3Explorer
                             {
                                 byte[] data = CurrentLoadedExport.Data;
                                 SharedPathfinding.WriteMem(data, dataOffset, BitConverter.GetBytes(parsedValue));
+                                CurrentLoadedExport.Data = data;
+                            }
+                            break;
+                        case NodeType.StructLeafFloat:
+                            if (dataOffset != 0 && parsedFloatSucceeded)
+                            {
+                                byte[] data = CurrentLoadedExport.Data;
+                                SharedPathfinding.WriteMem(data, dataOffset, BitConverter.GetBytes(parsedFloatValue));
                                 CurrentLoadedExport.Data = data;
                             }
                             break;
