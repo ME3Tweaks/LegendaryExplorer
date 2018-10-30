@@ -344,7 +344,7 @@ namespace ME3Explorer
                                 if (PathfindingNodesActive)
                                 {
                                     CurrentObjects.Add(exportEntry.Index);
-                                    activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
+                                    activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + "_" + exportEntry.indexValue + " - Class: " + exportEntry.ClassName);
                                 }
                             }
 
