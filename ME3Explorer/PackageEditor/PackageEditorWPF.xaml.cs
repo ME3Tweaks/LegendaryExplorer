@@ -1464,7 +1464,7 @@ namespace ME3Explorer
                 //TODO: Add new names to current UI
             }
 
-            else if (CurrentView == CurrentViewMode.Imports && importChanges ||
+            if (CurrentView == CurrentViewMode.Imports && importChanges ||
                      CurrentView == CurrentViewMode.Exports && exportNonDataChanges ||
                      CurrentView == CurrentViewMode.Tree && (importChanges || exportNonDataChanges))
             {

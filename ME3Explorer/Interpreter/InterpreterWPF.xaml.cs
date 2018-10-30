@@ -1556,6 +1556,8 @@ namespace ME3Explorer
                             else
                             {
                                 index = CurrentLoadedExport.FileRef.FindNameOrAdd(input);
+                                //Wait for namelist to update. we may need to set a timer here.
+                                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                             }
                         }
 
