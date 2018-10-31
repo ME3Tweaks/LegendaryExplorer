@@ -158,6 +158,7 @@ namespace ME3Explorer
         public ICommand EditNameCommand { get; set; }
         public ICommand ExportImportDataVisibilityCommand { get; set; }
         public ICommand AddNameCommand { get; set; }
+        public ICommand CopyNameCommand { get; set; }
         public ICommand RebuildStreamingLevelsCommand { get; set; }
         public ICommand ExportEmbeddedFileCommand { get; set; }
         public ICommand ImportEmbeddedFileCommand { get; set; }
@@ -175,10 +176,23 @@ namespace ME3Explorer
             CheckForDuplicateIndexesCommand = new RelayCommand(CheckForDuplicateIndexes, PackageIsLoaded);
             EditNameCommand = new RelayCommand(EditName, NameIsSelected);
             AddNameCommand = new RelayCommand(AddName, CanAddName);
+            CopyNameCommand = new RelayCommand(CopyName, NameIsSelected);
             ExportImportDataVisibilityCommand = new RelayCommand((o) => { }, ExportIsSelected); //no execution command
             RebuildStreamingLevelsCommand = new RelayCommand(RebuildStreamingLevels, PackageIsLoaded);
             ExportEmbeddedFileCommand = new RelayCommand(ExportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
             ImportEmbeddedFileCommand = new RelayCommand(ImportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
+        }
+
+        private void CopyName(object obj)
+        {
+            try
+            {
+                Clipboard.SetText((LeftSide_ListView.SelectedItem as IndexedName).Name.Name);
+            }
+            catch (Exception)
+            {
+                //don't bother, clippy is not having it today
+            }
         }
 
         private bool DoesSelectedItemHaveEmbeddedFile(object obj)
@@ -449,7 +463,7 @@ namespace ME3Explorer
         private void EditName(object obj)
         {
             string input = $"Enter a new name to replace this name ({(LeftSide_ListView.SelectedItem as IndexedName).Name.Name}) with.";
-            string result = PromptDialog.Prompt(this, input, "Enter new name");
+            string result = PromptDialog.Prompt(this, input, "Enter new name", defaultValue: (LeftSide_ListView.SelectedItem as IndexedName).Name.Name, selectText: true);
             if (result != null && result != "")
             {
                 Pcc.replaceName(LeftSide_ListView.SelectedIndex, result);
@@ -1430,8 +1444,6 @@ namespace ME3Explorer
                 int currentLeftSideListMaxCount = LeftSideList_ItemsSource.Count - 1;
                 if (CurrentView == CurrentViewMode.Imports)
                 {
-                    //TODO: Add importentries
-                    //LeftSideList_ItemsSource.ReplaceAll(Pcc.Imports);
                     foreach (PackageUpdate update in addedChangesByUIndex)
                     {
                         if (update.index < 0)
@@ -1443,8 +1455,6 @@ namespace ME3Explorer
 
                 if (CurrentView == CurrentViewMode.Exports)
                 {
-                    //TODO: Add exportentries
-                    //LeftSideList_ItemsSource.ReplaceAll(Pcc.Exports);
                     foreach (PackageUpdate update in addedChangesByUIndex)
                     {
                         if (update.index > 0)
@@ -1460,8 +1470,6 @@ namespace ME3Explorer
             {
                 //reloads names - used by metadata editor control as well as names list
                 RefreshNames(updates.Where(x => x.change == PackageChange.Names).ToList());
-
-                //TODO: Add new names to current UI
             }
 
             if (CurrentView == CurrentViewMode.Imports && importChanges ||
@@ -1485,6 +1493,8 @@ namespace ME3Explorer
         {
             if (updates == null)
             {
+                //initial loading
+                //we don't update the left side with this
                 var indexedList = new List<IndexedName>();
                 for (int i = 0; i < Pcc.Names.Count; i++)
                 {
@@ -1495,6 +1505,8 @@ namespace ME3Explorer
             }
             else
             {
+                bool shouldUpdateLeftside = CurrentView == CurrentViewMode.Names;
+
                 //only modify the list
                 updates = updates.OrderBy(x => x.index).ToList(); //ensure ascending order
                 foreach (PackageUpdate update in updates)
@@ -1503,10 +1515,14 @@ namespace ME3Explorer
                     {
                         NameReference nr = Pcc.Names[update.index];
                         NamesList.Add(new IndexedName(update.index, nr));
+                        LeftSideList_ItemsSource.Add(new IndexedName(update.index, nr));
                     }
                     else
                     {
-                        NamesList[update.index] = new IndexedName(update.index - 1, Pcc.Names[update.index]);
+                        IndexedName indexed = new IndexedName(update.index, Pcc.Names[update.index]);
+                        NamesList[update.index] = indexed;
+                        LeftSideList_ItemsSource[update.index] = indexed;
+
                     }
                 }
             }
@@ -1621,10 +1637,10 @@ namespace ME3Explorer
                 try
                 {
 #endif
-                    LoadFile(d.FileName);
-                    AddRecent(d.FileName, false);
-                    SaveRecentList();
-                    RefreshRecent(true, RFiles);
+                LoadFile(d.FileName);
+                AddRecent(d.FileName, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
 #if !DEBUG
             }
                 catch (Exception ex)

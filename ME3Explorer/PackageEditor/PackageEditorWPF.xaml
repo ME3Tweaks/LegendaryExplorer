@@ -234,6 +234,7 @@
                     </ListBox.ItemsPanel>
                     <ListBox.ContextMenu>
                         <ContextMenu>
+                            <MenuItem Header="Copy name text" ToolTip="Copies the name text to the clipboard" Command="{Binding CopyNameCommand}"/>
                             <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" CommandParameter="FromNameView"/>
                             <MenuItem Header="Edit name" ToolTip="Edits the string this name represents" Command="{Binding EditNameCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
