@@ -597,10 +597,10 @@ namespace ME3Explorer.Unreal
         /// </summary>
         /// <param name="pcc"></param>
         /// <returns></returns>
-        public long GetLength(IMEPackage pcc)
+        public long GetLength(IMEPackage pcc, bool valueOnly = false)
         {
             var stream = new MemoryStream();
-            WriteTo(stream, pcc);
+            WriteTo(stream, pcc, valueOnly);
             return stream.Length;
         }
     }
@@ -685,7 +685,7 @@ namespace ME3Explorer.Unreal
                         prop.WriteTo(m, pcc, IsImmutable);
                     }
 
-                    if (!IsImmutable && (!(Properties.Last() is NoneProperty)))
+                    if (!IsImmutable && (Properties.Count == 0 || (!(Properties.Last() is NoneProperty)))) //ensure ending none
                     {
                         m.WriteNoneProperty(pcc);
                     }
