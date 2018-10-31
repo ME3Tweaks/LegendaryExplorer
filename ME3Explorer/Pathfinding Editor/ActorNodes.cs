@@ -97,10 +97,10 @@ namespace ME3Explorer.ActorNodes
             : base(idx, p, grapheditor)
         {
             string s = export.ObjectName;
-
             if (grapheditor.showVolumeBrushes && grapheditor.showVolume_BlockingVolume)
             {
                 var TShape = get3DBrushShape();
+                int calculatedHeight = get3DBrushHeight();
                 if (TShape != null)
                 {
                     shape = PPath.CreatePolygon(TShape);
@@ -108,6 +108,10 @@ namespace ME3Explorer.ActorNodes
                 else
                 {
                     shape = PPath.CreateRectangle(0, 0, 50, 50);
+                }
+                if (calculatedHeight >= 0)
+                {
+                    comment.Text += "\nBrush total height: " + calculatedHeight;
                 }
             }
             else
@@ -147,6 +151,7 @@ namespace ME3Explorer.ActorNodes
             if (grapheditor.showVolumeBrushes && grapheditor.showVolume_DynamicBlockingVolume)
             {
                 var TShape = get3DBrushShape();
+                int calculatedHeight = get3DBrushHeight();
                 if (TShape != null)
                 {
                     shape = PPath.CreatePolygon(TShape);
@@ -154,6 +159,10 @@ namespace ME3Explorer.ActorNodes
                 else
                 {
                     shape = PPath.CreateRectangle(0, 0, 50, 50);
+                }
+                if (calculatedHeight >= 0)
+                {
+                    comment.Text += "\nBrush total height: " + calculatedHeight;
                 }
             }
             else
@@ -196,13 +205,18 @@ namespace ME3Explorer.ActorNodes
             if (grapheditor.showVolumeBrushes && grapheditor.showVolume_SFXBlockingVolume_Ledge)
             {
                 var TShape = get3DBrushShape();
+                int calculatedHeight = get3DBrushHeight();
                 if (TShape != null)
                 {
                     shape = PPath.CreatePolygon(TShape);
                 }
                 else
                 {
-                    shape = PPath.CreatePolygon(edgeShape);
+                    shape = PPath.CreateRectangle(0, 0, 50, 50);
+                }
+                if (calculatedHeight >= 0)
+                {
+                    comment.Text += "\nBrush total height: " + calculatedHeight;
                 }
             }
             else
@@ -507,14 +521,19 @@ namespace ME3Explorer.ActorNodes
             float h = 50;
             if (grapheditor.showVolumeBrushes && grapheditor.showVolume_WwiseAudioVolume)
             {
-                var volumeShape = get3DBrushShape();
-                if (volumeShape != null)
+                var TShape = get3DBrushShape();
+                int calculatedHeight = get3DBrushHeight();
+                if (TShape != null)
                 {
-                    shape = PPath.CreatePolygon(volumeShape);
+                    shape = PPath.CreatePolygon(TShape);
                 }
                 else
                 {
-                    shape = PPath.CreatePolygon(soundShape);
+                    shape = PPath.CreateRectangle(0, 0, 50, 50);
+                }
+                if (calculatedHeight >= 0)
+                {
+                    comment.Text += "\nBrush total height: " + calculatedHeight;
                 }
             }
             else
@@ -682,14 +701,19 @@ namespace ME3Explorer.ActorNodes
             float h = 50;
             if (grapheditor.showVolumeBrushes && grapheditor.showVolume_SFXCombatZones)
             {
-                var brushShape = get3DBrushShape();
-                if (brushShape != null)
+                var TShape = get3DBrushShape();
+                int calculatedHeight = get3DBrushHeight();
+                if (TShape != null)
                 {
-                    shape = PPath.CreatePolygon(brushShape);
+                    shape = PPath.CreatePolygon(TShape);
                 }
                 else
                 {
-                    shape = PPath.CreatePolygon(cShape);
+                    shape = PPath.CreateRectangle(0, 0, 50, 50);
+                }
+                if (calculatedHeight >= 0)
+                {
+                    comment.Text += "\nBrush total height: " + calculatedHeight;
                 }
             }
             else
@@ -886,14 +910,19 @@ namespace ME3Explorer.ActorNodes
 
             if (grapheditor.showVolumeBrushes && grapheditor.showVolume_BioTriggerVolume)
             {
-                var brushShape = get3DBrushShape();
-                if (brushShape != null)
+                var TShape = get3DBrushShape();
+                int calculatedHeight = get3DBrushHeight();
+                if (TShape != null)
                 {
-                    shape = PPath.CreatePolygon(brushShape);
+                    shape = PPath.CreatePolygon(TShape);
                 }
                 else
                 {
-                    shape = PPath.CreatePolygon(TShape);
+                    shape = PPath.CreateRectangle(0, 0, 50, 50);
+                }
+                if (calculatedHeight >= 0)
+                {
+                    comment.Text += "\nBrush total height: " + calculatedHeight;
                 }
             }
             else
@@ -980,14 +1009,19 @@ namespace ME3Explorer.ActorNodes
             outlinePen = new Pen(color);
             if (grapheditor.showVolumeBrushes && grapheditor.showVolume_BioTriggerStream)
             {
-                var brushShape = get3DBrushShape();
-                if (brushShape != null)
+                var TShape = get3DBrushShape();
+                int calculatedHeight = get3DBrushHeight();
+                if (TShape != null)
                 {
-                    shape = PPath.CreatePolygon(brushShape);
+                    shape = PPath.CreatePolygon(TShape);
                 }
                 else
                 {
-                    shape = PPath.CreatePolygon(TShape);
+                    shape = PPath.CreateRectangle(0, 0, 50, 50);
+                }
+                if (calculatedHeight >= 0)
+                {
+                    comment.Text += "\nBrush total height: " + calculatedHeight;
                 }
             }
             else

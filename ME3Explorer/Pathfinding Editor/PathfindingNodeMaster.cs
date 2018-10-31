@@ -83,6 +83,90 @@ namespace ME3Explorer.Pathfinding_Editor
 
         }
 
+        protected int get3DBrushHeight()
+        {
+            try
+            {
+                PropertyCollection props = export.GetProperties();
+                float zScalar = 1;
+
+                var drawScale = props.GetProp<FloatProperty>("DrawScale");
+                var drawScale3d = props.GetProp<StructProperty>("DrawScale3D");
+                if (drawScale != null)
+                {
+                    zScalar = drawScale.Value;
+                }
+                if (drawScale3d != null)
+                {
+                    zScalar *= drawScale3d.GetProp<FloatProperty>("Z").Value;
+                }
+
+                //Todo: figure out how to do rotation properly for yaw. rotationpoint seems to be the issue.
+                //var rotation = props.GetProp<StructProperty>("Rotation");
+                //if (rotation != null)
+                //{
+                //    var yaw = rotation.GetProp<IntProperty>("Yaw");
+                //    if (yaw != 0)
+                //    {
+                //        var translatedYaw = yaw * 360f / 65536f;
+                //        RotateInPlace(translatedYaw);
+                //        Debug.WriteLine("Rotation YAW found on " + export.UIndex + " " + translatedYaw);
+                //    }
+                //}
+                var brushComponent = props.GetProp<ObjectProperty>("BrushComponent");
+                if (brushComponent == null)
+                {
+                    return -1;
+                }
+                IExportEntry brush = export.FileRef.getExport(brushComponent.Value - 1);
+                List<PointF> graphVertices = new List<PointF>();
+                List<Vector3> brushVertices = new List<Vector3>();
+                PropertyCollection brushProps = brush.GetProperties();
+                var brushAggGeom = brushProps.GetProp<StructProperty>("BrushAggGeom");
+                if (brushAggGeom == null)
+                {
+                    return -1;
+                }
+                var convexList = brushAggGeom.GetProp<ArrayProperty<StructProperty>>("ConvexElems");
+
+                //Vertices
+                var verticiesList = convexList[0].Properties.GetProp<ArrayProperty<StructProperty>>("VertexData");
+                foreach (StructProperty vertex in verticiesList)
+                {
+                    Vector3 point = new Vector3();
+                    point.Z = vertex.GetProp<FloatProperty>("Z") * zScalar;
+                    brushVertices.Add(point);
+                }
+
+                int minZ = int.MaxValue;
+                int maxZ = int.MinValue;
+                //FaceTris
+                var faceTriData = convexList[0].Properties.GetProp<ArrayProperty<IntProperty>>("FaceTriData");
+                foreach (IntProperty triPoint in faceTriData)
+                {
+                    Vector3 vertex = brushVertices[triPoint];
+                    //if (vertex.X == prevX && vertex.Y == prevY)
+                    //{
+                    //    continue; //Z is on the difference
+                    //}
+
+                    //float x = vertex.X;
+                    //float y = vertex.Y;
+                    float z = vertex.Z;
+                    minZ = Math.Min((int)z, minZ);
+                    maxZ = Math.Max((int)z, maxZ);
+                }
+                if (minZ != int.MaxValue && maxZ != int.MinValue)
+                {
+                    return maxZ - minZ;
+                }
+            }
+            catch (Exception)
+            {
+            }
+            return -1;
+        }
+
         protected PointF[] get3DBrushShape()
         {
             try
