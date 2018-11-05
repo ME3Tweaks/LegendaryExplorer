@@ -30,7 +30,14 @@
         <DataTemplate DataType="{x:Type Packages:ExportEntry}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding Path=UIndex}" Foreground="Gray"/>
-                <TextBlock Text="{Binding Path=GetFullPath}" Foreground="Black" Margin="5,0,0,0"/>
+                <TextBlock Foreground="Black" Margin="5,0,0,0">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0}_{1}">
+                            <Binding Path="GetFullPath" />
+                            <Binding Path="indexValue" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
             </StackPanel>
         </DataTemplate>
     </global:ExportLoaderControl.Resources>

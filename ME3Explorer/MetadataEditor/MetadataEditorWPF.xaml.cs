@@ -349,7 +349,7 @@ namespace ME3Explorer.MetadataEditor
             {
                 var selectedArchetTypeIndex = InfoTab_Archetype_ComboBox.SelectedIndex;
                 var unrealIndex = selectedArchetTypeIndex - CurrentLoadedEntry.FileRef.ImportCount;
-                Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXARCHETYPE, BitConverter.GetBytes(selectedArchetTypeIndex));
+                Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_EXP_IDXARCHETYPE, BitConverter.GetBytes(unrealIndex));
             }
         }
 
