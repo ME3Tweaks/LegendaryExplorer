@@ -1006,7 +1006,7 @@ namespace ME3Explorer.Unreal.Classes
                 s += "Flags : 0x" + b.Flags.ToString("X8") + " ";
                 s += "Unk1 : 0x" + b.Unk1.ToString("X8") + " ";
                 s += "Orientation : X(" + b.Orientation.X + ") Y(" + b.Orientation.X + ") Z(" + b.Orientation.Z + ") W(" + b.Orientation.W + ")";
-                s += "Position : X(" + b.Position.X + ") Y(" + b.Position.X + ") Z(" + b.Position.Z + ")";
+                s += "Position : X(" + b.Position.X + ") Y(" + b.Position.Y + ") Z(" + b.Position.Z + ")";
                 s += "NumChildren : " + b.NumChildren + " ";
                 s += "Parent : " + b.Parent + " ";
                 s += "Color : 0x" + b.BoneColor.ToString("X8");
