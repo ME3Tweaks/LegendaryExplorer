@@ -709,7 +709,8 @@ namespace ME3Explorer
                             if (isFirst)
                             {
                                 isFirst = false;
-                            } else
+                            }
+                            else
                             {
                                 loc += ", ";
                             }
@@ -1671,12 +1672,25 @@ namespace ME3Explorer
             {
                 if (tvi.Parent.Property != null && tvi.Parent.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)))
                 {
-                    bool removed = tvi.ChildrenProperties.Remove(tvi);
-                    Debug.WriteLine("removed: " + removed);
+                    TreeViewItem rtvi = Interpreter_TreeView.ItemContainerGenerator.ContainerFromItemRecursive(Interpreter_TreeView.SelectedItem);
+                    if (rtvi != null)
+                    {
+                        TreeViewItem parent = Interpreter_TreeView.ItemContainerGenerator.ContainerFromItemRecursive(tvi.Parent);
+                        int index = parent.Items.IndexOf(Interpreter_TreeView.SelectedItem); //=1 when you select "0-0-1"
+                        if (index >= 0)
+                        {
+                            tvi.Parent.ChildrenProperties.RemoveAt(index);
+                            CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
+                        } else
+                        {
+                            Debug.WriteLine("DIDN'T REMOVE ANYTHING!");
+                        }
+                    }
                 }
-                CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
             }
         }
+
+        
     }
 
     [DebuggerDisplay("UPropertyTreeViewEntry | {DisplayName}")]
