@@ -47,6 +47,8 @@
             this.directionY = new System.Windows.Forms.Label();
             this.directionZ = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.localNodeRadioButton = new System.Windows.Forms.RadioButton();
+            this.externalNodeRadioButton = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
             // 
             // label1
@@ -54,7 +56,7 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(9, 126);
+            this.label1.Location = new System.Drawing.Point(9, 142);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(105, 13);
             this.label1.TabIndex = 0;
@@ -66,7 +68,7 @@
             this.createReturningSpecCheckbox.AutoSize = true;
             this.createReturningSpecCheckbox.Checked = true;
             this.createReturningSpecCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.createReturningSpecCheckbox.Location = new System.Drawing.Point(12, 169);
+            this.createReturningSpecCheckbox.Location = new System.Drawing.Point(12, 185);
             this.createReturningSpecCheckbox.Name = "createReturningSpecCheckbox";
             this.createReturningSpecCheckbox.Size = new System.Drawing.Size(216, 17);
             this.createReturningSpecCheckbox.TabIndex = 1;
@@ -91,7 +93,7 @@
             "SFXGame.SFXLargeBoostReachSpec",
             "SFXGame.SFXLargeMantleReachSpec",
             "Engine.SlotToSlotReachSpec"});
-            this.reachSpecTypeComboBox.Location = new System.Drawing.Point(21, 142);
+            this.reachSpecTypeComboBox.Location = new System.Drawing.Point(21, 158);
             this.reachSpecTypeComboBox.Name = "reachSpecTypeComboBox";
             this.reachSpecTypeComboBox.Size = new System.Drawing.Size(207, 21);
             this.reachSpecTypeComboBox.TabIndex = 2;
@@ -102,7 +104,7 @@
             // 
             this.createSpecButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.createSpecButton.Enabled = false;
-            this.createSpecButton.Location = new System.Drawing.Point(360, 163);
+            this.createSpecButton.Location = new System.Drawing.Point(360, 179);
             this.createSpecButton.Name = "createSpecButton";
             this.createSpecButton.Size = new System.Drawing.Size(127, 23);
             this.createSpecButton.TabIndex = 3;
@@ -118,7 +120,7 @@
             "Mooks(34x90)",
             "Minibosses(105x145)",
             "Bosses(140x195)"});
-            this.specSizeCombobox.Location = new System.Drawing.Point(21, 90);
+            this.specSizeCombobox.Location = new System.Drawing.Point(21, 116);
             this.specSizeCombobox.Name = "specSizeCombobox";
             this.specSizeCombobox.Size = new System.Drawing.Size(185, 21);
             this.specSizeCombobox.TabIndex = 16;
@@ -148,7 +150,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(12, 35);
+            this.label4.Location = new System.Drawing.Point(9, 39);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(105, 13);
             this.label4.TabIndex = 6;
@@ -156,7 +158,7 @@
             // 
             // destinationNodeTextBox
             // 
-            this.destinationNodeTextBox.Location = new System.Drawing.Point(21, 51);
+            this.destinationNodeTextBox.Location = new System.Drawing.Point(21, 77);
             this.destinationNodeTextBox.Name = "destinationNodeTextBox";
             this.destinationNodeTextBox.Size = new System.Drawing.Size(100, 20);
             this.destinationNodeTextBox.TabIndex = 0;
@@ -166,7 +168,7 @@
             // destinationLabel
             // 
             this.destinationLabel.AutoSize = true;
-            this.destinationLabel.Location = new System.Drawing.Point(126, 54);
+            this.destinationLabel.Location = new System.Drawing.Point(126, 80);
             this.destinationLabel.Name = "destinationLabel";
             this.destinationLabel.Size = new System.Drawing.Size(80, 13);
             this.destinationLabel.TabIndex = 8;
@@ -231,17 +233,43 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(12, 74);
+            this.label3.Location = new System.Drawing.Point(12, 100);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(163, 13);
             this.label3.TabIndex = 15;
             this.label3.Text = "ReachSpec Size Allowance";
             // 
+            // localNodeRadioButton
+            // 
+            this.localNodeRadioButton.AutoSize = true;
+            this.localNodeRadioButton.Checked = true;
+            this.localNodeRadioButton.Location = new System.Drawing.Point(21, 55);
+            this.localNodeRadioButton.Name = "localNodeRadioButton";
+            this.localNodeRadioButton.Size = new System.Drawing.Size(78, 17);
+            this.localNodeRadioButton.TabIndex = 17;
+            this.localNodeRadioButton.TabStop = true;
+            this.localNodeRadioButton.Text = "Local node";
+            this.localNodeRadioButton.UseVisualStyleBackColor = true;
+            this.localNodeRadioButton.CheckedChanged += new System.EventHandler(this.DestinationNodeType_Changed);
+            // 
+            // externalNodeRadioButton
+            // 
+            this.externalNodeRadioButton.AutoSize = true;
+            this.externalNodeRadioButton.Location = new System.Drawing.Point(105, 55);
+            this.externalNodeRadioButton.Name = "externalNodeRadioButton";
+            this.externalNodeRadioButton.Size = new System.Drawing.Size(90, 17);
+            this.externalNodeRadioButton.TabIndex = 18;
+            this.externalNodeRadioButton.TabStop = true;
+            this.externalNodeRadioButton.Text = "External node";
+            this.externalNodeRadioButton.UseVisualStyleBackColor = true;
+            // 
             // ReachSpecCreatorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(499, 198);
+            this.ClientSize = new System.Drawing.Size(499, 214);
+            this.Controls.Add(this.externalNodeRadioButton);
+            this.Controls.Add(this.localNodeRadioButton);
             this.Controls.Add(this.specSizeCombobox);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.directionZ);
@@ -286,5 +314,7 @@
         private System.Windows.Forms.Label directionZ;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox specSizeCombobox;
+        private System.Windows.Forms.RadioButton localNodeRadioButton;
+        private System.Windows.Forms.RadioButton externalNodeRadioButton;
     }
 }

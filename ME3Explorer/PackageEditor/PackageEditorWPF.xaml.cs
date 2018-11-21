@@ -162,7 +162,7 @@ namespace ME3Explorer
         public ICommand RebuildStreamingLevelsCommand { get; set; }
         public ICommand ExportEmbeddedFileCommand { get; set; }
         public ICommand ImportEmbeddedFileCommand { get; set; }
-
+        public ICommand ReindexCommand { get; set; }
         private void LoadCommands()
         {
             ComparePackagesCommand = new RelayCommand(ComparePackages, PackageIsLoaded);
@@ -181,6 +181,44 @@ namespace ME3Explorer
             RebuildStreamingLevelsCommand = new RelayCommand(RebuildStreamingLevels, PackageIsLoaded);
             ExportEmbeddedFileCommand = new RelayCommand(ExportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
             ImportEmbeddedFileCommand = new RelayCommand(ImportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
+            ReindexCommand = new RelayCommand(ReindexObjectByName, ExportIsSelected);
+        }
+
+        private void ReindexObjectByName(object obj)
+        {
+            IExportEntry exp = null;
+            if (CurrentView == CurrentViewMode.Exports && LeftSide_ListView.SelectedItem is IExportEntry)
+            {
+                exp = LeftSide_ListView.SelectedItem as IExportEntry;
+            }
+            if (CurrentView == CurrentViewMode.Tree && LeftSide_TreeView.SelectedItem is TreeViewEntry tvi && tvi.Entry is IExportEntry)
+            {
+                exp = (LeftSide_TreeView.SelectedItem as TreeViewEntry).Entry as IExportEntry;
+            }
+            if (exp != null)
+            {
+                string objectname = exp.ObjectName;
+                var confirmResult = MessageBox.Show("Confirm reindexing of all exports with object name:\n" + objectname + "\n\nEnsure this file has a backup - this operation will make many changes to export indexes!",
+                                     "Confirm Reindexing",
+                                     MessageBoxButton.YesNo);
+                if (confirmResult == MessageBoxResult.Yes)
+                {
+                    // Get list of all exports with that object name.
+                    //List<IExportEntry> exports = new List<IExportEntry>();
+                    //Could use LINQ... meh.
+
+                    int index = 1; //we'll start at 1.
+                    foreach (IExportEntry export in Pcc.Exports)
+                    {
+                        if (objectname == export.ObjectName && export.ClassName != "Class")
+                        {
+                            export.indexValue = index;
+                            index++;
+                        }
+                    }
+                }
+                MessageBox.Show("Objects named \"" + objectname + "\" have been reindexed.", "Reindexing completed");
+            }
         }
 
         private void CopyName(object obj)
@@ -734,7 +772,7 @@ namespace ME3Explorer
             {
                 return;
             }
-            IExportEntry export = Pcc.getExport(n);
+            IExportEntry export = Pcc.getEntry(n) as IExportEntry;
             OpenFileDialog d = new OpenFileDialog
             {
                 Filter = "*.bin|*.bin",
