@@ -33,8 +33,10 @@ namespace ME3Explorer
                 KeyValuePair<int, int> entry = crossPCCObjectMappingList[i];
                 if (entry.Key > 0)
                 {
-                    PropertyCollection transplantProps = importpcc.Exports[entry.Key].GetProperties();
-                    relinkResults.AddRange(relinkPropertiesRecursive(importpcc, Pcc, transplantProps, crossPCCObjectMappingList));
+                    IExportEntry sourceExport = importpcc.Exports[entry.Key];
+                    PropertyCollection transplantProps = sourceExport.GetProperties();
+                    Debug.WriteLine("Relinking items from source export: " + sourceExport.GetFullPath);
+                    relinkResults.AddRange(relinkPropertiesRecursive(importpcc, Pcc, transplantProps, crossPCCObjectMappingList, ""));
                     Pcc.getExport(entry.Value).WriteProperties(transplantProps);
                 }
             }
@@ -42,27 +44,28 @@ namespace ME3Explorer
             return relinkResults;
         }
 
-        private List<string> relinkPropertiesRecursive(IMEPackage importingPCC, IMEPackage destinationPCC, PropertyCollection transplantProps, List<KeyValuePair<int, int>> crossPCCObjectMappingList)
+        private List<string> relinkPropertiesRecursive(IMEPackage importingPCC, IMEPackage destinationPCC, PropertyCollection transplantProps, List<KeyValuePair<int, int>> crossPCCObjectMappingList, string debugPrefix)
         {
             List<string> relinkResults = new List<string>();
             foreach (UProperty prop in transplantProps)
             {
+                Debug.WriteLine(debugPrefix + " Relink recursive on " + prop.Name);
                 if (prop is StructProperty)
                 {
-                    relinkResults.AddRange(relinkPropertiesRecursive(importingPCC, destinationPCC, (prop as StructProperty).Properties, crossPCCObjectMappingList));
+                    relinkResults.AddRange(relinkPropertiesRecursive(importingPCC, destinationPCC, (prop as StructProperty).Properties, crossPCCObjectMappingList, debugPrefix + "-"));
                 }
                 else if (prop is ArrayProperty<StructProperty>)
                 {
                     foreach (StructProperty arrayStructProperty in prop as ArrayProperty<StructProperty>)
                     {
-                        relinkResults.AddRange(relinkPropertiesRecursive(importingPCC, destinationPCC, arrayStructProperty.Properties, crossPCCObjectMappingList));
+                        relinkResults.AddRange(relinkPropertiesRecursive(importingPCC, destinationPCC, arrayStructProperty.Properties, crossPCCObjectMappingList, debugPrefix + "-"));
                     }
                 }
                 else if (prop is ArrayProperty<ObjectProperty>)
                 {
                     foreach (ObjectProperty objProperty in prop as ArrayProperty<ObjectProperty>)
                     {
-                        string result = relinkObjectProperty(importingPCC, destinationPCC, objProperty, crossPCCObjectMappingList);
+                        string result = relinkObjectProperty(importingPCC, destinationPCC, objProperty, crossPCCObjectMappingList, debugPrefix);
                         if (result != null)
                         {
                             relinkResults.Add(result);
@@ -72,7 +75,7 @@ namespace ME3Explorer
                 if (prop is ObjectProperty)
                 {
                     //relink
-                    string result = relinkObjectProperty(importingPCC, destinationPCC, prop as ObjectProperty, crossPCCObjectMappingList);
+                    string result = relinkObjectProperty(importingPCC, destinationPCC, prop as ObjectProperty, crossPCCObjectMappingList, debugPrefix);
                     if (result != null)
                     {
                         relinkResults.Add(result);
@@ -82,7 +85,7 @@ namespace ME3Explorer
             return relinkResults;
         }
 
-        private string relinkObjectProperty(IMEPackage importingPCC, IMEPackage destinationPCC, ObjectProperty objProperty, List<KeyValuePair<int, int>> crossPCCObjectMappingList)
+        private string relinkObjectProperty(IMEPackage importingPCC, IMEPackage destinationPCC, ObjectProperty objProperty, List<KeyValuePair<int, int>> crossPCCObjectMappingList, string debugPrefix)
         {
             if (objProperty.Value == 0)
             {
@@ -102,10 +105,10 @@ namespace ME3Explorer
             {
                 sourceObjReference++; //make 0 based for mapping.
             }
-            //if (objProperty.Name != null)
-            //{
-            //    Debug.WriteLine(objProperty.Name);
-            //}
+            if (objProperty.Name != null)
+            {
+                Debug.WriteLine(debugPrefix + " Relinking:" + objProperty.Name);
+            }
             KeyValuePair<int, int> mapping = crossPCCObjectMappingList.Where(pair => pair.Key == sourceObjReference).FirstOrDefault();
             var defaultKVP = default(KeyValuePair<int, int>); //struct comparison
 
@@ -128,7 +131,7 @@ namespace ME3Explorer
                 {
                     s = entry.GetFullPath;
                 }
-                Debug.WriteLine("Relink hit: " + sourceObjReference + objProperty.Name + ": " + s);
+                Debug.WriteLine(debugPrefix + " Relink hit: " + sourceObjReference + objProperty.Name + " : " + s);
             }
             else if (objProperty.Value < 0) //It's an unmapped import
             {

@@ -1910,6 +1910,7 @@ namespace ME3Explorer
                     if (importExport(sourceEntry as IExportEntry, link, out newExport))
                     {
                         newItem = new TreeViewEntry(newExport);
+                        crossPCCObjectMap[n - 1] = newExport.Index; //0 based. map old index to new index
                     }
                     else
                     {
@@ -1922,6 +1923,7 @@ namespace ME3Explorer
                 {
                     ImportEntry newImport = getOrAddCrossImport(importpcc.getImport(Math.Abs(n) - 1).GetFullPath, importpcc, Pcc, sourceItem.Sublinks.Count == 0 ? link : (int?)null);
                     newItem = new TreeViewEntry(newImport);
+                    crossPCCObjectMap[n] = newImport.UIndex; //0 based. map old index to new index
                 }
                 newItem.Parent = targetItem;
                 targetItem.Sublinks.Add(newItem);
