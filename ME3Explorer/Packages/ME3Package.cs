@@ -358,6 +358,10 @@ namespace ME3Explorer.Packages
 
         private static void UpdateOffsets(IExportEntry export)
         {
+            if (export.ObjectName.StartsWith("Default__"))
+            {
+                return; //this is not actually instance of that class
+            }
             //update offsets for pcc-stored audio in wwisestreams
             if ((export.ClassName == "WwiseStream" && export.GetProperty<NameProperty>("Filename") == null) || export.ClassName == "WwiseBank")
             {
