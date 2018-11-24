@@ -291,6 +291,13 @@ namespace ME3Explorer.MetadataEditor
                 tve.RefreshDisplayName();
             }
             */
+            if (CurrentLoadedEntry is IExportEntry)
+            {
+                LoadExport(CurrentLoadedEntry as IExportEntry);
+            } else if (CurrentLoadedEntry is ImportEntry)
+            {
+                LoadImport(CurrentLoadedEntry as ImportEntry);
+            }
             //todo: mvvm-ize this
             if (Header_Hexbox.ByteProvider != null)
             {
