@@ -1364,7 +1364,10 @@ namespace ME3Explorer.Unreal
             int strLen = value.Length == 0 ? 0 : value.Length + 1;
             if (pcc.Game == MEGame.ME3)
             {
-                stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, (strLen * 2) + 4);
+                if (propName != null)
+                {
+                    stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, (strLen * 2) + 4);
+                }
                 stream.WriteStringUnicode(value);
             }
             else

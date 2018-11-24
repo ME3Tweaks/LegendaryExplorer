@@ -42,7 +42,7 @@ namespace ME3Explorer.MetadataEditor
         private const int HEADER_OFFSET_EXP_OBJECTFLAGS = 24;
 
         private const int HEADER_OFFSET_IMP_IDXCLASSNAME = 8;
-        private const int HEADER_OFFSET_IMP_IDXLINK = 12;
+        private const int HEADER_OFFSET_IMP_IDXLINK = 16;
         private const int HEADER_OFFSET_IMP_IDXOBJECTNAME = 20;
         private const int HEADER_OFFSET_IMP_IDXPACKAGEFILE = 0;
         private IEntry CurrentLoadedEntry;
@@ -186,7 +186,7 @@ namespace ME3Explorer.MetadataEditor
             Row_Superclass.Height = new GridLength(0);
             Row_ObjectFlags.Height = new GridLength(0);
             Row_Packagefile.Height = new GridLength(24);
-            InfoTab_Link_TextBlock.Text = "0x0C Link:";
+            InfoTab_Link_TextBlock.Text = "0x10 Link:";
             InfoTab_ObjectName_TextBlock.Text = "0x14 Object name:";
 
             InfoTab_Objectname_ComboBox.SelectedIndex = importEntry.FileRef.findName(importEntry.ObjectName);
