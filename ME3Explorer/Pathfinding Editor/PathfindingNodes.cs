@@ -33,7 +33,7 @@ namespace ME3Explorer.PathfindingNodes
         static Color objectColor = Color.FromArgb(219, 39, 217);//purple
         static Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
         static Pen blackPen = Pens.Black;
-        static Pen halfReachSpecPen = Pens.Gray;
+        static Pen halfReachSpecPen = Pens.LightGray;
         static Pen slotToSlotPen = Pens.DarkOrange;
         static Pen sfxLadderPen = Pens.Purple;
         static Pen sfxBoostPen = Pens.Blue;
@@ -99,6 +99,7 @@ namespace ME3Explorer.PathfindingNodes
             {
                 foreach (var prop in outLinksProp)
                 {
+                    //System.Diagnostics.Debug.WriteLine("Outlink: " + prop.Value);
                     int reachspecexport = prop.Value;
                     ReachSpecs.Add(pcc.Exports[reachspecexport - 1]);
                 }
@@ -141,6 +142,7 @@ namespace ME3Explorer.PathfindingNodes
                                     break;
                                 }
                             }
+                            break;
                         }
                     }
 
@@ -669,6 +671,48 @@ namespace ME3Explorer.PathfindingNodes
             float w = 50;
             float h = 50;
             shape = PPath.CreatePolygon(doorshape);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = pathfindingNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            var props = export.GetProperties();
+            this.TranslateBy(x, y);
+
+
+        }
+    }
+
+    public class SFXNav_LeapNodeHumanoid : PathfindingNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(0, 100, 0);
+        PointF[] beststickmanshape = new PointF[] {
+            new PointF(20, 0), new PointF(30, 0), new PointF(30, 5), new PointF(27, 5), new PointF(27, 10),  //inner elbow of right arm
+            new PointF(45, 10), new PointF(45, 3), new PointF(50, 3), new PointF(50, 14), new PointF(27, 14), //upper thigh of right leg
+            new PointF(27, 25), new PointF(50, 25), new PointF(40, 45), new PointF(35, 45), new PointF(44, 30), //behind right leg kneecap 
+            new PointF(26, 30), new PointF(7, 50), new PointF(0, 50), new PointF(23, 30), new PointF(23, 14), //left armpit
+            new PointF(0, 22), new PointF(0, 18), new PointF(23, 10), new PointF(23, 5), new PointF(20, 5) //bottom left of head
+        };
+
+        public SFXNav_LeapNodeHumanoid(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreatePolygon(beststickmanshape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
             shape.Brush = pathfindingNodeBrush;

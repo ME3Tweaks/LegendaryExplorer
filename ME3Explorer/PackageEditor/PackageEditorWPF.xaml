@@ -137,7 +137,11 @@
                 <MenuItem Header="Experiments" Padding="4">
                     <MenuItem Header="Items in this list are for toolset developers only" IsEnabled="False"/>
                     <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
+                    <MenuItem Header="Port SFXObjectives from one file to another" Click="Port_SFXObjectives_Click"/>
                     <MenuItem Header="Build ME1 Object Info" Click="BuildME1ObjectInfo_Clicked"/>
+                    <MenuItem Header="Generate GUID cache binary for folder" Click="GenerateGUIDCacheForFolder_Clicked"/>
+                    <MenuItem Header="Generate new GUID for package file" Click="GenerateNewGUIDForPackageFile_Clicked"/>
+
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">

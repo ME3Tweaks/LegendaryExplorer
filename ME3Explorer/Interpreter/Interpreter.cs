@@ -601,7 +601,7 @@ namespace ME3Explorer
                         if (arrayType == ArrayType.Struct)
                         {
                             PropertyInfo info = GetPropertyInfo(header.name);
-                            
+
                             t.Text = t.Text.Insert(t.Text.IndexOf("Size: ") - 2, $"({info.reference})");
                             for (int i = 0; i < arrayLength; i++)
                             {
@@ -1721,7 +1721,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ExceptionHandlerDialogWPF.FlattenException(ex));
             }
         }
 
@@ -1838,7 +1838,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ExceptionHandlerDialogWPF.FlattenException(ex));
             }
         }
 
@@ -2003,7 +2003,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ExceptionHandlerDialogWPF.FlattenException(ex));
             }
         }
 
@@ -2174,7 +2174,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ExceptionHandlerDialogWPF.FlattenException(ex));
             }
         }
 
@@ -2263,7 +2263,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ExceptionHandlerDialogWPF.FlattenException(ex));
                 return new byte[0];
             }
         }
@@ -2434,7 +2434,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ExceptionHandlerDialogWPF.FlattenException(ex));
             }
         }
 
