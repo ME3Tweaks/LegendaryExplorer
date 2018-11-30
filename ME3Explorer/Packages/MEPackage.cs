@@ -317,16 +317,33 @@ namespace ME3Explorer.Packages
 
         protected virtual void AfterSave()
         {
+            //We do if checks here to prevent firing tons of extra events as we can't prevent firing chanage notifications if 
+            //it's not really a change due to the side effects of suppressing that.
             foreach (var export in exports)
             {
-                export.DataChanged = false;
-                export.HeaderChanged = false;
-                export.EntryHasPendingChanges = false;
+                if (export.DataChanged)
+                {
+                    export.DataChanged = false;
+                }
+                if (export.HeaderChanged)
+                {
+                    export.HeaderChanged = false;
+                }
+                if (export.EntryHasPendingChanges)
+                {
+                    export.EntryHasPendingChanges = false;
+                }
             }
             foreach (var import in imports)
             {
-                import.HeaderChanged = false;
-                import.EntryHasPendingChanges = false;
+                if (import.HeaderChanged)
+                {
+                    import.HeaderChanged = false;
+                }
+                if (import.EntryHasPendingChanges)
+                {
+                    import.EntryHasPendingChanges = false;
+                }
             }
             namesAdded = 0;
 
