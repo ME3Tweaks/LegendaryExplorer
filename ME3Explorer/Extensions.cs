@@ -27,7 +27,7 @@ namespace ME3Explorer
         public static IEnumerable<System.Windows.Forms.TreeNode> FlattenTreeView(this System.Windows.Forms.TreeView tv)
         {
             return tv.Nodes.Cast<System.Windows.Forms.TreeNode>().SelectMany(FlattenTree);
-            
+
             List<System.Windows.Forms.TreeNode> FlattenTree(System.Windows.Forms.TreeNode rootNode)
             {
                 var nodes = new List<System.Windows.Forms.TreeNode> { rootNode };
@@ -99,7 +99,7 @@ namespace ME3Explorer
             }
             return idx;
         }
-        
+
         public static IEnumerable<T> Concat<T>(this IEnumerable<T> first, T second)
         {
             foreach (T element in first)
@@ -504,7 +504,8 @@ namespace ME3Explorer
             {
                 stream.WriteValueS32(-(value.Length + 1));
                 stream.WriteStringZ(value, Encoding.Unicode);
-            } else
+            }
+            else
             {
                 stream.WriteValueS32(0);
             }
@@ -550,7 +551,7 @@ namespace ME3Explorer
         /// </summary>
         public static int? FromUnrealIdx(this int i)
         {
-            if(i == 0)
+            if (i == 0)
             {
                 return null;
             }
@@ -618,6 +619,35 @@ namespace ME3Explorer
         public static T[] GetValues<T>() where T : Enum
         {
             return (T[])Enum.GetValues(typeof(T));
+        }
+    }
+
+    public static class EnumHelper<T> where T : struct
+    {
+        // ReSharper disable StaticFieldInGenericType
+        private static readonly Enum[] Values;
+        // ReSharper restore StaticFieldInGenericType
+        private static readonly T DefaultValue;
+
+        static EnumHelper()
+        {
+            var type = typeof(T);
+            if (type.IsSubclassOf(typeof(Enum)) == false)
+            {
+                throw new ArgumentException();
+            }
+            Values = Enum.GetValues(type).Cast<Enum>().ToArray();
+            DefaultValue = default(T);
+        }
+
+        public static T[] MaskToList(Enum mask, bool ignoreDefault = true)
+        {
+            var q = Values.Where(mask.HasFlag);
+            if (ignoreDefault)
+            {
+                q = q.Where(v => !v.Equals(DefaultValue));
+            }
+            return q.Cast<T>().ToArray();
         }
     }
 }

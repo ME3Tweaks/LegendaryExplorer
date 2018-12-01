@@ -449,8 +449,10 @@ namespace ME3Explorer
                     while (node.Tag as bool? != true)
                     {
                         node.Tag = true;
-                        //Debug.WriteLine(curIndex);
+                        int oldindex = curIndex;
                         curIndex = pcc.getEntry(curIndex).idxLink;
+                        Debug.WriteLine(oldindex + " links to " + curIndex);
+
                         link = curIndex >= 0 ? curIndex : (-curIndex + importsOffset);
                         nodeList[link].Nodes.Add(node);
                         node = nodeList[link];
@@ -1633,7 +1635,7 @@ namespace ME3Explorer
                     goToNumber(n >= 0 ? pcc.ExportCount - 1 : -pcc.ImportCount);
                     if (relinkResults.Count > 0)
                     {
-                        ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.");
+                        ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.", null);
                         ld.Show();
                     }
                     else
@@ -2157,7 +2159,7 @@ namespace ME3Explorer
                 }
                 //Clipboard.SetText(copy);
                 MessageBox.Show(duplicates.Count + " duplicate indexes were found.", "BAD INDEXING");
-                ListDialog lw = new ListDialog(duplicates, "Duplicate indexes", "The following items have duplicate indexes.");
+                ListDialog lw = new ListDialog(duplicates, "Duplicate indexes", "The following items have duplicate indexes.", null);
                 lw.Show();
             }
             else
@@ -2494,7 +2496,7 @@ namespace ME3Explorer
                     sw.Stop();
                     Debug.WriteLine("Time: " + sw.ElapsedMilliseconds + "ms");
 
-                    ListDialog ld = new ListDialog(changedExports, "Changed exports between files", "The following exports are different between the files.");
+                    ListDialog ld = new ListDialog(changedExports, "Changed exports between files", "The following exports are different between the files.", null);
                     ld.Show();
                 }
             }

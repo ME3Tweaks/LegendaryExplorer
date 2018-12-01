@@ -29,7 +29,7 @@ namespace ME3Explorer
 
             if (serialexportsbad.Count > 0)
             {
-                ListDialog lw = new ListDialog(serialexportsbad, "Serial Size Mismatches", "The following exports had serial size mismatches.");
+                ListDialog lw = new ListDialog(serialexportsbad, "Serial Size Mismatches", "The following exports had serial size mismatches.", null);
                 lw.Show();
             }
             else

@@ -97,8 +97,10 @@
                 </MenuItem>
 
                 <MenuItem Header="Tools" Padding="4">
-                    <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}"/>
+                    <MenuItem Header="Package file header info" ToolTip="View information stored in package header" Command="{Binding PackageHeaderViewerCommand}"/>
                     <MenuItem Header="Compare with another package" ToolTip="Compare another version of this package to see what exports and imports have changed" Command="{Binding ComparePackagesCommand}"/>
+                    <Separator/>
+                    <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}"/>
                     <MenuItem Header="Convenience tools" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <MenuItem Header="Rebuild BioWorld StreamingLevels"  Command="{Binding RebuildStreamingLevelsCommand}" ToolTip="Updates BioWorldInfo's list of StreamingLevels to include all LevelStreamingKismet"/>
 
@@ -310,6 +312,7 @@
                             <MenuItem Header="Reindex objects with this name" ToolTip="Reindexes all objects with this name, ensuring there are no duplicate indexes" Command="{Binding ReindexCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                             <MenuItem Header="Clone" Command="{Binding CloneCommand}"/>
                             <MenuItem Header="Clone Tree" Command="{Binding CloneTreeCommand}"/>
+                            <MenuItem Header="Trash export and children" ToolTip="Converts this export and its children into empty data" Command="{Binding TrashCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                             <MenuItem Header="Export..." IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                                 <MenuItem Header="Embedded file" Command="{Binding ExportEmbeddedFileCommand}" ToolTip="{Binding Converter={StaticResource EmbeddedFileToolTipConverter}, ConverterParameter='Export'}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                 <MenuItem Header="Complete export data"  Command="{Binding ExportAllDataCommand}" ToolTip="Export all export data (properties + binary) to a .bin file"/>

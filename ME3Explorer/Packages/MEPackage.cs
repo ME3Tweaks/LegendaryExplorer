@@ -63,6 +63,8 @@ namespace ME3Explorer.Packages
         public abstract int ImportCount { get; protected set; }
         public abstract int ExportCount { get; protected set; }
 
+        public byte[] getHeader() { return header; }
+
         public bool IsCompressed
         {
             get { return (flags & 0x02000000) != 0; }
