@@ -921,6 +921,11 @@ namespace ME3Explorer
         private List<object> Scan_WwiseEvent(byte[] data, int binarystart)
         {
             var subnodes = new List<object>();
+            if (CurrentLoadedExport.FileRef.Game != MEGame.ME3)
+            {
+                subnodes.Add("Only ME3 is supported for this scan.");
+                return subnodes;
+            }
             try
             {
                 int binarypos = binarystart;

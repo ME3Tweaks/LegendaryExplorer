@@ -253,7 +253,13 @@ namespace ME3Explorer.Packages
             {
                 replaceExports = exports.Where(export => export.DataChanged && export.DataOffset < NameOffset && export.DataSize <= export.OriginalDataSize);
                 appendExports = exports.Where(export => export.DataOffset > NameOffset || (export.DataChanged && export.DataSize > export.OriginalDataSize));
-                max = exports.Where(exp => exp.DataOffset < NameOffset).Max(e => e.DataOffset);
+                var expsBeforeNameOffset = exports.Where(exp => exp.DataOffset < NameOffset).ToList();
+                if (expsBeforeNameOffset.Count > 0) {
+                    max = expsBeforeNameOffset.Max(e => e.DataOffset);
+                } else
+                {
+                    max = exports.Max(maxExport => maxExport.DataOffset);
+                }
             }
             else
             {

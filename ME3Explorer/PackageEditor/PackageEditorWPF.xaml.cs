@@ -169,6 +169,8 @@ namespace ME3Explorer
         public ICommand ReindexCommand { get; set; }
         public ICommand TrashCommand { get; set; }
         public ICommand PackageHeaderViewerCommand { get; set; }
+        public ICommand CreateNewPackageGUIDCommand { get; set; }
+
         private void LoadCommands()
         {
             ComparePackagesCommand = new RelayCommand(ComparePackages, PackageIsLoaded);
@@ -190,6 +192,20 @@ namespace ME3Explorer
             ReindexCommand = new RelayCommand(ReindexObjectByName, ExportIsSelected);
             TrashCommand = new RelayCommand(TrashEntryAndChildren, EntryIsSelected);
             PackageHeaderViewerCommand = new RelayCommand(ViewPackageInfo, PackageIsLoaded);
+            CreateNewPackageGUIDCommand = new RelayCommand(GenerateNewGUIDForSelected, PackageExportIsSelected);
+        }
+
+        private void GenerateNewGUIDForSelected(object obj)
+        {
+            TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+            IExportEntry export = selected.Entry as IExportEntry;
+            Guid newGuid = Guid.NewGuid();
+            byte[] header = export.Header;
+            int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
+            int count = BitConverter.ToInt32(header, preguidcountoffset);
+            int headerguidoffset = (preguidcountoffset + 4) + (count * 4);
+            SharedPathfinding.WriteMem(header, headerguidoffset, newGuid.ToByteArray());
+            export.Header = header;
         }
 
         private void ViewPackageInfo(object obj)
@@ -294,7 +310,7 @@ namespace ME3Explorer
                         Debugger.Break();
                     }
                     //Write trash GUID
-                    exp.ObjectFlags &= (ulong) ~EObjectFlags.HasStack;
+                    exp.ObjectFlags &= (ulong)~EObjectFlags.HasStack;
                     Guid trashGuid = ToGuid("ME3ExpTrashPackage"); //DO NOT EDIT THIS!!
                     byte[] header = exp.Header;
                     int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
@@ -1004,6 +1020,16 @@ namespace ME3Explorer
             return false;
         }
 
+        private bool PackageExportIsSelected(object obj)
+        {
+            TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+            if (selected != null && selected.Entry != null && selected.Entry.ClassName == "Package")
+            {
+                return true;
+            }
+            return false;
+        }
+
         private bool ImportIsSelected(object obj)
         {
             int n;
@@ -1599,7 +1625,7 @@ namespace ME3Explorer
 
             //we might need to identify parent depths and add those first
             List<PackageUpdate> addedChanges = updates.Where(x => x.change == PackageChange.ExportAdd || x.change == PackageChange.ImportAdd).OrderBy(x => x.index).ToList();
-            List<int> headerChanges = updates.Where(x => x.change == PackageChange.ExportHeader).Select(x=>x.index).OrderBy(x=>x).ToList();
+            List<int> headerChanges = updates.Where(x => x.change == PackageChange.ExportHeader).Select(x => x.index).OrderBy(x => x).ToList();
             if (addedChanges.Count > 0)
             {
                 //Find nodes that haven't been generated and added yet
@@ -1682,7 +1708,7 @@ namespace ME3Explorer
                 var tree = AllTreeViewNodesX[0].FlattenTree();
                 var nodesNeedingResort = new List<TreeViewEntry>();
                 List<TreeViewEntry> tviWithChangedHeaders = tree.Where(x => x.UIndex > 0 && headerChanges.Contains(x.Entry.Index)).ToList();
-                foreach(TreeViewEntry tvi in tviWithChangedHeaders)
+                foreach (TreeViewEntry tvi in tviWithChangedHeaders)
                 {
                     if (tvi.Parent.UIndex != tvi.Entry.idxLink)
                     {
@@ -1691,7 +1717,8 @@ namespace ME3Explorer
                         if (newParent == null)
                         {
                             Debugger.Break();
-                        } else
+                        }
+                        else
                         {
                             tvi.Parent.Sublinks.Remove(tvi);
                             tvi.Parent = newParent;
@@ -3188,16 +3215,18 @@ namespace ME3Explorer
                                 int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
                                 int count = BitConverter.ToInt32(exp.Header, preguidcountoffset);
                                 byte[] guidbytes = exp.Header.Skip((preguidcountoffset + 4) + (count * 4)).Take(16).ToArray();
-
-                                Guid guid = new Guid(guidbytes);
-                                GuidPackageMap.TryGetValue(guid, out string packagename);
-                                if (packagename != null && packagename != exp.ObjectName)
+                                if (!guidbytes.All(singleByte => singleByte == 0))
                                 {
-                                    Debug.WriteLine($"{exp.ObjectName} has a guid different from already found one!");
-                                }
-                                if (packagename == null)
-                                {
-                                    GuidPackageMap[guid] = exp.ObjectName;
+                                    Guid guid = new Guid(guidbytes);
+                                    GuidPackageMap.TryGetValue(guid, out string packagename);
+                                    if (packagename != null && packagename != exp.ObjectName)
+                                    {
+                                        Debug.WriteLine($"{exp.ObjectName} has a guid different from already found one ({packagename})! " + guid.ToString());
+                                    }
+                                    if (packagename == null)
+                                    {
+                                        GuidPackageMap[guid] = exp.ObjectName;
+                                    }
                                 }
                             }
                         }
@@ -3274,8 +3303,10 @@ namespace ME3Explorer
                     return;
                 }
                 byte[] header = selfNamingExport.Header;
-                int count = BitConverter.ToInt32(header, 0x2C);
-                int headerguidoffset = 0x30 + (count * 4);
+                int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
+                int count = BitConverter.ToInt32(header, preguidcountoffset);
+                int headerguidoffset = (preguidcountoffset + 4) + (count * 4);
+
                 SharedPathfinding.WriteMem(header, headerguidoffset, newGuid.ToByteArray());
                 selfNamingExport.Header = header;
                 sourceFile.save();
