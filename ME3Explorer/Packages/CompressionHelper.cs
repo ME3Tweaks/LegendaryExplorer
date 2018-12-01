@@ -62,14 +62,14 @@ namespace ME3Explorer.Packages
             raw.Seek(64 + tempNameSize, SeekOrigin.Begin);
             int tempGenerations = raw.ReadValueS32();
             raw.Seek(32 + tempGenerations * 12, SeekOrigin.Current);
-            CompressionType compressionType = (CompressionType)raw.ReadValueU32();
-
 
             //if ME1
             if (versionLo == 491 && versionHi == 1008)
             {
                 raw.Seek(4, SeekOrigin.Current);
             }
+            CompressionType compressionType = (CompressionType)raw.ReadValueU32();
+
 
             int pos = 4;
             int NumChunks = raw.ReadValueS32();
