@@ -1695,6 +1695,7 @@ namespace ME3Explorer
 
                         Tag = NodeType.StructLeafName
                     });
+                    //Debug.WriteLine($"{pos:X4} {CurrentLoadedExport.FileRef.getNameEntry(nameRef)}_{nameIdx}: {{{guid}}}");
                     pos += 24;
                 }
             }

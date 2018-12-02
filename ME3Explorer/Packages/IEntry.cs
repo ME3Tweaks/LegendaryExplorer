@@ -20,6 +20,7 @@ namespace ME3Explorer.Packages
         string ObjectName { get; }
         string PackageFullName { get; }
         string PackageName { get; }
+        byte[] GetHeader(); //returns clone
     }
 
     public interface IExportEntry : IEntry

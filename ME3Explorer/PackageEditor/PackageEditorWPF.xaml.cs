@@ -170,7 +170,7 @@ namespace ME3Explorer
         public ICommand TrashCommand { get; set; }
         public ICommand PackageHeaderViewerCommand { get; set; }
         public ICommand CreateNewPackageGUIDCommand { get; set; }
-
+        public ICommand SetPackageAsFilenamePackageCommand { get; set; }
         private void LoadCommands()
         {
             ComparePackagesCommand = new RelayCommand(ComparePackages, PackageIsLoaded);
@@ -193,6 +193,25 @@ namespace ME3Explorer
             TrashCommand = new RelayCommand(TrashEntryAndChildren, EntryIsSelected);
             PackageHeaderViewerCommand = new RelayCommand(ViewPackageInfo, PackageIsLoaded);
             CreateNewPackageGUIDCommand = new RelayCommand(GenerateNewGUIDForSelected, PackageExportIsSelected);
+            SetPackageAsFilenamePackageCommand = new RelayCommand(SetSelectedAsFilenamePackage, PackageExportIsSelected);
+        }
+
+        private void SetSelectedAsFilenamePackage(object obj)
+        {
+            TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+            IExportEntry export = selected.Entry as IExportEntry;
+            byte[] fileGUID = export.FileRef.getHeader().Skip(0x4E).Take(16).ToArray();
+            string fname = Path.GetFileNameWithoutExtension(export.FileRef.FileName);
+
+            //Write GUID
+            byte[] header = export.GetHeader();
+            int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
+            int count = BitConverter.ToInt32(header, preguidcountoffset);
+            int headerguidoffset = (preguidcountoffset + 4) + (count * 4);
+            SharedPathfinding.WriteMem(header, headerguidoffset, fileGUID);
+            export.Header = header;
+
+            export.idxObjectName = export.FileRef.FindNameOrAdd(fname);
         }
 
         private void GenerateNewGUIDForSelected(object obj)
@@ -200,7 +219,7 @@ namespace ME3Explorer
             TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
             IExportEntry export = selected.Entry as IExportEntry;
             Guid newGuid = Guid.NewGuid();
-            byte[] header = export.Header;
+            byte[] header = export.GetHeader();
             int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
             int count = BitConverter.ToInt32(header, preguidcountoffset);
             int headerguidoffset = (preguidcountoffset + 4) + (count * 4);
@@ -312,7 +331,7 @@ namespace ME3Explorer
                     //Write trash GUID
                     exp.ObjectFlags &= (ulong)~EObjectFlags.HasStack;
                     Guid trashGuid = ToGuid("ME3ExpTrashPackage"); //DO NOT EDIT THIS!!
-                    byte[] header = exp.Header;
+                    byte[] header = exp.GetHeader();
                     int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
                     int count = BitConverter.ToInt32(header, preguidcountoffset);
                     int headerguidoffset = (preguidcountoffset + 4) + (count * 4);
@@ -330,7 +349,7 @@ namespace ME3Explorer
                     exp.idxObjectName = Pcc.FindNameOrAdd("Trash");
                     exp.ObjectFlags &= (ulong)~EObjectFlags.HasStack;
 
-                    byte[] header = exp.Header;
+                    byte[] header = exp.GetHeader();
                     int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
                     int count = BitConverter.ToInt32(header, preguidcountoffset);
                     int headerguidoffset = (preguidcountoffset + 4) + (count * 4);
@@ -3200,19 +3219,25 @@ namespace ME3Explorer
                             guidcachefile = file;
                             continue;
                         }
+                        if (fname.Contains("_LOC_"))
+                        {
+                            Debug.WriteLine("--> Skipping " + fname);
+                            continue; //skip localizations
+                        }
                         Debug.WriteLine(Path.GetFileName(file));
                         var package = MEPackageHandler.OpenMEPackage(file);
                         bool hasPackageNamingItself = false;
+                        var filesToSkip = new string[] { "BioD_Cit004_270ShuttleBay1", "BioD_Cit003_600MechEvent", "CAT6_Executioner", "SFXPawn_Demo", "SFXPawn_Sniper", "SFXPawn_Heavy", "GethAssassin", "BioD_OMG003_125LitExtra" };
                         foreach (IExportEntry exp in package.Exports)
                         {
-                            if (exp.ClassName == "Package" && exp.idxLink == 0)
+                            if (exp.ClassName == "Package" && exp.idxLink == 0 && !filesToSkip.Contains(exp.ObjectName))
                             {
                                 if (string.Equals(exp.ObjectName, fname, StringComparison.InvariantCultureIgnoreCase))
                                 {
                                     hasPackageNamingItself = true;
                                 }
 
-                                int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
+                                int preguidcountoffset = package.Game == MEGame.ME3 ? 0x2C : 0x30;
                                 int count = BitConverter.ToInt32(exp.Header, preguidcountoffset);
                                 byte[] guidbytes = exp.Header.Skip((preguidcountoffset + 4) + (count * 4)).Take(16).ToArray();
                                 if (!guidbytes.All(singleByte => singleByte == 0))
@@ -3221,7 +3246,7 @@ namespace ME3Explorer
                                     GuidPackageMap.TryGetValue(guid, out string packagename);
                                     if (packagename != null && packagename != exp.ObjectName)
                                     {
-                                        Debug.WriteLine($"{exp.ObjectName} has a guid different from already found one ({packagename})! " + guid.ToString());
+                                        Debug.WriteLine($"-> {exp.UIndex} {exp.ObjectName} has a guid different from already found one ({packagename})! " + guid.ToString());
                                     }
                                     if (packagename == null)
                                     {
@@ -3302,8 +3327,8 @@ namespace ME3Explorer
                     MessageBox.Show("Selected package does not contain a self-naming package export.\nCannot regenerate package file-level GUID if it doesn't contain self-named export.");
                     return;
                 }
-                byte[] header = selfNamingExport.Header;
-                int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
+                byte[] header = selfNamingExport.GetHeader();
+                int preguidcountoffset = selfNamingExport.FileRef.Game == MEGame.ME3 ? 0x2C : 0x30;
                 int count = BitConverter.ToInt32(header, preguidcountoffset);
                 int headerguidoffset = (preguidcountoffset + 4) + (count * 4);
 

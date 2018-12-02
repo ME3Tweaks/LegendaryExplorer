@@ -23,7 +23,14 @@ namespace ME3Explorer.Packages
             OriginalDataSize = 0;
         }
 
+        /// <summary>
+        /// NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
+        /// </summary>
         protected byte[] _header;
+        /// <summary>
+        /// The underlying header is directly returned by this getter. If you want to write a new header back, use the copy provided by getHeader()!
+        /// Otherwise some events may not trigger
+        /// </summary>
         public byte[] Header
         {
             get { return _header; }
@@ -42,6 +49,15 @@ namespace ME3Explorer.Packages
                     EntryHasPendingChanges = true;
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns a clone of the header for modifying
+        /// </summary>
+        /// <returns></returns>
+        public byte[] GetHeader()
+        {
+            return _header.TypedClone();
         }
 
         public uint HeaderOffset { get; set; }
