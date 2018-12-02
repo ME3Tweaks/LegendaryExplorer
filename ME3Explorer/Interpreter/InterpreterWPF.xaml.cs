@@ -20,6 +20,7 @@ using ME3Explorer.SharedUI;
 using System.Windows.Input;
 using Xceed.Wpf.Toolkit;
 using static ME3Explorer.PackageEditorWPF;
+using Gammtek.Conduit.Extensions.IO;
 
 namespace ME3Explorer
 {
@@ -705,6 +706,7 @@ namespace ME3Explorer
                         bool isFirst = true;
                         foreach (UProperty uprop in sp.Properties)
                         {
+
                             string val = (uprop as FloatProperty).Value.ToString();
                             if (isFirst)
                             {
@@ -718,6 +720,17 @@ namespace ME3Explorer
                         }
                         loc += ")";
                         parsedValue = loc;
+                    }
+                    else if (sp.StructType == "Guid")
+                    {
+                        MemoryStream ms = new MemoryStream();
+                        foreach (UProperty uprop in sp.Properties)
+                        {
+                            int val = (uprop as IntProperty).Value;
+                            ms.WriteInt32(val);
+                        }
+                        Guid g = new Guid(ms.ToArray());
+                        parsedValue = g.ToString();
                     }
                     else
                     {
