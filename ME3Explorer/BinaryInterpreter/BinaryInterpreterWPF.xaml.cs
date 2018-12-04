@@ -1827,7 +1827,6 @@ namespace ME3Explorer
 
         private List<object> StartMaterialScan(byte[] data, int binarystart)
         {
-            //const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
             var subnodes = new List<object>();
 
             if (binarystart >= data.Length)

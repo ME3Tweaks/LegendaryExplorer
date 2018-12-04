@@ -458,13 +458,45 @@ namespace ME3Explorer
                                         }
                                     }
                                     break;
+                                case "Material":
+                                    {
+                                        int binarypos = 0x8;
+
+                                        int guidcount = BitConverter.ToInt32(binarydata, binarypos);
+                                        binarypos += 4;
+                                        for (int i = 0; i < guidcount; i++)
+                                        {
+                                            binarypos += 16;
+                                        }
+                                        int unkcount = BitConverter.ToInt32(binarydata, binarypos);
+                                        binarypos += 4;
+                                        int count = BitConverter.ToInt32(binarydata, binarypos);
+                                        binarypos += 4;
+                                        while (binarypos <= binarydata.Length - 4 && count > 0)
+                                        {
+                                            int val = BitConverter.ToInt32(binarydata, binarypos);
+                                            string name = val.ToString();
+
+                                            if (crossPCCObjectMap.TryGetValue(unrealIndexToME3ExpIndexing(val), out int mapped)){
+                                                Debug.WriteLine($"Binary relink (material) hit: {val} -> {mapped}");
+                                                WriteMem(binarypos, binarydata, BitConverter.GetBytes(me3ExpIndexingToUnreal(mapped)));
+                                            } else
+                                            {
+                                                Debug.WriteLine($"Binary relink (material) miss: {val}");
+                                            }
+                                            binarypos += 4;
+                                            count--;
+                                        }
+                                        exp.setBinaryData(binarydata);
+                                    }
+                                    break;
                                 default:
                                     continue;
                             }
                         }
                         catch (Exception e)
                         {
-                            relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relinking failed: " + e.Message);
+                            relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relinking failed due to exception: " + e.Message);
                         }
                         //Run an interpreter pass over it - we will find objectleafnodes and attempt to update the same offset in the destination file.
                         //BinaryInterpreter binaryrelinkInterpreter = new ME3Explorer.BinaryInterpreter(importpcc, importpcc.Exports[entry.Key], pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
