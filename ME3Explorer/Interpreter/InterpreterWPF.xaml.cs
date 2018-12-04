@@ -628,6 +628,10 @@ namespace ME3Explorer
                         {
                             editableValue = index.ToString();
                             parsedValue = entry.GetFullPath;
+                            if (entry is IExportEntry exp)
+                            {
+                                parsedValue += "_" + exp.indexValue;
+                            }
                             if (index > 0 && ExportToStringConverters.Contains(entry.ClassName))
                             {
                                 editableValue += " " + ExportToString(parsingExport.FileRef.Exports[index - 1]);
@@ -1671,6 +1675,17 @@ namespace ME3Explorer
                         FloatProperty fp = new FloatProperty(0);
                         afp.Add(fp);
                         break;
+                    case ArrayProperty<StrProperty> asp:
+                        StrProperty strp = new StrProperty("Empty String");
+                        asp.Add(strp);
+                        break;
+                    case ArrayProperty<StringRefProperty> astrf:
+                        StringRefProperty strfp = new StringRefProperty();
+                        astrf.Add(strfp);
+                        break;
+                    default:
+                        System.Windows.MessageBox.Show("Can't add this property type yet.\nPlease pester Mgamerz to get it implemented");
+                        break;
 
                         //TODO: Figure out how to do these
                         /*
@@ -1703,6 +1718,9 @@ namespace ME3Explorer
                         int index = parent.Items.IndexOf(Interpreter_TreeView.SelectedItem); //=1 when you select "0-0-1"
                         if (index >= 0)
                         {
+                            dynamic arrayPropContaining = tvi.Parent.Property; //???? -> Property = UProperty
+                            //var childProps = arrayPropContaining.ValuesAsProperties.ToList();
+                            arrayPropContaining.RemoveAt(index);
                             tvi.Parent.ChildrenProperties.RemoveAt(index);
                             CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
                         }
@@ -1714,8 +1732,6 @@ namespace ME3Explorer
                 }
             }
         }
-
-
     }
 
     [DebuggerDisplay("UPropertyTreeViewEntry | {DisplayName}")]

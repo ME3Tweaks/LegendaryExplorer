@@ -127,6 +127,11 @@ namespace ME3Explorer.Packages
 
         public void addName(string name)
         {
+            if (name == null)
+            {
+                Debug.WriteLine("THIS SHOULD NOT OCCUR.");
+                Debugger.Break();
+            }
             if (!names.Contains(name))
             {
                 names.Add(name);
