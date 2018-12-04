@@ -2290,6 +2290,7 @@ namespace ME3Explorer
                     if (importExport(node.Entry as IExportEntry, newItemParent.UIndex, out importedEntry))
                     {
                         newEntry = new TreeViewEntry(importedEntry);
+                        crossPCCObjectMap[node.Entry.UIndex - 1] = importedEntry.Index; //0 based. map old index to new index
                     }
                     else
                     {
@@ -2305,6 +2306,7 @@ namespace ME3Explorer
 
                     //ImportEntry newImport = Pcc.Imports[nextIndex - 1]; //0 based
                     newEntry = new TreeViewEntry(newImport);
+                    crossPCCObjectMap[index] = newImport.UIndex; //0 based. map old index to new index
                 }
                 newEntry.Parent = newItemParent;
                 newItemParent.Sublinks.Add(newEntry); //TODO: Resort the children so they display in the proper order
