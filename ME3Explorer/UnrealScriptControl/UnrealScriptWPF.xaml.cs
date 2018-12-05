@@ -133,7 +133,7 @@ namespace ME3Explorer
 
         private void hb1_SelectionChanged(object sender, EventArgs e)
         {
-            if (TokenChanging)
+            if (!TokenChanging)
             {
                 System.Diagnostics.Debug.WriteLine("hb1 updated");
                 int start = (int)ScriptEditor_Hexbox.SelectionStart;

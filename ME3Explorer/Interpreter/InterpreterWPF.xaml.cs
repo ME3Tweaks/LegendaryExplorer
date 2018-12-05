@@ -376,6 +376,12 @@ namespace ME3Explorer
                     case PropertyType.NameProperty:
                         newProperty = new NameProperty(prop.Item1) { Value = "None" };
                         break;
+                    case PropertyType.ByteProperty:
+                        newProperty = new ByteProperty(0, prop.Item1);
+                        break;
+                    case PropertyType.ObjectProperty:
+                        newProperty = new ObjectProperty(0, prop.Item1);
+                        break;
                     case PropertyType.StructProperty:
                         // Generate the bytecode and then read it as a prop.
                         // This is effectively the way classic interpreter does it
