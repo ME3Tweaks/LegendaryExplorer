@@ -338,10 +338,6 @@ namespace ME3Explorer.Unreal
             {
                 className = className.Substring(9);
             }
-            if (propName == "Interactions")
-            {
-                Debugger.Break();
-            }
             Dictionary<string, ClassInfo> temp = inStruct ? Structs : Classes;
             ClassInfo info;
             bool infoExists = temp.TryGetValue(className, out info);
@@ -364,7 +360,7 @@ namespace ME3Explorer.Unreal
                     {
                         if ((p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty) && reSearch)
                         {
-                            PropertyInfo val = getPropertyInfo(p.reference, propName, true, nonVanillaClassInfo, reSearch: false);
+                            PropertyInfo val = getPropertyInfo(p.reference, propName, true, nonVanillaClassInfo, reSearch: true);
                             if (val != null)
                             {
                                 return val;
