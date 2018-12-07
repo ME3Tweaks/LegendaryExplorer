@@ -118,7 +118,7 @@ namespace ME3Explorer.Unreal
                         if (ME3UnrealObjectInfo.isImmutable(structType))
                         {
                             PropertyCollection structProps = ReadSpecialStruct(pcc, stream, structType, size);
-                            props.Add(new StructProperty(structType, structProps, nameRef, true) { StartOffset = propertyStartPosition, ValueOffset = valOffset });
+                            props.Add(new StructProperty(structType, structProps, nameRef, true) { StartOffset = valOffset, ValueOffset = valOffset });
                         }
                         else
                         {
@@ -491,7 +491,7 @@ namespace ME3Explorer.Unreal
                             {
                                 long offset = stream.Position;
                                 PropertyCollection structProps = ReadSpecialStruct(pcc, stream, arrayStructType, arraySize / count);
-                                StructProperty structP = new StructProperty(arrayStructType, structProps, isImmutable: true) { StartOffset = startPos };
+                                StructProperty structP = new StructProperty(arrayStructType, structProps, isImmutable: true) { StartOffset = offset };
                                 structP.ValueOffset = offset;
                                 props.Add(structP);
                             }

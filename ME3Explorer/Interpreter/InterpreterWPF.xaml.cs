@@ -453,7 +453,10 @@ namespace ME3Explorer
             EditorSetElements.ForEach(x => x.Visibility = Visibility.Collapsed);
             Set_Button.Visibility = Visibility.Collapsed;
             EditorSet_Separator.Visibility = Visibility.Collapsed;
-            (Interpreter_Hexbox.ByteProvider as DynamicByteProvider).Bytes.Clear();
+            if (Interpreter_Hexbox != null)
+            {
+                (Interpreter_Hexbox.ByteProvider as DynamicByteProvider).Bytes.Clear();
+            }
             HasUnsavedChanges = false;
             PropertyNodes.Clear();
         }
@@ -710,6 +713,7 @@ namespace ME3Explorer
                     editableValue = strp.Value;
                     break;
                 case StructProperty sp:
+
                     if (sp.Name == "location" && sp.StructType == "Vector")
                     {
                         string loc = "(";
@@ -1304,7 +1308,7 @@ namespace ME3Explorer
 
                 if (CurrentLoadedExport.ClassName != "Class")
                 {
-                    if (newSelectedItem.Property is StructProperty && newSelectedItem.Parent.Property is ArrayProperty<StructProperty>)
+                    if (newSelectedItem.Property is StructProperty && newSelectedItem.Parent.Property is ArrayProperty<StructProperty> || newSelectedItem.Parent.Property is ArrayProperty<EnumProperty>)
                     {
                         Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef, true));
                     }

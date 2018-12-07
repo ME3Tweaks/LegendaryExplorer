@@ -1625,17 +1625,25 @@ namespace ME3Explorer
 
             AllowRefresh = false;
             IExportEntry nodeEntry = pcc.Exports[n];
-            ObjectProperty collisionComponentProperty = nodeEntry.GetProperty<ObjectProperty>("CollisionComponent");
-            IExportEntry collisionEntry = pcc.Exports[collisionComponentProperty.Value - 1];
+            cloneNode(nodeEntry);
+            AllowRefresh = true;
 
-            int newNodeIndex = pcc.Exports.Count;
+            //RefreshView();
+        }
+
+        private IExportEntry cloneNode(IExportEntry nodeEntry)
+        {
+            ObjectProperty collisionComponentProperty = nodeEntry.GetProperty<ObjectProperty>("CollisionComponent");
+            IExportEntry collisionEntry = nodeEntry.FileRef.Exports[collisionComponentProperty.Value - 1];
+
+            int newNodeIndex = nodeEntry.FileRef.Exports.Count;
             int newCollisionIndex = newNodeIndex + 1;
 
-            pcc.addExport(nodeEntry.Clone());
-            pcc.addExport(collisionEntry.Clone());
+            nodeEntry.FileRef.addExport(nodeEntry.Clone());
+            nodeEntry.FileRef.addExport(collisionEntry.Clone());
 
-            IExportEntry newNodeEntry = pcc.Exports[newNodeIndex];
-            IExportEntry newCollisionEntry = pcc.Exports[newCollisionIndex];
+            IExportEntry newNodeEntry = nodeEntry.FileRef.Exports[newNodeIndex];
+            IExportEntry newCollisionEntry = nodeEntry.FileRef.Exports[newCollisionIndex];
             newCollisionEntry.idxLink = newNodeEntry.UIndex;
 
             //empty the pathlist
@@ -1685,7 +1693,7 @@ namespace ME3Explorer
             SharedPathfinding.GenerateNewRandomGUID(newNodeEntry);
             //Add cloned node to persistentlevel
             IExportEntry persistentlevel = null;
-            foreach (IExportEntry exp in pcc.Exports)
+            foreach (IExportEntry exp in nodeEntry.FileRef.Exports)
             {
                 if (exp.ClassName == "Level" && exp.ObjectName == "PersistentLevel")
                 {
@@ -1712,9 +1720,7 @@ namespace ME3Explorer
 
             reindexObjectsWithName(newNodeEntry.ObjectName);
             reindexObjectsWithName(newCollisionEntry.ObjectName);
-            AllowRefresh = true;
-
-            //RefreshView();
+            return newNodeEntry;
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)
@@ -2235,21 +2241,25 @@ namespace ME3Explorer
                 size = form.SpecSize;
                 destinationType = form.DestinationType;
             }
+            IExportEntry startNode = pcc.Exports[sourceExportIndex];
+            createReachSpec(startNode, createTwoWay, destinationIndex, reachSpecClass, size, destinationType);
+        }
+
+        private void createReachSpec(IExportEntry startNode, bool createTwoWay, int destinationIndex, string reachSpecClass, int size, int destinationType)
+        {
+            //func
+            IExportEntry reachSpectoClone = null;
+            foreach (IExportEntry exp in pcc.Exports)
+            {
+                if (exp.ClassName == "ReachSpec") //clone basic reachspec, set class later
+                {
+                    reachSpectoClone = exp;
+                    break;
+                }
+            }
             if (destinationType == 1) //EXTERNAL
             {
                 //external node
-                IExportEntry startNode = pcc.Exports[sourceExportIndex];
-                //Debug.WriteLine("Source Node: " + startNode.Index);
-                //Find reachspec to clone
-                IExportEntry reachSpectoClone = null;
-                foreach (IExportEntry exp in pcc.Exports)
-                {
-                    if (exp.ClassName == "ReachSpec") //clone basic reachspec, set class later
-                    {
-                        reachSpectoClone = exp;
-                        break;
-                    }
-                }
 
                 //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
                 int outgoingSpec = pcc.ExportCount;
@@ -2296,19 +2306,7 @@ namespace ME3Explorer
             }
             else
             {
-                IExportEntry startNode = pcc.Exports[sourceExportIndex];
                 //Debug.WriteLine("Source Node: " + startNode.Index);
-                //Find reachspec to clone
-                IExportEntry reachSpectoClone = null;
-                foreach (IExportEntry exp in pcc.Exports)
-                {
-                    if (exp.ClassName == "ReachSpec") //clone basic reachspec, set class later
-                    {
-                        reachSpectoClone = exp;
-                        break;
-                    }
-                }
-
 
                 //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
                 int outgoingSpec = pcc.ExportCount;
@@ -2902,6 +2900,11 @@ namespace ME3Explorer
             //    start = findEndOfProps(level);
             //}
             //Read persistent level binary
+            fixStackHeaders(true);
+        }
+
+        private void fixStackHeaders(bool showUI)
+        {
             int itemcount = 2;
             int numUpdated = 0;
 
@@ -3027,10 +3030,10 @@ namespace ME3Explorer
                     Debug.WriteLine(itemlist);
                 }
             }
-
-
-
-            MessageBox.Show(this, numUpdated + " export" + (numUpdated != 1 ? "s" : "") + " in PersistentLevel had data headers updated.", "Header Check Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (showUI)
+            {
+                MessageBox.Show(this, numUpdated + " export" + (numUpdated != 1 ? "s" : "") + " in PersistentLevel had data headers updated.", "Header Check Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         private void validateReachToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3084,6 +3087,11 @@ namespace ME3Explorer
         }
 
         private void relinkPathfinding_ButtonClicked(object sender, EventArgs e)
+        {
+            relinkingPathfindingChain();
+        }
+
+        private void relinkingPathfindingChain()
         {
             List<IExportEntry> pathfindingChain = new List<IExportEntry>();
 
@@ -3803,10 +3811,76 @@ namespace ME3Explorer
                         MessageBox.Show(i + " is already in the level.");
                     }
                 }
-            } else
+            }
+            else
             {
                 MessageBox.Show("PersistentLevel export not found.");
             }
+        }
+
+        private void buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc == null)
+            {
+                return;
+            }
+            var pathfindingChainFile = @"X:\Google Drive\Mass Effect 3 Modding\CitHubBSP_Pathfinding.txt";
+            var pointsStrs = File.ReadAllLines(pathfindingChainFile);
+            var points = new List<Point3D>();
+            foreach (var point in pointsStrs)
+            {
+                string[] coords = point.Split(',');
+                points.Add(new Point3D(float.Parse(coords[0]), float.Parse(coords[1]), float.Parse(coords[2])));
+            }
+            //var packageToOpen = @"C:\Users\mgame\Desktop\ME3CMM\mods\Redemption DLC - 1811\DLC_MOD_MPMapPack\CookedPCConsole\BioA_CitHub_000BSP_SOURCE.pcc";
+            var packageToSave = @"C:\Users\mgame\Desktop\ME3CMM\mods\Redemption DLC - 1811\DLC_MOD_MPMapPack\CookedPCConsole\BioA_CitHub_000BSP.pcc";
+            //var package = MEPackageHandler.OpenMEPackage(packageToOpen);
+            var basePathNode = pcc.Exports.First(x => x.ObjectName == "PathNode" && x.ClassName == "PathNode");
+            IExportEntry firstNode = null;
+            IExportEntry previousNode = null;
+
+
+            foreach (var point in points)
+            {
+                IExportEntry newNode = cloneNode(basePathNode);
+                StructProperty prop = newNode.GetProperty<StructProperty>("location");
+                if (prop != null)
+                {
+                    PropertyCollection nodelocprops = (prop as StructProperty).Properties;
+                    foreach (var locprop in nodelocprops)
+                    {
+                        switch (locprop.Name)
+                        {
+                            case "X":
+                                (locprop as FloatProperty).Value = (float)point.X;
+                                break;
+                            case "Y":
+                                (locprop as FloatProperty).Value = (float)point.Y;
+                                break;
+                            case "Z":
+                                (locprop as FloatProperty).Value = (float)point.Z;
+                                break;
+                        }
+                    }
+                    newNode.WriteProperty(prop);
+                    if (previousNode != null)
+                    {
+                        createReachSpec(previousNode, true, newNode.Index, "Engine.ReachSpec", 1, 0);
+                    }
+                    if (firstNode == null)
+                    {
+                        firstNode = newNode;
+                    }
+                    previousNode = newNode;
+                }
+            }
+            createReachSpec(previousNode, true, firstNode.Index, "Engine.ReachSpec", 1, 0);
+
+            fixStackHeaders(false);
+            relinkingPathfindingChain();
+            ReachSpecRecalculator rsr = new ReachSpecRecalculator(this);
+            rsr.ShowDialog(this);
+            Debug.WriteLine("Done");
         }
     }
 }
