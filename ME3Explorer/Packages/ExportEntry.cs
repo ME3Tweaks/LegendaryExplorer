@@ -227,20 +227,20 @@ namespace ME3Explorer.Packages
             {
                 return properties;
             }
-            else if (!includeNoneProperties)
-            {
-                int start = GetPropertyStart();
-                MemoryStream stream = new MemoryStream(_data, false);
-                stream.Seek(start, SeekOrigin.Current);
-                return properties = PropertyCollection.ReadProps(FileRef, stream, ClassName);
-            }
-            else
-            {
-                int start = GetPropertyStart();
-                MemoryStream stream = new MemoryStream(_data, false);
-                stream.Seek(start, SeekOrigin.Current);
-                return PropertyCollection.ReadProps(FileRef, stream, ClassName, includeNoneProperties); //do not set properties as this may interfere with some other code. may change later.
-            }
+            //else if (!includeNoneProperties)
+            //{
+            //    int start = GetPropertyStart();
+            //    MemoryStream stream = new MemoryStream(_data, false);
+            //    stream.Seek(start, SeekOrigin.Current);
+            //    return properties = PropertyCollection.ReadProps(FileRef, stream, ClassName, includeNoneProperties, true, ObjectName);
+            //}
+            //else
+            //{
+            int start = GetPropertyStart();
+            MemoryStream stream = new MemoryStream(_data, false);
+            stream.Seek(start, SeekOrigin.Current);
+            return PropertyCollection.ReadProps(FileRef, stream, ClassName, includeNoneProperties, true, ObjectName); //do not set properties as this may interfere with some other code. may change later.
+                                                                                                                      //  }
         }
 
         public T GetProperty<T>(string name) where T : UProperty
@@ -283,6 +283,12 @@ namespace ME3Explorer.Packages
                 result = 4;
             if (pcc.isName(test1) && pcc.isName(test2) && test2 != 0)
                 result = 8;
+
+            if (pcc.Game == MEGame.ME3 && _data.Length > 0x10 && pcc.isName(test1) && pcc.getNameEntry(test1) == ObjectName)
+            {
+                //Primitive Component
+                result = 0x10;
+            }
             return result;
         }
 
