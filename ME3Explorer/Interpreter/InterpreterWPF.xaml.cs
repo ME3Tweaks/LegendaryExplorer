@@ -1677,6 +1677,12 @@ namespace ME3Explorer
                         ObjectProperty op = new ObjectProperty(0);
                         aop.Add(op);
                         break;
+                    case ArrayProperty<EnumProperty> aep:
+                        PropertyInfo p = GetPropertyInfo(aep.Name, CurrentLoadedExport.ClassName, false);
+                        string typeName = p.reference;
+                        EnumProperty ep = new EnumProperty(typeName,CurrentLoadedExport.FileRef);
+                        aep.Add(ep);
+                        break;
                     case ArrayProperty<IntProperty> aip:
                         IntProperty ip = new IntProperty(0);
                         aip.Add(ip);
