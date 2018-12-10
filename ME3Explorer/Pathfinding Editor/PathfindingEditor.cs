@@ -851,41 +851,7 @@ namespace ME3Explorer
                                 if (annexZoneLocProp != null)
                                 {
                                     int ind = annexZoneLocProp.Value - 1;
-                                    if (ind >= 0 && ind < pcc.Exports.Count)
-                                    {
-                                        IExportEntry annexzonelocexp = pcc.Exports[ind];
-
-                                        PropertyCollection annexzoneprops = annexzonelocexp.GetProperties();
-                                        foreach (var annexprop in annexzoneprops)
-                                        {
-                                            if (annexprop.Name == "location")
-                                            {
-                                                PropertyCollection sublocprops = (annexprop as StructProperty).Properties;
-                                                int locx = 0;
-                                                int locy = 0;
-                                                foreach (var locprop in sublocprops)
-                                                {
-                                                    switch (locprop.Name)
-                                                    {
-                                                        case "X":
-                                                            locx = Convert.ToInt32((locprop as FloatProperty).Value);
-                                                            break;
-                                                        case "Y":
-                                                            locy = Convert.ToInt32((locprop as FloatProperty).Value);
-                                                            break;
-                                                    }
-                                                }
-
-                                                AnnexNode annexNode = new PathfindingNodes.AnnexNode(annexzonelocexp.Index, locx, locy, pcc, graphEditor);
-                                                Objects.Add(annexNode); //this might cause concurrentmodificationexception...
-                                                activeExportsListbox.Items.Add("#" + (annexzonelocexp.Index) + " " + annexzonelocexp.ObjectName + " class: " + annexzonelocexp.ClassName);
-                                                //annexNode.MouseDown += node_MouseDown;
-                                                CurrentObjects.Add(annexzonelocexp.Index); //this might cause concurrentmodificationexception...
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    else
+                                    if (ind < 0 || ind > pcc.Exports.Count)
                                     {
                                         pathNode.comment.Text += "\nBAD ANNEXZONELOC!";
                                         pathNode.comment.TextBrush = new SolidBrush(System.Drawing.Color.Red);

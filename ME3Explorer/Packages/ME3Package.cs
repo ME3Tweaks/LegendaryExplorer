@@ -6,9 +6,11 @@ using System.Text;
 using Gibbed.IO;
 using ME3Explorer.Unreal;
 using System.Windows;
+using System.Diagnostics;
 
 namespace ME3Explorer.Packages
 {
+    [DebuggerDisplay("ME3Package | {FileName}")]
     public sealed class ME3Package : MEPackage, IMEPackage
     {
         const uint packageTag = 0x9E2A83C1;

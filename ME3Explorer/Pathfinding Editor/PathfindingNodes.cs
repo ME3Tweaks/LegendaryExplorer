@@ -33,9 +33,11 @@ namespace ME3Explorer.PathfindingNodes
         static Color objectColor = Color.FromArgb(219, 39, 217);//purple
         static Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
         static Pen blackPen = Pens.Black;
-        static Pen halfReachSpecPen = Pens.LightGray;
+        static Pen halfReachSpecPen = new Pen(Color.FromArgb(60,60,60));
         static Pen slotToSlotPen = Pens.DarkOrange;
+        static Pen coverSlipPen = Pens.OrangeRed;
         static Pen sfxLadderPen = Pens.Purple;
+        protected static Pen annexZoneLocPen = Pens.Lime;
         static Pen sfxBoostPen = Pens.Blue;
         static Pen sfxJumpDownPen = Pens.Maroon;
         static Pen sfxLargeBoostPen = Pens.DeepPink;
@@ -111,6 +113,9 @@ namespace ME3Explorer.PathfindingNodes
                     {
                         case "SlotToSlotReachSpec":
                             penToUse = slotToSlotPen;
+                            break;
+                        case "CoverSlipReachSpec":
+                            penToUse = coverSlipPen;
                             break;
                         case "SFXLadderReachSpec":
                             penToUse = sfxLadderPen;
@@ -814,6 +819,7 @@ namespace ME3Explorer.PathfindingNodes
                 if (othernode != null)
                 {
                     PPath edge = new PPath();
+                    edge.Pen = annexZoneLocPen;
                     ((ArrayList)Tag).Add(edge);
                     ((ArrayList)othernode.Tag).Add(edge);
                     edge.Tag = new ArrayList();
