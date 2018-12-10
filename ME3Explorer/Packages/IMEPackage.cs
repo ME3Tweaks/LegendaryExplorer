@@ -102,7 +102,7 @@ namespace ME3Explorer.Packages
         //saving
         void save();
         void save(string path);
-
+        byte[] getHeader();
         ObservableCollection<GenericWindow> Tools { get; }
         void RegisterTool(GenericWindow tool);
         void Release(System.Windows.Window wpfWindow = null, System.Windows.Forms.Form winForm = null);

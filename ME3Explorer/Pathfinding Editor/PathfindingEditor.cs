@@ -27,6 +27,7 @@ using static ME3Explorer.Pathfinding_Editor.PathfindingNodeMaster;
 using static ME3Explorer.BinaryInterpreter;
 using ME3Explorer.SplineNodes;
 using SharpDX;
+using ME3Explorer.SharedUI;
 
 namespace ME3Explorer
 {
@@ -63,6 +64,9 @@ namespace ME3Explorer
         private const int NODETYPE_BIOPATHPOINT = 9;
         private const int NODETYPE_SFXDYNAMICCOVERLINK = 10;
         private const int NODETYPE_SFXDYNAMICCOVERSLOTMARKER = 11;
+        private const int NODETYPE_SFXNAV_JUMPDOWNNODE_TOP = 12;
+        private const int NODETYPE_SFXNAV_JUMPDOWNNODE_BOTTOM = 13;
+
         public List<string> RFiles;
         public static readonly string PathfindingEditorDataFolder = Path.Combine(App.AppDataFolder, @"PathfindingEditor\");
         private readonly string RECENTFILES_FILE = "RECENTFILES";
@@ -71,15 +75,15 @@ namespace ME3Explorer
         public static Dictionary<string, Dictionary<string, string>> importclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
         public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
 
-        public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "SFXNav_HarvesterMoveNode", "MantleMarker", "TargetPoint", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode",
+        public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "SFXNav_HarvesterMoveNode", "SFXNav_LeapNodeHumanoid", "MantleMarker", "TargetPoint", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode",
                 "SFXNav_InteractionHenchOmniTool", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionHenchBeckonFront", "SFXNav_InteractionHenchBeckonRear", "SFXNav_InteractionHenchCustom", "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow", "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping", "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionInspectWeapon", "SFXNav_InteractionOmniToolScan" };
-        public string[] actorNodeClasses = { "BlockingVolume", "DynamicBlockingVolume", "StaticMeshActor", "SFXMedStation", "InterpActor", "SFXDoor", "BioTriggerVolume", "SFXArmorNode", "BioTriggerStream", "SFXTreasureNode", "SFXPointOfInterest", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume" };
+        public string[] actorNodeClasses = { "BlockingVolume", "DynamicBlockingVolume", "StaticMeshActor", "SFXMedStation", "InterpActor", "SFXDoor", "BioTriggerVolume", "SFXArmorNode", "BioTriggerStream", "SFXTreasureNode", "SFXPointOfInterest", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer_Simulator", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume" };
         public string[] splineNodeClasses = { "SplineActor" };
         public string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
         public bool ActorNodesActive = false;
         public bool PathfindingNodesActive = true;
         public bool StaticMeshCollectionActorNodesActive = false;
-
+        private List<IExportEntry> AllLevelObjects = new List<IExportEntry>();
         public PathfindingEditor()
         {
             AllowRefresh = true;
@@ -284,7 +288,7 @@ namespace ME3Explorer
             sfxCombatZones = new List<int>();
             CurrentObjects = new List<int>();
             activeExportsListbox.Items.Clear();
-
+            AllLevelObjects.Clear();
             foreach (IExportEntry exp in pcc.Exports)
             {
                 if (exp.ClassName == "Level" && exp.ObjectName == "PersistentLevel")
@@ -311,6 +315,7 @@ namespace ME3Explorer
                         //INVALID!!
                         return false;
                     }
+                    AllLevelObjects.Add(bioworldinfo);
 
                     start += 4;
                     uint shouldbezero = BitConverter.ToUInt32(data, start);
@@ -329,6 +334,8 @@ namespace ME3Explorer
                         if (itemexportid - 1 < pcc.Exports.Count)
                         {
                             IExportEntry exportEntry = pcc.Exports[(int)itemexportid - 1];
+                            AllLevelObjects.Add(exportEntry);
+
                             if (ignoredobjectnames.Contains(exportEntry.ObjectName))
                             {
                                 start += 4;
@@ -786,6 +793,9 @@ namespace ME3Explorer
                             case "SFXNav_JumpNode":
                                 pathNode = new PathfindingNodes.SFXNav_JumpNode(index, x, y, pcc, graphEditor);
                                 break;
+                            case "SFXNav_LeapNodeHumanoid":
+                                pathNode = new PathfindingNodes.SFXNav_LeapNodeHumanoid(index, x, y, pcc, graphEditor);
+                                break;
                             case "SFXDoorMarker":
                                 pathNode = new PathfindingNodes.SFXDoorMarker(index, x, y, pcc, graphEditor);
                                 break;
@@ -939,6 +949,9 @@ namespace ME3Explorer
                                 break;
                             case "SFXAmmoContainer":
                                 actorNode = new ActorNodes.SFXAmmoContainer(index, x, y, pcc, graphEditor);
+                                break;
+                            case "SFXAmmoContainer_Simulator":
+                                actorNode = new ActorNodes.SFXAmmoContainer_Simulator(index, x, y, pcc, graphEditor);
                                 break;
                             case "SFXBlockingVolume_Ledge":
                                 actorNode = new ActorNodes.SFXBlockingVolume_Ledge(index, x, y, pcc, graphEditor);
@@ -1612,17 +1625,25 @@ namespace ME3Explorer
 
             AllowRefresh = false;
             IExportEntry nodeEntry = pcc.Exports[n];
-            ObjectProperty collisionComponentProperty = nodeEntry.GetProperty<ObjectProperty>("CollisionComponent");
-            IExportEntry collisionEntry = pcc.Exports[collisionComponentProperty.Value - 1];
+            cloneNode(nodeEntry);
+            AllowRefresh = true;
 
-            int newNodeIndex = pcc.Exports.Count;
+            //RefreshView();
+        }
+
+        private IExportEntry cloneNode(IExportEntry nodeEntry)
+        {
+            ObjectProperty collisionComponentProperty = nodeEntry.GetProperty<ObjectProperty>("CollisionComponent");
+            IExportEntry collisionEntry = nodeEntry.FileRef.Exports[collisionComponentProperty.Value - 1];
+
+            int newNodeIndex = nodeEntry.FileRef.Exports.Count;
             int newCollisionIndex = newNodeIndex + 1;
 
-            pcc.addExport(nodeEntry.Clone());
-            pcc.addExport(collisionEntry.Clone());
+            nodeEntry.FileRef.addExport(nodeEntry.Clone());
+            nodeEntry.FileRef.addExport(collisionEntry.Clone());
 
-            IExportEntry newNodeEntry = pcc.Exports[newNodeIndex];
-            IExportEntry newCollisionEntry = pcc.Exports[newCollisionIndex];
+            IExportEntry newNodeEntry = nodeEntry.FileRef.Exports[newNodeIndex];
+            IExportEntry newCollisionEntry = nodeEntry.FileRef.Exports[newCollisionIndex];
             newCollisionEntry.idxLink = newNodeEntry.UIndex;
 
             //empty the pathlist
@@ -1672,7 +1693,7 @@ namespace ME3Explorer
             SharedPathfinding.GenerateNewRandomGUID(newNodeEntry);
             //Add cloned node to persistentlevel
             IExportEntry persistentlevel = null;
-            foreach (IExportEntry exp in pcc.Exports)
+            foreach (IExportEntry exp in nodeEntry.FileRef.Exports)
             {
                 if (exp.ClassName == "Level" && exp.ObjectName == "PersistentLevel")
                 {
@@ -1699,9 +1720,7 @@ namespace ME3Explorer
 
             reindexObjectsWithName(newNodeEntry.ObjectName);
             reindexObjectsWithName(newCollisionEntry.ObjectName);
-            AllowRefresh = true;
-
-            //RefreshView();
+            return newNodeEntry;
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)
@@ -1772,13 +1791,30 @@ namespace ME3Explorer
                     exportclassdbkey = "SFXNav_TurretPoint";
                     break;
                 case NODETYPE_SFXNAV_BOOSTNODE_TOP:
-                    exportclassdbkey = "SFXNav_BoostNode";
-                    BoolProperty bTopNode = new BoolProperty(true, "bTopNode");
-                    propertiesToAdd.Add(bTopNode);
+                    {
+                        exportclassdbkey = "SFXNav_BoostNode";
+                        BoolProperty bTopNode = new BoolProperty(true, "bTopNode");
+                        propertiesToAdd.Add(bTopNode);
+                        propertiesToRemoveIfPresent.Add("JumpDownDest");
+                    }
                     break;
                 case NODETYPE_SFXNAV_BOOSTNODE_BOTTOM:
                     exportclassdbkey = "SFXNav_BoostNode";
                     propertiesToRemoveIfPresent.Add("bTopNode");
+                    propertiesToRemoveIfPresent.Add("JumpDownDest");
+                    break;
+                case NODETYPE_SFXNAV_JUMPDOWNNODE_TOP:
+                    {
+                        exportclassdbkey = "SFXNav_JumpDownNode";
+                        BoolProperty bTopNode = new BoolProperty(true, "bTopNode");
+                        propertiesToAdd.Add(bTopNode);
+                        propertiesToRemoveIfPresent.Add("BoostDest");
+                    }
+                    break;
+                case NODETYPE_SFXNAV_JUMPDOWNNODE_BOTTOM:
+                    exportclassdbkey = "SFXNav_JumpDownNode";
+                    propertiesToRemoveIfPresent.Add("bTopNode");
+                    propertiesToRemoveIfPresent.Add("BoostDest");
                     break;
                 case NODETYPE_SFXNAV_LARGEMANTLENODE:
                     exportclassdbkey = "SFXNav_LargeMantleNode";
@@ -2205,21 +2241,25 @@ namespace ME3Explorer
                 size = form.SpecSize;
                 destinationType = form.DestinationType;
             }
+            IExportEntry startNode = pcc.Exports[sourceExportIndex];
+            createReachSpec(startNode, createTwoWay, destinationIndex, reachSpecClass, size, destinationType);
+        }
+
+        private void createReachSpec(IExportEntry startNode, bool createTwoWay, int destinationIndex, string reachSpecClass, int size, int destinationType)
+        {
+            //func
+            IExportEntry reachSpectoClone = null;
+            foreach (IExportEntry exp in pcc.Exports)
+            {
+                if (exp.ClassName == "ReachSpec") //clone basic reachspec, set class later
+                {
+                    reachSpectoClone = exp;
+                    break;
+                }
+            }
             if (destinationType == 1) //EXTERNAL
             {
                 //external node
-                IExportEntry startNode = pcc.Exports[sourceExportIndex];
-                //Debug.WriteLine("Source Node: " + startNode.Index);
-                //Find reachspec to clone
-                IExportEntry reachSpectoClone = null;
-                foreach (IExportEntry exp in pcc.Exports)
-                {
-                    if (exp.ClassName == "ReachSpec") //clone basic reachspec, set class later
-                    {
-                        reachSpectoClone = exp;
-                        break;
-                    }
-                }
 
                 //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
                 int outgoingSpec = pcc.ExportCount;
@@ -2266,19 +2306,7 @@ namespace ME3Explorer
             }
             else
             {
-                IExportEntry startNode = pcc.Exports[sourceExportIndex];
                 //Debug.WriteLine("Source Node: " + startNode.Index);
-                //Find reachspec to clone
-                IExportEntry reachSpectoClone = null;
-                foreach (IExportEntry exp in pcc.Exports)
-                {
-                    if (exp.ClassName == "ReachSpec") //clone basic reachspec, set class later
-                    {
-                        reachSpectoClone = exp;
-                        break;
-                    }
-                }
-
 
                 //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
                 int outgoingSpec = pcc.ExportCount;
@@ -2872,6 +2900,11 @@ namespace ME3Explorer
             //    start = findEndOfProps(level);
             //}
             //Read persistent level binary
+            fixStackHeaders(true);
+        }
+
+        private void fixStackHeaders(bool showUI)
+        {
             int itemcount = 2;
             int numUpdated = 0;
 
@@ -2997,10 +3030,10 @@ namespace ME3Explorer
                     Debug.WriteLine(itemlist);
                 }
             }
-
-
-
-            MessageBox.Show(this, numUpdated + " export" + (numUpdated != 1 ? "s" : "") + " in PersistentLevel had data headers updated.", "Header Check Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (showUI)
+            {
+                MessageBox.Show(this, numUpdated + " export" + (numUpdated != 1 ? "s" : "") + " in PersistentLevel had data headers updated.", "Header Check Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         private void validateReachToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3054,6 +3087,11 @@ namespace ME3Explorer
         }
 
         private void relinkPathfinding_ButtonClicked(object sender, EventArgs e)
+        {
+            relinkingPathfindingChain();
+        }
+
+        private void relinkingPathfindingChain()
         {
             List<IExportEntry> pathfindingChain = new List<IExportEntry>();
 
@@ -3681,6 +3719,168 @@ namespace ME3Explorer
                     break;
                 }
             }
+        }
+
+        private void toSFXNavJumpDownNode_Top_ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (activeExportsListbox.SelectedIndex >= 0)
+            {
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
+                if (n == -1)
+                    return;
+
+                if (pcc.Exports[n].ClassName != "SFXNav_JumpDownNode")
+                {
+                    changeNodeType(pcc.Exports[n], NODETYPE_SFXNAV_JUMPDOWNNODE_TOP);
+                    RefreshView();
+                }
+            }
+        }
+
+        private void toSFXNavJumpDownNodeBottomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (activeExportsListbox.SelectedIndex >= 0)
+            {
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
+                if (n == -1)
+                    return;
+
+                if (pcc.Exports[n].ClassName != "SFXNav_JumpDownNode")
+                {
+                    changeNodeType(pcc.Exports[n], NODETYPE_SFXNAV_JUMPDOWNNODE_BOTTOM);
+                    RefreshView();
+                }
+            }
+        }
+
+        private void addExportToLevelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc == null)
+            {
+                return;
+            }
+
+            IExportEntry levelExport = null;
+            foreach (IExportEntry exp in pcc.Exports)
+            {
+                if (exp.ClassName == "Level" && exp.ObjectName == "PersistentLevel")
+                {
+                    levelExport = exp;
+                    break;
+                }
+            }
+
+
+
+            if (levelExport != null)
+            {
+                using (ExportSelectorWinForms form = new ExportSelectorWinForms(pcc, ExportSelectorWinForms.SUPPORTS_EXPORTS_ONLY))
+                {
+                    DialogResult dr = form.ShowDialog(this);
+                    if (dr != DialogResult.Yes)
+                    {
+                        return; //user cancel
+                    }
+
+                    int i = form.SelectedItemIndex;
+                    IExportEntry addingExport = pcc.getExport(i);
+                    if (!AllLevelObjects.Contains(addingExport))
+                    {
+                        byte[] leveldata = levelExport.Data;
+                        int start = levelExport.propsEnd();
+                        //Console.WriteLine("Found start of binary at {start.ToString("X8"));
+
+                        uint exportid = BitConverter.ToUInt32(levelExport.Data, start);
+                        start += 4;
+                        uint numberofitems = BitConverter.ToUInt32(levelExport.Data, start);
+                        numberofitems++;
+                        SharedPathfinding.WriteMem(leveldata, start, BitConverter.GetBytes(numberofitems));
+
+                        //Debug.WriteLine("Size before: {memory.Length);
+                        //memory = RemoveIndices(memory, offset, size);
+                        int offset = (int)(start + numberofitems * 4); //will be at the very end of the list as it is now +1
+                        List<byte> memList = leveldata.ToList();
+                        memList.InsertRange(offset, BitConverter.GetBytes(addingExport.UIndex));
+                        leveldata = memList.ToArray();
+                        levelExport.Data = leveldata;
+                        RefreshView();
+                        graphEditor.Invalidate();
+                    }
+                    else
+                    {
+                        MessageBox.Show(i + " is already in the level.");
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("PersistentLevel export not found.");
+            }
+        }
+
+        private void buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc == null)
+            {
+                return;
+            }
+            var pathfindingChainFile = @"X:\Google Drive\Mass Effect 3 Modding\CitHubBSP_Pathfinding.txt";
+            var pointsStrs = File.ReadAllLines(pathfindingChainFile);
+            var points = new List<Point3D>();
+            foreach (var point in pointsStrs)
+            {
+                string[] coords = point.Split(',');
+                points.Add(new Point3D(float.Parse(coords[0]), float.Parse(coords[1]), float.Parse(coords[2])));
+            }
+            //var packageToOpen = @"C:\Users\mgame\Desktop\ME3CMM\mods\Redemption DLC - 1811\DLC_MOD_MPMapPack\CookedPCConsole\BioA_CitHub_000BSP_SOURCE.pcc";
+            var packageToSave = @"C:\Users\mgame\Desktop\ME3CMM\mods\Redemption DLC - 1811\DLC_MOD_MPMapPack\CookedPCConsole\BioA_CitHub_000BSP.pcc";
+            //var package = MEPackageHandler.OpenMEPackage(packageToOpen);
+            var basePathNode = pcc.Exports.First(x => x.ObjectName == "PathNode" && x.ClassName == "PathNode");
+            IExportEntry firstNode = null;
+            IExportEntry previousNode = null;
+
+
+            foreach (var point in points)
+            {
+                IExportEntry newNode = cloneNode(basePathNode);
+                StructProperty prop = newNode.GetProperty<StructProperty>("location");
+                if (prop != null)
+                {
+                    PropertyCollection nodelocprops = (prop as StructProperty).Properties;
+                    foreach (var locprop in nodelocprops)
+                    {
+                        switch (locprop.Name)
+                        {
+                            case "X":
+                                (locprop as FloatProperty).Value = (float)point.X;
+                                break;
+                            case "Y":
+                                (locprop as FloatProperty).Value = (float)point.Y;
+                                break;
+                            case "Z":
+                                (locprop as FloatProperty).Value = (float)point.Z;
+                                break;
+                        }
+                    }
+                    newNode.WriteProperty(prop);
+                    if (previousNode != null)
+                    {
+                        createReachSpec(previousNode, true, newNode.Index, "Engine.ReachSpec", 1, 0);
+                    }
+                    if (firstNode == null)
+                    {
+                        firstNode = newNode;
+                    }
+                    previousNode = newNode;
+                }
+            }
+            createReachSpec(previousNode, true, firstNode.Index, "Engine.ReachSpec", 1, 0);
+
+            fixStackHeaders(false);
+            relinkingPathfindingChain();
+            ReachSpecRecalculator rsr = new ReachSpecRecalculator(this);
+            rsr.ShowDialog(this);
+            Debug.WriteLine("Done");
         }
     }
 }

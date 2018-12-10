@@ -360,7 +360,7 @@ namespace ME3Explorer.Unreal
                     {
                         if ((p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty) && reSearch)
                         {
-                            PropertyInfo val = getPropertyInfo(p.reference, propName, true, nonVanillaClassInfo, reSearch: false);
+                            PropertyInfo val = getPropertyInfo(p.reference, propName, true, nonVanillaClassInfo, reSearch: true);
                             if (val != null)
                             {
                                 return val;
@@ -378,6 +378,12 @@ namespace ME3Explorer.Unreal
                     }
                 }
             }
+
+            //if (reSearch)
+            //{
+            //    PropertyInfo reAttempt = getPropertyInfo(className, propName, !inStruct, nonVanillaClassInfo, reSearch: false);
+            //    return reAttempt; //will be null if not found.
+            //}
             return null;
         }
 

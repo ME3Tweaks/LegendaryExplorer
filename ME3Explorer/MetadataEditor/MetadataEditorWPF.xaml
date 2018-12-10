@@ -130,7 +130,8 @@
         <ComboBox Name="InfoTab_PackageLink_ComboBox" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" 
                   ToolTip="What entry this one is nested under.&#x0a;Set to 0 to make this a top level entry." 
                   ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_PackageLink_ComboBox_GotFocus" 
-                  SelectionChanged="Info_PackageLinkClassComboBox_SelectionChanged"/>
+                  SelectionChanged="Info_PackageLinkClassComboBox_SelectionChanged"
+                  IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"/>
         <ComboBox Name="InfoTab_PackageFile_ComboBox" VerticalAlignment="Center" Grid.Row="6" Grid.Column="1" 
                   ItemsSource="{Binding NamesList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" 
                   ToolTip="Set what package file this class' type is from." ItemsPanel="{StaticResource VSP}" 

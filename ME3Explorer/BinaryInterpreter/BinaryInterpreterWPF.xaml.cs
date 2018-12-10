@@ -921,6 +921,11 @@ namespace ME3Explorer
         private List<object> Scan_WwiseEvent(byte[] data, int binarystart)
         {
             var subnodes = new List<object>();
+            if (CurrentLoadedExport.FileRef.Game != MEGame.ME3)
+            {
+                subnodes.Add("Only ME3 is supported for this scan.");
+                return subnodes;
+            }
             try
             {
                 int binarypos = binarystart;
@@ -1690,6 +1695,7 @@ namespace ME3Explorer
 
                         Tag = NodeType.StructLeafName
                     });
+                    //Debug.WriteLine($"{pos:X4} {CurrentLoadedExport.FileRef.getNameEntry(nameRef)}_{nameIdx}: {{{guid}}}");
                     pos += 24;
                 }
             }
@@ -1821,7 +1827,6 @@ namespace ME3Explorer
 
         private List<object> StartMaterialScan(byte[] data, int binarystart)
         {
-            //const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
             var subnodes = new List<object>();
 
             if (binarystart >= data.Length)
@@ -1831,16 +1836,38 @@ namespace ME3Explorer
             }
             try
             {
-                int binarypos = binarystart;
+                int binarypos = binarystart + 0x8;
 
-                binarypos += 0x20; //Skip ??? and GUID
-
+                int guidcount = BitConverter.ToInt32(data, binarypos);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X4} GUID count: {guidcount}",
+                    Name = "_" + binarypos
+                });
+                binarypos += 4;
+                for (int i = 0; i < guidcount; i++)
+                {
+                    byte[] guidData = data.Skip(binarypos).Take(16).ToArray();
+                    Guid guid = new Guid(guidData);
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{binarypos:X4} GUID: {guid}",
+                        Name = "_" + binarypos
+                    });
+                    binarypos += 16;
+                }
+                int unkcount = BitConverter.ToInt32(data, binarypos);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{binarypos:X4} ??? (Count?): {unkcount}",
+                    Name = "_" + binarypos
+                });
+                binarypos += 4;
                 int count = BitConverter.ToInt32(data, binarypos);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{binarypos:X4} Count: {count}",
                     Name = "_" + binarypos
-
                 });
                 binarypos += 4;
 
@@ -2046,7 +2073,7 @@ namespace ME3Explorer
                     string objtext = "Null - unused data";
                     if (assossiateddata != null)
                     {
-                        objtext = $"[Export {assossiateddata.Index}] {assossiateddata.ObjectName}_{assossiateddata.indexValue}";
+                        objtext = $"[Export {assossiateddata.UIndex}] {assossiateddata.ObjectName}_{assossiateddata.indexValue}";
 
                         //find associated static mesh value for display.
                         byte[] smc_data = assossiateddata.Data;
@@ -2313,6 +2340,15 @@ namespace ME3Explorer
                         Tag = NodeType.StructLeafInt
                     });
                 }
+                ReadInt32(textureData); //skip
+                byte[] textureGuid = textureData.ReadBytes(16);
+                var textureGuidNode = new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{textureData.Position} Texture GUID: {new Guid(textureGuid)}",
+                    Name = "_" + (textureData.Position)
+
+                };
+                subnodes.Add(textureGuidNode);
             }
             catch (Exception ex)
             {

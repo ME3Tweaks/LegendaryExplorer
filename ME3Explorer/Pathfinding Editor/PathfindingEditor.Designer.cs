@@ -70,6 +70,7 @@ namespace ME3Explorer
             this.staticMeshCollectionActorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sFXCombatZonesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addExportToLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.recalculateReachspecsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fixStackHeadersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.validateReachToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -78,6 +79,7 @@ namespace ME3Explorer
             this.gotoNode_TextBox = new System.Windows.Forms.ToolStripTextBox();
             this.gotoNodeButton = new System.Windows.Forms.ToolStripMenuItem();
             this.allTagsCombobox = new System.Windows.Forms.ToolStripComboBox();
+            this.findNextNodeWTagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
@@ -89,17 +91,20 @@ namespace ME3Explorer
             this.removeFromLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeNodeTypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toBioPathPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toSFXEnemySpawnPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toSFXDynamicCoverLinkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toSFXDynamicCoverSlotMarkerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toSFXEnemySpawnPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toSFXNavBoostNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sFXNavBoostNodeTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sFXNavBoostNodeBottomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toSFXNavClimbWallNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toSFXNavTurretPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toPathNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toSFXNavJumpDownNodeToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toSFXNavJumpDownNodeTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toSFXNavJumpDownNodeBottomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toSFXNavLargeBoostNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toSFXNavLargeMantleNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toSFXNavTurretPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toPathNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createReachSpecToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setGraphPositionAsNodeLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setGraphPositionAsSplineLocationXYToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -111,7 +116,7 @@ namespace ME3Explorer
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.findNextNodeWTagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -527,19 +532,28 @@ namespace ME3Explorer
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addExportToLevelToolStripMenuItem,
             this.recalculateReachspecsToolStripMenuItem,
             this.fixStackHeadersToolStripMenuItem,
             this.validateReachToolStripMenuItem,
             this.relinkingPathfindingChainButton,
-            this.flipLevelUpsidedownEXPERIMENTALToolStripMenuItem});
+            this.flipLevelUpsidedownEXPERIMENTALToolStripMenuItem,
+            this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 23);
             this.toolsToolStripMenuItem.Text = "Tools";
             // 
+            // addExportToLevelToolStripMenuItem
+            // 
+            this.addExportToLevelToolStripMenuItem.Name = "addExportToLevelToolStripMenuItem";
+            this.addExportToLevelToolStripMenuItem.Size = new System.Drawing.Size(388, 22);
+            this.addExportToLevelToolStripMenuItem.Text = "Add export to level";
+            this.addExportToLevelToolStripMenuItem.Click += new System.EventHandler(this.addExportToLevelToolStripMenuItem_Click);
+            // 
             // recalculateReachspecsToolStripMenuItem
             // 
             this.recalculateReachspecsToolStripMenuItem.Name = "recalculateReachspecsToolStripMenuItem";
-            this.recalculateReachspecsToolStripMenuItem.Size = new System.Drawing.Size(285, 22);
+            this.recalculateReachspecsToolStripMenuItem.Size = new System.Drawing.Size(388, 22);
             this.recalculateReachspecsToolStripMenuItem.Text = "Recalculate Reachspecs";
             this.recalculateReachspecsToolStripMenuItem.ToolTipText = "Recalculates the distances and directions of reachspecs so AI can properly naviga" +
     "te the pathing network";
@@ -548,7 +562,7 @@ namespace ME3Explorer
             // fixStackHeadersToolStripMenuItem
             // 
             this.fixStackHeadersToolStripMenuItem.Name = "fixStackHeadersToolStripMenuItem";
-            this.fixStackHeadersToolStripMenuItem.Size = new System.Drawing.Size(285, 22);
+            this.fixStackHeadersToolStripMenuItem.Size = new System.Drawing.Size(388, 22);
             this.fixStackHeadersToolStripMenuItem.Text = "Fix Stack Headers";
             this.fixStackHeadersToolStripMenuItem.ToolTipText = "Exports that exist in the level and have a stack should have their first 8 bytes " +
     "point to their class (2x). This will check all level items for this and set them" +
@@ -558,7 +572,7 @@ namespace ME3Explorer
             // validateReachToolStripMenuItem
             // 
             this.validateReachToolStripMenuItem.Name = "validateReachToolStripMenuItem";
-            this.validateReachToolStripMenuItem.Size = new System.Drawing.Size(285, 22);
+            this.validateReachToolStripMenuItem.Size = new System.Drawing.Size(388, 22);
             this.validateReachToolStripMenuItem.Text = "Fix Duplicate Nav GUIDs";
             this.validateReachToolStripMenuItem.ToolTipText = "Finds navigation points with duplicate nav GUIDs and will offer to fix them by ge" +
     "nerating new ones.";
@@ -567,7 +581,7 @@ namespace ME3Explorer
             // relinkingPathfindingChainButton
             // 
             this.relinkingPathfindingChainButton.Name = "relinkingPathfindingChainButton";
-            this.relinkingPathfindingChainButton.Size = new System.Drawing.Size(285, 22);
+            this.relinkingPathfindingChainButton.Size = new System.Drawing.Size(388, 22);
             this.relinkingPathfindingChainButton.Text = "Relink Pathfinding Chain";
             this.relinkingPathfindingChainButton.ToolTipText = "Generates a new pathfinding chain by making each node reference at least one othe" +
     "r so all nodes are referenced.";
@@ -576,7 +590,7 @@ namespace ME3Explorer
             // flipLevelUpsidedownEXPERIMENTALToolStripMenuItem
             // 
             this.flipLevelUpsidedownEXPERIMENTALToolStripMenuItem.Name = "flipLevelUpsidedownEXPERIMENTALToolStripMenuItem";
-            this.flipLevelUpsidedownEXPERIMENTALToolStripMenuItem.Size = new System.Drawing.Size(285, 22);
+            this.flipLevelUpsidedownEXPERIMENTALToolStripMenuItem.Size = new System.Drawing.Size(388, 22);
             this.flipLevelUpsidedownEXPERIMENTALToolStripMenuItem.Text = "Flip Level Upsidedown (EXPERIMENTAL)";
             this.flipLevelUpsidedownEXPERIMENTALToolStripMenuItem.ToolTipText = "Was an experiment that inverts all items around the origin point and inverts thei" +
     "r size. Flips level upside down, but the textures are not displayed properly as " +
@@ -603,6 +617,13 @@ namespace ME3Explorer
             this.allTagsCombobox.Size = new System.Drawing.Size(250, 23);
             this.allTagsCombobox.ToolTipText = "List of all tags of nodes in this file";
             // 
+            // findNextNodeWTagToolStripMenuItem
+            // 
+            this.findNextNodeWTagToolStripMenuItem.Name = "findNextNodeWTagToolStripMenuItem";
+            this.findNextNodeWTagToolStripMenuItem.Size = new System.Drawing.Size(134, 23);
+            this.findNextNodeWTagToolStripMenuItem.Text = "Find next node w/ tag";
+            this.findNextNodeWTagToolStripMenuItem.Click += new System.EventHandler(this.findNextNodeWTagToolStripMenuItem_Click);
+            // 
             // toolStrip1
             // 
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
@@ -610,9 +631,9 @@ namespace ME3Explorer
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripTextBox1,
             this.toolStripButton1});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 27);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1024, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(1211, 25);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             this.toolStrip1.Visible = false;
@@ -690,15 +711,16 @@ namespace ME3Explorer
             // 
             this.changeNodeTypeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toBioPathPointToolStripMenuItem,
-            this.toSFXEnemySpawnPointToolStripMenuItem,
             this.toSFXDynamicCoverLinkToolStripMenuItem,
             this.toSFXDynamicCoverSlotMarkerToolStripMenuItem,
+            this.toSFXEnemySpawnPointToolStripMenuItem,
             this.toSFXNavBoostNodeToolStripMenuItem,
             this.toSFXNavClimbWallNodeToolStripMenuItem,
-            this.toSFXNavTurretPointToolStripMenuItem,
-            this.toPathNodeToolStripMenuItem,
+            this.toSFXNavJumpDownNodeToolStripMenuItem1,
             this.toSFXNavLargeBoostNodeToolStripMenuItem,
-            this.toSFXNavLargeMantleNodeToolStripMenuItem});
+            this.toSFXNavLargeMantleNodeToolStripMenuItem,
+            this.toSFXNavTurretPointToolStripMenuItem,
+            this.toPathNodeToolStripMenuItem});
             this.changeNodeTypeToolStripMenuItem.Name = "changeNodeTypeToolStripMenuItem";
             this.changeNodeTypeToolStripMenuItem.Size = new System.Drawing.Size(297, 22);
             this.changeNodeTypeToolStripMenuItem.Text = "Change Node Type";
@@ -709,15 +731,6 @@ namespace ME3Explorer
             this.toBioPathPointToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.toBioPathPointToolStripMenuItem.Text = "To BioPathPoint";
             this.toBioPathPointToolStripMenuItem.Click += new System.EventHandler(this.toBioPathPointToolStripMenuItem_Click);
-            // 
-            // toSFXEnemySpawnPointToolStripMenuItem
-            // 
-            this.toSFXEnemySpawnPointToolStripMenuItem.Name = "toSFXEnemySpawnPointToolStripMenuItem";
-            this.toSFXEnemySpawnPointToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.toSFXEnemySpawnPointToolStripMenuItem.Text = "To SFXEnemySpawnPoint";
-            this.toSFXEnemySpawnPointToolStripMenuItem.ToolTipText = "Spawnpoint for an enemy group in MP. Ensure it has enough radial space for a grou" +
-    "p. Use SupportedReachSpec prop to limit what can spawn here.";
-            this.toSFXEnemySpawnPointToolStripMenuItem.Click += new System.EventHandler(this.toSFXEnemySpawnPointToolStripMenuItem_Click);
             // 
             // toSFXDynamicCoverLinkToolStripMenuItem
             // 
@@ -732,6 +745,15 @@ namespace ME3Explorer
             this.toSFXDynamicCoverSlotMarkerToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.toSFXDynamicCoverSlotMarkerToolStripMenuItem.Text = "To SFXDynamicCoverSlotMarker";
             this.toSFXDynamicCoverSlotMarkerToolStripMenuItem.Click += new System.EventHandler(this.toSFXDynamicCoverSlotMarkerToolStripMenuItem_Click);
+            // 
+            // toSFXEnemySpawnPointToolStripMenuItem
+            // 
+            this.toSFXEnemySpawnPointToolStripMenuItem.Name = "toSFXEnemySpawnPointToolStripMenuItem";
+            this.toSFXEnemySpawnPointToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.toSFXEnemySpawnPointToolStripMenuItem.Text = "To SFXEnemySpawnPoint";
+            this.toSFXEnemySpawnPointToolStripMenuItem.ToolTipText = "Spawnpoint for an enemy group in MP. Ensure it has enough radial space for a grou" +
+    "p. Use SupportedReachSpec prop to limit what can spawn here.";
+            this.toSFXEnemySpawnPointToolStripMenuItem.Click += new System.EventHandler(this.toSFXEnemySpawnPointToolStripMenuItem_Click);
             // 
             // toSFXNavBoostNodeToolStripMenuItem
             // 
@@ -764,22 +786,28 @@ namespace ME3Explorer
             this.toSFXNavClimbWallNodeToolStripMenuItem.Text = "To SFXNav_ClimbWallNode";
             this.toSFXNavClimbWallNodeToolStripMenuItem.Click += new System.EventHandler(this.toSFXNavClimbWallNodeToolStripMenuItem_Click);
             // 
-            // toSFXNavTurretPointToolStripMenuItem
+            // toSFXNavJumpDownNodeToolStripMenuItem1
             // 
-            this.toSFXNavTurretPointToolStripMenuItem.Name = "toSFXNavTurretPointToolStripMenuItem";
-            this.toSFXNavTurretPointToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.toSFXNavTurretPointToolStripMenuItem.Text = "To SFXNav_TurretPoint";
-            this.toSFXNavTurretPointToolStripMenuItem.ToolTipText = "Use by Engineers, Geth Primes, and Collector Troopers to put down their placeable" +
-    "/pawns.";
-            this.toSFXNavTurretPointToolStripMenuItem.Click += new System.EventHandler(this.toSFXNavTurretPointToolStripMenuItem_Click);
+            this.toSFXNavJumpDownNodeToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toSFXNavJumpDownNodeTopToolStripMenuItem,
+            this.toSFXNavJumpDownNodeBottomToolStripMenuItem});
+            this.toSFXNavJumpDownNodeToolStripMenuItem1.Name = "toSFXNavJumpDownNodeToolStripMenuItem1";
+            this.toSFXNavJumpDownNodeToolStripMenuItem1.Size = new System.Drawing.Size(244, 22);
+            this.toSFXNavJumpDownNodeToolStripMenuItem1.Text = "To SFXNav_JumpDownNode";
             // 
-            // toPathNodeToolStripMenuItem
+            // toSFXNavJumpDownNodeTopToolStripMenuItem
             // 
-            this.toPathNodeToolStripMenuItem.Name = "toPathNodeToolStripMenuItem";
-            this.toPathNodeToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.toPathNodeToolStripMenuItem.Text = "To PathNode";
-            this.toPathNodeToolStripMenuItem.ToolTipText = "Basic pathfinding node.";
-            this.toPathNodeToolStripMenuItem.Click += new System.EventHandler(this.toPathNodeToolStripMenuItem_Click);
+            this.toSFXNavJumpDownNodeTopToolStripMenuItem.Name = "toSFXNavJumpDownNodeTopToolStripMenuItem";
+            this.toSFXNavJumpDownNodeTopToolStripMenuItem.Size = new System.Drawing.Size(275, 22);
+            this.toSFXNavJumpDownNodeTopToolStripMenuItem.Text = "To SFXNav_JumpDownNode (Top)";
+            this.toSFXNavJumpDownNodeTopToolStripMenuItem.Click += new System.EventHandler(this.toSFXNavJumpDownNode_Top_ToolStripMenuItem_Click);
+            // 
+            // toSFXNavJumpDownNodeBottomToolStripMenuItem
+            // 
+            this.toSFXNavJumpDownNodeBottomToolStripMenuItem.Name = "toSFXNavJumpDownNodeBottomToolStripMenuItem";
+            this.toSFXNavJumpDownNodeBottomToolStripMenuItem.Size = new System.Drawing.Size(275, 22);
+            this.toSFXNavJumpDownNodeBottomToolStripMenuItem.Text = "To SFXNav_JumpDownNode (Bottom)";
+            this.toSFXNavJumpDownNodeBottomToolStripMenuItem.Click += new System.EventHandler(this.toSFXNavJumpDownNodeBottomToolStripMenuItem_Click);
             // 
             // toSFXNavLargeBoostNodeToolStripMenuItem
             // 
@@ -795,6 +823,23 @@ namespace ME3Explorer
             this.toSFXNavLargeMantleNodeToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.toSFXNavLargeMantleNodeToolStripMenuItem.Text = "To SFXNav_LargeMantleNode";
             this.toSFXNavLargeMantleNodeToolStripMenuItem.Click += new System.EventHandler(this.toSFXNavLargeMantleNodeToolStripMenuItem_Click);
+            // 
+            // toSFXNavTurretPointToolStripMenuItem
+            // 
+            this.toSFXNavTurretPointToolStripMenuItem.Name = "toSFXNavTurretPointToolStripMenuItem";
+            this.toSFXNavTurretPointToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.toSFXNavTurretPointToolStripMenuItem.Text = "To SFXNav_TurretPoint";
+            this.toSFXNavTurretPointToolStripMenuItem.ToolTipText = "Used by Engineers, Geth Primes, and Collector Troopers to put down their placeabl" +
+    "e/pawns.";
+            this.toSFXNavTurretPointToolStripMenuItem.Click += new System.EventHandler(this.toSFXNavTurretPointToolStripMenuItem_Click);
+            // 
+            // toPathNodeToolStripMenuItem
+            // 
+            this.toPathNodeToolStripMenuItem.Name = "toPathNodeToolStripMenuItem";
+            this.toPathNodeToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.toPathNodeToolStripMenuItem.Text = "To PathNode";
+            this.toPathNodeToolStripMenuItem.ToolTipText = "Basic pathfinding node.";
+            this.toPathNodeToolStripMenuItem.Click += new System.EventHandler(this.toPathNodeToolStripMenuItem_Click);
             // 
             // createReachSpecToolStripMenuItem
             // 
@@ -877,12 +922,12 @@ namespace ME3Explorer
             this.addObjectToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.addObjectToolStripMenuItem.Text = "Add Object";
             // 
-            // findNextNodeWTagToolStripMenuItem
+            // buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem
             // 
-            this.findNextNodeWTagToolStripMenuItem.Name = "findNextNodeWTagToolStripMenuItem";
-            this.findNextNodeWTagToolStripMenuItem.Size = new System.Drawing.Size(134, 23);
-            this.findNextNodeWTagToolStripMenuItem.Text = "Find next node w/ tag";
-            this.findNextNodeWTagToolStripMenuItem.Click += new System.EventHandler(this.findNextNodeWTagToolStripMenuItem_Click);
+            this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem.Name = "buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem";
+            this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem.Size = new System.Drawing.Size(388, 22);
+            this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem.Text = "Build linear pathfindnig chain from logfile (EXPERIMENTAL)";
+            this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem.Click += new System.EventHandler(this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem_Click);
             // 
             // PathfindingEditor
             // 
@@ -1009,5 +1054,10 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripMenuItem highlightReferencedNodeFromSequencesToolStripMenuItem;
         private System.Windows.Forms.ToolStripComboBox allTagsCombobox;
         private System.Windows.Forms.ToolStripMenuItem findNextNodeWTagToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toSFXNavJumpDownNodeTopToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toSFXNavJumpDownNodeToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem toSFXNavJumpDownNodeBottomToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addExportToLevelToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem;
     }
 }

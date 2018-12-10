@@ -52,6 +52,15 @@ namespace ME3Explorer.Packages
             }
         }
 
+        /// <summary>
+        /// Returns a clone of the header for modifying
+        /// </summary>
+        /// <returns></returns>
+        public byte[] GetHeader()
+        {
+            return _header.TypedClone();
+        }
+
         public int idxPackageFile { get { return BitConverter.ToInt32(Header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 0, sizeof(int)); HeaderChanged = true; } }
         //int PackageNameNumber
         public int idxClassName { get { return BitConverter.ToInt32(Header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 8, sizeof(int)); HeaderChanged = true; } }

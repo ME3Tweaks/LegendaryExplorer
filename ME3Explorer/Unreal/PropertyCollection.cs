@@ -63,7 +63,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static PropertyCollection ReadProps(IMEPackage pcc, MemoryStream stream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true)
+        public static PropertyCollection ReadProps(IMEPackage pcc, MemoryStream stream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, string exportName = null)
         {
             //Uncomment this for debugging property engine
             /*DebugOutput.StartDebugger("Property Engine ReadProps() for "+typeName);
@@ -118,7 +118,7 @@ namespace ME3Explorer.Unreal
                         if (ME3UnrealObjectInfo.isImmutable(structType))
                         {
                             PropertyCollection structProps = ReadSpecialStruct(pcc, stream, structType, size);
-                            props.Add(new StructProperty(structType, structProps, nameRef, true) { StartOffset = propertyStartPosition, ValueOffset = valOffset });
+                            props.Add(new StructProperty(structType, structProps, nameRef, true) { StartOffset = valOffset, ValueOffset = valOffset });
                         }
                         else
                         {
@@ -208,7 +208,7 @@ namespace ME3Explorer.Unreal
                 //error reading props.
                 if (props[props.Count - 1].PropType != PropertyType.None && requireNoneAtEnd)
                 {
-                    Debug.WriteLine("Invalid properties: Does not end with None");
+                    Debug.WriteLine(exportName + " - Invalid properties: Does not end with None");
                     stream.Seek(startPosition, SeekOrigin.Begin);
                     return new PropertyCollection { endOffset = (int)stream.Position };
                 }
@@ -491,7 +491,7 @@ namespace ME3Explorer.Unreal
                             {
                                 long offset = stream.Position;
                                 PropertyCollection structProps = ReadSpecialStruct(pcc, stream, arrayStructType, arraySize / count);
-                                StructProperty structP = new StructProperty(arrayStructType, structProps, isImmutable: true) { StartOffset = startPos };
+                                StructProperty structP = new StructProperty(arrayStructType, structProps, isImmutable: true) { StartOffset = offset };
                                 structP.ValueOffset = offset;
                                 props.Add(structP);
                             }
@@ -1117,6 +1117,24 @@ namespace ME3Explorer.Unreal
             NameReference enumVal = value;
             Value = enumVal;
             EnumValues = UnrealObjectInfo.GetEnumValues(pcc.Game, enumType, true);
+            PropType = PropertyType.ByteProperty;
+        }
+
+        /// <summary>
+        /// Creates an enum property and sets the value to the first item in the values list.
+        /// </summary>
+        /// <param name="enumType">Name of enum</param>
+        /// <param name="pcc">PCC to lookup information from</param>
+        /// <param name="name">Optional name of EnumProperty</param>
+        public EnumProperty(NameReference enumType, IMEPackage pcc, NameReference? name = null) : base(name)
+        {
+            EnumType = enumType;
+            EnumValues = UnrealObjectInfo.GetEnumValues(pcc.Game, enumType, true);
+            if (EnumValues == null)
+            {
+                Debugger.Break();
+            }
+            Value = EnumValues[0];
             PropType = PropertyType.ByteProperty;
         }
 

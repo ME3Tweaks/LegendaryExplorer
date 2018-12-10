@@ -63,6 +63,8 @@ namespace ME3Explorer.Packages
         public abstract int ImportCount { get; protected set; }
         public abstract int ExportCount { get; protected set; }
 
+        public byte[] getHeader() { return header; }
+
         public bool IsCompressed
         {
             get { return (flags & 0x02000000) != 0; }
@@ -125,6 +127,11 @@ namespace ME3Explorer.Packages
 
         public void addName(string name)
         {
+            if (name == null)
+            {
+                Debug.WriteLine("THIS SHOULD NOT OCCUR.");
+                Debugger.Break();
+            }
             if (!names.Contains(name))
             {
                 names.Add(name);
@@ -317,16 +324,33 @@ namespace ME3Explorer.Packages
 
         protected virtual void AfterSave()
         {
+            //We do if checks here to prevent firing tons of extra events as we can't prevent firing chanage notifications if 
+            //it's not really a change due to the side effects of suppressing that.
             foreach (var export in exports)
             {
-                export.DataChanged = false;
-                export.HeaderChanged = false;
-                export.EntryHasPendingChanges = false;
+                if (export.DataChanged)
+                {
+                    export.DataChanged = false;
+                }
+                if (export.HeaderChanged)
+                {
+                    export.HeaderChanged = false;
+                }
+                if (export.EntryHasPendingChanges)
+                {
+                    export.EntryHasPendingChanges = false;
+                }
             }
             foreach (var import in imports)
             {
-                import.HeaderChanged = false;
-                import.EntryHasPendingChanges = false;
+                if (import.HeaderChanged)
+                {
+                    import.HeaderChanged = false;
+                }
+                if (import.EntryHasPendingChanges)
+                {
+                    import.EntryHasPendingChanges = false;
+                }
             }
             namesAdded = 0;
 

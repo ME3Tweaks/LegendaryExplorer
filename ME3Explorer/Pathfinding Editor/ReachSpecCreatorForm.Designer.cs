@@ -90,6 +90,7 @@
             "SFXGame.SFXBoostReachSpec",
             "SFXGame.SFXClimbWallReachSpec",
             "SFXGame.SFXLadderReachSpec",
+            "SFXGame.SFXJumpDownReachSpec",
             "SFXGame.SFXLargeBoostReachSpec",
             "SFXGame.SFXLargeMantleReachSpec",
             "Engine.SlotToSlotReachSpec"});

@@ -20,6 +20,7 @@ using ME3Explorer.SharedUI;
 using System.Windows.Input;
 using Xceed.Wpf.Toolkit;
 using static ME3Explorer.PackageEditorWPF;
+using Gammtek.Conduit.Extensions.IO;
 
 namespace ME3Explorer
 {
@@ -33,7 +34,7 @@ namespace ME3Explorer
         //Values in this list will cause the ExportToString() method to be called on an objectproperty in InterpreterWPF.
         //This is useful for end user when they want to view things in a list for example, but all of the items are of the 
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
-        public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet" };
+        public static readonly string[] ExportToStringConverters = { "LevelStreamingKismet", "StaticMeshComponent" };
         public static readonly string[] IntToStringConverters = { "WwiseEvent" };
         public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
 
@@ -375,6 +376,12 @@ namespace ME3Explorer
                     case PropertyType.NameProperty:
                         newProperty = new NameProperty(prop.Item1) { Value = "None" };
                         break;
+                    case PropertyType.ByteProperty:
+                        newProperty = new ByteProperty(0, prop.Item1);
+                        break;
+                    case PropertyType.ObjectProperty:
+                        newProperty = new ObjectProperty(0, prop.Item1);
+                        break;
                     case PropertyType.StructProperty:
                         // Generate the bytecode and then read it as a prop.
                         // This is effectively the way classic interpreter does it
@@ -446,7 +453,10 @@ namespace ME3Explorer
             EditorSetElements.ForEach(x => x.Visibility = Visibility.Collapsed);
             Set_Button.Visibility = Visibility.Collapsed;
             EditorSet_Separator.Visibility = Visibility.Collapsed;
-            (Interpreter_Hexbox.ByteProvider as DynamicByteProvider).Bytes.Clear();
+            if (Interpreter_Hexbox != null)
+            {
+                (Interpreter_Hexbox.ByteProvider as DynamicByteProvider).Bytes.Clear();
+            }
             HasUnsavedChanges = false;
             PropertyNodes.Clear();
         }
@@ -627,6 +637,10 @@ namespace ME3Explorer
                         {
                             editableValue = index.ToString();
                             parsedValue = entry.GetFullPath;
+                            if (entry is IExportEntry exp)
+                            {
+                                parsedValue += "_" + exp.indexValue;
+                            }
                             if (index > 0 && ExportToStringConverters.Contains(entry.ClassName))
                             {
                                 editableValue += " " + ExportToString(parsingExport.FileRef.Exports[index - 1]);
@@ -699,12 +713,14 @@ namespace ME3Explorer
                     editableValue = strp.Value;
                     break;
                 case StructProperty sp:
+
                     if (sp.Name == "location" && sp.StructType == "Vector")
                     {
                         string loc = "(";
                         bool isFirst = true;
                         foreach (UProperty uprop in sp.Properties)
                         {
+
                             string val = (uprop as FloatProperty).Value.ToString();
                             if (isFirst)
                             {
@@ -718,6 +734,17 @@ namespace ME3Explorer
                         }
                         loc += ")";
                         parsedValue = loc;
+                    }
+                    else if (sp.StructType == "Guid")
+                    {
+                        MemoryStream ms = new MemoryStream();
+                        foreach (UProperty uprop in sp.Properties)
+                        {
+                            int val = (uprop as IntProperty).Value;
+                            ms.WriteInt32(val);
+                        }
+                        Guid g = new Guid(ms.ToArray());
+                        parsedValue = g.ToString();
                     }
                     else
                     {
@@ -802,6 +829,17 @@ namespace ME3Explorer
                 case "LevelStreamingKismet":
                     NameProperty prop = exportEntry.GetProperty<NameProperty>("PackageName");
                     return "(" + prop.Value.Name + "_" + prop.Value.Number + ")";
+                case "StaticMeshComponent":
+                    ObjectProperty smprop = exportEntry.GetProperty<ObjectProperty>("StaticMesh");
+                    if (smprop != null)
+                    {
+                        IEntry smEntry = exportEntry.FileRef.getEntry(smprop.Value);
+                        if (smEntry != null)
+                        {
+                            return "(" + smEntry.ObjectName + ")";
+                        }
+                    }
+                    break;
             }
             return "";
         }
@@ -1270,7 +1308,7 @@ namespace ME3Explorer
 
                 if (CurrentLoadedExport.ClassName != "Class")
                 {
-                    if (newSelectedItem.Property is StructProperty && newSelectedItem.Parent.Property is ArrayProperty<StructProperty>)
+                    if (newSelectedItem.Property is StructProperty && newSelectedItem.Parent.Property is ArrayProperty<StructProperty> || newSelectedItem.Parent.Property is ArrayProperty<EnumProperty>)
                     {
                         Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef, true));
                     }
@@ -1639,6 +1677,12 @@ namespace ME3Explorer
                         ObjectProperty op = new ObjectProperty(0);
                         aop.Add(op);
                         break;
+                    case ArrayProperty<EnumProperty> aep:
+                        PropertyInfo p = GetPropertyInfo(aep.Name, CurrentLoadedExport.ClassName, false);
+                        string typeName = p.reference;
+                        EnumProperty ep = new EnumProperty(typeName,CurrentLoadedExport.FileRef);
+                        aep.Add(ep);
+                        break;
                     case ArrayProperty<IntProperty> aip:
                         IntProperty ip = new IntProperty(0);
                         aip.Add(ip);
@@ -1646,6 +1690,17 @@ namespace ME3Explorer
                     case ArrayProperty<FloatProperty> afp:
                         FloatProperty fp = new FloatProperty(0);
                         afp.Add(fp);
+                        break;
+                    case ArrayProperty<StrProperty> asp:
+                        StrProperty strp = new StrProperty("Empty String");
+                        asp.Add(strp);
+                        break;
+                    case ArrayProperty<StringRefProperty> astrf:
+                        StringRefProperty strfp = new StringRefProperty();
+                        astrf.Add(strfp);
+                        break;
+                    default:
+                        System.Windows.MessageBox.Show("Can't add this property type yet.\nPlease pester Mgamerz to get it implemented");
                         break;
 
                         //TODO: Figure out how to do these
@@ -1679,9 +1734,13 @@ namespace ME3Explorer
                         int index = parent.Items.IndexOf(Interpreter_TreeView.SelectedItem); //=1 when you select "0-0-1"
                         if (index >= 0)
                         {
+                            dynamic arrayPropContaining = tvi.Parent.Property; //???? -> Property = UProperty
+                            //var childProps = arrayPropContaining.ValuesAsProperties.ToList();
+                            arrayPropContaining.RemoveAt(index);
                             tvi.Parent.ChildrenProperties.RemoveAt(index);
                             CurrentLoadedExport.WriteProperties(CurrentLoadedProperties);
-                        } else
+                        }
+                        else
                         {
                             Debug.WriteLine("DIDN'T REMOVE ANYTHING!");
                         }
@@ -1689,8 +1748,6 @@ namespace ME3Explorer
                 }
             }
         }
-
-        
     }
 
     [DebuggerDisplay("UPropertyTreeViewEntry | {DisplayName}")]

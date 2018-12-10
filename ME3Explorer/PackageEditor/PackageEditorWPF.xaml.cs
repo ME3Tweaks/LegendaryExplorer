@@ -3,11 +3,14 @@ using GongSolutions.Wpf.DragDrop;
 using ME1Explorer.Unreal;
 using ME3Explorer.PackageEditorWPFControls;
 using ME3Explorer.Packages;
+using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using StreamHelpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,6 +19,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -163,6 +167,10 @@ namespace ME3Explorer
         public ICommand ExportEmbeddedFileCommand { get; set; }
         public ICommand ImportEmbeddedFileCommand { get; set; }
         public ICommand ReindexCommand { get; set; }
+        public ICommand TrashCommand { get; set; }
+        public ICommand PackageHeaderViewerCommand { get; set; }
+        public ICommand CreateNewPackageGUIDCommand { get; set; }
+        public ICommand SetPackageAsFilenamePackageCommand { get; set; }
         private void LoadCommands()
         {
             ComparePackagesCommand = new RelayCommand(ComparePackages, PackageIsLoaded);
@@ -182,6 +190,185 @@ namespace ME3Explorer
             ExportEmbeddedFileCommand = new RelayCommand(ExportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
             ImportEmbeddedFileCommand = new RelayCommand(ImportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
             ReindexCommand = new RelayCommand(ReindexObjectByName, ExportIsSelected);
+            TrashCommand = new RelayCommand(TrashEntryAndChildren, EntryIsSelected);
+            PackageHeaderViewerCommand = new RelayCommand(ViewPackageInfo, PackageIsLoaded);
+            CreateNewPackageGUIDCommand = new RelayCommand(GenerateNewGUIDForSelected, PackageExportIsSelected);
+            SetPackageAsFilenamePackageCommand = new RelayCommand(SetSelectedAsFilenamePackage, PackageExportIsSelected);
+        }
+
+        private void SetSelectedAsFilenamePackage(object obj)
+        {
+            TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+            IExportEntry export = selected.Entry as IExportEntry;
+            byte[] fileGUID = export.FileRef.getHeader().Skip(0x4E).Take(16).ToArray();
+            string fname = Path.GetFileNameWithoutExtension(export.FileRef.FileName);
+
+            //Write GUID
+            byte[] header = export.GetHeader();
+            int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
+            int count = BitConverter.ToInt32(header, preguidcountoffset);
+            int headerguidoffset = (preguidcountoffset + 4) + (count * 4);
+            SharedPathfinding.WriteMem(header, headerguidoffset, fileGUID);
+            export.Header = header;
+
+            export.idxObjectName = export.FileRef.FindNameOrAdd(fname);
+        }
+
+        private void GenerateNewGUIDForSelected(object obj)
+        {
+            TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+            IExportEntry export = selected.Entry as IExportEntry;
+            Guid newGuid = Guid.NewGuid();
+            byte[] header = export.GetHeader();
+            int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
+            int count = BitConverter.ToInt32(header, preguidcountoffset);
+            int headerguidoffset = (preguidcountoffset + 4) + (count * 4);
+            SharedPathfinding.WriteMem(header, headerguidoffset, newGuid.ToByteArray());
+            export.Header = header;
+        }
+
+        private void ViewPackageInfo(object obj)
+        {
+            var items = new List<string>();
+            byte[] header = Pcc.getHeader();
+            MemoryStream ms = new MemoryStream(header);
+
+            uint magicnum = ms.ReadUInt32();
+            items.Add($"0x{(ms.Position - 4):X2} Magic number: 0x{magicnum:X8}");
+            ushort unrealVer = ms.ReadUInt16();
+            items.Add($"0x{(ms.Position - 2):X2} Unreal version: {unrealVer} (0x{unrealVer:X4})");
+            int licenseeVer = ms.ReadUInt16();
+            items.Add($"0x{(ms.Position - 2):X2} Licensee version:  {licenseeVer} (0x{licenseeVer:X4})");
+            uint fullheadersize = ms.ReadUInt32();
+            items.Add($"0x{(ms.Position - 4):X2} Full header size:  {fullheadersize} (0x{fullheadersize:X8})");
+            int foldernameStrLen = ms.ReadInt32();
+            items.Add($"0x{(ms.Position - 4):X2} Folder name string length: {foldernameStrLen} (0x{foldernameStrLen:X8}) (Negative means Unicode)");
+            long currentPosition = ms.Position;
+            if (foldernameStrLen > 0)
+            {
+                string str = ms.ReadStringASCII(foldernameStrLen);
+                items.Add($"0x{currentPosition:X2} Folder name:  {str}");
+            }
+            else
+            {
+                string str = ms.ReadStringUnicodeNull((foldernameStrLen * -2));
+                items.Add($"0x{currentPosition:X2} Folder name:  {str}");
+            }
+            uint flags = ms.ReadUInt32();
+            string flagsStr = $"0x{(ms.Position - 4):X2} Flags: 0x{flags:X8} ";
+            EPackageFlags flagEnum = (EPackageFlags)flags;
+            var setFlags = EnumHelper<EPackageFlags>.MaskToList(flagEnum);
+            foreach (var setFlag in setFlags)
+            {
+                flagsStr += " " + setFlag.ToString();
+            }
+            items.Add(flagsStr);
+            new SharedUI.ListDialog(items, Path.GetFileName(Pcc.FileName) + " header information", "Below is information about this package from the header.", this).Show();
+        }
+
+        private void TrashEntryAndChildren(object obj)
+        {
+            if (GetSelected(out int n))
+            {
+                TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+
+                List<TreeViewEntry> itemsToTrash = selected.FlattenTree();
+                itemsToTrash.OrderByDescending(x => x.UIndex);
+
+                if (itemsToTrash[0].Entry is ImportEntry)
+                {
+                    MessageBox.Show("Cannot trash a tree only containing imports.\nTrashing only works if there is at least one export in the subtree.");
+                    return;
+                }
+
+                IExportEntry existingTrashTopLevel = Pcc.Exports.FirstOrDefault(x => x.idxLink == 0 && x.ObjectName == "ME3ExplorerTrashPackage");
+                ImportEntry packageImport = Pcc.Imports.First(x => x.GetFullPath == "Core.Package");
+                foreach (TreeViewEntry entry in itemsToTrash)
+                {
+                    IExportEntry newTrash = TrashEntry(entry.Entry, existingTrashTopLevel, packageImport.UIndex);
+                    if (existingTrashTopLevel == null) existingTrashTopLevel = newTrash;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Trashes an entry.
+        /// </summary>
+        /// <param name="entry">Entry to trash</param>
+        /// <param name="trashContainer">Container for trash. Pass null if you want to create the trash container from the passed in value.</param>
+        /// <param name="packageClassIdx">Idx for package class. Prevents multiple calls to find it</param>
+        /// <returns>New trash container, otherwise will be null</returns>
+        private IExportEntry TrashEntry(IEntry entry, IExportEntry trashContainer, int packageClassIdx)
+        {
+            if (entry is ImportEntry imp)
+            {
+                imp.idxClassName = packageClassIdx;
+                imp.idxPackageFile = Pcc.FindNameOrAdd("Core");
+                imp.idxLink = trashContainer.UIndex;
+                imp.idxObjectName = Pcc.FindNameOrAdd("Trash");
+                imp.indexValue = 0;
+            }
+            if (entry is IExportEntry exp)
+            {
+                exp.Data = new byte[exp.Data.Length]; //Write all zeros to nullify the existing data. For DLC this will allow it to compress better in 7z
+                MemoryStream trashData = new MemoryStream();
+                trashData.WriteInt32(-1);
+                trashData.WriteInt32(Pcc.findName("None"));
+                trashData.WriteInt32(0);
+                exp.Data = trashData.ToArray();
+                exp.idxArchtype = 0;
+                exp.idxClassParent = 0;
+                exp.indexValue = 0;
+                exp.idxClass = packageClassIdx;
+                if (trashContainer == null)
+                {
+                    exp.idxObjectName = Pcc.FindNameOrAdd("ME3ExplorerTrashPackage");
+                    exp.idxLink = 0;
+                    if (exp.idxLink == exp.UIndex)
+                    {
+                        Debugger.Break();
+                    }
+                    //Write trash GUID
+                    exp.ObjectFlags &= (ulong)~EObjectFlags.HasStack;
+                    Guid trashGuid = ToGuid("ME3ExpTrashPackage"); //DO NOT EDIT THIS!!
+                    byte[] header = exp.GetHeader();
+                    int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
+                    int count = BitConverter.ToInt32(header, preguidcountoffset);
+                    int headerguidoffset = (preguidcountoffset + 4) + (count * 4);
+                    SharedPathfinding.WriteMem(header, headerguidoffset, trashGuid.ToByteArray());
+                    exp.Header = header;
+                    return exp;
+                }
+                else
+                {
+                    exp.idxLink = trashContainer.UIndex;
+                    if (exp.idxLink == exp.UIndex)
+                    {
+                        Debugger.Break();
+                    }
+                    exp.idxObjectName = Pcc.FindNameOrAdd("Trash");
+                    exp.ObjectFlags &= (ulong)~EObjectFlags.HasStack;
+
+                    byte[] header = exp.GetHeader();
+                    int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
+                    int count = BitConverter.ToInt32(header, preguidcountoffset);
+                    int headerguidoffset = (preguidcountoffset + 4) + (count * 4);
+
+                    SharedPathfinding.WriteMem(header, headerguidoffset, new byte[16]); //erase guid
+                    exp.Header = header;
+                }
+            }
+            return null;
+        }
+
+        public static Guid ToGuid(string src)
+        {
+            byte[] stringbytes = Encoding.UTF8.GetBytes(src);
+            byte[] hashedBytes = new System.Security.Cryptography
+                .SHA1CryptoServiceProvider()
+                .ComputeHash(stringbytes);
+            Array.Resize(ref hashedBytes, 16);
+            return new Guid(hashedBytes);
         }
 
         private void ReindexObjectByName(object obj)
@@ -195,13 +382,22 @@ namespace ME3Explorer
             {
                 exp = (LeftSide_TreeView.SelectedItem as TreeViewEntry).Entry as IExportEntry;
             }
+            ReindexObjectsByName(exp, true);
+        }
+
+        private void ReindexObjectsByName(IExportEntry exp, bool showUI)
+        {
             if (exp != null)
             {
+                bool trueShowUI = showUI;
                 string objectname = exp.ObjectName;
-                var confirmResult = MessageBox.Show("Confirm reindexing of all exports with object name:\n" + objectname + "\n\nEnsure this file has a backup - this operation will make many changes to export indexes!",
-                                     "Confirm Reindexing",
-                                     MessageBoxButton.YesNo);
-                if (confirmResult == MessageBoxResult.Yes)
+                if (showUI)
+                {
+                    showUI = MessageBox.Show("Confirm reindexing of all exports with object name:\n" + objectname + "\n\nEnsure this file has a backup - this operation will make many changes to export indexes!",
+                                         "Confirm Reindexing",
+                                         MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+                }
+                if (!showUI)
                 {
                     // Get list of all exports with that object name.
                     //List<IExportEntry> exports = new List<IExportEntry>();
@@ -217,7 +413,10 @@ namespace ME3Explorer
                         }
                     }
                 }
-                MessageBox.Show("Objects named \"" + objectname + "\" have been reindexed.", "Reindexing completed");
+                if (showUI)
+                {
+                    MessageBox.Show("Objects named \"" + objectname + "\" have been reindexed.", "Reindexing completed");
+                }
             }
         }
 
@@ -547,7 +746,7 @@ namespace ME3Explorer
                 }
                 //Clipboard.SetText(copy);
                 MessageBox.Show(duplicates.Count + " duplicate indexes were found.", "BAD INDEXING");
-                ListDialog lw = new ListDialog(duplicates, "Duplicate indexes", "The following items have duplicate indexes.");
+                ListDialog lw = new ListDialog(duplicates, "Duplicate indexes", "The following items have duplicate indexes.", this);
                 lw.Show();
             }
             else
@@ -703,7 +902,6 @@ namespace ME3Explorer
                 selected.Parent.Sublinks.Add(newEntry);
                 selected.Parent.SortChildren();
                 GoToNumber(newEntry.UIndex);
-
             }
         }
 
@@ -841,6 +1039,16 @@ namespace ME3Explorer
             return false;
         }
 
+        private bool PackageExportIsSelected(object obj)
+        {
+            TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+            if (selected != null && selected.Entry != null && selected.Entry.ClassName == "Package")
+            {
+                return true;
+            }
+            return false;
+        }
+
         private bool ImportIsSelected(object obj)
         {
             int n;
@@ -940,7 +1148,7 @@ namespace ME3Explorer
                     sw.Stop();
                     Debug.WriteLine("Time: " + sw.ElapsedMilliseconds + "ms");
 
-                    ListDialog ld = new ListDialog(changedExports, "Changed exports between files", "The following exports are different between the files.");
+                    ListDialog ld = new ListDialog(changedExports, "Changed exports between files", "The following exports are different between the files.", this);
                     ld.Show();
                 }
             }
@@ -1358,6 +1566,10 @@ namespace ME3Explorer
             ClassDropdownList.ReplaceAll(Pcc.Exports.Select(x => x.idxClass).Distinct().Select(Pcc.getObjectName).ToList().OrderBy(p => p));
             MetadataTab_MetadataEditor.LoadPccData(Pcc);
             RefreshNames();
+            if (CurrentView != CurrentViewMode.Tree)
+            {
+                RefreshView(); //Tree will initialize itself in thread
+            }
         }
 
         private void TreeView_Click(object sender, RoutedEventArgs e)
@@ -1432,6 +1644,7 @@ namespace ME3Explorer
 
             //we might need to identify parent depths and add those first
             List<PackageUpdate> addedChanges = updates.Where(x => x.change == PackageChange.ExportAdd || x.change == PackageChange.ImportAdd).OrderBy(x => x.index).ToList();
+            List<int> headerChanges = updates.Where(x => x.change == PackageChange.ExportHeader).Select(x => x.index).OrderBy(x => x).ToList();
             if (addedChanges.Count > 0)
             {
                 //Find nodes that haven't been generated and added yet
@@ -1453,8 +1666,12 @@ namespace ME3Explorer
                 var nodesToSortChildrenFor = new HashSet<TreeViewEntry>();
                 foreach (PackageUpdate newItem in addedChangesByUIndex)
                 {
-                    int idx = newItem.index >= 0 ? newItem.index : newItem.index; //make UIndex based
+                    int idx = newItem.change == PackageChange.ExportAdd ? newItem.index : -newItem.index; //make UIndex based
                     IEntry entry = Pcc.getEntry(idx);
+                    if (entry == null)
+                    {
+                        Debugger.Break();
+                    }
 
                     //TreeViewEntry parent = null;
                     //foreach (TreeViewEntry tve in treeViewItems)
@@ -1467,12 +1684,15 @@ namespace ME3Explorer
                     //        break;
                     //    }
                     //}
-                    TreeViewEntry parent = treeViewItems.First(x => x.UIndex == entry.idxLink);
-                    TreeViewEntry newEntry = new TreeViewEntry(entry);
-                    newEntry.Parent = parent;
-                    parent.Sublinks.Add(newEntry);
-                    treeViewItems.Add(newEntry); //used to find parents
-                    nodesToSortChildrenFor.Add(parent);
+                    TreeViewEntry parent = treeViewItems.FirstOrDefault(x => x.UIndex == entry.idxLink);
+                    if (parent != null)
+                    {
+                        TreeViewEntry newEntry = new TreeViewEntry(entry);
+                        newEntry.Parent = parent;
+                        parent.Sublinks.Add(newEntry);
+                        treeViewItems.Add(newEntry); //used to find parents
+                        nodesToSortChildrenFor.Add(parent);
+                    }
                     //newItem.Parent = targetItem;
                     //targetItem.Sublinks.Add(newItem);
                 }
@@ -1502,7 +1722,33 @@ namespace ME3Explorer
                     }
                 }
             }
-
+            if (headerChanges.Count > 0)
+            {
+                var tree = AllTreeViewNodesX[0].FlattenTree();
+                var nodesNeedingResort = new List<TreeViewEntry>();
+                List<TreeViewEntry> tviWithChangedHeaders = tree.Where(x => x.UIndex > 0 && headerChanges.Contains(x.Entry.Index)).ToList();
+                foreach (TreeViewEntry tvi in tviWithChangedHeaders)
+                {
+                    if (tvi.Parent.UIndex != tvi.Entry.idxLink)
+                    {
+                        Debug.WriteLine("Reorder req for " + tvi.UIndex);
+                        TreeViewEntry newParent = tree.FirstOrDefault(x => x.UIndex == tvi.Entry.idxLink);
+                        if (newParent == null)
+                        {
+                            Debugger.Break();
+                        }
+                        else
+                        {
+                            tvi.Parent.Sublinks.Remove(tvi);
+                            tvi.Parent = newParent;
+                            newParent.Sublinks.Add(tvi);
+                            nodesNeedingResort.Add(newParent);
+                        }
+                    }
+                }
+                nodesNeedingResort = nodesNeedingResort.Distinct().ToList();
+                nodesNeedingResort.ForEach(x => x.SortChildren());
+            }
 
             if (changes.Contains(PackageChange.Names))
             {
@@ -1946,7 +2192,7 @@ namespace ME3Explorer
                 GoToNumber(n >= 0 ? Pcc.ExportCount : -Pcc.ImportCount);
                 if (relinkResults.Count > 0)
                 {
-                    ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.");
+                    ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.", this);
                     ld.Show();
                 }
                 else
@@ -2044,6 +2290,7 @@ namespace ME3Explorer
                     if (importExport(node.Entry as IExportEntry, newItemParent.UIndex, out importedEntry))
                     {
                         newEntry = new TreeViewEntry(importedEntry);
+                        crossPCCObjectMap[node.Entry.UIndex - 1] = importedEntry.Index; //0 based. map old index to new index
                     }
                     else
                     {
@@ -2059,6 +2306,7 @@ namespace ME3Explorer
 
                     //ImportEntry newImport = Pcc.Imports[nextIndex - 1]; //0 based
                     newEntry = new TreeViewEntry(newImport);
+                    crossPCCObjectMap[index] = newImport.UIndex; //0 based. map old index to new index
                 }
                 newEntry.Parent = newItemParent;
                 newItemParent.Sublinks.Add(newEntry); //TODO: Resort the children so they display in the proper order
@@ -2738,7 +2986,8 @@ namespace ME3Explorer
         private void PackageEditorWPF_Closing(object sender, CancelEventArgs e)
         {
             SoundTab_Soundpanel.FreeAudioResources();
-
+            //System.Runtime.GCSettings.LargeObjectHeapCompactionMode = System.Runtime.GCLargeObjectHeapCompactionMode.CompactOnce;
+            //GC.Collect();
         }
 
         private void OpenIn_Clicked(object sender, RoutedEventArgs e)
@@ -2808,7 +3057,296 @@ namespace ME3Explorer
             Properties.Settings.Default.BinaryInterpreterWPFAutoScanAlways = !Properties.Settings.Default.BinaryInterpreterWPFAutoScanAlways;
             Properties.Settings.Default.Save();
         }
+
+        private void Port_SFXObjectives_Click(object sender, RoutedEventArgs e)
+        {
+            /*int offsetx = -9990 - 38713;
+            int standingz = 803;
+            int offsety = -809 - 1589;
+            foreach (IExportEntry exp in Pcc.Exports)
+            {
+                StructProperty locationProp = exp.GetProperty<StructProperty>("location");
+                if (locationProp != null)
+                {
+                    FloatProperty xProp = locationProp.GetProp<FloatProperty>("X");
+                    FloatProperty yProp = locationProp.GetProp<FloatProperty>("Y");
+                    //FloatProperty zProp = locationProp.GetProp<FloatProperty>("Z");
+                    //Debug.WriteLine("Original coordinate of objective: " + xProp.Value + "," + yProp.Value + "," + zProp.Value);
+
+                    xProp.Value += -600;
+                    yProp.Value += 3000;
+                    //zProp.Value = standingz;
+
+                    //Debug.WriteLine("--New coordinate for positioning: " + xPos + "," + y + "," + z);
+
+                    //xPos += 55;
+                    exp.WriteProperty(locationProp);
+                }
+            }
+
+            return;*/
+            if (Pcc == null)
+            {
+                return;
+            }
+            OpenFileDialog d = new OpenFileDialog { Title = "Select source file", Filter = "*.pcc|*.pcc" };
+            bool? result = d.ShowDialog();
+            IMEPackage sourceFile = null;
+
+            if (result.HasValue && result.Value)
+            {
+                if (d.FileName == Pcc.FileName)
+                {
+                    Debug.WriteLine("Same input/target file");
+                    return;
+                }
+                sourceFile = MEPackageHandler.OpenMEPackage(d.FileName);
+            }
+
+            var targetPersistentLevel = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
+
+            if (targetPersistentLevel == null)
+            {
+                Debug.WriteLine("Could not find persistent level in current file");
+                return;
+            }
+
+            var pathnodeForPositioning = Pcc.Exports.FirstOrDefault(x => x.ClassName == "PathNode" && x.ObjectName == "PathNode");
+            if (pathnodeForPositioning == null)
+            {
+
+                Debug.WriteLine("Could not find pathnode to position objectives around");
+                return;
+            }
+            StructProperty pathnodePos = pathnodeForPositioning.GetProperty<StructProperty>("location");
+            float xPos = pathnodePos.GetProp<FloatProperty>("X");
+            float y = pathnodePos.GetProp<FloatProperty>("Y") + 80;
+            float z = pathnodePos.GetProp<FloatProperty>("Z");
+
+            Debug.WriteLine("Base coordinate for positioning: " + xPos + "," + y + "," + z);
+
+            crossPCCObjectMap = new SortedDictionary<int, int>();
+
+            var itemsToAddToLevel = new List<IExportEntry>();
+            foreach (IExportEntry export in sourceFile.Exports)
+            {
+                if (export.ObjectName == "SFXOperation_ObjectiveSpawnPoint")
+                {
+                    Debug.WriteLine("Porting " + export.GetFullPath + "_" + export.indexValue);
+                    importExport(export, targetPersistentLevel.UIndex, out IExportEntry portedObjective);
+                    crossPCCObjectMap[export.Index] = portedObjective.Index; //0 based. map old index to new index
+                    itemsToAddToLevel.Add(portedObjective);
+                    var child = export.GetProperty<ObjectProperty>("CollisionComponent");
+                    IExportEntry collCyl = sourceFile.Exports[child.Value - 1];
+                    Debug.WriteLine("Porting " + collCyl.GetFullPath + "_" + collCyl.indexValue);
+                    importExport(collCyl, portedObjective.UIndex, out IExportEntry portedCollisionCylinder);
+                    crossPCCObjectMap[collCyl.Index] = portedCollisionCylinder.Index; //0 based. map old index to new index
+                }
+            }
+
+            relinkObjects2(sourceFile);
+
+            xPos -= (itemsToAddToLevel.Count / 2) * 55.0f;
+            foreach (IExportEntry addingExport in itemsToAddToLevel)
+            {
+                StructProperty locationProp = addingExport.GetProperty<StructProperty>("location");
+                if (locationProp != null)
+                {
+                    FloatProperty xProp = locationProp.GetProp<FloatProperty>("X");
+                    FloatProperty yProp = locationProp.GetProp<FloatProperty>("Y");
+                    FloatProperty zProp = locationProp.GetProp<FloatProperty>("Z");
+                    Debug.WriteLine("Original coordinate of objective: " + xProp.Value + "," + yProp.Value + "," + zProp.Value);
+
+                    xProp.Value = xPos;
+                    yProp.Value = y;
+                    zProp.Value = z;
+
+                    Debug.WriteLine("--New coordinate for positioning: " + xPos + "," + y + "," + z);
+
+                    xPos += 55;
+                    addingExport.WriteProperty(locationProp);
+                }
+            }
+
+            byte[] leveldata = targetPersistentLevel.Data;
+            int start = targetPersistentLevel.propsEnd();
+            //Console.WriteLine("Found start of binary at {start.ToString("X8"));
+
+            uint exportid = BitConverter.ToUInt32(leveldata, start);
+            start += 4;
+            uint numberofitems = BitConverter.ToUInt32(leveldata, start);
+            SharedPathfinding.WriteMem(leveldata, start, BitConverter.GetBytes(numberofitems + ((uint)itemsToAddToLevel.Count)));
+            var readback = BitConverter.ToUInt32(leveldata, start);
+
+            //Debug.WriteLine("Size before: {memory.Length);
+            //memory = RemoveIndices(memory, offset, size);
+            int offset = (int)(start + (numberofitems + 1) * 4); //will be at the very end of the list as it is now +1
+
+            List<byte> memList = leveldata.ToList();
+            foreach (IExportEntry addingExport in itemsToAddToLevel)
+            {
+                memList.InsertRange(offset, BitConverter.GetBytes(addingExport.UIndex));
+                offset += 4;
+            }
+            leveldata = memList.ToArray();
+            targetPersistentLevel.Data = leveldata;
+
+            sourceFile.Release();
+            Debug.WriteLine("Done");
+            crossPCCObjectMap = null;
+            GoToNumber(targetPersistentLevel.UIndex);
+        }
+
+        private void GenerateGUIDCacheForFolder_Clicked(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog m = new CommonOpenFileDialog();
+            m.IsFolderPicker = true;
+            m.EnsurePathExists = true;
+            m.Title = "Select folder to generate GUID cache on";
+            if (m.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                string dir = m.FileName;
+                string[] files = Directory.GetFiles(dir, "*.pcc");
+                if (files.Count() > 0)
+                {
+                    var packageGuidMap = new Dictionary<string, Guid>();
+                    var GuidPackageMap = new Dictionary<Guid, string>();
+
+                    IsBusy = true;
+                    string guidcachefile = null;
+                    foreach (string file in files)
+                    {
+                        string fname = Path.GetFileNameWithoutExtension(file);
+                        if (fname.StartsWith("GuidCache"))
+                        {
+                            guidcachefile = file;
+                            continue;
+                        }
+                        if (fname.Contains("_LOC_"))
+                        {
+                            Debug.WriteLine("--> Skipping " + fname);
+                            continue; //skip localizations
+                        }
+                        Debug.WriteLine(Path.GetFileName(file));
+                        var package = MEPackageHandler.OpenMEPackage(file);
+                        bool hasPackageNamingItself = false;
+                        var filesToSkip = new string[] { "BioD_Cit004_270ShuttleBay1", "BioD_Cit003_600MechEvent", "CAT6_Executioner", "SFXPawn_Demo", "SFXPawn_Sniper", "SFXPawn_Heavy", "GethAssassin", "BioD_OMG003_125LitExtra" };
+                        foreach (IExportEntry exp in package.Exports)
+                        {
+                            if (exp.ClassName == "Package" && exp.idxLink == 0 && !filesToSkip.Contains(exp.ObjectName))
+                            {
+                                if (string.Equals(exp.ObjectName, fname, StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    hasPackageNamingItself = true;
+                                }
+
+                                int preguidcountoffset = package.Game == MEGame.ME3 ? 0x2C : 0x30;
+                                int count = BitConverter.ToInt32(exp.Header, preguidcountoffset);
+                                byte[] guidbytes = exp.Header.Skip((preguidcountoffset + 4) + (count * 4)).Take(16).ToArray();
+                                if (!guidbytes.All(singleByte => singleByte == 0))
+                                {
+                                    Guid guid = new Guid(guidbytes);
+                                    GuidPackageMap.TryGetValue(guid, out string packagename);
+                                    if (packagename != null && packagename != exp.ObjectName)
+                                    {
+                                        Debug.WriteLine($"-> {exp.UIndex} {exp.ObjectName} has a guid different from already found one ({packagename})! " + guid.ToString());
+                                    }
+                                    if (packagename == null)
+                                    {
+                                        GuidPackageMap[guid] = exp.ObjectName;
+                                    }
+                                }
+                            }
+                        }
+                        package.Release();
+                        if (!hasPackageNamingItself)
+                        {
+                            Debug.WriteLine("----HAS NO SELF NAMING EXPORT");
+                        }
+                    }
+                    foreach (KeyValuePair<Guid, string> entry in GuidPackageMap)
+                    {
+                        // do something with entry.Value or entry.Key
+                        Debug.WriteLine($"  {entry.Value} {entry.Key}");
+                    }
+                    if (guidcachefile != null)
+                    {
+                        Debug.WriteLine("Opening GuidCache file " + guidcachefile);
+                        var package = MEPackageHandler.OpenMEPackage(guidcachefile);
+                        var cacheExp = package.Exports.FirstOrDefault(x => x.ObjectName == "GuidCache");
+                        if (cacheExp != null)
+                        {
+                            var data = new MemoryStream();
+                            var expPre = cacheExp.Data.Take(12).ToArray();
+                            data.Write(expPre, 0, 12); //4 byte header, None
+                            data.WriteInt32(GuidPackageMap.Count);
+                            foreach (KeyValuePair<Guid, string> entry in GuidPackageMap)
+                            {
+                                int nametableIndex = cacheExp.FileRef.FindNameOrAdd(entry.Value);
+                                data.WriteInt32(nametableIndex);
+                                data.WriteInt32(0);
+                                data.Write(entry.Key.ToByteArray(), 0, 16);
+                            }
+                            cacheExp.Data = data.ToArray();
+                        }
+                        package.save();
+                        package.Release();
+                    }
+                    Debug.WriteLine("Done. Cache size: " + GuidPackageMap.Count);
+
+                    IsBusy = false;
+                }
+            }
+        }
+
+        private void GenerateNewGUIDForPackageFile_Clicked(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("This process applies immediately and cannot be undone.\nEnsure the file you are going to regenerate is not open in ME3Explorer in any tools.\nBe absolutely sure you know what you're doing before you use this!");
+            OpenFileDialog d = new OpenFileDialog { Title = "Select file to regen guid for", Filter = "*.pcc|*.pcc" };
+            bool? result = d.ShowDialog();
+            IMEPackage sourceFile = null;
+
+            if (result.HasValue && result.Value)
+            {
+                sourceFile = MEPackageHandler.OpenMEPackage(d.FileName);
+                string fname = Path.GetFileNameWithoutExtension(d.FileName);
+                Guid newGuid = Guid.NewGuid();
+                IExportEntry selfNamingExport = null;
+                foreach (IExportEntry exp in sourceFile.Exports)
+                {
+                    if (exp.ClassName == "Package" && exp.idxLink == 0)
+                    {
+                        if (string.Equals(exp.ObjectName, fname, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            selfNamingExport = exp;
+                            break;
+                        }
+                    }
+                }
+
+                if (selfNamingExport == null)
+                {
+                    sourceFile.Release();
+                    MessageBox.Show("Selected package does not contain a self-naming package export.\nCannot regenerate package file-level GUID if it doesn't contain self-named export.");
+                    return;
+                }
+                byte[] header = selfNamingExport.GetHeader();
+                int preguidcountoffset = selfNamingExport.FileRef.Game == MEGame.ME3 ? 0x2C : 0x30;
+                int count = BitConverter.ToInt32(header, preguidcountoffset);
+                int headerguidoffset = (preguidcountoffset + 4) + (count * 4);
+
+                SharedPathfinding.WriteMem(header, headerguidoffset, newGuid.ToByteArray());
+                selfNamingExport.Header = header;
+                sourceFile.save();
+                sourceFile.Release();
+                var fileAsBytes = File.ReadAllBytes(d.FileName);
+                SharedPathfinding.WriteMem(fileAsBytes, 0x4E, newGuid.ToByteArray());
+                File.WriteAllBytes(d.FileName, fileAsBytes);
+                MessageBox.Show("Generated a new GUID for package.");
+            }
+        }
     }
+
     [DebuggerDisplay("TreeViewEntry {DisplayName}")]
     public class TreeViewEntry : INotifyPropertyChanged
     {
