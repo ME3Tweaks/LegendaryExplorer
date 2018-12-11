@@ -139,7 +139,8 @@ namespace ME3Explorer.SequenceObjects
         public VarTypes type { get; set; }
         readonly SText val;
         protected PPath shape;
-        public string Value {
+        public string Value
+        {
             get => val.Text;
             set => val.Text = value;
         }
@@ -375,7 +376,7 @@ namespace ME3Explorer.SequenceObjects
         public SFrame(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
-            string s = export.ObjectName;
+            string s = $"{export.ObjectName}_{export.indexValue}";
             float w = 0;
             float h = 0;
             var props = export.GetProperties();
@@ -893,6 +894,7 @@ namespace ME3Explorer.SequenceObjects
             s = s.Replace("SFXSeqEvt_", "");
             s = s.Replace("SeqEvt_", "");
             s = s.Replace("SeqEvent_", "");
+            s += "_" + export.indexValue;
             float starty = 0;
             float w = 15;
             float midW = 0;
@@ -1124,18 +1126,18 @@ namespace ME3Explorer.SequenceObjects
                 switch (prop)
                 {
                     case ObjectProperty objProp when objProp.Name == "oSequenceReference":
-                    {
-                        string seqName = pcc.getEntry(objProp.Value).ObjectName;
-                        if (pcc.Game == MEGame.ME1 
-                            && objProp.Value > 0
-                            && seqName == "Sequence"
-                            && pcc.getExport(objProp.Value - 1).GetProperty<StrProperty>("ObjName") is StrProperty objNameProp)
                         {
-                            seqName = objNameProp;
+                            string seqName = pcc.getEntry(objProp.Value).ObjectName;
+                            if (pcc.Game == MEGame.ME1
+                                && objProp.Value > 0
+                                && seqName == "Sequence"
+                                && pcc.getExport(objProp.Value - 1).GetProperty<StrProperty>("ObjName") is StrProperty objNameProp)
+                            {
+                                seqName = objNameProp;
+                            }
+                            s += $"\n\"{seqName}\"";
+                            break;
                         }
-                        s += $"\n\"{seqName}\"";
-                        break;
-                    }
                     case NameProperty nameProp when nameProp.Name == "EventName" || nameProp.Name == "StateName":
                         s += $"\n\"{nameProp}\"";
                         break;
@@ -1361,7 +1363,7 @@ namespace ME3Explorer.SequenceObjects
                 {
                     RectangleF shadowbounds = Bounds;
                     shadowbounds.Offset(1, 1);
-                    StringFormat stringformat = new StringFormat {Alignment = base.TextAlignment};
+                    StringFormat stringformat = new StringFormat { Alignment = base.TextAlignment };
                     g.DrawString(base.Text, base.Font, black, shadowbounds, stringformat);
                 }
             }

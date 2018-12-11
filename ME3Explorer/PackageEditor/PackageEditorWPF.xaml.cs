@@ -3345,6 +3345,21 @@ namespace ME3Explorer
                 MessageBox.Show("Generated a new GUID for package.");
             }
         }
+
+        private void MakeAllGrenadesAmmoRespawn_Click(object sender, RoutedEventArgs e)
+        {
+            var ammoGrenades = Pcc.Exports.Where(x => x.ClassName != "Class" && !x.ObjectName.StartsWith("Default") && (x.ObjectName == "SFXAmmoContainer" || x.ObjectName == "SFXGrenadeContainer"));
+            foreach (var container in ammoGrenades)
+            {
+                BoolProperty repawns = new BoolProperty(true, "bRespawns");
+                FloatProperty respawnTime = new FloatProperty(container.ObjectName == "GrenadeContainer" ? 8 : 3, "RespawnTime");
+                var currentprops = container.GetProperties();
+                currentprops.AddOrReplaceProp(repawns);
+                currentprops.AddOrReplaceProp(respawnTime);
+                container.WriteProperties(currentprops);
+            }
+
+        }
     }
 
     [DebuggerDisplay("TreeViewEntry {DisplayName}")]
