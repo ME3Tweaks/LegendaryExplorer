@@ -260,6 +260,7 @@ namespace ME3Explorer
             byte[] data = arguments.Item2;
             int binarystart = arguments.Item3;
             bool isGenericScan = false;
+            bool appendGenericScan = false;
             switch (CurrentLoadedExport.ClassName)
             {
                 case "IntProperty":
@@ -270,20 +271,20 @@ namespace ME3Explorer
                     subNodes = StartObjectScan(data);
                     break;
                 case "BioDynamicAnimSet":
-                    subNodes = StartBioDynamicAnimSetScan(data, binarystart);
+                    subNodes = StartBioDynamicAnimSetScan(data, ref binarystart);
                     break;
                 case "ObjectRedirector":
-                    subNodes = StartObjectRedirectorScan(data, binarystart);
+                    subNodes = StartObjectRedirectorScan(data, ref binarystart);
                     break;
                 case "WwiseStream":
                 case "WwiseBank":
                     subNodes = Scan_WwiseStreamBank(data);
                     break;
                 case "WwiseEvent":
-                    subNodes = Scan_WwiseEvent(data, binarystart);
+                    subNodes = Scan_WwiseEvent(data, ref binarystart);
                     break;
                 case "BioStage":
-                    subNodes = StartBioStageScan(data, binarystart);
+                    subNodes = StartBioStageScan(data, ref binarystart);
                     break;
                 case "Class":
                     subNodes = StartClassScan(data);
@@ -293,62 +294,69 @@ namespace ME3Explorer
                     subNodes = StartEnumScan(data);
                     break;
                 case "GuidCache":
-                    subNodes = StartGuidCacheScan(data, binarystart);
+                    subNodes = StartGuidCacheScan(data, ref binarystart);
                     break;
                 case "Level":
-                    subNodes = StartLevelScan(data);
+                    subNodes = StartLevelScan(data, ref binarystart);
+                    appendGenericScan = true;
                     break;
                 case "Material":
                 case "MaterialInstanceConstant":
-                    subNodes = StartMaterialScan(data, binarystart);
+                    subNodes = StartMaterialScan(data, ref binarystart);
                     break;
                 case "PrefabInstance":
-                    subNodes = StartPrefabInstanceScan(data, binarystart);
+                    subNodes = StartPrefabInstanceScan(data, ref binarystart);
                     break;
                 case "SkeletalMesh":
-                    subNodes = StartSkeletalMeshScan(data, binarystart);
+                    subNodes = StartSkeletalMeshScan(data, ref binarystart);
                     break;
                 case "StaticMeshCollectionActor":
-                    subNodes = StartStaticMeshCollectionActorScan(data, binarystart);
+                    subNodes = StartStaticMeshCollectionActorScan(data, ref binarystart);
                     break;
                 case "StaticMesh":
-                    subNodes = StartStaticMeshScan(data, binarystart);
+                    subNodes = StartStaticMeshScan(data, ref binarystart);
                     break;
                 case "Texture2D":
                     subNodes = StartTextureBinaryScan(data);
                     break;
                 case "State":
-                    subNodes = StartStateScan(data, binarystart);
+                    subNodes = StartStateScan(data, ref binarystart);
                     break;
                 case "TextureMovie":
-                    subNodes = StartTextureMovieScan(data, binarystart);
+                    subNodes = StartTextureMovieScan(data, ref binarystart);
                     break;
                 case "BioGestureRuntimeData":
-                    subNodes = StartBioGestureRuntimeDataScan(data, binarystart);
+                    subNodes = StartBioGestureRuntimeDataScan(data, ref binarystart);
                     break;
                 case "ScriptStruct":
-                    subNodes = StartScriptStructScan(data, binarystart);
+                    subNodes = StartScriptStructScan(data, ref binarystart);
                     break;
                 case "SoundCue":
-                    subNodes = StartSoundCueScan(data, binarystart);
+                    subNodes = StartSoundCueScan(data, ref binarystart);
                     break;
                 case "BioSoundNodeWaveStreamingData":
-                    subNodes = StartBioSoundNodeWaveStreamingDataScan(data, binarystart);
+                    subNodes = StartBioSoundNodeWaveStreamingDataScan(data, ref binarystart);
                     break;
                 case "SoundNodeWave":
-                    subNodes = StartSoundNodeWaveScan(data, binarystart);
+                    subNodes = StartSoundNodeWaveScan(data, ref binarystart);
                     break;
                 default:
                     isGenericScan = true;
-                    subNodes = StartGenericScan(data, binarystart);
+                    subNodes = StartGenericScan(data, ref binarystart);
                     break;
             }
-            GenericEditorSetVisibility = isGenericScan ? Visibility.Visible : Visibility.Collapsed;
+            if (appendGenericScan)
+            {
+                BinaryInterpreterWPFTreeViewItem genericContainer = new BinaryInterpreterWPFTreeViewItem() { Header = $"Generic scan data", IsExpanded = true };
+                subNodes.Add(genericContainer);
+                genericContainer.Items.AddRange(StartGenericScan(data, ref binarystart));
+            }
+            GenericEditorSetVisibility = (appendGenericScan || isGenericScan) ? Visibility.Visible : Visibility.Collapsed;
             arguments.Item1.Items = subNodes;
             e.Result = arguments.Item1; //return topLevelTree
         }
 
-        private List<object> StartSoundNodeWaveScan(byte[] data, int binarystart)
+        private List<object> StartSoundNodeWaveScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<object>();
             try
@@ -411,7 +419,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartBioSoundNodeWaveStreamingDataScan(byte[] data, int binarystart)
+        private List<object> StartBioSoundNodeWaveStreamingDataScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<object>();
             try
@@ -474,7 +482,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartSoundCueScan(byte[] data, int binarystart)
+        private List<object> StartSoundCueScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<object>();
             try
@@ -519,7 +527,7 @@ namespace ME3Explorer
             }
         }
         #region scans
-        private List<object> StartScriptStructScan(byte[] data, int binarystart)
+        private List<object> StartScriptStructScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<object>();
             try
@@ -577,7 +585,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartBioGestureRuntimeDataScan(byte[] data, int binarystart)
+        private List<object> StartBioGestureRuntimeDataScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<object>();
             try
@@ -662,7 +670,7 @@ namespace ME3Explorer
             }
             return subnodes;
         }
-        private List<object> StartObjectRedirectorScan(byte[] data, int binarystart)
+        private List<object> StartObjectRedirectorScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<object>();
 
@@ -918,7 +926,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> Scan_WwiseEvent(byte[] data, int binarystart)
+        private List<object> Scan_WwiseEvent(byte[] data, ref int binarystart)
         {
             var subnodes = new List<object>();
             if (CurrentLoadedExport.FileRef.Game != MEGame.ME3)
@@ -971,7 +979,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartBioDynamicAnimSetScan(byte[] data, int binarystart)
+        private List<object> StartBioDynamicAnimSetScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<object>();
 
@@ -1016,7 +1024,7 @@ namespace ME3Explorer
         }
 
         //TODO: unfinished. currently does not display the properties for the list of BioStageCamera objects at the end
-        private List<object> StartBioStageScan(byte[] data, int binarystart)
+        private List<object> StartBioStageScan(byte[] data, ref int binarystart)
         {
             /*
              * Length (int)
@@ -1661,7 +1669,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartGuidCacheScan(byte[] data, int binarystart)
+        private List<object> StartGuidCacheScan(byte[] data, ref int binarystart)
         {
             /*
              *  
@@ -1706,15 +1714,12 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartLevelScan(byte[] data)
+        private List<object> StartLevelScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<object>();
-
             try
             {
-                int start = CurrentLoadedExport.propsEnd();
-
-
+                int start = binarystart;
                 //uint exportid = BitConverter.ToUInt32(data, start);
                 start += 4;
                 uint numberofitems = BitConverter.ToUInt32(data, start);
@@ -1726,7 +1731,6 @@ namespace ME3Explorer
                     Name = "_" + start
                 };
                 subnodes.Add(countnode);
-
 
                 start += 4;
                 //uint bioworldinfoexportid = BitConverter.ToUInt32(data, start);
@@ -1811,12 +1815,42 @@ namespace ME3Explorer
                             Tag = NodeType.ArrayLeafObject,
                             Header = $"{start:X4} Invalid item. Ensure the list is the correct length. (Export {itemexportid})",
                             Name = "_" + start
-
                         });
                         start += 4;
                         itemcount++;
                     }
                 }
+                int unrealNameLen = BitConverter.ToInt32(data, start);
+                unrealNameLen *= -2;
+                int strStart = start;
+                start += 4;
+                MemoryStream ms = new MemoryStream(data);
+                ms.Position = start;
+                string unrealStr = ms.ReadString(unrealNameLen, true, Encoding.Unicode);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Tag = NodeType.Unknown,
+                    Header = $"{strStart:X4}| Unreal header string: " + unrealStr,
+                    Name = "_" + strStart
+                });
+                start += unrealNameLen;
+
+                start += 4; //blank 0
+
+                int persistentLevelPackageLen = BitConverter.ToInt32(data, start);
+                start += 4;
+                persistentLevelPackageLen *= -2;
+                ms.Position = start;
+                string persistentLevelPackageStr = ms.ReadString(persistentLevelPackageLen, true, Encoding.Unicode);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Tag = NodeType.Unknown,
+                    Header = $"{start:X4}| Persistent Level Package: " + persistentLevelPackageStr,
+                    Name = "_" + start
+                });
+                start += persistentLevelPackageLen;
+
+                binarystart = start;
             }
             catch (Exception ex)
             {
@@ -1825,7 +1859,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartMaterialScan(byte[] data, int binarystart)
+        private List<object> StartMaterialScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<object>();
 
@@ -1910,7 +1944,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartPrefabInstanceScan(byte[] data, int binarystart)
+        private List<object> StartPrefabInstanceScan(byte[] data, ref int binarystart)
         {
             /*
              *  count: 4 bytes 
@@ -1981,7 +2015,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartSkeletalMeshScan(byte[] data, int binarystart)
+        private List<object> StartSkeletalMeshScan(byte[] data, ref int binarystart)
         {
             /*
              *  
@@ -2024,7 +2058,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartStaticMeshCollectionActorScan(byte[] data, int binarystart)
+        private List<object> StartStaticMeshCollectionActorScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<object>();
             try
@@ -2161,7 +2195,7 @@ namespace ME3Explorer
 
         }
 
-        private List<object> StartStaticMeshScan(byte[] data, int binarystart)
+        private List<object> StartStaticMeshScan(byte[] data, ref int binarystart)
         {
             /*
              *  
@@ -2357,7 +2391,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartTextureMovieScan(byte[] data, int binarystart)
+        private List<object> StartTextureMovieScan(byte[] data, ref int binarystart)
         {
             /*
              *  
@@ -2429,7 +2463,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartStateScan(byte[] data, int binarystart)
+        private List<object> StartStateScan(byte[] data, ref int binarystart)
         {
             /*
              * Has UnrealScript Functions contained within, however 
@@ -2501,7 +2535,7 @@ namespace ME3Explorer
             return subnodes;
         }
 
-        private List<object> StartGenericScan(byte[] data, int binarystart)
+        private List<object> StartGenericScan(byte[] data, ref int binarystart)
         {
             binarystart = ByteShiftUpDownValue.Value + binarystart;
             var subnodes = new List<object>();

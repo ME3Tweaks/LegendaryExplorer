@@ -365,7 +365,7 @@ namespace ME3Explorer.MetadataEditor
             if (!loadingNewData)
             {
                 var selectedNameIndex = InfoTab_PackageFile_ComboBox.SelectedIndex;
-                Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_IMP_IDXOBJECTNAME, BitConverter.GetBytes(selectedNameIndex));
+                Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_IMP_IDXPACKAGEFILE, BitConverter.GetBytes(selectedNameIndex));
             }
         }
 

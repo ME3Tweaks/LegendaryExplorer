@@ -451,7 +451,7 @@ namespace ME3Explorer
                         node.Tag = true;
                         int oldindex = curIndex;
                         curIndex = pcc.getEntry(curIndex).idxLink;
-                        Debug.WriteLine(oldindex + " links to " + curIndex);
+                        //Debug.WriteLine(oldindex + " links to " + curIndex);
 
                         link = curIndex >= 0 ? curIndex : (-curIndex + importsOffset);
                         nodeList[link].Nodes.Add(node);

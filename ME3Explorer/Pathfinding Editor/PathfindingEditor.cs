@@ -3790,63 +3790,76 @@ namespace ME3Explorer
             {
                 return;
             }
-            var pathfindingChainFile = @"X:\Google Drive\Mass Effect 3 Modding\CitHubBSP_Pathfinding.txt";
-            var pointsStrs = File.ReadAllLines(pathfindingChainFile);
-            var points = new List<Point3D>();
-            foreach (var point in pointsStrs)
+
+            OpenFileDialog d = new OpenFileDialog();
+            d.Filter = "Point Logger ASI file output (txt)|*txt";
+            string pathfindingChainFile = null;
+            if (d.ShowDialog() == DialogResult.OK)
             {
-                string[] coords = point.Split(',');
-                points.Add(new Point3D(float.Parse(coords[0]), float.Parse(coords[1]), float.Parse(coords[2])));
-            }
-            //var packageToOpen = @"C:\Users\mgame\Desktop\ME3CMM\mods\Redemption DLC - 1811\DLC_MOD_MPMapPack\CookedPCConsole\BioA_CitHub_000BSP_SOURCE.pcc";
-            var packageToSave = @"C:\Users\mgame\Desktop\ME3CMM\mods\Redemption DLC - 1811\DLC_MOD_MPMapPack\CookedPCConsole\BioA_CitHub_000BSP.pcc";
-            //var package = MEPackageHandler.OpenMEPackage(packageToOpen);
-            var basePathNode = pcc.Exports.First(x => x.ObjectName == "PathNode" && x.ClassName == "PathNode");
-            IExportEntry firstNode = null;
-            IExportEntry previousNode = null;
+                pathfindingChainFile = d.FileName;
 
 
-            foreach (var point in points)
-            {
-                IExportEntry newNode = cloneNode(basePathNode);
-                StructProperty prop = newNode.GetProperty<StructProperty>("location");
-                if (prop != null)
+                var pointsStrs = File.ReadAllLines(pathfindingChainFile);
+                var points = new List<Point3D>();
+                int lineIndex = 0;
+                foreach (var point in pointsStrs)
                 {
-                    PropertyCollection nodelocprops = (prop as StructProperty).Properties;
-                    foreach (var locprop in nodelocprops)
+                    lineIndex++;
+                    if (lineIndex <= 4)
                     {
-                        switch (locprop.Name)
-                        {
-                            case "X":
-                                (locprop as FloatProperty).Value = (float)point.X;
-                                break;
-                            case "Y":
-                                (locprop as FloatProperty).Value = (float)point.Y;
-                                break;
-                            case "Z":
-                                (locprop as FloatProperty).Value = (float)point.Z;
-                                break;
-                        }
+                        continue; //skip header of file
                     }
-                    newNode.WriteProperty(prop);
-                    if (previousNode != null)
-                    {
-                        createReachSpec(previousNode, true, newNode.Index, "Engine.ReachSpec", 1, 0);
-                    }
-                    if (firstNode == null)
-                    {
-                        firstNode = newNode;
-                    }
-                    previousNode = newNode;
+                    string[] coords = point.Split(',');
+                    points.Add(new Point3D(float.Parse(coords[0]), float.Parse(coords[1]), float.Parse(coords[2])));
                 }
-            }
-            createReachSpec(previousNode, true, firstNode.Index, "Engine.ReachSpec", 1, 0);
+                var basePathNode = pcc.Exports.First(x => x.ObjectName == "PathNode" && x.ClassName == "PathNode");
+                IExportEntry firstNode = null;
+                IExportEntry previousNode = null;
 
-            fixStackHeaders(false);
-            relinkingPathfindingChain();
-            ReachSpecRecalculator rsr = new ReachSpecRecalculator(this);
-            rsr.ShowDialog(this);
-            Debug.WriteLine("Done");
+
+                foreach (var point in points)
+                {
+                    IExportEntry newNode = cloneNode(basePathNode);
+                    StructProperty prop = newNode.GetProperty<StructProperty>("location");
+                    if (prop != null)
+                    {
+                        PropertyCollection nodelocprops = (prop as StructProperty).Properties;
+                        foreach (var locprop in nodelocprops)
+                        {
+                            switch (locprop.Name)
+                            {
+                                case "X":
+                                    (locprop as FloatProperty).Value = (float)point.X;
+                                    break;
+                                case "Y":
+                                    (locprop as FloatProperty).Value = (float)point.Y;
+                                    break;
+                                case "Z":
+                                    (locprop as FloatProperty).Value = (float)point.Z;
+                                    break;
+                            }
+                        }
+                        newNode.WriteProperty(prop);
+
+                        if (previousNode != null)
+                        {
+                            createReachSpec(previousNode, true, newNode.Index, "Engine.ReachSpec", 1, 0);
+                        }
+                        if (firstNode == null)
+                        {
+                            firstNode = newNode;
+                        }
+                        previousNode = newNode;
+                    }
+                }
+                //createReachSpec(previousNode, true, firstNode.Index, "Engine.ReachSpec", 1, 0);
+
+                fixStackHeaders(false);
+                relinkingPathfindingChain();
+                ReachSpecRecalculator rsr = new ReachSpecRecalculator(this);
+                rsr.ShowDialog(this);
+                Debug.WriteLine("Done");
+            }
         }
     }
 }

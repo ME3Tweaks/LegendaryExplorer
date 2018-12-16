@@ -3348,11 +3348,15 @@ namespace ME3Explorer
 
         private void MakeAllGrenadesAmmoRespawn_Click(object sender, RoutedEventArgs e)
         {
-            var ammoGrenades = Pcc.Exports.Where(x => x.ClassName != "Class" && !x.ObjectName.StartsWith("Default") && (x.ObjectName == "SFXAmmoContainer" || x.ObjectName == "SFXGrenadeContainer"));
+            var ammoGrenades = Pcc.Exports.Where(x => x.ClassName != "Class" && !x.ObjectName.StartsWith("Default") && (x.ObjectName == "SFXAmmoContainer" || x.ObjectName == "SFXGrenadeContainer" || x.ObjectName == "SFXAmmoContainer_Simulator"));
             foreach (var container in ammoGrenades)
             {
                 BoolProperty repawns = new BoolProperty(true, "bRespawns");
-                FloatProperty respawnTime = new FloatProperty(container.ObjectName == "GrenadeContainer" ? 8 : 3, "RespawnTime");
+                float respawnTimeVal = 20;
+                if (container.ObjectName == "SFXGrenadeContainer") { respawnTimeVal = 8; }
+                if (container.ObjectName == "SFXAmmoContainer") { respawnTimeVal = 3; }
+                if (container.ObjectName == "SFXAmmoContainer_Simulator") { respawnTimeVal = 5; }
+                FloatProperty respawnTime = new FloatProperty(respawnTimeVal, "RespawnTime");
                 var currentprops = container.GetProperties();
                 currentprops.AddOrReplaceProp(repawns);
                 currentprops.AddOrReplaceProp(respawnTime);
