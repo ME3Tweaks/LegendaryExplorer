@@ -1114,16 +1114,16 @@ namespace ME3Explorer
                         if (!header1.SequenceEqual(header2))
 
                         {
-                            foreach (byte b in header1)
-                            {
-                                Debug.Write(" " + b.ToString("X2"));
-                            }
-                            Debug.WriteLine("");
-                            foreach (byte b in header2)
-                            {
-                                Debug.Write(" " + b.ToString("X2"));
-                            }
-                            Debug.WriteLine("");
+                            //foreach (byte b in header1)
+                            //{
+                            //    Debug.Write(" " + b.ToString("X2"));
+                            //}
+                            //Debug.WriteLine("");
+                            //foreach (byte b in header2)
+                            //{
+                            //    //Debug.Write(" " + b.ToString("X2"));
+                            //}
+                            //Debug.WriteLine("");
                             changedExports.Add("Export header has changed: " + exp1.UIndex + " " + exp1.GetFullPath);
                         }
                         if (!exp1.Data.SequenceEqual(exp2.Data))
@@ -2397,8 +2397,28 @@ namespace ME3Explorer
             }
             outputEntry.Header = header;
             bool dataAlreadySet = false;
-            if (ex.FileRef.Game == MEGame.ME3)
+           
+            if (ex.FileRef.Game == MEGame.UDK)
             {
+                //todo: move to binary relinker
+                switch (ex.FileRef.getObjectName(ex.idxClass))
+                {
+                    case "StaticMesh":
+                        {
+                            //res.Write(idata, end, idata.Length - end);
+                            //rewrite data
+                            outputEntry.Data = res.ToArray();
+                            UDKStaticMesh usm = new UDKStaticMesh(ex.FileRef as UDKPackage, ex.Index);
+                            usm.PortToME3Export(outputEntry);
+                            dataAlreadySet = true;
+                            break;
+                        }
+                    default:
+                        //Write binary
+                        res.Write(idata, end, idata.Length - end);
+                        break;
+                }
+            } else {
                 switch (ex.FileRef.getObjectName(ex.idxClass))
                 {
                     //Todo: Move this to binary relinker
@@ -2431,32 +2451,6 @@ namespace ME3Explorer
                         res.Write(idata, end, idata.Length - end);
                         break;
                 }
-            }
-            else if (ex.FileRef.Game == MEGame.UDK)
-            {
-                //todo: move to binary relinker
-                switch (ex.FileRef.getObjectName(ex.idxClass))
-                {
-                    case "StaticMesh":
-                        {
-                            //res.Write(idata, end, idata.Length - end);
-                            //rewrite data
-                            outputEntry.Data = res.ToArray();
-                            UDKStaticMesh usm = new UDKStaticMesh(ex.FileRef as UDKPackage, ex.Index);
-                            usm.PortToME3Export(outputEntry);
-                            dataAlreadySet = true;
-                            break;
-                        }
-                    default:
-                        //Write binary
-                        res.Write(idata, end, idata.Length - end);
-                        break;
-                }
-            }
-            else
-            {
-                //Write binary
-                res.Write(idata, end, idata.Length - end);
             }
 
             int classValue = 0;
