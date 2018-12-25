@@ -81,11 +81,11 @@ namespace ME3Explorer
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
             {
                 var func = new ME3Explorer.Unreal.Classes.Function(data, CurrentLoadedExport.FileRef, CurrentLoadedExport.ClassName == "State" ? Convert.ToInt32(StartOffset_Changer.Text) : 32);
-                func.ParseFunction();
                 DecompiledScriptBlocks.Clear();
-                DecompiledScriptBlocks.AddRange(func.ScriptBlocks);
-
                 TokenList.Clear();
+
+                func.ParseFunction();
+                DecompiledScriptBlocks.AddRange(func.ScriptBlocks);
                 TokenList.AddRange(func.SingularTokenList);
 
                 ScriptHeaderBlocks.Clear();

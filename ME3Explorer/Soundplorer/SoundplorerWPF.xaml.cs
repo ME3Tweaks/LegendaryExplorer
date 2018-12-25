@@ -54,6 +54,11 @@ namespace ME3Explorer.Soundplorer
             set { if (_isBusy != value) { _isBusy = value; OnPropertyChanged(); } }
         }
 
+        public bool AudioFileLoaded
+        {
+            get { return Pcc != null || LoadedISBFile != null; }
+        }
+
         private bool _isBusyTaskbar;
         public bool IsBusyTaskbar
         {
@@ -220,6 +225,13 @@ namespace ME3Explorer.Soundplorer
 
                 StatusBar_GameID_Container.Visibility = Visibility.Visible;
 
+                if (Pcc != null)
+                {
+                    Pcc.Release();
+                    Pcc = null;
+                }
+                LoadedISBFile = null;
+
                 if (System.IO.Path.GetExtension(fileName).ToLower() == ".isb")
                 {
                     LoadedISBFile = fileName;
@@ -228,7 +240,6 @@ namespace ME3Explorer.Soundplorer
                 }
                 else
                 {
-                    LoadedISBFile = null;
                     LoadMEPackage(fileName);
                     switch (Pcc.Game)
                     {
@@ -261,6 +272,7 @@ namespace ME3Explorer.Soundplorer
                     LoadObjects();
                 }
                 Title = "Soundplorer - " + System.IO.Path.GetFileName(fileName);
+                OnPropertyChanged("AudioFileLoaded");
             }
             catch (Exception ex)
             {
@@ -968,16 +980,25 @@ namespace ME3Explorer.Soundplorer
             var location = dlg.FileName;
 
             IsBusy = true;
-            foreach (SoundplorerExport sp in BindedItemsList)
+            foreach (object o in BindedItemsList)
             {
-                if (sp.Export.ClassName == "WwiseStream")
+                if (o is SoundplorerExport sp)
                 {
-                    string outfile = System.IO.Path.Combine(location, sp.Export.ObjectName + ".wav");
-                    ExportWave(sp, outfile);
+                    if (sp.Export.ClassName == "WwiseStream")
+                    {
+                        string outfile = System.IO.Path.Combine(location, sp.Export.ObjectName + ".wav");
+                        ExportWave(sp, outfile);
+                    }
+                    if (sp.Export.ClassName == "WwiseBank")
+                    {
+                        ExtractBankToWav(sp, location);
+                    }
                 }
-                if (sp.Export.ClassName == "WwiseBank")
+                if (o is ISACTFileEntry ife)
                 {
-                    ExtractBankToWav(sp, location);
+                    string outfile = System.IO.Path.Combine(location, System.IO.Path.GetFileNameWithoutExtension(ife.Entry.FileName) + ".wav");
+                    MemoryStream ms = ife.Entry.GetWaveStream();
+                    File.WriteAllBytes(outfile, ms.ToArray());
                 }
             }
             IsBusy = false;
@@ -1313,13 +1334,12 @@ namespace ME3Explorer.Soundplorer
             if (Export.ClassName == "WwiseStream")
             {
                 SubText = "Calculating stream length";
-                Icon = FontAwesomeIcon.Spinner;
             }
             else
             {
                 SubText = "Calculating number of embedded WEMs";
-                Icon = FontAwesomeIcon.University;
             }
+            Icon = FontAwesomeIcon.Spinner;
             NeedsLoading = true;
             UpdateDisplay();
         }

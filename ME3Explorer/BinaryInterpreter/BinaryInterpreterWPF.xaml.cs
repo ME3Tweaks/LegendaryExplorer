@@ -135,7 +135,7 @@ namespace ME3Explorer
         #endregion
 
         static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "ShaderCache", "Class", "BioStage", "ObjectProperty", "Const",
-            "Enum", "ArrayProperty","FloatProperty", "IntProperty", "BoolProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
+            "Enum", "ArrayProperty","FloatProperty", "StructProperty", "ComponentProperty", "IntProperty", "NameProperty", "BoolProperty", "ClassProperty", "ByteProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
             "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "PrefabInstance",
             "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D", "State", "BioGestureRuntimeData", "ScriptStruct", "SoundCue", "SoundNodeWave","BioSoundNodeWaveStreamingData"};
 
@@ -267,6 +267,11 @@ namespace ME3Explorer
                 case "BoolProperty":
                 case "ArrayProperty":
                 case "FloatProperty":
+                case "ClassProperty":
+                case "ByteProperty":
+                case "NameProperty":
+                case "StructProperty":
+                case "ComponentProperty":
                 case "ObjectProperty":
                     subNodes = StartObjectScan(data);
                     break;
@@ -782,6 +787,8 @@ namespace ME3Explorer
 
                 switch (CurrentLoadedExport.ClassName)
                 {
+                    case "ByteProperty":
+                    case "StructProperty":
                     case "ObjectProperty":
                         {
                             //has listed outerclass

@@ -71,7 +71,7 @@
                     <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
                 </MenuItem>
                 <MenuItem Header="_Wwise" Padding="4">
-                    <MenuItem Header="Extract all audio from this file" Click="ExtractAllAudio_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="Extract all audio from this file" Click="ExtractAllAudio_Clicked" IsEnabled="{Binding AudioFileLoaded, Converter={StaticResource NullEnabledConverter}}"/>
                     <MenuItem Header="Compact a DLC mod AFC" Click="CompactAFC_Clicked"/>
                     <MenuItem Header="Convert Wave files to Wwise Ogg" Click="ConvertFolderToWwise_Clicked"/>
                 </MenuItem>

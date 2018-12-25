@@ -693,9 +693,16 @@ namespace ME3Explorer.Unreal
             res.Add(t);
             while (!t.stop)
             {
-                pos += t.raw.Length;
-                t = ReadToken(pos);
-                res.Add(t);
+                try
+                {
+                    pos += t.raw.Length;
+                    t = ReadToken(pos);
+                    res.Add(t);
+                }
+                catch (Exception e)
+                {
+                    res.Add(new Token() { text = "Exception: " + e.Message, raw = new byte[] { } });
+                }
             }
             return res;
         }
@@ -1254,7 +1261,7 @@ namespace ME3Explorer.Unreal
             }
             BytecodeSingularToken msg = new BytecodeSingularToken();
             string opname;// = 
-            byteOpnameMap.TryGetValue(t, out opname);
+            byteOpnameMap.TryGetValue(t < 0x60 ? (short) t : newTok.op, out opname);
             if (opname == null || opname == "")
             {
                 opname = "UNKNOWN(0x" + t.ToString("X2") + ")";
@@ -3237,6 +3244,7 @@ namespace ME3Explorer.Unreal
                     t.text = "UnknownNative(" + index + ")";
                     break;
             }
+            t.op = (short)index;
             int len = pos - start;
             t.raw = new byte[len];
             if (start + len <= memsize)
@@ -4556,7 +4564,7 @@ namespace ME3Explorer.Unreal
         public byte[] raw;
         public string text { get; set; }
         public bool stop;
-        public byte op { get; set; }
+        public short op { get; set; }
         public int pos { get; set; }
         public string posStr
         {

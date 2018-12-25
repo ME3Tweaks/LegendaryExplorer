@@ -1134,14 +1134,15 @@ namespace ME3Explorer
 
                     IMEPackage enumerateExtras = Pcc;
                     string file = "this file";
-                    if (compareFile.ExportCount < numExportsToEnumerate)
+                    if (compareFile.ExportCount > numExportsToEnumerate)
                     {
                         file = "other file";
                         enumerateExtras = compareFile;
                     }
 
-                    for (int i = numExportsToEnumerate; i < compareFile.ExportCount; i++)
+                    for (int i = numExportsToEnumerate; i < enumerateExtras.ExportCount; i++)
                     {
+                        Debug.WriteLine("Export only exists in " + (file + ": " + (i + 1)) + " " + enumerateExtras.Exports[i].GetFullPath);
                         changedExports.Add("Export only exists in " + file + ": " + (i + 1) + " " + enumerateExtras.Exports[i].GetFullPath);
                     }
 
