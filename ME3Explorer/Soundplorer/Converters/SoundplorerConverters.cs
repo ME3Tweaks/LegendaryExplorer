@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using static ME3Explorer.Unreal.Classes.WwiseBank;
 
 namespace ME3Explorer.Soundplorer
 {
@@ -66,6 +67,26 @@ namespace ME3Explorer.Soundplorer
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return WwiseBank.GetHircObjType((byte)value);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class HIRCObjectTypeVisibilityConverter : IValueConverter
+    {
+        // parameter is allowed class type for visibility
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (parameter != null)
+            {
+                int iparameter = int.Parse((string)parameter);
+                HIRCObject ho = (HIRCObject)value;
+                return iparameter == ho.ObjType ? Visibility.Visible : Visibility.Collapsed;
+            }
+            return Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

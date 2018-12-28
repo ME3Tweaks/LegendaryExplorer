@@ -160,13 +160,13 @@ namespace ME3Explorer.Unreal.Classes
             string res = "";
             switch (b)
             {
-                case 0x2:
+                case HIRCObject.TYPE_SOUNDSFXVOICE:
                     res = "Sound SFX/Sound Voice";
                     break;
-                case 0x3:
+                case HIRCObject.TYPE_EVENTACTION:
                     res = "Event Action";
                     break;
-                case 0x4:
+                case HIRCObject.TYPE_EVENT:
                     res = "Event";
                     break;
                 case 0x5:
@@ -213,6 +213,10 @@ namespace ME3Explorer.Unreal.Classes
 
         public class HIRCObject
         {
+            public const byte TYPE_SOUNDSFXVOICE = 0x2;
+            public const byte TYPE_EVENTACTION = 0x3;
+            public const byte TYPE_EVENT = 0x4;
+
             private int index;
             public int Index { get { return index; } set { index = value; } }
 
@@ -238,6 +242,7 @@ namespace ME3Explorer.Unreal.Classes
             //typeinfo
             public int cnt, unk1, IDaudio, IDsource;//scope,atype;
             public List<int> eventIDs { get; set; }
+            public byte[] Data { get; internal set; }
         }
 
         public List<HIRCObject> ParseHIRCObjects(byte[] buff)
@@ -281,7 +286,7 @@ namespace ME3Explorer.Unreal.Classes
                         else
                             res += ".........Sound Type = Sound Voice\n";*/
                         break;
-                    //case 0x3:
+                    //case 0x3: //Event Action
                     //    scope = buff[pos + 9];
                     //    res += ".........Scope = " + scope + "\n";
                     //    atype = buff[pos + 10];
@@ -299,6 +304,9 @@ namespace ME3Explorer.Unreal.Classes
                         //res += ".........ID = 0x" + .ToString("X8") + "\n";
                         break;
                 }
+                byte[] hircObjMemory = new byte[ho.Size + 5]; //size + 1byte type
+                Buffer.BlockCopy(buff, ho.Offset, hircObjMemory, 0, hircObjMemory.Count());
+                ho.Data = hircObjMemory;
                 //byte[] tmp = new byte[size + 5];
 
                 //could be block copied

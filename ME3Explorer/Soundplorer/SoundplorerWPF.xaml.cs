@@ -203,9 +203,6 @@ namespace ME3Explorer.Soundplorer
                 try
                 {
                     LoadFile(d.FileName);
-                    AddRecent(d.FileName, false);
-                    SaveRecentList();
-                    RefreshRecent(true, RFiles);
                 }
                 catch (Exception ex)
                 {
@@ -273,6 +270,9 @@ namespace ME3Explorer.Soundplorer
                 }
                 Title = "Soundplorer - " + System.IO.Path.GetFileName(fileName);
                 OnPropertyChanged("AudioFileLoaded");
+                AddRecent(fileName, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
             }
             catch (Exception ex)
             {
