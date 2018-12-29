@@ -783,7 +783,7 @@ namespace ME3Explorer
                                 //We will need to find a way to cross map this as this will block cross import mapping unless these exports already exist.
                                 Debug.WriteLine("FOUND UPSTREAM, AS EXPORT!");
                                 KFreonLib.Debugging.DebugOutput.StartDebugger("Package Editor Relinker");
-                                KFreonLib.Debugging.DebugOutput.PrintLn("Error: Upstream item that is required is an export in the pcc to import from: " + fullobjectname);
+                                KFreonLib.Debugging.DebugOutput.PrintLn("Warning: Upstream item that is required is an export in the pcc to import from. Found same-named item locally, using that one instead: " + fullobjectname);
                                 donorUpstreamExport = exp;
                                 upstreamCount--; //level 1 now from the top down
                                                  //Create new import with this as higher IDK
