@@ -33,7 +33,7 @@ namespace ME3Explorer
                 KeyValuePair<int, int> entry = crossPCCObjectMappingList[i];
                 if (entry.Key > 0)
                 {
-                    IExportEntry sourceExport = importpcc.Exports[entry.Key];
+                    IExportEntry sourceExport = Pcc.getExport(entry.Value);
                     PropertyCollection transplantProps = sourceExport.GetProperties();
                     Debug.WriteLine("Relinking items from source export: " + sourceExport.GetFullPath);
                     relinkResults.AddRange(relinkPropertiesRecursive(importpcc, Pcc, transplantProps, crossPCCObjectMappingList, ""));
@@ -211,6 +211,7 @@ namespace ME3Explorer
             {
                 if (entry.Key > 0)
                 {
+                    IExportEntry sourceexp = importpcc.getExport(entry.Key);
                     IExportEntry exp = Pcc.getExport(entry.Value);
                     byte[] binarydata = exp.getBinaryData();
                     if (binarydata.Length > 0)
@@ -263,8 +264,8 @@ namespace ME3Explorer
                                         //This is going to be pretty ugly
                                         try
                                         {
-                                            byte[] newdata = importpcc.Exports[entry.Key].Data; //may need to rewrite first unreal header
-                                            byte[] data = importpcc.Exports[entry.Key].Data;
+                                            byte[] newdata = sourceexp.Data; //may need to rewrite first unreal header
+                                            byte[] data = sourceexp.Data;
 
                                             int offset = 0;
                                             int unrealExportIndex = BitConverter.ToInt32(data, offset);
@@ -490,6 +491,12 @@ namespace ME3Explorer
                                         exp.setBinaryData(binarydata);
                                     }
                                     break;
+                                case "Function":
+                                    //Crazy experimental
+                                    {
+                                        Bytecode.RelinkFunctionForPorting(sourceexp, exp, relinkFailedReport, crossPCCObjectMap);
+                                    }
+                                    break;
                                 default:
                                     continue;
                             }
@@ -499,7 +506,7 @@ namespace ME3Explorer
                             relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relinking failed due to exception: " + e.Message);
                         }
                         //Run an interpreter pass over it - we will find objectleafnodes and attempt to update the same offset in the destination file.
-                        //BinaryInterpreter binaryrelinkInterpreter = new ME3Explorer.BinaryInterpreter(importpcc, importpcc.Exports[entry.Key], pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
+                        //BinaryInterpreter binaryrelinkInterpreter = new ME3Explorer.BinaryInterpreter(importpcc, sourceexp, pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
                     }
                 }
             }
@@ -707,7 +714,7 @@ namespace ME3Explorer
         /// <param name="importingPCC">PCC to import imports from</param>
         /// <param name="destinationPCC">PCC to add imports to</param>
         /// <returns></returns>
-        private ImportEntry getOrAddCrossImport(string importFullName, IMEPackage importingPCC, IMEPackage destinationPCC, int? forcedLinkIdx = null)
+        public static ImportEntry getOrAddCrossImport(string importFullName, IMEPackage importingPCC, IMEPackage destinationPCC, int? forcedLinkIdx = null)
         {
             //This code is kind of ugly, sorry.
 
@@ -792,7 +799,7 @@ namespace ME3Explorer
                         }
                         if (donorUpstreamExport == null)
                         {
-                            Debug.WriteLine("An error has occured. Could not find an upstream import or export for relinking: " + fullobjectname + " from " + Pcc.FileName);
+                            Debug.WriteLine("An error has occured. Could not find an upstream import or export for relinking: " + fullobjectname + " from " + importingPCC.FileName);
                             return null;
                         }
                     }
