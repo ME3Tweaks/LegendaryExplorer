@@ -638,7 +638,7 @@ namespace ME3Explorer.Unreal
             NATIVE_UpdateURL = 0x0222
         };
 
-        public static Tuple<List<Token>, List<BytecodeSingularToken>> ParseBytecode(byte[] raw, IMEPackage pcc)
+        public static Tuple<List<Token>, List<BytecodeSingularToken>> ParseBytecode(byte[] raw, IMEPackage pcc, int pos = 0x20)
         {
 
             string s = "";
@@ -658,7 +658,6 @@ namespace ME3Explorer.Unreal
 
             //calculate block position and assign paddingwidth.
             int paddingSize = totalLength.ToString().Length;
-            int pos = 0x20;
             for (int i = 0; i < t.Count; i++)
             {
                 t[i].pos = pos;

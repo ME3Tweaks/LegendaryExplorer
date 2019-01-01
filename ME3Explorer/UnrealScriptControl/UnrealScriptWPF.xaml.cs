@@ -90,10 +90,12 @@ namespace ME3Explorer
 
                 ScriptHeaderBlocks.Clear();
                 int pos = 16;
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Child", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
+                var nextItemCompilingChain = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Next item in loading chain", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? CurrentLoadedExport : null));
 
                 pos += 4;
-                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 1", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
+                nextItemCompilingChain = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Children Probe Start", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? CurrentLoadedExport : null));
 
                 pos += 4;
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 2 (Memory size?)", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
@@ -135,7 +137,6 @@ namespace ME3Explorer
         {
             if (!TokenChanging)
             {
-                System.Diagnostics.Debug.WriteLine("hb1 updated");
                 int start = (int)ScriptEditor_Hexbox.SelectionStart;
                 int len = (int)ScriptEditor_Hexbox.SelectionLength;
                 int size = (int)ScriptEditor_Hexbox.ByteProvider.Length;
@@ -271,10 +272,18 @@ namespace ME3Explorer
             public string value { get; set; }
             public int offset { get; set; }
             public int length { get; set; }
-            public ScriptHeaderItem(string id, int value, int offset)
+            public ScriptHeaderItem(string id, int value, int offset, IExportEntry callingEntry = null)
             {
                 this.id = id;
-                this.value = $"{value} ({value.ToString("X8")})";
+                this.value = $"{value}";
+                if (callingEntry != null)
+                {
+                    this.value += $" ({ callingEntry.FileRef.getEntry(value).GetFullPath})";
+                }
+                else
+                {
+                    this.value += $" ({ value:X8})";
+                }
                 this.offset = offset;
                 length = 4;
             }

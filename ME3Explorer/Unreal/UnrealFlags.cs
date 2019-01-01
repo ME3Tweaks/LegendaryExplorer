@@ -18,6 +18,48 @@ namespace ME3Explorer.Unreal
                                  .Cast<T>();
         }
 
+        /// <summary>
+        /// Flags describing an class instance. This code is from UEExplorer.
+        ///
+        /// Note:
+        ///     This is valid for UE3 as well unless otherwise noted.
+        ///
+        /// @Redefined( Version, Clone )
+        ///     The flag is redefined in (Version) as (Clone)
+        ///
+        /// @Removed( Version )
+        ///     The flag is removed in (Version)
+        ///
+        /// @Moved( Version, New )
+        ///     The flag was moved since (Version) to a different value (New)
+        /// </summary>
+        [Flags]
+        public enum EClassFlags : uint
+        {
+            None =                  0x00000000U,
+            Abstract =              0x00000001U,
+            Compiled =              0x00000002U,
+            Config =                0x00000004U,
+            Transient =             0x00000008U,
+            Parsed =                0x00000010U,
+            Localized =             0x00000020U,
+            SafeReplace =           0x00000040U,
+
+            NoExport =              0x00000100U,
+            Placeable =             0x00000200U,
+            PerObjectConfig =       0x00000400U,
+            NativeReplication =     0x00000800U,
+            EditInlineNew =         0x00001000U,
+            CollapseCategories =    0x00002000U,
+            ExportStructs =         0x00004000U,      // @Removed(UE3 in early but not latest)
+            HasComponents =         0x00400000U,      // @Redefined Class has component properties.
+            Hidden =                0x00800000U,      // @Redefined Don't show this class in the editor class browser or edit inline new menus.
+            Deprecated =            0x01000000U,      // @Redefined Don't save objects of this class when serializing
+            HideDropDown2 =         0x02000000U,
+            Exported =              0x04000000U,
+            NativeOnly =            0x20000000U
+        }
+
         [Flags]
         //from https://github.com/EliotVU/Unreal-Library/blob/23da0b1d42d90ccf8bc7d64051ffd38a8088ec93/src/UnrealFlags.cs#L17
         public enum EPackageFlags : uint
@@ -40,8 +82,6 @@ namespace ME3Explorer.Unreal
             /// Only necessary to load on the server.
             /// </summary>
             ServerSideOnly = 0x00000004U,
-
-            BrokenLinks = 0x00000008U,      // @Redefined(UE3, Cooked)
 
             /// <summary>
             /// The package is cooked.
@@ -202,6 +242,31 @@ namespace ME3Explorer.Unreal
             [EPropertyFlags.CrossLevelActive] = "",
         };
 
+        public static Dictionary<EClassFlags, string> classflagdesc = new Dictionary<EClassFlags, string>
+        {
+            [EClassFlags.None] = "",
+            [EClassFlags.Abstract] = "",
+            [EClassFlags.Compiled] = "",
+            [EClassFlags.Config] = "",
+            [EClassFlags.Transient] = "",
+            [EClassFlags.Parsed] = "",
+            [EClassFlags.Localized] = "",
+            [EClassFlags.SafeReplace] = "",
+            [EClassFlags.NoExport] = "",
+            [EClassFlags.Placeable] = "",
+            [EClassFlags.PerObjectConfig] = "",
+            [EClassFlags.NativeReplication] = "",
+            [EClassFlags.EditInlineNew] = "",
+            [EClassFlags.CollapseCategories] = "",
+            [EClassFlags.ExportStructs] = "",      // @Removed(UE3 in early but not latest)
+
+            [EClassFlags.HasComponents] = "Class has component properties",      // @Redefined Class has component properties.
+            [EClassFlags.Hidden] = "Don't show this class in the editor class browser or edit inline new menus",     // @Redefined .
+            [EClassFlags.Deprecated] = "Don't save objects of this class when serializing",      // @Redefined 
+            [EClassFlags.HideDropDown2] = "",
+            [EClassFlags.Exported] = "",
+            [EClassFlags.NativeOnly] = ""
+        };
 
         public enum EObjectFlags : ulong
         {

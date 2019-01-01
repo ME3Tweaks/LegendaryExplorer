@@ -308,7 +308,7 @@ namespace ME3Explorer
             uint generationsTableCount = ms.ReadUInt32();
             items.Add($"0x{(ms.Position - 4):X2} Generations Count: {generationsTableCount}");
 
-            for(int i = 0; i < generationsTableCount; i++)
+            for (int i = 0; i < generationsTableCount; i++)
             {
                 uint generationExportcount = ms.ReadUInt32();
                 items.Add($"0x{(ms.Position - 4):X2} (Generations #{i}: Export count: {generationExportcount}");
@@ -332,7 +332,7 @@ namespace ME3Explorer
             uint unknown6 = ms.ReadUInt32();
             items.Add($"0x{(ms.Position - 4):X2} Unknown 6: {unknown6} (0x{unknown6:X8})");
 
-            CompressionType compressionType = (CompressionType) ms.ReadUInt32();
+            CompressionType compressionType = (CompressionType)ms.ReadUInt32();
             items.Add($"0x{(ms.Position - 4):X2} Package Compression Type: {compressionType.ToString()}");
 
             new SharedUI.ListDialog(items, Path.GetFileName(Pcc.FileName) + " header information", "Below is information about this package from the header.", this).Show();
@@ -1947,12 +1947,16 @@ namespace ME3Explorer
                             entry.Key.UnloadExport();
                         }
                     }
+                    if (Interpreter_Tab.IsSelected && exportEntry.ClassName == "Class")
+                    {
+                        //We are on interpreter tab, selecting class. Switch to binary interpreter as interpreter will never be useful
+                        BinaryInterpreter_Tab.IsSelected = true;
+                    }
                 }
-
-
-                //import
                 else
                 {
+                    //import
+
                     ImportEntry importEntry = Pcc.getImport(-n - 1);
                     MetadataTab_MetadataEditor.LoadImport(importEntry);
                     foreach (KeyValuePair<ExportLoaderControl, TabItem> entry in ExportLoaders)
@@ -2470,7 +2474,7 @@ namespace ME3Explorer
             }
             outputEntry.Header = header;
             bool dataAlreadySet = false;
-           
+
             if (ex.FileRef.Game == MEGame.UDK)
             {
                 //todo: move to binary relinker
@@ -2491,7 +2495,9 @@ namespace ME3Explorer
                         res.Write(idata, end, idata.Length - end);
                         break;
                 }
-            } else {
+            }
+            else
+            {
                 switch (ex.FileRef.getObjectName(ex.idxClass))
                 {
                     //Todo: Move this to binary relinker

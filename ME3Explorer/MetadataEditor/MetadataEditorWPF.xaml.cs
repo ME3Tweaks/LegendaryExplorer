@@ -33,18 +33,21 @@ namespace ME3Explorer.MetadataEditor
         //This is a ExportLoaderControl as it can technically function as one. It can also function as an ImportLoader. Given that there is really no other
         //use for loading imports into an editor I am going to essentially just add the required load methods in this loader.
 
-        private const int HEADER_OFFSET_EXP_IDXCLASS = 0;
-        private const int HEADER_OFFSET_EXP_IDXSUPERCLASS = 4;
-        private const int HEADER_OFFSET_EXP_IDXLINK = 8;
-        private const int HEADER_OFFSET_EXP_IDXOBJECTNAME = 12;
-        private const int HEADER_OFFSET_EXP_INDEXVALUE = 16;
-        private const int HEADER_OFFSET_EXP_IDXARCHETYPE = 20;
-        private const int HEADER_OFFSET_EXP_OBJECTFLAGS = 24;
+        private const int HEADER_OFFSET_EXP_IDXCLASS = 0x0;
+        private const int HEADER_OFFSET_EXP_IDXSUPERCLASS = 0x4;
+        private const int HEADER_OFFSET_EXP_IDXLINK = 0x8;
+        private const int HEADER_OFFSET_EXP_IDXOBJECTNAME = 0xC;
+        private const int HEADER_OFFSET_EXP_INDEXVALUE = 0x10;
+        private const int HEADER_OFFSET_EXP_IDXARCHETYPE = 0x14;
+        private const int HEADER_OFFSET_EXP_OBJECTFLAGS = 0x18;
 
-        private const int HEADER_OFFSET_IMP_IDXCLASSNAME = 8;
-        private const int HEADER_OFFSET_IMP_IDXLINK = 16;
-        private const int HEADER_OFFSET_IMP_IDXOBJECTNAME = 20;
-        private const int HEADER_OFFSET_IMP_IDXPACKAGEFILE = 0;
+        private const int HEADER_OFFSET_EXP_UNKNOWN1 = 0x1C;
+
+
+        private const int HEADER_OFFSET_IMP_IDXCLASSNAME = 0x8;
+        private const int HEADER_OFFSET_IMP_IDXLINK = 0x10;
+        private const int HEADER_OFFSET_IMP_IDXOBJECTNAME = 0x14;
+        private const int HEADER_OFFSET_IMP_IDXPACKAGEFILE = 0x0;
         private IEntry CurrentLoadedEntry;
         private List<object> AllEntriesList;
         private HexBox Header_Hexbox;
@@ -91,6 +94,10 @@ namespace ME3Explorer.MetadataEditor
                 Row_ExportDataSize.Height = new GridLength(24);
                 Row_ExportDataOffsetDec.Height = new GridLength(24);
                 Row_ExportDataOffsetHex.Height = new GridLength(24);
+                Row_ExportUnknown1.Height = new GridLength(24);
+                Row_ExportUnknown2.Height = new GridLength(24);
+                Row_ExportPreGUIDCount.Height = new GridLength(24);
+                Row_ExportGUID.Height = new GridLength(24);
                 InfoTab_Link_TextBlock.Text = "0x08 Link:";
                 InfoTab_ObjectName_TextBlock.Text = "0x0C Object name:";
 
@@ -158,7 +165,24 @@ namespace ME3Explorer.MetadataEditor
                 InfoTab_ExportOffsetHex_TextBox.Text = "0x" + exportEntry.DataOffset.ToString("X8");
                 InfoTab_ExportOffsetDec_TextBox.Text = exportEntry.DataOffset.ToString();
 
+                //not parsed by package handling, must do it manually here
+                byte[] header = exportEntry.Header;
 
+                InfoTab_ExportUnknown1_TextBox.Text = BitConverter.ToInt32(header, 0x28).ToString();
+
+                int preguidcountoffset = exportEntry.FileRef.Game == MEGame.ME3 ? 0x2C : 0x30;
+                InfoTab_PreGUID_TextBlock.Text = $"0x{preguidcountoffset:X2} Pre GUID count:";
+                int preguidcount = BitConverter.ToInt32(header, preguidcountoffset);
+                InfoTab_ExportPreGuidCount_TextBox.Text = preguidcount.ToString();
+
+                int guidOffset = (preguidcountoffset + 4) + (preguidcount * 4);
+                InfoTab_GUID_TextBlock.Text = $"0x{guidOffset:X2} GUID:";
+                byte[] guidbytes = header.Skip(guidOffset).Take(16).ToArray();
+                Guid guid = new Guid(guidbytes);
+                InfoTab_ExportGUID_TextBox.Text = guid.ToString();
+                InfoTab_Unknown2_TextBlock.Text = $"0x{(guidOffset + 16):X2} Unknown 2:";
+
+                InfoTab_ExportUnknown2_TextBox.Text = BitConverter.ToInt32(header, guidOffset + 16).ToString();
             }
             catch (Exception e)
             {
@@ -182,7 +206,10 @@ namespace ME3Explorer.MetadataEditor
             Row_ExportDataSize.Height = new GridLength(0);
             Row_ExportDataOffsetDec.Height = new GridLength(0);
             Row_ExportDataOffsetHex.Height = new GridLength(0);
-
+            Row_ExportUnknown1.Height = new GridLength(0);
+            Row_ExportUnknown2.Height = new GridLength(0);
+            Row_ExportPreGUIDCount.Height = new GridLength(0);
+            Row_ExportGUID.Height = new GridLength(0);
             Row_Superclass.Height = new GridLength(0);
             Row_ObjectFlags.Height = new GridLength(0);
             Row_Packagefile.Height = new GridLength(24);
@@ -214,6 +241,53 @@ namespace ME3Explorer.MetadataEditor
             {
                 Header_Hexbox.SelectionStart = v;
                 Header_Hexbox.SelectionLength = 1;
+            }
+        }
+
+        private void hb1_SelectionChanged(object sender, EventArgs e)
+        {
+            int start = (int)Header_Hexbox.SelectionStart;
+            int len = (int)Header_Hexbox.SelectionLength;
+            int size = (int)Header_Hexbox.ByteProvider.Length;
+            //TODO: Optimize this so this is only called when data has changed
+            byte[] currentData = (Header_Hexbox.ByteProvider as DynamicByteProvider).Bytes.ToArray();
+            try
+            {
+                if (currentData != null && start != -1 && start < size)
+                {
+                    string s = $"Byte: {currentData[start]}"; //if selection is same as size this will crash.
+                    if (start <= currentData.Length - 4)
+                    {
+                        int val = BitConverter.ToInt32(currentData, start);
+                        s += $", Int: {val}";
+                        if (CurrentLoadedEntry.FileRef.isName(val))
+                        {
+                            s += $", Name: {CurrentLoadedEntry.FileRef.getNameEntry(val)}";
+                        }
+                        if (CurrentLoadedEntry.FileRef.getEntry(val) is IExportEntry exp)
+                        {
+                            s += $", Export: {exp.ObjectName}";
+                        }
+                        else if (CurrentLoadedEntry.FileRef.getEntry(val) is ImportEntry imp)
+                        {
+                            s += $", Import: {imp.ObjectName}";
+                        }
+                    }
+                    s += $" | Start=0x{start.ToString("X8")} ";
+                    if (len > 0)
+                    {
+                        s += $"Length=0x{len.ToString("X8")} ";
+                        s += $"End=0x{(start + len - 1).ToString("X8")}";
+                    }
+                    Header_Hexbox_SelectedBytesLabel.Content = s;
+                }
+                else
+                {
+                    Header_Hexbox_SelectedBytesLabel.Content = "Nothing Selected";
+                }
+            }
+            catch (Exception)
+            {
             }
         }
 
@@ -294,7 +368,8 @@ namespace ME3Explorer.MetadataEditor
             if (CurrentLoadedEntry is IExportEntry)
             {
                 LoadExport(CurrentLoadedEntry as IExportEntry);
-            } else if (CurrentLoadedEntry is ImportEntry)
+            }
+            else if (CurrentLoadedEntry is ImportEntry)
             {
                 LoadImport(CurrentLoadedEntry as ImportEntry);
             }

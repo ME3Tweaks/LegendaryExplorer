@@ -794,7 +794,7 @@ namespace ME3Explorer
                         {
                             if ((ObjectFlagsMask & UnrealFlags.EPropertyFlags.RepRetry) != 0)
                             {
-                                offset += 2; 
+                                offset += 2;
                             }
                             //has listed outerclass
                             int outer = BitConverter.ToInt32(data, offset);
@@ -1260,12 +1260,30 @@ namespace ME3Explorer
                 //    skipAmount = 0x22A;
                 //}
                 int offsetEnd = offset + skipAmount + 10;
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                var scriptBlock = new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} State/Script Block: 0x{offset:X4} - 0x{offsetEnd:X4}",
                     Name = "_" + offset
+                };
+                subnodes.Add(scriptBlock);
 
-                });
+                if (CurrentLoadedExport.FileRef.Game == MEGame.ME3 && skipAmount > 6)
+                {
+                    byte[] scriptmemory = data.Skip(offset).Take(skipAmount).ToArray();
+                    var tokens = Bytecode.ParseBytecode(scriptmemory, CurrentLoadedExport.FileRef, offset);
+                    string scriptText = "";
+                    foreach (Token t in tokens.Item1)
+                    {
+                        scriptText += "0x" + t.pos.ToString("X4") + " " + t.text + "\n";
+                    }
+                    scriptBlock.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = scriptText,
+                        Name = "_" + offset
+                    });
+                }
+
+
                 offset += skipAmount + 10; //heuristic to find end of script
                                            //for (int i = 0; i < 5; i++)
                                            //{
@@ -1304,14 +1322,29 @@ namespace ME3Explorer
                     });
                 }
 
-                int classMask = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                {
-                    Header = $"0x{offset:X5} Class Mask: 0x{classMask:X8}",
-                    Name = "_" + offset,
+                UnrealFlags.EClassFlags ClassFlags = (UnrealFlags.EClassFlags)BitConverter.ToUInt32(data, offset);
 
+                var classFlagsNode = new BinaryInterpreterWPFTreeViewItem()
+                {
+                    Header = $"0x{offset:X5} Class Mask: 0x{ClassFlags.ToString():X8}",
+                    Name = "_" + offset,
                     Tag = NodeType.StructLeafInt
-                });
+                };
+                subnodes.Add(classFlagsNode);
+
+                //Create claskmask tree
+                foreach (UnrealFlags.EClassFlags flag in GetValues<UnrealFlags.EClassFlags>())
+                {
+                    if ((ClassFlags & flag) != UnrealFlags.EClassFlags.None)
+                    {
+                        string reason = UnrealFlags.classflagdesc[flag];
+                        classFlagsNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"{(ulong)flag:X16} {flag} {reason}",
+                            Name = "_" + offset
+                        });
+                    }
+                }
                 offset += 4;
 
                 if (CurrentLoadedExport.FileRef.Game != MEGame.ME3)
@@ -1856,12 +1889,17 @@ namespace ME3Explorer
                     }
                 }
                 int unrealNameLen = BitConverter.ToInt32(data, start);
-                unrealNameLen *= -2;
+                Encoding encodingToUse = Encoding.ASCII;
+                if (unrealNameLen < 0)
+                {
+                    unrealNameLen *= -2;
+                    encodingToUse = Encoding.Unicode;
+                }
                 int strStart = start;
                 start += 4;
                 MemoryStream ms = new MemoryStream(data);
                 ms.Position = start;
-                string unrealStr = ms.ReadString(unrealNameLen, true, Encoding.Unicode);
+                string unrealStr = ms.ReadString(unrealNameLen, true, encodingToUse);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Tag = NodeType.Unknown,
@@ -1874,9 +1912,14 @@ namespace ME3Explorer
 
                 int persistentLevelPackageLen = BitConverter.ToInt32(data, start);
                 start += 4;
-                persistentLevelPackageLen *= -2;
+                encodingToUse = Encoding.ASCII;
+                if (persistentLevelPackageLen < 0)
+                {
+                    persistentLevelPackageLen *= -2;
+                    encodingToUse = Encoding.Unicode;
+                }
                 ms.Position = start;
-                string persistentLevelPackageStr = ms.ReadString(persistentLevelPackageLen, true, Encoding.Unicode);
+                string persistentLevelPackageStr = ms.ReadString(persistentLevelPackageLen, true, encodingToUse);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Tag = NodeType.Unknown,
