@@ -488,6 +488,8 @@ namespace ME3Explorer
             isLoadingNewData = true;
             (Interpreter_Hexbox.ByteProvider as DynamicByteProvider).Bytes.Clear();
             (Interpreter_Hexbox.ByteProvider as DynamicByteProvider).Bytes.AddRange(export.Data);
+            Interpreter_Hexbox.Select(0, 1);
+            Interpreter_Hexbox.ScrollByteIntoView();
             isLoadingNewData = false;
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
             {
