@@ -669,9 +669,11 @@ namespace ME3Explorer
 
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.CreateNoWindow = true;
+            process.StartInfo.RedirectStandardOutput = true;
             process.Start();
-            process.BeginOutputReadLine();
+            //process.BeginOutputReadLine();
             process.WaitForExit();
+            Debug.WriteLine("Process output: \n" + process.StandardOutput.ReadToEnd());
             process.Close();
 
             //Files generates

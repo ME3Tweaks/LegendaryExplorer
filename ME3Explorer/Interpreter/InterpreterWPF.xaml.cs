@@ -377,7 +377,13 @@ namespace ME3Explorer
                         newProperty = new NameProperty(prop.Item1) { Value = "None" };
                         break;
                     case PropertyType.ByteProperty:
-                        newProperty = new ByteProperty(0, prop.Item1);
+                        if (prop.Item2.reference == null)
+                        {
+                            newProperty = new ByteProperty(0, prop.Item1);
+                        } else
+                        {
+                            newProperty = new EnumProperty(prop.Item2.reference, CurrentLoadedExport.FileRef,prop.Item1);
+                        }
                         break;
                     case PropertyType.ObjectProperty:
                         newProperty = new ObjectProperty(0, prop.Item1);
@@ -747,6 +753,21 @@ namespace ME3Explorer
                         }
                         Guid g = new Guid(ms.ToArray());
                         parsedValue = g.ToString();
+                    } else if (sp.StructType == "TimelineEffect")
+                    {
+                        string timelineEffectType = "(";
+                        bool isFirst = true;
+                        EnumProperty typeProp = sp.Properties.GetProp<EnumProperty>("Type");
+                        FloatProperty timeIndex = sp.Properties.GetProp<FloatProperty>("TimeIndex");
+                        if (typeProp!= null)
+                        {
+                            timelineEffectType += typeProp.Value.ToString() + " @ " + timeIndex.Value + "s";
+                        } else
+                        {
+                            timelineEffectType += "Unknown effect";
+                        }
+                        timelineEffectType += ")";
+                        parsedValue = timelineEffectType;
                     }
                     else
                     {

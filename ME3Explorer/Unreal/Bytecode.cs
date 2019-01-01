@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ME3Explorer.Packages;
+using System.Diagnostics;
 
 namespace ME3Explorer.Unreal
 {
@@ -1261,7 +1262,7 @@ namespace ME3Explorer.Unreal
             }
             BytecodeSingularToken msg = new BytecodeSingularToken();
             string opname;// = 
-            byteOpnameMap.TryGetValue(t < 0x60 ? (short) t : newTok.op, out opname);
+            byteOpnameMap.TryGetValue(t < 0x60 ? (short)t : newTok.op, out opname);
             if (opname == null || opname == "")
             {
                 opname = "UNKNOWN(0x" + t.ToString("X2") + ")";
@@ -1281,7 +1282,7 @@ namespace ME3Explorer.Unreal
         private static Token ReadNative(int start)
         {
             Token t = new Token();
-            Token a, b, c;
+            Token a = null, b = null, c = null;
             int count;
             byte byte1 = memory[start];
             byte byte2 = memory[start + 1];
@@ -1303,6 +1304,8 @@ namespace ME3Explorer.Unreal
                     while (pos < memsize - 6)
                     {
                         a = ReadToken(pos);
+                        t.inPackageReferences.AddRange(a.inPackageReferences);
+
                         pos += a.raw.Length;
                         if (a.raw != null && a.raw[0] == 0x16)
                             break;
@@ -3244,6 +3247,18 @@ namespace ME3Explorer.Unreal
                     t.text = "UnknownNative(" + index + ")";
                     break;
             }
+            if (a != null)
+            {
+                t.inPackageReferences.AddRange(a.inPackageReferences);
+            }
+            if (b != null)
+            {
+                t.inPackageReferences.AddRange(b.inPackageReferences);
+            }
+            if (c != null)
+            {
+                t.inPackageReferences.AddRange(c.inPackageReferences);
+            }
             t.op = (short)index;
             int len = pos - start;
             t.raw = new byte[len];
@@ -3352,6 +3367,8 @@ namespace ME3Explorer.Unreal
             while (pos < memsize - 6)
             {
                 Token t2 = ReadToken(pos);
+                t.inPackageReferences.AddRange(t2.inPackageReferences);
+
                 pos += t2.raw.Length;
                 if (t2.raw != null && t2.raw[0] == 0x16)
                     break;
@@ -3421,8 +3438,11 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
             int pos = start + 1;
             Token a = ReadToken(pos);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             pos += a.raw.Length;
             int index = (Int32)BitConverter.ToInt64(memory, pos);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(pos, Token.INPACKAGEREFTYPE_NAME, index));
             pos += 8;
             string s = pcc.getNameEntry(index);
             t.text = a.text + "." + s + "(";
@@ -3430,6 +3450,8 @@ namespace ME3Explorer.Unreal
             while (pos < memsize - 6)
             {
                 Token t2 = ReadToken(pos);
+                t.inPackageReferences.AddRange(t2.inPackageReferences);
+
                 pos += t2.raw.Length;
                 if (t2.raw != null && t2.raw[0] == 0x16)
                     break;
@@ -3452,12 +3474,16 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_NAME, index));
+
             t.text = "Global." + pcc.getNameEntry(index) + "(";
             int pos = start + 9;
             int count = 0;
             while (pos < memsize - 6)
             {
                 Token t2 = ReadToken(pos);
+                t.inPackageReferences.AddRange(t2.inPackageReferences);
+
                 pos += t2.raw.Length;
                 if (t2.raw != null && t2.raw[0] == 0x16)
                     break;
@@ -3483,6 +3509,9 @@ namespace ME3Explorer.Unreal
             Token a = ReadToken(pos);
             pos += a.raw.Length;
             Token b = ReadToken(pos);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+            t.inPackageReferences.AddRange(b.inPackageReferences);
+
             pos += b.raw.Length;
             t.text = a.text + " " + s + " " + b.text;
             int len = pos - start;
@@ -3499,6 +3528,8 @@ namespace ME3Explorer.Unreal
             int pos = start + 4;
             Token a = ReadToken(pos);
             pos += a.raw.Length;
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             t.text = "assert(" + a.text + ")";
             int len = pos - start;
             t.raw = new byte[len];
@@ -3513,6 +3544,8 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
             int pos = start + 1;
             Token a = ReadToken(pos);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             pos += a.raw.Length;
             t.text = a.text;
             int len = pos - start;
@@ -3535,6 +3568,11 @@ namespace ME3Explorer.Unreal
             pos += c.raw.Length;
             Token d = ReadToken(pos);
             pos += d.raw.Length;
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+            t.inPackageReferences.AddRange(b.inPackageReferences);
+            t.inPackageReferences.AddRange(c.inPackageReferences);
+            t.inPackageReferences.AddRange(d.inPackageReferences);
+
             t.text = "new(" + a.text + "," + b.text + "," + c.text + "," + d.text + ")";
             int len = pos - start;
             t.raw = new byte[len];
@@ -3556,6 +3594,10 @@ namespace ME3Explorer.Unreal
             pos += b.raw.Length;
             Token c = ReadToken(pos);
             pos += c.raw.Length;
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+            t.inPackageReferences.AddRange(b.inPackageReferences);
+            t.inPackageReferences.AddRange(c.inPackageReferences);
+
             t.text = a.text + "." + arg + "(" + b.text + "," + c.text + ")";
             int len = pos - start;
             t.raw = new byte[len];
@@ -3576,6 +3618,10 @@ namespace ME3Explorer.Unreal
             pos += b.raw.Length;
             Token c = ReadToken(pos);
             pos += c.raw.Length;
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+            t.inPackageReferences.AddRange(b.inPackageReferences);
+            t.inPackageReferences.AddRange(c.inPackageReferences);
+
             t.text = a.text + "." + arg + "(" + b.text + ")";
             int len = pos - start;
             t.raw = new byte[len];
@@ -3596,6 +3642,8 @@ namespace ME3Explorer.Unreal
             //if (index * -1 > 0 && index * -1 <= pcc.ImportCount)
             //    s = pcc.Imports[index * -1 - 1].ClassName;
             //s = s.Replace("Property", "");
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+
             t.text = pcc.getObjectName(index);
             int pos = start + 5;
             int len = pos - start;
@@ -3614,6 +3662,8 @@ namespace ME3Explorer.Unreal
             int size = BitConverter.ToInt16(memory, pos);
             pos += 2;
             Token a = ReadToken(pos);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             pos += a.raw.Length;
             t.text = "Case " + a.text + ":";
             int len = pos - start;
@@ -3636,6 +3686,8 @@ namespace ME3Explorer.Unreal
                 s = pcc.Imports[index * -1 - 1].ObjectName;
             pos += 4;
             Token a = ReadToken(pos);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             pos += a.raw.Length;
             t.text = "Class<" + s + ">(" + a.text + ")";
             int len = pos - start;
@@ -3693,6 +3745,11 @@ namespace ME3Explorer.Unreal
             pos += 2;
             Token c = ReadToken(pos);
             pos += c.raw.Length;
+
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+            t.inPackageReferences.AddRange(b.inPackageReferences);
+            t.inPackageReferences.AddRange(c.inPackageReferences);
+
             //Token d = ReadToken(pos);
             //pos += d.raw.Length;
             t.text = "(" + a.text + ") ? " + b.text + " : " + c.text;
@@ -3708,6 +3765,8 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             Token a = ReadToken(start + 5);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             t.text = a.text;
             int len = 5 + a.raw.Length;
             t.raw = new byte[len];
@@ -3721,9 +3780,13 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int index = BitConverter.ToInt32(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+
             t.text = "If(" + pcc.getObjectName(index) + "){"; //remove == null for normal
             int pos = start + 8;
             Token a = ReadToken(pos);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             t.text += a.text + "}";
             pos += a.raw.Length;
             int len = pos - start;
@@ -3748,9 +3811,13 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt32(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+
             t.text = "If(" + pcc.getObjectName(index) + ")\n\t{\n";
             int pos = start + 8;
             Token a = ReadToken(pos);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             pos += a.raw.Length;
             t.text += "\t\t" + a.text;
             t.text += "\n\t}";
@@ -3760,6 +3827,8 @@ namespace ME3Explorer.Unreal
                 t.text += "\nelse\\\\Jump 0x" + offset.ToString("X") + "\n{\n";
                 pos += 3;
                 Token t2 = ReadToken(pos);
+                t.inPackageReferences.AddRange(t2.inPackageReferences);
+
                 pos += t2.raw.Length;
                 t.text += t2.text + "\n}";
             }
@@ -3777,6 +3846,8 @@ namespace ME3Explorer.Unreal
 
             int pos = start + 1;
             Token a = ReadToken(pos);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             pos += a.raw.Length;
             t.text = a.text;
             int len = pos - start;
@@ -3792,10 +3863,14 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int field = BitConverter.ToInt32(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, field));
+
             int type = BitConverter.ToInt32(memory, start + 5);
             int skip = BitConverter.ToInt16(memory, start + 7);
             int pos = start + 11;
             Token a = ReadToken(pos);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             pos += a.raw.Length;
             t.text = a.text + "." + pcc.getObjectName(field);
             int len = pos - start;
@@ -3810,6 +3885,8 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             Token a = ReadToken(start + 2);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             t.text = a.text;
             int pos = start + a.raw.Length + 2;
             int len = pos - start;
@@ -3852,6 +3929,7 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_NAME, index));
             t.text = pcc.getNameEntry(index);
             int pos = start + 11;
             t.text += "(";
@@ -3859,6 +3937,8 @@ namespace ME3Explorer.Unreal
             while (pos < memsize - 6)
             {
                 Token a = ReadToken(pos);
+                t.inPackageReferences.AddRange(a.inPackageReferences);
+
                 pos += a.raw.Length;
                 if (a.raw != null && a.raw[0] == 0x16)
                     break;
@@ -3882,6 +3962,8 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+
             t.text = pcc.getObjectName(index);
             int pos = start + 11;
             int len = pos - start;
@@ -3899,6 +3981,9 @@ namespace ME3Explorer.Unreal
             t.text = "[" + a.text + "]";
             pos += a.raw.Length;
             Token b = ReadToken(pos);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+            t.inPackageReferences.AddRange(b.inPackageReferences);
+
             t.text = b.text + t.text;
             pos += b.raw.Length;
             int len = pos - start;
@@ -3912,6 +3997,8 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             Token a = ReadToken(start + 2);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             int pos = start + 2;
             t.text = "\t{\n\t\t" + a.text + "\n\t}";
             pos += a.raw.Length;
@@ -3935,6 +4022,8 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             Token a = ReadToken(start + 1);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             int len = a.raw.Length + 1;
             t.text = a.text;
             t.raw = new byte[len];
@@ -3950,6 +4039,8 @@ namespace ME3Explorer.Unreal
 
             int pos = start + 1;
             Token a = ReadToken(pos);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             pos += a.raw.Length + 2;
             t.text = "foreach " + a.text;
             int len = pos - start;
@@ -3982,7 +4073,11 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int idx = BitConverter.ToInt32(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, idx));
+
             Token a = ReadToken(start + 5);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             t.text = "(" + pcc.getObjectName(idx) + ")" + a.text;
             int len = a.raw.Length + 5;
             t.raw = new byte[len];
@@ -3997,6 +4092,8 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int index = BitConverter.ToInt32(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+
             t.text = pcc.getObjectName(index);
             t.raw = new byte[5];
             if (start + 5 <= memsize)
@@ -4017,6 +4114,10 @@ namespace ME3Explorer.Unreal
             Token c = ReadToken(pos);
             pos += c.raw.Length;
             pos += 2;
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+            t.inPackageReferences.AddRange(b.inPackageReferences);
+            t.inPackageReferences.AddRange(c.inPackageReferences);
+
             t.text = "foreach " + c.text + "(" + b.text + " IN " + a.text + ")";
             int len = pos - start;
             t.raw = new byte[len];
@@ -4030,6 +4131,8 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             Token a = ReadToken(start + 1);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             t.text = a.text;
             int len = a.raw.Length + 1;
             t.raw = new byte[len];
@@ -4044,6 +4147,8 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int index = BitConverter.ToInt32(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+
             t.text = pcc.getObjectName(index);
             t.raw = new byte[5];
             if (start + 5 <= memsize)
@@ -4057,6 +4162,8 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int index = BitConverter.ToInt32(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+
             t.text = pcc.getObjectName(index);
             t.raw = new byte[5];
             if (start + 5 <= memsize)
@@ -4069,6 +4176,8 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             Token a = ReadToken(start + 1);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             int pos = start + a.raw.Length + 1;
             int len = pos - start;
             t.text = a.text + ".Length";
@@ -4116,6 +4225,8 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_NAME, index));
+
             t.text = pcc.getNameEntry(index);
             t.raw = new byte[13];
             for (int i = 0; i < 13; i++)
@@ -4128,6 +4239,8 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_NAME, index));
+
             t.text = pcc.getNameEntry(index);
             t.raw = new byte[9];
             for (int i = 0; i < 9; i++)
@@ -4140,6 +4253,8 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt32(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+
             t.text = " '" + pcc.getObjectName(index) + "'";
             if (index > 0 && index <= pcc.Exports.Count)
                 t.text = pcc.Exports[index - 1].ClassName + t.text;
@@ -4156,12 +4271,15 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt32(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+
             t.text = pcc.getObjectName(index) + "(";
             int pos = start + 5;
             int count = 0;
             while (pos < memsize - 6)
             {
                 Token t2 = ReadToken(pos);
+                t.inPackageReferences.AddRange(t2.inPackageReferences);
                 pos += t2.raw.Length;
                 if (t2.raw != null && t2.raw[0] == 0x16)
                     break;
@@ -4184,6 +4302,8 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt32(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+
             t.text = pcc.getObjectName(index);
             t.raw = new byte[5];
             for (int i = 0; i < 5; i++)
@@ -4196,6 +4316,8 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_NAME, index));
+
             t.text = "'" + pcc.getNameEntry(index) + "'";
             t.raw = new byte[9];
             for (int i = 0; i < 9; i++)
@@ -4225,12 +4347,16 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_NAME, index));
+
             t.text = pcc.getNameEntry(index) + "(";
             int pos = start + 9;
             int count = 0;
             while (pos < memsize - 6)
             {
                 Token t2 = ReadToken(pos);
+                t.inPackageReferences.AddRange(t2.inPackageReferences);
+
                 pos += t2.raw.Length;
                 if (t2.raw != null && t2.raw[0] == 0x16)
                     break;
@@ -4263,6 +4389,8 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int index = (Int32)BitConverter.ToInt64(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+
             t.text = "ByteToInt(" + pcc.getObjectName(index) + ")";
             t.raw = new byte[5];
             for (int i = 0; i < 5; i++)
@@ -4321,12 +4449,16 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             Token a = ReadToken(start + 1);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             int pos = start + a.raw.Length + 1;
             int expSize = BitConverter.ToInt16(memory, pos);
             pos += 2;
             int bSize = memory[pos];
             pos += 5;
             Token b = ReadToken(pos);
+            t.inPackageReferences.AddRange(b.inPackageReferences);
+
             pos += b.raw.Length;
             int len = pos - start;
             t.text = a.text + "." + b.text;
@@ -4342,6 +4474,8 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
             int size = BitConverter.ToInt16(memory, start + 1);
             Token a = ReadToken(start + 3);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             int pos = start + a.raw.Length + 3;
             int len = pos - start;
             t.text = "DefaultParameterValue(" + a.text + ")";
@@ -4359,6 +4493,9 @@ namespace ME3Explorer.Unreal
             int pos = start + a.raw.Length + 1;
             Token b = ReadToken(pos);
             pos += b.raw.Length;
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+            t.inPackageReferences.AddRange(b.inPackageReferences);
+
             int len = pos - start;
             t.text = "(" + a.text + " == " + b.text + ")";
             t.raw = new byte[len];
@@ -4371,6 +4508,8 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             Token a = ReadToken(start + 6);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             t.text = "switch (" + a.text + ")";
             int len = a.raw.Length + 6;
             t.raw = new byte[len];
@@ -4384,6 +4523,8 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
             int offset = BitConverter.ToInt16(memory, start + 1);
             Token a = ReadToken(start + 3);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             t.text = "If (!(" + a.text + ")) Goto(0x" + offset.ToString("X") + ");";
             int pos = start + 3 + a.raw.Length;
             int len = pos - start;
@@ -4406,6 +4547,9 @@ namespace ME3Explorer.Unreal
             t.text += b.text;
             pos += b.raw.Length;
             t.text += ";";
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+            t.inPackageReferences.AddRange(b.inPackageReferences);
+
             int len = pos - start;
             t.raw = new byte[len];
             if (start + len <= memsize)
@@ -4419,6 +4563,8 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
             t.text = "Return (";
             Token a = ReadToken(start + 1);
+            t.inPackageReferences.AddRange(a.inPackageReferences);
+
             t.text += a.text + ");";
             int len = 1 + a.raw.Length;
             t.raw = new byte[len];
@@ -4433,6 +4579,8 @@ namespace ME3Explorer.Unreal
             t.text = "";
 
             int index = BitConverter.ToInt32(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+
             if (index > 0 && index <= pcc.Exports.Count)
             {
                 string name = pcc.getObjectName(index);
@@ -4458,6 +4606,8 @@ namespace ME3Explorer.Unreal
             Token t = new Token();
 
             int index = BitConverter.ToInt32(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+
             t.text = pcc.getObjectName(index);
             t.raw = new byte[5];
             if (start + 5 < memsize)
@@ -4472,6 +4622,8 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             int index = BitConverter.ToInt32(memory, start + 1);
+            t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_ENTRY, index));
+
             t.text = pcc.getObjectName(index);
             t.raw = new byte[5];
             if (start + 5 <= memsize)
@@ -4504,7 +4656,10 @@ namespace ME3Explorer.Unreal
             index = (int)((index & 0x000000FFU) << 24 | (index & 0x0000FF00U) << 8 | (index & 0x00FF0000U) >> 8 | (index & 0xFF000000U) >> 24);
 
             if (index >= 0 && index < pcc.Names.Count)
+            {
                 t.text = pcc.getNameEntry(index);
+                t.inPackageReferences.Add(new Tuple<int, int, int>(start + 1, Token.INPACKAGEREFTYPE_NAME, index));
+            }
             else
                 t.text = "Label (" + index.ToString("X2") + ");";
             t.raw = new byte[5];
@@ -4539,6 +4694,83 @@ namespace ME3Explorer.Unreal
             t.raw[0] = memory[start];
             return t;
         }
+
+        public static void RelinkFunctionForPorting(IExportEntry sourceExport, IExportEntry destinationExport, List<string> relinkFailedReport, SortedDictionary<int, int> crossPCCObjectMap)
+        {
+            //Copy function bytes
+            byte[] originalData = sourceExport.Data;
+            byte[] script = new byte[sourceExport.Data.Length - 0x20];
+            byte[] newscript = new byte[sourceExport.Data.Length - 0x20];
+            for (int i = 0x20; i < script.Length; i++)
+            {
+                script[i - 0x20] = originalData[i];
+                newscript[i - 0x20] = originalData[i];
+            }
+
+            //Perform relink
+            var parsedSource = ParseBytecode(script, sourceExport.FileRef);
+            var parsedDest = ParseBytecode(script, destinationExport.FileRef);
+
+            var topLevelTokens = parsedSource.Item1;
+            foreach (Token t in topLevelTokens)
+            {
+                RelinkToken(t, newscript, sourceExport, destinationExport, relinkFailedReport, crossPCCObjectMap);
+            }
+
+            //Copy relinked data to new destination
+            byte[] newExpData = destinationExport.Data;
+            for (int i = 0x20; i < newscript.Length; i++)
+            {
+                newExpData[i] = newscript[i - 0x20];
+            }
+            destinationExport.Data = newExpData;
+        }
+
+        private static void RelinkToken(Token t, byte[] newscript, IExportEntry sourceExport, IExportEntry destinationExport, List<string> relinkFailedReport, SortedDictionary<int, int> crossPCCObjectMap)
+        {
+            Debug.WriteLine($"Attemptng function relink on token at position {t.pos}. Number of listed relinkable items {t.inPackageReferences.Count}");
+
+            foreach (Tuple<int, int, int> relinkableItem in t.inPackageReferences)
+            {
+                switch (relinkableItem.Item2)
+                {
+                    case Token.INPACKAGEREFTYPE_NAME:
+                        int newValue = destinationExport.FileRef.FindNameOrAdd(sourceExport.FileRef.getNameEntry(relinkableItem.Item3));
+                        Debug.WriteLine($"Function relink hit @ 0x{(t.pos + relinkableItem.Item1).ToString("X6")}, cross ported a name: {sourceExport.FileRef.getNameEntry(relinkableItem.Item3)}");
+
+                        Pathfinding_Editor.SharedPathfinding.WriteMem(newscript, relinkableItem.Item1, BitConverter.GetBytes(newValue));
+                        break;
+                    case Token.INPACKAGEREFTYPE_ENTRY:
+                        if (relinkableItem.Item3 > 0)
+                        {
+                            //Export
+                            if (crossPCCObjectMap.TryGetValue(relinkableItem.Item3 - 1, out int relinkedValue))
+                            {
+                                Debug.WriteLine($"Function relink hit @ 0x{(t.pos + relinkableItem.Item1).ToString("X6")}, cross ported a sub export: {sourceExport.FileRef.getEntry(relinkableItem.Item3).GetFullPath}");
+                                Pathfinding_Editor.SharedPathfinding.WriteMem(newscript, relinkableItem.Item1, BitConverter.GetBytes(relinkedValue+1)); //crossPCCMapping is 0 indexed
+                            }
+                            else
+                            {
+                                relinkFailedReport.Add($"0x{(t.pos + relinkableItem.Item1).ToString("X6")} Function relink failed: Cannot relink reference to export from another package: {sourceExport.FileRef.getObjectName(relinkableItem.Item3)}");
+                            }
+                            continue;
+                        }
+                        if (relinkableItem.Item3 < 0)
+                        {
+                            //Import
+                            ImportEntry newCrossImport = PackageEditorWPF.getOrAddCrossImport(sourceExport.FileRef.getEntry(relinkableItem.Item3).GetFullPath, sourceExport.FileRef, destinationExport.FileRef);
+                            if (newCrossImport == null)
+                            {
+                                relinkFailedReport.Add($"0x{relinkableItem.Item1.ToString("X6")} Function relink failed: Could not add cross referenced import: {sourceExport.FileRef.getEntry(relinkableItem.Item3).GetFullPath}");
+                                continue;
+                            }
+                            Debug.WriteLine($"Function relink hit @ 0x{(t.pos + relinkableItem.Item1).ToString("X6")}, cross ported an import: {sourceExport.FileRef.getEntry(relinkableItem.Item3).GetFullPath}");
+                            Pathfinding_Editor.SharedPathfinding.WriteMem(newscript, relinkableItem.Item1, BitConverter.GetBytes(newCrossImport.UIndex));
+                        }
+                        break;
+                }
+            }
+        }
     }
 
     public class BytecodeSingularToken : IComparable<BytecodeSingularToken>
@@ -4561,6 +4793,10 @@ namespace ME3Explorer.Unreal
 
     public class Token
     {
+        public const int INPACKAGEREFTYPE_NAME = 0;
+        public const int INPACKAGEREFTYPE_ENTRY = 1;
+
+        public List<Tuple<int, int, int>> inPackageReferences = new List<Tuple<int, int, int>>(); //POSITION, TYPE, VALUE
         public byte[] raw;
         public string text { get; set; }
         public bool stop;
@@ -4581,6 +4817,8 @@ namespace ME3Explorer.Unreal
             return $"0x{pos.ToString("X" + paddingSize)} : {text}";
         }
     }
+
+
 }            //for (int i = 0; i < t.Count; i++)
              //{
              //    s += "0x" + pos.ToString("X" + paddingSize) + " : " + t[i].text + "\n";

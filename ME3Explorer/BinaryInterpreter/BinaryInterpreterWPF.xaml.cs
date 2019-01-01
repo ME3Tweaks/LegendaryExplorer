@@ -790,7 +790,12 @@ namespace ME3Explorer
                     case "ByteProperty":
                     case "StructProperty":
                     case "ObjectProperty":
+                    case "ComponentProperty":
                         {
+                            if ((ObjectFlagsMask & UnrealFlags.EPropertyFlags.RepRetry) != 0)
+                            {
+                                offset += 2; 
+                            }
                             //has listed outerclass
                             int outer = BitConverter.ToInt32(data, offset);
                             subnodes.Add(new BinaryInterpreterWPFTreeViewItem
@@ -800,11 +805,10 @@ namespace ME3Explorer
                                 Tag = NodeType.StructLeafInt
                             });
                             offset += 4;
-                            break;
                         }
+                        break;
                     case "ArrayProperty":
                         {
-                            //has listed outerclass
                             int outer = BitConverter.ToInt32(data, offset);
                             subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                             {
@@ -813,8 +817,32 @@ namespace ME3Explorer
                                 Tag = NodeType.StructLeafInt
                             });
                             offset += 4;
-                            break;
                         }
+                        break;
+                    case "ClassProperty":
+                        {
+
+                            //has listed outerclass
+                            int outer = BitConverter.ToInt32(data, offset);
+                            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Outer class: {outer} {getEntryFullPath(outer)}",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafInt
+                            });
+                            offset += 4;
+
+                            //type of class
+                            int classtype = BitConverter.ToInt32(data, offset);
+                            subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X5} Class type: {classtype} {getEntryFullPath(classtype)}",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafObject
+                            });
+                            offset += 4;
+                        }
+                        break;
                 }
             }
             catch (Exception ex)
