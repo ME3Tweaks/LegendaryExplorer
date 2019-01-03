@@ -36,28 +36,28 @@ namespace ME3Explorer.Unreal
         [Flags]
         public enum EClassFlags : uint
         {
-            None =                  0x00000000U,
-            Abstract =              0x00000001U,
-            Compiled =              0x00000002U,
-            Config =                0x00000004U,
-            Transient =             0x00000008U,
-            Parsed =                0x00000010U,
-            Localized =             0x00000020U,
-            SafeReplace =           0x00000040U,
+            None = 0x00000000U,
+            Abstract = 0x00000001U,
+            Compiled = 0x00000002U,
+            Config = 0x00000004U,
+            Transient = 0x00000008U,
+            Parsed = 0x00000010U,
+            Localized = 0x00000020U,
+            SafeReplace = 0x00000040U,
 
-            NoExport =              0x00000100U,
-            Placeable =             0x00000200U,
-            PerObjectConfig =       0x00000400U,
-            NativeReplication =     0x00000800U,
-            EditInlineNew =         0x00001000U,
-            CollapseCategories =    0x00002000U,
-            ExportStructs =         0x00004000U,      // @Removed(UE3 in early but not latest)
-            HasComponents =         0x00400000U,      // @Redefined Class has component properties.
-            Hidden =                0x00800000U,      // @Redefined Don't show this class in the editor class browser or edit inline new menus.
-            Deprecated =            0x01000000U,      // @Redefined Don't save objects of this class when serializing
-            HideDropDown2 =         0x02000000U,
-            Exported =              0x04000000U,
-            NativeOnly =            0x20000000U
+            NoExport = 0x00000100U,
+            Placeable = 0x00000200U,
+            PerObjectConfig = 0x00000400U,
+            NativeReplication = 0x00000800U,
+            EditInlineNew = 0x00001000U,
+            CollapseCategories = 0x00002000U,
+            ExportStructs = 0x00004000U,      // @Removed(UE3 in early but not latest)
+            HasComponents = 0x00400000U,      // @Redefined Class has component properties.
+            Hidden = 0x00800000U,      // @Redefined Don't show this class in the editor class browser or edit inline new menus.
+            Deprecated = 0x01000000U,      // @Redefined Don't save objects of this class when serializing
+            HideDropDown2 = 0x02000000U,
+            Exported = 0x04000000U,
+            NativeOnly = 0x20000000U
         }
 
         [Flags]
@@ -115,9 +115,15 @@ namespace ME3Explorer.Unreal
             Map = 0x00020000U,
 
             /// <summary>
+            /// Package has ME3Explorer appended name table. This is an unused flag by the engine and is present only due to ME3Explorer modified files
+            /// </summary>
+            ME3ExplorerAppendedNameTable = 0x00100000U,
+
+            /// <summary>
             /// Package contains classes.
             /// </summary>
             Script = 0x00200000U,
+
 
             /// <summary>
             /// The package was build with -Debug

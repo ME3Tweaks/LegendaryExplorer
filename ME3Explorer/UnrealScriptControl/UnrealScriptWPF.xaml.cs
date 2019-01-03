@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Be.Windows.Forms;
+using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
@@ -54,7 +57,7 @@ namespace ME3Explorer
 
         public override bool CanParse(IExportEntry exportEntry)
         {
-            return (exportEntry.ClassName == "Function" || exportEntry.ClassName == "State") && exportEntry.FileRef.Game == MEGame.ME3;
+            return (exportEntry.ClassName == "Function" || exportEntry.ClassName == "State") && (exportEntry.FileRef.Game == MEGame.ME3 || exportEntry.FileRef.Game == MEGame.ME1);
         }
 
         public override void LoadExport(IExportEntry exportEntry)
@@ -112,7 +115,9 @@ namespace ME3Explorer
             }
             else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
             {
-                ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(data, CurrentLoadedExport.FileRef as ME1Package);
+                var funcoutput = UE3FunctionReader.ReadFunction(CurrentLoadedExport);
+                Debug.WriteLine(funcoutput);
+                //ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(data, CurrentLoadedExport.FileRef as ME1Package);
                 //try
                 //{
                 //    Function_TextBox.Text = func.ToRawText();

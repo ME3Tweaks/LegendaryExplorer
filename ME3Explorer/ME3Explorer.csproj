@@ -402,6 +402,15 @@
     <Compile Include="Main Window\MainToolPanel.xaml.cs">
       <DependentUpon>MainToolPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ME1\Unreal\UnhoodBytecode\BytecodeReader.cs" />
+    <Compile Include="ME1\Unreal\UnhoodBytecode\FlagSet.cs" />
+    <Compile Include="ME1\Unreal\UnhoodBytecode\ProblemRegistry.cs" />
+    <Compile Include="ME1\Unreal\UnhoodBytecode\StatementList.cs" />
+    <Compile Include="ME1\Unreal\UnhoodBytecode\TextBuilder.cs" />
+    <Compile Include="ME1\Unreal\UnhoodBytecode\UE3FunctionReader.cs" />
+    <Compile Include="ME1\Unreal\UnhoodBytecode\UnClass.cs" />
+    <Compile Include="ME1\Unreal\UnhoodBytecode\UnFunction.cs" />
+    <Compile Include="ME1\Unreal\UnhoodBytecode\UnhoodFunction.cs" />
     <Compile Include="ME2\FaceFXAnimSetEditor.cs">
       <SubType>Form</SubType>
     </Compile>
