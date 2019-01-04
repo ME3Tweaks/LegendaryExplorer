@@ -1599,13 +1599,13 @@ Floats*/
                             }
                             switch (cell.Type)
                             {
-                                case Bio2DACell.TYPE_FLOAT:
+                                case Bio2DACell.Bio2DADataType.TYPE_FLOAT:
                                     columnNode.Tag = NodeType.StructLeafFloat;
                                     break;
-                                case Bio2DACell.TYPE_NAME:
+                                case Bio2DACell.Bio2DADataType.TYPE_NAME:
                                     columnNode.Tag = NodeType.StructLeafName;
                                     break;
-                                case Bio2DACell.TYPE_INT:
+                                case Bio2DACell.Bio2DADataType.TYPE_INT:
                                     columnNode.Tag = NodeType.StructLeafInt;
                                     break;
                             }

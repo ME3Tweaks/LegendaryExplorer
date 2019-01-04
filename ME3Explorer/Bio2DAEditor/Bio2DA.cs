@@ -198,7 +198,7 @@ namespace ME3Explorer
                                 int index = (rowindex * ColumnNames.Count()) + colindex; //+1 because they are not zero based indexes since they are numerals
                                 stream.WriteBytes(BitConverter.GetBytes(index));
                             }
-                            stream.WriteByte(cell.Type);
+                            stream.WriteByte((byte)cell.Type);
                             stream.WriteBytes(cell.Data);
                         }
                         else

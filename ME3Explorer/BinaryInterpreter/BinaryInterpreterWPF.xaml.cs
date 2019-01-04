@@ -137,7 +137,7 @@ namespace ME3Explorer
         static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "ShaderCache", "Class", "BioStage", "ObjectProperty", "Const",
             "Enum", "ArrayProperty","FloatProperty", "StructProperty", "ComponentProperty", "IntProperty", "NameProperty", "BoolProperty", "ClassProperty", "ByteProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
             "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "PrefabInstance",
-            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D", "State", "BioGestureRuntimeData", "ScriptStruct", "SoundCue", "SoundNodeWave","BioSoundNodeWaveStreamingData"};
+            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D", "State", "BioGestureRuntimeData", "BioTlkFileSet", "ScriptStruct", "SoundCue", "SoundNodeWave","BioSoundNodeWaveStreamingData"};
 
         public override bool CanParse(IExportEntry exportEntry)
         {
@@ -291,6 +291,9 @@ namespace ME3Explorer
                 case "BioStage":
                     subNodes = StartBioStageScan(data, ref binarystart);
                     break;
+                case "BioTlkFileSet":
+                    subNodes = StartBioTlkFileSetScan(data, ref binarystart);
+                    break;
                 case "Class":
                     subNodes = StartClassScan(data);
                     break;
@@ -359,6 +362,61 @@ namespace ME3Explorer
             GenericEditorSetVisibility = (appendGenericScan || isGenericScan) ? Visibility.Visible : Visibility.Collapsed;
             arguments.Item1.Items = subNodes;
             e.Result = arguments.Item1; //return topLevelTree
+        }
+
+        private List<object> StartBioTlkFileSetScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<object>();
+            try
+            {
+                int offset = binarystart;
+                if (data.Length > binarystart)
+                {
+                    int count = BitConverter.ToInt32(data, offset);
+                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{offset:X4} Count: {count}",
+                        Name = "_" + offset,
+                        Tag = NodeType.StructLeafInt
+                    });
+                    offset += 4;
+
+                    //offset += 4;
+                    //offset += 8; //skip 8
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        int langRef = BitConverter.ToInt32(data, offset);
+                        int langTlkCount = BitConverter.ToInt32(data, offset + 8);
+                        var languageNode = new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"0x{offset:X4} {CurrentLoadedExport.FileRef.getNameEntry(langRef)} - {langTlkCount} entries",
+                            Name = "_" + offset,
+                            Tag = NodeType.StructLeafName,
+                            IsExpanded = true
+                        };
+                        subnodes.Add(languageNode);
+                        offset += 12;
+
+                        for (int k = 0; k < langTlkCount; k++)
+                        {
+                            int tlkIndex = BitConverter.ToInt32(data, offset); //-1 in reader
+                            languageNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
+                            {
+                                Header = $"0x{offset:X4} TLK #{k} export: {tlkIndex} {getEntryFullPath(tlkIndex)}",
+                                Name = "_" + offset,
+                                Tag = NodeType.StructLeafObject
+                            });
+                            offset += 4;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
         }
 
         private List<object> StartSoundNodeWaveScan(byte[] data, ref int binarystart)

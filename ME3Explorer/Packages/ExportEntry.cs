@@ -284,7 +284,7 @@ namespace ME3Explorer.Packages
             if (pcc.isName(test1) && pcc.isName(test2) && test2 != 0)
                 result = 8;
 
-            if (pcc.Game == MEGame.ME3 && _data.Length > 0x10 && pcc.isName(test1) && pcc.getNameEntry(test1) == ObjectName)
+            if (_data.Length > 0x10 && pcc.isName(test1) && pcc.getNameEntry(test1) == ObjectName)
             {
                 //Primitive Component
                 result = 0x10;

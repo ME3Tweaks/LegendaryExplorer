@@ -189,16 +189,22 @@ namespace ME1Explorer.Unreal
             }
         }
 
-        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
+        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true)
         {
             if (className.StartsWith("Default__"))
             {
                 className = className.Substring(9);
             }
             Dictionary<string, ClassInfo> temp = inStruct ? Structs : Classes;
-            if (temp.ContainsKey(className)) //|| (temp = !inStruct ? Structs : Classes).ContainsKey(className))
+            ClassInfo info;
+            bool infoExists = temp.TryGetValue(className, out info);
+            if (!infoExists && nonVanillaClassInfo != null)
             {
-                ClassInfo info = temp[className];
+                info = nonVanillaClassInfo;
+                infoExists = true;
+            }
+            if (infoExists) //|| (temp = !inStruct ? Structs : Classes).ContainsKey(className))
+            {
                 //look in class properties
                 if (info.properties.ContainsKey(propName))
                 {
@@ -209,9 +215,9 @@ namespace ME1Explorer.Unreal
                 {
                     foreach (PropertyInfo p in info.properties.Values)
                     {
-                        if (p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty)
+                        if ((p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty) && reSearch)
                         {
-                            PropertyInfo val = getPropertyInfo(p.reference, propName, true);
+                            PropertyInfo val = getPropertyInfo(p.reference, propName, true, nonVanillaClassInfo, reSearch: false);
                             if (val != null)
                             {
                                 return val;
@@ -222,13 +228,19 @@ namespace ME1Explorer.Unreal
                 //look in base class
                 if (temp.ContainsKey(info.baseClass))
                 {
-                    PropertyInfo val = getPropertyInfo(info.baseClass, propName, inStruct);
+                    PropertyInfo val = getPropertyInfo(info.baseClass, propName, inStruct, nonVanillaClassInfo, reSearch: true);
                     if (val != null)
                     {
                         return val;
                     }
                 }
             }
+
+            //if (reSearch)
+            //{
+            //    PropertyInfo reAttempt = getPropertyInfo(className, propName, !inStruct, nonVanillaClassInfo, reSearch: false);
+            //    return reAttempt; //will be null if not found.
+            //}
             return null;
         }
 
@@ -294,7 +306,7 @@ namespace ME1Explorer.Unreal
                     pcc.Release();
                 }
             }
-            File.WriteAllText(Application.StartupPath + "//exec//ME1ObjectInfo.json", JsonConvert.SerializeObject(new { Classes = Classes, Structs = Structs, Enums = Enums }));
+            File.WriteAllText(Application.StartupPath + "//exec//ME1ObjectInfo.json", JsonConvert.SerializeObject(new { Classes = Classes, Structs = Structs, Enums = Enums }, Formatting.Indented));
             MessageBox.Show("Done");
         }
 
@@ -325,13 +337,18 @@ namespace ME1Explorer.Unreal
                     && entry.ClassName != "Function" && entry.ClassName != "Const" && entry.ClassName != "State")
                 {
                     //Skip if property is transient (only used during execution, will never be in game files)
-                    if ((BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) == 0 && !info.properties.ContainsKey(entry.ObjectName))
+                    if (/*(BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) == 0 &&*/ !info.properties.ContainsKey(entry.ObjectName))
                     {
                         PropertyInfo p = getProperty(pcc, entry);
                         if (p != null)
                         {
+                            Debug.WriteLine("Adding property to DB " + entry.ObjectName);
                             info.properties.Add(entry.ObjectName, p);
                         }
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Skipping property due to flag: " + entry.ObjectName);
                     }
                 }
             }

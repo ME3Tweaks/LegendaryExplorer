@@ -1,6 +1,8 @@
 ﻿using ByteSizeLib;
 using GongSolutions.Wpf.DragDrop;
+using KFreonLib.MEDirectories;
 using ME1Explorer.Unreal;
+using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.PackageEditorWPFControls;
 using ME3Explorer.Packages;
 using ME3Explorer.Pathfinding_Editor;
@@ -10,6 +12,7 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Newtonsoft.Json;
 using StreamHelpers;
 using System;
 using System.Collections.Generic;
@@ -3436,6 +3439,92 @@ namespace ME3Explorer
                 container.WriteProperties(currentprops);
             }
 
+        }
+
+        private void BuildME1NativeFunctionsInfo_Click(object sender, RoutedEventArgs e)
+        {
+            if (ME1Directory.gamePath != null)
+            {
+                var newCachedInfo = new SortedDictionary<int, CachedNativeFunctionInfo>();
+                var dir = new DirectoryInfo(ME1Directory.gamePath);
+                var filesToSearch = dir.GetFiles(/*"*.sfm", SearchOption.AllDirectories).Union(dir.GetFiles(*/"*.u", SearchOption.AllDirectories).ToArray();
+                Debug.WriteLine("Number of files: " + filesToSearch.Count());
+                foreach (FileInfo fi in filesToSearch)
+                {
+                    var package = MEPackageHandler.OpenME1Package(fi.FullName);
+                    Debug.WriteLine(fi.Name);
+                    foreach (IExportEntry export in package.Exports)
+                    {
+                        if (export.ClassName == "Function")
+                        {
+
+                            BinaryReader reader = new BinaryReader(new MemoryStream(export.Data));
+                            reader.ReadBytes(12);
+                            int super = reader.ReadInt32();
+                            int children = reader.ReadInt32();
+                            reader.ReadBytes(12);
+                            int line = reader.ReadInt32();
+                            int textPos = reader.ReadInt32();
+                            int scriptSize = reader.ReadInt32();
+                            byte[] bytecode = reader.ReadBytes(scriptSize);
+                            int nativeIndex = reader.ReadInt16();
+                            int operatorPrecedence = reader.ReadByte();
+                            int functionFlags = reader.ReadInt32();
+                            if ((functionFlags & UE3FunctionReader._flagSet.GetMask("Net")) != 0)
+                            {
+                                reader.ReadInt16();  // repOffset
+                            }
+                            int friendlyNameIndex = reader.ReadInt32();
+                            reader.ReadInt32();
+                            var function = new UnFunction(export, package.getNameEntry(friendlyNameIndex),
+                                new FlagValues(functionFlags, UE3FunctionReader._flagSet), bytecode, nativeIndex, operatorPrecedence);
+
+                            if (nativeIndex != 0)
+                            {
+                                Debug.WriteLine(">>NATIVE Function " + nativeIndex + " " + export.ObjectName);
+                                var newInfo = new CachedNativeFunctionInfo();
+                                newInfo.nativeIndex = nativeIndex;
+                                newInfo.Name = export.ObjectName;
+                                newInfo.Filename = fi.Name;
+                                newInfo.Operator = function.Operator;
+                                newInfo.PreOperator = function.PreOperator;
+                                newInfo.PostOperator = function.PostOperator;
+                                newCachedInfo[nativeIndex] = newInfo;
+                            }
+                        }
+                    }
+
+                    package.Release();
+                }
+                File.WriteAllText(System.Windows.Forms.Application.StartupPath + "//exec//ME1NativeFunctionInfo.json", JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
+                Debug.WriteLine("Done");
+            }
+        }
+
+        private void FindME12DATables_Click(object sender, RoutedEventArgs e)
+        {
+            if (ME1Directory.gamePath != null)
+            {
+                var newCachedInfo = new SortedDictionary<int, CachedNativeFunctionInfo>();
+                var dir = new DirectoryInfo(Path.Combine(ME1Directory.gamePath/*, "BioGame", "CookedPC", "Maps"*/));
+                var filesToSearch = dir.GetFiles("*.sfm", SearchOption.AllDirectories).Union(dir.GetFiles("*.u", SearchOption.AllDirectories)).Union(dir.GetFiles("*.u", SearchOption.AllDirectories)).ToArray();
+                Debug.WriteLine("Number of files: " + filesToSearch.Count());
+                foreach (FileInfo fi in filesToSearch)
+                {
+                    var package = MEPackageHandler.OpenME1Package(fi.FullName);
+                    foreach (IExportEntry export in package.Exports)
+                    {
+                        if ((export.ClassName == "Bio2DA" || export.ClassName == "Bio2DANumberedRows") && export.ObjectName.Contains("BOS"))
+                        {
+                            Debug.WriteLine(export.ClassName + "(" + export.ObjectName + ") in " + fi.Name + " at export " + export.UIndex);
+                        }
+                    }
+
+                    package.Release();
+                }
+                File.WriteAllText(System.Windows.Forms.Application.StartupPath + "//exec//ME1NativeFunctionInfo.json", JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
+                Debug.WriteLine("Done");
+            }
         }
     }
 

@@ -1,14 +1,15 @@
 ﻿using ME3Explorer.Packages;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 {
-    
 
     public class BytecodeToken
     {
@@ -837,7 +838,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 nativeIndex = b;
             }
 
-            var function = GetNativeFunction(nativeIndex); //have to figure out how to do this, it's looking up name of native function
+            var function = CachedNativeFunctionInfo.GetNativeFunction(nativeIndex); //have to figure out how to do this, it's looking up name of native function
             if (function == null) return ErrToken("// invalid native function " + nativeIndex);
             if (function.PreOperator || function.PostOperator)
             {
@@ -859,12 +860,54 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             }
             return ReadCall(function.Name);
         }
+    }
 
-        internal UnFunction GetNativeFunction(int index)
+    public class CachedNativeFunctionInfo
+    {
+        public static Dictionary<int, CachedNativeFunctionInfo> NativeFunctionInfo;
+
+        public int nativeIndex;
+        public bool PreOperator;
+        public bool PostOperator;
+        public bool Operator;
+        public string Name;
+        public string Filename;
+
+        internal static CachedNativeFunctionInfo GetNativeFunction(int index)
         {
-            UnFunction result;
-            if (!UE3FunctionReader.tempNativeFunctions.TryGetValue(index, out result)) return null;
-            return result;
+            CachedNativeFunctionInfo result;
+            if (NativeFunctionInfo == null)
+            {
+                LoadME1NativeFunctionsInfo();
+            }
+            if (NativeFunctionInfo != null) //file check
+            {
+                if (!NativeFunctionInfo.TryGetValue(index, out result)) return null;
+                return result;
+            }
+            return null;
+        }
+
+        internal static void LoadME1NativeFunctionsInfo()
+        {
+            string path = Application.StartupPath + "//exec//ME1NativeFunctionInfo.json";
+
+            try
+            {
+                if (File.Exists(path))
+                {
+                    string raw = File.ReadAllText(path);
+                    var blob = JsonConvert.DeserializeAnonymousType(raw, new { NativeFunctionInfo });
+                    NativeFunctionInfo = blob.NativeFunctionInfo;
+                    //Classes = blob.Classes;
+                    //Structs = blob.Structs;
+                    //Enums = blob.Enums;
+                }
+            }
+            catch
+            {
+                return;
+            }
         }
     }
 }

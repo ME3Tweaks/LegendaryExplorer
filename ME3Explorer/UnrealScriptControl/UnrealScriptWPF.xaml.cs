@@ -31,7 +31,7 @@ namespace ME3Explorer
     {
         private HexBox ScriptEditor_Hexbox;
         public ObservableCollectionExtended<BytecodeSingularToken> TokenList { get; private set; } = new ObservableCollectionExtended<BytecodeSingularToken>();
-        public ObservableCollectionExtended<Token> DecompiledScriptBlocks { get; private set; } = new ObservableCollectionExtended<Token>();
+        public ObservableCollectionExtended<object> DecompiledScriptBlocks { get; private set; } = new ObservableCollectionExtended<object>();
         public ObservableCollectionExtended<ScriptHeaderItem> ScriptHeaderBlocks { get; private set; } = new ObservableCollectionExtended<ScriptHeaderItem>();
         public ObservableCollectionExtended<ScriptHeaderItem> ScriptFooterBlocks { get; private set; } = new ObservableCollectionExtended<ScriptHeaderItem>();
 
@@ -115,8 +115,10 @@ namespace ME3Explorer
             }
             else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
             {
+                DecompiledScriptBlocks.Clear();
                 var funcoutput = UE3FunctionReader.ReadFunction(CurrentLoadedExport);
                 Debug.WriteLine(funcoutput);
+                DecompiledScriptBlocks.Add(funcoutput);
                 //ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(data, CurrentLoadedExport.FileRef as ME1Package);
                 //try
                 //{
@@ -191,7 +193,15 @@ namespace ME3Explorer
                 List<ListBox> allBoxesToUpdate = new List<ListBox>(new ListBox[] { Function_ListBox, Function_Header, Function_Footer });
                 if (start >= 0x20 && start < CurrentLoadedExport.DataSize - 6)
                 {
-                    Token token = DecompiledScriptBlocks.FirstOrDefault(x => start >= x.pos && start < (x.pos + x.raw.Length));
+                    Token token = null;
+                    foreach (object o in DecompiledScriptBlocks)
+                    {
+                        if (o is Token x && start >= x.pos && start < (x.pos + x.raw.Length))
+                        {
+                            token = x;
+                            break;
+                        }
+                    }
                     if (token != null)
                     {
                         Function_ListBox.SelectedItem = token;

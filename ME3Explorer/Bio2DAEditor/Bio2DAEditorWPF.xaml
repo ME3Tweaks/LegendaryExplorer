@@ -8,5 +8,43 @@
              xmlns:dataGrid2D="http://gu.se/DataGrid2D"
              d:DesignHeight="450" d:DesignWidth="800"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
-    <DataGrid dataGrid2D:ItemsSource.Array2D="{Binding Path=Table2DA.Cells}" dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding Path=Table2DA.ColumnNames}" dataGrid2D:ItemsSource.RowHeadersSource="{Binding Path=Table2DA.RowNames}"/>
+    <DockPanel>
+        <Grid DockPanel.Dock="Bottom">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock FontWeight="Bold" Name="Bio2DAInfo_CellCoordinates_TextBlock" Grid.Row="0" Grid.Column="0" Text="Selected cell coordinates: " VerticalAlignment="Top"/>
+            <TextBlock FontWeight="Bold" Name="Bio2DAInfo_CellDataOffset_TextBlock" Grid.Row="1" Grid.Column="0" Text="Selected cell data offset: " VerticalAlignment="Top"/>
+            <TextBlock FontWeight="Bold" Name="Bio2DAInfo_CellDataType_TextBlock" Grid.Row="2"  Grid.Column="0" Text="Selected cell data type: " VerticalAlignment="Top"/>
+
+            <TextBlock FontWeight="Bold" Grid.Row="0"  Grid.Column="1" Text="Value as TLK reference:"/>
+            <TextBlock Margin="5,0,0,0" Name="Bio2DAInfo_CellDataAsStrRef_TextBlock" Grid.Row="1"  Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2" TextWrapping="Wrap" Text="Select a cell to preview TLK value"/>
+
+        </Grid>
+        <Grid DockPanel.Dock="Top" VerticalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Name="Save_Button" Grid.Row="0" Grid.Column="0" Content="Save"/>
+            <TextBlock  VerticalAlignment="Center" Margin="3" FontWeight="Bold" Grid.Row="0" Grid.Column="1" Text="{Binding Path=CurrentLoadedExport.ObjectName}"/>
+
+        </Grid>
+        <DataGrid Name="Bio2DA_DataGrid" Margin="0,3,3,3" SelectionUnit="Cell" SelectionMode="Single" dataGrid2D:ItemsSource.Array2D="{Binding Path=Table2DA.Cells}" dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding Path=Table2DA.ColumnNames}" dataGrid2D:ItemsSource.RowHeadersSource="{Binding Path=Table2DA.RowNames}" SelectedCellsChanged="DataGrid_SelectedCellsChanged" EnableRowVirtualization="True" EnableColumnVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling"/>
+    </DockPanel>
 </global:ExportLoaderControl>

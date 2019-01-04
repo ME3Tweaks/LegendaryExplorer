@@ -144,6 +144,8 @@
                     <MenuItem Header="Generate GUID cache binary for folder" Click="GenerateGUIDCacheForFolder_Clicked"/>
                     <MenuItem Header="Generate new GUID for package file" Click="GenerateNewGUIDForPackageFile_Clicked"/>
                     <MenuItem Header="Make all ammo/grenades in file respawn on proper timers" Click="MakeAllGrenadesAmmoRespawn_Click"/>
+                    <MenuItem Header="Build ME1 Native Functions Info" Click="BuildME1NativeFunctionsInfo_Click"/>
+                    <MenuItem Header="Find ME1 2DA Tables" Click="FindME12DATables_Click"/>
 
                 </MenuItem>
             </Menu>

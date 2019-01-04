@@ -578,7 +578,7 @@ namespace ME3Explorer
                 {
                     UPropertyTreeViewEntry errorNode = new UPropertyTreeViewEntry()
                     {
-                        DisplayName = $"PARSE ERROR {ex.Message}"
+                        DisplayName = $"PARSE ERROR: {ex.Message}"
                     };
                     topLevelTree.ChildrenProperties.Add(errorNode);
                 }

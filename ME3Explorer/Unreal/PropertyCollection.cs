@@ -158,9 +158,18 @@ namespace ME3Explorer.Unreal
                                 }
                                 else
                                 {
+                                    Debug.WriteLine("Enum reading ME1/ME2 at 0x" + propertyStartPosition.ToString("X6"));
                                     enumType.Name = UnrealObjectInfo.GetEnumType(pcc.Game, name, typeName);
                                 }
-                                props.Add(new EnumProperty(stream, pcc, enumType, nameRef) { StartOffset = propertyStartPosition });
+                                try
+                                {
+                                    props.Add(new EnumProperty(stream, pcc, enumType, nameRef) { StartOffset = propertyStartPosition });
+                                }
+                                catch (Exception e)
+                                {
+                                    //ERROR
+                                    props.Add(new UnknownProperty("Error reading enum property! Name: " + nameRef.Name));
+                                }
                             }
                             else
                             {
