@@ -722,7 +722,7 @@ namespace ME3Explorer
                     break;
                 case StructProperty sp:
 
-                    if (sp.Name == "location" && sp.StructType == "Vector")
+                    if (sp.Name.Name.ToLower() == "location" && sp.StructType == "Vector")
                     {
                         string loc = "(";
                         bool isFirst = true;
