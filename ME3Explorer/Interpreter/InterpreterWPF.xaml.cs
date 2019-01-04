@@ -380,9 +380,10 @@ namespace ME3Explorer
                         if (prop.Item2.reference == null)
                         {
                             newProperty = new ByteProperty(0, prop.Item1);
-                        } else
+                        }
+                        else
                         {
-                            newProperty = new EnumProperty(prop.Item2.reference, CurrentLoadedExport.FileRef,prop.Item1);
+                            newProperty = new EnumProperty(prop.Item2.reference, CurrentLoadedExport.FileRef, prop.Item1);
                         }
                         break;
                     case PropertyType.ObjectProperty:
@@ -722,7 +723,7 @@ namespace ME3Explorer
                     break;
                 case StructProperty sp:
 
-                    if (sp.Name.Name.ToLower() == "location" && sp.StructType == "Vector")
+                    if (sp.Name.Name != null && sp.Name.Name.ToLower() == "location" && sp.StructType == "Vector")
                     {
                         string loc = "(";
                         bool isFirst = true;
@@ -753,16 +754,18 @@ namespace ME3Explorer
                         }
                         Guid g = new Guid(ms.ToArray());
                         parsedValue = g.ToString();
-                    } else if (sp.StructType == "TimelineEffect")
+                    }
+                    else if (sp.StructType == "TimelineEffect")
                     {
                         string timelineEffectType = "(";
                         bool isFirst = true;
                         EnumProperty typeProp = sp.Properties.GetProp<EnumProperty>("Type");
                         FloatProperty timeIndex = sp.Properties.GetProp<FloatProperty>("TimeIndex");
-                        if (typeProp!= null)
+                        if (typeProp != null)
                         {
                             timelineEffectType += typeProp.Value.ToString() + " @ " + timeIndex.Value + "s";
-                        } else
+                        }
+                        else
                         {
                             timelineEffectType += "Unknown effect";
                         }
@@ -1703,7 +1706,7 @@ namespace ME3Explorer
                     case ArrayProperty<EnumProperty> aep:
                         PropertyInfo p = GetPropertyInfo(aep.Name, CurrentLoadedExport.ClassName, false);
                         string typeName = p.reference;
-                        EnumProperty ep = new EnumProperty(typeName,CurrentLoadedExport.FileRef);
+                        EnumProperty ep = new EnumProperty(typeName, CurrentLoadedExport.FileRef);
                         aep.Add(ep);
                         break;
                     case ArrayProperty<IntProperty> aip:
