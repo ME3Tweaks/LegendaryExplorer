@@ -140,6 +140,21 @@ namespace ME3Explorer
             Console.WriteLine("Finished loading " + export.ObjectName);
         }
 
+        internal void MarkAsUnmodified()
+        {
+            for (int rowindex = 0; rowindex < RowNames.Count(); rowindex++)
+            {
+                for (int colindex = 0; colindex < ColumnNames.Count(); colindex++)
+                {
+                    Bio2DACell cell = Cells[rowindex, colindex];
+                    if (cell != null)
+                    {
+                        cell.IsModified = false;
+                    }
+                }
+            }
+        }
+
         public void Write2DAToExcel(string path)
         {
             var workbook = new XLWorkbook();

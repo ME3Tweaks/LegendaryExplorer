@@ -6,8 +6,27 @@
              mc:Ignorable="d" 
              xmlns:global="clr-namespace:ME3Explorer"
              xmlns:dataGrid2D="http://gu.se/DataGrid2D"
+             xmlns:ct="http://schemas.xceed.com/wpf/xaml/toolkit"
              d:DesignHeight="450" d:DesignWidth="800"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <global:ExportLoaderControl.Resources>
+        <DataTemplate x:Key="Bio2DA_CellTemplate_Normal" DataType="{x:Type global:Bio2DACell}">
+            <TextBlock Name="Bio2DA_TextBlock" Text="{Binding Path=DisplayableValue}">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsModified}" Value="true">
+                                <Setter Property="Background" Value="SandyBrown"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </DataTemplate>
+        <DataTemplate x:Key="Bio2DA_CellTemplate_Edit" DataType="{x:Type global:Bio2DACell}">
+            <ct:AutoSelectTextBox FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}" Text="{Binding Path=DisplayableValue}" />
+        </DataTemplate>
+    </global:ExportLoaderControl.Resources>
     <DockPanel>
         <Grid DockPanel.Dock="Bottom">
             <Grid.RowDefinitions>
@@ -41,10 +60,17 @@
                 <ColumnDefinition Width="60"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Name="Save_Button" Grid.Row="0" Grid.Column="0" Content="Save"/>
+            <Button Name="Save_Button" Grid.Row="0" Grid.Column="0" Content="Save" Click="Save_Button_Click"/>
             <TextBlock  VerticalAlignment="Center" Margin="3" FontWeight="Bold" Grid.Row="0" Grid.Column="1" Text="{Binding Path=CurrentLoadedExport.ObjectName}"/>
 
         </Grid>
-        <DataGrid Name="Bio2DA_DataGrid" Margin="0,3,3,3" SelectionUnit="Cell" SelectionMode="Single" dataGrid2D:ItemsSource.Array2D="{Binding Path=Table2DA.Cells}" dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding Path=Table2DA.ColumnNames}" dataGrid2D:ItemsSource.RowHeadersSource="{Binding Path=Table2DA.RowNames}" SelectedCellsChanged="DataGrid_SelectedCellsChanged" EnableRowVirtualization="True" EnableColumnVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling"/>
+        <DataGrid Name="Bio2DA_DataGrid" Margin="0,3,3,3" SelectionUnit="Cell" 
+                  SelectionMode="Single"  dataGrid2D:ItemsSource.Array2D="{Binding Path=Table2DA.Cells}" 
+                  dataGrid2D:Cell.EditingTemplate="{StaticResource Bio2DA_CellTemplate_Edit}"
+                  dataGrid2D:Cell.Template="{StaticResource Bio2DA_CellTemplate_Normal}" 
+                  dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding Path=Table2DA.ColumnNames}" 
+                  dataGrid2D:ItemsSource.RowHeadersSource="{Binding Path=Table2DA.RowNames}" 
+                  SelectedCellsChanged="DataGrid_SelectedCellsChanged" EnableRowVirtualization="True" 
+                  EnableColumnVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling"/>
     </DockPanel>
 </global:ExportLoaderControl>

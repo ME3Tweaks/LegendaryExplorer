@@ -46,43 +46,7 @@ namespace ME3Explorer
 
         private void StartBio2DAScan()
         {
-            //dataGridView1.Rows.Clear();
-            //dataGridView1.Columns.Clear();
             Table2DA = new Bio2DA(CurrentLoadedExport);
-            //Add columns
-            /*for (int j = 0; j < table2da.columnNames.Count(); j++)
-            {
-                dataGridView1.Columns.Add(table2da.columnNames[j], table2da.columnNames[j]);
-            }
-
-
-            //Add rows
-            for (int i = 0; i < table2da.rowNames.Count(); i++)
-            {
-                //defines row data. If you add columns, you need to add them here in order
-                List<Object> rowData = new List<object>();
-                for (int j = 0; j < table2da.columnNames.Count(); j++)
-                {
-                    Bio2DACell cell = table2da[i, j];
-                    if (cell != null)
-                    {
-                        rowData.Add(cell.GetDisplayableValue());
-                    }
-                    else
-                    {
-                        rowData.Add(null);
-                    }
-                    //rowData.Add(table2da[i, j]);
-                }
-                dataGridView1.Rows.Add(rowData.ToArray());
-                dataGridView1.Rows[dataGridView1.Rows.Count - 1].HeaderCell.Value = table2da.rowNames[i];
-            }
-
-            //Add row headers
-            for (int i = 0; i < table2da.rowNames.Count(); i++)
-            {
-                dataGridView1.Rows[i].HeaderCell.Value = table2da.rowNames[i];
-            }*/
         }
 
         public override bool CanParse(IExportEntry exportEntry)
@@ -134,6 +98,12 @@ namespace ME3Explorer
                     Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = "Select a cell to preview TLK value";
                 }
             }
+        }
+
+        private void Save_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Table2DA.Write2DAToExport();
+            Table2DA.MarkAsUnmodified();
         }
     }
 
