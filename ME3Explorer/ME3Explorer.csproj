@@ -494,6 +494,11 @@
     <Compile Include="NativesEditor\Views\StateTaskListsView.xaml.cs">
       <DependentUpon>StateTaskListsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PackageDumper\PackageDumper.xaml.cs">
+      <DependentUpon>PackageDumper.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PackageDumper\TreeNode.cs" />
+    <Compile Include="PackageDumper\TreeNodeList.cs" />
     <Compile Include="PackageEditor\PackageEditorDebugFunctions.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1024,6 +1029,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Interpreter\PropertyEditorHost.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PackageDumper\PackageDumper.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -2918,7 +2918,7 @@ namespace ME3Explorer
 
         private void BuildME1ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
-            ME1UnrealObjectInfo.generateInfo();
+            ME2Explorer.Unreal.ME2UnrealObjectInfo.generateInfo();
         }
 
         private void FocusTreeViewNodeOld(TreeViewEntry node)
@@ -3525,6 +3525,25 @@ namespace ME3Explorer
                 File.WriteAllText(System.Windows.Forms.Application.StartupPath + "//exec//ME1NativeFunctionInfo.json", JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
                 Debug.WriteLine("Done");
             }
+        }
+
+        private void CreatePCCDumpME1_Click(object sender, RoutedEventArgs e)
+        {
+            new PackageDumper.PackageDumper(1).Show();
+        }
+
+        private void CreatePCCDumpME2_Click(object sender, RoutedEventArgs e)
+        {
+            new PackageDumper.PackageDumper(2).Show();
+        }
+
+        private void CreatePCCDumpME3_Click(object sender, RoutedEventArgs e)
+        {
+            new PackageDumper.PackageDumper(3).Show();
+        }
+
+        private void CreatePCCDump(int v)
+        {
         }
     }
 

@@ -224,7 +224,11 @@ namespace ME3Explorer
             DynamicByteProvider db = new DynamicByteProvider(CurrentLoadedExport.Data);
             BinaryInterpreter_Hexbox.ByteProvider = db;
             byte[] data = CurrentLoadedExport.Data;
-            int binarystart = CurrentLoadedExport.propsEnd();
+            int binarystart = 0;
+            if (CurrentLoadedExport.ClassName != "Class")
+            {
+                binarystart = CurrentLoadedExport.propsEnd();
+            }
 
             //top node will always be of this element type.
             BinaryInterpreterWPFTreeViewItem topLevelTree = new BinaryInterpreterWPFTreeViewItem

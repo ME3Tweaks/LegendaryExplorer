@@ -39,12 +39,12 @@ namespace ME2Explorer.Unreal
             }
         }
 
-        public static string getEnumTypefromProp(string className, string propName, bool inStruct = false)
+        public static string getEnumTypefromProp(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
         {
-            PropertyInfo p = getPropertyInfo(className, propName, inStruct);
+            PropertyInfo p = getPropertyInfo(className, propName, inStruct, nonVanillaClassInfo);
             if (p == null && !inStruct)
             {
-                p = getPropertyInfo(className, propName, true);
+                p = getPropertyInfo(className, propName, true, nonVanillaClassInfo);
             }
             return p?.reference;
         }
@@ -118,9 +118,12 @@ namespace ME2Explorer.Unreal
             {
                 p = getPropertyInfo(className, propName, !inStruct);
             }
-            if (p == null && export != null && export.ClassName != "Class")
+            if (p == null && export != null)
             {
-                export = export.FileRef.Exports[export.idxClass - 1]; //make sure you get actual class
+                if (export.ClassName != "Class")
+                {
+                    export = export.FileRef.Exports[export.idxClass - 1]; //make sure you get actual class
+                }
                 ClassInfo currentInfo;
                 switch (export.FileRef.Game)
                 {
@@ -141,7 +144,6 @@ namespace ME2Explorer.Unreal
                 {
                     p = getPropertyInfo(className, propName, !inStruct, currentInfo);
                 }
-
             }
             return getArrayType(p);
         }
@@ -193,16 +195,22 @@ namespace ME2Explorer.Unreal
             }
         }
 
-        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
+        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true)
         {
             if (className.StartsWith("Default__"))
             {
                 className = className.Substring(9);
             }
             Dictionary<string, ClassInfo> temp = inStruct ? Structs : Classes;
-            if (temp.ContainsKey(className)) //|| (temp = !inStruct ? Structs : Classes).ContainsKey(className))
+            ClassInfo info;
+            bool infoExists = temp.TryGetValue(className, out info);
+            if (!infoExists && nonVanillaClassInfo != null)
             {
-                ClassInfo info = temp[className];
+                info = nonVanillaClassInfo;
+                infoExists = true;
+            }
+            if (infoExists) //|| (temp = !inStruct ? Structs : Classes).ContainsKey(className))
+            {
                 //look in class properties
                 if (info.properties.ContainsKey(propName))
                 {
@@ -213,9 +221,9 @@ namespace ME2Explorer.Unreal
                 {
                     foreach (PropertyInfo p in info.properties.Values)
                     {
-                        if (p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty)
+                        if ((p.type == PropertyType.StructProperty || p.type == PropertyType.ArrayProperty) && reSearch)
                         {
-                            PropertyInfo val = getPropertyInfo(p.reference, propName, true);
+                            PropertyInfo val = getPropertyInfo(p.reference, propName, true, nonVanillaClassInfo, reSearch: false);
                             if (val != null)
                             {
                                 return val;
@@ -226,13 +234,19 @@ namespace ME2Explorer.Unreal
                 //look in base class
                 if (temp.ContainsKey(info.baseClass))
                 {
-                    PropertyInfo val = getPropertyInfo(info.baseClass, propName, inStruct);
+                    PropertyInfo val = getPropertyInfo(info.baseClass, propName, inStruct, nonVanillaClassInfo, reSearch: true);
                     if (val != null)
                     {
                         return val;
                     }
                 }
             }
+
+            //if (reSearch)
+            //{
+            //    PropertyInfo reAttempt = getPropertyInfo(className, propName, !inStruct, nonVanillaClassInfo, reSearch: false);
+            //    return reAttempt; //will be null if not found.
+            //}
             return null;
         }
 
@@ -291,6 +305,8 @@ namespace ME2Explorer.Unreal
                             }
                         }
                     }
+                    System.Diagnostics.Debug.WriteLine("Releasing "+pcc.FileName);
+                    pcc.Release();
                 }
             }
             File.WriteAllText(Application.StartupPath + "//exec//ME2ObjectInfo.json", JsonConvert.SerializeObject(new { Classes = Classes, Structs = Structs, Enums = Enums }));
@@ -300,6 +316,7 @@ namespace ME2Explorer.Unreal
         private static ClassInfo generateClassInfo(int index, ME2Package pcc)
         {
             ClassInfo info = new ClassInfo();
+            var export = pcc.Exports[index];
             info.baseClass = pcc.Exports[index].ClassParent;
             foreach (ME2ExportEntry entry in pcc.Exports)
             {
@@ -307,7 +324,7 @@ namespace ME2Explorer.Unreal
                     && entry.ClassName != "Function" && entry.ClassName != "Const" && entry.ClassName != "State")
                 {
                     //Skip if property is transient (only used during execution, will never be in game files)
-                    if ((BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) == 0 && !info.properties.ContainsKey(entry.ObjectName))
+                    if (/*(BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) == 0 && */!info.properties.ContainsKey(entry.ObjectName))
                     {
                         PropertyInfo p = getProperty(pcc, entry);
                         if (p != null)

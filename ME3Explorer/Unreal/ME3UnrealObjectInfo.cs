@@ -38,14 +38,14 @@ namespace ME3Explorer.Unreal
             return false;
         }
 
-        public static string GetEnumType(MEGame game, string propName, string typeName)
+        public static string GetEnumType(MEGame game, string propName, string typeName, ClassInfo nonVanillaClassInfo = null)
         {
             switch (game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getEnumTypefromProp(typeName, propName);
+                    return ME1UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo);
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getEnumTypefromProp(typeName, propName);
+                    return ME2UnrealObjectInfo.getEnumTypefromProp(typeName, propName, nonVanillaClassInfo: nonVanillaClassInfo);
                 case MEGame.ME3:
                     return ME3UnrealObjectInfo.getEnumTypefromProp(typeName, propName);
                 case MEGame.UDK:
@@ -70,17 +70,17 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static ArrayType GetArrayType(MEGame game, string propName, string typeName)
+        public static ArrayType GetArrayType(MEGame game, string propName, string typeName, IEntry parsingEntry = null)
         {
             switch (game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getArrayType(typeName, propName);
+                    return ME1UnrealObjectInfo.getArrayType(typeName, propName, export: parsingEntry as IExportEntry);
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getArrayType(typeName, propName);
+                    return ME2UnrealObjectInfo.getArrayType(typeName, propName, export: parsingEntry as IExportEntry);
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getArrayType(typeName, propName);
+                    return ME3UnrealObjectInfo.getArrayType(typeName, propName, export: parsingEntry as IExportEntry);
             }
             return ArrayType.Int;
         }

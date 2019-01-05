@@ -239,7 +239,12 @@ namespace ME3Explorer.Packages
             int start = GetPropertyStart();
             MemoryStream stream = new MemoryStream(_data, false);
             stream.Seek(start, SeekOrigin.Current);
-            return PropertyCollection.ReadProps(FileRef, stream, ClassName, includeNoneProperties, true, ObjectName); //do not set properties as this may interfere with some other code. may change later.
+            IEntry parsingClass = this;
+            if (ObjectName.StartsWith("Default__"))
+            {
+                parsingClass = FileRef.getEntry(idxClass); //class we are defaults of
+            }
+            return PropertyCollection.ReadProps(FileRef, stream, ClassName, includeNoneProperties, true, parsingClass); //do not set properties as this may interfere with some other code. may change later.
                                                                                                                       //  }
         }
 

@@ -71,7 +71,6 @@ namespace ME3Explorer.Packages
                 }
                 package.noLongerUsed += Package_noLongerUsed;
                 openPackages.TryAdd(pathToFile, package);
-                Debug.WriteLine("Adding package to loaded map: " + pathToFile);
             }
             else
             {
@@ -98,12 +97,7 @@ namespace ME3Explorer.Packages
         private static void Package_noLongerUsed(object sender, EventArgs e)
         {
             IMEPackage ime;
-            int packageMapSize = openPackages.Count;
             openPackages.TryRemove((sender as IMEPackage).FileName, out ime);
-            if (packageMapSize == openPackages.Count)
-            {
-                Debugger.Break();
-            }
         }
 
         private static void addToPackagesInTools(IMEPackage package)

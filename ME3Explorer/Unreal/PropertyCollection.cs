@@ -63,7 +63,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static PropertyCollection ReadProps(IMEPackage pcc, MemoryStream stream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, string exportName = null)
+        public static PropertyCollection ReadProps(IMEPackage pcc, MemoryStream stream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null)
         {
             //Uncomment this for debugging property engine
             /*DebugOutput.StartDebugger("Property Engine ReadProps() for "+typeName);
@@ -159,7 +159,19 @@ namespace ME3Explorer.Unreal
                                 else
                                 {
                                     Debug.WriteLine("Enum reading ME1/ME2 at 0x" + propertyStartPosition.ToString("X6"));
-                                    enumType.Name = UnrealObjectInfo.GetEnumType(pcc.Game, name, typeName);
+                                    ClassInfo classInfo = null;
+                                    if (entry != null)
+                                    {
+                                        if (entry.FileRef.Game == MEGame.ME1)
+                                        {
+                                            classInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo((IExportEntry)entry);
+                                        }
+                                        if (entry.FileRef.Game == MEGame.ME2)
+                                        {
+                                            classInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo((IExportEntry)entry);
+                                        }
+                                    }
+                                    enumType.Name = UnrealObjectInfo.GetEnumType(pcc.Game, name, typeName, classInfo);
                                 }
                                 try
                                 {
@@ -183,7 +195,7 @@ namespace ME3Explorer.Unreal
                         break;
                     case PropertyType.ArrayProperty:
                         {
-                            UProperty ap = ReadArrayProperty(stream, pcc, typeName, nameRef, IncludeNoneProperties: includeNoneProperty);
+                            UProperty ap = ReadArrayProperty(stream, pcc, typeName, nameRef, IncludeNoneProperties: includeNoneProperty, parsingEntry: entry);
                             ap.StartOffset = propertyStartPosition;
                             props.Add(ap);
                         }
@@ -217,7 +229,12 @@ namespace ME3Explorer.Unreal
                 //error reading props.
                 if (props[props.Count - 1].PropType != PropertyType.None && requireNoneAtEnd)
                 {
-                    Debug.WriteLine(exportName + " - Invalid properties: Does not end with None");
+                    if (entry != null)
+                    {
+                        Debug.WriteLine(entry.ObjectName + " - Invalid properties: Does not end with None");
+                    }
+                    //props.endOffset = (int)stream.Position;
+                    //return props;
                     stream.Seek(startPosition, SeekOrigin.Begin);
                     return new PropertyCollection { endOffset = (int)stream.Position };
                 }
@@ -443,10 +460,10 @@ namespace ME3Explorer.Unreal
             throw new NotImplementedException("cannot read Unknown property of Immutable struct");
         }
 
-        public static UProperty ReadArrayProperty(MemoryStream stream, IMEPackage pcc, string enclosingType, NameReference name, bool IsInImmutable = false, bool IncludeNoneProperties = false)
+        public static UProperty ReadArrayProperty(MemoryStream stream, IMEPackage pcc, string enclosingType, NameReference name, bool IsInImmutable = false, bool IncludeNoneProperties = false, IEntry parsingEntry = null)
         {
             long arrayOffset = IsInImmutable ? stream.Position : stream.Position - 24;
-            ArrayType arrayType = UnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType);
+            ArrayType arrayType = UnrealObjectInfo.GetArrayType(pcc.Game, name, enclosingType, parsingEntry);
             int count = stream.ReadValueS32();
             switch (arrayType)
             {
@@ -486,7 +503,27 @@ namespace ME3Explorer.Unreal
                         long startPos = stream.Position;
 
                         var props = new List<StructProperty>();
-                        string arrayStructType = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType)?.reference;
+                        var propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType);
+                        if (propertyInfo == null && parsingEntry != null)
+                        {
+                            ClassInfo currentInfo;
+                            switch (parsingEntry.FileRef.Game)
+                            {
+                                case MEGame.ME1:
+                                    currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(parsingEntry as IExportEntry);
+                                    break;
+                                case MEGame.ME2:
+                                    currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(parsingEntry as IExportEntry);
+                                    break;
+                                case MEGame.ME3:
+                                default:
+                                    currentInfo = ME3UnrealObjectInfo.generateClassInfo(parsingEntry as IExportEntry);
+                                    break;
+                            }
+                            currentInfo.baseClass = (parsingEntry as IExportEntry).ClassParent;
+                            propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, currentInfo);
+                        }
+                        string arrayStructType = propertyInfo?.reference;
                         if (IsInImmutable || ME3UnrealObjectInfo.isImmutable(arrayStructType))
                         {
                             int arraySize = 0;

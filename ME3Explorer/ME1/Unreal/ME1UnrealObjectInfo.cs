@@ -40,12 +40,12 @@ namespace ME1Explorer.Unreal
             }
         }
 
-        public static string getEnumTypefromProp(string className, string propName, bool inStruct = false)
+        public static string getEnumTypefromProp(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
         {
-            PropertyInfo p = getPropertyInfo(className, propName, inStruct);
+            PropertyInfo p = getPropertyInfo(className, propName, inStruct, nonVanillaClassInfo);
             if (p == null && !inStruct)
             {
-                p = getPropertyInfo(className, propName, true);
+                p = getPropertyInfo(className, propName, true, nonVanillaClassInfo);
             }
             return p?.reference;
         }
