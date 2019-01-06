@@ -8,7 +8,7 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
         mc:Ignorable="d" DataContext="{Binding Mode=OneWay, RelativeSource={RelativeSource Self}}" 
-        Title="ME3Explorer" Height="450" WindowStyle="None" Icon="../Resources/meexp_favicon.ico" ResizeMode="CanMinimize" Background="#D8232E43" 
+        Title="ME3Explorer" Height="450" WindowStyle="None" Icon="../Resources/meexp_favicon.ico" ResizeMode="CanMinimize" Background="#DD0F5587" 
         Foreground="{x:Null}" AllowsTransparency="True" SizeToContent="Width" Closing="Window_Closing" WindowStartupLocation="CenterScreen" Opacity="0" Loaded="MainWindow_Loaded">
     <Window.Triggers>
         <EventTrigger RoutedEvent="Window.Loaded">
@@ -93,12 +93,12 @@
                 <Button DockPanel.Dock="Left" Style="{StaticResource VersioningBarButton}" Click="About_Click">
                     <Image Source="../Resources/About_icon.ico"/>
                 </Button>
-                <Button DockPanel.Dock="Right" Style="{StaticResource VersioningBarButton}" Click="Debug_Click">
+                <!--<Button DockPanel.Dock="Right" Style="{StaticResource VersioningBarButton}" Click="Debug_Click">
                     <Image Source="../Resources/bug_icon.ico" />
-                </Button>
+                </Button>-->
                 <Label Content="{Binding Source={x:Static local:App.Version}}" FontFamily="/ME3Explorer;component/Resources/#Hack" FontSize="16" Foreground="#FF10192A" Background="#A3FDFDFD" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
             </DockPanel>
-            <StackPanel Height="312" Background="#7210192A">
+            <StackPanel Height="312" Background="#4210192A">
                 <StackPanel.Resources>
                     <Style x:Key="MainMenuButton" TargetType="{x:Type Button}">
                         <Style.Resources>
@@ -234,7 +234,7 @@
                         </Grid.ColumnDefinitions>
                         <local:ToolPanel x:Name="installModspanel" Grid.Column="0" Category="Develop Mods" Width="385" ItemMargin="0,10,0,0" Columns="5"
 							ItemControlMargin="-6.5,0" ClipToBounds="True" ToolMouseOver="ToolMouseOver"/>
-                        <Border Grid.Column="2" Background="#7210192A">
+                        <Border Grid.Column="2" Background="#4210192A">
                             <StackPanel Orientation="Vertical" Margin="6,0">
                                 <StackPanel.Resources>
                                     <Style x:Key="styleIcon" TargetType="{x:Type Rectangle}">
