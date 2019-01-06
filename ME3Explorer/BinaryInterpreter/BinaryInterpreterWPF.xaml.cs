@@ -407,7 +407,7 @@ namespace ME3Explorer
                             int tlkIndex = BitConverter.ToInt32(data, offset); //-1 in reader
                             languageNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                             {
-                                Header = $"0x{offset:X4} TLK #{k} export: {tlkIndex} {getEntryFullPath(tlkIndex)}",
+                                Header = $"0x{offset:X4} TLK #{k} export: {tlkIndex} {CurrentLoadedExport.FileRef.GetEntryString(tlkIndex)}",
                                 Name = "_" + offset,
                                 Tag = NodeType.StructLeafObject
                             });
@@ -560,7 +560,7 @@ namespace ME3Explorer
                 int classObjTree = BitConverter.ToInt32(data, offset);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
-                    Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {getEntryFullPath(classObjTree)}",
+                    Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {CurrentLoadedExport.FileRef.GetEntryString(classObjTree)}",
                     Name = "_" + offset,
                     Tag = NodeType.StructLeafObject
                 });
@@ -604,7 +604,7 @@ namespace ME3Explorer
                 int classObjTree = BitConverter.ToInt32(data, offset);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
-                    Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {getEntryFullPath(classObjTree)}",
+                    Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {CurrentLoadedExport.FileRef.GetEntryString(classObjTree)}",
                     Name = "_" + offset,
                     Tag = NodeType.StructLeafObject
                 });
@@ -776,7 +776,7 @@ namespace ME3Explorer
                 offset += 8;
 
                 int superclassIndex = BitConverter.ToInt32(data, offset);
-                string superclassStr = getEntryFullPath(superclassIndex);
+                string superclassStr = CurrentLoadedExport.FileRef.GetEntryString(superclassIndex);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Superclass: {superclassIndex}({superclassStr})",
@@ -788,7 +788,7 @@ namespace ME3Explorer
                 int classObjTree = BitConverter.ToInt32(data, offset);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
-                    Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {getEntryFullPath(classObjTree)}",
+                    Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {CurrentLoadedExport.FileRef.GetEntryString(classObjTree)}",
                     Name = "_" + offset,
                     Tag = NodeType.StructLeafObject
                 });
@@ -862,7 +862,7 @@ namespace ME3Explorer
                             int outer = BitConverter.ToInt32(data, offset);
                             subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                             {
-                                Header = $"0x{offset:X5} OuterClass: {outer} {getEntryFullPath(outer)}",
+                                Header = $"0x{offset:X5} OuterClass: {outer} {CurrentLoadedExport.FileRef.GetEntryString(outer)}",
                                 Name = "_" + offset,
                                 Tag = NodeType.StructLeafInt
                             });
@@ -874,7 +874,7 @@ namespace ME3Explorer
                             int outer = BitConverter.ToInt32(data, offset);
                             subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                             {
-                                Header = $"0x{offset:X5} Array can hold objects of type: {outer} {getEntryFullPath(outer)}",
+                                Header = $"0x{offset:X5} Array can hold objects of type: {outer} {CurrentLoadedExport.FileRef.GetEntryString(outer)}",
                                 Name = "_" + offset,
                                 Tag = NodeType.StructLeafInt
                             });
@@ -888,7 +888,7 @@ namespace ME3Explorer
                             int outer = BitConverter.ToInt32(data, offset);
                             subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                             {
-                                Header = $"0x{offset:X5} Outer class: {outer} {getEntryFullPath(outer)}",
+                                Header = $"0x{offset:X5} Outer class: {outer} {CurrentLoadedExport.FileRef.GetEntryString(outer)}",
                                 Name = "_" + offset,
                                 Tag = NodeType.StructLeafInt
                             });
@@ -898,7 +898,7 @@ namespace ME3Explorer
                             int classtype = BitConverter.ToInt32(data, offset);
                             subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                             {
-                                Header = $"0x{offset:X5} Class type: {classtype} {getEntryFullPath(classtype)}",
+                                Header = $"0x{offset:X5} Class type: {classtype} {CurrentLoadedExport.FileRef.GetEntryString(classtype)}",
                                 Name = "_" + offset,
                                 Tag = NodeType.StructLeafObject
                             });
@@ -1236,7 +1236,7 @@ namespace ME3Explorer
 
 
                 int superclassIndex = BitConverter.ToInt32(data, offset);
-                string superclassStr = getEntryFullPath(superclassIndex);
+                string superclassStr = CurrentLoadedExport.FileRef.GetEntryString(superclassIndex);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Superclass Index: {superclassIndex}({superclassStr})",
@@ -1378,7 +1378,7 @@ namespace ME3Explorer
                     offset += 4;
                     (subnodes.Last() as BinaryInterpreterWPFTreeViewItem).Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{offset - 12:X5}  {CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex)}() = {functionObjectIndex} ({getEntryFullPath(functionObjectIndex)})",
+                        Header = $"0x{offset - 12:X5}  {CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex)}() = {functionObjectIndex} ({CurrentLoadedExport.FileRef.GetEntryString(functionObjectIndex)})",
                         Name = "_" + (offset - 12),
                         Tag = NodeType.StructLeafName //might need to add a subnode for the 3rd int
                     });
@@ -1415,7 +1415,7 @@ namespace ME3Explorer
                 }
 
                 int coreReference = BitConverter.ToInt32(data, offset);
-                string coreRefFullPath = getEntryFullPath(coreReference);
+                string coreRefFullPath = CurrentLoadedExport.FileRef.GetEntryString(coreReference);
 
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
@@ -1498,7 +1498,7 @@ namespace ME3Explorer
                 int defaultsClassLink = BitConverter.ToInt32(data, offset);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
-                    Header = $"0x{offset:X5} Class Defaults: {defaultsClassLink} ({getEntryFullPath(defaultsClassLink)}))",
+                    Header = $"0x{offset:X5} Class Defaults: {defaultsClassLink} ({CurrentLoadedExport.FileRef.GetEntryString(defaultsClassLink)}))",
                     Name = "_" + offset,
 
                     Tag = NodeType.StructLeafObject
@@ -1520,7 +1520,7 @@ namespace ME3Explorer
                     for (int i = 0; i < functionsTableCount; i++)
                     {
                         int functionsTableIndex = BitConverter.ToInt32(data, offset);
-                        string impexpName = getEntryFullPath(functionsTableIndex);
+                        string impexpName = CurrentLoadedExport.FileRef.GetEntryString(functionsTableIndex);
                         (subnodes.Last() as BinaryInterpreterWPFTreeViewItem).Items.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = $"0x{offset:X5} {impexpName}",
@@ -1564,7 +1564,7 @@ namespace ME3Explorer
                     offset += 8;
                     int componentObjectIndex = BitConverter.ToInt32(data, offset);
                     offset += 4;
-                    string objectName = getEntryFullPath(componentObjectIndex);
+                    string objectName = CurrentLoadedExport.FileRef.GetEntryString(componentObjectIndex);
                     (subnodes.Last() as BinaryInterpreterWPFTreeViewItem).Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset - 12:X5}  {CurrentLoadedExport.FileRef.getNameEntry(nameTableIndex)}({objectName})",
@@ -1596,7 +1596,7 @@ namespace ME3Explorer
                     string objName = "Null";
                     if (componentObjectIndex != 0)
                     {
-                        objName = getEntryFullPath(componentObjectIndex);
+                        objName = CurrentLoadedExport.FileRef.GetEntryString(componentObjectIndex);
                     }
                     (subnodes.Last() as BinaryInterpreterWPFTreeViewItem).Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
@@ -1630,7 +1630,7 @@ namespace ME3Explorer
                     int interfaceIndex = BitConverter.ToInt32(data, offset);
                     offset += 4;
 
-                    string objectName = getEntryFullPath(interfaceIndex);
+                    string objectName = CurrentLoadedExport.FileRef.GetEntryString(interfaceIndex);
                     BinaryInterpreterWPFTreeViewItem subnode = new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset - 12:X5}  {interfaceIndex} {objectName}",
@@ -1643,7 +1643,7 @@ namespace ME3Explorer
                     interfaceIndex = BitConverter.ToInt32(data, offset);
                     offset += 4;
 
-                    objectName = getEntryFullPath(interfaceIndex);
+                    objectName = CurrentLoadedExport.FileRef.GetEntryString(interfaceIndex);
                     subnode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
                         Header = $"0x{offset - 12:X5}  Interface Property Link: {interfaceIndex} {objectName}",
@@ -1685,7 +1685,7 @@ namespace ME3Explorer
                     /* interfaceIndex = BitConverter.ToInt32(data, offset);
                      offset += 4;
 
-                     objectName = getEntryFullPath(interfaceIndex);
+                     objectName = CurrentLoadedExport.FileRef.GetEntryString(interfaceIndex);
                      TreeNode subsubnode = new TreeNode($"0x{offset - 12:X5}  Interface Property Link: {interfaceIndex} {objectName}");
                      subsubnode.Name = (offset - 4).ToString();
                      subsubnode.Tag = nodeType.StructLeafObject;
@@ -1723,7 +1723,7 @@ namespace ME3Explorer
                 offset += 8;
 
                 int superclassIndex = BitConverter.ToInt32(data, offset);
-                string superclassStr = getEntryFullPath(superclassIndex);
+                string superclassStr = CurrentLoadedExport.FileRef.GetEntryString(superclassIndex);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} Superclass: {superclassIndex}({superclassStr})",
@@ -1735,7 +1735,7 @@ namespace ME3Explorer
                 int classObjTree = BitConverter.ToInt32(data, offset);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
-                    Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {getEntryFullPath(classObjTree)}",
+                    Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {CurrentLoadedExport.FileRef.GetEntryString(classObjTree)}",
                     Name = "_" + offset,
                     Tag = NodeType.StructLeafObject
                 });
@@ -1930,7 +1930,7 @@ namespace ME3Explorer
                         subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Tag = NodeType.ArrayLeafObject,
-                            Header = $"{start:X4}|{itemcount}: {locexp.UIndex.ToString().PadRight(8, ' ')} {getEntryFullPath(locexp.UIndex)}_{locexp.indexValue}",
+                            Header = $"{start:X4}|{itemcount}: {locexp.UIndex.ToString().PadRight(8, ' ')} {CurrentLoadedExport.FileRef.GetEntryString(locexp.UIndex)}_{locexp.indexValue}",
                             Name = "_" + start
 
                         });
@@ -2011,8 +2011,14 @@ namespace ME3Explorer
             try
             {
                 int binarypos = binarystart + 0x8;
-
+                if (CurrentLoadedExport.FileRef.Game == MEGame.ME2)
+                {
+                    binarypos -= 4;
+                }
                 int guidcount = BitConverter.ToInt32(data, binarypos);
+
+                
+
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{binarypos:X4} GUID count: {guidcount}",
@@ -2618,7 +2624,7 @@ namespace ME3Explorer
                 int stateEntryIndex = BitConverter.ToInt32(data, pos);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
-                    Header = $"{pos:X4} State Entry: {stateEntryIndex} {getEntryFullPath(stateEntryIndex)}",
+                    Header = $"{pos:X4} State Entry: {stateEntryIndex} {CurrentLoadedExport.FileRef.GetEntryString(stateEntryIndex)}",
                     Name = "_" + pos,
                     Tag = NodeType.StructLeafObject
                 });
@@ -3030,22 +3036,6 @@ namespace ME3Explorer
             {
                 // ignored
             }
-        }
-
-        private string getEntryFullPath(int index)
-        {
-            if (index == 0)
-            {
-                return "Null";
-            }
-            string retStr = "Entry not found";
-            IEntry coreRefEntry = CurrentLoadedExport.FileRef.getEntry(index);
-            if (coreRefEntry != null)
-            {
-                retStr = coreRefEntry is ImportEntry ? "[I] " : "[E] ";
-                retStr += coreRefEntry.GetFullPath;
-            }
-            return retStr;
         }
 
         private void viewModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

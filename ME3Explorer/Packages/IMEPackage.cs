@@ -109,5 +109,6 @@ namespace ME3Explorer.Packages
         event EventHandler noLongerOpenInTools;
         void RegisterUse();
         event EventHandler noLongerUsed;
+        string GetEntryString(int index);
     }
 }

@@ -48,6 +48,22 @@ namespace ME3Explorer.Packages
                 return exports.Any(entry => entry.DataChanged == true || entry.HeaderChanged == true) || imports.Any(entry => entry.HeaderChanged == true) || namesAdded > 0;
             }
         }
+
+        public string GetEntryString(int index)
+        {
+            if (index == 0)
+            {
+                return "Null";
+            }
+            string retStr = "Entry not found";
+            IEntry coreRefEntry = getEntry(index);
+            if (coreRefEntry != null)
+            {
+                retStr = coreRefEntry is ImportEntry ? "[I] " : "[E] ";
+                retStr += coreRefEntry.GetFullPath;
+            }
+            return retStr;
+        }
         public bool CanReconstruct { get { return !exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }
 
         protected byte[] header;
