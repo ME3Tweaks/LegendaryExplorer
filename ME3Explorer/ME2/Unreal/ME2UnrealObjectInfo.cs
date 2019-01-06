@@ -118,12 +118,9 @@ namespace ME2Explorer.Unreal
             {
                 p = getPropertyInfo(className, propName, !inStruct);
             }
-            if (p == null && export != null)
+            if (p == null && export != null && export.ClassName != "Class" && export.idxClass > 0)
             {
-                if (export.ClassName != "Class")
-                {
-                    export = export.FileRef.Exports[export.idxClass - 1]; //make sure you get actual class
-                }
+                export = export.FileRef.Exports[export.idxClass - 1]; //make sure you get actual class
                 ClassInfo currentInfo;
                 switch (export.FileRef.Game)
                 {
@@ -305,7 +302,7 @@ namespace ME2Explorer.Unreal
                             }
                         }
                     }
-                    System.Diagnostics.Debug.WriteLine("Releasing "+pcc.FileName);
+                    System.Diagnostics.Debug.WriteLine("Releasing " + pcc.FileName);
                     pcc.Release();
                 }
             }
@@ -405,7 +402,8 @@ namespace ME2Explorer.Unreal
                                 p.reference = arrayTypeProp.reference;
                                 break;
                             case PropertyType.ByteProperty:
-                                if (arrayTypeProp.reference == "")
+                                //if (arrayTypeProp.reference == "")
+                                if (arrayTypeProp.reference == "Class")
                                     p.reference = arrayTypeProp.type.ToString();
                                 else
                                     p.reference = arrayTypeProp.reference;

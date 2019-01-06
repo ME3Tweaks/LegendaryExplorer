@@ -71,158 +71,166 @@ namespace ME3Explorer.Unreal
             {
               //Debugger.Break();
             }*/
+
             PropertyCollection props = new PropertyCollection();
             long startPosition = stream.Position;
-            while (stream.Position + 8 <= stream.Length)
+            try
             {
-                long propertyStartPosition = stream.Position;
-                int nameIdx = stream.ReadValueS32();
-                if (!pcc.isName(nameIdx))
+                while (stream.Position + 8 <= stream.Length)
                 {
-                    stream.Seek(-4, SeekOrigin.Current);
-                    break;
-                }
-                string name = pcc.getNameEntry(nameIdx);
-                if (name == "None")
-                {
-                    props.Add(new NoneProperty(stream, "None") { StartOffset = propertyStartPosition });
-                    stream.Seek(4, SeekOrigin.Current);
-                    break;
-                }
-                NameReference nameRef = new NameReference { Name = name, Number = stream.ReadValueS32() };
-                int typeIdx = stream.ReadValueS32();
-                stream.Seek(4, SeekOrigin.Current);
-                int size = stream.ReadValueS32();
-                if (!pcc.isName(typeIdx) || size < 0 || size > stream.Length - stream.Position)
-                {
-                    stream.Seek(-16, SeekOrigin.Current);
-                    break;
-                }
-                stream.Seek(4, SeekOrigin.Current);
-                PropertyType type;
-                string namev = pcc.getNameEntry(typeIdx);
-                if (Enum.IsDefined(typeof(PropertyType), namev))
-                {
-                    Enum.TryParse(namev, out type);
-                }
-                else
-                {
-                    type = PropertyType.Unknown;
-                }
-                switch (type)
-                {
-                    case PropertyType.StructProperty:
-                        string structType = pcc.getNameEntry(stream.ReadValueS32());
+                    long propertyStartPosition = stream.Position;
+                    int nameIdx = stream.ReadValueS32();
+                    if (!pcc.isName(nameIdx))
+                    {
+                        stream.Seek(-4, SeekOrigin.Current);
+                        break;
+                    }
+                    string name = pcc.getNameEntry(nameIdx);
+                    if (name == "None")
+                    {
+                        props.Add(new NoneProperty(stream, "None") { StartOffset = propertyStartPosition });
                         stream.Seek(4, SeekOrigin.Current);
-                        long valOffset = stream.Position;
-                        if (ME3UnrealObjectInfo.isImmutable(structType))
-                        {
-                            PropertyCollection structProps = ReadSpecialStruct(pcc, stream, structType, size);
-                            props.Add(new StructProperty(structType, structProps, nameRef, true) { StartOffset = valOffset, ValueOffset = valOffset });
-                        }
-                        else
-                        {
-                            PropertyCollection structProps = ReadProps(pcc, stream, structType, includeNoneProperty);
-                            props.Add(new StructProperty(structType, structProps, nameRef) { StartOffset = propertyStartPosition, ValueOffset = valOffset });
-                        }
                         break;
-                    case PropertyType.IntProperty:
-                        IntProperty ip = new IntProperty(stream, nameRef);
-                        ip.StartOffset = propertyStartPosition;
-                        props.Add(ip);
+                    }
+                    NameReference nameRef = new NameReference { Name = name, Number = stream.ReadValueS32() };
+                    int typeIdx = stream.ReadValueS32();
+                    stream.Seek(4, SeekOrigin.Current);
+                    int size = stream.ReadValueS32();
+                    if (!pcc.isName(typeIdx) || size < 0 || size > stream.Length - stream.Position)
+                    {
+                        stream.Seek(-16, SeekOrigin.Current);
                         break;
-                    case PropertyType.FloatProperty:
-                        props.Add(new FloatProperty(stream, nameRef) { StartOffset = propertyStartPosition });
-                        break;
-                    case PropertyType.ObjectProperty:
-                        props.Add(new ObjectProperty(stream, nameRef) { StartOffset = propertyStartPosition });
-                        break;
-                    case PropertyType.NameProperty:
-                        props.Add(new NameProperty(stream, pcc, nameRef) { StartOffset = propertyStartPosition });
-                        break;
-                    case PropertyType.BoolProperty:
-                        props.Add(new BoolProperty(stream, pcc.Game, nameRef) { StartOffset = propertyStartPosition });
-                        break;
-                    case PropertyType.BioMask4Property:
-                        props.Add(new BioMask4Property(stream, nameRef) { StartOffset = propertyStartPosition });
-                        break;
-                    case PropertyType.ByteProperty:
-                        {
-                            if (size != 1)
+                    }
+                    stream.Seek(4, SeekOrigin.Current);
+                    PropertyType type;
+                    string namev = pcc.getNameEntry(typeIdx);
+                    if (Enum.IsDefined(typeof(PropertyType), namev))
+                    {
+                        Enum.TryParse(namev, out type);
+                    }
+                    else
+                    {
+                        type = PropertyType.Unknown;
+                    }
+                    switch (type)
+                    {
+                        case PropertyType.StructProperty:
+                            string structType = pcc.getNameEntry(stream.ReadValueS32());
+                            stream.Seek(4, SeekOrigin.Current);
+                            long valOffset = stream.Position;
+                            if (ME3UnrealObjectInfo.isImmutable(structType))
                             {
-                                NameReference enumType = new NameReference();
-                                if (pcc.Game == MEGame.ME3)
-                                {
-                                    enumType.Name = pcc.getNameEntry(stream.ReadValueS32());
-                                    enumType.Number = stream.ReadValueS32();
-                                }
-                                else
-                                {
-                                    Debug.WriteLine("Enum reading ME1/ME2 at 0x" + propertyStartPosition.ToString("X6"));
-                                    ClassInfo classInfo = null;
-                                    if (entry != null)
-                                    {
-                                        if (entry.FileRef.Game == MEGame.ME1)
-                                        {
-                                            classInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo((IExportEntry)entry);
-                                        }
-                                        if (entry.FileRef.Game == MEGame.ME2)
-                                        {
-                                            classInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo((IExportEntry)entry);
-                                        }
-                                    }
-                                    enumType.Name = UnrealObjectInfo.GetEnumType(pcc.Game, name, typeName, classInfo);
-                                }
-                                try
-                                {
-                                    props.Add(new EnumProperty(stream, pcc, enumType, nameRef) { StartOffset = propertyStartPosition });
-                                }
-                                catch (Exception e)
-                                {
-                                    //ERROR
-                                    props.Add(new UnknownProperty("Error reading enum property! Name: " + nameRef.Name));
-                                }
+                                PropertyCollection structProps = ReadSpecialStruct(pcc, stream, structType, size);
+                                props.Add(new StructProperty(structType, structProps, nameRef, true) { StartOffset = valOffset, ValueOffset = valOffset });
                             }
                             else
                             {
-                                if (pcc.Game == MEGame.ME3)
-                                {
-                                    stream.Seek(8, SeekOrigin.Current);
-                                }
-                                props.Add(new ByteProperty(stream, nameRef) { StartOffset = propertyStartPosition });
+                                PropertyCollection structProps = ReadProps(pcc, stream, structType, includeNoneProperty);
+                                props.Add(new StructProperty(structType, structProps, nameRef) { StartOffset = propertyStartPosition, ValueOffset = valOffset });
                             }
-                        }
-                        break;
-                    case PropertyType.ArrayProperty:
-                        {
-                            UProperty ap = ReadArrayProperty(stream, pcc, typeName, nameRef, IncludeNoneProperties: includeNoneProperty, parsingEntry: entry);
-                            ap.StartOffset = propertyStartPosition;
-                            props.Add(ap);
-                        }
-                        break;
-                    case PropertyType.StrProperty:
-                        {
-                            props.Add(new StrProperty(stream, nameRef) { StartOffset = propertyStartPosition });
-                        }
-                        break;
-                    case PropertyType.StringRefProperty:
-                        props.Add(new StringRefProperty(stream, nameRef) { StartOffset = propertyStartPosition });
-                        break;
-                    case PropertyType.DelegateProperty:
-                        props.Add(new DelegateProperty(stream, pcc, nameRef) { StartOffset = propertyStartPosition });
-                        break;
-                    case PropertyType.Unknown:
-                        {
-                            props.Add(new UnknownProperty(stream, size, pcc.getNameEntry(typeIdx), nameRef) { StartOffset = propertyStartPosition });
-                        }
-                        break;
-                    case PropertyType.None:
-                        if (includeNoneProperty)
-                        {
-                            props.Add(new NoneProperty(stream, "None") { StartOffset = propertyStartPosition });
-                        }
-                        break;
+                            break;
+                        case PropertyType.IntProperty:
+                            IntProperty ip = new IntProperty(stream, nameRef);
+                            ip.StartOffset = propertyStartPosition;
+                            props.Add(ip);
+                            break;
+                        case PropertyType.FloatProperty:
+                            props.Add(new FloatProperty(stream, nameRef) { StartOffset = propertyStartPosition });
+                            break;
+                        case PropertyType.ObjectProperty:
+                            props.Add(new ObjectProperty(stream, nameRef) { StartOffset = propertyStartPosition });
+                            break;
+                        case PropertyType.NameProperty:
+                            props.Add(new NameProperty(stream, pcc, nameRef) { StartOffset = propertyStartPosition });
+                            break;
+                        case PropertyType.BoolProperty:
+                            props.Add(new BoolProperty(stream, pcc.Game, nameRef) { StartOffset = propertyStartPosition });
+                            break;
+                        case PropertyType.BioMask4Property:
+                            props.Add(new BioMask4Property(stream, nameRef) { StartOffset = propertyStartPosition });
+                            break;
+                        case PropertyType.ByteProperty:
+                            {
+                                if (size != 1)
+                                {
+                                    NameReference enumType = new NameReference();
+                                    if (pcc.Game == MEGame.ME3)
+                                    {
+                                        enumType.Name = pcc.getNameEntry(stream.ReadValueS32());
+                                        enumType.Number = stream.ReadValueS32();
+                                    }
+                                    else
+                                    {
+                                        //Debug.WriteLine("Enum reading ME1/ME2 at 0x" + propertyStartPosition.ToString("X6"));
+                                        ClassInfo classInfo = null;
+                                        if (entry != null)
+                                        {
+                                            if (entry.FileRef.Game == MEGame.ME1)
+                                            {
+                                                classInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo((IExportEntry)entry);
+                                            }
+                                            if (entry.FileRef.Game == MEGame.ME2)
+                                            {
+                                                classInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo((IExportEntry)entry);
+                                            }
+                                        }
+                                        enumType.Name = UnrealObjectInfo.GetEnumType(pcc.Game, name, typeName, classInfo);
+                                    }
+                                    try
+                                    {
+                                        props.Add(new EnumProperty(stream, pcc, enumType, nameRef) { StartOffset = propertyStartPosition });
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        //ERROR
+                                        props.Add(new UnknownProperty("Error reading enum property! Name: " + nameRef.Name));
+                                    }
+                                }
+                                else
+                                {
+                                    if (pcc.Game == MEGame.ME3)
+                                    {
+                                        stream.Seek(8, SeekOrigin.Current);
+                                    }
+                                    props.Add(new ByteProperty(stream, nameRef) { StartOffset = propertyStartPosition });
+                                }
+                            }
+                            break;
+                        case PropertyType.ArrayProperty:
+                            {
+                                UProperty ap = ReadArrayProperty(stream, pcc, typeName, nameRef, IncludeNoneProperties: includeNoneProperty, parsingEntry: entry);
+                                ap.StartOffset = propertyStartPosition;
+                                props.Add(ap);
+                            }
+                            break;
+                        case PropertyType.StrProperty:
+                            {
+                                props.Add(new StrProperty(stream, nameRef) { StartOffset = propertyStartPosition });
+                            }
+                            break;
+                        case PropertyType.StringRefProperty:
+                            props.Add(new StringRefProperty(stream, nameRef) { StartOffset = propertyStartPosition });
+                            break;
+                        case PropertyType.DelegateProperty:
+                            props.Add(new DelegateProperty(stream, pcc, nameRef) { StartOffset = propertyStartPosition });
+                            break;
+                        case PropertyType.Unknown:
+                            {
+                                props.Add(new UnknownProperty(stream, size, pcc.getNameEntry(typeIdx), nameRef) { StartOffset = propertyStartPosition });
+                            }
+                            break;
+                        case PropertyType.None:
+                            if (includeNoneProperty)
+                            {
+                                props.Add(new NoneProperty(stream, "None") { StartOffset = propertyStartPosition });
+                            }
+                            break;
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Exception: " + e.Message);
             }
             if (props.Count > 0)
             {
@@ -231,7 +239,7 @@ namespace ME3Explorer.Unreal
                 {
                     if (entry != null)
                     {
-                        Debug.WriteLine(entry.ObjectName + " - Invalid properties: Does not end with None");
+                        Debug.WriteLine(entry.UIndex + " " + entry.ObjectName + " - Invalid properties: Does not end with None");
                     }
                     //props.endOffset = (int)stream.Position;
                     //return props;

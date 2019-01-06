@@ -342,7 +342,6 @@ namespace ME1Explorer.Unreal
                         PropertyInfo p = getProperty(pcc, entry);
                         if (p != null)
                         {
-                            Debug.WriteLine("Adding property to DB " + entry.ObjectName);
                             info.properties.Add(entry.ObjectName, p);
                         }
                     }
@@ -423,7 +422,7 @@ namespace ME1Explorer.Unreal
                                 p.reference = arrayTypeProp.reference;
                                 break;
                             case PropertyType.ByteProperty:
-                                if (arrayTypeProp.reference == "")
+                                if (arrayTypeProp.reference == "Class")
                                     p.reference = arrayTypeProp.type.ToString();
                                 else
                                     p.reference = arrayTypeProp.reference;
