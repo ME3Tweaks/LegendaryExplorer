@@ -33,7 +33,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             while (s.Position < s.Length)
             {
                 int startOffset = (int)s.Position;
-                Debug.WriteLine("Reading token at 0x" + startOffset.ToString("X4"));
+                //Debug.WriteLine("Reading token at 0x" + startOffset.ToString("X4"));
 
                 BytecodeToken bc;
                 try

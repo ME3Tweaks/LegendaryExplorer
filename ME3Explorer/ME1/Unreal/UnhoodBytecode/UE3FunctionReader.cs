@@ -28,7 +28,14 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         {
             UnFunction func = ReadInstance(export.FileRef, new BinaryReader(new MemoryStream(export.Data)), export);
             TextBuilder tb = new TextBuilder();
-            func.Decompile(tb);
+            try
+            {
+                func.Decompile(tb);
+            }
+            catch (Exception e)
+            {
+                return "Error reading function: " + e.ToString();
+            }
             return tb.ToString();
         }
 
