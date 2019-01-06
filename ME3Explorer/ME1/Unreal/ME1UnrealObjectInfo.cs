@@ -306,6 +306,17 @@ namespace ME1Explorer.Unreal
                     pcc.Release();
                 }
             }
+
+            //CUSTOM ADDITIONS
+            ClassInfo info = new ClassInfo
+            {
+                baseClass ="Texture2D",
+                exportIndex = 0,
+                pccPath = "ME3Explorer_CustomNativeAdditions"
+            };
+            Classes.Add("LightMapTexture2D", info);
+
+
             File.WriteAllText(Application.StartupPath + "//exec//ME1ObjectInfo.json", JsonConvert.SerializeObject(new { Classes = Classes, Structs = Structs, Enums = Enums }, Formatting.Indented));
             MessageBox.Show("Done");
         }

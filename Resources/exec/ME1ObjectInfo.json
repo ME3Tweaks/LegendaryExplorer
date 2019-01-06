@@ -33650,7 +33650,7 @@
           "type": 1
         },
         "SoundNodeData": {
-          "reference": "Class",
+          "reference": "ByteProperty",
           "type": 8
         },
         "WaveInstances": {
@@ -34429,7 +34429,7 @@
           "type": 8
         },
         "RequiredBones": {
-          "reference": "Class",
+          "reference": "ByteProperty",
           "type": 8
         },
         "ForcedAimDir": {
@@ -34670,7 +34670,7 @@
     "AnimNodeBlendMultiBone": {
       "properties": {
         "SourceRequiredBones": {
-          "reference": "Class",
+          "reference": "ByteProperty",
           "type": 8
         },
         "BlendTargetList": {
@@ -34685,7 +34685,7 @@
     "AnimNodeBlendPerBone": {
       "properties": {
         "LocalToCompReqBones": {
-          "reference": "Class",
+          "reference": "ByteProperty",
           "type": 8
         },
         "Child2PerBoneWeight": {
@@ -35166,7 +35166,7 @@
           "type": 8
         },
         "CompressedByteStream": {
-          "reference": "Class",
+          "reference": "ByteProperty",
           "type": 8
         },
         "RotationCompressionFormat": {
@@ -35347,7 +35347,7 @@
           "type": 8
         },
         "PriorityList": {
-          "reference": "Class",
+          "reference": "ByteProperty",
           "type": 8
         },
         "PrioritizedSkelBranches": {
@@ -36723,7 +36723,7 @@
     "BioSoundNodeWaveStreamingData": {
       "properties": {
         "StreamingData": {
-          "reference": "Class",
+          "reference": "ByteProperty",
           "type": 8
         }
       },
@@ -63651,6 +63651,12 @@
       "baseClass": "SequenceVariable",
       "pccPath": "X:\\Mass Effect Games HDD\\Mass Effect\\DLC\\DLC_Vegas\\CookedPC\\BIOC_BaseDLC_Vegas.u",
       "exportIndex": 214
+    },
+    "LightMapTexture2D": {
+      "properties": {},
+      "baseClass": "Texture2D",
+      "pccPath": "ME3Explorer_CustomNativeAdditions",
+      "exportIndex": 0
     }
   },
   "Structs": {
@@ -69957,7 +69963,7 @@
     "BioHuffmanEntry": {
       "properties": {
         "aBitStream_NATIVE_MIRROR": {
-          "reference": "Class",
+          "reference": "ByteProperty",
           "type": 8
         },
         "nLength_NATIVE_MIRROR": {
@@ -72535,7 +72541,7 @@
     "ChildBoneBlendInfo": {
       "properties": {
         "TargetRequiredBones": {
-          "reference": "Class",
+          "reference": "ByteProperty",
           "type": 8
         },
         "OldBoneIncrease": {
@@ -72674,7 +72680,7 @@
           "type": 8
         },
         "ByteStream": {
-          "reference": "Class",
+          "reference": "ByteProperty",
           "type": 8
         }
       },
@@ -72685,7 +72691,7 @@
     "AnimSetMeshLinkup": {
       "properties": {
         "BoneUseAnimTranslation": {
-          "reference": "Class",
+          "reference": "ByteProperty",
           "type": 8
         },
         "BoneToTrackTable": {

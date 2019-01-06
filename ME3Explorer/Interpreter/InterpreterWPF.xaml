@@ -141,6 +141,12 @@
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#4a5568"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88e2edff"/>
                             </DataTrigger>
+                            <DataTrigger Binding="{Binding PropertyType}" Value="Unknown">
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="White"/>
+                                <Setter TargetName="PropertyItem_EditableValue" Property="Foreground" Value="White"/>
+                                <Setter TargetName="PropertyItem_ParsedValue" Property="Foreground" Value="White"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="Red"/>
+                            </DataTrigger>
                             <DataTrigger Binding="{Binding PropertyType}" Value="None">
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d4818"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88ffb759"/>

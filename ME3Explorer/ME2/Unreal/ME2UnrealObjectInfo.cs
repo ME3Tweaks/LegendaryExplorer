@@ -306,22 +306,49 @@ namespace ME2Explorer.Unreal
                     pcc.Release();
                 }
             }
+
+            //CUSTOM ADDITIONS
+            ClassInfo info = new ClassInfo
+            {
+                baseClass = "Texture2D",
+                exportIndex = 0,
+                pccPath = "ME3Explorer_CustomNativeAdditions"
+            };
+            try
+            {
+                Classes.Add("LightMapTexture2D", info);
+            }
+            catch (Exception e)
+            {
+
+            }
             File.WriteAllText(Application.StartupPath + "//exec//ME2ObjectInfo.json", JsonConvert.SerializeObject(new { Classes = Classes, Structs = Structs, Enums = Enums }, Formatting.Indented));
             MessageBox.Show("Done");
         }
 
         private static ClassInfo generateClassInfo(int index, ME2Package pcc)
         {
-            ClassInfo info = new ClassInfo();
-            var export = pcc.Exports[index];
-            info.baseClass = pcc.Exports[index].ClassParent;
-            foreach (ME2ExportEntry entry in pcc.Exports)
+            ClassInfo info = new ClassInfo
+            {
+                baseClass = pcc.Exports[index].ClassParent,
+                exportIndex = index
+            };
+            if (pcc.FileName.Contains("BioGame"))
+            {
+                info.pccPath = new string(pcc.FileName.Skip(pcc.FileName.LastIndexOf("BioGame") + 8).ToArray());
+            }
+            else
+            {
+                info.pccPath = pcc.FileName; //used for dynamic resolution of files outside the game directory.
+            }
+
+            foreach (IExportEntry entry in pcc.Exports)
             {
                 if (entry.idxLink - 1 == index && entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"
                     && entry.ClassName != "Function" && entry.ClassName != "Const" && entry.ClassName != "State")
                 {
                     //Skip if property is transient (only used during execution, will never be in game files)
-                    if (/*(BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) == 0 && */!info.properties.ContainsKey(entry.ObjectName))
+                    if (/*(BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) == 0 &&*/ !info.properties.ContainsKey(entry.ObjectName))
                     {
                         PropertyInfo p = getProperty(pcc, entry);
                         if (p != null)
@@ -329,6 +356,10 @@ namespace ME2Explorer.Unreal
                             info.properties.Add(entry.ObjectName, p);
                         }
                     }
+                    //else
+                    //{
+                    //    //Debug.WriteLine("Skipping property due to flag: " + entry.ObjectName);
+                    //}
                 }
             }
             return info;

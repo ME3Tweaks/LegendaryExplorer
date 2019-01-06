@@ -183,7 +183,8 @@ namespace ME3Explorer.Unreal
                                     catch (Exception e)
                                     {
                                         //ERROR
-                                        props.Add(new UnknownProperty("Error reading enum property! Name: " + nameRef.Name));
+                                        var unknownEnum = new UnknownProperty(stream, 0, enumType, nameRef) { StartOffset = propertyStartPosition};
+                                        props.Add(unknownEnum);
                                     }
                                 }
                                 else
@@ -1503,7 +1504,7 @@ namespace ME3Explorer.Unreal
         public UnknownProperty(MemoryStream stream, int size, string typeName = null, NameReference? name = null) : base(name)
         {
             ValueOffset = stream.Position;
-            TypeName = typeName;
+            TypeName = typeName ?? "Unknown";
             raw = stream.ReadBytes(size);
             PropType = PropertyType.Unknown;
         }
