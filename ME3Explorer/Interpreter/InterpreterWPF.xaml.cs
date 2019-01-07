@@ -587,7 +587,7 @@ namespace ME3Explorer
                 if (RescanSelectionOffset != 0)
                 {
                     var flattenedTree = topLevelTree.FlattenTree();
-                    var itemToSelect = flattenedTree.FirstOrDefault(x => x.Property != null && x.Property.ValueOffset == RescanSelectionOffset);
+                    var itemToSelect = flattenedTree.LastOrDefault(x => x.Property != null && x.Property.ValueOffset == RescanSelectionOffset);
                     if (itemToSelect != null)
                     {
                         //todo: select node using parent-first selection (from packageeditorwpf)
