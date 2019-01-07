@@ -245,7 +245,7 @@ namespace ME3Explorer.Packages
                 parsingClass = FileRef.getEntry(idxClass); //class we are defaults of
             }
             return PropertyCollection.ReadProps(FileRef, stream, ClassName, includeNoneProperties, true, parsingClass); //do not set properties as this may interfere with some other code. may change later.
-                                                                                                                      //  }
+                                                                                                                        //  }
         }
 
         public T GetProperty<T>(string name) where T : UProperty
@@ -282,14 +282,15 @@ namespace ME3Explorer.Packages
                 return 30;
             }
             int result = 8;
+            int test0 = BitConverter.ToInt32(_data, 0);
             int test1 = BitConverter.ToInt32(_data, 4);
-            int test2 = BitConverter.ToInt32(_data, 8);
-            if (pcc.isName(test1) && test2 == 0)
+            int test2 = BitConverter.ToInt32(_data, 8); //Name index if Test1 is actually a name. Should be 0 since we wouldn't have indexes here
+            if (pcc.isName(test1) && test2 == 0) //is 0x4 a proper 8 byte name?
                 result = 4;
             if (pcc.isName(test1) && pcc.isName(test2) && test2 != 0)
                 result = 8;
 
-            if (_data.Length > 0x10 && pcc.isName(test1) && pcc.getNameEntry(test1) == ObjectName)
+            if (_data.Length > 0x10 && pcc.isName(test1) && pcc.getNameEntry(test1) == ObjectName && test0 == 0 && test1 != UIndex && test2 == 0) //!= UIndex will cover more cases, but there's still the very tiny case where they line up
             {
                 //Primitive Component
                 result = 0x10;

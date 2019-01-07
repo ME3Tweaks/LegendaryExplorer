@@ -599,12 +599,21 @@ namespace ME3Explorer
             var subnodes = new List<object>();
             try
             {
-                int offset = binarystart + 0x8;
+                int offset = binarystart + 0x4;
 
                 int classObjTree = BitConverter.ToInt32(data, offset);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {CurrentLoadedExport.FileRef.GetEntryString(classObjTree)}",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+
+                int childObjTree = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X5} ChildCompilingChain: {childObjTree} {CurrentLoadedExport.FileRef.GetEntryString(childObjTree)}",
                     Name = "_" + offset,
                     Tag = NodeType.StructLeafObject
                 });

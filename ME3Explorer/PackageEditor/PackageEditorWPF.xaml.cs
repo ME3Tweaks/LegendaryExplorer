@@ -2914,8 +2914,6 @@ namespace ME3Explorer
             }
         }
 
-
-
         private void BuildME1ObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
             ME2Explorer.Unreal.ME2UnrealObjectInfo.generateInfo();
@@ -3529,21 +3527,7 @@ namespace ME3Explorer
 
         private void CreatePCCDumpME1_Click(object sender, RoutedEventArgs e)
         {
-            new PackageDumper.PackageDumper(1).Show();
-        }
-
-        private void CreatePCCDumpME2_Click(object sender, RoutedEventArgs e)
-        {
-            new PackageDumper.PackageDumper(2).Show();
-        }
-
-        private void CreatePCCDumpME3_Click(object sender, RoutedEventArgs e)
-        {
-            new PackageDumper.PackageDumper(3).Show();
-        }
-
-        private void CreatePCCDump(int v)
-        {
+            new PackageDumper.PackageDumper().Show();
         }
     }
 

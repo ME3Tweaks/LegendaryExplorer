@@ -17,7 +17,9 @@ namespace ME3Explorer.Unreal
 {
     public class PropertyCollection : ObservableCollection<UProperty>
     {
-        static Dictionary<string, PropertyCollection> defaultStructValues = new Dictionary<string, PropertyCollection>();
+        static Dictionary<string, PropertyCollection> defaultStructValuesME3 = new Dictionary<string, PropertyCollection>();
+        static Dictionary<string, PropertyCollection> defaultStructValuesME2 = new Dictionary<string, PropertyCollection>();
+        static Dictionary<string, PropertyCollection> defaultStructValuesME1 = new Dictionary<string, PropertyCollection>();
 
         public int endOffset;
 
@@ -183,7 +185,8 @@ namespace ME3Explorer.Unreal
                                     catch (Exception e)
                                     {
                                         //ERROR
-                                        var unknownEnum = new UnknownProperty(stream, 0, enumType, nameRef) { StartOffset = propertyStartPosition};
+                                        Debugger.Break();
+                                        var unknownEnum = new UnknownProperty(stream, 0, enumType, nameRef) { StartOffset = propertyStartPosition };
                                         props.Add(unknownEnum);
                                     }
                                 }
@@ -217,6 +220,7 @@ namespace ME3Explorer.Unreal
                             break;
                         case PropertyType.Unknown:
                             {
+                                Debugger.Break();
                                 props.Add(new UnknownProperty(stream, size, pcc.getNameEntry(typeIdx), nameRef) { StartOffset = propertyStartPosition });
                             }
                             break;
@@ -242,10 +246,13 @@ namespace ME3Explorer.Unreal
                     {
                         Debug.WriteLine(entry.UIndex + " " + entry.ObjectName + " - Invalid properties: Does not end with None");
                     }
-                    //props.endOffset = (int)stream.Position;
-                    //return props;
+#if DEBUG
+                    props.endOffset = (int)stream.Position;
+                    return props;
+#else
                     stream.Seek(startPosition, SeekOrigin.Begin);
                     return new PropertyCollection { endOffset = (int)stream.Position };
+#endif
                 }
                 //remove None Property
                 if (!includeNoneProperty)
@@ -265,10 +272,10 @@ namespace ME3Explorer.Unreal
                 if (ME3UnrealObjectInfo.Structs.ContainsKey(structType))
                 {
                     PropertyCollection defaultProps;
-                    //memoize
-                    if (defaultStructValues.ContainsKey(structType))
+                    //cache
+                    if (defaultStructValuesME3.ContainsKey(structType))
                     {
-                        defaultProps = defaultStructValues[structType];
+                        defaultProps = defaultStructValuesME3[structType];
                     }
                     else
                     {
@@ -279,7 +286,7 @@ namespace ME3Explorer.Unreal
                             props.Add(new UnknownProperty(stream, size) { StartOffset = startPos });
                             return props;
                         }
-                        defaultStructValues.Add(structType, defaultProps);
+                        defaultStructValuesME3.Add(structType, defaultProps);
                     }
                     foreach (var prop in defaultProps)
                     {
@@ -292,6 +299,7 @@ namespace ME3Explorer.Unreal
                     return props;
                 }
             }
+
             //TODO: implement getDefaultClassValue() for ME1 and ME2 so this isn't needed
             if (structType == "Rotator")
             {
@@ -302,7 +310,7 @@ namespace ME3Explorer.Unreal
                     props.Add(new IntProperty(stream, labels[i]) { StartOffset = startPos });
                 }
             }
-            else if (structType == "Vector2d" || structType == "RwVector2")
+            else if (structType == "Vector2d" || structType == "Vector2D" || structType == "RwVector2")
             {
                 string[] labels = { "X", "Y" };
                 for (int i = 0; i < 2; i++)
@@ -382,6 +390,16 @@ namespace ME3Explorer.Unreal
                     props.Add(new IntProperty(stream, labels[i]) { StartOffset = startPos });
                 }
             }
+            else if (structType == "NavReference")
+            {
+                string[] labels = { "A", "B", "C", "D" };
+                for (int i = 0; i < 4; i++)
+                {
+                    long startPos = stream.Position;
+                    props.Add(new IntProperty(stream, labels[i]) { StartOffset = startPos });
+                }
+                props.Add(new ObjectProperty(stream, "Actor"));
+            }
             else if (structType == "IntPoint")
             {
                 string[] labels = { "X", "Y" };
@@ -411,7 +429,44 @@ namespace ME3Explorer.Unreal
             }
             else
             {
+                //Fallback: Attempt lookup
+                if (pcc.Game == MEGame.ME2)
+                {
+                    if (ME2Explorer.Unreal.ME2UnrealObjectInfo.Structs.ContainsKey(structType))
+                    {
+                        PropertyCollection defaultProps;
+                        //Cache
+                        if (defaultStructValuesME2.ContainsKey(structType))
+                        {
+                            defaultProps = defaultStructValuesME2[structType];
+                        }
+                        else
+                        {
+                            defaultProps = ME2Explorer.Unreal.ME2UnrealObjectInfo.getDefaultStructValue(structType);
+                            if (defaultProps == null)
+                            {
+                                long pos = stream.Position;
+                                props.Add(new UnknownProperty(stream, size) { StartOffset = pos });
+                                return props;
+                            }
+                            defaultStructValuesME2.Add(structType, defaultProps);
+                        }
+                        foreach (var prop in defaultProps)
+                        {
+                            UProperty uProperty = ReadSpecialStructProp(pcc, stream, prop, structType);
+                            if (uProperty.PropType != PropertyType.None)
+                            {
+                                props.Add(uProperty);
+                            }
+                        }
+                        return props;
+                    }
+                }
+
+
+                Debug.WriteLine("Unknown struct type: " + structType);
                 long startPos = stream.Position;
+                //Debugger.Break();
                 props.Add(new UnknownProperty(stream, size) { StartOffset = startPos });
             }
             return props;
@@ -1156,10 +1211,15 @@ namespace ME3Explorer.Unreal
         {
             ValueOffset = stream.Position;
             EnumType = enumType;
+            var eNameIdx = stream.ReadValueS32();
+            var eName = pcc.getNameEntry(eNameIdx);
+            var eNameNumber = stream.ReadValueS32();
+            var eNameTEST = pcc.getNameEntry(eNameNumber);
+
             NameReference enumVal = new NameReference
             {
-                Name = pcc.getNameEntry(stream.ReadValueS32()),
-                Number = stream.ReadValueS32()
+                Name = eName,
+                Number = eNameNumber
             };
             Value = enumVal;
             EnumValues = UnrealObjectInfo.GetEnumValues(pcc.Game, enumType, true);

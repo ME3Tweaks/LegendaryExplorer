@@ -146,12 +146,7 @@
                     <MenuItem Header="Make all ammo/grenades in file respawn on proper timers" Click="MakeAllGrenadesAmmoRespawn_Click"/>
                     <MenuItem Header="Build ME1 Native Functions Info" Click="BuildME1NativeFunctionsInfo_Click"/>
                     <MenuItem Header="Find ME1 2DA Tables" Click="FindME12DATables_Click"/>
-                    <MenuItem Header="Create PCC dump for...">
-                        <MenuItem Header="Mass Effect" Click="CreatePCCDumpME1_Click"/>
-                        <MenuItem Header="Mass Effect 2" Click="CreatePCCDumpME2_Click"/>
-                        <MenuItem Header="Mass Effect 3" Click="CreatePCCDumpME3_Click"/>
-                    </MenuItem>
-
+                    <MenuItem Header="Open PCC Dumper" Click="CreatePCCDumpME1_Click"/>
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">

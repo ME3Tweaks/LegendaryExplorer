@@ -9,6 +9,7 @@ using KFreonLib.MEDirectories;
 using Newtonsoft.Json;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
+using System.Diagnostics;
 
 namespace ME2Explorer.Unreal
 {
@@ -261,18 +262,177 @@ namespace ME2Explorer.Unreal
             return false;
         }
 
+        private static string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
+            "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform", "NavReference",
+            "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "BioRwBox44" };
+
+        public static bool isImmutable(string structName)
+        {
+            string hex = "991A000000000000E62D000000000000040000000000000000000000";
+            string str = "0x";
+            for (int i = 0; i < hex.Length; i++)
+            {
+                if (i % 2 == 0 && i != 0)
+                {
+                    Debug.Write(str + ", ");
+                    str = "0x";
+                }
+                str += hex[i];
+            }
+            Debug.WriteLine("");
+            return ImmutableStructs.Contains(structName);
+        }
+
+        #region struct default values
+        private readonly static byte[] CoverReferenceDefault = { 
+            // >> CoverReference
+            //CoverReference: Direction
+            0x99, 0x1A, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0xE6, 0x2D, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x04, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+
+
+            //CoverReference: SlotIdx
+            0x2C, 0x49, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0xE6, 0x2D, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x04, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+
+
+            // >> NavReference
+            //NavReference: Nav (ObjectProperty)
+            0xD4, 0x36, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x4A, 0x39, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x04, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0xC9, 0x2A, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+
+            //NavReference: Guid (GUID)
+            0xC9, 0x4B, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x10, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0xC9, 0x2A, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 
+            0x00, 0x00, 0x00, 0x00, //A
+            0x00, 0x00, 0x00, 0x00, //B
+            0x00, 0x00, 0x00, 0x00, //C
+            0x00, 0x00, 0x00, 0x00, //D
+
+             //None
+            0x08, 0x83, 0, 0, 0, 0, 0, 0 };
+
+        /*
+            //SlotIdx
+            0x78, 0x45, 0, 0, 0, 0, 0, 0, 0xB6, 0x29, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            //Direction
+            0x28, 0x1B, 0, 0, 0, 0, 0, 0, 0xB6, 0x29, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            //Guid
+            0xC7, 0x26, 0, 0, 0, 0, 0, 0, 0x17, 0x48, 0, 0, 0, 0, 0, 0, 0x10, 0, 0, 0, 0, 0, 0, 0, 0xC7, 0x26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            //Actor
+            0xF7, 0, 0, 0, 0, 0, 0, 0, 0x62, 0x34, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+*/
+
+        private static byte[] PlaneDefault = { 
+            //X
+            0x09, 0x03, 0, 0, 0, 0, 0, 0, 0x15, 0x01, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            //Y
+            0x0D, 0x03, 0, 0, 0, 0, 0, 0, 0x15, 0x01, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            //Z
+            0x12, 0x03, 0, 0, 0, 0, 0, 0, 0x15, 0x01, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            //W
+            0x04, 0x03, 0, 0, 0, 0, 0, 0, 0x15, 0x01, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            //None
+            0xF0, 0x01, 0, 0, 0, 0, 0, 0 };
+        #endregion
+
+
+        public static PropertyCollection getDefaultStructValue(string className)
+        {
+            if (Structs.ContainsKey(className))
+            {
+                bool immutable = isImmutable(className);
+                ClassInfo info = Structs[className];
+                try
+                {
+                    if (info.pccPath != "ME3Explorer_CustomNativeAdditions")
+                    {
+                        string filepath = (Path.Combine(ME2Directory.gamePath, @"BioGame\" + info.pccPath));
+                        if (File.Exists(info.pccPath))
+                        {
+                            filepath = info.pccPath; //Used for dynamic lookup
+                        }
+                        using (ME2Package importPCC = MEPackageHandler.OpenME2Package(filepath))
+                        {
+                            byte[] buff;
+                            //Plane and CoverReference inherit from other structs, meaning they don't have default values (who knows why)
+                            //thus, I have hardcoded what those default values should be 
+                            if (className == "Plane")
+                            {
+                                buff = PlaneDefault;
+                            }
+                            else if (className == "CoverReference")
+                            {
+                                buff = CoverReferenceDefault;
+                            }
+                            else
+                            {
+                                var exportToRead = importPCC.Exports[info.exportIndex];
+                                buff = exportToRead.Data.Skip(0x30).ToArray();
+                            }
+                            PropertyCollection props = PropertyCollection.ReadProps(importPCC, new MemoryStream(buff), className);
+                            List<UProperty> toRemove = new List<UProperty>();
+                            foreach (var prop in props)
+                            {
+                                //remove transient props
+                                if (!info.properties.ContainsKey(prop.Name) && info.baseClass == "Class")
+                                {
+                                    toRemove.Add(prop);
+                                }
+                            }
+                            foreach (var prop in toRemove)
+                            {
+                                props.Remove(prop);
+                            }
+                            return props;
+                        }
+                    }
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            return null;
+        }
+
         #region Generating
         //call this method to regenerate ME2ObjectInfo.json
         //Takes a long time (10 minutes maybe?). Application will be completely unresponsive during that time.
         public static void generateInfo()
         {
+            Dictionary<string, ClassInfo> NewClasses = new Dictionary<string, ClassInfo>();
+            Dictionary<string, ClassInfo> NewStructs = new Dictionary<string, ClassInfo>();
+            Dictionary<string, List<string>> NewEnums = new Dictionary<string, List<string>>();
+
             ME2Package pcc;
             string path = ME2Directory.gamePath;
             string[] files = Directory.GetFiles(path, "*.pcc", SearchOption.AllDirectories);
             string objectName;
             for (int i = 0; i < files.Length; i++)
             {
-                if (files[i].ToLower().EndsWith(".pcc"))
+                if (files[i].ToLower().EndsWith(".pcc")/* && files[i].Contains("Engine")*/)
                 {
                     pcc = MEPackageHandler.OpenME2Package(files[i]);
                     IReadOnlyList<IExportEntry> Exports = pcc.Exports;
@@ -281,28 +441,28 @@ namespace ME2Explorer.Unreal
                     {
                         exportEntry = Exports[j];
                         if (exportEntry.ClassName == "Enum")
-
                         {
-                            generateEnumValues(j, pcc);
+                            generateEnumValues(j, pcc, NewEnums);
                         }
                         else if (exportEntry.ClassName == "Class")
                         {
                             objectName = exportEntry.ObjectName;
-                            if (!Classes.ContainsKey(exportEntry.ObjectName))
+                            if (!NewClasses.ContainsKey(exportEntry.ObjectName))
                             {
-                                Classes.Add(objectName, generateClassInfo(j, pcc));
+                                NewClasses.Add(objectName, generateClassInfo(j, pcc));
                             }
                         }
                         else if (exportEntry.ClassName == "ScriptStruct")
                         {
                             objectName = exportEntry.ObjectName;
-                            if (!Structs.ContainsKey(exportEntry.ObjectName))
+                            //if (objectName == "CoverSlot") { Debugger.Break(); }
+                            if (!NewStructs.ContainsKey(exportEntry.ObjectName))
                             {
-                                Structs.Add(objectName, generateClassInfo(j, pcc));
+                                NewStructs.Add(objectName, generateClassInfo(j, pcc));
                             }
                         }
                     }
-                    System.Diagnostics.Debug.WriteLine("Releasing " + pcc.FileName);
+                    //System.Diagnostics.Debug.WriteLine("Releasing " + pcc.FileName);
                     pcc.Release();
                 }
             }
@@ -316,13 +476,13 @@ namespace ME2Explorer.Unreal
             };
             try
             {
-                Classes.Add("LightMapTexture2D", info);
+                NewClasses.Add("LightMapTexture2D", info);
             }
             catch (Exception e)
             {
 
             }
-            File.WriteAllText(Application.StartupPath + "//exec//ME2ObjectInfo.json", JsonConvert.SerializeObject(new { Classes = Classes, Structs = Structs, Enums = Enums }, Formatting.Indented));
+            File.WriteAllText(Application.StartupPath + "//exec//ME2ObjectInfo.json", JsonConvert.SerializeObject(new { Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented));
             MessageBox.Show("Done");
         }
 
@@ -365,10 +525,11 @@ namespace ME2Explorer.Unreal
             return info;
         }
 
-        private static void generateEnumValues(int index, ME2Package pcc)
+        private static void generateEnumValues(int index, ME2Package pcc, Dictionary<string, List<string>> NewEnums = null)
         {
+            var enumTable = NewEnums ?? Enums;
             string enumName = pcc.Exports[index].ObjectName;
-            if (!Enums.ContainsKey(enumName))
+            if (!enumTable.ContainsKey(enumName))
             {
                 List<string> values = new List<string>();
                 byte[] buff = pcc.Exports[index].Data;
@@ -377,7 +538,8 @@ namespace ME2Explorer.Unreal
                 {
                     values.Add(pcc.Names[BitConverter.ToInt32(buff, 24 + i * 8)]);
                 }
-                Enums.Add(enumName, values);
+
+                enumTable.Add(enumName, values);
             }
         }
 

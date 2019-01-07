@@ -2177,7 +2177,7 @@ namespace Be.Windows.Forms
             {
                 for (int i = 0; i < buffer.Length; i++)
                 {
-                    sBuffer += buffer[i].ToString("x2");
+                    sBuffer += buffer[i].ToString("X2");
                 }
             }
             else

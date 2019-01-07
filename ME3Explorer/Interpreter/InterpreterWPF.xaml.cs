@@ -1779,6 +1779,7 @@ namespace ME3Explorer
     [DebuggerDisplay("UPropertyTreeViewEntry | {DisplayName}")]
     public class UPropertyTreeViewEntry : INotifyPropertyChanged
     {
+        static string[] PropertyDumperSuppressedPropertyNames = { "CompressedTrackOffsets", "LookupTable" };
         protected void OnPropertyChanged([CallerMemberName] string propName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
@@ -2092,6 +2093,68 @@ namespace ME3Explorer
                 //return $"({type}) {UIndex} {Entry.ObjectName}({Entry.ClassName})"; */
             }
             //set { _displayName = value; }
+        }
+
+        public void PrintPretty(string indent, StreamWriter str, bool last, IExportEntry associatedExport)
+        {
+            bool supressNewLine = false;
+            if (Property != null)
+            {
+                str.Write(indent);
+                if (last)
+                {
+                    str.Write("└─");
+                    indent += "  ";
+                }
+                else
+                {
+                    str.Write("├─");
+                    indent += "| ";
+                }
+                //if (Parent != null && Parent == )
+                str.Write(Property.Name + ": " + EditableValue);// + " "  " (" + PropertyType + ")");
+
+                if (Property is ObjectProperty op)
+                {
+                    //Resolve
+                    string objectName = associatedExport.FileRef.GetEntryString(op.Value);
+                    str.Write("  " + objectName);
+                }
+
+                bool isArrayPropertyTable = Property.GetType().IsOfGenericType(typeof(ArrayProperty<>));
+                if (ChildrenProperties.Count > 1000 && isArrayPropertyTable)
+                {
+                    str.Write(" is very large array (" + ChildrenProperties.Count + " items) - skipping");
+                    return;
+                }
+
+                if (PropertyDumperSuppressedPropertyNames.Any(x => x == Property.Name))
+                {
+                    str.Write(" - suppressed by data dumper.");
+                    return;
+                }
+            }
+            else
+            {
+                supressNewLine = true;
+            }
+            for (int i = 0; i < ChildrenProperties.Count; i++)
+            {
+                if (ChildrenProperties[i].Property is NoneProperty)
+                {
+                    continue;
+                }
+                if (!supressNewLine)
+                {
+                    str.Write("\n");
+                }
+                else
+                {
+                    supressNewLine = false;
+                }
+                ChildrenProperties[i].PrintPretty(indent, str, i == ChildrenProperties.Count - 1 || (i == ChildrenProperties.Count - 2 && ChildrenProperties[ChildrenProperties.Count - 1].Property is NoneProperty), associatedExport);
+            }
+            return;
         }
 
         public override string ToString()
