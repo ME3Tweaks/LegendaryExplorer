@@ -8,12 +8,12 @@
         Title="Hex Converter" Height="180" Width="260">
     <Grid Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="22"/>
-            <RowDefinition Height="22"/>
-            <RowDefinition Height="22"/>
-            <RowDefinition Height="22"/>
-            <RowDefinition Height="22"/>
-            <RowDefinition Height="22"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -29,11 +29,11 @@
         <TextBlock Text="Press enter to convert" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" FontSize="11" Foreground="Gray"/>
 
 
-        <TextBox Name="LittleEndian_TextBox" Text="{Binding LittleEndianText}"  Grid.Row="0" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
-        <TextBox Name="BigEndian_TextBox" Text="{Binding BigEndianText}" Grid.Row="1" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
-        <TextBox Name="Signed_TextBox" Text="{Binding SignedIntegerText}" MaxLength="11" Grid.Row="2" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
-        <TextBox Name="Unsigned_TextBox" Text="{Binding UnsignedIntegerText}" MaxLength="10" Grid.Row="3" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
-        <TextBox Name="Float_TextBox" Text="{Binding FloatText}" MaxLength="8" Grid.Row="4" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
+        <TextBox Name="LittleEndian_TextBox" Text="{Binding LittleEndianText}"  Grid.Row="0" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
+        <TextBox Name="BigEndian_TextBox" Text="{Binding BigEndianText}" Grid.Row="1" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
+        <TextBox Name="Signed_TextBox" Text="{Binding SignedIntegerText}" MaxLength="11" Grid.Row="2" Height="20" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
+        <TextBox Name="Unsigned_TextBox" Text="{Binding UnsignedIntegerText}" MaxLength="10" Grid.Row="3" Height="20" Grid.Column="1" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
+        <TextBox Name="Float_TextBox" Text="{Binding FloatText}" MaxLength="8" Grid.Row="4" Grid.Column="1" Height="20" GotFocus="MyTextBox_GotFocus" VerticalAlignment="Center" KeyUp="OnKeyUp"/>
 
         <!--<Button Name="LittleEndian_Convert_Button" Content="C" Grid.Row="0" Grid.Column="2"/>
         <Button Name="BigEndian_Convert_Button" Content="C" Grid.Row="1" Grid.Column="2"/>
