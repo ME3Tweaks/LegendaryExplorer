@@ -227,6 +227,7 @@ namespace ME3Explorer.Packages
             {
                 return properties;
             }
+            if (ClassName == "Class") { return new PropertyCollection(); } //no properties
             //else if (!includeNoneProperties)
             //{
             //    int start = GetPropertyStart();

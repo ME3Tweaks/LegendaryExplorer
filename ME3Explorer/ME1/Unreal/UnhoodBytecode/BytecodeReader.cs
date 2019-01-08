@@ -847,7 +847,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 ReadNext();   // end of parms
                 if (function.PreOperator)
                     return Token(function.Name + p);
-                return Token(p + function.Name);
+                return Token(p + function.HumanReadableControlToken ?? function.Name);
             }
             if (function.Operator)
             {
@@ -856,7 +856,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 var p2 = ReadNext();
                 if (IsInvalid(p2)) return WrapErrToken(p1 + " " + function.Name + " " + p2, p2);
                 ReadNext();  // end of parms
-                return Token(p1 + " " + function.Name + " " + p2);
+                return Token(p1 + " " + (function.HumanReadableControlToken ?? function.Name) + " " + p2);
             }
             return ReadCall(function.Name);
         }
@@ -872,6 +872,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         public bool Operator;
         public string Name;
         public string Filename;
+        public string HumanReadableControlToken; //like ==, ++, etc
 
         internal static CachedNativeFunctionInfo GetNativeFunction(int index)
         {

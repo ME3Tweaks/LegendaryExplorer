@@ -117,8 +117,8 @@ namespace ME3Explorer
             {
                 DecompiledScriptBlocks.Clear();
                 var funcoutput = UE3FunctionReader.ReadFunction(CurrentLoadedExport);
-                Debug.WriteLine(funcoutput);
-                DecompiledScriptBlocks.Add(funcoutput);
+                var result = funcoutput.Split(new[] { '\r', '\n' }).Where(x=>x != "").ToList();
+                DecompiledScriptBlocks.AddRange(result);
                 //ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(data, CurrentLoadedExport.FileRef as ME1Package);
                 //try
                 //{

@@ -1955,6 +1955,10 @@ namespace ME3Explorer
                         //We are on interpreter tab, selecting class. Switch to binary interpreter as interpreter will never be useful
                         BinaryInterpreter_Tab.IsSelected = true;
                     }
+                    if (Interpreter_Tab.IsSelected && exportEntry.ClassName == "Function" && Script_Tab.IsVisible)
+                    {
+                        Script_Tab.IsSelected = true;
+                    }
                 }
                 else
                 {

@@ -797,9 +797,18 @@ namespace ME3Explorer
                 int classObjTree = BitConverter.ToInt32(data, offset);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
-                    Header = $"0x{offset:X5} NextItemCompilingChain: {classObjTree} {CurrentLoadedExport.FileRef.GetEntryString(classObjTree)}",
+                    Header = $"0x{offset:X5} Next item in compiling chain UIndex: {classObjTree} {CurrentLoadedExport.FileRef.GetEntryString(classObjTree)}",
                     Name = "_" + offset,
                     Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+
+                int unk1 = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X5} Unknown 1: {unk1}",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafInt
                 });
                 offset += 4;
 
@@ -828,14 +837,7 @@ namespace ME3Explorer
                 }
                 offset += 8;
 
-                int unk1 = BitConverter.ToInt32(data, offset);
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                {
-                    Header = $"0x{offset:X5} Unknown1 {unk1}",
-                    Name = "_" + offset,
-                    Tag = NodeType.StructLeafInt
-                });
-                offset += 4;
+
 
                 //has listed outerclass
                 int none = BitConverter.ToInt32(data, offset);

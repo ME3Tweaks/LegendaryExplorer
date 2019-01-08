@@ -500,24 +500,27 @@ namespace ME3Explorer
             isLoadingNewData = false;
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
             {
-                // attempt to find a TlkFileSet associated with the object, else just pick the first one and hope it's correct
-                if (editorTlkSet == null)
+                if (CurrentLoadedExport.ClassName != "Class")
                 {
-                    try
+                    // attempt to find a TlkFileSet associated with the object, else just pick the first one and hope it's correct
+                    if (editorTlkSet == null)
                     {
-                        IntProperty tlkSetRef = export.GetProperty<IntProperty>("m_oTlkFileSet");
-                        if (tlkSetRef != null)
+                        try
                         {
-                            tlkset = new BioTlkFileSet(CurrentLoadedExport.FileRef as ME1Package, tlkSetRef.Value - 1);
+                            IntProperty tlkSetRef = export.GetProperty<IntProperty>("m_oTlkFileSet");
+                            if (tlkSetRef != null)
+                            {
+                                tlkset = new BioTlkFileSet(CurrentLoadedExport.FileRef as ME1Package, tlkSetRef.Value - 1);
+                            }
+                            else
+                            {
+                                tlkset = new BioTlkFileSet(CurrentLoadedExport.FileRef as ME1Package);
+                            }
                         }
-                        else
+                        catch (Exception e)
                         {
                             tlkset = new BioTlkFileSet(CurrentLoadedExport.FileRef as ME1Package);
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        tlkset = new BioTlkFileSet(CurrentLoadedExport.FileRef as ME1Package);
                     }
                 }
                 else

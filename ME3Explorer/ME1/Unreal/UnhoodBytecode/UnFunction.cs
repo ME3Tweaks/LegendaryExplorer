@@ -5,6 +5,7 @@
  */
 
 using ME3Explorer.Packages;
+using ME3Explorer.Unreal;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -89,6 +90,50 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             foreach (IExportEntry export in childrenReversed)
             {
                 //Reading parameters info...
+                if (export.ClassName.EndsWith("Property"))
+                {
+                    UnrealFlags.EPropertyFlags ObjectFlagsMask = (UnrealFlags.EPropertyFlags)BitConverter.ToUInt64(export.Data, 0x18);
+                    if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.Parm) && !ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
+                    {
+                        if (paramCount > 0)
+                        {
+                            result.Append(", ");
+                        }
+
+                        if (export.ClassName == "ObjectProperty")
+                        {
+                            var uindexOfOuter = BitConverter.ToInt32(export.Data, export.Data.Length - 4);
+                            IEntry entry = export.FileRef.getEntry(uindexOfOuter);
+                            if (entry != null)
+                            {
+                                result.Append(entry.ObjectName + " ");
+                            }
+                        }
+                        else
+                        {
+                            result.Append(GetPropertyType(export) + " ");
+                        }
+
+                        result.Append(export.ObjectName);
+                        paramCount++;
+
+                        if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.OptionalParm) && statements.Count > 0)
+                        {
+                            if (statements[0].Token is NothingToken)
+                                statements.RemoveRange(0, 1);
+                            else if (statements[0].Token is DefaultParamValueToken)
+                            {
+                                result.Append(" = ").Append(statements[0].Token.ToString());
+                                statements.RemoveRange(0, 1);
+                            }
+                        }
+                    }
+                    if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.ReturnParm))
+                    {
+                        break; //return param
+                    }
+                }
+
                 //object instance = export.ReadInstance();
                 //if (instance is UnClassProperty)
                 //{
@@ -154,6 +199,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     return "float";
                 case "StrProperty":
                     return "String";
+                case "ByteProperty":
+                    return "byte";
                 default:
                     return "???";
             }

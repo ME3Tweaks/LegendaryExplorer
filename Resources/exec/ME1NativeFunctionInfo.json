@@ -6,7 +6,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Concat_StrStr",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "113": {
       "nativeIndex": 113,
@@ -14,7 +15,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "GotoState",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "114": {
       "nativeIndex": 114,
@@ -22,7 +24,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "EqualEqual_ObjectObject",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " == "
     },
     "115": {
       "nativeIndex": 115,
@@ -30,7 +33,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Less_StrStr",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "116": {
       "nativeIndex": 116,
@@ -38,7 +42,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Greater_StrStr",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "117": {
       "nativeIndex": 117,
@@ -46,7 +51,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Enable",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "118": {
       "nativeIndex": 118,
@@ -54,7 +60,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Disable",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "119": {
       "nativeIndex": 119,
@@ -62,7 +69,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "NotEqual_ObjectObject",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " != "
     },
     "120": {
       "nativeIndex": 120,
@@ -70,7 +78,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "LessEqual_StrStr",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "121": {
       "nativeIndex": 121,
@@ -78,7 +87,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "GreaterEqual_StrStr",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "122": {
       "nativeIndex": 122,
@@ -86,7 +96,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "EqualEqual_StrStr",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "123": {
       "nativeIndex": 123,
@@ -94,7 +105,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "NotEqual_StrStr",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "124": {
       "nativeIndex": 124,
@@ -102,7 +114,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "ComplementEqual_StrStr",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "125": {
       "nativeIndex": 125,
@@ -110,7 +123,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Len",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "126": {
       "nativeIndex": 126,
@@ -118,7 +132,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "InStr",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "127": {
       "nativeIndex": 127,
@@ -126,7 +141,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Mid",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "128": {
       "nativeIndex": 128,
@@ -134,7 +150,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Left",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "129": {
       "nativeIndex": 129,
@@ -142,7 +159,8 @@
       "PostOperator": true,
       "Operator": true,
       "Name": "Not_PreBool",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "130": {
       "nativeIndex": 130,
@@ -150,7 +168,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "AndAnd_BoolBool",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " && "
     },
     "131": {
       "nativeIndex": 131,
@@ -158,7 +177,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "XorXor_BoolBool",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "132": {
       "nativeIndex": 132,
@@ -166,7 +186,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "OrOr_BoolBool",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " || "
     },
     "133": {
       "nativeIndex": 133,
@@ -174,7 +195,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "MultiplyEqual_ByteByte",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " *= "
     },
     "134": {
       "nativeIndex": 134,
@@ -182,7 +204,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "DivideEqual_ByteByte",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " /= "
     },
     "135": {
       "nativeIndex": 135,
@@ -190,7 +213,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "AddEqual_ByteByte",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " += "
     },
     "136": {
       "nativeIndex": 136,
@@ -198,7 +222,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "SubtractEqual_ByteByte",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " -= "
     },
     "137": {
       "nativeIndex": 137,
@@ -206,7 +231,8 @@
       "PostOperator": true,
       "Operator": true,
       "Name": "AddAdd_PreByte",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": "++"
     },
     "138": {
       "nativeIndex": 138,
@@ -214,7 +240,8 @@
       "PostOperator": true,
       "Operator": true,
       "Name": "SubtractSubtract_PreByte",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": "--"
     },
     "139": {
       "nativeIndex": 139,
@@ -222,7 +249,8 @@
       "PostOperator": true,
       "Operator": true,
       "Name": "AddAdd_Byte",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " + "
     },
     "140": {
       "nativeIndex": 140,
@@ -230,7 +258,8 @@
       "PostOperator": true,
       "Operator": true,
       "Name": "SubtractSubtract_Byte",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " - "
     },
     "141": {
       "nativeIndex": 141,
@@ -238,7 +267,8 @@
       "PostOperator": true,
       "Operator": true,
       "Name": "Complement_PreInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "142": {
       "nativeIndex": 142,
@@ -246,7 +276,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "EqualEqual_RotatorRotator",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "143": {
       "nativeIndex": 143,
@@ -254,7 +285,8 @@
       "PostOperator": true,
       "Operator": true,
       "Name": "Subtract_PreInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": "--"
     },
     "144": {
       "nativeIndex": 144,
@@ -262,7 +294,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Multiply_IntInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " * "
     },
     "145": {
       "nativeIndex": 145,
@@ -270,7 +303,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Divide_IntInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " / "
     },
     "146": {
       "nativeIndex": 146,
@@ -278,7 +312,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Add_IntInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " + "
     },
     "147": {
       "nativeIndex": 147,
@@ -286,7 +321,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Subtract_IntInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " - "
     },
     "148": {
       "nativeIndex": 148,
@@ -294,7 +330,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "LessLess_IntInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " < "
     },
     "149": {
       "nativeIndex": 149,
@@ -302,7 +339,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "GreaterGreater_IntInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " > "
     },
     "150": {
       "nativeIndex": 150,
@@ -310,7 +348,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Less_IntInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " < "
     },
     "151": {
       "nativeIndex": 151,
@@ -318,7 +357,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Greater_IntInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "152": {
       "nativeIndex": 152,
@@ -326,7 +366,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "LessEqual_IntInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " <= "
     },
     "153": {
       "nativeIndex": 153,
@@ -334,7 +375,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "GreaterEqual_IntInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " >= "
     },
     "154": {
       "nativeIndex": 154,
@@ -342,7 +384,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "EqualEqual_IntInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " == "
     },
     "155": {
       "nativeIndex": 155,
@@ -350,7 +393,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "NotEqual_IntInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " != "
     },
     "156": {
       "nativeIndex": 156,
@@ -358,7 +402,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "And_IntInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " + "
     },
     "157": {
       "nativeIndex": 157,
@@ -366,7 +411,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Xor_IntInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "158": {
       "nativeIndex": 158,
@@ -374,7 +420,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Or_IntInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "159": {
       "nativeIndex": 159,
@@ -382,7 +429,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "MultiplyEqual_IntFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " *= "
     },
     "160": {
       "nativeIndex": 160,
@@ -390,7 +438,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "DivideEqual_IntFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " /= "
     },
     "161": {
       "nativeIndex": 161,
@@ -398,7 +447,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "AddEqual_IntInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " += "
     },
     "162": {
       "nativeIndex": 162,
@@ -406,7 +456,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "SubtractEqual_IntInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " -= "
     },
     "163": {
       "nativeIndex": 163,
@@ -414,7 +465,8 @@
       "PostOperator": true,
       "Operator": true,
       "Name": "AddAdd_PreInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": "++"
     },
     "164": {
       "nativeIndex": 164,
@@ -422,7 +474,8 @@
       "PostOperator": true,
       "Operator": true,
       "Name": "SubtractSubtract_PreInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": "--"
     },
     "165": {
       "nativeIndex": 165,
@@ -430,7 +483,8 @@
       "PostOperator": true,
       "Operator": true,
       "Name": "AddAdd_Int",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": "++"
     },
     "166": {
       "nativeIndex": 166,
@@ -438,7 +492,8 @@
       "PostOperator": true,
       "Operator": true,
       "Name": "SubtractSubtract_Int",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": "--"
     },
     "167": {
       "nativeIndex": 167,
@@ -446,7 +501,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Rand",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "168": {
       "nativeIndex": 168,
@@ -454,7 +510,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "At_StrStr",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "169": {
       "nativeIndex": 169,
@@ -462,7 +519,8 @@
       "PostOperator": true,
       "Operator": true,
       "Name": "Subtract_PreFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "170": {
       "nativeIndex": 170,
@@ -470,7 +528,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "MultiplyMultiply_FloatFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " ** "
     },
     "171": {
       "nativeIndex": 171,
@@ -478,7 +537,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Multiply_FloatFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " * "
     },
     "172": {
       "nativeIndex": 172,
@@ -486,7 +546,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Divide_FloatFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " / "
     },
     "173": {
       "nativeIndex": 173,
@@ -494,7 +555,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Percent_FloatFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "174": {
       "nativeIndex": 174,
@@ -502,7 +564,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Add_FloatFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " + "
     },
     "175": {
       "nativeIndex": 175,
@@ -510,7 +573,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Subtract_FloatFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " - "
     },
     "176": {
       "nativeIndex": 176,
@@ -518,7 +582,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Less_FloatFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " < "
     },
     "177": {
       "nativeIndex": 177,
@@ -526,7 +591,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Greater_FloatFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " > "
     },
     "178": {
       "nativeIndex": 178,
@@ -534,7 +600,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "LessEqual_FloatFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " <= "
     },
     "179": {
       "nativeIndex": 179,
@@ -542,7 +609,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "GreaterEqual_FloatFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " >= "
     },
     "180": {
       "nativeIndex": 180,
@@ -550,7 +618,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "EqualEqual_FloatFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " == "
     },
     "181": {
       "nativeIndex": 181,
@@ -558,7 +627,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "NotEqual_FloatFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " != "
     },
     "182": {
       "nativeIndex": 182,
@@ -566,7 +636,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "MultiplyEqual_FloatFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " * "
     },
     "183": {
       "nativeIndex": 183,
@@ -574,7 +645,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "DivideEqual_FloatFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " / "
     },
     "184": {
       "nativeIndex": 184,
@@ -582,7 +654,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "AddEqual_FloatFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " += "
     },
     "185": {
       "nativeIndex": 185,
@@ -590,7 +663,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "SubtractEqual_FloatFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " -= "
     },
     "186": {
       "nativeIndex": 186,
@@ -598,7 +672,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Abs",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "187": {
       "nativeIndex": 187,
@@ -606,7 +681,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Sin",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "188": {
       "nativeIndex": 188,
@@ -614,7 +690,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Cos",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "189": {
       "nativeIndex": 189,
@@ -622,7 +699,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Tan",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "190": {
       "nativeIndex": 190,
@@ -630,7 +708,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Atan",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "191": {
       "nativeIndex": 191,
@@ -638,7 +717,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Exp",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "192": {
       "nativeIndex": 192,
@@ -646,7 +726,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Loge",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "193": {
       "nativeIndex": 193,
@@ -654,7 +735,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Sqrt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "194": {
       "nativeIndex": 194,
@@ -662,7 +744,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Square",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "195": {
       "nativeIndex": 195,
@@ -670,7 +753,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "FRand",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "196": {
       "nativeIndex": 196,
@@ -678,7 +762,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "GreaterGreaterGreater_IntInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " > "
     },
     "197": {
       "nativeIndex": 197,
@@ -686,7 +771,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "IsA",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "198": {
       "nativeIndex": 198,
@@ -694,7 +780,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "MultiplyEqual_ByteFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "201": {
       "nativeIndex": 201,
@@ -702,7 +789,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Repl",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "203": {
       "nativeIndex": 203,
@@ -710,7 +798,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "NotEqual_RotatorRotator",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "210": {
       "nativeIndex": 210,
@@ -718,7 +807,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "ComplementEqual_FloatFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "211": {
       "nativeIndex": 211,
@@ -726,7 +816,8 @@
       "PostOperator": true,
       "Operator": true,
       "Name": "Subtract_PreVector",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "212": {
       "nativeIndex": 212,
@@ -734,7 +825,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Multiply_VectorFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "213": {
       "nativeIndex": 213,
@@ -742,7 +834,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Multiply_FloatVector",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "214": {
       "nativeIndex": 214,
@@ -750,7 +843,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Divide_VectorFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "215": {
       "nativeIndex": 215,
@@ -758,7 +852,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Add_VectorVector",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "216": {
       "nativeIndex": 216,
@@ -766,7 +861,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Subtract_VectorVector",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "217": {
       "nativeIndex": 217,
@@ -774,7 +870,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "EqualEqual_VectorVector",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "218": {
       "nativeIndex": 218,
@@ -782,7 +879,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "NotEqual_VectorVector",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "219": {
       "nativeIndex": 219,
@@ -790,7 +888,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Dot_VectorVector",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "220": {
       "nativeIndex": 220,
@@ -798,7 +897,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Cross_VectorVector",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "221": {
       "nativeIndex": 221,
@@ -806,7 +906,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "MultiplyEqual_VectorFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "222": {
       "nativeIndex": 222,
@@ -814,7 +915,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "DivideEqual_VectorFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "223": {
       "nativeIndex": 223,
@@ -822,7 +924,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "AddEqual_VectorVector",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "224": {
       "nativeIndex": 224,
@@ -830,7 +933,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "SubtractEqual_VectorVector",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "225": {
       "nativeIndex": 225,
@@ -838,7 +942,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "VSize",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "226": {
       "nativeIndex": 226,
@@ -846,7 +951,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Normal",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "229": {
       "nativeIndex": 229,
@@ -854,7 +960,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "GetAxes",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "230": {
       "nativeIndex": 230,
@@ -862,7 +969,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "GetUnAxes",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "231": {
       "nativeIndex": 231,
@@ -870,7 +978,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "LogInternal",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "232": {
       "nativeIndex": 232,
@@ -878,7 +987,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "WarnInternal",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "234": {
       "nativeIndex": 234,
@@ -886,7 +996,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Right",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "235": {
       "nativeIndex": 235,
@@ -894,7 +1005,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Caps",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "236": {
       "nativeIndex": 236,
@@ -902,7 +1014,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Chr",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "237": {
       "nativeIndex": 237,
@@ -910,7 +1023,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Asc",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "238": {
       "nativeIndex": 238,
@@ -918,7 +1032,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Locs",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "242": {
       "nativeIndex": 242,
@@ -926,7 +1041,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "EqualEqual_BoolBool",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " == "
     },
     "243": {
       "nativeIndex": 243,
@@ -934,7 +1050,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "NotEqual_BoolBool",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": " != "
     },
     "244": {
       "nativeIndex": 244,
@@ -942,7 +1059,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "FMin",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "245": {
       "nativeIndex": 245,
@@ -950,7 +1068,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "FMax",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "246": {
       "nativeIndex": 246,
@@ -958,7 +1077,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "FClamp",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "247": {
       "nativeIndex": 247,
@@ -966,7 +1086,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Lerp",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "249": {
       "nativeIndex": 249,
@@ -974,7 +1095,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Min",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "250": {
       "nativeIndex": 250,
@@ -982,7 +1104,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Max",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "251": {
       "nativeIndex": 251,
@@ -990,7 +1113,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Clamp",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "252": {
       "nativeIndex": 252,
@@ -998,7 +1122,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "VRand",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "254": {
       "nativeIndex": 254,
@@ -1006,7 +1131,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "EqualEqual_NameName",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "255": {
       "nativeIndex": 255,
@@ -1014,7 +1140,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "NotEqual_NameName",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "256": {
       "nativeIndex": 256,
@@ -1022,7 +1149,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Sleep",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "258": {
       "nativeIndex": 258,
@@ -1030,7 +1158,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "ClassIsChildOf",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "261": {
       "nativeIndex": 261,
@@ -1038,7 +1167,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "FinishAnim",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "262": {
       "nativeIndex": 262,
@@ -1046,7 +1176,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "SetCollision",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "266": {
       "nativeIndex": 266,
@@ -1054,7 +1185,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Move",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "267": {
       "nativeIndex": 267,
@@ -1062,7 +1194,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "SetLocation",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "270": {
       "nativeIndex": 270,
@@ -1070,7 +1203,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Add_QuatQuat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "271": {
       "nativeIndex": 271,
@@ -1078,7 +1212,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Subtract_QuatQuat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "272": {
       "nativeIndex": 272,
@@ -1086,7 +1221,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "SetOwner",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "275": {
       "nativeIndex": 275,
@@ -1094,7 +1230,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "LessLess_VectorRotator",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "276": {
       "nativeIndex": 276,
@@ -1102,7 +1239,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "GreaterGreater_VectorRotator",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "277": {
       "nativeIndex": 277,
@@ -1110,7 +1248,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Trace",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "278": {
       "nativeIndex": 278,
@@ -1118,7 +1257,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Spawn",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "279": {
       "nativeIndex": 279,
@@ -1126,7 +1266,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "Destroy",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "280": {
       "nativeIndex": 280,
@@ -1134,7 +1275,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "SetTimer",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "281": {
       "nativeIndex": 281,
@@ -1142,7 +1284,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "IsInState",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "283": {
       "nativeIndex": 283,
@@ -1150,7 +1293,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "SetCollisionSize",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "284": {
       "nativeIndex": 284,
@@ -1158,7 +1302,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "GetStateName",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "287": {
       "nativeIndex": 287,
@@ -1166,7 +1311,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Multiply_RotatorFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "288": {
       "nativeIndex": 288,
@@ -1174,7 +1320,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Multiply_FloatRotator",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "289": {
       "nativeIndex": 289,
@@ -1182,7 +1329,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Divide_RotatorFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "290": {
       "nativeIndex": 290,
@@ -1190,7 +1338,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "MultiplyEqual_RotatorFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "291": {
       "nativeIndex": 291,
@@ -1198,7 +1347,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "DivideEqual_RotatorFloat",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "296": {
       "nativeIndex": 296,
@@ -1206,7 +1356,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Multiply_VectorVector",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "297": {
       "nativeIndex": 297,
@@ -1214,7 +1365,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "MultiplyEqual_VectorVector",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "298": {
       "nativeIndex": 298,
@@ -1222,7 +1374,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "SetBase",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "299": {
       "nativeIndex": 299,
@@ -1230,7 +1383,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "SetRotation",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "300": {
       "nativeIndex": 300,
@@ -1238,7 +1392,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "MirrorVectorByNormal",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "304": {
       "nativeIndex": 304,
@@ -1246,7 +1401,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "AllActors",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "305": {
       "nativeIndex": 305,
@@ -1254,7 +1410,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "ChildActors",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "306": {
       "nativeIndex": 306,
@@ -1262,7 +1419,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "BasedActors",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "307": {
       "nativeIndex": 307,
@@ -1270,7 +1428,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "TouchingActors",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "309": {
       "nativeIndex": 309,
@@ -1278,7 +1437,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "TraceActors",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "311": {
       "nativeIndex": 311,
@@ -1286,7 +1446,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "VisibleActors",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "312": {
       "nativeIndex": 312,
@@ -1294,7 +1455,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "VisibleCollidingActors",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "313": {
       "nativeIndex": 313,
@@ -1302,7 +1464,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "DynamicActors",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "316": {
       "nativeIndex": 316,
@@ -1310,7 +1473,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Add_RotatorRotator",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "317": {
       "nativeIndex": 317,
@@ -1318,7 +1482,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "Subtract_RotatorRotator",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "318": {
       "nativeIndex": 318,
@@ -1326,7 +1491,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "AddEqual_RotatorRotator",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "319": {
       "nativeIndex": 319,
@@ -1334,7 +1500,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "SubtractEqual_RotatorRotator",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "320": {
       "nativeIndex": 320,
@@ -1342,7 +1509,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "RotRand",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "321": {
       "nativeIndex": 321,
@@ -1350,7 +1518,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "CollidingActors",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "322": {
       "nativeIndex": 322,
@@ -1358,7 +1527,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "ConcatEqual_StrStr",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "323": {
       "nativeIndex": 323,
@@ -1366,7 +1536,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "AtEqual_StrStr",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "324": {
       "nativeIndex": 324,
@@ -1374,7 +1545,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "SubtractEqual_StrStr",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "500": {
       "nativeIndex": 500,
@@ -1382,7 +1554,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "MoveTo",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "502": {
       "nativeIndex": 502,
@@ -1390,7 +1563,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "MoveToward",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "508": {
       "nativeIndex": 508,
@@ -1398,7 +1572,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "FinishRotation",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "512": {
       "nativeIndex": 512,
@@ -1406,7 +1581,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "MakeNoise",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "514": {
       "nativeIndex": 514,
@@ -1414,7 +1590,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "LineOfSightTo",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "517": {
       "nativeIndex": 517,
@@ -1422,7 +1599,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "FindPathToward",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "518": {
       "nativeIndex": 518,
@@ -1430,7 +1608,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "FindPathTo",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "520": {
       "nativeIndex": 520,
@@ -1438,7 +1617,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "ActorReachable",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "521": {
       "nativeIndex": 521,
@@ -1446,7 +1626,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "PointReachable",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "524": {
       "nativeIndex": 524,
@@ -1454,7 +1635,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "FindStairRotation",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "525": {
       "nativeIndex": 525,
@@ -1462,7 +1644,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "FindRandomDest",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "526": {
       "nativeIndex": 526,
@@ -1470,7 +1653,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "PickWallAdjust",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "527": {
       "nativeIndex": 527,
@@ -1478,7 +1662,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "WaitForLanding",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "531": {
       "nativeIndex": 531,
@@ -1486,7 +1671,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "PickTarget",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "532": {
       "nativeIndex": 532,
@@ -1494,7 +1680,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "PlayerCanSeeMe",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "533": {
       "nativeIndex": 533,
@@ -1502,7 +1689,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "CanSee",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "536": {
       "nativeIndex": 536,
@@ -1510,7 +1698,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "SaveConfig",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "537": {
       "nativeIndex": 537,
@@ -1518,7 +1707,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "CanSeeByPoints",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "546": {
       "nativeIndex": 546,
@@ -1526,7 +1716,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "UpdateURL",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "547": {
       "nativeIndex": 547,
@@ -1534,7 +1725,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "GetURLMap",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "548": {
       "nativeIndex": 548,
@@ -1542,7 +1734,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "FastTrace",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "1000": {
       "nativeIndex": 1000,
@@ -1550,7 +1743,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "EqualEqual_StringRefStringRef",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "1001": {
       "nativeIndex": 1001,
@@ -1558,7 +1752,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "EqualEqual_StringRefInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "1002": {
       "nativeIndex": 1002,
@@ -1566,7 +1761,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "EqualEqual_IntStringRef",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "1003": {
       "nativeIndex": 1003,
@@ -1574,7 +1770,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "NotEqual_StringRefStringRef",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "1004": {
       "nativeIndex": 1004,
@@ -1582,7 +1779,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "NotEqual_StringRefInt",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "1005": {
       "nativeIndex": 1005,
@@ -1590,7 +1788,8 @@
       "PostOperator": false,
       "Operator": true,
       "Name": "NotEqual_IntStringRef",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "1500": {
       "nativeIndex": 1500,
@@ -1598,7 +1797,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "ProjectOnTo",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "1501": {
       "nativeIndex": 1501,
@@ -1606,7 +1806,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "IsZero",
-      "Filename": "Core.u"
+      "Filename": "Core.u",
+      "HumanReadableControlToken": null
     },
     "3969": {
       "nativeIndex": 3969,
@@ -1614,7 +1815,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "MoveSmooth",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "3970": {
       "nativeIndex": 3970,
@@ -1622,7 +1824,8 @@
       "PostOperator": false,
       "Operator": false,
       "Name": "SetPhysics",
-      "Filename": "Engine.u"
+      "Filename": "Engine.u",
+      "HumanReadableControlToken": null
     },
     "3971": {
       "nativeIndex": 3971,
