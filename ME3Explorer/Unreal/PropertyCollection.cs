@@ -493,7 +493,8 @@ namespace ME3Explorer.Unreal
                 case PropertyType.NameProperty:
                     return new NameProperty(stream, pcc, template.Name) { StartOffset = startPos };
                 case PropertyType.BoolProperty:
-                    return new BoolProperty(stream, pcc.Game, template.Name) { StartOffset = startPos };
+                    //always say it's ME3 so that bools get read as 1 byte
+                    return new BoolProperty(stream, MEGame.ME3, template.Name) { StartOffset = startPos };
                 case PropertyType.ByteProperty:
                     if (template is EnumProperty)
                     {
