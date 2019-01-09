@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HexConverterWPF"
         mc:Ignorable="d"
-        Title="Hex Converter" Height="180" Width="260">
+        Title="Hex Converter" Height="192" Width="260">
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="24"/>

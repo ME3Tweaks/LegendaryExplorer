@@ -1277,6 +1277,7 @@ namespace ME3Explorer
                 var hexPos = newSelectedItem.Property.ValueOffset;
                 Interpreter_Hexbox.SelectionStart = hexPos;
                 Interpreter_Hexbox.SelectionLength = 1; //maybe change
+
                 Interpreter_Hexbox.UnhighlightAll();
                 switch (newSelectedItem.Property)
                 {
@@ -1310,6 +1311,15 @@ namespace ME3Explorer
                                 return;
                             }
                             else if (newSelectedItem.Parent.Property is ArrayProperty<ByteProperty>)
+                            {
+                                Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 1);
+                                return;
+                            }
+                        }
+                        break;
+                    case BoolProperty boolp:
+                        {
+                            if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
                             {
                                 Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 1);
                                 return;
@@ -1394,6 +1404,8 @@ namespace ME3Explorer
                 {
                     Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 24, 28);
                 }*/
+                Interpreter_Hexbox_Host.UpdateLayout();
+                Interpreter_Hexbox.Invalidate();
             }
         }
 

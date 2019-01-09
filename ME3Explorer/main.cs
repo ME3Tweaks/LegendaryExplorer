@@ -126,7 +126,7 @@ namespace ME3Explorer
         public int SignalExternalCommandLineArgs(string[] args)
         {
             int taskListResponse = HandleCommandLineJumplistCall(args, out int exitCode);
-            if (taskListResponse == 1)
+            if (taskListResponse == 0)
             {
                 //just a new instance
                 MainWindow.RestoreAndBringToFront();

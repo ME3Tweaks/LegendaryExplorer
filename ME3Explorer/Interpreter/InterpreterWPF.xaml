@@ -71,7 +71,7 @@
             </Grid.ColumnDefinitions>
             <!--<control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />-->
             <WindowsFormsHost Name="Interpreter_Hexbox_Host" Grid.Row="10" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">
-                <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" VScrollBarVisible="True">
+                <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" SelectionLengthChanged="hb1_SelectionChanged" VScrollBarVisible="True">
                 </hb1:HexBox>
             </WindowsFormsHost>
             <GridSplitter Grid.Column="1" 

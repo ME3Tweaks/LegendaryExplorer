@@ -319,13 +319,17 @@ namespace ME3Explorer
 
                     start += 4;
                     uint shouldbezero = BitConverter.ToUInt32(data, start);
-                    if (shouldbezero != 0)
+                    if (shouldbezero != 0 && pcc.Game != MEGame.ME1)
                     {
                         //INVALID!!!
                         return false;
                     }
-                    start += 4;
-                    int itemcount = 2; //Skip bioworldinfo and Class
+                    int itemcount = 1; //Skip bioworldinfo and Class
+                    if (pcc.Game != MEGame.ME1)
+                    {
+                        start += 4;
+                        itemcount = 2;
+                    }
 
                     while (itemcount < numberofitems)
                     {
@@ -1388,7 +1392,7 @@ namespace ME3Explorer
                         {
                             IExportEntry outgoingSpec = pcc.Exports[prop.Value - 1];
                             StructProperty outgoingEndStructProp = outgoingSpec.GetProperty<StructProperty>("End"); //Embeds END
-                            ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>("Actor"); //END                    
+                            ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpec)); //END                    
 
 
                             breaklLinkItem = new ToolStripMenuItem("Break reachspec to " + (outgoingSpecEndProp.Value - 1));
@@ -1911,7 +1915,7 @@ namespace ME3Explorer
                                         PropertyCollection reachspecprops = (prop as StructProperty).Properties;
                                         foreach (var rprop in reachspecprops)
                                         {
-                                            if (rprop.Name == "Actor")
+                                            if (rprop.Name == SharedPathfinding.GetReachSpecEndName(spec))
                                             {
                                                 othernodeidx = (rprop as ObjectProperty).Value;
                                                 break;
@@ -1956,7 +1960,7 @@ namespace ME3Explorer
                                                     PropertyCollection reachspecprops = (prop as StructProperty).Properties;
                                                     foreach (var rprop in reachspecprops)
                                                     {
-                                                        if (rprop.Name == "Actor")
+                                                        if (rprop.Name == SharedPathfinding.GetReachSpecEndName(inboundSpec))
                                                         {
                                                             int inboundSpecDest = (rprop as ObjectProperty).Value;
                                                             if (inboundSpecDest == nodeEntry.UIndex)
@@ -2244,7 +2248,7 @@ namespace ME3Explorer
 
                     ObjectProperty outgoingSpecStartProp = outgoingSpecExp.GetProperty<ObjectProperty>("Start"); //START
                     StructProperty outgoingEndStructProp = outgoingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
-                    ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>("Actor"); //END
+                    ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpecExp)); //END
                     outgoingSpecStartProp.Value = startNode.UIndex;
                     outgoingSpecEndProp.Value = 0; //we will have to set the GUID - maybe through form or something
 
@@ -2316,7 +2320,7 @@ namespace ME3Explorer
 
                     ObjectProperty outgoingSpecStartProp = outgoingSpecExp.GetProperty<ObjectProperty>("Start"); //START
                     StructProperty outgoingEndStructProp = outgoingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
-                    ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>("Actor"); //END
+                    ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpecExp)); //END
                     outgoingSpecStartProp.Value = startNode.UIndex;
                     outgoingSpecEndProp.Value = destNode.UIndex;
 
@@ -2354,7 +2358,7 @@ namespace ME3Explorer
 
                         ObjectProperty incomingSpecStartProp = incomingSpecExp.GetProperty<ObjectProperty>("Start"); //START
                         StructProperty incomingEndStructProp = incomingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
-                        ObjectProperty incomingSpecEndProp = incomingEndStructProp.Properties.GetProp<ObjectProperty>("Actor"); //END
+                        ObjectProperty incomingSpecEndProp = incomingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(incomingSpecExp)); //END
 
                         incomingSpecStartProp.Value = destNode.UIndex;//Uindex
                         incomingSpecEndProp.Value = startNode.UIndex;

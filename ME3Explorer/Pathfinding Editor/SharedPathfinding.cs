@@ -45,6 +45,11 @@ namespace ME3Explorer.Pathfinding_Editor
             return memory;
         }
 
+        public static string GetReachSpecEndName(IExportEntry export)
+        {
+            return export.FileRef.Game != MEGame.ME1 ? "Actor" : "Nav";
+        }
+
         /// <summary>
         /// Fetches the NavGuid object as a UnrealGUID
         /// </summary>

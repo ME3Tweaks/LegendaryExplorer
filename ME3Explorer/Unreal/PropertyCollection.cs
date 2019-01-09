@@ -32,7 +32,7 @@ namespace ME3Explorer.Unreal
         {
             foreach (var prop in this)
             {
-                if (prop.Name.Name == name)
+                if (prop.Name != null && prop.Name.Name.ToLower() == name.ToLower())
                 {
                     return prop as T;
                 }
@@ -123,7 +123,7 @@ namespace ME3Explorer.Unreal
                             if (ME3UnrealObjectInfo.isImmutable(structType))
                             {
                                 PropertyCollection structProps = ReadSpecialStruct(pcc, stream, structType, size);
-                                props.Add(new StructProperty(structType, structProps, nameRef, true) { StartOffset = valOffset, ValueOffset = valOffset });
+                                props.Add(new StructProperty(structType, structProps, nameRef, true) { StartOffset = propertyStartPosition, ValueOffset = valOffset });
                             }
                             else
                             {
@@ -220,7 +220,7 @@ namespace ME3Explorer.Unreal
                             break;
                         case PropertyType.Unknown:
                             {
-                                Debugger.Break();
+                               // Debugger.Break();
                                 props.Add(new UnknownProperty(stream, size, pcc.getNameEntry(typeIdx), nameRef) { StartOffset = propertyStartPosition });
                             }
                             break;

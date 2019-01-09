@@ -2532,14 +2532,17 @@ namespace ME3Explorer
                     });
                 }
                 ReadInt32(textureData); //skip
-                byte[] textureGuid = textureData.ReadBytes(16);
-                var textureGuidNode = new BinaryInterpreterWPFTreeViewItem
+                if (CurrentLoadedExport.FileRef.Game != MEGame.ME1)
                 {
-                    Header = $"0x{textureData.Position} Texture GUID: {new Guid(textureGuid)}",
-                    Name = "_" + (textureData.Position)
+                    byte[] textureGuid = textureData.ReadBytes(16);
+                    var textureGuidNode = new BinaryInterpreterWPFTreeViewItem
+                    {
+                        Header = $"0x{textureData.Position} Texture GUID: {new Guid(textureGuid)}",
+                        Name = "_" + (textureData.Position)
 
-                };
-                subnodes.Add(textureGuidNode);
+                    };
+                    subnodes.Add(textureGuidNode);
+                }
             }
             catch (Exception ex)
             {

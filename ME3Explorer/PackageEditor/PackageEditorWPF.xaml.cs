@@ -234,110 +234,122 @@ namespace ME3Explorer
         private void ViewPackageInfo(object obj)
         {
             var items = new List<string>();
-            byte[] header = Pcc.getHeader();
-            MemoryStream ms = new MemoryStream(header);
-
-            uint magicnum = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Magic number: 0x{magicnum:X8}");
-            ushort unrealVer = ms.ReadUInt16();
-            items.Add($"0x{(ms.Position - 2):X2} Unreal version: {unrealVer} (0x{unrealVer:X4})");
-            int licenseeVer = ms.ReadUInt16();
-            items.Add($"0x{(ms.Position - 2):X2} Licensee version:  {licenseeVer} (0x{licenseeVer:X4})");
-            uint fullheadersize = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Full header size:  {fullheadersize} (0x{fullheadersize:X8})");
-            int foldernameStrLen = ms.ReadInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Folder name string length: {foldernameStrLen} (0x{foldernameStrLen:X8}) (Negative means Unicode)");
-            long currentPosition = ms.Position;
-            if (foldernameStrLen > 0)
+            try
             {
-                string str = ms.ReadStringASCII(foldernameStrLen);
-                items.Add($"0x{currentPosition:X2} Folder name:  {str}");
-            }
-            else
+                byte[] header = Pcc.getHeader();
+                MemoryStream ms = new MemoryStream(header);
+
+                uint magicnum = ms.ReadUInt32();
+                items.Add($"0x{(ms.Position - 4):X2} Magic number: 0x{magicnum:X8}");
+                ushort unrealVer = ms.ReadUInt16();
+                items.Add($"0x{(ms.Position - 2):X2} Unreal version: {unrealVer} (0x{unrealVer:X4})");
+                int licenseeVer = ms.ReadUInt16();
+                items.Add($"0x{(ms.Position - 2):X2} Licensee version:  {licenseeVer} (0x{licenseeVer:X4})");
+                uint fullheadersize = ms.ReadUInt32();
+                items.Add($"0x{(ms.Position - 4):X2} Full header size:  {fullheadersize} (0x{fullheadersize:X8})");
+                int foldernameStrLen = ms.ReadInt32();
+                items.Add($"0x{(ms.Position - 4):X2} Folder name string length: {foldernameStrLen} (0x{foldernameStrLen:X8}) (Negative means Unicode)");
+                long currentPosition = ms.Position;
+                if (foldernameStrLen > 0)
+                {
+                    string str = ms.ReadStringASCII(foldernameStrLen - 1);
+                    items.Add($"0x{currentPosition:X2} Folder name:  {str}");
+                    ms.ReadByte();
+                }
+                else
+                {
+                    string str = ms.ReadStringUnicodeNull((foldernameStrLen * -2));
+                    items.Add($"0x{currentPosition:X2} Folder name:  {str}");
+                }
+                uint flags = ms.ReadUInt32();
+                string flagsStr = $"0x{(ms.Position - 4):X2} Flags: 0x{flags:X8} ";
+                EPackageFlags flagEnum = (EPackageFlags)flags;
+                var setFlags = EnumHelper<EPackageFlags>.MaskToList(flagEnum);
+                foreach (var setFlag in setFlags)
+                {
+                    flagsStr += " " + setFlag.ToString();
+                }
+                items.Add(flagsStr);
+
+                if (Pcc.Game != MEGame.ME1)
+                {
+                    uint unknown1 = ms.ReadUInt32();
+                    items.Add($"0x{(ms.Position - 4):X2} Unknown 1: {unknown1} (0x{unknown1:X8})");
+                }
+
+                uint nameCount = ms.ReadUInt32();
+                items.Add($"0x{(ms.Position - 4):X2} Name Table Count: {nameCount}");
+
+                uint nameOffset = ms.ReadUInt32();
+                items.Add($"0x{(ms.Position - 4):X2} Name Table Offset: 0x{nameOffset:X8}");
+
+                uint exportCount = ms.ReadUInt32();
+                items.Add($"0x{(ms.Position - 4):X2} Export Count: {exportCount}");
+
+                uint exportOffset = ms.ReadUInt32();
+                items.Add($"0x{(ms.Position - 4):X2} Export Metadata Table Offset: 0x{exportOffset:X8}");
+
+                uint importCount = ms.ReadUInt32();
+                items.Add($"0x{(ms.Position - 4):X2} Import Count: {importCount}");
+
+                uint importOffset = ms.ReadUInt32();
+                items.Add($"0x{(ms.Position - 4):X2} Import Metadata Table Offset: 0x{importOffset:X8}");
+
+                uint dependencyTableCount = ms.ReadUInt32();
+                items.Add($"0x{(ms.Position - 4):X2} Dependency Count: {dependencyTableCount} (Not used in Mass Effect games)");
+
+                if (Pcc.Game != MEGame.ME1)
+                {
+                    uint dependencyTableOffset = ms.ReadUInt32();
+                    items.Add($"0x{(ms.Position - 4):X2} Dependency Table Offset: 0x{dependencyTableOffset:X8} (Not used in Mass Effect games)");
+
+                    uint unknown2 = ms.ReadUInt32();
+                    items.Add($"0x{(ms.Position - 4):X2} Unknown 2: {unknown2} (0x{unknown2:X8})");
+
+                    uint unknown3 = ms.ReadUInt32();
+                    items.Add($"0x{(ms.Position - 4):X2} Unknown 3: {unknown3} (0x{unknown3:X8})");
+
+                    uint unknown4 = ms.ReadUInt32();
+                    items.Add($"0x{(ms.Position - 4):X2} Unknown 4: {unknown4} (0x{unknown4:X8})");
+                }
+
+                byte[] guidBytes = new byte[16];
+                ms.Read(guidBytes, 0, 16);
+                items.Add($"0x{(ms.Position - 16):X2} Package File GUID: {new Guid(guidBytes).ToString()}");
+
+                uint generationsTableCount = ms.ReadUInt32();
+                items.Add($"0x{(ms.Position - 4):X2} Generations Count: {generationsTableCount}");
+
+                for (int i = 0; i < generationsTableCount; i++)
+                {
+                    uint generationExportcount = ms.ReadUInt32();
+                    items.Add($"0x{(ms.Position - 4):X2} (Generations #{i}: Export count: {generationExportcount}");
+
+                    uint generationImportcount = ms.ReadUInt32();
+                    items.Add($"0x{(ms.Position - 4):X2} (Generations #{i}: Import count: {generationImportcount}");
+
+                    uint generationNetcount = ms.ReadUInt32();
+                    items.Add($"0x{(ms.Position - 4):X2} (Generations #{i}: Net(worked) object count: {generationNetcount}");
+                }
+
+                uint engineVersion = ms.ReadUInt32();
+                items.Add($"0x{(ms.Position - 4):X2} Engine Version: {generationsTableCount}");
+
+                uint cookerVersion = ms.ReadUInt32();
+                items.Add($"0x{(ms.Position - 4):X2} Cooker Version: {generationsTableCount}");
+
+                uint unknown5 = ms.ReadUInt32();
+                items.Add($"0x{(ms.Position - 4):X2} Unknown 5: {unknown5} (0x{unknown5:X8})");
+
+                uint unknown6 = ms.ReadUInt32();
+                items.Add($"0x{(ms.Position - 4):X2} Unknown 6: {unknown6} (0x{unknown6:X8})");
+
+                CompressionType compressionType = (CompressionType)ms.ReadUInt32();
+                items.Add($"0x{(ms.Position - 4):X2} Package Compression Type: {compressionType.ToString()}");
+            } catch (Exception e)
             {
-                string str = ms.ReadStringUnicodeNull((foldernameStrLen * -2));
-                items.Add($"0x{currentPosition:X2} Folder name:  {str}");
+
             }
-            uint flags = ms.ReadUInt32();
-            string flagsStr = $"0x{(ms.Position - 4):X2} Flags: 0x{flags:X8} ";
-            EPackageFlags flagEnum = (EPackageFlags)flags;
-            var setFlags = EnumHelper<EPackageFlags>.MaskToList(flagEnum);
-            foreach (var setFlag in setFlags)
-            {
-                flagsStr += " " + setFlag.ToString();
-            }
-            items.Add(flagsStr);
-
-            uint unknown1 = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Unknown 1: {unknown1} (0x{unknown1:X8})");
-
-            uint nameCount = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Name Table Count: {nameCount}");
-
-            uint nameOffset = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Name Table Offset: 0x{nameOffset:X8}");
-
-            uint exportCount = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Export Count: {exportCount}");
-
-            uint exportOffset = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Export Metadata Table Offset: 0x{exportOffset:X8}");
-
-            uint importCount = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Import Count: {importCount}");
-
-            uint importOffset = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Import Metadata Table Offset: 0x{importOffset:X8}");
-
-            uint dependencyTableCount = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Dependency Count: {dependencyTableCount} (Not used in Mass Effect games)");
-
-            uint dependencyTableOffset = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Dependency Table Offset: 0x{dependencyTableOffset:X8} (Not used in Mass Effect games)");
-
-            uint unknown2 = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Unknown 2: {unknown2} (0x{unknown2:X8})");
-
-            uint unknown3 = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Unknown 3: {unknown3} (0x{unknown3:X8})");
-
-            uint unknown4 = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Unknown 4: {unknown4} (0x{unknown4:X8})");
-
-            byte[] guidBytes = new byte[16];
-            ms.Read(guidBytes, 0, 16);
-            items.Add($"0x{(ms.Position - 16):X2} Package File GUID: {new Guid(guidBytes).ToString()}");
-
-            uint generationsTableCount = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Generations Count: {generationsTableCount}");
-
-            for (int i = 0; i < generationsTableCount; i++)
-            {
-                uint generationExportcount = ms.ReadUInt32();
-                items.Add($"0x{(ms.Position - 4):X2} (Generations #{i}: Export count: {generationExportcount}");
-
-                uint generationImportcount = ms.ReadUInt32();
-                items.Add($"0x{(ms.Position - 4):X2} (Generations #{i}: Import count: {generationImportcount}");
-
-                uint generationNetcount = ms.ReadUInt32();
-                items.Add($"0x{(ms.Position - 4):X2} (Generations #{i}: Net(worked) object count: {generationNetcount}");
-            }
-
-            uint engineVersion = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Engine Version: {generationsTableCount}");
-
-            uint cookerVersion = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Cooker Version: {generationsTableCount}");
-
-            uint unknown5 = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Unknown 5: {unknown5} (0x{unknown5:X8})");
-
-            uint unknown6 = ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Unknown 6: {unknown6} (0x{unknown6:X8})");
-
-            CompressionType compressionType = (CompressionType)ms.ReadUInt32();
-            items.Add($"0x{(ms.Position - 4):X2} Package Compression Type: {compressionType.ToString()}");
-
             new SharedUI.ListDialog(items, Path.GetFileName(Pcc.FileName) + " header information", "Below is information about this package from the header.", this).Show();
         }
 
@@ -3532,6 +3544,12 @@ namespace ME3Explorer
         private void CreatePCCDumpME1_Click(object sender, RoutedEventArgs e)
         {
             new PackageDumper.PackageDumper().Show();
+        }
+
+        private void AssociateFileTypes_Clicked(object sender, RoutedEventArgs e)
+        {
+            ME3Explorer.Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("pcc", "Mass Effect 2/3 Package File");
+            ME3Explorer.Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("sfm", "Mass Effect 1 Package File");
         }
     }
 

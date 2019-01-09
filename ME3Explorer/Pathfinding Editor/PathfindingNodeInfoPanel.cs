@@ -104,8 +104,8 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     IExportEntry outgoingSpec = export.FileRef.Exports[prop.Value - 1];
                     StructProperty outgoingEndStructProp = outgoingSpec.GetProperty<StructProperty>("End"); //Embeds END
-                    ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>("Actor"); //END                    
-                    if (outgoingSpecEndProp.Value - 1 > 0)
+                    ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpec)); //END                    
+                    if (outgoingSpecEndProp != null && outgoingSpecEndProp.Value - 1 > 0)
                     {
 
                         IExportEntry endNode = export.FileRef.Exports[outgoingSpecEndProp.Value - 1];
@@ -176,7 +176,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
 
             StructProperty outgoingEndStructProp = props.GetProp<StructProperty>("End"); //Embeds END
-            ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>("Actor"); //END                    
+            ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(reachSpec)); //END                    
             if (outgoingSpecEndProp.Value - 1 > 0)
             {
 

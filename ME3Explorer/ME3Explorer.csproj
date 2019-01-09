@@ -398,6 +398,7 @@
     <Compile Include="Main Window\TaskPaneInfoPanel.xaml.cs">
       <DependentUpon>TaskPaneInfoPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Main Window\Utilities\FileAssociations.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Main Window\MainToolPanel.xaml.cs">
       <DependentUpon>MainToolPanel.xaml</DependentUpon>

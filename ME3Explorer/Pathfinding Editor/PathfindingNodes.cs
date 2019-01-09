@@ -141,7 +141,7 @@ namespace ME3Explorer.PathfindingNodes
                             PropertyCollection reachspecprops = (prop as StructProperty).Properties;
                             foreach (var rprop in reachspecprops)
                             {
-                                if (rprop.Name == "Actor")
+                                if (rprop.Name == SharedPathfinding.GetReachSpecEndName(spec))
                                 {
                                     othernodeidx = (rprop as ObjectProperty).Value;
                                     break;
@@ -177,7 +177,7 @@ namespace ME3Explorer.PathfindingNodes
                                                 PropertyCollection reachspecprops = (otherSpecProp as StructProperty).Properties;
                                                 foreach (var rprop in reachspecprops)
                                                 {
-                                                    if (rprop.Name == "Actor")
+                                                    if (rprop.Name == SharedPathfinding.GetReachSpecEndName(possibleIncomingSpec))
                                                     {
                                                         othernodeidx = (rprop as ObjectProperty).Value;
                                                         if (othernodeidx == export.UIndex)
