@@ -177,7 +177,19 @@ namespace ME3Explorer
                 for (int colindex = 0; colindex < ColumnNames.Count(); colindex++)
                 {
                     if (Cells[rowindex, colindex] != null)
-                        worksheet.Cell(rowindex + 2, colindex + 2).Value = Cells[rowindex, colindex].GetDisplayableValue();
+                    {
+                        var cell = Cells[rowindex, colindex];
+                        worksheet.Cell(rowindex + 2, colindex + 2).Value = cell.GetDisplayableValue();
+                        if (cell.Type == Bio2DACell.Bio2DADataType.TYPE_INT && cell.GetIntValue() > 0)
+                        {
+                            int stringId = cell.GetIntValue();
+                            string tlkLookup = ME1Explorer.TlkManager.GetStringById(stringId);
+                            if (tlkLookup != "No Data" && tlkLookup != "")
+                            {
+                                worksheet.Cell(rowindex + 2, colindex + 2).Comment.AddText(tlkLookup);
+                            }
+                        }
+                    }
                 }
             }
 

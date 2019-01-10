@@ -160,7 +160,7 @@
       "Operator": true,
       "Name": "Not_PreBool",
       "Filename": "Core.u",
-      "HumanReadableControlToken": null
+      "HumanReadableControlToken": "!"
     },
     "130": {
       "nativeIndex": 130,
@@ -1132,7 +1132,7 @@
       "Operator": true,
       "Name": "EqualEqual_NameName",
       "Filename": "Core.u",
-      "HumanReadableControlToken": null
+      "HumanReadableControlToken": " == "
     },
     "255": {
       "nativeIndex": 255,
@@ -1141,7 +1141,7 @@
       "Operator": true,
       "Name": "NotEqual_NameName",
       "Filename": "Core.u",
-      "HumanReadableControlToken": null
+      "HumanReadableControlToken": " != "
     },
     "256": {
       "nativeIndex": 256,

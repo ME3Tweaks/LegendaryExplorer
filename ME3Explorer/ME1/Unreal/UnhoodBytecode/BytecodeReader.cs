@@ -846,8 +846,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 if (IsInvalid(p)) return p;
                 ReadNext();   // end of parms
                 if (function.PreOperator)
-                    return Token(function.Name + p);
-                return Token(p + function.HumanReadableControlToken ?? function.Name);
+                    return Token((function.HumanReadableControlToken ?? function.Name) + p);
+                return Token(p + (function.HumanReadableControlToken ?? function.Name));
             }
             if (function.Operator)
             {

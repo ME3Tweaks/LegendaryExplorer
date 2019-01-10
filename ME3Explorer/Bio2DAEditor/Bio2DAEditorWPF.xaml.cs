@@ -1,4 +1,5 @@
 ﻿using ME3Explorer.Packages;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -104,6 +105,19 @@ namespace ME3Explorer
         {
             Table2DA.Write2DAToExport();
             Table2DA.MarkAsUnmodified();
+        }
+
+        private void ExportToExcel_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog d = new SaveFileDialog();
+            d.Filter = $"Excel spreadsheet|*.xlsx";
+            d.FileName = CurrentLoadedExport.ObjectName;
+            var result = d.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                Table2DA.Write2DAToExcel(d.FileName);
+                MessageBox.Show("Done");
+            }
         }
     }
 

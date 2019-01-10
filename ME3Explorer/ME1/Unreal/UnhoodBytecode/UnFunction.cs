@@ -100,7 +100,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                             result.Append(", ");
                         }
 
-                        if (export.ClassName == "ObjectProperty")
+                        if (export.ClassName == "ObjectProperty" || export.ClassName == "StructProperty")
                         {
                             var uindexOfOuter = BitConverter.ToInt32(export.Data, export.Data.Length - 4);
                             IEntry entry = export.FileRef.getEntry(uindexOfOuter);
@@ -201,6 +201,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     return "String";
                 case "ByteProperty":
                     return "byte";
+                case "StringRefProperty":
+                    return "stringref";
                 default:
                     return "???";
             }

@@ -30,7 +30,6 @@ namespace ME3Explorer
     public partial class InterpreterWPF : ExportLoaderControl
     {
         public ObservableCollectionExtended<UPropertyTreeViewEntry> PropertyNodes { get; set; } = new ObservableCollectionExtended<UPropertyTreeViewEntry>();
-
         //Values in this list will cause the ExportToString() method to be called on an objectproperty in InterpreterWPF.
         //This is useful for end user when they want to view things in a list for example, but all of the items are of the 
         //same type and are not distinguishable without changing to another export, wasting a lot of time.
@@ -59,8 +58,8 @@ namespace ME3Explorer
         private Dictionary<string, List<PropertyReader.Property>> defaultStructValues;
         //private byte[] memory;
         //private int memsize;
-        private BioTlkFileSet tlkset;
-        private BioTlkFileSet editorTlkSet;
+        //private BioTlkFileSet tlkset;
+        //private BioTlkFileSet editorTlkSet;
         int readerpos;
         int RescanSelectionOffset = 0;
         private List<FrameworkElement> EditorSetElements = new List<FrameworkElement>();
@@ -498,36 +497,36 @@ namespace ME3Explorer
             Interpreter_Hexbox.Select(0, 1);
             Interpreter_Hexbox.ScrollByteIntoView();
             isLoadingNewData = false;
-            if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
-            {
-                if (CurrentLoadedExport.ClassName != "Class")
-                {
-                    // attempt to find a TlkFileSet associated with the object, else just pick the first one and hope it's correct
-                    if (editorTlkSet == null)
-                    {
-                        try
-                        {
-                            IntProperty tlkSetRef = export.GetProperty<IntProperty>("m_oTlkFileSet");
-                            if (tlkSetRef != null)
-                            {
-                                tlkset = new BioTlkFileSet(CurrentLoadedExport.FileRef as ME1Package, tlkSetRef.Value - 1);
-                            }
-                            else
-                            {
-                                tlkset = new BioTlkFileSet(CurrentLoadedExport.FileRef as ME1Package);
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            tlkset = new BioTlkFileSet(CurrentLoadedExport.FileRef as ME1Package);
-                        }
-                    }
-                }
-                else
-                {
-                    tlkset = editorTlkSet;
-                }
-            }
+            //if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
+            //{
+            //    if (CurrentLoadedExport.ClassName != "Class")
+            //    {
+            //        // attempt to find a TlkFileSet associated with the object, else just pick the first one and hope it's correct
+            //        if (editorTlkSet == null)
+            //        {
+            //            try
+            //            {
+            //                IntProperty tlkSetRef = export.GetProperty<IntProperty>("m_oTlkFileSet");
+            //                if (tlkSetRef != null)
+            //                {
+            //                    tlkset = new BioTlkFileSet(CurrentLoadedExport.FileRef as ME1Package, tlkSetRef.Value - 1);
+            //                }
+            //                else
+            //                {
+            //                    tlkset = new BioTlkFileSet(CurrentLoadedExport.FileRef as ME1Package);
+            //                }
+            //            }
+            //            catch (Exception e)
+            //            {
+            //                tlkset = new BioTlkFileSet(CurrentLoadedExport.FileRef as ME1Package);
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        tlkset = editorTlkSet;
+            //    }
+            //}
             StartScan();
         }
 
@@ -719,6 +718,10 @@ namespace ME3Explorer
                     if (parsingExport.FileRef.Game == MEGame.ME3)
                     {
                         parsedValue = ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(strrefp.Value);
+                    }
+                    if (parsingExport.FileRef.Game == MEGame.ME1)
+                    {
+                        parsedValue = ME1Explorer.TlkManager.GetStringById(strrefp.Value);
                     }
                     break;
                 case StrProperty strp:
@@ -2134,6 +2137,20 @@ namespace ME3Explorer
                     //Resolve
                     string objectName = associatedExport.FileRef.GetEntryString(op.Value);
                     str.Write("  " + objectName);
+                }
+
+                if (Property is StringRefProperty srp)
+                {
+                    if (associatedExport.FileRef.Game == MEGame.ME1)
+                    {
+                        //string objectName = associatedExport.FileRef.GetEntryString(srp.Value);
+                        //if (InterpreterWPF.ME1TalkFiles == null)
+                        //{
+                        //    InterpreterWPF.ME1TalkFiles = new ME1Explorer.TalkFiles();
+                        //}
+                        //ParsedValue = InterpreterWPF.ME1TalkFiles.findDataById(srp.Value);
+                        str.Write(" " + ParsedValue);
+                    }
                 }
 
                 bool isArrayPropertyTable = Property.GetType().IsOfGenericType(typeof(ArrayProperty<>));

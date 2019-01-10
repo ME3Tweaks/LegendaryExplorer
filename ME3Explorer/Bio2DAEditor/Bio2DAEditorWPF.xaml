@@ -59,10 +59,17 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="60"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="110"/>
             </Grid.ColumnDefinitions>
             <Button Name="Save_Button" Grid.Row="0" Grid.Column="0" Content="Save" Click="Save_Button_Click"/>
-            <TextBlock  VerticalAlignment="Center" Margin="3" FontWeight="Bold" Grid.Row="0" Grid.Column="1" Text="{Binding Path=CurrentLoadedExport.ObjectName}"/>
 
+            <TextBlock  VerticalAlignment="Center" Margin="3" FontWeight="Bold" Grid.Row="0" Grid.Column="1" Text="{Binding Path=CurrentLoadedExport.ObjectName}"/>
+            <Button Margin="5,0,0,0" Name="ExportToExcel_Button" Grid.Row="0" Grid.Column="4" Click="ExportToExcel_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16"/>
+                    <TextBlock Text="Export to Excel"/>
+                </StackPanel>
+            </Button>
         </Grid>
         <DataGrid Name="Bio2DA_DataGrid" Margin="0,3,3,3" SelectionUnit="Cell" 
                   SelectionMode="Single"  dataGrid2D:ItemsSource.Array2D="{Binding Path=Table2DA.Cells}" 
