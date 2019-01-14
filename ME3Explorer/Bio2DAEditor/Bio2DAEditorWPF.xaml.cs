@@ -25,6 +25,10 @@ namespace ME3Explorer
     /// </summary>
     public partial class Bio2DAEditorWPF : ExportLoaderControl
     {
+        private Bio2DA CachedME12DA_TalentsGUI;
+        private Bio2DA CachedME12DA_ClassTalents_Talents;
+        private Bio2DA CachedME12DA_TalentEffectLevels;
+
         static ME1Explorer.TalkFiles talkFiles = new ME1Explorer.TalkFiles();
         private Bio2DA _table2da;
         public Bio2DA Table2DA
@@ -69,9 +73,19 @@ namespace ME3Explorer
 
         private void DataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
+            if (CachedME12DA_TalentEffectLevels == null && CurrentLoadedExport.FileRef.FileName.Contains("Engine.u"))
+            {
+                IExportEntry TalentEffectLevels = CurrentLoadedExport.FileRef.Exports.FirstOrDefault(x => x.ObjectName == "Talent_TalentEffectLevels" && x.ClassName == "Bio2DANumberedRows");
+                if (TalentEffectLevels != null)
+                {
+                    CachedME12DA_TalentEffectLevels = new Bio2DA(TalentEffectLevels);
+                }
+            }
+
             for (int counter = 0; counter < (Bio2DA_DataGrid.SelectedCells.Count); counter++)
             {
                 int columnIndex = Bio2DA_DataGrid.SelectedCells[0].Column.DisplayIndex;
+                string columnName = Table2DA.GetColumnNameByIndex(columnIndex);
                 int rowIndex = Bio2DA_DataGrid.Items.IndexOf(Bio2DA_DataGrid.SelectedCells[0].Item);
                 var item = Table2DA[rowIndex, columnIndex];
                 Bio2DAInfo_CellCoordinates_TextBlock.Text = "Selected cell coordinates: " + (rowIndex + 1) + "," + (columnIndex + 1);
@@ -84,7 +98,24 @@ namespace ME3Explorer
                     {
                         if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
                         {
-                            Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = talkFiles.findDataById(item.GetIntValue());
+                            if (columnName == "TalentID" && CachedME12DA_TalentEffectLevels != null)
+                            {
+                                //Get Talent ID name
+                                for (int i = 0; i < CachedME12DA_TalentEffectLevels.RowNames.Count; i++)
+                                {
+                                    if (CachedME12DA_TalentEffectLevels[i,0].GetIntValue() == item.GetIntValue())
+                                    {
+                                        int labelColumn = CachedME12DA_TalentEffectLevels.GetColumnIndexByName("Talent_Label");
+                                        string label = CachedME12DA_TalentEffectLevels[i, labelColumn].GetDisplayableValue();
+                                        Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = label;
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = talkFiles.findDataById(item.GetIntValue());
+                            }
                         }
                     }
                     else
@@ -99,6 +130,19 @@ namespace ME3Explorer
                     Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = "Select a cell to preview TLK value";
                 }
             }
+        }
+
+        /// <summary>
+        /// Removes the access key where you can do _ for quick key press to go to a column. will make headers and stuff look proper
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            string header = e.Column.Header.ToString();
+
+            // Replace all underscores with two underscores, to prevent AccessKey handling
+            e.Column.Header = header.Replace("_", "__");
         }
 
         private void Save_Button_Click(object sender, RoutedEventArgs e)

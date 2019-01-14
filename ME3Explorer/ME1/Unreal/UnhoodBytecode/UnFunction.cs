@@ -203,6 +203,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     return "byte";
                 case "StringRefProperty":
                     return "stringref";
+                case "ClassProperty":
+                    return "UClass";
                 default:
                     return "???";
             }
@@ -213,9 +215,16 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             var returnValue = _self.FileRef.Exports.SingleOrDefault(e => e.ObjectName == "ReturnValue" && e.idxLink == _self.UIndex);
             if (returnValue != null)
             {
+                if (returnValue.ClassName == "ObjectProperty" || returnValue.ClassName == "StructProperty")
+                {
+                    var uindexOfOuter = BitConverter.ToInt32(returnValue.Data, returnValue.Data.Length - 4);
+                    IEntry entry = returnValue.FileRef.getEntry(uindexOfOuter);
+                    if (entry != null)
+                    {
+                        return entry.ObjectName;
+                    }
+                }
                 return returnValue.ClassName;
-                //                var prop = (UnClassProperty)returnValue.ReadInstance();
-                //              return prop == null ? "???<" + returnValue.ClassName + ">" : prop.GetPropertyType();
             }
             return null;
         }

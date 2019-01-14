@@ -22,6 +22,8 @@ namespace ME3Explorer
 {
     public partial class Bio2DAEditor : UserControl
     {
+
+
         public int InterpreterMode { get; private set; }
         public IExportEntry export;
         public string className;

@@ -140,6 +140,30 @@ namespace ME3Explorer
             Console.WriteLine("Finished loading " + export.ObjectName);
         }
 
+        internal string GetColumnNameByIndex(int columnIndex)
+        {
+            if (columnIndex < ColumnNames.Count && columnIndex >= 0)
+            {
+             return   ColumnNames[columnIndex];
+            }
+            return null;
+        }
+
+        public Bio2DACell GetColumnItem(int row, string columnName)
+        {
+            int colIndex = ColumnNames.IndexOf(columnName);
+            if (colIndex >= 0)
+            {
+                return Cells[row, colIndex];
+            }
+            return null;
+        }
+
+        public int GetColumnIndexByName(string columnName)
+        {
+            return ColumnNames.IndexOf(columnName);
+        }
+
         internal void MarkAsUnmodified()
         {
             for (int rowindex = 0; rowindex < RowNames.Count(); rowindex++)

@@ -78,6 +78,23 @@
                   dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding Path=Table2DA.ColumnNames}" 
                   dataGrid2D:ItemsSource.RowHeadersSource="{Binding Path=Table2DA.RowNames}" 
                   SelectedCellsChanged="DataGrid_SelectedCellsChanged" EnableRowVirtualization="True" 
-                  EnableColumnVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling"/>
+                  EnableColumnVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling">
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="DataGridColumnHeader">
+                                <Border BorderThickness="0">
+                                    <ContentPresenter 
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                RecognizesAccessKey="False" Margin="1,3,2,3"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+        </DataGrid>
     </DockPanel>
 </global:ExportLoaderControl>
