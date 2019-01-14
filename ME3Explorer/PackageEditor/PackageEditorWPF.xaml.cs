@@ -175,6 +175,8 @@ namespace ME3Explorer
         public ICommand PackageHeaderViewerCommand { get; set; }
         public ICommand CreateNewPackageGUIDCommand { get; set; }
         public ICommand SetPackageAsFilenamePackageCommand { get; set; }
+        public ICommand OpenInInterpViewerCommand { get; set; }
+
         private void LoadCommands()
         {
             ComparePackagesCommand = new RelayCommand(ComparePackages, PackageIsLoaded);
@@ -198,6 +200,31 @@ namespace ME3Explorer
             PackageHeaderViewerCommand = new RelayCommand(ViewPackageInfo, PackageIsLoaded);
             CreateNewPackageGUIDCommand = new RelayCommand(GenerateNewGUIDForSelected, PackageExportIsSelected);
             SetPackageAsFilenamePackageCommand = new RelayCommand(SetSelectedAsFilenamePackage, PackageExportIsSelected);
+            OpenInInterpViewerCommand = new RelayCommand(OpenInInterpViewer, CanOpenInInterpViewer);
+        }
+
+        private void OpenInInterpViewer(object obj)
+        {
+            TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+            Matinee.InterpEditor p = new Matinee.InterpEditor();
+            p.Show();
+            p.LoadPCC(selected.Entry.FileRef.FileName); //hmm...
+            p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(selected.Entry.Index);
+            p.loadInterpData(selected.Entry.Index);
+        }
+
+        private bool CanOpenInInterpViewer(object obj)
+        {
+            if ((CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Tree) && GetSelected(out int n))
+            {
+                TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+
+                if (selected.Entry is IExportEntry export && export.FileRef.Game == MEGame.ME3 && export.ClassName == "InterpData" && !export.ObjectName.Contains("Default__"))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void SetSelectedAsFilenamePackage(object obj)
@@ -346,7 +373,8 @@ namespace ME3Explorer
 
                 CompressionType compressionType = (CompressionType)ms.ReadUInt32();
                 items.Add($"0x{(ms.Position - 4):X2} Package Compression Type: {compressionType.ToString()}");
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
 
             }
@@ -2017,12 +2045,12 @@ namespace ME3Explorer
                 try
                 {
 #endif
-                LoadFile(d.FileName);
-                AddRecent(d.FileName, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
+                    LoadFile(d.FileName);
+                    AddRecent(d.FileName, false);
+                    SaveRecentList();
+                    RefreshRecent(true, RFiles);
 #if !DEBUG
-            }
+                }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Unable to open file:\n" + ex.Message);

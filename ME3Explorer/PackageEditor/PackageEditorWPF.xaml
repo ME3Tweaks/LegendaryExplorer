@@ -46,7 +46,6 @@
         <CommandBinding Command="Commands:PackageEditorWPFCommands.GotoCommand" Executed="GotoCommandBinding_Executed"/>
         <CommandBinding Command="Commands:PackageEditorWPFCommands.NextTabCommand" Executed="NextTabBinding_Executed"/>
         <CommandBinding Command="Commands:PackageEditorWPFCommands.PreviousTabCommand" Executed="PreviousTabBinding_Executed"/>
-
     </Window.CommandBindings>
     <Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Control" Command="Open"/>
@@ -56,7 +55,6 @@
         <KeyBinding Key="G" Modifiers="Control" Command="Commands:PackageEditorWPFCommands.GotoCommand"/>
         <KeyBinding Key="Right" Modifiers="Alt" Command="Commands:PackageEditorWPFCommands.NextTabCommand"/>
         <KeyBinding Key="Left" Modifiers="Alt" Command="Commands:PackageEditorWPFCommands.PreviousTabCommand"/>
-
     </Window.InputBindings>
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
         <DockPanel>
@@ -250,7 +248,7 @@
 
                             <MenuItem Header="Reindex objects with this name" ToolTip="Reindexes all objects with this name, ensuring there are no duplicate indexes" Command="{Binding ReindexCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
-
+                            <MenuItem Header="Open Export in InterpViewer" ToolTip="Opens this export in InterpViewer" Command="{Binding OpenInInterpViewerCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                             <MenuItem Header="Clone" ToolTip="Clone only this entry" Command="{Binding CloneCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                             <MenuItem Header="Clone Tree" ToolTip="Clone this entry and all children" Command="{Binding CloneTreeCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                             <MenuItem Header="Export..." Command="{Binding ExportImportDataVisibilityCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -316,6 +314,7 @@
                             <MenuItem Header="Reindex objects with this name" ToolTip="Reindexes all objects with this name, ensuring there are no duplicate indexes" Command="{Binding ReindexCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                             <MenuItem Header="Clone" Command="{Binding CloneCommand}"/>
                             <MenuItem Header="Clone Tree" Command="{Binding CloneTreeCommand}"/>
+                            <MenuItem Header="Open Export in InterpViewer" ToolTip="Opens this export in InterpViewer" Command="{Binding OpenInInterpViewerCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                             <MenuItem Header="Package utilities">
                                 <MenuItem Header="Generate new GUID for package" ToolTip="Generates a new GUID for this package. Only use this if you really know what you're doing." Command="{Binding CreateNewPackageGUIDCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                 <MenuItem Header="Set as filename package" ToolTip="Sets the name of this export to the same as the file." Command="{Binding SetPackageAsFilenamePackageCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
