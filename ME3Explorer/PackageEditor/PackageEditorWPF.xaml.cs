@@ -504,15 +504,15 @@ namespace ME3Explorer
         {
             if (exp != null)
             {
-                bool trueShowUI = showUI;
+                bool uiConfirm = false;
                 string objectname = exp.ObjectName;
                 if (showUI)
                 {
-                    showUI = MessageBox.Show("Confirm reindexing of all exports with object name:\n" + objectname + "\n\nEnsure this file has a backup - this operation will make many changes to export indexes!",
+                    uiConfirm = MessageBox.Show("Confirm reindexing of all exports with object name:\n" + objectname + "\n\nEnsure this file has a backup - this operation will make many changes to export indexes!",
                                          "Confirm Reindexing",
                                          MessageBoxButton.YesNo) == MessageBoxResult.Yes;
                 }
-                if (!showUI)
+                if (!showUI || uiConfirm)
                 {
                     // Get list of all exports with that object name.
                     //List<IExportEntry> exports = new List<IExportEntry>();
@@ -528,7 +528,7 @@ namespace ME3Explorer
                         }
                     }
                 }
-                if (showUI)
+                if (showUI && uiConfirm)
                 {
                     MessageBox.Show("Objects named \"" + objectname + "\" have been reindexed.", "Reindexing completed");
                 }
@@ -2543,7 +2543,7 @@ namespace ME3Explorer
                         break;
                 }
             }
-            else
+            else if (ex.FileRef.Game == MEGame.ME3)
             {
                 switch (ex.FileRef.getObjectName(ex.idxClass))
                 {

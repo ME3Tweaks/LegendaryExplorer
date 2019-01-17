@@ -1394,8 +1394,8 @@ namespace ME3Explorer
                             StructProperty outgoingEndStructProp = outgoingSpec.GetProperty<StructProperty>("End"); //Embeds END
                             ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpec)); //END                    
 
-
-                            breaklLinkItem = new ToolStripMenuItem("Break reachspec to " + (outgoingSpecEndProp.Value - 1));
+                            IEntry dest = pcc.getEntry(outgoingSpecEndProp.Value);
+                            breaklLinkItem = new ToolStripMenuItem("Break " + outgoingSpec.ObjectName + " to " + (outgoingSpecEndProp.Value - 1) + " " + dest.ObjectName);
                             breaklLinkItem.Click += (object o, EventArgs args) =>
                             {
                                 removeReachSpec(nodeExp, outgoingSpec);

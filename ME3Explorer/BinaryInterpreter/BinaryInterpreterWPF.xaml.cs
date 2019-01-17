@@ -18,7 +18,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Be.Windows.Forms;
-using Gammtek.Conduit.Extensions;
 using Gibbed.IO;
 using ME3Explorer;
 using ME3Explorer.Packages;
@@ -26,6 +25,7 @@ using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
+using StreamHelpers;
 using static ME3Explorer.BinaryInterpreter;
 using static ME3Explorer.EnumExtensions;
 using static ME3Explorer.PackageEditorWPF;
@@ -136,7 +136,7 @@ namespace ME3Explorer
 
         static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "ShaderCache", "Class", "BioStage", "ObjectProperty", "Const",
             "Enum", "ArrayProperty","FloatProperty", "StructProperty", "ComponentProperty", "IntProperty", "NameProperty", "BoolProperty", "ClassProperty", "ByteProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
-            "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "PrefabInstance",
+            "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "PrefabInstance", "MetaData",
             "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D", "State", "BioGestureRuntimeData", "BioTlkFileSet", "ScriptStruct", "SoundCue", "SoundNodeWave","BioSoundNodeWaveStreamingData"};
 
         public override bool CanParse(IExportEntry exportEntry)
@@ -285,6 +285,9 @@ namespace ME3Explorer
                 case "ObjectRedirector":
                     subNodes = StartObjectRedirectorScan(data, ref binarystart);
                     break;
+                case "MetaData":
+                    subNodes = StartMetaDataScan(data, ref binarystart);
+                    break;
                 case "WwiseStream":
                 case "WwiseBank":
                     subNodes = Scan_WwiseStreamBank(data);
@@ -366,6 +369,78 @@ namespace ME3Explorer
             GenericEditorSetVisibility = (appendGenericScan || isGenericScan) ? Visibility.Visible : Visibility.Collapsed;
             arguments.Item1.Items = subNodes;
             e.Result = arguments.Item1; //return topLevelTree
+        }
+
+        private List<object> StartMetaDataScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<object>();
+            try
+            {
+                int offset = binarystart;
+
+                int count = BitConverter.ToInt32(data, offset);
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                {
+                    Header = $"0x{offset:X5} Metadata String Count: {count}",
+                    Name = "_" + offset,
+                    Tag = NodeType.StructLeafObject
+                });
+                offset += 4;
+
+                MemoryStream ms = new MemoryStream(data);
+                ms.Position = offset;
+                for (int i = 0; i < count; i++)
+                {
+                    offset = (int)ms.Position;
+
+                    string label = null;
+                    if (i % 2 == 1)
+                    {
+                        var postint = ms.ReadInt32();
+                        var nameIdx = ms.ReadInt32();
+                        label = CurrentLoadedExport.FileRef.getNameEntry(nameIdx);
+                        ms.ReadInt32();
+                    }
+
+                    var strLen = ms.ReadUInt32();
+                    var line = ms.ReadString(strLen, true, Encoding.ASCII);
+                    if (label != null)
+                    {
+                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"0x{offset:X6}    {label}:\n{line}\n",
+                            Name = "_" + offset,
+                            Tag = NodeType.None
+                        });
+                    }
+                    else
+                    {
+                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"0x{offset:X6} {line}",
+                            Name = "_" + offset,
+                            Tag = NodeType.None
+                        });
+                    }
+                }
+                /*
+                offset = binarystart + 0x18;
+
+                MemoryStream ms = new MemoryStream(data);
+                ms.Position = offset;
+                var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, ms, "ScriptStruct", includeNoneProperty: true);
+
+                UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
+                foreach (UProperty prop in scriptStructProperties)
+                {
+                    InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
+                }*/
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
         }
 
         private List<object> StartBioTlkFileSetScan(byte[] data, ref int binarystart)
@@ -2028,7 +2103,7 @@ namespace ME3Explorer
                 }
                 int guidcount = BitConverter.ToInt32(data, binarypos);
 
-                
+
 
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
@@ -2812,8 +2887,8 @@ namespace ME3Explorer
                 {
                     GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
                     GC.Collect();
-                    // Note: When stop is called this DispatcherTimer handler will be GC'd (eventually). There is no need to unregister the event.
-                    timer.Stop();
+            // Note: When stop is called this DispatcherTimer handler will be GC'd (eventually). There is no need to unregister the event.
+            timer.Stop();
                     detach?.Invoke();
                 });
 

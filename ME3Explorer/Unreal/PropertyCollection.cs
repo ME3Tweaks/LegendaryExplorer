@@ -781,7 +781,7 @@ namespace ME3Explorer.Unreal
                 {
                     prop.WriteTo(stream, pcc, IsImmutable);
                 }
-                if (!IsImmutable && (!(Properties.Last() is NoneProperty)))
+                if (!IsImmutable && (Properties.Count == 0  || !(Properties.Last() is NoneProperty)))
                 {
                     stream.WriteNoneProperty(pcc);
                 }

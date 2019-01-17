@@ -563,7 +563,7 @@ namespace ME3Explorer
 
                 UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry()
                 {
-                    DisplayName = $"Export {CurrentLoadedExport.UIndex }: { CurrentLoadedExport.ObjectName} ({CurrentLoadedExport.ClassName})",
+                    DisplayName = $"Export {CurrentLoadedExport.UIndex }: { CurrentLoadedExport.ObjectName}_{CurrentLoadedExport.indexValue} ({CurrentLoadedExport.ClassName})",
                     IsExpanded = true
                 };
 
@@ -729,7 +729,7 @@ namespace ME3Explorer
                     break;
                 case StructProperty sp:
 
-                    if (sp.Name.Name != null && sp.Name.Name.ToLower() == "location" && sp.StructType == "Vector")
+                    if (sp.StructType == "Vector")
                     {
                         string loc = "(";
                         bool isFirst = true;
@@ -745,6 +745,8 @@ namespace ME3Explorer
                             {
                                 loc += ", ";
                             }
+                            loc += uprop.Name;
+                            loc += "=";
                             loc += val;
                         }
                         loc += ")";
@@ -778,6 +780,22 @@ namespace ME3Explorer
                         timelineEffectType += ")";
                         parsedValue = timelineEffectType;
                     }
+                    else if (sp.StructType == "BioStreamingState")
+                    {
+                        editableValue = "";
+                        NameProperty stateName = sp.Properties.GetProp<NameProperty>("StateName");
+                        if (stateName != null && stateName.Value.Name != "None")
+                        {
+                            editableValue = $"{stateName.Value.Name}";
+                        }
+
+                        NameProperty inChunkName = sp.Properties.GetProp<NameProperty>("InChunkName");
+                        if (inChunkName != null && inChunkName.Value.Name != "None")
+                        {
+                            editableValue += $" InChunkName: {inChunkName.Value.Name}";
+                        }
+
+                    }
                     else
                     {
                         parsedValue = sp.StructType;
@@ -796,6 +814,13 @@ namespace ME3Explorer
                 Parent = parent,
                 AttachedExport = parsingExport
             };
+
+            //Auto expand
+            if (item.Property != null && item.Property.Name == "StreamingStates")
+            {
+                item.IsExpanded = true;
+            }
+
             if (PropertyChangedHandler != null)
             {
                 item.PropertyChanged += PropertyChangedHandler;
