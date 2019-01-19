@@ -609,9 +609,21 @@ namespace ME3Explorer
             if (prop.PropType == PropertyType.ArrayProperty)
             {
                 int i = 0;
-                foreach (UProperty listProp in (prop as ArrayPropertyBase).ValuesAsProperties)
+                if ((prop as ArrayPropertyBase).ValuesAsProperties.Count() > 1000)
                 {
-                    GenerateUPropertyTreeForProperty(listProp, upropertyEntry, export, $" Item {i++}:", PropertyChangedHandler);
+                    //Too big to load reliably, users won't edit huge things like this anyways.
+                    UPropertyTreeViewEntry wontshowholder = new UPropertyTreeViewEntry()
+                    {
+                        DisplayName = "Too many children to display"
+                    };
+                    upropertyEntry.ChildrenProperties.Add(wontshowholder);
+                }
+                else
+                {
+                    foreach (UProperty listProp in (prop as ArrayPropertyBase).ValuesAsProperties)
+                    {
+                        GenerateUPropertyTreeForProperty(listProp, upropertyEntry, export, $" Item {i++}:", PropertyChangedHandler);
+                    }
                 }
             }
             if (prop.PropType == PropertyType.StructProperty)

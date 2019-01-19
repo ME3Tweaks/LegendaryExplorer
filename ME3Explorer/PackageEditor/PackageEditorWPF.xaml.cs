@@ -3549,14 +3549,15 @@ namespace ME3Explorer
             {
                 var newCachedInfo = new SortedDictionary<int, CachedNativeFunctionInfo>();
                 var dir = new DirectoryInfo(Path.Combine(ME1Directory.gamePath/*, "BioGame", "CookedPC", "Maps"*/));
-                var filesToSearch = dir.GetFiles("*.sfm", SearchOption.AllDirectories).Union(dir.GetFiles("*.u", SearchOption.AllDirectories)).Union(dir.GetFiles("*.u", SearchOption.AllDirectories)).ToArray();
+                var filesToSearch = dir.GetFiles("*.sfm", SearchOption.AllDirectories).Union(dir.GetFiles("*.u", SearchOption.AllDirectories)).Union(dir.GetFiles("*.upk", SearchOption.AllDirectories)).ToArray();
                 Debug.WriteLine("Number of files: " + filesToSearch.Count());
                 foreach (FileInfo fi in filesToSearch)
                 {
                     var package = MEPackageHandler.OpenME1Package(fi.FullName);
                     foreach (IExportEntry export in package.Exports)
                     {
-                        if ((export.ClassName == "Bio2DA" || export.ClassName == "Bio2DANumberedRows") && export.ObjectName.Contains("BOS"))
+                        if ((export.ClassName == "BioSWF"))
+                            //|| export.ClassName == "Bio2DANumberedRows") && export.ObjectName.Contains("BOS"))
                         {
                             Debug.WriteLine(export.ClassName + "(" + export.ObjectName + ") in " + fi.Name + " at export " + export.UIndex);
                         }
@@ -3564,7 +3565,7 @@ namespace ME3Explorer
 
                     package.Release();
                 }
-                File.WriteAllText(System.Windows.Forms.Application.StartupPath + "//exec//ME1NativeFunctionInfo.json", JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
+                //File.WriteAllText(System.Windows.Forms.Application.StartupPath + "//exec//ME1NativeFunctionInfo.json", JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
                 Debug.WriteLine("Done");
             }
         }
