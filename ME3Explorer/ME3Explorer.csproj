@@ -684,6 +684,9 @@
     <Compile Include="SharedUI\ListScrollBox.cs" />
     <Compile Include="SharedUI\ObservableCollectionExtended.cs" />
     <Compile Include="SharedUI\PeregrineTreeView\TreeViewHelper.cs" />
+    <Compile Include="SharedUI\NamePromptDialog.xaml.cs">
+      <DependentUpon>NamePromptDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SharedUI\PromptDialog.xaml.cs">
       <DependentUpon>PromptDialog.xaml</DependentUpon>
     </Compile>
@@ -1056,6 +1059,10 @@
     <Page Include="SharedUI\ListDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedUI\NamePromptDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="SharedUI\PromptDialog.xaml">
       <SubType>Designer</SubType>

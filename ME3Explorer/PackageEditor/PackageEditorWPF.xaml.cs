@@ -176,6 +176,7 @@ namespace ME3Explorer
         public ICommand CreateNewPackageGUIDCommand { get; set; }
         public ICommand SetPackageAsFilenamePackageCommand { get; set; }
         public ICommand OpenInInterpViewerCommand { get; set; }
+        public ICommand FindEntryViaTagCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -201,6 +202,51 @@ namespace ME3Explorer
             CreateNewPackageGUIDCommand = new RelayCommand(GenerateNewGUIDForSelected, PackageExportIsSelected);
             SetPackageAsFilenamePackageCommand = new RelayCommand(SetSelectedAsFilenamePackage, PackageExportIsSelected);
             OpenInInterpViewerCommand = new RelayCommand(OpenInInterpViewer, CanOpenInInterpViewer);
+            FindEntryViaTagCommand = new RelayCommand(FindEntryViaTag, PackageIsLoaded);
+        }
+
+        private void FindEntryViaTag(object obj)
+        {
+            var indexedList = new List<IndexedName>();
+            for (int i = 0; i < Pcc.Names.Count; i++)
+            {
+                NameReference nr = Pcc.Names[i];
+                indexedList.Add(new IndexedName(i, nr));
+            }
+
+            string input = "Enter a name table string to search.";
+            IndexedName result = NamePromptDialog.Prompt(this, input, "Enter tag value to search", indexedList);
+
+            if (result != null)
+            {
+                var searchTerm = result.Name.Name.ToLower();
+                var found = Pcc.Names.Any(x => x.ToLower() == searchTerm);
+                if (found)
+                {
+                    foreach (IExportEntry exp in Pcc.Exports)
+                    {
+                        try
+                        {
+                            var tag = exp.GetProperty<NameProperty>("Tag");
+                            if (tag != null && tag.Value.Name.Equals(searchTerm, StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                GoToNumber(exp.UIndex);
+                                return;
+                            }
+                        }
+                        catch
+                        {
+                            //skip
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(result + " is not a name in the name table.");
+                    return;
+                }
+                MessageBox.Show("Could not find export with Tag property with value: " + result);
+            }
         }
 
         private void OpenInInterpViewer(object obj)
@@ -1341,7 +1387,7 @@ namespace ME3Explorer
                 RefreshView();
                 InitStuff();
                 StatusBar_LeftMostText.Text = System.IO.Path.GetFileName(s);
-                Title = "Package Editor WPF - " + System.IO.Path.GetFileName(s);
+                Title = "Package Editor WPF - " + s;
                 InterpreterTab_Interpreter.UnloadExport();
                 //InitializeTreeView();
 
@@ -2045,10 +2091,10 @@ namespace ME3Explorer
                 try
                 {
 #endif
-                    LoadFile(d.FileName);
-                    AddRecent(d.FileName, false);
-                    SaveRecentList();
-                    RefreshRecent(true, RFiles);
+                LoadFile(d.FileName);
+                AddRecent(d.FileName, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
 #if !DEBUG
                 }
                 catch (Exception ex)
@@ -3557,7 +3603,7 @@ namespace ME3Explorer
                     foreach (IExportEntry export in package.Exports)
                     {
                         if ((export.ClassName == "BioSWF"))
-                            //|| export.ClassName == "Bio2DANumberedRows") && export.ObjectName.Contains("BOS"))
+                        //|| export.ClassName == "Bio2DANumberedRows") && export.ObjectName.Contains("BOS"))
                         {
                             Debug.WriteLine(export.ClassName + "(" + export.ObjectName + ") in " + fi.Name + " at export " + export.UIndex);
                         }
