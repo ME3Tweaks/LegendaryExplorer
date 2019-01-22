@@ -494,6 +494,15 @@ namespace ME3Explorer
             isLoadingNewData = true;
             (Interpreter_Hexbox.ByteProvider as DynamicByteProvider).Bytes.Clear();
             (Interpreter_Hexbox.ByteProvider as DynamicByteProvider).Bytes.AddRange(export.Data);
+            Interpreter_Hexbox.Invalidate();
+            Interpreter_Hexbox_Host.VerticalAlignment = VerticalAlignment.Top;
+            Interpreter_Hexbox_Host.VerticalAlignment = VerticalAlignment.Stretch;
+
+            //InterpreterWPF_DockPanel.UpdateLayout();
+            //Interpreter_Hexbox_Host.UpdateLayout();
+            //Interpreter_Hexbox.Height = (int) Interpreter_Hexbox_Host.ActualHeight;
+            //            Interpreter_Hexbox_Host.UpdateLayout();
+            //.size = true;
             Interpreter_Hexbox.Select(0, 1);
             Interpreter_Hexbox.ScrollByteIntoView();
             isLoadingNewData = false;
@@ -1319,131 +1328,186 @@ namespace ME3Explorer
                 Interpreter_Hexbox.SelectionLength = 1; //maybe change
 
                 Interpreter_Hexbox.UnhighlightAll();
-                switch (newSelectedItem.Property)
-                {
-                    //case NoneProperty np:
-                    //    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 4, 8);
-                    //    return;
-                    //case StructProperty sp:
-                    //    break;
-                    case ObjectProperty op:
-                    case FloatProperty fp:
-                    case IntProperty ip:
-                        {
-                            if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
-                            {
-                                Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
-                                return;
-                            }
-                            else if (newSelectedItem.Parent.Property is ArrayProperty<IntProperty> || newSelectedItem.Parent.Property is ArrayProperty<FloatProperty> || newSelectedItem.Parent.Property is ArrayProperty<ObjectProperty>)
-                            {
-                                Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
-                                return;
-                            }
-                        }
-                        //otherwise use the default
-                        break;
-                    case ByteProperty bp:
-                        {
-                            if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
-                            {
-                                Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 1);
-                                return;
-                            }
-                            else if (newSelectedItem.Parent.Property is ArrayProperty<ByteProperty>)
-                            {
-                                Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 1);
-                                return;
-                            }
-                        }
-                        break;
-                    case BoolProperty boolp:
-                        {
-                            if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
-                            {
-                                Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 1);
-                                return;
-                            }
-                        }
-                        break;
-                    case NameProperty np:
-                        {
-                            if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
-                            {
-                                Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 8);
-                                return;
-                            }
-                            else if (newSelectedItem.Parent.Property is ArrayProperty<NameProperty>)
-                            {
-                                Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 8);
-                                return;
-                            }
-                        }
-                        break;
-                        //case EnumProperty ep:
-                        //    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 32, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
-                        //    return;
-                }
 
                 if (CurrentLoadedExport.ClassName != "Class")
                 {
-                    if (newSelectedItem.Property is StructProperty && newSelectedItem.Parent.Property is ArrayProperty<StructProperty> || newSelectedItem.Parent.Property is ArrayProperty<EnumProperty>)
+                    if (newSelectedItem.Property is StructProperty structp)
                     {
-                        Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef, true));
+                        //New selected property is struct property
+
+                        //If we are in an array
+                        if (newSelectedItem.Parent.Property is ArrayProperty<StructProperty>/* || newSelectedItem.Parent.Property is ArrayProperty<EnumProperty>*/)
+                        {
+
+                            Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef, true));
+                            return;
+                        }
+                        else if (newSelectedItem.Parent.Property is StructProperty structParentProp)
+                        {
+                            if (ME3UnrealObjectInfo.isImmutable(structParentProp.StructType))
+                            {
+                                //We are inside of an immutable struct
+                                Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef, true));
+                            }
+                            else
+                            {
+                                //We are not inside of an immutable struct
+                                Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
+                            }
+                            return;
+                        }
+                        else
+                        {
+                            Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
+                        }
                     }
-                    else
+                    if (newSelectedItem.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)))
                     {
                         Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
+                        return;
                     }
-                }
-                //else if (newSelectedItem.Parent.Property is ArrayProperty<IntProperty> || newSelectedItem.Parent.Property is ArrayProperty<FloatProperty> || newSelectedItem.Parent.Property is ArrayProperty<ObjectProperty>)
-                //{
-                //    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
-                //    return;
-                //}
-                //else if (newSelectedItem.Property is StructProperty)
-                //{
-                //    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 40, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
-                //    return;
-                //}
-                //else
-                //{
-                //}
-                //array children
-                /*if (newSelectedItem.Parent.Property != null && newSelectedItem.Parent.Property.PropType == PropertyType.ArrayProperty)
-                {
-                    if (newSelectedItem.Property is NameProperty np)
-                    {
-                        Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 8);
-                    }
-                    else
-                    {
-                        Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
-                    }
-                    return;
-                }
 
-                else if (newSelectedItem.Parent.Property != null && newSelectedItem.Parent.Property.PropType == PropertyType.StructProperty)
-                {
-                    //Determine if it is immutable or not, somehow.
-                }
+                    switch (newSelectedItem.Property)
+                    {
+                        //case NoneProperty np:
+                        //    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 4, 8);
+                        //    return;
+                        //case StructProperty sp:
+                        //    break;
+                        case ObjectProperty op:
+                        case FloatProperty fp:
+                        case IntProperty ip:
+                            {
+                                if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
+                                {
+                                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
+                                    return;
+                                }
+                                else if (newSelectedItem.Parent.Property is ArrayProperty<IntProperty> || newSelectedItem.Parent.Property is ArrayProperty<FloatProperty> || newSelectedItem.Parent.Property is ArrayProperty<ObjectProperty>)
+                                {
+                                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
+                                    return;
+                                }
+                                else
+                                {
+                                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, (newSelectedItem.Property.ValueOffset + 4) - newSelectedItem.Property.StartOffset);
+                                }
+                            }
+                            //otherwise use the default
+                            break;
+                        case ByteProperty bp:
+                            {
+                                if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
+                                {
+                                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 1);
+                                    return;
+                                }
+                                else if (newSelectedItem.Parent.Property is ArrayProperty<ByteProperty>)
+                                {
+                                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 1);
+                                    return;
+                                }
+                            }
+                            break;
+                        case BoolProperty boolp:
+                            {
+                                if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
+                                {
+                                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 1);
+                                    return;
+                                }
+                                else
+                                {
+                                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.ValueOffset - newSelectedItem.Property.StartOffset);
+                                }
+                            }
+                            break;
+                        case NameProperty np:
+                            {
+                                if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
+                                {
+                                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 8);
+                                    return;
+                                }
+                                else if (newSelectedItem.Parent.Property is ArrayProperty<NameProperty>)
+                                {
+                                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 8);
+                                    return;
+                                }
+                                else
+                                {
+                                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, (newSelectedItem.Property.ValueOffset + 8) - newSelectedItem.Property.StartOffset);
+                                }
+                            }
+                            break;
+                        case NoneProperty nonep:
+                            Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, 8);
+                            break;
+                            //case EnumProperty ep:
+                            //    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 32, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
+                            //    return;
+                    }
 
-                else if (newSelectedItem.Property is StructProperty sp)
-                {
-                    //struct size highlighting... not sure how to do this with this little info
+                    //if (CurrentLoadedExport.ClassName != "Class")
+                    //{
+                    //    if (newSelectedItem.Property is StructProperty && newSelectedItem.Parent.Property is ArrayProperty<StructProperty> || newSelectedItem.Parent.Property is ArrayProperty<EnumProperty>)
+                    //    {
+                    //        Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef, true));
+                    //    }
+                    //    else
+                    //    {
+                    //        Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
+                    //    }
+                    //}
+                    //else if (newSelectedItem.Parent.Property is ArrayProperty<IntProperty> || newSelectedItem.Parent.Property is ArrayProperty<FloatProperty> || newSelectedItem.Parent.Property is ArrayProperty<ObjectProperty>)
+                    //{
+                    //    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
+                    //    return;
+                    //}
+                    //else if (newSelectedItem.Property is StructProperty)
+                    //{
+                    //    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 40, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
+                    //    return;
+                    //}
+                    //else
+                    //{
+                    //}
+                    //array children
+                    /*if (newSelectedItem.Parent.Property != null && newSelectedItem.Parent.Property.PropType == PropertyType.ArrayProperty)
+                    {
+                        if (newSelectedItem.Property is NameProperty np)
+                        {
+                            Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 8);
+                        }
+                        else
+                        {
+                            Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
+                        }
+                        return;
+                    }
+
+                    else if (newSelectedItem.Parent.Property != null && newSelectedItem.Parent.Property.PropType == PropertyType.StructProperty)
+                    {
+                        //Determine if it is immutable or not, somehow.
+                    }
+
+                    else if (newSelectedItem.Property is StructProperty sp)
+                    {
+                        //struct size highlighting... not sure how to do this with this little info
+                    }
+                    else if (newSelectedItem.Property is NameProperty np)
+                    {
+                        Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 24, 32);
+                    }
+                    else if (newSelectedItem.Property is BoolProperty bp)
+                    {
+                        Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 24, 25);
+                    }
+                    else if (newSelectedItem.Parent.PropertyType != PropertyType.ArrayProperty.ToString())
+                    {
+                        Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 24, 28);
+                    }*/
                 }
-                else if (newSelectedItem.Property is NameProperty np)
-                {
-                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 24, 32);
-                }
-                else if (newSelectedItem.Property is BoolProperty bp)
-                {
-                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 24, 25);
-                }
-                else if (newSelectedItem.Parent.PropertyType != PropertyType.ArrayProperty.ToString())
-                {
-                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset - 24, 28);
-                }*/
                 Interpreter_Hexbox_Host.UpdateLayout();
                 Interpreter_Hexbox.Invalidate();
             }
@@ -1459,6 +1523,7 @@ namespace ME3Explorer
             //remove in the event this object is reloaded again
             Interpreter_Hexbox.ByteProvider.Changed -= Interpreter_Hexbox_BytesChanged;
             Interpreter_Hexbox.ByteProvider.Changed += Interpreter_Hexbox_BytesChanged;
+
         }
 
         private void Interpreter_Hexbox_BytesChanged(object sender, EventArgs e)
@@ -1780,6 +1845,22 @@ namespace ME3Explorer
                         StringRefProperty strfp = new StringRefProperty();
                         astrf.Add(strfp);
                         break;
+                    case ArrayProperty<StructProperty> astructp:
+                        if (astructp.Count > 0)
+                        {
+                            astructp.Add(astructp.Last()); //Bad form, but writing and reparse will correct it
+                            break;
+                        }
+                        else
+                        {
+                            //empty
+                            if (CurrentLoadedExport.FileRef.Game == MEGame.ME3) { }
+                            else
+                            {
+                                System.Windows.MessageBox.Show("Adding struct properties to ME1/ME2 is not supported at this time.");
+                            }
+                        }
+                        break;
                     default:
                         System.Windows.MessageBox.Show("Can't add this property type yet.\nPlease pester Mgamerz to get it implemented");
                         break;
@@ -1828,6 +1909,33 @@ namespace ME3Explorer
                     }
                 }
             }
+        }
+
+        private string getEnclosingType(UPropertyTreeViewEntry node)
+        {
+            Stack<UPropertyTreeViewEntry> nodeStack = new Stack<UPropertyTreeViewEntry>();
+            string typeName = CurrentLoadedExport.ClassName;
+            string propname;
+            PropertyInfo p;
+            while (node != null && node.Parent != null && node.Parent.Property != null)
+            {
+                nodeStack.Push(node);
+                node = node.Parent;
+            }
+            bool isStruct = false;
+            while (nodeStack.Count > 0)
+            {
+                node = nodeStack.Pop();
+                if (node.Property is StructProperty && node.Parent != null && node.Parent.Property is ArrayProperty<StructProperty>)
+                {
+                    continue;
+                }
+                propname = node.Property.Name; // pcc.getNameEntry(BitConverter.ToInt32(memory, getPosFromNode(node.Name)));
+                p = GetPropertyInfo(propname, typeName, isStruct);
+                typeName = p.reference;
+                isStruct = true;
+            }
+            return typeName;
         }
     }
 

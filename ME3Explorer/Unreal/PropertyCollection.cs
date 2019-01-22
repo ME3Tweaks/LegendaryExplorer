@@ -90,7 +90,7 @@ namespace ME3Explorer.Unreal
                     string name = pcc.getNameEntry(nameIdx);
                     if (name == "None")
                     {
-                        props.Add(new NoneProperty(stream, "None") { StartOffset = propertyStartPosition });
+                        props.Add(new NoneProperty(stream, "None") { StartOffset = propertyStartPosition, ValueOffset = propertyStartPosition });
                         stream.Seek(4, SeekOrigin.Current);
                         break;
                     }
@@ -511,9 +511,11 @@ namespace ME3Explorer.Unreal
                     arrayProperty.StartOffset = startPos;
                     return arrayProperty;//this implementation needs checked, as I am not 100% sure of it's validity.
                 case PropertyType.StructProperty:
+                    long valuePos = stream.Position;
                     PropertyCollection structProps = ReadSpecialStruct(pcc, stream, UnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType).reference, 0);
                     var structProp = new StructProperty(structType, structProps, template.Name, true);
                     structProp.StartOffset = startPos;
+                    structProp.ValueOffset = valuePos;
                     return structProp;//this implementation needs checked, as I am not 100% sure of it's validity.
                 case PropertyType.None:
                     return new NoneProperty(template.Name) { StartOffset = startPos };
@@ -613,8 +615,8 @@ namespace ME3Explorer.Unreal
                             {
                                 long structOffset = stream.Position;
                                 PropertyCollection structProps = ReadProps(pcc, stream, arrayStructType, includeNoneProperty: IncludeNoneProperties);
-                                StructProperty structP = new StructProperty(arrayStructType, structProps) { StartOffset = startPos };
-                                structP.ValueOffset = structOffset;
+                                StructProperty structP = new StructProperty(arrayStructType, structProps) { StartOffset = structOffset };
+                                structP.ValueOffset = structProps[0].StartOffset;
                                 props.Add(structP);
                             }
                         }

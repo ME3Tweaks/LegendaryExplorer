@@ -24,7 +24,7 @@
         <Converters:ColorCodeConverter x:Key="ColorCodeConverter"/>
         <Converters:UnsavedChangesForegroundConverter x:Key="UnsavedChangesForegroundConverter"/>
     </UserControl.Resources>
-    <DockPanel>
+    <DockPanel Name="InterpreterWPF_DockPanel">
         <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
             <Button Name="SaveHexChange_Button" ToolTip="Commit hex changes to the export" Content="Save Hex Changes" Foreground="{Binding HasUnsavedChanges, Converter={StaticResource UnsavedChangesForegroundConverter}}" Click="Interpreter_SaveHexChanges_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
             <Button Content="Toggle Hexbox Width" ToolTip="Toggle between 4 and 16 byte widths" Click="Interpreter_ToggleHexboxWidth_Click"/>
@@ -60,20 +60,20 @@
                 <TextBlock Name="StatusBar_LeftMostText" Text="Nothing selected"/>
             </StatusBarItem>
         </StatusBar>
-        <Grid Margin="0,1,0,-1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition MinWidth="220" MaxWidth="718" Width="285" Name="HexboxColumnDefinition" />
-                <ColumnDefinition Width="1" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <!--<control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />-->
-            <WindowsFormsHost Name="Interpreter_Hexbox_Host" Grid.Row="10" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">
-                <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" SelectionLengthChanged="hb1_SelectionChanged" VScrollBarVisible="True">
-                </hb1:HexBox>
-            </WindowsFormsHost>
+<Grid Margin="0,1,0,-1">
+    <Grid.RowDefinitions>
+        <RowDefinition Height="*" MaxHeight="1080"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition MinWidth="220" MaxWidth="718" Width="285" Name="HexboxColumnDefinition" />
+        <ColumnDefinition Width="1" />
+        <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+    <!--<control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />-->
+    <WindowsFormsHost Grid.Row="0" Grid.ColumnSpan="2"   Name="Interpreter_Hexbox_Host" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" SelectionLengthChanged="hb1_SelectionChanged" VScrollBarVisible="True">
+        </hb1:HexBox>
+    </WindowsFormsHost>
             <GridSplitter Grid.Column="1" 
                       Grid.Row="1" HorizontalAlignment="Stretch" 
                       Margin="-5,0"
