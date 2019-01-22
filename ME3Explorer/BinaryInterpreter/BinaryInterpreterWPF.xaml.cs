@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,6 +24,7 @@ using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI;
+using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
 using StreamHelpers;
@@ -145,10 +147,21 @@ namespace ME3Explorer
             return ParsableBinaryClasses.Contains(exportEntry.ClassName) && !exportEntry.ObjectName.StartsWith("Default__");
         }
 
+        private int PreviousLoadedUIndex = -1;
+        private string PreviousSelectedTreeName = "";
+
         public override void LoadExport(IExportEntry exportEntry)
         {
             LoadingNewData = true;
             ByteShift_UpDown.Value = 0;
+            if (CurrentLoadedExport != null)
+            {
+                PreviousLoadedUIndex = CurrentLoadedExport.UIndex;
+                if (BinaryInterpreter_TreeView.SelectedItem is BinaryInterpreterWPFTreeViewItem b)
+                {
+                    PreviousSelectedTreeName = b.Name;
+                }
+            }
             CurrentLoadedExport = exportEntry;
 
             OnDemand_Panel.Visibility = Visibility.Visible;
@@ -376,6 +389,11 @@ namespace ME3Explorer
                 }
                 genericContainer.Items.AddRange(genericItems);
             }
+            if (PreviousLoadedUIndex == CurrentLoadedExport.UIndex && PreviousSelectedTreeName != "")
+            {
+                var reSelected = AttemptSelectPreviousEntry(subNodes);
+                Debug.WriteLine("Reselected previous entry");
+            }
 
             GenericEditorSetVisibility = (appendGenericScan || isGenericScan) ? Visibility.Visible : Visibility.Collapsed;
             arguments.Item1.Items = subNodes;
@@ -387,6 +405,30 @@ namespace ME3Explorer
                 }
             }
             e.Result = arguments.Item1; //return topLevelTree
+        }
+
+        private bool AttemptSelectPreviousEntry(List<object> subNodes)
+        {
+            foreach (object o in subNodes)
+            {
+                if (o is BinaryInterpreterWPFTreeViewItem b)
+                {
+                    if (b.Name == PreviousSelectedTreeName)
+                    {
+                        b.IsProgramaticallySelecting = true;
+                        b.IsSelected = true;
+                        return true;
+                    }
+                    if (b.Items != null)
+                    {
+                        if (AttemptSelectPreviousEntry(b.Items))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
 
         private List<object> StartMetaDataScan(byte[] data, ref int binarystart)
@@ -1212,7 +1254,7 @@ namespace ME3Explorer
                     {
                         Header = $"0x{binarypos:X4} Name: {nodeValue}",
                         Tag = NodeType.StructLeafName,
-                        Name = $"_{binarypos.ToString()}"
+                        Name = $"_{binarypos.ToString()}",
                     });
                     binarypos += 12;
                 }
@@ -3184,7 +3226,51 @@ namespace ME3Explorer
                                 CurrentLoadedExport.Data = data;
                             }
                             break;
-                            /*case NodeType.StructLeafName:
+                        case NodeType.StructLeafName:
+                            var item = Value_ComboBox.SelectedItem as IndexedName;
+                            if (item == null)
+                            {
+                                var text = Value_ComboBox.Text;
+                                if (text != null && text != "")
+                                {
+                                    int index = CurrentLoadedExport.FileRef.findName(text);
+                                    if (index < 0)
+                                    {
+                                        string input = $"The name \"{text}\" does not exist in the current loaded package.\nIf you'd like to add this name, press enter below, or change the name to what you would like it to be.";
+                                        string result = PromptDialog.Prompt(Window.GetWindow(this), input, "Enter new name", text);
+                                        if (result != null && result != "")
+                                        {
+                                            int idx = CurrentLoadedExport.FileRef.FindNameOrAdd(result);
+                                            if (idx != CurrentLoadedExport.FileRef.Names.Count - 1)
+                                            {
+                                                //not the last
+                                                MessageBox.Show($"{result} already exists in this package file.\nName index: {idx} (0x{idx:X8})", "Name already exists");
+                                            }
+                                            else
+                                            {
+                                                //CurrentLoadedEntry.idxObjectName = idx;
+                                                //Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => { })).Wait();
+                                                //Value_ComboBox.SelectedIndex = idx; //This may need to be deferred as the handleUpdate() may not have fired yet.
+                                                //MessageBox.Show($"{result} has been added as a name.\nName index: {idx} (0x{idx:X8})", "Name added");
+                                                //.SelectedIndex = idx; //This may need to be deferred as the handleUpdate() may not have fired yet.
+                                                //item = Value_ComboBox.SelectedItem as IndexedName;
+                                                item = new IndexedName(idx, result);
+                                            }
+                                            //refresh should be triggered by hosting window
+                                        }
+                                    }
+                                }
+                            }
+                            if (item != null && dataOffset != 0)
+                            {
+                                byte[] data = CurrentLoadedExport.Data;
+                                SharedPathfinding.WriteMem(data, dataOffset, BitConverter.GetBytes(CurrentLoadedExport.FileRef.findName(item.Name.Name)));
+                                SharedPathfinding.WriteMem(data, dataOffset + 4, BitConverter.GetBytes(item.Name.Number));
+                                CurrentLoadedExport.Data = data;
+                                Debug.WriteLine("Set data");
+                            }
+                            break;
+                            /*
                                 TextSearch.SetTextPath(Value_ComboBox, "Name");
                                 Value_ComboBox.IsEditable = true;
 
@@ -3219,6 +3305,7 @@ namespace ME3Explorer
                                 SupportedEditorSetElements.Add(NameIndexPrefix_TextBlock);
                                 SupportedEditorSetElements.Add(NameIndex_TextBox);
                                 break;
+                            /*
                                 //Todo: We can add different nodeTypes to trigger different ParsedValue parsers, 
                                 //such as IntOffset. Enter in int, parse as hex
                                 Value_TextBox.Text = BitConverter.ToInt32(CurrentLoadedExport.Data, dataOffset).ToString();
@@ -3337,7 +3424,7 @@ namespace ME3Explorer
     }
 
 
-    class BinaryInterpreterWPFTreeViewItem
+    class BinaryInterpreterWPFTreeViewItem : INotifyPropertyChanged
     {
         public enum ArrayPropertyChildAddAlgorithm
         {
@@ -3368,6 +3455,79 @@ namespace ME3Explorer
             this.Parent = Parent;
             Items = new List<object>();
             Header = header;
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string propName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool IsProgramaticallySelecting;
+        private bool isSelected;
+        public bool IsSelected
+        {
+            get => isSelected;
+            set
+            {
+                if (!IsProgramaticallySelecting && isSelected != value)
+                {
+                    //user is selecting
+                    isSelected = value;
+                    OnPropertyChanged();
+                    return;
+                }
+                // build a priority queue of dispatcher operations
+
+                // All operations relating to tree item expansion are added with priority = DispatcherPriority.ContextIdle, so that they are
+                // sorted before any operations relating to selection (which have priority = DispatcherPriority.ApplicationIdle).
+                // This ensures that the visual container for all items are created before any selection operation is carried out.
+                // First expand all ancestors of the selected item - those closest to the root first
+                // Expanding a node will scroll as many of its children as possible into view - see perTreeViewItemHelper, but these scrolling
+                // operations will be added to the queue after all of the parent expansions.
+                if (value)
+                {
+                    var ancestorsToExpand = new Stack<BinaryInterpreterWPFTreeViewItem>();
+
+                    var parent = Parent;
+                    while (parent != null)
+                    {
+                        if (!parent.IsExpanded)
+                            ancestorsToExpand.Push(Parent);
+
+                        parent = parent.Parent;
+                    }
+
+                    while (ancestorsToExpand.Any())
+                    {
+                        var parentToExpand = ancestorsToExpand.Pop();
+                        DispatcherHelper.AddToQueue(() => parentToExpand.IsExpanded = true, DispatcherPriority.ContextIdle);
+                    }
+                }
+
+                //cancel if we're currently selected.
+                if (isSelected == value)
+                    return;
+
+                // Set the item's selected state - use DispatcherPriority.ApplicationIdle so this operation is executed after all
+                // expansion operations, no matter when they were added to the queue.
+                // Selecting a node will also scroll it into view - see perTreeViewItemHelper
+                DispatcherHelper.AddToQueue(() =>
+                {
+                    if (value != isSelected)
+                    {
+                        this.isSelected = value;
+                        OnPropertyChanged("IsSelected");
+                        IsProgramaticallySelecting = false;
+                    }
+                }, DispatcherPriority.ApplicationIdle);
+
+                // note that by rule, a TreeView can only have one selected item, but this is handled automatically by 
+                // the control - we aren't required to manually unselect the previously selected item.
+
+                // execute all of the queued operations in descending DipatecherPriority order (expansion before selection)
+                var unused = DispatcherHelper.ProcessQueueAsync();
+            }
         }
     }
 }

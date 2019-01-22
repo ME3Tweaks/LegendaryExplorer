@@ -10,6 +10,7 @@
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         d:DesignHeight="450" d:DesignWidth="800"
+        xmlns:vhelp="clr-namespace:ME3Explorer.SharedUI.PeregrineTreeView"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
                             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
@@ -125,6 +126,10 @@
                                                 <ei:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
+
+
+                                        
+
                                     </StackPanel>
                                 </StackPanel>
                                 <HierarchicalDataTemplate.Triggers>
@@ -184,6 +189,9 @@
                             <Style TargetType="{x:Type TreeViewItem}">
                                 <!--<Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />-->
                                 <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
+                                <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
+                                <Setter Property="vhelp:TreeViewItemHelper.BringSelectedItemIntoView" Value="True" />
+                                <Setter Property="vhelp:TreeViewItemHelper.BringExpandedChildrenIntoView" Value="True" />
                             </Style>
                         </TreeView.ItemContainerStyle>
                     </TreeView>
