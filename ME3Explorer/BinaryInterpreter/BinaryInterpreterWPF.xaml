@@ -35,6 +35,7 @@
                 <Button Name="SaveHexChange_Button" Content="Save Hex Changes" Click="BinaryInterpreter_SaveHexChanges_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
                 <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
                 <Button Content="Toggle Hexbox Width" Click="BinaryInterpreter_ToggleHexboxWidth_Click"/>
+                <Separator Name="EditorSet_Separator_LeftsideArray" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                 <Button Name="AddArrayElement_Button" ToolTip="Add a new element to the selected array" Content="Add Array Element" Click="AddArrayElement_Button_Click" VerticalAlignment="Center"/>
                 <Button Name="RemoveArrayElement_Button" ToolTip="Remove the selected element from the array" Content="Remove Array Element" Click="RemoveArrayElement_Button_Click" VerticalAlignment="Center"/>
                 <Separator Name="EditorSet_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />

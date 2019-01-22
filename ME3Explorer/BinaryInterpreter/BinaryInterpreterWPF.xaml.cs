@@ -105,6 +105,7 @@ namespace ME3Explorer
             EditorSetElements.Add(ParsedValue_TextBlock);
             EditorSetElements.Add(AddArrayElement_Button);
             EditorSetElements.Add(RemoveArrayElement_Button);
+            EditorSetElements.Add(EditorSet_Separator_LeftsideArray);
 
             //EditorSetElements.Add(EditorSet_ArraySetSeparator);
             Set_Button.Visibility = Visibility.Collapsed;
@@ -364,10 +365,27 @@ namespace ME3Explorer
             {
                 BinaryInterpreterWPFTreeViewItem genericContainer = new BinaryInterpreterWPFTreeViewItem() { Header = $"Generic scan data", IsExpanded = true };
                 subNodes.Add(genericContainer);
-                genericContainer.Items.AddRange(StartGenericScan(data, ref binarystart));
+
+                var genericItems = StartGenericScan(data, ref binarystart);
+                foreach (object o in genericItems)
+                {
+                    if (o is BinaryInterpreterWPFTreeViewItem b)
+                    {
+                        b.Parent = genericContainer;
+                    }
+                }
+                genericContainer.Items.AddRange(genericItems);
             }
+
             GenericEditorSetVisibility = (appendGenericScan || isGenericScan) ? Visibility.Visible : Visibility.Collapsed;
             arguments.Item1.Items = subNodes;
+            foreach (object o in subNodes)
+            {
+                if (o is BinaryInterpreterWPFTreeViewItem b)
+                {
+                    b.Parent = arguments.Item1;
+                }
+            }
             e.Result = arguments.Item1; //return topLevelTree
         }
 
@@ -1932,7 +1950,7 @@ namespace ME3Explorer
 
         private List<object> StartLevelScan(byte[] data, ref int binarystart)
         {
-            var subnodes = new List<object>();
+            var subnodesTop = new List<object>();
             try
             {
                 int start = binarystart;
@@ -1943,67 +1961,28 @@ namespace ME3Explorer
                 BinaryInterpreterWPFTreeViewItem countnode = new BinaryInterpreterWPFTreeViewItem
                 {
                     Tag = NodeType.StructLeafInt, //change to listlength or something.
+                    ArrayAddAlgoritm = BinaryInterpreterWPFTreeViewItem.ArrayPropertyChildAddAlgorithm.LevelItem,
                     Header = $"{start:X4} Level Items List Length: {numberofitems}",
-                    Name = "_" + start
+                    Name = "_" + start,
+                    IsExpanded = true
                 };
-                subnodes.Add(countnode);
+                subnodesTop.Add(countnode);
 
                 start += 4;
-                //uint bioworldinfoexportid = BitConverter.ToUInt32(data, start);
-                //BinaryInterpreterWPFTreeViewItem bionode = new BinaryInterpreterWPFTreeViewItem
-                //{
-                //    Tag = NodeType.StructLeafObject,
-                //    Header = $"{start:X4} BioWorldInfo Export: {bioworldinfoexportid}",
-                //    Name = "_" + start
-
-                //};
-                //if (bioworldinfoexportid < CurrentLoadedExport.FileRef.ExportCount && bioworldinfoexportid > 0)
-                //{
-                //    int me3expindex = (int)bioworldinfoexportid;
-                //    IEntry exp = CurrentLoadedExport.FileRef.getEntry(me3expindex);
-                //    bionode.Header += $" ({exp.PackageFullName}.{exp.ObjectName})";
-                //}
-                //subnodes.Add(bionode);
-
-                //IExportEntry bioworldinfo = CurrentLoadedExport.FileRef.Exports[(int)bioworldinfoexportid - 1];
-                //if (bioworldinfo.ObjectName != "BioWorldInfo")
-                //{
-                //    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                //    {
-                //        Tag = NodeType.StructLeafObject,
-                //        Header = $"{start:X4} Export reference to bioworldinfo resolves to wrong export. Resolved to {bioworldinfo.ObjectName} as export {bioworldinfoexportid}",
-                //        Name = "_" + start
-
-                //    });
-                //    return subnodes;
-                //}
-
-                //start += 4;
-                //uint shouldbezero = BitConverter.ToUInt32(data, start);
-                //if (shouldbezero != 0)
-                //{
-                //    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                //    {
-                //        Tag = NodeType.Unknown,
-                //        Header = $"{start:X4} Export may have extra parameters not accounted for yet (did not find 0 at 0x{start:X5} )",
-                //        Name = "_" + start
-
-                //    });
-                //    return subnodes;
-                //}
-                //start += 4;
                 int itemcount = 0;
 
+                var levelSubnodes = new List<object>();
                 while (itemcount < numberofitems)
                 {
                     //get header.
                     uint itemexportid = BitConverter.ToUInt32(data, start);
                     if (itemexportid == 0)
                     {
-                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                        levelSubnodes.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Tag = NodeType.ArrayLeafObject,
                             Header = $"{start:X4}|{itemcount}: {0.ToString().PadRight(8, ' ')} Null/Class",
+                            ArrayAddAlgoritm = BinaryInterpreterWPFTreeViewItem.ArrayPropertyChildAddAlgorithm.LevelItem,
                             Name = "_" + start
                         });
                         start += 4;
@@ -2013,12 +1992,12 @@ namespace ME3Explorer
                     {
                         IExportEntry locexp = CurrentLoadedExport.FileRef.Exports[(int)itemexportid - 1];
                         //Console.WriteLine($"0x{start:X5} \t0x{itemexportid:X5} \t{locexp.PackageFullName}.{locexp.ObjectName}_{locexp.indexValue} [{itemexportid - 1}]");
-                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                        levelSubnodes.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Tag = NodeType.ArrayLeafObject,
                             Header = $"{start:X4}|{itemcount}: {locexp.UIndex.ToString().PadRight(8, ' ')} {CurrentLoadedExport.FileRef.GetEntryString(locexp.UIndex)}_{locexp.indexValue}",
+                            ArrayAddAlgoritm = BinaryInterpreterWPFTreeViewItem.ArrayPropertyChildAddAlgorithm.LevelItem,
                             Name = "_" + start
-
                         });
                         start += 4;
                         itemcount++;
@@ -2026,7 +2005,7 @@ namespace ME3Explorer
                     else
                     {
                         //Console.WriteLine($"0x{start:X5} \t0x{itemexportid:X5} \tInvalid item. Ensure the list is the correct length. (Export {itemexportid})");
-                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                        levelSubnodes.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Tag = NodeType.ArrayLeafObject,
                             Header = $"{start:X4} Invalid item. Ensure the list is the correct length. (Export {itemexportid})",
@@ -2036,6 +2015,17 @@ namespace ME3Explorer
                         itemcount++;
                     }
                 }
+
+                foreach (object o in levelSubnodes)
+                {
+                    if (o is BinaryInterpreterWPFTreeViewItem b)
+                    {
+                        b.Parent = countnode;
+                    }
+                }
+                countnode.Items = levelSubnodes;
+
+                //Unreal, persistent package
                 int unrealNameLen = BitConverter.ToInt32(data, start);
                 Encoding encodingToUse = Encoding.ASCII;
                 if (unrealNameLen < 0)
@@ -2048,7 +2038,7 @@ namespace ME3Explorer
                 MemoryStream ms = new MemoryStream(data);
                 ms.Position = start;
                 string unrealStr = ms.ReadString(unrealNameLen, true, encodingToUse);
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                subnodesTop.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Tag = NodeType.Unknown,
                     Header = $"{strStart:X4}| Unreal header string: " + unrealStr,
@@ -2068,7 +2058,7 @@ namespace ME3Explorer
                 }
                 ms.Position = start;
                 string persistentLevelPackageStr = ms.ReadString(persistentLevelPackageLen, true, encodingToUse);
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                subnodesTop.Add(new BinaryInterpreterWPFTreeViewItem
                 {
                     Tag = NodeType.Unknown,
                     Header = $"{start:X4}| Persistent Level Package: " + persistentLevelPackageStr,
@@ -2080,9 +2070,9 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
+                subnodesTop.Add(new BinaryInterpreterWPFTreeViewItem() { Header = $"Error reading binary data: {ex}" });
             }
-            return subnodes;
+            return subnodesTop;
         }
 
         private List<object> StartMaterialScan(byte[] data, ref int binarystart)
@@ -2991,6 +2981,11 @@ namespace ME3Explorer
                             SupportedEditorSetElements.Add(Value_TextBox);
                             break;
                     }
+                    if (bitve.ArrayAddAlgoritm != BinaryInterpreterWPFTreeViewItem.ArrayPropertyChildAddAlgorithm.None)
+                    {
+                        SupportedEditorSetElements.Add(AddArrayElement_Button);
+                        SupportedEditorSetElements.Add(EditorSet_Separator_LeftsideArray);
+                    }
                     break;
                 case UPropertyTreeViewEntry uptve:
                     if (uptve.Property != null)
@@ -3301,7 +3296,33 @@ namespace ME3Explorer
 
         private void AddArrayElement_Button_Click(object sender, RoutedEventArgs e)
         {
+            var bitvi = BinaryInterpreter_TreeView.SelectedItem as BinaryInterpreterWPFTreeViewItem;
+            if (bitvi != null)
+            {
+                switch (bitvi.ArrayAddAlgoritm)
+                {
+                    case BinaryInterpreterWPFTreeViewItem.ArrayPropertyChildAddAlgorithm.LevelItem:
+                        BinaryInterpreterWPFTreeViewItem container = bitvi;
+                        if ((NodeType)container.Tag == NodeType.ArrayLeafObject)
+                        {
+                            container = bitvi.Parent; //container
+                        }
+                        var dataCopy = CurrentLoadedExport.Data;
+                        int countOffset = int.Parse(container.Name.Substring(1)); //chop off _
+                        int count = BitConverter.ToInt32(dataCopy, countOffset);
 
+                        //Incrememnt Count
+                        SharedPathfinding.WriteMem(dataCopy, countOffset, BitConverter.GetBytes(count + 1));
+
+                        //Insert new entry
+                        List<byte> memList = dataCopy.ToList();
+                        int offset = (int)(countOffset + ((count + 1) * 4)); //will be at the very end of the list as it is now +1
+
+                        memList.InsertRange(offset, BitConverter.GetBytes(0));
+                        CurrentLoadedExport.Data = memList.ToArray();
+                        break;
+                }
+            }
         }
 
         private void Value_TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -3315,12 +3336,23 @@ namespace ME3Explorer
         }
     }
 
+
     class BinaryInterpreterWPFTreeViewItem
     {
+        public enum ArrayPropertyChildAddAlgorithm
+        {
+            None,
+            LevelItem
+        }
+
         public string Header { get; set; }
         public string Name { get; set; }
         public object Tag { get; set; }
-        public bool IsExpanded { get; set; }
+        public BinaryInterpreterWPFTreeViewItem Parent;
+        public ArrayPropertyChildAddAlgorithm ArrayAddAlgoritm;
+
+        public bool IsExpanded
+        { get; set; }
 
         /// <summary>
         /// Children nodes of this item. They can be of different types (like UPropertyTreeViewEntry).
@@ -3331,8 +3363,9 @@ namespace ME3Explorer
             Items = new List<object>();
         }
 
-        public BinaryInterpreterWPFTreeViewItem(string header)
+        public BinaryInterpreterWPFTreeViewItem(string header, BinaryInterpreterWPFTreeViewItem Parent)
         {
+            this.Parent = Parent;
             Items = new List<object>();
             Header = header;
         }
