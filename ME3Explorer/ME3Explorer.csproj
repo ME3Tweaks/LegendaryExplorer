@@ -110,11 +110,11 @@
     <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
       <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="GongSolutions.Wpf.DragDrop, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\gong-wpf-dragdrop.1.1.0\lib\net46\GongSolutions.Wpf.DragDrop.dll</HintPath>
+    <Reference Include="GongSolutions.WPF.DragDrop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=91f1945125b7a587, processorArchitecture=MSIL">
+      <HintPath>..\packages\gong-wpf-dragdrop.2.0.0-alpha0106\lib\net47\GongSolutions.WPF.DragDrop.dll</HintPath>
     </Reference>
-    <Reference Include="Gu.Wpf.DataGrid2D, Version=0.2.1.5, Culture=neutral, PublicKeyToken=34988ea4e73235be, processorArchitecture=MSIL">
-      <HintPath>..\packages\Gu.Wpf.DataGrid2D.0.2.1.5\lib\net45\Gu.Wpf.DataGrid2D.dll</HintPath>
+    <Reference Include="Gu.Wpf.DataGrid2D, Version=0.2.1.6, Culture=neutral, PublicKeyToken=34988ea4e73235be, processorArchitecture=MSIL">
+      <HintPath>..\packages\Gu.Wpf.DataGrid2D.0.2.1.6\lib\net45\Gu.Wpf.DataGrid2D.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -156,6 +156,7 @@
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.2.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>

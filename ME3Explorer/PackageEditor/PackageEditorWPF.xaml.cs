@@ -3008,11 +3008,6 @@ namespace ME3Explorer
             }
         }
 
-        private void BuildME1ObjectInfo_Clicked(object sender, RoutedEventArgs e)
-        {
-            ME2Explorer.Unreal.ME2UnrealObjectInfo.generateInfo();
-        }
-
         private void FocusTreeViewNodeOld(TreeViewEntry node)
         {
             if (node == null) return;
@@ -3629,6 +3624,16 @@ namespace ME3Explorer
         {
             ME3Explorer.Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("pcc", "Mass Effect 2/3 Package File");
             ME3Explorer.Main_Window.Utilities.FileAssociations.EnsureAssociationsSet("sfm", "Mass Effect 1 Package File");
+        }
+
+        private void BuildME1ObjectInfo_Clicked(object sender, RoutedEventArgs e)
+        {
+            ME1Explorer.Unreal.ME1UnrealObjectInfo.generateInfo();
+        }
+
+        private void BuildME2ObjectInfo_Clicked(object sender, RoutedEventArgs e)
+        {
+            ME2Explorer.Unreal.ME2UnrealObjectInfo.generateInfo();
         }
     }
 

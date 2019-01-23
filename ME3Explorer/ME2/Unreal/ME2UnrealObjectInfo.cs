@@ -630,7 +630,11 @@ namespace ME2Explorer.Unreal
                     p = null;
                     break;
             }
-
+            if (p != null && (BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) != 0)
+            {
+                //Transient
+                p.transient = true;
+            }
             return p;
         }
         #endregion

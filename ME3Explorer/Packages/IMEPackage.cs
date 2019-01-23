@@ -29,6 +29,7 @@ namespace ME3Explorer.Packages
     {
         public Unreal.PropertyType type { get; set; }
         public string reference;
+        public bool transient;
     }
 
     public class ClassInfo

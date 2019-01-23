@@ -310,7 +310,7 @@ namespace ME1Explorer.Unreal
             //CUSTOM ADDITIONS
             ClassInfo info = new ClassInfo
             {
-                baseClass ="Texture2D",
+                baseClass = "Texture2D",
                 exportIndex = 0,
                 pccPath = "ME3Explorer_CustomNativeAdditions"
             };
@@ -467,7 +467,11 @@ namespace ME1Explorer.Unreal
                     p = null;
                     break;
             }
-
+            if (p != null && (BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) != 0)
+            {
+                //Transient
+                p.transient = true;
+            }
             return p;
         }
         #endregion
