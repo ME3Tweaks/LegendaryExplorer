@@ -1520,7 +1520,6 @@
     <Resource Include="Resources\package_editor_64x64.png" />
     <Resource Include="Resources\meshplorer2_64x64.png" />
     <Resource Include="Resources\meshplorer_64x64.png" />
-    <Resource Include="Resources\me3creator_64x64.png" />
     <Resource Include="Resources\interpreter_icon_64x64.png" />
     <Resource Include="Resources\interp_viewer_icon_64x64.png" />
     <Resource Include="Resources\info.ico" />
@@ -1653,6 +1652,8 @@
     <Resource Include="PackageEditor\EntryIcons\icon_swf.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_texture2d.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_sound.png" />
+    <Resource Include="Resources\dlc_unpacker_256x256.ico" />
+    <Resource Include="Resources\dlc_unpacker_64x64.png" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

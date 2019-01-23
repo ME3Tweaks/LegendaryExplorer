@@ -170,7 +170,7 @@ namespace ME3Explorer
             {
                 name = "DLC Unpacker",
                 type = typeof(DLCUnpacker.DLCUnpacker),
-                icon = Application.Current.FindResource("iconCoalescedEditor") as ImageSource,
+                icon = Application.Current.FindResource("iconDLCUnpacker") as ImageSource,
                 open = () =>
                 {
                     if (ME3Directory.gamePath != null)
@@ -505,7 +505,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer" },
                 subCategory = other,
-                description = "Level Explorer allows you to view the meshes of a level. This tool is deprecated, no longer supported, and will be replaced in the future.\n\nFor those who have trouble with this tool, level objects can also be visualized with ME3Creator.",
+                description = "Level Explorer allows you to view the meshes of a level.",
 
             });*/
             set.Add(new Tool
