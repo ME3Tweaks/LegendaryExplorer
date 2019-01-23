@@ -63,6 +63,9 @@ namespace ME3Explorer
             //load kismet font
             SequenceObjects.SText.LoadFont();
 
+
+            System.Windows.Controls.ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(Int32.MaxValue));
+
             splashScreen.Close(TimeSpan.FromMilliseconds(1));
             if (HandleCommandLineJumplistCall(Environment.GetCommandLineArgs(), out int exitCode) == 0)
             {

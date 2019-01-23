@@ -116,43 +116,54 @@
                   ItemsSource="{Binding NamesList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" 
                   ItemsPanel="{StaticResource VSP}" KeyUp="InfoTab_Objectname_ComboBox_KeyUp" 
                   GotFocus="InfoTab_Objectname_ComboBox_GotFocus" SelectionChanged="Info_ObjectNameComboBox_SelectionChanged" 
-                  IsTextSearchEnabled="True" TextSearch.TextPath="Name" IsEditable="True"/>
+                  IsTextSearchEnabled="True" TextSearch.TextPath="Name" IsEditable="True"
+                  ToolTip="Name for this entry&#10;Type a name value to automatically select it&#10;Type in a new name and press enter to add a new name"/>
         
         <TextBox Name="InfoTab_ObjectnameIndex_TextBox"  VerticalAlignment="Center" Grid.Row="1" 
                  Grid.Column="1" Grid.ColumnSpan="2" TextChanged="Info_IndexTextBox_TextChanged" 
-                 GotFocus="InfoTab_ObjectNameIndex_ComboBox_GotFocus"/>
+                 GotFocus="InfoTab_ObjectNameIndex_ComboBox_GotFocus"
+                 ToolTip="Instance number for this entry&#10;These numbers must be unique across same-full path entries&#10;If you are having issues with things not loading it may be the index is wrong"/>
 
         <ComboBox Name="InfoTab_Class_ComboBox" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" 
                   ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Class_ComboBox_GotFocus" 
-                  SelectionChanged="Info_ClassComboBox_SelectionChanged" IsTextSearchEnabled="True" TextSearch.TextPath="UIndex" />
+                  SelectionChanged="Info_ClassComboBox_SelectionChanged" IsTextSearchEnabled="True" TextSearch.TextPath="UIndex" 
+                  ToolTip="Class for this entry&#10;Type a UIndex value to automatically select it"/>
         
         <ComboBox Name="InfoTab_ImpClass_ComboBox" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" 
                   ItemsSource="{Binding NamesList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" 
                   ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_ImpClass_ComboBox_GotFocus" 
                   SelectionChanged="Info_ImpClassComboBox_SelectionChanged"
-                  IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"/>
+                  IsTextSearchEnabled="True" TextSearch.TextPath="Name"
+                  ToolTip="Class for this entry&#10;Type a name value to automatically select it"/>
 
         <ComboBox Name="InfoTab_Superclass_ComboBox" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" 
                   ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Superclass_ComboBox_GotFocus" 
                   SelectionChanged="Info_SuperClassComboBox_SelectionChanged"
-                  IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"/>
+                  IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"
+                  ToolTip="Superclass for this entry&#10;Type a UIndex value to automatically select it"/>
 
         <ComboBox Name="InfoTab_PackageLink_ComboBox" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" 
-                  ToolTip="What entry this one is nested under.&#x0a;Set to 0 to make this a top level entry." 
                   ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_PackageLink_ComboBox_GotFocus" 
                   SelectionChanged="Info_PackageLinkClassComboBox_SelectionChanged"
-                  IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"/>
+                  IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"
+                  ToolTip="Parent for this entry&#10;Set to 0 to make this item a top level entry&#10;Type a UIndex value to automatically select it"/>
+        
         <ComboBox Name="InfoTab_PackageFile_ComboBox" VerticalAlignment="Center" Grid.Row="6" Grid.Column="1" 
                   ItemsSource="{Binding NamesList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" 
-                  ToolTip="Set what package file this class' type is from." ItemsPanel="{StaticResource VSP}" 
+                  ItemsPanel="{StaticResource VSP}" 
                   GotFocus="InfoTab_PackageFile_ComboBox_GotFocus" SelectionChanged="Info_PackageFileComboBox_SelectionChanged"
-                  IsTextSearchEnabled="True" TextSearch.TextPath="Name"/>
+                  IsTextSearchEnabled="True" TextSearch.TextPath="Name"
+                  ToolTip="Filename (without extension) that contains the class for this import&#10;Type a name value to automatically select it"/>
 
         <ComboBox Name="InfoTab_Archetype_ComboBox" VerticalAlignment="Center" Grid.Row="7" 
                   Grid.Column="1" ItemsPanel="{StaticResource VSP}"  GotFocus="InfoTab_Archetype_ComboBox_GotFocus" 
                   SelectionChanged="Info_ArchetypeComboBox_SelectionChanged"
-                  IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"/>
-        <xctk:CheckComboBox Name="InfoTab_Flags_ComboBox" IsEditable="False" Delimiter=" " VerticalAlignment="Center" Grid.Row="8" Grid.Column="1" GotFocus="InfoTab_Flags_ComboBox_GotFocus" ItemSelectionChanged="InfoTab_Flags_ComboBox_ItemSelectionChanged"/>
+                  IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"
+                  ToolTip="Archetype for this entry&#10;Set to 0 to indicate no archetype&#10;Type a UIndex value to automatically select it"/>
+
+        <xctk:CheckComboBox Name="InfoTab_Flags_ComboBox" IsEditable="False" Delimiter=" " VerticalAlignment="Center" Grid.Row="8" Grid.Column="1"
+                            GotFocus="InfoTab_Flags_ComboBox_GotFocus" ItemSelectionChanged="InfoTab_Flags_ComboBox_ItemSelectionChanged"
+                            ToolTip="Flags for this entry&#10;It is very rare you will ever need to change these"/>
         <Separator Grid.ColumnSpan="2" Grid.Row="9"/>
 
         <TextBox Name="InfoTab_Headersize_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="10" Grid.Column="1" IsReadOnly="true"/>
