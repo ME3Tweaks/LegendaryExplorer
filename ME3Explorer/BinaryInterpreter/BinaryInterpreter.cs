@@ -1439,7 +1439,7 @@ Floats*/
             List<string> columnNames = new List<string>();
             int colcount = BitConverter.ToInt32(data, data.Length - 4); //this is actually index of last column, but it works the same
             int currentcoloffset = 0;
-            Console.WriteLine($"Number of columns: {colcount}");
+            //Console.WriteLine($"Number of columns: {colcount}");
             TreeNode columnsnode = new TreeNode("Columns");
 
             while (colcount >= 0)
@@ -1563,7 +1563,7 @@ Floats*/
                     int col = index % columnNames.Count();
                     curroffset += 4;
                     byte dataType = data[curroffset];
-                    int dataSize = dataType == Bio2DACell.TYPE_NAME ? 8 : 4;
+                    int dataSize = dataType == (byte) Bio2DACell.Bio2DADataType.TYPE_NAME ? 8 : 4;
                     curroffset++;
                     byte[] celldata = new byte[dataSize];
                     Buffer.BlockCopy(data, curroffset, celldata, 0, dataSize);
@@ -1589,7 +1589,7 @@ Floats*/
                         if (cell != null)
                         {
                             columnNode = new TreeNode($"{columnname}: {cell.GetDisplayableValue()}");
-                            if (cell.Type == Bio2DACell.TYPE_INT)
+                            if (cell.Type == (byte)Bio2DACell.Bio2DADataType.TYPE_INT)
                             {
                                 if (ME1_TLK_DICT != null && ME1_TLK_DICT.TryGetValue(BitConverter.ToInt32(cell.Data, 0).ToString(), out string tlkVal))
                                 {

@@ -24,7 +24,56 @@
             </TextBlock>
         </DataTemplate>
         <DataTemplate x:Key="Bio2DA_CellTemplate_Edit" DataType="{x:Type global:Bio2DACell}">
-            <ct:AutoSelectTextBox FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}" Text="{Binding Path=DisplayableValue}" />
+            <ContentControl Content="{Binding}">
+                <ContentControl.Style>
+                    <Style TargetType="ContentControl">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Type}" Value="TYPE_FLOAT">
+                                <Setter Property="ContentTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <ct:AutoSelectTextBox FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}" Text="{Binding Path=DisplayableValue}" />
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Type}" Value="TYPE_INT">
+                                <Setter Property="ContentTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <ct:AutoSelectTextBox FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}" Text="{Binding Path=DisplayableValue}" />
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Type}" Value="TYPE_NAME">
+                                <Setter Property="ContentTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <ComboBox FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}" ItemsSource="{Binding ParentNameList,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type global:Bio2DAEditorWPF}}}" SelectedIndex="{Binding ValueAsName}">
+                                                <ComboBox.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <VirtualizingStackPanel />
+                                                    </ItemsPanelTemplate>
+                                                </ComboBox.ItemsPanel>
+                                                <ComboBox.Resources>
+                                                    <DataTemplate DataType="{x:Type global:PackageEditorWPF+IndexedName}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding Path=Index}" Foreground="Gray"/>
+                                                            <TextBlock Text="{Binding Path=Name.Name}" Foreground="Black" Margin="5,0,0,0"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ComboBox.Resources>
+                                            </ComboBox>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <!-- More triggers -->
+                        </Style.Triggers>
+                    </Style>
+                </ContentControl.Style>
+            </ContentControl>
         </DataTemplate>
     </global:ExportLoaderControl.Resources>
     <DockPanel>

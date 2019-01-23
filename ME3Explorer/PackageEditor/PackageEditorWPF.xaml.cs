@@ -214,8 +214,8 @@ namespace ME3Explorer
                 indexedList.Add(new IndexedName(i, nr));
             }
 
-            string input = "Enter a name table string to search.";
-            IndexedName result = NamePromptDialog.Prompt(this, input, "Enter tag value to search", indexedList);
+            string input = "Select the name of the tag you are trying to find.";
+            IndexedName result = NamePromptDialog.Prompt(this, input, "Select tag name", indexedList);
 
             if (result != null)
             {
@@ -1334,6 +1334,8 @@ namespace ME3Explorer
             ExportLoaders[BinaryInterpreterTab_BinaryInterpreter] = BinaryInterpreter_Tab;
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
             BinaryInterpreterTab_BinaryInterpreter.SetParentNameList(NamesList); //reference to this control for name editor set
+            Bio2DATab_Bio2DAEditor.SetParentNameList(NamesList); //reference to this control for name editor set
+
             RecentButtons.AddRange(new Button[] { RecentButton1, RecentButton2, RecentButton3, RecentButton4, RecentButton5, RecentButton6, RecentButton7, RecentButton8, RecentButton9, RecentButton10, });
             LoadRecentList();
             RefreshRecent(false);

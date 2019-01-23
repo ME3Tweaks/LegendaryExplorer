@@ -1,4 +1,6 @@
 ﻿using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
+using ME3Explorer.Unreal;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -17,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static ME3Explorer.PackageEditorWPF;
 
 namespace ME3Explorer
 {
@@ -25,7 +28,9 @@ namespace ME3Explorer
     /// </summary>
     public partial class Bio2DAEditorWPF : ExportLoaderControl
     {
-        private Bio2DA CachedME12DA_TalentsGUI;
+        public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
+
+        //private Bio2DA CachedME12DA_TalentsGUI;
         private Bio2DA CachedME12DA_ClassTalents_Talents;
         private Bio2DA CachedME12DA_TalentEffectLevels;
 
@@ -103,7 +108,7 @@ namespace ME3Explorer
                                 //Get Talent ID name
                                 for (int i = 0; i < CachedME12DA_TalentEffectLevels.RowNames.Count; i++)
                                 {
-                                    if (CachedME12DA_TalentEffectLevels[i,0].GetIntValue() == item.GetIntValue())
+                                    if (CachedME12DA_TalentEffectLevels[i, 0].GetIntValue() == item.GetIntValue())
                                     {
                                         int labelColumn = CachedME12DA_TalentEffectLevels.GetColumnIndexByName("Talent_Label");
                                         string label = CachedME12DA_TalentEffectLevels[i, labelColumn].GetDisplayableValue();
@@ -162,6 +167,11 @@ namespace ME3Explorer
                 Table2DA.Write2DAToExcel(d.FileName);
                 MessageBox.Show("Done");
             }
+        }
+
+        internal void SetParentNameList(ObservableCollectionExtended<IndexedName> namesList)
+        {
+            ParentNameList = namesList;
         }
     }
 

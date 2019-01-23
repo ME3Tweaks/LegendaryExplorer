@@ -11,9 +11,6 @@ namespace ME3Explorer
 {
     public class Bio2DACell : INotifyPropertyChanged
     {
-        public const byte TYPE_INT = 0;
-        public const byte TYPE_NAME = 1;
-        public const byte TYPE_FLOAT = 2;
         public byte[] Data { get; set; }
         public int Offset { get; private set; }
         public IMEPackage Pcc { get; private set; }
@@ -119,6 +116,12 @@ namespace ME3Explorer
         public int GetIntValue()
         {
             return BitConverter.ToInt32(Data, 0);
+        }
+
+        public int ValueAsName
+        {
+            get { return GetIntValue(); }
+            set { Data = BitConverter.GetBytes((long)value); }
         }
 
         public float GetFloatValue()

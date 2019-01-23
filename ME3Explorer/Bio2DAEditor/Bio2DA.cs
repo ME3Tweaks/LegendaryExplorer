@@ -24,7 +24,7 @@ namespace ME3Explorer
         IExportEntry export;
         public Bio2DA(IExportEntry export)
         {
-            Console.WriteLine("Loading " + export.ObjectName);
+            //Console.WriteLine("Loading " + export.ObjectName);
             this.export = export;
             IMEPackage pcc = export.FileRef;
             byte[] data = export.Data;
@@ -102,7 +102,7 @@ namespace ME3Explorer
                         byte dataType = 255;
                         dataType = data[curroffset];
                         curroffset++;
-                        int dataSize = dataType == Bio2DACell.TYPE_NAME ? 8 : 4;
+                        int dataSize = dataType == (byte)Bio2DACell.Bio2DADataType.TYPE_NAME ? 8 : 4;
                         byte[] celldata = new byte[dataSize];
                         Buffer.BlockCopy(data, curroffset, celldata, 0, dataSize);
                         Bio2DACell cell = new Bio2DACell(pcc, curroffset, dataType, celldata);
@@ -127,7 +127,7 @@ namespace ME3Explorer
                     int col = index % ColumnNames.Count();
                     curroffset += 4;
                     byte dataType = data[curroffset];
-                    int dataSize = dataType == Bio2DACell.TYPE_NAME ? 8 : 4;
+                    int dataSize = dataType == (byte)Bio2DACell.Bio2DADataType.TYPE_NAME ? 8 : 4;
                     curroffset++;
                     byte[] celldata = new byte[dataSize];
                     Buffer.BlockCopy(data, curroffset, celldata, 0, dataSize);
@@ -137,7 +137,7 @@ namespace ME3Explorer
                     curroffset += dataSize;
                 }
             }
-            Console.WriteLine("Finished loading " + export.ObjectName);
+            //Console.WriteLine("Finished loading " + export.ObjectName);
         }
 
         internal string GetColumnNameByIndex(int columnIndex)
