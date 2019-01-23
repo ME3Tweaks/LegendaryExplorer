@@ -145,8 +145,7 @@ namespace ME3Explorer.Packages
         {
             if (name == null)
             {
-                Debug.WriteLine("THIS SHOULD NOT OCCUR.");
-                Debugger.Break();
+                throw new Exception("Cannot add a null name to the list of names for a package file.\nThis is a bug in ME3Explorer.");
             }
             if (!names.Contains(name))
             {
