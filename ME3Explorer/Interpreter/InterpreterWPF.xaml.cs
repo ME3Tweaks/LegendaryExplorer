@@ -495,9 +495,21 @@ namespace ME3Explorer
             (Interpreter_Hexbox.ByteProvider as DynamicByteProvider).Bytes.Clear();
             (Interpreter_Hexbox.ByteProvider as DynamicByteProvider).Bytes.AddRange(export.Data);
             Interpreter_Hexbox.Invalidate();
-            Interpreter_Hexbox_Host.VerticalAlignment = VerticalAlignment.Top;
-            Interpreter_Hexbox_Host.VerticalAlignment = VerticalAlignment.Stretch;
-
+            var currentWidth = Interpreter_Hexbox_Host.Width;
+            if (currentWidth > 500)
+            {
+                Interpreter_Hexbox.Width -= 1;
+                Interpreter_Hexbox_Host.UpdateLayout();
+                Interpreter_Hexbox.Width += 1;
+            } else
+            {
+                Interpreter_Hexbox.Width += 1;
+                Interpreter_Hexbox_Host.UpdateLayout();
+                Interpreter_Hexbox.Width -= 1;
+            }
+            //Interpreter_Hexbox.Width += 1;
+            Interpreter_Hexbox_Host.UpdateLayout();
+            //Interpreter_Hexbox.Width -= 1;
             //InterpreterWPF_DockPanel.UpdateLayout();
             //Interpreter_Hexbox_Host.UpdateLayout();
             //Interpreter_Hexbox.Height = (int) Interpreter_Hexbox_Host.ActualHeight;
@@ -1523,7 +1535,6 @@ namespace ME3Explorer
             //remove in the event this object is reloaded again
             Interpreter_Hexbox.ByteProvider.Changed -= Interpreter_Hexbox_BytesChanged;
             Interpreter_Hexbox.ByteProvider.Changed += Interpreter_Hexbox_BytesChanged;
-
         }
 
         private void Interpreter_Hexbox_BytesChanged(object sender, EventArgs e)
