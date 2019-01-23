@@ -49,13 +49,14 @@ namespace ME3Explorer.MetadataEditor
         private const int HEADER_OFFSET_IMP_IDXOBJECTNAME = 0x14;
         private const int HEADER_OFFSET_IMP_IDXPACKAGEFILE = 0x0;
         private IEntry CurrentLoadedEntry;
-        private List<object> AllEntriesList;
+        public ObservableCollectionExtended<object> AllEntriesList { get; set; } = new ObservableCollectionExtended<object>();
         private HexBox Header_Hexbox;
         private bool loadingNewData = false;
 
         public MetadataEditorWPF()
         {
             InitializeComponent();
+            DataContext = this;
         }
 
         public override bool CanParse(IExportEntry exportEntry)
@@ -63,19 +64,19 @@ namespace ME3Explorer.MetadataEditor
             return true;
         }
 
-        private void RefreshAllEntriesList(IMEPackage Pcc)
+        public void RefreshAllEntriesList(IMEPackage Pcc)
         {
-            AllEntriesList = new List<object>();
+            var allEntriesNew = new List<object>();
             for (int i = Pcc.Imports.Count - 1; i >= 0; i--)
             {
-                AllEntriesList.Add(Pcc.Imports[i]);
+                allEntriesNew.Add(Pcc.Imports[i]);
             }
-            AllEntriesList.Add(new ZeroUIndexClassEntry());
+            allEntriesNew.Add(new ZeroUIndexClassEntry());
             foreach (IExportEntry exp in Pcc.Exports)
             {
-                AllEntriesList.Add(exp);
+                allEntriesNew.Add(exp);
             }
-            InfoTab_PackageLink_ComboBox.ItemsSource = AllEntriesList;
+            AllEntriesList.ReplaceAll(allEntriesNew);
         }
 
         public override void LoadExport(IExportEntry exportEntry)
@@ -106,14 +107,14 @@ namespace ME3Explorer.MetadataEditor
                 if (exportEntry.idxClass != 0)
                 {
                     //IEntry _class = pcc.getEntry(exportEntry.idxClass);
-                    InfoTab_Class_ComboBox.ItemsSource = AllEntriesList;
+                    //InfoTab_Class_ComboBox.ItemsSource = AllEntriesList;
                     InfoTab_Class_ComboBox.SelectedIndex = exportEntry.idxClass + exportEntry.FileRef.Imports.Count; //make positive
                 }
                 else
                 {
                     InfoTab_Class_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
                 }
-                InfoTab_Superclass_ComboBox.ItemsSource = AllEntriesList;
+                //InfoTab_Superclass_ComboBox.ItemsSource = AllEntriesList;
                 if (exportEntry.idxClassParent != 0)
                 {
                     InfoTab_Superclass_ComboBox.SelectedIndex = exportEntry.idxClassParent + exportEntry.FileRef.Imports.Count; //make positive
@@ -133,7 +134,7 @@ namespace ME3Explorer.MetadataEditor
                 }
                 InfoTab_Headersize_TextBox.Text = exportEntry.Header.Length + " bytes";
                 InfoTab_ObjectnameIndex_TextBox.Text = BitConverter.ToInt32(exportEntry.Header, HEADER_OFFSET_EXP_IDXOBJECTNAME + 4).ToString();
-                InfoTab_Archetype_ComboBox.ItemsSource = AllEntriesList;
+                //InfoTab_Archetype_ComboBox.ItemsSource = AllEntriesList;
                 if (exportEntry.idxArchtype != 0)
                 {
                     InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.idxArchtype + exportEntry.FileRef.Imports.Count; //make positive
@@ -300,8 +301,8 @@ namespace ME3Explorer.MetadataEditor
             InfoTab_PackageLink_ComboBox.SelectedItem = null;
             InfoTab_Headersize_TextBox.Text = null;
             InfoTab_ObjectnameIndex_TextBox.Text = null;
-            InfoTab_Archetype_ComboBox.ItemsSource = null;
-            InfoTab_Archetype_ComboBox.Items.Clear();
+            //InfoTab_Archetype_ComboBox.ItemsSource = null;
+            //InfoTab_Archetype_ComboBox.Items.Clear();
             InfoTab_Archetype_ComboBox.SelectedItem = null;
             InfoTab_Flags_ComboBox.ItemsSource = null;
             InfoTab_Flags_ComboBox.SelectedItem = null;

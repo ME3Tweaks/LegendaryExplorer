@@ -127,7 +127,8 @@
         <ComboBox Name="InfoTab_Class_ComboBox" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" 
                   ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Class_ComboBox_GotFocus" 
                   SelectionChanged="Info_ClassComboBox_SelectionChanged" IsTextSearchEnabled="True" TextSearch.TextPath="UIndex" 
-                  ToolTip="Class for this entry&#10;Type a UIndex value to automatically select it"/>
+                  ToolTip="Class for this entry&#10;Type a UIndex value to automatically select it"
+                  ItemsSource="{Binding AllEntriesList}"/>
         
         <ComboBox Name="InfoTab_ImpClass_ComboBox" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" 
                   ItemsSource="{Binding NamesList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" 
@@ -140,13 +141,15 @@
                   ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_Superclass_ComboBox_GotFocus" 
                   SelectionChanged="Info_SuperClassComboBox_SelectionChanged"
                   IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"
-                  ToolTip="Superclass for this entry&#10;Type a UIndex value to automatically select it"/>
+                  ToolTip="Superclass for this entry&#10;Type a UIndex value to automatically select it"
+                  ItemsSource="{Binding AllEntriesList}"/>
 
         <ComboBox Name="InfoTab_PackageLink_ComboBox" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" 
                   ItemsPanel="{StaticResource VSP}" GotFocus="InfoTab_PackageLink_ComboBox_GotFocus" 
                   SelectionChanged="Info_PackageLinkClassComboBox_SelectionChanged"
                   IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"
-                  ToolTip="Parent for this entry&#10;Set to 0 to make this item a top level entry&#10;Type a UIndex value to automatically select it"/>
+                  ToolTip="Parent for this entry&#10;Set to 0 to make this item a top level entry&#10;Type a UIndex value to automatically select it"
+                  ItemsSource="{Binding AllEntriesList}"/>
         
         <ComboBox Name="InfoTab_PackageFile_ComboBox" VerticalAlignment="Center" Grid.Row="6" Grid.Column="1" 
                   ItemsSource="{Binding NamesList, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" 
@@ -159,7 +162,8 @@
                   Grid.Column="1" ItemsPanel="{StaticResource VSP}"  GotFocus="InfoTab_Archetype_ComboBox_GotFocus" 
                   SelectionChanged="Info_ArchetypeComboBox_SelectionChanged"
                   IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"
-                  ToolTip="Archetype for this entry&#10;Set to 0 to indicate no archetype&#10;Type a UIndex value to automatically select it"/>
+                  ToolTip="Archetype for this entry&#10;Set to 0 to indicate no archetype&#10;Type a UIndex value to automatically select it"
+                  ItemsSource="{Binding AllEntriesList}"/>
 
         <xctk:CheckComboBox Name="InfoTab_Flags_ComboBox" IsEditable="False" Delimiter=" " VerticalAlignment="Center" Grid.Row="8" Grid.Column="1"
                             GotFocus="InfoTab_Flags_ComboBox_GotFocus" ItemSelectionChanged="InfoTab_Flags_ComboBox_ItemSelectionChanged"

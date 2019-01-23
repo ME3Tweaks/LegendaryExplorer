@@ -1809,6 +1809,8 @@ namespace ME3Explorer
             List<int> headerChanges = updates.Where(x => x.change == PackageChange.ExportHeader).Select(x => x.index).OrderBy(x => x).ToList();
             if (addedChanges.Count > 0)
             {
+                ClassDropdownList.ReplaceAll(Pcc.Exports.Select(x => x.idxClass).Distinct().Select(Pcc.getObjectName).ToList().OrderBy(p => p));
+                MetadataTab_MetadataEditor.RefreshAllEntriesList(Pcc);
                 //Find nodes that haven't been generated and added yet
                 List<PackageUpdate> addedChangesByUIndex = new List<PackageUpdate>();
                 foreach (PackageUpdate u in addedChanges)
