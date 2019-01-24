@@ -282,6 +282,14 @@ namespace ME3Explorer.Packages
                 }
                 return 30;
             }
+            if (!ObjectName.StartsWith("Default__"))
+            {
+                switch (ClassName)
+                {
+                    case "ParticleSystemComponent":
+                        return 0x10;
+                }
+            }
             int result = 8;
             int test0 = BitConverter.ToInt32(_data, 0);
             int test1 = BitConverter.ToInt32(_data, 4);
@@ -294,6 +302,7 @@ namespace ME3Explorer.Packages
             if (_data.Length > 0x10 && pcc.isName(test1) && pcc.getNameEntry(test1) == ObjectName && test0 == 0 && test1 != UIndex && test2 == 0) //!= UIndex will cover more cases, but there's still the very tiny case where they line up
             {
                 //Primitive Component
+                Debug.WriteLine("Primitive Component: " + ClassName + " (" + ObjectName + ")");
                 result = 0x10;
             }
             return result;
