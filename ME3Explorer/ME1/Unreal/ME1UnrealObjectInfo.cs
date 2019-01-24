@@ -40,6 +40,15 @@ namespace ME1Explorer.Unreal
             }
         }
 
+        private static string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
+            "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform",
+            "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "BioRwBox44" };
+
+        public static bool isImmutableStruct(string structName)
+        {
+            return ImmutableStructs.Contains(structName);
+        }
+
         public static string getEnumTypefromProp(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
         {
             PropertyInfo p = getPropertyInfo(className, propName, inStruct, nonVanillaClassInfo);

@@ -614,7 +614,7 @@ namespace ME3Explorer
                                 n.Name = (-pos).ToString();
                                 t.Nodes.Add(n);
                                 n = t.LastNode;
-                                if (info != null && (ME3UnrealObjectInfo.isImmutable(info.reference) || arrayListPropHeaders.Count == 0))
+                                if (info != null && (UnrealObjectInfo.isImmutable(info.reference,pcc.Game) || arrayListPropHeaders.Count == 0))
                                 {
                                     readerpos = pos;
                                     GenerateSpecialStruct(n, info.reference, header.size / arrayLength);

@@ -16,6 +16,21 @@ namespace ME3Explorer.Unreal
 {
     public static class UnrealObjectInfo
     {
+        public static bool isImmutable(string structType, MEGame game)
+        {
+            switch (game)
+            {
+                case MEGame.ME1:
+                    return ME1UnrealObjectInfo.isImmutableStruct(structType);
+                case MEGame.ME2:
+                    return ME2UnrealObjectInfo.isImmutableStruct(structType);
+                case MEGame.ME3:
+                    return ME3UnrealObjectInfo.isImmutableStruct(structType);
+                case MEGame.UDK:
+                    return ME3UnrealObjectInfo.isImmutableStruct(structType);
+            }
+            return false; //unknown game
+        }
 
         public static bool inheritsFrom(this IExportEntry entry, string baseClass)
         {
@@ -147,7 +162,7 @@ namespace ME3Explorer.Unreal
             "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform",
             "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "BioRwBox44" };
 
-        public static bool isImmutable(string structName)
+        public static bool isImmutableStruct(string structName)
         {
             return ImmutableStructs.Contains(structName);
         }
@@ -391,7 +406,7 @@ namespace ME3Explorer.Unreal
         {
             if (Structs.ContainsKey(className))
             {
-                bool immutable = isImmutable(className);
+                bool immutable = UnrealObjectInfo.isImmutable(className, MEGame.ME3);
                 ClassInfo info = Structs[className];
                 try
                 {
@@ -483,7 +498,7 @@ namespace ME3Explorer.Unreal
         {
             if (Structs.ContainsKey(className))
             {
-                bool immutable = isImmutable(className);
+                bool immutable = UnrealObjectInfo.isImmutable(className, MEGame.ME3);
                 ClassInfo info = Structs[className];
                 try
                 {

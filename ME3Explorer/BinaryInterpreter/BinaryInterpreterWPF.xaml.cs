@@ -758,7 +758,7 @@ namespace ME3Explorer
 
                 MemoryStream ms = new MemoryStream(data);
                 ms.Position = offset;
-                var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, ms, "ScriptStruct", includeNoneProperty: true);
+                var scriptStructProperties = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, ms, "ScriptStruct", includeNoneProperty: true, entry: CurrentLoadedExport);
 
                 UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
                 foreach (UProperty prop in scriptStructProperties)

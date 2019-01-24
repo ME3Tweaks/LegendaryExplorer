@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace ME3Explorer.Packages
 {
@@ -25,6 +26,7 @@ namespace ME3Explorer.Packages
         Byte,
     }
 
+    [DebuggerDisplay("PropertyInfo | {type} , parent: {reference}, transient: {transient}")]
     public class PropertyInfo
     {
         public Unreal.PropertyType type { get; set; }

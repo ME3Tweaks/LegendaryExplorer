@@ -120,7 +120,7 @@ namespace ME3Explorer.Unreal
                             string structType = pcc.getNameEntry(stream.ReadValueS32());
                             stream.Seek(4, SeekOrigin.Current);
                             long valOffset = stream.Position;
-                            if (ME3UnrealObjectInfo.isImmutable(structType))
+                            if (UnrealObjectInfo.isImmutable(structType, pcc.Game))
                             {
                                 PropertyCollection structProps = ReadSpecialStruct(pcc, stream, structType, size);
                                 props.Add(new StructProperty(structType, structProps, nameRef, true) { StartOffset = propertyStartPosition, ValueOffset = valOffset });
@@ -176,6 +176,7 @@ namespace ME3Explorer.Unreal
                                                 classInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo((IExportEntry)entry);
                                             }
                                         }
+
                                         enumType.Name = UnrealObjectInfo.GetEnumType(pcc.Game, name, typeName, classInfo);
                                     }
                                     try
@@ -220,7 +221,7 @@ namespace ME3Explorer.Unreal
                             break;
                         case PropertyType.Unknown:
                             {
-                               // Debugger.Break();
+                                // Debugger.Break();
                                 props.Add(new UnknownProperty(stream, size, pcc.getNameEntry(typeIdx), nameRef) { StartOffset = propertyStartPosition });
                             }
                             break;
@@ -392,13 +393,13 @@ namespace ME3Explorer.Unreal
             }
             else if (structType == "NavReference")
             {
+                props.Add(new ObjectProperty(stream, "Actor"));
                 string[] labels = { "A", "B", "C", "D" };
                 for (int i = 0; i < 4; i++)
                 {
                     long startPos = stream.Position;
                     props.Add(new IntProperty(stream, labels[i]) { StartOffset = startPos });
                 }
-                props.Add(new ObjectProperty(stream, "Actor"));
             }
             else if (structType == "IntPoint")
             {
@@ -442,6 +443,7 @@ namespace ME3Explorer.Unreal
                         }
                         else
                         {
+                            Debug.WriteLine("Build&cache for ME2 struct: " + structType);
                             defaultProps = ME2Explorer.Unreal.ME2UnrealObjectInfo.getDefaultStructValue(structType);
                             if (defaultProps == null)
                             {
@@ -451,13 +453,16 @@ namespace ME3Explorer.Unreal
                             }
                             defaultStructValuesME2.Add(structType, defaultProps);
                         }
+                        Debug.WriteLine("ME2: Build immuatable struct properties for struct type " + structType);
                         foreach (var prop in defaultProps)
                         {
                             UProperty uProperty = ReadSpecialStructProp(pcc, stream, prop, structType);
+                            Debug.WriteLine("  >> ME2: Built immutable property: " + uProperty.Name + " at 0x" + uProperty.StartOffset.ToString("X5"));
                             if (uProperty.PropType != PropertyType.None)
                             {
                                 props.Add(uProperty);
                             }
+
                         }
                         return props;
                     }
@@ -591,7 +596,7 @@ namespace ME3Explorer.Unreal
                             propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, currentInfo);
                         }
                         string arrayStructType = propertyInfo?.reference;
-                        if (IsInImmutable || ME3UnrealObjectInfo.isImmutable(arrayStructType))
+                        if (IsInImmutable || UnrealObjectInfo.isImmutable(arrayStructType, pcc.Game))
                         {
                             int arraySize = 0;
                             if (!IsInImmutable)
@@ -603,10 +608,18 @@ namespace ME3Explorer.Unreal
                             for (int i = 0; i < count; i++)
                             {
                                 long offset = stream.Position;
-                                PropertyCollection structProps = ReadSpecialStruct(pcc, stream, arrayStructType, arraySize / count);
-                                StructProperty structP = new StructProperty(arrayStructType, structProps, isImmutable: true) { StartOffset = offset };
-                                structP.ValueOffset = offset;
-                                props.Add(structP);
+                                try
+                                {
+                                    PropertyCollection structProps = ReadSpecialStruct(pcc, stream, arrayStructType, arraySize / count);
+                                    StructProperty structP = new StructProperty(arrayStructType, structProps, isImmutable: true) { StartOffset = offset };
+                                    structP.ValueOffset = offset;
+                                    props.Add(structP);
+                                }
+                                catch (Exception e)
+                                {
+                                    Debug.WriteLine("ERROR READING ARRAY PROP");
+                                    return new ArrayProperty<StructProperty>(arrayOffset, props, arrayType, name);
+                                }
                             }
                         }
                         else
@@ -783,7 +796,7 @@ namespace ME3Explorer.Unreal
                 {
                     prop.WriteTo(stream, pcc, IsImmutable);
                 }
-                if (!IsImmutable && (Properties.Count == 0  || !(Properties.Last() is NoneProperty)))
+                if (!IsImmutable && (Properties.Count == 0 || !(Properties.Last() is NoneProperty)))
                 {
                     stream.WriteNoneProperty(pcc);
                 }

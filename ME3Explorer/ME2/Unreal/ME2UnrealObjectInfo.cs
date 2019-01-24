@@ -266,20 +266,8 @@ namespace ME2Explorer.Unreal
             "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform", "NavReference",
             "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "BioRwBox44" };
 
-        public static bool isImmutable(string structName)
+        public static bool isImmutableStruct(string structName)
         {
-            string hex = "991A000000000000E62D000000000000040000000000000000000000";
-            string str = "0x";
-            for (int i = 0; i < hex.Length; i++)
-            {
-                if (i % 2 == 0 && i != 0)
-                {
-                    Debug.Write(str + ", ");
-                    str = "0x";
-                }
-                str += hex[i];
-            }
-            Debug.WriteLine("");
             return ImmutableStructs.Contains(structName);
         }
 
@@ -324,7 +312,7 @@ namespace ME2Explorer.Unreal
             0x10, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00,
             0xC9, 0x2A, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00, 
+            0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, //A
             0x00, 0x00, 0x00, 0x00, //B
             0x00, 0x00, 0x00, 0x00, //C
@@ -345,6 +333,7 @@ namespace ME2Explorer.Unreal
 */
 
         private static byte[] PlaneDefault = { 
+            //TODO: THIS IS COPIED FROM ME3. REBUILD BYTES AS THEY WOULD APPEAR IN THE ENGINE.PCC WITH CORRECT NAME INDICES
             //X
             0x09, 0x03, 0, 0, 0, 0, 0, 0, 0x15, 0x01, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             //Y
@@ -362,7 +351,7 @@ namespace ME2Explorer.Unreal
         {
             if (Structs.ContainsKey(className))
             {
-                bool immutable = isImmutable(className);
+                bool immutable = UnrealObjectInfo.isImmutable(className, MEGame.ME2);
                 ClassInfo info = Structs[className];
                 try
                 {
@@ -396,13 +385,21 @@ namespace ME2Explorer.Unreal
                             foreach (var prop in props)
                             {
                                 //remove transient props
-                                if (!info.properties.ContainsKey(prop.Name) && info.baseClass == "Class")
+                                if (info.properties.TryGetValue(prop.Name, out PropertyInfo propInfo))
                                 {
-                                    toRemove.Add(prop);
+                                    if (propInfo.transient)
+                                    {
+                                        toRemove.Add(prop);
+                                    }
                                 }
+                                //if (!info.properties.ContainsKey(prop.Name) && info.baseClass == "Class")
+                                //{
+                                //    toRemove.Add(prop);
+                                //}
                             }
                             foreach (var prop in toRemove)
                             {
+                                Debug.WriteLine("ME2: Get Default Struct value (" + className + ") - removing transient prop: " + prop.Name);
                                 props.Remove(prop);
                             }
                             return props;

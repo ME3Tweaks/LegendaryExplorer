@@ -1052,7 +1052,7 @@ namespace ME3Explorer.Unreal
                     m.Write(BitConverter.GetBytes(size), 0, 4);
                     m.Write(new byte[4], 0, 4);
                     m.Write(BitConverter.GetBytes(count), 0, 4);
-                    if (AllProps.Count != 0 && (info == null || !ME3UnrealObjectInfo.isImmutable(info.reference)))
+                    if (AllProps.Count != 0 && (info == null || !UnrealObjectInfo.isImmutable(info.reference,pcc.Game)))
                     {
                         foreach (Property pp in AllProps)
                             ImportProperty(pcc, importpcc, pp, className, m, inStruct);

@@ -1356,7 +1356,7 @@ namespace ME3Explorer
                         }
                         else if (newSelectedItem.Parent.Property is StructProperty structParentProp)
                         {
-                            if (ME3UnrealObjectInfo.isImmutable(structParentProp.StructType))
+                            if (UnrealObjectInfo.isImmutable(structParentProp.StructType, CurrentLoadedExport.FileRef.Game))
                             {
                                 //We are inside of an immutable struct
                                 Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef, true));
