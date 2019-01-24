@@ -64,6 +64,20 @@ namespace ME3Explorer.PackageDumper
             }
         }
 
+        private int _overallProgressMaximum;
+        public int OverallProgressMaximum
+        {
+            get { return _overallProgressMaximum; }
+            set
+            {
+                if (value != _overallProgressMaximum)
+                {
+                    _overallProgressMaximum = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private int _currentFileProgressValue;
         public int CurrentFileProgressValue
         {
@@ -73,6 +87,20 @@ namespace ME3Explorer.PackageDumper
                 if (value != _currentFileProgressValue)
                 {
                     _currentFileProgressValue = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _currentFileProgressMaximum;
+        public int CurrentFileProgressMaximum
+        {
+            get { return _currentFileProgressMaximum; }
+            set
+            {
+                if (value != _currentFileProgressMaximum)
+                {
+                    _currentFileProgressMaximum = value;
                     OnPropertyChanged();
                 }
             }
@@ -243,24 +271,27 @@ namespace ME3Explorer.PackageDumper
             var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
             var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s))).ToList();
             //string[] files = Directory.GetFiles(path, "*.pcc", SearchOption.AllDirectories);
+            bool beginParsing = false;
+            OverallProgressMaximum = files.Count;
             for (int i = 0; i < files.Count; i++)
             {
                 if (!DumpCanceled)
                 {
                     string file = Path.GetFullPath(files[i]);
-                    //if (file.ToLower().EndsWith("startup_int.pcc"))
+                    //if (file.EndsWith("BioD_CitHub_DockWrex_LOC_INT.pcc") || beginParsing)
                     //{
-                    string outfolder = outputfolder;
-                    if (outfolder != null)
-                    {
-                        string relative = GetRelativePath(path, Directory.GetParent(file).ToString());
-                        outfolder = Path.Combine(outfolder, relative);
-                    }
-                    CurrentOverallOperationText = "Dumping " + Path.GetFileNameWithoutExtension(file);
+                    beginParsing = true;
+                        string outfolder = outputfolder;
+                        if (outfolder != null)
+                        {
+                            string relative = GetRelativePath(path, Directory.GetParent(file).ToString());
+                            outfolder = Path.Combine(outfolder, relative);
+                        }
+                        CurrentOverallOperationText = "Dumping " + Path.GetFileNameWithoutExtension(file);
 
-                    Console.WriteLine("[" + (i + 1) + "/" + files.Count + "] Dumping " + Path.GetFileNameWithoutExtension(file));
-                    dumpPCCFile(file, outfolder);
-                    OverallProgressValue = (int)((i * 1.0 / files.Count) * 100);
+                        Debug.WriteLine("[" + (i + 1) + "/" + files.Count + "] Dumping " + Path.GetFileNameWithoutExtension(file));
+                        dumpPCCFile(file, outfolder);
+                        OverallProgressValue = i;
                     //}
                 }
             }
@@ -282,7 +313,7 @@ namespace ME3Explorer.PackageDumper
             //try
             {
                 IMEPackage pcc = MEPackageHandler.OpenMEPackage(file);
-
+                CurrentFileProgressMaximum = pcc.ExportCount;
                 string outfolder = outputfolder;
                 if (outfolder == null)
                 {
@@ -351,7 +382,7 @@ namespace ME3Explorer.PackageDumper
                             return;
                         }
                         //writeVerboseLine("Parse export #" + index);
-                        CurrentFileProgressValue = (int)(((exp.UIndex * 1.0) / pcc.ExportCount) * 100);
+                        CurrentFileProgressValue = exp.UIndex;
                         //bool isCoalesced = coalesced && exp.likelyCoalescedVal;
                         String className = exp.ClassName;
                         bool isCoalesced = exp.ReadsFromConfig;
@@ -406,10 +437,6 @@ namespace ME3Explorer.PackageDumper
                                     foreach (UProperty prop in props)
                                     {
                                         InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, exp);
-                                    }
-                                    if (exp.GetFullPath == "BIOG_V_Crt_Rbt__Death_Z.Prefabs.G_Turret.v_TurretDeath_Prefab.v_TurretDeath_Prefab_Arc1.SunFlareSprite3" || exp.GetFullPath == "BioBaseResources.Male_Stick_Man_Animset_ST_Enter_01")
-                                    {
-                                        //  Debugger.Break();
                                     }
                                     topLevelTree.PrintPretty("", stringoutput, false, exp);
                                     stringoutput.WriteLine();
@@ -593,6 +620,11 @@ namespace ME3Explorer.PackageDumper
         private void PackageDumper_Closing(object sender, CancelEventArgs e)
         {
             DumpCanceled = true;
+        }
+
+        private void PackageDumper_Loaded(object sender, RoutedEventArgs e)
+        {
+            Owner = null; //Detach from parent
         }
     }
 }

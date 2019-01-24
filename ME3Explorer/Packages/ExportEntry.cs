@@ -299,10 +299,10 @@ namespace ME3Explorer.Packages
             if (pcc.isName(test1) && pcc.isName(test2) && test2 != 0)
                 result = 8;
 
-            if (_data.Length > 0x10 && pcc.isName(test1) && pcc.getNameEntry(test1) == ObjectName && test0 == 0 && test1 != UIndex && test2 == 0) //!= UIndex will cover more cases, but there's still the very tiny case where they line up
+            if (_data.Length > 0x10 && pcc.isName(test1) && pcc.getNameEntry(test1) == ObjectName && test0 == 0 && test2 == indexValue) //!= UIndex will cover more cases, but there's still the very tiny case where they line up
             {
                 //Primitive Component
-                Debug.WriteLine("Primitive Component: " + ClassName + " (" + ObjectName + ")");
+                //Debug.WriteLine("Primitive Component: " + ClassName + " (" + ObjectName + ")");
                 result = 0x10;
             }
             return result;
