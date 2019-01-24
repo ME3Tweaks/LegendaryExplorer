@@ -6,7 +6,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ME3Explorer.PackageDumper"
         mc:Ignorable="d"
-    Closing="PackageDumper_Closing"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        Closing="PackageDumper_Closing"
         Title="Package Dumper" Height="270" Width="500">
     <StackPanel >
         <TextBlock Padding="5" Background="LightGray" TextWrapping="Wrap" Text="Package dumps are text file dumps of data that you can view in package editor. You can use tools such as GrepWin to search for strings, which is very useful for finding certain things in game files."/>

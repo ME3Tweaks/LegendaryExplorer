@@ -263,7 +263,7 @@ namespace ME2Explorer.Unreal
         }
 
         private static string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
-            "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform", "NavReference",
+            "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform", "NavReference", "FontCharacter", "CovPosInfo",
             "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "BioRwBox44" };
 
         public static bool isImmutableStruct(string structName)
@@ -347,7 +347,7 @@ namespace ME2Explorer.Unreal
         #endregion
 
 
-        public static PropertyCollection getDefaultStructValue(string className)
+        public static PropertyCollection getDefaultStructValue(string className, bool stripTransients = true)
         {
             if (Structs.ContainsKey(className))
             {
@@ -381,26 +381,29 @@ namespace ME2Explorer.Unreal
                                 buff = exportToRead.Data.Skip(0x30).ToArray();
                             }
                             PropertyCollection props = PropertyCollection.ReadProps(importPCC, new MemoryStream(buff), className);
-                            List<UProperty> toRemove = new List<UProperty>();
-                            foreach (var prop in props)
+                            if (stripTransients)
                             {
-                                //remove transient props
-                                if (info.properties.TryGetValue(prop.Name, out PropertyInfo propInfo))
+                                List<UProperty> toRemove = new List<UProperty>();
+                                foreach (var prop in props)
                                 {
-                                    if (propInfo.transient)
+                                    //remove transient props
+                                    if (info.properties.TryGetValue(prop.Name, out PropertyInfo propInfo))
                                     {
-                                        toRemove.Add(prop);
+                                        if (propInfo.transient)
+                                        {
+                                            toRemove.Add(prop);
+                                        }
                                     }
+                                    //if (!info.properties.ContainsKey(prop.Name) && info.baseClass == "Class")
+                                    //{
+                                    //    toRemove.Add(prop);
+                                    //}
                                 }
-                                //if (!info.properties.ContainsKey(prop.Name) && info.baseClass == "Class")
-                                //{
-                                //    toRemove.Add(prop);
-                                //}
-                            }
-                            foreach (var prop in toRemove)
-                            {
-                                Debug.WriteLine("ME2: Get Default Struct value (" + className + ") - removing transient prop: " + prop.Name);
-                                props.Remove(prop);
+                                foreach (var prop in toRemove)
+                                {
+                                    Debug.WriteLine("ME2: Get Default Struct value (" + className + ") - removing transient prop: " + prop.Name);
+                                    props.Remove(prop);
+                                }
                             }
                             return props;
                         }

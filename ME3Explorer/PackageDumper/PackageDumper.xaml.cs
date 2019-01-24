@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ME3Explorer.PackageDumper
@@ -137,8 +138,9 @@ namespace ME3Explorer.PackageDumper
 
         #endregion
 
-        public PackageDumper()
+        public PackageDumper(Window owner = null)
         {
+            Owner = owner;
             DataContext = this;
             LoadCommands();
             InitializeComponent();
@@ -246,6 +248,8 @@ namespace ME3Explorer.PackageDumper
                 if (!DumpCanceled)
                 {
                     string file = Path.GetFullPath(files[i]);
+                    //if (file.ToLower().EndsWith("startup_int.pcc"))
+                    //{
                     string outfolder = outputfolder;
                     if (outfolder != null)
                     {
@@ -257,6 +261,7 @@ namespace ME3Explorer.PackageDumper
                     Console.WriteLine("[" + (i + 1) + "/" + files.Count + "] Dumping " + Path.GetFileNameWithoutExtension(file));
                     dumpPCCFile(file, outfolder);
                     OverallProgressValue = (int)((i * 1.0 / files.Count) * 100);
+                    //}
                 }
             }
         }
@@ -409,7 +414,8 @@ namespace ME3Explorer.PackageDumper
                                     topLevelTree.PrintPretty("", stringoutput, false, exp);
                                     stringoutput.WriteLine();
                                 }
-                            } catch (Exception e)
+                            }
+                            catch (Exception e)
                             {
                                 Debug.WriteLine(exp.UIndex);
                             }

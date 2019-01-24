@@ -3617,7 +3617,7 @@ namespace ME3Explorer
 
         private void CreatePCCDumpME1_Click(object sender, RoutedEventArgs e)
         {
-            new PackageDumper.PackageDumper().Show();
+            new PackageDumper.PackageDumper(this).Show();
         }
 
         private void AssociateFileTypes_Clicked(object sender, RoutedEventArgs e)
