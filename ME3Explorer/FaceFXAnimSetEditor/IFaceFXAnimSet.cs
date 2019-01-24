@@ -37,6 +37,17 @@ namespace ME3Explorer.FaceFX
         public int unk3;
         public ushort unk4;
         public HNodeStruct[] Nodes;
+
+        public static readonly HNodeStruct[] fullNodeTable =
+        {
+            new HNodeStruct {unk1 = 0x1A, unk2 = 1, Name = "FxObject", unk3 = 0},
+            new HNodeStruct {unk1 = 0x48, unk2 = 1, Name = "FxAnim", unk3 = 6},
+            new HNodeStruct {unk1 = 0x54, unk2 = 1, Name = "FxAnimSet", unk3 = 0},
+            new HNodeStruct {unk1 = 0x5F, unk2 = 1, Name = "FxNamedObject", unk3 = 0},
+            new HNodeStruct {unk1 = 0x64, unk2 = 1, Name = "FxName", unk3 = 1},
+            new HNodeStruct {unk1 = 0x6D, unk2 = 1, Name = "FxAnimCurve", unk3 = 1},
+            new HNodeStruct {unk1 = 0x75, unk2 = 1, Name = "FxAnimGroup", unk3 = 0}
+        };
     }
     public class HNodeStruct
     {
