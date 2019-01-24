@@ -113,9 +113,9 @@
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#664f46"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#AAffeae2"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding PropertyType}" Value="StringProperty">
+                            <DataTrigger Binding="{Binding PropertyType}" Value="StrProperty">
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#374f46"/>
-                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#e2fff4"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#32aaf4"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding PropertyType}" Value="ArrayProperty">
                                 <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#382c4c"/>-->

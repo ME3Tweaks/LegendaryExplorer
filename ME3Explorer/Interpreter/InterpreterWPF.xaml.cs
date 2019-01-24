@@ -503,7 +503,8 @@ namespace ME3Explorer
                 Interpreter_Hexbox.Width -= 1;
                 Interpreter_Hexbox_Host.UpdateLayout();
                 Interpreter_Hexbox.Width += 1;
-            } else
+            }
+            else
             {
                 Interpreter_Hexbox.Width += 1;
                 Interpreter_Hexbox_Host.UpdateLayout();
@@ -1423,6 +1424,24 @@ namespace ME3Explorer
                                 }
                             }
                             break;
+                        case StrProperty stringp:
+                            {
+                                if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
+                                {
+                                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef, true));
+                                    return;
+                                }
+                                else if (newSelectedItem.Parent.Property is ArrayProperty<StrProperty>)
+                                {
+                                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef, true));
+                                    return;
+                                }
+                                else
+                                {
+                                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
+                                }
+                            }
+                            break;
                         case BoolProperty boolp:
                             {
                                 if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
@@ -2295,6 +2314,12 @@ namespace ME3Explorer
                     //Resolve
                     string objectName = associatedExport.FileRef.GetEntryString(op.Value);
                     str.Write("  " + objectName);
+                }
+
+                if (Property is NameProperty np)
+                {
+                    //Resolve
+                    str.Write("  " + np.Value + "_" + np.Value.Number);
                 }
 
                 if (Property is StringRefProperty srp)
