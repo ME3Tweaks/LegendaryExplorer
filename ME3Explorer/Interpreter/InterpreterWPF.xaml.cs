@@ -474,6 +474,8 @@ namespace ME3Explorer
         public override void LoadExport(IExportEntry export)
         {
             EditorSetElements.ForEach(x => x.Visibility = Visibility.Collapsed);
+            Set_Button.Visibility = Visibility.Collapsed;
+            EditorSet_Separator.Visibility = Visibility.Collapsed;
             HasUnsavedChanges = false;
             Interpreter_Hexbox.UnhighlightAll();
             //set rescan offset

@@ -282,14 +282,14 @@ namespace ME3Explorer.Packages
                 }
                 return 30;
             }
-            if (!ObjectName.StartsWith("Default__"))
-            {
-                switch (ClassName)
-                {
-                    case "ParticleSystemComponent":
-                        return 0x10;
-                }
-            }
+            //if (!ObjectName.StartsWith("Default__"))
+            //{
+            //    switch (ClassName)
+            //    {
+            //        case "ParticleSystemComponent":
+            //            return 0x10;
+            //    }
+            //}
             int result = 8;
             int test0 = BitConverter.ToInt32(_data, 0);
             int test1 = BitConverter.ToInt32(_data, 4);
