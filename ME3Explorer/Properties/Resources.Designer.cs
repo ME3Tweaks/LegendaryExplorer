@@ -103,16 +103,6 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap class_viewer_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("class_viewer_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap conditionals_editor_64x64 {
             get {
                 object obj = ResourceManager.GetObject("conditionals_editor_64x64", resourceCulture);
@@ -306,16 +296,6 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap package_editor_64x64 {
             get {
                 object obj = ResourceManager.GetObject("package_editor_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap pcc_repacker_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("pcc_repacker_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

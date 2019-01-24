@@ -184,7 +184,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "dlc", "sfar", "unpack", "extract" },
                 subCategory = "Extractors + Repackers",
-                description = "DLC Unpacker allows you to extract Mass Effect 3 DLC SFAR files, allowing you to access their contents for modding.",
+                description = "DLC Unpacker allows you to extract Mass Effect 3 DLC SFAR files, allowing you to access their contents for modding.\n\nThis unpacker is based on MEM code, which is very fast and is compatible with the ALOT texture mod.",
             });
             set.Add(new Tool
             {
@@ -525,7 +525,7 @@ namespace ME3Explorer
             {
                 name = "Package Editor",
                 type = typeof(PackageEditor),
-                icon = Application.Current.FindResource("iconPackageEditor") as ImageSource,
+                icon = Application.Current.FindResource("iconPackageEditorClassic") as ImageSource,
                 open = () =>
                 {
                     PackageEditor pck = new PackageEditor();
@@ -533,7 +533,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
                 subCategory = "Core",
-                description = "Package Editor is the toolset's main tool for editing trilogy package files in various formats (PCC, SFM, UPK). Properties, arrays, names, curve data, and more can all be easily added and edited."
+                description = "Package Editor Classic is a tool for editing trilogy package files in various formats (PCC, SFM, UPK). Properties, arrays, names, curve data, and more can all be easily added and edited.\n\nPackage Editor Classic has been mostly replaced by Package Editor WPF, and will eventually placed into a deprecated status."
             });
             set.Add(new Tool
             {
@@ -547,7 +547,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "user", "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
                 subCategory = "Core",
-                description = "Package Editor WPF is a complete rewrite of Package Editor using the WPF design language. It is currently under development."
+                description = "Package Editor WPF is a complete rewrite of Package Editor using the WPF design language. Edit trilogy game files in a single window with access to external tools such as Curve Editor and Soundplorer, right in the same window."
             });
             set.Add(new Tool
             {
@@ -600,11 +600,11 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "dlc" },
                 subCategory = other,
-                description = "SFAR Editor 2 is an advanced SFAR exploration and editing tool for ME3. With DLC unpacking now the norm and the advent of DLC mods, this tool will be used by few modders.",
+                description = "SFAR Editor 2 allows you to explore SFAR files in Mass Effect 3. This tool has been deprecated as DLC unpacking and AutoTOC has replaced the need to inspect SFAR files.",
             });
             set.Add(new Tool
             {
-                name = "Soundplorer",
+                name = "Soundplorer Classic",
                 type = typeof(SoundplorerWinforms),
                 icon = Application.Current.FindResource("iconSoundplorer") as ImageSource,
                 open = () =>
@@ -613,7 +613,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "audio", "dialogue", "music", "wav", "ogg", "sound" },
                 subCategory = "Scene Shop",
-                description = "Soundplorer provides access to all Wwisestream and Wwisebank objects inside an ME3 PCC. Sounds can be played within the tool, exported, and changed via import.",
+                description = "Soundplorer provides access to all Wwisestream and Wwisebank objects inside an ME3 PCC. Sounds can be played within the tool, exported, and changed via import.\n\nThis tool is deprecated and has been replaced by Soundplorer WPF.",
             });
             set.Add(new Tool
             {
@@ -626,7 +626,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound" },
                 subCategory = "Scene Shop",
-                description = "Soundplorer WPF is the newly rewritten version of Soundplorer.",
+                description = "Soundplorer WPF is the newly rewritten version of Soundplorer. Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
             });
             set.Add(new Tool
             {
@@ -639,7 +639,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "texture", "tfc", "scan", "tree" },
                 subCategory = "Meshes + Textures",
-                description = "For users and modders alike, Texplorer is the toolset's primary texture tool for the trilogy. Textures are organized into a package tree, and each is displayed with its associated data. Textures can be searched, extracted/replaced, and exported into TPF Tools."
+                description = "TEXPLORER IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nTexplorer is a texturing utility that allows users to browse and install textures for all 3 Mass Effect trilogy games. It has been superceded by Mass Effect Modder (MEM) in most regards."
             });
             set.Add(new Tool
             {

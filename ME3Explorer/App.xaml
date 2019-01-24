@@ -181,6 +181,7 @@
         <BitmapImage x:Key="iconMeshplorer" UriSource="Resources/meshplorer_64x64.png"/>
         <BitmapImage x:Key="iconMeshplorer2" UriSource="Resources/meshplorer2_64x64.png"/>
         <BitmapImage x:Key="iconPackageEditor" UriSource="Resources/package_editor_64x64.png"/>
+        <BitmapImage x:Key="iconPackageEditorClassic" UriSource="Resources/packageeditorclassic_64x64.png"/>
         <BitmapImage x:Key="iconPlotEditor" UriSource="Resources/plot_editor_icon.ico"/>
         <BitmapImage x:Key="iconSequenceEditor" UriSource="Resources/sequence_editor_64x64.png"/>
         <BitmapImage x:Key="iconSFAREditor2" UriSource="Resources/sfar_editor2_icon_64x64.png"/>

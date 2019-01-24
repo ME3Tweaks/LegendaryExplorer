@@ -21,6 +21,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:metadataeditor="clr-namespace:ME3Explorer.MetadataEditor"
         Title="Package Editor WPF" Height="650" Width="1100"
+        Icon="..\Resources\package_editor_64x64.png"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         AllowDrop="True"
@@ -137,12 +138,13 @@
                     <MenuItem Header="Check for duplicate indexes" ToolTip="Tries to find duplicate indexes in this file" Command="{Binding CheckForDuplicateIndexesCommand}"/>
                 </MenuItem>
                 <MenuItem Header="Experiments" Padding="4">
-                    <MenuItem Header="Items in this list are for toolset developers only" IsEnabled="False"/>
+                    <MenuItem Header="FOR TOOLSET DEVELOPERS ONLY" IsEnabled="False"/>
                     <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
                     <MenuItem Header="Port SFXObjectives from one file to another" Click="Port_SFXObjectives_Click"/>
                     <MenuItem Header="Rebuild Object Infos">
                         <MenuItem Header="Build ME1 Object Info" Click="BuildME1ObjectInfo_Clicked"/>
                         <MenuItem Header="Build ME2 Object Info" Click="BuildME2ObjectInfo_Clicked"/>
+                        <MenuItem Header="Build ME3 Object Info" Click="BuildME3ObjectInfo_Clicked"/>
                     </MenuItem>
                     <MenuItem Header="Generate GUID cache binary for folder" Click="GenerateGUIDCacheForFolder_Clicked"/>
                     <MenuItem Header="Generate new GUID for package file" Click="GenerateNewGUIDForPackageFile_Clicked"/>

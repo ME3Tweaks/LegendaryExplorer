@@ -3648,6 +3648,11 @@ namespace ME3Explorer
         {
             ME2Explorer.Unreal.ME2UnrealObjectInfo.generateInfo();
         }
+
+        private void BuildME3ObjectInfo_Clicked(object sender, RoutedEventArgs e)
+        {
+            ME3UnrealObjectInfo.generateInfo();
+        }
     }
 
     [DebuggerDisplay("TreeViewEntry {DisplayName}")]
