@@ -285,8 +285,10 @@ namespace ME3Explorer.FaceFX
         {
             
             MemoryStream m = new MemoryStream();
-            SerializingContainer Container = new SerializingContainer(m);
-            Container.isLoading = false;
+            SerializingContainer Container = new SerializingContainer(m)
+            {
+                isLoading = false
+            };
             Serialize(Container);
             m = Container.Memory;
             MemoryStream res = new MemoryStream();
@@ -302,7 +304,7 @@ namespace ME3Explorer.FaceFX
         {
             if (n < 0 || n >= Data.Data.Length)
                 return;
-            List<ME3FaceFXLine> list = new List<ME3FaceFXLine>();
+            var list = new List<ME3FaceFXLine>();
             list.AddRange(Data.Data);
             list.Add(Data.Data[n]);
             Data.Data = list.ToArray();
@@ -311,7 +313,7 @@ namespace ME3Explorer.FaceFX
         {
             if (n < 0 || n >= Data.Data.Length)
                 return;
-            List<ME3FaceFXLine> list = new List<ME3FaceFXLine>();
+            var list = new List<ME3FaceFXLine>();
             list.AddRange(Data.Data);
             list.RemoveAt(n);
             Data.Data = list.ToArray();
@@ -321,19 +323,21 @@ namespace ME3Explorer.FaceFX
         {
             if (n < 0 || n >= Data.Data.Length || m < 0 || m >= Data.Data.Length)
                 return;
-            List<ME3FaceFXLine> list = new List<ME3FaceFXLine>();
-            for (int i = 0; i < Data.Data.Length; i++)
-                if (i != n)
-                    list.Add(Data.Data[i]);
+            List<ME3FaceFXLine> list = Data.Data.Where((_, i) => i != n).ToList();
             list.Insert(m, Data.Data[n]);
             Data.Data = list.ToArray();
         }
 
         public void AddName(string s)
         {
-            List<string> list = new List<string>(header.Names);
+            var list = new List<string>(header.Names);
             list.Add(s);
             header.Names = list.ToArray();
+        }
+
+        public void FixNodeTable()
+        {
+            header.Nodes = ME3HeaderStruct.fullNodeTable;
         }
     }
 }
