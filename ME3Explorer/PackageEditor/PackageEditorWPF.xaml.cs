@@ -344,7 +344,7 @@ namespace ME3Explorer
                 }
                 items.Add(flagsStr);
 
-                if (Pcc.Game != MEGame.ME1)
+                if (Pcc.Game == MEGame.ME3)
                 {
                     uint unknown1 = ms.ReadUInt32();
                     items.Add($"0x{(ms.Position - 4):X2} Unknown 1: {unknown1} (0x{unknown1:X8})");
@@ -371,7 +371,7 @@ namespace ME3Explorer
                 uint dependencyTableCount = ms.ReadUInt32();
                 items.Add($"0x{(ms.Position - 4):X2} Dependency Count: {dependencyTableCount} (Not used in Mass Effect games)");
 
-                if (Pcc.Game != MEGame.ME1)
+                if (Pcc.Game == MEGame.ME3)
                 {
                     uint dependencyTableOffset = ms.ReadUInt32();
                     items.Add($"0x{(ms.Position - 4):X2} Dependency Table Offset: 0x{dependencyTableOffset:X8} (Not used in Mass Effect games)");
@@ -381,7 +381,6 @@ namespace ME3Explorer
 
                     uint unknown3 = ms.ReadUInt32();
                     items.Add($"0x{(ms.Position - 4):X2} Unknown 3: {unknown3} (0x{unknown3:X8})");
-
                     uint unknown4 = ms.ReadUInt32();
                     items.Add($"0x{(ms.Position - 4):X2} Unknown 4: {unknown4} (0x{unknown4:X8})");
                 }
@@ -410,6 +409,20 @@ namespace ME3Explorer
 
                 uint cookerVersion = ms.ReadUInt32();
                 items.Add($"0x{(ms.Position - 4):X2} Cooker Version: {generationsTableCount}");
+
+                if (Pcc.Game == MEGame.ME2)
+                {
+                    uint dependencyTableOffset = ms.ReadUInt32();
+                    items.Add($"0x{(ms.Position - 4):X2} Dependency Table Offset: 0x{dependencyTableOffset:X8} (Not used in Mass Effect games)");
+
+                    uint unknown2 = ms.ReadUInt32();
+                    items.Add($"0x{(ms.Position - 4):X2} Unknown 2: {unknown2} (0x{unknown2:X8})");
+
+                    uint unknown3 = ms.ReadUInt32();
+                    items.Add($"0x{(ms.Position - 4):X2} Unknown 3: {unknown3} (0x{unknown3:X8})");
+                    uint unknown4 = ms.ReadUInt32();
+                    items.Add($"0x{(ms.Position - 4):X2} Unknown 4: {unknown4} (0x{unknown4:X8})");
+                }
 
                 uint unknown5 = ms.ReadUInt32();
                 items.Add($"0x{(ms.Position - 4):X2} Unknown 5: {unknown5} (0x{unknown5:X8})");

@@ -23,7 +23,7 @@ namespace ME3Explorer.Packages
         private int FreeZoneStart { get { return BitConverter.ToInt32(header, nameSize + 44); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 44, sizeof(int)); } }
         private int Generations { get { return BitConverter.ToInt32(header, nameSize + 64); } }
         private int Compression { get { return BitConverter.ToInt32(header, header.Length - 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, header.Length - 4, sizeof(int)); } }
-        
+
         static bool isInitialized;
         public static Func<string, ME2Package> Initialize()
         {
@@ -40,7 +40,7 @@ namespace ME3Explorer.Packages
 
         private ME2Package(string path)
         {
-            
+
             DebugOutput.PrintLn("Load file : " + path);
             FileName = Path.GetFullPath(path);
             MemoryStream tempStream = new MemoryStream();
@@ -85,7 +85,7 @@ namespace ME3Explorer.Packages
                     listsStream = CompressionHelper.DecompressME1orME2(tempStream);
 
                     //Correct the header
-                    IsCompressed = false;
+                    //IsCompressed = false; // DO NOT MARK FILE AS DECOMPRESSED AS THIS WILL CORRUPT FILES ON SAVE
                     listsStream.Seek(0, SeekOrigin.Begin);
                     listsStream.WriteBytes(header);
 
@@ -171,7 +171,8 @@ namespace ME3Explorer.Packages
                 this.IsCompressed = false;
                 MemoryStream m = new MemoryStream();
                 m.WriteBytes(header);
-
+                m.Seek(-4, SeekOrigin.Current);
+                m.WriteByte((byte)CompressionType.None); //Write header compression type to None
                 //Set numblocks to zero
                 m.WriteValueS32(0);
                 //Write the magic number
@@ -254,9 +255,11 @@ namespace ME3Explorer.Packages
                 replaceExports = exports.Where(export => export.DataChanged && export.DataOffset < NameOffset && export.DataSize <= export.OriginalDataSize);
                 appendExports = exports.Where(export => export.DataOffset > NameOffset || (export.DataChanged && export.DataSize > export.OriginalDataSize));
                 var expsBeforeNameOffset = exports.Where(exp => exp.DataOffset < NameOffset).ToList();
-                if (expsBeforeNameOffset.Count > 0) {
+                if (expsBeforeNameOffset.Count > 0)
+                {
                     max = expsBeforeNameOffset.Max(e => e.DataOffset);
-                } else
+                }
+                else
                 {
                     max = exports.Max(maxExport => maxExport.DataOffset);
                 }
@@ -303,7 +306,7 @@ namespace ME3Explorer.Packages
                     newPCCStream.WriteBytes(export.Data);
                 }
 
-                
+
                 newPCCStream.Seek(lastDataOffset, SeekOrigin.Begin);
                 //Set the new nameoffset and namecounts
                 NameOffset = (int)newPCCStream.Position;
@@ -332,7 +335,7 @@ namespace ME3Explorer.Packages
                     export.DataSize = export.Data.Length;
                     newPCCStream.Write(export.Data, 0, export.Data.Length);
                 }
-                
+
                 //Write the export list
                 ExportOffset = (int)newPCCStream.Position;
                 ExportCount = exports.Count;
@@ -346,6 +349,8 @@ namespace ME3Explorer.Packages
                 //write the updated header
                 newPCCStream.Seek(0, SeekOrigin.Begin);
                 newPCCStream.WriteBytes(header);
+                newPCCStream.Seek(-4, SeekOrigin.Current);
+                newPCCStream.WriteBytes(BitConverter.GetBytes((int)CompressionType.None));
             }
             AfterSave();
         }
