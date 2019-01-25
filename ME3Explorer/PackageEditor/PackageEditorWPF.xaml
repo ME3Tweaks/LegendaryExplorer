@@ -139,6 +139,7 @@
                 </MenuItem>
                 <MenuItem Header="Experiments" Padding="4">
                     <MenuItem Header="FOR TOOLSET DEVELOPERS ONLY" IsEnabled="False"/>
+                    <MenuItem Header="Trigger GetProperties() on current export" Click="RefreshProperties_Clicked"/>
                     <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
                     <MenuItem Header="Port SFXObjectives from one file to another" Click="Port_SFXObjectives_Click"/>
                     <MenuItem Header="Rebuild Object Infos">
