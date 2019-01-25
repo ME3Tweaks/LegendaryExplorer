@@ -13,7 +13,7 @@
         Closing="PackageDumper_Closing"
         Title="Package Dumper" Height="265" Width="500">
     <StackPanel >
-        <TextBlock Padding="5" Background="LightGray" TextWrapping="Wrap" Text="Package dumps are text file dumps of data that you can view in package editor. You can use tools such as GrepWin to search for strings, which is very useful for finding certain things in game files."/>
+        <TextBlock Padding="5" Background="LightGray" TextWrapping="Wrap" Text="Package dumps are text file dumps of the data that you would be able to view in Package Editor. You can use tools on these text files, such as GrepWin, to search for strings. It is a very easy way to find things in game files."/>
         <Grid Margin="12">
             <Grid.RowDefinitions>
                 <RowDefinition Height="20"/>

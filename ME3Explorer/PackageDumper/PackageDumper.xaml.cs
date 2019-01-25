@@ -236,11 +236,13 @@ namespace ME3Explorer.PackageDumper
             {
                 DumpCanceled = false;
                 CurrentFileProgressValue = 0;
+                OverallProgressMaximum = 100;
                 CurrentOverallOperationText = "Dump canceled";
             }
             else
             {
                 OverallProgressValue = 100;
+                OverallProgressMaximum = 100;
                 CurrentOverallOperationText = "Dump completed";
             }
             //throw new NotImplementedException();
@@ -278,8 +280,8 @@ namespace ME3Explorer.PackageDumper
                 if (!DumpCanceled)
                 {
                     string file = Path.GetFullPath(files[i]);
-                    //if (file.EndsWith("BioD_CitHub_DockWrex_LOC_INT.pcc") || beginParsing)
-                    //{
+                    if (file.EndsWith("SFXGame.pcc") || beginParsing)
+                    {
                     beginParsing = true;
                         string outfolder = outputfolder;
                         if (outfolder != null)
@@ -292,7 +294,7 @@ namespace ME3Explorer.PackageDumper
                         Debug.WriteLine("[" + (i + 1) + "/" + files.Count + "] Dumping " + Path.GetFileNameWithoutExtension(file));
                         dumpPCCFile(file, outfolder);
                         OverallProgressValue = i;
-                    //}
+                    }
                 }
             }
         }

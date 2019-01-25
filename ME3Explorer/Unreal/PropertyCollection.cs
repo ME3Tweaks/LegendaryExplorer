@@ -647,7 +647,7 @@ namespace ME3Explorer.Unreal
                             for (int i = 0; i < count; i++)
                             {
                                 long structOffset = stream.Position;
-                                Debug.WriteLine("reading array struct: " + arrayStructType + " at 0x" + stream.Position.ToString("X5"));
+                                //Debug.WriteLine("reading array struct: " + arrayStructType + " at 0x" + stream.Position.ToString("X5"));
                                 PropertyCollection structProps = ReadProps(pcc, stream, arrayStructType, includeNoneProperty: IncludeNoneProperties);
                                 StructProperty structP = new StructProperty(arrayStructType, structProps) { StartOffset = structOffset };
                                 structP.ValueOffset = structProps[0].StartOffset;
