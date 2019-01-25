@@ -97,7 +97,11 @@ namespace ME3Explorer.Packages
         private static void Package_noLongerUsed(object sender, EventArgs e)
         {
             IMEPackage ime;
-            openPackages.TryRemove((sender as IMEPackage).FileName, out ime);
+            var package = (sender as IMEPackage).FileName;
+            //if (Path.GetFileNameWithoutExtension(package) != "Core") //Keep Core loaded as it is very often referenced
+            //{
+                openPackages.TryRemove(package, out ime);
+            //}
         }
 
         private static void addToPackagesInTools(IMEPackage package)
@@ -151,6 +155,15 @@ namespace ME3Explorer.Packages
                 throw new FormatException("Not an ME1 package file.");
             }
             return pcc;
+        }
+
+        internal static void PrintOpenPackages()
+        {
+            Debug.WriteLine("Open Packages:");
+            foreach (KeyValuePair<string, IMEPackage> package in openPackages)
+            {
+                Debug.WriteLine(package.Key);
+            }
         }
     }
 }

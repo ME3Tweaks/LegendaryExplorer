@@ -3658,6 +3658,11 @@ namespace ME3Explorer
         {
             var properties = InterpreterTab_Interpreter.CurrentLoadedExport.GetProperties();
         }
+
+        private void PrintLoadedPackages_Clicked(object sender, RoutedEventArgs e)
+        {
+            MEPackageHandler.PrintOpenPackages();
+        }
     }
 
     [DebuggerDisplay("TreeViewEntry {DisplayName}")]
