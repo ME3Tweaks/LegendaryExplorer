@@ -280,8 +280,8 @@ namespace ME3Explorer.PackageDumper
                 if (!DumpCanceled)
                 {
                     string file = Path.GetFullPath(files[i]);
-                    if (file.EndsWith("SFXGame.pcc") || beginParsing)
-                    {
+                    //if (file.EndsWith("SFXGame.pcc") || beginParsing)
+                    //{
                     beginParsing = true;
                         string outfolder = outputfolder;
                         if (outfolder != null)
@@ -294,7 +294,7 @@ namespace ME3Explorer.PackageDumper
                         Debug.WriteLine("[" + (i + 1) + "/" + files.Count + "] Dumping " + Path.GetFileNameWithoutExtension(file));
                         dumpPCCFile(file, outfolder);
                         OverallProgressValue = i;
-                    }
+                    //}
                 }
             }
         }
