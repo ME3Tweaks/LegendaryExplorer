@@ -41,11 +41,29 @@ namespace ME1Explorer.Unreal
         }
 
         private static string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
-            "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform",
-            "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "BioRwBox44" };
+            "Quat", "Matrix", "IntPoint", "ActorReference", "PolyReference", "AimTransform","BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4",
+            "BioRwBox44" };
 
         public static bool isImmutableStruct(string structName)
         {
+            //string hex = "1F19000000000000A12E0000000000000400000000000000000000001849000000000000A12E0000000000000400000000000000000000001638000000000000763A000000000000040000000000000000000000722B000000000000414C0000000000001000000000000000722B00000000000000000000000000000000000000000000C539000000000000";
+            //string str = "0x";
+            //for (int i = 0; i < hex.Length; i++)
+            //{
+            //    if (i % 2 == 0 && i != 0)
+            //    {
+            //        Debug.Write(str + ", ");
+            //        str = "0x";
+            //    }
+            //    str += hex[i];
+            //    if (i % 8 == 0)
+            //    {
+            //        Debug.WriteLine("");
+            //    }
+            //}
+            //Debug.WriteLine("");
+
+
             return ImmutableStructs.Contains(structName);
         }
 
@@ -250,6 +268,162 @@ namespace ME1Explorer.Unreal
             //    PropertyInfo reAttempt = getPropertyInfo(className, propName, !inStruct, nonVanillaClassInfo, reSearch: false);
             //    return reAttempt; //will be null if not found.
             //}
+            return null;
+        }
+
+        #region struct default values
+
+        //COPIED FROM ME2. REQUIRES A REBUILD
+        private readonly static byte[] CoverReferenceDefault = { 
+            // >> CoverReference
+            //CoverReference: Direction
+            0x1F, 0x19, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0xA1, 0x2E, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x04, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+
+            0x18, 0x49, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0xA1, 0x2E, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x04, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x16, 0x38, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x76, 0x3A, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x04, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x72, 0x2B, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+
+            0x41, 0x4C, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x10, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x72, 0x2B, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, //A
+            0x00, 0x00, 0x00, 0x00, //B
+            0x00, 0x00, 0x00, 0x00, //C
+            0x00, 0x00, 0x00, 0x00, //D
+
+            //NONE
+            0xC5, 0x39, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00};
+
+        /*
+         * Direction nameIdx 6431 0x191F INTPROP
+         * 1F19000000000000A12E000000000000040000000000000000000000
+         * SlotIdx nameIdx 18712 0x4918 INTPROP
+         * 1849000000000000A12E000000000000040000000000000000000000
+         * 
+         * NAV REFERENCE BINARY
+         * 1638000000000000763A000000000000040000000000000000000000722B000000000000414C0000000000001000000000000000722B00000000000000000000000000000000000000000000C539000000000000
+         * 
+         * 
+         * 
+         * 
+
+        /*
+            //SlotIdx
+            0x78, 0x45, 0, 0, 0, 0, 0, 0, 0xB6, 0x29, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            //Direction
+            0x28, 0x1B, 0, 0, 0, 0, 0, 0, 0xB6, 0x29, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            //Guid
+            0xC7, 0x26, 0, 0, 0, 0, 0, 0, 0x17, 0x48, 0, 0, 0, 0, 0, 0, 0x10, 0, 0, 0, 0, 0, 0, 0, 0xC7, 0x26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            //Actor
+            0xF7, 0, 0, 0, 0, 0, 0, 0, 0x62, 0x34, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+*/
+
+        private static byte[] PlaneDefault = { 
+            //TODO: THIS IS COPIED FROM ME3. REBUILD BYTES AS THEY WOULD APPEAR IN THE ENGINE.PCC WITH CORRECT NAME INDICES
+            //X
+            0x09, 0x03, 0, 0, 0, 0, 0, 0, 0x15, 0x01, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            //Y
+            0x0D, 0x03, 0, 0, 0, 0, 0, 0, 0x15, 0x01, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            //Z
+            0x12, 0x03, 0, 0, 0, 0, 0, 0, 0x15, 0x01, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            //W
+            0x04, 0x03, 0, 0, 0, 0, 0, 0, 0x15, 0x01, 0, 0, 0, 0, 0, 0, 0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            //None
+            0xF0, 0x01, 0, 0, 0, 0, 0, 0 };
+        #endregion
+
+        public static PropertyCollection getDefaultStructValue(string className, bool stripTransients = true)
+        {
+            if (Structs.ContainsKey(className))
+            {
+                bool immutable = UnrealObjectInfo.isImmutable(className, MEGame.ME1);
+                ClassInfo info = Structs[className];
+                try
+                {
+                    if (info.pccPath != "ME3Explorer_CustomNativeAdditions")
+                    {
+                        string filepath = (Path.Combine(ME1Directory.gamePath, @"BioGame\" + info.pccPath));
+                        if (File.Exists(info.pccPath))
+                        {
+                            filepath = info.pccPath; //Used for dynamic lookup
+                        }
+                        IMEPackage importPCC = MEPackageHandler.OpenMEPackage(filepath);
+                        //using (ME1Package importPCC = MEPackageHandler.OpenME1Package(filepath))
+                        //{
+                        byte[] buff;
+                        //Plane and CoverReference inherit from other structs, meaning they don't have default values (who knows why)
+                        //thus, I have hardcoded what those default values should be 
+                        if (className == "Plane")
+                        {
+                            buff = PlaneDefault;
+                        }
+                        else if (className == "CoverReference")
+                        {
+                            buff = CoverReferenceDefault;
+                        }
+                        else
+                        {
+                            var exportToRead = importPCC.Exports[info.exportIndex];
+                            buff = exportToRead.Data.Skip(0x30).ToArray();
+                        }
+                        PropertyCollection props = PropertyCollection.ReadProps(importPCC, new MemoryStream(buff), className);
+                        if (stripTransients)
+                        {
+                            List<UProperty> toRemove = new List<UProperty>();
+                            foreach (var prop in props)
+                            {
+                                //remove transient props
+                                if (info.properties.TryGetValue(prop.Name, out PropertyInfo propInfo))
+                                {
+                                    if (propInfo.transient)
+                                    {
+                                        toRemove.Add(prop);
+                                    }
+                                }
+                                //if (!info.properties.ContainsKey(prop.Name) && info.baseClass == "Class")
+                                //{
+                                //    toRemove.Add(prop);
+                                //}
+                            }
+                            foreach (var prop in toRemove)
+                            {
+                                Debug.WriteLine("ME1: Get Default Struct value (" + className + ") - removing transient prop: " + prop.Name);
+                                props.Remove(prop);
+                            }
+                        }
+                        importPCC.Release();
+                        return props;
+                    }
+                    //}
+                }
+                catch
+                {
+                    return null;
+                }
+            }
             return null;
         }
 
