@@ -301,9 +301,16 @@ namespace ME3Explorer.Packages
 
             if (_data.Length > 0x10 && pcc.isName(test1) && pcc.getNameEntry(test1) == ObjectName && test0 == 0 && test2 == indexValue) //!= UIndex will cover more cases, but there's still the very tiny case where they line up
             {
-                //Primitive Component
-                //Debug.WriteLine("Primitive Component: " + ClassName + " (" + ObjectName + ")");
-                result = 0x10;
+                int test3 = BitConverter.ToInt32(_data, 0x10);
+                if (pcc.getNameEntry(test3) != "ObjectProperty")
+                {
+                    //Debug.WriteLine("Primitive Component: " + ClassName + " (" + ObjectName + ")");
+                    return 0x10; //Primitive Component
+                } else
+                {
+                    return 8; //It's one of the super special edge cases (BIOA_UNC51_02_SND.SFM, Export 28)
+                }
+
             }
             return result;
         }

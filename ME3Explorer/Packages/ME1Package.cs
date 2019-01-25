@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using Gibbed.IO;
@@ -38,6 +39,8 @@ namespace ME3Explorer.Packages
 
         private ME1Package(string path)
         {
+            //Debug.WriteLine(" >> Opening me1 package " + path);
+
             FileName = Path.GetFullPath(path);
             MemoryStream tempStream = new MemoryStream();
             if (!File.Exists(FileName))

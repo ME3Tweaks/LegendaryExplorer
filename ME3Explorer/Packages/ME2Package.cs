@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -40,6 +41,7 @@ namespace ME3Explorer.Packages
 
         private ME2Package(string path)
         {
+            //Debug.WriteLine(" >> Opening me2 package " + path);
 
             DebugOutput.PrintLn("Load file : " + path);
             FileName = Path.GetFullPath(path);
