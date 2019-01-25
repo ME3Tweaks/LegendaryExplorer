@@ -2281,9 +2281,16 @@ namespace ME3Explorer
                         return $"ArrayProperty - {props.Count()} item{(props.Count() != 1 ? "s" : "")}";
 
                     }
-                    else if (Property.PropType == Unreal.PropertyType.StructProperty)
+                    else if (Property is StructProperty sp)
                     {
-                        return $"StructProperty({(Property as StructProperty).StructType})";
+                        if (sp.IsImmutable)
+                        {
+                            return $"Immutable StructProperty({sp.StructType})";
+                        }
+                        else
+                        {
+                            return $"StructProperty({sp.StructType})";
+                        }
                     }
                     else if (Property.PropType == Unreal.PropertyType.ByteProperty && Property is EnumProperty)
                     {

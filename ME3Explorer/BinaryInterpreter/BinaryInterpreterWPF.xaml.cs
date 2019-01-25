@@ -2289,7 +2289,11 @@ namespace ME3Explorer
              *  
              */
             var subnodes = new List<object>();
-
+            if (CurrentLoadedExport.FileRef.Game != MEGame.ME3)
+            {
+                subnodes.Add("Only ME3 is supported for this scan.");
+                return subnodes;
+            }
             try
             {
                 int pos = binarystart;
