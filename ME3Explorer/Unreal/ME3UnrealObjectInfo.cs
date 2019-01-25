@@ -159,7 +159,7 @@ namespace ME3Explorer.Unreal
         public static Dictionary<string, List<string>> Enums = new Dictionary<string, List<string>>();
 
         private static string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
-            "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform", "AimOffsetProfile",
+            "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform", "AimOffsetProfile", "FontCharacter",
             "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "BioRwBox44" };
 
         public static bool isImmutableStruct(string structName)
@@ -494,7 +494,7 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static PropertyCollection getDefaultStructValue(string className)
+        public static PropertyCollection getDefaultStructValue(string className, bool stripTransients)
         {
             if (Structs.ContainsKey(className))
             {
@@ -522,21 +522,33 @@ namespace ME3Explorer.Unreal
                         }
                         else
                         {
-                            buff = importPCC.Exports[info.exportIndex].Data.Skip(0x24).ToArray();
+                            var exportToRead = importPCC.Exports[info.exportIndex];
+                            buff = exportToRead.Data.Skip(0x24).ToArray();
                         }
                         PropertyCollection props = PropertyCollection.ReadProps(importPCC, new MemoryStream(buff), className);
-                        List<UProperty> toRemove = new List<UProperty>();
-                        foreach (var prop in props)
+                        if (stripTransients)
                         {
-                            //remove transient props
-                            if (!info.properties.ContainsKey(prop.Name) && info.baseClass == "Class")
+                            List<UProperty> toRemove = new List<UProperty>();
+                            foreach (var prop in props)
                             {
-                                toRemove.Add(prop);
+                                //remove transient props
+                                if (info.properties.TryGetValue(prop.Name, out PropertyInfo propInfo))
+                                {
+                                    if (propInfo.transient)
+                                    {
+                                        toRemove.Add(prop);
+                                    }
+                                }
+                                //if (!info.properties.ContainsKey(prop.Name) && info.baseClass == "Class")
+                                //{
+                                //    toRemove.Add(prop);
+                                //}
                             }
-                        }
-                        foreach (var prop in toRemove)
-                        {
-                            props.Remove(prop);
+                            foreach (var prop in toRemove)
+                            {
+                                Debug.WriteLine("ME3: Get Default Struct value (" + className + ") - removing transient prop: " + prop.Name);
+                                props.Remove(prop);
+                            }
                         }
                         return props;
                     }
@@ -582,6 +594,10 @@ namespace ME3Explorer.Unreal
         //Takes a long time (~5 minutes maybe?). Application will be completely unresponsive during that time.
         public static void generateInfo()
         {
+            Classes = new Dictionary<string, ClassInfo>();
+            Structs = new Dictionary<string, ClassInfo>();
+            Enums = new Dictionary<string, List<string>>();
+
             string path = ME3Directory.gamePath;
             string[] files = Directory.GetFiles(Path.Combine(path, "BIOGame"), "*.pcc", SearchOption.AllDirectories);
             string objectName;
@@ -625,10 +641,10 @@ namespace ME3Explorer.Unreal
                         }
                     }
                 }
-                System.Diagnostics.Debug.WriteLine($"{i} of {length} processed");
+               // System.Diagnostics.Debug.WriteLine($"{i} of {length} processed");
             }
             File.WriteAllText(Application.StartupPath + "//exec//ME3ObjectInfo.json",
-                JsonConvert.SerializeObject(new { SequenceObjects = SequenceObjects, Classes = Classes, Structs = Structs, Enums = Enums }));
+                JsonConvert.SerializeObject(new { SequenceObjects = SequenceObjects, Classes = Classes, Structs = Structs, Enums = Enums }, Formatting.Indented));
             MessageBox.Show("Done");
         }
 
@@ -669,14 +685,13 @@ namespace ME3Explorer.Unreal
                 info.pccPath = pcc.FileName; //used for dynamic resolution of files outside the game directory.
             }
 
-
-            foreach (ME3ExportEntry entry in pcc.Exports)
+            foreach (IExportEntry entry in pcc.Exports)
             {
                 if (entry.idxLink - 1 == index && entry.ClassName != "ScriptStruct" && entry.ClassName != "Enum"
                     && entry.ClassName != "Function" && entry.ClassName != "Const" && entry.ClassName != "State")
                 {
                     //Skip if property is transient (only used during execution, will never be in game files)
-                    if ((BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) == 0 && !info.properties.ContainsKey(entry.ObjectName))
+                    if (/*(BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) == 0 &&*/ !info.properties.ContainsKey(entry.ObjectName))
                     {
                         PropertyInfo p = getProperty(pcc, entry);
                         if (p != null)
@@ -684,6 +699,10 @@ namespace ME3Explorer.Unreal
                             info.properties.Add(entry.ObjectName, p);
                         }
                     }
+                    //else
+                    //{
+                    //    //Debug.WriteLine("Skipping property due to flag: " + entry.ObjectName);
+                    //}
                 }
             }
             return info;
@@ -760,7 +779,7 @@ namespace ME3Explorer.Unreal
                                 p.reference = arrayTypeProp.reference;
                                 break;
                             case PropertyType.ByteProperty:
-                                if (arrayTypeProp.reference == "")
+                                if (arrayTypeProp.reference == "Class")
                                     p.reference = arrayTypeProp.type.ToString();
                                 else
                                     p.reference = arrayTypeProp.reference;
@@ -792,7 +811,11 @@ namespace ME3Explorer.Unreal
                     p = null;
                     break;
             }
-
+            if (p != null && (BitConverter.ToUInt64(entry.Data, 24) & 0x0000000000002000) != 0)
+            {
+                //Transient
+                p.transient = true;
+            }
             return p;
         }
 

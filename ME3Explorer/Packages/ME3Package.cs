@@ -76,6 +76,7 @@ namespace ME3Explorer.Packages
         /// <param name="pccFilePath">full path + file name of desired pcc file.</param>
         private ME3Package(string pccFilePath)
         {
+            //Debug.WriteLine(" >> Opening me3 package " + pccFilePath);
             FileName = Path.GetFullPath(pccFilePath);
             MemoryStream inStream;
             using (FileStream pccStream = File.OpenRead(FileName))
