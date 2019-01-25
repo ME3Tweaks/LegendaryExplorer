@@ -106,7 +106,7 @@ namespace ME3Explorer.Unreal
                     stream.Seek(4, SeekOrigin.Current);
                     PropertyType type;
                     string namev = pcc.getNameEntry(typeIdx);
-                    //Debug.WriteLine("Reading "+name+" (" + namev + ") at 0x" + (stream.Position - 24).ToString("X8"));
+                    //Debug.WriteLine("Reading " + name + " (" + namev + ") at 0x" + (stream.Position - 24).ToString("X8"));
                     if (Enum.IsDefined(typeof(PropertyType), namev))
                     {
                         Enum.TryParse(namev, out type);
@@ -123,12 +123,12 @@ namespace ME3Explorer.Unreal
                             long valOffset = stream.Position;
                             if (UnrealObjectInfo.isImmutable(structType, pcc.Game))
                             {
-                                PropertyCollection structProps = ReadSpecialStruct(pcc, stream, structType, size);
+                                PropertyCollection structProps = ReadSpecialStruct(pcc, stream, structType, size, entry);
                                 props.Add(new StructProperty(structType, structProps, nameRef, true) { StartOffset = propertyStartPosition, ValueOffset = valOffset });
                             }
                             else
                             {
-                                PropertyCollection structProps = ReadProps(pcc, stream, structType, includeNoneProperty);
+                                PropertyCollection structProps = ReadProps(pcc, stream, structType, includeNoneProperty, entry: entry);
                                 props.Add(new StructProperty(structType, structProps, nameRef) { StartOffset = propertyStartPosition, ValueOffset = valOffset });
                             }
                             break;
@@ -274,22 +274,30 @@ namespace ME3Explorer.Unreal
             {
                 if (ME3UnrealObjectInfo.Structs.ContainsKey(structType))
                 {
+                    bool stripTransients = true;
+                    if (parsingEntry != null && parsingEntry.ClassName == "Class")
+                    {
+                        stripTransients = false;
+                    }
                     PropertyCollection defaultProps;
                     //cache
-                    if (defaultStructValuesME3.ContainsKey(structType))
+                    if (defaultStructValuesME3.ContainsKey(structType) && stripTransients)
                     {
                         defaultProps = defaultStructValuesME3[structType];
                     }
                     else
                     {
-                        defaultProps = ME3UnrealObjectInfo.getDefaultStructValue(structType);
+                        defaultProps = ME3UnrealObjectInfo.getDefaultStructValue(structType, stripTransients);
                         if (defaultProps == null)
                         {
                             long startPos = stream.Position;
                             props.Add(new UnknownProperty(stream, size) { StartOffset = startPos });
                             return props;
                         }
-                        defaultStructValuesME3.Add(structType, defaultProps);
+                        if (stripTransients)
+                        {
+                            defaultStructValuesME3.Add(structType, defaultProps);
+                        }
                     }
                     foreach (var prop in defaultProps)
                     {
@@ -605,6 +613,7 @@ namespace ME3Explorer.Unreal
                             currentInfo.baseClass = (parsingEntry as IExportEntry).ClassParent;
                             propertyInfo = UnrealObjectInfo.GetPropertyInfo(pcc.Game, name, enclosingType, currentInfo);
                         }
+
                         string arrayStructType = propertyInfo?.reference;
                         if (IsInImmutable || UnrealObjectInfo.isImmutable(arrayStructType, pcc.Game))
                         {
@@ -612,6 +621,7 @@ namespace ME3Explorer.Unreal
                             if (!IsInImmutable)
                             {
                                 stream.Seek(-16, SeekOrigin.Current);
+                                //Debug.WriteLine("Arraysize at 0x" + stream.Position.ToString("X5"));
                                 arraySize = stream.ReadValueS32();
                                 stream.Seek(12, SeekOrigin.Current);
                             }
@@ -637,7 +647,7 @@ namespace ME3Explorer.Unreal
                             for (int i = 0; i < count; i++)
                             {
                                 long structOffset = stream.Position;
-                                //Debug.WriteLine("reading array struct: " + arrayStructType + " at 0x" + stream.Position.ToString("X5"));
+                                Debug.WriteLine("reading array struct: " + arrayStructType + " at 0x" + stream.Position.ToString("X5"));
                                 PropertyCollection structProps = ReadProps(pcc, stream, arrayStructType, includeNoneProperty: IncludeNoneProperties);
                                 StructProperty structP = new StructProperty(arrayStructType, structProps) { StartOffset = structOffset };
                                 structP.ValueOffset = structProps[0].StartOffset;
@@ -652,7 +662,7 @@ namespace ME3Explorer.Unreal
                         for (int i = 0; i < count; i++)
                         {
                             long startPos = stream.Position;
-                            props.Add(new BoolProperty(stream, pcc.Game,isArrayContained: true) { StartOffset = startPos });
+                            props.Add(new BoolProperty(stream, pcc.Game, isArrayContained: true) { StartOffset = startPos });
                         }
                         return new ArrayProperty<BoolProperty>(arrayOffset, props, arrayType, name);
                     }
