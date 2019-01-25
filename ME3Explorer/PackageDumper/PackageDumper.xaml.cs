@@ -271,8 +271,7 @@ namespace ME3Explorer.PackageDumper
         {
             path = Path.GetFullPath(path);
             var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
-            var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s))).ToList();
-            //string[] files = Directory.GetFiles(path, "*.pcc", SearchOption.AllDirectories);
+            var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower()))).ToList();
             bool beginParsing = false;
             OverallProgressMaximum = files.Count;
             for (int i = 0; i < files.Count; i++)
@@ -280,7 +279,7 @@ namespace ME3Explorer.PackageDumper
                 if (!DumpCanceled)
                 {
                     string file = Path.GetFullPath(files[i]);
-                    //if (file.EndsWith("SFXGame.pcc") || beginParsing)
+                    //if (file.EndsWith("Engine.pcc") || beginParsing)
                     //{
                     beginParsing = true;
                         string outfolder = outputfolder;
@@ -419,7 +418,7 @@ namespace ME3Explorer.PackageDumper
                             switch (GameBeingDumped)
                             {
                                 case MEGame.ME1:
-                                    stringoutput.WriteLine(UE3FunctionReader.ReadFunction(exp));
+                                    //stringoutput.WriteLine(UE3FunctionReader.ReadFunction(exp));
                                     break;
                             }
                             //Function func = new Function(exp.Data, pcc);
