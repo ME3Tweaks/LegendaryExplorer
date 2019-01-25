@@ -2255,6 +2255,18 @@ namespace ME3Explorer
             }
         }
 
+        public string RawPropertyType
+        {
+            get
+            {
+                if (Property != null)
+                {
+                    return Property.PropType.ToString();
+                }
+                return "Currently loaded export";
+            }
+        }
+
         public string PropertyType
         {
             get

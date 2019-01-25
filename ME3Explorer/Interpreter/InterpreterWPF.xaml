@@ -91,7 +91,7 @@
                                     <TextBlock x:Name="PropertyItem_ParsedValue" Margin="5,0,0,0" Text="{Binding ParsedValue}" VerticalAlignment="Center" FontStyle="Italic"/>
                                     <xctk:ColorPicker Margin="5,0,0,0" Visibility="{Binding Property, Converter={StaticResource UPropertyColorPickerVisibilityConverter}}" SelectedColor="{Binding ColorStructCode,Converter={StaticResource ColorCodeConverter}}" Width="60"/>
                                 </StackPanel>
-                                <TextBlock x:Name="PropertyItem_DisplayType" FontSize="10" Text="{Binding PropertyType}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                <TextBlock x:Name="PropertyItem_DisplayType" FontSize="10" Text="{Binding RawPropertyType}" VerticalAlignment="Center" Margin="5,0,0,0"/>
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="PreviewMouseRightButtonDown">
                                         <ei:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
@@ -100,54 +100,54 @@
                             </StackPanel>
                         </StackPanel>
                         <HierarchicalDataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding PropertyType}" Value="ObjectProperty">
+                            <DataTrigger Binding="{Binding RawPropertyType}" Value="ObjectProperty">
                                 <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#6d6c3f"/>-->
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d6c3f"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88fffec4"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding PropertyType}" Value="FloatProperty">
+                            <DataTrigger Binding="{Binding RawPropertyType}" Value="FloatProperty">
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#004f46"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#4400ffaa"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding PropertyType}" Value="IntProperty">
+                            <DataTrigger Binding="{Binding RawPropertyType}" Value="IntProperty">
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#664f46"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#AAffeae2"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding PropertyType}" Value="StrProperty">
-                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#374f46"/>
-                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#32aaf4"/>
+                            <DataTrigger Binding="{Binding RawPropertyType}" Value="StrProperty">
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#071f06"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#6632aaf4"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding PropertyType}" Value="ArrayProperty">
+                            <DataTrigger Binding="{Binding RawPropertyType}" Value="ArrayProperty">
                                 <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#382c4c"/>-->
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#382c4c"/>
-                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#d3bef4"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88d3bef4"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding PropertyType}" Value="BoolProperty">
+                            <DataTrigger Binding="{Binding RawPropertyType}" Value="BoolProperty">
                                 <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#43563a"/>-->
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#43563a"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88ecffe2"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding PropertyType}" Value="StructProperty">
+                            <DataTrigger Binding="{Binding RawPropertyType}" Value="StructProperty">
                                 <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#593953"/>-->
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#593953"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88f4beea"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding PropertyType}" Value="ByteProperty">
+                            <DataTrigger Binding="{Binding RawPropertyType}" Value="ByteProperty">
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#474647"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88afaeaf"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding PropertyType}" Value="NameProperty">
+                            <DataTrigger Binding="{Binding RawPropertyType}" Value="NameProperty">
                                 <!--<Setter TargetName="PropertyItem_EditorSet" Property="ContentTemplate" Value="{StaticResource EditorSet_NamePropertyTemplate}"/>-->
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#4a5568"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88e2edff"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding PropertyType}" Value="Unknown">
+                            <DataTrigger Binding="{Binding RawPropertyType}" Value="Unknown">
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="White"/>
                                 <Setter TargetName="PropertyItem_EditableValue" Property="Foreground" Value="White"/>
                                 <Setter TargetName="PropertyItem_ParsedValue" Property="Foreground" Value="White"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="Red"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding PropertyType}" Value="None">
+                            <DataTrigger Binding="{Binding RawPropertyType}" Value="None">
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d4818"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88ffb759"/>
                             </DataTrigger>
