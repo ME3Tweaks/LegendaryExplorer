@@ -268,6 +268,19 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "Package Dumper",
+                type = typeof(AnimationExplorer.AnimationExplorer),
+                icon = Application.Current.FindResource("iconPackageDumper") as ImageSource,
+                open = () =>
+                {
+                    (new PackageDumper.PackageDumper()).Show();
+                },
+                tags = new List<string> { "utility", "package", "pcc", "text", "dump" },
+                subCategory = "Utilities",
+                description = "Package Dumper is a utility for dumping package information to files that can be searched with tools like GrepWin. Names, Imports, Exports, Properties and more are dumped."
+            });
+            set.Add(new Tool
+            {
                 name = "Plot Database",
                 type = typeof(PlotVarDB.PlotVarDB),
                 icon = Application.Current.FindResource("iconPlotDatabase") as ImageSource,
