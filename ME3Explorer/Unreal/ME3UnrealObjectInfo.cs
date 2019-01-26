@@ -100,10 +100,28 @@ namespace ME3Explorer.Unreal
                 case MEGame.ME1:
                     return ME1UnrealObjectInfo.getArrayType(className, propName, export: parsingEntry as IExportEntry);
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getArrayType(className, propName, export: parsingEntry as IExportEntry);
+                    var res2 = ME2UnrealObjectInfo.getArrayType(className, propName, export: parsingEntry as IExportEntry);
+#if DEBUG
+                    //For debugging only!
+                    if (res2 == ArrayType.Int && ME2UnrealObjectInfo.ArrayTypeLookupJustFailed)
+                    {
+                        ME2UnrealObjectInfo.ArrayTypeLookupJustFailed = false;
+                        Debug.WriteLine("Array type lookup failed for " + propName + " in class " + className + " in export " + parsingEntry.FileRef.GetEntryString(parsingEntry.UIndex));
+                    }
+#endif
+                    return res2;
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getArrayType(className, propName, export: parsingEntry as IExportEntry);
+                    var res = ME3UnrealObjectInfo.getArrayType(className, propName, export: parsingEntry as IExportEntry);
+#if DEBUG
+                    //For debugging only!
+                    if (res == ArrayType.Int && ME3UnrealObjectInfo.ArrayTypeLookupJustFailed)
+                    {
+                        ME3UnrealObjectInfo.ArrayTypeLookupJustFailed = false;
+                        Debug.WriteLine("Array type lookup failed for " + propName + " in class " + className + " in export " + parsingEntry.FileRef.GetEntryString(parsingEntry.UIndex));
+                    }
+#endif
+                    return res;
             }
             return ArrayType.Int;
         }
@@ -324,6 +342,10 @@ namespace ME3Explorer.Unreal
             return getArrayType(p);
         }
 
+#if DEBUG
+        public static bool ArrayTypeLookupJustFailed;
+#endif
+
         public static ArrayType getArrayType(PropertyInfo p)
         {
             if (p != null)
@@ -367,6 +389,9 @@ namespace ME3Explorer.Unreal
             }
             else
             {
+#if DEBUG
+         ArrayTypeLookupJustFailed = true;
+#endif
                 Debug.WriteLine("ME3 Array type lookup failed due to no info provided, defaulting to int");
                 return ArrayType.Int;
             }
@@ -699,7 +724,7 @@ namespace ME3Explorer.Unreal
             };
             ci.properties["TargetPawn"] = new PropertyInfo()
             {
-                type=PropertyType.ObjectProperty,
+                type = PropertyType.ObjectProperty,
                 reference = "Actor"
             };
             ci.properties["AttachSocketName"] = new PropertyInfo()

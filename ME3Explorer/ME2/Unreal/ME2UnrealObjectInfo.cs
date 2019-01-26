@@ -139,6 +139,9 @@ namespace ME2Explorer.Unreal
             return getArrayType(p);
         }
 
+#if DEBUG
+        public static bool ArrayTypeLookupJustFailed;
+#endif
         public static ArrayType getArrayType(PropertyInfo p)
         {
             if (p != null)
@@ -182,6 +185,9 @@ namespace ME2Explorer.Unreal
             }
             else
             {
+#if DEBUG
+                ArrayTypeLookupJustFailed = true;
+#endif
                 Debug.WriteLine("ME2 Array type lookup failed due to no info provided, defaulting to int");
                 return ArrayType.Int;
             }
@@ -456,7 +462,7 @@ namespace ME2Explorer.Unreal
                             }
                         }
                     }
-                    //System.Diagnostics.Debug.WriteLine("Releasing " + pcc.FileName);
+                    System.Diagnostics.Debug.WriteLine("Releasing " + pcc.FileName);
                     pcc.Release();
                 }
             }
@@ -476,6 +482,25 @@ namespace ME2Explorer.Unreal
             {
 
             }
+
+            //SFXPhysicalMaterialDecals missing items
+            ClassInfo sfxpmd = Classes["SFXPhysicalMaterialDecals"];
+            string[] decalComponentArrays = { "HeavyPistol", "AutoPistol", "HandCannon", "SMG", "Shotgun", "HeavyShotgun","FlakGun", "AssaultRifle", "Needler", "Machinegun", "SniperRifle", "AntiMatRifle", "MassCannon", "ParticleBeam" };
+            foreach (string decal in decalComponentArrays)
+            {
+                sfxpmd.properties[decal] = new PropertyInfo()
+                {
+                    type = PropertyType.ArrayProperty,
+                    reference = "DecalComponent"
+                };
+            }
+
+            ClassInfo sfxweapon = Classes["SFXWeapon"];
+            sfxpmd.properties["InstantHitDamageTypes"] = new PropertyInfo()
+            {
+                type = PropertyType.ArrayProperty,
+                reference = "Class"
+            };
             File.WriteAllText(Application.StartupPath + "//exec//ME2ObjectInfo.json", JsonConvert.SerializeObject(new { Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented));
             MessageBox.Show("Done");
         }
