@@ -3663,6 +3663,68 @@ namespace ME3Explorer
         {
             MEPackageHandler.PrintOpenPackages();
         }
+
+        private void ObjectInfosSearch_Click(object sender, RoutedEventArgs e)
+        {
+            var searchTerm = PromptDialog.Prompt(this, "Enter key value to search", "ObjectInfos Search");
+            if (searchTerm != null)
+            {
+                string searchResult = "";
+
+                //ME1
+                if (ME1Explorer.Unreal.ME1UnrealObjectInfo.Classes.TryGetValue(searchTerm, out ClassInfo val))
+                {
+                    searchResult += "Key found in ME1 Classes\n";
+                }
+                if (ME1Explorer.Unreal.ME1UnrealObjectInfo.Structs.TryGetValue(searchTerm, out ClassInfo val2))
+                {
+                    searchResult += "Key found in ME1 Structs\n";
+                }
+                if (ME1Explorer.Unreal.ME1UnrealObjectInfo.Enums.TryGetValue(searchTerm, out List<string> val3))
+                {
+                    searchResult += "Key found in ME1 Enums\n";
+                }
+
+                //ME2
+                if (ME2Explorer.Unreal.ME2UnrealObjectInfo.Classes.TryGetValue(searchTerm, out ClassInfo val4))
+                {
+                    searchResult += "Key found in ME2 Classes\n";
+                }
+                if (ME2Explorer.Unreal.ME2UnrealObjectInfo.Structs.TryGetValue(searchTerm, out ClassInfo val5))
+                {
+                    searchResult += "Key found in ME2 Structs\n";
+                }
+                if (ME2Explorer.Unreal.ME2UnrealObjectInfo.Enums.TryGetValue(searchTerm, out List<string> val6))
+                {
+                    searchResult += "Key found in ME2 Enums\n";
+                }
+
+                //ME3
+                if (ME3UnrealObjectInfo.Classes.TryGetValue(searchTerm, out ClassInfo val7))
+                {
+                    searchResult += "Key found in ME3 Classes\n";
+                }
+                if (ME3UnrealObjectInfo.Structs.TryGetValue(searchTerm, out ClassInfo val8))
+                {
+                    searchResult += "Key found in ME3 Structs\n";
+                }
+                if (ME3UnrealObjectInfo.Enums.TryGetValue(searchTerm, out List<string> val9))
+                {
+                    searchResult += "Key found in ME3 Enums\n";
+                }
+
+                if (searchResult == "")
+                {
+                    searchResult = "Key " + searchTerm + " not found in any ObjectInfo Structs/Classes/Enums dictionaries";
+                }
+                else
+                {
+                    searchResult = "Key " + searchTerm + " found in the following:\n"+searchResult;
+                }
+
+                MessageBox.Show(searchResult);
+            }
+        }
     }
 
     [DebuggerDisplay("TreeViewEntry {DisplayName}")]
@@ -3855,5 +3917,4 @@ namespace ME3Explorer
             Sublinks.AddRange(exportNodes);
         }
     }
-
 }

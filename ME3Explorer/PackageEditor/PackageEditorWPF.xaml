@@ -138,7 +138,10 @@
                     <MenuItem Header="Check for duplicate indexes" ToolTip="Tries to find duplicate indexes in this file" Command="{Binding CheckForDuplicateIndexesCommand}"/>
                 </MenuItem>
                 <MenuItem Header="Experiments" Padding="4">
-                    <MenuItem Header="FOR TOOLSET DEVELOPERS ONLY" IsEnabled="False"/>
+                    <MenuItem Header=" &gt;&gt; FOR TOOLSET DEVELOPERS ONLY &lt;&lt;" IsEnabled="False"/>
+                    <MenuItem Header=" &gt;&gt; Text may not reflect exact functionality &lt;&lt;" IsEnabled="False"/>
+                    <MenuItem Header="Search ObjectInfo keys for value" Click="ObjectInfosSearch_Click"/>
+
                     <MenuItem Header="Trigger GetProperties() on current export" Click="RefreshProperties_Clicked"/>
                     <MenuItem Header="Print loaded packages to debug console" Click="PrintLoadedPackages_Clicked"/>
                     <MenuItem Header="Build ME1 TLK Database" Click="BuildME1TLKDB_Clicked"/>
