@@ -569,7 +569,7 @@ namespace ME3Explorer.Unreal
                     return new NameProperty(stream, pcc, template.Name) { StartOffset = startPos };
                 case PropertyType.BoolProperty:
                     //always say it's ME3 so that bools get read as 1 byte
-                    return new BoolProperty(stream, MEGame.ME3, template.Name) { StartOffset = startPos };
+                    return new BoolProperty(stream, pcc.Game, template.Name, true) { StartOffset = startPos };
                 case PropertyType.ByteProperty:
                     if (template is EnumProperty)
                     {
@@ -868,6 +868,7 @@ namespace ME3Explorer.Unreal
             {
                 foreach (var prop in Properties)
                 {
+                    //Debug.WriteLine("Writing struct prop " + prop.Name + " at 0x" + stream.Position.ToString("X4"));
                     prop.WriteTo(stream, pcc, IsImmutable);
                 }
                 if (!IsImmutable && (Properties.Count == 0 || !(Properties.Last() is NoneProperty)))
@@ -1210,14 +1211,16 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                if (pcc.Game == MEGame.ME3)
-                {
-                    stream.WriteValueB8(Value);
-                }
-                else
-                {
-                    stream.WriteValueB32(Value);
-                }
+                stream.WriteValueB8(Value);
+
+                //if (pcc.Game == MEGame.ME3 || isArrayContained)
+                //{
+                //    stream.WriteValueB8(Value);
+                //}
+                //else
+                //{
+                //    stream.WriteValueB32(Value);
+                //}
             }
         }
 

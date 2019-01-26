@@ -1359,7 +1359,7 @@ namespace ME3Explorer
                         }
                         else if (newSelectedItem.Parent.Property is StructProperty structParentProp)
                         {
-                            if (UnrealObjectInfo.isImmutable(structParentProp.StructType, CurrentLoadedExport.FileRef.Game))
+                            if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
                             {
                                 //We are inside of an immutable struct
                                 Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef, true));
@@ -1378,7 +1378,14 @@ namespace ME3Explorer
                     }
                     if (newSelectedItem.Property.GetType().IsOfGenericType(typeof(ArrayProperty<>)))
                     {
-                        Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
+                        if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
+                        {
+                            Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef, true));
+                        }
+                        else
+                        {
+                            Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
+                        }
                         return;
                     }
 
@@ -1409,6 +1416,27 @@ namespace ME3Explorer
                                 }
                             }
                             //otherwise use the default
+                            break;
+                        case EnumProperty ep:
+                            {
+                                {
+                                    if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
+                                    {
+                                        Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 8);
+                                        return;
+                                    }
+                                    else if (newSelectedItem.Parent.Property is ArrayProperty<EnumProperty>)
+                                    {
+                                        Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 8);
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.GetLength(CurrentLoadedExport.FileRef));
+                                        return;
+                                    }
+                                }
+                            }
                             break;
                         case ByteProperty bp:
                             {

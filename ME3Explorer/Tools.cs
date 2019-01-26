@@ -95,7 +95,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "texture", "tpf", "dds", "bmp", "jpg", "png" },
                 subCategory = "Mod Packagers",
-                description = "TPF Tools is the toolset’s primary texture installation utility for users. An alternative to Texmod, TPF Tools allows for permanent insertion of textures into game files. It’s compatible with a variety of texture formats, will help “repair” improperly-formatted textures, and has an assortment of other features.\n\nTPF Tools can also be used by modders to package textures into TPFs for distribution."
+                description = "TPF TOOLS IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nTPF Tools allows for permanent insertion of textures into game files. TPF tools can also be used by modders to package textures into TPFs for distribution.\n\nThis tool has been mostly superceded by Mass Effect Modder (MEM)."
             });
             #endregion
 
@@ -238,7 +238,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "mesh" },
                 subCategory = "Meshes + Textures",
-                description = "Meshplorer loads and displays all meshes within a database or level. The tool skins most meshes with its associated texture. A variety of view options including solid and wireframe are available.",
+                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool only works with Mass Effect 3.",
             });
             set.Add(new Tool
             {
