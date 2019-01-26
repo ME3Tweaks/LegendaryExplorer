@@ -478,7 +478,7 @@ namespace ME2Explorer.Unreal
             {
                 NewClasses.Add("LightMapTexture2D", info);
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
             }

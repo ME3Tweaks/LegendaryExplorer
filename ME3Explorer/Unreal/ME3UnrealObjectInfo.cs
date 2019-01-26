@@ -343,6 +343,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
+                Debug.WriteLine("ME3 Array type lookup failed due to no info provided, defaulting to int");
                 return ArrayType.Int;
             }
         }
@@ -641,8 +642,88 @@ namespace ME3Explorer.Unreal
                         }
                     }
                 }
-               // System.Diagnostics.Debug.WriteLine($"{i} of {length} processed");
+                // System.Diagnostics.Debug.WriteLine($"{i} of {length} processed");
             }
+
+
+            #region CUSTOM ADDITIONS
+            //Custom additions
+            //Custom additions are tweaks and additional classes either not automatically able to be determined
+            //or by new classes designed in the modding scene that must be present in order for parsing to work properly
+
+            //Kinkojiro - New Class - SFXSeqAct_AttachToSocket
+            ClassInfo ci = new ClassInfo()
+            {
+                baseClass = "SequenceAction",
+                pccPath = "ME3Explorer_CustomNativeAdditions",
+                exportIndex = 0
+            };
+            ci.properties["PSC2Component"] = new PropertyInfo()
+            {
+                type = PropertyType.ObjectProperty,
+                reference = "ParticleSystemComponent"
+            };
+            ci.properties["PSC1Component"] = new PropertyInfo()
+            {
+                type = PropertyType.ObjectProperty,
+                reference = "ParticleSystemComponent"
+            };
+            ci.properties["SkMeshComponent"] = new PropertyInfo()
+            {
+                type = PropertyType.ObjectProperty,
+                reference = "SkeletalMeshComponent"
+            };
+            ci.properties["TargetPawn"] = new PropertyInfo()
+            {
+                type=PropertyType.ObjectProperty,
+                reference = "Actor"
+            };
+            ci.properties["AttachSocketName"] = new PropertyInfo()
+            {
+                type = PropertyType.NameProperty
+            };
+            Classes["SFXSeqAct_AttachToSocket"] = ci;
+
+            //Kinkojiro - New Class - BioSeqAct_ShowMedals
+            //Sequence object for showing the medals UI
+            ci = new ClassInfo()
+            {
+                baseClass = "SequenceAction",
+                pccPath = "ME3Explorer_CustomNativeAdditions",
+                exportIndex = 0
+            };
+            ci.properties["bFromMainMenu"] = new PropertyInfo()
+            {
+                type = PropertyType.BoolProperty,
+            };
+            ci.properties["m_oGuiReferenced"] = new PropertyInfo()
+            {
+                type = PropertyType.ObjectProperty,
+                reference = "GFxMovieInfo"
+            };
+            Classes["BioSeqAct_ShowMedals"] = ci;
+
+            //Kinkojiro - New Class - SFXSeqAct_SetFaceFX
+            ci = new ClassInfo()
+            {
+                baseClass = "SequenceAction",
+                pccPath = "ME3Explorer_CustomNativeAdditions",
+                exportIndex = 0
+            };
+            ci.properties["m_aoTargets"] = new PropertyInfo()
+            {
+                type = PropertyType.ArrayProperty,
+                reference = "Actor"
+            };
+            ci.properties["m_pDefaultFaceFXAsset"] = new PropertyInfo()
+            {
+                type = PropertyType.ObjectProperty,
+                reference = "FaceFXAsset"
+            };
+            Classes["SFXSeqAct_SetFaceFX"] = ci;
+
+            #endregion
+
             File.WriteAllText(Application.StartupPath + "//exec//ME3ObjectInfo.json",
                 JsonConvert.SerializeObject(new { SequenceObjects = SequenceObjects, Classes = Classes, Structs = Structs, Enums = Enums }, Formatting.Indented));
             MessageBox.Show("Done");
