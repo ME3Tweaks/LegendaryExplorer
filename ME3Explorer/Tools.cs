@@ -82,7 +82,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", ".mod", "mod", "mesh" },
                 subCategory = "Mod Packagers",
-                description = "ModMaker is used to create and install files with the \".mod\" extension. MOD files are compatible with ME3 and may be packaged with meshes and other game resources.\n\nAttention: Installation of textures via MOD files is deprecated. Use MM to extract any textures, then install them with TPF Tools, instead."
+                description = "MODMAKER IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nModMaker is used to create and install files with the \".mod\" extension. MOD files are compatible with ME3 and may be packaged with meshes and other game resources."
             });
             set.Add(new Tool
             {
@@ -303,6 +303,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility" },
                 subCategory = "Databases",
+                description = "Scans ME3 and creates a database of all the classes and properties for those classes that Bioware uses.\n\nThis is different than Package Dumper, as it looks across all instances of the class and what is actually used."
             });
             set.Add(new Tool
             {
@@ -315,6 +316,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility" },
                 subCategory = "Properties",
+                description = "Dumps property information.\n\nThis tool has been replaced by Package Dumper and will be removed in the next release."
             });
             set.Add(new Tool
             {
@@ -327,6 +329,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility" },
                 subCategory = "Properties",
+                description = "Allos you to create a custom database of properties.\n\nThis tool is deprecated and will be removed in the next release."
             });
             set.Add(new Tool
             {
@@ -339,6 +342,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "mesh", "animation" },
                 subCategory = "Explorers",
+                description = "View the data contained in a PSA animation file extracted using Gildor's umodel toolkit."
             });
             set.Add(new Tool
             {
@@ -351,6 +355,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "mesh" },
                 subCategory = "Explorers",
+                description = "View the data contained in a PSK skeletal mesh file extracted using Gildor's umodel toolkit."
             });
             set.Add(new Tool
             {
