@@ -1856,10 +1856,12 @@ namespace ME3Explorer
                         aop.Add(op);
                         break;
                     case ArrayProperty<EnumProperty> aep:
-                        PropertyInfo p = GetPropertyInfo(aep.Name, CurrentLoadedExport.ClassName, false);
-                        string typeName = p.reference;
-                        EnumProperty ep = new EnumProperty(typeName, CurrentLoadedExport.FileRef);
-                        aep.Add(ep);
+                        {
+                            PropertyInfo p = GetPropertyInfo(aep.Name, CurrentLoadedExport.ClassName, false);
+                            string typeName = p.reference;
+                            EnumProperty ep = new EnumProperty(typeName, CurrentLoadedExport.FileRef);
+                            aep.Add(ep);
+                        }
                         break;
                     case ArrayProperty<IntProperty> aip:
                         IntProperty ip = new IntProperty(0);
@@ -1878,18 +1880,27 @@ namespace ME3Explorer
                         astrf.Add(strfp);
                         break;
                     case ArrayProperty<StructProperty> astructp:
-                        if (astructp.Count > 0)
                         {
-                            astructp.Add(astructp.Last()); //Bad form, but writing and reparse will correct it
-                            break;
-                        }
-                        else
-                        {
-                            //empty
-                            if (CurrentLoadedExport.FileRef.Game == MEGame.ME3) { }
+                            if (astructp.Count > 0)
+                            {
+                                astructp.Add(astructp.Last()); //Bad form, but writing and reparse will correct it
+                                break;
+                            }
                             else
                             {
-                                System.Windows.MessageBox.Show("Adding struct properties to ME1/ME2 is not supported at this time.");
+                                //empty
+                                //if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
+                                //{
+                                    PropertyInfo p = GetPropertyInfo(astructp.Name, CurrentLoadedExport.ClassName, false);
+                                    string typeName = p.reference;
+                                    PropertyCollection props = ME3UnrealObjectInfo.getDefaultStructValue(typeName, true);
+                                    StructProperty sp = new StructProperty(typeName, props);
+                                    astructp.Add(sp);
+                                //}
+                                //else
+                                //{
+                                //    System.Windows.MessageBox.Show("Adding struct properties to ME1/ME2 is not supported at this time.");
+                                //}
                             }
                         }
                         break;
@@ -2005,25 +2016,6 @@ namespace ME3Explorer
                         _colorStructCode = $"#{a:X2}{r:X2}{g:X2}{b:X2}";
                         return _colorStructCode;
                     }
-                    //if (colorStruct.StructType == "LinearColor")
-                    //{
-                    //    if (_colorStructCode != null) return _colorStructCode;
-
-                    //    var a = colorStruct.GetProp<FloatProperty>("A").Value;
-                    //    var r = colorStruct.GetProp<FloatProperty>("R").Value;
-                    //    var g = colorStruct.GetProp<FloatProperty>("G").Value;
-                    //    var b = colorStruct.GetProp<FloatProperty>("B").Value;
-
-                    //    if (a >= 0 && a <= 1 && r >= 0 && r <= 1 && g >= 0 && g <= 1 && b >= 0 && b <= 1)
-                    //    {
-                    //        var byteA = (byte)(255 * a);
-                    //        var byteR = (byte)(255 * r);
-                    //        var byteG = (byte)(255 * g);
-                    //        var byteB = (byte)(255 * b);
-                    //        _colorStructCode = $"#{byteA:X2}{byteR:X2}{byteG:X2}{byteB:X2}";
-                    //        return _colorStructCode;
-                    //    }
-                    //}
                 }
                 return null;
             }
@@ -2047,22 +2039,6 @@ namespace ME3Explorer
                         _colorStructCode = value;
                         OnPropertyChanged("ColorStructCode");
                     }
-                    //if (colorStruct.StructType == "LinearColor")
-                    //{
-                    //    var a = colorStruct.GetProp<FloatProperty>("A");
-                    //    var r = colorStruct.GetProp<FloatProperty>("R");
-                    //    var g = colorStruct.GetProp<FloatProperty>("G");
-                    //    var b = colorStruct.GetProp<FloatProperty>("B");
-                    //    var newColor = (Color)ColorConverter.ConvertFromString(value);
-                    //    //update values
-                    //    a.Value = newColor.A / 255.0f;
-                    //    r.Value = newColor.R / 255.0f;
-                    //    g.Value = newColor.G / 255.0f;
-                    //    b.Value = newColor.B / 255.0f;
-
-                    //    _colorStructCode = value;
-                    //    OnPropertyChanged("ColorStructCode");
-                    //}
                 }
             }
         }
