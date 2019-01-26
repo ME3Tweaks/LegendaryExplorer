@@ -85,36 +85,52 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static ArrayType GetArrayType(MEGame game, string propName, string typeName, IEntry parsingEntry = null)
+        /// <summary>
+        /// Gets the type of an array
+        /// </summary>
+        /// <param name="game">What game we are looking info for</param>
+        /// <param name="propName">Name of the array property</param>
+        /// <param name="className">Name of the class that should contain the information. If contained in a struct, this will be the name of the struct type</param>
+        /// <param name="parsingEntry">Entry that is being parsed. Used for dynamic lookup if it's not in the DB</param>
+        /// <returns></returns>
+        public static ArrayType GetArrayType(MEGame game, string propName, string className, IEntry parsingEntry = null)
         {
             switch (game)
             {
                 case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getArrayType(typeName, propName, export: parsingEntry as IExportEntry);
+                    return ME1UnrealObjectInfo.getArrayType(className, propName, export: parsingEntry as IExportEntry);
                 case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getArrayType(typeName, propName, export: parsingEntry as IExportEntry);
+                    return ME2UnrealObjectInfo.getArrayType(className, propName, export: parsingEntry as IExportEntry);
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getArrayType(typeName, propName, export: parsingEntry as IExportEntry);
+                    return ME3UnrealObjectInfo.getArrayType(className, propName, export: parsingEntry as IExportEntry);
             }
             return ArrayType.Int;
         }
 
-        public static PropertyInfo GetPropertyInfo(MEGame game, string propname, string typeName, ClassInfo nonVanillaClassInfo = null)
+        /// <summary>
+        /// Gets property information for a property by name & containing class or struct name
+        /// </summary>
+        /// <param name="game">Game to lookup informatino from</param>
+        /// <param name="propname">Name of property information to look up</param>
+        /// <param name="containingClassOrStructName">Name of containing class or struct name</param>
+        /// <param name="nonVanillaClassInfo">Dynamically built property info</param>
+        /// <returns></returns>
+        public static PropertyInfo GetPropertyInfo(MEGame game, string propname, string containingClassOrStructName, ClassInfo nonVanillaClassInfo = null)
         {
             bool inStruct = false;
             PropertyInfo p = null;
             switch (game)
             {
                 case MEGame.ME1:
-                    p = ME1UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
+                    p = ME1UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo);
                     break;
                 case MEGame.ME2:
-                    p = ME2UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
+                    p = ME2UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo);
                     break;
                 case MEGame.ME3:
                 case MEGame.UDK:
-                    p = ME3UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
+                    p = ME3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo);
                     break;
             }
             if (p == null)
@@ -123,20 +139,42 @@ namespace ME3Explorer.Unreal
                 switch (game)
                 {
                     case MEGame.ME1:
-                        p = ME1UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                        p = ME1UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct);
                         break;
                     case MEGame.ME2:
-                        p = ME2UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                        p = ME2UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct);
                         break;
                     case MEGame.ME3:
-                        p = ME3UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                        p = ME3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct);
                         break;
                     case MEGame.UDK:
-                        p = ME3UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct);
+                        p = ME3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct);
                         break;
                 }
             }
             return p;
+        }
+
+        /// <summary>
+        /// Gets the default values for a struct
+        /// </summary>
+        /// <param name="game">Game to pull info from</param>
+        /// <param name="typeName">Struct type name</param>
+        /// <param name="stripTransients">Strip transients from the struct</param>
+        /// <returns></returns>
+        internal static PropertyCollection getDefaultStructValue(MEGame game, string typeName, bool stripTransients)
+        {
+            switch (game)
+            {
+                case MEGame.ME1:
+                    return ME1UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients);
+                case MEGame.ME2:
+                    return ME2UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients);
+                case MEGame.ME3:
+                case MEGame.UDK:
+                    return ME3UnrealObjectInfo.getDefaultStructValue(typeName, stripTransients);
+            }
+            return null;
         }
     }
 
@@ -259,42 +297,28 @@ namespace ME3Explorer.Unreal
             return null;
         }
 
-        public static ArrayType getArrayType(string className, string propName, bool inStruct = false, IExportEntry export = null)
+        public static ArrayType getArrayType(string className, string propName, IExportEntry export = null)
         {
-            PropertyInfo p = getPropertyInfo(className, propName, inStruct);
+            PropertyInfo p = getPropertyInfo(className, propName, false);
             if (p == null)
             {
-                p = getPropertyInfo(className, propName, !inStruct);
+                p = getPropertyInfo(className, propName, true);
             }
-
-            if (p == null && export != null && export.ClassName != "Class" && export.idxClass > 0)
+            if (p == null && export != null)
             {
-                export = export.FileRef.Exports[export.idxClass - 1]; //make sure you get actual class
-                ClassInfo currentInfo;
-                switch (export.FileRef.Game)
+                if (export.ClassName != "Class" && export.idxClass > 0)
                 {
-                    case MEGame.ME1:
-                        currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(export);
-                        break;
-                    case MEGame.ME2:
-                        currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(export);
-                        break;
-                    case MEGame.ME3:
-                    default:
-                        currentInfo = ME3UnrealObjectInfo.generateClassInfo(export);
-                        break;
+                    export = export.FileRef.Exports[export.idxClass - 1]; //make sure you get actual class
                 }
-                currentInfo.baseClass = export.ClassParent;
-
-                p = getPropertyInfo(className, propName, inStruct, currentInfo);
-                if (p == null)
+                if (export.ClassName == "Class")
                 {
-                    p = getPropertyInfo(className, propName, !inStruct, currentInfo);
-                }
-                if (p == null)
-                {
-                    //getting property info failed
-                    return ArrayType.Int;
+                    ClassInfo currentInfo = generateClassInfo(export);
+                    currentInfo.baseClass = export.ClassParent;
+                    p = getPropertyInfo(className, propName, false, currentInfo);
+                    if (p == null)
+                    {
+                        p = getPropertyInfo(className, propName, true, currentInfo);
+                    }
                 }
             }
             return getArrayType(p);

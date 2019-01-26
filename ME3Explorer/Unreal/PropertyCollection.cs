@@ -447,7 +447,7 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                //Fallback: Attempt lookup
+                //Fallback: Attempt lookup. This may be able to be promoted to main lookup now, but we'll do that later
                 if (pcc.Game == MEGame.ME2)
                 {
                     if (ME2Explorer.Unreal.ME2UnrealObjectInfo.Structs.ContainsKey(structType))

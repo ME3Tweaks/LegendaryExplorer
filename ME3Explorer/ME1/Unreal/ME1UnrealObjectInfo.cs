@@ -134,37 +134,29 @@ namespace ME1Explorer.Unreal
             return null;
         }
 
-        public static ArrayType getArrayType(string className, string propName, bool inStruct = false, IExportEntry export = null)
+        public static ArrayType getArrayType(string className, string propName, IExportEntry export = null)
         {
-            PropertyInfo p = getPropertyInfo(className, propName, inStruct);
+            PropertyInfo p = getPropertyInfo(className, propName, false);
             if (p == null)
             {
-                p = getPropertyInfo(className, propName, !inStruct);
+                p = getPropertyInfo(className, propName, true);
             }
-            if (p == null && export != null && export.ClassName != "Class" && export.idxClass > 0)
+            if (p == null && export != null)
             {
-                export = export.FileRef.Exports[export.idxClass - 1]; //make sure you get actual class
-                ClassInfo currentInfo;
-                switch (export.FileRef.Game)
+                if (export.ClassName != "Class" && export.idxClass > 0)
                 {
-                    case MEGame.ME1:
-                        currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(export);
-                        break;
-                    case MEGame.ME2:
-                        currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(export);
-                        break;
-                    case MEGame.ME3:
-                    default:
-                        currentInfo = ME3UnrealObjectInfo.generateClassInfo(export);
-                        break;
+                    export = export.FileRef.Exports[export.idxClass - 1]; //make sure you get actual class
                 }
-                currentInfo.baseClass = export.ClassParent;
-                p = getPropertyInfo(className, propName, inStruct, currentInfo);
-                if (p == null)
+                if (export.ClassName == "Class")
                 {
-                    p = getPropertyInfo(className, propName, !inStruct, currentInfo);
+                    ClassInfo currentInfo = generateClassInfo(export);
+                    currentInfo.baseClass = export.ClassParent;
+                    p = getPropertyInfo(className, propName, false, currentInfo);
+                    if (p == null)
+                    {
+                        p = getPropertyInfo(className, propName, true, currentInfo);
+                    }
                 }
-
             }
             return getArrayType(p);
         }

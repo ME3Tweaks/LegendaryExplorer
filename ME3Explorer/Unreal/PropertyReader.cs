@@ -1161,7 +1161,7 @@ namespace ME3Explorer.Unreal
                 case "ArrayProperty":
                     size = BitConverter.ToInt32(p.raw, 16);
                     count = BitConverter.ToInt32(p.raw, 24);
-                    ArrayType arrayType = ME3UnrealObjectInfo.getArrayType(className, importpcc.getNameEntry(p.Name), inStruct);
+                    ArrayType arrayType = ME3UnrealObjectInfo.getArrayType(className, importpcc.getNameEntry(p.Name));
                     pos = 28;
                     List<Property> AllProps = new List<Property>();
 

@@ -119,28 +119,21 @@ namespace ME2Explorer.Unreal
             {
                 p = getPropertyInfo(className, propName, !inStruct);
             }
-            if (p == null && export != null && export.ClassName != "Class" && export.idxClass > 0)
+            if (p == null && export != null)
             {
-                export = export.FileRef.Exports[export.idxClass - 1]; //make sure you get actual class
-                ClassInfo currentInfo;
-                switch (export.FileRef.Game)
+                if (export.ClassName != "Class" && export.idxClass > 0)
                 {
-                    case MEGame.ME1:
-                        currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(export);
-                        break;
-                    case MEGame.ME2:
-                        currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(export);
-                        break;
-                    case MEGame.ME3:
-                    default:
-                        currentInfo = ME3UnrealObjectInfo.generateClassInfo(export);
-                        break;
+                    export = export.FileRef.Exports[export.idxClass - 1]; //make sure you get actual class
                 }
-                currentInfo.baseClass = export.ClassParent;
-                p = getPropertyInfo(className, propName, inStruct, currentInfo);
-                if (p == null)
+                if (export.ClassName == "Class")
                 {
-                    p = getPropertyInfo(className, propName, !inStruct, currentInfo);
+                    ClassInfo currentInfo = generateClassInfo(export);
+                    currentInfo.baseClass = export.ClassParent;
+                    p = getPropertyInfo(className, propName, inStruct, currentInfo);
+                    if (p == null)
+                    {
+                        p = getPropertyInfo(className, propName, !inStruct, currentInfo);
+                    }
                 }
             }
             return getArrayType(p);
@@ -189,6 +182,7 @@ namespace ME2Explorer.Unreal
             }
             else
             {
+                Debug.WriteLine("ME2 Array type lookup failed due to no info provided, defaulting to int");
                 return ArrayType.Int;
             }
         }

@@ -732,7 +732,7 @@ namespace ME3Explorer
                 case ArrayPropertyBase ap:
                     {
                         //todo - assign bottom text to show array type.
-                        ArrayType at = GetArrayType(prop.Name.Name, parsingExport);
+                        ArrayType at = UnrealObjectInfo.GetArrayType(parsingExport.FileRef.Game, prop.Name.Name, parent.Property is StructProperty sp ? sp.StructType : parsingExport.ClassName, parsingExport);
                         editableValue = $"{at.ToString()} array";
                     }
                     break;
@@ -1013,104 +1013,104 @@ namespace ME3Explorer
         }
 
         #region UnrealObjectInfo
-        private PropertyInfo GetPropertyInfo(int propName)
-        {
-            switch (CurrentLoadedExport.FileRef.Game)
-            {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getPropertyInfo(CurrentLoadedExport.ClassName, CurrentLoadedExport.FileRef.getNameEntry(propName));
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getPropertyInfo(CurrentLoadedExport.ClassName, CurrentLoadedExport.FileRef.getNameEntry(propName));
-                case MEGame.ME3:
-                case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getPropertyInfo(CurrentLoadedExport.ClassName, CurrentLoadedExport.FileRef.getNameEntry(propName));
-            }
-            return null;
-        }
+        //private PropertyInfo GetPropertyInfo(int propName)
+        //{
+        //    switch (CurrentLoadedExport.FileRef.Game)
+        //    {
+        //        case MEGame.ME1:
+        //            return ME1UnrealObjectInfo.getPropertyInfo(CurrentLoadedExport.ClassName, CurrentLoadedExport.FileRef.getNameEntry(propName));
+        //        case MEGame.ME2:
+        //            return ME2UnrealObjectInfo.getPropertyInfo(CurrentLoadedExport.ClassName, CurrentLoadedExport.FileRef.getNameEntry(propName));
+        //        case MEGame.ME3:
+        //        case MEGame.UDK:
+        //            return ME3UnrealObjectInfo.getPropertyInfo(CurrentLoadedExport.ClassName, CurrentLoadedExport.FileRef.getNameEntry(propName));
+        //    }
+        //    return null;
+        //}
 
-        private PropertyInfo GetPropertyInfo(string propname, string typeName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
-        {
-            switch (CurrentLoadedExport.FileRef.Game)
-            {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
-                case MEGame.ME3:
-                case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
-            }
-            return null;
-        }
+        //private PropertyInfo GetPropertyInfo(string propname, string typeName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null)
+        //{
+        //    switch (CurrentLoadedExport.FileRef.Game)
+        //    {
+        //        case MEGame.ME1:
+        //            return ME1UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
+        //        case MEGame.ME2:
+        //            return ME2UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
+        //        case MEGame.ME3:
+        //        case MEGame.UDK:
+        //            return ME3UnrealObjectInfo.getPropertyInfo(typeName, propname, inStruct, nonVanillaClassInfo);
+        //    }
+        //    return null;
+        //}
 
-        private static ArrayType GetArrayType(PropertyInfo propInfo, IMEPackage pcc)
-        {
-            switch (pcc.Game)
-            {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getArrayType(propInfo);
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getArrayType(propInfo);
-                case MEGame.ME3:
-                case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getArrayType(propInfo);
-            }
-            return ArrayType.Int;
-        }
+        //private static ArrayType GetArrayType(PropertyInfo propInfo, IMEPackage pcc)
+        //{
+        //    switch (pcc.Game)
+        //    {
+        //        case MEGame.ME1:
+        //            return ME1UnrealObjectInfo.getArrayType(propInfo);
+        //        case MEGame.ME2:
+        //            return ME2UnrealObjectInfo.getArrayType(propInfo);
+        //        case MEGame.ME3:
+        //        case MEGame.UDK:
+        //            return ME3UnrealObjectInfo.getArrayType(propInfo);
+        //    }
+        //    return ArrayType.Int;
+        //}
 
-        private static ArrayType GetArrayType(string propName, IExportEntry parsingExport, string typeName = null)
-        {
-            if (typeName == null)
-            {
-                typeName = parsingExport.ClassName;
-            }
-            switch (parsingExport.FileRef.Game)
-            {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getArrayType(typeName, propName, export: parsingExport);
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getArrayType(typeName, propName, export: parsingExport);
-                case MEGame.ME3:
-                case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getArrayType(typeName, propName, export: parsingExport);
-            }
-            return ArrayType.Int;
-        }
+        //private static ArrayType GetArrayType(string propName, IExportEntry parsingExport, string typeName = null)
+        //{
+        //    if (typeName == null)
+        //    {
+        //        typeName = parsingExport.ClassName;
+        //    }
+        //    switch (parsingExport.FileRef.Game)
+        //    {
+        //        case MEGame.ME1:
+        //            return ME1UnrealObjectInfo.getArrayType(typeName, propName, export: parsingExport);
+        //        case MEGame.ME2:
+        //            return ME2UnrealObjectInfo.getArrayType(typeName, propName, export: parsingExport);
+        //        case MEGame.ME3:
+        //        case MEGame.UDK:
+        //            return ME3UnrealObjectInfo.getArrayType(typeName, propName, export: parsingExport);
+        //    }
+        //    return ArrayType.Int;
+        //}
 
-        private ArrayType GetArrayType(int propName, string typeName = null)
-        {
-            if (typeName == null)
-            {
-                typeName = CurrentLoadedExport.ClassName;
-            }
-            switch (CurrentLoadedExport.FileRef.Game)
-            {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getArrayType(typeName, CurrentLoadedExport.FileRef.getNameEntry(propName), export: CurrentLoadedExport);
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getArrayType(typeName, CurrentLoadedExport.FileRef.getNameEntry(propName), export: CurrentLoadedExport);
-                case MEGame.ME3:
-                case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getArrayType(typeName, CurrentLoadedExport.FileRef.getNameEntry(propName), export: CurrentLoadedExport);
-            }
-            return ArrayType.Int;
-        }
+        //private ArrayType GetArrayType(int propName, string typeName = null)
+        //{
+        //    if (typeName == null)
+        //    {
+        //        typeName = CurrentLoadedExport.ClassName;
+        //    }
+        //    switch (CurrentLoadedExport.FileRef.Game)
+        //    {
+        //        case MEGame.ME1:
+        //            return ME1UnrealObjectInfo.getArrayType(typeName, CurrentLoadedExport.FileRef.getNameEntry(propName), export: CurrentLoadedExport);
+        //        case MEGame.ME2:
+        //            return ME2UnrealObjectInfo.getArrayType(typeName, CurrentLoadedExport.FileRef.getNameEntry(propName), export: CurrentLoadedExport);
+        //        case MEGame.ME3:
+        //        case MEGame.UDK:
+        //            return ME3UnrealObjectInfo.getArrayType(typeName, CurrentLoadedExport.FileRef.getNameEntry(propName), export: CurrentLoadedExport);
+        //    }
+        //    return ArrayType.Int;
+        //}
 
-        //private List<string> GetEnumValues(string enumName, int propName)
-        private List<string> GetEnumValues(string enumName, string propName)
-        {
-            switch (CurrentLoadedExport.FileRef.Game)
-            {
-                case MEGame.ME1:
-                    return ME1UnrealObjectInfo.getEnumfromProp(CurrentLoadedExport.ClassName, propName);
-                case MEGame.ME2:
-                    return ME2UnrealObjectInfo.getEnumfromProp(CurrentLoadedExport.ClassName, propName);
-                case MEGame.ME3:
-                case MEGame.UDK:
-                    return ME3UnrealObjectInfo.getEnumValues(enumName, true);
-            }
-            return null;
-        }
+        ////private List<string> GetEnumValues(string enumName, int propName)
+        //private List<string> GetEnumValues(string enumName, string propName)
+        //{
+        //    switch (CurrentLoadedExport.FileRef.Game)
+        //    {
+        //        case MEGame.ME1:
+        //            return ME1UnrealObjectInfo.getEnumfromProp(CurrentLoadedExport.ClassName, propName);
+        //        case MEGame.ME2:
+        //            return ME2UnrealObjectInfo.getEnumfromProp(CurrentLoadedExport.ClassName, propName);
+        //        case MEGame.ME3:
+        //        case MEGame.UDK:
+        //            return ME3UnrealObjectInfo.getEnumValues(enumName, true);
+        //    }
+        //    return null;
+        //}
         #endregion
 
         private void Interpreter_ToggleHexboxWidth_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -1857,7 +1857,7 @@ namespace ME3Explorer
                         break;
                     case ArrayProperty<EnumProperty> aep:
                         {
-                            PropertyInfo p = GetPropertyInfo(aep.Name, CurrentLoadedExport.ClassName, false);
+                            PropertyInfo p = UnrealObjectInfo.GetPropertyInfo(CurrentLoadedExport.FileRef.Game, aep.Name, CurrentLoadedExport.ClassName);
                             string typeName = p.reference;
                             EnumProperty ep = new EnumProperty(typeName, CurrentLoadedExport.FileRef);
                             aep.Add(ep);
@@ -1891,11 +1891,37 @@ namespace ME3Explorer
                                 //empty
                                 //if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
                                 //{
-                                    PropertyInfo p = GetPropertyInfo(astructp.Name, CurrentLoadedExport.ClassName, false);
+                                PropertyInfo p = UnrealObjectInfo.GetPropertyInfo(CurrentLoadedExport.FileRef.Game, astructp.Name, CurrentLoadedExport.ClassName);
+                                if (p == null)
+                                {
+                                    //Attempt dynamic lookup
+                                    ClassInfo classInfo = null;
+                                    IExportEntry exportToBuildFor = CurrentLoadedExport;
+                                    if (CurrentLoadedExport.ClassName != "Class" && CurrentLoadedExport.idxClass > 0)
+                                    {
+                                        exportToBuildFor = CurrentLoadedExport.FileRef.getEntry(CurrentLoadedExport.idxClass) as IExportEntry;
+                                    }
+                                    switch (CurrentLoadedExport.FileRef.Game)
+                                    {
+                                        case MEGame.ME1:
+                                            classInfo = classInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(exportToBuildFor);
+                                            break;
+                                        case MEGame.ME2:
+                                            classInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(exportToBuildFor);
+                                            break;
+                                        case MEGame.ME3:
+                                            classInfo = ME3UnrealObjectInfo.generateClassInfo(exportToBuildFor);
+                                            break;
+                                    }
+                                    p = UnrealObjectInfo.GetPropertyInfo(CurrentLoadedExport.FileRef.Game, astructp.Name, CurrentLoadedExport.ClassName, classInfo);
+                                }
+                                if (p != null)
+                                {
                                     string typeName = p.reference;
-                                    PropertyCollection props = ME3UnrealObjectInfo.getDefaultStructValue(typeName, true);
+                                    PropertyCollection props = UnrealObjectInfo.getDefaultStructValue(CurrentLoadedExport.FileRef.Game, typeName, true);
                                     StructProperty sp = new StructProperty(typeName, props);
                                     astructp.Add(sp);
+                                }
                                 //}
                                 //else
                                 //{
@@ -1952,33 +1978,6 @@ namespace ME3Explorer
                     }
                 }
             }
-        }
-
-        private string getEnclosingType(UPropertyTreeViewEntry node)
-        {
-            Stack<UPropertyTreeViewEntry> nodeStack = new Stack<UPropertyTreeViewEntry>();
-            string typeName = CurrentLoadedExport.ClassName;
-            string propname;
-            PropertyInfo p;
-            while (node != null && node.Parent != null && node.Parent.Property != null)
-            {
-                nodeStack.Push(node);
-                node = node.Parent;
-            }
-            bool isStruct = false;
-            while (nodeStack.Count > 0)
-            {
-                node = nodeStack.Pop();
-                if (node.Property is StructProperty && node.Parent != null && node.Parent.Property is ArrayProperty<StructProperty>)
-                {
-                    continue;
-                }
-                propname = node.Property.Name; // pcc.getNameEntry(BitConverter.ToInt32(memory, getPosFromNode(node.Name)));
-                p = GetPropertyInfo(propname, typeName, isStruct);
-                typeName = p.reference;
-                isStruct = true;
-            }
-            return typeName;
         }
     }
 
