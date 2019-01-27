@@ -111,6 +111,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "animation", "gesture", "bone" },
                 subCategory = "Explorers",
+                description = "Animation Explorer can build a database of all the files containing animtrees and complete animsets in Mass Effect 3. You can import and export Animsets to PSA files."
             });
             set.Add(new Tool
             {
