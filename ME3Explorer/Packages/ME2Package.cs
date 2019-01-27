@@ -63,7 +63,7 @@ namespace ME3Explorer.Packages
             tempStream.Seek(64 + tempNameSize, SeekOrigin.Begin);
             int tempGenerations = tempStream.ReadValueS32();
             tempStream.Seek(32 + tempGenerations * 12, SeekOrigin.Current);
-            PackageCompressionType = (CompressionType)tempStream.ReadValueU32();
+            tempStream.ReadValueU32(); //Compression Type. We read this from header[] in MEPackage.cs intead when accessing value
             int tempPos = (int)tempStream.Position;
             tempStream.Seek(0, SeekOrigin.Begin);
             header = tempStream.ReadBytes(tempPos);
@@ -173,8 +173,8 @@ namespace ME3Explorer.Packages
                 this.IsCompressed = false;
                 MemoryStream m = new MemoryStream();
                 m.WriteBytes(header);
-                m.Seek(-4, SeekOrigin.Current);
-                m.WriteByte((byte)CompressionType.None); //Write header compression type to None
+                //m.Seek(-4, SeekOrigin.Current);
+                //m.WriteByte((byte)CompressionType.None); //Write header compression type to None
                 //Set numblocks to zero
                 m.WriteValueS32(0);
                 //Write the magic number

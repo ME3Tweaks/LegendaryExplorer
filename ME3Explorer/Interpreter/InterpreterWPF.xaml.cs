@@ -393,6 +393,11 @@ namespace ME3Explorer
                         // This is effectively the way classic interpreter does it
                         // and I have to use it since I don't have a way to just
                         // get UProperty struct
+
+                        PropertyCollection structProps = UnrealObjectInfo.getDefaultStructValue(CurrentLoadedExport.FileRef.Game, prop.Item2.reference, true);
+                        newProperty = new StructProperty(prop.Item2.reference, structProps, prop.Item1);
+                        /*
+
                         List<byte> buff = new List<byte>();
                         //name
                         buff.AddRange(BitConverter.GetBytes(CurrentLoadedExport.FileRef.FindNameOrAdd(prop.Item1)));
@@ -400,7 +405,6 @@ namespace ME3Explorer
                         //type
                         buff.AddRange(BitConverter.GetBytes(CurrentLoadedExport.FileRef.FindNameOrAdd(prop.Item2.type.ToString())));
                         buff.AddRange(new byte[4]);
-                        byte[] structBuff = ME3UnrealObjectInfo.getDefaultClassValue(CurrentLoadedExport.FileRef as ME3Package, prop.Item2.reference);
                         //struct length
                         buff.AddRange(BitConverter.GetBytes(structBuff.Length));
                         buff.AddRange(new byte[4]);
@@ -411,7 +415,7 @@ namespace ME3Explorer
                         structBuff = buff.ToArray();
                         //read data to get property. We set includeNonePRoperty because this buff only has one property - true ones will have at least 2 (the single prop, and None). So we don't want to clip off our property
                         var structPropertyGenerated = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, new MemoryStream(structBuff), CurrentLoadedExport.ClassName, includeNoneProperty: true, requireNoneAtEnd: false);
-                        newProperty = structPropertyGenerated[0]; //i'm sure i won't regret this later
+                        newProperty = structPropertyGenerated[0]; //i'm sure i won't regret this later*/
                         break;
                 }
 

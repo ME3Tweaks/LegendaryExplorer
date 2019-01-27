@@ -1281,81 +1281,84 @@ namespace ME3Explorer
             {
 
                 int pos = binarystart;
-                int length = BitConverter.ToInt32(data, binarystart);
-                subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                if (data.Length > binarystart)
                 {
-                    Header = $"{binarystart:X4} Length: {length}",
-                    Name = $"_{pos.ToString()}"
-                });
-                pos += 4;
-                if (length != 0)
-                {
-                    int nameindex = BitConverter.ToInt32(data, pos);
-                    int nameindexunreal = BitConverter.ToInt32(data, pos + 4);
-
-                    string name = CurrentLoadedExport.FileRef.getNameEntry(nameindex);
+                    int length = BitConverter.ToInt32(data, binarystart);
                     subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"{pos:X4} Camera: {name}_{nameindexunreal}",
-                        Name = $"_{pos.ToString()}",
-                        Tag = NodeType.StructLeafName
-                    });
-
-                    pos += 8;
-                    int shouldbezero = BitConverter.ToInt32(data, pos);
-                    if (shouldbezero != 0)
-                    {
-                        Debug.WriteLine($"NOT ZERO FOUND: {pos}");
-                    }
-                    pos += 4;
-
-                    int count = BitConverter.ToInt32(data, pos);
-                    subnodes.Add(new BinaryInterpreterWPFTreeViewItem
-                    {
-                        Header = $"{pos:X4} Count: {count}",
+                        Header = $"{binarystart:X4} Length: {length}",
                         Name = $"_{pos.ToString()}"
                     });
                     pos += 4;
+                    if (length != 0)
+                    {
+                        int nameindex = BitConverter.ToInt32(data, pos);
+                        int nameindexunreal = BitConverter.ToInt32(data, pos + 4);
 
-                    shouldbezero = BitConverter.ToInt32(data, pos);
-                    if (shouldbezero != 0)
-                    {
-                        Debug.WriteLine($"NOT ZERO FOUND: {pos}");
-                    }
-                    pos += 4;
-                    try
-                    {
-                        var stream = new MemoryStream(data);
-                        for (int i = 0; i < count; i++)
+                        string name = CurrentLoadedExport.FileRef.getNameEntry(nameindex);
+                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                         {
-                            nameindex = BitConverter.ToInt32(data, pos);
-                            nameindexunreal = BitConverter.ToInt32(data, pos + 4);
-                            BinaryInterpreterWPFTreeViewItem parentnode = new BinaryInterpreterWPFTreeViewItem
-                            {
-                                Header = $"{pos:X4} Camera {i + 1}: {CurrentLoadedExport.FileRef.getNameEntry(nameindex)}_{nameindexunreal}",
-                                Tag = NodeType.StructLeafName,
-                                Name = $"_{pos.ToString()}"
-                            };
-                            subnodes.Add(parentnode);
-                            pos += 8;
-                            stream.Seek(pos, SeekOrigin.Begin);
-                            var props = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, stream, "BioStageCamera", includeNoneProperty: true);
+                            Header = $"{pos:X4} Camera: {name}_{nameindexunreal}",
+                            Name = $"_{pos.ToString()}",
+                            Tag = NodeType.StructLeafName
+                        });
 
-                            UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
-                            foreach (UProperty prop in props)
-                            {
-                                InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
-                            }
-                            subnodes.AddRange(topLevelTree.ChildrenProperties.Cast<object>().ToList());
-
-                            //finish writing function here
-                            pos = props.endOffset;
-
+                        pos += 8;
+                        int shouldbezero = BitConverter.ToInt32(data, pos);
+                        if (shouldbezero != 0)
+                        {
+                            Debug.WriteLine($"NOT ZERO FOUND: {pos}");
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem { Header = $"Error reading binary data: {ex}" });
+                        pos += 4;
+
+                        int count = BitConverter.ToInt32(data, pos);
+                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"{pos:X4} Count: {count}",
+                            Name = $"_{pos.ToString()}"
+                        });
+                        pos += 4;
+
+                        shouldbezero = BitConverter.ToInt32(data, pos);
+                        if (shouldbezero != 0)
+                        {
+                            Debug.WriteLine($"NOT ZERO FOUND: {pos}");
+                        }
+                        pos += 4;
+                        try
+                        {
+                            var stream = new MemoryStream(data);
+                            for (int i = 0; i < count; i++)
+                            {
+                                nameindex = BitConverter.ToInt32(data, pos);
+                                nameindexunreal = BitConverter.ToInt32(data, pos + 4);
+                                BinaryInterpreterWPFTreeViewItem parentnode = new BinaryInterpreterWPFTreeViewItem
+                                {
+                                    Header = $"{pos:X4} Camera {i + 1}: {CurrentLoadedExport.FileRef.getNameEntry(nameindex)}_{nameindexunreal}",
+                                    Tag = NodeType.StructLeafName,
+                                    Name = $"_{pos.ToString()}"
+                                };
+                                subnodes.Add(parentnode);
+                                pos += 8;
+                                stream.Seek(pos, SeekOrigin.Begin);
+                                var props = PropertyCollection.ReadProps(CurrentLoadedExport.FileRef, stream, "BioStageCamera", includeNoneProperty: true);
+
+                                UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
+                                foreach (UProperty prop in props)
+                                {
+                                    InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, CurrentLoadedExport);
+                                }
+                                subnodes.AddRange(topLevelTree.ChildrenProperties.Cast<object>().ToList());
+
+                                //finish writing function here
+                                pos = props.endOffset;
+
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            subnodes.Add(new BinaryInterpreterWPFTreeViewItem { Header = $"Error reading binary data: {ex}" });
+                        }
                     }
                 }
             }

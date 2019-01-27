@@ -74,7 +74,6 @@ namespace ME3Explorer.Packages
         protected int nameSize { get { int val = BitConverter.ToInt32(header, 12); return (val < 0) ? val * -2 : val; } } //this may be able to be optimized. It is used a lot during package load
         protected uint flags { get { return BitConverter.ToUInt32(header, 16 + nameSize); } }
 
-
         public abstract int NameCount { get; protected set; }
         public abstract int ImportCount { get; protected set; }
         public abstract int ExportCount { get; protected set; }
@@ -87,9 +86,15 @@ namespace ME3Explorer.Packages
             protected set
             {
                 if (value) // sets the compressed flag if bCompressed set equal to true
+                {
+                    //Toolkit never should never set this flag as we do not support compressing files.
                     Buffer.BlockCopy(BitConverter.GetBytes(flags | 0x02000000), 0, header, 16 + nameSize, sizeof(int));
+                }
                 else // else set to false
+                {
                     Buffer.BlockCopy(BitConverter.GetBytes(flags & ~0x02000000), 0, header, 16 + nameSize, sizeof(int));
+                    PackageCompressionType = CompressionType.None;
+                }
             }
         }
 
@@ -100,7 +105,20 @@ namespace ME3Explorer.Packages
             LZO
         }
 
-        public CompressionType PackageCompressionType { get; protected set; }
+        public CompressionType PackageCompressionType
+        {
+            get
+            {
+                return (CompressionType)BitConverter.ToInt32(header, header.Length - 4);
+            }
+            set
+            {
+                if (header != null)
+                {
+                    Pathfinding_Editor.SharedPathfinding.WriteMem(header, header.Length - 4, BitConverter.GetBytes((int)value));
+                }
+            }
+        }
 
         //has been saved with the revised Append method
         public bool IsAppend
