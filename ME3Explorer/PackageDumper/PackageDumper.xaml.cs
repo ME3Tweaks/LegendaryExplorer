@@ -279,9 +279,9 @@ namespace ME3Explorer.PackageDumper
                 if (!DumpCanceled)
                 {
                     string file = Path.GetFullPath(files[i]);
-                    //if (file.EndsWith("Engine.pcc") || beginParsing)
+                    //if (file.EndsWith("BioD_Cat002.pcc") || beginParsing)
                     //{
-                    beginParsing = true;
+                        beginParsing = true;
                         string outfolder = outputfolder;
                         if (outfolder != null)
                         {
