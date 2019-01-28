@@ -137,7 +137,7 @@ namespace ME3Explorer
         }
         #endregion
 
-        static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "ShaderCache", "Class", "BioStage", "ObjectProperty", "Const",
+        static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "ShaderCache", "Class","StringRefProperty", "BioStage", "ObjectProperty", "Const",
             "Enum", "ArrayProperty","FloatProperty", "StructProperty", "ComponentProperty", "IntProperty", "NameProperty", "BoolProperty", "ClassProperty", "ByteProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
             "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "PrefabInstance", "MetaData", "MaterialInstanceConstants",
             "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D", "State", "BioGestureRuntimeData", "BioTlkFileSet", "ScriptStruct", "SoundCue", "SoundNodeWave","BioSoundNodeWaveStreamingData"};
@@ -288,6 +288,7 @@ namespace ME3Explorer
                 case "ClassProperty":
                 case "ByteProperty":
                 case "NameProperty":
+                case "StringRefProperty":
                 case "StructProperty":
                 case "ComponentProperty":
                 case "ObjectProperty":
@@ -952,7 +953,8 @@ namespace ME3Explorer
                 {
                     Header = $"0x{offset:X5} ObjectFlags: 0x{(ulong)ObjectFlagsMask:X16}",
                     Name = "_" + offset,
-                    Tag = NodeType.StructLeafInt
+                    Tag = NodeType.StructLeafInt,
+                    IsExpanded = true
                 };
 
                 subnodes.Add(objectFlagsNode);
