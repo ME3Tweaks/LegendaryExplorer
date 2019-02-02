@@ -358,7 +358,7 @@
       "Operator": true,
       "Name": "Greater_IntInt",
       "Filename": "Core.u",
-      "HumanReadableControlToken": null
+      "HumanReadableControlToken": " > "
     },
     "152": {
       "nativeIndex": 152,
@@ -520,7 +520,7 @@
       "Operator": true,
       "Name": "Subtract_PreFloat",
       "Filename": "Core.u",
-      "HumanReadableControlToken": null
+      "HumanReadableControlToken": "--"
     },
     "170": {
       "nativeIndex": 170,
@@ -880,7 +880,7 @@
       "Operator": true,
       "Name": "NotEqual_VectorVector",
       "Filename": "Core.u",
-      "HumanReadableControlToken": null
+      "HumanReadableControlToken": " != "
     },
     "219": {
       "nativeIndex": 219,
