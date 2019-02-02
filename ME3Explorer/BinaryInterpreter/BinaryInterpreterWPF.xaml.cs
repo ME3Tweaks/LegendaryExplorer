@@ -442,7 +442,7 @@ namespace ME3Explorer
                 int count = BitConverter.ToInt32(data, offset);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
-                    Header = $"0x{offset:X5} Metadata String Count: {count}",
+                    Header = $"0x{offset:X5} Unknown int (not count): {count}",
                     Name = "_" + offset,
                     Tag = NodeType.StructLeafObject
                 });
@@ -450,7 +450,8 @@ namespace ME3Explorer
 
                 MemoryStream ms = new MemoryStream(data);
                 ms.Position = offset;
-                for (int i = 0; i < count; i++)
+                int i = 0;
+                while (ms.Position + 1 < ms.Length)
                 {
                     offset = (int)ms.Position;
 
@@ -483,6 +484,8 @@ namespace ME3Explorer
                             Tag = NodeType.None
                         });
                     }
+                    Debug.WriteLine("Read string " + i + ", end at 0x" + offset.ToString("X6"));
+                    i++;
                 }
                 /*
                 offset = binarystart + 0x18;
@@ -1934,6 +1937,16 @@ namespace ME3Explorer
                     if (literalStringLength < 0)
                     {
                         string str = stream.ReadString((literalStringLength * -2), true, Encoding.Unicode);
+                        subnodes.Add(new BinaryInterpreterWPFTreeViewItem
+                        {
+                            Header = $"0x{offset:X5} Const Literal Value: {str}",
+                            Name = "_" + offset,
+                            Tag = NodeType.StrProperty
+                        });
+                    }
+                    else
+                    {
+                        string str = stream.ReadString((literalStringLength), false, Encoding.ASCII);
                         subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                         {
                             Header = $"0x{offset:X5} Const Literal Value: {str}",
