@@ -20,6 +20,7 @@ namespace ME3Explorer.Packages
         string ObjectName { get; }
         string PackageFullName { get; }
         string PackageName { get; }
+        byte[] GetHeader(); //returns clone
     }
 
     public interface IExportEntry : IEntry
@@ -37,7 +38,7 @@ namespace ME3Explorer.Packages
         int indexValue { get; set; }
         string ArchtypeName { get; }
         string ClassParent { get; }
-        uint headerOffset { get; set; }
+        uint HeaderOffset { get; set; }
         ulong ObjectFlags { get; set; }
         int OriginalDataSize { get; }
         bool ReadsFromConfig { get; }

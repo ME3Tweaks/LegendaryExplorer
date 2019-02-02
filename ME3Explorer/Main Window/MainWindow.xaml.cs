@@ -263,7 +263,16 @@ namespace ME3Explorer
             }
             foreach (var tool in tools)
             {
-                tool.Close();
+                try
+                {
+                    tool.Close();
+                }
+                catch (Exception)
+                {
+                    //This exception can occur if you are doing "Close All Windows" while a file has unsaved changes
+                    //All windows will be signaled to close, which will throw dialog twice
+                    //exception occuring here will cause this window to close but not the one with the dialog.
+                }
             }
             if (MEPackageHandler.packagesInTools.Count > 0)
             {
@@ -656,13 +665,16 @@ namespace ME3Explorer
             {
                 System.Diagnostics.Process.Start(link);
             }
-            catch (Exception other)
+            catch (Exception)
             {
                 try
                 {
                     System.Windows.Clipboard.SetText(link);
                 }
-                catch { }
+                catch
+                {
+                    //RIP
+                }
             }
         }
     }

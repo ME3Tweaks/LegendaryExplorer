@@ -23,7 +23,14 @@ namespace ME3Explorer.Packages
             OriginalDataSize = 0;
         }
 
+        /// <summary>
+        /// NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
+        /// </summary>
         protected byte[] _header;
+        /// <summary>
+        /// The underlying header is directly returned by this getter. If you want to write a new header back, use the copy provided by getHeader()!
+        /// Otherwise some events may not trigger
+        /// </summary>
         public byte[] Header
         {
             get { return _header; }
@@ -44,7 +51,16 @@ namespace ME3Explorer.Packages
             }
         }
 
-        public uint headerOffset { get; set; }
+        /// <summary>
+        /// Returns a clone of the header for modifying
+        /// </summary>
+        /// <returns></returns>
+        public byte[] GetHeader()
+        {
+            return _header.TypedClone();
+        }
+
+        public uint HeaderOffset { get; set; }
 
         public int idxClass { get { return BitConverter.ToInt32(Header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 0, sizeof(int)); HeaderChanged = true; } }
         public int idxClassParent { get { return BitConverter.ToInt32(Header, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 4, sizeof(int)); HeaderChanged = true; } }
@@ -211,20 +227,26 @@ namespace ME3Explorer.Packages
             {
                 return properties;
             }
-            else if (!includeNoneProperties)
+            if (ClassName == "Class") { return new PropertyCollection(); } //no properties
+            //else if (!includeNoneProperties)
+            //{
+            //    int start = GetPropertyStart();
+            //    MemoryStream stream = new MemoryStream(_data, false);
+            //    stream.Seek(start, SeekOrigin.Current);
+            //    return properties = PropertyCollection.ReadProps(FileRef, stream, ClassName, includeNoneProperties, true, ObjectName);
+            //}
+            //else
+            //{
+            int start = GetPropertyStart();
+            MemoryStream stream = new MemoryStream(_data, false);
+            stream.Seek(start, SeekOrigin.Current);
+            IEntry parsingClass = this;
+            if (ObjectName.StartsWith("Default__"))
             {
-                int start = GetPropertyStart();
-                MemoryStream stream = new MemoryStream(_data, false);
-                stream.Seek(start, SeekOrigin.Current);
-                return properties = PropertyCollection.ReadProps(FileRef, stream, ClassName);
+                parsingClass = FileRef.getEntry(idxClass); //class we are defaults of
             }
-            else
-            {
-                int start = GetPropertyStart();
-                MemoryStream stream = new MemoryStream(_data, false);
-                stream.Seek(start, SeekOrigin.Current);
-                return PropertyCollection.ReadProps(FileRef, stream, ClassName, includeNoneProperties); //do not set properties as this may interfere with some other code. may change later.
-            }
+            return PropertyCollection.ReadProps(FileRef, stream, ClassName, includeNoneProperties, true, parsingClass); //do not set properties as this may interfere with some other code. may change later.
+                                                                                                                        //  }
         }
 
         public T GetProperty<T>(string name) where T : UProperty
@@ -260,13 +282,40 @@ namespace ME3Explorer.Packages
                 }
                 return 30;
             }
+            //if (!ObjectName.StartsWith("Default__"))
+            //{
+            //    switch (ClassName)
+            //    {
+            //        case "ParticleSystemComponent":
+            //            return 0x10;
+            //    }
+            //}
             int result = 8;
+            int test0 = BitConverter.ToInt32(_data, 0);
             int test1 = BitConverter.ToInt32(_data, 4);
-            int test2 = BitConverter.ToInt32(_data, 8);
-            if (pcc.isName(test1) && test2 == 0)
+            int test2 = BitConverter.ToInt32(_data, 8); //Name index if Test1 is actually a name. Should be 0 since we wouldn't have indexes here
+            if (pcc.isName(test1) && test2 == 0) //is 0x4 a proper 8 byte name?
                 result = 4;
             if (pcc.isName(test1) && pcc.isName(test2) && test2 != 0)
                 result = 8;
+
+            if (_data.Length > 0x10 && pcc.isName(test1) && pcc.getNameEntry(test1) == ObjectName && test0 == 0 && test2 == indexValue) //!= UIndex will cover more cases, but there's still the very tiny case where they line up
+            {
+                int test3 = BitConverter.ToInt32(_data, 0x10);
+                string namev = pcc.getNameEntry(test3);
+                //Debug.WriteLine("Reading " + name + " (" + namev + ") at 0x" + (stream.Position - 24).ToString("X8"));
+                if (namev != null && Enum.IsDefined(typeof(PropertyType), namev) && Enum.TryParse(namev, out PropertyType propertyType))
+                {
+                    if (propertyType > PropertyType.None)
+                    {
+                        //Edge case
+                        return 0x8;
+                    }
+                }
+
+                //Debug.WriteLine("Primitive Component: " + ClassName + " (" + ObjectName + ")");
+                return 0x10; //Primitive Component
+            }
             return result;
         }
 
@@ -298,7 +347,7 @@ namespace ME3Explorer.Packages
     {
         public UDKExportEntry(UDKPackage udkFile, Stream stream) : base(udkFile)
         {
-            headerOffset = (uint)stream.Position;
+            HeaderOffset = (uint)stream.Position;
             stream.Seek(44, SeekOrigin.Current);
             int count = stream.ReadValueS32();
             stream.Seek(-48, SeekOrigin.Current);
@@ -330,7 +379,7 @@ namespace ME3Explorer.Packages
             UDKExportEntry newExport = new UDKExportEntry(FileRef as UDKPackage)
             {
                 Header = this.Header.TypedClone(),
-                headerOffset = 0,
+                HeaderOffset = 0,
                 Data = this.Data
             };
             int index = 0;
@@ -353,7 +402,7 @@ namespace ME3Explorer.Packages
     {
         public ME3ExportEntry(ME3Package pccFile, Stream stream) : base(pccFile)
         {
-            headerOffset = (uint)stream.Position;
+            HeaderOffset = (uint)stream.Position;
             stream.Seek(44, SeekOrigin.Current);
             int count = stream.ReadValueS32();
             stream.Seek(-48, SeekOrigin.Current);
@@ -385,7 +434,7 @@ namespace ME3Explorer.Packages
             ME3ExportEntry newExport = new ME3ExportEntry(FileRef as ME3Package)
             {
                 Header = this.Header.TypedClone(),
-                headerOffset = 0,
+                HeaderOffset = 0,
                 Data = this.Data
             };
             int index = 0;
@@ -421,7 +470,7 @@ namespace ME3Explorer.Packages
 
             //read header
             Header = stream.ReadBytes((int)(end - start));
-            headerOffset = (uint)start;
+            HeaderOffset = (uint)start;
             OriginalDataSize = DataSize;
 
             //read data
@@ -447,7 +496,7 @@ namespace ME3Explorer.Packages
             ME2ExportEntry newExport = new ME2ExportEntry(FileRef as ME2Package)
             {
                 Header = this.Header.TypedClone(),
-                headerOffset = 0,
+                HeaderOffset = 0,
                 Data = this.Data
             };
             int index = 0;
@@ -483,7 +532,7 @@ namespace ME3Explorer.Packages
 
             //read header
             Header = stream.ReadBytes((int)(end - start));
-            headerOffset = (uint)start;
+            HeaderOffset = (uint)start;
             OriginalDataSize = DataSize;
 
             //read data
@@ -509,7 +558,7 @@ namespace ME3Explorer.Packages
             ME1ExportEntry newExport = new ME1ExportEntry(FileRef as ME1Package)
             {
                 Header = this.Header.TypedClone(),
-                headerOffset = 0,
+                HeaderOffset = 0,
                 Data = this.Data
             };
             int index = 0;

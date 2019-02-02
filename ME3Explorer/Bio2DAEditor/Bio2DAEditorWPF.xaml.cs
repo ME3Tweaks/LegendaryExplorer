@@ -1,4 +1,7 @@
 ﻿using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
+using ME3Explorer.Unreal;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static ME3Explorer.PackageEditorWPF;
 
 namespace ME3Explorer
 {
@@ -24,8 +28,14 @@ namespace ME3Explorer
     /// </summary>
     public partial class Bio2DAEditorWPF : ExportLoaderControl
     {
-        private Bio2DA _table2da;
+        public ObservableCollectionExtended<IndexedName> ParentNameList { get; private set; }
 
+        //private Bio2DA CachedME12DA_TalentsGUI;
+        private Bio2DA CachedME12DA_ClassTalents_Talents;
+        private Bio2DA CachedME12DA_TalentEffectLevels;
+
+        static ME1Explorer.TalkFiles talkFiles = new ME1Explorer.TalkFiles();
+        private Bio2DA _table2da;
         public Bio2DA Table2DA
         {
             get
@@ -38,69 +48,130 @@ namespace ME3Explorer
             }
         }
 
-        public IExportEntry CurrentlyLoadedExport { get; private set; }
-
         public Bio2DAEditorWPF()
         {
             InitializeComponent();
+            talkFiles.LoadGlobalTlk();
         }
 
         private void StartBio2DAScan()
         {
-            //dataGridView1.Rows.Clear();
-            //dataGridView1.Columns.Clear();
-            Table2DA = new Bio2DA(CurrentlyLoadedExport);
-            //Add columns
-            /*for (int j = 0; j < table2da.columnNames.Count(); j++)
-            {
-                dataGridView1.Columns.Add(table2da.columnNames[j], table2da.columnNames[j]);
-            }
-
-
-            //Add rows
-            for (int i = 0; i < table2da.rowNames.Count(); i++)
-            {
-                //defines row data. If you add columns, you need to add them here in order
-                List<Object> rowData = new List<object>();
-                for (int j = 0; j < table2da.columnNames.Count(); j++)
-                {
-                    Bio2DACell cell = table2da[i, j];
-                    if (cell != null)
-                    {
-                        rowData.Add(cell.GetDisplayableValue());
-                    }
-                    else
-                    {
-                        rowData.Add(null);
-                    }
-                    //rowData.Add(table2da[i, j]);
-                }
-                dataGridView1.Rows.Add(rowData.ToArray());
-                dataGridView1.Rows[dataGridView1.Rows.Count - 1].HeaderCell.Value = table2da.rowNames[i];
-            }
-
-            //Add row headers
-            for (int i = 0; i < table2da.rowNames.Count(); i++)
-            {
-                dataGridView1.Rows[i].HeaderCell.Value = table2da.rowNames[i];
-            }*/
+            Table2DA = new Bio2DA(CurrentLoadedExport);
         }
 
         public override bool CanParse(IExportEntry exportEntry)
         {
-            return exportEntry.ClassName == "Bio2DA" || exportEntry.ClassName == "Bio2DANumberedRows";
+            return !exportEntry.ObjectName.Contains("Default__") && exportEntry.ObjectName != "Default2DA" && (exportEntry.ClassName == "Bio2DA" || exportEntry.ClassName == "Bio2DANumberedRows");
         }
 
         public override void LoadExport(IExportEntry exportEntry)
         {
-            CurrentlyLoadedExport = exportEntry;
+            CurrentLoadedExport = exportEntry;
             StartBio2DAScan();
         }
 
         public override void UnloadExport()
         {
             Table2DA = null;
-            CurrentlyLoadedExport = null;
+            CurrentLoadedExport = null;
+        }
+
+        private void DataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            if (CachedME12DA_TalentEffectLevels == null && CurrentLoadedExport.FileRef.FileName.Contains("Engine.u"))
+            {
+                IExportEntry TalentEffectLevels = CurrentLoadedExport.FileRef.Exports.FirstOrDefault(x => x.ObjectName == "Talent_TalentEffectLevels" && x.ClassName == "Bio2DANumberedRows");
+                if (TalentEffectLevels != null)
+                {
+                    CachedME12DA_TalentEffectLevels = new Bio2DA(TalentEffectLevels);
+                }
+            }
+
+            for (int counter = 0; counter < (Bio2DA_DataGrid.SelectedCells.Count); counter++)
+            {
+                int columnIndex = Bio2DA_DataGrid.SelectedCells[0].Column.DisplayIndex;
+                string columnName = Table2DA.GetColumnNameByIndex(columnIndex);
+                int rowIndex = Bio2DA_DataGrid.Items.IndexOf(Bio2DA_DataGrid.SelectedCells[0].Item);
+                var item = Table2DA[rowIndex, columnIndex];
+                Bio2DAInfo_CellCoordinates_TextBlock.Text = "Selected cell coordinates: " + (rowIndex + 1) + "," + (columnIndex + 1);
+                Bio2DAInfo_CellDataOffset_TextBlock.Text = "Selected cell data offset: ????";// + (rowIndex + 1) + "," + (columnIndex + 1);
+                if (item != null)
+                {
+                    Bio2DAInfo_CellDataType_TextBlock.Text = "Selected cell data type: " + item.Type.ToString() + "   " + item.GetDisplayableValue();
+                    Bio2DAInfo_CellDataOffset_TextBlock.Text = "Selected cell data offset: 0x" + item.Offset.ToString("X6");
+                    if (item.Type == Bio2DACell.Bio2DADataType.TYPE_INT)
+                    {
+                        if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
+                        {
+                            if (columnName == "TalentID" && CachedME12DA_TalentEffectLevels != null)
+                            {
+                                //Get Talent ID name
+                                for (int i = 0; i < CachedME12DA_TalentEffectLevels.RowNames.Count; i++)
+                                {
+                                    if (CachedME12DA_TalentEffectLevels[i, 0].GetIntValue() == item.GetIntValue())
+                                    {
+                                        int labelColumn = CachedME12DA_TalentEffectLevels.GetColumnIndexByName("Talent_Label");
+                                        string label = CachedME12DA_TalentEffectLevels[i, labelColumn].GetDisplayableValue();
+                                        Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = label;
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = talkFiles.findDataById(item.GetIntValue());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = "Select cell of TYPE_INT to see as TLK Str";
+                    }
+                }
+                else
+                {
+                    Bio2DAInfo_CellDataType_TextBlock.Text = "Selected cell data type: NULL";
+                    Bio2DAInfo_CellDataOffset_TextBlock.Text = "Selected cell data offset: N/A";
+                    Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = "Select a cell to preview TLK value";
+                }
+            }
+        }
+
+        /// <summary>
+        /// Removes the access key where you can do _ for quick key press to go to a column. will make headers and stuff look proper
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            string header = e.Column.Header.ToString();
+
+            // Replace all underscores with two underscores, to prevent AccessKey handling
+            e.Column.Header = header.Replace("_", "__");
+        }
+
+        private void Save_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Table2DA.Write2DAToExport();
+            Table2DA.MarkAsUnmodified();
+        }
+
+        private void ExportToExcel_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog d = new SaveFileDialog();
+            d.Filter = $"Excel spreadsheet|*.xlsx";
+            d.FileName = CurrentLoadedExport.ObjectName;
+            var result = d.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                Table2DA.Write2DAToExcel(d.FileName);
+                MessageBox.Show("Done");
+            }
+        }
+
+        internal void SetParentNameList(ObservableCollectionExtended<IndexedName> namesList)
+        {
+            ParentNameList = namesList;
         }
     }
 

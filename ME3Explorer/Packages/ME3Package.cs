@@ -4,15 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Gibbed.IO;
-using AmaroK86.MassEffect3.ZlibBlock;
-using System.Diagnostics;
 using ME3Explorer.Unreal;
 using System.Windows;
+using System.Diagnostics;
 
 namespace ME3Explorer.Packages
 {
+    [DebuggerDisplay("ME3Package | {FileName}")]
     public sealed class ME3Package : MEPackage, IMEPackage
     {
+        const uint packageTag = 0x9E2A83C1;
+
         public MEGame Game { get { return MEGame.ME3; } }
 
         static int headerSize = 0x8E;
@@ -74,13 +76,13 @@ namespace ME3Explorer.Packages
         /// <param name="pccFilePath">full path + file name of desired pcc file.</param>
         private ME3Package(string pccFilePath)
         {
+            //Debug.WriteLine(" >> Opening me3 package " + pccFilePath);
             FileName = Path.GetFullPath(pccFilePath);
             MemoryStream inStream;
             using (FileStream pccStream = File.OpenRead(FileName))
             {
                 header = pccStream.ReadBytes(headerSize);
-                if (magic != ZBlock.magic &&
-                    magic.Swap() != ZBlock.magic)
+                if (magic != packageTag)
                 {
                     throw new FormatException("Not an Unreal package!");
                 }
@@ -91,6 +93,7 @@ namespace ME3Explorer.Packages
                 }
                 if (IsCompressed)
                 {
+                    //Aquadran: Code to decompress package on disk.
                     inStream = CompressionHelper.DecompressME3(pccStream);
                     //read uncompressed header
                     inStream.Seek(0, SeekOrigin.Begin);
@@ -195,7 +198,7 @@ namespace ME3Explorer.Packages
                 ExportCount = exports.Count;
                 foreach (IExportEntry e in exports)
                 {
-                    e.headerOffset = (uint)m.Position;
+                    e.HeaderOffset = (uint)m.Position;
                     m.WriteBytes(e.Header);
                 }
                 //freezone
@@ -214,7 +217,7 @@ namespace ME3Explorer.Packages
                     m.WriteBytes(e.Data);
                     //update size and offset in already-written header
                     long pos = m.Position;
-                    m.Seek(e.headerOffset + 32, SeekOrigin.Begin);
+                    m.Seek(e.HeaderOffset + 32, SeekOrigin.Begin);
                     m.WriteValueS32(e.DataSize);
                     m.WriteValueS32(e.DataOffset);
                     m.Seek(pos, SeekOrigin.Begin);
@@ -283,6 +286,7 @@ namespace ME3Explorer.Packages
             byte[] oldPCC = new byte[lastDataOffset];
             if (IsCompressed)
             {
+                //Aquadran: Code to decompress package on disk.
                 oldPCC = CompressionHelper.Decompress(FileName).Take(lastDataOffset).ToArray();
                 IsCompressed = false;
             }
@@ -357,8 +361,12 @@ namespace ME3Explorer.Packages
 
         private static void UpdateOffsets(IExportEntry export)
         {
+            if (export.ObjectName.StartsWith("Default__"))
+            {
+                return; //this is not actually instance of that class
+            }
             //update offsets for pcc-stored audio in wwisestreams
-            if (export.ClassName == "WwiseStream" && export.GetProperty<NameProperty>("Filename") == null)
+            if ((export.ClassName == "WwiseStream" && export.GetProperty<NameProperty>("Filename") == null) || export.ClassName == "WwiseBank")
             {
                 byte[] binData = export.getBinaryData();
                 binData.OverwriteRange(12, BitConverter.GetBytes(export.DataOffset + export.propsEnd() + 16));

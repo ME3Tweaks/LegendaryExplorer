@@ -13,7 +13,7 @@ namespace ME1Explorer
     public class TalkFiles : ITalkFile
     {
         public List<TalkFile> tlkList;
-
+        private bool loadedGlobalTlk = false;
         public TalkFiles()
         {
             tlkList = new List<TalkFile>();
@@ -21,11 +21,13 @@ namespace ME1Explorer
 
         public void LoadGlobalTlk()
         {
+            if (loadedGlobalTlk) return;
             string path = ME1Directory.cookedPath + @"Packages\Dialog\GlobalTlk.upk";
             try
             {
                 ME1Package pcc = MEPackageHandler.OpenME1Package(path);
                 tlkList.Add(new TalkFile(pcc, 0));
+                loadedGlobalTlk = true;
             }
             catch (Exception)
             {

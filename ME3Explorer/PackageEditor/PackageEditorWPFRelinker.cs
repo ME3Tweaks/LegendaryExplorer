@@ -33,36 +33,39 @@ namespace ME3Explorer
                 KeyValuePair<int, int> entry = crossPCCObjectMappingList[i];
                 if (entry.Key > 0)
                 {
-                    PropertyCollection transplantProps = importpcc.Exports[entry.Key].GetProperties();
-                    relinkResults.AddRange(relinkPropertiesRecursive(importpcc, pcc, transplantProps, crossPCCObjectMappingList));
-                    pcc.getExport(entry.Value).WriteProperties(transplantProps);
+                    IExportEntry sourceExportInNewFile = Pcc.getExport(entry.Value);
+                    PropertyCollection transplantProps = sourceExportInNewFile.GetProperties();
+                    Debug.WriteLine("Relinking items in destination export: " + sourceExportInNewFile.GetFullPath);
+                    relinkResults.AddRange(relinkPropertiesRecursive(importpcc, sourceExportInNewFile, transplantProps, crossPCCObjectMappingList, ""));
+                    Pcc.getExport(entry.Value).WriteProperties(transplantProps);
                 }
             }
 
             return relinkResults;
         }
 
-        private List<string> relinkPropertiesRecursive(IMEPackage importingPCC, IMEPackage destinationPCC, PropertyCollection transplantProps, List<KeyValuePair<int, int>> crossPCCObjectMappingList)
+        private List<string> relinkPropertiesRecursive(IMEPackage importingPCC, IExportEntry relinkingExport, PropertyCollection transplantProps, List<KeyValuePair<int, int>> crossPCCObjectMappingList, string debugPrefix)
         {
             List<string> relinkResults = new List<string>();
             foreach (UProperty prop in transplantProps)
             {
+                Debug.WriteLine(debugPrefix + " Relink recursive on " + prop.Name);
                 if (prop is StructProperty)
                 {
-                    relinkResults.AddRange(relinkPropertiesRecursive(importingPCC, destinationPCC, (prop as StructProperty).Properties, crossPCCObjectMappingList));
+                    relinkResults.AddRange(relinkPropertiesRecursive(importingPCC, relinkingExport, (prop as StructProperty).Properties, crossPCCObjectMappingList, debugPrefix + "-"));
                 }
                 else if (prop is ArrayProperty<StructProperty>)
                 {
                     foreach (StructProperty arrayStructProperty in prop as ArrayProperty<StructProperty>)
                     {
-                        relinkResults.AddRange(relinkPropertiesRecursive(importingPCC, destinationPCC, arrayStructProperty.Properties, crossPCCObjectMappingList));
+                        relinkResults.AddRange(relinkPropertiesRecursive(importingPCC, relinkingExport, arrayStructProperty.Properties, crossPCCObjectMappingList, debugPrefix + "-"));
                     }
                 }
                 else if (prop is ArrayProperty<ObjectProperty>)
                 {
                     foreach (ObjectProperty objProperty in prop as ArrayProperty<ObjectProperty>)
                     {
-                        string result = relinkObjectProperty(importingPCC, destinationPCC, objProperty, crossPCCObjectMappingList);
+                        string result = relinkObjectProperty(importingPCC, relinkingExport, objProperty, crossPCCObjectMappingList, debugPrefix);
                         if (result != null)
                         {
                             relinkResults.Add(result);
@@ -72,7 +75,7 @@ namespace ME3Explorer
                 if (prop is ObjectProperty)
                 {
                     //relink
-                    string result = relinkObjectProperty(importingPCC, destinationPCC, prop as ObjectProperty, crossPCCObjectMappingList);
+                    string result = relinkObjectProperty(importingPCC, relinkingExport, prop as ObjectProperty, crossPCCObjectMappingList, debugPrefix);
                     if (result != null)
                     {
                         relinkResults.Add(result);
@@ -82,13 +85,13 @@ namespace ME3Explorer
             return relinkResults;
         }
 
-        private string relinkObjectProperty(IMEPackage importingPCC, IMEPackage destinationPCC, ObjectProperty objProperty, List<KeyValuePair<int, int>> crossPCCObjectMappingList)
+        private string relinkObjectProperty(IMEPackage importingPCC, IExportEntry relinkingExport, ObjectProperty objProperty, List<KeyValuePair<int, int>> crossPCCObjectMappingList, string debugPrefix)
         {
             if (objProperty.Value == 0)
             {
                 return null; //do not relink 0
             }
-            if (importingPCC == destinationPCC && objProperty.Value < 0)
+            if (importingPCC == relinkingExport.FileRef && objProperty.Value < 0)
             {
                 return null; //do not relink same-pcc imports.
             }
@@ -102,10 +105,10 @@ namespace ME3Explorer
             {
                 sourceObjReference++; //make 0 based for mapping.
             }
-            //if (objProperty.Name != null)
-            //{
-            //    Debug.WriteLine(objProperty.Name);
-            //}
+            if (objProperty.Name != null)
+            {
+                Debug.WriteLine(debugPrefix + " Relinking:" + objProperty.Name);
+            }
             KeyValuePair<int, int> mapping = crossPCCObjectMappingList.Where(pair => pair.Key == sourceObjReference).FirstOrDefault();
             var defaultKVP = default(KeyValuePair<int, int>); //struct comparison
 
@@ -122,13 +125,13 @@ namespace ME3Explorer
                     newval = mapping.Value - 1; //redecrement
                 }
                 objProperty.Value = (newval);
-                IEntry entry = destinationPCC.getEntry(newval);
+                IEntry entry = relinkingExport.FileRef.getEntry(newval);
                 string s = "";
                 if (entry != null)
                 {
                     s = entry.GetFullPath;
                 }
-                Debug.WriteLine("Relink hit: " + sourceObjReference + objProperty.Name + ": " + s);
+                Debug.WriteLine(debugPrefix + " Relink hit: " + sourceObjReference + objProperty.Name + " : " + s);
             }
             else if (objProperty.Value < 0) //It's an unmapped import
             {
@@ -148,7 +151,7 @@ namespace ME3Explorer
                     string linkFailedDueToError = null;
                     try
                     {
-                        crossImport = getOrAddCrossImport(origImportFullName, importingPCC, destinationPCC);
+                        crossImport = getOrAddCrossImport(origImportFullName, importingPCC, relinkingExport.FileRef);
                     }
                     catch (Exception e)
                     {
@@ -169,20 +172,22 @@ namespace ME3Explorer
                     }
                     else
                     {
+                        string path = importingPCC.getEntry(objProperty.Value) != null ? importingPCC.getEntry(objProperty.Value).GetFullPath : "Entry not found: " + objProperty.Value;
+
                         if (linkFailedDueToError != null)
                         {
-                            Debug.WriteLine("Relink failed: CrossImport porting failed for " + objProperty.Name + " " + objProperty.Value + ": " + importingPCC.getEntry(origvalue).GetFullPath);
-                            return "Relink failed for " + objProperty.Name + " " + objProperty.Value + ": " + linkFailedDueToError;
+                            Debug.WriteLine("Relink failed: CrossImport porting failed for " + relinkingExport.ObjectName + " " + relinkingExport.UIndex + ": " + objProperty.Name + " (" + objProperty.Value + "): " + importingPCC.getEntry(origvalue).GetFullPath);
+                            return "Relink failed for " + objProperty.Name + " " + objProperty.Value + " in export " + path + "(" + relinkingExport.UIndex + "): " + linkFailedDueToError;
                         }
                         else
-                        if (destinationPCC.getEntry(objProperty.Value) != null)
+                        if (relinkingExport.FileRef.getEntry(objProperty.Value) != null)
                         {
-                            Debug.WriteLine("Relink failed: CrossImport porting failed for " + objProperty.Name + " " + objProperty.Value + ": " + importingPCC.getEntry(origvalue).GetFullPath);
-                            return "Relink failed: CrossImport porting failed for " + objProperty.Name + " " + objProperty.Value + " " + destinationPCC.getEntry(objProperty.Value).GetFullPath;
+                            Debug.WriteLine("Relink failed: CrossImport porting failed for " + relinkingExport.ObjectName + " " + relinkingExport.UIndex + ": " + objProperty.Name + " (" + objProperty.Value + "): " + importingPCC.getEntry(origvalue).GetFullPath);
+                            return "Relink failed: CrossImport porting failed for " + objProperty.Name + " " + objProperty.Value + " " + relinkingExport.FileRef.getEntry(objProperty.Value).GetFullPath + " in export " + path + "(" + relinkingExport.UIndex + ")";
                         }
                         else
                         {
-                            return "Relink failed: New export does not exist - this is probably a bug in cross import code for " + objProperty.Name + " " + objProperty.Value;
+                            return "Relink failed: New export does not exist - this is probably a bug in cross import code for " + objProperty.Name + " " + objProperty.Value + " in export " + path + "(" + relinkingExport.UIndex + ")";
                         }
                     }
                 }
@@ -190,8 +195,8 @@ namespace ME3Explorer
             else
             {
                 string path = importingPCC.getEntry(objProperty.Value) != null ? importingPCC.getEntry(objProperty.Value).GetFullPath : "Entry not found: " + objProperty.Value;
-                Debug.WriteLine("Relink failed: " + objProperty.Name + " " + objProperty.Value + " " + path);
-                return "Relink failed: " + objProperty.Name + " " + objProperty.Value + " " + path;
+                Debug.WriteLine("Relink failed in " + relinkingExport.ObjectName + " " + relinkingExport.UIndex + ": " + objProperty.Name + " " + objProperty.Value + " " + path);
+                return "Relink failed: " + objProperty.Name + " " + objProperty.Value + " in export " + path + "(" + relinkingExport.UIndex + ")";
             }
             return null;
         }
@@ -208,7 +213,8 @@ namespace ME3Explorer
             {
                 if (entry.Key > 0)
                 {
-                    IExportEntry exp = pcc.getExport(entry.Value);
+                    IExportEntry sourceexp = importpcc.getExport(entry.Key);
+                    IExportEntry exp = Pcc.getExport(entry.Value);
                     byte[] binarydata = exp.getBinaryData();
                     if (binarydata.Length > 0)
                     {
@@ -260,8 +266,8 @@ namespace ME3Explorer
                                         //This is going to be pretty ugly
                                         try
                                         {
-                                            byte[] newdata = importpcc.Exports[entry.Key].Data; //may need to rewrite first unreal header
-                                            byte[] data = importpcc.Exports[entry.Key].Data;
+                                            byte[] newdata = sourceexp.Data; //may need to rewrite first unreal header
+                                            byte[] data = sourceexp.Data;
 
                                             int offset = 0;
                                             int unrealExportIndex = BitConverter.ToInt32(data, offset);
@@ -455,16 +461,56 @@ namespace ME3Explorer
                                         }
                                     }
                                     break;
+                                case "Material":
+                                    {
+                                        int binarypos = 0x8;
+
+                                        int guidcount = BitConverter.ToInt32(binarydata, binarypos);
+                                        binarypos += 4;
+                                        for (int i = 0; i < guidcount; i++)
+                                        {
+                                            binarypos += 16;
+                                        }
+                                        int unkcount = BitConverter.ToInt32(binarydata, binarypos);
+                                        binarypos += 4;
+                                        int count = BitConverter.ToInt32(binarydata, binarypos);
+                                        binarypos += 4;
+                                        while (binarypos <= binarydata.Length - 4 && count > 0)
+                                        {
+                                            int val = BitConverter.ToInt32(binarydata, binarypos);
+                                            string name = val.ToString();
+
+                                            if (crossPCCObjectMap.TryGetValue(unrealIndexToME3ExpIndexing(val), out int mapped))
+                                            {
+                                                Debug.WriteLine($"Binary relink (material) hit: {val} -> {mapped}");
+                                                WriteMem(binarypos, binarydata, BitConverter.GetBytes(me3ExpIndexingToUnreal(mapped)));
+                                            }
+                                            else
+                                            {
+                                                Debug.WriteLine($"Binary relink (material) miss: {val}");
+                                            }
+                                            binarypos += 4;
+                                            count--;
+                                        }
+                                        exp.setBinaryData(binarydata);
+                                    }
+                                    break;
+                                case "Function":
+                                    //Crazy experimental
+                                    {
+                                        Bytecode.RelinkFunctionForPorting(sourceexp, exp, relinkFailedReport, crossPCCObjectMap);
+                                    }
+                                    break;
                                 default:
                                     continue;
                             }
                         }
                         catch (Exception e)
                         {
-                            relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relinking failed: " + e.Message);
+                            relinkFailedReport.Add(exp.Index + " " + exp.GetFullPath + " binary relinking failed due to exception: " + e.Message);
                         }
                         //Run an interpreter pass over it - we will find objectleafnodes and attempt to update the same offset in the destination file.
-                        //BinaryInterpreter binaryrelinkInterpreter = new ME3Explorer.BinaryInterpreter(importpcc, importpcc.Exports[entry.Key], pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
+                        //BinaryInterpreter binaryrelinkInterpreter = new ME3Explorer.BinaryInterpreter(importpcc, sourceexp, pcc, pcc.Exports[entry.Value], crossPCCObjectMapping);
                     }
                 }
             }
@@ -665,14 +711,14 @@ namespace ME3Explorer
         /// <summary>
         /// Adds an import from the importingPCC to the destinationPCC with the specified importFullName, or returns the existing one if it can be found. 
         /// This method will look at importingPCC's import upstream chain and check for the most downstream one's existence in destinationPCC, 
-        /// including if none can be founc (in which case the entire upstream is copied). It will then create new imports to match the remaining 
+        /// including if none can be found (in which case the entire upstream is copied). It will then create new imports to match the remaining 
         /// downstream ones and return the originally named import, however now located in destinationPCC.
         /// </summary>
         /// <param name="importFullName">GetFullPath() of an import from ImportingPCC</param>
         /// <param name="importingPCC">PCC to import imports from</param>
         /// <param name="destinationPCC">PCC to add imports to</param>
         /// <returns></returns>
-        private ImportEntry getOrAddCrossImport(string importFullName, IMEPackage importingPCC, IMEPackage destinationPCC, int? forcedLinkIdx = null)
+        public static ImportEntry getOrAddCrossImport(string importFullName, IMEPackage importingPCC, IMEPackage destinationPCC, int? forcedLinkIdx = null)
         {
             //This code is kind of ugly, sorry.
 
@@ -748,7 +794,7 @@ namespace ME3Explorer
                                 //We will need to find a way to cross map this as this will block cross import mapping unless these exports already exist.
                                 Debug.WriteLine("FOUND UPSTREAM, AS EXPORT!");
                                 KFreonLib.Debugging.DebugOutput.StartDebugger("Package Editor Relinker");
-                                KFreonLib.Debugging.DebugOutput.PrintLn("Error: Upstream item that is required is an export in the pcc to import from: " + fullobjectname);
+                                KFreonLib.Debugging.DebugOutput.PrintLn("Warning: Upstream item that is required is an export in the pcc to import from. Found same-named item locally, using that one instead: " + fullobjectname);
                                 donorUpstreamExport = exp;
                                 upstreamCount--; //level 1 now from the top down
                                                  //Create new import with this as higher IDK
@@ -757,7 +803,7 @@ namespace ME3Explorer
                         }
                         if (donorUpstreamExport == null)
                         {
-                            Debug.WriteLine("An error has occured. Could not find an upstream import or export for relinking: " + fullobjectname + " from " + pcc.FileName);
+                            Debug.WriteLine("An error has occured. Could not find an upstream import or export for relinking: " + fullobjectname + " from " + importingPCC.FileName);
                             return null;
                         }
                     }

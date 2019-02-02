@@ -61,12 +61,59 @@ namespace ME3Explorer.WwiseBankEditor
             listBox1.Items.Clear();
             listBox2.Items.Clear();
             for (int i = 0; i < objects.Count; i++)
-                listBox1.Items.Add(objects[i] + " : " + pcc.Exports[objects[i]].ObjectName);            
+                listBox1.Items.Add(objects[i] + " : " + pcc.Exports[objects[i]].ObjectName);
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             RefreshSelected();
+        }
+
+        private void hircHexbox_SelectionChanged(object sender, EventArgs e)
+        {
+            DynamicByteProvider hbp = hircHexBox.ByteProvider as DynamicByteProvider;
+            byte[] memory = hbp.Bytes.ToArray();
+            int start = (int)hircHexBox.SelectionStart;
+            int len = (int)hircHexBox.SelectionLength;
+            int size = (int)hircHexBox.ByteProvider.Length;
+            try
+            {
+                if (memory.Length > 0 && start != -1 && start < size)
+                {
+                    string s = $"Byte: {memory[start]}"; //if selection is same as size this will crash.
+                    if (start <= memory.Length - 4)
+                    {
+                        int val = BitConverter.ToInt32(memory, start);
+                        s += $", Int: {val} (0x{val.ToString("X8")})";
+                        if (pcc.isName(val))
+                        {
+                            s += $", Name: {pcc.getNameEntry(val)}";
+                        }
+                        if (pcc.getEntry(val) is IExportEntry exp)
+                        {
+                            s += $", Export: {exp.ObjectName}";
+                        }
+                        else if (pcc.getEntry(val) is ImportEntry imp)
+                        {
+                            s += $", Import: {imp.ObjectName}";
+                        }
+                    }
+                    s += $" | Start=0x{start.ToString("X8")} ";
+                    if (len > 0)
+                    {
+                        s += $"Length=0x{len.ToString("X8")} ";
+                        s += $"End=0x{(start + len - 1).ToString("X8")}";
+                    }
+                    hircHexboxStatusLabel.Text = s;
+                }
+                else
+                {
+                    hircHexboxStatusLabel.Text = "Nothing Selected";
+                }
+            }
+            catch (Exception)
+            {
+            }
         }
 
         public void RefreshSelected()
@@ -117,7 +164,7 @@ namespace ME3Explorer.WwiseBankEditor
             int n = listBox2.SelectedIndex;
             if (n == -1)
                 return;
-            hb2.ByteProvider = new DynamicByteProvider(bank.HIRCObjects[n]);
+            hircHexBox.ByteProvider = new DynamicByteProvider(bank.HIRCObjects[n]);
         }
 
         private void recreateBankToolStripMenuItem_Click(object sender, EventArgs e)
@@ -150,12 +197,12 @@ namespace ME3Explorer.WwiseBankEditor
             int m = listBox2.SelectedIndex;
             if (m == -1)
                 return;
-            byte[] tmp = new byte[hb2.ByteProvider.Length];
-            for (int i = 0; i < hb2.ByteProvider.Length; i++)
-                tmp[i] = hb2.ByteProvider.ReadByte(i);
+            byte[] tmp = new byte[hircHexBox.ByteProvider.Length];
+            for (int i = 0; i < hircHexBox.ByteProvider.Length; i++)
+                tmp[i] = hircHexBox.ByteProvider.ReadByte(i);
 
             //write size of this HIRC
-            int insideLen = (int) hb2.ByteProvider.Length - 5;
+            int insideLen = (int)hircHexBox.ByteProvider.Length - 5;
             byte[] b = BitConverter.GetBytes(insideLen);
             b.CopyTo(tmp, 1);
 
@@ -179,7 +226,7 @@ namespace ME3Explorer.WwiseBankEditor
             }
             else
             {
-                
+
                 int ID1 = BitConverter.ToInt32(buff, 5);
                 int opt = BitConverter.ToInt32(buff, 13);
                 int ID2 = BitConverter.ToInt32(buff, 17);
@@ -237,6 +284,24 @@ namespace ME3Explorer.WwiseBankEditor
             saveHIRCHexEdits();
         }
 
+        public static bool isHexString(string s)
+        {
+            string hexChars = "0123456789abcdefABCDEF";
+            for (int i = 0; i < s.Length; i++)
+            {
+                int f = -1;
+                for (int j = 0; j < hexChars.Length; j++)
+                    if (s[i] == hexChars[j])
+                    {
+                        f = j;
+                        break;
+                    }
+                if (f == -1)
+                    return false;
+            }
+            return true;
+        }
+
         private void searchHexButton_Click(object sender, EventArgs e)
         {
             if (bank == null)
@@ -247,7 +312,7 @@ namespace ME3Explorer.WwiseBankEditor
             string hexString = searchHexTextBox.Text.Replace(" ", string.Empty);
             if (hexString.Length == 0)
                 return;
-            if (!HexConverter.Hexconverter.isHexString(hexString))
+            if (isHexString(hexString))
             {
                 searchHexStatus.Text = "Illegal characters in Hex String";
                 return;
@@ -264,7 +329,7 @@ namespace ME3Explorer.WwiseBankEditor
             }
             byte[] hirc;
             int count = bank.HIRCObjects.Count;
-            int hexboxIndex = (int)hb2.SelectionStart + 1;
+            int hexboxIndex = (int)hircHexBox.SelectionStart + 1;
             for (int i = 0; i < count; i++)
             {
                 hirc = bank.HIRCObjects[(i + m) % count]; //search from selected index, and loop back around
@@ -272,7 +337,7 @@ namespace ME3Explorer.WwiseBankEditor
                 if (indexIn > -1)
                 {
                     listBox2.SelectedIndex = (i + m) % count;
-                    hb2.Select(indexIn, buff.Length);
+                    hircHexBox.Select(indexIn, buff.Length);
                     searchHexStatus.Text = "";
                     return;
                 }
@@ -297,7 +362,7 @@ namespace ME3Explorer.WwiseBankEditor
                     listBox2.Items.Clear();
                     rtb1.Text = "";
                     hb1.ByteProvider = new DynamicByteProvider(new List<byte>());
-                    hb2.ByteProvider = new DynamicByteProvider(new List<byte>());
+                    hircHexBox.ByteProvider = new DynamicByteProvider(new List<byte>());
                 }
                 RefreshSelected();
                 updatedExports.Remove(index);

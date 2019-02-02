@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using UsefulThings.WPF;
 
 namespace ME3Explorer.Packages
@@ -10,6 +11,7 @@ namespace ME3Explorer.Packages
     {
         public ImportEntry(IMEPackage pccFile, Stream importData)
         {
+            HeaderOffset = importData.Position;
             FileRef = pccFile;
             Header = new byte[byteSize];
             importData.Read(Header, 0, Header.Length);
@@ -20,6 +22,8 @@ namespace ME3Explorer.Packages
             FileRef = pccFile;
             Header = new byte[byteSize];
         }
+
+        public long HeaderOffset { get; set; }
 
         public int Index { get; set; }
         public int UIndex { get { return -Index - 1; } }
@@ -35,12 +39,26 @@ namespace ME3Explorer.Packages
             set
             {
                 bool isFirstLoad = _header == null;
+                if (_header != null && value != null && _header.SequenceEqual(value))
+                {
+                    return; //if the data is the same don't write it and trigger the side effects
+                }
                 _header = value;
                 if (!isFirstLoad)
                 {
                     HeaderChanged = true;
+                    EntryHasPendingChanges = true;
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns a clone of the header for modifying
+        /// </summary>
+        /// <returns></returns>
+        public byte[] GetHeader()
+        {
+            return _header.TypedClone();
         }
 
         public int idxPackageFile { get { return BitConverter.ToInt32(Header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 0, sizeof(int)); HeaderChanged = true; } }

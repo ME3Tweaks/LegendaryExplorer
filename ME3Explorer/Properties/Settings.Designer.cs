@@ -274,5 +274,17 @@ namespace ME3Explorer.Properties {
                 this["SoundpanelRepeating"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool BinaryInterpreterWPFAutoScanAlways {
+            get {
+                return ((bool)(this["BinaryInterpreterWPFAutoScanAlways"]));
+            }
+            set {
+                this["BinaryInterpreterWPFAutoScanAlways"] = value;
+            }
+        }
     }
 }

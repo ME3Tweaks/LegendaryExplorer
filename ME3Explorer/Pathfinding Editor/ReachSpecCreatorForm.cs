@@ -20,7 +20,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public int DestinationNode = -1;
         public bool CreateTwoWaySpec = true;
         public string SpecClass = "";
-        public int SpecSize;
+        public int SpecSize, DestinationType;
 
         public ReachSpecCreatorForm(IMEPackage package, int sourceExportIndex)
         {
@@ -177,8 +177,27 @@ namespace ME3Explorer.Pathfinding_Editor
                 CreateTwoWaySpec = createReturningSpecCheckbox.Checked;
                 SpecClass = (string)reachSpecTypeComboBox.SelectedItem;
                 SpecSize = specSizeCombobox.SelectedIndex;
+                DestinationType = localNodeRadioButton.Checked ? 0 : 1;
                 this.DialogResult = System.Windows.Forms.DialogResult.Yes;
                 this.Close();
+            }
+        }
+
+        private void DestinationNodeType_Changed(object sender, EventArgs e)
+        {
+            destinationNodeTextBox.Enabled = reachSpecTypeComboBox.Enabled = createReturningSpecCheckbox.Enabled = localNodeRadioButton.Checked;
+            if (localNodeRadioButton.Checked)
+            {
+                emptyAutoFields();
+                destinationNodeTextBox_TextChanged(null, null);
+            }
+            else
+            {
+                directionX.Text = "X: Not calculatable";
+                directionY.Text = "Y: Not calculatable";
+                directionZ.Text = "Z: Not calculatable";
+                destinationLabel.Text = "| External ReachSpec";
+                createSpecButton.Enabled = true;
             }
         }
     }

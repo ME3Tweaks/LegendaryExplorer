@@ -7,6 +7,145 @@ namespace ME3Explorer.Unreal
 {
     public static class UnrealFlags
     {
+        public static IEnumerable<T> MaskToList<T>(Enum mask)
+        {
+            if (typeof(T).IsSubclassOf(typeof(Enum)) == false)
+                throw new ArgumentException();
+
+            return Enum.GetValues(typeof(T))
+                                 .Cast<Enum>()
+                                 .Where(m => mask.HasFlag(m))
+                                 .Cast<T>();
+        }
+
+        /// <summary>
+        /// Flags describing an class instance. This code is from UEExplorer.
+        ///
+        /// Note:
+        ///     This is valid for UE3 as well unless otherwise noted.
+        ///
+        /// @Redefined( Version, Clone )
+        ///     The flag is redefined in (Version) as (Clone)
+        ///
+        /// @Removed( Version )
+        ///     The flag is removed in (Version)
+        ///
+        /// @Moved( Version, New )
+        ///     The flag was moved since (Version) to a different value (New)
+        /// </summary>
+        [Flags]
+        public enum EClassFlags : uint
+        {
+            None = 0x00000000U,
+            Abstract = 0x00000001U,
+            Compiled = 0x00000002U,
+            Config = 0x00000004U,
+            Transient = 0x00000008U,
+            Parsed = 0x00000010U,
+            Localized = 0x00000020U,
+            SafeReplace = 0x00000040U,
+
+            NoExport = 0x00000100U,
+            Placeable = 0x00000200U,
+            PerObjectConfig = 0x00000400U,
+            NativeReplication = 0x00000800U,
+            EditInlineNew = 0x00001000U,
+            CollapseCategories = 0x00002000U,
+            ExportStructs = 0x00004000U,      // @Removed(UE3 in early but not latest)
+            HasComponents = 0x00400000U,      // @Redefined Class has component properties.
+            Hidden = 0x00800000U,      // @Redefined Don't show this class in the editor class browser or edit inline new menus.
+            Deprecated = 0x01000000U,      // @Redefined Don't save objects of this class when serializing
+            HideDropDown2 = 0x02000000U,
+            Exported = 0x04000000U,
+            NativeOnly = 0x20000000U
+        }
+
+        [Flags]
+        //from https://github.com/EliotVU/Unreal-Library/blob/23da0b1d42d90ccf8bc7d64051ffd38a8088ec93/src/UnrealFlags.cs#L17
+        public enum EPackageFlags : uint
+        {
+            // 028A0009 : A cooked and compressed package
+            // 00280009 : A cooked package
+            // 00020001 : A ordinary package
+
+            /// <summary>
+            /// Whether clients are allowed to download the package from the server.
+            /// </summary>
+            AllowDownload = 0x00000001U,
+
+            /// <summary>
+            /// Whether clients can skip downloading the package but still able to join the server.
+            /// </summary>
+            ClientOptional = 0x00000002U,
+
+            /// <summary>
+            /// Only necessary to load on the server.
+            /// </summary>
+            ServerSideOnly = 0x00000004U,
+
+            /// <summary>
+            /// The package is cooked.
+            /// </summary>
+            Cooked = 0x00000008U,      // @Redefined
+
+            /// <summary>
+            /// ???
+            /// <= UT
+            /// </summary>
+            Unsecure = 0x00000010U,
+
+            /// <summary>
+            /// The package is encrypted.
+            /// <= UT
+            /// </summary>
+            Encrypted = 0x00000020U,
+
+            /// <summary>
+            /// Clients must download the package.
+            /// </summary>
+            Need = 0x00008000U,
+
+            /// <summary>
+            /// Unknown flags
+            /// -   0x20000000  -- Probably means the package contains Content(Meshes, Textures)
+            /// </summary>
+            ///
+
+            /// Package holds map data.
+            Map = 0x00020000U,
+
+            /// <summary>
+            /// Package has ME3Explorer appended name table. This is an unused flag by the engine and is present only due to ME3Explorer modified files
+            /// </summary>
+            ME3ExplorerAppendedNameTable = 0x00100000U,
+
+            /// <summary>
+            /// Package contains classes.
+            /// </summary>
+            Script = 0x00200000U,
+
+
+            /// <summary>
+            /// The package was build with -Debug
+            /// </summary>
+            Debug = 0x00400000U,
+            Imports = 0x00800000U,
+
+            Compressed = 0x02000000U,
+            FullyCompressed = 0x04000000U,
+
+            /// <summary>
+            /// Whether package has metadata exported(anything related to the editor).
+            /// </summary>
+            NoExportsData = 0x20000000U,
+
+            /// <summary>
+            /// Package's source is stripped.
+            /// </summary>
+            Stripped = 0x40000000U,
+
+            Protected = 0x80000000U,
+        }
 
         [Flags]
         public enum EPropertyFlags : ulong
@@ -108,7 +247,32 @@ namespace ME3Explorer.Unreal
             [EPropertyFlags.CrossLevelPassive] = "",
             [EPropertyFlags.CrossLevelActive] = "",
         };
-        
+
+        public static Dictionary<EClassFlags, string> classflagdesc = new Dictionary<EClassFlags, string>
+        {
+            [EClassFlags.None] = "",
+            [EClassFlags.Abstract] = "",
+            [EClassFlags.Compiled] = "",
+            [EClassFlags.Config] = "",
+            [EClassFlags.Transient] = "",
+            [EClassFlags.Parsed] = "",
+            [EClassFlags.Localized] = "",
+            [EClassFlags.SafeReplace] = "",
+            [EClassFlags.NoExport] = "",
+            [EClassFlags.Placeable] = "",
+            [EClassFlags.PerObjectConfig] = "",
+            [EClassFlags.NativeReplication] = "",
+            [EClassFlags.EditInlineNew] = "",
+            [EClassFlags.CollapseCategories] = "",
+            [EClassFlags.ExportStructs] = "",      // @Removed(UE3 in early but not latest)
+
+            [EClassFlags.HasComponents] = "Class has component properties",      // @Redefined Class has component properties.
+            [EClassFlags.Hidden] = "Don't show this class in the editor class browser or edit inline new menus",     // @Redefined .
+            [EClassFlags.Deprecated] = "Don't save objects of this class when serializing",      // @Redefined 
+            [EClassFlags.HideDropDown2] = "",
+            [EClassFlags.Exported] = "",
+            [EClassFlags.NativeOnly] = ""
+        };
 
         public enum EObjectFlags : ulong
         {
@@ -149,43 +313,43 @@ namespace ME3Explorer.Unreal
             DebugDestroy = 0x8000000000000000,   // For debugging Destroy calls.
         }
 
-        public static string[] flagdesc =  
+        public static string[] flagdesc =
         {
-            "Transactional , 0000000100000000,    Object is transactional.",
-            "Unreachable , 0000000200000000,	 Object is not reachable on the object graph.",
-            "Public , 0000000400000000,	 Object is visible outside its package.",
-            "TagImp , 0000000800000000,	 Temporary import tag in loadsave.",
-            "TagExp , 0000001000000000,	 Temporary export tag in loadsave.",
-            "Obsolete , 0000002000000000,    Object marked as obsolete and should be replaced.",
-            "TagGarbage , 0000004000000000,	 Check during garbage collection.",
-            "Final , 0000008000000000,	 Object is not visible outside of class.",
-            "PerObjectLocalized , 0000010000000000,	 Object is localized by instance name00000000, not by class.",
-            "NeedLoad , 0000020000000000,    During load00000000, indicates object needs loading.",
-            "HighlightedName , 0000040000000000,	 A hardcoded name which should be syntax-highlighted.",
-            "EliminateObject , 0000040000000000,    NULL out references to this during garbage collecion.",
-            "InSingularFunc , 0000080000000000,	 In a singular function.",
-            "RemappedName , 0000080000000000,    Name is remapped.",
-            "Suppress , 0000100000000000,	warning: Mirrored in UnName.h. Suppressed log name.",
-            "StateChanged , 0000100000000000,    Object did a state change.",
-            "InEndState , 0000200000000000,    Within an EndState call.",
-            "Transient , 0000400000000000,	 Don't save object.",
-            "Preloading , 0000800000000000,    Data is being preloaded from file.",
-            "LoadForClient , 0001000000000000,	 In-file load for client.",
-            "LoadForServer , 0002000000000000,	 In-file load for client.",
-            "LoadForEdit , 0004000000000000,	 In-file load for client.",
-            "Standalone , 0008000000000000,    Keep object around for editing even if unreferenced.",
-            "NotForClient , 0010000000000000,	 Don't load this object for the game client.",
-            "NotForServer , 0020000000000000,	 Don't load this object for the game server.",
-            "NotForEdit , 0040000000000000,	 Don't load this object for the editor.",
-            "Destroyed , 0080000000000000,	 Object Destroy has already been called.",
-            "NeedPostLoad , 0100000000000000,    Object needs to be postloaded.",
-            "HasStack , 0200000000000000,	 Has execution stack.",
-            "Native , 0400000000000000,    Native (UClass only).",
-            "Marked , 0800000000000000,    Marked (for debugging).",
-            "ErrorShutdown , 1000000000000000,	 ShutdownAfterError called.",
-            "DebugPostLoad , 2000000000000000,    For debugging Serialize calls.",
-            "DebugSerialize , 4000000000000000,    For debugging Serialize calls.",
-            "DebugDestroy , 8000000000000000,    For debugging Destroy calls."
-        };
+    "Transactional , 0000000100000000,    Object is transactional.",
+    "Unreachable , 0000000200000000,	 Object is not reachable on the object graph.",
+    "Public , 0000000400000000,	 Object is visible outside its package.",
+    "TagImp , 0000000800000000,	 Temporary import tag in loadsave.",
+    "TagExp , 0000001000000000,	 Temporary export tag in loadsave.",
+    "Obsolete , 0000002000000000,    Object marked as obsolete and should be replaced.",
+    "TagGarbage , 0000004000000000,	 Check during garbage collection.",
+    "Final , 0000008000000000,	 Object is not visible outside of class.",
+    "PerObjectLocalized , 0000010000000000,	 Object is localized by instance name00000000, not by class.",
+    "NeedLoad , 0000020000000000,    During load00000000, indicates object needs loading.",
+    "HighlightedName , 0000040000000000,	 A hardcoded name which should be syntax-highlighted.",
+    "EliminateObject , 0000040000000000,    NULL out references to this during garbage collecion.",
+    "InSingularFunc , 0000080000000000,	 In a singular function.",
+    "RemappedName , 0000080000000000,    Name is remapped.",
+    "Suppress , 0000100000000000,	warning: Mirrored in UnName.h. Suppressed log name.",
+    "StateChanged , 0000100000000000,    Object did a state change.",
+    "InEndState , 0000200000000000,    Within an EndState call.",
+    "Transient , 0000400000000000,	 Don't save object.",
+    "Preloading , 0000800000000000,    Data is being preloaded from file.",
+    "LoadForClient , 0001000000000000,	 In-file load for client.",
+    "LoadForServer , 0002000000000000,	 In-file load for client.",
+    "LoadForEdit , 0004000000000000,	 In-file load for client.",
+    "Standalone , 0008000000000000,    Keep object around for editing even if unreferenced.",
+    "NotForClient , 0010000000000000,	 Don't load this object for the game client.",
+    "NotForServer , 0020000000000000,	 Don't load this object for the game server.",
+    "NotForEdit , 0040000000000000,	 Don't load this object for the editor.",
+    "Destroyed , 0080000000000000,	 Object Destroy has already been called.",
+    "NeedPostLoad , 0100000000000000,    Object needs to be postloaded.",
+    "HasStack , 0200000000000000,	 Has execution stack.",
+    "Native , 0400000000000000,    Native (UClass only).",
+    "Marked , 0800000000000000,    Marked (for debugging).",
+    "ErrorShutdown , 1000000000000000,	 ShutdownAfterError called.",
+    "DebugPostLoad , 2000000000000000,    For debugging Serialize calls.",
+    "DebugSerialize , 4000000000000000,    For debugging Serialize calls.",
+    "DebugDestroy , 8000000000000000,    For debugging Destroy calls."
+};
     }
 }

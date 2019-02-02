@@ -34,6 +34,8 @@
             this.openPccToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.savePccToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cloneHIRCObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.transferToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportAllWEMFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.recreateBankToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,13 +54,13 @@
             this.searchHexButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.searchHexStatus = new System.Windows.Forms.ToolStripLabel();
-            this.hb2 = new Be.Windows.Forms.HexBox();
+            this.hircHexBox = new Be.Windows.Forms.HexBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.saveHexChangesButton = new System.Windows.Forms.ToolStripButton();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.openFileLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.cloneHIRCObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.statusStrip2 = new System.Windows.Forms.StatusStrip();
+            this.hircHexboxStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -75,6 +77,7 @@
             this.toolStrip2.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.statusStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -121,26 +124,40 @@
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
             // 
+            // cloneHIRCObjectToolStripMenuItem
+            // 
+            this.cloneHIRCObjectToolStripMenuItem.Name = "cloneHIRCObjectToolStripMenuItem";
+            this.cloneHIRCObjectToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.cloneHIRCObjectToolStripMenuItem.Text = "Clone HIRC object";
+            this.cloneHIRCObjectToolStripMenuItem.Click += new System.EventHandler(this.cloneObjectToolStripMenuItem_Click);
+            // 
+            // editToolStripMenuItem1
+            // 
+            this.editToolStripMenuItem1.Name = "editToolStripMenuItem1";
+            this.editToolStripMenuItem1.Size = new System.Drawing.Size(226, 22);
+            this.editToolStripMenuItem1.Text = "Edit Type02 Sound SFX/Voice";
+            this.editToolStripMenuItem1.Click += new System.EventHandler(this.editSoundSFXVoiceToolStripMenuItem1_Click);
+            // 
             // transferToolStripMenuItem
             // 
             this.transferToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exportAllWEMFilesToolStripMenuItem,
             this.recreateBankToolStripMenuItem});
             this.transferToolStripMenuItem.Name = "transferToolStripMenuItem";
-            this.transferToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
+            this.transferToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.transferToolStripMenuItem.Text = "Transfer";
             // 
             // exportAllWEMFilesToolStripMenuItem
             // 
             this.exportAllWEMFilesToolStripMenuItem.Name = "exportAllWEMFilesToolStripMenuItem";
-            this.exportAllWEMFilesToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.exportAllWEMFilesToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.exportAllWEMFilesToolStripMenuItem.Text = "Export all WEM files";
             this.exportAllWEMFilesToolStripMenuItem.Click += new System.EventHandler(this.exportAllWEMFilesToolStripMenuItem_Click);
             // 
             // recreateBankToolStripMenuItem
             // 
             this.recreateBankToolStripMenuItem.Name = "recreateBankToolStripMenuItem";
-            this.recreateBankToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.recreateBankToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.recreateBankToolStripMenuItem.Text = "Recreate Bank To File";
             this.recreateBankToolStripMenuItem.Click += new System.EventHandler(this.recreateBankToolStripMenuItem_Click);
             // 
@@ -205,6 +222,7 @@
             this.hb1.LineInfoForeColor = System.Drawing.Color.Empty;
             this.hb1.LineInfoVisible = true;
             this.hb1.Location = new System.Drawing.Point(3, 3);
+            this.hb1.MaxBytesPerLine = 100;
             this.hb1.MinBytesPerLine = 0;
             this.hb1.Name = "hb1";
             this.hb1.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
@@ -262,7 +280,8 @@
             // 
             // splitContainer2.Panel2
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.hb2);
+            this.splitContainer2.Panel2.Controls.Add(this.statusStrip2);
+            this.splitContainer2.Panel2.Controls.Add(this.hircHexBox);
             this.splitContainer2.Panel2.Controls.Add(this.toolStrip1);
             this.splitContainer2.Size = new System.Drawing.Size(482, 451);
             this.splitContainer2.SplitterDistance = 163;
@@ -318,22 +337,26 @@
             this.searchHexStatus.Name = "searchHexStatus";
             this.searchHexStatus.Size = new System.Drawing.Size(0, 22);
             // 
-            // hb2
+            // hircHexBox
             // 
-            this.hb2.BoldFont = null;
-            this.hb2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.hb2.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.hb2.LineInfoForeColor = System.Drawing.Color.Empty;
-            this.hb2.LineInfoVisible = true;
-            this.hb2.Location = new System.Drawing.Point(0, 25);
-            this.hb2.MinBytesPerLine = 0;
-            this.hb2.Name = "hb2";
-            this.hb2.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.hb2.Size = new System.Drawing.Size(482, 259);
-            this.hb2.StringViewVisible = true;
-            this.hb2.TabIndex = 0;
-            this.hb2.UseFixedBytesPerLine = true;
-            this.hb2.VScrollBarVisible = true;
+            this.hircHexBox.BoldFont = null;
+            this.hircHexBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hircHexBox.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.hircHexBox.LineInfoForeColor = System.Drawing.Color.Empty;
+            this.hircHexBox.LineInfoVisible = true;
+            this.hircHexBox.Location = new System.Drawing.Point(0, 25);
+            this.hircHexBox.MaxBytesPerLine = 100;
+            this.hircHexBox.MinBytesPerLine = 0;
+            this.hircHexBox.Name = "hircHexBox";
+            this.hircHexBox.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.hircHexBox.Size = new System.Drawing.Size(482, 259);
+            this.hircHexBox.StringViewVisible = true;
+            this.hircHexBox.TabIndex = 0;
+            this.hircHexBox.UseFixedBytesPerLine = true;
+            this.hircHexBox.VScrollBarVisible = true;
+            this.hircHexBox.SelectionStartChanged += new System.EventHandler(this.hircHexbox_SelectionChanged);
+            this.hircHexBox.SelectionLengthChanged += new System.EventHandler(this.hircHexbox_SelectionChanged);
+            
             // 
             // toolStrip1
             // 
@@ -370,19 +393,21 @@
             this.openFileLabel.Name = "openFileLabel";
             this.openFileLabel.Size = new System.Drawing.Size(0, 17);
             // 
-            // cloneHIRCObjectToolStripMenuItem
+            // statusStrip2
             // 
-            this.cloneHIRCObjectToolStripMenuItem.Name = "cloneHIRCObjectToolStripMenuItem";
-            this.cloneHIRCObjectToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
-            this.cloneHIRCObjectToolStripMenuItem.Text = "Clone HIRC object";
-            this.cloneHIRCObjectToolStripMenuItem.Click += new System.EventHandler(this.cloneObjectToolStripMenuItem_Click);
+            this.statusStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.hircHexboxStatusLabel});
+            this.statusStrip2.Location = new System.Drawing.Point(0, 262);
+            this.statusStrip2.Name = "statusStrip2";
+            this.statusStrip2.Size = new System.Drawing.Size(482, 22);
+            this.statusStrip2.TabIndex = 2;
+            this.statusStrip2.Text = "statusStrip2";
             // 
-            // editToolStripMenuItem1
+            // hircHexboxStatusLabel
             // 
-            this.editToolStripMenuItem1.Name = "editToolStripMenuItem1";
-            this.editToolStripMenuItem1.Size = new System.Drawing.Size(228, 22);
-            this.editToolStripMenuItem1.Text = "Edit Type02 Sound SFX/Voice";
-            this.editToolStripMenuItem1.Click += new System.EventHandler(this.editSoundSFXVoiceToolStripMenuItem1_Click);
+            this.hircHexboxStatusLabel.Name = "hircHexboxStatusLabel";
+            this.hircHexboxStatusLabel.Size = new System.Drawing.Size(97, 17);
+            this.hircHexboxStatusLabel.Text = "Nothing selected";
             // 
             // WwiseEditor
             // 
@@ -418,6 +443,8 @@
             this.toolStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.statusStrip2.ResumeLayout(false);
+            this.statusStrip2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -440,7 +467,7 @@
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.ListBox listBox2;
-        private Be.Windows.Forms.HexBox hb2;
+        private Be.Windows.Forms.HexBox hircHexBox;
         private System.Windows.Forms.ToolStripMenuItem recreateBankToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem savePccToolStripMenuItem;
@@ -455,5 +482,7 @@
         private System.Windows.Forms.ToolStripLabel searchHexStatus;
         private System.Windows.Forms.ToolStripMenuItem cloneHIRCObjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem1;
+        private System.Windows.Forms.StatusStrip statusStrip2;
+        private System.Windows.Forms.ToolStripStatusLabel hircHexboxStatusLabel;
     }
 }

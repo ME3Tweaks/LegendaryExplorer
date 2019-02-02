@@ -26,19 +26,24 @@ namespace ME3Explorer.Unreal.Classes
                                     null, "Public", "Private", "Protected", 
                                     "Delegate", "NetServer", "HasOutParms", "HasDefaults", 
                                     "NetClient", "FuncInherit", "FuncOverrideMatch"};
+        internal string ScriptText;
+        public string HeaderText;
+        public List<Token> ScriptBlocks;
+
+        internal List<BytecodeSingularToken> SingularTokenList { get; private set; }
 
         public Function()
         {
         }
 
-        public Function(byte[] raw, IMEPackage Pcc)
+        public Function(byte[] raw, IMEPackage Pcc, int clippingSize = 32)
         {
             pcc = Pcc;
             memory = raw;
             memsize = raw.Length;
             flagint = GetFlagInt();
             nativeindex = GetNatIdx();
-            Deserialize();
+            Deserialize(clippingSize);
         }
 
         public int GetNatIdx()
@@ -70,13 +75,13 @@ namespace ME3Explorer.Unreal.Classes
         }
 
 
-        public void Deserialize()
+        public void Deserialize(int clippingSize = 32)
         {
             
             ReadHeader();
-            script = new byte[memsize - 32];
-            for (int i = 32; i < memsize; i++)
-                script[i - 32] = memory[i];
+            script = new byte[memsize - clippingSize];
+            for (int i = clippingSize; i < memsize; i++)
+                script[i - clippingSize] = memory[i];
         }
 
         public void ReadHeader()
@@ -92,18 +97,18 @@ namespace ME3Explorer.Unreal.Classes
             pos += 4;
         }
 
-        public string ToRawText(bool debug = true)
+        public void ParseFunction()
         {
-            string s = "";
-            s += "Childindex : " + child + "\n";
-            s += "Unknown1 : " + unk1 + "\n";
-            s += "Unknown2 : " + unk2 + "\n";
-            s += "Script Size : " + size + "\n";
-            s += GetFlags() + "\n";
-            s += "Native Index: " + nativeindex + "\n";
-            s += "Script:\n";
-            s += Bytecode.ToRawText(script, pcc,debug);
-            return s;
+            HeaderText = "";
+            HeaderText += "Childindex : " + child + "\n";
+            HeaderText += "Unknown1 : " + unk1 + "\n";
+            HeaderText += "Unknown2 : " + unk2 + "\n";
+            HeaderText += "Script Size : " + size + "\n";
+            HeaderText += GetFlags() + "\n";
+            HeaderText += "Native Index: " + nativeindex;
+            var parsedData = Bytecode.ParseBytecode(script, pcc);
+            ScriptBlocks = parsedData.Item1;
+            SingularTokenList = parsedData.Item2;
         }
     }
 }

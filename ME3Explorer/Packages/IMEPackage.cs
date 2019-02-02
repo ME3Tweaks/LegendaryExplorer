@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace ME3Explorer.Packages
 {
@@ -25,10 +26,12 @@ namespace ME3Explorer.Packages
         Byte,
     }
 
+    [DebuggerDisplay("PropertyInfo | {type} , parent: {reference}, transient: {transient}")]
     public class PropertyInfo
     {
-        public Unreal.PropertyType type;
+        public Unreal.PropertyType type { get; set; }
         public string reference;
+        public bool transient;
     }
 
     public class ClassInfo
@@ -50,6 +53,7 @@ namespace ME3Explorer.Packages
         bool IsCompressed { get; }
         bool CanReconstruct { get; }
         bool IsModified { get; }
+        int NameCount { get; }
         int ExportCount { get; }
         int ImportCount { get; }
         int ImportOffset { get; }
@@ -101,12 +105,13 @@ namespace ME3Explorer.Packages
         //saving
         void save();
         void save(string path);
-
+        byte[] getHeader();
         ObservableCollection<GenericWindow> Tools { get; }
         void RegisterTool(GenericWindow tool);
         void Release(System.Windows.Window wpfWindow = null, System.Windows.Forms.Form winForm = null);
         event EventHandler noLongerOpenInTools;
         void RegisterUse();
         event EventHandler noLongerUsed;
+        string GetEntryString(int index);
     }
 }

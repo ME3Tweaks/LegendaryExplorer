@@ -81,23 +81,23 @@ namespace MassEffect.NativesEditor.Views
 
             if (CodexMapControl != null)
             {
-                CodexMapControl.Open(pcc);
+                CodexMapControl.Open(Pcc);
             }
 
             if (QuestMapControl != null)
             {
-                QuestMapControl.Open(pcc);
+                QuestMapControl.Open(Pcc);
             }
 
             if (StateEventMapControl != null)
             {
-                StateEventMapControl.Open(pcc);
+                StateEventMapControl.Open(Pcc);
             }
         }
 
         public void SaveFile()
         {
-            if (pcc == null)
+            if (Pcc == null)
             {
                 return;
             }
@@ -107,7 +107,7 @@ namespace MassEffect.NativesEditor.Views
                 IExportEntry export;
                 int dataOffset;
 
-                if (CodexMapView.TryFindCodexMap(pcc, out export, out dataOffset))
+                if (CodexMapView.TryFindCodexMap(Pcc, out export, out dataOffset))
                 {
                     using (var stream = new MemoryStream())
                     {
@@ -126,7 +126,7 @@ namespace MassEffect.NativesEditor.Views
                 IExportEntry export;
                 int dataOffset;
 
-                if (QuestMapControl.TryFindQuestMap(pcc, out export, out dataOffset))
+                if (QuestMapControl.TryFindQuestMap(Pcc, out export, out dataOffset))
                 {
                     using (var stream = new MemoryStream())
                     {
@@ -145,7 +145,7 @@ namespace MassEffect.NativesEditor.Views
                 IExportEntry export;
                 int dataOffset;
 
-                if (StateEventMapControl.TryFindStateEventMap(pcc, out export, out dataOffset))
+                if (StateEventMapControl.TryFindStateEventMap(Pcc, out export, out dataOffset))
                 {
                     using (var stream = new MemoryStream())
                     {
@@ -159,7 +159,7 @@ namespace MassEffect.NativesEditor.Views
                 }
             }
 
-            pcc.save(FileName);
+            Pcc.save(FileName);
         }
 
         public void SaveFileAs()
@@ -188,7 +188,7 @@ namespace MassEffect.NativesEditor.Views
 
         private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute =  pcc != null && !FileName.IsNullOrWhiteSpace();
+            e.CanExecute =  Pcc != null && !FileName.IsNullOrWhiteSpace();
         }
 
         private void Save_Executed(object sender, ExecutedRoutedEventArgs e)

@@ -832,7 +832,6 @@ namespace ME3Explorer.DialogEditor
         private void loadDifferentTLKToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TlkManager tm = new TlkManager();
-            tm.InitTlkManager();
             tm.Show();
         }
 

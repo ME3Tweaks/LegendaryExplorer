@@ -21,10 +21,8 @@ namespace ME3Explorer.CurveEd
     /// <summary>
     /// Interaction logic for CurveEditor.xaml
     /// </summary>
-    public partial class CurveEditor : ExportLoaderControl
+    public sealed partial class CurveEditor : ExportLoaderControl
     {
-        new MEGame[] SupportedGames = new MEGame[] { MEGame.ME3 };
-
         public List<InterpCurve> InterpCurveTracks;
 
         public CurveEditor()
@@ -32,9 +30,9 @@ namespace ME3Explorer.CurveEd
             InitializeComponent();
         }
 
-        public override void LoadExport(IExportEntry exp)
+        public override void LoadExport(IExportEntry exportEntry)
         {
-            CurrentLoadedExport = exp;
+            CurrentLoadedExport = exportEntry;
             Load();
         }
 
@@ -42,13 +40,12 @@ namespace ME3Explorer.CurveEd
         {
             InitializeComponent();
             LoadExport(exp);
-            //Title = "Curve Editor | " + System.IO.Path.GetFileName(expEntry.FileRef.FileName) + " | " + exp.Index + ": " + exp.ClassName;
         }
 
         private void Load()
         {
             InterpCurveTracks = new List<InterpCurve>();
-            
+
             var props = CurrentLoadedExport.GetProperties();
             foreach (var prop in props)
             {
@@ -60,7 +57,7 @@ namespace ME3Explorer.CurveEd
                     }
                 }
             }
-            
+
             foreach (var interpCurve in InterpCurveTracks)
             {
                 foreach (var curve in interpCurve.Curves)
@@ -70,30 +67,18 @@ namespace ME3Explorer.CurveEd
             }
 
             TrackList.ItemsSource = InterpCurveTracks;
-            if (InterpCurveTracks.Count() > 0)
-            {
-
-                //TreeView in WPF can be really ugly sometimes
-                //Select the first track and display it so the default view isn't empty
-                //does not work yet - probably should ask SirC how this tool works
-                var tvi = TrackList.ItemContainerGenerator.ContainerFromItem(InterpCurveTracks[0])
-                          as TreeViewItem;
-
-                if (tvi != null)
-                {
-                    tvi.IsSelected = true;
-                }
-            }
             graph.Paint();
         }
 
         private void TrackList_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (e.NewValue is Curve)
+            CurveGraph.TrackLoading = true;
+            if (e.NewValue is Curve curve)
             {
-                graph.SelectedCurve = e.NewValue as Curve;
+                graph.SelectedCurve = curve;
             }
             graph.Paint(true);
+            CurveGraph.TrackLoading = false;
         }
 
         private void graph_SelectedPointChanged(object sender, RoutedPropertyChangedEventArgs<CurvePoint> e)
@@ -122,15 +107,13 @@ namespace ME3Explorer.CurveEd
                 case CurveMode.CIM_CurveAutoClamped:
                     btnClamped.IsChecked = true;
                     break;
-                default:
-                    break;
             }
         }
 
         private void btnInterpMode_Click(object sender, RoutedEventArgs e)
         {
             CurvePoint selectedPoint = graph.SelectedPoint;
-            switch ((sender as RadioButton).Name)
+            switch ((sender as RadioButton)?.Name)
             {
                 case "btnLinear":
                     selectedPoint.InterpMode = CurveMode.CIM_Linear;
@@ -150,8 +133,6 @@ namespace ME3Explorer.CurveEd
                 case "btnClamped":
                     selectedPoint.InterpMode = CurveMode.CIM_CurveAutoClamped;
                     break;
-                default:
-                    break;
             }
             graph.Paint();
             graph.SelectedPoint = selectedPoint;
@@ -164,12 +145,15 @@ namespace ME3Explorer.CurveEd
 
         private void Commit()
         {
-            var props = CurrentLoadedExport.GetProperties();
-            foreach (InterpCurve item in InterpCurveTracks)
+            if (!CurveGraph.TrackLoading)
             {
-                props.AddOrReplaceProp(item.WriteProperties());
+                var props = CurrentLoadedExport.GetProperties();
+                foreach (InterpCurve item in InterpCurveTracks)
+                {
+                    props.AddOrReplaceProp(item.WriteProperties());
+                }
+                CurrentLoadedExport.WriteProperties(props);
             }
-            CurrentLoadedExport.WriteProperties(props);
         }
 
         private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -198,12 +182,10 @@ namespace ME3Explorer.CurveEd
                 var props = exportEntry.GetProperties();
                 foreach (var prop in props)
                 {
-                    if (prop is StructProperty structProp)
+                    if (prop is StructProperty structProp 
+                        && Enum.TryParse(structProp.StructType, out CurveType _))
                     {
-                        if (Enum.TryParse(structProp.StructType, out CurveType _))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }

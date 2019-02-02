@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using SharpDX;
 
 namespace ME3Explorer.UnrealHelper
 {
@@ -392,6 +393,28 @@ namespace ME3Explorer.UnrealHelper
             if (buff == null || buff.Length < 4)
                 return -1;
             return BitConverter.ToInt32(buff, buff.Length - 4);
+        }
+
+        public Vector3 PropToVector3(byte[] buff)
+        {
+            Vector3 v = new Vector3(0, 0, 0);
+            if (buff == null || buff.Length < 12)
+                return v;
+            v.X = BitConverter.ToSingle(buff, buff.Length - 12);
+            v.Y = BitConverter.ToSingle(buff, buff.Length - 8);
+            v.Z = BitConverter.ToSingle(buff, buff.Length - 4);
+            return v;
+        }
+
+        public Vector3 PropToIntVector3(byte[] buff)
+        {
+            Vector3 v = new Vector3(0, 0, 0);
+            if (buff == null || buff.Length < 12)
+                return v;
+            v.X = BitConverter.ToInt32(buff, buff.Length - 12);
+            v.Y = BitConverter.ToInt32(buff, buff.Length - 8);
+            v.Z = BitConverter.ToInt32(buff, buff.Length - 4);
+            return v;
         }
     }
 }

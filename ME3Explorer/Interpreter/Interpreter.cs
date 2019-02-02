@@ -332,10 +332,6 @@ namespace ME3Explorer
                 ImportEntry donorTopLevelImport = null;
                 foreach (ImportEntry imp in pcc.Imports) //importing side info we will move to our dest pcc
                 {
-                    if (imp.GetFullPath.StartsWith("BioVFX"))
-                    {
-                        Console.WriteLine(imp.GetFullPath);
-                    }
                     if (imp.GetFullPath == fullobjectname)
                     {
                         donorTopLevelImport = imp;
@@ -605,7 +601,7 @@ namespace ME3Explorer
                         if (arrayType == ArrayType.Struct)
                         {
                             PropertyInfo info = GetPropertyInfo(header.name);
-                            
+
                             t.Text = t.Text.Insert(t.Text.IndexOf("Size: ") - 2, $"({info.reference})");
                             for (int i = 0; i < arrayLength; i++)
                             {
@@ -618,7 +614,7 @@ namespace ME3Explorer
                                 n.Name = (-pos).ToString();
                                 t.Nodes.Add(n);
                                 n = t.LastNode;
-                                if (info != null && (ME3UnrealObjectInfo.isImmutable(info.reference) || arrayListPropHeaders.Count == 0))
+                                if (info != null && (UnrealObjectInfo.isImmutable(info.reference,pcc.Game) || arrayListPropHeaders.Count == 0))
                                 {
                                     readerpos = pos;
                                     GenerateSpecialStruct(n, info.reference, header.size / arrayLength);
@@ -1725,7 +1721,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ExceptionHandlerDialogWPF.FlattenException(ex));
             }
         }
 
@@ -1842,7 +1838,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ExceptionHandlerDialogWPF.FlattenException(ex));
             }
         }
 
@@ -2007,7 +2003,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ExceptionHandlerDialogWPF.FlattenException(ex));
             }
         }
 
@@ -2178,7 +2174,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ExceptionHandlerDialogWPF.FlattenException(ex));
             }
         }
 
@@ -2267,7 +2263,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ExceptionHandlerDialogWPF.FlattenException(ex));
                 return new byte[0];
             }
         }
@@ -2438,7 +2434,7 @@ namespace ME3Explorer
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ExceptionHandlerDialogWPF.FlattenException(ex));
             }
         }
 
@@ -2665,48 +2661,50 @@ namespace ME3Explorer
                 return;
             }
             List<string> props = PropertyReader.getPropList(export).Select(x => pcc.getNameEntry(x.Name)).ToList();
-            string prop = AddPropertyDialogWPF.GetProperty(export, props, pcc.Game);
-
-            string origname = export.ClassName;
-            string temp = export.ClassName;
-            List<string> classes = new List<string>();
-            Dictionary<string, ClassInfo> classList;
-            switch (pcc.Game)
+            var prop = AddPropertyDialogWPF.GetProperty(export, props, pcc.Game);
+            if (prop != null)
             {
-                case MEGame.ME1:
-                    classList = ME1Explorer.Unreal.ME1UnrealObjectInfo.Classes;
-                    break;
-                case MEGame.ME2:
-                    classList = ME2Explorer.Unreal.ME2UnrealObjectInfo.Classes;
-                    break;
-                case MEGame.ME3:
-                default:
-                    classList = ME3UnrealObjectInfo.Classes;
-                    break;
-            }
-            ClassInfo currentInfo = null;
-            if (!classList.ContainsKey(temp) && export.idxClass > 0)
-            {
-                IExportEntry exportTemp = export.FileRef.Exports[export.idxClass - 1];
-                //current object is not in classes db, temporarily add it to the list
+                string origname = export.ClassName;
+                string temp = export.ClassName;
+                List<string> classes = new List<string>();
+                Dictionary<string, ClassInfo> classList;
                 switch (pcc.Game)
                 {
                     case MEGame.ME1:
-                        currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(exportTemp);
+                        classList = ME1Explorer.Unreal.ME1UnrealObjectInfo.Classes;
                         break;
                     case MEGame.ME2:
-                        currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(exportTemp);
+                        classList = ME2Explorer.Unreal.ME2UnrealObjectInfo.Classes;
                         break;
                     case MEGame.ME3:
                     default:
-                        currentInfo = ME3UnrealObjectInfo.generateClassInfo(exportTemp);
+                        classList = ME3UnrealObjectInfo.Classes;
                         break;
                 }
-                currentInfo.baseClass = exportTemp.ClassParent;
-            }
+                ClassInfo currentInfo = null;
+                if (!classList.ContainsKey(temp) && export.idxClass > 0)
+                {
+                    IExportEntry exportTemp = export.FileRef.Exports[export.idxClass - 1];
+                    //current object is not in classes db, temporarily add it to the list
+                    switch (pcc.Game)
+                    {
+                        case MEGame.ME1:
+                            currentInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo(exportTemp);
+                            break;
+                        case MEGame.ME2:
+                            currentInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo(exportTemp);
+                            break;
+                        case MEGame.ME3:
+                        default:
+                            currentInfo = ME3UnrealObjectInfo.generateClassInfo(exportTemp);
+                            break;
+                    }
+                    currentInfo.baseClass = exportTemp.ClassParent;
+                }
 
-            AddProperty(prop, currentInfo);
-            RefreshMem();
+                AddProperty(prop.Item1, currentInfo);
+                RefreshMem();
+            }
         }
 
         public void AddProperty(string prop, ClassInfo nonVanillaClassInfo = null)

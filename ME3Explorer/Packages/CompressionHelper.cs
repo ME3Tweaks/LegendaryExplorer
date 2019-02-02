@@ -1,13 +1,14 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ManagedLZO;
 using System.IO;
 using Gibbed.IO;
-using AmaroK86.MassEffect3.ZlibBlock;
+//using AmaroK86.MassEffect3.ZlibBlock;
 using System.Threading.Tasks;
-using System.Windows;
+using LZO2Helper;
+using static ME3Explorer.Packages.MEPackage;
 
 namespace ME3Explorer.Packages
 {
@@ -60,13 +61,15 @@ namespace ME3Explorer.Packages
             int tempNameSize = raw.ReadValueS32();
             raw.Seek(64 + tempNameSize, SeekOrigin.Begin);
             int tempGenerations = raw.ReadValueS32();
-            raw.Seek(36 + tempGenerations * 12, SeekOrigin.Current);
+            raw.Seek(32 + tempGenerations * 12, SeekOrigin.Current);
 
             //if ME1
             if (versionLo == 491 && versionHi == 1008)
             {
                 raw.Seek(4, SeekOrigin.Current);
             }
+            CompressionType compressionType = (CompressionType)raw.ReadValueU32();
+
 
             int pos = 4;
             int NumChunks = raw.ReadValueS32();
@@ -130,19 +133,20 @@ namespace ME3Explorer.Packages
                         datain[j] = c.Compressed[pos + j];
                     pos += b.compressedsize;
 
-                    try
+                    if (compressionType == CompressionType.LZO)
                     {
-                        LZO1X.Decompress(datain, dataout);
+                        if (LZO2.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                            throw new Exception("LZO decompression failed!");
                     }
-                    catch (DllNotFoundException ex)
+                    else
+                    if (compressionType == CompressionType.Zlib)
                     {
-                        var mbResult = MessageBox.Show("Decompression failed! This may be the fault of a missing 2010 VC++ redistributable. Would you like to install this now?\n(make sure to restart ME3Explorer after installation.)",
-                            "", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
-                        if (mbResult == MessageBoxResult.Yes)
-                        {
-                            System.Diagnostics.Process.Start("https://www.microsoft.com/en-us/download/details.aspx?id=5555");
-                        }
-                        throw new Exception("LZO decompression failed!", ex);
+                        if (new ZlibHelper.Zlib().Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                            throw new Exception("Zlib decompression failed!");
+                    }
+                    else
+                    {
+                        throw new Exception("Unknown compression type for this package.");
                     }
                     for (int j = 0; j < b.uncompressedsize; j++)
                         c.Uncompressed[outpos + j] = dataout[j];
@@ -160,10 +164,10 @@ namespace ME3Explorer.Packages
                 result.Seek(c.uncompressedOffset, SeekOrigin.Begin);
                 result.WriteBytes(c.Uncompressed);
             }
-            
+
             return result;
         }
-        
+
         #region Decompression
         /// <summary>
         ///     decompress an entire ME3 pcc file.
@@ -187,7 +191,7 @@ namespace ME3Explorer.Packages
         {
             using (FileStream input = File.OpenRead(pccFileName))
             {
-                input.Seek(4, SeekOrigin.Begin);
+                input.Seek(4, SeekOrigin.Begin); //skip package tag
                 ushort versionLo = input.ReadValueU16();
                 ushort versionHi = input.ReadValueU16();
 
@@ -313,7 +317,7 @@ namespace ME3Explorer.Packages
                 input.Seek(compressedOffset, SeekOrigin.Begin);
                 input.Read(buff, 0, buff.Length);
 
-                tasks[i] = ZBlock.DecompressAsync(buff);
+                tasks[i] = AmaroK86.MassEffect3.ZlibBlock.ZBlock.DecompressAsync(buff);
             }
             Task.WaitAll(tasks);
             for (int i = 0; i < blockCount; i++)
@@ -498,7 +502,7 @@ namespace ME3Explorer.Packages
 
                 byte[] inputBlock = new byte[currentUncBlockSize];
                 uncompressedPcc.Read(inputBlock, 0, currentUncBlockSize);
-                byte[] compressedBlock = ZBlock.Compress(inputBlock, 0, inputBlock.Length);
+                byte[] compressedBlock = AmaroK86.MassEffect3.ZlibBlock.ZBlock.Compress(inputBlock);
 
                 outputStream.WriteValueS32(compressedBlock.Length);
                 outOffsetBlockInfo = outputStream.Position;
@@ -534,7 +538,7 @@ namespace ME3Explorer.Packages
                 Compress(uncompressedPcc).CopyTo(outputStream);
             }
         }
-        
+
         /// <summary>
         ///     compress an entire ME3 pcc into a file.
         /// </summary>

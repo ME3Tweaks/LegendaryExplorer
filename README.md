@@ -15,7 +15,7 @@ Some highlights of features that were developed on this fork:
  - WPF rewrites of multiple tools to use a more modern design language - better DPI scaling, more features. These include PackageEditorWPF (and its contents), and SoundplorerWPF, with more on the way. All of these tools are being completely rewritten.
  - Many more not listed here
   
-You can get thse releases in Mass Effect 3 Mod Manager from the tools menu, or you can download from the releases tab above.
+You can get these releases in Mass Effect 3 Mod Manager from the tools menu, or you can download from the releases tab above.
 
 ## Contributing
 [You can check out my contributing guidelines and tips document](https://github.com/Mgamerz/ME3Explorer/blob/Beta/CONTRIBUTING.md), for both developers and end-users who need features.

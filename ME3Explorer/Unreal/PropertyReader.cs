@@ -1052,7 +1052,7 @@ namespace ME3Explorer.Unreal
                     m.Write(BitConverter.GetBytes(size), 0, 4);
                     m.Write(new byte[4], 0, 4);
                     m.Write(BitConverter.GetBytes(count), 0, 4);
-                    if (AllProps.Count != 0 && (info == null || !ME3UnrealObjectInfo.isImmutable(info.reference)))
+                    if (AllProps.Count != 0 && (info == null || !UnrealObjectInfo.isImmutable(info.reference,pcc.Game)))
                     {
                         foreach (Property pp in AllProps)
                             ImportProperty(pcc, importpcc, pp, className, m, inStruct);
@@ -1161,7 +1161,7 @@ namespace ME3Explorer.Unreal
                 case "ArrayProperty":
                     size = BitConverter.ToInt32(p.raw, 16);
                     count = BitConverter.ToInt32(p.raw, 24);
-                    ArrayType arrayType = ME3UnrealObjectInfo.getArrayType(className, importpcc.getNameEntry(p.Name), inStruct);
+                    ArrayType arrayType = ME3UnrealObjectInfo.getArrayType(className, importpcc.getNameEntry(p.Name));
                     pos = 28;
                     List<Property> AllProps = new List<Property>();
 
@@ -1364,7 +1364,10 @@ namespace ME3Explorer.Unreal
             int strLen = value.Length == 0 ? 0 : value.Length + 1;
             if (pcc.Game == MEGame.ME3)
             {
-                stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, (strLen * 2) + 4);
+                if (propName != null)
+                {
+                    stream.WritePropHeader(pcc, propName, PropertyType.StrProperty, (strLen * 2) + 4);
+                }
                 stream.WriteStringUnicode(value);
             }
             else

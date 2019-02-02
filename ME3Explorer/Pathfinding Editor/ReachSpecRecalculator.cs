@@ -51,7 +51,7 @@ namespace ME3Explorer.Pathfinding_Editor
             if (badBases != null && badBases.Count > 0)
             {
                 //bad bases were found.
-                ListDialog lw = new ListDialog(badBases, "Bad reachspecs found", badBases.Count + " bad ReachSpecs were found.");
+                ListDialog lw = new ListDialog(badBases, "Bad reachspecs found", badBases.Count + " bad ReachSpecs were found.", null);
                 lw.ShowDialog();
             }
             //throw new NotImplementedException();

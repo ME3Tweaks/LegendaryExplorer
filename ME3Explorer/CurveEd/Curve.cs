@@ -31,32 +31,32 @@ namespace ME3Explorer.CurveEd
 
         public float InVal
         {
-            get { return inVal; }
-            set { SetProperty(ref inVal, value); }
+            get => inVal;
+            set => SetProperty(ref inVal, value);
         }
 
         public CurveMode InterpMode
         {
-            get { return interpMode; }
-            set { SetProperty(ref interpMode, value); }
+            get => interpMode;
+            set => SetProperty(ref interpMode, value);
         }
 
         public float OutVal
         {
-            get { return outVal; }
-            set { SetProperty(ref outVal, value); }
+            get => outVal;
+            set => SetProperty(ref outVal, value);
         }
 
         public float ArriveTangent
         {
-            get { return arriveTangent; }
-            set { SetProperty(ref arriveTangent, value); }
+            get => arriveTangent;
+            set => SetProperty(ref arriveTangent, value);
         }
 
         public float LeaveTangent
         {
-            get { return leaveTangent; }
-            set { SetProperty(ref leaveTangent, value); }
+            get => leaveTangent;
+            set => SetProperty(ref leaveTangent, value);
         }
 
         public CurvePoint(float inVal, float outVal, float arriveTangent, float leaveTangent, CurveMode interpMode)
@@ -94,7 +94,7 @@ namespace ME3Explorer.CurveEd
 
         public event EventHandler SharedValueChanged;
 
-        public event EventHandler<Tuple<bool, int>> ListModified;
+        public event EventHandler<(bool added, int index)> ListModified;
 
         public Action SaveChanges;
 
@@ -114,14 +114,16 @@ namespace ME3Explorer.CurveEd
             {
                 SharedValueChanged?.Invoke(this, e);
             }
+
             SaveChanges?.Invoke();
+
         }
 
         public void RemovePoint(LinkedListNode<CurvePoint> p)
         {
             int index = CurvePoints.IndexOf(p);
             CurvePoints.Remove(p);
-            ListModified?.Invoke(this, new Tuple<bool, int>(false, index));
+            ListModified?.Invoke(this, (added: false, index));
             SaveChanges?.Invoke();
         }
 
@@ -141,7 +143,7 @@ namespace ME3Explorer.CurveEd
             {
                 addedNode = CurvePoints.AddAfter(relTo, newPoint);
             }
-            ListModified?.Invoke(this, new Tuple<bool, int>(true, CurvePoints.IndexOf(addedNode)));
+            ListModified?.Invoke(this, (added: true, index: CurvePoints.IndexOf(addedNode)));
             SaveChanges?.Invoke();
         }
 

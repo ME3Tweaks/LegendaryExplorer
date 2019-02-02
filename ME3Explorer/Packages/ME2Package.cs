@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using AmaroK86.MassEffect3.ZlibBlock;
 using Gibbed.IO;
 using KFreonLib.Debugging;
 
@@ -13,6 +11,8 @@ namespace ME3Explorer.Packages
 {
     public sealed class ME2Package : MEPackage, IMEPackage
     {
+        const uint packageTag = 0x9E2A83C1;
+
         public MEGame Game { get { return MEGame.ME2; } }
 
         public override int NameCount { get { return BitConverter.ToInt32(header, nameSize + 20); } protected set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 20, sizeof(int)); } }
@@ -24,7 +24,7 @@ namespace ME3Explorer.Packages
         private int FreeZoneStart { get { return BitConverter.ToInt32(header, nameSize + 44); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 44, sizeof(int)); } }
         private int Generations { get { return BitConverter.ToInt32(header, nameSize + 64); } }
         private int Compression { get { return BitConverter.ToInt32(header, header.Length - 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, header.Length - 4, sizeof(int)); } }
-        
+
         static bool isInitialized;
         public static Func<string, ME2Package> Initialize()
         {
@@ -41,7 +41,8 @@ namespace ME3Explorer.Packages
 
         private ME2Package(string path)
         {
-            
+            //Debug.WriteLine(" >> Opening me2 package " + path);
+
             DebugOutput.PrintLn("Load file : " + path);
             FileName = Path.GetFullPath(path);
             MemoryStream tempStream = new MemoryStream();
@@ -61,13 +62,14 @@ namespace ME3Explorer.Packages
             int tempNameSize = tempStream.ReadValueS32();
             tempStream.Seek(64 + tempNameSize, SeekOrigin.Begin);
             int tempGenerations = tempStream.ReadValueS32();
-            tempStream.Seek(36 + tempGenerations * 12, SeekOrigin.Current);
+            tempStream.Seek(32 + tempGenerations * 12, SeekOrigin.Current);
+            tempStream.ReadValueU32(); //Compression Type. We read this from header[] in MEPackage.cs intead when accessing value
             int tempPos = (int)tempStream.Position;
             tempStream.Seek(0, SeekOrigin.Begin);
             header = tempStream.ReadBytes(tempPos);
             tempStream.Seek(0, SeekOrigin.Begin);
 
-            if (magic != ZBlock.magic && magic.Swap() != ZBlock.magic)
+            if (magic != packageTag)
             {
                 DebugOutput.PrintLn("Magic number incorrect: " + magic);
                 throw new FormatException("This is not a pcc file. The magic number is incorrect.");
@@ -78,10 +80,14 @@ namespace ME3Explorer.Packages
             {
                 DebugOutput.PrintLn("File is compressed");
                 {
+                    //Aquadran: Code to decompress package on disk.
+                    //Do not set the decompressed flag as some tools use this flag
+                    //to determine if the file on disk is still compressed or not
+                    //e.g. soundplorer's offset based audio access
                     listsStream = CompressionHelper.DecompressME1orME2(tempStream);
 
                     //Correct the header
-                    IsCompressed = false;
+                    //IsCompressed = false; // DO NOT MARK FILE AS DECOMPRESSED AS THIS WILL CORRUPT FILES ON SAVE
                     listsStream.Seek(0, SeekOrigin.Begin);
                     listsStream.WriteBytes(header);
 
@@ -167,7 +173,8 @@ namespace ME3Explorer.Packages
                 this.IsCompressed = false;
                 MemoryStream m = new MemoryStream();
                 m.WriteBytes(header);
-
+                //m.Seek(-4, SeekOrigin.Current);
+                //m.WriteByte((byte)CompressionType.None); //Write header compression type to None
                 //Set numblocks to zero
                 m.WriteValueS32(0);
                 //Write the magic number
@@ -196,7 +203,7 @@ namespace ME3Explorer.Packages
                 for (int i = 0; i < exports.Count; i++)
                 {
                     IExportEntry e = exports[i];
-                    e.headerOffset = (uint)m.Position;
+                    e.HeaderOffset = (uint)m.Position;
                     m.WriteBytes(e.Header);
                 }
                 //freezone
@@ -212,7 +219,7 @@ namespace ME3Explorer.Packages
                     e.DataSize = e.Data.Length;
                     m.WriteBytes(e.Data);
                     long pos = m.Position;
-                    m.Seek(e.headerOffset + 32, SeekOrigin.Begin);
+                    m.Seek(e.HeaderOffset + 32, SeekOrigin.Begin);
                     m.WriteValueS32(e.DataSize);
                     m.WriteValueS32(e.DataOffset);
                     m.Seek(pos, SeekOrigin.Begin);
@@ -249,7 +256,15 @@ namespace ME3Explorer.Packages
             {
                 replaceExports = exports.Where(export => export.DataChanged && export.DataOffset < NameOffset && export.DataSize <= export.OriginalDataSize);
                 appendExports = exports.Where(export => export.DataOffset > NameOffset || (export.DataChanged && export.DataSize > export.OriginalDataSize));
-                max = exports.Where(exp => exp.DataOffset < NameOffset).Max(e => e.DataOffset);
+                var expsBeforeNameOffset = exports.Where(exp => exp.DataOffset < NameOffset).ToList();
+                if (expsBeforeNameOffset.Count > 0)
+                {
+                    max = expsBeforeNameOffset.Max(e => e.DataOffset);
+                }
+                else
+                {
+                    max = exports.Max(maxExport => maxExport.DataOffset);
+                }
             }
             else
             {
@@ -266,6 +281,7 @@ namespace ME3Explorer.Packages
             byte[] oldPCC = new byte[lastDataOffset];//Check whether compressed
             if (IsCompressed)
             {
+                //Aquadran: Code to decompress package on disk.
                 oldPCC = CompressionHelper.Decompress(FileName).Take(lastDataOffset).ToArray();
                 IsCompressed = false;
             }
@@ -292,7 +308,7 @@ namespace ME3Explorer.Packages
                     newPCCStream.WriteBytes(export.Data);
                 }
 
-                
+
                 newPCCStream.Seek(lastDataOffset, SeekOrigin.Begin);
                 //Set the new nameoffset and namecounts
                 NameOffset = (int)newPCCStream.Position;
@@ -321,7 +337,7 @@ namespace ME3Explorer.Packages
                     export.DataSize = export.Data.Length;
                     newPCCStream.Write(export.Data, 0, export.Data.Length);
                 }
-                
+
                 //Write the export list
                 ExportOffset = (int)newPCCStream.Position;
                 ExportCount = exports.Count;
@@ -335,6 +351,8 @@ namespace ME3Explorer.Packages
                 //write the updated header
                 newPCCStream.Seek(0, SeekOrigin.Begin);
                 newPCCStream.WriteBytes(header);
+                newPCCStream.Seek(-4, SeekOrigin.Current);
+                newPCCStream.WriteBytes(BitConverter.GetBytes((int)CompressionType.None));
             }
             AfterSave();
         }

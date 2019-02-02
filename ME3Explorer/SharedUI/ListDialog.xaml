@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ME3Explorer.SharedUI"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
         Title="List Dialog" Width="640" Height="480">
     <DockPanel Margin="5" LastChildFill="True">
         <DockPanel.Resources>

@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -25,8 +26,8 @@ namespace ME3Explorer
     {
         public static IEnumerable<System.Windows.Forms.TreeNode> FlattenTreeView(this System.Windows.Forms.TreeView tv)
         {
-            return tv.Nodes.Cast<System.Windows.Forms.TreeNode>().SelectMany(x => FlattenTree(x));
-            
+            return tv.Nodes.Cast<System.Windows.Forms.TreeNode>().SelectMany(FlattenTree);
+
             List<System.Windows.Forms.TreeNode> FlattenTree(System.Windows.Forms.TreeNode rootNode)
             {
                 var nodes = new List<System.Windows.Forms.TreeNode> { rootNode };
@@ -43,7 +44,7 @@ namespace ME3Explorer
     {
         public static IEnumerable<System.Windows.Controls.TreeViewItem> FlattenTreeView(this System.Windows.Controls.TreeView tv)
         {
-            return tv.Items.Cast<System.Windows.Controls.TreeViewItem>().SelectMany(x => FlattenTree(x));
+            return tv.Items.Cast<System.Windows.Controls.TreeViewItem>().SelectMany(FlattenTree);
 
             List<System.Windows.Controls.TreeViewItem> FlattenTree(System.Windows.Controls.TreeViewItem rootNode)
             {
@@ -61,11 +62,28 @@ namespace ME3Explorer
         /// </summary>
         public static void SelectItem(this System.Windows.Controls.TreeViewItem treeView, object item)
         {
-            var tvItem = treeView.ItemContainerGenerator.ContainerFromItem(item) as System.Windows.Controls.TreeViewItem;
-            if (tvItem != null)
+            if (treeView.ItemContainerGenerator.ContainerFromItem(item) is System.Windows.Controls.TreeViewItem tvItem)
             {
                 tvItem.IsSelected = true;
             }
+        }
+    }
+
+    public static class TreeViewExtensions
+    {
+        public static TreeViewItem ContainerFromItemRecursive(this ItemContainerGenerator root, object item)
+        {
+            var treeViewItem = root.ContainerFromItem(item) as TreeViewItem;
+            if (treeViewItem != null)
+                return treeViewItem;
+            foreach (var subItem in root.Items)
+            {
+                treeViewItem = root.ContainerFromItem(subItem) as TreeViewItem;
+                var search = treeViewItem?.ItemContainerGenerator.ContainerFromItemRecursive(item);
+                if (search != null)
+                    return search;
+            }
+            return null;
         }
     }
 
@@ -81,7 +99,7 @@ namespace ME3Explorer
             }
             return idx;
         }
-        
+
         public static IEnumerable<T> Concat<T>(this IEnumerable<T> first, T second)
         {
             foreach (T element in first)
@@ -257,9 +275,7 @@ namespace ME3Explorer
             {
                 v1[i] = i;
             }
-            int above;
-            int left;
-            int cost;
+
             for (int i = 1; i <= n; i++)
             {
                 v0 = v1;
@@ -267,8 +283,9 @@ namespace ME3Explorer
                 v1[0] = i;
                 for (int j = 1; j <= m; j++)
                 {
-                    above = v1[j - 1] + 1;
-                    left = v0[j] + 1;
+                    int above = v1[j - 1] + 1;
+                    int left = v0[j] + 1;
+                    int cost;
                     if (j > m || j > n)
                     {
                         cost = 1;
@@ -288,10 +305,9 @@ namespace ME3Explorer
 
         public static bool FuzzyMatch(this IEnumerable<string> words, string word, double threshold = 0.75)
         {
-            int dist;
             foreach (string s in words)
-               {
-                dist = s.LevenshteinDistance(word);
+            {
+                int dist = s.LevenshteinDistance(word);
                 if (1 - (double)dist / Math.Max(s.Length, word.Length) > threshold)
                 {
                     return true;
@@ -360,7 +376,7 @@ namespace ME3Explorer
     public static class ExternalExtensions
     {
         [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
+        static extern IntPtr GetForegroundWindow();
         [DllImport("user32.dll")]
         static extern bool SetForegroundWindow(IntPtr hWnd);
         [DllImport("user32.dll")]
@@ -425,7 +441,7 @@ namespace ME3Explorer
 
         public static BitmapSource DrawToBitmapSource(this System.Windows.Forms.Control control)
         {
-            int WM_PRINT = 0x317, PRF_CLIENT = 4,
+            const int WM_PRINT = 0x317, PRF_CLIENT = 4,
             PRF_CHILDREN = 0x10, PRF_NON_CLIENT = 2,
             COMBINED_PRINTFLAGS = PRF_CLIENT | PRF_CHILDREN | PRF_NON_CLIENT;
 
@@ -488,7 +504,8 @@ namespace ME3Explorer
             {
                 stream.WriteValueS32(-(value.Length + 1));
                 stream.WriteStringZ(value, Encoding.Unicode);
-            } else
+            }
+            else
             {
                 stream.WriteValueS32(0);
             }
@@ -507,7 +524,7 @@ namespace ME3Explorer
         /// <param name="bytes">The number of bytes to copy</param>
         public static void CopyToEx(this Stream input, Stream output, int bytes)
         {
-            byte[] buffer = new byte[32768];
+            var buffer = new byte[32768];
             int read;
             while (bytes > 0 &&
                    (read = input.Read(buffer, 0, Math.Min(buffer.Length, bytes))) > 0)
@@ -534,11 +551,103 @@ namespace ME3Explorer
         /// </summary>
         public static int? FromUnrealIdx(this int i)
         {
-            if(i == 0)
+            if (i == 0)
             {
                 return null;
             }
             return i > 0 ? i - 1 : i;
+        }
+
+        /// <summary>
+        /// Checks if this object is of a specific generic type (e.g. List<IntProperty>)
+        /// </summary>
+        /// <param name="typeToCheck">typeof() of the item you are checking</param>
+        /// <param name="genericType">typeof() of the value you are checking against</param>
+        /// <returns>True if type matches, false otherwise</returns>
+        public static bool IsOfGenericType(this Type typeToCheck, Type genericType)
+        {
+            Type concreteType;
+            return typeToCheck.IsOfGenericType(genericType, out concreteType);
+        }
+
+        /// <summary>
+        /// Checks if this object is of a specific generic type (e.g. List<IntProperty>)
+        /// </summary>
+        /// <param name="typeToCheck">typeof() of the item you are checking</param>
+        /// <param name="genericType">typeof() of the value you are checking against</param>
+        /// <param name="concreteGenericType">Concrete type output if this result is true</param>
+        /// <returns>True if type matches, false otherwise</returns>
+        public static bool IsOfGenericType(this Type typeToCheck, Type genericType, out Type concreteGenericType)
+        {
+            while (true)
+            {
+                concreteGenericType = null;
+
+                if (genericType == null)
+                    throw new ArgumentNullException(nameof(genericType));
+
+                if (!genericType.IsGenericTypeDefinition)
+                    throw new ArgumentException("The definition needs to be a GenericTypeDefinition", nameof(genericType));
+
+                if (typeToCheck == null || typeToCheck == typeof(object))
+                    return false;
+
+                if (typeToCheck == genericType)
+                {
+                    concreteGenericType = typeToCheck;
+                    return true;
+                }
+
+                if ((typeToCheck.IsGenericType ? typeToCheck.GetGenericTypeDefinition() : typeToCheck) == genericType)
+                {
+                    concreteGenericType = typeToCheck;
+                    return true;
+                }
+
+                if (genericType.IsInterface)
+                    foreach (var i in typeToCheck.GetInterfaces())
+                        if (i.IsOfGenericType(genericType, out concreteGenericType))
+                            return true;
+
+                typeToCheck = typeToCheck.BaseType;
+            }
+        }
+    }
+
+    public static class EnumExtensions
+    {
+        public static T[] GetValues<T>() where T : Enum
+        {
+            return (T[])Enum.GetValues(typeof(T));
+        }
+    }
+
+    public static class EnumHelper<T> where T : struct
+    {
+        // ReSharper disable StaticFieldInGenericType
+        private static readonly Enum[] Values;
+        // ReSharper restore StaticFieldInGenericType
+        private static readonly T DefaultValue;
+
+        static EnumHelper()
+        {
+            var type = typeof(T);
+            if (type.IsSubclassOf(typeof(Enum)) == false)
+            {
+                throw new ArgumentException();
+            }
+            Values = Enum.GetValues(type).Cast<Enum>().ToArray();
+            DefaultValue = default(T);
+        }
+
+        public static T[] MaskToList(Enum mask, bool ignoreDefault = true)
+        {
+            var q = Values.Where(mask.HasFlag);
+            if (ignoreDefault)
+            {
+                q = q.Where(v => !v.Equals(DefaultValue));
+            }
+            return q.Cast<T>().ToArray();
         }
     }
 }

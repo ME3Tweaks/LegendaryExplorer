@@ -24,6 +24,12 @@
          "cylindercomponentarchetype":"SFXGame.Default__SFXNav_BoostNode.CollisionCylinder",
          "incomingreachspecclass":"Engine.ReachSpec"
       },
+      "SFXNav_JumpDownNode":{
+         "class":"SFXGame.SFXNav_JumpDownNode",
+         "name":"SFXNav_JumpDownNode",
+         "cylindercomponentarchetype":"SFXGame.Default__SFXNav_JumpDownNode.CollisionCylinder",
+         "incomingreachspecclass":"Engine.ReachSpec"
+      },
       "SFXNav_LargeBoostNode":{
          "class":"SFXGame.SFXNav_LargeBoostNode",
          "name":"SFXNav_LargeBoostNode",
@@ -265,7 +271,18 @@
          "class":"Engine.CylinderComponent",
          "packagefile":"Engine"
       },
-
+      "SFXGame.SFXNav_JumpDownNode":{
+         "class":"Class",
+         "packagefile":"Core"
+      },
+      "SFXGame.Default__SFXNav_JumpDownNode":{
+         "class":"SFXGame.SFXNav_JumpDownNode",
+         "packagefile":"SFXGame"
+      },
+      "SFXGame.Default__SFXNav_JumpDownNode.CollisionCylinder":{
+         "class":"Engine.CylinderComponent",
+         "packagefile":"Engine"
+      },
       "SFXGame.BioPathPoint":{
          "class":"Class",
          "packagefile":"Core"

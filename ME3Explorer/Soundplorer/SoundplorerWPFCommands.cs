@@ -9,6 +9,6 @@ namespace ME3Explorer.Commands
 {
     public static class SoundplorerWPFCommands
     {
-        public static RoutedUICommand OpenInWwiseBankEditor { get; } = new RoutedUICommand("OpenInWwiseBankEditor", "OpenInWwiseBankEditorCommand", typeof(PackageEditorWPF));
+        public static RoutedUICommand OpenInWwiseBankEditor { get; } = new RoutedUICommand("OpenInWwiseBankEditor", "OpenInWwiseBankEditorCommand", typeof(WwiseBankEditor.WwiseEditor));
     }
 }

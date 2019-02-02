@@ -151,7 +151,7 @@ namespace ME3Explorer
                 LoadMEPackage(s);
                 interpreterControl.Pcc = pcc;
                 binaryInterpreterControl.Pcc = pcc;
-               // bio2DAEditor1.Pcc = pcc;
+                // bio2DAEditor1.Pcc = pcc;
                 treeView1.Tag = pcc;
                 RefreshView();
                 InitStuff();
@@ -449,8 +449,10 @@ namespace ME3Explorer
                     while (node.Tag as bool? != true)
                     {
                         node.Tag = true;
-                        //Debug.WriteLine(curIndex);
+                        int oldindex = curIndex;
                         curIndex = pcc.getEntry(curIndex).idxLink;
+                        //Debug.WriteLine(oldindex + " links to " + curIndex);
+
                         link = curIndex >= 0 ? curIndex : (-curIndex + importsOffset);
                         nodeList[link].Nodes.Add(node);
                         node = nodeList[link];
@@ -553,7 +555,12 @@ namespace ME3Explorer
                             if (pcc.Game == MEGame.ME3)
                             {
                                 Function func = new Function(exportEntry.Data, pcc);
-                                rtb1.Text = func.ToRawText();
+                                func.ParseFunction();
+                                string text = func.ScriptText;
+                                text += "\nDebug print:\n\n";
+                                for (int i = 0; i < func.SingularTokenList.Count(); i++)
+                                    text += func.SingularTokenList[i].ToString();
+                                rtb1.Text = text;
                             }
                             else if (pcc.Game == MEGame.ME1)
                             {
@@ -1418,9 +1425,9 @@ namespace ME3Explorer
         private void hexConverterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string loc = Path.GetDirectoryName(Application.ExecutablePath);
-            if (File.Exists(loc + @"\HexConverter.exe"))
+            if (File.Exists(loc + @"\HexConverterWPF.exe"))
             {
-                Process.Start(loc + @"\HexConverter.exe");
+                Process.Start(loc + @"\HexConverterWPF.exe");
             }
         }
 
@@ -1628,7 +1635,7 @@ namespace ME3Explorer
                     goToNumber(n >= 0 ? pcc.ExportCount - 1 : -pcc.ImportCount);
                     if (relinkResults.Count > 0)
                     {
-                        ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.");
+                        ListDialog ld = new ListDialog(relinkResults, "Relink report", "The following items failed to relink.", null);
                         ld.Show();
                     }
                     else
@@ -2088,7 +2095,7 @@ namespace ME3Explorer
                 return;
             }
             string input = "Enter an offset (in hex, e.g. 2fa360) to find what export contains that offset.";
-            string result = PromptDialog.Prompt(input, "Enter offset");
+            string result = PromptDialog.Prompt(null, input, "Enter offset");
             if (result != null)
             {
                 try
@@ -2152,7 +2159,7 @@ namespace ME3Explorer
                 }
                 //Clipboard.SetText(copy);
                 MessageBox.Show(duplicates.Count + " duplicate indexes were found.", "BAD INDEXING");
-                ListDialog lw = new ListDialog(duplicates, "Duplicate indexes", "The following items have duplicate indexes.");
+                ListDialog lw = new ListDialog(duplicates, "Duplicate indexes", "The following items have duplicate indexes.", null);
                 lw.Show();
             }
             else
@@ -2489,7 +2496,7 @@ namespace ME3Explorer
                     sw.Stop();
                     Debug.WriteLine("Time: " + sw.ElapsedMilliseconds + "ms");
 
-                    ListDialog ld = new ListDialog(changedExports, "Changed exports between files", "The following exports are different between the files.");
+                    ListDialog ld = new ListDialog(changedExports, "Changed exports between files", "The following exports are different between the files.", null);
                     ld.Show();
                 }
             }

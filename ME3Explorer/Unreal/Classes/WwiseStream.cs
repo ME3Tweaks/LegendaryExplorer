@@ -273,7 +273,8 @@ namespace ME3Explorer.Unreal.Classes
             string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
             if (ExtractRawFromStream(basePath + ".dat", getPathToAFC()))
             {
-                ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
+                MemoryStream dataStream = ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
+                File.WriteAllBytes(basePath + ".wav", dataStream.ToArray());
             }
             return basePath + ".wav";
         }
@@ -295,11 +296,11 @@ namespace ME3Explorer.Unreal.Classes
         }
         private void PlayWave(string path)
         {
-            string wavPath = CreateWave(path);
-            if (wavPath != null && File.Exists(wavPath))
+            Stream waveStream = CreateWaveStream(path);
+            if (waveStream != null)
             {
-                sp = new SoundPlayer(wavPath);
-                sp.Play();
+                sp = new SoundPlayer(waveStream);
+                sp.PlaySync();
                 while (!sp.IsLoadCompleted)
                     Application.DoEvents();
             }
@@ -345,47 +346,56 @@ namespace ME3Explorer.Unreal.Classes
                     oggStream.CopyTo(fs);
                     fs.Flush();
                 }
-
-                //convert OGG to WAV
-                string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
-                MemoryStream outputData = new MemoryStream();
-
-                System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\oggdec.exe", "--stdout " + oggPath);
-                procStartInfo.WorkingDirectory = loc;
-                procStartInfo.RedirectStandardOutput = true;
-                procStartInfo.UseShellExecute = false;
-                procStartInfo.CreateNoWindow = true;
-                //procStartInfo.StandardOutputEncoding = Encoding.GetEncoding(850); //standard cmd-page
-                System.Diagnostics.Process proc = new System.Diagnostics.Process();
-                proc.StartInfo = procStartInfo;
-
-                // Set our event handler to asynchronously read the sort output.
-                proc.Start();
-                //proc.BeginOutputReadLine();
-                var outputTask = Task.Run(() =>
-                {
-                    proc.StandardOutput.BaseStream.CopyTo(outputData);
-
-                    /*using (var output = new FileStream(outputFile, FileMode.Create))
-                    {
-                        process.StandardOutput.BaseStream.CopyTo(output);
-                    }*/
-                });
-                Task.WaitAll(outputTask);
-
-                proc.WaitForExit();
                 File.Delete(riffPath); //raw
-                File.Delete(oggPath); //intermediate
-
-                //Fix headers as they are not correct when output from oggdec over stdout - no idea what it is outputting.
-                outputData.Position = 0x4;
-                outputData.Write(BitConverter.GetBytes(((int)outputData.Length) - 0x8), 0, 4); //filesize
-                outputData.Position = 0x28;
-                outputData.Write(BitConverter.GetBytes(((int)outputData.Length) - 0x24), 0, 4); //datasize
-                outputData.Position = 0;
-                return outputData;
+                return ConvertOggToWave(oggPath);
             }
             return null;
+        }
+
+        /// <summary>
+        /// Converts an ogg file to a wav file using oggdec
+        /// </summary>
+        /// <param name="oggPath">Path to ogg file</param>
+        /// <returns></returns>
+        public static MemoryStream ConvertOggToWave(string oggPath)
+        {
+            //convert OGG to WAV
+            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
+            MemoryStream outputData = new MemoryStream();
+
+            System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\oggdec.exe", "--stdout " + oggPath);
+            procStartInfo.WorkingDirectory = loc;
+            procStartInfo.RedirectStandardOutput = true;
+            procStartInfo.UseShellExecute = false;
+            procStartInfo.CreateNoWindow = true;
+            //procStartInfo.StandardOutputEncoding = Encoding.GetEncoding(850); //standard cmd-page
+            System.Diagnostics.Process proc = new System.Diagnostics.Process();
+            proc.StartInfo = procStartInfo;
+
+            // Set our event handler to asynchronously read the sort output.
+            proc.Start();
+            //proc.BeginOutputReadLine();
+            var outputTask = Task.Run(() =>
+            {
+                proc.StandardOutput.BaseStream.CopyTo(outputData);
+
+                /*using (var output = new FileStream(outputFile, FileMode.Create))
+                {
+                    process.StandardOutput.BaseStream.CopyTo(output);
+                }*/
+            });
+            Task.WaitAll(outputTask);
+
+            proc.WaitForExit();
+            File.Delete(oggPath); //intermediate
+
+            //Fix headers as they are not correct when output from oggdec over stdout - no idea what it is outputting.
+            outputData.Position = 0x4;
+            outputData.Write(BitConverter.GetBytes(((int)outputData.Length) - 0x8), 0, 4); //filesize
+            outputData.Position = 0x28;
+            outputData.Write(BitConverter.GetBytes(((int)outputData.Length) - 0x24), 0, 4); //datasize
+            outputData.Position = 0;
+            return outputData;
         }
 
         /// <summary>

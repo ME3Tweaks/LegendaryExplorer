@@ -71,12 +71,26 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>DEBUG</DefineConstants>
+    <LangVersion>latest</LangVersion>
+    <CodeAnalysisRuleSet>..\..\..\..\Desktop\UnreferencedMethods.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ByteSize, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ByteSize.1.3.0\lib\net45\ByteSize.dll</HintPath>
     </Reference>
-    <Reference Include="ClosedXML, Version=0.92.1.0, Culture=neutral, PublicKeyToken=fd1eb21b62ae805b, processorArchitecture=MSIL">
-      <HintPath>..\packages\ClosedXML.0.92.1\lib\net46\ClosedXML.dll</HintPath>
+    <Reference Include="ClosedXML, Version=0.94.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClosedXML.0.94.2\lib\net46\ClosedXML.dll</HintPath>
     </Reference>
     <Reference Include="CSharpImageLibrary, Version=3.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CSharpImageLibrary.3.1.6.0\lib\net45\CSharpImageLibrary.exe</HintPath>
@@ -90,17 +104,17 @@
     <Reference Include="ExcelNumberFormat, Version=1.0.3.0, Culture=neutral, PublicKeyToken=23c6f5d73be07eca, processorArchitecture=MSIL">
       <HintPath>..\packages\ExcelNumberFormat.1.0.3\lib\net20\ExcelNumberFormat.dll</HintPath>
     </Reference>
-    <Reference Include="FastMember.Signed, Version=1.3.0.0, Culture=neutral, PublicKeyToken=9e8f22703bef9a29, processorArchitecture=MSIL">
-      <HintPath>..\packages\FastMember.Signed.1.3.0\lib\net45\FastMember.Signed.dll</HintPath>
+    <Reference Include="FastMember, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FastMember.1.3.0\lib\net45\FastMember.dll</HintPath>
     </Reference>
     <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
       <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="GongSolutions.Wpf.DragDrop, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\gong-wpf-dragdrop.1.1.0\lib\net46\GongSolutions.Wpf.DragDrop.dll</HintPath>
+    <Reference Include="GongSolutions.WPF.DragDrop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=91f1945125b7a587, processorArchitecture=MSIL">
+      <HintPath>..\packages\gong-wpf-dragdrop.2.0.0-alpha0106\lib\net47\GongSolutions.WPF.DragDrop.dll</HintPath>
     </Reference>
-    <Reference Include="Gu.Wpf.DataGrid2D, Version=0.2.1.5, Culture=neutral, PublicKeyToken=34988ea4e73235be, processorArchitecture=MSIL">
-      <HintPath>..\packages\Gu.Wpf.DataGrid2D.0.2.1.5\lib\net45\Gu.Wpf.DataGrid2D.dll</HintPath>
+    <Reference Include="Gu.Wpf.DataGrid2D, Version=0.2.1.6, Culture=neutral, PublicKeyToken=34988ea4e73235be, processorArchitecture=MSIL">
+      <HintPath>..\packages\Gu.Wpf.DataGrid2D.0.2.1.6\lib\net45\Gu.Wpf.DataGrid2D.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -112,12 +126,6 @@
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=1.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IO.RecyclableMemoryStream.1.2.2\lib\net45\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
-    </Reference>
-    <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NAudio.1.8.4\lib\net35\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -148,12 +156,13 @@
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.1\System.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.2.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.IO.Compression.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.IO.Compression.FileSystem" />
@@ -193,14 +202,9 @@
     <Reference Include="lib3ds.Net">
       <HintPath>..\Libraries\lib3ds.Net.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.DirectX">
-      <HintPath>..\Libraries\Microsoft.DirectX.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.DirectX.Direct3D">
-      <HintPath>..\Libraries\Microsoft.DirectX.Direct3D.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.DirectX.Direct3DX">
-      <HintPath>..\Libraries\Microsoft.DirectX.Direct3DX.dll</HintPath>
+    <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IO.RecyclableMemoryStream.1.1.0.0\lib\net45\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.VisualC" />
@@ -255,6 +259,10 @@
     <Page Include="CurveEd\CurveEditorHost.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DLCUnpacker\DLCUnpacker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Interpreter\AltPropertyEditor.xaml">
       <SubType>Designer</SubType>
@@ -321,7 +329,12 @@
     <Compile Include="CurveEd\CurveEditorHost.xaml.cs">
       <DependentUpon>CurveEditorHost.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DLCUnpacker\DLCUnpacker.xaml.cs">
+      <DependentUpon>DLCUnpacker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FaceFXAnimSetEditor\ME1FaceFXAnimSet.cs" />
+    <Compile Include="Helpers\SevenZipHelper.cs" />
+    <Compile Include="Helpers\StreamIO.cs" />
     <Compile Include="Interpreter\AltPropertyEditor.xaml.cs">
       <DependentUpon>AltPropertyEditor.xaml</DependentUpon>
     </Compile>
@@ -370,10 +383,15 @@
     <Compile Include="Interpreter\PropertyEditor.xaml.cs">
       <DependentUpon>PropertyEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LevelExplorer\LevelExplorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LevelExplorer\LevelExplorer.Designer.cs">
+      <DependentUpon>LevelExplorer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main Window\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DirectXGlobal.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="InitialSetup.xaml.cs">
       <DependentUpon>InitialSetup.xaml</DependentUpon>
@@ -381,10 +399,20 @@
     <Compile Include="Main Window\TaskPaneInfoPanel.xaml.cs">
       <DependentUpon>TaskPaneInfoPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Main Window\Utilities\FileAssociations.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Main Window\MainToolPanel.xaml.cs">
       <DependentUpon>MainToolPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ME1\Unreal\UnhoodBytecode\BytecodeReader.cs" />
+    <Compile Include="ME1\Unreal\UnhoodBytecode\FlagSet.cs" />
+    <Compile Include="ME1\Unreal\UnhoodBytecode\ProblemRegistry.cs" />
+    <Compile Include="ME1\Unreal\UnhoodBytecode\StatementList.cs" />
+    <Compile Include="ME1\Unreal\UnhoodBytecode\TextBuilder.cs" />
+    <Compile Include="ME1\Unreal\UnhoodBytecode\UE3FunctionReader.cs" />
+    <Compile Include="ME1\Unreal\UnhoodBytecode\UnClass.cs" />
+    <Compile Include="ME1\Unreal\UnhoodBytecode\UnFunction.cs" />
+    <Compile Include="ME1\Unreal\UnhoodBytecode\UnhoodFunction.cs" />
     <Compile Include="ME2\FaceFXAnimSetEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -392,6 +420,9 @@
       <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="FaceFXAnimSetEditor\ME2FaceFXAnimSet.cs" />
+    <Compile Include="MetadataEditor\MetadataEditorWPF.xaml.cs">
+      <DependentUpon>MetadataEditorWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NativesEditor\CodexMapCommands.cs" />
     <Compile Include="NativesEditor\Commands.cs" />
     <Compile Include="NativesEditor\Dialogs\ChangeObjectIdDialog.xaml.cs">
@@ -465,6 +496,11 @@
     <Compile Include="NativesEditor\Views\StateTaskListsView.xaml.cs">
       <DependentUpon>StateTaskListsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PackageDumper\PackageDumper.xaml.cs">
+      <DependentUpon>PackageDumper.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PackageDumper\TreeNode.cs" />
+    <Compile Include="PackageDumper\TreeNodeList.cs" />
     <Compile Include="PackageEditor\PackageEditorDebugFunctions.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -476,6 +512,9 @@
       <DependentUpon>PackageEditorWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="PackageEditor\PackageEditorWPFCommands.cs" />
+    <Compile Include="PackageEditor\TreeMergeDialog.xaml.cs">
+      <DependentUpon>TreeMergeDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Packages\UDKPackage.cs" />
     <Compile Include="Packages\MEPackage.cs" />
     <Compile Include="Pathfinding Editor\SplineNodes.cs" />
@@ -501,10 +540,21 @@
     <Compile Include="SharedUI\AddPropertyDialogWPF.xaml.cs">
       <DependentUpon>AddPropertyDialogWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\Converters\EntryTypeVisibiltyConverter.cs" />
+    <Compile Include="SharedUI\Converters\UnsavedChangesForegroundConverter.cs" />
+    <Compile Include="SharedUI\Converters\NullVisibilityConverter.cs" />
+    <Compile Include="SharedUI\Converters\NullOrEmptyStringVisibilityConverter.cs" />
+    <Compile Include="SharedUI\Converters\ColorCodeConverter.cs" />
+    <Compile Include="SharedUI\Converters\UPropertyColorPickerVisibilityConverter.cs" />
     <Compile Include="SharedUI\Converters\FriendlyTimeConverter.cs" />
     <Compile Include="SharedUI\Converters\WwiseDataExchangeEnabledConverter.cs" />
     <Compile Include="SharedUI\Converters\NullEnabledConverter.cs" />
+    <Compile Include="SharedUI\Converters\PackageEditorWPFConverters.cs" />
     <Compile Include="SharedUI\Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="SharedUI\EditableComboBox.cs" />
+    <Compile Include="SharedUI\EditableTextBlock.cs" />
+    <Compile Include="SharedUI\EditableComboBoxAdorner.cs" />
+    <Compile Include="SharedUI\EditableTextBlockAdorner.cs" />
     <Compile Include="SharedUI\ExceptionHandlerDialogWPF.xaml.cs">
       <DependentUpon>ExceptionHandlerDialogWPF.xaml</DependentUpon>
     </Compile>
@@ -537,7 +587,6 @@
     </Compile>
     <Compile Include="ME1\Unreal\Bytecode.cs" />
     <Compile Include="ME1\Unreal\Function.cs" />
-    <Compile Include="Packages\MiniLZO.cs" />
     <Compile Include="Packages\ExportEntry.cs" />
     <Compile Include="Packages\IEntry.cs" />
     <Compile Include="Packages\IMEPackage.cs" />
@@ -635,10 +684,22 @@
     </Compile>
     <Compile Include="SharedUI\ListScrollBox.cs" />
     <Compile Include="SharedUI\ObservableCollectionExtended.cs" />
+    <Compile Include="SharedUI\PeregrineTreeView\TreeViewHelper.cs" />
+    <Compile Include="SharedUI\NamePromptDialog.xaml.cs">
+      <DependentUpon>NamePromptDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SharedUI\PromptDialog.xaml.cs">
       <DependentUpon>PromptDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\StretchingTreeView.cs" />
+    <Compile Include="SharedUI\PeregrineTreeView\DispatcherHelper.cs" />
+    <Compile Include="SharedUI\PeregrineTreeView\PeregrineHeap.cs" />
+    <Compile Include="SharedUI\PeregrineTreeView\TreeViewItemHelper.cs" />
     <Compile Include="SingleInstance.cs" />
+    <Compile Include="Soundplorer\ISACT_Parser.cs" />
+    <Compile Include="Soundplorer\ISBank.cs" />
+    <Compile Include="Soundplorer\ISBankEntry.cs" />
+    <Compile Include="Soundplorer\KoopsAudioDecoder.cs" />
     <Compile Include="Soundplorer\SoundplorerWPFCommands.cs" />
     <Compile Include="Soundplorer\SoundpanelAudioPlayer.cs" />
     <Compile Include="Soundplorer\DirectReplace.cs">
@@ -662,7 +723,9 @@
       <DependentUpon>SoundplorerWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\Converters\FontAwesomeStateColorConverter.cs" />
-    <Compile Include="Soundplorer\WwiseMenuItemVisibilityConverter.cs" />
+    <Compile Include="Soundplorer\Converters\SoundplorerConverters.cs" />
+    <Compile Include="Soundplorer\Converters\WwiseMenuItemVisibilityConverter.cs" />
+    <Compile Include="Soundplorer\XboxADPCMDecoder.cs" />
     <Compile Include="SubtitleScanner\FileHelpers.cs" />
     <Compile Include="SubtitleScanner\SubtitleScanner.cs">
       <SubType>Form</SubType>
@@ -725,6 +788,9 @@
     <Compile Include="TPFTools\KFreonTPFTools3.Designer.cs">
       <DependentUpon>KFreonTPFTools3.cs</DependentUpon>
     </Compile>
+    <Compile Include="UnrealScriptControl\UnrealScriptWPF.xaml.cs">
+      <DependentUpon>UnrealScriptWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Unreal\BitConverter.cs" />
     <Compile Include="Unreal\Bytecode.cs" />
     <Compile Include="Unreal\Classes\AnimNodeSlot.cs" />
@@ -752,7 +818,6 @@
     <Compile Include="Unreal\Classes\MaterialInstanceConstant.cs" />
     <Compile Include="Unreal\Classes\PathNode.cs" />
     <Compile Include="Unreal\Classes\SkeletalMesh.cs" />
-    <Compile Include="Unreal\Classes\SkeletalMeshOld.cs" />
     <Compile Include="Unreal\Classes\SplineActor.cs" />
     <Compile Include="Unreal\Classes\StaticMesh.cs" />
     <Compile Include="Unreal\Classes\StaticMeshActor.cs" />
@@ -767,6 +832,7 @@
     <Compile Include="Unreal\Classes\WwiseEnvironmentVolume.cs" />
     <Compile Include="Unreal\Classes\WwiseStream.cs" />
     <Compile Include="Unreal\DLCPackage.cs" />
+    <Compile Include="Unreal\DLCUnpacker.cs" />
     <Compile Include="Unreal\Helper3DS.cs" />
     <Compile Include="Unreal\HuffmanCompression.cs" />
     <Compile Include="Packages\MEPackageHandler.cs" />
@@ -911,13 +977,6 @@
     <Compile Include="Interpreter\InterpreterHost.Designer.cs">
       <DependentUpon>InterpreterHost.cs</DependentUpon>
     </Compile>
-    <Compile Include="LevelExplorer\LevelEditor\Leveleditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LevelExplorer\LevelEditor\Leveleditor.Designer.cs">
-      <DependentUpon>Leveleditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="LevelExplorer\LevelEditor\SceneManager.cs" />
     <Compile Include="Main Window\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -925,6 +984,10 @@
     <Page Include="Main Window\TaskPaneInfoPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MetadataEditor\MetadataEditorWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Modmaker\CreateJobFromPCCDiff.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -974,7 +1037,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PackageDumper\PackageDumper.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PackageEditor\PackageEditorWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PackageEditor\TreeMergeDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -989,6 +1060,10 @@
     <Page Include="SharedUI\ListDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedUI\NamePromptDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="SharedUI\PromptDialog.xaml">
       <SubType>Designer</SubType>
@@ -1019,6 +1094,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Main Window\ToolPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UnrealScriptControl\UnrealScriptWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1123,12 +1202,6 @@
     <Compile Include="PackageEditor\PackageEditor.Designer.cs">
       <DependentUpon>PackageEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="PCCRepack\PCCRepack.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PCCRepack\PCCRepack.Designer.cs">
-      <DependentUpon>PCCRepack.cs</DependentUpon>
-    </Compile>
     <Compile Include="PlotVarDB\PlotVarDB.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1206,8 +1279,8 @@
     <EmbeddedResource Include="Interpreter\InterpreterHost.resx">
       <DependentUpon>InterpreterHost.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LevelExplorer\LevelEditor\Leveleditor.resx">
-      <DependentUpon>Leveleditor.cs</DependentUpon>
+    <EmbeddedResource Include="LevelExplorer\LevelExplorer.resx">
+      <DependentUpon>LevelExplorer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ME1\DialogEditor\AddReply.resx">
       <DependentUpon>AddReply.cs</DependentUpon>
@@ -1269,9 +1342,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Pathfinding Editor\ReachSpecRecalculator.resx">
       <DependentUpon>ReachSpecRecalculator.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PCCRepack\PCCRepack.resx">
-      <DependentUpon>PCCRepack.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlotVarDB\PlotVarDB.resx">
       <DependentUpon>PlotVarDB.cs</DependentUpon>
@@ -1375,21 +1445,17 @@
       <Project>{9f364d6b-5046-4186-b684-968b52afcb81}</Project>
       <Name>Gammtek.Conduit.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HexConverter\HexConverter.csproj">
-      <Project>{bc67f053-755a-45e9-b157-8b063f1f6509}</Project>
-      <Name>HexConverter</Name>
-    </ProjectReference>
     <ProjectReference Include="..\KFreonLib\KFreonLib.csproj">
       <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
       <Name>KFreonLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ME3Creator\ME3Creator.csproj">
-      <Project>{5aba4120-7379-479e-be61-c452c10a1810}</Project>
-      <Name>ME3Creator</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ME3LibWV\ME3LibWV.csproj">
       <Project>{a8e1981a-0a8c-4c7a-9175-b5f0c085f639}</Project>
       <Name>ME3LibWV</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NAudio\NAudio.csproj">
+      <Project>{da4f02e3-0b5e-42cd-b8d9-5583fa51d66e}</Project>
+      <Name>NAudio</Name>
     </ProjectReference>
     <ProjectReference Include="..\Piccolo\Piccolo.csproj">
       <Project>{daf03684-bb0b-4528-bfee-8a3fbfc9fc4a}</Project>
@@ -1406,10 +1472,6 @@
     <ProjectReference Include="..\Tools\Gibbed.MassEffect3.FileFormats\Gibbed.MassEffect3.FileFormats.csproj">
       <Project>{681db2ce-e3eb-4110-ac50-f53eaca66e99}</Project>
       <Name>Gibbed.MassEffect3.FileFormats</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tools\SevenZip\SevenZip.csproj">
-      <Project>{b6c4d3b4-1267-48d5-8c3b-c86ff3e517a9}</Project>
-      <Name>SevenZip</Name>
     </ProjectReference>
     <ProjectReference Include="..\UDKExplorer\UDKExplorer.csproj">
       <Project>{f660e850-da7a-41a6-ae77-4ab4f21d8f33}</Project>
@@ -1455,11 +1517,9 @@
     <Resource Include="Resources\property_manager_64x64.png" />
     <Resource Include="Resources\property_dumper_64x64.png" />
     <Resource Include="Resources\property_database_64x64.png" />
-    <Resource Include="Resources\pcc_repacker_64x64.png" />
     <Resource Include="Resources\package_editor_64x64.png" />
     <Resource Include="Resources\meshplorer2_64x64.png" />
     <Resource Include="Resources\meshplorer_64x64.png" />
-    <Resource Include="Resources\me3creator_64x64.png" />
     <Resource Include="Resources\interpreter_icon_64x64.png" />
     <Resource Include="Resources\interp_viewer_icon_64x64.png" />
     <Resource Include="Resources\info.ico" />
@@ -1470,8 +1530,6 @@
     <Resource Include="Resources\document-save.png" />
     <Resource Include="Resources\dialogue_editor_64x64.png" />
     <Resource Include="Resources\conditionals_editor_64x64.png" />
-    <Resource Include="Resources\class_viewer_64x64.png" />
-    <Resource Include="Resources\camera_tool_64x64.png" />
     <Resource Include="Resources\asset_explorer_64x64.png" />
     <Resource Include="Resources\animation_explorer_64x64.png" />
     <Resource Include="Icons\udk_explorer_64x64.png" />
@@ -1533,9 +1591,6 @@
     <Resource Include="Resources\facefx_editor_icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\level_database_icon.ico" />
-    <Resource Include="Resources\save_gameeditor_icon.ico" />
-    <Resource Include="Resources\save_gameoperator_icon.ico" />
     <SplashScreen Include="Resources\toolset_splash.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </SplashScreen>
@@ -1579,16 +1634,23 @@
     <Resource Include="Resources\audio_editor_icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\excel.png" />
+    <Resource Include="Resources\excel.png" />
     <None Include="Resources\excel.gif" />
     <Resource Include="Resources\error_x.png" />
-    <Resource Include="Resources\bik_tool.ico" />
-    <Resource Include="Resources\bik_tool_64.png" />
     <Resource Include="Resources\coalesced_editor_64.png" />
     <Resource Include="Resources\coalesced_editor_newB.ico" />
     <Resource Include="Resources\path_editor.ico" />
     <Resource Include="Resources\path_editor_64.png" />
     <Resource Include="Resources\me3tweaks_fork.png" />
+    <Resource Include="PackageEditor\EntryIcons\icon_swf.png" />
+    <Resource Include="PackageEditor\EntryIcons\icon_texture2d.png" />
+    <Resource Include="PackageEditor\EntryIcons\icon_sound.png" />
+    <Resource Include="Resources\dlc_unpacker_256x256.ico" />
+    <Resource Include="Resources\dlc_unpacker_64x64.png" />
+    <Resource Include="Resources\packagedumper_256x256.ico" />
+    <Resource Include="Resources\packagedumper_64x64.png" />
+    <Resource Include="Resources\packageeditorclassic_256x256.ico" />
+    <Resource Include="Resources\packageeditorclassic_64x64.png" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

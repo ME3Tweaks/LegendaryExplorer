@@ -9,10 +9,6 @@ namespace ME3Explorer
         public TlkManager()
         {
             InitializeComponent();
-        }
-
-        public void InitTlkManager()
-        {
             refresh();
         }
 

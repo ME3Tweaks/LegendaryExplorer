@@ -27,6 +27,7 @@ using static ME3Explorer.Pathfinding_Editor.PathfindingNodeMaster;
 using static ME3Explorer.BinaryInterpreter;
 using ME3Explorer.SplineNodes;
 using SharpDX;
+using ME3Explorer.SharedUI;
 
 namespace ME3Explorer
 {
@@ -63,6 +64,9 @@ namespace ME3Explorer
         private const int NODETYPE_BIOPATHPOINT = 9;
         private const int NODETYPE_SFXDYNAMICCOVERLINK = 10;
         private const int NODETYPE_SFXDYNAMICCOVERSLOTMARKER = 11;
+        private const int NODETYPE_SFXNAV_JUMPDOWNNODE_TOP = 12;
+        private const int NODETYPE_SFXNAV_JUMPDOWNNODE_BOTTOM = 13;
+
         public List<string> RFiles;
         public static readonly string PathfindingEditorDataFolder = Path.Combine(App.AppDataFolder, @"PathfindingEditor\");
         private readonly string RECENTFILES_FILE = "RECENTFILES";
@@ -71,15 +75,15 @@ namespace ME3Explorer
         public static Dictionary<string, Dictionary<string, string>> importclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
         public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
 
-        public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "SFXNav_HarvesterMoveNode", "MantleMarker", "TargetPoint", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode",
+        public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "SFXNav_HarvesterMoveNode", "SFXNav_LeapNodeHumanoid", "MantleMarker", "TargetPoint", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode",
                 "SFXNav_InteractionHenchOmniTool", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionHenchBeckonFront", "SFXNav_InteractionHenchBeckonRear", "SFXNav_InteractionHenchCustom", "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow", "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping", "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionInspectWeapon", "SFXNav_InteractionOmniToolScan" };
-        public string[] actorNodeClasses = { "BlockingVolume", "DynamicBlockingVolume", "StaticMeshActor", "SFXMedStation", "InterpActor", "SFXDoor", "BioTriggerVolume", "SFXArmorNode", "BioTriggerStream", "SFXTreasureNode", "SFXPointOfInterest", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume" };
+        public string[] actorNodeClasses = { "BlockingVolume", "DynamicBlockingVolume", "StaticMeshActor", "SFXMedStation", "InterpActor", "SFXDoor", "BioTriggerVolume", "SFXArmorNode", "BioTriggerStream", "SFXTreasureNode", "SFXPointOfInterest", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer_Simulator", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume" };
         public string[] splineNodeClasses = { "SplineActor" };
         public string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
         public bool ActorNodesActive = false;
         public bool PathfindingNodesActive = true;
         public bool StaticMeshCollectionActorNodesActive = false;
-
+        private List<IExportEntry> AllLevelObjects = new List<IExportEntry>();
         public PathfindingEditor()
         {
             AllowRefresh = true;
@@ -284,7 +288,7 @@ namespace ME3Explorer
             sfxCombatZones = new List<int>();
             CurrentObjects = new List<int>();
             activeExportsListbox.Items.Clear();
-
+            AllLevelObjects.Clear();
             foreach (IExportEntry exp in pcc.Exports)
             {
                 if (exp.ClassName == "Level" && exp.ObjectName == "PersistentLevel")
@@ -311,16 +315,21 @@ namespace ME3Explorer
                         //INVALID!!
                         return false;
                     }
+                    AllLevelObjects.Add(bioworldinfo);
 
                     start += 4;
                     uint shouldbezero = BitConverter.ToUInt32(data, start);
-                    if (shouldbezero != 0)
+                    if (shouldbezero != 0 && pcc.Game != MEGame.ME1)
                     {
                         //INVALID!!!
                         return false;
                     }
-                    start += 4;
-                    int itemcount = 2; //Skip bioworldinfo and Class
+                    int itemcount = 1; //Skip bioworldinfo and Class
+                    if (pcc.Game != MEGame.ME1)
+                    {
+                        start += 4;
+                        itemcount = 2;
+                    }
 
                     while (itemcount < numberofitems)
                     {
@@ -329,6 +338,8 @@ namespace ME3Explorer
                         if (itemexportid - 1 < pcc.Exports.Count)
                         {
                             IExportEntry exportEntry = pcc.Exports[(int)itemexportid - 1];
+                            AllLevelObjects.Add(exportEntry);
+
                             if (ignoredobjectnames.Contains(exportEntry.ObjectName))
                             {
                                 start += 4;
@@ -344,7 +355,7 @@ namespace ME3Explorer
                                 if (PathfindingNodesActive)
                                 {
                                     CurrentObjects.Add(exportEntry.Index);
-                                    activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
+                                    activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + "_" + exportEntry.indexValue + " - Class: " + exportEntry.ClassName);
                                 }
                             }
 
@@ -786,6 +797,9 @@ namespace ME3Explorer
                             case "SFXNav_JumpNode":
                                 pathNode = new PathfindingNodes.SFXNav_JumpNode(index, x, y, pcc, graphEditor);
                                 break;
+                            case "SFXNav_LeapNodeHumanoid":
+                                pathNode = new PathfindingNodes.SFXNav_LeapNodeHumanoid(index, x, y, pcc, graphEditor);
+                                break;
                             case "SFXDoorMarker":
                                 pathNode = new PathfindingNodes.SFXDoorMarker(index, x, y, pcc, graphEditor);
                                 break;
@@ -841,41 +855,7 @@ namespace ME3Explorer
                                 if (annexZoneLocProp != null)
                                 {
                                     int ind = annexZoneLocProp.Value - 1;
-                                    if (ind >= 0 && ind < pcc.Exports.Count)
-                                    {
-                                        IExportEntry annexzonelocexp = pcc.Exports[ind];
-
-                                        PropertyCollection annexzoneprops = annexzonelocexp.GetProperties();
-                                        foreach (var annexprop in annexzoneprops)
-                                        {
-                                            if (annexprop.Name == "location")
-                                            {
-                                                PropertyCollection sublocprops = (annexprop as StructProperty).Properties;
-                                                int locx = 0;
-                                                int locy = 0;
-                                                foreach (var locprop in sublocprops)
-                                                {
-                                                    switch (locprop.Name)
-                                                    {
-                                                        case "X":
-                                                            locx = Convert.ToInt32((locprop as FloatProperty).Value);
-                                                            break;
-                                                        case "Y":
-                                                            locy = Convert.ToInt32((locprop as FloatProperty).Value);
-                                                            break;
-                                                    }
-                                                }
-
-                                                AnnexNode annexNode = new PathfindingNodes.AnnexNode(annexzonelocexp.Index, locx, locy, pcc, graphEditor);
-                                                Objects.Add(annexNode); //this might cause concurrentmodificationexception...
-                                                activeExportsListbox.Items.Add("#" + (annexzonelocexp.Index) + " " + annexzonelocexp.ObjectName + " class: " + annexzonelocexp.ClassName);
-                                                //annexNode.MouseDown += node_MouseDown;
-                                                CurrentObjects.Add(annexzonelocexp.Index); //this might cause concurrentmodificationexception...
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    else
+                                    if (ind < 0 || ind > pcc.Exports.Count)
                                     {
                                         pathNode.comment.Text += "\nBAD ANNEXZONELOC!";
                                         pathNode.comment.TextBrush = new SolidBrush(System.Drawing.Color.Red);
@@ -939,6 +919,9 @@ namespace ME3Explorer
                                 break;
                             case "SFXAmmoContainer":
                                 actorNode = new ActorNodes.SFXAmmoContainer(index, x, y, pcc, graphEditor);
+                                break;
+                            case "SFXAmmoContainer_Simulator":
+                                actorNode = new ActorNodes.SFXAmmoContainer_Simulator(index, x, y, pcc, graphEditor);
                                 break;
                             case "SFXBlockingVolume_Ledge":
                                 actorNode = new ActorNodes.SFXBlockingVolume_Ledge(index, x, y, pcc, graphEditor);
@@ -1409,10 +1392,10 @@ namespace ME3Explorer
                         {
                             IExportEntry outgoingSpec = pcc.Exports[prop.Value - 1];
                             StructProperty outgoingEndStructProp = outgoingSpec.GetProperty<StructProperty>("End"); //Embeds END
-                            ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>("Actor"); //END                    
+                            ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpec)); //END                    
 
-
-                            breaklLinkItem = new ToolStripMenuItem("Break reachspec to " + (outgoingSpecEndProp.Value - 1));
+                            IEntry dest = pcc.getEntry(outgoingSpecEndProp.Value);
+                            breaklLinkItem = new ToolStripMenuItem("Break " + outgoingSpec.ObjectName + " to " + (outgoingSpecEndProp.Value - 1) + " " + dest.ObjectName);
                             breaklLinkItem.Click += (object o, EventArgs args) =>
                             {
                                 removeReachSpec(nodeExp, outgoingSpec);
@@ -1612,17 +1595,25 @@ namespace ME3Explorer
 
             AllowRefresh = false;
             IExportEntry nodeEntry = pcc.Exports[n];
-            ObjectProperty collisionComponentProperty = nodeEntry.GetProperty<ObjectProperty>("CollisionComponent");
-            IExportEntry collisionEntry = pcc.Exports[collisionComponentProperty.Value - 1];
+            cloneNode(nodeEntry);
+            AllowRefresh = true;
 
-            int newNodeIndex = pcc.Exports.Count;
+            //RefreshView();
+        }
+
+        private IExportEntry cloneNode(IExportEntry nodeEntry)
+        {
+            ObjectProperty collisionComponentProperty = nodeEntry.GetProperty<ObjectProperty>("CollisionComponent");
+            IExportEntry collisionEntry = nodeEntry.FileRef.Exports[collisionComponentProperty.Value - 1];
+
+            int newNodeIndex = nodeEntry.FileRef.Exports.Count;
             int newCollisionIndex = newNodeIndex + 1;
 
-            pcc.addExport(nodeEntry.Clone());
-            pcc.addExport(collisionEntry.Clone());
+            nodeEntry.FileRef.addExport(nodeEntry.Clone());
+            nodeEntry.FileRef.addExport(collisionEntry.Clone());
 
-            IExportEntry newNodeEntry = pcc.Exports[newNodeIndex];
-            IExportEntry newCollisionEntry = pcc.Exports[newCollisionIndex];
+            IExportEntry newNodeEntry = nodeEntry.FileRef.Exports[newNodeIndex];
+            IExportEntry newCollisionEntry = nodeEntry.FileRef.Exports[newCollisionIndex];
             newCollisionEntry.idxLink = newNodeEntry.UIndex;
 
             //empty the pathlist
@@ -1672,7 +1663,7 @@ namespace ME3Explorer
             SharedPathfinding.GenerateNewRandomGUID(newNodeEntry);
             //Add cloned node to persistentlevel
             IExportEntry persistentlevel = null;
-            foreach (IExportEntry exp in pcc.Exports)
+            foreach (IExportEntry exp in nodeEntry.FileRef.Exports)
             {
                 if (exp.ClassName == "Level" && exp.ObjectName == "PersistentLevel")
                 {
@@ -1699,9 +1690,7 @@ namespace ME3Explorer
 
             reindexObjectsWithName(newNodeEntry.ObjectName);
             reindexObjectsWithName(newCollisionEntry.ObjectName);
-            AllowRefresh = true;
-
-            //RefreshView();
+            return newNodeEntry;
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)
@@ -1772,13 +1761,30 @@ namespace ME3Explorer
                     exportclassdbkey = "SFXNav_TurretPoint";
                     break;
                 case NODETYPE_SFXNAV_BOOSTNODE_TOP:
-                    exportclassdbkey = "SFXNav_BoostNode";
-                    BoolProperty bTopNode = new BoolProperty(true, "bTopNode");
-                    propertiesToAdd.Add(bTopNode);
+                    {
+                        exportclassdbkey = "SFXNav_BoostNode";
+                        BoolProperty bTopNode = new BoolProperty(true, "bTopNode");
+                        propertiesToAdd.Add(bTopNode);
+                        propertiesToRemoveIfPresent.Add("JumpDownDest");
+                    }
                     break;
                 case NODETYPE_SFXNAV_BOOSTNODE_BOTTOM:
                     exportclassdbkey = "SFXNav_BoostNode";
                     propertiesToRemoveIfPresent.Add("bTopNode");
+                    propertiesToRemoveIfPresent.Add("JumpDownDest");
+                    break;
+                case NODETYPE_SFXNAV_JUMPDOWNNODE_TOP:
+                    {
+                        exportclassdbkey = "SFXNav_JumpDownNode";
+                        BoolProperty bTopNode = new BoolProperty(true, "bTopNode");
+                        propertiesToAdd.Add(bTopNode);
+                        propertiesToRemoveIfPresent.Add("BoostDest");
+                    }
+                    break;
+                case NODETYPE_SFXNAV_JUMPDOWNNODE_BOTTOM:
+                    exportclassdbkey = "SFXNav_JumpDownNode";
+                    propertiesToRemoveIfPresent.Add("bTopNode");
+                    propertiesToRemoveIfPresent.Add("BoostDest");
                     break;
                 case NODETYPE_SFXNAV_LARGEMANTLENODE:
                     exportclassdbkey = "SFXNav_LargeMantleNode";
@@ -1909,7 +1915,7 @@ namespace ME3Explorer
                                         PropertyCollection reachspecprops = (prop as StructProperty).Properties;
                                         foreach (var rprop in reachspecprops)
                                         {
-                                            if (rprop.Name == "Actor")
+                                            if (rprop.Name == SharedPathfinding.GetReachSpecEndName(spec))
                                             {
                                                 othernodeidx = (rprop as ObjectProperty).Value;
                                                 break;
@@ -1954,7 +1960,7 @@ namespace ME3Explorer
                                                     PropertyCollection reachspecprops = (prop as StructProperty).Properties;
                                                     foreach (var rprop in reachspecprops)
                                                     {
-                                                        if (rprop.Name == "Actor")
+                                                        if (rprop.Name == SharedPathfinding.GetReachSpecEndName(inboundSpec))
                                                         {
                                                             int inboundSpecDest = (rprop as ObjectProperty).Value;
                                                             if (inboundSpecDest == nodeEntry.UIndex)
@@ -2190,6 +2196,7 @@ namespace ME3Explorer
             int destinationIndex = -1;
             bool createTwoWay = true;
             int size = 1; //Minibosses by default
+            int destinationType = 0; //local by default
             using (ReachSpecCreatorForm form = new ReachSpecCreatorForm(pcc, sourceExportIndex))
             {
                 DialogResult dr = form.ShowDialog(this);
@@ -2202,11 +2209,15 @@ namespace ME3Explorer
                 destinationIndex = form.DestinationNode;
                 reachSpecClass = form.SpecClass;
                 size = form.SpecSize;
+                destinationType = form.DestinationType;
             }
-
             IExportEntry startNode = pcc.Exports[sourceExportIndex];
-            //Debug.WriteLine("Source Node: " + startNode.Index);
-            //Find reachspec to clone
+            createReachSpec(startNode, createTwoWay, destinationIndex, reachSpecClass, size, destinationType);
+        }
+
+        private void createReachSpec(IExportEntry startNode, bool createTwoWay, int destinationIndex, string reachSpecClass, int size, int destinationType)
+        {
+            //func
             IExportEntry reachSpectoClone = null;
             foreach (IExportEntry exp in pcc.Exports)
             {
@@ -2216,112 +2227,162 @@ namespace ME3Explorer
                     break;
                 }
             }
-
-
-            //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
-            int outgoingSpec = pcc.ExportCount;
-            int incomingSpec = pcc.ExportCount + 1;
-
-
-            if (reachSpectoClone != null)
+            if (destinationType == 1) //EXTERNAL
             {
-                IExportEntry destNode = pcc.Exports[destinationIndex];
-                //Debug.WriteLine("Destination Node: " + destNode.Index);
+                //external node
 
-                //time to clone.
-                pcc.addExport(reachSpectoClone.Clone()); //outgoing
+                //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
+                int outgoingSpec = pcc.ExportCount;
+                int incomingSpec = pcc.ExportCount + 1;
 
-                //Have to do this manually because tools firing the clone seem to bust it.
 
-                //Debug.WriteLine("Clone 1 Num Exports: " + pcc.Exports.Count);
-                //Debug.WriteLine("Clone 1 UIndex: " + pcc.Exports[outgoingSpec].UIndex);
-                if (createTwoWay)
+                if (reachSpectoClone != null)
                 {
-                    pcc.addExport(reachSpectoClone.Clone()); //incoming
-                                                             //Debug.WriteLine("Clone 2 Num Exports: " + pcc.Exports.Count);
-                                                             //Debug.WriteLine("Clone 2 UIndex: " + pcc.Exports[incomingSpec].UIndex);
+                    pcc.addExport(reachSpectoClone.Clone()); //outgoing
 
-                }
+                    IExportEntry outgoingSpecExp = pcc.Exports[outgoingSpec]; //cloned outgoing
+                    ImportEntry reachSpecClassImp = getOrAddImport(reachSpecClass); //new class type.
 
-                IExportEntry outgoingSpecExp = pcc.Exports[outgoingSpec]; //cloned outgoing
-                ImportEntry reachSpecClassImp = getOrAddImport(reachSpecClass); //new class type.
+                    outgoingSpecExp.idxClass = reachSpecClassImp.UIndex;
+                    outgoingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
 
-                outgoingSpecExp.idxClass = reachSpecClassImp.UIndex;
-                outgoingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
-
-                if (reachSpecClass == "Engine.SlotToSlotReachSpec")
-                {
-                    var props = outgoingSpecExp.GetProperties();
-                    props.Add(new ByteProperty(1, "SpecDirection"));
-                    outgoingSpecExp.WriteProperties(props);
-                }
-
-                //Debug.WriteLine("Outgoing UIndex: " + outgoingSpecExp.UIndex);
-
-                ObjectProperty outgoingSpecStartProp = outgoingSpecExp.GetProperty<ObjectProperty>("Start"); //START
-                StructProperty outgoingEndStructProp = outgoingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
-                ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>("Actor"); //END
-                outgoingSpecStartProp.Value = startNode.UIndex;
-                outgoingSpecEndProp.Value = destNode.UIndex;
-
-
-                //Add to source node prop
-                ArrayProperty<ObjectProperty> PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-                byte[] memory = startNode.Data;
-                memory = addObjectArrayLeaf(memory, (int)PathList.Offset, outgoingSpecExp.UIndex);
-                startNode.Data = memory;
-                outgoingSpecExp.WriteProperty(outgoingSpecStartProp);
-                outgoingSpecExp.WriteProperty(outgoingEndStructProp);
-
-                //Write Spec Size
-                int radVal = -1;
-                int heightVal = -1;
-
-                System.Drawing.Point sizePair = PathfindingNodeInfoPanel.getDropdownSizePair(size);
-                radVal = sizePair.X;
-                heightVal = sizePair.Y;
-                setReachSpecSize(outgoingSpecExp, radVal, heightVal);
-
-
-                if (createTwoWay)
-                {
-                    IExportEntry incomingSpecExp = pcc.Exports[incomingSpec];
-                    incomingSpecExp.idxClass = reachSpecClassImp.UIndex;
-                    incomingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
-
-                    if (reachSpecClass == "Engine.SlotToSlotReachSpec")
-                    {
-                        var props = incomingSpecExp.GetProperties();
-                        props.Add(new ByteProperty(2, "SpecDirection"));
-                        incomingSpecExp.WriteProperties(props);
-                    }
-
-                    ObjectProperty incomingSpecStartProp = incomingSpecExp.GetProperty<ObjectProperty>("Start"); //START
-                    StructProperty incomingEndStructProp = incomingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
-                    ObjectProperty incomingSpecEndProp = incomingEndStructProp.Properties.GetProp<ObjectProperty>("Actor"); //END
-
-                    incomingSpecStartProp.Value = destNode.UIndex;//Uindex
-                    incomingSpecEndProp.Value = startNode.UIndex;
+                    ObjectProperty outgoingSpecStartProp = outgoingSpecExp.GetProperty<ObjectProperty>("Start"); //START
+                    StructProperty outgoingEndStructProp = outgoingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
+                    ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpecExp)); //END
+                    outgoingSpecStartProp.Value = startNode.UIndex;
+                    outgoingSpecEndProp.Value = 0; //we will have to set the GUID - maybe through form or something
 
 
                     //Add to source node prop
-                    ArrayProperty<ObjectProperty> DestPathList = pcc.Exports[destinationIndex].GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-                    memory = destNode.Data;
-                    memory = addObjectArrayLeaf(memory, (int)DestPathList.Offset, incomingSpecExp.UIndex);
-                    destNode.Data = memory;
-                    //destNode.WriteProperty(DestPathList);
-                    incomingSpecExp.WriteProperty(incomingSpecStartProp);
-                    incomingSpecExp.WriteProperty(incomingEndStructProp);
-                    setReachSpecSize(incomingSpecExp, radVal, heightVal);
+                    ArrayProperty<ObjectProperty> PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                    byte[] memory = startNode.Data;
+                    memory = addObjectArrayLeaf(memory, (int)PathList.ValueOffset, outgoingSpecExp.UIndex);
+                    startNode.Data = memory;
+                    outgoingSpecExp.WriteProperty(outgoingSpecStartProp);
+                    outgoingSpecExp.WriteProperty(outgoingEndStructProp);
 
+                    //Write Spec Size
+                    int radVal = -1;
+                    int heightVal = -1;
 
-                    //verify
-                    destNode.GetProperties();
+                    System.Drawing.Point sizePair = PathfindingNodeInfoPanel.getDropdownSizePair(size);
+                    radVal = sizePair.X;
+                    heightVal = sizePair.Y;
+                    setReachSpecSize(outgoingSpecExp, radVal, heightVal);
+
+                    //Reindex reachspecs.
+                    reindexObjectsWithName(reachSpecClass);
                 }
-                //incomingSpecStartProp.Value =
+            }
+            else
+            {
+                //Debug.WriteLine("Source Node: " + startNode.Index);
 
-                //Reindex reachspecs.
-                reindexObjectsWithName(reachSpecClass);
+                //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
+                int outgoingSpec = pcc.ExportCount;
+                int incomingSpec = pcc.ExportCount + 1;
+
+
+                if (reachSpectoClone != null)
+                {
+                    IExportEntry destNode = pcc.Exports[destinationIndex];
+                    //Debug.WriteLine("Destination Node: " + destNode.Index);
+
+                    //time to clone.
+                    pcc.addExport(reachSpectoClone.Clone()); //outgoing
+
+                    //Have to do this manually because tools firing the clone seem to bust it.
+
+                    //Debug.WriteLine("Clone 1 Num Exports: " + pcc.Exports.Count);
+                    //Debug.WriteLine("Clone 1 UIndex: " + pcc.Exports[outgoingSpec].UIndex);
+                    if (createTwoWay)
+                    {
+                        pcc.addExport(reachSpectoClone.Clone()); //incoming
+                                                                 //Debug.WriteLine("Clone 2 Num Exports: " + pcc.Exports.Count);
+                                                                 //Debug.WriteLine("Clone 2 UIndex: " + pcc.Exports[incomingSpec].UIndex);
+
+                    }
+
+                    IExportEntry outgoingSpecExp = pcc.Exports[outgoingSpec]; //cloned outgoing
+                    ImportEntry reachSpecClassImp = getOrAddImport(reachSpecClass); //new class type.
+
+                    outgoingSpecExp.idxClass = reachSpecClassImp.UIndex;
+                    outgoingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
+
+                    if (reachSpecClass == "Engine.SlotToSlotReachSpec")
+                    {
+                        var props = outgoingSpecExp.GetProperties();
+                        props.Add(new ByteProperty(1, "SpecDirection"));
+                        outgoingSpecExp.WriteProperties(props);
+                    }
+
+                    //Debug.WriteLine("Outgoing UIndex: " + outgoingSpecExp.UIndex);
+
+                    ObjectProperty outgoingSpecStartProp = outgoingSpecExp.GetProperty<ObjectProperty>("Start"); //START
+                    StructProperty outgoingEndStructProp = outgoingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
+                    ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpecExp)); //END
+                    outgoingSpecStartProp.Value = startNode.UIndex;
+                    outgoingSpecEndProp.Value = destNode.UIndex;
+
+
+                    //Add to source node prop
+                    ArrayProperty<ObjectProperty> PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                    byte[] memory = startNode.Data;
+                    memory = addObjectArrayLeaf(memory, (int)PathList.ValueOffset, outgoingSpecExp.UIndex);
+                    startNode.Data = memory;
+                    outgoingSpecExp.WriteProperty(outgoingSpecStartProp);
+                    outgoingSpecExp.WriteProperty(outgoingEndStructProp);
+
+                    //Write Spec Size
+                    int radVal = -1;
+                    int heightVal = -1;
+
+                    System.Drawing.Point sizePair = PathfindingNodeInfoPanel.getDropdownSizePair(size);
+                    radVal = sizePair.X;
+                    heightVal = sizePair.Y;
+                    setReachSpecSize(outgoingSpecExp, radVal, heightVal);
+
+
+                    if (createTwoWay)
+                    {
+                        IExportEntry incomingSpecExp = pcc.Exports[incomingSpec];
+                        incomingSpecExp.idxClass = reachSpecClassImp.UIndex;
+                        incomingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
+
+                        if (reachSpecClass == "Engine.SlotToSlotReachSpec")
+                        {
+                            var props = incomingSpecExp.GetProperties();
+                            props.Add(new ByteProperty(2, "SpecDirection"));
+                            incomingSpecExp.WriteProperties(props);
+                        }
+
+                        ObjectProperty incomingSpecStartProp = incomingSpecExp.GetProperty<ObjectProperty>("Start"); //START
+                        StructProperty incomingEndStructProp = incomingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
+                        ObjectProperty incomingSpecEndProp = incomingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(incomingSpecExp)); //END
+
+                        incomingSpecStartProp.Value = destNode.UIndex;//Uindex
+                        incomingSpecEndProp.Value = startNode.UIndex;
+
+
+                        //Add to source node prop
+                        ArrayProperty<ObjectProperty> DestPathList = pcc.Exports[destinationIndex].GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                        memory = destNode.Data;
+                        memory = addObjectArrayLeaf(memory, (int)DestPathList.ValueOffset, incomingSpecExp.UIndex);
+                        destNode.Data = memory;
+                        //destNode.WriteProperty(DestPathList);
+                        incomingSpecExp.WriteProperty(incomingSpecStartProp);
+                        incomingSpecExp.WriteProperty(incomingEndStructProp);
+                        setReachSpecSize(incomingSpecExp, radVal, heightVal);
+
+
+                        //verify
+                        destNode.GetProperties();
+                    }
+                    //incomingSpecStartProp.Value =
+
+                    //Reindex reachspecs.
+                    reindexObjectsWithName(reachSpecClass);
+                }
             }
         }
 
@@ -2809,6 +2870,11 @@ namespace ME3Explorer
             //    start = findEndOfProps(level);
             //}
             //Read persistent level binary
+            fixStackHeaders(true);
+        }
+
+        private void fixStackHeaders(bool showUI)
+        {
             int itemcount = 2;
             int numUpdated = 0;
 
@@ -2934,10 +3000,10 @@ namespace ME3Explorer
                     Debug.WriteLine(itemlist);
                 }
             }
-
-
-
-            MessageBox.Show(this, numUpdated + " export" + (numUpdated != 1 ? "s" : "") + " in PersistentLevel had data headers updated.", "Header Check Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (showUI)
+            {
+                MessageBox.Show(this, numUpdated + " export" + (numUpdated != 1 ? "s" : "") + " in PersistentLevel had data headers updated.", "Header Check Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         private void validateReachToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2991,6 +3057,11 @@ namespace ME3Explorer
         }
 
         private void relinkPathfinding_ButtonClicked(object sender, EventArgs e)
+        {
+            relinkingPathfindingChain();
+        }
+
+        private void relinkingPathfindingChain()
         {
             List<IExportEntry> pathfindingChain = new List<IExportEntry>();
 
@@ -3073,7 +3144,7 @@ namespace ME3Explorer
                         ObjectProperty nextNav = chainItem.GetProperty<ObjectProperty>("nextNavigationPoint");
 
                         byte[] expData = chainItem.Data;
-                        SharedPathfinding.WriteMem(expData, (int)nextNav.Offset, BitConverter.GetBytes(nextchainItem.UIndex));
+                        SharedPathfinding.WriteMem(expData, (int)nextNav.ValueOffset, BitConverter.GetBytes(nextchainItem.UIndex));
                         chainItem.Data = expData;
                         Debug.WriteLine(chainItem.Index + " Chain link -> " + nextchainItem.UIndex);
                     }
@@ -3619,42 +3690,180 @@ namespace ME3Explorer
                 }
             }
         }
-    }
 
-    public static class ExportInputPrompt
-    {
-        public static IExportEntry ShowDialog(string text, string caption, IMEPackage pcc)
+        private void toSFXNavJumpDownNode_Top_ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form prompt = new Form()
+            if (activeExportsListbox.SelectedIndex >= 0)
             {
-                Width = 500,
-                Height = 150,
-                FormBorderStyle = FormBorderStyle.FixedDialog,
-                Text = caption,
-                StartPosition = FormStartPosition.CenterScreen
-            };
-            Label textLabel = new Label() { Left = 50, Top = 20, Text = text };
-            //TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 400 };
-            ComboBox items = new ComboBox() { Left = 50, Top = 50, Width = 400 };
-            items.DropDownStyle = ComboBoxStyle.DropDownList;
-            List<IExportEntry> exports = new List<IExportEntry>();
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
+                if (n == -1)
+                    return;
+
+                if (pcc.Exports[n].ClassName != "SFXNav_JumpDownNode")
+                {
+                    changeNodeType(pcc.Exports[n], NODETYPE_SFXNAV_JUMPDOWNNODE_TOP);
+                    RefreshView();
+                }
+            }
+        }
+
+        private void toSFXNavJumpDownNodeBottomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (activeExportsListbox.SelectedIndex >= 0)
+            {
+                int n = CurrentObjects[activeExportsListbox.SelectedIndex];
+                if (n == -1)
+                    return;
+
+                if (pcc.Exports[n].ClassName != "SFXNav_JumpDownNode")
+                {
+                    changeNodeType(pcc.Exports[n], NODETYPE_SFXNAV_JUMPDOWNNODE_BOTTOM);
+                    RefreshView();
+                }
+            }
+        }
+
+        private void addExportToLevelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc == null)
+            {
+                return;
+            }
+
+            IExportEntry levelExport = null;
             foreach (IExportEntry exp in pcc.Exports)
             {
-                if (exp.ObjectName == "StaticMeshCollectionActor")
+                if (exp.ClassName == "Level" && exp.ObjectName == "PersistentLevel")
                 {
-                    items.Items.Add(exp.Index + " " + exp.ObjectName + "_" + exp.indexValue);
-                    exports.Add(exp);
+                    levelExport = exp;
+                    break;
                 }
             }
 
-            Button confirmation = new Button() { Text = "Ok", Left = 350, Width = 100, Top = 70, DialogResult = DialogResult.OK };
-            confirmation.Click += (sender, e) => { prompt.Close(); };
-            prompt.Controls.Add(items);
-            prompt.Controls.Add(confirmation);
-            prompt.Controls.Add(textLabel);
-            prompt.AcceptButton = confirmation;
 
-            return prompt.ShowDialog() == DialogResult.OK ? exports[items.SelectedIndex] : null;
+
+            if (levelExport != null)
+            {
+                using (ExportSelectorWinForms form = new ExportSelectorWinForms(pcc, ExportSelectorWinForms.SUPPORTS_EXPORTS_ONLY))
+                {
+                    DialogResult dr = form.ShowDialog(this);
+                    if (dr != DialogResult.Yes)
+                    {
+                        return; //user cancel
+                    }
+
+                    int i = form.SelectedItemIndex;
+                    IExportEntry addingExport = pcc.getExport(i);
+                    if (!AllLevelObjects.Contains(addingExport))
+                    {
+                        byte[] leveldata = levelExport.Data;
+                        int start = levelExport.propsEnd();
+                        //Console.WriteLine("Found start of binary at {start.ToString("X8"));
+
+                        uint exportid = BitConverter.ToUInt32(levelExport.Data, start);
+                        start += 4;
+                        uint numberofitems = BitConverter.ToUInt32(levelExport.Data, start);
+                        numberofitems++;
+                        SharedPathfinding.WriteMem(leveldata, start, BitConverter.GetBytes(numberofitems));
+
+                        //Debug.WriteLine("Size before: {memory.Length);
+                        //memory = RemoveIndices(memory, offset, size);
+                        int offset = (int)(start + numberofitems * 4); //will be at the very end of the list as it is now +1
+                        List<byte> memList = leveldata.ToList();
+                        memList.InsertRange(offset, BitConverter.GetBytes(addingExport.UIndex));
+                        leveldata = memList.ToArray();
+                        levelExport.Data = leveldata;
+                        RefreshView();
+                        graphEditor.Invalidate();
+                    }
+                    else
+                    {
+                        MessageBox.Show(i + " is already in the level.");
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("PersistentLevel export not found.");
+            }
+        }
+
+        private void buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pcc == null)
+            {
+                return;
+            }
+
+            OpenFileDialog d = new OpenFileDialog();
+            d.Filter = "Point Logger ASI file output (txt)|*txt";
+            string pathfindingChainFile = null;
+            if (d.ShowDialog() == DialogResult.OK)
+            {
+                pathfindingChainFile = d.FileName;
+
+
+                var pointsStrs = File.ReadAllLines(pathfindingChainFile);
+                var points = new List<Point3D>();
+                int lineIndex = 0;
+                foreach (var point in pointsStrs)
+                {
+                    lineIndex++;
+                    if (lineIndex <= 4)
+                    {
+                        continue; //skip header of file
+                    }
+                    string[] coords = point.Split(',');
+                    points.Add(new Point3D(float.Parse(coords[0]), float.Parse(coords[1]), float.Parse(coords[2])));
+                }
+                var basePathNode = pcc.Exports.First(x => x.ObjectName == "PathNode" && x.ClassName == "PathNode");
+                IExportEntry firstNode = null;
+                IExportEntry previousNode = null;
+
+
+                foreach (var point in points)
+                {
+                    IExportEntry newNode = cloneNode(basePathNode);
+                    StructProperty prop = newNode.GetProperty<StructProperty>("location");
+                    if (prop != null)
+                    {
+                        PropertyCollection nodelocprops = (prop as StructProperty).Properties;
+                        foreach (var locprop in nodelocprops)
+                        {
+                            switch (locprop.Name)
+                            {
+                                case "X":
+                                    (locprop as FloatProperty).Value = (float)point.X;
+                                    break;
+                                case "Y":
+                                    (locprop as FloatProperty).Value = (float)point.Y;
+                                    break;
+                                case "Z":
+                                    (locprop as FloatProperty).Value = (float)point.Z;
+                                    break;
+                            }
+                        }
+                        newNode.WriteProperty(prop);
+
+                        if (previousNode != null)
+                        {
+                            createReachSpec(previousNode, true, newNode.Index, "Engine.ReachSpec", 1, 0);
+                        }
+                        if (firstNode == null)
+                        {
+                            firstNode = newNode;
+                        }
+                        previousNode = newNode;
+                    }
+                }
+                //createReachSpec(previousNode, true, firstNode.Index, "Engine.ReachSpec", 1, 0);
+
+                fixStackHeaders(false);
+                relinkingPathfindingChain();
+                ReachSpecRecalculator rsr = new ReachSpecRecalculator(this);
+                rsr.ShowDialog(this);
+                Debug.WriteLine("Done");
+            }
         }
     }
 }

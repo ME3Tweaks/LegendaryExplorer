@@ -170,6 +170,7 @@
         <BitmapImage x:Key="iconAnimationExplorer" UriSource="Resources/animation_explorer_64x64.png"/>
         <BitmapImage x:Key="iconCameraTool" UriSource="Resources/camera_tool_64x64.png"/>
         <BitmapImage x:Key="iconCoalescedEditor" UriSource="Resources/coalesced_editor_64.png"/>
+        <BitmapImage x:Key="iconDLCUnpacker" UriSource="Resources/dlc_unpacker_64x64.png"/>
         <BitmapImage x:Key="iconConditionalsEditor" UriSource="Resources/conditionals_editor_64x64.png"/>
         <BitmapImage x:Key="iconDialogueEditor" UriSource="Resources/dialogue_editor_64x64.png"/>
         <BitmapImage x:Key="iconFaceFXAnimSetEditor" UriSource="Resources/fxa_editor_64x64.png"/>
@@ -177,10 +178,11 @@
         <BitmapImage x:Key="iconInterpreter" UriSource="Icons/interpreter_icon.ico"/>
         <BitmapImage x:Key="iconPlaceholder" UriSource="Icons/placeholder_64x64.png"/>
         <BitmapImage x:Key="iconLevelEditor" UriSource="Resources/level_explorer_64x64.png"/>
-        <BitmapImage x:Key="iconME3Creator" UriSource="Resources/me3creator_64x64.png"/>
         <BitmapImage x:Key="iconMeshplorer" UriSource="Resources/meshplorer_64x64.png"/>
         <BitmapImage x:Key="iconMeshplorer2" UriSource="Resources/meshplorer2_64x64.png"/>
         <BitmapImage x:Key="iconPackageEditor" UriSource="Resources/package_editor_64x64.png"/>
+        <BitmapImage x:Key="iconPackageEditorClassic" UriSource="Resources/packageeditorclassic_64x64.png"/>
+        <BitmapImage x:Key="iconPackageDumper" UriSource="Resources/packagedumper_64x64.png"/>
         <BitmapImage x:Key="iconPlotEditor" UriSource="Resources/plot_editor_icon.ico"/>
         <BitmapImage x:Key="iconSequenceEditor" UriSource="Resources/sequence_editor_64x64.png"/>
         <BitmapImage x:Key="iconSFAREditor2" UriSource="Resources/sfar_editor2_icon_64x64.png"/>
@@ -194,7 +196,7 @@
         <JumpList >
             
             <JumpTask Title="Package Editor" 
-                      Description="Opens a new instance of Package Editor" 
+                      Description="Opens a new instance of Package Editor WPF" 
                       Arguments="JUMPLIST_PACKAGE_EDITOR"/>
             <JumpTask Title="Pathfinding Editor" 
                       Description="Opens a new instance of Pathfinding Editor" 
@@ -202,6 +204,9 @@
             <JumpTask Title="Sequence Editor" 
                       Description="Opens a new instance of Sequence Editor" 
                       Arguments="JUMPLIST_SEQUENCE_EDITOR"/>
+            <JumpTask Title="Soundplorer" 
+                      Description="Opens a new instance of Soundplorer WPF" 
+                      Arguments="JUMPLIST_SOUNDPLORER"/>
         </JumpList>
     </JumpList.JumpList>
 </Application>

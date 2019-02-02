@@ -13,14 +13,17 @@ namespace ME3Explorer
 {
     public abstract class WPFBase : Window, INotifyPropertyChanged
     {
-        protected IMEPackage pcc;
+        private IMEPackage pcc;
+        /// <summary>
+        /// Currently loaded Package file, if any.
+        /// </summary>
         public IMEPackage Pcc
         {
             get
             {
                 return pcc;
             }
-            private set
+            set
             {
                 SetProperty(ref pcc, value);
             }

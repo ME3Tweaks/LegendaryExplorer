@@ -5,6 +5,7 @@ using System.IO;
 
 using ME1Explorer.Unreal.Classes;
 using ME3Explorer.Packages;
+using KFreonLib.MEDirectories;
 
 namespace ME1Explorer
 {
@@ -15,6 +16,7 @@ namespace ME1Explorer
         public TalkFiles selectedTlks;
 
         private bool editor;
+        private static TalkFile me1GlobalTlk;
 
         public TlkManager(bool _editor = false)
         {
@@ -38,7 +40,7 @@ namespace ME1Explorer
             packages = new List<ME1Package>();
             tlkFileSets = new List<BioTlkFileSet>();
             selectedTlks = tlks;
-            
+
             foreach (TalkFile tlkFile in selectedTlks.tlkList)
             {
                 selectedTlkFilesBox.Items.Add(Path.GetFileName(tlkFile.pcc.FileName) + " -> " + tlkFile.BioTlkSetName + tlkFile.Name);
@@ -72,7 +74,7 @@ namespace ME1Explorer
             }
             foreach (TalkFile tlkFile in selectedTlks.tlkList)
             {
-                selectedTlkFilesBox.Items.Add(Path.GetFileName(pcc.FileName) + " -> " + tlkFile.BioTlkSetName + tlkFile.Name); 
+                selectedTlkFilesBox.Items.Add(Path.GetFileName(pcc.FileName) + " -> " + tlkFile.BioTlkSetName + tlkFile.Name);
             }
         }
 
@@ -118,7 +120,7 @@ namespace ME1Explorer
             IReadOnlyList<IExportEntry> Exports = pcc.Exports;
             for (int i = 0; i < Exports.Count; i++)
             {
-                if(Exports[i].ClassName == "BioTlkFileSet")
+                if (Exports[i].ClassName == "BioTlkFileSet")
                 {
                     BioTlkFileSet b = new BioTlkFileSet(pcc, i);
                     tlkFileSets.Add(b);
@@ -126,7 +128,7 @@ namespace ME1Explorer
                 }
             }
             //No BioTlkSets, look for loose BioTlkFiles
-            if(tlkFileSets.Count == 0)
+            if (tlkFileSets.Count == 0)
             {
                 BioTlkFileSet tlkSet = new BioTlkFileSet(pcc);
                 for (int i = 0; i < Exports.Count; i++)
@@ -287,6 +289,40 @@ namespace ME1Explorer
             packages.RemoveAt(n);
             packages.Insert(n, MEPackageHandler.OpenME1Package(tlk.pcc.FileName));
             refreshFileBox();
+        }
+
+        internal static string GetStringById(int value)
+        {
+            if (me1GlobalTlk == null)
+            {
+                if (ME1Directory.BioGamePath != null)
+                {
+                    string globalTlkPath = Path.Combine(ME1Directory.BioGamePath, "CookedPC", "Packages", "Dialog", "GlobalTLK.upk");
+                    if (File.Exists(globalTlkPath))
+                    {
+                        IMEPackage globalTLK = MEPackageHandler.OpenME1Package(globalTlkPath);
+                        IExportEntry firstTLK = null;
+                        foreach (IExportEntry exp in globalTLK.Exports)
+                        {
+                            if (exp.ClassName == "BioTlkFile")
+                            {
+                                firstTLK = exp;
+                                break;
+                            }
+                        }
+                        if (firstTLK != null)
+                        {
+                            me1GlobalTlk = new TalkFile(firstTLK);
+                        }
+                        globalTLK.Release();
+                    }
+                }
+            }
+            if (me1GlobalTlk != null)
+            {
+                return me1GlobalTlk.findDataById(value);
+            }
+            return "No Data";
         }
     }
 }

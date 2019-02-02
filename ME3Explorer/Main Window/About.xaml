@@ -32,15 +32,15 @@
                 <ColumnDefinition Width="385"/>
             </Grid.ColumnDefinitions>
             <StackPanel>
-                <TextBlock Text="Current Developers" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="17"/>
+                <TextBlock Text="Developers" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="17"/>
                 <TextBlock Text="ME3Tweaks Fork" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="14"/>
                 <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="7,0,0,0">
                     <Run Text="• Mgamerz - Developer"/>
 
                 </TextBlock>
-                <TextBlock Text="Upstream" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="14"/>
+                <TextBlock Text="Additional contributors" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="14"/>
                 <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="7,0,0,0">
-                    <Run Text="• SirCxyrtyx - Developer"/>
+                    <Run Text="• SirCxyrtyx - Developer&#10;• Benji - 3D Developer"/>
                 </TextBlock>
                 <Label FontFamily="{StaticResource TitilliumWeb-Light}"
                        FontSize="14" Foreground="#FF808080" BorderBrush="#FFA8A8A8" BorderThickness="2" HorizontalAlignment="Center"
@@ -48,7 +48,7 @@
                     <TextBlock TextWrapping="Wrap" Text="Credit also goes to toolset modders for their continued feedback &amp; support!" TextAlignment="Center"/>
                 </Label>
             </StackPanel>
-            <TabControl Height="200" Width="385" HorizontalContentAlignment="Right" Grid.Column="1" Margin="0,0,0,0" BorderThickness="2" BorderBrush="#FFA8A8A8">
+            <TabControl Height="215" Width="385" HorizontalContentAlignment="Right" Grid.Column="1" Margin="0,0,0,0" BorderThickness="2" BorderBrush="#FFA8A8A8">
                 <TabControl.Resources>
                     <Style TargetType="TabItem">
                         <Setter Property="Template">
@@ -112,8 +112,11 @@
                         Jean-Loup Gailly and Mark Adler - zLib          <LineBreak/>
                         John33 - Oggdec                                 <LineBreak/>
                         Newtonsoft - JSON.NET                           <LineBreak/>
+                        NAudio - NAudio sound system                    <LineBreak/>
                         Nvidia - Real Time DXT                          <LineBreak/>
+                        Peregrine66 - WPF Tree View Helpers             <LineBreak/>
                         Piccolo Team - Piccolo Graphics Framework       <LineBreak/>
+                        bgbennyboy - Psychonauts Explorer (ME1 Audio)   <LineBreak/>
                         RS - Texmod                                     <LineBreak/>
                         TheFeckless - UE3 SDK Generator                 <LineBreak/>
                         </TextBlock>
@@ -124,7 +127,7 @@
                         <TextBlock>
                         GitHub - SirCxyrtyx                       <LineBreak/>
                         Nexusmods - Giftfish and SirCxyrtyx       <LineBreak/>
-                        Toolset GUI Text - Giftfish and SirCxyrtyx<LineBreak/>
+                        Toolset GUI Text - Giftfish, SirCxyrtyx, Kinkojiro, Mgamerz<LineBreak/>
                         Web Portal - Giftfish and SirCxyrtyx      <LineBreak/>
                         Wikia - Giftfish and Wiki Contributors    <LineBreak/>
                         </TextBlock>
@@ -146,7 +149,7 @@
                         “3”, “M”, &amp; Splash Background © BioWare Corp. and Electronic Arts, Inc.<LineBreak/>
                         Hex Code Background © Maksim Kabakou, Shutterstock                         <LineBreak/>
                         Outline icons © Flaticon.com                                               <LineBreak/>
-                        ME3Explorer Graphics and Tool Icons by Giftfish                            <LineBreak/>
+                        ME3Explorer Graphics and Tool Icons by Giftfish &amp; Kinkojiro            <LineBreak/>
                         </TextBlock>
                     </ScrollViewer>
                 </TabItem>

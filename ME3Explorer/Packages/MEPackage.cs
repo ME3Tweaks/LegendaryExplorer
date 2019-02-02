@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,7 @@ namespace ME3Explorer.Packages
         ImportAdd,
     }
 
+    [DebuggerDisplay("PackageUpdate | {change} on index {index}")]
     public struct PackageUpdate
     {
         /// <summary>
@@ -46,6 +48,22 @@ namespace ME3Explorer.Packages
                 return exports.Any(entry => entry.DataChanged == true || entry.HeaderChanged == true) || imports.Any(entry => entry.HeaderChanged == true) || namesAdded > 0;
             }
         }
+
+        public string GetEntryString(int index)
+        {
+            if (index == 0)
+            {
+                return "Null";
+            }
+            string retStr = "Entry not found";
+            IEntry coreRefEntry = getEntry(index);
+            if (coreRefEntry != null)
+            {
+                retStr = coreRefEntry is ImportEntry ? "[I] " : "[E] ";
+                retStr += coreRefEntry.GetFullPath;
+            }
+            return retStr;
+        }
         public bool CanReconstruct { get { return !exports.Exists(x => x.ObjectName == "SeekFreeShaderCache" && x.ClassName == "ShaderCache"); } }
 
         protected byte[] header;
@@ -53,13 +71,14 @@ namespace ME3Explorer.Packages
         protected ushort lowVers { get { return BitConverter.ToUInt16(header, 4); } }
         protected ushort highVers { get { return BitConverter.ToUInt16(header, 6); } }
         protected int expDataBegOffset { get { return BitConverter.ToInt32(header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int)); } }
-        protected int nameSize { get { int val = BitConverter.ToInt32(header, 12); return (val < 0) ? val * -2 : val; } }
+        protected int nameSize { get { int val = BitConverter.ToInt32(header, 12); return (val < 0) ? val * -2 : val; } } //this may be able to be optimized. It is used a lot during package load
         protected uint flags { get { return BitConverter.ToUInt32(header, 16 + nameSize); } }
-
 
         public abstract int NameCount { get; protected set; }
         public abstract int ImportCount { get; protected set; }
         public abstract int ExportCount { get; protected set; }
+
+        public byte[] getHeader() { return header; }
 
         public bool IsCompressed
         {
@@ -67,11 +86,40 @@ namespace ME3Explorer.Packages
             protected set
             {
                 if (value) // sets the compressed flag if bCompressed set equal to true
+                {
+                    //Toolkit never should never set this flag as we do not support compressing files.
                     Buffer.BlockCopy(BitConverter.GetBytes(flags | 0x02000000), 0, header, 16 + nameSize, sizeof(int));
+                }
                 else // else set to false
+                {
                     Buffer.BlockCopy(BitConverter.GetBytes(flags & ~0x02000000), 0, header, 16 + nameSize, sizeof(int));
+                    PackageCompressionType = CompressionType.None;
+                }
             }
         }
+
+        public enum CompressionType
+        {
+            None = 0,
+            Zlib,
+            LZO
+        }
+
+        public CompressionType PackageCompressionType
+        {
+            get
+            {
+                return (CompressionType)BitConverter.ToInt32(header, header.Length - 4);
+            }
+            set
+            {
+                if (header != null)
+                {
+                    Pathfinding_Editor.SharedPathfinding.WriteMem(header, header.Length - 4, BitConverter.GetBytes((int)value));
+                }
+            }
+        }
+
         //has been saved with the revised Append method
         public bool IsAppend
         {
@@ -113,13 +161,17 @@ namespace ME3Explorer.Packages
 
         public void addName(string name)
         {
+            if (name == null)
+            {
+                throw new Exception("Cannot add a null name to the list of names for a package file.\nThis is a bug in ME3Explorer.");
+            }
             if (!names.Contains(name))
             {
                 names.Add(name);
                 namesAdded++;
                 NameCount = names.Count;
 
-                updateTools(PackageChange.Names, NameCount);
+                updateTools(PackageChange.Names, NameCount - 1);
                 OnPropertyChanged(nameof(NameCount));
             }
         }
@@ -305,16 +357,33 @@ namespace ME3Explorer.Packages
 
         protected virtual void AfterSave()
         {
+            //We do if checks here to prevent firing tons of extra events as we can't prevent firing chanage notifications if 
+            //it's not really a change due to the side effects of suppressing that.
             foreach (var export in exports)
             {
-                export.DataChanged = false;
-                export.HeaderChanged = false;
-                export.EntryHasPendingChanges = false;
+                if (export.DataChanged)
+                {
+                    export.DataChanged = false;
+                }
+                if (export.HeaderChanged)
+                {
+                    export.HeaderChanged = false;
+                }
+                if (export.EntryHasPendingChanges)
+                {
+                    export.EntryHasPendingChanges = false;
+                }
             }
             foreach (var import in imports)
             {
-                import.HeaderChanged = false;
-                import.EntryHasPendingChanges = false;
+                if (import.HeaderChanged)
+                {
+                    import.HeaderChanged = false;
+                }
+                if (import.EntryHasPendingChanges)
+                {
+                    import.EntryHasPendingChanges = false;
+                }
             }
             namesAdded = 0;
 
@@ -342,13 +411,27 @@ namespace ME3Explorer.Packages
         {
             if (wpfWindow != null)
             {
-                GenericWindow gen = Tools.First(x => x == wpfWindow);
-                ReleaseGenericWindow(gen);
+                GenericWindow gen = Tools.FirstOrDefault(x => x == wpfWindow);
+                if (gen is GenericWindow) //can't use != due to ambiguity apparently
+                {
+                    ReleaseGenericWindow(gen);
+                }
+                else
+                {
+                    Debug.WriteLine("Releasing pcc that isn't in use by any window");
+                }
             }
             else if (winForm != null)
             {
-                GenericWindow gen = Tools.First(x => x == winForm);
-                ReleaseGenericWindow(gen);
+                GenericWindow gen = Tools.FirstOrDefault(x => x == winForm);
+                if (gen is GenericWindow) //can't use != due to ambiguity apparently
+                {
+                    ReleaseGenericWindow(gen);
+                }
+                else
+                {
+                    Debug.WriteLine("Releasing pcc that isn't in use by any window");
+                }
             }
             Dispose();
         }

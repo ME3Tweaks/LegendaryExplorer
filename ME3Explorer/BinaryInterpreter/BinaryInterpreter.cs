@@ -1213,21 +1213,21 @@ Floats*/
                 });
                 pos += 4;
                 int length = BitConverter.ToInt32(data, pos);
-                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} stream length: {length} (0x{length:X})")
+                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Stream length: {length} (0x{length:X})")
                 {
                     Name = pos.ToString(),
                     Tag = NodeType.StructLeafInt
                 });
                 pos += 4;
                 length = BitConverter.ToInt32(data, pos);
-                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} stream length: {length} (0x{length:X})")
+                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Stream length: {length} (0x{length:X})")
                 {
                     Name = pos.ToString(),
                     Tag = NodeType.StructLeafInt
                 });
                 pos += 4;
                 int offset = BitConverter.ToInt32(data, pos);
-                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} stream offset in file: {offset} (0x{offset:X})")
+                topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Stream offset in file: {offset} (0x{offset:X})")
                 {
                     Name = pos.ToString(),
                     Tag = NodeType.StructLeafInt
@@ -1235,7 +1235,7 @@ Floats*/
                 pos += 4;
                 if (pos < data.Length && export.GetProperty<NameProperty>("Filename") == null)
                 {
-                    topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Embedded sound data. Can be extracted with Soundplorer.")
+                    topLevelTree.Nodes.Add(new TreeNode($"{pos:X4} Embedded sound data. Use Soundplorer to modify this data.")
                     {
                         Name = pos.ToString(),
                         Tag = NodeType.Unknown
@@ -1439,7 +1439,7 @@ Floats*/
             List<string> columnNames = new List<string>();
             int colcount = BitConverter.ToInt32(data, data.Length - 4); //this is actually index of last column, but it works the same
             int currentcoloffset = 0;
-            Console.WriteLine($"Number of columns: {colcount}");
+            //Console.WriteLine($"Number of columns: {colcount}");
             TreeNode columnsnode = new TreeNode("Columns");
 
             while (colcount >= 0)
@@ -1563,7 +1563,7 @@ Floats*/
                     int col = index % columnNames.Count();
                     curroffset += 4;
                     byte dataType = data[curroffset];
-                    int dataSize = dataType == Bio2DACell.TYPE_NAME ? 8 : 4;
+                    int dataSize = dataType == (byte) Bio2DACell.Bio2DADataType.TYPE_NAME ? 8 : 4;
                     curroffset++;
                     byte[] celldata = new byte[dataSize];
                     Buffer.BlockCopy(data, curroffset, celldata, 0, dataSize);
@@ -1589,7 +1589,7 @@ Floats*/
                         if (cell != null)
                         {
                             columnNode = new TreeNode($"{columnname}: {cell.GetDisplayableValue()}");
-                            if (cell.Type == Bio2DACell.TYPE_INT)
+                            if (cell.Type == (byte)Bio2DACell.Bio2DADataType.TYPE_INT)
                             {
                                 if (ME1_TLK_DICT != null && ME1_TLK_DICT.TryGetValue(BitConverter.ToInt32(cell.Data, 0).ToString(), out string tlkVal))
                                 {
@@ -1599,13 +1599,13 @@ Floats*/
                             }
                             switch (cell.Type)
                             {
-                                case Bio2DACell.TYPE_FLOAT:
+                                case Bio2DACell.Bio2DADataType.TYPE_FLOAT:
                                     columnNode.Tag = NodeType.StructLeafFloat;
                                     break;
-                                case Bio2DACell.TYPE_NAME:
+                                case Bio2DACell.Bio2DADataType.TYPE_NAME:
                                     columnNode.Tag = NodeType.StructLeafName;
                                     break;
-                                case Bio2DACell.TYPE_INT:
+                                case Bio2DACell.Bio2DADataType.TYPE_INT:
                                     columnNode.Tag = NodeType.StructLeafInt;
                                     break;
                             }
@@ -2197,71 +2197,6 @@ Floats*/
             //}
         }
 
-        private void StartClassScan(string nodeNameToSelect = null)
-        {
-            const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
-
-            TreeNode topLevelTree = new TreeNode($"0000 : {export.ObjectName}")
-            {
-                Tag = NodeType.Root,
-                Name = "0"
-            };
-            try
-            {
-                List<TreeNode> subnodes = ReadTableBackwards(export);
-                subnodes.Reverse();
-                for (int i = nonTableEntryCount; i < subnodes.Count; i++)
-                {
-                    string text = subnodes[i].Text;
-                    text = $"{i - nonTableEntryCount} | {text}";
-                    subnodes[i].Text = text;
-                }
-                topLevelTree.Nodes.AddRange(subnodes.ToArray());
-            }
-            catch (Exception ex)
-            {
-                topLevelTree.Nodes.Add($"An error occured parsing the class: {ex.Message}");
-            }
-            treeView1.Nodes.Add(topLevelTree);
-            treeView1.CollapseAll();
-            treeView1.Nodes[0].Expand();
-            TreeNode[] nodes;
-            //if (expandedNodes != null)
-            //{
-            //    int memDiff = memory.Length - memsize;
-            //    int selectedPos = getPosFromNode(selectedNodeName);
-            //    int curPos = 0;
-            //    foreach (string item in expandedNodes)
-            //    {
-            //        curPos = getPosFromNode(item);
-            //        if (curPos > selectedPos)
-            //        {
-            //            curPos += memDiff;
-            //        }
-            //        nodes = treeView1.Nodes.Find((item[0] == '-' ? -curPos : curPos).ToString(), true);
-            //        if (nodes.Length > 0)
-            //        {
-            //            foreach (var node in nodes)
-            //            {
-            //                node.Expand();
-            //            }
-            //        }
-            //    }
-            //}
-            if (nodeNameToSelect != null)
-            {
-                nodes = treeView1.Nodes.Find(nodeNameToSelect, true);
-                if (nodes.Length > 0)
-                {
-                    treeView1.SelectedNode = nodes[0];
-                }
-                else
-                {
-                    treeView1.SelectedNode = treeView1.Nodes[0];
-                }
-            }
-        }
-
         private void StartClassScan2(string nodeNameToSelect = null)
         {
             //const int nonTableEntryCount = 2; //how many items we parse that are not part of the functions table. e.g. the count, the defaults pointer
@@ -2689,7 +2624,7 @@ Floats*/
             Simulated = 0x00000004U,
         }
 
-        private string getStateFlagsStr(uint stateFlags)
+        public static string getStateFlagsStr(uint stateFlags)
         {
             string str = "";
             if (stateFlags == 0)

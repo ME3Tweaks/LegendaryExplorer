@@ -1,7 +1,7 @@
 ﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     x:Class="ME3Explorer.SharedUI.PromptDialog"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    WindowStartupLocation="CenterScreen" 
+    WindowStartupLocation="CenterOwner" 
     SizeToContent="WidthAndHeight"
     MinWidth="300"
     MinHeight="100"

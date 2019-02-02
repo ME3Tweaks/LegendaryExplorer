@@ -11,8 +11,7 @@ using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
 using KFreonLib.Debugging;
 
 namespace ME3Explorer.Unreal.Classes
@@ -40,7 +39,6 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] data;
         public List<PropertyReader.Property> Props;
         public BrushComponent brush;
-        public Matrix MyMatrix;
         public bool isEdited = false;
 
         public BioPlaypenVolumeAdditive(ME3Package Pcc, int Index)
@@ -75,7 +73,6 @@ namespace ME3Explorer.Unreal.Classes
                         location.Z = BitConverter.ToSingle(p.raw, p.raw.Length - 4);
                         break;
                 }
-            MyMatrix = Matrix.Translation(location);
         }
 
         public void ProcessTreeClick(int[] path, bool AutoFocus)
@@ -90,22 +87,11 @@ namespace ME3Explorer.Unreal.Classes
                 brush.SetSelection(Selected);
         }
 
-        public void ApplyTransform(Matrix m)
-        {
-            if (brush != null && brush.isSelected)
-            {
-                isEdited = true;
-                MyMatrix *= m;
-            }
-        }
-
         public void SaveChanges()
         {
             if (isEdited)
             {
-                Matrix m = MyMatrix;
-                Vector3 loc = new Vector3(m.M41, m.M42, m.M43);
-                byte[] buff = Vector3ToBuff(loc);
+                byte[] buff = Vector3ToBuff(location);
                 int f = -1;
                 for (int i = 0; i < Props.Count; i++)
                     if (pcc.getNameEntry(Props[i].Name) == "location")
@@ -131,9 +117,7 @@ namespace ME3Explorer.Unreal.Classes
         {
             if (isEdited)
             {
-                Matrix m = MyMatrix;
-                Vector3 loc = new Vector3(m.M41, m.M42, m.M43);
-                byte[] buff = Vector3ToBuff(loc);
+                byte[] buff = Vector3ToBuff(location);
                 int f = -1;
                 for (int i = 0; i < Props.Count; i++)
                     if (pcc.getNameEntry(Props[i].Name) == "location")
@@ -173,13 +157,6 @@ namespace ME3Explorer.Unreal.Classes
             m.Write(BitConverter.GetBytes(v.Y), 0, 4);
             m.Write(BitConverter.GetBytes(v.Z), 0, 4);
             return m.ToArray();
-        }
-
-        public void Render(Device device)
-        {
-            device.Transform.World = MyMatrix;
-            if (brush != null)
-                brush.Render(device);
         }
 
         public TreeNode ToTree()

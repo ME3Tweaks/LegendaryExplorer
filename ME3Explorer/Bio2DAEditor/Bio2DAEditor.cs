@@ -22,6 +22,8 @@ namespace ME3Explorer
 {
     public partial class Bio2DAEditor : UserControl
     {
+
+
         public int InterpreterMode { get; private set; }
         public IExportEntry export;
         public string className;
@@ -376,19 +378,8 @@ namespace ME3Explorer
                 if (cell != null)
                 {
                     string text = "";
-                    switch (cell.Type)
-                    {
-                        case Bio2DACell.TYPE_FLOAT:
-                            text = "Float";
-                            break;
-                        case Bio2DACell.TYPE_NAME:
-                            text = "Name";
-                            break;
-                        case Bio2DACell.TYPE_INT:
-                            text = "Integer";
-                            break;
-                    }
-                    Label_CellType.Text = text;
+                    
+                    Label_CellType.Text = cell.GetTypeString();
                 }
                 else
                 {

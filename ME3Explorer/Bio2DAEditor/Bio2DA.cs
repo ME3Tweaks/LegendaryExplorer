@@ -24,7 +24,7 @@ namespace ME3Explorer
         IExportEntry export;
         public Bio2DA(IExportEntry export)
         {
-            Console.WriteLine("Loading " + export.ObjectName);
+            //Console.WriteLine("Loading " + export.ObjectName);
             this.export = export;
             IMEPackage pcc = export.FileRef;
             byte[] data = export.Data;
@@ -102,7 +102,7 @@ namespace ME3Explorer
                         byte dataType = 255;
                         dataType = data[curroffset];
                         curroffset++;
-                        int dataSize = dataType == Bio2DACell.TYPE_NAME ? 8 : 4;
+                        int dataSize = dataType == (byte)Bio2DACell.Bio2DADataType.TYPE_NAME ? 8 : 4;
                         byte[] celldata = new byte[dataSize];
                         Buffer.BlockCopy(data, curroffset, celldata, 0, dataSize);
                         Bio2DACell cell = new Bio2DACell(pcc, curroffset, dataType, celldata);
@@ -127,7 +127,7 @@ namespace ME3Explorer
                     int col = index % ColumnNames.Count();
                     curroffset += 4;
                     byte dataType = data[curroffset];
-                    int dataSize = dataType == Bio2DACell.TYPE_NAME ? 8 : 4;
+                    int dataSize = dataType == (byte)Bio2DACell.Bio2DADataType.TYPE_NAME ? 8 : 4;
                     curroffset++;
                     byte[] celldata = new byte[dataSize];
                     Buffer.BlockCopy(data, curroffset, celldata, 0, dataSize);
@@ -137,7 +137,46 @@ namespace ME3Explorer
                     curroffset += dataSize;
                 }
             }
-            Console.WriteLine("Finished loading " + export.ObjectName);
+            //Console.WriteLine("Finished loading " + export.ObjectName);
+        }
+
+        internal string GetColumnNameByIndex(int columnIndex)
+        {
+            if (columnIndex < ColumnNames.Count && columnIndex >= 0)
+            {
+             return   ColumnNames[columnIndex];
+            }
+            return null;
+        }
+
+        public Bio2DACell GetColumnItem(int row, string columnName)
+        {
+            int colIndex = ColumnNames.IndexOf(columnName);
+            if (colIndex >= 0)
+            {
+                return Cells[row, colIndex];
+            }
+            return null;
+        }
+
+        public int GetColumnIndexByName(string columnName)
+        {
+            return ColumnNames.IndexOf(columnName);
+        }
+
+        internal void MarkAsUnmodified()
+        {
+            for (int rowindex = 0; rowindex < RowNames.Count(); rowindex++)
+            {
+                for (int colindex = 0; colindex < ColumnNames.Count(); colindex++)
+                {
+                    Bio2DACell cell = Cells[rowindex, colindex];
+                    if (cell != null)
+                    {
+                        cell.IsModified = false;
+                    }
+                }
+            }
         }
 
         public void Write2DAToExcel(string path)
@@ -162,7 +201,19 @@ namespace ME3Explorer
                 for (int colindex = 0; colindex < ColumnNames.Count(); colindex++)
                 {
                     if (Cells[rowindex, colindex] != null)
-                        worksheet.Cell(rowindex + 2, colindex + 2).Value = Cells[rowindex, colindex].GetDisplayableValue();
+                    {
+                        var cell = Cells[rowindex, colindex];
+                        worksheet.Cell(rowindex + 2, colindex + 2).Value = cell.GetDisplayableValue();
+                        if (cell.Type == Bio2DACell.Bio2DADataType.TYPE_INT && cell.GetIntValue() > 0)
+                        {
+                            int stringId = cell.GetIntValue();
+                            string tlkLookup = ME1Explorer.TlkManager.GetStringById(stringId);
+                            if (tlkLookup != "No Data" && tlkLookup != "")
+                            {
+                                worksheet.Cell(rowindex + 2, colindex + 2).Comment.AddText(tlkLookup);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -198,7 +249,7 @@ namespace ME3Explorer
                                 int index = (rowindex * ColumnNames.Count()) + colindex; //+1 because they are not zero based indexes since they are numerals
                                 stream.WriteBytes(BitConverter.GetBytes(index));
                             }
-                            stream.WriteByte(cell.Type);
+                            stream.WriteByte((byte)cell.Type);
                             stream.WriteBytes(cell.Data);
                         }
                         else

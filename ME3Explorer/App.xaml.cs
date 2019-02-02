@@ -10,6 +10,8 @@ using KFreonLib.MEDirectories;
 using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
 using ME3Explorer.Packages;
+using ME3Explorer.SharedUI.PeregrineTreeView;
+using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
 
 namespace ME3Explorer
@@ -33,6 +35,9 @@ namespace ME3Explorer
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            //Peregrine's Dispatcher (for WPF Treeview selecting on virtualized lists)
+            DispatcherHelper.Initialize();
+
             //Winforms interop
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
@@ -58,8 +63,11 @@ namespace ME3Explorer
             //load kismet font
             SequenceObjects.SText.LoadFont();
 
+
+            System.Windows.Controls.ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(Int32.MaxValue));
+
             splashScreen.Close(TimeSpan.FromMilliseconds(1));
-            if (HandleCommandLineJumplistCall(Environment.GetCommandLineArgs(), out int exitCode) != 1)
+            if (HandleCommandLineJumplistCall(Environment.GetCommandLineArgs(), out int exitCode) == 0)
             {
                 Shutdown(exitCode);
             }
@@ -86,11 +94,11 @@ namespace ME3Explorer
             string arg = args[1];
             if (arg == "JUMPLIST_PACKAGE_EDITOR")
             {
-                PackageEditor editor = new PackageEditor();
-                editor.BringToFront();
+                PackageEditorWPF editor = new PackageEditorWPF();
                 editor.Show();
+                editor.Focus();
                 exitCode = 0;
-                return 0;
+                return 1;
             }
             if (arg == "JUMPLIST_SEQUENCE_EDITOR")
             {
@@ -98,26 +106,38 @@ namespace ME3Explorer
                 editor.BringToFront();
                 editor.Show();
                 exitCode = 0;
-                return 0;
+                return 1;
             }
             if (arg == "JUMPLIST_PATHFINDING_EDITOR")
             {
                 PathfindingEditor editor = new PathfindingEditor();
-                editor.BringToFront();
                 editor.Show();
+                editor.RestoreAndBringToFront();
                 exitCode = 0;
-                return 0;
+                return 1;
+            }
+            if (arg == "JUMPLIST_SOUNDPLORER")
+            {
+                SoundplorerWPF editor = new SoundplorerWPF();
+                editor.Show();
+                editor.RestoreAndBringToFront();
+                exitCode = 0;
+                return 1;
             }
 
             string ending = Path.GetExtension(args[1]).ToLower();
             switch (ending)
             {
                 case ".pcc":
-                    PackageEditor editor = new PackageEditor();
+                case ".sfm":
+                case ".upk":
+                case ".u":
+                    PackageEditorWPF editor = new PackageEditorWPF();
                     editor.Show();
                     editor.LoadFile(args[1]);
+                    editor.RestoreAndBringToFront();
                     exitCode = 0;
-                    return 1;
+                    return 2; //Do not signal bring main forward
             }
             exitCode = 0;
             return 1;
@@ -134,9 +154,7 @@ namespace ME3Explorer
             Window wpfActiveWindow = Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive);
             eh.Owner = wpfActiveWindow;
             eh.ShowDialog();
-#if DEBUG
             e.Handled = eh.Handled;
-#endif
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
+using KFreonLib.MEDirectories;
 using Newtonsoft.Json;
 
 namespace ME3Explorer
@@ -81,7 +82,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", ".mod", "mod", "mesh" },
                 subCategory = "Mod Packagers",
-                description = "ModMaker is used to create and install files with the \".mod\" extension. MOD files are compatible with ME3 and may be packaged with meshes and other game resources.\n\nAttention: Installation of textures via MOD files is deprecated. Use MM to extract any textures, then install them with TPF Tools, instead."
+                description = "MODMAKER IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nModMaker is used to create and install files with the \".mod\" extension. MOD files are compatible with ME3 and may be packaged with meshes and other game resources."
             });
             set.Add(new Tool
             {
@@ -94,7 +95,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "texture", "tpf", "dds", "bmp", "jpg", "png" },
                 subCategory = "Mod Packagers",
-                description = "TPF Tools is the toolset’s primary texture installation utility for users. An alternative to Texmod, TPF Tools allows for permanent insertion of textures into game files. It’s compatible with a variety of texture formats, will help “repair” improperly-formatted textures, and has an assortment of other features.\n\nTPF Tools can also be used by modders to package textures into TPFs for distribution."
+                description = "TPF TOOLS IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nTPF Tools allows for permanent insertion of textures into game files. TPF tools can also be used by modders to package textures into TPFs for distribution.\n\nThis tool has been mostly superceded by Mass Effect Modder (MEM)."
             });
             #endregion
 
@@ -110,6 +111,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "animation", "gesture", "bone" },
                 subCategory = "Explorers",
+                description = "Animation Explorer can build a database of all the files containing animtrees and complete animsets in Mass Effect 3. You can import and export Animsets to PSA files."
             });
             set.Add(new Tool
             {
@@ -167,14 +169,34 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "DLC Unpacker",
+                type = typeof(DLCUnpacker.DLCUnpacker),
+                icon = Application.Current.FindResource("iconDLCUnpacker") as ImageSource,
+                open = () =>
+                {
+                    if (ME3Directory.gamePath != null)
+                    {
+                        new DLCUnpacker.DLCUnpacker().Show();
+                    }
+                    else
+                    {
+                        MessageBox.Show("DLC Unpacker only works with Mass Effect 3.");
+                    }
+                },
+                tags = new List<string> { "utility", "dlc", "sfar", "unpack", "extract" },
+                subCategory = "Extractors + Repackers",
+                description = "DLC Unpacker allows you to extract Mass Effect 3 DLC SFAR files, allowing you to access their contents for modding.\n\nThis unpacker is based on MEM code, which is very fast and is compatible with the ALOT texture mod.",
+            });
+            set.Add(new Tool
+            {
                 name = "Hex Converter",
-                type = typeof(HexConverter.Hexconverter),
+                //type = typeof(HexConverter.Hexconverter),
                 icon = Application.Current.FindResource("iconHexConverter") as ImageSource,
                 open = () =>
                 {
                     string loc = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                    if (File.Exists(loc + "\\HexConverter.exe"))
-                        Process.Start(loc + "\\HexConverter.exe");
+                    if (File.Exists(loc + "\\HexConverterWPF.exe"))
+                        Process.Start(loc + "\\HexConverterWPF.exe");
                 },
                 tags = new List<string> { "utility", "code", "endian", "convert", "integer", "float" },
                 subCategory = "Converters",
@@ -217,7 +239,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "mesh" },
                 subCategory = "Meshes + Textures",
-                description = "Meshplorer loads and displays all meshes within a database or level. The tool skins most meshes with its associated texture. A variety of view options including solid and wireframe are available.",
+                description = "Meshplorer loads and displays all meshes within a file. The tool skins most meshes with its associated texture.\n\nThis tool only works with Mass Effect 3.",
             });
             set.Add(new Tool
             {
@@ -247,17 +269,16 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "PCC Repacker",
-                type = typeof(PCCRepack),
-                icon = Application.Current.FindResource("iconPCCRepacker") as ImageSource,
+                name = "Package Dumper",
+                type = typeof(AnimationExplorer.AnimationExplorer),
+                icon = Application.Current.FindResource("iconPackageDumper") as ImageSource,
                 open = () =>
                 {
-                    (new PCCRepack()).Show();
+                    (new PackageDumper.PackageDumper()).Show();
                 },
-                tags = new List<string> { "utility", "compress", "decompress", "pack", "unpack" },
-                subCategory = "Extractors + Repackers",
-                description = "PCC Repacker allows you to compress and decompress PCC files.",
-
+                tags = new List<string> { "utility", "package", "pcc", "text", "dump" },
+                subCategory = "Utilities",
+                description = "Package Dumper is a utility for dumping package information to files that can be searched with tools like GrepWin. Names, Imports, Exports, Properties and more are dumped."
             });
             set.Add(new Tool
             {
@@ -283,6 +304,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility" },
                 subCategory = "Databases",
+                description = "Scans ME3 and creates a database of all the classes and properties for those classes that Bioware uses.\n\nThis is different than Package Dumper, as it looks across all instances of the class and what is actually used."
             });
             set.Add(new Tool
             {
@@ -295,6 +317,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility" },
                 subCategory = "Properties",
+                description = "Dumps property information.\n\nThis tool has been replaced by Package Dumper and will be removed in the next release."
             });
             set.Add(new Tool
             {
@@ -307,6 +330,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility" },
                 subCategory = "Properties",
+                description = "Allos you to create a custom database of properties.\n\nThis tool is deprecated and will be removed in the next release."
             });
             set.Add(new Tool
             {
@@ -319,6 +343,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "mesh", "animation" },
                 subCategory = "Explorers",
+                description = "View the data contained in a PSA animation file extracted using Gildor's umodel toolkit."
             });
             set.Add(new Tool
             {
@@ -331,6 +356,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "mesh" },
                 subCategory = "Explorers",
+                description = "View the data contained in a PSK skeletal mesh file extracted using Gildor's umodel toolkit."
             });
             set.Add(new Tool
             {
@@ -486,37 +512,21 @@ namespace ME3Explorer
                 tags = new List<string>(),
                 subCategory = other,
             });
-            set.Add(new Tool
+            //Benji's tool. Uncomment when we have more progress.
+            /*set.Add(new Tool
             {
                 name = "Level Explorer",
-                type = typeof(LevelExplorer.LevelEditor.Leveleditor),
+                type = typeof(LevelExplorer.LevelExplorer),
                 icon = Application.Current.FindResource("iconLevelEditor") as ImageSource,
                 open = () =>
                 {
-                    (new LevelExplorer.LevelEditor.Leveleditor()).Show();
+                    (new LevelExplorer.LevelExplorer()).Show();
                 },
                 tags = new List<string> { "developer" },
                 subCategory = other,
-                description = "Level Explorer allows you to view the meshes of a level. This tool is deprecated, no longer supported, and will be replaced in the future.\n\nFor those who have trouble with this tool, level objects can also be visualized with ME3Creator.",
+                description = "Level Explorer allows you to view the meshes of a level.",
 
-            });
-            set.Add(new Tool
-            {
-                name = "ME3 Creator",
-                type = typeof(ME3Creator.Form1),
-                icon = Application.Current.FindResource("iconME3Creator") as ImageSource,
-                open = () =>
-                {
-                    string loc = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                    if (File.Exists(loc + "\\ME3Creator.exe"))
-                    {
-                        Process.Start(loc + "\\ME3Creator.exe");
-                    }
-                },
-                tags = new List<string> { "developer", "level" },
-                subCategory = "Core",
-                description = "ME3Creator is deprecated. All functionalities save the level viewer and file header viewer are now incorporated into Package Editor. It will be removed from the toolset in the near future.",
-            });
+            });*/
             set.Add(new Tool
             {
                 name = "Mesh Database",
@@ -534,7 +544,7 @@ namespace ME3Explorer
             {
                 name = "Package Editor",
                 type = typeof(PackageEditor),
-                icon = Application.Current.FindResource("iconPackageEditor") as ImageSource,
+                icon = Application.Current.FindResource("iconPackageEditorClassic") as ImageSource,
                 open = () =>
                 {
                     PackageEditor pck = new PackageEditor();
@@ -542,7 +552,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
                 subCategory = "Core",
-                description = "Package Editor is the toolset's main tool for editing trilogy package files in various formats (PCC, SFM, UPK). Properties, arrays, names, curve data, and more can all be easily added and edited."
+                description = "Package Editor Classic is a tool for editing trilogy package files in various formats (PCC, SFM, UPK). Properties, arrays, names, curve data, and more can all be easily added and edited.\n\nPackage Editor Classic has been mostly replaced by Package Editor WPF, and will eventually placed into a deprecated status."
             });
             set.Add(new Tool
             {
@@ -556,7 +566,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "user", "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
                 subCategory = "Core",
-                description = "Package Editor WPF is a complete rewrite of Package Editor using the WPF design language. It is currently under development."
+                description = "Package Editor WPF is a complete rewrite of Package Editor using the WPF design language. Edit trilogy game files in a single window with access to external tools such as Curve Editor and Soundplorer, right in the same window."
             });
             set.Add(new Tool
             {
@@ -567,7 +577,7 @@ namespace ME3Explorer
                 {
                     (new PathfindingEditor()).Show();
                 },
-                tags = new List<string> { "user","developer", "path", "ai", "combat", "spline", "spawn", "map", "path", "node", "cover", "level" },
+                tags = new List<string> { "user", "developer", "path", "ai", "combat", "spline", "spawn", "map", "path", "node", "cover", "level" },
                 subCategory = "Core",
                 description = "Pathfinding Editor allows you to modify pathing nodes so squadmates and enemies can move around a map. You can also edit placement of several different types of level objects such as StaticMeshes, Splines, CoverSlots, and more.",
             });
@@ -609,11 +619,11 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "dlc" },
                 subCategory = other,
-                description = "SFAR Editor 2 is an advanced SFAR exploration and editing tool for ME3. With DLC unpacking now the norm and the advent of DLC mods, this tool will be used by few modders.",
+                description = "SFAR Editor 2 allows you to explore SFAR files in Mass Effect 3. This tool has been deprecated as DLC unpacking and AutoTOC has replaced the need to inspect SFAR files.",
             });
             set.Add(new Tool
             {
-                name = "Soundplorer",
+                name = "Soundplorer Classic",
                 type = typeof(SoundplorerWinforms),
                 icon = Application.Current.FindResource("iconSoundplorer") as ImageSource,
                 open = () =>
@@ -622,7 +632,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "audio", "dialogue", "music", "wav", "ogg", "sound" },
                 subCategory = "Scene Shop",
-                description = "Soundplorer provides access to all Wwisestream and Wwisebank objects inside an ME3 PCC. Sounds can be played within the tool, exported, and changed via import.",
+                description = "Soundplorer provides access to all Wwisestream and Wwisebank objects inside an ME3 PCC. Sounds can be played within the tool, exported, and changed via import.\n\nThis tool is deprecated and has been replaced by Soundplorer WPF.",
             });
             set.Add(new Tool
             {
@@ -635,7 +645,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound" },
                 subCategory = "Scene Shop",
-                description = "Soundplorer WPF is the newly rewritten version of Soundplorer.",
+                description = "Soundplorer WPF is the newly rewritten version of Soundplorer. Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
             });
             set.Add(new Tool
             {
@@ -648,7 +658,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "texture", "tfc", "scan", "tree" },
                 subCategory = "Meshes + Textures",
-                description = "For users and modders alike, Texplorer is the toolset's primary texture tool for the trilogy. Textures are organized into a package tree, and each is displayed with its associated data. Textures can be searched, extracted/replaced, and exported into TPF Tools."
+                description = "TEXPLORER IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nTexplorer is a texturing utility that allows users to browse and install textures for all 3 Mass Effect trilogy games. It has been superceded by Mass Effect Modder (MEM) in most regards."
             });
             set.Add(new Tool
             {

@@ -8,6 +8,7 @@ using ME3Explorer.Unreal.Classes;
 using ME3Explorer.WwiseBankEditor;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -42,17 +43,20 @@ namespace ME3Explorer.Soundplorer
         public static readonly string SoundplorerDataFolder = System.IO.Path.Combine(App.AppDataFolder, @"Soundplorer\");
         private readonly string RECENTFILES_FILE = "RECENTFILES";
         public List<string> RFiles;
-
+        private string LoadedISBFile;
         BackgroundWorker backgroundScanner;
-        public BindingList<SoundplorerExport> BindedExportsList { get; set; }
-
-
+        public ObservableCollectionExtended<object> BindedItemsList { get; set; } = new ObservableCollectionExtended<object>();
 
         private bool _isBusy;
         public bool IsBusy
         {
             get { return _isBusy; }
             set { if (_isBusy != value) { _isBusy = value; OnPropertyChanged(); } }
+        }
+
+        public bool AudioFileLoaded
+        {
+            get { return Pcc != null || LoadedISBFile != null; }
         }
 
         private bool _isBusyTaskbar;
@@ -76,9 +80,10 @@ namespace ME3Explorer.Soundplorer
             set { if (_taskbarText != value) { _taskbarText = value; OnPropertyChanged(); } }
         }
 
+
         public SoundplorerWPF()
         {
-            TaskbarText = "Open a file to view sound-related exports";
+            TaskbarText = "Open a file to view sound-related exports/data";
             InitializeComponent();
 
             LoadRecentList();
@@ -120,22 +125,11 @@ namespace ME3Explorer.Soundplorer
         {
             if (propogate && recents != null)
             {
-                //we are posting an update to other instances of packed
-
-                //This code can be removed when non-WPF package editor is removed.
-                var forms = System.Windows.Forms.Application.OpenForms;
-                foreach (System.Windows.Forms.Form form in forms)
+                foreach (var window in App.Current.Windows)
                 {
-                    if (form is PackageEditor) //it will never be "this"
+                    if (window is SoundplorerWPF && this != window)
                     {
-                        ((PackageEditor)form).RefreshRecent(false, RFiles);
-                    }
-                }
-                foreach (var form in App.Current.Windows)
-                {
-                    if (form is PackageEditorWPF && this != form)
-                    {
-                        ((PackageEditorWPF)form).RefreshRecent(false, RFiles);
+                        ((SoundplorerWPF)window).RefreshRecent(false, RFiles);
                     }
                 }
             }
@@ -202,16 +196,13 @@ namespace ME3Explorer.Soundplorer
 
         private void OpenCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = "*.pcc|*.pcc" };
+            OpenFileDialog d = new OpenFileDialog { Filter = "Package files and ISB|*.pcc;*.u;*.sfm;*.upk;*.isb" };
             bool? result = d.ShowDialog();
             if (result.HasValue && result.Value)
             {
                 try
                 {
                     LoadFile(d.FileName);
-                    AddRecent(d.FileName, false);
-                    SaveRecentList();
-                    RefreshRecent(true, RFiles);
                 }
                 catch (Exception ex)
                 {
@@ -228,31 +219,60 @@ namespace ME3Explorer.Soundplorer
                 StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
                 TaskbarText = "Loading " + System.IO.Path.GetFileName(fileName) + " (" + ByteSize.FromBytes(new System.IO.FileInfo(fileName).Length) + ")";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
-                LoadMEPackage(fileName);
+
                 StatusBar_GameID_Container.Visibility = Visibility.Visible;
 
-                switch (Pcc.Game)
+                if (Pcc != null)
                 {
-                    case MEGame.ME1:
-                        StatusBar_GameID_Text.Text = "ME1";
-                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
-                        break;
-                    case MEGame.ME2:
-                        StatusBar_GameID_Text.Text = "ME2";
-                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Maroon);
-                        break;
-                    case MEGame.ME3:
-                        StatusBar_GameID_Text.Text = "ME3";
-                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.DarkSeaGreen);
-                        break;
-                    case MEGame.UDK:
-                        StatusBar_GameID_Text.Text = "UDK";
-                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.IndianRed);
-                        break;
+                    Pcc.Release();
+                    Pcc = null;
+                }
+                LoadedISBFile = null;
+
+                if (System.IO.Path.GetExtension(fileName).ToLower() == ".isb")
+                {
+                    LoadedISBFile = fileName;
+                    StatusBar_GameID_Text.Text = "ISB";
+                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
+                }
+                else
+                {
+                    LoadMEPackage(fileName);
+                    switch (Pcc.Game)
+                    {
+                        case MEGame.ME1:
+                            StatusBar_GameID_Text.Text = "ME1";
+                            StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
+                            break;
+                        case MEGame.ME2:
+                            StatusBar_GameID_Text.Text = "ME2";
+                            StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Maroon);
+                            break;
+                        case MEGame.ME3:
+                            StatusBar_GameID_Text.Text = "ME3";
+                            StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.DarkSeaGreen);
+                            break;
+                        case MEGame.UDK:
+                            StatusBar_GameID_Text.Text = "UDK";
+                            StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.IndianRed);
+                            break;
+                    }
                 }
 
-                LoadObjects();
+
+                if (LoadedISBFile != null)
+                {
+                    LoadISB();
+                }
+                else
+                {
+                    LoadObjects();
+                }
                 Title = "Soundplorer - " + System.IO.Path.GetFileName(fileName);
+                OnPropertyChanged("AudioFileLoaded");
+                AddRecent(fileName, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
             }
             catch (Exception ex)
             {
@@ -260,34 +280,90 @@ namespace ME3Explorer.Soundplorer
             }
         }
 
+        private async void LoadISB()
+        {
+            BindedItemsList.ClearEx();
+            IsBusyTaskbar = true;
+            TaskbarText = "Loading ISB: " + System.IO.Path.GetFileName(LoadedISBFile);
+            if (backgroundScanner != null && backgroundScanner.IsBusy)
+            {
+                backgroundScanner.CancelAsync(); //cancel current operation
+                while (backgroundScanner.IsBusy)
+                {
+                    //I am sorry for this. I truely am. 
+                    //But it's the simplest code to get the job done while we wait for the thread to finish.
+                    await Task.Delay(200);
+                }
+            }
+
+            //Background thread as larger ISB parsing can lock up the UI for a few seconds.
+            backgroundScanner = new BackgroundWorker();
+            backgroundScanner.DoWork += LoadISBFile;
+            backgroundScanner.RunWorkerCompleted += LoadISBFile_Completed;
+            backgroundScanner.WorkerSupportsCancellation = true;
+            backgroundScanner.RunWorkerAsync(LoadedISBFile);
+        }
+
+        private void LoadISBFile_Completed(object sender, RunWorkerCompletedEventArgs e)
+        {
+            ISBank result = (ISBank)e.Result;
+            if (result != null)
+            {
+                List<ISACTFileEntry> entries = new List<ISACTFileEntry>(result.BankEntries.Where(x => x.DataAsStored != null).Select(x => new ISACTFileEntry(x)).ToList());
+                BindedItemsList.AddRange(entries);
+                backgroundScanner = new BackgroundWorker();
+                backgroundScanner.DoWork += GetStreamTimes;
+                backgroundScanner.RunWorkerCompleted += GetStreamTimes_Completed;
+                backgroundScanner.WorkerReportsProgress = true;
+                backgroundScanner.ProgressChanged += GetStreamTimes_ReportProgress;
+                backgroundScanner.WorkerSupportsCancellation = true;
+                backgroundScanner.RunWorkerAsync(entries.Cast<object>().ToList());
+            }
+        }
+
+        private void LoadISBFile(object sender, DoWorkEventArgs e)
+        {
+            ISBank bank = new ISBank((string)e.Argument);
+            e.Result = bank;
+        }
+
         private void GetStreamTimes(object sender, DoWorkEventArgs e)
         {
-            var ExportsToLoad = (List<SoundplorerExport>)e.Argument;
+            var ExportsToLoad = (List<object>)e.Argument;
             int i = 0;
-            foreach (SoundplorerExport se in ExportsToLoad)
+            foreach (object se in ExportsToLoad)
             {
                 if (backgroundScanner.CancellationPending == true)
                 {
                     e.Cancel = true;
                     return;
                 }
-                backgroundScanner.ReportProgress((int)((i * 100.0) / BindedExportsList.Count));
+                backgroundScanner.ReportProgress((int)((i * 100.0) / BindedItemsList.Count));
                 //Debug.WriteLine("Getting time for " + se.Export.UIndex);
-                se.LoadData();
+                if (se is SoundplorerExport)
+                {
+                    (se as SoundplorerExport).LoadData();
+                }
+                if (se is ISACTFileEntry)
+                {
+                    (se as ISACTFileEntry).LoadData();
+
+                }
                 i++;
             }
         }
 
-        private async void LoadObjects(List<SoundplorerExport> ExportsToReload = null)
+        private async void LoadObjects(List<SoundplorerExport> exportsToReload = null)
         {
-            if (ExportsToReload == null)
+            if (exportsToReload == null)
             {
-                BindedExportsList = new BindingList<SoundplorerExport>(Pcc.Exports.Where(e => e.ClassName == "WwiseBank" || e.ClassName == "WwiseStream").Select(x => new SoundplorerExport(x)).ToList());
-                SoundExports_ListBox.ItemsSource = BindedExportsList;
+                BindedItemsList.Clear();
+                BindedItemsList.AddRange(Pcc.Exports.Where(e => e.ClassName == "WwiseBank" || e.ClassName == "WwiseStream").Select(x => new SoundplorerExport(x)));
+                //SoundExports_ListBox.ItemsSource = BindedExportsList; //todo: figure out why this is required and data is not binding
             }
             else
             {
-                foreach (SoundplorerExport se in ExportsToReload)
+                foreach (SoundplorerExport se in exportsToReload)
                 {
                     se.SubText = "Refreshing";
                     se.NeedsLoading = true;
@@ -312,19 +388,20 @@ namespace ME3Explorer.Soundplorer
             backgroundScanner.WorkerReportsProgress = true;
             backgroundScanner.ProgressChanged += GetStreamTimes_ReportProgress;
             backgroundScanner.WorkerSupportsCancellation = true;
-            backgroundScanner.RunWorkerAsync(ExportsToReload != null ? ExportsToReload : BindedExportsList.ToList());
+            backgroundScanner.RunWorkerAsync(exportsToReload != null ? exportsToReload.Cast<object>().ToList() : BindedItemsList.ToList());
             IsBusyTaskbar = true;
             //string s = i.ToString("d6") + " : " + e.ClassName + " : \"" + e.ObjectName + "\"";
         }
 
         private void GetStreamTimes_ReportProgress(object sender, ProgressChangedEventArgs e)
         {
-            TaskbarText = "Parsing " + System.IO.Path.GetFileName(Pcc.FileName) + " (" + e.ProgressPercentage + "%)";
+            IsBusyTaskbar = true; //enforce spinner
+            TaskbarText = "Parsing " + System.IO.Path.GetFileName(LoadedISBFile ?? Pcc.FileName) + " (" + e.ProgressPercentage + "%)";
         }
 
         private void GetStreamTimes_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
-            TaskbarText = System.IO.Path.GetFileName(Pcc.FileName);
+            TaskbarText = System.IO.Path.GetFileName(LoadedISBFile ?? Pcc.FileName);
             IsBusyTaskbar = false;
         }
 
@@ -336,7 +413,7 @@ namespace ME3Explorer.Soundplorer
         private void SaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             SaveFileDialog d = new SaveFileDialog();
-            string extension = System.IO.Path.GetExtension(pcc.FileName);
+            string extension = System.IO.Path.GetExtension(Pcc.FileName);
             d.Filter = $"*{extension}|*{extension}";
             bool? result = d.ShowDialog();
             if (result.HasValue && result.Value)
@@ -346,21 +423,26 @@ namespace ME3Explorer.Soundplorer
             }
         }
 
-
         public override void handleUpdate(List<PackageUpdate> updates)
         {
+            if (LoadedISBFile != null)
+            {
+                return; //we don't handle updates on ISB
+            }
+
+            List<SoundplorerExport> bindedListAsCasted = BindedItemsList.Cast<SoundplorerExport>().ToList();
             List<PackageChange> changes = updates.Select(x => x.change).ToList();
             bool importChanges = changes.Contains(PackageChange.Import) || changes.Contains(PackageChange.ImportAdd);
             bool exportNonDataChanges = changes.Contains(PackageChange.ExportHeader) || changes.Contains(PackageChange.ExportAdd);
 
-            var loadedIndexes = BindedExportsList.Where(x => x.Export != null).Select(y => y.Export.Index).ToList();
+            var loadedIndexes = bindedListAsCasted.Where(x => x.Export != null).Select(y => y.Export.Index).ToList();
 
             List<SoundplorerExport> exportsRequiringReload = new List<SoundplorerExport>();
             foreach (PackageUpdate pc in updates)
             {
                 if (loadedIndexes.Contains(pc.index))
                 {
-                    SoundplorerExport sp = BindedExportsList.First(x => x.Export.Index == pc.index);
+                    SoundplorerExport sp = bindedListAsCasted.First(x => x.Export.Index == pc.index);
                     exportsRequiringReload.Add(sp);
                 }
             }
@@ -378,19 +460,30 @@ namespace ME3Explorer.Soundplorer
                     }
                 }
                 LoadObjects(exportsRequiringReload);
-                soundPanel.LoadExport(spExport.Export); //reload
+
+                if (spExport != null)
+                {
+                    soundPanel.LoadExport(spExport.Export); //reload
+                }
             }
         }
 
         private void SoundExports_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
+            object selectedItem = SoundExports_ListBox.SelectedItem;
+            SoundplorerExport spExport = selectedItem as SoundplorerExport;
             if (spExport == null)
             {
                 soundPanel.UnloadExport();
-                return;
             }
-            soundPanel.LoadExport(spExport.Export);
+            ISACTFileEntry isEntry = selectedItem as ISACTFileEntry;
+            if (isEntry == null)
+            {
+                soundPanel.UnloadISACTEntry();
+            }
+            if (isEntry != null) soundPanel.LoadISACTEntry(isEntry.Entry);
+            if (spExport != null) soundPanel.LoadExport(spExport.Export);
+
         }
 
         private void Soundplorer_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -468,17 +561,23 @@ namespace ME3Explorer.Soundplorer
             SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
             if (spExport != null && spExport.Export.ClassName == "WwiseBank")
             {
-                SaveFileDialog d = new SaveFileDialog();
+                ExportBank(spExport);
+            }
+        }
 
-                d.Filter = "WwiseBank|*.bnk";
-                d.FileName = spExport.Export.ObjectName + ".bnk";
-                bool? res = d.ShowDialog();
-                if (res.HasValue && res.Value)
-                {
-                    //File.WriteAllBytes(d.FileName, spExport.Export.getBinaryData());
-                    File.WriteAllBytes(d.FileName, spExport.Export.Data);
-                    MessageBox.Show("Done.");
-                }
+        private void ExportBank(SoundplorerExport spExport)
+        {
+            SaveFileDialog d = new SaveFileDialog();
+
+            d.Filter = "WwiseBank|*.bnk";
+            d.FileName = spExport.Export.ObjectName + ".bnk";
+            d.Title = "Select save location for bank file";
+            bool? res = d.ShowDialog();
+            if (res.HasValue && res.Value)
+            {
+                //File.WriteAllBytes(d.FileName, spExport.Export.getBinaryData());
+                File.WriteAllBytes(d.FileName, spExport.Export.Data);
+                MessageBox.Show("Done.");
             }
         }
 
@@ -504,7 +603,7 @@ namespace ME3Explorer.Soundplorer
                 {
                     foldername = System.IO.Path.GetFileName(System.IO.Directory.GetParent(dlg.FileName).FullName);
                 }
-                string result = PromptDialog.Prompt("Enter an AFC filename that all mod referenced items will be repointed to.\n\nCompacting AFC folder: " + foldername, "Enter an AFC filename");
+                string result = PromptDialog.Prompt(this, "Enter an AFC filename that all mod referenced items will be repointed to.\n\nCompacting AFC folder: " + foldername, "Enter an AFC filename");
                 if (result != null)
                 {
                     var regex = new Regex(@"^[a-zA-Z0-9_]+$");
@@ -786,7 +885,7 @@ namespace ME3Explorer.Soundplorer
 
         private void CloneAndReplace(bool fromWave)
         {
-            string result = PromptDialog.Prompt("Enter a new object name for the cloned item.", "Cloned export name");
+            string result = PromptDialog.Prompt(this, "Enter a new object name for the cloned item.", "Cloned export name");
             if (result != null)
             {
                 SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
@@ -796,7 +895,7 @@ namespace ME3Explorer.Soundplorer
                     clone.idxObjectName = clone.FileRef.FindNameOrAdd(result);
                     spExport.Export.FileRef.addExport(clone);
                     SoundplorerExport newExport = new SoundplorerExport(clone);
-                    BindedExportsList.Add(newExport);
+                    BindedItemsList.Add(newExport);
                     var reloadList = new List<SoundplorerExport>();
                     reloadList.Add(newExport);
                     SoundExports_ListBox.ScrollIntoView(newExport);
@@ -881,16 +980,25 @@ namespace ME3Explorer.Soundplorer
             var location = dlg.FileName;
 
             IsBusy = true;
-            foreach (SoundplorerExport sp in BindedExportsList)
+            foreach (object o in BindedItemsList)
             {
-                if (sp.Export.ClassName == "WwiseStream")
+                if (o is SoundplorerExport sp)
                 {
-                    string outfile = System.IO.Path.Combine(location, sp.Export.ObjectName + ".wav");
-                    ExportWave(sp, outfile);
+                    if (sp.Export.ClassName == "WwiseStream")
+                    {
+                        string outfile = System.IO.Path.Combine(location, sp.Export.ObjectName + ".wav");
+                        ExportWave(sp, outfile);
+                    }
+                    if (sp.Export.ClassName == "WwiseBank")
+                    {
+                        ExtractBankToWav(sp, location);
+                    }
                 }
-                if (sp.Export.ClassName == "WwiseBank")
+                if (o is ISACTFileEntry ife)
                 {
-                    ExtractBankToWav(sp, location);
+                    string outfile = System.IO.Path.Combine(location, System.IO.Path.GetFileNameWithoutExtension(ife.Entry.FileName) + ".wav");
+                    MemoryStream ms = ife.Entry.GetWaveStream();
+                    File.WriteAllBytes(outfile, ms.ToArray());
                 }
             }
             IsBusy = false;
@@ -958,11 +1066,100 @@ namespace ME3Explorer.Soundplorer
                 soundPanel.StartOrPausePlaying();
             }
         }
+
+        private void DebugWriteBankToFileRebuild_Clicked(object sender, RoutedEventArgs e)
+        {
+            SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
+            if (spExport != null)
+            {
+                if (spExport.Export.ClassName == "WwiseBank")
+                {
+                    WwiseBank wb = new WwiseBank(spExport.Export);
+                    var embeddedWEMFiles = wb.GetWEMFilesMetadata();
+                    var data = wb.GetChunk("DATA");
+                    int i = 0;
+                    if (embeddedWEMFiles.Count > 0)
+                    {
+                        List<EmbeddedWEMFile> AllWems = new List<EmbeddedWEMFile>();
+                        foreach (var singleWemMetadata in embeddedWEMFiles)
+                        {
+                            byte[] wemData = new byte[singleWemMetadata.Item3];
+                            //copy WEM data to buffer. Add 0x8 to skip DATA and DATASIZE header for this block.
+                            Buffer.BlockCopy(data, singleWemMetadata.Item2 + 0x8, wemData, 0, singleWemMetadata.Item3);
+                            //check for RIFF header as some don't seem to have it and are not playable.
+                            string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
+
+                            string wemId = singleWemMetadata.Item1.ToString("X8");
+                            string wemName = "Embedded WEM 0x" + wemId;// + "(" + singleWemMetadata.Item1 + ")";
+
+                            EmbeddedWEMFile wem = new EmbeddedWEMFile(wemData, i + ": " + wemName, spExport.Export.FileRef.Game, singleWemMetadata.Item1);
+                            AllWems.Add(wem);
+                            i++;
+                        }
+                        wb.UpdateDataChunk(AllWems);
+                        ExportBank(spExport);
+                    }
+                }
+            }
+        }
+
+        private void OpenME1ISB_Clicked(object sender, RoutedEventArgs e)
+        {
+            var package = MEPackageHandler.OpenMEPackage(@"D:\Origin Games\Mass Effect\BioGame\CookedPC\Packages\Audio_Content\snd_cinematic_amb.upk");
+            foreach (IExportEntry export in package.Exports)
+            {
+                if (export.ClassName == "SoundNodeWave")
+                {
+                    Debug.WriteLine(export.ObjectName);
+                    byte[] binData = export.Data.Skip(export.propsEnd() + 20).ToArray();
+                    ISBank isb = new ISBank(binData, true);
+                    Debug.WriteLine("PCM SIG " + 1053609165.ToString("X8"));
+                    foreach (ISBankEntry isbe in isb.BankEntries)
+                    {
+                        if (isbe.DataAsStored == null) continue;
+                        Debug.WriteLine("+++" + isbe.FileName);
+                        Debug.WriteLine("Type signature1: " + isbe.CodecID + " " + isbe.CodecID.ToString("X8"));
+                        Debug.WriteLine("Type signature2: " + isbe.CodecID2 + " " + isbe.CodecID2.ToString("X8"));
+
+                    }
+                }
+            }
+        }
+
+        private void ExtractISACTAsRaw_Clicked(object sender, RoutedEventArgs e)
+        {
+            ISACTFileEntry spExport = SoundExports_ListBox.SelectedItem as ISACTFileEntry;
+            if (spExport != null)
+            {
+                ExportISACTEntryRaw(spExport);
+            }
+        }
+
+        private void ExtractISACTAsWave_Clicked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ExportISACTEntryRaw(ISACTFileEntry spExport)
+        {
+            SaveFileDialog d = new SaveFileDialog();
+
+            d.Filter = "ISACT Audio|*.isa";
+            d.FileName = spExport.Entry.FileName + ".isa";
+            d.Title = "Select save location for ISACT file";
+            bool? res = d.ShowDialog();
+            if (res.HasValue && res.Value)
+            {
+                //File.WriteAllBytes(d.FileName, spExport.Export.getBinaryData());
+                File.WriteAllBytes(d.FileName, spExport.Entry.DataAsStored);
+                MessageBox.Show("Done.");
+            }
+        }
     }
 
-    public class SoundplorerExport : INotifyPropertyChanged
+    public class ISACTFileEntry : INotifyPropertyChanged
     {
-        public IExportEntry Export { get; set; }
+        public ISBankEntry Entry { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -1023,19 +1220,126 @@ namespace ME3Explorer.Soundplorer
                 }
             }
         }
+        public ISACTFileEntry(ISBankEntry entry)
+        {
+            this.Entry = entry;
+            SubText = "Calculating stream length";
+            Icon = FontAwesomeIcon.Spinner;
+            NeedsLoading = true;
+            UpdateDisplay();
+        }
+
+        private void UpdateDisplay()
+        {
+            DisplayString = Entry.FileName;
+        }
+
+        public void LoadData()
+        {
+            if (Entry.DataAsStored != null)
+            {
+                //Debug.WriteLine("getting time for " + Entry.FileName + " Ogg: " + Entry.isOgg);
+                TimeSpan? time = Entry.GetLength();
+                if (time != null)
+                {
+                    //here backslash must be present to tell that parser colon is
+                    //not the part of format, it just a character that we want in output
+                    SubText = time.Value.ToString(@"mm\:ss\:fff");
+                }
+                else
+                {
+                    SubText = "Error getting length, may be unsupported";
+                }
+            }
+            else
+            {
+                SubText = "Sound stub only";
+            }
+            NeedsLoading = false;
+            Icon = FontAwesomeIcon.VolumeUp;
+        }
+
+
+
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    public class SoundplorerExport : INotifyPropertyChanged
+    {
+        public IExportEntry Export { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private bool _needsLoading;
+        public bool NeedsLoading
+        {
+            get { return _needsLoading; }
+            set
+            {
+                if (value != this._needsLoading)
+                {
+                    this._needsLoading = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private FontAwesomeIcon _icon;
+        public FontAwesomeIcon Icon
+        {
+            get { return _icon; }
+            set
+            {
+                if (value != this._icon)
+                {
+                    this._icon = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _timeString;
+        public string SubText
+        {
+            get { return _timeString; }
+            set
+            {
+                if (value != this._timeString)
+                {
+                    this._timeString = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _displayString;
+        public string DisplayString
+        {
+            get { return _displayString; }
+            set
+            {
+                if (value != this._displayString)
+                {
+                    this._displayString = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         public SoundplorerExport(IExportEntry export)
         {
             this.Export = export;
             if (Export.ClassName == "WwiseStream")
             {
                 SubText = "Calculating stream length";
-                Icon = FontAwesomeIcon.Spinner;
             }
             else
             {
                 SubText = "Calculating number of embedded WEMs";
-                Icon = FontAwesomeIcon.University;
             }
+            Icon = FontAwesomeIcon.Spinner;
             NeedsLoading = true;
             UpdateDisplay();
         }
@@ -1086,12 +1390,7 @@ namespace ME3Explorer.Soundplorer
 
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

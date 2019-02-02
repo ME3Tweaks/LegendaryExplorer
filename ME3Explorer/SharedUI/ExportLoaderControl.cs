@@ -21,7 +21,6 @@ namespace ME3Explorer
         /// <summary>
         /// The list of supported games that this loader control can handle. Typically used by CanParse().
         /// </summary>
-        public static MEGame[] SupportedGames;
         private IExportEntry _currentLoadedExport;
         /// <summary>
         /// The currently loaded export, or null if none is currently loaded

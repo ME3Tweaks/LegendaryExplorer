@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
-using SevenZip.Compression.LZMA;
 using KFreonLib.Debugging;
 using UsefulThings;
 using System.Threading.Tasks;
@@ -335,7 +334,7 @@ namespace ME3Explorer.Unreal
                         fs.Read(inputBlock, 0, (int)compressedBlockSize);
                         uint actualUncompressedBlockSize = uncompressedBlockSize;
                         uint actualCompressedBlockSize = compressedBlockSize;
-                        outputBlock = SevenZipHelper.Decompress(inputBlock, (int)actualUncompressedBlockSize);
+                        outputBlock = SevenZipHelper.LZMA.Decompress(inputBlock, actualUncompressedBlockSize);
                         if (outputBlock.Length != actualUncompressedBlockSize)
                             throw new Exception("Decompression Error");
                         result.Write(outputBlock, 0, (int)actualUncompressedBlockSize);
@@ -383,7 +382,7 @@ namespace ME3Explorer.Unreal
 
                 var decompressor = new TransformBlock<InputBlock, byte[]>(
                     input => input.IsCompressed
-                        ? SevenZipHelper.Decompress(input.Data, input.UncompressedSize)
+                        ? SevenZipHelper.LZMA.Decompress(input.Data, (uint)input.UncompressedSize)
                         : input.Data
                     , new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = DataflowBlockOptions.Unbounded }
                     );
@@ -476,7 +475,7 @@ namespace ME3Explorer.Unreal
                         uint actualUncompressedBlockSize = uncompressedBlockSize;
                         uint actualCompressedBlockSize = compressedBlockSize;
                         
-                        outputBlock = SevenZipHelper.Decompress(inputBlock, (int)actualUncompressedBlockSize);
+                        outputBlock = SevenZipHelper.LZMA.Decompress(inputBlock, actualUncompressedBlockSize);
                         if (outputBlock.Length != actualUncompressedBlockSize)
                             throw new Exception("Decompression Error");
                         result.Write(outputBlock, 0, (int)actualUncompressedBlockSize);

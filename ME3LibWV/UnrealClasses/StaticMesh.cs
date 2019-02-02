@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
 
 namespace ME3LibWV.UnrealClasses
 {
@@ -92,7 +91,6 @@ namespace ME3LibWV.UnrealClasses
             public int FirstIdx2;
             public int NumFaces2;
             public byte Unk6;
-            public CustomVertex.PositionNormalTextured[] RawTriangles;
         }
         public struct Bounding
         {
@@ -438,95 +436,6 @@ namespace ME3LibWV.UnrealClasses
             Mesh.End = endChunk;
         }
 
-
-        public override void Render(Device device)
-        {
-            device.VertexFormat = CustomVertex.PositionNormalTextured.Format;
-            device.RenderState.Lighting = true;
-            device.RenderState.FillMode = FillMode.Solid;
-            device.Transform.World = ParentMatrix * TempMatrix;
-            device.RenderState.CullMode = Cull.None;
-            try
-            {
-                for (int i = 0; i < Mesh.Mat.Lods[0].SectionCount; i++)
-                {
-                    Section sec = Mesh.Mat.Lods[0].Sections[i];
-                    if(!Selected )
-                        device.SetTexture(0, DXHelper.DefaultTex);
-                    else
-                        device.SetTexture(0, DXHelper.SelectTex);
-                    if (sec.RawTriangles == null)
-                    {
-                        Mesh.Mat.Lods[0].Sections[i] = MakeMesh(sec);
-                    }
-                    if (sec.RawTriangles != null && sec.RawTriangles.Length != 0)
-                        device.DrawUserPrimitives(PrimitiveType.TriangleList, sec.RawTriangles.Length / 3, sec.RawTriangles);
-                }
-            }
-            catch (Exception e)
-            {
-                DebugLog.PrintLn("Static Mesh #" + MyIndex + " ERROR: " + e.Message);
-            }
-        }
-
-        private Section MakeMesh(Section sec)
-        {
-            sec.RawTriangles = new CustomVertex.PositionNormalTextured[sec.NumFaces1 * 3];
-            try
-            {
-                if (Mesh.IdxBuf.Indexes.Count() != 0)
-                    for (int j = 0; j < sec.NumFaces1; j++)
-                    {
-                        int Idx = Mesh.IdxBuf.Indexes[sec.FirstIdx1 + j * 3];
-                        Vector3 pos = Mesh.Vertices.Points[Idx];
-                        Vector2 UV = Mesh.Edges.UVSet[Idx].UVs[0];
-                        sec.RawTriangles[j * 3] = new CustomVertex.PositionNormalTextured(pos, new Vector3(0, 0, 0), UV.X, UV.Y);
-                        Idx = Mesh.IdxBuf.Indexes[sec.FirstIdx1 + j * 3 + 1];
-                        pos = Mesh.Vertices.Points[Idx];
-                        UV = Mesh.Edges.UVSet[Idx].UVs[0];
-                        sec.RawTriangles[j * 3 + 1] = new CustomVertex.PositionNormalTextured(pos, new Vector3(0, 0, 0), UV.X, UV.Y);
-                        Idx = Mesh.IdxBuf.Indexes[sec.FirstIdx1 + j * 3 + 2];
-                        pos = Mesh.Vertices.Points[Idx];
-                        UV = Mesh.Edges.UVSet[Idx].UVs[0];
-                        sec.RawTriangles[j * 3 + 2] = new CustomVertex.PositionNormalTextured(pos, new Vector3(0, 0, 0), UV.X, UV.Y);
-                    }
-                else
-                    for (int j = 0; j < sec.NumFaces1; j++)
-                    {
-                        int Idx = Mesh.RawTris.RawTriangles[sec.FirstIdx1 / 3 + j].v0;
-                        Vector3 pos = Mesh.Vertices.Points[Idx];
-                        Vector2 UV = Mesh.Edges.UVSet[Idx].UVs[0];
-                        sec.RawTriangles[j * 3] = new CustomVertex.PositionNormalTextured(pos, new Vector3(0, 0, 0), UV.X, UV.Y);
-                        Idx = Mesh.RawTris.RawTriangles[sec.FirstIdx1 / 3 + j].v1;
-                        pos = Mesh.Vertices.Points[Idx];
-                        UV = Mesh.Edges.UVSet[Idx].UVs[0];
-                        sec.RawTriangles[j * 3 + 1] = new CustomVertex.PositionNormalTextured(pos, new Vector3(0, 0, 0), UV.X, UV.Y);
-                        Idx = Mesh.RawTris.RawTriangles[sec.FirstIdx1 / 3 + j].v2;
-                        pos = Mesh.Vertices.Points[Idx];
-                        UV = Mesh.Edges.UVSet[Idx].UVs[0];
-                        sec.RawTriangles[j * 3 + 2] = new CustomVertex.PositionNormalTextured(pos, new Vector3(0, 0, 0), UV.X, UV.Y);
-                    }
-            }
-            catch (Exception e)
-            {
-                DebugLog.PrintLn("Static Mesh #" + MyIndex + " error on reading dx mesh: " + e.Message);
-                sec.RawTriangles = new CustomVertex.PositionNormalTextured[0];
-            }
-            for (int j = 0; j < sec.RawTriangles.Length; j += 3)
-            {
-                Vector3 p0 = sec.RawTriangles[j].Position - sec.RawTriangles[j + 1].Position;
-                Vector3 p1 = sec.RawTriangles[j].Position - sec.RawTriangles[j + 2].Position;
-                p0.Normalize();
-                p1.Normalize();
-                Vector3 n = Vector3.Cross(p0, p1);
-                sec.RawTriangles[j].Normal = n;
-                sec.RawTriangles[j + 1].Normal = n;
-                sec.RawTriangles[j + 2].Normal = n;                
-            }
-            if (sec.RawTriangles.Length != 0)
-                DXHelper.cam = Vector3.TransformCoordinate(sec.RawTriangles[0].Position, ParentMatrix);
-            return sec;
-        }
         public override TreeNode ToTree()
         {
             TreeNode t = new TreeNode("E#" + MyIndex.ToString("d6") + " : " + pcc.getObjectName(MyIndex + 1));
@@ -537,43 +446,6 @@ namespace ME3LibWV.UnrealClasses
         public override void SetSelection(bool s)
         {
             Selected = s;
-        }
-
-        public override float Process3DClick(Vector3 org, Vector3 dir, float max)
-        {
-            float dist = max;
-            for (int i = 0; i < Mesh.Mat.Lods[0].SectionCount; i++)
-            {
-                Section sec = Mesh.Mat.Lods[0].Sections[i];
-                float d = -1f;
-                if (sec.RawTriangles != null)
-                    for (int j = 0; j < sec.RawTriangles.Length / 3; j++)
-                        if (DXHelper.RayIntersectTriangle(org,
-                                                dir,
-                                                Vector3.TransformCoordinate(sec.RawTriangles[j * 3].Position, ParentMatrix * TempMatrix),
-                                                Vector3.TransformCoordinate(sec.RawTriangles[j * 3 + 1].Position, ParentMatrix * TempMatrix),
-                                                Vector3.TransformCoordinate(sec.RawTriangles[j * 3 + 2].Position, ParentMatrix * TempMatrix),
-                                                out d))
-                        {
-                            if ((d < dist && d > 0) || (dist == -1f && d > 0))
-                                dist = d;
-                        }
-                        else
-                            if (DXHelper.RayIntersectTriangle(org,
-                                                dir,
-                                                Vector3.TransformCoordinate(sec.RawTriangles[j * 3].Position, ParentMatrix * TempMatrix),
-                                                Vector3.TransformCoordinate(sec.RawTriangles[j * 3 + 2].Position, ParentMatrix * TempMatrix),
-                                                Vector3.TransformCoordinate(sec.RawTriangles[j * 3 + 1].Position, ParentMatrix * TempMatrix),
-                                                out d))
-                                if ((d < dist && d > 0) || (dist == -1f && d > 0))
-                                    dist = d;
-            }
-            if (dist != -1 && (dist < max || max == -1))
-            {
-                DXHelper.level.DeSelectAll();
-                SetSelection(true);
-            }
-            return dist;
         }
     }
 }

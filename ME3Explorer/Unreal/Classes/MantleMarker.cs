@@ -12,8 +12,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
 using KFreonLib.Debugging;
 
 namespace ME3Explorer.Unreal.Classes
@@ -54,9 +53,6 @@ namespace ME3Explorer.Unreal.Classes
         public ME3Package pcc;
         public byte[] data;
         public List<PropertyReader.Property> Props;
-        public Matrix MyMatrix;
-        public CustomVertex.PositionColored[] points;
-        public CustomVertex.PositionColored[] points_sel;
         public bool isSelected = false;
         public bool isEdited = false;
 
@@ -116,45 +112,6 @@ namespace ME3Explorer.Unreal.Classes
                         break;
 #endregion
                 }
-            MyMatrix = Matrix.Translation(location);
-            GenerateMesh();
-        }
-
-        public void GenerateMesh()
-        {
-            List<CustomVertex.PositionColored> list = new List<CustomVertex.PositionColored>();
-
-            float w = 20;
-            float h = 100;
-            Vector3 z = new Vector3();
-            int c = Color.Brown.ToArgb();
-            list.Add(new CustomVertex.PositionColored(z, c));
-            list.Add(new CustomVertex.PositionColored(z + new Vector3(-w, -w, h), c));
-
-            list.Add(new CustomVertex.PositionColored(z, c));
-            list.Add(new CustomVertex.PositionColored(z + new Vector3(w, -w, h), c));
-
-            list.Add(new CustomVertex.PositionColored(z, c));
-            list.Add(new CustomVertex.PositionColored(z + new Vector3(w, w, h), c));
-
-            list.Add(new CustomVertex.PositionColored(z, c));
-            list.Add(new CustomVertex.PositionColored(z + new Vector3(-w, w, h), c));
-
-            list.Add(new CustomVertex.PositionColored(z + new Vector3(-w, -w, h), c));
-            list.Add(new CustomVertex.PositionColored(z + new Vector3(w, -w, h), c));
-
-            list.Add(new CustomVertex.PositionColored(z + new Vector3(w, -w, h), c));
-            list.Add(new CustomVertex.PositionColored(z + new Vector3(w, w, h), c));
-
-            list.Add(new CustomVertex.PositionColored(z + new Vector3(w, w, h), c));
-            list.Add(new CustomVertex.PositionColored(z + new Vector3(-w, w, h), c));
-
-            list.Add(new CustomVertex.PositionColored(z + new Vector3(-w, w, h), c));
-            list.Add(new CustomVertex.PositionColored(z + new Vector3(-w, -w, h), c));
-            points = list.ToArray();
-            points_sel = list.ToArray();
-            for (int i = 0; i < points_sel.Length; i++)
-                points_sel[i].Color = Color.Red.ToArgb();
         }
 
         public void SaveChanges()
@@ -239,7 +196,6 @@ namespace ME3Explorer.Unreal.Classes
             if (isSelected)
             {
                 location += new Vector3(m.M41, m.M42, m.M43);
-                MyMatrix = Matrix.Translation(location);
                 isEdited = true;
             }
         }
@@ -247,17 +203,6 @@ namespace ME3Explorer.Unreal.Classes
         public void SetSelection(bool Selected)
         {
             isSelected = Selected;
-        }
-
-        public void Render(Device device)
-        {
-            device.RenderState.Lighting = false;
-            device.Transform.World = MyMatrix;
-            device.VertexFormat = CustomVertex.PositionColored.Format;
-            if (points.Length != 0 && !isSelected)
-                device.DrawUserPrimitives(PrimitiveType.LineList, points.Length / 2, points);
-            if (points_sel.Length != 0 && isSelected)
-                device.DrawUserPrimitives(PrimitiveType.LineList, points_sel.Length / 2, points_sel);
         }
 
         public TreeNode ToTree()

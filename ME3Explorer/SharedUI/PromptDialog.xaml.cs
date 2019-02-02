@@ -27,13 +27,17 @@ namespace ME3Explorer.SharedUI
 
         private InputType _inputType = InputType.Text;
 
-        public PromptDialog(string question, string title, string defaultValue = "", InputType inputType = InputType.Text)
+        public PromptDialog(string question, string title, string defaultValue = "", bool selectText = false, InputType inputType = InputType.Text)
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(PromptDialog_Loaded);
             txtQuestion.Text = question;
             Title = title;
             txtResponse.Text = defaultValue;
+            if (selectText)
+            {
+                txtResponse.SelectAll();
+            }
             _inputType = inputType;
         }
 
@@ -42,9 +46,10 @@ namespace ME3Explorer.SharedUI
             txtResponse.Focus();
         }
 
-        public static string Prompt(string question, string title, string defaultValue = "", InputType inputType = InputType.Text)
+        public static string Prompt(Window owner, string question, string title, string defaultValue = "", bool selectText = false, InputType inputType = InputType.Text)
         {
-            PromptDialog inst = new PromptDialog(question, title, defaultValue, inputType);
+            PromptDialog inst = new PromptDialog(question, title, defaultValue, selectText, inputType);
+            inst.Owner = owner;
             inst.ShowDialog();
             if (inst.DialogResult == true)
                 return inst.ResponseText;

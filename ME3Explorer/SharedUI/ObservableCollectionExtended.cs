@@ -13,7 +13,7 @@ namespace ME3Explorer.SharedUI
 {
     public class ObservableCollectionExtended<T> : ObservableCollection<T>
     {
-        //INotifyPropertyChanged interited from ObservableCollection<T>
+        //INotifyPropertyChanged inherited from ObservableCollection<T>
         #region INotifyPropertyChanged
 
         protected override event PropertyChangedEventHandler PropertyChanged;
@@ -49,17 +49,26 @@ namespace ME3Explorer.SharedUI
         }
 
         /// <summary> 
+        /// Removes all items then raises collection changed event
+        /// </summary> 
+        public void ClearEx()
+        {
+            Items.Clear();
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        /// <summary> 
         /// Clears the current collection and replaces it with the specified item. 
         /// </summary> 
         public void Replace(T item)
         {
-            Replace(new T[] { item });
+            ReplaceAll(new T[] { item });
         }
 
         /// <summary> 
         /// Replaces all elements in existing collection with specified collection of the ObservableCollection(Of T). 
         /// </summary> 
-        public void Replace(IEnumerable<T> collection)
+        public void ReplaceAll(IEnumerable<T> collection)
         {
             if (collection == null) throw new ArgumentNullException(nameof(collection));
 
@@ -67,6 +76,56 @@ namespace ME3Explorer.SharedUI
             foreach (var i in collection) Items.Add(i);
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
+
+        #region Sorting
+
+        /// <summary>
+        /// Sorts the items of the collection in ascending order according to a key.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key returned by <paramref name="keySelector"/>.</typeparam>
+        /// <param name="keySelector">A function to extract a key from an item.</param>
+        public void Sort<TKey>(Func<T, TKey> keySelector)
+        {
+            InternalSort(Items.OrderBy(keySelector));
+        }
+
+        /// <summary>
+        /// Sorts the items of the collection in descending order according to a key.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key returned by <paramref name="keySelector"/>.</typeparam>
+        /// <param name="keySelector">A function to extract a key from an item.</param>
+        public void SortDescending<TKey>(Func<T, TKey> keySelector)
+        {
+            InternalSort(Items.OrderByDescending(keySelector));
+        }
+
+        /// <summary>
+        /// Sorts the items of the collection in ascending order according to a key.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key returned by <paramref name="keySelector"/>.</typeparam>
+        /// <param name="keySelector">A function to extract a key from an item.</param>
+        /// <param name="comparer">An <see cref="IComparer{T}"/> to compare keys.</param>
+        public void Sort<TKey>(Func<T, TKey> keySelector, IComparer<TKey> comparer)
+        {
+            InternalSort(Items.OrderBy(keySelector, comparer));
+        }
+
+        /// <summary>
+        /// Moves the items of the collection so that their orders are the same as those of the items provided.
+        /// </summary>
+        /// <param name="sortedItems">An <see cref="IEnumerable{T}"/> to provide item orders.</param>
+        private void InternalSort(IEnumerable<T> sortedItems)
+        {
+            var sortedItemsList = sortedItems.ToList();
+
+            foreach (var item in sortedItemsList)
+            {
+                Move(IndexOf(item), sortedItemsList.IndexOf(item));
+            }
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        #endregion // Sorting
 
         /// <summary> 
         /// Initializes a new instance of the System.Collections.ObjectModel.ObservableCollection(Of T) class. 

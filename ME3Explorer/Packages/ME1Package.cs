@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using AmaroK86.MassEffect3.ZlibBlock;
 using Gibbed.IO;
-using KFreonLib.Debugging;
 
 namespace ME3Explorer.Packages
 {
     public sealed class ME1Package : MEPackage, IMEPackage
     {
+        const uint packageTag = 0x9E2A83C1;
+
         public MEGame Game { get { return MEGame.ME1;} }
 
         public override int NameCount { get { return BitConverter.ToInt32(header, nameSize + 20); } protected set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 20, sizeof(int)); } }
@@ -41,6 +39,8 @@ namespace ME3Explorer.Packages
 
         private ME1Package(string path)
         {
+            //Debug.WriteLine(" >> Opening me1 package " + path);
+
             FileName = Path.GetFullPath(path);
             MemoryStream tempStream = new MemoryStream();
             if (!File.Exists(FileName))
@@ -60,18 +60,24 @@ namespace ME3Explorer.Packages
             tempStream.Seek(64 + tempNameSize, SeekOrigin.Begin);
             int tempGenerations = tempStream.ReadValueS32();
             tempStream.Seek(36 + tempGenerations * 12, SeekOrigin.Current);
-            int tempPos = (int)tempStream.Position + 4;
+
+            tempStream.ReadValueU32(); //Compression Type. We read this from header[] in MEPackage.cs intead when accessing value
+            int tempPos = (int)tempStream.Position;
             tempStream.Seek(0, SeekOrigin.Begin);
             header = tempStream.ReadBytes(tempPos);
             tempStream.Seek(0, SeekOrigin.Begin);
 
-            if (magic != ZBlock.magic && magic.Swap() != ZBlock.magic)
+            if (magic != packageTag)
             {
                 throw new FormatException("This is not an ME1 Package file. The magic number is incorrect.");
             }
             MemoryStream listsStream;
             if (IsCompressed)
             {
+                //Aquadran: Code to decompress package on disk.
+                //Do not set the decompressed flag as some tools use this flag
+                //to determine if the file on disk is still compressed or not
+                //e.g. soundplorer's offset based audio access
                 listsStream = CompressionHelper.DecompressME1orME2(tempStream);
 
                 //Correct the header
@@ -220,7 +226,7 @@ namespace ME3Explorer.Packages
                 for (int i = 0; i < exports.Count; i++)
                 {
                     IExportEntry e = exports[i];
-                    e.headerOffset = (uint)m.Position;
+                    e.HeaderOffset = (uint)m.Position;
                     m.WriteBytes(e.Header);
                 }
                 //freezone
@@ -236,7 +242,7 @@ namespace ME3Explorer.Packages
                     e.DataSize = e.Data.Length;
                     m.WriteBytes(e.Data);
                     long pos = m.Position;
-                    m.Seek(e.headerOffset + 32, SeekOrigin.Begin);
+                    m.Seek(e.HeaderOffset + 32, SeekOrigin.Begin);
                     m.WriteValueS32(e.DataSize);
                     m.WriteValueS32(e.DataOffset);
                     m.Seek(pos, SeekOrigin.Begin);

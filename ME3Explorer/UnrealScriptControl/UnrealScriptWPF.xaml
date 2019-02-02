@@ -1,0 +1,180 @@
+﻿<global:ExportLoaderControl x:Class="ME3Explorer.UnrealScriptWPF"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            xmlns:System="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+             xmlns:global="clr-namespace:ME3Explorer"
+                xmlns:me3bytecode="clr-namespace:ME3Explorer.Unreal"
+             xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
+                            xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                            d:DesignHeight="450" d:DesignWidth="800"
+             Loaded="UnrealScriptWPF_Loaded"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <global:ExportLoaderControl.Resources>
+        <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+    </global:ExportLoaderControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="200*"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="200*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="200"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition MinWidth="200"/>
+        </Grid.ColumnDefinitions>
+        <DockPanel Grid.Row="0" Grid.Column="0">
+            <DockPanel DockPanel.Dock="Top">
+                <TextBlock Text="Script header" DockPanel.Dock="Top" FontWeight="Bold"/>
+                <ListBox Name="Function_Header" HorizontalAlignment="Stretch" MinHeight="60" ItemsSource="{Binding ScriptHeaderBlocks}" SelectionChanged="FunctionHeader_ListBox_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=offset, StringFormat='{}0x{0:X2}'}"/>
+                                <TextBlock Margin="4,0,0,0" Text="{Binding Path=id, StringFormat='{}{0}:'}">
+                                    <TextBlock.Style>
+                                        <Style>
+                                            <Setter Property="TextBlock.FontWeight" Value="Regular"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem }}}" Value="True">
+                                                    <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Margin="4,0,0,0" Text="{Binding Path=value}">
+                                    <TextBlock.Style>
+                                        <Style>
+                                            <Setter Property="TextBlock.FontWeight" Value="Regular"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem }}}" Value="True">
+                                                    <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Bottom">
+                <TextBlock Text="Script footer" DockPanel.Dock="Top" FontWeight="Bold"/>
+                <ListBox Name="Function_Footer" HorizontalAlignment="Stretch" MinHeight="60" ItemsSource="{Binding ScriptFooterBlocks}" SelectionChanged="FunctionFooter_ListBox_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=offset, StringFormat='{}0x{0:X2}'}"/>
+                                <TextBlock Margin="4,0,0,0" Text="{Binding Path=id, StringFormat='{}{0}:'}">
+                                    <TextBlock.Style>
+                                        <Style>
+                                            <Setter Property="TextBlock.FontWeight" Value="Regular"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem }}}" Value="True">
+                                                    <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Margin="4,0,0,0" Text="{Binding Path=value}">
+                                    <TextBlock.Style>
+                                        <Style>
+                                            <Setter Property="TextBlock.FontWeight" Value="Regular"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem }}}" Value="True">
+                                                    <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+            <DockPanel>
+                <TextBlock Text="Decompiled script" DockPanel.Dock="Top" FontWeight="Bold"/>
+                <ListBox Name="Function_ListBox" HorizontalAlignment="Stretch" ItemsSource="{Binding DecompiledScriptBlocks}" SelectionChanged="Function_ListBox_SelectionChanged">
+                    <ListBox.Resources>
+                        <DataTemplate DataType="{x:Type me3bytecode:Token}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="PosBlock" Text="{Binding Path=posStr, StringFormat='{}0x{0}:'}" />
+                                <TextBlock x:Name="ScriptBlock" Margin="4,0,0,0" Text="{Binding Path=text}">
+                                    <TextBlock.Style>
+                                        <Style>
+                                            <Setter Property="TextBlock.FontWeight" Value="Regular"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem }}}" Value="True">
+                                                    <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type System:String}">
+                            <TextBlock x:Name="PosBlock" Text="{Binding}"/>
+                        </DataTemplate>
+                    </ListBox.Resources>
+                </ListBox>
+            </DockPanel>
+        </DockPanel>
+        <GridSplitter Grid.Row="0" Grid.Column="1" Width="5" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+        <DockPanel Grid.Row="0" Grid.Column="2">
+            <TextBlock Text="Tokens" DockPanel.Dock="Top" FontWeight="Bold"/>
+            <ListBox Name="Tokens_ListBox" VerticalAlignment="Stretch" ItemsSource="{Binding TokenList}" SelectionChanged="Tokens_ListBox_SelectionChanged">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding}">
+                                <TextBlock.Style>
+                                    <Style>
+                                        <Setter Property="TextBlock.FontWeight" Value="Regular"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem }}}" Value="True">
+                                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+        <GridSplitter Grid.Row="1" Grid.ColumnSpan="3" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+        <DockPanel Grid.Row="2" Grid.ColumnSpan="3">
+            <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
+                <Button Name="PreviewScript_Button" Content="Preview Script" Click="ScriptEditor_PreviewScript_Click"
+                        IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" ToolTip="Decompile the current hex without saving it to the export"/>
+                <Button Name="SaveHexChange_Button" Content="Save Hex Changes" Click="ScriptEditor_SaveHexChanges_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" ToolTip="Save the below hex as the export data"/>
+                <TextBlock Text="Changes not yet saved" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
+                <xctk:IntegerUpDown Name="StartOffset_Changer" Value="32"/>
+
+
+                <!--<Button Content="Toggle Hexbox Width" Click="Interpreter_ToggleHexboxWidth_Click"/>
+                    <Button Content="Add Property" Click="Interpreter_AddProperty_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>-->
+            </ToolBar>
+            <StatusBar Height="23" DockPanel.Dock="Bottom">
+                <StatusBarItem>
+                    <TextBlock Name="StatusBar_LeftMostText" Text="Nothing selected"/>
+                </StatusBarItem>
+            </StatusBar>
+            <WindowsFormsHost Grid.Row="2" Name="ScriptEditor_Hexbox_Host" HorizontalAlignment="Stretch">
+                <hb1:HexBox MinBytesPerLine="16" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" SelectionLengthChanged="hb1_SelectionChanged" VScrollBarVisible="True">
+                </hb1:HexBox>
+            </WindowsFormsHost>
+
+        </DockPanel>
+    </Grid>
+</global:ExportLoaderControl>

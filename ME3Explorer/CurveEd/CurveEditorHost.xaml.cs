@@ -23,7 +23,7 @@ namespace ME3Explorer.CurveEd
     /// </summary>
     public partial class CurveEditorHost : WPFBase
     {
-        IExportEntry exp;
+        readonly IExportEntry exp;
 
         public CurveEditorHost()
         {

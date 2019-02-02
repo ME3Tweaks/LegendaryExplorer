@@ -82,7 +82,6 @@ namespace ME3Explorer.Matinee
         private void loadAlternateTlkToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TlkManager tm = new TlkManager();
-            tm.InitTlkManager();
             tm.Show();
         }
 

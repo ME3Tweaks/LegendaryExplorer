@@ -9,7 +9,7 @@ using System.Windows.Shapes;
 
 namespace ME3Explorer.CurveEd
 {
-    class BezierSegment : Shape
+    internal class BezierSegment : Shape
     {
         public CurveGraph graph;
 
@@ -25,8 +25,8 @@ namespace ME3Explorer.CurveEd
 
         public double X1
         {
-            get { return (double)GetValue(X1Property); }
-            set { SetValue(X1Property, value); }
+            get => (double)GetValue(X1Property);
+            set => SetValue(X1Property, value);
         }
         
         public static readonly DependencyProperty X1Property =
@@ -34,8 +34,8 @@ namespace ME3Explorer.CurveEd
 
         public double Y1
         {
-            get { return (double)GetValue(Y1Property); }
-            set { SetValue(Y1Property, value); }
+            get => (double)GetValue(Y1Property);
+            set => SetValue(Y1Property, value);
         }
         
         public static readonly DependencyProperty Y1Property =
@@ -43,8 +43,8 @@ namespace ME3Explorer.CurveEd
 
         public double X2
         {
-            get { return (double)GetValue(X2Property); }
-            set { SetValue(X2Property, value); }
+            get => (double)GetValue(X2Property);
+            set => SetValue(X2Property, value);
         }
         
         public static readonly DependencyProperty X2Property =
@@ -52,8 +52,8 @@ namespace ME3Explorer.CurveEd
 
         public double Y2
         {
-            get { return (double)GetValue(Y2Property); }
-            set { SetValue(Y2Property, value); }
+            get => (double)GetValue(Y2Property);
+            set => SetValue(Y2Property, value);
         }
         
         public static readonly DependencyProperty Y2Property =
@@ -61,8 +61,8 @@ namespace ME3Explorer.CurveEd
 
         public double Slope1
         {
-            get { return (double)GetValue(Slope1Property); }
-            set { SetValue(Slope1Property, value); }
+            get => (double)GetValue(Slope1Property);
+            set => SetValue(Slope1Property, value);
         }
         
         public static readonly DependencyProperty Slope1Property =
@@ -70,8 +70,8 @@ namespace ME3Explorer.CurveEd
 
         public double Slope2
         {
-            get { return (double)GetValue(Slope2Property); }
-            set { SetValue(Slope2Property, value); }
+            get => (double)GetValue(Slope2Property);
+            set => SetValue(Slope2Property, value);
         }
         
         public static readonly DependencyProperty Slope2Property =

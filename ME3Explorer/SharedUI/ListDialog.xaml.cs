@@ -15,12 +15,12 @@ using System.Windows.Shapes;
 namespace ME3Explorer.SharedUI
 {
     /// <summary>
-    /// Interaction logic for ListDialog.xaml
+    /// Dialog that has copy button, designed for showing lists of short lines of text
     /// </summary>
     public partial class ListDialog : Window
     {
         List<string> items;
-        public ListDialog(List<string> listItems, String title, String message, int width = 0, int height = 0)
+        public ListDialog(List<string> listItems, string title, string message, Window owner, int width = 0, int height = 0)
         {
             InitializeComponent();
             Title = title;
@@ -38,6 +38,7 @@ namespace ME3Explorer.SharedUI
             {
                 ListDialog_List.Items.Add(str);
             }
+            Owner = owner;
         }
 
         private void CopyItemsToClipBoard_Click(object sender, RoutedEventArgs e)
