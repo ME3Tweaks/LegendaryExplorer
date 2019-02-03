@@ -778,6 +778,9 @@
       <DependentUpon>ToolInfoPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main Window\ToolListControl.cs" />
+    <Compile Include="TlkManager\TLKManagerWPF.xaml.cs">
+      <DependentUpon>TLKManagerWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tools.cs" />
     <Compile Include="Main Window\ToolPanel.xaml.cs">
       <DependentUpon>ToolPanel.xaml</DependentUpon>
@@ -1094,6 +1097,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Main Window\ToolPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TlkManager\TLKManagerWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
