@@ -26,7 +26,7 @@ namespace ME3Explorer.PackageDumper
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class PackageDumper : WPFBase
+    public partial class PackageDumper : NotifyPropertyChangedBase
     {
         MEGame GameBeingDumped;
         BackgroundWorker DumpWorker;
@@ -53,71 +53,36 @@ namespace ME3Explorer.PackageDumper
         private int _overallProgressValue;
         public int OverallProgressValue
         {
-            get { return _overallProgressValue; }
-            set
-            {
-                if (value != _overallProgressValue)
-                {
-                    _overallProgressValue = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _overallProgressValue;
+            set => SetProperty(ref _overallProgressValue, value);
         }
 
         private int _overallProgressMaximum;
         public int OverallProgressMaximum
         {
-            get { return _overallProgressMaximum; }
-            set
-            {
-                if (value != _overallProgressMaximum)
-                {
-                    _overallProgressMaximum = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _overallProgressMaximum;
+            set => SetProperty(ref _overallProgressMaximum, value);
         }
 
         private int _currentFileProgressValue;
         public int CurrentFileProgressValue
         {
-            get { return _currentFileProgressValue; }
-            set
-            {
-                if (value != _currentFileProgressValue)
-                {
-                    _currentFileProgressValue = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _currentFileProgressValue;
+            set => SetProperty(ref _currentFileProgressValue, value);
         }
 
         private int _currentFileProgressMaximum;
         public int CurrentFileProgressMaximum
         {
-            get { return _currentFileProgressMaximum; }
-            set
-            {
-                if (value != _currentFileProgressMaximum)
-                {
-                    _currentFileProgressMaximum = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _currentFileProgressMaximum;
+            set => SetProperty(ref _currentFileProgressMaximum, value);
         }
 
         private string _currentOverallOperationText;
         public string CurrentOverallOperationText
         {
-            get { return _currentOverallOperationText; }
-            set
-            {
-                if (value != _currentOverallOperationText)
-                {
-                    _currentOverallOperationText = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _currentOverallOperationText;
+            set => SetProperty(ref _currentOverallOperationText, value);
         }
 
         private bool CanDumpGameME1(object obj)
@@ -149,19 +114,19 @@ namespace ME3Explorer.PackageDumper
         private void DumpGameME1(object obj)
         {
             GameBeingDumped = MEGame.ME1;
-            DumpGame(1);
+            DumpGame(GameBeingDumped);
         }
 
         private void DumpGameME2(object obj)
         {
             GameBeingDumped = MEGame.ME2;
-            DumpGame(2);
+            DumpGame(GameBeingDumped);
         }
 
         private void DumpGameME3(object obj)
         {
             GameBeingDumped = MEGame.ME3;
-            DumpGame(3);
+            DumpGame(GameBeingDumped);
         }
 
         #endregion
@@ -186,39 +151,41 @@ namespace ME3Explorer.PackageDumper
             }
         }
 
-        private void DumpGame(int game)
+        private void DumpGame(MEGame game)
         {
             string rootPath = null;
             switch (game)
             {
-                case 1:
+                case MEGame.ME1:
                     rootPath = ME1Directory.gamePath;
                     break;
-                case 2:
+                case MEGame.ME2:
                     rootPath = ME2Directory.gamePath;
                     break;
-                case 3:
+                case MEGame.ME3:
                     rootPath = ME3Directory.gamePath;
                     break;
             }
-            CommonOpenFileDialog m = new CommonOpenFileDialog();
-            m.IsFolderPicker = true;
-            m.EnsurePathExists = true;
-            m.Title = "Select output folder";
+            CommonOpenFileDialog m = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                EnsurePathExists = true,
+                Title = "Select output folder"
+            };
             if (m.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 string outputDir = m.FileName;
                 DumpWorker = new BackgroundWorker();
                 DumpWorker.DoWork += Dump_BackgroundThread;
                 DumpWorker.RunWorkerCompleted += Dump_Completed;
-                DumpWorker.RunWorkerAsync(argument: new Tuple<string, string>(rootPath, outputDir));
+                DumpWorker.RunWorkerAsync(argument: (rootPath, outputDir));
             }
         }
 
         private void Dump_BackgroundThread(object sender, DoWorkEventArgs e)
         {
-            var args = (Tuple<string, string>)e.Argument;
-            dumpPackagesFromFolder(args.Item1, args.Item2);
+            var (rootPath, outputDir) = (ValueTuple<string, string>)e.Argument;
+            dumpPackagesFromFolder(rootPath, outputDir);
         }
 
         private void Dump_Completed(object sender, RunWorkerCompletedEventArgs e)
@@ -271,7 +238,7 @@ namespace ME3Explorer.PackageDumper
         {
             path = Path.GetFullPath(path);
             var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
-            var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower()))).ToList();
+            List<string> files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower()))).ToList();
             bool beginParsing = false;
             OverallProgressMaximum = files.Count;
             for (int i = 0; i < files.Count; i++)
@@ -281,18 +248,18 @@ namespace ME3Explorer.PackageDumper
                     string file = Path.GetFullPath(files[i]);
                     //if (file.EndsWith("BioD_Cat002.pcc") || beginParsing)
                     //{
-                        beginParsing = true;
-                        string outfolder = outputfolder;
-                        if (outfolder != null)
-                        {
-                            string relative = GetRelativePath(path, Directory.GetParent(file).ToString());
-                            outfolder = Path.Combine(outfolder, relative);
-                        }
-                        CurrentOverallOperationText = "Dumping " + Path.GetFileNameWithoutExtension(file);
+                    beginParsing = true;
+                    string outfolder = outputfolder;
+                    if (outfolder != null)
+                    {
+                        string relative = GetRelativePath(path, Directory.GetParent(file).ToString());
+                        outfolder = Path.Combine(outfolder, relative);
+                    }
+                    CurrentOverallOperationText = "Dumping " + Path.GetFileNameWithoutExtension(file);
 
-                        Debug.WriteLine("[" + (i + 1) + "/" + files.Count + "] Dumping " + Path.GetFileNameWithoutExtension(file));
-                        dumpPCCFile(file, outfolder);
-                        OverallProgressValue = i;
+                    Debug.WriteLine("[" + (i + 1) + "/" + files.Count + "] Dumping " + Path.GetFileNameWithoutExtension(file));
+                    dumpPCCFile(file, outfolder);
+                    OverallProgressValue = i;
                     //}
                 }
             }
@@ -313,169 +280,150 @@ namespace ME3Explorer.PackageDumper
             //}
             //try
             {
-                IMEPackage pcc = MEPackageHandler.OpenMEPackage(file);
-                CurrentFileProgressMaximum = pcc.ExportCount;
-                string outfolder = outputfolder;
-                if (outfolder == null)
+                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(file))
                 {
-                    outfolder = Directory.GetParent(file).ToString();
-                }
+                    CurrentFileProgressMaximum = pcc.ExportCount;
+                    string outfolder = outputfolder ?? Directory.GetParent(file).ToString();
 
-                if (!outfolder.EndsWith(@"\"))
-                {
-                    outfolder += @"\";
-                }
+                    if (!outfolder.EndsWith(@"\"))
+                    {
+                        outfolder += @"\";
+                    }
 
-                //if (properties)
-                //{
-                //    UnrealObjectInfo.loadfromJSON();
-                //}
-                StreamWriter stringoutput = StreamWriter.Null;
-                //dumps data.
-                string savepath = outfolder + System.IO.Path.GetFileNameWithoutExtension(file) + ".txt";
-                Directory.CreateDirectory(System.IO.Path.GetDirectoryName(savepath));
-                stringoutput = new StreamWriter(savepath);
-
-                using (stringoutput)
-                {
-
-                    //if (imports)
+                    //if (properties)
                     //{
-                    //writeVerboseLine("Getting Imports");
-                    stringoutput.WriteLine("--Imports");
-                    for (int x = 0; x < pcc.Imports.Count; x++)
-                    {
-                        ImportEntry imp = pcc.Imports[x];
-                        if (imp.PackageFullName != "Class" && imp.PackageFullName != "Package")
-                        {
-                            stringoutput.WriteLine("#" + ((x + 1) * -1) + ": " + imp.PackageFullName + "." + imp.ObjectName + "(From: " + imp.PackageFile + ") " +
-                                "(Offset: 0x " + (pcc.ImportOffset + (x * ImportEntry.byteSize)).ToString("X4") + ")");
-                        }
-                        else
-                        {
-                            stringoutput.WriteLine("#" + ((x + 1) * -1) + ": " + imp.ObjectName + "(From: " + imp.PackageFile + ") " +
-                                "(Offset: 0x " + (pcc.ImportOffset + (x * ImportEntry.byteSize)).ToString("X4") + ")");
-                        }
-                    }
-
-                    stringoutput.WriteLine("--End of Imports");
+                    //    UnrealObjectInfo.loadfromJSON();
                     //}
+                    //dumps data.
+                    string savepath = outfolder + System.IO.Path.GetFileNameWithoutExtension(file) + ".txt";
+                    Directory.CreateDirectory(System.IO.Path.GetDirectoryName(savepath));
 
-                    string datasets = "Exports Coalesced ";
-                    if (GameBeingDumped != MEGame.ME2)
+                    using (StreamWriter stringoutput = new StreamWriter(savepath))
                     {
-                        datasets += " Functions";
-                    }
 
-                    stringoutput.WriteLine("--Start of " + datasets);
-                    stringoutput.WriteLine("Exports starting with [C] can be overriden from the configuration file");
-
-                    int numDone = 1;
-                    int numTotal = pcc.Exports.Count;
-                    int lastProgress = 0;
-                    //writeVerboseLine("Enumerating exports");
-                    string swfoutfolder = outfolder + System.IO.Path.GetFileNameWithoutExtension(file) + "\\";
-                    foreach (IExportEntry exp in pcc.Exports)
-                    {
-                        if (DumpCanceled)
-                        {
-                            pcc.Release();
-                            return;
-                        }
-                        //writeVerboseLine("Parse export #" + index);
-                        CurrentFileProgressValue = exp.UIndex;
-                        //bool isCoalesced = coalesced && exp.likelyCoalescedVal;
-                        String className = exp.ClassName;
-                        bool isCoalesced = exp.ReadsFromConfig;
-                        bool isScript = (className == "Function");
-                        //int progress = ((int)(((double)numDone / numTotal) * 100));
-                        //while (progress >= (lastProgress + 10))
+                        //if (imports)
                         //{
-                        //    Console.Write("..." + (lastProgress + 10) + "%");
-                        //    //needsFlush = true;
-                        //    lastProgress += 10;
+                        //writeVerboseLine("Getting Imports");
+                        stringoutput.WriteLine("--Imports");
+                        for (int x = 0; x < pcc.Imports.Count; x++)
+                        {
+                            ImportEntry imp = pcc.Imports[x];
+                            if (imp.PackageFullName != "Class" && imp.PackageFullName != "Package")
+                            {
+                                stringoutput.WriteLine(
+                                    $"#{(x + 1) * -1}: {imp.PackageFullName}.{imp.ObjectName}(From: {imp.PackageFile}) (Offset: 0x {pcc.ImportOffset + (x * ImportEntry.byteSize):X4})");
+                            }
+                            else
+                            {
+                                stringoutput.WriteLine(
+                                    $"#{(x + 1) * -1}: {imp.ObjectName}(From: {imp.PackageFile}) (Offset: 0x {pcc.ImportOffset + (x * ImportEntry.byteSize):X4})");
+                            }
+                        }
+                        stringoutput.WriteLine("--End of Imports");
                         //}
 
-                        stringoutput.WriteLine("=======================================================================");
-                        stringoutput.Write("#" + exp.UIndex + " ");
-                        if (isCoalesced)
+                        string datasets = "Exports Coalesced ";
+                        if (GameBeingDumped != MEGame.ME2)
                         {
-                            stringoutput.Write("[C] ");
+                            datasets += " Functions";
                         }
 
-                        stringoutput.Write(exp.GetFullPath + "(" + exp.ClassName + ")");
-                        int ival = exp.indexValue;
-                        if (ival > 0)
-                        {
-                            stringoutput.Write(" (Index: " + ival + ") ");
+                        stringoutput.WriteLine("--Start of " + datasets);
+                        stringoutput.WriteLine("Exports starting with [C] can be overriden from the configuration file");
 
-                        }
-                        stringoutput.WriteLine("(Superclass: " + exp.ClassParent + ") (Data Offset: 0x " + exp.DataOffset.ToString("X5") + ")");
-
-                        if (isScript)
+                        int numDone = 1;
+                        int numTotal = pcc.Exports.Count;
+                        int lastProgress = 0;
+                        //writeVerboseLine("Enumerating exports");
+                        string swfoutfolder = outfolder + System.IO.Path.GetFileNameWithoutExtension(file) + "\\";
+                        foreach (IExportEntry exp in pcc.Exports)
                         {
-                            stringoutput.WriteLine("==============Function==============");
-                            switch (GameBeingDumped)
+                            if (DumpCanceled)
                             {
-                                case MEGame.ME1:
-                                    //stringoutput.WriteLine(UE3FunctionReader.ReadFunction(exp));
-                                    break;
+                                return;
                             }
-                            //Function func = new Function(exp.Data, pcc);
-                            //stringoutput.WriteLine(func.ToRawText());
-                        }
-                        //TODO: Change to UProperty
+                            //writeVerboseLine("Parse export #" + index);
+                            CurrentFileProgressValue = exp.UIndex;
+                            //bool isCoalesced = coalesced && exp.likelyCoalescedVal;
+                            string className = exp.ClassName;
+                            bool isCoalesced = exp.ReadsFromConfig;
+                            bool isScript = (className == "Function");
+                            //int progress = ((int)(((double)numDone / numTotal) * 100));
+                            //while (progress >= (lastProgress + 10))
+                            //{
+                            //    Console.Write("..." + (lastProgress + 10) + "%");
+                            //    //needsFlush = true;
+                            //    lastProgress += 10;
+                            //}
 
-                        if (exp.ClassName != "Class" && exp.ClassName != "Function" && exp.ClassName != "ShaderCache")
-                        {
-                            try
+                            stringoutput.WriteLine("=======================================================================");
+                            stringoutput.Write($"#{exp.UIndex} ");
+                            if (isCoalesced)
                             {
-                                var props = exp.GetProperties();
-                                if (props.Count > 0)
+                                stringoutput.Write("[C] ");
+                            }
+
+                            stringoutput.Write($"{exp.GetFullPath}({exp.ClassName})");
+                            int ival = exp.indexValue;
+                            if (ival > 0)
+                            {
+                                stringoutput.Write($" (Index: {ival}) ");
+
+                            }
+                            stringoutput.WriteLine($"(Superclass: {exp.ClassParent}) (Data Offset: 0x {exp.DataOffset:X5})");
+
+                            if (isScript)
+                            {
+                                stringoutput.WriteLine("==============Function==============");
+                                switch (GameBeingDumped)
                                 {
-                                    stringoutput.WriteLine("==============Properties==============");
-                                    UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
-                                    foreach (UProperty prop in props)
+                                    case MEGame.ME1:
+                                        //stringoutput.WriteLine(UE3FunctionReader.ReadFunction(exp));
+                                        break;
+                                }
+                                //Function func = new Function(exp.Data, pcc);
+                                //stringoutput.WriteLine(func.ToRawText());
+                            }
+                            //TODO: Change to UProperty
+
+                            if (exp.ClassName != "Class" && exp.ClassName != "Function" && exp.ClassName != "ShaderCache")
+                            {
+                                try
+                                {
+                                    var props = exp.GetProperties();
+                                    if (props.Count > 0)
                                     {
-                                        InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, exp);
+                                        stringoutput.WriteLine("==============Properties==============");
+                                        UPropertyTreeViewEntry topLevelTree = new UPropertyTreeViewEntry(); //not used, just for holding and building data.
+                                        foreach (UProperty prop in props)
+                                        {
+                                            InterpreterWPF.GenerateUPropertyTreeForProperty(prop, topLevelTree, exp);
+                                        }
+                                        topLevelTree.PrintPretty("", stringoutput, false, exp);
+                                        stringoutput.WriteLine();
                                     }
-                                    topLevelTree.PrintPretty("", stringoutput, false, exp);
-                                    stringoutput.WriteLine();
+                                }
+                                catch (Exception e)
+                                {
+                                    Debug.WriteLine(exp.UIndex);
                                 }
                             }
-                            catch (Exception e)
-                            {
-                                Debug.WriteLine(exp.UIndex);
-                            }
                         }
+                        numDone++;
+                        stringoutput.WriteLine($"--End of {datasets}");
 
-                        //Interpreter i = new Interpreter();
-                        //i.Pcc = pcc;
-                        //i.Index = index - 1; //0-based array
-                        //i.InitInterpreter();
-                        //TreeNode top = i.topNode;
 
-                        //if (top.Children.Count > 0 && top.Children[0].Tag != Interpreter.nodeType.None)
-                        //{
-                        //    
-                        //    //stringoutput.WriteLine(String.Format("|{0,40}|{1,15}|{2,10}|{3,30}|", "Name", "Type", "Size", "Value"));
-                        //    top.PrintPretty("", stringoutput, false);
-                        //    stringoutput.WriteLine();
-                        //}
+                        // writeVerboseLine("Gathering names");
+                        stringoutput.WriteLine("--Start of Names");
+
+                        int count = 0;
+                        foreach (string s in pcc.Names)
+                            stringoutput.WriteLine((count++) + " : " + s);
+                        stringoutput.WriteLine("--End of Names");
                     }
-                    numDone++;
-                    stringoutput.WriteLine("--End of " + datasets);
-
-
-                    // writeVerboseLine("Gathering names");
-                    stringoutput.WriteLine("--Start of Names");
-
-                    int count = 0;
-                    foreach (string s in pcc.Names)
-                        stringoutput.WriteLine((count++) + " : " + s);
-                    stringoutput.WriteLine("--End of Names");
                 }
-                pcc.Release();
+
+
             }
 
             //if (properties)
@@ -574,12 +522,12 @@ namespace ME3Explorer.PackageDumper
         {
             if (string.IsNullOrEmpty(fromPath))
             {
-                throw new ArgumentNullException("fromPath");
+                throw new ArgumentNullException(nameof(fromPath));
             }
 
             if (string.IsNullOrEmpty(toPath))
             {
-                throw new ArgumentNullException("toPath");
+                throw new ArgumentNullException(nameof(toPath));
             }
 
             Uri fromUri = new Uri(AppendDirectorySeparatorChar(fromPath));
@@ -601,7 +549,7 @@ namespace ME3Explorer.PackageDumper
             return relativePath;
         }
 
-        private string AppendDirectorySeparatorChar(string path)
+        private static string AppendDirectorySeparatorChar(string path)
         {
             // Append a slash only if the path is a directory and does not have a slash.
             if (!System.IO.Path.HasExtension(path) &&
@@ -611,11 +559,6 @@ namespace ME3Explorer.PackageDumper
             }
 
             return path;
-        }
-
-        public override void handleUpdate(List<PackageUpdate> updates)
-        {
-            //This window does not handle updates
         }
 
         private void PackageDumper_Closing(object sender, CancelEventArgs e)
@@ -629,3 +572,4 @@ namespace ME3Explorer.PackageDumper
         }
     }
 }
+

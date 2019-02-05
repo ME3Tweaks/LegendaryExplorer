@@ -257,7 +257,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "ME1 TLK Editor",
-                type = typeof(TlkManager),
+                type = typeof(ME1Explorer.TlkManager),
                 icon = Application.Current.FindResource("iconTLKEditorME1") as ImageSource,
                 open = () =>
                 {
@@ -270,7 +270,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Package Dumper",
-                type = typeof(AnimationExplorer.AnimationExplorer),
+                type = typeof(PackageDumper.PackageDumper),
                 icon = Application.Current.FindResource("iconPackageDumper") as ImageSource,
                 open = () =>
                 {

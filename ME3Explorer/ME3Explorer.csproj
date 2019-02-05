@@ -496,6 +496,7 @@
     <Compile Include="NativesEditor\Views\StateTaskListsView.xaml.cs">
       <DependentUpon>StateTaskListsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NotifyPropertyChangedBase.cs" />
     <Compile Include="PackageDumper\PackageDumper.xaml.cs">
       <DependentUpon>PackageDumper.xaml</DependentUpon>
     </Compile>
