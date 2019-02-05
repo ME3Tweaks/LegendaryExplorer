@@ -759,7 +759,11 @@ namespace ME3Explorer
                     {
                         parsedValue = ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME3TalkFiles.findDataById(strrefp.Value);
                     }
-                    if (parsingExport.FileRef.Game == MEGame.ME1)
+                    else if (parsingExport.FileRef.Game == MEGame.ME2)
+                    {
+                        parsedValue = ME2Explorer.ME2TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME2Explorer.ME2TalkFiles.findDataById(strrefp.Value);
+                    }
+                    else if (parsingExport.FileRef.Game == MEGame.ME1)
                     {
                         parsedValue = ME1Explorer.TlkManager.GetStringById(strrefp.Value);
                     }
@@ -1302,6 +1306,26 @@ namespace ME3Explorer
                                         str = str.Substring(0, 80) + "...";
                                     }
                                     ParsedValue_TextBlock.Text = ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : str.Replace(System.Environment.NewLine, "[\\n]");
+                                }
+                                else if (CurrentLoadedExport.FileRef.Game == MEGame.ME2)
+                                {
+                                    string str = ME2Explorer.ME2TalkFiles.findDataById(index);
+                                    str = str.Replace("\n", "[\\n]");
+                                    if (str.Length > 80)
+                                    {
+                                        str = str.Substring(0, 80) + "...";
+                                    }
+                                    ParsedValue_TextBlock.Text = ME2Explorer.ME2TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : str.Replace(System.Environment.NewLine, "[\\n]");
+                                }
+                                else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
+                                {
+                                    string str = ME1Explorer.TlkManager.GetStringById(index);
+                                    str = str.Replace("\n", "[\\n]");
+                                    if (str.Length > 80)
+                                    {
+                                        str = str.Substring(0, 80) + "...";
+                                    }
+                                    ParsedValue_TextBlock.Text = str.Replace(System.Environment.NewLine, "[\\n]");
                                 }
                             }
                             else
