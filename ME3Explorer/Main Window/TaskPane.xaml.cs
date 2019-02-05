@@ -37,7 +37,7 @@ namespace ME3Explorer
         {
             //wait for the UI to reflect the collection change
             await Task.Delay(100);
-             if (fileList.ActualHeight > topScrollViewer.ActualHeight)
+            if (fileList.ActualHeight > topScrollViewer.ActualHeight)
             {
                 scrollIndicator.Visibility = Visibility.Visible;
             }
@@ -61,27 +61,24 @@ namespace ME3Explorer
 
         protected void Button_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) &&
+                ((sender as Button)?.DataContext as GenericWindow)?.tool is Tool t)
             {
-                Tool t = ((sender as Button)?.DataContext as GenericWindow)?.tool;
                 t.IsFavorited = !t.IsFavorited;
             }
         }
 
         protected virtual void Button_MouseEnter(object sender, MouseEventArgs e)
         {
-            Button b = sender as Button;
-            if (b != null)
+            if (sender is Button b)
             {
                 deselectButton(highlightedButton);
                 highlightedButton = b;
-                Rectangle r = b.FindName("highlightUnderline") as Rectangle;
-                if (r != null)
+                if (b.FindName("highlightUnderline") is Rectangle r)
                 {
                     r.Visibility = Visibility.Visible;
                 }
-                Image img = b.FindName("toolIcon") as Image;
-                if (img != null)
+                if (b.FindName("toolIcon") is Image img)
                 {
                     img.Opacity = 1;
                 }
@@ -93,13 +90,12 @@ namespace ME3Explorer
         {
             if (b != null)
             {
-                Rectangle r = b.FindName("highlightUnderline") as Rectangle;
-                if (r != null)
+                if (b.FindName("highlightUnderline") is Rectangle r)
                 {
                     r.Visibility = Visibility.Hidden;
                 }
-                Image img = b.FindName("toolIcon") as Image;
-                if (img != null)
+
+                if (b.FindName("toolIcon") is Image img)
                 {
                     img.Opacity = 0.85;
                 }

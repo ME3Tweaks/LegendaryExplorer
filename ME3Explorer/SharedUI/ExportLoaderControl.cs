@@ -27,14 +27,8 @@ namespace ME3Explorer
         /// </summary>
         public IExportEntry CurrentLoadedExport
         {
-            get
-            {
-                return _currentLoadedExport;
-            }
-            protected set
-            {
-                SetProperty(ref _currentLoadedExport, value);
-            }
+            get => _currentLoadedExport;
+            protected set => SetProperty(ref _currentLoadedExport, value);
         }
 
         /// <summary>
