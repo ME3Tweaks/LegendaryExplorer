@@ -765,19 +765,26 @@ namespace ME3Explorer
 
         private void GetProperties(IExportEntry export)
         {
-            List<PropertyReader.Property> p;
-            switch (export.ClassName)
+            try
             {
-                default:
-                    p = PropertyReader.getPropList(export);
-                    break;
-            }
-            pg = new PropGrid();
-            pg1.SelectedObject = pg;
-            foreach (var prop in p)
-                pg.Add(PropertyReader.PropertyToGrid(prop, pcc));
+                List<PropertyReader.Property> p;
+                switch (export.ClassName)
+                {
+                    default:
+                        p = PropertyReader.getPropList(export);
+                        break;
+                }
+                pg = new PropGrid();
+                pg1.SelectedObject = pg;
+                foreach (var prop in p)
+                    pg.Add(PropertyReader.PropertyToGrid(prop, pcc));
 
-            pg1.Refresh();
+                pg1.Refresh();
+            }
+            catch (Exception e)
+            {
+
+            }
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)

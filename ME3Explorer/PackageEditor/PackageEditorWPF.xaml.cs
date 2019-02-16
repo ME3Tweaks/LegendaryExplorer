@@ -2641,6 +2641,10 @@ namespace ME3Explorer
                         break;
                 }
             }
+            else
+            {
+                res.Write(idata, end, idata.Length - end);
+            }
 
             int classValue = 0;
             int archetype = 0;
@@ -3719,11 +3723,16 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    searchResult = "Key " + searchTerm + " found in the following:\n"+searchResult;
+                    searchResult = "Key " + searchTerm + " found in the following:\n" + searchResult;
                 }
 
                 MessageBox.Show(searchResult);
             }
+        }
+
+        private void TLKManagerWPF_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            new TlkManagerNS.TLKManagerWPF().Show();
         }
     }
 
