@@ -363,7 +363,7 @@ namespace ME3Explorer.Unreal.Classes
             string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
             MemoryStream outputData = new MemoryStream();
 
-            System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\oggdec.exe", "--stdout " + oggPath);
+            System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\oggdec.exe", $"--stdout \"{oggPath}\"");
             procStartInfo.WorkingDirectory = loc;
             procStartInfo.RedirectStandardOutput = true;
             procStartInfo.UseShellExecute = false;
@@ -388,7 +388,7 @@ namespace ME3Explorer.Unreal.Classes
 
             proc.WaitForExit();
             File.Delete(oggPath); //intermediate
-
+            
             //Fix headers as they are not correct when output from oggdec over stdout - no idea what it is outputting.
             outputData.Position = 0x4;
             outputData.Write(BitConverter.GetBytes(((int)outputData.Length) - 0x8), 0, 4); //filesize

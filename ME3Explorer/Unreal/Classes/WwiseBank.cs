@@ -59,9 +59,9 @@ namespace ME3Explorer.Unreal.Classes
         /// Gets DIDX information for this soundbank. 
         /// </summary>
         /// <returns>List of Tuple of ID, Offset, Datasize</returns>
-        public List<Tuple<uint, int, int>> GetWEMFilesMetadata()
+        public List<(uint, int, int)> GetWEMFilesMetadata()
         {
-            var returnData = new List<Tuple<uint, int, int>>();
+            var returnData = new List<(uint, int, int)>();
             foreach (byte[] buff in Chunks)
             {
                 if (GetID(buff) == "DIDX")
@@ -73,7 +73,7 @@ namespace ME3Explorer.Unreal.Classes
                         uint wemID = BitConverter.ToUInt32(buff, 0x8 + i * 0xC);
                         int offset = BitConverter.ToInt32(buff, 0xC + i * 0xC);
                         int size = BitConverter.ToInt32(buff, 0x10 + i * 0xC);
-                        returnData.Add(new Tuple<uint, int, int>(wemID, offset, size));
+                        returnData.Add((wemID, offset, size));
                     }
                     break;
                 }

@@ -22,8 +22,8 @@ namespace ME3Explorer
         public Type type { get; set; }
         public bool IsFavorited
         {
-            get { return (bool)GetValue(IsFavoritedProperty); }
-            set { SetValue(IsFavoritedProperty, value); }
+            get => (bool)GetValue(IsFavoritedProperty);
+            set => SetValue(IsFavoritedProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for IsFavorited.  This enables animation, styling, binding, etc...
@@ -257,7 +257,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "ME1 TLK Editor",
-                type = typeof(TlkManager),
+                type = typeof(ME1Explorer.TlkManager),
                 icon = Application.Current.FindResource("iconTLKEditorME1") as ImageSource,
                 open = () =>
                 {
@@ -270,7 +270,7 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Package Dumper",
-                type = typeof(AnimationExplorer.AnimationExplorer),
+                type = typeof(PackageDumper.PackageDumper),
                 icon = Application.Current.FindResource("iconPackageDumper") as ImageSource,
                 open = () =>
                 {
@@ -435,7 +435,7 @@ namespace ME3Explorer
                 icon = Application.Current.FindResource("iconDialogueEditor") as ImageSource,
                 open = () =>
                 {
-                    string result = InputComboBox.GetValue("Which game's files do you want to edit?", new string[] { "ME3", "ME2", "ME1" }, "ME3", true);
+                    string result = InputComboBox.GetValue("Which game's files do you want to edit?", new[] { "ME3", "ME2", "ME1" }, "ME3", true);
                     switch (result)
                     {
                         case "ME3":
@@ -641,7 +641,7 @@ namespace ME3Explorer
                 icon = Application.Current.FindResource("iconSoundplorer") as ImageSource,
                 open = () =>
                 {
-                    (new ME3Explorer.Soundplorer.SoundplorerWPF()).Show();
+                    (new Soundplorer.SoundplorerWPF()).Show();
                 },
                 tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound" },
                 subCategory = "Scene Shop",
