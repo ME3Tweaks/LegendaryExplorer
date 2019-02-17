@@ -140,7 +140,7 @@ namespace ME3Explorer
         static readonly string[] ParsableBinaryClasses = { "Level", "StaticMeshCollectionActor", "StaticLightCollectionActor", "ShaderCache", "Class","StringRefProperty", "BioStage", "ObjectProperty", "Const",
             "Enum", "ArrayProperty","FloatProperty", "StructProperty", "ComponentProperty", "IntProperty", "NameProperty", "BoolProperty", "ClassProperty", "ByteProperty","Enum","ObjectRedirector", "WwiseEvent", "Material", "StaticMesh", "MaterialInstanceConstant",
             "BioDynamicAnimSet", "StaticMeshComponent", "SkeletalMeshComponent", "SkeletalMesh", "PrefabInstance", "MetaData", "MaterialInstanceConstants",
-            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D", "State", "BioGestureRuntimeData", "BioTlkFileSet", "ScriptStruct", "SoundCue", "SoundNodeWave","BioSoundNodeWaveStreamingData"};
+            "WwiseStream", "WwiseBank", "TextureMovie", "GuidCache", "World", "Texture2D", "TextureFlipBook", "State", "BioGestureRuntimeData", "BioTlkFileSet", "ScriptStruct", "SoundCue", "SoundNodeWave","BioSoundNodeWaveStreamingData"};
 
         public override bool CanParse(IExportEntry exportEntry)
         {
@@ -347,6 +347,7 @@ namespace ME3Explorer
                     subNodes = StartStaticMeshScan(data, ref binarystart);
                     break;
                 case "Texture2D":
+                case "TextureFlipBook":
                     subNodes = StartTextureBinaryScan(data);
                     break;
                 case "State":
