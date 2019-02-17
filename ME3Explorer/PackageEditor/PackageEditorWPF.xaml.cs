@@ -526,7 +526,7 @@ namespace ME3Explorer
                     byte[] header = exp.GetHeader();
                     int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
                     int count = BitConverter.ToInt32(header, preguidcountoffset);
-                    int headerguidoffset = (preguidcountoffset + 4) + (count * 4);
+                    int headerguidoffset = (header.Length - 20);// + 4) + (count * 4);
 
                     SharedPathfinding.WriteMem(header, headerguidoffset, new byte[16]); //erase guid
                     exp.Header = header;
