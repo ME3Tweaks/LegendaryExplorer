@@ -1,10 +1,6 @@
-﻿using ME3Explorer.Packages;
+﻿using System;
+using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -64,10 +60,8 @@ namespace ME3Explorer.Pathfinding_Editor
                 guid.export = export;
                 return guid;
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         /// <summary>
@@ -110,7 +104,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public override string ToString()
         {
-            return A.ToString() + " " + B.ToString() + " " + C.ToString() + " " + D.ToString();
+            return A + " " + B + " " + C + " " + D;
         }
     }
 }

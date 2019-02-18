@@ -26,7 +26,7 @@ namespace ME3Explorer.PackageDumper
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class PackageDumper : NotifyPropertyChangedBase
+    public partial class PackageDumper : NotifyPropertyChangedWindowBase
     {
         MEGame GameBeingDumped;
         BackgroundWorker DumpWorker;

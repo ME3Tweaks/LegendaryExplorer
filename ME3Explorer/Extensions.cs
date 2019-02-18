@@ -73,8 +73,7 @@ namespace ME3Explorer
     {
         public static TreeViewItem ContainerFromItemRecursive(this ItemContainerGenerator root, object item)
         {
-            var treeViewItem = root.ContainerFromItem(item) as TreeViewItem;
-            if (treeViewItem != null)
+            if (root.ContainerFromItem(item) is TreeViewItem treeViewItem)
                 return treeViewItem;
             foreach (var subItem in root.Items)
             {
@@ -185,10 +184,11 @@ namespace ME3Explorer
 
         /// <summary>
         /// Overwrites a portion of an array starting at offset with the contents of another array.
+        /// Accepts negative indexes
         /// </summary>
         /// <typeparam name="T">Content of array.</typeparam>
         /// <param name="dest">Array to write to</param>
-        /// <param name="offset">Start index in dest</param>
+        /// <param name="offset">Start index in dest. Can be negative (eg. last element is -1)</param>
         /// <param name="source">data to write to dest</param>
         public static void OverwriteRange<T>(this IList<T> dest, int offset, IList<T> source)
         {
@@ -265,12 +265,12 @@ namespace ME3Explorer
             {
                 return m;
             }
-            else if (m == 0)
+            if (m == 0)
             {
                 return n;
             }
-            int[] v0;
-            int[] v1 = new int[m + 1];
+
+            var v1 = new int[m + 1];
             for (int i = 0; i <= m; i++)
             {
                 v1[i] = i;
@@ -278,7 +278,7 @@ namespace ME3Explorer
 
             for (int i = 1; i <= n; i++)
             {
-                v0 = v1;
+                int[] v0 = v1;
                 v1 = new int[m + 1];
                 v1[0] = i;
                 for (int j = 1; j <= m; j++)
@@ -559,19 +559,18 @@ namespace ME3Explorer
         }
 
         /// <summary>
-        /// Checks if this object is of a specific generic type (e.g. List<IntProperty>)
+        /// Checks if this object is of a specific generic type (e.g. List&lt;IntProperty&gt;)
         /// </summary>
         /// <param name="typeToCheck">typeof() of the item you are checking</param>
         /// <param name="genericType">typeof() of the value you are checking against</param>
         /// <returns>True if type matches, false otherwise</returns>
         public static bool IsOfGenericType(this Type typeToCheck, Type genericType)
         {
-            Type concreteType;
-            return typeToCheck.IsOfGenericType(genericType, out concreteType);
+            return typeToCheck.IsOfGenericType(genericType, out Type _);
         }
 
         /// <summary>
-        /// Checks if this object is of a specific generic type (e.g. List<IntProperty>)
+        /// Checks if this object is of a specific generic type (e.g. List&lt;IntProperty&gt;)
         /// </summary>
         /// <param name="typeToCheck">typeof() of the item you are checking</param>
         /// <param name="genericType">typeof() of the value you are checking against</param>
@@ -637,7 +636,7 @@ namespace ME3Explorer
                 throw new ArgumentException();
             }
             Values = Enum.GetValues(type).Cast<Enum>().ToArray();
-            DefaultValue = default(T);
+            DefaultValue = default;
         }
 
         public static T[] MaskToList(Enum mask, bool ignoreDefault = true)

@@ -21,48 +21,16 @@ namespace ME3Explorer.SharedUI
     /// <summary>
     /// Interaction logic for AddPropertyDialogWPF.xaml
     /// </summary>
-    public partial class AddPropertyDialogWPF : Window, INotifyPropertyChanged
+    public partial class AddPropertyDialogWPF : NotifyPropertyChangedWindowBase
     {
         public List<string> existingProperties;
         Dictionary<string, ClassInfo> classList;
-
-        #region PropertyChangedHandler
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (Equals(storage, value))
-            {
-                return false;
-            }
-
-            storage = value;
-
-            if (propertyName != null)
-            {
-                OnPropertyChanged(propertyName);
-            }
-
-            return true;
-        }
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            var handler = PropertyChanged;
-
-            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion
+        
         private string _selectedClassName;
         public string SelectedClassName
         {
-            get
-            {
-                return _selectedClassName;
-            }
-            set
-            {
-                SetProperty(ref _selectedClassName, value);
-            }
+            get => _selectedClassName;
+            set => SetProperty(ref _selectedClassName, value);
         }
 
         public AddPropertyDialogWPF()
@@ -95,11 +63,11 @@ namespace ME3Explorer.SharedUI
             Close();
         }
 
-        public static Tuple<string, PropertyInfo> GetProperty(IExportEntry export, List<string> _existingProperties, MEGame game, Window callingWindow = null)
+        public static (string, PropertyInfo)? GetProperty(IExportEntry export, List<string> _existingProperties, MEGame game, Window callingWindow = null)
         {
             string origname = export.ClassName;
             string temp = export.ClassName;
-            List<string> classes = new List<string>();
+            var classes = new List<string>();
             Dictionary<string, ClassInfo> classList;
             switch (game)
             {
@@ -166,14 +134,14 @@ namespace ME3Explorer.SharedUI
             prompt.ClassesListView.ItemsSource = classes;
             prompt.ClassesListView.SelectedItem = origname;
             prompt.ShowDialog();
-            if (prompt.DialogResult.HasValue && prompt.DialogResult.Value && prompt.PropertiesListView.SelectedIndex != -1)
+            if (prompt.DialogResult.HasValue
+             && prompt.DialogResult.Value
+             && prompt.PropertiesListView.SelectedIndex != -1
+             && prompt.PropertiesListView.SelectedItem is KeyValuePair<string, PropertyInfo> kvp)
             {
-                return Tuple.Create(((KeyValuePair<string, PropertyInfo>)prompt.PropertiesListView.SelectedItem).Key, ((KeyValuePair<string, PropertyInfo>)prompt.PropertiesListView.SelectedItem).Value);
+                return (kvp.Key, kvp.Value);
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e)

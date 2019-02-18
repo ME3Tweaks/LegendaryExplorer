@@ -2661,8 +2661,8 @@ namespace ME3Explorer
                 return;
             }
             List<string> props = PropertyReader.getPropList(export).Select(x => pcc.getNameEntry(x.Name)).ToList();
-            var prop = AddPropertyDialogWPF.GetProperty(export, props, pcc.Game);
-            if (prop != null)
+            (string propName, PropertyInfo)? prop = AddPropertyDialogWPF.GetProperty(export, props, pcc.Game);
+            if (prop.HasValue)
             {
                 string origname = export.ClassName;
                 string temp = export.ClassName;
@@ -2702,7 +2702,7 @@ namespace ME3Explorer
                     currentInfo.baseClass = exportTemp.ClassParent;
                 }
 
-                AddProperty(prop.Item1, currentInfo);
+                AddProperty(prop.Value.propName, currentInfo);
                 RefreshMem();
             }
         }

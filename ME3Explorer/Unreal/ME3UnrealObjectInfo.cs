@@ -701,75 +701,74 @@ namespace ME3Explorer.Unreal
             //or by new classes designed in the modding scene that must be present in order for parsing to work properly
 
             //Kinkojiro - New Class - SFXSeqAct_AttachToSocket
-            ClassInfo ci = new ClassInfo()
+            Classes["SFXSeqAct_AttachToSocket"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = "ME3Explorer_CustomNativeAdditions",
-                exportIndex = 0
+                exportIndex = 0,
+                properties =
+                {
+                    ["PSC2Component"] = new PropertyInfo
+                    {
+                        type = PropertyType.ObjectProperty, reference = "ParticleSystemComponent"
+                    },
+                    ["PSC1Component"] = new PropertyInfo
+                    {
+                        type = PropertyType.ObjectProperty, reference = "ParticleSystemComponent"
+                    },
+                    ["SkMeshComponent"] = new PropertyInfo
+                    {
+                        type = PropertyType.ObjectProperty, reference = "SkeletalMeshComponent"
+                    },
+                    ["TargetPawn"] = new PropertyInfo
+                    {
+                        type = PropertyType.ObjectProperty, reference = "Actor"
+                    },
+                    ["AttachSocketName"] = new PropertyInfo
+                    {
+                        type = PropertyType.NameProperty
+                    }
+                }
             };
-            ci.properties["PSC2Component"] = new PropertyInfo()
-            {
-                type = PropertyType.ObjectProperty,
-                reference = "ParticleSystemComponent"
-            };
-            ci.properties["PSC1Component"] = new PropertyInfo()
-            {
-                type = PropertyType.ObjectProperty,
-                reference = "ParticleSystemComponent"
-            };
-            ci.properties["SkMeshComponent"] = new PropertyInfo()
-            {
-                type = PropertyType.ObjectProperty,
-                reference = "SkeletalMeshComponent"
-            };
-            ci.properties["TargetPawn"] = new PropertyInfo()
-            {
-                type = PropertyType.ObjectProperty,
-                reference = "Actor"
-            };
-            ci.properties["AttachSocketName"] = new PropertyInfo()
-            {
-                type = PropertyType.NameProperty
-            };
-            Classes["SFXSeqAct_AttachToSocket"] = ci;
 
             //Kinkojiro - New Class - BioSeqAct_ShowMedals
             //Sequence object for showing the medals UI
-            ci = new ClassInfo()
+            Classes["BioSeqAct_ShowMedals"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = "ME3Explorer_CustomNativeAdditions",
-                exportIndex = 0
+                exportIndex = 0,
+                properties =
+                {
+                    ["bFromMainMenu"] = new PropertyInfo
+                    {
+                        type = PropertyType.BoolProperty,
+                    },
+                    ["m_oGuiReferenced"] = new PropertyInfo
+                    {
+                        type = PropertyType.ObjectProperty, reference = "GFxMovieInfo"
+                    }
+                }
             };
-            ci.properties["bFromMainMenu"] = new PropertyInfo()
-            {
-                type = PropertyType.BoolProperty,
-            };
-            ci.properties["m_oGuiReferenced"] = new PropertyInfo()
-            {
-                type = PropertyType.ObjectProperty,
-                reference = "GFxMovieInfo"
-            };
-            Classes["BioSeqAct_ShowMedals"] = ci;
 
             //Kinkojiro - New Class - SFXSeqAct_SetFaceFX
-            ci = new ClassInfo()
+            Classes["SFXSeqAct_SetFaceFX"] = new ClassInfo
             {
                 baseClass = "SequenceAction",
                 pccPath = "ME3Explorer_CustomNativeAdditions",
-                exportIndex = 0
+                exportIndex = 0,
+                properties =
+                {
+                    ["m_aoTargets"] = new PropertyInfo()
+                    {
+                        type = PropertyType.ArrayProperty, reference = "Actor"
+                    },
+                    ["m_pDefaultFaceFXAsset"] = new PropertyInfo()
+                    {
+                        type = PropertyType.ObjectProperty, reference = "FaceFXAsset"
+                    }
+                }
             };
-            ci.properties["m_aoTargets"] = new PropertyInfo()
-            {
-                type = PropertyType.ArrayProperty,
-                reference = "Actor"
-            };
-            ci.properties["m_pDefaultFaceFXAsset"] = new PropertyInfo()
-            {
-                type = PropertyType.ObjectProperty,
-                reference = "FaceFXAsset"
-            };
-            Classes["SFXSeqAct_SetFaceFX"] = ci;
 
             #endregion
 

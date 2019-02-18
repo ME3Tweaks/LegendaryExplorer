@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using Gammtek.Conduit;
 using Gammtek.Conduit.MassEffect3.SFXGame.CodexMap;
 using MassEffect.NativesEditor.Dialogs;
+using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 
@@ -16,7 +17,7 @@ namespace MassEffect.NativesEditor.Views
 	/// <summary>
 	///   Interaction logic for CodexMapView.xaml.
 	/// </summary>
-	public partial class CodexMapView : INotifyPropertyChanged
+	public partial class CodexMapView : NotifyPropertyChangedControlBase
 	{
 		/// <summary>
 		///   Initializes a new instance of the <see cref="CodexMapView" /> class.
@@ -68,7 +69,7 @@ namespace MassEffect.NativesEditor.Views
 
         public ObservableCollection<KeyValuePair<int, BioCodexPage>> CodexPages
         {
-            get { return _codexPages; }
+            get => _codexPages;
             set
             {
                 SetProperty(ref _codexPages, value);
@@ -79,7 +80,7 @@ namespace MassEffect.NativesEditor.Views
 
         public ObservableCollection<KeyValuePair<int, BioCodexSection>> CodexSections
         {
-            get { return _codexSections; }
+            get => _codexSections;
             set
             {
                 SetProperty(ref _codexSections, value);
@@ -89,7 +90,7 @@ namespace MassEffect.NativesEditor.Views
 
         public KeyValuePair<int, BioCodexPage> SelectedCodexPage
         {
-            get { return _selectedCodexPage; }
+            get => _selectedCodexPage;
             set
             {
                 SetProperty(ref _selectedCodexPage, value);
@@ -99,7 +100,7 @@ namespace MassEffect.NativesEditor.Views
 
         public KeyValuePair<int, BioCodexSection> SelectedCodexSection
         {
-            get { return _selectedCodexSection; }
+            get => _selectedCodexSection;
             set
             {
                 SetProperty(ref _selectedCodexSection, value);
@@ -197,7 +198,7 @@ namespace MassEffect.NativesEditor.Views
 
             var dlg = new ChangeObjectIdDialog
             {
-                ContentText = string.Format("Change id of codex page #{0}", SelectedCodexPage.Key),
+                ContentText = $"Change id of codex page #{SelectedCodexPage.Key}",
                 ObjectId = SelectedCodexPage.Key
             };
 
@@ -222,7 +223,7 @@ namespace MassEffect.NativesEditor.Views
 
             var dlg = new ChangeObjectIdDialog
             {
-                ContentText = string.Format("Change id of codex section #{0}", SelectedCodexSection.Key),
+                ContentText = $"Change id of codex section #{SelectedCodexSection.Key}",
                 ObjectId = SelectedCodexSection.Key
             };
 
@@ -247,7 +248,7 @@ namespace MassEffect.NativesEditor.Views
 
             var dlg = new CopyObjectDialog
             {
-                ContentText = string.Format("Copy codex page #{0}", SelectedCodexPage.Key),
+                ContentText = $"Copy codex page #{SelectedCodexPage.Key}",
                 ObjectId = GetMaxCodexPageId() + 1
             };
 
@@ -268,7 +269,7 @@ namespace MassEffect.NativesEditor.Views
 
             var dlg = new CopyObjectDialog
             {
-                ContentText = string.Format("Copy codex section #{0}", SelectedCodexSection.Key),
+                ContentText = $"Copy codex section #{SelectedCodexSection.Key}",
                 ObjectId = GetMaxCodexSectionId() + 1
             };
 
@@ -301,10 +302,7 @@ namespace MassEffect.NativesEditor.Views
 
         public void Open(IMEPackage pcc)
         {
-            IExportEntry export;
-            int dataOffset;
-
-            if (!TryFindCodexMap(pcc, out export, out dataOffset))
+            if (!TryFindCodexMap(pcc, out IExportEntry export, out int dataOffset))
             {
                 return;
             }
@@ -376,16 +374,14 @@ namespace MassEffect.NativesEditor.Views
                 return;
             }
 
-            var codexMapData = export.Data;
-            var codexMapProperties = PropertyReader.getPropList(export);
+            byte[] codexMapData = export.Data;
 
-            if (codexMapProperties.Count <= 0)
+            if (!export.GetProperties(includeNoneProperties: true).Any())
             {
                 return;
             }
 
-            var codexMapProperty = codexMapProperties.Find(property => property.TypeVal == PropertyType.None);
-            var codexMapDataOffset = codexMapProperty.offend;
+            var codexMapDataOffset = export.propsEnd();
 
             byte[] bytes;
             var codexMap = new BioCodexMap(CodexSections.ToDictionary(pair => pair.Key, pair => pair.Value),
@@ -437,7 +433,7 @@ namespace MassEffect.NativesEditor.Views
         {
             if (collection == null)
             {
-                ThrowHelper.ThrowArgumentNullException("collection");
+                ThrowHelper.ThrowArgumentNullException(nameof(collection));
             }
 
             return new ObservableCollection<T>(collection);
@@ -452,36 +448,6 @@ namespace MassEffect.NativesEditor.Views
         {
             return CodexSections.Any() ? CodexSections.Max(pair => pair.Key) : -1;
         }
-
-        #region Property Changed Notification
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Notifies listeners when given property is updated.
-        /// </summary>
-        /// <param name="propertyname">Name of property to give notification for. If called in property, argument can be ignored as it will be default.</param>
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyname = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
-        }
-
-        /// <summary>
-        /// Sets given property and notifies listeners of its change. IGNORES setting the property to same value.
-        /// Should be called in property setters.
-        /// </summary>
-        /// <typeparam name="T">Type of given property.</typeparam>
-        /// <param name="field">Backing field to update.</param>
-        /// <param name="value">New value of property.</param>
-        /// <param name="propertyName">Name of property.</param>
-        /// <returns>True if success, false if backing field and new value aren't compatible.</returns>
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-        #endregion
 
         private void ChangeCodexPageId_Click(object sender, System.Windows.RoutedEventArgs e)
         {

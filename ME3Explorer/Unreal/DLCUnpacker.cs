@@ -33,25 +33,20 @@ using ByteSizeLib;
 
 namespace ME3Explorer.Unreal
 {
-    class DLCUnpack : INotifyPropertyChanged
+    class DLCUnpack : NotifyPropertyChangedBase
     {
         const uint SfarTag = 0x53464152; // 'SFAR'
         const uint SfarVersion = 0x00010000;
         const uint LZMATag = 0x6c7a6d61; // 'lzma'
         const uint HeaderSize = 0x20;
         const uint EntryHeaderSize = 0x1e;
-        readonly byte[] FileListHash = new byte[] { 0xb5, 0x50, 0x19, 0xcb, 0xf9, 0xd3, 0xda, 0x65, 0xd5, 0x5b, 0x32, 0x1c, 0x00, 0x19, 0x69, 0x7c };
+        readonly byte[] FileListHash = { 0xb5, 0x50, 0x19, 0xcb, 0xf9, 0xd3, 0xda, 0x65, 0xd5, 0x5b, 0x32, 0x1c, 0x00, 0x19, 0x69, 0x7c };
         const long MaxBlockSize = 0x00010000;
         int filenamesIndex;
         public List<DLCEntry> filesList { get; private set; }
         uint maxBlockSize;
         List<ushort> blockSizes;
         public string filePath;
-
-        /// <summary>
-        /// Assign a handler to this to subscribe to progress changes in this class.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public long UncompressedSize { get; private set; }
         public int GetNumberOfFiles => (int)TotalFilesInDLC;
@@ -67,8 +62,8 @@ namespace ME3Explorer.Unreal
         /// </summary>
         public string CurrentOverallStatus
         {
-            get { return _currentOverallStatus; }
-            set { SetProperty(ref _currentOverallStatus, value); }
+            get => _currentOverallStatus;
+            set => SetProperty(ref _currentOverallStatus, value);
         }
 
         private string _currentStatus;
@@ -77,15 +72,15 @@ namespace ME3Explorer.Unreal
         /// </summary>
         public string CurrentStatus
         {
-            get { return _currentStatus; }
-            set { SetProperty(ref _currentStatus, value); }
+            get => _currentStatus;
+            set => SetProperty(ref _currentStatus, value);
         }
 
         private bool _loadingFileIntoRAM;
         public bool IndeterminateState
         {
-            get { return _loadingFileIntoRAM; }
-            set { SetProperty(ref _loadingFileIntoRAM, value); }
+            get => _loadingFileIntoRAM;
+            set => SetProperty(ref _loadingFileIntoRAM, value);
         }
 
         /// <summary>
@@ -99,8 +94,8 @@ namespace ME3Explorer.Unreal
         /// </summary>
         public int CurrentFilesProcessed
         {
-            get { return _currentFilesProcessed; }
-            set { SetProperty(ref _currentFilesProcessed, value); }
+            get => _currentFilesProcessed;
+            set => SetProperty(ref _currentFilesProcessed, value);
         }
 
         private int _currentProgress;
@@ -109,8 +104,8 @@ namespace ME3Explorer.Unreal
         /// </summary>
         public int CurrentProgress
         {
-            get { return _currentProgress; }
-            set { SetProperty(ref _currentProgress, value); }
+            get => _currentProgress;
+            set => SetProperty(ref _currentProgress, value);
         }
 
         public struct DLCEntry
@@ -220,9 +215,9 @@ namespace ME3Explorer.Unreal
             }
             else
             {
-                List<byte[]> uncompressedBlockBuffers = new List<byte[]>();
-                List<byte[]> compressedBlockBuffers = new List<byte[]>();
-                List<long> blockBytesLeft = new List<long>();
+                var uncompressedBlockBuffers = new List<byte[]>();
+                var compressedBlockBuffers = new List<byte[]>();
+                var blockBytesLeft = new List<long>();
                 long bytesLeft = entry.uncomprSize;
                 for (int j = 0; j < entry.numBlocks; j++)
                 {
@@ -287,7 +282,7 @@ namespace ME3Explorer.Unreal
                     if (filesList[i].filenamePath == null)
                         throw new Exception("filename missing");
 
-                    CurrentStatus = "File " + (i + 1) + " of " + filesList.Count() + " - " + Path.GetFileName(filesList[i].filenamePath);
+                    CurrentStatus = "File " + (i + 1) + " of " + filesList.Count + " - " + Path.GetFileName(filesList[i].filenamePath);
                     CurrentProgress = (int)(100.0 * CurrentFilesProcessed) / (int)TotalFilesInDLC;
 
                     int pos = filesList[i].filenamePath.IndexOf("\\BIOGame\\DLC\\", StringComparison.OrdinalIgnoreCase);
@@ -332,32 +327,6 @@ namespace ME3Explorer.Unreal
                 outputFile.WriteUInt32(LZMATag);
             }
         }
-
-        #region PropertyChanged stuff
-        protected virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (Equals(storage, value))
-            {
-                return false;
-            }
-
-            storage = value;
-
-            if (propertyName != null)
-            {
-                OnPropertyChanged(propertyName);
-            }
-
-            return true;
-        }
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            var handler = PropertyChanged;
-
-            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion
 
     }
 }

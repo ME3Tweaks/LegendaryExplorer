@@ -274,6 +274,7 @@ namespace ME3Explorer.Unreal
             [EClassFlags.NativeOnly] = ""
         };
 
+        [Flags]
         public enum EObjectFlags : ulong
         {
             Transactional = 0x0000000100000000,   // Object is transactional.

@@ -1372,6 +1372,7 @@ namespace ME3Explorer.Unreal
     public abstract class ArrayPropertyBase : UProperty
     {
         public abstract IEnumerable<UProperty> ValuesAsProperties { get; }
+        public abstract int Count { get; }
 
         protected ArrayPropertyBase(NameReference? name) : base(name)
         {
@@ -1444,7 +1445,7 @@ namespace ME3Explorer.Unreal
         #endregion
 
         #region IList<T>
-        public int Count => Values.Count;
+        public override int Count => Values.Count;
         public bool IsReadOnly => ((ICollection<T>)Values).IsReadOnly;
 
         public T this[int index]
@@ -1491,6 +1492,11 @@ namespace ME3Explorer.Unreal
         public void Insert(int index, T item)
         {
             Values.Insert(index, item);
+        }
+
+        public void InsertRange(int index, IEnumerable<T> collection)
+        {
+            Values.InsertRange(index, collection);
         }
         #endregion
     }

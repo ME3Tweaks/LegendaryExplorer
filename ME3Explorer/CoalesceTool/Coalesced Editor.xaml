@@ -1,8 +1,9 @@
-﻿<Window x:Class="MassEffect3.CoalesceTool.CoalescedEditor"
+﻿<global:NotifyPropertyChangedWindowBase x:Class="MassEffect3.CoalesceTool.CoalescedEditor"
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:global="clr-namespace:ME3Explorer"
 		mc:Ignorable="d" xmlns:local="clr-namespace:MassEffect3.CoalesceTool"
 		Title="Coalesced Editor" MinHeight="300" MinWidth="600" d:DesignHeight="300" d:DesignWidth="600" SizeToContent="WidthAndHeight"
 		d:DataContext="{d:DesignInstance local:CoalescedEditor}">
@@ -64,4 +65,4 @@
 					  Grid.Column="0" Grid.Row="3" />
 		</Grid>
 	</Grid>
-</Window>
+</global:NotifyPropertyChangedWindowBase>

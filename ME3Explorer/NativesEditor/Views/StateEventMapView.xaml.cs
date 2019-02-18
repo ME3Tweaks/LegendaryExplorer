@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using Gammtek.Conduit;
 using Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap;
 using MassEffect.NativesEditor.Dialogs;
+using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 
@@ -15,7 +16,7 @@ namespace MassEffect.NativesEditor.Views
 	/// <summary>
 	///   Interaction logic for StateEventMapView.xaml
 	/// </summary>
-	public partial class StateEventMapView : INotifyPropertyChanged
+	public partial class StateEventMapView : NotifyPropertyChangedControlBase
     {
 		public StateEventMapView()
 		{
@@ -26,15 +27,9 @@ namespace MassEffect.NativesEditor.Views
         private BioStateEventElement _selectedStateEventElement;
         private ObservableCollection<KeyValuePair<int, BioStateEvent>> _stateEvents;
         
-        public bool CanAddStateEventElement
-        {
-            get { return StateEvents != null && SelectedStateEvent.Value != null; }
-        }
+        public bool CanAddStateEventElement => StateEvents != null && SelectedStateEvent.Value != null;
 
-        public bool CanRemoveStateEvent
-        {
-            get { return StateEvents != null && SelectedStateEvent.Value != null; }
-        }
+        public bool CanRemoveStateEvent => StateEvents != null && SelectedStateEvent.Value != null;
 
         public bool CanRemoveStateEventElement
         {
@@ -51,7 +46,7 @@ namespace MassEffect.NativesEditor.Views
 
         public KeyValuePair<int, BioStateEvent> SelectedStateEvent
         {
-            get { return _selectedStateEvent; }
+            get => _selectedStateEvent;
             set
             {
                 SetProperty(ref _selectedStateEvent, value);
@@ -63,7 +58,7 @@ namespace MassEffect.NativesEditor.Views
 
         public BioStateEventElement SelectedStateEventElement
         {
-            get { return _selectedStateEventElement; }
+            get => _selectedStateEventElement;
             set
             {
                 SetProperty(ref _selectedStateEventElement, value);
@@ -73,11 +68,8 @@ namespace MassEffect.NativesEditor.Views
 
         public ObservableCollection<KeyValuePair<int, BioStateEvent>> StateEvents
         {
-            get { return _stateEvents; }
-            set
-            {
-                SetProperty(ref _stateEvents, value);
-            }
+            get => _stateEvents;
+            set => SetProperty(ref _stateEvents, value);
         }
 
         public void AddStateEvent()
@@ -238,7 +230,7 @@ namespace MassEffect.NativesEditor.Views
 
             var dlg = new CopyObjectDialog
             {
-                ContentText = string.Format("Copy state event #{0}", SelectedStateEvent.Key),
+                ContentText = $"Copy state event #{SelectedStateEvent.Key}",
                 ObjectId = SelectedStateEvent.Key
             };
 
@@ -339,10 +331,7 @@ namespace MassEffect.NativesEditor.Views
 
         public void Open(IMEPackage pcc)
         {
-            IExportEntry export;
-            int dataOffset;
-
-            if (!TryFindStateEventMap(pcc, out export, out dataOffset))
+            if (!TryFindStateEventMap(pcc, out IExportEntry export, out int dataOffset))
             {
                 return;
             }
@@ -377,7 +366,7 @@ namespace MassEffect.NativesEditor.Views
 
             var dlg = new ChangeObjectIdDialog
             {
-                ContentText = string.Format("Change id of codex page #{0}", SelectedStateEvent.Key),
+                ContentText = $"Change id of codex page #{SelectedStateEvent.Key}",
                 ObjectId = SelectedStateEvent.Key
             };
 
@@ -439,24 +428,13 @@ namespace MassEffect.NativesEditor.Views
 
         public void RemoveSubstateSiblingIndex(int siblingIndex)
         {
-            if (StateEvents == null || SelectedStateEvent.Value == null || SelectedStateEventElement == null)
+            if (StateEvents != null && SelectedStateEvent.Value != null && SelectedStateEventElement != null 
+                && SelectedStateEventElement is BioStateEventElementSubstate selectedSubstate 
+                && siblingIndex >= 0 
+                && siblingIndex < selectedSubstate.SiblingIndices.Count)
             {
-                return;
+                selectedSubstate.SiblingIndices.RemoveAt(siblingIndex);
             }
-
-            var selectedSubstate = SelectedStateEventElement as BioStateEventElementSubstate;
-
-            if (selectedSubstate == null)
-            {
-                return;
-            }
-
-            if (siblingIndex < 0 || siblingIndex >= selectedSubstate.SiblingIndices.Count)
-            {
-                return;
-            }
-
-            selectedSubstate.SiblingIndices.RemoveAt(siblingIndex);
         }
 
         protected void SetListsAsBindable()
@@ -486,7 +464,7 @@ namespace MassEffect.NativesEditor.Views
         {
             if (collection == null)
             {
-                ThrowHelper.ThrowArgumentNullException("collection");
+                ThrowHelper.ThrowArgumentNullException(nameof(collection));
             }
 
             return new ObservableCollection<T>(collection);
@@ -508,36 +486,6 @@ namespace MassEffect.NativesEditor.Views
 
             SetListsAsBindable();
         }
-
-        #region Property Changed Notification
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Notifies listeners when given property is updated.
-        /// </summary>
-        /// <param name="propertyname">Name of property to give notification for. If called in property, argument can be ignored as it will be default.</param>
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyname = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
-        }
-
-        /// <summary>
-        /// Sets given property and notifies listeners of its change. IGNORES setting the property to same value.
-        /// Should be called in property setters.
-        /// </summary>
-        /// <typeparam name="T">Type of given property.</typeparam>
-        /// <param name="field">Backing field to update.</param>
-        /// <param name="value">New value of property.</param>
-        /// <param name="propertyName">Name of property.</param>
-        /// <returns>True if success, false if backing field and new value aren't compatible.</returns>
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-        #endregion
 
         private void ChangeStateEventId_Click(object sender, System.Windows.RoutedEventArgs e)
         {

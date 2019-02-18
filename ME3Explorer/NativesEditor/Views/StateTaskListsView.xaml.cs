@@ -18,13 +18,14 @@ using System.Windows.Shapes;
 using Gammtek.Conduit;
 using Gammtek.Conduit.MassEffect3.SFXGame.QuestMap;
 using MassEffect.NativesEditor.Dialogs;
+using ME3Explorer;
 
 namespace MassEffect.NativesEditor.Views
 {
 	/// <summary>
 	/// Interaction logic for StateTaskListsView.xaml
 	/// </summary>
-	public partial class StateTaskListsView : INotifyPropertyChanged
+	public partial class StateTaskListsView : NotifyPropertyChangedControlBase
     {
 		public StateTaskListsView()
 		{
@@ -73,9 +74,7 @@ namespace MassEffect.NativesEditor.Views
                     return false;
                 }
 
-                if (SelectedStateTaskList.Value == null
-                    || SelectedStateTaskList.Value.TaskEvals == null
-                    || !SelectedStateTaskList.Value.TaskEvals.Any())
+                if (SelectedStateTaskList.Value?.TaskEvals == null || !SelectedStateTaskList.Value.TaskEvals.Any())
                 {
                     return false;
                 }
@@ -86,7 +85,7 @@ namespace MassEffect.NativesEditor.Views
 
         public KeyValuePair<int, BioStateTaskList> SelectedStateTaskList
         {
-            get { return _selectedStateTaskList; }
+            get => _selectedStateTaskList;
             set
             {
                 SetProperty(ref _selectedStateTaskList, value);
@@ -98,7 +97,7 @@ namespace MassEffect.NativesEditor.Views
 
         public BioTaskEval SelectedTaskEval
         {
-            get { return _selectedTaskEval; }
+            get => _selectedTaskEval;
             set
             {
                 SetProperty(ref _selectedTaskEval, value);
@@ -108,7 +107,7 @@ namespace MassEffect.NativesEditor.Views
 
         public ObservableCollection<KeyValuePair<int, BioStateTaskList>> StateTaskLists
         {
-            get { return _stateTaskLists; }
+            get => _stateTaskLists;
             set
             {
                 SetProperty(ref _stateTaskLists, value);
@@ -127,8 +126,7 @@ namespace MassEffect.NativesEditor.Views
 
             var dlg = new NewObjectDialog
             {
-                ContentText =
-                    string.Format("New {0}", "StateTaskList"),
+                ContentText = "New StateTaskList",
                 ObjectId = (GetMaxStateTaskListId() + 1)
             };
 
@@ -199,8 +197,7 @@ namespace MassEffect.NativesEditor.Views
 
             var dlg = new ChangeObjectIdDialog
             {
-                ContentText =
-                    string.Format("Change id of {0} #{1}", "StateTaskList", SelectedStateTaskList.Key),
+                ContentText = $"Change id of StateTaskList #{SelectedStateTaskList.Key}",
                 ObjectId = SelectedStateTaskList.Key
             };
 
@@ -225,8 +222,7 @@ namespace MassEffect.NativesEditor.Views
 
             var dlg = new CopyObjectDialog
             {
-                ContentText =
-                    string.Format("Copy {0} {1}", "StateTaskList", SelectedStateTaskList.Key),
+                ContentText = $"Copy StateTaskList {SelectedStateTaskList.Key}",
                 ObjectId = SelectedStateTaskList.Key
             };
 
@@ -320,7 +316,7 @@ namespace MassEffect.NativesEditor.Views
         {
             if (collection == null)
             {
-                ThrowHelper.ThrowArgumentNullException("collection");
+                ThrowHelper.ThrowArgumentNullException(nameof(collection));
             }
 
             return new ObservableCollection<T>(collection);
@@ -330,36 +326,6 @@ namespace MassEffect.NativesEditor.Views
         {
             return StateTaskLists.Any() ? StateTaskLists.Max(b => b.Key) : -1;
         }
-
-        #region Property Changed Notification
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Notifies listeners when given property is updated.
-        /// </summary>
-        /// <param name="propertyname">Name of property to give notification for. If called in property, argument can be ignored as it will be default.</param>
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyname = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
-        }
-
-        /// <summary>
-        /// Sets given property and notifies listeners of its change. IGNORES setting the property to same value.
-        /// Should be called in property setters.
-        /// </summary>
-        /// <typeparam name="T">Type of given property.</typeparam>
-        /// <param name="field">Backing field to update.</param>
-        /// <param name="value">New value of property.</param>
-        /// <param name="propertyName">Name of property.</param>
-        /// <returns>True if success, false if backing field and new value aren't compatible.</returns>
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-        #endregion
 
         private void ChangeStateTaskListId_Click(object sender, RoutedEventArgs e)
         {

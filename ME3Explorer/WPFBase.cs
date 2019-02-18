@@ -11,7 +11,7 @@ using ME3Explorer.Packages;
 
 namespace ME3Explorer
 {
-    public abstract class WPFBase : NotifyPropertyChangedBase
+    public abstract class WPFBase : NotifyPropertyChangedWindowBase
     {
         private IMEPackage pcc;
         /// <summary>

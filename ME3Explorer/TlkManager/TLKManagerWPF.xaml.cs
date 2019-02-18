@@ -23,7 +23,7 @@ namespace ME3Explorer.TlkManagerNS
     /// <summary>
     /// Interaction logic for TLKManagerWPF.xaml
     /// </summary>
-    public partial class TLKManagerWPF : Window, INotifyPropertyChanged
+    public partial class TLKManagerWPF : NotifyPropertyChangedWindowBase
     {
         public ObservableCollectionExtended<LoadedTLK> ME1TLKItems { get; private set; } = new ObservableCollectionExtended<LoadedTLK>();
         public ObservableCollectionExtended<LoadedTLK> ME2TLKItems { get; private set; } = new ObservableCollectionExtended<LoadedTLK>();
@@ -62,23 +62,22 @@ namespace ME3Explorer.TlkManagerNS
         private bool _isBusy;
         public bool IsBusy
         {
-            get { return _isBusy; }
-            set { if (_isBusy != value) { _isBusy = value; OnPropertyChanged(); } }
+            get => _isBusy;
+            set => SetProperty(ref _isBusy, value);
         }
 
         private bool _isBusyTaskbar;
         public bool IsBusyTaskbar
         {
-            get { return _isBusyTaskbar; }
-            set { if (_isBusyTaskbar != value) { _isBusyTaskbar = value; OnPropertyChanged(); } }
+            get => _isBusyTaskbar;
+            set => SetProperty(ref _isBusyTaskbar, value);
         }
 
         private string _busyText;
-
         public string BusyText
         {
-            get { return _busyText; }
-            set { if (_busyText != value) { _busyText = value; OnPropertyChanged(); } }
+            get => _busyText;
+            set => SetProperty(ref _busyText, value);
         }
         #endregion
 
@@ -102,47 +101,51 @@ namespace ME3Explorer.TlkManagerNS
 
         private void AutoFindTLKME3(object obj)
         {
-            var tlks = Directory.EnumerateFiles(ME3Directory.BIOGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false)).ToList();
+            var tlks = Directory.EnumerateFiles(ME3Directory.BIOGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false));
             ME3TLKItems.ReplaceAll(tlks);
             SelectLoadedTLKsME3();
         }
 
         private void AutoFindTLKME2(object obj)
         {
-            var tlks = Directory.EnumerateFiles(ME2Directory.BioGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false)).ToList();
+            var tlks = Directory.EnumerateFiles(ME2Directory.BioGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false));
             ME2TLKItems.ReplaceAll(tlks);
             SelectLoadedTLKsME2();
         }
 
         private void AutoFindTLKME1(object obj)
         {
-            var tlks = Directory.EnumerateFiles(ME1Directory.gamePath, "*Tlk*", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false)).ToList();
+            var tlks = Directory.EnumerateFiles(ME1Directory.gamePath, "*Tlk*", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false));
             ME1TLKItems.ReplaceAll(tlks);
             SelectLoadedTLKsME1();
         }
 
-        private bool ME1GamePathExists(object obj)
+        private static bool ME1GamePathExists(object obj)
         {
             return ME1Directory.gamePath != null && Directory.Exists(ME1Directory.gamePath);
         }
 
-        private bool ME2BIOGamePathExists(object obj)
+        private static bool ME2BIOGamePathExists(object obj)
         {
             return ME2Directory.BioGamePath != null && Directory.Exists(ME2Directory.BioGamePath);
         }
 
-        private bool ME3BIOGamePathExists(object obj)
+        private static bool ME3BIOGamePathExists(object obj)
         {
             return ME3Directory.BIOGamePath != null && Directory.Exists(ME3Directory.BIOGamePath);
         }
 
-        public class LoadedTLK : INotifyPropertyChanged
+        public class LoadedTLK : NotifyPropertyChangedBase
         {
             public string tlkPath { get; set; }
             public string tlkDisplayPath { get; set; }
 
             private bool _selectedForLoad;
-            public bool selectedForLoad { get { return _selectedForLoad; } set { _selectedForLoad = value; OnPropertyChanged(); } }
+            public bool selectedForLoad
+            {
+                get => _selectedForLoad;
+                set { _selectedForLoad = value; OnPropertyChanged(); }
+            }
 
             public LoadedTLK(string tlkPath, bool selectedForLoad)
             {
@@ -150,67 +153,7 @@ namespace ME3Explorer.TlkManagerNS
                 this.tlkDisplayPath = System.IO.Path.GetFileName(tlkPath);
                 this.selectedForLoad = selectedForLoad;
             }
-
-            #region Property Changed Notification
-            public event PropertyChangedEventHandler PropertyChanged;
-
-            /// <summary>
-            /// Notifies listeners when given property is updated.
-            /// </summary>
-            /// <param name="propertyname">Name of property to give notification for. If called in property, argument can be ignored as it will be default.</param>
-            protected virtual void OnPropertyChanged([CallerMemberName] string propertyname = null)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
-            }
-
-            /// <summary>
-            /// Sets given property and notifies listeners of its change. IGNORES setting the property to same value.
-            /// Should be called in property setters.
-            /// </summary>
-            /// <typeparam name="T">Type of given property.</typeparam>
-            /// <param name="field">Backing field to update.</param>
-            /// <param name="value">New value of property.</param>
-            /// <param name="propertyName">Name of property.</param>
-            /// <returns>True if success, false if backing field and new value aren't compatible.</returns>
-            protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
-            {
-                if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-                field = value;
-                OnPropertyChanged(propertyName);
-                return true;
-            }
-            #endregion
         }
-
-        #region Property Changed Notification
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Notifies listeners when given property is updated.
-        /// </summary>
-        /// <param name="propertyname">Name of property to give notification for. If called in property, argument can be ignored as it will be default.</param>
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyname = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
-        }
-
-        /// <summary>
-        /// Sets given property and notifies listeners of its change. IGNORES setting the property to same value.
-        /// Should be called in property setters.
-        /// </summary>
-        /// <typeparam name="T">Type of given property.</typeparam>
-        /// <param name="field">Backing field to update.</param>
-        /// <param name="value">New value of property.</param>
-        /// <param name="propertyName">Name of property.</param>
-        /// <returns>True if success, false if backing field and new value aren't compatible.</returns>
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-        #endregion
 
         private void ME3TLKLangCombobox_Changed(object sender, SelectionChangedEventArgs e)
         {

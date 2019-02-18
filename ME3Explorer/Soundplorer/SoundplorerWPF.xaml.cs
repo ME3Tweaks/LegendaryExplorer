@@ -703,7 +703,7 @@ namespace ME3Explorer.Soundplorer
             i = 1;
             foreach (string pccPath in pccFiles)
             {
-                BusyText = $"Updating audio references ({i}/{pccFiles.Count()})";
+                BusyText = $"Updating audio references ({i}/{pccFiles.Length})";
                 using (IMEPackage pack = MEPackageHandler.OpenMEPackage(pccPath))
                 {
                     bool shouldSave = false;
@@ -868,8 +868,7 @@ namespace ME3Explorer.Soundplorer
 
         private void CloneAndReplace_Clicked(object sender, RoutedEventArgs e)
         {
-            SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
-            if (spExport != null)
+            if (SoundExports_ListBox.SelectedItem is SoundplorerExport)
             {
                 CloneAndReplace(false);
             }
@@ -888,8 +887,7 @@ namespace ME3Explorer.Soundplorer
                     spExport.Export.FileRef.addExport(clone);
                     SoundplorerExport newExport = new SoundplorerExport(clone);
                     BindedItemsList.Add(newExport);
-                    var reloadList = new List<SoundplorerExport>();
-                    reloadList.Add(newExport);
+                    var reloadList = new List<SoundplorerExport> {newExport};
                     SoundExports_ListBox.ScrollIntoView(newExport);
                     SoundExports_ListBox.UpdateLayout();
                     if (SoundExports_ListBox.ItemContainerGenerator.ContainerFromItem(newExport) is ListBoxItem item)
@@ -1053,8 +1051,7 @@ namespace ME3Explorer.Soundplorer
 
         private void SoundExports_ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var item = ((FrameworkElement)e.OriginalSource).DataContext as SoundplorerExport;
-            if (item != null)
+            if ((e.OriginalSource as FrameworkElement)?.DataContext is SoundplorerExport)
             {
                 soundPanel.StopPlaying();
                 soundPanel.StartOrPausePlaying();
@@ -1132,7 +1129,7 @@ namespace ME3Explorer.Soundplorer
 
         }
 
-        private void ExportISACTEntryRaw(ISACTFileEntry spExport)
+        private static void ExportISACTEntryRaw(ISACTFileEntry spExport)
         {
             SaveFileDialog d = new SaveFileDialog
             {
@@ -1151,11 +1148,9 @@ namespace ME3Explorer.Soundplorer
         }
     }
 
-    public class ISACTFileEntry : INotifyPropertyChanged
+    public class ISACTFileEntry : NotifyPropertyChangedBase
     {
         public ISBankEntry Entry { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         private bool _needsLoading;
         public bool NeedsLoading
@@ -1223,28 +1218,11 @@ namespace ME3Explorer.Soundplorer
             NeedsLoading = false;
             Icon = FontAwesomeIcon.VolumeUp;
         }
-
-
-
-        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
     }
 
-    public class SoundplorerExport : INotifyPropertyChanged
+    public class SoundplorerExport : NotifyPropertyChangedBase
     {
         public IExportEntry Export { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         private bool _needsLoading;
         public bool NeedsLoading
@@ -1331,18 +1309,6 @@ namespace ME3Explorer.Soundplorer
                 Icon = FontAwesomeIcon.University;
             }
 
-        }
-
-        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
         }
     }
 }

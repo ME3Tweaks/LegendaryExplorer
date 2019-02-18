@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using Gammtek.Conduit;
 using Gammtek.Conduit.MassEffect3.SFXGame.QuestMap;
 using MassEffect.NativesEditor.Dialogs;
+using ME3Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 
@@ -15,7 +16,7 @@ namespace MassEffect.NativesEditor.Views
 	/// <summary>
 	///   Interaction logic for QuestMapView.xaml
 	/// </summary>
-	public partial class QuestMapView : INotifyPropertyChanged
+	public partial class QuestMapView : NotifyPropertyChangedControlBase
     {
 		public QuestMapView()
 		{
@@ -85,9 +86,7 @@ namespace MassEffect.NativesEditor.Views
         {
             get
             {
-                if (SelectedQuest.Value == null
-                    || SelectedQuest.Value.Goals == null
-                    || !SelectedQuest.Value.Goals.Any())
+                if (SelectedQuest.Value?.Goals == null || !SelectedQuest.Value.Goals.Any())
                 {
                     return false;
                 }
@@ -100,9 +99,7 @@ namespace MassEffect.NativesEditor.Views
         {
             get
             {
-                if (SelectedQuest.Value == null
-                    || SelectedQuest.Value.PlotItems == null
-                    || !SelectedQuest.Value.PlotItems.Any())
+                if (SelectedQuest.Value?.PlotItems == null || !SelectedQuest.Value.PlotItems.Any())
                 {
                     return false;
                 }
@@ -115,9 +112,7 @@ namespace MassEffect.NativesEditor.Views
         {
             get
             {
-                if (SelectedQuest.Value == null
-                    || SelectedQuest.Value.Tasks == null
-                    || !SelectedQuest.Value.Tasks.Any())
+                if (SelectedQuest.Value?.Tasks == null || !SelectedQuest.Value.Tasks.Any())
                 {
                     return false;
                 }
@@ -128,7 +123,7 @@ namespace MassEffect.NativesEditor.Views
 
         public ObservableCollection<KeyValuePair<int, BioQuest>> Quests
         {
-            get { return _quests; }
+            get => _quests;
             set
             {
                 SetProperty(ref _quests, value);
@@ -141,7 +136,7 @@ namespace MassEffect.NativesEditor.Views
 
         public KeyValuePair<int, BioQuest> SelectedQuest
         {
-            get { return _selectedQuest; }
+            get => _selectedQuest;
             set
             {
                 SetProperty(ref _selectedQuest, value);
@@ -157,7 +152,7 @@ namespace MassEffect.NativesEditor.Views
 
         public BioQuestGoal SelectedQuestGoal
         {
-            get { return _selectedQuestGoal; }
+            get => _selectedQuestGoal;
             set
             {
                 SetProperty(ref _selectedQuestGoal, value);
@@ -167,7 +162,7 @@ namespace MassEffect.NativesEditor.Views
 
         public BioQuestPlotItem SelectedQuestPlotItem
         {
-            get { return _selectedQuestPlotItem; }
+            get => _selectedQuestPlotItem;
             set
             {
                 SetProperty(ref _selectedQuestPlotItem, value);
@@ -177,7 +172,7 @@ namespace MassEffect.NativesEditor.Views
 
         public BioQuestTask SelectedQuestTask
         {
-            get { return _selectedQuestTask; }
+            get => _selectedQuestTask;
             set
             {
                 SetProperty(ref _selectedQuestTask, value);
@@ -355,7 +350,7 @@ namespace MassEffect.NativesEditor.Views
 
             var dlg = new CopyObjectDialog
             {
-                ContentText = string.Format("Copy quest #{0}", SelectedQuest.Key),
+                ContentText = $"Copy quest #{SelectedQuest.Key}",
                 ObjectId = GetMaxQuestId() + 1
             };
 
@@ -369,7 +364,7 @@ namespace MassEffect.NativesEditor.Views
 
         public void CopyQuestGoal()
         {
-            if (Quests == null || SelectedQuest.Value == null || SelectedQuest.Value.Goals == null || SelectedQuestGoal == null)
+            if (Quests == null || SelectedQuest.Value?.Goals == null || SelectedQuestGoal == null)
             {
                 return;
             }
@@ -379,7 +374,7 @@ namespace MassEffect.NativesEditor.Views
 
         public void CopyQuestPlotItem()
         {
-            if (Quests == null || SelectedQuest.Value == null || SelectedQuest.Value.PlotItems == null || SelectedQuestPlotItem == null)
+            if (Quests == null || SelectedQuest.Value?.PlotItems == null || SelectedQuestPlotItem == null)
             {
                 return;
             }
@@ -389,7 +384,7 @@ namespace MassEffect.NativesEditor.Views
 
         public void CopyQuestTask()
         {
-            if (Quests == null || SelectedQuest.Value == null || SelectedQuest.Value.Tasks == null || SelectedQuestTask == null)
+            if (Quests == null || SelectedQuest.Value?.Tasks == null || SelectedQuestTask == null)
             {
                 return;
             }
@@ -418,10 +413,7 @@ namespace MassEffect.NativesEditor.Views
 
         public void Open(IMEPackage pcc)
         {
-            IExportEntry export;
-            int dataOffset;
-
-            if (!TryFindQuestMap(pcc, out export, out dataOffset))
+            if (!TryFindQuestMap(pcc, out IExportEntry export, out int dataOffset))
             {
                 return;
             }
@@ -459,7 +451,7 @@ namespace MassEffect.NativesEditor.Views
 
             var dlg = new ChangeObjectIdDialog
             {
-                ContentText = string.Format("Change id of codex page #{0}", SelectedQuest.Key),
+                ContentText = $"Change id of codex page #{SelectedQuest.Key}",
                 ObjectId = SelectedQuest.Key
             };
 
@@ -491,7 +483,7 @@ namespace MassEffect.NativesEditor.Views
 
             if (Quests.Any())
             {
-                SelectedQuest = ((index - 1) >= 0)
+                SelectedQuest = index - 1 >= 0
                     ? Quests[index - 1]
                     : Quests.First();
             }
@@ -499,7 +491,7 @@ namespace MassEffect.NativesEditor.Views
 
         public void RemoveQuestGoal()
         {
-            if (Quests == null || SelectedQuest.Value == null || SelectedQuest.Value.PlotItems == null || SelectedQuestGoal == null)
+            if (Quests == null || SelectedQuest.Value?.PlotItems == null || SelectedQuestGoal == null)
             {
                 return;
             }
@@ -513,7 +505,7 @@ namespace MassEffect.NativesEditor.Views
 
             if (SelectedQuest.Value.Goals.Any())
             {
-                SelectedQuestGoal = ((index - 1) >= 0)
+                SelectedQuestGoal = index - 1 >= 0
                     ? SelectedQuest.Value.Goals[index - 1]
                     : SelectedQuest.Value.Goals.First();
             }
@@ -521,7 +513,7 @@ namespace MassEffect.NativesEditor.Views
 
         public void RemoveQuestPlotItem()
         {
-            if (Quests == null || SelectedQuest.Value == null || SelectedQuest.Value.PlotItems == null || SelectedQuestPlotItem == null)
+            if (Quests == null || SelectedQuest.Value?.PlotItems == null || SelectedQuestPlotItem == null)
             {
                 return;
             }
@@ -535,7 +527,7 @@ namespace MassEffect.NativesEditor.Views
 
             if (SelectedQuest.Value.PlotItems.Any())
             {
-                SelectedQuestPlotItem = ((index - 1) >= 0)
+                SelectedQuestPlotItem = index - 1 >= 0
                     ? SelectedQuest.Value.PlotItems[index - 1]
                     : SelectedQuest.Value.PlotItems.First();
             }
@@ -543,7 +535,7 @@ namespace MassEffect.NativesEditor.Views
 
         public void RemoveQuestTask()
         {
-            if (Quests == null || SelectedQuest.Value == null || SelectedQuest.Value.Tasks == null || SelectedQuestTask == null)
+            if (Quests == null || SelectedQuest.Value?.Tasks == null || SelectedQuestTask == null)
             {
                 return;
             }
@@ -557,7 +549,7 @@ namespace MassEffect.NativesEditor.Views
 
             if (SelectedQuest.Value.Goals.Any())
             {
-                SelectedQuestTask = ((index - 1) >= 0)
+                SelectedQuestTask = index - 1 >= 0
                     ? SelectedQuest.Value.Tasks[index - 1]
                     : SelectedQuest.Value.Tasks.First();
             }
@@ -619,7 +611,7 @@ namespace MassEffect.NativesEditor.Views
         {
             if (collection == null)
             {
-                ThrowHelper.ThrowArgumentNullException("collection");
+                ThrowHelper.ThrowArgumentNullException(nameof(collection));
             }
 
             return new ObservableCollection<T>(collection);
@@ -629,36 +621,6 @@ namespace MassEffect.NativesEditor.Views
         {
             return Quests.Any() ? Quests.Max(page => page.Key) : -1;
         }
-
-        #region Property Changed Notification
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Notifies listeners when given property is updated.
-        /// </summary>
-        /// <param name="propertyname">Name of property to give notification for. If called in property, argument can be ignored as it will be default.</param>
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyname = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
-        }
-
-        /// <summary>
-        /// Sets given property and notifies listeners of its change. IGNORES setting the property to same value.
-        /// Should be called in property setters.
-        /// </summary>
-        /// <typeparam name="T">Type of given property.</typeparam>
-        /// <param name="field">Backing field to update.</param>
-        /// <param name="value">New value of property.</param>
-        /// <param name="propertyName">Name of property.</param>
-        /// <returns>True if success, false if backing field and new value aren't compatible.</returns>
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-        #endregion
 
         private void ChangeQuestId_Click(object sender, System.Windows.RoutedEventArgs e)
         {

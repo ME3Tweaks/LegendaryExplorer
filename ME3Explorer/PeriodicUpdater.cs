@@ -16,13 +16,13 @@ namespace ME3Explorer
 
         public double Interval
         {
-            get { return (double)GetValue(IntervalProperty); }
-            set { SetValue(IntervalProperty, value); }
+            get => (double)GetValue(IntervalProperty);
+            set => SetValue(IntervalProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Interval.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IntervalProperty =
-            DependencyProperty.Register("Interval", typeof(double), typeof(PeriodicUpdater), new PropertyMetadata(0.0, IntervalChanged));
+            DependencyProperty.Register(nameof(Interval), typeof(double), typeof(PeriodicUpdater), new PropertyMetadata(0.0, IntervalChanged));
 
         private static void IntervalChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -30,10 +30,7 @@ namespace ME3Explorer
             p?.Start((double)e.NewValue);
         }
 
-        public DateTime Now
-        {
-            get { return DateTime.Now; }
-        }
+        public DateTime Now => DateTime.Now;
 
         public void Start(double interval)
         {
@@ -51,7 +48,7 @@ namespace ME3Explorer
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Now"));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Now)));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

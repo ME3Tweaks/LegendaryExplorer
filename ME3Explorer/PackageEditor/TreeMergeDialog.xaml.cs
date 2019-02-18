@@ -20,7 +20,7 @@ namespace ME3Explorer.PackageEditorWPFControls
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class TreeMergeDialog : Window, INotifyPropertyChanged
+    public partial class TreeMergeDialog : NotifyPropertyChangedWindowBase
     {
         public enum PortingOption
         {
@@ -31,38 +31,13 @@ namespace ME3Explorer.PackageEditorWPFControls
             Cancel
         }
         public PortingOption PortingOptionChosen;
-        private IEntry sourceEntry;
-        private IEntry targetEntry;
-        private bool sourceHasChildren;
-        private bool targetHasChildren;
-        #region propertychangedhandling
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (Equals(storage, value))
-            {
-                return false;
-            }
+        private readonly IEntry sourceEntry;
+        private readonly IEntry targetEntry;
+        private readonly bool sourceHasChildren;
+        private readonly bool targetHasChildren;
 
-            storage = value;
-
-            if (propertyName != null)
-            {
-                OnPropertyChanged(propertyName);
-            }
-
-            return true;
-        }
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            var handler = PropertyChanged;
-            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion
-
-        public string TargetEntryObjectName { get { return targetEntry == null ? "Root" : targetEntry.ObjectName; } }
-        public string SourceEntryObjectName { get { return sourceEntry.ObjectName; } }
+        public string TargetEntryObjectName => targetEntry == null ? "Root" : targetEntry.ObjectName;
+        public string SourceEntryObjectName => sourceEntry.ObjectName;
 
         public ICommand ReplaceDataCommand { get; set; }
         public ICommand AddSingularCommand { get; set; }

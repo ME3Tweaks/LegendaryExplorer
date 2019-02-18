@@ -147,7 +147,7 @@ namespace ME3Explorer
             //only use parallel execution if no ui interaction will be performed.
             if (rtb == null)
             {
-                Task.WhenAll(folders.Select(loc => TOCAsync(loc))).Wait();
+                Task.WhenAll(folders.Select(TOCAsync)).Wait();
             }
             else
             {

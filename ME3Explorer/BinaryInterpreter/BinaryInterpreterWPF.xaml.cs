@@ -3174,7 +3174,7 @@ namespace ME3Explorer
                         s += $"End=0x{(start + len - 1):X8}";
                     }
                     StatusBar_LeftMostText.Text = s;
-                    SelectedFileOffset = $"{(CurrentLoadedExport.DataOffset + start):X8}";
+                    SelectedFileOffset = $"{CurrentLoadedExport.DataOffset + start:X8}";
                 }
                 else
                 {
@@ -3254,14 +3254,14 @@ namespace ME3Explorer
                             if (item == null)
                             {
                                 var text = Value_ComboBox.Text;
-                                if (text != null && text != "")
+                                if (!string.IsNullOrEmpty(text))
                                 {
                                     int index = CurrentLoadedExport.FileRef.findName(text);
                                     if (index < 0)
                                     {
                                         string input = $"The name \"{text}\" does not exist in the current loaded package.\nIf you'd like to add this name, press enter below, or change the name to what you would like it to be.";
                                         string result = PromptDialog.Prompt(Window.GetWindow(this), input, "Enter new name", text);
-                                        if (result != null && result != "")
+                                        if (!string.IsNullOrEmpty(result))
                                         {
                                             int idx = CurrentLoadedExport.FileRef.FindNameOrAdd(result);
                                             if (idx != CurrentLoadedExport.FileRef.Names.Count - 1)
@@ -3406,8 +3406,7 @@ namespace ME3Explorer
 
         private void AddArrayElement_Button_Click(object sender, RoutedEventArgs e)
         {
-            var bitvi = BinaryInterpreter_TreeView.SelectedItem as BinaryInterpreterWPFTreeViewItem;
-            if (bitvi != null)
+            if (BinaryInterpreter_TreeView.SelectedItem is BinaryInterpreterWPFTreeViewItem bitvi)
             {
                 switch (bitvi.ArrayAddAlgoritm)
                 {
@@ -3426,7 +3425,7 @@ namespace ME3Explorer
 
                         //Insert new entry
                         List<byte> memList = dataCopy.ToList();
-                        int offset = (int)(countOffset + ((count + 1) * 4)); //will be at the very end of the list as it is now +1
+                        int offset = countOffset + ((count + 1) * 4); //will be at the very end of the list as it is now +1
 
                         memList.InsertRange(offset, BitConverter.GetBytes(0));
                         CurrentLoadedExport.Data = memList.ToArray();
@@ -3447,7 +3446,7 @@ namespace ME3Explorer
     }
 
 
-    class BinaryInterpreterWPFTreeViewItem : INotifyPropertyChanged
+    class BinaryInterpreterWPFTreeViewItem : NotifyPropertyChangedBase
     {
         public enum ArrayPropertyChildAddAlgorithm
         {
@@ -3479,12 +3478,6 @@ namespace ME3Explorer
             Items = new List<object>();
             Header = header;
         }
-
-        protected void OnPropertyChanged([CallerMemberName] string propName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
-        }
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public bool IsProgramaticallySelecting;
         private bool isSelected;
@@ -3540,7 +3533,7 @@ namespace ME3Explorer
                     if (value != isSelected)
                     {
                         this.isSelected = value;
-                        OnPropertyChanged("IsSelected");
+                        OnPropertyChanged(nameof(IsSelected));
                         IsProgramaticallySelecting = false;
                     }
                 }, DispatcherPriority.ApplicationIdle);
