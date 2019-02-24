@@ -124,7 +124,7 @@
 
                 <MenuItem Header="Options" Padding="4">
                     <MenuItem Name="TLKManager_MenuItem" Header="TLK Manager" Click="TLKManager_MenuItem_Click" ToolTip="Open TLK Manager"/>
-                    <MenuItem Name="TLKManagerWPF_MenuItem" Header="TLK Manager WPF" Click="TLKManagerWPF_MenuItem_Click" ToolTip="Open TLK Manager WPF"/>
+                    <!--<MenuItem Name="TLKManagerWPF_MenuItem" Header="TLK Manager WPF" Click="TLKManagerWPF_MenuItem_Click" ToolTip="Open TLK Manager WPF"/>-->
                     <MenuItem Name="TouchComfyMode_MenuItem" Header="Touch Comfy Mode" Click="TouchComfyMode_Clicked" ToolTip="Makes Package Editor WPF a bit easier to use on touch devices"/>
                     <MenuItem Name="AssociatePccSfm_MenuItem" Header="Associate PCC/SFM files" Click="AssociateFileTypes_Clicked" ToolTip="Makes Package Editor WPF open when you double click PCC/SFM files in Windows Explorer"/>
                     <Separator/>

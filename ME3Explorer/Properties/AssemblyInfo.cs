@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ME3Explorer - ME3Tweaks Fork")]
 [assembly: AssemblyProduct("ME3Explorer - ME3Tweaks Fork")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCopyright("ME3Tweaks 2017-2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,5 +51,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("4.0.0.0")]
-[assembly: AssemblyFileVersion("4.0.0.0")]
+[assembly: AssemblyVersion("3.1.12.15")]
+[assembly: AssemblyFileVersion("3.1.12.15")]
