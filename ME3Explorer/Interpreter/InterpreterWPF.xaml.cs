@@ -492,6 +492,7 @@ namespace ME3Explorer
             (Interpreter_Hexbox.ByteProvider as DynamicByteProvider)?.Bytes.Clear();
             (Interpreter_Hexbox.ByteProvider as DynamicByteProvider)?.Bytes.AddRange(export.Data);
             Interpreter_Hexbox.Invalidate();
+            hb1_SelectionChanged(null, null); //refresh bottom text
             var currentWidth = Interpreter_Hexbox_Host.Width;
             if (currentWidth > 500)
             {
