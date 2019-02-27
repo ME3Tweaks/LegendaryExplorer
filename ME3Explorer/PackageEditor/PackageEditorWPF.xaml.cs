@@ -85,6 +85,7 @@ namespace ME3Explorer
                             TextSearch.SetTextPath(LeftSide_ListView, "ObjectName");
                             break;
                     }
+                    RefreshView();
                 }
             }
         }
@@ -1428,9 +1429,9 @@ namespace ME3Explorer
             IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
             int importsOffset = Exports.Count;
 
-            var rootEntry = new TreeViewEntry(null, Pcc.FileName) {IsExpanded = true};
+            var rootEntry = new TreeViewEntry(null, Pcc.FileName) { IsExpanded = true };
 
-            var rootNodes = new List<TreeViewEntry> {rootEntry};
+            var rootNodes = new List<TreeViewEntry> { rootEntry };
             rootNodes.AddRange(Exports.Select(t => new TreeViewEntry(t)));
             rootNodes.AddRange(Imports.Select(t => new TreeViewEntry(t)));
 
@@ -1474,7 +1475,7 @@ namespace ME3Explorer
             AllEntriesList = new List<string>();
             int importsOffset = Exports.Count;
 
-            TreeViewEntry rootEntry = new TreeViewEntry(null, Pcc.FileName) {IsExpanded = true};
+            TreeViewEntry rootEntry = new TreeViewEntry(null, Pcc.FileName) { IsExpanded = true };
             AllTreeViewNodesX.Add(rootEntry);
 
             foreach (IExportEntry exp in Exports)
@@ -1707,22 +1708,18 @@ namespace ME3Explorer
         private void TreeView_Click(object sender, RoutedEventArgs e)
         {
             CurrentView = CurrentViewMode.Tree;
-            RefreshView();
         }
         private void NamesView_Click(object sender, RoutedEventArgs e)
         {
             CurrentView = CurrentViewMode.Names;
-            RefreshView();
         }
         private void ImportsView_Click(object sender, RoutedEventArgs e)
         {
             CurrentView = CurrentViewMode.Imports;
-            RefreshView();
         }
         private void ExportsView_Click(object sender, RoutedEventArgs e)
         {
             CurrentView = CurrentViewMode.Exports;
-            RefreshView();
         }
 
         /// <summary>
@@ -1747,11 +1744,11 @@ namespace ME3Explorer
             switch (CurrentView)
             {
                 case CurrentViewMode.Tree when LeftSide_TreeView.SelectedItem != null:
-                {
-                    TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
-                    n = Convert.ToInt32(selected.UIndex);
-                    return true;
-                }
+                    {
+                        TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+                        n = Convert.ToInt32(selected.UIndex);
+                        return true;
+                    }
                 case CurrentViewMode.Exports when LeftSide_ListView.SelectedItem != null:
                     n = LeftSide_ListView.SelectedIndex + 1; //to unreal indexing
                     return true;
@@ -1818,7 +1815,7 @@ namespace ME3Explorer
                     TreeViewEntry parent = treeViewItems.FirstOrDefault(x => x.UIndex == entry.idxLink);
                     if (parent != null)
                     {
-                        TreeViewEntry newEntry = new TreeViewEntry(entry) {Parent = parent};
+                        TreeViewEntry newEntry = new TreeViewEntry(entry) { Parent = parent };
                         parent.Sublinks.Add(newEntry);
                         treeViewItems.Add(newEntry); //used to find parents
                         nodesToSortChildrenFor.Add(parent);
@@ -2074,7 +2071,7 @@ namespace ME3Explorer
         private void SaveAsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             string extension = System.IO.Path.GetExtension(Pcc.FileName);
-            SaveFileDialog d = new SaveFileDialog {Filter = $"*{extension}|*{extension}"};
+            SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
                 Pcc.save(d.FileName);
@@ -2143,8 +2140,28 @@ namespace ME3Explorer
             }
             else
             {
-                if (entryIndex >= 0 && entryIndex < LeftSide_ListView.Items.Count)
+                if (CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Imports)
                 {
+                    //Check bounds
+                    var entry = Pcc.getEntry(entryIndex);
+                    if (entry != null)
+                    {
+                        //UI switch
+                        if (CurrentView == CurrentViewMode.Exports && entry is ImportEntry)
+                        {
+                            CurrentView = CurrentViewMode.Imports;
+                        }
+                        else if (CurrentView == CurrentViewMode.Imports && entry is IExportEntry)
+                        {
+                            CurrentView = CurrentViewMode.Exports;
+                        }
+
+                        LeftSide_ListView.SelectedIndex = Math.Abs(entryIndex) - 1;
+                    }
+                }
+                else if (CurrentView == CurrentViewMode.Names && entryIndex >= 0 && entryIndex < LeftSide_ListView.Items.Count)
+                {
+                    //Names
                     LeftSide_ListView.SelectedIndex = entryIndex;
                 }
             }
@@ -2176,20 +2193,34 @@ namespace ME3Explorer
                 }
                 if (int.TryParse(Goto_TextBox.Text, out int index))
                 {
-                    if (index == 0)
+                    if (CurrentView == CurrentViewMode.Names)
                     {
-                        Goto_Preview_TextBox.Text = "Invalid value";
-                    }
-                    else
-                    {
-                        var entry = Pcc.getEntry(index);
-                        if (entry != null)
+                        if (index >= 0 && index < Pcc.NameCount)
                         {
-                            Goto_Preview_TextBox.Text = entry.GetFullPath;
+                            Goto_Preview_TextBox.Text = Pcc.getNameEntry(index);
                         }
                         else
                         {
-                            Goto_Preview_TextBox.Text = "Index out of bounds of entry list";
+                            Goto_Preview_TextBox.Text = "Invalid value";
+                        }
+                    }
+                    else
+                    {
+                        if (index == 0)
+                        {
+                            Goto_Preview_TextBox.Text = "Invalid value";
+                        }
+                        else
+                        {
+                            var entry = Pcc.getEntry(index);
+                            if (entry != null)
+                            {
+                                Goto_Preview_TextBox.Text = entry.GetFullPath + "_" + entry.indexValue;
+                            }
+                            else
+                            {
+                                Goto_Preview_TextBox.Text = "Index out of bounds of entry list";
+                            }
                         }
                     }
                 }
@@ -3424,8 +3455,8 @@ namespace ME3Explorer
                 IExportEntry selfNamingExport = null;
                 foreach (IExportEntry exp in sourceFile.Exports)
                 {
-                    if (exp.ClassName == "Package" 
-                     && exp.idxLink == 0 
+                    if (exp.ClassName == "Package"
+                     && exp.idxLink == 0
                      && string.Equals(exp.ObjectName, fname, StringComparison.InvariantCultureIgnoreCase))
                     {
                         selfNamingExport = exp;
@@ -3762,7 +3793,7 @@ namespace ME3Explorer
         /// <returns></returns>
         public List<TreeViewEntry> FlattenTree()
         {
-            var nodes = new List<TreeViewEntry> {this};
+            var nodes = new List<TreeViewEntry> { this };
             foreach (TreeViewEntry tve in Sublinks)
             {
                 nodes.AddRange(tve.FlattenTree());

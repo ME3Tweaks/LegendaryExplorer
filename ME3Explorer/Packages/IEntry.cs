@@ -10,6 +10,7 @@ namespace ME3Explorer.Packages
         bool EntryHasPendingChanges { get; set; } //used to signal that this entry has uncommited changes
         bool HeaderChanged { get; set; }
         int Index { get; set; }
+        int indexValue { get; set; }
         int UIndex { get; }
         byte[] Header { get; set; }
         IMEPackage FileRef { get; }
@@ -35,7 +36,6 @@ namespace ME3Explorer.Packages
         int idxArchtype { get; set; }
         int idxClass { get; set; }
         int idxClassParent { get; set; }
-        int indexValue { get; set; }
         string ArchtypeName { get; }
         string ClassParent { get; }
         uint HeaderOffset { get; set; }
