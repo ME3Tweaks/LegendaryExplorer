@@ -7,6 +7,7 @@ using ME3Explorer.PackageEditorWPFControls;
 using ME3Explorer.Packages;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI;
+using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
@@ -37,7 +38,7 @@ namespace ME3Explorer
     /// <summary>
     /// Interaction logic for PackageEditorWPF.xaml
     /// </summary>
-    public partial class PackageEditorWPF : WPFBase, GongSolutions.Wpf.DragDrop.IDropTarget
+    public partial class PackageEditorWPF : WPFBase, GongSolutions.Wpf.DragDrop.IDropTarget, IBusyUIHost
     {
         public enum CurrentViewMode
         {

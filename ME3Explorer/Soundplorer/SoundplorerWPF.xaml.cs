@@ -3,6 +3,7 @@ using FontAwesome.WPF;
 using KFreonLib.Debugging;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using ME3Explorer.WwiseBankEditor;
@@ -38,7 +39,7 @@ namespace ME3Explorer.Soundplorer
     /// <summary>
     /// Interaction logic for SoundplorerWPF.xaml
     /// </summary>
-    public partial class SoundplorerWPF : WPFBase
+    public partial class SoundplorerWPF : WPFBase, IBusyUIHost
     {
         public static readonly string SoundplorerDataFolder = System.IO.Path.Combine(App.AppDataFolder, @"Soundplorer\");
         private const string RECENTFILES_FILE = "RECENTFILES";
@@ -47,14 +48,14 @@ namespace ME3Explorer.Soundplorer
         BackgroundWorker backgroundScanner;
         public ObservableCollectionExtended<object> BindedItemsList { get; set; } = new ObservableCollectionExtended<object>();
 
+        public bool AudioFileLoaded => Pcc != null || LoadedISBFile != null;
+
         private bool _isBusy;
         public bool IsBusy
         {
             get => _isBusy;
             set => SetProperty(ref _isBusy, value);
         }
-
-        public bool AudioFileLoaded => Pcc != null || LoadedISBFile != null;
 
         private bool _isBusyTaskbar;
         public bool IsBusyTaskbar
@@ -887,7 +888,7 @@ namespace ME3Explorer.Soundplorer
                     spExport.Export.FileRef.addExport(clone);
                     SoundplorerExport newExport = new SoundplorerExport(clone);
                     BindedItemsList.Add(newExport);
-                    var reloadList = new List<SoundplorerExport> {newExport};
+                    var reloadList = new List<SoundplorerExport> { newExport };
                     SoundExports_ListBox.ScrollIntoView(newExport);
                     SoundExports_ListBox.UpdateLayout();
                     if (SoundExports_ListBox.ItemContainerGenerator.ContainerFromItem(newExport) is ListBoxItem item)
@@ -976,23 +977,23 @@ namespace ME3Explorer.Soundplorer
                 switch (o)
                 {
                     case SoundplorerExport sp when sp.Export.ClassName == "WwiseStream":
-                    {
-                        string outfile = System.IO.Path.Combine(location, sp.Export.ObjectName + ".wav");
-                        ExportWave(sp, outfile);
-                        break;
-                    }
+                        {
+                            string outfile = System.IO.Path.Combine(location, sp.Export.ObjectName + ".wav");
+                            ExportWave(sp, outfile);
+                            break;
+                        }
                     case SoundplorerExport sp when sp.Export.ClassName == "WwiseBank":
-                    {
-                        ExtractBankToWav(sp, location);
-                        break;
-                    }
+                        {
+                            ExtractBankToWav(sp, location);
+                            break;
+                        }
                     case ISACTFileEntry ife:
-                    {
-                        string outfile = System.IO.Path.Combine(location, System.IO.Path.GetFileNameWithoutExtension(ife.Entry.FileName) + ".wav");
-                        MemoryStream ms = ife.Entry.GetWaveStream();
-                        File.WriteAllBytes(outfile, ms.ToArray());
-                        break;
-                    }
+                        {
+                            string outfile = System.IO.Path.Combine(location, System.IO.Path.GetFileNameWithoutExtension(ife.Entry.FileName) + ".wav");
+                            MemoryStream ms = ife.Entry.GetWaveStream();
+                            File.WriteAllBytes(outfile, ms.ToArray());
+                            break;
+                        }
                 }
             }
             IsBusy = false;
@@ -1158,7 +1159,7 @@ namespace ME3Explorer.Soundplorer
             get => _needsLoading;
             set => SetProperty(ref _needsLoading, value);
         }
-        
+
         private FontAwesomeIcon _icon;
         public FontAwesomeIcon Icon
         {

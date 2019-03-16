@@ -444,7 +444,7 @@
                         <TabItem.Header>
                             <TextBlock Text="Sound" ToolTip="Edit and play audio"/>
                         </TabItem.Header>
-                        <global:Soundpanel x:Name="SoundTab_Soundpanel"/>
+                        <global:Soundpanel x:Name="SoundTab_Soundpanel" HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </TabItem>
                 </TabControl>
             </Grid>

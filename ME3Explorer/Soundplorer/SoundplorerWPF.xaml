@@ -132,7 +132,7 @@
                   BorderThickness="3,0"
                   BorderBrush="Transparent"
                   HorizontalAlignment="Stretch" />
-                <global:Soundpanel x:Name="soundPanel" Grid.Column="2"/>
+                <global:Soundpanel x:Name="soundPanel" Grid.Column="2" HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
             </Grid>
         </DockPanel>
     </xctk:BusyIndicator>

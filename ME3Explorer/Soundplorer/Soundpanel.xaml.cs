@@ -27,6 +27,7 @@ using FontAwesome.WPF;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
@@ -50,6 +51,14 @@ namespace ME3Explorer
         private bool SeekDragging = false;
         Stream vorbisStream;
         private HexBox SoundpanelHIRC_Hexbox;
+
+        public IBusyUIHost HostingControl
+        {
+            get { return (IBusyUIHost)this.GetValue(HostingControlProperty); }
+            set { this.SetValue(HostingControlProperty, value); }
+        }
+        public static readonly DependencyProperty HostingControlProperty = DependencyProperty.Register(
+            "HostingControl", typeof(IBusyUIHost), typeof(Soundpanel));
 
         private string _quickScanText;
         public string QuickScanText
@@ -456,12 +465,12 @@ namespace ME3Explorer
             return false;
         }
 
-        private void ReplaceAudio(object obj)
+        private async void ReplaceAudio(object obj)
         {
             if (CurrentLoadedExport == null) return;
             if (CurrentLoadedExport.ClassName == "WwiseStream")
             {
-                ReplaceAudioFromWave();
+                await ReplaceAudioFromWave();
             }
             if (CurrentLoadedExport.ClassName == "WwiseBank")
             {
@@ -477,7 +486,7 @@ namespace ME3Explorer
                 if (wwisePath == null) return;
                 if (sourceFile == null)
                 {
-                    OpenFileDialog d = new OpenFileDialog {Filter = "Wave PCM|*.wav"};
+                    OpenFileDialog d = new OpenFileDialog { Filter = "Wave PCM|*.wav" };
                     bool? res = d.ShowDialog();
                     if (res.HasValue && res.Value)
                     {
@@ -489,7 +498,7 @@ namespace ME3Explorer
                     }
                 }
 
-                //Convert and rpelace
+                //Convert and replace
                 ReplaceWEMAudioFromWwiseOgg(await RunWwiseConversion(wwisePath, sourceFile), wemToReplace);
             }
         }
@@ -504,7 +513,7 @@ namespace ME3Explorer
             WwiseBank w = new WwiseBank(CurrentLoadedExport);
             if (oggPath == null)
             {
-                OpenFileDialog d = new OpenFileDialog {Filter = "Wwise Encoded Ogg|*.ogg"};
+                OpenFileDialog d = new OpenFileDialog { Filter = "Wwise Encoded Ogg|*.ogg" };
                 bool? res = d.ShowDialog();
                 if (res.HasValue && res.Value)
                 {
@@ -537,13 +546,13 @@ namespace ME3Explorer
             MessageBox.Show("Done");
         }
 
-        public async void ReplaceAudioFromWave(string sourceFile = null, IExportEntry forcedExport = null)
+        public async Task ReplaceAudioFromWave(string sourceFile = null, IExportEntry forcedExport = null)
         {
             string wwisePath = GetWwiseCLIPath(false);
             if (wwisePath == null) return;
             if (sourceFile == null)
             {
-                OpenFileDialog d = new OpenFileDialog {Filter = "Wave PCM|*.wav"};
+                OpenFileDialog d = new OpenFileDialog { Filter = "Wave PCM|*.wav" };
                 bool? res = d.ShowDialog();
                 if (res.HasValue && res.Value)
                 {
@@ -554,8 +563,18 @@ namespace ME3Explorer
                     return;
                 }
             }
-            //Convert and rpelace
-            ReplaceAudioFromWwiseOgg(await RunWwiseConversion(wwisePath, sourceFile), forcedExport);
+            //Convert and replace
+            if (HostingControl != null)
+            {
+                HostingControl.BusyText = "Converting and replacing audio";
+                HostingControl.IsBusy = true;
+            }
+            var conversion = await Task.Run(async () =>
+            {
+                return await RunWwiseConversion(wwisePath, sourceFile);
+            });
+
+            ReplaceAudioFromWwiseOgg(conversion, forcedExport);
         }
 
         public async Task<string> RunWwiseConversion(string wwisePath, string fileOrFolderPath)
@@ -1126,7 +1145,7 @@ namespace ME3Explorer
 
                 if (oggPath == null)
                 {
-                    OpenFileDialog d = new OpenFileDialog {Filter = "Wwise Encoded Ogg|*.ogg"};
+                    OpenFileDialog d = new OpenFileDialog { Filter = "Wwise Encoded Ogg|*.ogg" };
                     bool? res = d.ShowDialog();
                     if (res.HasValue && res.Value)
                     {
@@ -1139,8 +1158,28 @@ namespace ME3Explorer
                 }
                 w.ImportFromFile(oggPath, w.getPathToAFC());
                 CurrentLoadedExport.Data = w.memory.TypedClone();
+                if (HostingControl != null)
+                {
+                    HostingControl.IsBusy = false;
+                }
                 MessageBox.Show("Done");
             }
+        }
+
+        public static T FindParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            //get parent item
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+
+            //we've reached the end of the tree
+            if (parentObject == null) return null;
+
+            //check if the parent matches the type we're looking for
+            T parent = parentObject as T;
+            if (parent != null)
+                return parent;
+            else
+                return FindParent<T>(parentObject);
         }
 
         private void RepeatingButton_Click(object sender, RoutedEventArgs e)
