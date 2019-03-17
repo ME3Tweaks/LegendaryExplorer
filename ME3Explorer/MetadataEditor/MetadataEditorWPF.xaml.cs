@@ -449,7 +449,7 @@ namespace ME3Explorer.MetadataEditor
         {
             if (!loadingNewData)
             {
-                var selectedNameIndex = InfoTab_PackageFile_ComboBox.SelectedIndex;
+                var selectedNameIndex = InfoTab_ImpClass_ComboBox.SelectedIndex;
                 Header_Hexbox.ByteProvider.WriteBytes(HEADER_OFFSET_IMP_IDXCLASSNAME, BitConverter.GetBytes(selectedNameIndex));
             }
         }
