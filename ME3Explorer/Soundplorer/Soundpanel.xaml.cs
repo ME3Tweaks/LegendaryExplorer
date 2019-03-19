@@ -139,6 +139,68 @@ namespace ME3Explorer
                         wemId += $" | 0x{ReverseBytes((uint)w.Id):X8} (Reversed)";
                     }
                     ExportInformationList.Add(wemId);
+
+                    if (w.FileName != null)
+                    {
+                        try
+                        {
+                            var samefolderpath = Directory.GetParent(exportEntry.FileRef.FileName);
+                            string samefolderfilepath = System.IO.Path.Combine(samefolderpath.FullName, w.FileName + ".afc");
+                            byte[] headerbytes = new byte[0x56];
+                            bool bytesread = false;
+
+                            if (File.Exists(samefolderfilepath))
+                            {
+                                using (FileStream fs = new FileStream(samefolderfilepath, FileMode.Open))
+                                {
+                                    fs.Seek(w.DataOffset, SeekOrigin.Begin);
+                                    fs.Read(headerbytes, 0, 0x56);
+                                    bytesread = true;
+                                }
+                            }
+
+                            if (bytesread)
+                            {
+                                //Parse it
+                                ExportInformationList.Add($"---------Referenced Audio Header----------");
+                                ASCIIEncoding ascii = new ASCIIEncoding();
+
+                                ExportInformationList.Add("0x00 RIFF tag: " + ascii.GetString(headerbytes, 0, 4));
+                                ExportInformationList.Add("0x04 File size: " + BitConverter.ToInt32(headerbytes, 4) + " bytes");
+                                ExportInformationList.Add("0x08 WAVE tag: " + ascii.GetString(headerbytes, 8, 4));
+                                ExportInformationList.Add("0x0C Format tag: " + ascii.GetString(headerbytes, 0xC, 4));
+                                ExportInformationList.Add("0x10 Unknown 1: " + GetHexForUI(headerbytes, 0x10, 4));
+                                ExportInformationList.Add("0x14 Unknown 2: " + GetHexForUI(headerbytes, 0x14, 2));
+                                ExportInformationList.Add("0x16 Unknown 3: " + GetHexForUI(headerbytes, 0x16, 2));
+                                ExportInformationList.Add("0x18 Unknown 4: " + GetHexForUI(headerbytes, 0x18, 4));
+                                ExportInformationList.Add("0x1C Unknown 5: " + GetHexForUI(headerbytes, 0x1C, 4));
+
+                                ExportInformationList.Add("0x20 Unknown 6: " + GetHexForUI(headerbytes, 0x20, 4));
+                                ExportInformationList.Add("0x24 Unknown 7: " + GetHexForUI(headerbytes, 0x24, 2));
+                                ExportInformationList.Add("0x26 Unknown 8: " + GetHexForUI(headerbytes, 0x26, 2));
+                                ExportInformationList.Add("0x28 Unknown 9: " + GetHexForUI(headerbytes, 0x28, 4));
+                                ExportInformationList.Add("0x2C Unknown 10: " + GetHexForUI(headerbytes, 0x2C, 2));
+                                ExportInformationList.Add("0x2E Unknown 11: " + GetHexForUI(headerbytes, 0x2E, 2));
+                                ExportInformationList.Add("0x30 Unknown 12: " + GetHexForUI(headerbytes, 0x30, 4));
+                                ExportInformationList.Add("0x34 Unknown 13: " + GetHexForUI(headerbytes, 0x34, 4));
+                                ExportInformationList.Add("0x38 Unknown 14: " + GetHexForUI(headerbytes, 0x38, 2));
+                                ExportInformationList.Add("0x3A Unknown 15: " + GetHexForUI(headerbytes, 0x3A, 2));
+                                ExportInformationList.Add("0x3C Unknown 16: " + GetHexForUI(headerbytes, 0x3C, 4));
+
+                                ExportInformationList.Add("0x40 Unknown 17: " + GetHexForUI(headerbytes, 0x40, 4));
+                                ExportInformationList.Add("0x44 Unknown 18: " + GetHexForUI(headerbytes, 0x44, 2));
+                                ExportInformationList.Add("0x46 Unknown 19: " + GetHexForUI(headerbytes, 0x46, 2));
+                                ExportInformationList.Add("0x48 Unknown 20: " + GetHexForUI(headerbytes, 0x48, 4));
+                                ExportInformationList.Add("0x4C Unknown 21: " + GetHexForUI(headerbytes, 0x4C, 4));
+
+                                ExportInformationList.Add("0x50-56 Fully unknown: " + GetHexForUI(headerbytes, 0x50, 6));
+                            }
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
+                    }
                     CurrentLoadedExport = exportEntry;
                 }
                 if (exportEntry.ClassName == "WwiseBank")
@@ -238,7 +300,29 @@ namespace ME3Explorer
             {
 
             }
+        }
 
+        private string GetHexForUI(byte[] bytes, int startoffset, int length)
+        {
+            string ret = "";
+
+            if (length == 2)
+            {
+                ret += BitConverter.ToInt16(bytes, startoffset);
+            }
+            else if (length == 4)
+            {
+                ret += BitConverter.ToInt32(bytes, startoffset);
+            }
+
+            ret += " (";
+            for (int i = 0; i < length; i++)
+            {
+                ret += bytes[startoffset + i].ToString("X2") + " ";
+            }
+            ret = ret.Trim();
+            ret += ")";
+            return ret;
         }
 
         public static UInt32 ReverseBytes(UInt32 value)
