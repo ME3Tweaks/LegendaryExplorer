@@ -57,7 +57,7 @@ namespace ME2Explorer
             }
         }
 
-        private static void SaveTLKList()
+        public static void SaveTLKList()
         {
             File.WriteAllText(LoadedTLKsPath, JsonConvert.SerializeObject(tlkList.Select(x => x.path)));
         }

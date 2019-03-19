@@ -727,6 +727,9 @@
     <Compile Include="SharedUI\Converters\FontAwesomeStateColorConverter.cs" />
     <Compile Include="Soundplorer\Converters\SoundplorerConverters.cs" />
     <Compile Include="Soundplorer\Converters\WwiseMenuItemVisibilityConverter.cs" />
+    <Compile Include="Soundplorer\SoundReplaceOptionsDialog.xaml.cs">
+      <DependentUpon>SoundReplaceOptionsDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Soundplorer\XboxADPCMDecoder.cs" />
     <Compile Include="SubtitleScanner\FileHelpers.cs" />
     <Compile Include="SubtitleScanner\SubtitleScanner.cs">
@@ -1079,6 +1082,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Soundplorer\SoundplorerWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Soundplorer\SoundReplaceOptionsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

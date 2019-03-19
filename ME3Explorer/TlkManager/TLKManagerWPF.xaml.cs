@@ -1,4 +1,5 @@
 ﻿using KFreonLib.MEDirectories;
+using ME2Explorer;
 using ME3Explorer.SharedUI;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,8 @@ namespace ME3Explorer.TlkManagerNS
             DataContext = this;
             LoadCommands();
             InitializeComponent();
+            ME2TLKItems.AddRange(ME2TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
+            ME3TLKItems.AddRange(ME3TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
         }
 
         #region Commands
@@ -81,16 +84,40 @@ namespace ME3Explorer.TlkManagerNS
         }
         #endregion
 
-        private void ME3ReloadTLKStrings(object obj)
+        private async void ME3ReloadTLKStrings(object obj)
         {
             BusyText = "Reloading Mass Effect 3 TLK strings";
             IsBusy = true;
+            ME3TalkFiles.tlkList.Clear();
+            await Task.Run(() => ME3ReloadTLKStringsAsync(ME3TLKItems.Where(x => x.selectedForLoad).ToList()));
+            IsBusy = false;
         }
 
-        private void ME2ReloadTLKStrings(object obj)
+        private async void ME2ReloadTLKStrings(object obj)
         {
             BusyText = "Reloading Mass Effect 2 TLK strings";
             IsBusy = true;
+            ME2TalkFiles.tlkList.Clear();
+            await Task.Run(() => ME2ReloadTLKStringsAsync(ME2TLKItems.Where(x => x.selectedForLoad).ToList()));
+            IsBusy = false;
+        }
+
+        private void ME2ReloadTLKStringsAsync(List<LoadedTLK> tlksToLoad)
+        {
+            foreach (LoadedTLK tlk in tlksToLoad)
+            {
+                ME2TalkFiles.LoadTlkData(tlk.tlkPath);
+            }
+            ME2TalkFiles.SaveTLKList();
+        }
+
+        private void ME3ReloadTLKStringsAsync(List<LoadedTLK> tlksToLoad)
+        {
+            foreach (LoadedTLK tlk in tlksToLoad)
+            {
+                ME3TalkFiles.LoadTlkData(tlk.tlkPath);
+            }
+            ME3TalkFiles.SaveTLKList();
         }
 
         private void ME1ReloadTLKStrings(object obj)
