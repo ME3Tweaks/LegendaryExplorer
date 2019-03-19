@@ -53,7 +53,7 @@
                 </Button>
                 <Rectangle MouseDown="Rectangle_MouseDown" Fill="#00000000"/>
             </DockPanel>
-            <Image x:Name="Logo" Source="{DynamicResource LogoOnImage}" Opacity="0.8" MouseDown="Logo_MouseDown" Cursor="Hand">
+            <Image x:Name="Logo" Source="{DynamicResource LogoOnImage}" Opacity="0.8" MouseDown="Logo_MouseDown" Cursor="Hand" ToolTip="Shrink/Enlarge this toolbox">
                 <Image.Resources>
                     <BitmapImage x:Key="LogoOffImage" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="../Resources/logo_OFF.png"/>
                     <BitmapImage x:Key="LogoOnImage" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="../Resources/logo_ON.png"/>
@@ -66,11 +66,11 @@
                     </Style>
                 </Image.Resources>
             </Image>
-            <DockPanel Height="24">
+            <DockPanel Height="36">
                 <DockPanel.Resources>
                     <Style x:Key="VersioningBarButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BorderlessButton}">
                         <Setter Property="Width" Value="24"/>
-                        <Setter Property="Height" Value="24"/>
+                        <Setter Property="Height" Value="36"/>
                         <Setter Property="Background" Value="#A3C1C1C1"/>
                         <Setter Property="ContentTemplate">
                             <Setter.Value>
@@ -90,15 +90,18 @@
                         </Setter>
                     </Style>
                 </DockPanel.Resources>
-                <Button DockPanel.Dock="Left" Style="{StaticResource VersioningBarButton}" Click="About_Click">
+                <Button DockPanel.Dock="Left" Style="{StaticResource VersioningBarButton}" Click="About_Click" ToolTip="About ME3Explorer ME3Tweaks Fork">
                     <Image Source="../Resources/About_icon.ico"/>
                 </Button>
                 <!--<Button DockPanel.Dock="Right" Style="{StaticResource VersioningBarButton}" Click="Debug_Click">
                     <Image Source="../Resources/bug_icon.ico" />
                 </Button>-->
-                <Label Content="{Binding Source={x:Static local:App.Version}}" FontFamily="/ME3Explorer;component/Resources/#Hack" FontSize="16" Foreground="#FF10192A" Background="#A3FDFDFD" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                <StackPanel Height="36">
+                    <Label Content="{Binding Source={x:Static local:App.Version}}" FontFamily="/ME3Explorer;component/Resources/#Hack" FontSize="16" Foreground="#FF10192A" Background="#A3FDFDFD" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                    <Label Content="Loading" Name="VersionBar_BuildDate_Label" ToolTip="Build date for this executable" FontFamily="/ME3Explorer;component/Resources/#Hack" FontSize="12" Height="18" Foreground="#FF10192A" Background="#A3FDFDFD" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                </StackPanel>
             </DockPanel>
-            <StackPanel Height="312" Background="#4210192A">
+            <StackPanel Height="300" Background="#4210192A">
                 <StackPanel.Resources>
                     <Style x:Key="MainMenuButton" TargetType="{x:Type Button}">
                         <Style.Resources>
@@ -117,7 +120,7 @@
                             </Style>
                         </Style.Resources>
                         <Setter Property="OpacityMask" Value="{StaticResource LabelTextBrush}"/>
-                        <Setter Property="Padding" Value="0,14,0,0"/>
+                        <Setter Property="Padding" Value="0,10,0,0"/>
                         <Style.BasedOn>
                             <StaticResource ResourceKey="BorderlessButton"/>
                         </Style.BasedOn>
