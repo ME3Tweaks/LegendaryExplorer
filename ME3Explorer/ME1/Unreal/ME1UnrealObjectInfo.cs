@@ -204,6 +204,7 @@ namespace ME1Explorer.Unreal
             }
             else
             {
+                if (ME3Explorer.Properties.Settings.Default.PropertyParsingME1UnknownArrayAsObject) return ArrayType.Object;
                 return ArrayType.Int;
             }
         }

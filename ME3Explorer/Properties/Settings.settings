@@ -68,5 +68,14 @@
     <Setting Name="BinaryInterpreterWPFAutoScanAlways" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="PropertyParsingME3UnknownArrayAsObject" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="PropertyParsingME2UnknownArrayAsObject" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="PropertyParsingME1UnknownArrayAsObject" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

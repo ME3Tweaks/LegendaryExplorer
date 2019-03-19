@@ -189,6 +189,7 @@ namespace ME2Explorer.Unreal
                 ArrayTypeLookupJustFailed = true;
 #endif
                 Debug.WriteLine("ME2 Array type lookup failed due to no info provided, defaulting to int");
+                if (ME3Explorer.Properties.Settings.Default.PropertyParsingME2UnknownArrayAsObject) return ArrayType.Object;
                 return ArrayType.Int;
             }
         }
