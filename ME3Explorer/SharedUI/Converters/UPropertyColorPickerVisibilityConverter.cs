@@ -19,7 +19,7 @@ namespace ME3Explorer.SharedUI.Converters
             //Debug.WriteLine("booltocollapsed: " + ((bool)value == true).ToString());
             if (value is StructProperty sp)
             {
-                return (sp.StructType == "Color" || sp.StructType == "LinearColor") ? Visibility.Visible : Visibility.Collapsed;
+                return (sp.StructType == "Color") ? Visibility.Visible : Visibility.Collapsed;
             }
             return Visibility.Collapsed;
         }
