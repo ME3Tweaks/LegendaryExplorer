@@ -29,9 +29,9 @@
                 <TextBlock Text="Mass Effect 2 TLKs" Grid.Row="0" Grid.Column="2" TextAlignment="Center" FontWeight="Bold"/>
                 <TextBlock Text="Mass Effect 3 TLKs" Grid.Row="0" Grid.Column="4" TextAlignment="Center" FontWeight="Bold"/>
 
-                <xctk:CheckListBox  Grid.Column="0" Grid.Row="1" ItemsSource="{Binding ME1TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
-                <xctk:CheckListBox  Grid.Column="2" Grid.Row="1" ItemsSource="{Binding ME2TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
-                <xctk:CheckListBox  Grid.Column="4" Grid.Row="1" ItemsSource="{Binding ME3TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
+                <xctk:CheckListBox Name="ME1TLKList" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding ME1TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
+                <xctk:CheckListBox Name="ME2TLKList" Grid.Column="2" Grid.Row="1" ItemsSource="{Binding ME2TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
+                <xctk:CheckListBox Name="ME3TLKList" Grid.Column="4" Grid.Row="1" ItemsSource="{Binding ME3TLKItems}" SelectedMemberPath="selectedForLoad" DisplayMemberPath="tlkDisplayPath"/>
 
                 <Grid Grid.Column="0" Grid.Row="2">
                     <Grid.ColumnDefinitions>
@@ -48,6 +48,8 @@
                         <ComboBoxItem>Default</ComboBoxItem>
                         <ComboBoxItem>ES</ComboBoxItem>
                     </xctk:WatermarkComboBox>
+                    <Button Content="Add TLK" Margin="2" Grid.Row="2" Grid.Column="2"  Command="{Binding ME1AddManualTLK}"/>
+
                 </Grid>
 
                 <Grid Grid.Column="2" Grid.Row="2">
@@ -71,6 +73,7 @@
                         <ComboBoxItem>RUS</ComboBoxItem>
                         <ComboBoxItem>JPN</ComboBoxItem>
                     </xctk:WatermarkComboBox>
+                    <Button Content="Add TLK" Margin="2" Grid.Row="2" Grid.Column="2"  Command="{Binding ME2AddManualTLK}"/>
                 </Grid>
 
 
@@ -95,6 +98,7 @@
                         <ComboBoxItem>RUS</ComboBoxItem>
                         <ComboBoxItem>JPN</ComboBoxItem>
                     </xctk:WatermarkComboBox>
+                    <Button Content="Add TLK" Margin="2" Grid.Row="2" Grid.Column="2"  Command="{Binding ME3AddManualTLK}"/>
                 </Grid>
 
                 <GridSplitter Grid.Row="0" Grid.RowSpan="4" Grid.Column="1"/>

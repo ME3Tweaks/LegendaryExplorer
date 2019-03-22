@@ -1,6 +1,7 @@
 ﻿using KFreonLib.MEDirectories;
 using ME2Explorer;
 using ME3Explorer.SharedUI;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -48,6 +50,10 @@ namespace ME3Explorer.TlkManagerNS
         public ICommand ME2AutoFindTLK { get; set; }
         public ICommand ME3AutoFindTLK { get; set; }
 
+        public ICommand ME1AddManualTLK { get; set; }
+        public ICommand ME2AddManualTLK { get; set; }
+        public ICommand ME3AddManualTLK { get; set; }
+
         private void LoadCommands()
         {
             ME1ReloadTLKs = new RelayCommand(ME1ReloadTLKStrings, ME1GamePathExists);
@@ -57,6 +63,46 @@ namespace ME3Explorer.TlkManagerNS
             ME1AutoFindTLK = new RelayCommand(AutoFindTLKME1, ME1GamePathExists);
             ME2AutoFindTLK = new RelayCommand(AutoFindTLKME2, ME2BIOGamePathExists);
             ME3AutoFindTLK = new RelayCommand(AutoFindTLKME3, ME3BIOGamePathExists);
+
+            ME1AddManualTLK = new RelayCommand(AddTLKME1, ME1GamePathExists);
+            ME2AddManualTLK = new RelayCommand(AddTLKME2, ME2BIOGamePathExists);
+            ME3AddManualTLK = new RelayCommand(AddTLKME3, ME3BIOGamePathExists);
+        }
+
+        private string getTLKFile()
+        {
+            CommonOpenFileDialog m = new CommonOpenFileDialog
+            {
+                EnsurePathExists = true,
+                Title = "Select TLK file to load",
+            };
+            m.Filters.Add(new CommonFileDialogFilter("Talk files", "*.tlk"));
+            if (m.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                return m.FileName;
+            }
+            return null;
+        }
+
+        private void AddTLKME3(object obj)
+        {
+            string tlk = getTLKFile();
+            if (tlk != null)
+            {
+                LoadedTLK lTLK = new LoadedTLK(tlk, true);
+                ME3TLKItems.Add(lTLK);
+                ME3TLKList.SelectedItems.Add(lTLK);
+            }
+        }
+
+        private void AddTLKME2(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void AddTLKME1(object obj)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -128,10 +174,32 @@ namespace ME3Explorer.TlkManagerNS
 
         private void AutoFindTLKME3(object obj)
         {
-            var tlks = Directory.EnumerateFiles(ME3Directory.BIOGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false));
-            ME3TLKItems.ReplaceAll(tlks);
-            SelectLoadedTLKsME3();
+            BusyText = "Scanning for Mass Effect 3 TLK files";
+            IsBusy = true;
+            Debug.WriteLine("Clearing..");
+            ME3TalkFiles.tlkList.Clear();
+            Debug.WriteLine("Cleared..");
+            Task.Run(() =>
+            {
+                Debug.WriteLine("Scanning..");
+
+                var tlks = Directory.EnumerateFiles(ME3Directory.BIOGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false));
+                Debug.WriteLine("Scanned..");
+                Thread.Sleep(1000);
+
+                //Ugly, yes, but I would rather not have to add concurrent synchronization to ObservableCollectionExtended (yuck!)
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    ME3TLKItems.ReplaceAll(tlks);
+                    SelectLoadedTLKsME3();
+                    IsBusy = false;
+                    Debug.WriteLine("Scanned..");
+                }));
+
+            });
+
         }
+
 
         private void AutoFindTLKME2(object obj)
         {
@@ -171,7 +239,7 @@ namespace ME3Explorer.TlkManagerNS
             public bool selectedForLoad
             {
                 get => _selectedForLoad;
-                set { _selectedForLoad = value; OnPropertyChanged(); }
+                set { if (_selectedForLoad != value) { _selectedForLoad = value; OnPropertyChanged(); } }
             }
 
             public LoadedTLK(string tlkPath, bool selectedForLoad)
@@ -206,12 +274,15 @@ namespace ME3Explorer.TlkManagerNS
 
         private void SelectLoadedTLKsME3()
         {
+            Debug.WriteLine("Loaded selected TLK.");
             var tlkLang = ((ComboBoxItem)ME3TLKLangCombobox.SelectedItem).Content.ToString();
+            Debug.WriteLine("Content to string done");
             tlkLang += ".tlk";
             foreach (LoadedTLK tlk in ME3TLKItems)
             {
                 tlk.selectedForLoad = tlk.tlkPath.EndsWith(tlkLang);
             }
+            Debug.WriteLine("loaded");
         }
 
         private void SelectLoadedTLKsME2()
