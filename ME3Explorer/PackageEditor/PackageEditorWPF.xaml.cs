@@ -3715,6 +3715,11 @@ namespace ME3Explorer
             Properties.Settings.Default.PropertyParsingME1UnknownArrayAsObject = !Properties.Settings.Default.PropertyParsingME1UnknownArrayAsObject;
             Properties.Settings.Default.Save();
         }
+
+        private void MountEditor_Click(object sender, RoutedEventArgs e)
+        {
+            new MountEditor.MountEditorWPF().Show();
+        }
     }
 
     [DebuggerDisplay("TreeViewEntry {" + nameof(DisplayName) + "}")]
