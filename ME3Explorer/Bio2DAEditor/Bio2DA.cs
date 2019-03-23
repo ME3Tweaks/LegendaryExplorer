@@ -207,7 +207,7 @@ namespace ME3Explorer
                         if (cell.Type == Bio2DACell.Bio2DADataType.TYPE_INT && cell.GetIntValue() > 0)
                         {
                             int stringId = cell.GetIntValue();
-                            string tlkLookup = ME1Explorer.TlkManager.GetStringById(stringId);
+                            string tlkLookup = ME1Explorer.ME1TalkFiles.findDataById(stringId);
                             if (tlkLookup != "No Data" && tlkLookup != "")
                             {
                                 worksheet.Cell(rowindex + 2, colindex + 2).Comment.AddText(tlkLookup);

@@ -7,35 +7,61 @@ using System.Threading.Tasks;
 using ME1Explorer.Unreal.Classes;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
+using ME3Explorer;
+using TalkFile = ME1Explorer.Unreal.Classes.TalkFile;
+using Newtonsoft.Json;
 
 namespace ME1Explorer
 {
-    public class TalkFiles : ITalkFile
+    public static class ME1TalkFiles
     {
-        public List<TalkFile> tlkList;
-        private bool loadedGlobalTlk = false;
-        public TalkFiles()
+        public static List<TalkFile> tlkList = new List<TalkFile>();
+        public static readonly string LoadedTLKsPath = App.AppDataFolder + "ME1LoadedTLKs.JSON";
+        private static bool loadedGlobalTlk = false;
+
+        public static void LoadSavedTlkList()
         {
-            tlkList = new List<TalkFile>();
+            if (File.Exists(LoadedTLKsPath))
+            {
+                List<(int, string)> files = JsonConvert.DeserializeObject<List<(int, string)>>(File.ReadAllText(LoadedTLKsPath));
+                foreach ((int exportnum, string filename) in files)
+                {
+                    LoadTlkData(filename, exportnum);
+                }
+            }
+            else
+            {
+                string path = ME1Directory.cookedPath + @"Packages\Dialog\GlobalTlk.upk";
+                try
+                {
+                    ME1Package pcc = MEPackageHandler.OpenME1Package(path);
+                    tlkList.Add(new TalkFile(pcc, 0));
+                    loadedGlobalTlk = true;
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+            }
         }
 
-        public void LoadGlobalTlk()
+        public static void SaveTLKList()
         {
-            if (loadedGlobalTlk) return;
-            string path = ME1Directory.cookedPath + @"Packages\Dialog\GlobalTlk.upk";
-            try
+            File.WriteAllText(LoadedTLKsPath, JsonConvert.SerializeObject(tlkList.Select(x => (x.index, x.pcc.FileName))));
+        }
+
+        public static void LoadTlkData(string fileName, int index)
+        {
+            if (File.Exists(fileName))
             {
-                ME1Package pcc = MEPackageHandler.OpenME1Package(path);
-                tlkList.Add(new TalkFile(pcc, 0));
-                loadedGlobalTlk = true;
-            }
-            catch (Exception)
-            {
-                return;
+                ME1Package pcc = MEPackageHandler.OpenME1Package(fileName);
+                TalkFile tlk = new TalkFile(pcc, index);
+                tlk.LoadTlkData();
+                tlkList.Add(tlk);
             }
         }
 
-        public string findDataById(int strRefID, bool withFileName = false)
+        public static string findDataById(int strRefID, bool withFileName = false)
         {
             string s = "No Data";
             foreach (TalkFile tlk in tlkList)

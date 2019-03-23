@@ -76,16 +76,16 @@ namespace ME3Explorer
             graphEditor.Camera.MouseDown += backMouseDown_Handler;
             zoomController = new ZoomController(graphEditor);
 
-            if (SObj.talkfiles == null)
-            {
-                talkFiles = new ME1Explorer.TalkFiles();
-                talkFiles.LoadGlobalTlk();
-                SObj.talkfiles = talkFiles;
-            }
-            else
-            {
-                talkFiles = SObj.talkfiles;
-            }
+            //if (SObj.talkfiles == null)
+            //{
+            //    talkFiles = new ME1Explorer.TalkFiles();
+            //    talkFiles.LoadGlobalTlk();
+            //    SObj.talkfiles = talkFiles;
+            //}
+            //else
+            //{
+            //    talkFiles = SObj.talkfiles;
+            //}
         }
 
         private void SequenceEditor_Load(object sender, EventArgs e)
@@ -299,7 +299,6 @@ namespace ME3Explorer
 
         private const float CLONED_SEQREF_MAGIC = 2.237777E-35f;
 
-        private ME1Explorer.TalkFiles talkFiles;
         private bool selectedByNode;
         private int selectedIndex;
         private ZoomController zoomController;
@@ -1194,9 +1193,7 @@ namespace ME3Explorer
                         }
                     case MEGame.ME1:
                         {
-                            ME1Explorer.TlkManager tm = new ME1Explorer.TlkManager();
-                            tm.InitTlkManager(talkFiles);
-                            tm.Show();
+                            new TlkManagerNS.TLKManagerWPF().Show();
                             break;
                         }
                 }

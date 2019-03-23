@@ -752,7 +752,7 @@ namespace ME3Explorer
                             parsedValue = ME2Explorer.ME2TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME2Explorer.ME2TalkFiles.findDataById(strrefp.Value);
                             break;
                         case MEGame.ME1:
-                            parsedValue = ME1Explorer.TlkManager.GetStringById(strrefp.Value);
+                            parsedValue = ME1Explorer.ME1TalkFiles.tlkList.Count == 0 ? "(no TLK loaded)" : ME1Explorer.ME1TalkFiles.findDataById(strrefp.Value);
                             break;
                     }
                     break;
@@ -1198,7 +1198,7 @@ namespace ME3Explorer
                                         ParsedValue_TextBlock.Text = ME2Explorer.ME2TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : str.Replace(System.Environment.NewLine, "[\\n]");
                                         break;
                                     case MEGame.ME1:
-                                        str = ME1Explorer.TlkManager.GetStringById(index);
+                                        str = ME1Explorer.ME1TalkFiles.findDataById(index);
                                         str = str.Replace("\n", "[\\n]");
                                         if (str.Length > 82)
                                         {

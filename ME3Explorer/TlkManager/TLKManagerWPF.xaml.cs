@@ -1,4 +1,5 @@
 ﻿using KFreonLib.MEDirectories;
+using ME1Explorer;
 using ME2Explorer;
 using ME3Explorer.SharedUI;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -37,6 +38,7 @@ namespace ME3Explorer.TlkManagerNS
             DataContext = this;
             LoadCommands();
             InitializeComponent();
+            ME1TLKItems.AddRange(ME1TalkFiles.tlkList.Select(x => new LoadedTLK(x.pcc.FileName, x.index, true)));
             ME2TLKItems.AddRange(ME2TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
             ME3TLKItems.AddRange(ME3TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
         }
@@ -97,7 +99,13 @@ namespace ME3Explorer.TlkManagerNS
 
         private void AddTLKME2(object obj)
         {
-            throw new NotImplementedException();
+            string tlk = getTLKFile();
+            if (tlk != null)
+            {
+                LoadedTLK lTLK = new LoadedTLK(tlk, true);
+                ME2TLKItems.Add(lTLK);
+                ME2TLKList.SelectedItems.Add(lTLK);
+            }
         }
 
         private void AddTLKME1(object obj)
@@ -148,6 +156,15 @@ namespace ME3Explorer.TlkManagerNS
             IsBusy = false;
         }
 
+        private void ME1ReloadTLKStringsAsync(List<LoadedTLK> tlksToLoad)
+        {
+            foreach (LoadedTLK tlk in tlksToLoad)
+            {
+                ME1TalkFiles.LoadTlkData(tlk.tlkPath, tlk.exportNumber);
+            }
+            ME1TalkFiles.SaveTLKList();
+        }
+
         private void ME2ReloadTLKStringsAsync(List<LoadedTLK> tlksToLoad)
         {
             foreach (LoadedTLK tlk in tlksToLoad)
@@ -166,53 +183,70 @@ namespace ME3Explorer.TlkManagerNS
             ME3TalkFiles.SaveTLKList();
         }
 
-        private void ME1ReloadTLKStrings(object obj)
+        private async void ME1ReloadTLKStrings(object obj)
         {
             BusyText = "Reloading Mass Effect TLK strings";
             IsBusy = true;
+            ME1TalkFiles.tlkList.Clear();
+            await Task.Run(() => ME1ReloadTLKStringsAsync(ME1TLKItems.Where(x => x.selectedForLoad).ToList()));
+            IsBusy = false;
+
         }
 
         private void AutoFindTLKME3(object obj)
         {
             BusyText = "Scanning for Mass Effect 3 TLK files";
             IsBusy = true;
-            Debug.WriteLine("Clearing..");
             ME3TalkFiles.tlkList.Clear();
-            Debug.WriteLine("Cleared..");
             Task.Run(() =>
             {
-                Debug.WriteLine("Scanning..");
-
                 var tlks = Directory.EnumerateFiles(ME3Directory.BIOGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false));
-                Debug.WriteLine("Scanned..");
-                Thread.Sleep(1000);
-
                 //Ugly, yes, but I would rather not have to add concurrent synchronization to ObservableCollectionExtended (yuck!)
                 Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
                     ME3TLKItems.ReplaceAll(tlks);
                     SelectLoadedTLKsME3();
                     IsBusy = false;
-                    Debug.WriteLine("Scanned..");
                 }));
 
             });
-
         }
 
 
         private void AutoFindTLKME2(object obj)
         {
-            var tlks = Directory.EnumerateFiles(ME2Directory.BioGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false));
-            ME2TLKItems.ReplaceAll(tlks);
-            SelectLoadedTLKsME2();
+            BusyText = "Scanning for Mass Effect 2 TLK files";
+            IsBusy = true;
+            ME3TalkFiles.tlkList.Clear();
+            Task.Run(() =>
+            {
+                var tlks = Directory.EnumerateFiles(ME2Directory.BioGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false));
+                //Ugly, yes, but I would rather not have to add concurrent synchronization to ObservableCollectionExtended (yuck!)
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    ME2TLKItems.ReplaceAll(tlks);
+                    SelectLoadedTLKsME2();
+                    IsBusy = false;
+                }));
+            });
         }
 
         private void AutoFindTLKME1(object obj)
         {
-            var tlks = Directory.EnumerateFiles(ME1Directory.gamePath, "*Tlk*", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false));
-            ME1TLKItems.ReplaceAll(tlks);
-            SelectLoadedTLKsME1();
+            BusyText = "Scanning for Mass Effect TLK files";
+            IsBusy = true;
+            ME3TalkFiles.tlkList.Clear();
+            Task.Run(() =>
+            {
+                var tlks = Directory.EnumerateFiles(ME1Directory.gamePath, "*Tlk*", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false));
+                //Ugly, yes, but I would rather not have to add concurrent synchronization to ObservableCollectionExtended (yuck!)
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    ME1TLKItems.ReplaceAll(tlks);
+                    SelectLoadedTLKsME1();
+                    IsBusy = false;
+                }));
+            });
         }
 
         private static bool ME1GamePathExists(object obj)
@@ -232,7 +266,9 @@ namespace ME3Explorer.TlkManagerNS
 
         public class LoadedTLK : NotifyPropertyChangedBase
         {
+            public bool embedded { get; set; }
             public string tlkPath { get; set; }
+            public int exportNumber { get; set; }
             public string tlkDisplayPath { get; set; }
 
             private bool _selectedForLoad;
@@ -246,6 +282,15 @@ namespace ME3Explorer.TlkManagerNS
             {
                 this.tlkPath = tlkPath;
                 this.tlkDisplayPath = System.IO.Path.GetFileName(tlkPath);
+                this.selectedForLoad = selectedForLoad;
+            }
+
+            public LoadedTLK(string tlkPath, int exportNumber, bool selectedForLoad)
+            {
+                this.exportNumber = exportNumber;
+                this.embedded = true;
+                this.tlkPath = tlkPath;
+                this.tlkDisplayPath = exportNumber + " in " + System.IO.Path.GetFileName(tlkPath);
                 this.selectedForLoad = selectedForLoad;
             }
         }

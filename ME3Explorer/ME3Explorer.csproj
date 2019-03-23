@@ -404,6 +404,7 @@
     <Compile Include="Main Window\MainToolPanel.xaml.cs">
       <DependentUpon>MainToolPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ME1\ITalkFile.cs" />
     <Compile Include="ME1\Unreal\UnhoodBytecode\BytecodeReader.cs" />
     <Compile Include="ME1\Unreal\UnhoodBytecode\FlagSet.cs" />
     <Compile Include="ME1\Unreal\UnhoodBytecode\ProblemRegistry.cs" />
@@ -1140,14 +1141,7 @@
       <DependentUpon>DialogEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="ME1\HuffmanCompression.cs" />
-    <Compile Include="ME1\ITalkFile.cs" />
     <Compile Include="ME1\Talkfiles.cs" />
-    <Compile Include="ME1\TlkManager.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ME1\TlkManager.designer.cs">
-      <DependentUpon>TlkManager.cs</DependentUpon>
-    </Compile>
     <Compile Include="ME1\Unreal\Classes\ME1BioConversation.cs" />
     <Compile Include="ME1\Unreal\Classes\BioTlkFileSet.cs" />
     <Compile Include="ME1\Unreal\Classes\TalkFile.cs" />
@@ -1311,9 +1305,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ME1\DialogEditor\DialogEditor.resx">
       <DependentUpon>DialogEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ME1\TlkManager.resx">
-      <DependentUpon>TlkManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ME2\DialogEditor\AddReply.resx">
       <DependentUpon>AddReply.cs</DependentUpon>

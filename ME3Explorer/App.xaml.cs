@@ -49,9 +49,8 @@ namespace ME3Explorer
                 Directory.CreateDirectory(AppDataFolder);
             }
 
-            //load in data files
-            ME3TalkFiles.LoadSavedTlkList();
-            ME2Explorer.ME2TalkFiles.LoadSavedTlkList();
+
+
             ME1UnrealObjectInfo.loadfromJSON();
             ME2UnrealObjectInfo.loadfromJSON();
             ME3UnrealObjectInfo.loadfromJSON();
@@ -59,6 +58,11 @@ namespace ME3Explorer
             //static class setup
             Tools.Initialize();
             MEPackageHandler.Initialize();
+
+            //load TLK strings
+            ME1Explorer.ME1TalkFiles.LoadSavedTlkList();
+            ME2Explorer.ME2TalkFiles.LoadSavedTlkList();
+            ME3TalkFiles.LoadSavedTlkList();
 
             //load kismet font
             SequenceObjects.SText.LoadFont();

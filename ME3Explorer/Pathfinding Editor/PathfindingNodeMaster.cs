@@ -24,7 +24,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public PPath shape;
         public IMEPackage pcc;
         public PathingGraphEditor g;
-        public static ME1Explorer.TalkFiles talkfiles { get; set; }
+        //public static ME1Explorer.TalkFiles talkfiles { get; set; }
         static Color commentColor = Color.FromArgb(74, 63, 190);
         static Color intColor = Color.FromArgb(34, 218, 218);//cyan
         static Color floatColor = Color.FromArgb(23, 23, 213);//blue

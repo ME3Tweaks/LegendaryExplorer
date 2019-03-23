@@ -14,6 +14,7 @@ using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.GraphEditor;
 using System.Runtime.InteropServices;
+using ME1Explorer;
 
 namespace ME3Explorer.SequenceObjects
 {
@@ -23,7 +24,6 @@ namespace ME3Explorer.SequenceObjects
     {
         public IMEPackage pcc;
         public GraphEditor g;
-        public static ME1Explorer.TalkFiles talkfiles { get; set; }
         static readonly Color commentColor = Color.FromArgb(74, 63, 190);
         static readonly Color intColor = Color.FromArgb(34, 218, 218);//cyan
         static readonly Color floatColor = Color.FromArgb(23, 23, 213);//blue
@@ -273,7 +273,7 @@ namespace ME3Explorer.SequenceObjects
                                 switch (pcc.Game)
                                 {
                                     case MEGame.ME1:
-                                        return talkfiles.findDataById(strRefProp.Value);
+                                        return ME1TalkFiles.findDataById(strRefProp.Value);
                                     case MEGame.ME2:
                                         return ME2Explorer.ME2TalkFiles.findDataById(strRefProp.Value);
                                     case MEGame.ME3:
