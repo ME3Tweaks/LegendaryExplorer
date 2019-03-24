@@ -312,7 +312,7 @@ namespace ME3Explorer.WwiseBankEditor
             string hexString = searchHexTextBox.Text.Replace(" ", string.Empty);
             if (hexString.Length == 0)
                 return;
-            if (isHexString(hexString))
+            if (!isHexString(hexString))
             {
                 searchHexStatus.Text = "Illegal characters in Hex String";
                 return;

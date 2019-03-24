@@ -54,7 +54,7 @@ namespace ME3Explorer
         private PropertyCollection CurrentLoadedProperties;
         //Values in this list will cause custom code to be fired to modify what the displayed string is for IntProperties
         //when the class matches.
-        
+
 
         int RescanSelectionOffset = 0;
         private readonly List<FrameworkElement> EditorSetElements = new List<FrameworkElement>();
@@ -253,7 +253,7 @@ namespace ME3Explorer
 
         private bool CanExpandOrCollapseChildren(object obj)
         {
-            return Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi 
+            return Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi
                 && tvi.ChildrenProperties.Count > 0;
         }
 
@@ -392,10 +392,8 @@ namespace ME3Explorer
                         // get UProperty struct
 
                         PropertyCollection structProps = UnrealObjectInfo.getDefaultStructValue(CurrentLoadedExport.FileRef.Game, propInfo.reference, true);
-                        newProperty = new StructProperty(propInfo.reference, structProps, propName);
-                        /*
-
-                        List<byte> buff = new List<byte>();
+                        newProperty = new StructProperty(propInfo.reference, structProps, propName, isImmutable: UnrealObjectInfo.isImmutable(propInfo.reference, CurrentLoadedExport.FileRef.Game));
+                        /*                        List<byte> buff = new List<byte>();
                         //name
                         buff.AddRange(BitConverter.GetBytes(CurrentLoadedExport.FileRef.FindNameOrAdd(prop.Item1)));
                         buff.AddRange(new byte[4]);
@@ -625,34 +623,34 @@ namespace ME3Explorer
             switch (prop)
             {
                 case ArrayPropertyBase arrayProp:
-                {
-                    int i = 0;
-                    if (arrayProp.Count > 1000)
                     {
-                        //Too big to load reliably, users won't edit huge things like this anyways.
-                        UPropertyTreeViewEntry wontshowholder = new UPropertyTreeViewEntry()
+                        int i = 0;
+                        if (arrayProp.Count > 1000)
                         {
-                            DisplayName = "Too many children to display"
-                        };
-                        upropertyEntry.ChildrenProperties.Add(wontshowholder);
-                    }
-                    else
-                    {
-                        foreach (UProperty listProp in arrayProp.ValuesAsProperties)
-                        {
-                            GenerateUPropertyTreeForProperty(listProp, upropertyEntry, export, $" Item {i++}:", PropertyChangedHandler);
+                            //Too big to load reliably, users won't edit huge things like this anyways.
+                            UPropertyTreeViewEntry wontshowholder = new UPropertyTreeViewEntry()
+                            {
+                                DisplayName = "Too many children to display"
+                            };
+                            upropertyEntry.ChildrenProperties.Add(wontshowholder);
                         }
+                        else
+                        {
+                            foreach (UProperty listProp in arrayProp.ValuesAsProperties)
+                            {
+                                GenerateUPropertyTreeForProperty(listProp, upropertyEntry, export, $" Item {i++}:", PropertyChangedHandler);
+                            }
+                        }
+                        break;
                     }
-                    break;
-                }
                 case StructProperty sProp:
-                {
-                    foreach (var subProp in sProp.Properties)
                     {
-                        GenerateUPropertyTreeForProperty(subProp, upropertyEntry, export, PropertyChangedHandler: PropertyChangedHandler);
+                        foreach (var subProp in sProp.Properties)
+                        {
+                            GenerateUPropertyTreeForProperty(subProp, upropertyEntry, export, PropertyChangedHandler: PropertyChangedHandler);
+                        }
+                        break;
                     }
-                    break;
-                }
             }
         }
 
@@ -754,7 +752,7 @@ namespace ME3Explorer
                             parsedValue = ME2Explorer.ME2TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : ME2Explorer.ME2TalkFiles.findDataById(strrefp.Value);
                             break;
                         case MEGame.ME1:
-                            parsedValue = ME1Explorer.TlkManager.GetStringById(strrefp.Value);
+                            parsedValue = ME1Explorer.ME1TalkFiles.tlkList.Count == 0 ? "(no TLK loaded)" : ME1Explorer.ME1TalkFiles.findDataById(strrefp.Value);
                             break;
                     }
                     break;
@@ -1148,92 +1146,92 @@ namespace ME3Explorer
                         }
                         break;
                     case ObjectProperty _:
-                    {
-                        if (int.TryParse(Value_TextBox.Text, out int index))
                         {
-                            if (index == 0)
+                            if (int.TryParse(Value_TextBox.Text, out int index))
                             {
-                                ParsedValue_TextBlock.Text = "Null";
-                            }
-                            else
-                            {
-                                var entry = CurrentLoadedExport.FileRef.getEntry(index);
-                                if (entry != null)
+                                if (index == 0)
                                 {
-                                    ParsedValue_TextBlock.Text = entry.GetFullPath;
+                                    ParsedValue_TextBlock.Text = "Null";
                                 }
                                 else
                                 {
-                                    ParsedValue_TextBlock.Text = "Index out of bounds of entry list";
+                                    var entry = CurrentLoadedExport.FileRef.getEntry(index);
+                                    if (entry != null)
+                                    {
+                                        ParsedValue_TextBlock.Text = entry.GetFullPath;
+                                    }
+                                    else
+                                    {
+                                        ParsedValue_TextBlock.Text = "Index out of bounds of entry list";
+                                    }
                                 }
-                            }
-                        }
-                        else
-                        {
-                            ParsedValue_TextBlock.Text = "Invalid value";
-                        }
-                    }
-                        break;
-                    case StringRefProperty _:
-                    {
-                        if (int.TryParse(Value_TextBox.Text, out int index))
-                        {
-                            string str;
-                            switch (CurrentLoadedExport.FileRef.Game)
-                            {
-                                case MEGame.ME3:
-                                    str = ME3TalkFiles.findDataById(index);
-                                    str = str.Replace("\n", "[\\n]");
-                                    if (str.Length > 82)
-                                    {
-                                        str = str.Substring(0, 80) + "...";
-                                    }
-                                    ParsedValue_TextBlock.Text = ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : str.Replace(System.Environment.NewLine, "[\\n]");
-                                    break;
-                                case MEGame.ME2:
-                                    str = ME2Explorer.ME2TalkFiles.findDataById(index);
-                                    str = str.Replace("\n", "[\\n]");
-                                    if (str.Length > 82)
-                                    {
-                                        str = str.Substring(0, 80) + "...";
-                                    }
-                                    ParsedValue_TextBlock.Text = ME2Explorer.ME2TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : str.Replace(System.Environment.NewLine, "[\\n]");
-                                    break;
-                                case MEGame.ME1:
-                                    str = ME1Explorer.TlkManager.GetStringById(index);
-                                    str = str.Replace("\n", "[\\n]");
-                                    if (str.Length > 82)
-                                    {
-                                        str = str.Substring(0, 80) + "...";
-                                    }
-                                    ParsedValue_TextBlock.Text = str.Replace(System.Environment.NewLine, "[\\n]");
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            ParsedValue_TextBlock.Text = "Invalid value";
-                        }
-                    }
-                        break;
-                    case NameProperty _:
-                    {
-                        if (int.TryParse(Value_TextBox.Text, out int index) && int.TryParse(NameIndex_TextBox.Text, out int number))
-                        {
-                            if (index >= 0 && index < CurrentLoadedExport.FileRef.Names.Count)
-                            {
-                                //ParsedValue_TextBlock.Text = CurrentLoadedExport.FileRef.getNameEntry(index) + "_" + number;
                             }
                             else
                             {
-                                ParsedValue_TextBlock.Text = "Name index out of range";
+                                ParsedValue_TextBlock.Text = "Invalid value";
                             }
                         }
-                        else
+                        break;
+                    case StringRefProperty _:
                         {
-                            ParsedValue_TextBlock.Text = "Invalid value(s)";
+                            if (int.TryParse(Value_TextBox.Text, out int index))
+                            {
+                                string str;
+                                switch (CurrentLoadedExport.FileRef.Game)
+                                {
+                                    case MEGame.ME3:
+                                        str = ME3TalkFiles.findDataById(index);
+                                        str = str.Replace("\n", "[\\n]");
+                                        if (str.Length > 82)
+                                        {
+                                            str = str.Substring(0, 80) + "...";
+                                        }
+                                        ParsedValue_TextBlock.Text = ME3TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : str.Replace(System.Environment.NewLine, "[\\n]");
+                                        break;
+                                    case MEGame.ME2:
+                                        str = ME2Explorer.ME2TalkFiles.findDataById(index);
+                                        str = str.Replace("\n", "[\\n]");
+                                        if (str.Length > 82)
+                                        {
+                                            str = str.Substring(0, 80) + "...";
+                                        }
+                                        ParsedValue_TextBlock.Text = ME2Explorer.ME2TalkFiles.tlkList.Count == 0 ? "(.tlk not loaded)" : str.Replace(System.Environment.NewLine, "[\\n]");
+                                        break;
+                                    case MEGame.ME1:
+                                        str = ME1Explorer.ME1TalkFiles.findDataById(index);
+                                        str = str.Replace("\n", "[\\n]");
+                                        if (str.Length > 82)
+                                        {
+                                            str = str.Substring(0, 80) + "...";
+                                        }
+                                        ParsedValue_TextBlock.Text = str.Replace(System.Environment.NewLine, "[\\n]");
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                ParsedValue_TextBlock.Text = "Invalid value";
+                            }
                         }
-                    }
+                        break;
+                    case NameProperty _:
+                        {
+                            if (int.TryParse(Value_TextBox.Text, out int index) && int.TryParse(NameIndex_TextBox.Text, out int number))
+                            {
+                                if (index >= 0 && index < CurrentLoadedExport.FileRef.Names.Count)
+                                {
+                                    //ParsedValue_TextBlock.Text = CurrentLoadedExport.FileRef.getNameEntry(index) + "_" + number;
+                                }
+                                else
+                                {
+                                    ParsedValue_TextBlock.Text = "Name index out of range";
+                                }
+                            }
+                            else
+                            {
+                                ParsedValue_TextBlock.Text = "Invalid value(s)";
+                            }
+                        }
                         break;
                 }
             }
@@ -1299,80 +1297,80 @@ namespace ME3Explorer
                         case ObjectProperty _:
                         case FloatProperty _:
                         case IntProperty _:
-                        {
-                            switch (newSelectedItem.Parent.Property)
                             {
-                                case StructProperty p when p.IsImmutable:
-                                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
-                                    return;
-                                case ArrayProperty<IntProperty> _:
-                                case ArrayProperty<FloatProperty> _:
-                                case ArrayProperty<ObjectProperty> _:
-                                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
-                                    return;
-                                default:
-                                    Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.ValueOffset + 4 - newSelectedItem.Property.StartOffset);
-                                    break;
+                                switch (newSelectedItem.Parent.Property)
+                                {
+                                    case StructProperty p when p.IsImmutable:
+                                        Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
+                                        return;
+                                    case ArrayProperty<IntProperty> _:
+                                    case ArrayProperty<FloatProperty> _:
+                                    case ArrayProperty<ObjectProperty> _:
+                                        Interpreter_Hexbox.Highlight(newSelectedItem.Property.ValueOffset, 4);
+                                        return;
+                                    default:
+                                        Interpreter_Hexbox.Highlight(newSelectedItem.Property.StartOffset, newSelectedItem.Property.ValueOffset + 4 - newSelectedItem.Property.StartOffset);
+                                        break;
+                                }
+                                break;
                             }
-                            break;
-                        }
                         case EnumProperty ep:
-                        {
-                            switch (newSelectedItem.Parent.Property)
                             {
-                                case StructProperty p when p.IsImmutable:
-                                    Interpreter_Hexbox.Highlight(ep.ValueOffset, 8);
-                                    return;
-                                case ArrayProperty<EnumProperty> _:
-                                    Interpreter_Hexbox.Highlight(ep.ValueOffset, 8);
-                                    return;
-                                default:
-                                    Interpreter_Hexbox.Highlight(ep.StartOffset, ep.GetLength(CurrentLoadedExport.FileRef));
-                                    return;
+                                switch (newSelectedItem.Parent.Property)
+                                {
+                                    case StructProperty p when p.IsImmutable:
+                                        Interpreter_Hexbox.Highlight(ep.ValueOffset, 8);
+                                        return;
+                                    case ArrayProperty<EnumProperty> _:
+                                        Interpreter_Hexbox.Highlight(ep.ValueOffset, 8);
+                                        return;
+                                    default:
+                                        Interpreter_Hexbox.Highlight(ep.StartOffset, ep.GetLength(CurrentLoadedExport.FileRef));
+                                        return;
+                                }
                             }
-                        }
                         case ByteProperty bp:
-                        {
-                            if ((newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
-                                || newSelectedItem.Parent.Property is ArrayProperty<ByteProperty>)
                             {
-                                Interpreter_Hexbox.Highlight(bp.ValueOffset, 1);
-                                return;
+                                if ((newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
+                                    || newSelectedItem.Parent.Property is ArrayProperty<ByteProperty>)
+                                {
+                                    Interpreter_Hexbox.Highlight(bp.ValueOffset, 1);
+                                    return;
+                                }
+                                break;
                             }
-                            break;
-                        }
                         case StrProperty sp:
-                        {
-                            if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable
-                             || newSelectedItem.Parent.Property is ArrayProperty<StrProperty>)
                             {
-                                Interpreter_Hexbox.Highlight(sp.StartOffset, sp.GetLength(CurrentLoadedExport.FileRef, true));
-                                return;
+                                if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable
+                                 || newSelectedItem.Parent.Property is ArrayProperty<StrProperty>)
+                                {
+                                    Interpreter_Hexbox.Highlight(sp.StartOffset, sp.GetLength(CurrentLoadedExport.FileRef, true));
+                                    return;
+                                }
+                                Interpreter_Hexbox.Highlight(sp.StartOffset, sp.GetLength(CurrentLoadedExport.FileRef));
+                                break;
                             }
-                            Interpreter_Hexbox.Highlight(sp.StartOffset, sp.GetLength(CurrentLoadedExport.FileRef));
-                            break;
-                        }
                         case BoolProperty boolp:
-                        {
-                            if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
                             {
-                                Interpreter_Hexbox.Highlight(boolp.ValueOffset, 1);
-                                return;
+                                if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable)
+                                {
+                                    Interpreter_Hexbox.Highlight(boolp.ValueOffset, 1);
+                                    return;
+                                }
+                                Interpreter_Hexbox.Highlight(boolp.StartOffset, boolp.ValueOffset - boolp.StartOffset);
+                                break;
                             }
-                            Interpreter_Hexbox.Highlight(boolp.StartOffset, boolp.ValueOffset - boolp.StartOffset);
-                            break;
-                        }
                         case NameProperty np:
-                        {
-                            if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable
-                             || newSelectedItem.Parent.Property is ArrayProperty<NameProperty>)
                             {
-                                Interpreter_Hexbox.Highlight(np.ValueOffset, 8);
-                                return;
+                                if (newSelectedItem.Parent.Property is StructProperty p && p.IsImmutable
+                                 || newSelectedItem.Parent.Property is ArrayProperty<NameProperty>)
+                                {
+                                    Interpreter_Hexbox.Highlight(np.ValueOffset, 8);
+                                    return;
+                                }
+                                Interpreter_Hexbox.Highlight(np.StartOffset, np.ValueOffset + 8 - np.StartOffset);
+                                break;
                             }
-                            Interpreter_Hexbox.Highlight(np.StartOffset, np.ValueOffset + 8 - np.StartOffset);
-                            break;
-                        }
                         case NoneProperty nonep:
                             Interpreter_Hexbox.Highlight(nonep.StartOffset, 8);
                             break;
@@ -2097,12 +2095,12 @@ namespace ME3Explorer
                     switch (Property)
                     {
                         case ArrayPropertyBase arrayProp:
-                        {
-                            //we don't have reference to current pcc so we cannot look this up at this time.
-                            //return $"ArrayProperty({(Property as ArrayProperty).arrayType})";
-                            int count = arrayProp.Count;
-                            return $"ArrayProperty - {count} item{(count != 1 ? "s" : "")}";
-                        }
+                            {
+                                //we don't have reference to current pcc so we cannot look this up at this time.
+                                //return $"ArrayProperty({(Property as ArrayProperty).arrayType})";
+                                int count = arrayProp.Count;
+                                return $"ArrayProperty - {count} item{(count != 1 ? "s" : "")}";
+                            }
                         case StructProperty sp:
                             return $"{(sp.IsImmutable ? "Immutable " : "")}StructProperty({sp.StructType})";
                         case EnumProperty _:
@@ -2141,31 +2139,31 @@ namespace ME3Explorer
                 switch (Property)
                 {
                     case ObjectProperty op:
-                    {
-                        //Resolve
-                        string objectName = associatedExport.FileRef.GetEntryString(op.Value);
-                        str.Write("  " + objectName);
-                        break;
-                    }
+                        {
+                            //Resolve
+                            string objectName = associatedExport.FileRef.GetEntryString(op.Value);
+                            str.Write("  " + objectName);
+                            break;
+                        }
                     case NameProperty np:
                         //Resolve
                         str.Write($"  {np.Value}_{np.Value.Number}");
                         break;
                     case StringRefProperty srp:
-                    {
-                        if (associatedExport.FileRef.Game == MEGame.ME1)
                         {
-                            //string objectName = associatedExport.FileRef.GetEntryString(srp.Value);
-                            //if (InterpreterWPF.ME1TalkFiles == null)
-                            //{
-                            //    InterpreterWPF.ME1TalkFiles = new ME1Explorer.TalkFiles();
-                            //}
-                            //ParsedValue = InterpreterWPF.ME1TalkFiles.findDataById(srp.Value);
-                            str.Write(" " + ParsedValue);
-                        }
+                            if (associatedExport.FileRef.Game == MEGame.ME1)
+                            {
+                                //string objectName = associatedExport.FileRef.GetEntryString(srp.Value);
+                                //if (InterpreterWPF.ME1TalkFiles == null)
+                                //{
+                                //    InterpreterWPF.ME1TalkFiles = new ME1Explorer.TalkFiles();
+                                //}
+                                //ParsedValue = InterpreterWPF.ME1TalkFiles.findDataById(srp.Value);
+                                str.Write(" " + ParsedValue);
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                 }
 
                 bool isArrayPropertyTable = Property.GetType().IsOfGenericType(typeof(ArrayProperty<>));

@@ -404,6 +404,7 @@
     <Compile Include="Main Window\MainToolPanel.xaml.cs">
       <DependentUpon>MainToolPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ME1\ITalkFile.cs" />
     <Compile Include="ME1\Unreal\UnhoodBytecode\BytecodeReader.cs" />
     <Compile Include="ME1\Unreal\UnhoodBytecode\FlagSet.cs" />
     <Compile Include="ME1\Unreal\UnhoodBytecode\ProblemRegistry.cs" />
@@ -422,6 +423,9 @@
     <Compile Include="FaceFXAnimSetEditor\ME2FaceFXAnimSet.cs" />
     <Compile Include="MetadataEditor\MetadataEditorWPF.xaml.cs">
       <DependentUpon>MetadataEditorWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MountEditor\MountEditorWPF.xaml.cs">
+      <DependentUpon>MountEditorWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="NativesEditor\CodexMapCommands.cs" />
     <Compile Include="NativesEditor\Commands.cs" />
@@ -541,6 +545,7 @@
     <Compile Include="SharedUI\AddPropertyDialogWPF.xaml.cs">
       <DependentUpon>AddPropertyDialogWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SharedUI\BuildInfo.cs" />
     <Compile Include="SharedUI\Converters\EntryTypeVisibiltyConverter.cs" />
     <Compile Include="SharedUI\Converters\UnsavedChangesForegroundConverter.cs" />
     <Compile Include="SharedUI\Converters\NullVisibilityConverter.cs" />
@@ -727,6 +732,9 @@
     <Compile Include="SharedUI\Converters\FontAwesomeStateColorConverter.cs" />
     <Compile Include="Soundplorer\Converters\SoundplorerConverters.cs" />
     <Compile Include="Soundplorer\Converters\WwiseMenuItemVisibilityConverter.cs" />
+    <Compile Include="Soundplorer\SoundReplaceOptionsDialog.xaml.cs">
+      <DependentUpon>SoundReplaceOptionsDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Soundplorer\XboxADPCMDecoder.cs" />
     <Compile Include="SubtitleScanner\FileHelpers.cs" />
     <Compile Include="SubtitleScanner\SubtitleScanner.cs">
@@ -1002,6 +1010,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MountEditor\MountEditorWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="NativesEditor\Dialogs\ChangeObjectIdDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1082,6 +1094,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Soundplorer\SoundReplaceOptionsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TlkEditor\TlkEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1125,14 +1141,7 @@
       <DependentUpon>DialogEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="ME1\HuffmanCompression.cs" />
-    <Compile Include="ME1\ITalkFile.cs" />
     <Compile Include="ME1\Talkfiles.cs" />
-    <Compile Include="ME1\TlkManager.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ME1\TlkManager.designer.cs">
-      <DependentUpon>TlkManager.cs</DependentUpon>
-    </Compile>
     <Compile Include="ME1\Unreal\Classes\ME1BioConversation.cs" />
     <Compile Include="ME1\Unreal\Classes\BioTlkFileSet.cs" />
     <Compile Include="ME1\Unreal\Classes\TalkFile.cs" />
@@ -1296,9 +1305,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ME1\DialogEditor\DialogEditor.resx">
       <DependentUpon>DialogEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ME1\TlkManager.resx">
-      <DependentUpon>TlkManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ME2\DialogEditor\AddReply.resx">
       <DependentUpon>AddReply.cs</DependentUpon>

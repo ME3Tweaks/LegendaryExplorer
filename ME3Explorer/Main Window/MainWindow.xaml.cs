@@ -1,22 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using FontAwesome.WPF;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
@@ -58,6 +49,15 @@ namespace ME3Explorer
             {
                 MessageBox.Show(e.Message);
                 SystemCommands.CloseWindow(this);
+            }
+            var buildDate = SharedUI.BuildInfo.GetBuildDateTime(Assembly.GetExecutingAssembly().Location);
+            if (DateTime.Compare(buildDate,default(DateTime)) != 0)
+            {
+                VersionBar_BuildDate_Label.Content = buildDate.Date;
+            }
+            else
+            {
+                VersionBar_BuildDate_Label.Content = "Unknown build date";
             }
 
             //make menu's appear right side, which is busted on WPF with touchscreens

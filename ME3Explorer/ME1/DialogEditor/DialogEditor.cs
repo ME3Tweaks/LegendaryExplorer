@@ -11,13 +11,14 @@ using ME1Explorer.Unreal.Classes;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using ME3Explorer;
+using ME3Explorer.TlkManagerNS;
 
 namespace ME1Explorer
 {
     public partial class DialogEditor : WinFormsBase
     {
         public BioTlkFileSet tlkFileSet;
-        public TalkFiles tlkFiles;
+        //public TalkFiles tlkFiles;
         public ITalkFile tlkFile;
         public ME1BioConversation Dialog;
         public List<int> Objs;
@@ -25,7 +26,7 @@ namespace ME1Explorer
         public void InitBioTlkFileSet()
         {
             tlkFileSet = new BioTlkFileSet(pcc as ME1Package);
-            tlkFiles = new TalkFiles();
+            //tlkFiles = new TalkFiles();
             tlkFile = tlkFileSet;
         }
 
@@ -78,9 +79,9 @@ namespace ME1Explorer
                 return;
             Dialog = new ME1BioConversation(pcc as ME1Package, Objs[n]);
             tlkFileSet.loadData(Dialog.TlkFileSet - 1);
-            if (!tlkFiles.tlkList.Contains(tlkFileSet.talkFiles[tlkFileSet.selectedTLK]))
+            if (!ME1TalkFiles.tlkList.Contains(tlkFileSet.talkFiles[tlkFileSet.selectedTLK]))
             {
-                tlkFiles.tlkList.Add(tlkFileSet.talkFiles[tlkFileSet.selectedTLK]);
+                ME1TalkFiles.tlkList.Add(tlkFileSet.talkFiles[tlkFileSet.selectedTLK]);
             }
             RefreshTabs();
         }
@@ -870,11 +871,7 @@ namespace ME1Explorer
 
         private void manageTLKSetToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TlkManager tm = new TlkManager();
-            tm.InitTlkManager(pcc as ME1Package, tlkFileSet, tlkFiles);
-            tlkFiles = tm.selectedTlks;
-            tlkFile = tlkFiles;
-            tm.Show();
+            new TLKManagerWPF().Show();
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)

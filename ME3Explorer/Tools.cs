@@ -256,16 +256,16 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "ME1 TLK Editor",
-                type = typeof(ME1Explorer.TlkManager),
+                name = "TLK Manager WPF",
+                type = typeof(TlkManagerNS.TLKManagerWPF),
                 icon = Application.Current.FindResource("iconTLKEditorME1") as ImageSource,
                 open = () =>
                 {
-                    (new ME1Explorer.TlkManager(true)).Show();
+                    new TlkManagerNS.TLKManagerWPF().Show();
                 },
                 tags = new List<string> { "utility", "dialogue", "subtitle", "text" },
-                subCategory = "Extractors + Repackers",
-                description = "ME1 TLK Editor extracts and repackages TLK data, allowing users to edit the display of all game text in ME1. Extracted data is stored in XML format and must be edited with an external program, such as Notepad++.",
+                subCategory = "Tools",
+                description = "TLK Manager WPF manages loaded TLK files that are used to display string data in editor tools. You can also use it to extract and recompile TLK files."
             });
             set.Add(new Tool
             {

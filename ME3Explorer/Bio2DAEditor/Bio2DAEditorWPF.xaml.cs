@@ -34,7 +34,6 @@ namespace ME3Explorer
         private Bio2DA CachedME12DA_ClassTalents_Talents;
         private Bio2DA CachedME12DA_TalentEffectLevels;
 
-        static ME1Explorer.TalkFiles talkFiles = new ME1Explorer.TalkFiles();
         private Bio2DA _table2da;
         public Bio2DA Table2DA
         {
@@ -51,7 +50,6 @@ namespace ME3Explorer
         public Bio2DAEditorWPF()
         {
             InitializeComponent();
-            talkFiles.LoadGlobalTlk();
         }
 
         private void StartBio2DAScan()
@@ -119,7 +117,7 @@ namespace ME3Explorer
                             }
                             else
                             {
-                                Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = talkFiles.findDataById(item.GetIntValue());
+                                Bio2DAInfo_CellDataAsStrRef_TextBlock.Text = ME1Explorer.ME1TalkFiles.findDataById(item.GetIntValue());
                             }
                         }
                     }

@@ -3697,6 +3697,29 @@ namespace ME3Explorer
         {
             new TlkManagerNS.TLKManagerWPF().Show();
         }
+
+        private void PropertyParsing_ME3UnknownArrayAsObj_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.PropertyParsingME3UnknownArrayAsObject = !Properties.Settings.Default.PropertyParsingME3UnknownArrayAsObject;
+            Properties.Settings.Default.Save();
+        }
+
+        private void PropertyParsing_ME2UnknownArrayAsObj_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.PropertyParsingME2UnknownArrayAsObject = !Properties.Settings.Default.PropertyParsingME2UnknownArrayAsObject;
+            Properties.Settings.Default.Save();
+        }
+
+        private void PropertyParsing_ME1UnknownArrayAsObj_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.PropertyParsingME1UnknownArrayAsObject = !Properties.Settings.Default.PropertyParsingME1UnknownArrayAsObject;
+            Properties.Settings.Default.Save();
+        }
+
+        private void MountEditor_Click(object sender, RoutedEventArgs e)
+        {
+            new MountEditor.MountEditorWPF().Show();
+        }
     }
 
     [DebuggerDisplay("TreeViewEntry {" + nameof(DisplayName) + "}")]
