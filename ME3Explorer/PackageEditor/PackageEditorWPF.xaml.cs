@@ -3595,6 +3595,54 @@ namespace ME3Explorer
             }
         }
 
+        private void FindAllME3PowerCustomAction_Click(object sender, RoutedEventArgs e)
+        {
+            if (ME1Directory.gamePath != null)
+            {
+                var newCachedInfo = new SortedDictionary<string, List<string>>();
+                var dir = new DirectoryInfo(ME3Directory.gamePath);
+                var filesToSearch = dir.GetFiles("*.pcc", SearchOption.AllDirectories).ToArray();
+                Debug.WriteLine("Number of files: " + filesToSearch.Length);
+                foreach (FileInfo fi in filesToSearch)
+                {
+                    var package = MEPackageHandler.OpenME3Package(fi.FullName);
+                    foreach (IExportEntry export in package.Exports)
+                    {
+                        if (export.ClassParent == "SFXPowerCustomAction")
+                        {
+                            Debug.WriteLine($"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
+                            if (newCachedInfo.TryGetValue(export.ObjectName, out List<string> instances))
+                            {
+                                instances.Add($"{fi.Name} at export { export.UIndex}");
+                            }
+                            else
+                            {
+                                var list = new List<string>();
+                                list.Add($"{fi.Name} at export { export.UIndex}");
+                                newCachedInfo[export.ObjectName] = list;
+                            }
+                        }
+                    }
+
+                    package.Release();
+                }
+
+
+                string outstr = "";
+                foreach (KeyValuePair<string, List<string>> instancelist in newCachedInfo)
+                {
+                    outstr += instancelist.Key;
+                    outstr += "\n";
+                    foreach (string str in instancelist.Value)
+                    {
+                        outstr += " - " + str + "\n";
+                    }
+                }
+                File.WriteAllText(@"C:\users\public\me3powers.txt", outstr);
+                Debug.WriteLine("Done");
+            }
+        }
+
         private void CreatePCCDumpME1_Click(object sender, RoutedEventArgs e)
         {
             new PackageDumper.PackageDumper(this).Show();
