@@ -52,8 +52,8 @@
                 </TextBlock.Style>
             </TextBlock>
             <xctk:WatermarkTextBox Watermark="DLC Folder Name (e.g. DLC_MOD_MYMOD)" Name="DLCFolder_TextBox" IsEnabled="{Binding IsME2}" ToolTip="The name of the DLC folder."/>
-            <TextBlock Text="{Binding CurrentMountFileText}" Margin="0,5,0,0"/>
-            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+            <TextBlock Text="{Binding CurrentMountFileText}" Margin="0,5,0,0" FontSize="10"/>
+            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
                 <Button Content="Load mount file" Padding="4" Click="LoadMountFile_Click"/>
                 <Button Content="Save mount file" Padding="4" Margin="10,0,0,0" Click="SaveMountFile_Click"/>
                 <CheckBox Name="ME2CheckBox" Content="ME2 Mount file" VerticalAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding IsME2}" Click="IsME2Checkbox_Click"/>

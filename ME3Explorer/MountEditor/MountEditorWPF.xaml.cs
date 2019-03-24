@@ -49,15 +49,16 @@ namespace ME3Explorer.MountEditor
 
         public MountEditorWPF()
         {
-            ME2MountFlags.Add(new MountFlag(0x1, "0x1 - No save file dependency on DLC"));
-            ME2MountFlags.Add(new MountFlag(0x2, "0x2 - Save file dependency on DLC"));
+            ME2MountFlags.Add(new MountFlag(0x1, "0x01 - No save file dependency on DLC"));
+            ME2MountFlags.Add(new MountFlag(0x2, "0x02 - Save file dependency on DLC"));
 
-            ME3MountFlags.Add(new MountFlag(0x8, "0x8 - SP | Does not require DLC in save file"));
-            ME3MountFlags.Add(new MountFlag(0x9, "0x9 - SP&MP | No save file dependency on DLC"));
-            ME3MountFlags.Add(new MountFlag(0x1C, "0x1C - MP | Loads in MP (PATCH)"));
-            ME3MountFlags.Add(new MountFlag(0x14, "0x14 - MP | Loads in MP"));
-            ME3MountFlags.Add(new MountFlag(0x34, "0x34 - MP | Loads in MP"));
-            CurrentMountFileText = "No mount file loaded. Saving will create a new mount file.";
+            ME3MountFlags.Add(new MountFlag(0x8,  "0x08 - SP only | Does not require DLC in save file"));
+            ME3MountFlags.Add(new MountFlag(0x9,  "0x09 - SP only | No save file dependency on DLC"));
+            ME3MountFlags.Add(new MountFlag(0x1C, "0x1C - SP & MP | No save file dependency on DLC"));
+            ME3MountFlags.Add(new MountFlag(0x0C, "0x0C - MP only | Loads in MP (PATCH)"));
+            ME3MountFlags.Add(new MountFlag(0x14, "0x14 - MP only | Loads in MP"));
+            ME3MountFlags.Add(new MountFlag(0x34, "0x34 - MP only | Loads in MP"));
+            CurrentMountFileText = "No mount file loaded. Mouse over fields for descriptions of their values.";
             MountIDValues.AddRange(ME3MountFlags);
             DataContext = this;
             InitializeComponent();
@@ -223,8 +224,25 @@ namespace ME3Explorer.MountEditor
                         ms.WriteInt32(0x2AC);
                         ms.WriteInt32(0xC2);
                         ms.WriteInt32(0x3006B);
-                        //@ 0x10
 
+                        //@ 0x10 - Mount Priority
+                        ms.WriteUInt16(priority);
+                        ms.WriteUInt16(0x0);
+                        ms.WriteInt32(0x0);
+
+                        //@ 0x18 - Mount Flag
+                        ms.WriteInt32(mf.Flag); //Write as 32-bit since the rest is just zeros anyways.
+
+                        //@ 0x1C - TLK ID (x2)
+                        ms.WriteInt32(tlkid);
+                        ms.WriteInt32(tlkid);
+                        ms.WriteInt32(0x0);
+                        ms.WriteInt32(0x0);
+
+                        //@ 0x2C - Unknown, Possible double GUID?
+                        // Also all remaining zeros.
+                        var guidbytes = new byte[] { 0x5A, 0x7B, 0xBD, 0x26, 0xDD, 0x41, 0x7E, 0x49, 0x9C, 0xC6, 0x60, 0xD2, 0x58, 0x72, 0x78, 0xEB, 0x2E, 0x2C, 0x6A, 0x06, 0x13, 0x0A, 0xE4, 0x47, 0x83, 0xEA, 0x08, 0xF3, 0x87, 0xA0, 0xE2, 0xDA, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+                        ms.WriteBytes(guidbytes);
 
                     }
                     File.WriteAllBytes(m.FileName, ms.ToArray());
