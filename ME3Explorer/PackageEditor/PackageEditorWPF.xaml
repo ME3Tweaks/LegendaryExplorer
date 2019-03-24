@@ -371,16 +371,20 @@
                                 -  Export references will be incremented by 1 from what you have seen in Package Editor
                             <LineBreak/>
                                 -  Import references will remain the same
+                            <LineBreak/>
+                                -  0 indicates null, empty, or "Class", depending on the context
                              <LineBreak/>
                              <LineBreak/>
                             Additionally the order of entries will appear different as they now reflect
                             <LineBreak/>
                             the order of the data stored in game files.
                             <LineBreak/>
-                            <LineBreak/>
-                            Package Editor WPF is still in development - the tool is very complex,
-                            <LineBreak/>
-                            and will take some time for development to complete.
+                                <LineBreak/>
+                                Package Editor WPF is still relatively new, if you have issues, please report them to one of the following places:
+                                <LineBreak/>
+                                 - The ME3Tweaks Discord's ME3Explorer channel (accessible via the ME3Tweaks Fork icon in the main window)
+                                <LineBreak/>
+                                 - The issues list on GitHub at https://github.com/Mgamerz/ME3Explorer/issues
                             </TextBlock>
 
                             <Grid HorizontalAlignment="Left" Margin="20" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
