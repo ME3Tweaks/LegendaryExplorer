@@ -161,6 +161,7 @@
                     <MenuItem Header="Make all ammo/grenades in file respawn on proper timers" Click="MakeAllGrenadesAmmoRespawn_Click"/>
                     <MenuItem Header="Build ME1 Native Functions Info" Click="BuildME1NativeFunctionsInfo_Click"/>
                     <MenuItem Header="Find ME1 2DA Tables" Click="FindME12DATables_Click"/>
+                    <MenuItem Header="Find ME3 PowerCustomActions" Click="FindAllME3PowerCustomAction_Click"/>
                     <MenuItem Header="Open PCC Dumper" Click="CreatePCCDumpME1_Click"/>
                     <MenuItem Header="Open Mount Editor" Click="MountEditor_Click"/>
 
@@ -173,7 +174,7 @@
                     </Border>
                 </StatusBarItem>
                 <StatusBarItem>
-                    <TextBlock Name="StatusBar_LeftMostText" Text="Package Editor WPF is in beta - not everything works right now!"/>
+                    <TextBlock Name="StatusBar_LeftMostText" Text="Select package file to load"/>
                 </StatusBarItem>
             </StatusBar>
             <Grid>
