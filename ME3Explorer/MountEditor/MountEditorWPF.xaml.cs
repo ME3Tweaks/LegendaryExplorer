@@ -52,7 +52,7 @@ namespace ME3Explorer.MountEditor
             ME2MountFlags.Add(new MountFlag(0x1, "0x01 - No save file dependency on DLC"));
             ME2MountFlags.Add(new MountFlag(0x2, "0x02 - Save file dependency on DLC"));
 
-            ME3MountFlags.Add(new MountFlag(0x8,  "0x08 - SP only | Does not require DLC in save file"));
+            ME3MountFlags.Add(new MountFlag(0x8,  "0x08 - SP only | Save file dependency on DLC"));
             ME3MountFlags.Add(new MountFlag(0x9,  "0x09 - SP only | No save file dependency on DLC"));
             ME3MountFlags.Add(new MountFlag(0x1C, "0x1C - SP & MP | No save file dependency on DLC"));
             ME3MountFlags.Add(new MountFlag(0x0C, "0x0C - MP only | Loads in MP (PATCH)"));
