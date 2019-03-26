@@ -52,8 +52,8 @@ namespace ME3Explorer.MountEditor
             ME2MountFlags.Add(new MountFlag(0x1, "0x01 - No save file dependency on DLC"));
             ME2MountFlags.Add(new MountFlag(0x2, "0x02 - Save file dependency on DLC"));
 
-            ME3MountFlags.Add(new MountFlag(0x8,  "0x08 - SP only | Save file dependency on DLC"));
-            ME3MountFlags.Add(new MountFlag(0x9,  "0x09 - SP only | No save file dependency on DLC"));
+            ME3MountFlags.Add(new MountFlag(0x8, "0x08 - SP only | Save file dependency on DLC"));
+            ME3MountFlags.Add(new MountFlag(0x9, "0x09 - SP only | No save file dependency on DLC"));
             ME3MountFlags.Add(new MountFlag(0x1C, "0x1C - SP & MP | No save file dependency on DLC"));
             ME3MountFlags.Add(new MountFlag(0x0C, "0x0C - MP only | Loads in MP (PATCH)"));
             ME3MountFlags.Add(new MountFlag(0x14, "0x14 - MP only | Loads in MP"));
@@ -252,6 +252,32 @@ namespace ME3Explorer.MountEditor
 
         private bool validate()
         {
+            if (!ushort.TryParse(MountPriority_TextBox.Text, out ushort value))
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show("Mount priority must be a value between 1 and " + ushort.MaxValue + ".", "Validation error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            if (!int.TryParse(TLKID_TextBox.Text, out int valuex) || valuex <= 0)
+            {
+                Xceed.Wpf.Toolkit.MessageBox.Show("TLK ID must be between 1 and " + (UInt32.MaxValue/2) + ".", "Validation error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            if (IsME2)
+            {
+                if (HumanReadable_TextBox.Text.Length < 5)
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("Human readable name must be at least 5 characters.\nUse the full name of your mod to prevent end-user confusion.", "Validation error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
+
+                if (!DLCFolder_TextBox.Text.StartsWith("DLC_"))
+                {
+                    Xceed.Wpf.Toolkit.MessageBox.Show("DLC Folder Name must start with \"DLC_\".\nMass Effect 2 will not load a DLC that does not start with this prefix.", "Validation error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
+            }
             return true;
         }
 
@@ -263,14 +289,20 @@ namespace ME3Explorer.MountEditor
             var fullText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
 
             double val;
-            // If parsing is successful, set Handled to false
-            var handled = !double.TryParse(fullText, out val);
+            //Handled means it won't appear.
+            var handled = double.TryParse(fullText, out val);
 
+            //Validate it
             if (handled)
             {
-                int value = int.Parse(fullText);
-                e.Handled = value > 0 && value < short.MaxValue; //16-bit limit
+                if (int.TryParse(fullText, out int value))
+                {
+                    //logic is backwards. Handled means the character won't appear
+                    e.Handled = value <= 0 || value > short.MaxValue; //16-bit limit
+                    return;
+                }
             }
+            e.Handled = true;
         }
 
         private void TLKID_TextChanged(object sender, TextChangedEventArgs e)
@@ -293,6 +325,9 @@ namespace ME3Explorer.MountEditor
             IsME2 = ME2CheckBox.IsChecked.Value;
             DLCFolder_TextBox.Watermark = IsME2 ? "DLC Folder Name (e.g. DLC_MOD_MYMOD)" : "Not used in ME3";
             HumanReadable_TextBox.Watermark = IsME2 ? "DLC Human Readable Name (e.g. Superpowers Pack)" : "Not used in ME3";
+            MountIDValues.ClearEx();
+            MountIDValues.AddRange(IsME2 ? ME2MountFlags : ME3MountFlags);
+            MountComboBox.SelectedIndex = 0;
         }
     }
 }
