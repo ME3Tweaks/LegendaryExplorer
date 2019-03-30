@@ -17,8 +17,6 @@ namespace ME1Explorer
     {
         public static List<TalkFile> tlkList = new List<TalkFile>();
         public static readonly string LoadedTLKsPath = App.AppDataFolder + "ME1LoadedTLKs.JSON";
-        private static bool loadedGlobalTlk = false;
-
         public static void LoadSavedTlkList()
         {
             if (File.Exists(LoadedTLKsPath))
@@ -35,8 +33,7 @@ namespace ME1Explorer
                 try
                 {
                     ME1Package pcc = MEPackageHandler.OpenME1Package(path);
-                    tlkList.Add(new TalkFile(pcc, 0));
-                    loadedGlobalTlk = true;
+                    tlkList.Add(new TalkFile(pcc, 1));
                 }
                 catch (Exception)
                 {
@@ -47,7 +44,7 @@ namespace ME1Explorer
 
         public static void SaveTLKList()
         {
-            File.WriteAllText(LoadedTLKsPath, JsonConvert.SerializeObject(tlkList.Select(x => (x.index, x.pcc.FileName))));
+            File.WriteAllText(LoadedTLKsPath, JsonConvert.SerializeObject(tlkList.Select(x => (x.uindex, x.pcc.FileName))));
         }
 
         public static void LoadTlkData(string fileName, int index)

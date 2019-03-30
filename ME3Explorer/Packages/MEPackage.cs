@@ -216,6 +216,8 @@ namespace ME3Explorer.Packages
         }
 
         public IExportEntry getExport(int index) => exports[index];
+        public IExportEntry getUExport(int uindex) => exports[uindex-1];
+
         #endregion
 
         #region Imports

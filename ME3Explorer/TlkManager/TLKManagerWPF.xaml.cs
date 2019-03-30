@@ -1,6 +1,7 @@
 ﻿using KFreonLib.MEDirectories;
 using ME1Explorer;
 using ME2Explorer;
+using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
@@ -38,7 +39,7 @@ namespace ME3Explorer.TlkManagerNS
             DataContext = this;
             LoadCommands();
             InitializeComponent();
-            ME1TLKItems.AddRange(ME1TalkFiles.tlkList.Select(x => new LoadedTLK(x.pcc.FileName, x.index, true)));
+            ME1TLKItems.AddRange(ME1TalkFiles.tlkList.Select(x => new LoadedTLK(x.pcc.FileName, x.uindex, x.pcc.getUExport(x.uindex).ObjectName, true)));
             ME2TLKItems.AddRange(ME2TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
             ME3TLKItems.AddRange(ME3TalkFiles.tlkList.Select(x => new LoadedTLK(x.path, true)));
         }
@@ -238,7 +239,18 @@ namespace ME3Explorer.TlkManagerNS
             ME3TalkFiles.tlkList.Clear();
             Task.Run(() =>
             {
-                var tlks = Directory.EnumerateFiles(ME1Directory.gamePath, "*Tlk*", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false));
+                var tlkfiles = Directory.EnumerateFiles(ME1Directory.gamePath, "*Tlk*", SearchOption.AllDirectories).ToList();
+                List<LoadedTLK> tlks = new List<LoadedTLK>();
+                foreach (string tlk in tlkfiles)
+                {
+                    ME1Package upk = MEPackageHandler.OpenME1Package(tlk);
+                    foreach (IExportEntry exp in upk.Exports)
+                    {
+                        tlks.Add(new LoadedTLK(tlk, exp.UIndex, exp.ObjectName, false));
+                    }
+                    upk.Release();
+                }
+
                 //Ugly, yes, but I would rather not have to add concurrent synchronization to ObservableCollectionExtended (yuck!)
                 Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
@@ -270,6 +282,7 @@ namespace ME3Explorer.TlkManagerNS
             public string tlkPath { get; set; }
             public int exportNumber { get; set; }
             public string tlkDisplayPath { get; set; }
+            public string exportName { get; set; }
 
             private bool _selectedForLoad;
             public bool selectedForLoad
@@ -285,12 +298,13 @@ namespace ME3Explorer.TlkManagerNS
                 this.selectedForLoad = selectedForLoad;
             }
 
-            public LoadedTLK(string tlkPath, int exportNumber, bool selectedForLoad)
+            public LoadedTLK(string tlkPath, int exportNumber, string exportName, bool selectedForLoad)
             {
                 this.exportNumber = exportNumber;
                 this.embedded = true;
                 this.tlkPath = tlkPath;
-                this.tlkDisplayPath = exportNumber + " in " + System.IO.Path.GetFileName(tlkPath);
+                this.exportName = exportName;
+                this.tlkDisplayPath = exportName + " - " + System.IO.Path.GetFileName(tlkPath);
                 this.selectedForLoad = selectedForLoad;
             }
         }
@@ -303,6 +317,16 @@ namespace ME3Explorer.TlkManagerNS
         private void SelectLoadedTLKsME1()
         {
             var tlkLang = ((ComboBoxItem)ME1TLKLangCombobox.SelectedItem).Content.ToString();
+            bool male = tlkLang.EndsWith("Male");
+            if (male)
+            {
+                tlkLang = tlkLang.Substring(0, tlkLang.Length - 7); //include 2 spaces and -
+            }
+            else
+            {
+                tlkLang = tlkLang.Substring(0, tlkLang.Length - 9); //include 2 spaces and -
+            }
+
             if (tlkLang != "Default")
             {
                 tlkLang += ".upk";
@@ -311,9 +335,10 @@ namespace ME3Explorer.TlkManagerNS
             {
                 tlkLang = "Tlk.upk";
             }
+
             foreach (LoadedTLK tlk in ME1TLKItems)
             {
-                tlk.selectedForLoad = tlk.tlkPath.EndsWith(tlkLang);
+                tlk.selectedForLoad = ((tlk.exportName.EndsWith("_M") && male) || (!tlk.exportName.EndsWith("_M") && !male)) && tlk.tlkPath.EndsWith(tlkLang);
             }
         }
 

@@ -62,8 +62,8 @@ namespace ME1Explorer.Unreal.Classes
                 {
                     langRef = r.ReadInt32();
                     r.ReadInt64();
-                    talkFiles.Add(new TalkFile(pcc, r.ReadInt32() - 1, true, langRef, index));
-                    talkFiles.Add(new TalkFile(pcc, r.ReadInt32() - 1, false, langRef, index));
+                    talkFiles.Add(new TalkFile(pcc, r.ReadInt32(), true, langRef, index));
+                    talkFiles.Add(new TalkFile(pcc, r.ReadInt32(), false, langRef, index));
                 }
                 for (int i = 0; i < talkFiles.Count; i++)
                 {

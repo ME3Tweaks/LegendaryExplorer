@@ -58,7 +58,8 @@ namespace ME1Explorer.Unreal.Classes
 
         public TLKStringRef[] StringRefs;
         public ME1Package pcc;
-        public int index;
+        //public int index;
+        public int uindex;
 
         public int LangRef
         {
@@ -69,15 +70,16 @@ namespace ME1Explorer.Unreal.Classes
         public string language;
         public bool male;
 
-        public string Name { get { return pcc.Exports[index].ObjectName; } }
+        public string Name { get { return pcc.getUExport(uindex).ObjectName; } }
         public string BioTlkSetName { get { return tlkSetIndex != -1 ? (pcc.Exports[tlkSetIndex].ObjectName + ".") : null; } }
 
 
         #region Constructors
-        public TalkFile(ME1Package _pcc, int _index)
+        public TalkFile(ME1Package _pcc, int uindex)
         {
             pcc = _pcc;
-            index = _index;
+            //index = _index;
+            this.uindex = uindex;
             tlkSetIndex = -1;
             LoadTlkData();
         }
@@ -89,15 +91,16 @@ namespace ME1Explorer.Unreal.Classes
                 throw new Exception("ME1 Unreal TalkFile cannot be initialized with a non-ME1 file");
             }
             pcc = export.FileRef as ME1Package;
-            index = export.Index;
+            uindex = export.UIndex;
             tlkSetIndex = -1;
             LoadTlkData();
         }
 
-        public TalkFile(ME1Package _pcc, int _index, bool _male, int _langRef, int _tlkSetIndex)
+        public TalkFile(ME1Package _pcc, int uindex, bool _male, int _langRef, int _tlkSetIndex)
         {
             pcc = _pcc;
-            index = _index;
+            //index = _index;
+            this.uindex = uindex;
             LangRef = _langRef;
             male = _male;
             tlkSetIndex = _tlkSetIndex;
@@ -127,7 +130,7 @@ namespace ME1Explorer.Unreal.Classes
         #region IEquatable
         public bool Equals(TalkFile other)
         {
-            return (other?.index == index && other.pcc.FileName == pcc.FileName);
+            return (other?.uindex == uindex && other.pcc.FileName == pcc.FileName);
         }
 
         public override bool Equals(object obj)
@@ -148,7 +151,7 @@ namespace ME1Explorer.Unreal.Classes
         #region Load Data
         public void LoadTlkData()
         {
-            BinaryReader r = new BinaryReader(new MemoryStream(pcc.Exports[index].Data), Encoding.Unicode);
+            BinaryReader r = new BinaryReader(new MemoryStream(pcc.getUExport(uindex).Data), Encoding.Unicode);
 
             //skip properties
             r.BaseStream.Seek(40, SeekOrigin.Begin);

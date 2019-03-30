@@ -73,7 +73,20 @@ namespace ME3Explorer.Packages
         /// </summary>
         /// <param name="index">unreal index</param>
         IEntry getEntry(int index);
+        /// <summary>
+        /// Gets an export based on it's 0 based index in the export list. (Not unreal indexing)
+        /// </summary>
+        /// <param name="index">0-based index in the export list</param>
+        /// <returns></returns>
         IExportEntry getExport(int index);
+
+        /// <summary>
+        /// Gets an export based on it's unreal based index in the export list.
+        /// </summary>
+        /// <param name="index">unreal-based index in the export list</param>
+        /// <returns></returns>
+        IExportEntry getUExport(int uindex);
+
         ImportEntry getImport(int index);
         int findName(string nameToFind);
         /// <summary>

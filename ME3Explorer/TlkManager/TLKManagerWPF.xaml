@@ -45,8 +45,10 @@
                     <Button Content="Auto find TLKs" Margin="2" Command="{Binding ME1AutoFindTLK}" />
                     <Button Content="Reload TLKs" Margin="2" Grid.Row="1"  Command="{Binding ME1ReloadTLKs}"/>
                     <xctk:WatermarkComboBox Name="ME1TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="ME1TLKLangCombobox_SelectionChanged">
-                        <ComboBoxItem>Default</ComboBoxItem>
-                        <ComboBoxItem>ES</ComboBoxItem>
+                        <ComboBoxItem>Default - Female</ComboBoxItem>
+                        <ComboBoxItem>Default - Male</ComboBoxItem>
+                        <ComboBoxItem>ES - Female</ComboBoxItem>
+                        <ComboBoxItem>ES - Male</ComboBoxItem>
                     </xctk:WatermarkComboBox>
                     <Button Content="Add TLK" Margin="2" Grid.Row="2" Grid.Column="2"  Command="{Binding ME1AddManualTLK}"/>
 

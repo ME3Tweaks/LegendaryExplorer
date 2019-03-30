@@ -60,9 +60,32 @@ namespace ME3Explorer
             MEPackageHandler.Initialize();
 
             //load TLK strings
-            ME1Explorer.ME1TalkFiles.LoadSavedTlkList();
-            ME2Explorer.ME2TalkFiles.LoadSavedTlkList();
-            ME3TalkFiles.LoadSavedTlkList();
+            try
+            {
+                ME1Explorer.ME1TalkFiles.LoadSavedTlkList();
+            }
+            catch (Exception ex)
+            {
+                //?
+            }
+
+            try
+            {
+                ME2Explorer.ME2TalkFiles.LoadSavedTlkList();
+            }
+            catch (Exception ex)
+            {
+                //?
+            }
+
+            try
+            {
+                ME3TalkFiles.LoadSavedTlkList();
+            }
+            catch (Exception ex)
+            {
+                //?
+            }
 
             //load kismet font
             SequenceObjects.SText.LoadFont();
