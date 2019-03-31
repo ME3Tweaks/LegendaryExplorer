@@ -21,7 +21,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="58"/>
+                    <RowDefinition Height="90"/>
                     <RowDefinition Height="18"/>
                 </Grid.RowDefinitions>
 
@@ -44,16 +44,18 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30"/>
                         <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
                     </Grid.RowDefinitions>
-                    <Button Content="Auto find TLKs" Margin="2" Command="{Binding ME1AutoFindTLK}" />
-                    <Button Content="Reload TLKs" Margin="2" Grid.Row="1"  Command="{Binding ME1ReloadTLKs}"/>
+                    <Button Content="Auto find TLKs" Margin="2" Command="{Binding ME1AutoFindTLK}" ToolTip="Automatically finds TLK files in game directory" />
+                    <Button Content="Reload TLKs" Margin="2" Grid.Row="1"  Command="{Binding ME1ReloadTLKs}" ToolTip="Reloads strings from the selected TLKs"/>
                     <xctk:WatermarkComboBox Name="ME1TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="ME1TLKLangCombobox_SelectionChanged">
                         <ComboBoxItem>Default - Female</ComboBoxItem>
                         <ComboBoxItem>Default - Male</ComboBoxItem>
                         <ComboBoxItem>ES - Female</ComboBoxItem>
                         <ComboBoxItem>ES - Male</ComboBoxItem>
                     </xctk:WatermarkComboBox>
-                    <Button Content="Add TLK" Margin="2" Grid.Row="2" Grid.Column="2"  Command="{Binding ME1AddManualTLK}"/>
+                    <Button Content="Add TLK" Margin="2" Grid.Row="1" Grid.Column="2"  Command="{Binding ME1AddManualTLK}"/>
+                    <Button Content="Export/Import" Margin="2" Grid.Row="2" Grid.Column="0"  Command="{Binding ME1ExportImportTLK}" ToolTip="Import or Export TLK to/from XML files"/>
 
                 </Grid>
 
@@ -66,9 +68,11 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30"/>
                         <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+
                     </Grid.RowDefinitions>
-                    <Button Content="Auto find TLKs" Margin="2" Command="{Binding ME2AutoFindTLK}"/>
-                    <Button Content="Reload TLKs" Margin="2" Grid.Row="1" Command="{Binding ME2ReloadTLKs}"/>
+                    <Button Content="Auto find TLKs" Margin="2" Command="{Binding ME2AutoFindTLK}" ToolTip="Automatically finds TLK files in game directory"/>
+                    <Button Content="Reload TLKs" Margin="2" Grid.Row="1" Command="{Binding ME2ReloadTLKs}"  ToolTip="Reloads strings from the selected TLKs"/>
                     <xctk:WatermarkComboBox Name="ME2TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="ME2TLKLangCombobox_SelectionChanged">
                         <ComboBoxItem>INT</ComboBoxItem>
                         <ComboBoxItem>ESN</ComboBoxItem>
@@ -79,7 +83,9 @@
                         <ComboBoxItem>RUS</ComboBoxItem>
                         <ComboBoxItem>JPN</ComboBoxItem>
                     </xctk:WatermarkComboBox>
-                    <Button Content="Add TLK" Margin="2" Grid.Row="2" Grid.Column="2"  Command="{Binding ME2AddManualTLK}"/>
+                    <Button Content="Add TLK" Margin="2" Grid.Row="1" Grid.Column="2"  Command="{Binding ME2AddManualTLK}"/>
+                    <Button Content="Export/Import" Margin="2" Grid.Row="2" Grid.Column="0"  Command="{Binding ME2ExportImportTLK}" ToolTip="Import or Export TLK to/from XML files"/>
+
                 </Grid>
 
                 <!-- ME3-->
@@ -91,9 +97,10 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30"/>
                         <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
                     </Grid.RowDefinitions>
-                    <Button Content="Auto find TLKs" Margin="2" Command="{Binding ME3AutoFindTLK}"/>
-                    <Button Content="Reload TLKs" Margin="2" Grid.Row="1"  Command="{Binding ME3ReloadTLKs}"/>
+                    <Button Content="Auto find TLKs" Margin="2" Command="{Binding ME3AutoFindTLK}"  ToolTip="Automatically finds TLK files in game directory"/>
+                    <Button Content="Reload TLKs" Margin="2" Grid.Row="1"  Command="{Binding ME3ReloadTLKs}" ToolTip="Reloads strings from the selected TLKs"/>
                     <xctk:WatermarkComboBox Name="ME3TLKLangCombobox" Grid.Column="1" Margin="2" Watermark="Language" SelectedIndex="0" SelectionChanged="ME3TLKLangCombobox_Changed">
                         <ComboBoxItem>INT</ComboBoxItem>
                         <ComboBoxItem>ESN</ComboBoxItem>
@@ -104,7 +111,8 @@
                         <ComboBoxItem>RUS</ComboBoxItem>
                         <ComboBoxItem>JPN</ComboBoxItem>
                     </xctk:WatermarkComboBox>
-                    <Button Content="Add TLK" Margin="2" Grid.Row="2" Grid.Column="2"  Command="{Binding ME3AddManualTLK}"/>
+                    <Button Content="Add TLK" Margin="2" Grid.Row="1" Grid.Column="2"  Command="{Binding ME3AddManualTLK}"/>
+                    <Button Content="Export/Import" Margin="2" Grid.Row="2" Grid.Column="0"  Command="{Binding ME3ExportImportTLK}" ToolTip="Import or Export TLK to/from XML files"/>
                 </Grid>
 
                 <TextBlock Text="{Binding Path=(local:TLKManagerWPF.ME1LastReloaded), StringFormat='Reloaded: {0}'}" Grid.Row="3" Grid.Column="0" TextAlignment="Center"/>

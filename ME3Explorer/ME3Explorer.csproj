@@ -785,6 +785,9 @@
     <Compile Include="TlkManager\TLKManagerWPF.xaml.cs">
       <DependentUpon>TLKManagerWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TlkManager\TLKManagerWPF_ExportReplaceDialog.xaml.cs">
+      <DependentUpon>TLKManagerWPF_ExportReplaceDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tools.cs" />
     <Compile Include="Main Window\ToolPanel.xaml.cs">
       <DependentUpon>ToolPanel.xaml</DependentUpon>
@@ -1113,6 +1116,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TlkManager\TLKManagerWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TlkManager\TLKManagerWPF_ExportReplaceDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

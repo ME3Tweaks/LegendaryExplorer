@@ -57,6 +57,9 @@ namespace ME3Explorer.TlkManagerNS
         public ICommand ME2AddManualTLK { get; set; }
         public ICommand ME3AddManualTLK { get; set; }
 
+        public ICommand ME1ExportImportTLK { get; set; }
+        public ICommand ME2ExportImportTLK { get; set; }
+        public ICommand ME3ExportImportTLK { get; set; }
 
         private static string _me1LastReloaded;
         private static string _me2LastReloaded;
@@ -117,6 +120,40 @@ namespace ME3Explorer.TlkManagerNS
             ME1AddManualTLK = new RelayCommand(AddTLKME1, ME1GamePathExists);
             ME2AddManualTLK = new RelayCommand(AddTLKME2, ME2BIOGamePathExists);
             ME3AddManualTLK = new RelayCommand(AddTLKME3, ME3BIOGamePathExists);
+
+            ME1ExportImportTLK = new RelayCommand(ImportExportTLKME1, ME1TLKListNotEmptyAndGameExists);
+            ME2ExportImportTLK = new RelayCommand(ImportExportTLKME2, ME2TLKListNotEmpty);
+            ME3ExportImportTLK = new RelayCommand(ImportExportTLKME3, ME3TLKListNotEmpty);
+        }
+
+        private bool ME3TLKListNotEmpty(object obj)
+        {
+            return ME3TLKItems.Count > 0;
+        }
+
+        private bool ME2TLKListNotEmpty(object obj)
+        {
+            return ME2TLKItems.Count > 0;
+        }
+
+        private bool ME1TLKListNotEmptyAndGameExists(object obj)
+        {
+            return ME1TLKItems.Count > 0 && ME1GamePathExists(null);
+        }
+
+        private void ImportExportTLKME1(object obj)
+        {
+            new TLKManagerWPF_ExportReplaceDialog(ME1TLKItems.ToList()).Show();
+        }
+
+        private void ImportExportTLKME2(object obj)
+        {
+            new TLKManagerWPF_ExportReplaceDialog(ME2TLKItems.ToList()).Show();
+        }
+
+        private void ImportExportTLKME3(object obj)
+        {
+            new TLKManagerWPF_ExportReplaceDialog(ME3TLKItems.ToList()).Show();
         }
 
         private string getTLKFile()
@@ -163,15 +200,17 @@ namespace ME3Explorer.TlkManagerNS
                 EnsurePathExists = true,
                 Title = "Select UPK containing TLK",
             };
-            m.Filters.Add(new CommonFileDialogFilter("Unreal Package File (ME1)", "*.upk"));
+            m.Filters.Add(new CommonFileDialogFilter("Unreal Package File (ME1)", "*.upk")); //Maybe include SFM, though IDK if anyone would load an SFM. Maybe if they want to export ME1 TLKs for dialogue? Are the local ones even used?
             if (m.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                ME1Package upk = MEPackageHandler.OpenME1Package(m.FileName);
-                foreach (IExportEntry exp in upk.Exports)
+                using (ME1Package upk = MEPackageHandler.OpenME1Package(m.FileName))
                 {
-                    LoadedTLK lTLK = new LoadedTLK(m.FileName, exp.UIndex, exp.ObjectName, false);
-                    ME1TLKItems.Add(lTLK);
-                    ME1TLKList.SelectedItems.Add(lTLK);
+                    foreach (IExportEntry exp in upk.Exports)
+                    {
+                        LoadedTLK lTLK = new LoadedTLK(m.FileName, exp.UIndex, exp.ObjectName, false);
+                        ME1TLKItems.Add(lTLK);
+                        ME1TLKList.SelectedItems.Add(lTLK);
+                    }
                     SelectLoadedTLKsME1();
                 }
             }
