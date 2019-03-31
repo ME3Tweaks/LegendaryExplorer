@@ -778,12 +778,6 @@
       <DependentUpon>TLKEditorHowToUseWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="TlkManager\ME3TalkFiles.cs" />
-    <Compile Include="TlkManager\TlkManager.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TlkManager\TlkManager.Designer.cs">
-      <DependentUpon>TlkManager.cs</DependentUpon>
-    </Compile>
     <Compile Include="Main Window\ToolInfoPanel.xaml.cs">
       <DependentUpon>ToolInfoPanel.xaml</DependentUpon>
     </Compile>
@@ -1160,12 +1154,6 @@
     </Compile>
     <Compile Include="Packages\CompressionHelper.cs" />
     <Compile Include="ME2\TlkManager\ME2TalkFiles.cs" />
-    <Compile Include="ME2\TlkManager\TlkManager.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ME2\TlkManager\TlkManager.Designer.cs">
-      <DependentUpon>TlkManager.cs</DependentUpon>
-    </Compile>
     <Compile Include="ME2\Unreal\Classes\ME2BioConversation.cs" />
     <Compile Include="ME2\Unreal\ME2UnrealObjectInfo.cs" />
     <Compile Include="Meshplorer2\Meshplorer2.cs">
@@ -1315,9 +1303,6 @@
     <EmbeddedResource Include="ME2\FaceFXAnimSetEditor.resx">
       <DependentUpon>FaceFXAnimSetEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ME2\TlkManager\TlkManager.resx">
-      <DependentUpon>TlkManager.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Meshplorer2\Meshplorer2.resx">
       <DependentUpon>Meshplorer2.cs</DependentUpon>
     </EmbeddedResource>
@@ -1413,9 +1398,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Texplorer\TexplorerFirstTimeSetup.resx">
       <DependentUpon>TexplorerFirstTimeSetup.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TlkManager\TlkManager.resx">
-      <DependentUpon>TlkManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TPFTools\KFreonTPFTools3.resx">
       <DependentUpon>KFreonTPFTools3.cs</DependentUpon>

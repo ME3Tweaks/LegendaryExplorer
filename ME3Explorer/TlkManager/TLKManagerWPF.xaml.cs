@@ -57,6 +57,53 @@ namespace ME3Explorer.TlkManagerNS
         public ICommand ME2AddManualTLK { get; set; }
         public ICommand ME3AddManualTLK { get; set; }
 
+
+        private static string _me1LastReloaded;
+        private static string _me2LastReloaded;
+        private static string _me3LastReloaded;
+
+        public static string ME1LastReloaded
+        {
+            get => _me1LastReloaded;
+            set
+            {
+                if (_me1LastReloaded == value) return;
+                _me1LastReloaded = value;
+                StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(ME1LastReloaded)));
+            }
+        }
+        public static string ME2LastReloaded
+        {
+            get => _me2LastReloaded;
+            set
+            {
+                if (_me2LastReloaded == value) return;
+                _me2LastReloaded = value;
+                StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(ME2LastReloaded)));
+            }
+        }
+        public static string ME3LastReloaded
+        {
+            get => _me3LastReloaded;
+            set
+            {
+                if (_me3LastReloaded == value) return;
+                _me3LastReloaded = value;
+                StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(ME3LastReloaded)));
+            }
+        }
+
+        // Declare a static event representing changes to your static property
+        public static event PropertyChangedEventHandler StaticPropertyChanged;
+
+        /// <summary>
+        /// Used for static property binding only.
+        /// </summary>
+        static TLKManagerWPF()
+        {
+            StaticPropertyChanged += (send, e) => { return; };
+        }
+
         private void LoadCommands()
         {
             ME1ReloadTLKs = new RelayCommand(ME1ReloadTLKStrings, ME1GamePathExists);
@@ -111,7 +158,23 @@ namespace ME3Explorer.TlkManagerNS
 
         private void AddTLKME1(object obj)
         {
-            throw new NotImplementedException();
+            CommonOpenFileDialog m = new CommonOpenFileDialog
+            {
+                EnsurePathExists = true,
+                Title = "Select UPK containing TLK",
+            };
+            m.Filters.Add(new CommonFileDialogFilter("Unreal Package File (ME1)", "*.upk"));
+            if (m.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                ME1Package upk = MEPackageHandler.OpenME1Package(m.FileName);
+                foreach (IExportEntry exp in upk.Exports)
+                {
+                    LoadedTLK lTLK = new LoadedTLK(m.FileName, exp.UIndex, exp.ObjectName, false);
+                    ME1TLKItems.Add(lTLK);
+                    ME1TLKList.SelectedItems.Add(lTLK);
+                    SelectLoadedTLKsME1();
+                }
+            }
         }
 
         #endregion
@@ -163,6 +226,7 @@ namespace ME3Explorer.TlkManagerNS
             {
                 ME1TalkFiles.LoadTlkData(tlk.tlkPath, tlk.exportNumber);
             }
+            ME1LastReloaded = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
             ME1TalkFiles.SaveTLKList();
         }
 
@@ -172,6 +236,7 @@ namespace ME3Explorer.TlkManagerNS
             {
                 ME2TalkFiles.LoadTlkData(tlk.tlkPath);
             }
+            ME2LastReloaded = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
             ME2TalkFiles.SaveTLKList();
         }
 
@@ -181,6 +246,7 @@ namespace ME3Explorer.TlkManagerNS
             {
                 ME3TalkFiles.LoadTlkData(tlk.tlkPath);
             }
+            ME3LastReloaded = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
             ME3TalkFiles.SaveTLKList();
         }
 

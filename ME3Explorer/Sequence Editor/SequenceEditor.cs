@@ -1174,30 +1174,7 @@ namespace ME3Explorer
 
         private void loadAlternateTLKToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc != null)
-            {
-                switch (pcc.Game)
-                {
-                    case MEGame.ME3:
-                        {
-                            TlkManager tm = new TlkManager();
-                            tm.Show();
-                            break;
-                        }
-                    case MEGame.ME2:
-                        {
-                            ME2Explorer.TlkManager tm = new ME2Explorer.TlkManager();
-                            tm.InitTlkManager();
-                            tm.Show();
-                            break;
-                        }
-                    case MEGame.ME1:
-                        {
-                            new TlkManagerNS.TLKManagerWPF().Show();
-                            break;
-                        }
-                }
-            }
+            new TlkManagerNS.TLKManagerWPF().Show();
         }
 
         private void SequenceEditor_DragDrop(object sender, DragEventArgs e)

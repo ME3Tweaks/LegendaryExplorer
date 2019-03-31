@@ -10,6 +10,7 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
+using ME3Explorer.TlkManagerNS;
 
 namespace ME3Explorer.DialogEditor
 {
@@ -831,8 +832,7 @@ namespace ME3Explorer.DialogEditor
 
         private void loadDifferentTLKToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TlkManager tm = new TlkManager();
-            tm.Show();
+            new TLKManagerWPF().Show();
         }
 
         private void toEntrysReplyListToolStripMenuItem_Click(object sender, EventArgs e)

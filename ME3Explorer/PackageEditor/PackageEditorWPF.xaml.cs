@@ -3163,12 +3163,6 @@ namespace ME3Explorer
             }
         }
 
-        private void TLKManager_MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            TlkManager tlk = new TlkManager();
-            tlk.Show();
-        }
-
         private void HexConverterMenuItem_Click(object sender, RoutedEventArgs e)
         {
             string loc = System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);

@@ -63,6 +63,7 @@ namespace ME3Explorer
             try
             {
                 ME1Explorer.ME1TalkFiles.LoadSavedTlkList();
+                TlkManagerNS.TLKManagerWPF.ME1LastReloaded = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
             }
             catch (Exception ex)
             {
@@ -72,6 +73,7 @@ namespace ME3Explorer
             try
             {
                 ME2Explorer.ME2TalkFiles.LoadSavedTlkList();
+                TlkManagerNS.TLKManagerWPF.ME2LastReloaded = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
             }
             catch (Exception ex)
             {
@@ -81,6 +83,7 @@ namespace ME3Explorer
             try
             {
                 ME3TalkFiles.LoadSavedTlkList();
+                TlkManagerNS.TLKManagerWPF.ME3LastReloaded = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
             }
             catch (Exception ex)
             {

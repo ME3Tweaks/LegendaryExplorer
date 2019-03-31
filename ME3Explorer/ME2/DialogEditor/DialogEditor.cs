@@ -850,9 +850,7 @@ namespace ME2Explorer
 
         private void manageTLKSetToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TlkManager tm = new TlkManager();
-            tm.InitTlkManager();
-            tm.Show();
+            new ME3Explorer.TlkManagerNS.TLKManagerWPF().Show();
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)
