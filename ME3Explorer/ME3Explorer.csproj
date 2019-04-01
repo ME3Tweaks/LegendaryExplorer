@@ -1658,6 +1658,11 @@
     <Resource Include="Resources\mounteditor_64x64.png" />
     <Resource Include="Resources\mounteditor_256x256.ico" />
     <Resource Include="Resources\tlkmanager_256x256.ico" />
+    <Resource Include="Resources\autotoc_256x256.ico" />
+    <Resource Include="Resources\packageeditorwpf_256x256.ico" />
+    <Resource Include="Resources\pathfindingeditor_256x256.ico" />
+    <Resource Include="Resources\soundplorerwpf_256x256.ico" />
+    <Resource Include="Resources\sequenceeditor_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

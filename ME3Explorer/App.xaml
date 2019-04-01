@@ -154,14 +154,14 @@
         <BitmapImage x:Key="iconPSKViewer" UriSource="Resources/psk_viewer_64x64.png"/>
         <BitmapImage x:Key="iconSaveGameEditor" UriSource="Resources/save_gameeditor_icon.ico"/>
         <BitmapImage x:Key="iconSaveGameOperator" UriSource="Resources/save_gameoperator_icon.ico"/>
-        <BitmapImage x:Key="iconPathfindingEditor" UriSource="Resources/path_editor_64.png"/>
+        <BitmapImage x:Key="iconPathfindingEditor" UriSource="Resources/pathfindingeditor_256x256.ico"/>
         <BitmapImage x:Key="iconScriptDatabase" UriSource="Resources/script_database_icon.ico"/>
         <BitmapImage x:Key="iconSubtitleScanner" UriSource="Resources/subtitle_scanner_64x64.png"/>
         <BitmapImage x:Key="iconLanguageSelector" UriSource="Icons/lang_select_64x64.png"/>
         <BitmapImage x:Key="iconME3BackupTool" UriSource="Icons/backup_64x64.png"/>
         <BitmapImage x:Key="iconWwiseBankEditor" UriSource="Resources/wwisebank_editor_64x64.png"/>
 
-        <BitmapImage x:Key="iconAutoTOC" UriSource="Icons/autotoc_64x64.png"/>
+        <BitmapImage x:Key="iconAutoTOC" UriSource="Resources/autotoc_256x256.ico"/>
         <BitmapImage x:Key="iconModMaker" UriSource="Icons/modmaker_64x64.png"/>
         <BitmapImage x:Key="iconSFARTOCUpdater" UriSource="Icons/SFARTOC_64x64.png"/>
         <BitmapImage x:Key="iconTPFTools" UriSource="Icons/TPFTools_64x64.png"/>
@@ -170,7 +170,7 @@
         <BitmapImage x:Key="iconAnimationExplorer" UriSource="Resources/animation_explorer_64x64.png"/>
         <BitmapImage x:Key="iconCameraTool" UriSource="Resources/camera_tool_64x64.png"/>
         <BitmapImage x:Key="iconCoalescedEditor" UriSource="Resources/coalesced_editor_64.png"/>
-        <BitmapImage x:Key="iconDLCUnpacker" UriSource="Resources/dlc_unpacker_64x64.png"/>
+        <BitmapImage x:Key="iconDLCUnpacker" UriSource="Resources/dlc_unpacker_256x256.ico"/>
         <BitmapImage x:Key="iconConditionalsEditor" UriSource="Resources/conditionals_editor_64x64.png"/>
         <BitmapImage x:Key="iconDialogueEditor" UriSource="Resources/dialogue_editor_64x64.png"/>
         <BitmapImage x:Key="iconFaceFXAnimSetEditor" UriSource="Resources/fxa_editor_64x64.png"/>
@@ -181,13 +181,13 @@
         <BitmapImage x:Key="iconMeshplorer" UriSource="Resources/meshplorer_64x64.png"/>
         <BitmapImage x:Key="iconMeshplorer2" UriSource="Resources/meshplorer2_64x64.png"/>
         <BitmapImage x:Key="iconMountEditor" UriSource="Resources/mounteditor_256x256.ico"/>
-        <BitmapImage x:Key="iconPackageEditor" UriSource="Resources/package_editor_64x64.png"/>
-        <BitmapImage x:Key="iconPackageEditorClassic" UriSource="Resources/packageeditorclassic_64x64.png"/>
+        <BitmapImage x:Key="iconPackageEditor" UriSource="Resources/packageeditorwpf_256x256.ico"/>
+        <BitmapImage x:Key="iconPackageEditorClassic" UriSource="Resources/packageeditorclassic_256x256.ico"/>
         <BitmapImage x:Key="iconPackageDumper" UriSource="Resources/packagedumper_64x64.png"/>
         <BitmapImage x:Key="iconPlotEditor" UriSource="Resources/plot_editor_icon.ico"/>
-        <BitmapImage x:Key="iconSequenceEditor" UriSource="Resources/sequence_editor_64x64.png"/>
+        <BitmapImage x:Key="iconSequenceEditor" UriSource="Resources/sequenceeditor_256x256.ico"/>
         <BitmapImage x:Key="iconSFAREditor2" UriSource="Resources/sfar_editor2_icon_64x64.png"/>
-        <BitmapImage x:Key="iconSoundplorer" UriSource="Resources/soundplorer_64x64.png"/>
+        <BitmapImage x:Key="iconSoundplorer" UriSource="Resources/soundplorerwpf_256x256.ico"/>
         <BitmapImage x:Key="iconTLKManager" UriSource="Resources/tlkmanager_256x256.ico"/>
         <BitmapImage x:Key="iconTLKEditorME23" UriSource="Resources/TLK_ME23_editor_icon.ico"/>
         <BitmapImage x:Key="iconTexplorer" UriSource="Icons/texplorer_64x64.png"/>
