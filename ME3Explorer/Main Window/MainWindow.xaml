@@ -97,7 +97,7 @@
                     <Image Source="../Resources/bug_icon.ico" />
                 </Button>-->
                 <StackPanel Height="36">
-                    <Label Content="{Binding Source={x:Static local:App.Version}}" FontFamily="/ME3Explorer;component/Resources/#Hack" FontSize="16" Foreground="#FF10192A" Background="#A3FDFDFD" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                    <Label Content="{Binding DisplayedVersion}" FontFamily="/ME3Explorer;component/Resources/#Hack" FontSize="16" Foreground="#FF10192A" Background="#A3FDFDFD" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
                     <Label Content="Loading" Name="VersionBar_BuildDate_Label" ToolTip="Build date for this executable" FontFamily="/ME3Explorer;component/Resources/#Hack" FontSize="12" Height="18" Foreground="#FF10192A" Background="#A3FDFDFD" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
                 </StackPanel>
             </DockPanel>

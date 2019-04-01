@@ -38,6 +38,30 @@ namespace ME3Explorer
 
         private static FieldInfo _menuDropAlignmentField;
 
+        /// <summary>
+        /// Displayed version in the UI. About page will be more detailed.
+        /// </summary>
+        public string DisplayedVersion
+        {
+            get
+            {
+                string version = $"{Assembly.GetEntryAssembly().GetName().Version.Major}.{Assembly.GetEntryAssembly().GetName().Version.Minor}";
+                if (Assembly.GetEntryAssembly().GetName().Version.Build != 0)
+                {
+                    version += "." + Assembly.GetEntryAssembly().GetName().Version.Build;
+                }
+                if (Assembly.GetEntryAssembly().GetName().Version.Revision != 0)
+                {
+                    version += "." + Assembly.GetEntryAssembly().GetName().Version.Revision;
+                }
+
+#if DEBUG
+                version += " DEBUG";
+#endif
+                return version;
+            }
+        }
+
         public MainWindow()
         {
             //exception occurs in InitializeComponent() without try block, but doesn't if present. wtf
@@ -51,7 +75,7 @@ namespace ME3Explorer
                 SystemCommands.CloseWindow(this);
             }
             var buildDate = SharedUI.BuildInfo.GetBuildDateTime(Assembly.GetExecutingAssembly().Location);
-            if (DateTime.Compare(buildDate,default(DateTime)) != 0)
+            if (DateTime.Compare(buildDate, default(DateTime)) != 0)
             {
                 VersionBar_BuildDate_Label.Content = buildDate.Date;
             }
