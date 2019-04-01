@@ -40,7 +40,7 @@
                                                             Click="Button_Click" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Width="302"
                                                             MouseRightButtonDown="Button_MouseRightButtonDown">
                                                         <StackPanel Orientation="Horizontal" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Button}}">
-                                                            <Image x:Name="toolIcon" Width="32" Height="32" Source="{Binding icon}" Opacity="0.85">
+                                                            <Image x:Name="toolIcon" Width="32" Height="32" Source="{Binding icon}" Opacity="0.85" RenderOptions.BitmapScalingMode="HighQuality">
                                                             </Image>
                                                             <StackPanel  Margin="10,0,0,0" VerticalAlignment="Center">
                                                                 <TextBlock x:Name="toolName" Style="{StaticResource styleFavoritable}" Text="{Binding name}"

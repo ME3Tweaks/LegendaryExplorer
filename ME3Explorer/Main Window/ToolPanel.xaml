@@ -40,7 +40,7 @@
                                 Style="{StaticResource BorderlessButton}" Width="64" ToolTip="{Binding name}" Click="Button_Click" GotFocus="Button_GotFocus"
                                     MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseRightButtonDown="Button_MouseRightButtonDown">
                                 <StackPanel Name="border">
-                                    <Image x:Name="toolIcon" Width="64" Height="64" Source="{Binding icon}" Opacity="0.85">
+                                    <Image x:Name="toolIcon" Width="64" Height="64" Source="{Binding icon}" Opacity="0.85" RenderOptions.BitmapScalingMode="HighQuality">
                                     </Image>
                                     <Rectangle x:Name="highlightUnderline" Height="3" Margin="0,2,0,0" Fill="{StaticResource HighlightColor}"
                                                Visibility="Hidden"/>

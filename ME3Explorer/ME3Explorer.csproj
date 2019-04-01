@@ -1655,6 +1655,9 @@
     <Resource Include="Resources\packagedumper_64x64.png" />
     <Resource Include="Resources\packageeditorclassic_256x256.ico" />
     <Resource Include="Resources\packageeditorclassic_64x64.png" />
+    <Resource Include="Resources\mounteditor_64x64.png" />
+    <Resource Include="Resources\mounteditor_256x256.ico" />
+    <Resource Include="Resources\tlkmanager_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

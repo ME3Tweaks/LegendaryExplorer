@@ -256,19 +256,6 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "TLK Manager WPF",
-                type = typeof(TlkManagerNS.TLKManagerWPF),
-                icon = Application.Current.FindResource("iconTLKEditorME1") as ImageSource,
-                open = () =>
-                {
-                    new TlkManagerNS.TLKManagerWPF().Show();
-                },
-                tags = new List<string> { "utility", "dialogue", "subtitle", "text" },
-                subCategory = "Tools",
-                description = "TLK Manager WPF manages loaded TLK files that are used to display string data in editor tools. You can also use it to extract and recompile TLK files."
-            });
-            set.Add(new Tool
-            {
                 name = "Package Dumper",
                 type = typeof(PackageDumper.PackageDumper),
                 icon = Application.Current.FindResource("iconPackageDumper") as ImageSource,
@@ -542,6 +529,32 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "Mount Editor",
+                type = typeof(MountEditor.MountEditorWPF),
+                icon = Application.Current.FindResource("iconMountEditor") as ImageSource,
+                open = () =>
+                {
+                    new MountEditor.MountEditorWPF().Show();
+                },
+                tags = new List<string> {"developer", "mount", "dlc", "me2", "me3" },
+                subCategory = "Core",
+                description = "Mount Editor allows you to create or modify mount.dlc files, which are used in DLC for Mass Effect 2 and Mass Effect 3."
+            });
+            set.Add(new Tool
+            {
+                name = "TLK Manager WPF",
+                type = typeof(TlkManagerNS.TLKManagerWPF),
+                icon = Application.Current.FindResource("iconTLKManager") as ImageSource,
+                open = () =>
+                {
+                    new TlkManagerNS.TLKManagerWPF().Show();
+                },
+                tags = new List<string> { "developer", "dialogue", "subtitle", "text", "string", "localize", "language" },
+                subCategory = "Core",
+                description = "TLK Manager WPF manages loaded TLK files that are used to display string data in editor tools. You can also use it to extract and recompile TLK files."
+            });
+            set.Add(new Tool
+            {
                 name = "Package Editor",
                 type = typeof(PackageEditor),
                 icon = Application.Current.FindResource("iconPackageEditorClassic") as ImageSource,
@@ -660,6 +673,7 @@ namespace ME3Explorer
                 subCategory = "Meshes + Textures",
                 description = "TEXPLORER IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nTexplorer is a texturing utility that allows users to browse and install textures for all 3 Mass Effect trilogy games. It has been superceded by Mass Effect Modder (MEM) in most regards."
             });
+            
             set.Add(new Tool
             {
                 name = "WwiseBank Editor",

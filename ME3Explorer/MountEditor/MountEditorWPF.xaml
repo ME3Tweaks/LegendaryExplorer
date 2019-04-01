@@ -7,7 +7,8 @@
         xmlns:local="clr-namespace:ME3Explorer.MountEditor"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="Mount Editor" Height="365" Width="500">
+        Icon="..\Resources\mounteditor_256x256.ico"
+        Title="Mount Editor" Height="358" Width="500">
     <StackPanel>
         <TextBlock Text="Use this tool to create new or modify existing mount.dlc files." Background="LightGray" Padding="5,5,5,0"/>
         <TextBlock Text="Loading a file will load its values into the editor." Background="LightGray" Padding="5,0,5,5"/>
