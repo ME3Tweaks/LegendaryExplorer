@@ -506,6 +506,9 @@
     </Compile>
     <Compile Include="PackageDumper\TreeNode.cs" />
     <Compile Include="PackageDumper\TreeNodeList.cs" />
+    <Compile Include="PackageEditor\EmbeddedTextureViewer.xaml.cs">
+      <DependentUpon>EmbeddedTextureViewer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PackageEditor\PackageEditorDebugFunctions.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1052,6 +1055,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PackageDumper\PackageDumper.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PackageEditor\EmbeddedTextureViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

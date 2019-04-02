@@ -1313,6 +1313,8 @@ namespace ME3Explorer
             ExportLoaders[Bio2DATab_Bio2DAEditor] = Bio2DAViewer_Tab;
             ExportLoaders[ScriptTab_UnrealScriptEditor] = Script_Tab;
             ExportLoaders[BinaryInterpreterTab_BinaryInterpreter] = BinaryInterpreter_Tab;
+            ExportLoaders[EmbeddedTextureViewerTab_EmbededTextureViewer] = EmbeddedTextureViewer_Tab;
+
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
             BinaryInterpreterTab_BinaryInterpreter.SetParentNameList(NamesList); //reference to this control for name editor set
             Bio2DATab_Bio2DAEditor.SetParentNameList(NamesList); //reference to this control for name editor set

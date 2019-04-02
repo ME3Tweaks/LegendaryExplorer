@@ -126,45 +126,60 @@ namespace AmaroK86.ImageFormat
         {
             using (FileStream ddsStream = File.OpenRead(ddsFileName))
             {
-                using (BinaryReader r = new BinaryReader(ddsStream))
+                LoadDDS(ddsStream);
+            }
+        }
+
+        public DDSImage(Stream ddsStream)
+        {
+            LoadDDS(ddsStream);
+        }
+
+        public DDSImage(byte[] ddsBytes)
+        {
+            LoadDDS(new MemoryStream(ddsBytes));
+        }
+
+        private void LoadDDS(Stream ddsStream)
+        {
+            using (BinaryReader r = new BinaryReader(ddsStream))
+            {
+                dwMagic = r.ReadInt32();
+                if (dwMagic != 0x20534444)
                 {
-                    dwMagic = r.ReadInt32();
-                    if (dwMagic != 0x20534444)
+                    throw new Exception("This is not a DDS!");
+                }
+
+                Read_DDS_HEADER(header, r);
+
+                if (((header.ddspf.dwFlags & DDPF_FOURCC) != 0) && (header.ddspf.dwFourCC == FOURCC_DX10 /*DX10*/))
+                {
+                    throw new Exception("DX10 not supported yet!");
+                }
+
+                int mipMapCount = 1;
+                if ((header.dwFlags & DDSD_MIPMAPCOUNT) != 0)
+                    mipMapCount = header.dwMipMapCount;
+
+                mipMaps = new MipMap[mipMapCount];
+
+                ddsFormat = getFormat();
+
+                double bytePerPixel = getBytesPerPixel(ddsFormat);
+
+                for (int i = 0; i < mipMapCount; i++)
+                {
+                    int w = (int)(header.dwWidth / Math.Pow(2, i));
+                    int h = (int)(header.dwHeight / Math.Pow(2, i));
+
+                    if (ddsFormat == DDSFormat.DXT1 || ddsFormat == DDSFormat.DXT5)
                     {
-                        throw new Exception("This is not a DDS!");
+                        w = (w < 4) ? 4 : w;
+                        h = (h < 4) ? 4 : h;
                     }
 
-                    Read_DDS_HEADER(header, r);
-
-                    if (((header.ddspf.dwFlags & DDPF_FOURCC) != 0) && (header.ddspf.dwFourCC == FOURCC_DX10 /*DX10*/))
-                    {
-                        throw new Exception("DX10 not supported yet!");
-                    }
-
-                    int mipMapCount = 1;
-                    if ((header.dwFlags & DDSD_MIPMAPCOUNT) != 0)
-                        mipMapCount = header.dwMipMapCount;
-
-                    mipMaps = new MipMap[mipMapCount];
-
-                    ddsFormat = getFormat();
-
-                    double bytePerPixel = getBytesPerPixel(ddsFormat);
-
-                    for (int i = 0; i < mipMapCount; i++)
-                    {
-                        int w = (int)(header.dwWidth / Math.Pow(2, i));
-                        int h = (int)(header.dwHeight / Math.Pow(2, i));
-
-                        if (ddsFormat == DDSFormat.DXT1 || ddsFormat == DDSFormat.DXT5)
-                        {
-                            w = (w < 4) ? 4 : w;
-                            h = (h < 4) ? 4 : h;
-                        }
-
-                        int mipMapBytes = (int)(w * h * bytePerPixel);
-                        mipMaps[i] = new MipMap(r.ReadBytes(mipMapBytes), ddsFormat, w, h);
-                    }
+                    int mipMapBytes = (int)(w * h * bytePerPixel);
+                    mipMaps[i] = new MipMap(r.ReadBytes(mipMapBytes), ddsFormat, w, h);
                 }
             }
         }
@@ -176,11 +191,12 @@ namespace AmaroK86.ImageFormat
                 case FOURCC_DXT1: return DDSFormat.DXT1;
                 case FOURCC_DXT5: return DDSFormat.DXT5;
                 case FOURCC_ATI2: return DDSFormat.ATI2;
-                case 0: if (header.ddspf.dwRGBBitCount == 0x10 &&
-                           header.ddspf.dwRBitMask == 0xFF &&
-                           header.ddspf.dwGBitMask == 0xFF00 &&
-                           header.ddspf.dwBBitMask == 0x00 &&
-                           header.ddspf.dwABitMask == 0x00)
+                case 0:
+                    if (header.ddspf.dwRGBBitCount == 0x10 &&
+                       header.ddspf.dwRBitMask == 0xFF &&
+                       header.ddspf.dwGBitMask == 0xFF00 &&
+                       header.ddspf.dwBBitMask == 0x00 &&
+                       header.ddspf.dwABitMask == 0x00)
                         return DDSFormat.V8U8;
                     break;
                 default: break;
@@ -627,7 +643,7 @@ namespace AmaroK86.ImageFormat
                 for (int j = 0; j < 3; j++)
                     buff[(3 * i) + j] = imgData[i];
             }
-            
+
             var bmp = new Bitmap(w, h, PixelFormat.Format24bppRgb);
             BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, bmp.PixelFormat);
             Marshal.Copy(buff, 0, bmpData.Scan0, buff.Length);

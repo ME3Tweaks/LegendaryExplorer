@@ -432,6 +432,12 @@
                         </TabItem.Header>
                         <global:Bio2DAEditorWPF x:Name="Bio2DATab_Bio2DAEditor"/>
                     </TabItem>
+                    <TabItem Name="EmbeddedTextureViewer_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Texture" ToolTip="View texture"/>
+                        </TabItem.Header>
+                        <global:EmbeddedTextureViewer x:Name="EmbeddedTextureViewerTab_EmbededTextureViewer"/>
+                    </TabItem>
                     <TabItem Name="BinaryInterpreter_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
                             <TextBlock Text="Binary Interpreter" ToolTip="View and edit binary data for supported classes"/>
