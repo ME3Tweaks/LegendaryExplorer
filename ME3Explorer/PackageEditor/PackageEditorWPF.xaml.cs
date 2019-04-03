@@ -459,13 +459,13 @@ namespace ME3Explorer
         {
             if (entry is ImportEntry imp)
             {
-                imp.idxClassName = packageClassIdx;
+                imp.idxClassName = Pcc.FindNameOrAdd("Package");
                 imp.idxPackageFile = Pcc.FindNameOrAdd("Core");
                 imp.idxLink = trashContainer.UIndex;
                 imp.idxObjectName = Pcc.FindNameOrAdd("Trash");
                 imp.indexValue = 0;
             }
-            if (entry is IExportEntry exp)
+            else if (entry is IExportEntry exp)
             {
                 exp.Data = new byte[exp.Data.Length]; //Write all zeros to nullify the existing data. For DLC this will allow it to compress better in 7z
                 MemoryStream trashData = new MemoryStream();
@@ -3896,9 +3896,16 @@ namespace ME3Explorer
         {
             get
             {
-                if (_displayName != null) return _displayName;
-                string type = UIndex < 0 ? "Imp" : "Exp";
-                return $"({type}) {UIndex} {Entry.ObjectName}({Entry.ClassName})";
+                try
+                {
+                    if (_displayName != null) return _displayName;
+                    string type = UIndex < 0 ? "Imp" : "Exp";
+                    return $"({type}) {UIndex} {Entry.ObjectName}({Entry.ClassName})";
+                }
+                catch (Exception e)
+                {
+                    return "ERROR!";
+                }
             }
             set { _displayName = value; OnPropertyChanged(); }
         }
