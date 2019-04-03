@@ -1670,6 +1670,11 @@
     <Resource Include="Resources\pathfindingeditor_256x256.ico" />
     <Resource Include="Resources\soundplorerwpf_256x256.ico" />
     <Resource Include="Resources\sequenceeditor_256x256.ico" />
+    <Resource Include="Resources\conditionalseditor_256x256.ico" />
+    <Resource Include="Resources\dialogueeditor_256x256.ico" />
+    <Resource Include="Resources\facefxeditor_256x256.ico" />
+    <Resource Include="Resources\hexconverter_256x256.ico" />
+    <Resource Include="Resources\meshplorer_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

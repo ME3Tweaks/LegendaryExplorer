@@ -9,5 +9,6 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Label Name="TextPrev" Content="Texture will show here"/>
+        <Image Name="TextureImage"/>
     </Grid>
 </global:ExportLoaderControl>

@@ -157,7 +157,7 @@ namespace AmaroK86.ImageFormat
 
         protected ImageFile(string fileName, byte[] data)
         {
-            string fileExtension = Path.GetExtension(fileName).ToLowerInvariant();
+            //string fileExtension = Path.GetExtension(fileName).ToLowerInvariant();
             int headerSize = 128;
 
             /*switch (fileExtension)

@@ -85,7 +85,26 @@ namespace ME3Explorer
                 content += "\n";
 
             }
+
+            var topmip = mips[0];
             TextPrev.Content = content;
+            byte[] imagebytes = new byte[topmip.uncompressedSize];
+            Buffer.BlockCopy(exportEntry.Data, topmip.offset - exportEntry.DataOffset, imagebytes, 0, topmip.uncompressedSize);
+            AmaroK86.ImageFormat.DDS dds = new AmaroK86.ImageFormat.DDS(null, new AmaroK86.ImageFormat.ImageSize((uint)topmip.width, (uint)topmip.height), format.Value.Name.Substring(3), imagebytes);
+            AmaroK86.ImageFormat.DDSImage ddsimage = new AmaroK86.ImageFormat.DDSImage(dds.ToArray());
+            var bitmap = ddsimage.mipMaps[0].bitmap;
+            using (MemoryStream memory = new MemoryStream())
+            {
+                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
+                memory.Position = 0;
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+
+                TextureImage.Source = bitmapImage; //image1 is your control            }
+            }
         }
 
         public override void UnloadExport()
