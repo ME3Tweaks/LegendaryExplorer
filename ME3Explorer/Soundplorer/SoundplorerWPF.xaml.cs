@@ -10,6 +10,7 @@ using ME3Explorer.WwiseBankEditor;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using NAudio.Wave;
+using StreamHelpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -45,10 +46,11 @@ namespace ME3Explorer.Soundplorer
         private const string RECENTFILES_FILE = "RECENTFILES";
         public List<string> RFiles;
         private string LoadedISBFile;
+        private string LoadedAFCFile;
         BackgroundWorker backgroundScanner;
         public ObservableCollectionExtended<object> BindedItemsList { get; set; } = new ObservableCollectionExtended<object>();
 
-        public bool AudioFileLoaded => Pcc != null || LoadedISBFile != null;
+        public bool AudioFileLoaded => Pcc != null || LoadedISBFile != null || LoadedAFCFile != null;
 
         private bool _isBusy;
         public bool IsBusy
@@ -194,7 +196,7 @@ namespace ME3Explorer.Soundplorer
 
         private void OpenCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = "Package files and ISB|*.pcc;*.u;*.sfm;*.upk;*.isb" };
+            OpenFileDialog d = new OpenFileDialog { Filter = "Package files, ISB, AFC|*.pcc;*.u;*.sfm;*.upk;*.isb;*.afc" };
             bool? result = d.ShowDialog();
             if (result.HasValue && result.Value)
             {
@@ -233,6 +235,12 @@ namespace ME3Explorer.Soundplorer
                     StatusBar_GameID_Text.Text = "ISB";
                     StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
                 }
+                else if (System.IO.Path.GetExtension(fileName).ToLower() == ".afc")
+                {
+                    LoadedAFCFile = fileName;
+                    StatusBar_GameID_Text.Text = "AFC";
+                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Azure);
+                }
                 else
                 {
                     LoadMEPackage(fileName);
@@ -262,6 +270,10 @@ namespace ME3Explorer.Soundplorer
                 {
                     LoadISB();
                 }
+                else if (LoadedAFCFile != null)
+                {
+                    LoadAFC();
+                }
                 else
                 {
                     LoadObjects();
@@ -276,6 +288,71 @@ namespace ME3Explorer.Soundplorer
             {
                 MessageBox.Show("Error:\n" + ex.Message);
             }
+        }
+
+        private async void LoadAFC()
+        {
+            BindedItemsList.ClearEx();
+            IsBusyTaskbar = true;
+            TaskbarText = $"Loading AFC: {System.IO.Path.GetFileName(LoadedAFCFile)}";
+            if (backgroundScanner != null && backgroundScanner.IsBusy)
+            {
+                backgroundScanner.CancelAsync(); //cancel current operation
+                while (backgroundScanner.IsBusy)
+                {
+                    //I am sorry for this. I truely am. 
+                    //But it's the simplest code to get the job done while we wait for the thread to finish.
+                    await Task.Delay(200);
+                }
+            }
+
+            //Background thread as larger AFC parsing can lock up the UI for a few seconds.
+            backgroundScanner = new BackgroundWorker();
+            backgroundScanner.DoWork += LoadAFCFile;
+            backgroundScanner.RunWorkerCompleted += LoadAFCFile_Completed;
+            backgroundScanner.WorkerSupportsCancellation = true;
+            backgroundScanner.RunWorkerAsync(LoadedAFCFile);
+        }
+
+        private void LoadAFCFile_Completed(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Result is List<AFCFileEntry> result)
+            {
+                BindedItemsList.AddRange(result);
+                //backgroundScanner = new BackgroundWorker();
+                //backgroundScanner.DoWork += GetStreamTimes;
+                //backgroundScanner.RunWorkerCompleted += GetStreamTimes_Completed;
+                //backgroundScanner.WorkerReportsProgress = true;
+                //backgroundScanner.ProgressChanged += GetStreamTimes_ReportProgress;
+                //backgroundScanner.WorkerSupportsCancellation = true;
+                //backgroundScanner.RunWorkerAsync(result.Cast<object>().ToList());
+            }
+        }
+
+        private void LoadAFCFile(object sender, DoWorkEventArgs e)
+        {
+            var entries = new List<AFCFileEntry>();
+            using (FileStream fileStream = new FileStream((string)e.Argument, FileMode.Open, FileAccess.Read))
+            {
+                while (fileStream.Position < fileStream.Length - 4)
+                {
+                    string readStr = fileStream.ReadStringASCII(4);
+                    if (readStr != "RIFF")
+                    {
+                        fileStream.Seek(-3, SeekOrigin.Current);
+                        continue;
+                    }
+
+                    //Found RIFF
+                    int size = fileStream.ReadInt32();
+                    fileStream.Seek(size, SeekOrigin.Current);
+
+                    var entry = new AFCFileEntry(size);
+                    entries.Add(entry);
+                }
+            }
+            e.Result = entries;
+            return;
         }
 
         private async void LoadISB()
@@ -1146,6 +1223,65 @@ namespace ME3Explorer.Soundplorer
                 File.WriteAllBytes(d.FileName, spExport.Entry.DataAsStored);
                 MessageBox.Show("Done.");
             }
+        }
+    }
+
+    public class AFCFileEntry : NotifyPropertyChangedBase
+    {
+        private int _index;
+        public int Index
+        {
+            get => _index;
+            set => SetProperty(ref _index, value);
+        }
+
+        private bool _needsLoading;
+        public bool NeedsLoading
+        {
+            get => _needsLoading;
+            set => SetProperty(ref _needsLoading, value);
+        }
+
+        private FontAwesomeIcon _icon;
+        public FontAwesomeIcon Icon
+        {
+            get => _icon;
+            set => SetProperty(ref _icon, value);
+        }
+
+        private string _timeString;
+        public string SubText
+        {
+            get => _timeString;
+            set => SetProperty(ref _timeString, value);
+        }
+
+        private string _displayString;
+        public string DisplayString
+        {
+            get => _displayString;
+            set => SetProperty(ref _displayString, value);
+        }
+
+        public AFCFileEntry(int index)
+        {
+            Index = index;
+            SubText = "Calculating length";
+            Icon = FontAwesomeIcon.Spinner;
+            NeedsLoading = true;
+            UpdateDisplay();
+        }
+
+        private void UpdateDisplay()
+        {
+            DisplayString = "AFC Entry " + Index;
+        }
+
+        public void LoadData()
+        {
+
+            NeedsLoading = false;
+            Icon = FontAwesomeIcon.VolumeUp;
         }
     }
 

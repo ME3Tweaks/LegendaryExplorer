@@ -1653,6 +1653,7 @@
     <Resource Include="Resources\ploteditor_256x256.ico" />
     <Resource Include="Resources\texplorer_256x256.ico" />
     <Resource Include="Resources\afcdumper_256x256.ico" />
+    <Resource Include="Resources\plotdatabase_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
