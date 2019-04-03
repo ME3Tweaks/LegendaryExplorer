@@ -85,9 +85,7 @@
     <Compile Include="GUI\VersionPickDialog.xaml.cs">
       <DependentUpon>VersionPickDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\LZO2Helper.cs" />
     <Compile Include="Helpers\SaltLZOHelper.cs" />
-    <Compile Include="Helpers\ZlibHelper.cs" />
     <Compile Include="MEDirectories\MEExDirectories.cs" />
     <Compile Include="Misc\BitConverter.cs" />
     <Compile Include="Debugging\DebugOutput.cs" />
@@ -141,6 +139,10 @@
     <ProjectReference Include="..\Be.Windows.Forms.HexBox\Be.Windows.Forms.HexBox.csproj">
       <Project>{26c5f25f-b450-4caf-ad8b-b8d11ae73457}</Project>
       <Name>Be.Windows.Forms.HexBox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Helpers\Helpers.csproj">
+      <Project>{ccf590b8-e6bf-4d31-85bf-afea7d075edf}</Project>
+      <Name>Helpers</Name>
     </ProjectReference>
     <ProjectReference Include="..\SaltTPF\SaltTPF.csproj">
       <Project>{8637a2aa-e1fb-4ec9-88a5-688d7d1f7921}</Project>

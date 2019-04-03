@@ -21,10 +21,10 @@
 
  /*
   * This code use lzo2wrapper.dll copied from MassEffectModder:
-  * https://github.com/MassEffectModder/MassEffectModder/tree/master/MassEffectModder/Dlls
+  * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Dlls
   *
   * The dll is created using Zlib, MiniZlib, FastZlib libraries and MassEffectModder wrapper code:
-  * https://github.com/MassEffectModder/MassEffectModder/tree/master/MassEffectModder/Helpers/Zlib
+  * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Helpers/Zlib
   *
   */
 
@@ -34,9 +34,7 @@ using System.Text;
 
 namespace ZlibHelper
 {
-    //This is same as stuff from KFreonLib, will be merged... someday...
-    //Had to be renamed because same-name ambiguity
-    static public class ZlibAmarok
+    static public class Zlib
     {
         [DllImport("zlibwrapper.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
         private static extern int ZlibDecompress([In] byte[] srcBuf, uint srcLen, [Out] byte[] dstBuf, ref uint dstLen);
