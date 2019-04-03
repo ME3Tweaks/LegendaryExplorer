@@ -21,7 +21,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:metadataeditor="clr-namespace:ME3Explorer.MetadataEditor"
         Title="Package Editor WPF" Height="650" Width="1100"
-        Icon="..\Resources\package_editor_64x64.png"
+        Icon="..\Resources\packageeditorwpf_256x256.ico"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         AllowDrop="True"
@@ -67,27 +67,27 @@
                     <MenuItem Header="Open in...">
                         <MenuItem Header="Dialogue Editor" Tag="DialogueEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                             <MenuItem.Icon>
-                                <Image Source="/Resources/dialogue_editor_64x64.png"/>
+                                <Image Source="/Resources/dialogueeditor_256x256.ico"/>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="FaceFX Editor" Tag="FaceFXEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                             <MenuItem.Icon>
-                                <Image Source="/Resources/facefx_editor_icon.ico"/>
+                                <Image Source="/Resources/facefxeditor_256x256.ico"/>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Pathfinding Editor" Tag="PathfindingEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                             <MenuItem.Icon>
-                                <Image Source="/Resources/path_editor_64.png"/>
+                                <Image Source="/Resources/pathfindingeditor_256x256.ico"/>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Soundplorer WPF" Tag="SoundplorerWPF" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                             <MenuItem.Icon>
-                                <Image Source="/Resources/soundplorer_64x64.png"/>
+                                <Image Source="/Resources/soundplorerwpf_256x256.ico"/>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Sequence Editor" Tag="SequenceEditor" Click="OpenIn_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                             <MenuItem.Icon>
-                                <Image Source="/Resources/sequence_editor_64x64.png"/>
+                                <Image Source="/Resources/sequenceeditor_256x256.ico"/>
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
@@ -116,7 +116,7 @@
                     <Separator/>
                     <MenuItem Name="HexConverterMenuItem" Header="Hex Converter" Click="HexConverterMenuItem_Click" ToolTip="Open the HexConverter application">
                         <MenuItem.Icon>
-                            <Image Source="/Resources/hexconverter_icon64x64.png"/>
+                            <Image Source="/Resources/hexconverter_256x256.ico"/>
                         </MenuItem.Icon>
                     </MenuItem>
 
