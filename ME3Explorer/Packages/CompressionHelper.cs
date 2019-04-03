@@ -141,7 +141,7 @@ namespace ME3Explorer.Packages
                     else
                     if (compressionType == CompressionType.Zlib)
                     {
-                        if (new ZlibHelper.Zlib().Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
+                        if (ZlibHelper.Zlib.Decompress(datain, (uint)datain.Length, dataout) != b.uncompressedsize)
                             throw new Exception("Zlib decompression failed!");
                     }
                     else

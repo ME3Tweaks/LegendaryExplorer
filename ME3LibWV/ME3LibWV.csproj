@@ -104,6 +104,10 @@
     <None Include="Select.dds" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Helpers\Helpers.csproj">
+      <Project>{ccf590b8-e6bf-4d31-85bf-afea7d075edf}</Project>
+      <Name>Helpers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\KFreonLib\KFreonLib.csproj">
       <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>
       <Name>KFreonLib</Name>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using ZlibHelper;
 
 namespace ME3LibWV
 {
@@ -930,7 +929,7 @@ namespace ME3LibWV
             {
                 s.Read(res, 0, (int)CompSize);
                 byte[] tmp = new byte[UnCompSize];
-                if (new Zlib().Decompress(res, (uint)CompSize, tmp) != UnCompSize)
+                if (ZlibHelper.Zlib.Decompress(res, (uint)CompSize, tmp) != UnCompSize)
                     throw new Exception("Zlib decompression failed!");
             }
             catch (Exception ex)

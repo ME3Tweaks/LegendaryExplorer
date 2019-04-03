@@ -333,8 +333,6 @@
       <DependentUpon>DLCUnpacker.xaml</DependentUpon>
     </Compile>
     <Compile Include="FaceFXAnimSetEditor\ME1FaceFXAnimSet.cs" />
-    <Compile Include="Helpers\SevenZipHelper.cs" />
-    <Compile Include="Helpers\StreamIO.cs" />
     <Compile Include="Interpreter\AltPropertyEditor.xaml.cs">
       <DependentUpon>AltPropertyEditor.xaml</DependentUpon>
     </Compile>
@@ -1455,6 +1453,10 @@
     <ProjectReference Include="..\Gammtek.Conduit.Core\Gammtek.Conduit.Core.csproj">
       <Project>{9f364d6b-5046-4186-b684-968b52afcb81}</Project>
       <Name>Gammtek.Conduit.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Helpers\Helpers.csproj">
+      <Project>{ccf590b8-e6bf-4d31-85bf-afea7d075edf}</Project>
+      <Name>Helpers</Name>
     </ProjectReference>
     <ProjectReference Include="..\KFreonLib\KFreonLib.csproj">
       <Project>{8b07ed45-42f4-4b0e-a581-2c257f77241e}</Project>

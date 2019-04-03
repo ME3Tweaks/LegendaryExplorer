@@ -45,7 +45,7 @@ namespace AmaroK86.MassEffect3.ZlibBlock
                 uint precCompSize = (uint)dataBlock.Length;
                 byte[] src = new byte[copyBytes];
                 Buffer.BlockCopy(buffer, offset, src, 0, copyBytes);
-                byte[] dst = ZlibAmarok.Compress(src);
+                byte[] dst = Zlib.Compress(src);
                 if (dst.Length == 0)
                     throw new Exception("Zlib compression failed!");
 
@@ -141,7 +141,7 @@ namespace AmaroK86.MassEffect3.ZlibBlock
                     //Console.WriteLine("compr size: {0}, uncompr size: {1}, data offset: 0x{2:X8}", comprSegm, uncomprSegm, dataSegm);
                     byte[] src = buffStream.ReadBytes(comprSegm);
                     byte[] dst = new byte[uncomprSegm];
-                    if (ZlibAmarok.Decompress(src, (uint)src.Length, dst) != uncomprSegm)
+                    if (Zlib.Decompress(src, (uint)src.Length, dst) != uncomprSegm)
                         throw new Exception("Zlib decompression failed!");
 
                     Buffer.BlockCopy(dst, 0, outputBuffer, buffOff, uncomprSegm);
