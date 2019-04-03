@@ -76,6 +76,7 @@ namespace ME3Explorer
             this.validateReachToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.relinkingPathfindingChainButton = new System.Windows.Forms.ToolStripMenuItem();
             this.flipLevelUpsidedownEXPERIMENTALToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gotoNode_TextBox = new System.Windows.Forms.ToolStripTextBox();
             this.gotoNodeButton = new System.Windows.Forms.ToolStripMenuItem();
             this.allTagsCombobox = new System.Windows.Forms.ToolStripComboBox();
@@ -116,7 +117,6 @@ namespace ME3Explorer
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -597,6 +597,13 @@ namespace ME3Explorer
     "they are 1 sided.";
             this.flipLevelUpsidedownEXPERIMENTALToolStripMenuItem.Click += new System.EventHandler(this.flipLevelUpsidedownEXPERIMENTALToolStripMenuItem_Click);
             // 
+            // buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem
+            // 
+            this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem.Name = "buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem";
+            this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem.Size = new System.Drawing.Size(388, 22);
+            this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem.Text = "Build linear pathfindnig chain from logfile (EXPERIMENTAL)";
+            this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem.Click += new System.EventHandler(this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem_Click);
+            // 
             // gotoNode_TextBox
             // 
             this.gotoNode_TextBox.Name = "gotoNode_TextBox";
@@ -921,13 +928,6 @@ namespace ME3Explorer
             this.addObjectToolStripMenuItem.Name = "addObjectToolStripMenuItem";
             this.addObjectToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.addObjectToolStripMenuItem.Text = "Add Object";
-            // 
-            // buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem
-            // 
-            this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem.Name = "buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem";
-            this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem.Size = new System.Drawing.Size(388, 22);
-            this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem.Text = "Build linear pathfindnig chain from logfile (EXPERIMENTAL)";
-            this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem.Click += new System.EventHandler(this.buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem_Click);
             // 
             // PathfindingEditor
             // 

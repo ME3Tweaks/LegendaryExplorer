@@ -1495,7 +1495,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\asset_explorer_64x64.png" />
-    <Resource Include="Resources\hexconverter_icon64x64.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\autotoc_64x64.png" />
@@ -1514,17 +1513,13 @@
     <Resource Include="Resources\resize_icon.ico" />
     <Resource Include="Resources\taskbar.ico" />
     <Resource Include="Resources\wwisebank_editor_64x64.png" />
-    <Resource Include="Resources\TLKManager_icon_64x64.png" />
     <Resource Include="Resources\subtitle_scanner_64x64.png" />
-    <Resource Include="Resources\soundplorer_64x64.png" />
     <Resource Include="Resources\sfar_editor2_icon_64x64.png" />
-    <Resource Include="Resources\sequence_editor_64x64.png" />
     <Resource Include="Resources\psk_viewer_64x64.png" />
     <Resource Include="Resources\psa_viewer_64x64.png" />
     <Resource Include="Resources\property_manager_64x64.png" />
     <Resource Include="Resources\property_dumper_64x64.png" />
     <Resource Include="Resources\property_database_64x64.png" />
-    <Resource Include="Resources\package_editor_64x64.png" />
     <Resource Include="Resources\meshplorer2_64x64.png" />
     <Resource Include="Resources\meshplorer_64x64.png" />
     <Resource Include="Resources\interpreter_icon_64x64.png" />
@@ -1535,8 +1530,6 @@
     <Resource Include="Resources\fxa_editor_64x64.png" />
     <Resource Include="Resources\folder.png" />
     <Resource Include="Resources\document-save.png" />
-    <Resource Include="Resources\dialogue_editor_64x64.png" />
-    <Resource Include="Resources\conditionals_editor_64x64.png" />
     <Resource Include="Resources\asset_explorer_64x64.png" />
     <Resource Include="Resources\animation_explorer_64x64.png" />
     <Resource Include="Icons\udk_explorer_64x64.png" />
@@ -1593,9 +1586,6 @@
     <Resource Include="Resources\elipsis_icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\facefx_editor_icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <SplashScreen Include="Resources\toolset_splash.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </SplashScreen>
@@ -1641,18 +1631,13 @@
     <Resource Include="Resources\error_x.png" />
     <Resource Include="Resources\coalesced_editor_64.png" />
     <Resource Include="Resources\coalesced_editor_newB.ico" />
-    <Resource Include="Resources\path_editor.ico" />
-    <Resource Include="Resources\path_editor_64.png" />
     <Resource Include="Resources\me3tweaks_fork.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_swf.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_texture2d.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_sound.png" />
     <Resource Include="Resources\dlc_unpacker_256x256.ico" />
-    <Resource Include="Resources\dlc_unpacker_64x64.png" />
     <Resource Include="Resources\packagedumper_256x256.ico" />
     <Resource Include="Resources\packageeditorclassic_256x256.ico" />
-    <Resource Include="Resources\packageeditorclassic_64x64.png" />
-    <Resource Include="Resources\mounteditor_64x64.png" />
     <Resource Include="Resources\mounteditor_256x256.ico" />
     <Resource Include="Resources\tlkmanager_256x256.ico" />
     <Resource Include="Resources\autotoc_256x256.ico" />

@@ -73,39 +73,9 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap autotoc_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("autotoc_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap BIK_movie_64x64 {
             get {
                 object obj = ResourceManager.GetObject("BIK_movie_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap conditionals_editor_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("conditionals_editor_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap dialogue_editor_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("dialogue_editor_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -156,16 +126,6 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap help_browser {
             get {
                 object obj = ResourceManager.GetObject("help-browser", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap hexconverter_icon64x64 {
-            get {
-                object obj = ResourceManager.GetObject("hexconverter_icon64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -253,16 +213,6 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap meshplorer_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("meshplorer_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap meshplorer2_64x64 {
             get {
                 object obj = ResourceManager.GetObject("meshplorer2_64x64", resourceCulture);
@@ -276,26 +226,6 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap modmaker_64x64 {
             get {
                 object obj = ResourceManager.GetObject("modmaker_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap mounteditor_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("mounteditor_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap package_editor_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("package_editor_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -363,29 +293,9 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap sequence_editor_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("sequence_editor_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap sfar_editor2_icon_64x64 {
             get {
                 object obj = ResourceManager.GetObject("sfar_editor2_icon_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap soundplorer_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("soundplorer_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -434,16 +344,6 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap subtitle_scanner_64x64 {
             get {
                 object obj = ResourceManager.GetObject("subtitle_scanner_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap TLKManager_icon_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("TLKManager_icon_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

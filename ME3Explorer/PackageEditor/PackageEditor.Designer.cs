@@ -51,6 +51,7 @@
             this.modjobsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createBinaryReplaceJobFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createBinaryReplaceJobFromObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.compareWithAnotherVersionOfThisPccToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getDumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getDumpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -151,7 +152,6 @@
             this.replaceSWFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cloneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.compareWithAnotherVersionOfThisPccToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -385,6 +385,13 @@
             this.createBinaryReplaceJobFromObjectToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
             this.createBinaryReplaceJobFromObjectToolStripMenuItem.Text = "Create Binary Replace Job from Object";
             this.createBinaryReplaceJobFromObjectToolStripMenuItem.Click += new System.EventHandler(this.createBinaryReplaceJobFromObjectToolStripMenuItem_Click);
+            // 
+            // compareWithAnotherVersionOfThisPccToolStripMenuItem
+            // 
+            this.compareWithAnotherVersionOfThisPccToolStripMenuItem.Name = "compareWithAnotherVersionOfThisPccToolStripMenuItem";
+            this.compareWithAnotherVersionOfThisPccToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.compareWithAnotherVersionOfThisPccToolStripMenuItem.Text = "Compare with another version of this pcc";
+            this.compareWithAnotherVersionOfThisPccToolStripMenuItem.Click += new System.EventHandler(this.compareWithAnotherVersionOfThisPccToolStripMenuItem_Click);
             // 
             // debugToolStripMenuItem
             // 
@@ -1354,13 +1361,6 @@
             this.cloneToolStripMenuItem1.Size = new System.Drawing.Size(105, 22);
             this.cloneToolStripMenuItem1.Text = "Clone";
             this.cloneToolStripMenuItem1.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
-            // 
-            // compareWithAnotherVersionOfThisPccToolStripMenuItem
-            // 
-            this.compareWithAnotherVersionOfThisPccToolStripMenuItem.Name = "compareWithAnotherVersionOfThisPccToolStripMenuItem";
-            this.compareWithAnotherVersionOfThisPccToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
-            this.compareWithAnotherVersionOfThisPccToolStripMenuItem.Text = "Compare with another version of this pcc";
-            this.compareWithAnotherVersionOfThisPccToolStripMenuItem.Click += new System.EventHandler(this.compareWithAnotherVersionOfThisPccToolStripMenuItem_Click);
             // 
             // PackageEditor
             // 
