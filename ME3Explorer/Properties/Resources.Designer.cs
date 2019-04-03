@@ -73,16 +73,6 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap audio_extract_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("audio_extract_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap autotoc_64x64 {
             get {
                 object obj = ResourceManager.GetObject("autotoc_64x64", resourceCulture);
@@ -444,16 +434,6 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap subtitle_scanner_64x64 {
             get {
                 object obj = ResourceManager.GetObject("subtitle_scanner_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap texplorer_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("texplorer_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

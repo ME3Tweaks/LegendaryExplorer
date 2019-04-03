@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:ME3Explorer.PackageDumper"
         mc:Ignorable="d"
         Loaded="PackageDumper_Loaded"
-        Icon="..\Resources\packagedumper_64x64.png"
+        Icon="..\Resources\packagedumper_256x256.ico"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
         Closing="PackageDumper_Closing"

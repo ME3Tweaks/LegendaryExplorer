@@ -130,7 +130,7 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Audio Extractor",
+                name = "AFC Dumper",
                 type = typeof(AFCExtract),
                 icon = Application.Current.FindResource("iconAudioExtractor") as ImageSource,
                 open = () =>
@@ -139,7 +139,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", "afc", "music", "ogg", "wav", "sound", "dialogue" },
                 subCategory = "Extractors + Repackers",
-                description = "Audio Extractor extracts sound data from ME3 AFC files."
+                description = "AFC Dumper extracts sound data from Wwise Audio File Cache (AFC) files."
             });
             set.Add(new Tool
             {

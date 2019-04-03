@@ -136,7 +136,7 @@
         <BitmapImage x:Key="iconME3" UriSource="/ME3Explorer;component/Resources/ME3Game.ico"/>
 
         <BitmapImage x:Key="iconAssetExplorer" UriSource="Icons/asset_explorer_64x64.png"/>
-        <BitmapImage x:Key="iconAudioExtractor" UriSource="Icons/audio_extract_64x64.png"/>
+        <BitmapImage x:Key="iconAudioExtractor" UriSource="Resources/afcdumper_256x256.ico"/>
         <BitmapImage x:Key="iconBikExtractor" UriSource="Icons/BIK_movie_64x64.png"/>
         <BitmapImage x:Key="iconBikTool" UriSource="Icons/bik_tool_64.png"/>
         <BitmapImage x:Key="iconBatchRenamer" UriSource="Icons/batch_rename_64x64.png"/>
@@ -183,14 +183,14 @@
         <BitmapImage x:Key="iconMountEditor" UriSource="Resources/mounteditor_256x256.ico"/>
         <BitmapImage x:Key="iconPackageEditor" UriSource="Resources/packageeditorwpf_256x256.ico"/>
         <BitmapImage x:Key="iconPackageEditorClassic" UriSource="Resources/packageeditorclassic_256x256.ico"/>
-        <BitmapImage x:Key="iconPackageDumper" UriSource="Resources/packagedumper_64x64.png"/>
-        <BitmapImage x:Key="iconPlotEditor" UriSource="Resources/plot_editor_icon.ico"/>
+        <BitmapImage x:Key="iconPackageDumper" UriSource="Resources/packagedumper_256x256.ico"/>
+        <BitmapImage x:Key="iconPlotEditor" UriSource="Resources/ploteditor_256x256.ico"/>
         <BitmapImage x:Key="iconSequenceEditor" UriSource="Resources/sequenceeditor_256x256.ico"/>
         <BitmapImage x:Key="iconSFAREditor2" UriSource="Resources/sfar_editor2_icon_64x64.png"/>
         <BitmapImage x:Key="iconSoundplorer" UriSource="Resources/soundplorerwpf_256x256.ico"/>
         <BitmapImage x:Key="iconTLKManager" UriSource="Resources/tlkmanager_256x256.ico"/>
         <BitmapImage x:Key="iconTLKEditorME23" UriSource="Resources/TLK_ME23_editor_icon.ico"/>
-        <BitmapImage x:Key="iconTexplorer" UriSource="Icons/texplorer_64x64.png"/>
+        <BitmapImage x:Key="iconTexplorer" UriSource="Resources/texplorer_256x256.ico"/>
         <BitmapImage x:Key="iconUDKExplorer" UriSource="Icons/udk_explorer_64x64.png"/>
     </Application.Resources>
     <JumpList.JumpList>

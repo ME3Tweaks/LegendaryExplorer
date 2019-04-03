@@ -1498,9 +1498,6 @@
     <Resource Include="Resources\hexconverter_icon64x64.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\audio_extract_64x64.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Icons\autotoc_64x64.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1509,7 +1506,6 @@
   <ItemGroup>
     <Resource Include="Icons\interpreter_icon.ico" />
     <Resource Include="Icons\interp_viewer_icon.ico" />
-    <Resource Include="Icons\TLKManager_icon.ico" />
     <Resource Include="Resources\About_icon.ico" />
     <Resource Include="Resources\close_icon.ico" />
     <Resource Include="Resources\create_mods_icon.ico" />
@@ -1545,8 +1541,6 @@
     <Resource Include="Resources\animation_explorer_64x64.png" />
     <Resource Include="Icons\udk_explorer_64x64.png" />
     <Resource Include="Icons\TPFTools_64x64.png" />
-    <Resource Include="Icons\texplorer_64x64.png" />
-    <Resource Include="Icons\texplorer.ico" />
     <Resource Include="Icons\plot_DB_64x64.png" />
     <Resource Include="Icons\placeholder_64x64.png" />
     <Resource Include="Icons\modmaker_64x64.png" />
@@ -1635,9 +1629,6 @@
     <Folder Include="NativesEditor\SFXGame\BioDefine\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\plot_editor_icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\TLK_ME1_editor_icon.ico" />
     <Resource Include="Resources\TLK_ME23_editor_icon.ico" />
   </ItemGroup>
@@ -1659,7 +1650,6 @@
     <Resource Include="Resources\dlc_unpacker_256x256.ico" />
     <Resource Include="Resources\dlc_unpacker_64x64.png" />
     <Resource Include="Resources\packagedumper_256x256.ico" />
-    <Resource Include="Resources\packagedumper_64x64.png" />
     <Resource Include="Resources\packageeditorclassic_256x256.ico" />
     <Resource Include="Resources\packageeditorclassic_64x64.png" />
     <Resource Include="Resources\mounteditor_64x64.png" />
@@ -1675,6 +1665,9 @@
     <Resource Include="Resources\facefxeditor_256x256.ico" />
     <Resource Include="Resources\hexconverter_256x256.ico" />
     <Resource Include="Resources\meshplorer_256x256.ico" />
+    <Resource Include="Resources\ploteditor_256x256.ico" />
+    <Resource Include="Resources\texplorer_256x256.ico" />
+    <Resource Include="Resources\afcdumper_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
