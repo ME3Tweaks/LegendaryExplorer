@@ -21,10 +21,10 @@
 
  /*
   * This code use sevenzipwrapper.dll copied from MassEffectModder:
-  * https://github.com/MassEffectModder/MassEffectModder/tree/master/MassEffectModder/Dlls
+  * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Dlls
   *
   * The dll is created using LZMA SDK and MassEffectModder wrapper code:
-  * https://github.com/MassEffectModder/MassEffectModder/tree/master/MassEffectModder/Helpers/7Zip
+  * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Helpers/7Zip
   *
   */
 

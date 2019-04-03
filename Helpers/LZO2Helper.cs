@@ -21,10 +21,10 @@
 
  /*
   * This code use lzo2wrapper.dll copied from MassEffectModder:
-  * https://github.com/MassEffectModder/MassEffectModder/tree/master/MassEffectModder/Dlls
+  * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Dlls
   *
   * The dll is created using LZO2 library and MassEffectModder wrapper code:
-  * https://github.com/MassEffectModder/MassEffectModder/tree/master/MassEffectModder/Helpers/LZO2
+  * https://github.com/MassEffectModder/MassEffectModderLegacy/tree/master/MassEffectModder/Helpers/LZO2
   *
   */
 
