@@ -196,7 +196,7 @@ namespace ME3Explorer.Soundplorer
 
         private void OpenCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            OpenFileDialog d = new OpenFileDialog { Filter = "Package files, ISB, AFC|*.pcc;*.u;*.sfm;*.upk;*.isb;*.afc" };
+            OpenFileDialog d = new OpenFileDialog { Filter = "All supported files|*.pcc;*.u;*.sfm;*.upk;*.isb;*.afc|Package files|*.pcc;*.u;*.sfm;*.upk|ISACT Sound Bank files|*.isb|Audio File Cache (AFC)|*.afc" };
             bool? result = d.ShowDialog();
             if (result.HasValue && result.Value)
             {
@@ -239,7 +239,7 @@ namespace ME3Explorer.Soundplorer
                 {
                     LoadedAFCFile = fileName;
                     StatusBar_GameID_Text.Text = "AFC";
-                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Azure);
+                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.DarkOrchid);
                 }
                 else
                 {
@@ -319,13 +319,13 @@ namespace ME3Explorer.Soundplorer
             if (e.Result is List<AFCFileEntry> result)
             {
                 BindedItemsList.AddRange(result);
-                //backgroundScanner = new BackgroundWorker();
-                //backgroundScanner.DoWork += GetStreamTimes;
-                //backgroundScanner.RunWorkerCompleted += GetStreamTimes_Completed;
-                //backgroundScanner.WorkerReportsProgress = true;
-                //backgroundScanner.ProgressChanged += GetStreamTimes_ReportProgress;
-                //backgroundScanner.WorkerSupportsCancellation = true;
-                //backgroundScanner.RunWorkerAsync(result.Cast<object>().ToList());
+                backgroundScanner = new BackgroundWorker();
+                backgroundScanner.DoWork += GetStreamTimes;
+                backgroundScanner.RunWorkerCompleted += GetStreamTimes_Completed;
+                backgroundScanner.WorkerReportsProgress = true;
+                backgroundScanner.ProgressChanged += GetStreamTimes_ReportProgress;
+                backgroundScanner.WorkerSupportsCancellation = true;
+                backgroundScanner.RunWorkerAsync(result.Cast<object>().ToList());
             }
         }
 
@@ -336,6 +336,9 @@ namespace ME3Explorer.Soundplorer
             {
                 while (fileStream.Position < fileStream.Length - 4)
                 {
+                    int offset = (int)fileStream.Position;
+
+                    TaskbarText = $"Loading AFC: {System.IO.Path.GetFileName(LoadedAFCFile)} ({(int)((fileStream.Position * 100.0) / fileStream.Length)}%)";
                     string readStr = fileStream.ReadStringASCII(4);
                     if (readStr != "RIFF")
                     {
@@ -345,9 +348,13 @@ namespace ME3Explorer.Soundplorer
 
                     //Found RIFF
                     int size = fileStream.ReadInt32();
-                    fileStream.Seek(size, SeekOrigin.Current);
+                    fileStream.Seek(8, SeekOrigin.Current); //skip WAVE and fmt
 
-                    var entry = new AFCFileEntry(size);
+                    short wwiseVersionMaybe = fileStream.ReadInt16();
+
+                    fileStream.Seek(size - 10, SeekOrigin.Current);
+
+                    var entry = new AFCFileEntry(LoadedAFCFile, offset, size + 8, wwiseVersionMaybe == 0x28);
                     entries.Add(entry);
                 }
             }
@@ -422,6 +429,9 @@ namespace ME3Explorer.Soundplorer
                     case ISACTFileEntry entry:
                         entry.LoadData();
                         break;
+                    case AFCFileEntry aentry:
+                        aentry.LoadData();
+                        break;
                 }
                 i++;
             }
@@ -470,12 +480,12 @@ namespace ME3Explorer.Soundplorer
         private void GetStreamTimes_ReportProgress(object sender, ProgressChangedEventArgs e)
         {
             IsBusyTaskbar = true; //enforce spinner
-            TaskbarText = "Parsing " + System.IO.Path.GetFileName(LoadedISBFile ?? Pcc.FileName) + " (" + e.ProgressPercentage + "%)";
+            TaskbarText = "Parsing " + System.IO.Path.GetFileName(LoadedISBFile ?? LoadedAFCFile ?? Pcc.FileName) + " (" + e.ProgressPercentage + "%)";
         }
 
         private void GetStreamTimes_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
-            TaskbarText = System.IO.Path.GetFileName(LoadedISBFile ?? Pcc.FileName);
+            TaskbarText = System.IO.Path.GetFileName(LoadedISBFile ?? LoadedAFCFile ?? Pcc.FileName);
             IsBusyTaskbar = false;
         }
 
@@ -499,9 +509,9 @@ namespace ME3Explorer.Soundplorer
 
         public override void handleUpdate(List<PackageUpdate> updates)
         {
-            if (LoadedISBFile != null)
+            if (LoadedISBFile != null || LoadedAFCFile != null)
             {
-                return; //we don't handle updates on ISB
+                return; //we don't handle updates on ISB or AFC
             }
 
             List<SoundplorerExport> bindedListAsCasted = BindedItemsList.Cast<SoundplorerExport>().ToList();
@@ -555,9 +565,17 @@ namespace ME3Explorer.Soundplorer
             {
                 soundPanel.UnloadISACTEntry();
             }
+
+            AFCFileEntry aEntry = selectedItem as AFCFileEntry;
+            if (aEntry == null)
+            {
+                soundPanel.UnloadAFCEntry();
+            }
+
+
             if (isEntry != null) soundPanel.LoadISACTEntry(isEntry.Entry);
             if (spExport != null) soundPanel.LoadExport(spExport.Export);
-
+            if (aEntry != null) soundPanel.LoadAFCEntry(aEntry);
         }
 
         private void Soundplorer_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -830,8 +848,51 @@ namespace ME3Explorer.Soundplorer
 
         private void ExportWav_Clicked(object sender, RoutedEventArgs e)
         {
-            ExportWave((SoundplorerExport)SoundExports_ListBox.SelectedItem);
+            switch (SoundExports_ListBox.SelectedItem)
+            {
+                case SoundplorerExport spE:
+                    ExportWave(spE);
+                    break;
+                case AFCFileEntry afE:
+                    ExportWaveAFC(afE);
+                    break;
+            }
         }
+
+        private void ExportWaveAFC(AFCFileEntry afE, string location = null)
+        {
+            bool silent = location != null;
+            if (!silent)
+            {
+                string presetfilename = $"{System.IO.Path.GetFileNameWithoutExtension(afE.AFCPath)}_{afE.Offset}.wav";
+                SaveFileDialog d = new SaveFileDialog
+                {
+                    Filter = "Wave PCM File|*.wav",
+                    FileName = presetfilename
+                };
+                if (d.ShowDialog().Value)
+                {
+                    location = d.FileName;
+                }
+            }
+
+            if (location != null)
+            {
+                using (Stream s = WwiseStream.CreateWaveStreamFromRaw(afE.AFCPath, afE.Offset, afE.DataSize, afE.ME2))
+                {
+                    using (var fileStream = File.Create(location))
+                    {
+                        s.Seek(0, SeekOrigin.Begin);
+                        s.CopyTo(fileStream);
+                    }
+                }
+            }
+            if (!silent)
+            {
+                MessageBox.Show("Done.");
+            }
+        }
+
 
         private void ExportWave(SoundplorerExport spExport, string outputLocation = null)
         {
@@ -882,27 +943,54 @@ namespace ME3Explorer.Soundplorer
 
         private void ExportRaw_Clicked(object sender, RoutedEventArgs e)
         {
-            SoundplorerExport spExport = (SoundplorerExport)SoundExports_ListBox.SelectedItem;
-            if (spExport != null && spExport.Export.ClassName == "WwiseStream")
+            switch (SoundExports_ListBox.SelectedItem)
             {
-                SaveFileDialog d = new SaveFileDialog
-                {
-                    Filter = "Wwise WEM|*.wem",
-                    FileName = spExport.Export.ObjectName + ".wem"
-                };
-                bool? res = d.ShowDialog();
-                if (res.HasValue && res.Value)
-                {
-                    WwiseStream w = new WwiseStream(spExport.Export);
-                    if (w.ExtractRawFromStream(d.FileName, w.getPathToAFC()))
+                case SoundplorerExport spExport:
+                    if (spExport != null && spExport.Export.ClassName == "WwiseStream")
                     {
-                        MessageBox.Show("Done.");
+                        SaveFileDialog d = new SaveFileDialog
+                        {
+                            Filter = "Wwise WEM|*.wem",
+                            FileName = spExport.Export.ObjectName + ".wem"
+                        };
+                        bool? res = d.ShowDialog();
+                        if (res.HasValue && res.Value)
+                        {
+                            WwiseStream w = new WwiseStream(spExport.Export);
+                            if (w.ExtractRawFromSource(d.FileName, w.getPathToAFC()))
+                            {
+                                MessageBox.Show("Done.");
+                            }
+                            else
+                            {
+                                MessageBox.Show("Error extracting WEM file.\nMetadata for this raw data may be incorrect (e.g. too big for file).");
+                            }
+                        }
                     }
-                    else
+                    break;
+                case AFCFileEntry afcEntry:
                     {
-                        MessageBox.Show("Error extracting WEM file.\nMetadata for this raw data may be incorrect (e.g. too big for file).");
+                        string presetfilename = $"{System.IO.Path.GetFileNameWithoutExtension(afcEntry.AFCPath)}_{afcEntry.Offset}.wem";
+
+                        SaveFileDialog d = new SaveFileDialog
+                        {
+                            Filter = "Wwise WEM|*.wem",
+                            FileName = presetfilename
+                        };
+                        bool? res = d.ShowDialog();
+                        if (res.HasValue && res.Value)
+                        {
+                            if (WwiseStream.ExtractRawFromSource(d.FileName, afcEntry.AFCPath, afcEntry.DataSize, afcEntry.Offset))
+                            {
+                                MessageBox.Show("Done.");
+                            }
+                            else
+                            {
+                                MessageBox.Show("Error extracting AFC WEM file.");
+                            }
+                        }
                     }
-                }
+                    break;
             }
         }
 
@@ -921,7 +1009,7 @@ namespace ME3Explorer.Soundplorer
                     WwiseStream w = new WwiseStream(spExport.Export);
                     string riffOutputFile = System.IO.Path.Combine(Directory.GetParent(d.FileName).FullName, System.IO.Path.GetFileNameWithoutExtension(d.FileName)) + ".dat";
 
-                    if (w.ExtractRawFromStream(riffOutputFile, w.getPathToAFC()))
+                    if (w.ExtractRawFromSource(riffOutputFile, w.getPathToAFC()))
                     {
                         MemoryStream oggStream = WwiseStream.ConvertRIFFToWWwiseOGG(riffOutputFile, spExport.Export.FileRef.Game == MEGame.ME2);
                         //string outputOggPath = 
@@ -938,6 +1026,41 @@ namespace ME3Explorer.Soundplorer
                         else
                         {
                             MessageBox.Show("Error extracting Ogg file.\nMetadata for the raw data may be incorrect (e.g. header specifies data is longer than it actually is).");
+                        }
+                    }
+                }
+            }
+
+            if (SoundExports_ListBox.SelectedItem is AFCFileEntry afE)
+            {
+                string presetfilename = $"{System.IO.Path.GetFileNameWithoutExtension(afE.AFCPath)}_{afE.Offset}.ogg";
+                SaveFileDialog d = new SaveFileDialog
+                {
+                    Filter = "Ogg Vorbis|*.ogg",
+                    FileName = presetfilename
+                };
+                bool? res = d.ShowDialog();
+                if (res.HasValue && res.Value)
+                {
+                    string riffOutputFile = System.IO.Path.Combine(Directory.GetParent(d.FileName).FullName, System.IO.Path.GetFileNameWithoutExtension(d.FileName)) + ".dat";
+
+                    if (WwiseStream.ExtractRawFromSource(riffOutputFile, afE.AFCPath, afE.DataSize, afE.Offset))
+                    {
+                        MemoryStream oggStream = WwiseStream.ConvertRIFFToWWwiseOGG(riffOutputFile, afE.ME2);
+                        //string outputOggPath = 
+                        if (oggStream != null)// && File.Exists(outputOggPath))
+                        {
+                            oggStream.Seek(0, SeekOrigin.Begin);
+                            using (FileStream fs = new FileStream(d.FileName, FileMode.OpenOrCreate))
+                            {
+                                oggStream.CopyTo(fs);
+                                fs.Flush();
+                            }
+                            MessageBox.Show("Done.");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error extracting and converting to Ogg file.");
                         }
                     }
                 }
@@ -1049,31 +1172,48 @@ namespace ME3Explorer.Soundplorer
             var location = dlg.FileName;
 
             IsBusy = true;
-            foreach (object o in BindedItemsList)
+            BusyText = "Extracting audio";
+            var itemsToExport = new List<object>(BindedItemsList);
+            var exportWorker = new BackgroundWorker();
+            exportWorker.DoWork += delegate
             {
-                switch (o)
+                foreach (object o in itemsToExport)
                 {
-                    case SoundplorerExport sp when sp.Export.ClassName == "WwiseStream":
-                        {
-                            string outfile = System.IO.Path.Combine(location, sp.Export.ObjectName + ".wav");
-                            ExportWave(sp, outfile);
-                            break;
-                        }
-                    case SoundplorerExport sp when sp.Export.ClassName == "WwiseBank":
-                        {
-                            ExtractBankToWav(sp, location);
-                            break;
-                        }
-                    case ISACTFileEntry ife:
-                        {
-                            string outfile = System.IO.Path.Combine(location, System.IO.Path.GetFileNameWithoutExtension(ife.Entry.FileName) + ".wav");
-                            MemoryStream ms = ife.Entry.GetWaveStream();
-                            File.WriteAllBytes(outfile, ms.ToArray());
-                            break;
-                        }
+                    switch (o)
+                    {
+                        case SoundplorerExport sp when sp.Export.ClassName == "WwiseStream":
+                            {
+                                string outfile = System.IO.Path.Combine(location, sp.Export.ObjectName + ".wav");
+                                ExportWave(sp, outfile);
+                                break;
+                            }
+                        case SoundplorerExport sp when sp.Export.ClassName == "WwiseBank":
+                            {
+                                ExtractBankToWav(sp, location);
+                                break;
+                            }
+                        case ISACTFileEntry ife:
+                            {
+                                string outfile = System.IO.Path.Combine(location, System.IO.Path.GetFileNameWithoutExtension(ife.Entry.FileName) + ".wav");
+                                MemoryStream ms = ife.Entry.GetWaveStream();
+                                File.WriteAllBytes(outfile, ms.ToArray());
+                                break;
+                            }
+                        case AFCFileEntry afE:
+                            {
+                                string presetfilename = $"{System.IO.Path.GetFileNameWithoutExtension(afE.AFCPath)}_{afE.Offset}.wav";
+                                ExportWaveAFC(afE, System.IO.Path.Combine(location, presetfilename));
+                                break;
+                            }
+                    }
                 }
-            }
-            IsBusy = false;
+            };
+            exportWorker.RunWorkerCompleted += delegate
+            {
+                IsBusy = false;
+                MessageBox.Show("Done.");
+            };
+            exportWorker.RunWorkerAsync();
         }
 
         private void ReplaceAudioFromWav_Clicked(object sender, RoutedEventArgs e)
@@ -1171,29 +1311,6 @@ namespace ME3Explorer.Soundplorer
             }
         }
 
-        private void OpenME1ISB_Clicked(object sender, RoutedEventArgs e)
-        {
-            var package = MEPackageHandler.OpenMEPackage(@"D:\Origin Games\Mass Effect\BioGame\CookedPC\Packages\Audio_Content\snd_cinematic_amb.upk");
-            foreach (IExportEntry export in package.Exports)
-            {
-                if (export.ClassName == "SoundNodeWave")
-                {
-                    Debug.WriteLine(export.ObjectName);
-                    byte[] binData = export.Data.Skip(export.propsEnd() + 20).ToArray();
-                    ISBank isb = new ISBank(binData, true);
-                    Debug.WriteLine("PCM SIG " + 1053609165.ToString("X8"));
-                    foreach (ISBankEntry isbe in isb.BankEntries)
-                    {
-                        if (isbe.DataAsStored == null) continue;
-                        Debug.WriteLine("+++" + isbe.FileName);
-                        Debug.WriteLine("Type signature1: " + isbe.CodecID + " " + isbe.CodecID.ToString("X8"));
-                        Debug.WriteLine("Type signature2: " + isbe.CodecID2 + " " + isbe.CodecID2.ToString("X8"));
-
-                    }
-                }
-            }
-        }
-
         private void ExtractISACTAsRaw_Clicked(object sender, RoutedEventArgs e)
         {
             if (SoundExports_ListBox.SelectedItem is ISACTFileEntry spExport)
@@ -1228,11 +1345,27 @@ namespace ME3Explorer.Soundplorer
 
     public class AFCFileEntry : NotifyPropertyChangedBase
     {
-        private int _index;
-        public int Index
+        public bool ME2;
+
+        private string _afcpath;
+        public string AFCPath
         {
-            get => _index;
-            set => SetProperty(ref _index, value);
+            get => _afcpath;
+            set => SetProperty(ref _afcpath, value);
+        }
+
+        private int _datasize;
+        public int DataSize
+        {
+            get => _datasize;
+            set => SetProperty(ref _datasize, value);
+        }
+
+        private int _offset;
+        public int Offset
+        {
+            get => _offset;
+            set => SetProperty(ref _offset, value);
         }
 
         private bool _needsLoading;
@@ -1263,9 +1396,12 @@ namespace ME3Explorer.Soundplorer
             set => SetProperty(ref _displayString, value);
         }
 
-        public AFCFileEntry(int index)
+        public AFCFileEntry(string afcpath, int offset, int size, bool ME2)
         {
-            Index = index;
+            AFCPath = afcpath;
+            DataSize = size;
+            this.ME2 = ME2;
+            Offset = offset;
             SubText = "Calculating length";
             Icon = FontAwesomeIcon.Spinner;
             NeedsLoading = true;
@@ -1274,12 +1410,29 @@ namespace ME3Explorer.Soundplorer
 
         private void UpdateDisplay()
         {
-            DisplayString = "AFC Entry " + Index;
+            DisplayString = $"AFC Entry @ 0x{Offset:X6}";
         }
 
         public void LoadData()
         {
-
+            Stream waveStream = WwiseStream.CreateWaveStreamFromRaw(AFCPath, Offset, DataSize, ME2);
+            if (waveStream != null)
+            {
+                //Check it is RIFF
+                byte[] riffHeaderBytes = new byte[4];
+                waveStream.Read(riffHeaderBytes, 0, 4);
+                string wemHeader = "" + (char)riffHeaderBytes[0] + (char)riffHeaderBytes[1] + (char)riffHeaderBytes[2] + (char)riffHeaderBytes[3];
+                if (wemHeader == "RIFF")
+                {
+                    waveStream.Position = 0;
+                    WaveFileReader wf = new WaveFileReader(waveStream);
+                    SubText = wf.TotalTime.ToString(@"mm\:ss\:fff");
+                }
+                else
+                {
+                    SubText = "Error getting length, may be unsupported";
+                }
+            }
             NeedsLoading = false;
             Icon = FontAwesomeIcon.VolumeUp;
         }

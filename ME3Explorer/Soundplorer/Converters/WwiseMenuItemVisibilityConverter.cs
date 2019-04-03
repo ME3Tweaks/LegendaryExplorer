@@ -22,6 +22,8 @@ namespace ME3Explorer.Soundplorer
                 return (value as SoundplorerExport).Export.ClassName == (string)parameter ? Visibility.Visible : Visibility.Collapsed;
             }
             if (value is ISACTFileEntry && parameter is string) return (parameter as string) == "ISACTFileEntry" ? Visibility.Visible : Visibility.Collapsed;
+            if (value is AFCFileEntry && parameter is string) return (parameter as string) == "AFCFileEntry" ? Visibility.Visible : Visibility.Collapsed;
+
             return Visibility.Collapsed;
         }
 

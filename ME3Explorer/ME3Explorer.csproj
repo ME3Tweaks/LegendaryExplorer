@@ -888,12 +888,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="AFCExtract\AFCExtract.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AFCExtract\AFCExtract.Designer.cs">
-      <DependentUpon>AFCExtract.cs</DependentUpon>
-    </Compile>
     <Compile Include="AnimationExplorer\AnimationExplorer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1236,10 +1230,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="AFCExtract\AFCExtract.resx">
-      <DependentUpon>AFCExtract.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="AnimationExplorer\AnimationExplorer.resx">
       <DependentUpon>AnimationExplorer.cs</DependentUpon>
     </EmbeddedResource>
@@ -1652,7 +1642,6 @@
     <Resource Include="Resources\meshplorer_256x256.ico" />
     <Resource Include="Resources\ploteditor_256x256.ico" />
     <Resource Include="Resources\texplorer_256x256.ico" />
-    <Resource Include="Resources\afcdumper_256x256.ico" />
     <Resource Include="Resources\plotdatabase_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>

@@ -32,6 +32,11 @@
                 <MenuItem Name="ExportAudioOgg_MenuItem" Header="Export to OGG (Wwise)" ToolTip="Exports this WwiseStream's raw data to a Wwise proprietary Ogg file.&#x0a;To play, you must use oggdec to convert to a wav." Click="ExportOgg_Clicked"/>
                 <MenuItem Name="ExportAudioPCM_MenuItem" Header="Export to WAV (PCM)" ToolTip="Exports this WwiseStream to a playable WAV file" Click="ExportWav_Clicked"/>
             </MenuItem>
+            <MenuItem Header="Export to..." Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='AFCFileEntry'}">
+                <MenuItem Name="ExportAudioRawAFC_MenuItem" Header="Export RIFF" ToolTip="Exports the raw data as stored in game files.&#x0a;To play, you must put this through ww2ogg to ogg and oggdec to wav." Click="ExportRaw_Clicked"/>
+                <MenuItem Name="ExportAudioOggAFC_MenuItem" Header="Export to OGG (Wwise)" ToolTip="Exports this WwiseStream's raw data to a Wwise proprietary Ogg file.&#x0a;To play, you must use oggdec to convert to a wav." Click="ExportOgg_Clicked"/>
+                <MenuItem Name="ExportAudioPCMAFC_MenuItem" Header="Export to WAV (PCM)" ToolTip="Exports this WwiseStream to a playable WAV file" Click="ExportWav_Clicked"/>
+            </MenuItem>
             <MenuItem Header="Replace audio..." Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}">
                 <MenuItem Name="ReplaceAudio_MenuItem" Click="ReplaceAudio_Clicked" Header="From Wwise encoded Ogg" ToolTip="Appends new audio data to an AFC and points this WwiseStream to that data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
                 <MenuItem Name="ReplaceAudioFromWav_MenuItem" Click="ReplaceAudioFromWav_Clicked" Header="From PCM Wav" ToolTip="Appends new audio data to an AFC and points this WwiseStream to that data" Visibility="{Binding Converter={StaticResource WwiseMenuItemVisibilityConverter},ConverterParameter='WwiseStream'}"/>
@@ -78,8 +83,6 @@
                 <MenuItem Header="_Options" Padding="4">
                     <MenuItem Name="ReverseEndianDisplayOfIDs_MenuItem" Header="Reverse endianness of displayed ID's" Click="ReverseEndiannessOfIDs_Clicked" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=SoundplorerReverseIDDisplayEndianness, Mode=TwoWay}"/>
                     <MenuItem Name="RebuildWwiseBankToFile_MenuItem" Header="Debugging: Rebuild wwisebank to file" Click="DebugWriteBankToFileRebuild_Clicked" />
-                    <MenuItem Header="Debugging: Open ME1 ISB" Click="OpenME1ISB_Clicked" />
-
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
@@ -115,6 +118,15 @@
                                     <Setter Property="Background" Value="Yellow" TargetName="ExportContainer"/>
                                 </DataTrigger>
                             </DataTemplate.Triggers>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type local:AFCFileEntry}">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
+                                <fa:ImageAwesome  Grid.Column="7" Icon="{Binding Icon}" Spin="{Binding NeedsLoading}" SpinDuration="1.2" Width="18" Height="18" Margin="2,0,4,0"/>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding DisplayString}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding SubText}" VerticalAlignment="Center" Foreground="Gray"/>
+                                </StackPanel>
+                            </StackPanel>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type local:ISACTFileEntry}">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0">

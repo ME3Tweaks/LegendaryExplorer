@@ -349,7 +349,7 @@ namespace ME3Explorer
 
         public override bool CanParse(IExportEntry exportEntry)
         {
-//            return (/*(exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "SoundNodeWave") || */(exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
+            //            return (/*(exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "SoundNodeWave") || */(exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
             return !exportEntry.ObjectName.StartsWith("Default__") && (exportEntry.FileRef.Game == MEGame.ME2 || exportEntry.FileRef.Game == MEGame.ME3) && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream");
         }
 
@@ -363,6 +363,10 @@ namespace ME3Explorer
             if (CurrentLoadedISACTEntry != null)
             {
                 return CurrentLoadedISACTEntry.GetWaveStream();
+            }
+            else if (CurrentLoadedAFCFileEntry != null)
+            {
+                return WwiseStream.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
             }
             else
             {
@@ -436,10 +440,86 @@ namespace ME3Explorer
         private double _currentTrackPosition;
         private float _currentVolume;
         private SoundpanelAudioPlayer _audioPlayer;
+
+        internal void UnloadAFCEntry()
+        {
+            CurrentLoadedAFCFileEntry = null;
+        }
+
         public string Title
         {
             get => _title;
             set => SetProperty(ref _title, value);
+        }
+
+        internal void LoadAFCEntry(AFCFileEntry aEntry)
+        {
+            ExportInformationList.ClearEx();
+            AllWems.Clear();
+
+            ExportInformationList.Add($"Audio file in Audio File Cache");
+            ExportInformationList.Add($"Filename : { aEntry.AFCPath}");
+            ExportInformationList.Add($"Data size: {aEntry.DataSize} bytes");
+            ExportInformationList.Add($"Data offset: 0x{aEntry.Offset:X8}");
+
+            byte[] headerbytes = new byte[0x56];
+            bool bytesread = false;
+
+            try
+            {
+                if (File.Exists(aEntry.AFCPath))
+                {
+                    using (FileStream fs = new FileStream(aEntry.AFCPath, FileMode.Open))
+                    {
+                        fs.Seek(aEntry.Offset, SeekOrigin.Begin);
+                        fs.Read(headerbytes, 0, 0x56);
+                        bytesread = true;
+                    }
+                }
+
+                if (bytesread)
+                {
+                    //Parse it
+                    ExportInformationList.Add($"---------Wwise Audio Header----------");
+                    ASCIIEncoding ascii = new ASCIIEncoding();
+
+                    ExportInformationList.Add("0x00 RIFF tag: " + ascii.GetString(headerbytes, 0, 4));
+                    ExportInformationList.Add("0x04 File size: " + BitConverter.ToInt32(headerbytes, 4) + " bytes");
+                    ExportInformationList.Add("0x08 WAVE tag: " + ascii.GetString(headerbytes, 8, 4));
+                    ExportInformationList.Add("0x0C Format tag: " + ascii.GetString(headerbytes, 0xC, 4));
+                    ExportInformationList.Add("0x10 Unknown 1: " + GetHexForUI(headerbytes, 0x10, 4));
+                    ExportInformationList.Add("0x14 Unknown 2: " + GetHexForUI(headerbytes, 0x14, 2));
+                    ExportInformationList.Add("0x16 Unknown 3: " + GetHexForUI(headerbytes, 0x16, 2));
+                    ExportInformationList.Add("0x18 Unknown 4: " + GetHexForUI(headerbytes, 0x18, 4));
+                    ExportInformationList.Add("0x1C Unknown 5: " + GetHexForUI(headerbytes, 0x1C, 4));
+
+                    ExportInformationList.Add("0x20 Unknown 6: " + GetHexForUI(headerbytes, 0x20, 4));
+                    ExportInformationList.Add("0x24 Unknown 7: " + GetHexForUI(headerbytes, 0x24, 2));
+                    ExportInformationList.Add("0x26 Unknown 8: " + GetHexForUI(headerbytes, 0x26, 2));
+                    ExportInformationList.Add("0x28 Unknown 9: " + GetHexForUI(headerbytes, 0x28, 4));
+                    ExportInformationList.Add("0x2C Unknown 10: " + GetHexForUI(headerbytes, 0x2C, 2));
+                    ExportInformationList.Add("0x2E Unknown 11: " + GetHexForUI(headerbytes, 0x2E, 2));
+                    ExportInformationList.Add("0x30 Unknown 12: " + GetHexForUI(headerbytes, 0x30, 4));
+                    ExportInformationList.Add("0x34 Unknown 13: " + GetHexForUI(headerbytes, 0x34, 4));
+                    ExportInformationList.Add("0x38 Unknown 14: " + GetHexForUI(headerbytes, 0x38, 2));
+                    ExportInformationList.Add("0x3A Unknown 15: " + GetHexForUI(headerbytes, 0x3A, 2));
+                    ExportInformationList.Add("0x3C Unknown 16: " + GetHexForUI(headerbytes, 0x3C, 4));
+
+                    ExportInformationList.Add("0x40 Unknown 17: " + GetHexForUI(headerbytes, 0x40, 4));
+                    ExportInformationList.Add("0x44 Unknown 18: " + GetHexForUI(headerbytes, 0x44, 2));
+                    ExportInformationList.Add("0x46 Unknown 19: " + GetHexForUI(headerbytes, 0x46, 2));
+                    ExportInformationList.Add("0x48 Unknown 20: " + GetHexForUI(headerbytes, 0x48, 4));
+                    ExportInformationList.Add("0x4C Unknown 21: " + GetHexForUI(headerbytes, 0x4C, 4));
+
+                    ExportInformationList.Add("0x50-56 Fully unknown: " + GetHexForUI(headerbytes, 0x50, 6));
+                    CurrentLoadedAFCFileEntry = aEntry;
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+
         }
 
         public float CurrentVolume
@@ -482,6 +562,7 @@ namespace ME3Explorer
         /// </summary>
         private object CachedStreamSource { get; set; }
         public ISBankEntry CurrentLoadedISACTEntry { get; private set; }
+        public AFCFileEntry CurrentLoadedAFCFileEntry { get; private set; }
 
         private enum PlaybackState
         {
@@ -531,7 +612,6 @@ namespace ME3Explorer
         internal void UnloadISACTEntry()
         {
             CurrentLoadedISACTEntry = null;
-            //throw new NotImplementedException();
         }
 
         private bool CanReplaceAudio(object obj)
@@ -910,12 +990,32 @@ namespace ME3Explorer
                     MessageBox.Show("Done.");
                 }
             }
+            if (CurrentLoadedAFCFileEntry != null)
+            {
+                string presetfilename = $"{System.IO.Path.GetFileNameWithoutExtension(CurrentLoadedAFCFileEntry.AFCPath)}_{CurrentLoadedAFCFileEntry.Offset}.wav";
+                SaveFileDialog d = new SaveFileDialog
+                {
+                    Filter = "Wave PCM File|*.wav",
+                    FileName = presetfilename
+                };
+                if (d.ShowDialog().Value)
+                {
+                    Stream s = WwiseStream.CreateWaveStreamFromRaw(CurrentLoadedAFCFileEntry.AFCPath, CurrentLoadedAFCFileEntry.Offset, CurrentLoadedAFCFileEntry.DataSize, CurrentLoadedAFCFileEntry.ME2);
+                    using (var fileStream = File.Create(d.FileName))
+                    {
+                        s.Seek(0, SeekOrigin.Begin);
+                        s.CopyTo(fileStream);
+                    }
+                    MessageBox.Show("Done.");
+                }
+            }
         }
 
         private bool CanExportAudio(object p)
         {
-            if (CurrentLoadedExport == null && CurrentLoadedISACTEntry == null) return false;
+            if (CurrentLoadedExport == null && CurrentLoadedISACTEntry == null && CurrentLoadedAFCFileEntry == null) return false;
             if (CurrentLoadedISACTEntry != null) return true;
+            if (CurrentLoadedAFCFileEntry != null) return true;
             if (CurrentLoadedExport != null)
             {
                 if (CurrentLoadedExport.ClassName == "WwiseStream") return true;
@@ -946,7 +1046,8 @@ namespace ME3Explorer
                 {
                     if (!RestartingDueToLoop)
                     {
-                        if (CurrentLoadedISACTEntry != null && CachedStreamSource != CurrentLoadedISACTEntry)
+                        if ((CurrentLoadedISACTEntry != null && CachedStreamSource != CurrentLoadedISACTEntry) ||
+                            (CurrentLoadedAFCFileEntry != null && CachedStreamSource != CurrentLoadedAFCFileEntry))
                         {
                             //invalidate the cache
                             UpdateVorbisStream();
@@ -1017,13 +1118,17 @@ namespace ME3Explorer
         private void UpdateVorbisStream()
         {
             vorbisStream = getPCMStream();
-            if (vorbisStream is MemoryStream ms)
-            {
-                File.WriteAllBytes(@"C:\users\public\file.wav", ms.ToArray());
-            }
+            //if (vorbisStream is MemoryStream ms)
+            //{
+            //    File.WriteAllBytes(@"C:\users\public\file.wav", ms.ToArray());
+            //}
             if (CurrentLoadedISACTEntry != null)
             {
                 CachedStreamSource = CurrentLoadedISACTEntry;
+            }
+            if (CurrentLoadedAFCFileEntry != null)
+            {
+                CachedStreamSource = CurrentLoadedAFCFileEntry;
             }
             if (CurrentLoadedExport != null)
             {
@@ -1054,9 +1159,11 @@ namespace ME3Explorer
         public bool CanStartPlayback(object p)
         {
             if (vorbisStream != null) return true; //looping
-            if (CurrentLoadedExport == null && CurrentLoadedISACTEntry == null) return false;
+            if (CurrentLoadedExport == null && CurrentLoadedISACTEntry == null && CurrentLoadedAFCFileEntry == null) return false;
             if (CurrentLoadedISACTEntry != null) return true;
+            if (CurrentLoadedAFCFileEntry != null) return true;
             if (CurrentLoadedExport.ClassName == "WwiseStream") return true;
+
             if (CurrentLoadedExport.ClassName == "WwiseBank")
             {
                 object currentWEMItem = ExportInfoListBox.SelectedItem;

@@ -271,14 +271,13 @@ namespace ME3Explorer.Unreal.Classes
         public string CreateWave(string afcPath)
         {
             string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
-            if (ExtractRawFromStream(basePath + ".dat", getPathToAFC()))
+            if (ExtractRawFromSource(basePath + ".dat", getPathToAFC(), DataSize, DataOffset))
             {
                 MemoryStream dataStream = ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
                 File.WriteAllBytes(basePath + ".wav", dataStream.ToArray());
             }
             return basePath + ".wav";
         }
-
 
         /// <summary>
         /// Creates wav stream from this WwiseStream
@@ -288,12 +287,28 @@ namespace ME3Explorer.Unreal.Classes
         public Stream CreateWaveStream(string afcPath)
         {
             string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
-            if (ExtractRawFromStream(basePath + ".dat", afcPath))
+            if (ExtractRawFromSource(basePath + ".dat", afcPath, DataSize, DataOffset))
             {
                 return ConvertRiffToWav(basePath + ".dat", export.FileRef.Game == MEGame.ME2);
             }
             return null;
         }
+
+        /// <summary>
+        /// Creates wav stream from this WwiseStream
+        /// </summary>
+        /// <param name="afcPath"></param>
+        /// <returns></returns>
+        public static Stream CreateWaveStreamFromRaw(string afcPath, int offset, int datasize, bool ME2)
+        {
+            string basePath = System.IO.Path.GetTempPath() + "ME3EXP_SOUND_" + Guid.NewGuid().ToString();
+            if (ExtractRawFromSource(basePath + ".dat", afcPath, datasize, offset))
+            {
+                return ConvertRiffToWav(basePath + ".dat", ME2);
+            }
+            return null;
+        }
+
         private void PlayWave(string path)
         {
             Stream waveStream = CreateWaveStream(path);
@@ -388,7 +403,7 @@ namespace ME3Explorer.Unreal.Classes
 
             proc.WaitForExit();
             File.Delete(oggPath); //intermediate
-            
+
             //Fix headers as they are not correct when output from oggdec over stdout - no idea what it is outputting.
             outputData.Position = 0x4;
             outputData.Write(BitConverter.GetBytes(((int)outputData.Length) - 0x8), 0, 4); //filesize
@@ -455,7 +470,12 @@ namespace ME3Explorer.Unreal.Classes
             //            return Path.Combine(Directory.GetParent(riffPath).FullName, Path.GetFileNameWithoutExtension(riffPath)) + ".ogg";
         }
 
-        public bool ExtractRawFromStream(string outputFile, string afcPath)
+        public bool ExtractRawFromSource(string outputFile, string afcPath)
+        {
+            return ExtractRawFromSource(outputFile, afcPath, DataSize, DataOffset);
+        }
+
+        public static bool ExtractRawFromSource(string outputFile, string afcPath, int DataSize, int DataOffset)
         {
             if (!File.Exists(afcPath))
                 return false;

@@ -136,7 +136,6 @@
         <BitmapImage x:Key="iconME3" UriSource="/ME3Explorer;component/Resources/ME3Game.ico"/>
 
         <BitmapImage x:Key="iconAssetExplorer" UriSource="Icons/asset_explorer_64x64.png"/>
-        <BitmapImage x:Key="iconAudioExtractor" UriSource="Resources/afcdumper_256x256.ico"/>
         <BitmapImage x:Key="iconBikExtractor" UriSource="Icons/BIK_movie_64x64.png"/>
         <BitmapImage x:Key="iconBikTool" UriSource="Icons/bik_tool_64.png"/>
         <BitmapImage x:Key="iconBatchRenamer" UriSource="Icons/batch_rename_64x64.png"/>
