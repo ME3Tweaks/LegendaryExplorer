@@ -2573,7 +2573,7 @@ namespace ME3Explorer
                 int unrealExportIndex = ReadInt32(textureData);
                 subnodes.Add(new BinaryInterpreterWPFTreeViewItem
                 {
-                    Header = $"0x{textureData.Position - 4:X5} Unreal Unique Index: {unrealExportIndex}",
+                    Header = $"0x{textureData.Position - 4:X4} Unreal Unique Index: {unrealExportIndex}",
                     Name = "_" + (textureData.Position - 4),
 
                     Tag = NodeType.StructLeafInt
@@ -2596,7 +2596,7 @@ namespace ME3Explorer
                 {
                     var mipMapNode = new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{textureData.Position} MipMap #{l}",
+                        Header = $"0x{textureData.Position:X4} MipMap #{l}",
                         Name = "_" + (textureData.Position)
 
                     };
@@ -2605,7 +2605,7 @@ namespace ME3Explorer
                     StorageTypes storageType = (StorageTypes)ReadInt32(textureData);
                     mipMapNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{textureData.Position - 4} Storage Type: {storageType}",
+                        Header = $"0x{textureData.Position - 4:X4} Storage Type: {storageType}",
                         Name = "_" + (textureData.Position - 4)
 
                     });
@@ -2613,7 +2613,7 @@ namespace ME3Explorer
                     var uncompressedSize = ReadInt32(textureData);
                     mipMapNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{textureData.Position - 4} Uncompressed Size: {uncompressedSize}",
+                        Header = $"0x{textureData.Position - 4:X4} Uncompressed Size: {uncompressedSize}",
                         Name = "_" + (textureData.Position - 4)
 
                     });
@@ -2621,7 +2621,7 @@ namespace ME3Explorer
                     var compressedSize = ReadInt32(textureData);
                     mipMapNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{textureData.Position - 4} Compressed Size: {compressedSize}",
+                        Header = $"0x{textureData.Position - 4:X4} Compressed Size: {compressedSize}",
                         Name = "_" + (textureData.Position - 4)
 
                     });
@@ -2629,7 +2629,7 @@ namespace ME3Explorer
                     var dataOffset = ReadInt32(textureData);
                     mipMapNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{textureData.Position - 4} Data Offset: 0x{dataOffset:X8}",
+                        Header = $"0x{textureData.Position - 4:X4} Data Offset: 0x{dataOffset:X8}",
                         Name = "_" + (textureData.Position - 4)
 
                     });
@@ -2648,7 +2648,7 @@ namespace ME3Explorer
                     var mipWidth = ReadInt32(textureData);
                     mipMapNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{textureData.Position - 4} Mip Width: {mipWidth}",
+                        Header = $"0x{textureData.Position - 4:X4} Mip Width: {mipWidth}",
                         Name = "_" + (textureData.Position - 4),
                         Tag = NodeType.StructLeafInt
                     });
@@ -2656,7 +2656,7 @@ namespace ME3Explorer
                     var mipHeight = ReadInt32(textureData);
                     mipMapNode.Items.Add(new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{textureData.Position - 4} Mip Height: {mipHeight}",
+                        Header = $"0x{textureData.Position - 4:X4} Mip Height: {mipHeight}",
                         Name = "_" + (textureData.Position - 4),
                         Tag = NodeType.StructLeafInt
                     });
@@ -2667,7 +2667,7 @@ namespace ME3Explorer
                     byte[] textureGuid = textureData.ReadBytes(16);
                     var textureGuidNode = new BinaryInterpreterWPFTreeViewItem
                     {
-                        Header = $"0x{textureData.Position} Texture GUID: {new Guid(textureGuid)}",
+                        Header = $"0x{textureData.Position:X4} Texture GUID: {new Guid(textureGuid)}",
                         Name = "_" + (textureData.Position)
 
                     };
