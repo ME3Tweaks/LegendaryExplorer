@@ -60,7 +60,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ImageFormat\DDSImage.cs" />
     <Compile Include="ImageFormat\ImageFormat.cs" />
     <Compile Include="ImageMipMapHandler\ImageMipMapHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

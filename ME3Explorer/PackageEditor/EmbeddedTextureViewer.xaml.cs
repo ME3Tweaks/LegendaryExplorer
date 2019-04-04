@@ -155,8 +155,10 @@ namespace ME3Explorer
 
             //CannotShowTextureText = "Cannot display TFC stored mips\nComing in a future release";
             CannotShowTextureTextVisibility = Visibility.Collapsed;
-            AmaroK86.ImageFormat.DDS dds = new AmaroK86.ImageFormat.DDS(null, new AmaroK86.ImageFormat.ImageSize((uint)mipToLoad.width, (uint)mipToLoad.height), CurrentLoadedFormat.Substring(3), imagebytes);
-            AmaroK86.ImageFormat.DDSImage ddsimage = new AmaroK86.ImageFormat.DDSImage(dds.ToArray());
+            AmaroK86.ImageFormat.DDS dds =
+                new AmaroK86.ImageFormat.DDS(null, new AmaroK86.ImageFormat.ImageSize((uint)mipToLoad.width, (uint)mipToLoad.height), CurrentLoadedFormat.Substring(3), imagebytes);
+            AmaroK86.ImageFormat.DDSImage ddsimage =
+                new AmaroK86.ImageFormat.DDSImage(new MemoryStream(dds.ToArray()));
             var bitmap = ddsimage.mipMaps[0].bitmap;
             using (MemoryStream memory = new MemoryStream())
             {
