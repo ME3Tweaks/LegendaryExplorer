@@ -290,7 +290,6 @@ namespace ME3Explorer
                 bitmapImage.StreamSource = memory;
                 bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                 bitmapImage.EndInit();
-
                 TextureImage.Source = bitmapImage; //image1 is your control            }
             }
         }
@@ -304,7 +303,7 @@ namespace ME3Explorer
 
         private void MipList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (MipList.Count > 0)
+            if (MipList.Count > 0 && MipListView.SelectedIndex >= 0)
             {
                 LoadMip(MipList[MipListView.SelectedIndex]);
             }
