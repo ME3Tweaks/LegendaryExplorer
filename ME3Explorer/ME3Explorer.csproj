@@ -828,6 +828,7 @@
     <Compile Include="Unreal\PSKFile.cs" />
     <Compile Include="Unreal\SerializingContainer.cs" />
     <Compile Include="Unreal\TalkFile.cs" />
+    <Compile Include="Unreal\TextureCompression.cs" />
     <Compile Include="Unreal\TOCBinFile.cs" />
     <Compile Include="Unreal\UnrealFlags.cs" />
     <Compile Include="Unreal\ME3UnrealObjectInfo.cs" />

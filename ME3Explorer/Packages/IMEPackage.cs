@@ -114,6 +114,8 @@ namespace ME3Explorer.Packages
         /// </summary>
         void setNames(List<string> list);
 
+        string FollowLink(int Link);
+
         //saving
         void save();
         void save(string path);
