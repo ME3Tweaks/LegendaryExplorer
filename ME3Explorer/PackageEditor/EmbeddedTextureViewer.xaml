@@ -10,7 +10,7 @@
     <DockPanel>
         <ListView DockPanel.Dock="Left" Name="MipListView" MinWidth="130" ItemsSource="{Binding MipList}" DisplayMemberPath="MipDisplayString" SelectionChanged="MipList_SelectedItemChanged"/>
         <StackPanel DockPanel.Dock="Top" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBlock Name="TextureStatus_TextBlock" Text="{Binding CannotShowTextureText}" Visibility="{Binding CannotShowTexturesTextVisibility}" TextAlignment="Center"/>
+            <TextBlock Name="TextureStatus_TextBlock" Text="{Binding CannotShowTextureText}" Visibility="{Binding CannotShowTextureTextVisibility}" TextAlignment="Center"/>
             <!--<Button Name="TFCSelect_Button" Margin="10,0,0,0" Content="Select TFC"/>-->
             <Image Name="TextureImage"/>
         </StackPanel>

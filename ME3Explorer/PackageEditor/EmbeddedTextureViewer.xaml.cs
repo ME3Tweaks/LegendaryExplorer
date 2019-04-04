@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -304,8 +305,9 @@ namespace ME3Explorer
 
         private void MipList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (MipList.Count > 0)
+            if (MipList.Count > 0 && MipListView.SelectedIndex >= 0)
             {
+                Debug.WriteLine("Loading mip: " + MipListView.SelectedIndex);
                 LoadMip(MipList[MipListView.SelectedIndex]);
             }
         }
