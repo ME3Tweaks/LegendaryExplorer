@@ -306,7 +306,10 @@ namespace ME3Explorer.TlkManagerNS
             ME3TalkFiles.tlkList.Clear();
             Task.Run(() =>
             {
-                var tlks = Directory.EnumerateFiles(ME3Directory.BIOGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false));
+                List<(string, int)> tlkmountmap = new List<(string, int)>();
+                var tlks = Directory.EnumerateFiles(ME3Directory.BIOGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false)).ToList();
+                tlks.ForEach(x => x.LoadMountPriority());
+                tlks.Sort((a, b) => a.mountpriority.CompareTo(b.mountpriority));
                 //Ugly, yes, but I would rather not have to add concurrent synchronization to ObservableCollectionExtended (yuck!)
                 Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
@@ -326,7 +329,10 @@ namespace ME3Explorer.TlkManagerNS
             ME3TalkFiles.tlkList.Clear();
             Task.Run(() =>
             {
-                var tlks = Directory.EnumerateFiles(ME2Directory.BioGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false));
+                List<(string, int)> tlkmountmap = new List<(string, int)>();
+                var tlks = Directory.EnumerateFiles(ME2Directory.BioGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false)).ToList();
+                tlks.ForEach(x => x.LoadMountPriority());
+                tlks.Sort((a, b) => a.mountpriority.CompareTo(b.mountpriority));
                 //Ugly, yes, but I would rather not have to add concurrent synchronization to ObservableCollectionExtended (yuck!)
                 Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
@@ -388,6 +394,7 @@ namespace ME3Explorer.TlkManagerNS
             public int exportNumber { get; set; }
             public string tlkDisplayPath { get; set; }
             public string exportName { get; set; }
+            public int mountpriority { get; set; }
 
             private bool _selectedForLoad;
             public bool selectedForLoad
@@ -411,6 +418,21 @@ namespace ME3Explorer.TlkManagerNS
                 this.exportName = exportName;
                 this.tlkDisplayPath = exportName + " - " + System.IO.Path.GetFileName(tlkPath);
                 this.selectedForLoad = selectedForLoad;
+            }
+
+            /// <summary>
+            /// Loads the mount.dlc file in the same directory as the TLK file and assigns it to this object, which can be used for sorting.
+            /// If the mount.dlc file is not found, the default value of 0 is used (basegame).
+            /// </summary>
+            internal void LoadMountPriority()
+            {
+                if (embedded) return; //This does not apply to embedded files.
+                string mountPath = System.IO.Path.Combine(Directory.GetParent(tlkPath).FullName, "mount.dlc");
+                if (File.Exists(mountPath))
+                {
+                    mountpriority = new MountEditor.MountFile(mountPath).MountPriority;
+                    tlkDisplayPath = "Priority " + mountpriority + ": " + tlkDisplayPath;
+                }
             }
         }
 
