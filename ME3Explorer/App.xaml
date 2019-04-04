@@ -135,7 +135,6 @@
         <BitmapImage x:Key="iconME2" UriSource="/ME3Explorer;component/Resources/ME2Game.ico"/>
         <BitmapImage x:Key="iconME3" UriSource="/ME3Explorer;component/Resources/ME3Game.ico"/>
 
-        <BitmapImage x:Key="iconAssetExplorer" UriSource="Icons/asset_explorer_64x64.png"/>
         <BitmapImage x:Key="iconBikExtractor" UriSource="Icons/BIK_movie_64x64.png"/>
         <BitmapImage x:Key="iconBikTool" UriSource="Icons/bik_tool_64.png"/>
         <BitmapImage x:Key="iconBatchRenamer" UriSource="Icons/batch_rename_64x64.png"/>
@@ -146,9 +145,6 @@
         <BitmapImage x:Key="iconLevelDatabase" UriSource="Resources/level_database_icon.ico"/>
         <BitmapImage x:Key="iconPCCRepacker" UriSource="Resources/pcc_repacker_64x64.png"/>
         <BitmapImage x:Key="iconPlotDatabase" UriSource="Resources/plotdatabase_256x256.ico"/>
-        <BitmapImage x:Key="iconPropertyDatabase" UriSource="Resources/property_database_64x64.png"/>
-        <BitmapImage x:Key="iconPropertyDumper" UriSource="Resources/property_dumper_64x64.png"/>
-        <BitmapImage x:Key="iconPropertyManager" UriSource="Resources/property_manager_64x64.png"/>
         <BitmapImage x:Key="iconPSAViewer" UriSource="Resources/psa_viewer_64x64.png"/>
         <BitmapImage x:Key="iconPSKViewer" UriSource="Resources/psk_viewer_64x64.png"/>
         <BitmapImage x:Key="iconSaveGameEditor" UriSource="Resources/save_gameeditor_icon.ico"/>

@@ -115,21 +115,6 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Asset Explorer",
-                type = typeof(AssetExplorer),
-                icon = Application.Current.FindResource("iconAssetExplorer") as ImageSource,
-                open = () =>
-                {
-                    AssetExplorer assExp = new AssetExplorer();
-                    assExp.Show();
-                    assExp.LoadMe();
-                },
-                tags = new List<string> { "utility", "novice", "friendly", "user-friendly", "new", "help" },
-                subCategory = "Explorers",
-                description = "Asset Explorer is a useful utility for newcomers to modding Mass Effect. It allows for the browsing of ME3 PCC files via a somewhat user-friendly GUI.\n\nAttention: this tool is in archival state and may contain features that no longer function.",
-            });
-            set.Add(new Tool
-            {
                 name = "Bik Movie Extractor",
                 type = typeof(BIKExtract),
                 icon = Application.Current.FindResource("iconBikExtractor") as ImageSource,
@@ -266,45 +251,6 @@ namespace ME3Explorer
                 tags = new List<string> { "utility", "bool", "boolean", "flag", "int", "integer", "id" },
                 subCategory = "Databases",
                 description = "Plot Database is a cross-game utility used to store plot IDs for reference. The tool comes pre-loaded with a default .db file that can be customized by the user. Never look up a plot bool or integer again!",
-            });
-            set.Add(new Tool
-            {
-                name = "Property Database",
-                type = typeof(Propertydb.PropertyDB),
-                icon = Application.Current.FindResource("iconPropertyDatabase") as ImageSource,
-                open = () =>
-                {
-                    (new Propertydb.PropertyDB()).Show();
-                },
-                tags = new List<string> { "utility" },
-                subCategory = "Databases",
-                description = "Scans ME3 and creates a database of all the classes and properties for those classes that Bioware uses.\n\nThis is different than Package Dumper, as it looks across all instances of the class and what is actually used."
-            });
-            set.Add(new Tool
-            {
-                name = "Property Dumper",
-                type = typeof(Property_Dumper.PropDumper),
-                icon = Application.Current.FindResource("iconPropertyDumper") as ImageSource,
-                open = () =>
-                {
-                    (new Property_Dumper.PropDumper()).Show();
-                },
-                tags = new List<string> { "utility" },
-                subCategory = "Properties",
-                description = "Dumps property information.\n\nThis tool has been replaced by Package Dumper and will be removed in the next release."
-            });
-            set.Add(new Tool
-            {
-                name = "Property Manager",
-                type = typeof(PropertyManager),
-                icon = Application.Current.FindResource("iconPropertyManager") as ImageSource,
-                open = () =>
-                {
-                    (new PropertyManager()).Show();
-                },
-                tags = new List<string> { "utility" },
-                subCategory = "Properties",
-                description = "Allos you to create a custom database of properties.\n\nThis tool is deprecated and will be removed in the next release."
             });
             set.Add(new Tool
             {

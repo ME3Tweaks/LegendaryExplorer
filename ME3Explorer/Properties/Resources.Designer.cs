@@ -63,16 +63,6 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap asset_explorer_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("asset_explorer_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap BIK_movie_64x64 {
             get {
                 object obj = ResourceManager.GetObject("BIK_movie_64x64", resourceCulture);
@@ -236,36 +226,6 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap plot_DB_64x64 {
             get {
                 object obj = ResourceManager.GetObject("plot_DB_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap property_database_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("property_database_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap property_dumper_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("property_dumper_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap property_manager_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("property_manager_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

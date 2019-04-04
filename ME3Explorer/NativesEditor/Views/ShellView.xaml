@@ -7,7 +7,11 @@
     xmlns:global="clr-namespace:ME3Explorer"
 	mc:Ignorable="d"
 	DataContext="{Binding RelativeSource={RelativeSource Self}}"
-	Title="{Binding WindowTitle}" Height="600" Width="800" SizeToContent="Manual" Icon="/ME3Explorer;component/Resources/plot_editor_icon.ico">
+	Title="{Binding WindowTitle}" 
+    Height="600" 
+    Width="800" 
+    SizeToContent="Manual" 
+    Icon="/Resources/ploteditor_256x256.ico">
     <Window.CommandBindings>
         <CommandBinding Command="Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>
         <CommandBinding Command="Open" CanExecute="Open_CanExecute" Executed="Open_Executed"/>

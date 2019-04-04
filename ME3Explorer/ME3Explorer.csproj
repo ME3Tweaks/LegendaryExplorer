@@ -268,10 +268,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Audio Editor\AudioEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="CoalesceTool\Coalesced Editor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -335,9 +331,6 @@
     <Compile Include="FaceFXAnimSetEditor\ME1FaceFXAnimSet.cs" />
     <Compile Include="Interpreter\AltPropertyEditor.xaml.cs">
       <DependentUpon>AltPropertyEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Audio Editor\AudioEditor.xaml.cs">
-      <DependentUpon>AudioEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="CoalesceTool\CoalesceAsset.cs" />
     <Compile Include="CoalesceTool\CoalesceAssetType.cs" />
@@ -601,9 +594,6 @@
     <Compile Include="Packages\ImportEntry.cs" />
     <Compile Include="Packages\ME1Package.cs" />
     <Compile Include="Packages\ME2Package.cs" />
-    <Compile Include="Property Dumper\PropDumper.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="CurveEd\Anchor.cs" />
     <Compile Include="CurveEd\BezierSegment.cs" />
     <Compile Include="CurveEd\Curve.cs" />
@@ -617,23 +607,6 @@
     <Compile Include="CurveEd\InterpCurve.cs" />
     <Compile Include="FaceFXAnimSetEditor\FaceFXEditor.xaml.cs">
       <DependentUpon>FaceFXEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Property Dumper\PropDumper.Designer.cs">
-      <DependentUpon>PropDumper.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Property Manager\PropertyManager.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Property Manager\PropertyManager.Designer.cs">
-      <DependentUpon>PropertyManager.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Property Manager\TreeViewSerializer.cs" />
-    <Compile Include="Property Manager\UPropertyReader.cs" />
-    <Compile Include="Propertydb\PropertyDB.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Propertydb\PropertyDB.Designer.cs">
-      <DependentUpon>PropertyDB.cs</DependentUpon>
     </Compile>
     <Compile Include="Interpreter\PropertyEditorHost.xaml.cs">
       <DependentUpon>PropertyEditorHost.xaml</DependentUpon>
@@ -895,12 +868,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Asset Explorer\AssetExplorer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Asset Explorer\AssetExplorer.Designer.cs">
-      <DependentUpon>AssetExplorer.cs</DependentUpon>
     </Compile>
     <Compile Include="AutoTOC\AutoTOC.cs">
       <SubType>Form</SubType>
@@ -1231,10 +1198,6 @@
     <EmbeddedResource Include="AnimationExplorer\AnimationExplorer.resx">
       <DependentUpon>AnimationExplorer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Asset Explorer\AssetExplorer.resx">
-      <DependentUpon>AssetExplorer.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="AutoTOC\AutoTOC.resx">
       <DependentUpon>AutoTOC.cs</DependentUpon>
     </EmbeddedResource>
@@ -1352,15 +1315,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Property Dumper\PropDumper.resx">
-      <DependentUpon>PropDumper.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Property Manager\PropertyManager.resx">
-      <DependentUpon>PropertyManager.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Propertydb\PropertyDB.resx">
-      <DependentUpon>PropertyDB.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PSAViewer\PSAViewer.resx">
       <DependentUpon>PSAViewer.cs</DependentUpon>
@@ -1486,9 +1440,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\asset_explorer_64x64.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Icons\autotoc_64x64.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1509,9 +1460,6 @@
     <Resource Include="Resources\sfar_editor2_icon_64x64.png" />
     <Resource Include="Resources\psk_viewer_64x64.png" />
     <Resource Include="Resources\psa_viewer_64x64.png" />
-    <Resource Include="Resources\property_manager_64x64.png" />
-    <Resource Include="Resources\property_dumper_64x64.png" />
-    <Resource Include="Resources\property_database_64x64.png" />
     <Resource Include="Resources\meshplorer2_64x64.png" />
     <Resource Include="Resources\meshplorer_64x64.png" />
     <Resource Include="Resources\interpreter_icon_64x64.png" />
@@ -1522,7 +1470,6 @@
     <Resource Include="Resources\fxa_editor_64x64.png" />
     <Resource Include="Resources\folder.png" />
     <Resource Include="Resources\document-save.png" />
-    <Resource Include="Resources\asset_explorer_64x64.png" />
     <Resource Include="Resources\animation_explorer_64x64.png" />
     <Resource Include="Icons\udk_explorer_64x64.png" />
     <Resource Include="Icons\TPFTools_64x64.png" />
@@ -1611,11 +1558,7 @@
     <Folder Include="NativesEditor\SFXGame\BioDefine\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\TLK_ME1_editor_icon.ico" />
     <Resource Include="Resources\TLK_ME23_editor_icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\audio_editor_icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\excel.png" />
