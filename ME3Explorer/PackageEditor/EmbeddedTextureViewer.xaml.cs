@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Gammtek.Conduit.Extensions.IO;
+using KFreonLib.MEDirectories;
 using KFreonLib.Textures;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
@@ -29,6 +30,8 @@ namespace ME3Explorer
         public ObservableCollectionExtended<Texture2DMipInfo> MipList { get; private set; } = new ObservableCollectionExtended<Texture2DMipInfo>();
         private string CurrentLoadedFormat;
         private string CurrentLoadedCacheName;
+        private bool CurrentLoadedNeverStreamFlag = false;
+        private string CurrentLoadedBasePackageName;
 
         private string _cannotShowTextureText;
         public string CannotShowTextureText
@@ -54,7 +57,10 @@ namespace ME3Explorer
 
         public override bool CanParse(IExportEntry exportEntry)
         {
-            return exportEntry.FileRef.Game == MEGame.ME3 && exportEntry.ClassName == "Texture2D";
+            return exportEntry.ClassName == "Texture2D" ||
+                   exportEntry.ClassName == "LightMapTexture2D" ||
+                   exportEntry.ClassName == "ShadowMapTexture2D" ||
+                   exportEntry.ClassName == "TextureFlipBook";
         }
 
         public override void LoadExport(IExportEntry exportEntry)
@@ -69,18 +75,32 @@ namespace ME3Explorer
                 {
                     CurrentLoadedCacheName = cache.Value.Name;
                 }
+                var neverStream = properties.GetProp<NameProperty>("NeverStream");
+                if (neverStream != null)
+                {
+                    CurrentLoadedNeverStreamFlag = true;
+                }
+
                 MemoryStream ms = new MemoryStream(exportEntry.Data);
                 ms.Seek(properties.endOffset, SeekOrigin.Begin);
+                if (exportEntry.FileRef.Game != MEGame.ME3)
+                {
+                    ms.Seek(12, SeekOrigin.Current); // 12 zeros
+                    ms.Seek(4, SeekOrigin.Current); // position in the package
+                }
                 List<Texture2DMipInfo> mips = new List<Texture2DMipInfo>();
                 int numMipMaps = ms.ReadInt32();
                 for (int l = 0; l < numMipMaps; l++)
                 {
-                    Texture2DMipInfo mip = new Texture2DMipInfo();
-                    mip.index = l;
-                    mip.storageType = (StorageTypes)ms.ReadInt32();
-                    mip.uncompressedSize = ms.ReadInt32();
-                    mip.compressedSize = ms.ReadInt32();
-                    mip.offset = ms.ReadInt32();
+                    Texture2DMipInfo mip = new Texture2DMipInfo
+                    {
+                        index = l,
+                        storageType = (StorageTypes)ms.ReadInt32(),
+                        uncompressedSize = ms.ReadInt32(),
+                        compressedSize = ms.ReadInt32(),
+                        externalOffset = ms.ReadInt32(),
+                        packageOffset = (int)ms.Position
+                    };
                     switch (mip.storageType)
                     {
                         case StorageTypes.pccUnc:
@@ -93,11 +113,46 @@ namespace ME3Explorer
                     }
                     mip.width = ms.ReadInt32();
                     mip.height = ms.ReadInt32();
+                    if (mip.width == 4 && mips.Exists(m => m.width == mip.width))
+                        mip.width = mips.Last().width / 2;
+                    if (mip.height == 4 && mips.Exists(m => m.height == mip.height))
+                        mip.height = mips.Last().height / 2;
+                    if (mip.width == 0)
+                        mip.width = 1;
+                    if (mip.height == 0)
+                        mip.height = 1;
                     mips.Add(mip);
                 }
 
-
                 var topmip = mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
+
+                if (exportEntry.FileRef.Game == MEGame.ME1)
+                {
+                    string baseName = exportEntry.FileRef.FollowLink(exportEntry.idxLink).Split('.')[0].ToUpper();
+                    if (mips.Exists(s => s.storageType == StorageTypes.extLZO) ||
+                        mips.Exists(s => s.storageType == StorageTypes.extZlib) ||
+                        mips.Exists(s => s.storageType == StorageTypes.extUnc))
+                    {
+                        CurrentLoadedBasePackageName = baseName;
+                    }
+                    else
+                    {
+                        if (baseName != "" && !CurrentLoadedNeverStreamFlag)
+                        {
+                            MEDirectories MEExDirecs = new MEDirectories
+                            {
+                                WhichGame = (int)exportEntry.FileRef.Game
+                            };
+                            MEExDirecs.SetupPaths((int)exportEntry.FileRef.Game);
+                            List<string> gameFiles =
+                                MEDirectories.EnumerateGameFiles(MEExDirecs.WhichGame, System.IO.Path.GetDirectoryName(MEExDirecs.PathBIOGame));
+                            if (gameFiles.Exists(s => System.IO.Path.GetFileNameWithoutExtension(s).ToUpperInvariant() == baseName))
+                            {
+                                CurrentLoadedBasePackageName = baseName;
+                            }
+                        }
+                    }
+                }
 
                 CurrentLoadedExport = exportEntry;
                 CurrentLoadedFormat = format.Value.Name;
@@ -112,54 +167,120 @@ namespace ME3Explorer
 
         private void LoadMip(Texture2DMipInfo mipToLoad)
         {
-            if (mipToLoad == null || mipToLoad.storageType == StorageTypes.extUnc || mipToLoad.storageType == StorageTypes.empty) { return; }
+            if (mipToLoad == null || mipToLoad.storageType == StorageTypes.empty) { return; }
             byte[] imagebytes = new byte[mipToLoad.uncompressedSize];
 
             if (mipToLoad.storageType == StorageTypes.pccUnc)
             {
-                Buffer.BlockCopy(CurrentLoadedExport.Data, mipToLoad.offset - CurrentLoadedExport.DataOffset, imagebytes, 0, mipToLoad.uncompressedSize);
+                Buffer.BlockCopy(CurrentLoadedExport.Data, mipToLoad.packageOffset, imagebytes, 0, mipToLoad.uncompressedSize);
             }
-            if ((mipToLoad.storageType == StorageTypes.extLZO || mipToLoad.storageType == StorageTypes.extZlib) && CurrentLoadedCacheName != null)
+            else if (mipToLoad.storageType == StorageTypes.pccLZO ||
+                     mipToLoad.storageType == StorageTypes.pccZlib)
             {
-
-                TextureImage.Source = null;
-                CannotShowTextureText = "Cannot display TFC stored mips\nSelect a lower mip to display\n\nComing in a future release";
-                CannotShowTextureTextVisibility = Visibility.Visible;
-
-                return;
-                //Aquadran: This does not work for me. I cannot display TFC stored mips.
-                //Uncomment above lines to activate this
-                string filename = CurrentLoadedCacheName + ".tfc";
-                string localPathText = System.IO.Path.Combine(Directory.GetParent(CurrentLoadedExport.FileRef.FileName).FullName, filename);
-                if (File.Exists(localPathText))
+                try
                 {
-                    using (var file = File.OpenRead(localPathText))
+                    TextureCompression.DecompressTexture(imagebytes,
+                                         new MemoryStream(CurrentLoadedExport.Data, mipToLoad.packageOffset, mipToLoad.compressedSize),
+                                         mipToLoad.storageType, mipToLoad.uncompressedSize, mipToLoad.compressedSize);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message + "\n" + "StorageType: " + mipToLoad.storageType + "\n");
+                }
+            }
+            if (mipToLoad.storageType == StorageTypes.extUnc ||
+                mipToLoad.storageType == StorageTypes.extLZO ||
+                mipToLoad.storageType == StorageTypes.extZlib)
+            {
+                TextureImage.Source = null;
+                string filename;
+                MEDirectories MEExDirecs = new MEDirectories
+                {
+                    WhichGame = (int)CurrentLoadedExport.FileRef.Game
+                };
+                MEExDirecs.SetupPaths((int)CurrentLoadedExport.FileRef.Game);
+                if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
+                {
+                    List<string> gameFiles =
+                        MEDirectories.EnumerateGameFiles(MEExDirecs.WhichGame, System.IO.Path.GetDirectoryName(MEExDirecs.PathBIOGame));
+                    filename = gameFiles.Find(s => System.IO.Path.GetFileNameWithoutExtension(s).Equals(CurrentLoadedBasePackageName, StringComparison.OrdinalIgnoreCase));
+                    if (filename == null || filename == "")
+                        throw new Exception("File not found in game: " + CurrentLoadedBasePackageName + ".*");
+                }
+                else
+                {
+                    string archive = CurrentLoadedCacheName;
+                    filename = System.IO.Path.Combine(MEExDirecs.pathCooked, archive + ".tfc");
+                    string packagePath = CurrentLoadedExport.FileRef.FileName;
+                    string currentPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(packagePath), archive + ".tfc");
+                    if (File.Exists(currentPath))
+                        filename = currentPath;
+                    else if (packagePath.ToLowerInvariant().Contains("\\dlc"))
                     {
-                        int bytesRead;
-                        var buffer = new byte[mipToLoad.compressedSize];
-                        file.Seek(mipToLoad.offset, SeekOrigin.Begin);
-                        bytesRead = file.Read(buffer, 0, buffer.Length);
-
-                        if (mipToLoad.storageType == StorageTypes.extLZO)
+                        string DLCArchiveFile = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(packagePath), archive + ".tfc");
+                        if (File.Exists(DLCArchiveFile))
+                            filename = DLCArchiveFile;
+                        else if (!File.Exists(filename))
                         {
-                            LZO2Helper.LZO2.Decompress(buffer, (uint)buffer.Length, imagebytes);
-                        }
-                        if (mipToLoad.storageType == StorageTypes.extZlib)
-                        {
-                            imagebytes = AmaroK86.MassEffect3.ZlibBlock.ZBlock.Decompress(file, mipToLoad.compressedSize);
-                            //new ZlibHelper.Zlib().Decompress(buffer, (uint)buffer.Length, imagebytes);
+                            List<string> files = Directory.GetFiles(MEExDirecs.PathBIOGame, archive + ".tfc",
+                                SearchOption.AllDirectories).Where(item => item.EndsWith(".tfc", StringComparison.OrdinalIgnoreCase)).ToList();
+                            if (files.Count == 1)
+                                filename = files[0];
+                            else if (files.Count == 0)
+                                throw new Exception("TFC File Not Found: " + archive + ".tfc");
+                            else
+                                throw new Exception("More instances of TFC file: " + archive + ".tfc");
                         }
                     }
                 }
+
+                try
+                {
+                    using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                    {
+                        try
+                        {
+                            fs.Seek(mipToLoad.externalOffset, SeekOrigin.Begin);
+                            if (mipToLoad.storageType == StorageTypes.extLZO || mipToLoad.storageType == StorageTypes.extZlib)
+                            {
+                                using (MemoryStream tmpStream = new MemoryStream(fs.ReadBytes(mipToLoad.compressedSize)))
+                                {
+                                    try
+                                    {
+                                        TextureCompression.DecompressTexture(imagebytes, tmpStream, mipToLoad.storageType, mipToLoad.uncompressedSize, mipToLoad.compressedSize);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        throw new Exception(e.Message + "\n" + "File: " + filename + "\n" +
+                                            "StorageType: " + mipToLoad.storageType + "\n" +
+                                            "External file offset: " + mipToLoad.externalOffset);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                fs.Read(imagebytes, 0, mipToLoad.uncompressedSize);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            throw new Exception(e.Message + "\n" + "File: " + filename + "\n" +
+                                "StorageType: " + mipToLoad.storageType + "\n" +
+                                "External file offset: " + mipToLoad.externalOffset);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message + "\n" + "File: " + filename + "\n" +
+                        "StorageType: " + mipToLoad.storageType + "\n" +
+                        "External file offset: " + mipToLoad.externalOffset);
+                }
             }
 
-            //CannotShowTextureText = "Cannot display TFC stored mips\nComing in a future release";
             CannotShowTextureTextVisibility = Visibility.Collapsed;
-            AmaroK86.ImageFormat.DDS dds =
-                new AmaroK86.ImageFormat.DDS(null, new AmaroK86.ImageFormat.ImageSize((uint)mipToLoad.width, (uint)mipToLoad.height), CurrentLoadedFormat.Substring(3), imagebytes);
-            AmaroK86.ImageFormat.DDSImage ddsimage =
-                new AmaroK86.ImageFormat.DDSImage(new MemoryStream(dds.ToArray()));
-            var bitmap = ddsimage.mipMaps[0].bitmap;
+            var fmt = AmaroK86.ImageFormat.DDSImage.convertFormat(CurrentLoadedFormat);
+            var bitmap = AmaroK86.ImageFormat.DDSImage.ToBitmap(imagebytes, fmt, mipToLoad.width, mipToLoad.height);
             using (MemoryStream memory = new MemoryStream())
             {
                 bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
@@ -196,7 +317,8 @@ namespace ME3Explorer
             public int compressedSize;
             public int width;
             public int height;
-            public int offset;
+            public int externalOffset;
+            public int packageOffset;
             public StorageTypes storageType;
 
             public string MipDisplayString
@@ -211,7 +333,7 @@ namespace ME3Explorer
                     mipinfostring += "\nCompressed size: ";
                     mipinfostring += compressedSize;
                     mipinfostring += "\nOffset: ";
-                    mipinfostring += offset;
+                    mipinfostring += externalOffset;
                     mipinfostring += "\nWidth: ";
                     mipinfostring += width;
                     mipinfostring += "\nHeight: ";

@@ -224,6 +224,11 @@ namespace ME3Explorer.Packages
         protected List<ImportEntry> imports;
         public IReadOnlyList<ImportEntry> Imports => imports;
 
+        public bool isImport(int Index)
+        {
+            return (Index >= 0 && Index < ImportCount);
+        }
+
         public void addImport(ImportEntry importEntry)
         {
             if (importEntry.FileRef != this)
@@ -285,6 +290,22 @@ namespace ME3Explorer.Packages
             return null;
         }
         #endregion
+
+        public string FollowLink(int Link)
+        {
+            string s = "";
+            if (Link > 0 && isExport(Link - 1))
+            {
+                s = Exports[Link - 1].ObjectName + ".";
+                s = FollowLink(Exports[Link - 1].idxLink) + s;
+            }
+            if (Link < 0 && isImport(Link * -1 - 1))
+            {
+                s = Imports[Link * -1 - 1].ObjectName + ".";
+                s = FollowLink(Imports[Link * -1 - 1].idxLink) + s;
+            }
+            return s;
+        }
 
         private DateTime? lastSaved;
         public DateTime LastSaved

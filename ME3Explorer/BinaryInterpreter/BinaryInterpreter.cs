@@ -316,6 +316,9 @@ Floats*/
                     StartBioDynamicAnimSetScan();
                     break;
                 case "Texture2D":
+                case "LightMapTexture2D":
+                case "ShadowMapTexture2D":
+                case "TextureFlipBook":
                     StartTextureBinaryScan();
                     break;
                 case "WwiseEvent":
