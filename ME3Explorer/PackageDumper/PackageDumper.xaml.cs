@@ -6,6 +6,7 @@
 
 using Gammtek.Conduit.Extensions.IO;
 using KFreonLib.MEDirectories;
+using ME3Explorer;
 using ME3Explorer.ME1.Unreal.UnhoodBytecode;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
@@ -18,6 +19,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
 
@@ -28,7 +31,7 @@ namespace ME3Explorer.PackageDumper
     /// </summary>
     public partial class PackageDumper : NotifyPropertyChangedWindowBase
     {
-        MEGame GameBeingDumped;
+        public ObservableCollectionExtended<PackageDumperSingleFileTask> CurrentDumpingItems { get; set; } = new ObservableCollectionExtended<PackageDumperSingleFileTask>();
         BackgroundWorker DumpWorker;
         private void LoadCommands()
         {
@@ -64,19 +67,6 @@ namespace ME3Explorer.PackageDumper
             set => SetProperty(ref _overallProgressMaximum, value);
         }
 
-        private int _currentFileProgressValue;
-        public int CurrentFileProgressValue
-        {
-            get => _currentFileProgressValue;
-            set => SetProperty(ref _currentFileProgressValue, value);
-        }
-
-        private int _currentFileProgressMaximum;
-        public int CurrentFileProgressMaximum
-        {
-            get => _currentFileProgressMaximum;
-            set => SetProperty(ref _currentFileProgressMaximum, value);
-        }
 
         private string _currentOverallOperationText;
         public string CurrentOverallOperationText
@@ -113,20 +103,17 @@ namespace ME3Explorer.PackageDumper
 
         private void DumpGameME1(object obj)
         {
-            GameBeingDumped = MEGame.ME1;
-            DumpGame(GameBeingDumped);
+            DumpGame(MEGame.ME1);
         }
 
         private void DumpGameME2(object obj)
         {
-            GameBeingDumped = MEGame.ME2;
-            DumpGame(GameBeingDumped);
+            DumpGame(MEGame.ME2);
         }
 
         private void DumpGameME3(object obj)
         {
-            GameBeingDumped = MEGame.ME3;
-            DumpGame(GameBeingDumped);
+            DumpGame(MEGame.ME3);
         }
 
         #endregion
@@ -175,17 +162,18 @@ namespace ME3Explorer.PackageDumper
             if (m.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 string outputDir = m.FileName;
+                dumpPackagesFromFolder(rootPath, outputDir);
+/*
                 DumpWorker = new BackgroundWorker();
                 DumpWorker.DoWork += Dump_BackgroundThread;
                 DumpWorker.RunWorkerCompleted += Dump_Completed;
-                DumpWorker.RunWorkerAsync(argument: (rootPath, outputDir));
+                DumpWorker.RunWorkerAsync(argument: (rootPath, outputDir));*/
             }
         }
 
         private void Dump_BackgroundThread(object sender, DoWorkEventArgs e)
         {
             var (rootPath, outputDir) = (ValueTuple<string, string>)e.Argument;
-            dumpPackagesFromFolder(rootPath, outputDir);
         }
 
         private void Dump_Completed(object sender, RunWorkerCompletedEventArgs e)
@@ -202,7 +190,7 @@ namespace ME3Explorer.PackageDumper
             if (DumpCanceled)
             {
                 DumpCanceled = false;
-                CurrentFileProgressValue = 0;
+                //CurrentFileProgressValue = 0;
                 OverallProgressMaximum = 100;
                 CurrentOverallOperationText = "Dump canceled";
             }
@@ -234,13 +222,43 @@ namespace ME3Explorer.PackageDumper
         /// <param name="path">Base path to start dumping functions from. Will search all subdirectories for package files.</param>
         /// <param name="args">Set of arguments for what to dump. In order: imports, exports, data, scripts, coalesced, names. At least 1 of these options must be true.</param>
         /// <param name="outputfolder">Output path to place files in. If null, it will use the same folder as the currently processing PCC. Files will be placed relative to the base path.</param>
-        public void dumpPackagesFromFolder(string path, string outputfolder = null)
+        public async void dumpPackagesFromFolder(string path, string outputfolder = null)
         {
             path = Path.GetFullPath(path);
             var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
             List<string> files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower()))).ToList();
-            bool beginParsing = false;
             OverallProgressMaximum = files.Count;
+            OverallProgressValue = 0;
+            var block = new ActionBlock<PackageDumperSingleFileTask>(x =>
+            {
+                Application.Current.Dispatcher.Invoke(new Action(() => CurrentDumpingItems.Add(x)));
+                x.dumpPackageFile(); // What to do on each item
+                OverallProgressValue++; //We might need to somehow wrap this in concurrent
+                Application.Current.Dispatcher.Invoke(new Action(() => CurrentDumpingItems.Remove(x)));
+            },
+    new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 4 }); // How many items at the same time
+
+            CurrentDumpingItems.ClearEx();
+            foreach (var item in files)
+            {
+                string outfolder = outputfolder;
+                if (outfolder != null)
+                {
+                    string relative = GetRelativePath(path, Directory.GetParent(item).ToString());
+                    outfolder = Path.Combine(outfolder, relative);
+                }
+
+                var threadtask = new PackageDumperSingleFileTask(item, outfolder);
+                //CurrentDumpingItems.Add(threadtask);
+                block.Post(threadtask); // Post all items to the block
+            }
+
+            block.Complete(); // Signal completion
+            await block.Completion; // Asynchronously wait for completion.
+
+
+
+            /*
             for (int i = 0; i < files.Count; i++)
             {
                 if (!DumpCanceled)
@@ -248,7 +266,6 @@ namespace ME3Explorer.PackageDumper
                     string file = Path.GetFullPath(files[i]);
                     //if (file.EndsWith("BioD_Cat002.pcc") || beginParsing)
                     //{
-                    beginParsing = true;
                     string outfolder = outputfolder;
                     if (outfolder != null)
                     {
@@ -258,20 +275,205 @@ namespace ME3Explorer.PackageDumper
                     CurrentOverallOperationText = "Dumping " + Path.GetFileNameWithoutExtension(file);
 
                     Debug.WriteLine("[" + (i + 1) + "/" + files.Count + "] Dumping " + Path.GetFileNameWithoutExtension(file));
-                    dumpPCCFile(file, outfolder);
+                    //dumpPCCFile(file, outfolder);
                     OverallProgressValue = i;
                     //}
-                }
+                }*/
+        }
+
+
+        //if (properties)
+        //{
+        //Resolve LevelStreamingKismet references
+        //    string savepath = outfolder + System.IO.Path.GetFileNameWithoutExtension(file) + ".txt";
+        //    string output = File.ReadAllText(savepath);
+        //    string[] lines = output.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+
+        //    int parsingLine = 0;
+        //    string streamingline = "LevelStreamingKismet [EXPORT";
+        //    string kismetprefix = "LevelStreamingKismet(LevelStreamingKismet)";
+        //    Dictionary<int, int> streamingLines = new Dictionary<int, int>(); //Maps string line # to export #s
+        //    Dictionary<int, string> lskPackageName = new Dictionary<int, string>();
+        //    //string streamingline = "LevelStreamingKismet[EXPORT";
+        //    string packagenameprefix = "Name: \"PackageName\" Type: \"NameProperty\" Size: 8 Value: \"";
+        //    foreach (string line in lines)
+        //    {
+
+        //        int exportnumstart = line.IndexOf(streamingline);
+        //        if (exportnumstart > 0)
+        //        {
+        //            exportnumstart += streamingline.Length;
+        //            string truncstr = line.Substring(exportnumstart);
+        //            int exportnumend = truncstr.IndexOf("]");
+        //            string exportidstr = truncstr.Substring(0, exportnumend);
+        //            int export = int.Parse(exportidstr);
+        //            export++;
+        //            streamingLines[parsingLine] = export;
+        //            parsingLine++;
+        //            continue;
+        //        }
+
+        //        if (line.Contains(kismetprefix))
+        //        {
+        //            //Get Export #
+        //            string exportStr = line.Substring(1); //Remove #
+        //            exportStr = exportStr.Substring(0, exportStr.IndexOf(" "));
+        //            int exportNum = int.Parse(exportStr);
+        //            //Get PackageName
+        //            string packagenamline = lines[parsingLine + 3];
+        //            if (packagenamline.Contains("PackageName"))
+        //            {
+        //                int prefixindex = packagenamline.IndexOf(packagenameprefix);
+        //                prefixindex += packagenameprefix.Length;
+        //                packagenamline = packagenamline.Substring(prefixindex);
+        //                int endofpackagename = packagenamline.IndexOf("\"");
+        //                string packagename = packagenamline.Substring(0, endofpackagename);
+        //                lskPackageName[exportNum] = packagename;
+        //            }
+        //            parsingLine++;
+        //            continue;
+        //        }
+        //        parsingLine++;
+        //    }
+
+        //    //Updates lines.
+        //    foreach (KeyValuePair<int, int> entry in streamingLines)
+        //    {
+        //        lines[entry.Key] += " - " + lskPackageName[entry.Value];
+        //        Console.WriteLine(lines[entry.Key]);
+
+        //        // do something with entry.Value or entry.Key
+        //    }
+        //    File.WriteAllLines(savepath, lines, Encoding.UTF8);
+        //}
+        //}
+        //catch (Exception e)
+        //{
+        //    Console.WriteLine("Exception parsing " + file + "\n" + e.Message);
+        //}
+
+
+        /// <summary>
+        /// Writes a line to the console if verbose mode is turned on
+        /// </summary>
+        /// <param name="message">Verbose message to write</param>
+        public void writeVerboseLine(String message)
+        {
+            if (verbose)
+            {
+                Console.WriteLine(message);
             }
         }
 
         /// <summary>
+        /// Creates a relative path from one file or folder to another.
+        /// </summary>
+        /// <param name="fromPath">Contains the directory that defines the start of the relative System.IO.Path.</param>
+        /// <param name="toPath">Contains the path that defines the endpoint of the relative System.IO.Path.</param>
+        /// <returns>The relative path from the start directory to the end System.IO.Path.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="fromPath"/> or <paramref name="toPath"/> is <c>null</c>.</exception>
+        /// <exception cref="UriFormatException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        public string GetRelativePath(string fromPath, string toPath)
+        {
+            if (string.IsNullOrEmpty(fromPath))
+            {
+                throw new ArgumentNullException(nameof(fromPath));
+            }
+
+            if (string.IsNullOrEmpty(toPath))
+            {
+                throw new ArgumentNullException(nameof(toPath));
+            }
+
+            Uri fromUri = new Uri(AppendDirectorySeparatorChar(fromPath));
+            Uri toUri = new Uri(AppendDirectorySeparatorChar(toPath));
+
+            if (fromUri.Scheme != toUri.Scheme)
+            {
+                return toPath;
+            }
+
+            Uri relativeUri = fromUri.MakeRelativeUri(toUri);
+            string relativePath = Uri.UnescapeDataString(relativeUri.ToString());
+
+            if (string.Equals(toUri.Scheme, Uri.UriSchemeFile, StringComparison.OrdinalIgnoreCase))
+            {
+                relativePath = relativePath.Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
+            }
+
+            return relativePath;
+        }
+
+        private static string AppendDirectorySeparatorChar(string path)
+        {
+            // Append a slash only if the path is a directory and does not have a slash.
+            if (!System.IO.Path.HasExtension(path) &&
+                !path.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+            {
+                return path + System.IO.Path.DirectorySeparatorChar;
+            }
+
+            return path;
+        }
+
+        private void PackageDumper_Closing(object sender, CancelEventArgs e)
+        {
+            DumpCanceled = true;
+        }
+
+        private void PackageDumper_Loaded(object sender, RoutedEventArgs e)
+        {
+            Owner = null; //Detach from parent
+        }
+    }
+
+    public class PackageDumperSingleFileTask : NotifyPropertyChangedBase
+    {
+        private string _currentOverallOperationText;
+        public string CurrentOverallOperationText
+        {
+            get => _currentOverallOperationText;
+            set => SetProperty(ref _currentOverallOperationText, value);
+        }
+
+        private int _currentFileProgressValue;
+        public int CurrentFileProgressValue
+        {
+            get => _currentFileProgressValue;
+            set => SetProperty(ref _currentFileProgressValue, value);
+        }
+
+        private int _currentFileProgressMaximum;
+        public int CurrentFileProgressMaximum
+        {
+            get => _currentFileProgressMaximum;
+            set => SetProperty(ref _currentFileProgressMaximum, value);
+        }
+
+        private string _shortFileName;
+        public string ShortFileName
+        {
+            get => _shortFileName;
+            set => SetProperty(ref _shortFileName, value);
+        }
+
+        public PackageDumperSingleFileTask(string file, string outputfolder = null)
+        {
+            this.File = file;
+            this.ShortFileName = Path.GetFileNameWithoutExtension(file);
+            this.OutputFolder = outputfolder;
+            CurrentOverallOperationText = "Dumping " + ShortFileName;
+        }
+
+        private bool DumpCanceled;
+        private string File;
+        private string OutputFolder;
+
+        /// <summary>
         /// Dumps data from a pcc file to a text file
         /// </summary>
-        /// <param name="file">PCC file path to dump from</param>
-        /// <param name="args">6 element bool array, specifying what should be dumped. In order: imports, exports, data, scripts, coalesced, names. At least 1 of these options must be true.</param>
-        /// <param name="outputfolder"></param>
-        public void dumpPCCFile(string file, string outputfolder = null)
+        public void dumpPackageFile()
         {
             //if (GamePath == null)
             //{
@@ -280,10 +482,11 @@ namespace ME3Explorer.PackageDumper
             //}
             //try
             {
-                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(file))
+                using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(File))
                 {
+                    var GameBeingDumped = pcc.Game;
                     CurrentFileProgressMaximum = pcc.ExportCount;
-                    string outfolder = outputfolder ?? Directory.GetParent(file).ToString();
+                    string outfolder = OutputFolder ?? Directory.GetParent(File).ToString();
 
                     if (!outfolder.EndsWith(@"\"))
                     {
@@ -295,7 +498,7 @@ namespace ME3Explorer.PackageDumper
                     //    UnrealObjectInfo.loadfromJSON();
                     //}
                     //dumps data.
-                    string savepath = outfolder + System.IO.Path.GetFileNameWithoutExtension(file) + ".txt";
+                    string savepath = outfolder + System.IO.Path.GetFileNameWithoutExtension(File) + ".txt";
                     Directory.CreateDirectory(System.IO.Path.GetDirectoryName(savepath));
 
                     using (StreamWriter stringoutput = new StreamWriter(savepath))
@@ -335,7 +538,7 @@ namespace ME3Explorer.PackageDumper
                         int numTotal = pcc.Exports.Count;
                         int lastProgress = 0;
                         //writeVerboseLine("Enumerating exports");
-                        string swfoutfolder = outfolder + System.IO.Path.GetFileNameWithoutExtension(file) + "\\";
+                        string swfoutfolder = outfolder + System.IO.Path.GetFileNameWithoutExtension(File) + "\\";
                         foreach (IExportEntry exp in pcc.Exports)
                         {
                             if (DumpCanceled)
@@ -422,154 +625,7 @@ namespace ME3Explorer.PackageDumper
                         stringoutput.WriteLine("--End of Names");
                     }
                 }
-
-
             }
-
-            //if (properties)
-            //{
-            //Resolve LevelStreamingKismet references
-            //    string savepath = outfolder + System.IO.Path.GetFileNameWithoutExtension(file) + ".txt";
-            //    string output = File.ReadAllText(savepath);
-            //    string[] lines = output.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
-
-            //    int parsingLine = 0;
-            //    string streamingline = "LevelStreamingKismet [EXPORT";
-            //    string kismetprefix = "LevelStreamingKismet(LevelStreamingKismet)";
-            //    Dictionary<int, int> streamingLines = new Dictionary<int, int>(); //Maps string line # to export #s
-            //    Dictionary<int, string> lskPackageName = new Dictionary<int, string>();
-            //    //string streamingline = "LevelStreamingKismet[EXPORT";
-            //    string packagenameprefix = "Name: \"PackageName\" Type: \"NameProperty\" Size: 8 Value: \"";
-            //    foreach (string line in lines)
-            //    {
-
-            //        int exportnumstart = line.IndexOf(streamingline);
-            //        if (exportnumstart > 0)
-            //        {
-            //            exportnumstart += streamingline.Length;
-            //            string truncstr = line.Substring(exportnumstart);
-            //            int exportnumend = truncstr.IndexOf("]");
-            //            string exportidstr = truncstr.Substring(0, exportnumend);
-            //            int export = int.Parse(exportidstr);
-            //            export++;
-            //            streamingLines[parsingLine] = export;
-            //            parsingLine++;
-            //            continue;
-            //        }
-
-            //        if (line.Contains(kismetprefix))
-            //        {
-            //            //Get Export #
-            //            string exportStr = line.Substring(1); //Remove #
-            //            exportStr = exportStr.Substring(0, exportStr.IndexOf(" "));
-            //            int exportNum = int.Parse(exportStr);
-            //            //Get PackageName
-            //            string packagenamline = lines[parsingLine + 3];
-            //            if (packagenamline.Contains("PackageName"))
-            //            {
-            //                int prefixindex = packagenamline.IndexOf(packagenameprefix);
-            //                prefixindex += packagenameprefix.Length;
-            //                packagenamline = packagenamline.Substring(prefixindex);
-            //                int endofpackagename = packagenamline.IndexOf("\"");
-            //                string packagename = packagenamline.Substring(0, endofpackagename);
-            //                lskPackageName[exportNum] = packagename;
-            //            }
-            //            parsingLine++;
-            //            continue;
-            //        }
-            //        parsingLine++;
-            //    }
-
-            //    //Updates lines.
-            //    foreach (KeyValuePair<int, int> entry in streamingLines)
-            //    {
-            //        lines[entry.Key] += " - " + lskPackageName[entry.Value];
-            //        Console.WriteLine(lines[entry.Key]);
-
-            //        // do something with entry.Value or entry.Key
-            //    }
-            //    File.WriteAllLines(savepath, lines, Encoding.UTF8);
-            //}
-            //}
-            //catch (Exception e)
-            //{
-            //    Console.WriteLine("Exception parsing " + file + "\n" + e.Message);
-            //}
-        }
-
-        /// <summary>
-        /// Writes a line to the console if verbose mode is turned on
-        /// </summary>
-        /// <param name="message">Verbose message to write</param>
-        public void writeVerboseLine(String message)
-        {
-            if (verbose)
-            {
-                Console.WriteLine(message);
-            }
-        }
-
-        /// <summary>
-        /// Creates a relative path from one file or folder to another.
-        /// </summary>
-        /// <param name="fromPath">Contains the directory that defines the start of the relative System.IO.Path.</param>
-        /// <param name="toPath">Contains the path that defines the endpoint of the relative System.IO.Path.</param>
-        /// <returns>The relative path from the start directory to the end System.IO.Path.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="fromPath"/> or <paramref name="toPath"/> is <c>null</c>.</exception>
-        /// <exception cref="UriFormatException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
-        public string GetRelativePath(string fromPath, string toPath)
-        {
-            if (string.IsNullOrEmpty(fromPath))
-            {
-                throw new ArgumentNullException(nameof(fromPath));
-            }
-
-            if (string.IsNullOrEmpty(toPath))
-            {
-                throw new ArgumentNullException(nameof(toPath));
-            }
-
-            Uri fromUri = new Uri(AppendDirectorySeparatorChar(fromPath));
-            Uri toUri = new Uri(AppendDirectorySeparatorChar(toPath));
-
-            if (fromUri.Scheme != toUri.Scheme)
-            {
-                return toPath;
-            }
-
-            Uri relativeUri = fromUri.MakeRelativeUri(toUri);
-            string relativePath = Uri.UnescapeDataString(relativeUri.ToString());
-
-            if (string.Equals(toUri.Scheme, Uri.UriSchemeFile, StringComparison.OrdinalIgnoreCase))
-            {
-                relativePath = relativePath.Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
-            }
-
-            return relativePath;
-        }
-
-        private static string AppendDirectorySeparatorChar(string path)
-        {
-            // Append a slash only if the path is a directory and does not have a slash.
-            if (!System.IO.Path.HasExtension(path) &&
-                !path.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
-            {
-                return path + System.IO.Path.DirectorySeparatorChar;
-            }
-
-            return path;
-        }
-
-        private void PackageDumper_Closing(object sender, CancelEventArgs e)
-        {
-            DumpCanceled = true;
-        }
-
-        private void PackageDumper_Loaded(object sender, RoutedEventArgs e)
-        {
-            Owner = null; //Detach from parent
         }
     }
 }
-

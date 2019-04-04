@@ -12,14 +12,15 @@ using UsefulThings.WPF;
 using System.Collections;
 using System.Diagnostics;
 using KFreonLib.Debugging;
+using System.Collections.Concurrent;
 
 namespace ME3Explorer.Unreal
 {
     public class PropertyCollection : ObservableCollection<UProperty>
     {
-        static Dictionary<string, PropertyCollection> defaultStructValuesME3 = new Dictionary<string, PropertyCollection>();
-        static Dictionary<string, PropertyCollection> defaultStructValuesME2 = new Dictionary<string, PropertyCollection>();
-        static Dictionary<string, PropertyCollection> defaultStructValuesME1 = new Dictionary<string, PropertyCollection>();
+        static ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME3 = new ConcurrentDictionary<string, PropertyCollection>();
+        static ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME2 = new ConcurrentDictionary<string, PropertyCollection>();
+        static ConcurrentDictionary<string, PropertyCollection> defaultStructValuesME1 = new ConcurrentDictionary<string, PropertyCollection>();
 
         public int endOffset;
 
@@ -303,7 +304,7 @@ namespace ME3Explorer.Unreal
                         }
                         if (stripTransients)
                         {
-                            defaultStructValuesME3.Add(structType, defaultProps);
+                            defaultStructValuesME3.TryAdd(structType, defaultProps);
                         }
                     }
                     foreach (var prop in defaultProps)
@@ -475,7 +476,7 @@ namespace ME3Explorer.Unreal
                             }
                             if (stripTransients)
                             {
-                                defaultStructValuesME2.Add(structType, defaultProps);
+                                defaultStructValuesME2.TryAdd(structType, defaultProps);
                             }
                         }
                         //Debug.WriteLine("ME2: Build immuatable struct properties for struct type " + structType);
@@ -519,7 +520,7 @@ namespace ME3Explorer.Unreal
                             }
                             if (stripTransients)
                             {
-                                defaultStructValuesME1.Add(structType, defaultProps);
+                                defaultStructValuesME1.TryAdd(structType, defaultProps);
                             }
                         }
                         //Debug.WriteLine("ME1: Build immuatable struct properties for struct type " + structType);
