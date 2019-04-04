@@ -30,9 +30,25 @@ namespace ME3Explorer
         private string CurrentLoadedFormat;
         private string CurrentLoadedCacheName;
 
+        private string _cannotShowTextureText;
+        public string CannotShowTextureText
+        {
+            get => _cannotShowTextureText;
+            set => SetProperty(ref _cannotShowTextureText, value);
+        }
+
+        private Visibility _cannotShowTextureTextVisibility;
+        public Visibility CannotShowTextureTextVisibility
+        {
+            get => _cannotShowTextureTextVisibility;
+            set => SetProperty(ref _cannotShowTextureTextVisibility, value);
+        }
+
         public EmbeddedTextureViewer()
         {
             DataContext = this;
+            CannotShowTextureText = "Select a mip to view";
+            CannotShowTextureTextVisibility = Visibility.Visible;
             InitializeComponent();
         }
 
@@ -43,6 +59,7 @@ namespace ME3Explorer
 
         public override void LoadExport(IExportEntry exportEntry)
         {
+            TextureImage.Source = null;
             try
             {
                 PropertyCollection properties = exportEntry.GetProperties();
@@ -95,7 +112,7 @@ namespace ME3Explorer
 
         private void LoadMip(Texture2DMipInfo mipToLoad)
         {
-            if (mipToLoad == null ||  mipToLoad.storageType == StorageTypes.extUnc || mipToLoad.storageType == StorageTypes.empty) { return; }
+            if (mipToLoad == null || mipToLoad.storageType == StorageTypes.extUnc || mipToLoad.storageType == StorageTypes.empty) { return; }
             byte[] imagebytes = new byte[mipToLoad.uncompressedSize];
 
             if (mipToLoad.storageType == StorageTypes.pccUnc)
@@ -104,6 +121,14 @@ namespace ME3Explorer
             }
             if ((mipToLoad.storageType == StorageTypes.extLZO || mipToLoad.storageType == StorageTypes.extZlib) && CurrentLoadedCacheName != null)
             {
+
+                TextureImage.Source = null;
+                CannotShowTextureText = "Cannot display TFC stored mips\nSelect a lower mip to display\n\nComing in a future release";
+                CannotShowTextureTextVisibility = Visibility.Visible;
+
+                return;
+                //Aquadran: This does not work for me. I cannot display TFC stored mips.
+                //Uncomment above lines to activate this
                 string filename = CurrentLoadedCacheName + ".tfc";
                 string localPathText = System.IO.Path.Combine(Directory.GetParent(CurrentLoadedExport.FileRef.FileName).FullName, filename);
                 if (File.Exists(localPathText))
@@ -115,18 +140,21 @@ namespace ME3Explorer
                         file.Seek(mipToLoad.offset, SeekOrigin.Begin);
                         bytesRead = file.Read(buffer, 0, buffer.Length);
 
-                        if (mipToLoad.storageType == StorageTypes.extLZO){
+                        if (mipToLoad.storageType == StorageTypes.extLZO)
+                        {
                             LZO2Helper.LZO2.Decompress(buffer, (uint)buffer.Length, imagebytes);
                         }
                         if (mipToLoad.storageType == StorageTypes.extZlib)
                         {
                             imagebytes = AmaroK86.MassEffect3.ZlibBlock.ZBlock.Decompress(file, mipToLoad.compressedSize);
-
                             //new ZlibHelper.Zlib().Decompress(buffer, (uint)buffer.Length, imagebytes);
                         }
                     }
                 }
             }
+
+            //CannotShowTextureText = "Cannot display TFC stored mips\nComing in a future release";
+            CannotShowTextureTextVisibility = Visibility.Collapsed;
             AmaroK86.ImageFormat.DDS dds = new AmaroK86.ImageFormat.DDS(null, new AmaroK86.ImageFormat.ImageSize((uint)mipToLoad.width, (uint)mipToLoad.height), CurrentLoadedFormat.Substring(3), imagebytes);
             AmaroK86.ImageFormat.DDSImage ddsimage = new AmaroK86.ImageFormat.DDSImage(dds.ToArray());
             var bitmap = ddsimage.mipMaps[0].bitmap;
