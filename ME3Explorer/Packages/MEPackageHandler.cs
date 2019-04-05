@@ -74,7 +74,6 @@ namespace ME3Explorer.Packages
             }
             else
             {
-                Debug.WriteLine("returning already open package " + pathToFile);
                 package = openPackages[pathToFile];
             }
 
