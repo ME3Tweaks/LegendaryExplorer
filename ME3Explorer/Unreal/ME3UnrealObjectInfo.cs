@@ -317,10 +317,10 @@ namespace ME3Explorer.Unreal
 
         public static ArrayType getArrayType(string className, string propName, IExportEntry export = null)
         {
-            PropertyInfo p = getPropertyInfo(className, propName, false);
+            PropertyInfo p = getPropertyInfo(className, propName, false, containingExport: export);
             if (p == null)
             {
-                p = getPropertyInfo(className, propName, true);
+                p = getPropertyInfo(className, propName, true, containingExport: export);
             }
             if (p == null && export != null)
             {
@@ -332,10 +332,10 @@ namespace ME3Explorer.Unreal
                 {
                     ClassInfo currentInfo = generateClassInfo(export);
                     currentInfo.baseClass = export.ClassParent;
-                    p = getPropertyInfo(className, propName, false, currentInfo);
+                    p = getPropertyInfo(className, propName, false, currentInfo, containingExport: export);
                     if (p == null)
                     {
-                        p = getPropertyInfo(className, propName, true, currentInfo);
+                        p = getPropertyInfo(className, propName, true, currentInfo, containingExport: export);
                     }
                 }
             }
@@ -390,7 +390,7 @@ namespace ME3Explorer.Unreal
             else
             {
 #if DEBUG
-         ArrayTypeLookupJustFailed = true;
+                ArrayTypeLookupJustFailed = true;
 #endif
                 Debug.WriteLine("ME3 Array type lookup failed due to no info provided, defaulting to int");
                 if (ME3Explorer.Properties.Settings.Default.PropertyParsingME3UnknownArrayAsObject) return ArrayType.Object;
@@ -398,7 +398,7 @@ namespace ME3Explorer.Unreal
             }
         }
 
-        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true)
+        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, IExportEntry containingExport = null)
         {
             if (className.StartsWith("Default__"))
             {
@@ -441,6 +441,16 @@ namespace ME3Explorer.Unreal
                     if (val != null)
                     {
                         return val;
+                    }
+                }
+                else
+                {
+                    //Baseclass may be modified as well...
+                    if (containingExport != null && containingExport.idxClassParent > 0)
+                    {
+                        //Class parent is in this file. Generate class parent info and attempt refetch
+                        IExportEntry parentExport = containingExport.FileRef.getUExport(containingExport.idxClassParent);
+                        return getPropertyInfo(parentExport.ClassParent, propName, inStruct, generateClassInfo(parentExport), reSearch: true, parentExport);
                     }
                 }
             }

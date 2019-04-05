@@ -114,10 +114,10 @@ namespace ME2Explorer.Unreal
 
         public static ArrayType getArrayType(string className, string propName, bool inStruct = false, IExportEntry export = null)
         {
-            PropertyInfo p = getPropertyInfo(className, propName, inStruct);
+            PropertyInfo p = getPropertyInfo(className, propName, inStruct, containingExport: export);
             if (p == null)
             {
-                p = getPropertyInfo(className, propName, !inStruct);
+                p = getPropertyInfo(className, propName, !inStruct, containingExport: export);
             }
             if (p == null && export != null)
             {
@@ -129,10 +129,10 @@ namespace ME2Explorer.Unreal
                 {
                     ClassInfo currentInfo = generateClassInfo(export);
                     currentInfo.baseClass = export.ClassParent;
-                    p = getPropertyInfo(className, propName, inStruct, currentInfo);
+                    p = getPropertyInfo(className, propName, inStruct, currentInfo, containingExport: export);
                     if (p == null)
                     {
-                        p = getPropertyInfo(className, propName, !inStruct, currentInfo);
+                        p = getPropertyInfo(className, propName, !inStruct, currentInfo, containingExport: export);
                     }
                 }
             }
@@ -194,7 +194,7 @@ namespace ME2Explorer.Unreal
             }
         }
 
-        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true)
+        public static PropertyInfo getPropertyInfo(string className, string propName, bool inStruct = false, ClassInfo nonVanillaClassInfo = null, bool reSearch = true, IExportEntry containingExport = null)
         {
             if (className.StartsWith("Default__"))
             {
@@ -237,6 +237,16 @@ namespace ME2Explorer.Unreal
                     if (val != null)
                     {
                         return val;
+                    }
+                }
+                else
+                {
+                    //Baseclass may be modified as well...
+                    if (containingExport != null && containingExport.idxClassParent > 0)
+                    {
+                        //Class parent is in this file. Generate class parent info and attempt refetch
+                        IExportEntry parentExport = containingExport.FileRef.getUExport(containingExport.idxClassParent);
+                        return getPropertyInfo(parentExport.ClassParent, propName, inStruct, generateClassInfo(parentExport), reSearch: true, parentExport);
                     }
                 }
             }
@@ -486,7 +496,7 @@ namespace ME2Explorer.Unreal
 
             //SFXPhysicalMaterialDecals missing items
             ClassInfo sfxpmd = Classes["SFXPhysicalMaterialDecals"];
-            string[] decalComponentArrays = { "HeavyPistol", "AutoPistol", "HandCannon", "SMG", "Shotgun", "HeavyShotgun","FlakGun", "AssaultRifle", "Needler", "Machinegun", "SniperRifle", "AntiMatRifle", "MassCannon", "ParticleBeam" };
+            string[] decalComponentArrays = { "HeavyPistol", "AutoPistol", "HandCannon", "SMG", "Shotgun", "HeavyShotgun", "FlakGun", "AssaultRifle", "Needler", "Machinegun", "SniperRifle", "AntiMatRifle", "MassCannon", "ParticleBeam" };
             foreach (string decal in decalComponentArrays)
             {
                 sfxpmd.properties[decal] = new PropertyInfo()
