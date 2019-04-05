@@ -9,8 +9,7 @@
         Closing="MemoryAnalyzer_Closing"
         SizeToContent="Width"
         Title="ME3Explorer Memory Analyzer" MinHeight="440" Height="440" MinWidth="500">
-    <StackPanel Margin="5">
-        <DockPanel LastChildFill="True">
+        <DockPanel LastChildFill="True" Margin="5">
             <StackPanel DockPanel.Dock="Top">
                 <TextBlock Text="This tool is for toolset developers only."/>
                 <TextBlock Text="Tracked references:" FontWeight="Bold" Margin="0,10,0,0"/>
@@ -24,7 +23,7 @@
                     <Button Content="Refresh" Margin="2,5" Padding="3,2,3,2" Click="Refresh_Click"/>
                 </StackPanel>
             </StackPanel>
-            <ListBox ItemsSource="{Binding InstancedTrackedMemoryObjects}" Height="300" HorizontalContentAlignment="Stretch">
+            <ListBox ItemsSource="{Binding InstancedTrackedMemoryObjects}" MinHeight="300" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <DockPanel LastChildFill="True" HorizontalAlignment="Stretch">
@@ -38,6 +37,4 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </DockPanel>
-
-    </StackPanel>
 </global:NotifyPropertyChangedWindowBase>
