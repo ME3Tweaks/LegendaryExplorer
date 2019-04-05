@@ -191,5 +191,10 @@ namespace ME3Explorer.CurveEd
             }
             return false;
         }
+
+        public override void Dispose()
+        {
+            //nothing to dispose in this control for now
+        }
     }
 }

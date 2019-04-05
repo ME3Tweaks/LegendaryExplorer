@@ -1,4 +1,5 @@
 ﻿using ME3Explorer.Packages;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -9,7 +10,7 @@ namespace ME3Explorer
     /// <summary>
     /// Subclass of UserControl that also sets up the CurrentLoadedExport, LoadExport(), UnloadExport() and more methods
     /// </summary>
-    public abstract class ExportLoaderControl : NotifyPropertyChangedControlBase
+    public abstract class ExportLoaderControl : NotifyPropertyChangedControlBase, IDisposable
     {
         /// <summary>
         /// Method to determine if an export is parsable by this control
@@ -41,5 +42,10 @@ namespace ME3Explorer
         /// Unloads any loaded exports from this control and resets the control UI
         /// </summary>
         public abstract void UnloadExport();
+
+        /// <summary>
+        /// Free resources for this control
+        /// </summary>
+        public abstract void Dispose();
     }
 }

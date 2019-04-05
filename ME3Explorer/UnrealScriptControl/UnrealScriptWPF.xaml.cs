@@ -353,5 +353,12 @@ namespace ME3Explorer
                 TokenChanging = false;
             }
         }
+
+        public override void Dispose()
+        {
+            ScriptEditor_Hexbox = null;
+            ScriptEditor_Hexbox_Host.Child.Dispose();
+            ScriptEditor_Hexbox_Host.Dispose();
+        }
     }
 }

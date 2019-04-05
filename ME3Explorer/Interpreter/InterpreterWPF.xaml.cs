@@ -1868,6 +1868,13 @@ namespace ME3Explorer
                 }
             }
         }
+
+        public override void Dispose()
+        {
+            Interpreter_Hexbox = null;
+            Interpreter_Hexbox_Host.Child.Dispose();
+            Interpreter_Hexbox_Host.Dispose();
+        }
     }
 
     [DebuggerDisplay("UPropertyTreeViewEntry | {" + nameof(DisplayName) + "}")]

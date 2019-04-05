@@ -21,7 +21,7 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
     /// <summary>
     /// Interaction logic for MemoryAnalyzer.xaml
     /// </summary>
-    public partial class MemoryAnalyzer : WPFBase
+    public partial class MemoryAnalyzer : NotifyPropertyChangedWindowBase
     {
 
         #region Static Reference Adding
@@ -151,11 +151,6 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
         private void MemoryAnalyzer_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             dispatcherTimer.Stop();
-        }
-
-        public override void handleUpdate(List<PackageUpdate> updates)
-        {
-            //throw new NotImplementedException();
         }
     }
 }

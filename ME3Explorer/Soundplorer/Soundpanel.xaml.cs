@@ -1466,7 +1466,7 @@ namespace ME3Explorer
 
         private void Soundpanel_Loaded(object sender, RoutedEventArgs e)
         {
-            SoundpanelHIRC_Hexbox = (HexBox)Interpreter_Hexbox_Host.Child;
+            SoundpanelHIRC_Hexbox = (HexBox)HIRC_Hexbox_Host.Child;
             if (SoundpanelHIRC_Hexbox.ByteProvider == null)
             {
                 SoundpanelHIRC_Hexbox.ByteProvider = new DynamicByteProvider(new byte[] { });
@@ -1546,6 +1546,13 @@ namespace ME3Explorer
         private void Soundpanel_Unloaded(object sender, RoutedEventArgs e)
         {
             seekbarUpdateTimer?.Stop();
+        }
+
+        public override void Dispose()
+        {
+            SoundpanelHIRC_Hexbox = null;
+            HIRC_Hexbox_Host.Child.Dispose();
+            HIRC_Hexbox_Host.Dispose();
         }
     }
 

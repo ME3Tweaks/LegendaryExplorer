@@ -3443,6 +3443,13 @@ namespace ME3Explorer
         {
 
         }
+
+        public override void Dispose()
+        {
+            BinaryInterpreter_Hexbox = null;
+            BinaryInterpreter_Hexbox_Host.Child.Dispose();
+            BinaryInterpreter_Hexbox_Host.Dispose();
+        }
     }
 
 

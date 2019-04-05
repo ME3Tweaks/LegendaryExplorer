@@ -3130,8 +3130,10 @@ namespace ME3Explorer
         private void PackageEditorWPF_Closing(object sender, CancelEventArgs e)
         {
             SoundTab_Soundpanel.FreeAudioResources();
-            //System.Runtime.GCSettings.LargeObjectHeapCompactionMode = System.Runtime.GCLargeObjectHeapCompactionMode.CompactOnce;
-            //GC.Collect();
+            foreach(var el in ExportLoaders.Keys)
+            {
+                el.Dispose(); //Remove hosted winforms references
+            }
         }
 
         private void OpenIn_Clicked(object sender, RoutedEventArgs e)

@@ -574,6 +574,13 @@ namespace ME3Explorer.MetadataEditor
             }
         }
 
+        public override void Dispose()
+        {
+            Header_Hexbox = null;
+            Header_Hexbox_Host.Child.Dispose();
+            Header_Hexbox_Host.Dispose();
+        }
+
         /// <summary>
         /// This class is used when stuffing into the list. It makes "0" searchable by having the UIndex property.
         /// </summary>

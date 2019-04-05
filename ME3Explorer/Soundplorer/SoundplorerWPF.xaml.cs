@@ -587,6 +587,7 @@ namespace ME3Explorer.Soundplorer
                 backgroundScanner.CancelAsync();
             }
             soundPanel.FreeAudioResources();
+            soundPanel.Dispose(); //Gets rid of WinForms control
         }
 
         private void ExtractWEMAsWaveFromBank_Clicked(object sender, RoutedEventArgs e)

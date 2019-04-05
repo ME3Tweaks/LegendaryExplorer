@@ -171,6 +171,11 @@ namespace ME3Explorer
         {
             ParentNameList = namesList;
         }
+
+        public override void Dispose()
+        {
+            //Nothing to dispose in this control
+        }
     }
 
 }

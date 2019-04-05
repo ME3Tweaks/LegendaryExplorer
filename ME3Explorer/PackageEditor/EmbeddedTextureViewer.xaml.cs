@@ -314,6 +314,11 @@ namespace ME3Explorer
             }
         }
 
+        public override void Dispose()
+        {
+            //Nothing to dispose
+        }
+
         public class Texture2DMipInfo
         {
             public int index;

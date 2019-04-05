@@ -164,7 +164,7 @@
                       BorderThickness="0,5"
                       BorderBrush="Transparent"
                       Panel.ZIndex="60"/>
-                    <WindowsFormsHost Name="Interpreter_Hexbox_Host" Grid.Row="2" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" MinWidth="220" MaxWidth="718">
+                    <WindowsFormsHost Name="HIRC_Hexbox_Host" Grid.Row="2" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" MinWidth="220" MaxWidth="718">
                         <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="Soundpanel_HIRCHexbox_SelectionChanged" VScrollBarVisible="True">
                         </hb1:HexBox>
                     </WindowsFormsHost>
