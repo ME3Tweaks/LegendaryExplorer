@@ -634,7 +634,39 @@ namespace ME3Explorer.Unreal
                 case ArrayType.Enum:
                     {
                         var props = new List<EnumProperty>();
-                        NameReference enumType = new NameReference { Name = UnrealObjectInfo.GetEnumType(pcc.Game, name, enclosingType) };
+
+                        NameReference enumType = new NameReference();
+                        //if (pcc.Game == MEGame.ME3)
+                        //{
+                        //    enumType.Name = pcc.getNameEntry(stream.ReadValueS32());
+                        //    enumType.Number = stream.ReadValueS32();
+                        //}
+                        //else
+                        //{
+                        //Debug.WriteLine("Reading enum for ME1/ME2 at 0x" + propertyStartPosition.ToString("X6"));
+
+                        //Attempt to get info without lookup first
+                        var enumname = UnrealObjectInfo.GetEnumType(pcc.Game, name, enclosingType);
+                        ClassInfo classInfo = null;
+                        if (enumname == null)
+                        {
+                            if (parsingEntry != null)
+                            {
+                                if (parsingEntry.FileRef.Game == MEGame.ME1)
+                                {
+                                    classInfo = ME1Explorer.Unreal.ME1UnrealObjectInfo.generateClassInfo((IExportEntry)parsingEntry);
+                                }
+                                if (parsingEntry.FileRef.Game == MEGame.ME2)
+                                {
+                                    classInfo = ME2Explorer.Unreal.ME2UnrealObjectInfo.generateClassInfo((IExportEntry)parsingEntry);
+                                }
+                            }
+                        }
+
+                        //Use DB info or attempt lookup
+                        enumType.Name = enumname ?? UnrealObjectInfo.GetEnumType(pcc.Game, name, enclosingType, classInfo);
+                        //}
+
                         for (int i = 0; i < count; i++)
                         {
                             long startPos = stream.Position;
