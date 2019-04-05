@@ -1195,6 +1195,14 @@ namespace ME3Explorer
 
         private void PathfindingEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
+            //Nullify things to prevent memory leaks
+
+            rightMouseButtonMenu = null;
+            contextMenuStrip2 = null;
+            showVolumesInsteadOfNodesToolStripMenuItem = null;
+            ViewingModesMenuItem = null;
+            sFXCombatZonesToolStripMenuItem = null;
+            staticMeshCollectionActorsToolStripMenuItem = null;
             graphEditor.RemoveInputEventListener(pathfindingMouseListener);
             graphEditor.Click -= graphEditor_Click;
             graphEditor.DragDrop -= PathfindingEditor_DragDrop;
@@ -3560,7 +3568,6 @@ namespace ME3Explorer
                 this.graphEditor = graphEditor;
                 this.camera = graphEditor.Camera;
                 camera.ViewScale = 0.5f;
-                camera.Canvas.ZoomEventHandler = null;
                 camera.MouseWheel += OnMouseWheel;
                 graphEditor.KeyDown += OnKeyDown;
             }
@@ -3568,6 +3575,7 @@ namespace ME3Explorer
             public void Dispose()
             {
                 //Remove event handlers for memory cleanup
+                camera.Canvas.ZoomEventHandler = null;
                 camera.MouseWheel -= OnMouseWheel;
                 graphEditor.KeyDown -= OnKeyDown;
                 camera = null;
