@@ -20,7 +20,7 @@ namespace ME3Explorer.SequenceObjects
 {
     public enum VarTypes { Int, Bool, Object, Float, StrRef, MatineeData, Extern, String };
 
-    public abstract class SObj : PNode
+    public abstract class SObj : PNode, IDisposable
     {
         public IMEPackage pcc;
         public GraphEditor g;
@@ -132,6 +132,8 @@ namespace ME3Explorer.SequenceObjects
                 return VarTypes.String;
             return VarTypes.Extern;
         }
+
+        public abstract void Dispose();
     }
 
     public class SVar : SObj
@@ -367,6 +369,11 @@ namespace ME3Explorer.SequenceObjects
                 dragTarget = null;
             }
         }
+
+        public override void Dispose()
+        {
+
+        }
     }
 
     public class SFrame : SObj
@@ -403,6 +410,11 @@ namespace ME3Explorer.SequenceObjects
             comment.Y -= titleBox.Height;
             this.Bounds = new RectangleF(0, -titleBox.Height, titleBox.Width, titleBox.Height);
             this.TranslateBy(x, y);
+        }
+
+        public override void Dispose()
+        {
+
         }
 
         protected void MakeTitleBox(string s)
@@ -462,7 +474,7 @@ namespace ME3Explorer.SequenceObjects
         protected PPath outLinkBox;
         public List<OutputLink> Outlinks;
         public List<VarLink> Varlinks;
-
+        protected VarDragHandler varDragHandler;
         protected SBox(int idx, IMEPackage p, GraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
@@ -605,7 +617,8 @@ namespace ME3Explorer.SequenceObjects
                         ((PPath)l.node[0]).Pen = l.node.Pen;
                         l.node[0].X = l.node.X;
                         l.node[0].Y = l.node.Y;
-                        l.node[0].AddInputEventListener(new VarDragHandler());
+                        varDragHandler = new VarDragHandler(); //track for memory release
+                        l.node[0].AddInputEventListener(varDragHandler);
                         Varlinks.Add(l);
                     }
                 }
@@ -990,6 +1003,14 @@ namespace ME3Explorer.SequenceObjects
             outLinkBox.Pen = outlinePen;
         }
 
+        public override void Dispose()
+        {
+            if (varDragHandler != null)
+            {
+                Outlinks.ForEach(x => x.node.RemoveInputEventListener(varDragHandler));
+            }
+        }
+
         //public override bool Intersects(RectangleF bounds)
         //{
         //    Region hitregion = new Region(outLinkBox.PathReference);
@@ -1305,6 +1326,13 @@ namespace ME3Explorer.SequenceObjects
             dragTarget = null;
         }
 
+        public override void Dispose()
+        {
+            if (varDragHandler != null)
+            {
+                Outlinks.ForEach(x => x.node.RemoveInputEventListener(varDragHandler));
+            }
+        }
     }
 
     public class SText : PText

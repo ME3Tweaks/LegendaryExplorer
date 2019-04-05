@@ -133,9 +133,6 @@
             this.graphEditor.Size = new System.Drawing.Size(698, 403);
             this.graphEditor.TabIndex = 1;
             this.graphEditor.Text = "graphEditor1";
-            this.graphEditor.Click += new System.EventHandler(this.graphEditor_Click);
-            this.graphEditor.DragDrop += new System.Windows.Forms.DragEventHandler(this.SequenceEditor_DragDrop);
-            this.graphEditor.DragEnter += new System.Windows.Forms.DragEventHandler(this.SequenceEditor_DragEnter);
             // 
             // splitContainer3
             // 

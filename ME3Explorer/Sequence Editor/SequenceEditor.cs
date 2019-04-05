@@ -75,6 +75,10 @@ namespace ME3Explorer
             RefreshRecent(false);
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
             graphEditor.Camera.MouseDown += backMouseDown_Handler;
+
+            this.graphEditor.Click += this.graphEditor_Click;
+            this.graphEditor.DragDrop += SequenceEditor_DragDrop;
+            this.graphEditor.DragEnter += SequenceEditor_DragEnter;
             zoomController = new ZoomController(graphEditor);
 
             //if (SObj.talkfiles == null)
@@ -825,6 +829,21 @@ namespace ME3Explorer
             if (!Directory.Exists(SequenceEditorDataFolder))
                 Directory.CreateDirectory(SequenceEditorDataFolder);
             File.WriteAllText(OptionsPath, outputFile);
+
+
+            //Code here remove these objects from leaking the window memory
+            contextMenuStrip1.Dispose();
+            contextMenuStrip2.Dispose();
+            breakLinksToolStripMenuItem.DropDown.Dispose();
+            //            breakLinksToolStripMenuItem = null;
+            graphEditor.Camera.MouseDown -= backMouseDown_Handler;
+            graphEditor.Click -= graphEditor_Click;
+            graphEditor.DragDrop -= SequenceEditor_DragDrop;
+            graphEditor.DragEnter -= SequenceEditor_DragEnter;
+            zoomController.Dispose();
+            Objects?.ForEach(x => { x.MouseDown -= node_MouseDown; x.Dispose(); });
+            Objects?.Clear();
+            graphEditor.Dispose();
         }
 
         private void saveImageToolStripMenuItem_Click(object sender, EventArgs e)
@@ -902,10 +921,10 @@ namespace ME3Explorer
                                 temp = new ToolStripMenuItem("Break link from " + sBox.Varlinks[i].Desc + " to " + sBox.Varlinks[i].Links[j]);
                                 int linkConnection = i;
                                 int linkIndex = j;
-                                temp.Click += (o, args) =>
-                                {
-                                    sBox.RemoveVarlink(linkConnection, linkIndex);
-                                };
+                                //temp.Click += (o, args) =>
+                                //{
+                                //    sBox.RemoveVarlink(linkConnection, linkIndex);
+                                //};
                                 varLinkMenu.Items.Add(temp);
                             }
                         }
@@ -919,10 +938,10 @@ namespace ME3Explorer
                                 temp = new ToolStripMenuItem("Break link from " + sBox.Outlinks[i].Desc + " to " + sBox.Outlinks[i].Links[j] + " :" + sBox.Outlinks[i].InputIndices[j]);
                                 int linkConnection = i;
                                 int linkIndex = j;
-                                temp.Click += (o, args) =>
-                                {
-                                    sBox.RemoveOutlink(linkConnection, linkIndex);
-                                };
+                                //temp.Click += (o, args) =>
+                                //{
+                                //    sBox.RemoveOutlink(linkConnection, linkIndex);
+                                //};
                                 outLinkMenu.Items.Add(temp);
                             }
                         }
@@ -943,6 +962,7 @@ namespace ME3Explorer
                         temp.Click += removeAllLinks_handler;
                         submenu.Items.Add(temp);
                         breakLinksToolStripMenuItem.Enabled = true;
+                        breakLinksToolStripMenuItem.DropDown.Dispose();
                         breakLinksToolStripMenuItem.DropDown = submenu;
                     }
                 }
@@ -1478,18 +1498,27 @@ namespace ME3Explorer
         }
     }
 
-    public class ZoomController
+    public class ZoomController : IDisposable
     {
         public static float MIN_SCALE = .005f;
         public static float MAX_SCALE = 15;
-        readonly PCamera camera;
+        private PCamera camera;
+        private GraphEditor graphEditor;
 
         public ZoomController(GraphEditor graphEditor)
         {
+            this.graphEditor = graphEditor;
             this.camera = graphEditor.Camera;
             camera.Canvas.ZoomEventHandler = null;
             camera.MouseWheel += OnMouseWheel;
             graphEditor.KeyDown += OnKeyDown;
+        }
+
+        public void Dispose()
+        {
+            //Remove event handlers for memory cleanup
+            graphEditor = null;
+            camera = null;
         }
 
         public void OnKeyDown(object o, KeyEventArgs e)

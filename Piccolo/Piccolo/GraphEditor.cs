@@ -161,6 +161,9 @@ namespace UMD.HCIL.GraphEditor
             {
                 if (components != null)
                     components.Dispose();
+                nodeLayer.RemoveAllChildren();
+                edgeLayer.RemoveAllChildren();
+                backLayer.RemoveAllChildren();
             }
             base.Dispose(disposing);
         }
