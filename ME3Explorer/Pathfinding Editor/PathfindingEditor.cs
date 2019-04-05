@@ -89,8 +89,10 @@ namespace ME3Explorer
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Pathfinding Editor", new WeakReference(this));
 
             AllowRefresh = true;
-            classDatabasePath = Application.StartupPath + "//exec//pathfindingclassdb.json";
+            classDatabasePath = Path.Combine(Application.StartupPath, "exec", "pathfindingclassdb.json");
             InitializeComponent();
+
+            pathfindingMouseListener = new PathfindingMouseListener(this); //Must be member so we can release reference
 
             //Stuff that can't be done in designer view easily
             showVolumesInsteadOfNodesToolStripMenuItem.DropDown.Closing += new ToolStripDropDownClosingEventHandler(DropDown_Closing);
@@ -104,7 +106,12 @@ namespace ME3Explorer
             RefreshRecent(false);
             pathfindingNodeInfoPanel.PassPathfindingNodeEditorIn(this);
             graphEditor.BackColor = System.Drawing.Color.FromArgb(130, 130, 130);
-            graphEditor.AddInputEventListener(new PathfindingMouseListener(this));
+            graphEditor.AddInputEventListener(pathfindingMouseListener);
+
+            graphEditor.Click += graphEditor_Click;
+            graphEditor.DragDrop += PathfindingEditor_DragDrop;
+            graphEditor.DragEnter += PathfindingEditor_DragEnter;
+
             zoomController = new PathingZoomController(graphEditor);
             CurrentFilterType = HeightFilterForm.FILTER_Z_NONE;
             CurrentZFilterValue = 0;
@@ -730,6 +737,7 @@ namespace ME3Explorer
         private bool EverythingElseActive;
         private bool HighlightSequenceReferences;
         private bool NodeTagListLoading;
+        private PathfindingMouseListener pathfindingMouseListener;
 
         public void LoadObject(int index)
         {
@@ -1187,7 +1195,11 @@ namespace ME3Explorer
 
         private void PathfindingEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
-
+            graphEditor.RemoveInputEventListener(pathfindingMouseListener);
+            graphEditor.Click -= graphEditor_Click;
+            graphEditor.DragDrop -= PathfindingEditor_DragDrop;
+            graphEditor.DragEnter -= PathfindingEditor_DragEnter;
+            zoomController.Dispose();
         }
 
         private void saveImageToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3536,19 +3548,30 @@ namespace ME3Explorer
             //No level was found.
         }
 
-        public class PathingZoomController
+        public class PathingZoomController : IDisposable
         {
             public static float MIN_SCALE = .005f;
             public static float MAX_SCALE = 15;
+            PathingGraphEditor graphEditor;
             PCamera camera;
 
             public PathingZoomController(PathingGraphEditor graphEditor)
             {
+                this.graphEditor = graphEditor;
                 this.camera = graphEditor.Camera;
                 camera.ViewScale = 0.5f;
                 camera.Canvas.ZoomEventHandler = null;
                 camera.MouseWheel += OnMouseWheel;
                 graphEditor.KeyDown += OnKeyDown;
+            }
+
+            public void Dispose()
+            {
+                //Remove event handlers for memory cleanup
+                camera.MouseWheel -= OnMouseWheel;
+                graphEditor.KeyDown -= OnKeyDown;
+                camera = null;
+                graphEditor = null;
             }
 
             public void OnKeyDown(object o, KeyEventArgs e)

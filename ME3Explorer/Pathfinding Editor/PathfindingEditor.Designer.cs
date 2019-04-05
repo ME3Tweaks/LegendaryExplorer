@@ -184,9 +184,7 @@ namespace ME3Explorer
             this.graphEditor.Size = new System.Drawing.Size(825, 521);
             this.graphEditor.TabIndex = 1;
             this.graphEditor.Text = "graphEditor1";
-            this.graphEditor.Click += new System.EventHandler(this.graphEditor_Click);
-            this.graphEditor.DragDrop += new System.Windows.Forms.DragEventHandler(this.PathfindingEditor_DragDrop);
-            this.graphEditor.DragEnter += new System.Windows.Forms.DragEventHandler(this.PathfindingEditor_DragEnter);
+
             // 
             // splitContainer3
             // 

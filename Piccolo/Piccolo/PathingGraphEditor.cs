@@ -37,6 +37,7 @@ namespace UMD.HCIL.PathingGraphEditor
         public PLayer backLayer;
         public PathingGraphEditor(int width, int height)
         {
+            //MemoryAnalyzer.AddTrackedMemoryItem("Pathfinding Graph Editor", new WeakReference(this));
             InitializeComponent();
             this.Size = new Size(width, height);
             nodeLayer = this.Layer;
@@ -47,7 +48,7 @@ namespace UMD.HCIL.PathingGraphEditor
             Root.AddChild(backLayer);
             backLayer.MoveToBack();
             this.Camera.AddLayer(1, backLayer);
-            nodeLayer.AddInputEventListener(new NodeDragHandler());
+            //nodeLayer.AddInputEventListener(new NodeDragHandler());
         }
 
         public void addBack(PNode p)
