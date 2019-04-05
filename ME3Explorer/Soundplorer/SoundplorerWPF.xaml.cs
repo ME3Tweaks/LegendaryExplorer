@@ -83,6 +83,8 @@ namespace ME3Explorer.Soundplorer
 
         public SoundplorerWPF()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Soundplorer WPF", new WeakReference(this));
+
             TaskbarText = "Open a file to view sound-related exports/data";
             InitializeComponent();
 

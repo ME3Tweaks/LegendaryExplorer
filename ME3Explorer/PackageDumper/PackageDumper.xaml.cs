@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
@@ -31,8 +32,25 @@ namespace ME3Explorer.PackageDumper
     /// </summary>
     public partial class PackageDumper : NotifyPropertyChangedWindowBase
     {
+        /// <summary>
+        /// Items show in the list that are currently being processed
+        /// </summary>
         public ObservableCollectionExtended<PackageDumperSingleFileTask> CurrentDumpingItems { get; set; } = new ObservableCollectionExtended<PackageDumperSingleFileTask>();
-        BackgroundWorker DumpWorker;
+
+        /// <summary>
+        /// All items in the queue
+        /// </summary>
+        private List<PackageDumperSingleFileTask> AllDumpingItems;
+
+        private int CoreCount;
+
+        private int _listViewHeight;
+        public int ListViewHeight
+        {
+            get => _listViewHeight;
+            set => SetProperty(ref _listViewHeight, value);
+        }
+
         private void LoadCommands()
         {
             // Player commands
@@ -60,6 +78,7 @@ namespace ME3Explorer.PackageDumper
             set => SetProperty(ref _overallProgressValue, value);
         }
 
+        private ActionBlock<PackageDumperSingleFileTask> ProcessingQueue;
         private int _overallProgressMaximum;
         public int OverallProgressMaximum
         {
@@ -77,27 +96,31 @@ namespace ME3Explorer.PackageDumper
 
         private bool CanDumpGameME1(object obj)
         {
-            return ME1Directory.gamePath != null && Directory.Exists(ME1Directory.gamePath) && (DumpWorker == null || !DumpWorker.IsBusy);
+            return ME1Directory.gamePath != null && Directory.Exists(ME1Directory.gamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation);
         }
 
         private bool CanDumpGameME2(object obj)
         {
-            return ME2Directory.gamePath != null && Directory.Exists(ME2Directory.gamePath) && (DumpWorker == null || !DumpWorker.IsBusy);
+            return ME2Directory.gamePath != null && Directory.Exists(ME2Directory.gamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation);
         }
 
         private bool CanDumpGameME3(object obj)
         {
-            return ME3Directory.gamePath != null && Directory.Exists(ME3Directory.gamePath) && (DumpWorker == null || !DumpWorker.IsBusy);
+            return ME3Directory.gamePath != null && Directory.Exists(ME3Directory.gamePath) && (ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation);
         }
 
         private bool CanCancelDump(object obj)
         {
-            return DumpWorker != null && DumpWorker.IsBusy && !DumpCanceled;
+            return ProcessingQueue != null && ProcessingQueue.Completion.Status == TaskStatus.WaitingForActivation && !DumpCanceled;
         }
 
         private void CancelDump(object obj)
         {
             DumpCanceled = true;
+            if (AllDumpingItems != null)
+            {
+                AllDumpingItems.ForEach(x => x.DumpCanceled = true);
+            }
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
         }
 
@@ -120,9 +143,19 @@ namespace ME3Explorer.PackageDumper
 
         public PackageDumper(Window owner = null)
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Package Dumper", new WeakReference(this));
+
             Owner = owner;
             DataContext = this;
             LoadCommands();
+
+            CoreCount = 0;
+            foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_Processor").Get())
+            {
+                CoreCount += int.Parse(item["NumberOfCores"].ToString());
+            }
+            if (CoreCount == 0) { CoreCount = 2; }
+            ListViewHeight = 25 * CoreCount;
             InitializeComponent();
         }
 
@@ -163,11 +196,6 @@ namespace ME3Explorer.PackageDumper
             {
                 string outputDir = m.FileName;
                 dumpPackagesFromFolder(rootPath, outputDir);
-/*
-                DumpWorker = new BackgroundWorker();
-                DumpWorker.DoWork += Dump_BackgroundThread;
-                DumpWorker.RunWorkerCompleted += Dump_Completed;
-                DumpWorker.RunWorkerAsync(argument: (rootPath, outputDir));*/
             }
         }
 
@@ -187,6 +215,65 @@ namespace ME3Explorer.PackageDumper
                 var exceptionMessage = ExceptionHandlerDialogWPF.FlattenException(ex);
                 Debug.WriteLine(exceptionMessage);
             }
+            
+            //throw new NotImplementedException();
+        }
+
+
+        /// <summary>
+        /// Dumps PCC data from all PCCs in the specified folder, recursively.
+        /// </summary>
+        /// <param name="path">Base path to start dumping functions from. Will search all subdirectories for package files.</param>
+        /// <param name="args">Set of arguments for what to dump. In order: imports, exports, data, scripts, coalesced, names. At least 1 of these options must be true.</param>
+        /// <param name="outputfolder">Output path to place files in. If null, it will use the same folder as the currently processing PCC. Files will be placed relative to the base path.</param>
+        public async void dumpPackagesFromFolder(string path, string outputfolder = null)
+        {
+            path = Path.GetFullPath(path);
+            var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
+            List<string> files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower()))).ToList();
+            await dumpPackages(files);
+        }
+
+        private async Task dumpPackages(List<string> files, string outputfolder = null)
+        {
+            CurrentOverallOperationText = "Dumping packages...";
+            OverallProgressMaximum = files.Count;
+            OverallProgressValue = 0;
+            ProcessingQueue = new ActionBlock<PackageDumperSingleFileTask>(x =>
+            {
+                if (x.DumpCanceled) { OverallProgressValue++; return; }
+                Application.Current.Dispatcher.Invoke(new Action(() => CurrentDumpingItems.Add(x)));
+                x.dumpPackageFile(); // What to do on each item
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    OverallProgressValue++; //Concurrency
+                    CurrentDumpingItems.Remove(x);
+                }));
+            },
+            new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = CoreCount }); // How many items at the same time
+
+            AllDumpingItems = new List<PackageDumperSingleFileTask>();
+            CurrentDumpingItems.ClearEx();
+            foreach (var item in files)
+            {
+                string outfolder = outputfolder;
+                if (outfolder != null)
+                {
+                    string relative = GetRelativePath(Path.GetFullPath(item), Directory.GetParent(item).ToString());
+                    outfolder = Path.Combine(outfolder, relative);
+                }
+
+                var threadtask = new PackageDumperSingleFileTask(item, outfolder);
+                AllDumpingItems.Add(threadtask); //For setting cancelation value
+                ProcessingQueue.Post(threadtask); // Post all items to the block
+            }
+
+            ProcessingQueue.Complete(); // Signal completion
+            Debug.WriteLine("HERE I BEFORE");
+
+            await ProcessingQueue.Completion; // Asynchronously wait for completion.        }
+            Debug.WriteLine("HERE I AM");
+
             if (DumpCanceled)
             {
                 DumpCanceled = false;
@@ -200,157 +287,7 @@ namespace ME3Explorer.PackageDumper
                 OverallProgressMaximum = 100;
                 CurrentOverallOperationText = "Dump completed";
             }
-            //throw new NotImplementedException();
         }
-
-        /// <summary>
-        /// Formats arguments as a string
-        /// </summary>
-        /// <param name="filename">EXE file</param>
-        /// <param name="arguments">EXE arguments</param>
-        /// <returns></returns>
-        public string Format(string filename, string arguments)
-        {
-            return "'" + filename +
-                ((string.IsNullOrEmpty(arguments)) ? string.Empty : " " + arguments) +
-                "'";
-        }
-
-        /// <summary>
-        /// Dumps PCC data from all PCCs in the specified folder, recursively.
-        /// </summary>
-        /// <param name="path">Base path to start dumping functions from. Will search all subdirectories for package files.</param>
-        /// <param name="args">Set of arguments for what to dump. In order: imports, exports, data, scripts, coalesced, names. At least 1 of these options must be true.</param>
-        /// <param name="outputfolder">Output path to place files in. If null, it will use the same folder as the currently processing PCC. Files will be placed relative to the base path.</param>
-        public async void dumpPackagesFromFolder(string path, string outputfolder = null)
-        {
-            path = Path.GetFullPath(path);
-            var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
-            List<string> files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower()))).ToList();
-            OverallProgressMaximum = files.Count;
-            OverallProgressValue = 0;
-            var block = new ActionBlock<PackageDumperSingleFileTask>(x =>
-            {
-                Application.Current.Dispatcher.Invoke(new Action(() => CurrentDumpingItems.Add(x)));
-                x.dumpPackageFile(); // What to do on each item
-                OverallProgressValue++; //We might need to somehow wrap this in concurrent
-                Application.Current.Dispatcher.Invoke(new Action(() => CurrentDumpingItems.Remove(x)));
-            },
-    new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 4 }); // How many items at the same time
-
-            CurrentDumpingItems.ClearEx();
-            foreach (var item in files)
-            {
-                string outfolder = outputfolder;
-                if (outfolder != null)
-                {
-                    string relative = GetRelativePath(path, Directory.GetParent(item).ToString());
-                    outfolder = Path.Combine(outfolder, relative);
-                }
-
-                var threadtask = new PackageDumperSingleFileTask(item, outfolder);
-                //CurrentDumpingItems.Add(threadtask);
-                block.Post(threadtask); // Post all items to the block
-            }
-
-            block.Complete(); // Signal completion
-            await block.Completion; // Asynchronously wait for completion.
-
-
-
-            /*
-            for (int i = 0; i < files.Count; i++)
-            {
-                if (!DumpCanceled)
-                {
-                    string file = Path.GetFullPath(files[i]);
-                    //if (file.EndsWith("BioD_Cat002.pcc") || beginParsing)
-                    //{
-                    string outfolder = outputfolder;
-                    if (outfolder != null)
-                    {
-                        string relative = GetRelativePath(path, Directory.GetParent(file).ToString());
-                        outfolder = Path.Combine(outfolder, relative);
-                    }
-                    CurrentOverallOperationText = "Dumping " + Path.GetFileNameWithoutExtension(file);
-
-                    Debug.WriteLine("[" + (i + 1) + "/" + files.Count + "] Dumping " + Path.GetFileNameWithoutExtension(file));
-                    //dumpPCCFile(file, outfolder);
-                    OverallProgressValue = i;
-                    //}
-                }*/
-        }
-
-
-        //if (properties)
-        //{
-        //Resolve LevelStreamingKismet references
-        //    string savepath = outfolder + System.IO.Path.GetFileNameWithoutExtension(file) + ".txt";
-        //    string output = File.ReadAllText(savepath);
-        //    string[] lines = output.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
-
-        //    int parsingLine = 0;
-        //    string streamingline = "LevelStreamingKismet [EXPORT";
-        //    string kismetprefix = "LevelStreamingKismet(LevelStreamingKismet)";
-        //    Dictionary<int, int> streamingLines = new Dictionary<int, int>(); //Maps string line # to export #s
-        //    Dictionary<int, string> lskPackageName = new Dictionary<int, string>();
-        //    //string streamingline = "LevelStreamingKismet[EXPORT";
-        //    string packagenameprefix = "Name: \"PackageName\" Type: \"NameProperty\" Size: 8 Value: \"";
-        //    foreach (string line in lines)
-        //    {
-
-        //        int exportnumstart = line.IndexOf(streamingline);
-        //        if (exportnumstart > 0)
-        //        {
-        //            exportnumstart += streamingline.Length;
-        //            string truncstr = line.Substring(exportnumstart);
-        //            int exportnumend = truncstr.IndexOf("]");
-        //            string exportidstr = truncstr.Substring(0, exportnumend);
-        //            int export = int.Parse(exportidstr);
-        //            export++;
-        //            streamingLines[parsingLine] = export;
-        //            parsingLine++;
-        //            continue;
-        //        }
-
-        //        if (line.Contains(kismetprefix))
-        //        {
-        //            //Get Export #
-        //            string exportStr = line.Substring(1); //Remove #
-        //            exportStr = exportStr.Substring(0, exportStr.IndexOf(" "));
-        //            int exportNum = int.Parse(exportStr);
-        //            //Get PackageName
-        //            string packagenamline = lines[parsingLine + 3];
-        //            if (packagenamline.Contains("PackageName"))
-        //            {
-        //                int prefixindex = packagenamline.IndexOf(packagenameprefix);
-        //                prefixindex += packagenameprefix.Length;
-        //                packagenamline = packagenamline.Substring(prefixindex);
-        //                int endofpackagename = packagenamline.IndexOf("\"");
-        //                string packagename = packagenamline.Substring(0, endofpackagename);
-        //                lskPackageName[exportNum] = packagename;
-        //            }
-        //            parsingLine++;
-        //            continue;
-        //        }
-        //        parsingLine++;
-        //    }
-
-        //    //Updates lines.
-        //    foreach (KeyValuePair<int, int> entry in streamingLines)
-        //    {
-        //        lines[entry.Key] += " - " + lskPackageName[entry.Value];
-        //        Console.WriteLine(lines[entry.Key]);
-
-        //        // do something with entry.Value or entry.Key
-        //    }
-        //    File.WriteAllLines(savepath, lines, Encoding.UTF8);
-        //}
-        //}
-        //catch (Exception e)
-        //{
-        //    Console.WriteLine("Exception parsing " + file + "\n" + e.Message);
-        //}
 
 
         /// <summary>
@@ -420,11 +357,50 @@ namespace ME3Explorer.PackageDumper
         private void PackageDumper_Closing(object sender, CancelEventArgs e)
         {
             DumpCanceled = true;
+            if (AllDumpingItems != null)
+            {
+                AllDumpingItems.ForEach(x => x.DumpCanceled = true);
+            }
         }
 
         private void PackageDumper_Loaded(object sender, RoutedEventArgs e)
         {
             Owner = null; //Detach from parent
+        }
+
+        private void PackageDumper_FilesDropped(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+        }
+
+        private void PackageDumper_DragOver(object sender, DragEventArgs e)
+        {
+            bool dropEnabled = true;
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, true))
+            {
+                string[] filenames =
+                                 e.Data.GetData(DataFormats.FileDrop, true) as string[];
+                string[] acceptedExtensions = new string[] { ".pcc", ".u", ".upk", ".sfc" };
+                foreach (string filename in filenames)
+                {
+                    string extension = System.IO.Path.GetExtension(filename).ToLower();
+                    if (!acceptedExtensions.Contains(extension))
+                    {
+                        dropEnabled = false;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                dropEnabled = false;
+            }
+
+            if (!dropEnabled)
+            {
+                e.Effects = DragDropEffects.None;
+                e.Handled = true;
+            }
         }
     }
 
@@ -466,7 +442,7 @@ namespace ME3Explorer.PackageDumper
             CurrentOverallOperationText = "Dumping " + ShortFileName;
         }
 
-        private bool DumpCanceled;
+        public bool DumpCanceled;
         private string File;
         private string OutputFolder;
 
@@ -536,7 +512,6 @@ namespace ME3Explorer.PackageDumper
 
                         int numDone = 1;
                         int numTotal = pcc.Exports.Count;
-                        int lastProgress = 0;
                         //writeVerboseLine("Enumerating exports");
                         string swfoutfolder = outfolder + System.IO.Path.GetFileNameWithoutExtension(File) + "\\";
                         foreach (IExportEntry exp in pcc.Exports)

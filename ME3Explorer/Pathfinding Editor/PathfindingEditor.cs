@@ -86,6 +86,8 @@ namespace ME3Explorer
         private List<IExportEntry> AllLevelObjects = new List<IExportEntry>();
         public PathfindingEditor()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Pathfinding Editor", new WeakReference(this));
+
             AllowRefresh = true;
             classDatabasePath = Application.StartupPath + "//exec//pathfindingclassdb.json";
             InitializeComponent();

@@ -16,6 +16,8 @@ namespace ME3Explorer
     {
         public AutoTOC()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("AutoTOC", new WeakReference(this));
+
             InitializeComponent();
         }
 

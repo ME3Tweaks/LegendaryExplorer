@@ -50,6 +50,8 @@ namespace ME3Explorer
 
         public EmbeddedTextureViewer()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("[PackEdWPF] Texture ExportLoader", new WeakReference(this));
+
             DataContext = this;
             CannotShowTextureText = "Select a mip to view";
             CannotShowTextureTextVisibility = Visibility.Visible;
@@ -76,7 +78,7 @@ namespace ME3Explorer
                 {
                     CurrentLoadedCacheName = cache.Value.Name;
                 }
-                var neverStream = properties.GetProp<NameProperty>("NeverStream");
+                var neverStream = properties.GetProp<BoolProperty>("NeverStream");
                 if (neverStream != null)
                 {
                     CurrentLoadedNeverStreamFlag = true;

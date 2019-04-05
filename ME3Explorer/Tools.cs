@@ -84,6 +84,21 @@ namespace ME3Explorer
                 subCategory = "Mod Packagers",
                 description = "MODMAKER IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nModMaker is used to create and install files with the \".mod\" extension. MOD files are compatible with ME3 and may be packaged with meshes and other game resources."
             });
+
+            set.Add(new Tool
+            {
+                name = "Memory Analyzer",
+                type = typeof(ME3ExpMemoryAnalyzer.MemoryAnalyzer),
+                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+                open = () =>
+                {
+                    (new ME3ExpMemoryAnalyzer.MemoryAnalyzer()).Show();
+                },
+                tags = new List<string> { "utility", "toolsetdev"},
+                subCategory = "For Toolset Devs Only",
+                description = "Memory Analyzer allows you to track references to objects to help trace memory leaks."
+            });
+
             set.Add(new Tool
             {
                 name = "TPF Tools",

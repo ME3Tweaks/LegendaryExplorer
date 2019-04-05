@@ -55,27 +55,33 @@ namespace ME3Explorer.Packages
                 SetHeaderValue(value, 64);
             }
         }
-        int ExportOffset {
+        int ExportOffset
+        {
             get => BitConverter.ToInt32(header, idxOffsets + 12);
             set => SetHeaderValue(value, 12);
         }
-        public override int ImportCount {
+        public override int ImportCount
+        {
             get => BitConverter.ToInt32(header, idxOffsets + 16);
             protected set => SetHeaderValue(value, 16);
         }
-        public int ImportOffset {
+        public int ImportOffset
+        {
             get => BitConverter.ToInt32(header, idxOffsets + 20);
             private set => SetHeaderValue(value, 20);
         }
-        public int DependsOffset {
+        public int DependsOffset
+        {
             get => BitConverter.ToInt32(header, idxOffsets + 24);
             private set => SetHeaderValue(value, 24);
         }
-        int FreeZoneStart {
+        int FreeZoneStart
+        {
             get => BitConverter.ToInt32(header, idxOffsets + 24);
             set => SetHeaderValue(value, 24);
         }
-        int FreeZoneEnd {
+        int FreeZoneEnd
+        {
             get => BitConverter.ToInt32(header, idxOffsets + 28);
             set => SetHeaderValue(value, 28);
         }
@@ -106,6 +112,8 @@ namespace ME3Explorer.Packages
         /// <param name="pccFilePath">full path + file name of desired pcc file.</param>
         private ME3Package(string pccFilePath)
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"ME3Package {Path.GetFileName(pccFilePath)}", new WeakReference(this));
+
             //Debug.WriteLine(" >> Opening me3 package " + pccFilePath);
             FileName = Path.GetFullPath(pccFilePath);
             MemoryStream inStream;
@@ -148,7 +156,7 @@ namespace ME3Explorer.Packages
             inStream.Seek(ImportOffset, SeekOrigin.Begin);
             for (int i = 0; i < ImportCount; i++)
             {
-                ImportEntry imp = new ImportEntry(this, inStream) {Index = i};
+                ImportEntry imp = new ImportEntry(this, inStream) { Index = i };
                 imp.PropertyChanged += importChanged;
                 imports.Add(imp);
             }
@@ -156,7 +164,7 @@ namespace ME3Explorer.Packages
             inStream.Seek(ExportOffset, SeekOrigin.Begin);
             for (int i = 0; i < ExportCount; i++)
             {
-                ME3ExportEntry e = new ME3ExportEntry(this, inStream) {Index = i};
+                ME3ExportEntry e = new ME3ExportEntry(this, inStream) { Index = i };
                 e.PropertyChanged += exportChanged;
                 exports.Add(e);
             }
@@ -250,7 +258,7 @@ namespace ME3Explorer.Packages
                     m.WriteValueS32(e.DataOffset);
                     m.Seek(pos, SeekOrigin.Begin);
                 }
-                
+
                 //update header
                 m.Seek(0, SeekOrigin.Begin);
                 m.WriteBytes(header);
@@ -292,7 +300,8 @@ namespace ME3Explorer.Packages
                 if (exportsBeforeNameTable.Any())
                 {
                     max = exportsBeforeNameTable.Max(e => e.DataOffset);
-                } else
+                }
+                else
                 {
                     //doesn't seem to be actual append... seems to be some sort of bug with mem/me3explorer mixing, or maybe just me3exp, where sequence = 0 lenght
                     max = exports.Max(maxExport => maxExport.DataOffset);

@@ -8,10 +8,14 @@
         mc:Ignorable="d"
         Loaded="PackageDumper_Loaded"
         Icon="..\Resources\packagedumper_256x256.ico"
-        ResizeMode="CanResize"
+        ResizeMode="NoResize"
+        SizeToContent="Height"
+        AllowDrop="True"
+    DragOver="PackageDumper_DragOver"
+        DragDrop.Drop="PackageDumper_FilesDropped"
         WindowStartupLocation="CenterOwner"
         Closing="PackageDumper_Closing"
-        Title="Package Dumper" Height="350" Width="500">
+        Title="Package Dumper" Height="340" Width="500">
     <StackPanel >
         <TextBlock Padding="5" Background="LightGray" TextWrapping="Wrap" Text="Package dumps are text file dumps of the data that you would be able to view in Package Editor. You can use tools on these text files, such as GrepWin, to search for strings. It is a very easy way to find things in game files."/>
         <Grid Margin="12">
@@ -46,7 +50,7 @@
 
         </Grid>
         <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="10,0,0,0" Width="456">
-            <ListView ItemsSource="{Binding CurrentDumpingItems}" MinHeight="80" MaxHeight="200">
+            <ListView ItemsSource="{Binding CurrentDumpingItems}" Height="{Binding ListViewHeight}">
                 <ListView.Resources>
                     <DataTemplate DataType="{x:Type local:PackageDumperSingleFileTask}">
                         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">
@@ -61,14 +65,15 @@
                     </Style>
                 </ListView.ItemContainerStyle>
             </ListView>
+            <TextBlock Text="{Binding CurrentOverallOperationText}"/>
             <ProgressBar Value="{Binding OverallProgressValue}" Maximum="{Binding OverallProgressMaximum}" Height="23" HorizontalAlignment="Stretch" Width="456"/>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,10">
                 <Button Command="{Binding CancelDumpCommand}" Content="Cancel" Width="79" Margin="5,5" HorizontalAlignment="Right"/>
-                <Button Command="{Binding DumpSpecificFiles}" Content="Dump specific files" Padding="8,0" Margin="2,5" HorizontalAlignment="Right"/>
+                <Button Command="{Binding DumpSpecificFiles}" Content="Dump specific files" Padding="8,0" Margin="6,5,2,5" HorizontalAlignment="Right"/>
                 <Button Command="{Binding DumpME1Command}" Content="Dump ME1" Width="79" Margin="2,5" HorizontalAlignment="Right"/>
                 <Button Command="{Binding DumpME2Command}" Content="Dump ME2" Width="79" Margin="2,5" HorizontalAlignment="Right" />
-                <Button Command="{Binding DumpME3Command}" Content="Dump ME3" Width="79" Margin="2,5" HorizontalAlignment="Right"/>
+                <Button Command="{Binding DumpME3Command}" Content="Dump ME3" Width="79" Margin="2,5,0,5" HorizontalAlignment="Right"/>
             </StackPanel>
         </StackPanel>
     </StackPanel>

@@ -36,6 +36,8 @@ namespace ME3Explorer.TlkManagerNS
 
         public TLKManagerWPF()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("TLK Manager WPF", new WeakReference(this));
+
             DataContext = this;
             LoadCommands();
             InitializeComponent();

@@ -31,6 +31,7 @@ namespace ME3Explorer
         private List<IExportEntry> SequenceExports = new List<IExportEntry>();
         public SequenceEditor()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Sequence Editor", new WeakReference(this));
             initialize();
         }
 

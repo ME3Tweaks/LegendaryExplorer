@@ -1300,6 +1300,8 @@ namespace ME3Explorer
 
         public PackageEditorWPF()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Package Editor WPF", new WeakReference(this));
+
             //ME3UnrealObjectInfo.generateInfo();
             CurrentView = CurrentViewMode.Tree;
             LoadCommands();
