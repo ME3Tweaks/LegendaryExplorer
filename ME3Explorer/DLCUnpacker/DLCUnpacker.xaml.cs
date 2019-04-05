@@ -214,6 +214,8 @@ namespace ME3Explorer.DLCUnpacker
 
         public DLCUnpacker()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("DLC Unpacker", new WeakReference(this));
+
             LoadCommands();
             RequiredSpaceText = "Calculating...";
             InitializeComponent();

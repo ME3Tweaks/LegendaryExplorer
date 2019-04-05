@@ -1,4 +1,5 @@
-﻿using ME3Explorer.SharedUI;
+﻿using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
     /// <summary>
     /// Interaction logic for MemoryAnalyzer.xaml
     /// </summary>
-    public partial class MemoryAnalyzer : NotifyPropertyChangedWindowBase
+    public partial class MemoryAnalyzer : WPFBase
     {
 
         #region Static Reference Adding
@@ -42,7 +43,10 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
 
         public MemoryAnalyzer()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Memory Analyzer", new WeakReference(this));
+
             DataContext = this;
+            Refresh();
             InitializeComponent();
 
             //  DispatcherTimer setup
@@ -51,6 +55,8 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
             dispatcherTimer.Interval = new TimeSpan(0, 0, 3);
             dispatcherTimer.Start();
         }
+
+        
 
         private string _lastRefreshText;
         public string LastRefreshText { get => _lastRefreshText; set => SetProperty(ref _lastRefreshText, value); }
@@ -140,6 +146,16 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
             {
                 return Reference.IsAlive;
             }
+        }
+
+        private void MemoryAnalyzer_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            dispatcherTimer.Stop();
+        }
+
+        public override void handleUpdate(List<PackageUpdate> updates)
+        {
+            //throw new NotImplementedException();
         }
     }
 }

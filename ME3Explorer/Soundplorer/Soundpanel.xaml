@@ -9,6 +9,7 @@
              xmlns:unrealclasses="clr-namespace:ME3Explorer.Unreal.Classes"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
                                         Loaded="Soundpanel_Loaded"
+                           Unloaded="Soundpanel_Unloaded"
 
              xmlns:properties="clr-namespace:ME3Explorer.Properties"
              xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"

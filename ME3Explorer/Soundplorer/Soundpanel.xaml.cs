@@ -1542,6 +1542,11 @@ namespace ME3Explorer
                 }
             }
         }
+
+        private void Soundpanel_Unloaded(object sender, RoutedEventArgs e)
+        {
+            seekbarUpdateTimer?.Stop();
+        }
     }
 
     public class EmbeddedWEMFile

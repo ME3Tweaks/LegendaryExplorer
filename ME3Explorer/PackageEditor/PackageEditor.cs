@@ -37,6 +37,8 @@ namespace ME3Explorer
 
         public PackageEditor()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Package Editor Classic", new WeakReference(this));
+
             InitializeComponent();
             LoadRecentList();
             RefreshRecent(false);

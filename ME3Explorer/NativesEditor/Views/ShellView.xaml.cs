@@ -21,6 +21,7 @@ namespace MassEffect.NativesEditor.Views
 	{
 		public ShellView()
 		{
+            ME3Explorer.ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Plot Editor", new WeakReference(this));
             WindowTitle = "Plot Editor";
 			InitializeComponent();
             FindObjectUsagesControl.parentRef = this;

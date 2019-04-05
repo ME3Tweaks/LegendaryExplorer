@@ -94,7 +94,7 @@ namespace ME3Explorer
                 {
                     (new ME3ExpMemoryAnalyzer.MemoryAnalyzer()).Show();
                 },
-                tags = new List<string> { "utility", "toolsetdev"},
+                tags = new List<string> { "utility", "toolsetdev" },
                 subCategory = "For Toolset Devs Only",
                 description = "Memory Analyzer allows you to track references to objects to help trace memory leaks."
             });
@@ -484,7 +484,7 @@ namespace ME3Explorer
                 {
                     new MountEditor.MountEditorWPF().Show();
                 },
-                tags = new List<string> {"developer", "mount", "dlc", "me2", "me3" },
+                tags = new List<string> { "developer", "mount", "dlc", "me2", "me3" },
                 subCategory = "Core",
                 description = "Mount Editor allows you to create or modify mount.dlc files, which are used in DLC for Mass Effect 2 and Mass Effect 3."
             });
@@ -522,8 +522,7 @@ namespace ME3Explorer
                 icon = Application.Current.FindResource("iconPackageEditor") as ImageSource,
                 open = () =>
                 {
-                    PackageEditorWPF pck = new PackageEditorWPF();
-                    pck.Show();
+                    new PackageEditorWPF().Show();
                 },
                 tags = new List<string> { "user", "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
                 subCategory = "Core",
@@ -621,7 +620,7 @@ namespace ME3Explorer
                 subCategory = "Meshes + Textures",
                 description = "TEXPLORER IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nTexplorer is a texturing utility that allows users to browse and install textures for all 3 Mass Effect trilogy games. It has been superceded by Mass Effect Modder (MEM) in most regards."
             });
-            
+
             set.Add(new Tool
             {
                 name = "WwiseBank Editor",
