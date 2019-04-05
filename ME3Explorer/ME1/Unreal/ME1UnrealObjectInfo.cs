@@ -40,7 +40,7 @@ namespace ME1Explorer.Unreal
             }
         }
 
-        private static string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
+        private static readonly string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
             "Quat", "Matrix", "IntPoint", "ActorReference", "PolyReference", "AimTransform","BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4",
             "BioRwBox44" };
 
@@ -124,7 +124,7 @@ namespace ME1Explorer.Unreal
         {
             if (Enums.ContainsKey(enumName))
             {
-                List<string> values = new List<string>(Enums[enumName]);
+                var values = new List<string>(Enums[enumName]);
                 if (includeNone)
                 {
                     values.Insert(0, "None");
@@ -136,11 +136,8 @@ namespace ME1Explorer.Unreal
 
         public static ArrayType getArrayType(string className, string propName, IExportEntry export = null)
         {
-            PropertyInfo p = getPropertyInfo(className, propName, false, containingExport: export);
-            if (p == null)
-            {
-                p = getPropertyInfo(className, propName, true, containingExport: export);
-            }
+            PropertyInfo p = getPropertyInfo(className, propName, false, containingExport: export)
+                          ?? getPropertyInfo(className, propName, true, containingExport: export);
             if (p == null && export != null)
             {
                 if (export.ClassName != "Class" && export.idxClass > 0)
@@ -151,11 +148,8 @@ namespace ME1Explorer.Unreal
                 {
                     ClassInfo currentInfo = generateClassInfo(export);
                     currentInfo.baseClass = export.ClassParent;
-                    p = getPropertyInfo(className, propName, false, currentInfo, containingExport: export);
-                    if (p == null)
-                    {
-                        p = getPropertyInfo(className, propName, true, currentInfo, containingExport: export);
-                    }
+                    p = getPropertyInfo(className, propName, false, currentInfo, containingExport: export)
+                     ?? getPropertyInfo(className, propName, true, currentInfo, containingExport: export);
                 }
             }
             return getArrayType(p);
@@ -216,8 +210,7 @@ namespace ME1Explorer.Unreal
                 className = className.Substring(9);
             }
             Dictionary<string, ClassInfo> temp = inStruct ? Structs : Classes;
-            ClassInfo info;
-            bool infoExists = temp.TryGetValue(className, out info);
+            bool infoExists = temp.TryGetValue(className, out ClassInfo info);
             if (!infoExists && nonVanillaClassInfo != null)
             {
                 info = nonVanillaClassInfo;
@@ -395,7 +388,7 @@ namespace ME1Explorer.Unreal
                         PropertyCollection props = PropertyCollection.ReadProps(importPCC, new MemoryStream(buff), className);
                         if (stripTransients)
                         {
-                            List<UProperty> toRemove = new List<UProperty>();
+                            var toRemove = new List<UProperty>();
                             foreach (var prop in props)
                             {
                                 //remove transient props
@@ -452,44 +445,43 @@ namespace ME1Explorer.Unreal
             Classes = new Dictionary<string, ClassInfo>();
             Structs = new Dictionary<string, ClassInfo>();
             Enums = new Dictionary<string, List<string>>();
-            ME1Package pcc;
             string path = ME1Directory.gamePath;
             string[] files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
             string objectName;
-            for (int i = 0; i < files.Length; i++)
+            foreach (string file in files)
             {
-                if (Path.GetExtension(files[i]) == ".upk" || Path.GetExtension(files[i]) == ".sfm" || Path.GetExtension(files[i]) == ".u")
+                if (Path.GetExtension(file) == ".upk" || Path.GetExtension(file) == ".sfm" || Path.GetExtension(file) == ".u")
                 {
-                    Debug.WriteLine("File: " + files[i]);
-                    pcc = MEPackageHandler.OpenME1Package(files[i]);
-                    IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                    IExportEntry exportEntry;
-                    for (int j = 0; j < Exports.Count; j++)
+                    Debug.WriteLine("File: " + file);
+                    using (ME1Package pcc = MEPackageHandler.OpenME1Package(file))
                     {
-                        exportEntry = Exports[j];
-                        if (exportEntry.ClassName == "Enum")
+                        IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+                        for (int j = 0; j < Exports.Count; j++)
                         {
-                            generateEnumValues(j, pcc);
-                        }
-                        else if (exportEntry.ClassName == "Class")
-                        {
-                            objectName = exportEntry.ObjectName;
-                            Debug.WriteLine("Generating information for " + exportEntry.ObjectName);
-                            if (!Classes.ContainsKey(exportEntry.ObjectName))
+                            IExportEntry exportEntry = Exports[j];
+                            if (exportEntry.ClassName == "Enum")
                             {
-                                Classes.Add(objectName, generateClassInfo(j, pcc));
+                                generateEnumValues(j, pcc);
                             }
-                        }
-                        else if (exportEntry.ClassName == "ScriptStruct")
-                        {
-                            objectName = exportEntry.ObjectName;
-                            if (!Structs.ContainsKey(exportEntry.ObjectName))
+                            else if (exportEntry.ClassName == "Class")
                             {
-                                Structs.Add(objectName, generateClassInfo(j, pcc));
+                                objectName = exportEntry.ObjectName;
+                                Debug.WriteLine("Generating information for " + exportEntry.ObjectName);
+                                if (!Classes.ContainsKey(exportEntry.ObjectName))
+                                {
+                                    Classes.Add(objectName, generateClassInfo(j, pcc));
+                                }
+                            }
+                            else if (exportEntry.ClassName == "ScriptStruct")
+                            {
+                                objectName = exportEntry.ObjectName;
+                                if (!Structs.ContainsKey(exportEntry.ObjectName))
+                                {
+                                    Structs.Add(objectName, generateClassInfo(j, pcc));
+                                }
                             }
                         }
                     }
-                    pcc.Release();
                 }
             }
 
@@ -594,6 +586,8 @@ namespace ME1Explorer.Unreal
                     p.type = PropertyType.DelegateProperty;
                     break;
                 case "ObjectProperty":
+                case "ClassProperty":
+                case "ComponentProperty":
                     p.type = PropertyType.ObjectProperty;
                     p.reference = pcc.getObjectName(BitConverter.ToInt32(entry.Data, entry.Data.Length - 4));
                     break;
@@ -646,9 +640,7 @@ namespace ME1Explorer.Unreal
                         p = null;
                     }
                     break;
-                case "ClassProperty":
                 case "InterfaceProperty":
-                case "ComponentProperty":
                 default:
                     p = null;
                     break;

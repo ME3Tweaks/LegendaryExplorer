@@ -214,7 +214,7 @@ namespace ME3Explorer.Unreal
         public static Dictionary<string, SequenceObjectInfo> SequenceObjects = new Dictionary<string, SequenceObjectInfo>();
         public static Dictionary<string, List<string>> Enums = new Dictionary<string, List<string>>();
 
-        private static string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
+        private static readonly string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
             "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform", "AimOffsetProfile", "FontCharacter",
             "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "BioRwBox44" };
 
@@ -670,10 +670,9 @@ namespace ME3Explorer.Unreal
                     using (ME3Package pcc = MEPackageHandler.OpenME3Package(files[i]))
                     {
                         IReadOnlyList<IExportEntry> Exports = pcc.Exports;
-                        IExportEntry exportEntry;
                         for (int j = 0; j < Exports.Count; j++)
                         {
-                            exportEntry = Exports[j];
+                            IExportEntry exportEntry = Exports[j];
                             if (exportEntry.ClassName == "Enum")
                             {
                                 generateEnumValues(j, pcc);
@@ -784,26 +783,19 @@ namespace ME3Explorer.Unreal
             #endregion
 
             File.WriteAllText(Application.StartupPath + "//exec//ME3ObjectInfo.json",
-                JsonConvert.SerializeObject(new { SequenceObjects = SequenceObjects, Classes = Classes, Structs = Structs, Enums = Enums }, Formatting.Indented));
+                JsonConvert.SerializeObject(new { SequenceObjects, Classes, Structs, Enums }, Formatting.Indented));
             MessageBox.Show("Done");
         }
 
         private static SequenceObjectInfo generateSequenceObjectInfo(int i, ME3Package pcc)
         {
             SequenceObjectInfo info = new SequenceObjectInfo();
-            PropertyReader.Property inputLinks = PropertyReader.getPropOrNull(pcc.Exports[i + 1], "InputLinks");
-            if (inputLinks != null)
+            var inLinks = pcc.Exports[i + 1].GetProperty<ArrayProperty<StructProperty>>("InputLinks");
+            if (inLinks != null)
             {
-                int pos = 28;
-                byte[] global = inputLinks.raw;
-                int count = BitConverter.ToInt32(global, 24);
-                for (int j = 0; j < count; j++)
+                foreach (var seqOpInputLink in inLinks)
                 {
-                    List<PropertyReader.Property> p2 = PropertyReader.ReadProp(pcc, global, pos);
-
-                    info.inputLinks.Add(p2[0].Value.StringValue);
-                    for (int k = 0; k < p2.Count(); k++)
-                        pos += p2[k].raw.Length;
+                    info.inputLinks.Add(seqOpInputLink.GetProp<StrProperty>("LinkDesc").Value);
                 }
             }
             return info;
