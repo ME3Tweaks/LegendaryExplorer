@@ -74,6 +74,7 @@ namespace ME3Explorer.Packages
             }
             else
             {
+                Debug.WriteLine("returning already open package " + pathToFile);
                 package = openPackages[pathToFile];
             }
 
@@ -98,10 +99,10 @@ namespace ME3Explorer.Packages
         {
             IMEPackage ime;
             var package = (sender as IMEPackage).FileName;
-            //if (Path.GetFileNameWithoutExtension(package) != "Core") //Keep Core loaded as it is very often referenced
-            //{
+            if (Path.GetFileNameWithoutExtension(package) != "Core") //Keep Core loaded as it is very often referenced
+            {
                 openPackages.TryRemove(package, out ime);
-            //}
+            }
         }
 
         private static void addToPackagesInTools(IMEPackage package)
