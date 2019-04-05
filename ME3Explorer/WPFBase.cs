@@ -35,7 +35,10 @@ namespace ME3Explorer
             {
                 e.Cancel = true;
             }
-            DataContext = null; //Remove all binding sources
+            else
+            {
+                DataContext = null; //Remove all binding sources
+            }
         }
 
         public void LoadMEPackage(string s)
