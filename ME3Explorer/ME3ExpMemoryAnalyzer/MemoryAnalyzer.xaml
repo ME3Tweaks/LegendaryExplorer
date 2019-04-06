@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Closing="MemoryAnalyzer_Closing"
         SizeToContent="Width"
-        Title="ME3Explorer Memory Analyzer" MinHeight="440" Height="440" MinWidth="500">
+        Title="ME3Explorer Memory Analyzer" MinHeight="445" Height="440" MinWidth="500">
         <DockPanel LastChildFill="True" Margin="5">
             <StackPanel DockPanel.Dock="Top">
                 <TextBlock Text="This tool is for toolset developers only."/>
@@ -23,12 +23,14 @@
                 <TextBlock TextWrapping="Wrap" Text="{Binding CurrentMemoryUsageText}" HorizontalAlignment="Left"/>
                 <TextBlock TextWrapping="Wrap" Text="{Binding LastRefreshText}" Grid.Column="1" HorizontalAlignment="Right"/>
             </Grid>
+            <DockPanel>
+                <Button Content="Clear garbage collected references" Padding="5,3,5,3" Margin="0,5,0,5" Click="CleanUpOldRefs_Click"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Content="Clear garbage collected references" Padding="3,2,3,2" Margin="2,5" Click="CleanUpOldRefs_Click"/>
-                    <Button Content="Force Large GC" Margin="2,5" Padding="3,2,3,2" Click="ForceLargeGC_Click"/>
-                    <Button Content="Force GC" Margin="2,5" Padding="3,2,3,2" Click="ForceGC_Click"/>
-                    <Button Content="Refresh" Margin="2,5" Padding="3,2,3,2" Click="Refresh_Click"/>
+                    <Button Content="Force Large GC" Margin="2,5" Padding="5,3,5,3" Click="ForceLargeGC_Click"/>
+                    <Button Content="Force GC" Margin="2,5" Padding="3,3,3,3" Click="ForceGC_Click"/>
                 </StackPanel>
+            </DockPanel>
+
             </StackPanel>
             <ListBox ItemsSource="{Binding InstancedTrackedMemoryObjects}" MinHeight="300" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch">
                 <ListBox.ItemTemplate>
