@@ -57,7 +57,37 @@ namespace ME3Explorer.PackageDumper
             DumpME1Command = new RelayCommand(DumpGameME1, CanDumpGameME1);
             DumpME2Command = new RelayCommand(DumpGameME2, CanDumpGameME2);
             DumpME3Command = new RelayCommand(DumpGameME3, CanDumpGameME3);
+            DumpSpecificFilesCommand = new RelayCommand(DumpSpecificFiles, CanDumpSpecificFiles);
             CancelDumpCommand = new RelayCommand(CancelDump, CanCancelDump);
+        }
+
+        private async void DumpSpecificFiles(object obj)
+        {
+            CommonOpenFileDialog dlg = new CommonOpenFileDialog
+            {
+                Multiselect = true,
+                EnsureFileExists = true,
+                Title = "Select files to dump",
+            };
+            dlg.Filters.Add(new CommonFileDialogFilter("All supported files", "*.pcc;*.sfm;*.u;*.upk"));
+            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect package files", "*.sfm;*.u;*.upk"));
+            dlg.Filters.Add(new CommonFileDialogFilter("Mass Effect 2/3 package files", "*.pcc"));
+
+
+            if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                CommonOpenFileDialog outputDlg = new CommonOpenFileDialog
+                {
+                    IsFolderPicker = true,
+                    EnsurePathExists = true,
+                    Title = "Select output folder"
+                };
+                if (outputDlg.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    string outputDir = outputDlg.FileName;
+                    await dumpPackages(dlg.FileNames.ToList(), outputDlg.FileName);
+                }
+            }
         }
 
         /// <summary>
@@ -69,6 +99,7 @@ namespace ME3Explorer.PackageDumper
         public ICommand DumpME1Command { get; set; }
         public ICommand DumpME2Command { get; set; }
         public ICommand DumpME3Command { get; set; }
+        public ICommand DumpSpecificFilesCommand { get; set; }
         public ICommand CancelDumpCommand { get; set; }
 
         private int _overallProgressValue;
@@ -92,6 +123,11 @@ namespace ME3Explorer.PackageDumper
         {
             get => _currentOverallOperationText;
             set => SetProperty(ref _currentOverallOperationText, value);
+        }
+
+        private bool CanDumpSpecificFiles(object obj)
+        {
+            return ProcessingQueue == null || ProcessingQueue.Completion.Status != TaskStatus.WaitingForActivation;
         }
 
         private bool CanDumpGameME1(object obj)
@@ -215,7 +251,7 @@ namespace ME3Explorer.PackageDumper
                 var exceptionMessage = ExceptionHandlerDialogWPF.FlattenException(ex);
                 Debug.WriteLine(exceptionMessage);
             }
-            
+
             //throw new NotImplementedException();
         }
 
@@ -269,10 +305,8 @@ namespace ME3Explorer.PackageDumper
             }
 
             ProcessingQueue.Complete(); // Signal completion
-            Debug.WriteLine("HERE I BEFORE");
-
+            CommandManager.InvalidateRequerySuggested();
             await ProcessingQueue.Completion; // Asynchronously wait for completion.        }
-            Debug.WriteLine("HERE I AM");
 
             if (DumpCanceled)
             {
@@ -287,6 +321,7 @@ namespace ME3Explorer.PackageDumper
                 OverallProgressMaximum = 100;
                 CurrentOverallOperationText = "Dump completed";
             }
+            CommandManager.InvalidateRequerySuggested();
         }
 
 
@@ -368,26 +403,52 @@ namespace ME3Explorer.PackageDumper
             Owner = null; //Detach from parent
         }
 
-        private void PackageDumper_FilesDropped(object sender, DragEventArgs e)
+        private async void PackageDumper_FilesDropped(object sender, DragEventArgs e)
         {
-            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if (ProcessingQueue != null && ProcessingQueue.Completion.Status == TaskStatus.WaitingForActivation) { return; } //Busy
+
+            string[] filenames = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if (filenames.Length == 1 && Directory.Exists(filenames[0]))
+            {
+                //Directory - can drop
+                dumpPackagesFromFolder(filenames[0]);
+            }
+            else
+            {
+                await dumpPackages(filenames.ToList());
+            }
         }
 
         private void PackageDumper_DragOver(object sender, DragEventArgs e)
         {
+            if (ProcessingQueue != null && ProcessingQueue.Completion.Status == TaskStatus.WaitingForActivation)
+            {
+                //Busy
+                e.Effects = DragDropEffects.None;
+                e.Handled = true;
+            }
+
             bool dropEnabled = true;
             if (e.Data.GetDataPresent(DataFormats.FileDrop, true))
             {
                 string[] filenames =
                                  e.Data.GetData(DataFormats.FileDrop, true) as string[];
-                string[] acceptedExtensions = new string[] { ".pcc", ".u", ".upk", ".sfc" };
-                foreach (string filename in filenames)
+                if (filenames.Length == 1 && Directory.Exists(filenames[0]))
                 {
-                    string extension = System.IO.Path.GetExtension(filename).ToLower();
-                    if (!acceptedExtensions.Contains(extension))
+                    //Directory - can drop
+                }
+                else
+                {
+
+                    string[] acceptedExtensions = new string[] { ".pcc", ".u", ".upk", ".sfm" };
+                    foreach (string filename in filenames)
                     {
-                        dropEnabled = false;
-                        break;
+                        string extension = System.IO.Path.GetExtension(filename).ToLower();
+                        if (!acceptedExtensions.Contains(extension))
+                        {
+                            dropEnabled = false;
+                            break;
+                        }
                     }
                 }
             }
