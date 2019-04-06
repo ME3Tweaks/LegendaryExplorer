@@ -273,138 +273,146 @@ namespace ME3Explorer
 
         private void PerformScanBackground(object sender, DoWorkEventArgs e)
         {
-            List<object> subNodes = null;
+            if (CurrentLoadedExport == null) return; //Could happen due to multithread
             Tuple<BinaryInterpreterWPFTreeViewItem, byte[], int> arguments = (Tuple<BinaryInterpreterWPFTreeViewItem, byte[], int>)e.Argument;
-            byte[] data = arguments.Item2;
-            int binarystart = arguments.Item3;
-            bool isGenericScan = false;
-            bool appendGenericScan = false;
-            switch (CurrentLoadedExport.ClassName)
+            try
             {
-                case "IntProperty":
-                case "BoolProperty":
-                case "ArrayProperty":
-                case "FloatProperty":
-                case "ClassProperty":
-                case "ByteProperty":
-                case "NameProperty":
-                case "StringRefProperty":
-                case "StructProperty":
-                case "ComponentProperty":
-                case "ObjectProperty":
-                    subNodes = StartObjectScan(data);
-                    break;
-                case "BioDynamicAnimSet":
-                    subNodes = StartBioDynamicAnimSetScan(data, ref binarystart);
-                    break;
-                case "ObjectRedirector":
-                    subNodes = StartObjectRedirectorScan(data, ref binarystart);
-                    break;
-                case "MetaData":
-                    subNodes = StartMetaDataScan(data, ref binarystart);
-                    break;
-                case "WwiseStream":
-                case "WwiseBank":
-                    subNodes = Scan_WwiseStreamBank(data);
-                    break;
-                case "WwiseEvent":
-                    subNodes = Scan_WwiseEvent(data, ref binarystart);
-                    break;
-                case "BioStage":
-                    subNodes = StartBioStageScan(data, ref binarystart);
-                    break;
-                case "BioTlkFileSet":
-                    subNodes = StartBioTlkFileSetScan(data, ref binarystart);
-                    break;
-                case "Class":
-                    subNodes = StartClassScan(data);
-                    break;
-                case "Enum":
-                case "Const":
-                    subNodes = StartEnumScan(data);
-                    break;
-                case "GuidCache":
-                    subNodes = StartGuidCacheScan(data, ref binarystart);
-                    break;
-                case "Level":
-                    subNodes = StartLevelScan(data, ref binarystart);
-                    appendGenericScan = true;
-                    break;
-                case "Material":
-                case "MaterialInstanceConstant":
-                    subNodes = StartMaterialScan(data, ref binarystart);
-                    break;
-                case "PrefabInstance":
-                    subNodes = StartPrefabInstanceScan(data, ref binarystart);
-                    break;
-                case "SkeletalMesh":
-                    subNodes = StartSkeletalMeshScan(data, ref binarystart);
-                    break;
-                case "StaticMeshCollectionActor":
-                    subNodes = StartStaticMeshCollectionActorScan(data, ref binarystart);
-                    break;
-                case "StaticMesh":
-                    subNodes = StartStaticMeshScan(data, ref binarystart);
-                    break;
-                case "Texture2D":
-                case "TextureFlipBook":
-                    subNodes = StartTextureBinaryScan(data);
-                    break;
-                case "State":
-                    subNodes = StartStateScan(data, ref binarystart);
-                    break;
-                case "TextureMovie":
-                    subNodes = StartTextureMovieScan(data, ref binarystart);
-                    break;
-                case "BioGestureRuntimeData":
-                    subNodes = StartBioGestureRuntimeDataScan(data, ref binarystart);
-                    break;
-                case "ScriptStruct":
-                    subNodes = StartScriptStructScan(data, ref binarystart);
-                    break;
-                case "SoundCue":
-                    subNodes = StartSoundCueScan(data, ref binarystart);
-                    break;
-                case "BioSoundNodeWaveStreamingData":
-                    subNodes = StartBioSoundNodeWaveStreamingDataScan(data, ref binarystart);
-                    break;
-                case "SoundNodeWave":
-                    subNodes = StartSoundNodeWaveScan(data, ref binarystart);
-                    break;
-                default:
-                    isGenericScan = true;
-                    subNodes = StartGenericScan(data, ref binarystart);
-                    break;
-            }
-            if (appendGenericScan)
-            {
-                BinaryInterpreterWPFTreeViewItem genericContainer = new BinaryInterpreterWPFTreeViewItem() { Header = $"Generic scan data", IsExpanded = true };
-                subNodes.Add(genericContainer);
+                List<object> subNodes = null;
+                byte[] data = arguments.Item2;
+                int binarystart = arguments.Item3;
+                bool isGenericScan = false;
+                bool appendGenericScan = false;
+                switch (CurrentLoadedExport.ClassName)
+                {
+                    case "IntProperty":
+                    case "BoolProperty":
+                    case "ArrayProperty":
+                    case "FloatProperty":
+                    case "ClassProperty":
+                    case "ByteProperty":
+                    case "NameProperty":
+                    case "StringRefProperty":
+                    case "StructProperty":
+                    case "ComponentProperty":
+                    case "ObjectProperty":
+                        subNodes = StartObjectScan(data);
+                        break;
+                    case "BioDynamicAnimSet":
+                        subNodes = StartBioDynamicAnimSetScan(data, ref binarystart);
+                        break;
+                    case "ObjectRedirector":
+                        subNodes = StartObjectRedirectorScan(data, ref binarystart);
+                        break;
+                    case "MetaData":
+                        subNodes = StartMetaDataScan(data, ref binarystart);
+                        break;
+                    case "WwiseStream":
+                    case "WwiseBank":
+                        subNodes = Scan_WwiseStreamBank(data);
+                        break;
+                    case "WwiseEvent":
+                        subNodes = Scan_WwiseEvent(data, ref binarystart);
+                        break;
+                    case "BioStage":
+                        subNodes = StartBioStageScan(data, ref binarystart);
+                        break;
+                    case "BioTlkFileSet":
+                        subNodes = StartBioTlkFileSetScan(data, ref binarystart);
+                        break;
+                    case "Class":
+                        subNodes = StartClassScan(data);
+                        break;
+                    case "Enum":
+                    case "Const":
+                        subNodes = StartEnumScan(data);
+                        break;
+                    case "GuidCache":
+                        subNodes = StartGuidCacheScan(data, ref binarystart);
+                        break;
+                    case "Level":
+                        subNodes = StartLevelScan(data, ref binarystart);
+                        appendGenericScan = true;
+                        break;
+                    case "Material":
+                    case "MaterialInstanceConstant":
+                        subNodes = StartMaterialScan(data, ref binarystart);
+                        break;
+                    case "PrefabInstance":
+                        subNodes = StartPrefabInstanceScan(data, ref binarystart);
+                        break;
+                    case "SkeletalMesh":
+                        subNodes = StartSkeletalMeshScan(data, ref binarystart);
+                        break;
+                    case "StaticMeshCollectionActor":
+                        subNodes = StartStaticMeshCollectionActorScan(data, ref binarystart);
+                        break;
+                    case "StaticMesh":
+                        subNodes = StartStaticMeshScan(data, ref binarystart);
+                        break;
+                    case "Texture2D":
+                    case "TextureFlipBook":
+                        subNodes = StartTextureBinaryScan(data);
+                        break;
+                    case "State":
+                        subNodes = StartStateScan(data, ref binarystart);
+                        break;
+                    case "TextureMovie":
+                        subNodes = StartTextureMovieScan(data, ref binarystart);
+                        break;
+                    case "BioGestureRuntimeData":
+                        subNodes = StartBioGestureRuntimeDataScan(data, ref binarystart);
+                        break;
+                    case "ScriptStruct":
+                        subNodes = StartScriptStructScan(data, ref binarystart);
+                        break;
+                    case "SoundCue":
+                        subNodes = StartSoundCueScan(data, ref binarystart);
+                        break;
+                    case "BioSoundNodeWaveStreamingData":
+                        subNodes = StartBioSoundNodeWaveStreamingDataScan(data, ref binarystart);
+                        break;
+                    case "SoundNodeWave":
+                        subNodes = StartSoundNodeWaveScan(data, ref binarystart);
+                        break;
+                    default:
+                        isGenericScan = true;
+                        subNodes = StartGenericScan(data, ref binarystart);
+                        break;
+                }
+                if (appendGenericScan)
+                {
+                    BinaryInterpreterWPFTreeViewItem genericContainer = new BinaryInterpreterWPFTreeViewItem() { Header = $"Generic scan data", IsExpanded = true };
+                    subNodes.Add(genericContainer);
 
-                var genericItems = StartGenericScan(data, ref binarystart);
-                foreach (object o in genericItems)
+                    var genericItems = StartGenericScan(data, ref binarystart);
+                    foreach (object o in genericItems)
+                    {
+                        if (o is BinaryInterpreterWPFTreeViewItem b)
+                        {
+                            b.Parent = genericContainer;
+                        }
+                    }
+                    genericContainer.Items.AddRange(genericItems);
+                }
+                if (PreviousLoadedUIndex == CurrentLoadedExport.UIndex && PreviousSelectedTreeName != "")
+                {
+                    var reSelected = AttemptSelectPreviousEntry(subNodes);
+                    Debug.WriteLine("Reselected previous entry");
+                }
+
+                GenericEditorSetVisibility = (appendGenericScan || isGenericScan) ? Visibility.Visible : Visibility.Collapsed;
+                arguments.Item1.Items = subNodes;
+                foreach (object o in subNodes)
                 {
                     if (o is BinaryInterpreterWPFTreeViewItem b)
                     {
-                        b.Parent = genericContainer;
+                        b.Parent = arguments.Item1;
                     }
                 }
-                genericContainer.Items.AddRange(genericItems);
             }
-            if (PreviousLoadedUIndex == CurrentLoadedExport.UIndex && PreviousSelectedTreeName != "")
+            catch (Exception ex)
             {
-                var reSelected = AttemptSelectPreviousEntry(subNodes);
-                Debug.WriteLine("Reselected previous entry");
-            }
-
-            GenericEditorSetVisibility = (appendGenericScan || isGenericScan) ? Visibility.Visible : Visibility.Collapsed;
-            arguments.Item1.Items = subNodes;
-            foreach (object o in subNodes)
-            {
-                if (o is BinaryInterpreterWPFTreeViewItem b)
-                {
-                    b.Parent = arguments.Item1;
-                }
+                arguments.Item1.Items.Add(ExceptionHandlerDialogWPF.FlattenException(ex));
             }
             e.Result = arguments.Item1; //return topLevelTree
         }
