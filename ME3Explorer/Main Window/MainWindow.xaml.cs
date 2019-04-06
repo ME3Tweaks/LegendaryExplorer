@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using FontAwesome.WPF;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
@@ -106,7 +107,70 @@ namespace ME3Explorer
                 (new InitialSetup()).ShowDialog();
             }
             UpdateGamePathWarningIconStatus();
+            StartLoadingTLKs();
+        }
 
+        private void StartLoadingTLKs()
+        {
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += delegate (object o, DoWorkEventArgs args)
+            {
+                // load TLK strings
+                try
+                {
+                    ME1Explorer.ME1TalkFiles.LoadSavedTlkList();
+                    TlkManagerNS.TLKManagerWPF.ME1LastReloaded = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
+                }
+                catch (Exception ex)
+                {
+                    //?
+                }
+
+                try
+                {
+                    ME2Explorer.ME2TalkFiles.LoadSavedTlkList();
+                    TlkManagerNS.TLKManagerWPF.ME2LastReloaded = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
+                }
+                catch (Exception ex)
+                {
+                    //?
+                }
+
+                try
+                {
+                    ME3TalkFiles.LoadSavedTlkList();
+                    TlkManagerNS.TLKManagerWPF.ME3LastReloaded = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
+                }
+                catch (Exception ex)
+                {
+                    //?
+                }
+            };
+            bw.RunWorkerCompleted += delegate (object o, RunWorkerCompletedEventArgs args)
+            {
+                //StartingUpPanel.Visibility = Visibility.Invisible;
+                DoubleAnimation fadeout = new DoubleAnimation();
+                fadeout.From = 1;
+                fadeout.To = 0;
+                fadeout.EasingFunction = new ExponentialEase();
+                fadeout.Duration = new Duration(TimeSpan.FromSeconds(1));
+                fadeout.Completed += delegate
+                {
+                    LoadingPanel.Visibility = Visibility.Collapsed;
+                    ME3TweaksLogoButton.Visibility = Visibility.Visible;
+                    DoubleAnimation fadein = new DoubleAnimation();
+                    fadein.From = 0;
+                    fadein.To = 1;
+                    fadein.EasingFunction = new ExponentialEase();
+                    fadein.Duration = new Duration(TimeSpan.FromSeconds(1));
+                    ME3TweaksLogoButton.BeginAnimation(OpacityProperty, fadein);
+                };
+                //da.RepeatBehavior=new RepeatBehavior(3);
+                LoadingPanel.BeginAnimation(OpacityProperty, fadeout);
+
+
+            };
+            bw.RunWorkerAsync();
         }
 
         private static void SystemParameters_StaticPropertyChanged(object sender, PropertyChangedEventArgs e)

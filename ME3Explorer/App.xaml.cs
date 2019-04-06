@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using KFreonLib.MEDirectories;
@@ -52,45 +53,14 @@ namespace ME3Explorer
             }
 
 
-
             ME1UnrealObjectInfo.loadfromJSON();
             ME2UnrealObjectInfo.loadfromJSON();
             ME3UnrealObjectInfo.loadfromJSON();
 
+
             //static class setup
             Tools.Initialize();
             MEPackageHandler.Initialize();
-
-            //load TLK strings
-            try
-            {
-                ME1Explorer.ME1TalkFiles.LoadSavedTlkList();
-                TlkManagerNS.TLKManagerWPF.ME1LastReloaded = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
-            }
-            catch (Exception ex)
-            {
-                //?
-            }
-
-            try
-            {
-                ME2Explorer.ME2TalkFiles.LoadSavedTlkList();
-                TlkManagerNS.TLKManagerWPF.ME2LastReloaded = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
-            }
-            catch (Exception ex)
-            {
-                //?
-            }
-
-            try
-            {
-                ME3TalkFiles.LoadSavedTlkList();
-                TlkManagerNS.TLKManagerWPF.ME3LastReloaded = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
-            }
-            catch (Exception ex)
-            {
-                //?
-            }
 
             //load kismet font
             SequenceObjects.SText.LoadFont();

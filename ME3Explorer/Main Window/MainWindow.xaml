@@ -222,7 +222,11 @@
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Button Style="{StaticResource ImageButtonStyle}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" ToolTip="Join the ME3Tweaks Discord" Click="ME3TweaksDiscord_Clicked">
+                            <StackPanel Name="LoadingPanel" Grid.Row="0" Grid.Column="0" Width="140" Grid.ColumnSpan="3" Grid.RowSpan="2" Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                <fa:ImageAwesome Icon="Spinner" Height="32" Width="32" Foreground="LightGray" Spin="True" SpinDuration="1.3"/>
+                                <TextBlock Width="100" TextWrapping="Wrap" Text="Loading in background" FontFamily="{StaticResource TitilliumWeb-Regular}" FontSize="14" TextAlignment="Center" Foreground="{DynamicResource LabelTextBrush}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <Button Name="ME3TweaksLogoButton" Visibility="Collapsed" Opacity="0" Style="{StaticResource ImageButtonStyle}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" ToolTip="Join the ME3Tweaks Discord" Click="ME3TweaksDiscord_Clicked">
                                 <Image Width="140" RenderOptions.BitmapScalingMode="HighQuality" Cursor="Hand" Source="../Resources/me3tweaks_fork.png"/>
                             </Button>
                         </Grid>
