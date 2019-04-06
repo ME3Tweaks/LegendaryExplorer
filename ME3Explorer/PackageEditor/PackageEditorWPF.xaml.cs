@@ -3134,6 +3134,10 @@ namespace ME3Explorer
             {
                 el.Dispose(); //Remove hosted winforms references
             }
+            LeftSideList_ItemsSource.ClearEx();
+            AllTreeViewNodesX.ClearEx();
+            Pcc = null;
+
         }
 
         private void OpenIn_Clicked(object sender, RoutedEventArgs e)
