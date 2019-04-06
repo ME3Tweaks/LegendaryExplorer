@@ -49,7 +49,8 @@ namespace ME3Explorer.SharedUI.PeregrineTreeView
                 DispatcherHelper.AddToQueue(() =>
                 {
                     //System.Diagnostics.Debug.WriteLine("BRINGING INTO VIEW - SELECTED NODE!");
-                    item.BringIntoView();
+                    Rect newTargetRect = new Rect(-1000, 0, item.ActualWidth + 1000, item.ActualHeight);
+                    item.BringIntoView(newTargetRect);
                 }, DispatcherPriority.ApplicationIdle);
             }
         }
@@ -113,8 +114,8 @@ namespace ME3Explorer.SharedUI.PeregrineTreeView
 
             // then bring the expanded item (back) into view
             Action action = () => {
-                //System.Diagnostics.Debug.WriteLine("BRINGING INTO VIEW - EXPANDED NODE FIRST: " + item.DataContext);
-                item.BringIntoView();
+                Rect newTargetRect = new Rect(-1000, 0, item.ActualWidth + 1000, item.ActualHeight);
+                item.BringIntoView(newTargetRect);
             };
 
             DispatcherHelper.AddToQueue(action, DispatcherPriority.ContextIdle);
