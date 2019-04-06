@@ -42,6 +42,7 @@ namespace ME3Explorer.Packages
         private ME2Package(string path)
         {
             //Debug.WriteLine(" >> Opening me2 package " + path);
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"ME2Package {Path.GetFileName(path)}", new WeakReference(this));
 
             DebugOutput.PrintLn("Load file : " + path);
             FileName = Path.GetFullPath(path);

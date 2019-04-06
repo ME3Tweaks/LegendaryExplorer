@@ -1,4 +1,5 @@
-﻿using ME3Explorer.Packages;
+﻿using ByteSizeLib;
+using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using System;
 using System.Collections.Generic;
@@ -60,6 +61,8 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
 
         private string _lastRefreshText;
         public string LastRefreshText { get => _lastRefreshText; set => SetProperty(ref _lastRefreshText, value); }
+        private string _currentUsageText;
+        public string CurrentMemoryUsageText { get => _currentUsageText; set => SetProperty(ref _currentUsageText, value); }
 
         private void automatedRefresh_Tick(object sender, EventArgs e)
         {
@@ -86,6 +89,7 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
         {
             InstancedTrackedMemoryObjects.ReplaceAll(TrackedMemoryObjects);
             LastRefreshText = "Last refreshed: " + DateTime.Now;
+            CurrentMemoryUsageText = "Current process allocation: " + ByteSize.FromBytes(System.Diagnostics.Process.GetCurrentProcess().PrivateMemorySize64);
             //foreach (var item in InstancedTrackedMemoryObjects)
             //{
             //    item.RefreshStatus();

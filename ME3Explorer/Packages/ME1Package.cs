@@ -40,6 +40,7 @@ namespace ME3Explorer.Packages
         private ME1Package(string path)
         {
             //Debug.WriteLine(" >> Opening me1 package " + path);
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem($"ME1Package {Path.GetFileName(path)}", new WeakReference(this));
 
             FileName = Path.GetFullPath(path);
             MemoryStream tempStream = new MemoryStream();
