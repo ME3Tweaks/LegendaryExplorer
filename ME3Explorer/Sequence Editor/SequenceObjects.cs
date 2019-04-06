@@ -372,7 +372,9 @@ namespace ME3Explorer.SequenceObjects
 
         public override void Dispose()
         {
-
+            g = null;
+            pcc = null;
+            export = null;
         }
     }
 
@@ -414,7 +416,9 @@ namespace ME3Explorer.SequenceObjects
 
         public override void Dispose()
         {
-
+            g = null;
+            pcc = null;
+            export = null;
         }
 
         protected void MakeTitleBox(string s)
@@ -1009,6 +1013,9 @@ namespace ME3Explorer.SequenceObjects
             {
                 Outlinks.ForEach(x => x.node.RemoveInputEventListener(varDragHandler));
             }
+            g = null;
+            pcc = null;
+            export = null;
         }
 
         //public override bool Intersects(RectangleF bounds)
@@ -1332,6 +1339,9 @@ namespace ME3Explorer.SequenceObjects
             {
                 Outlinks.ForEach(x => x.node.RemoveInputEventListener(varDragHandler));
             }
+            g = null;
+            pcc = null;
+            export = null;
         }
     }
 

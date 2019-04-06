@@ -80,17 +80,6 @@ namespace ME3Explorer
             this.graphEditor.DragDrop += SequenceEditor_DragDrop;
             this.graphEditor.DragEnter += SequenceEditor_DragEnter;
             zoomController = new ZoomController(graphEditor);
-
-            //if (SObj.talkfiles == null)
-            //{
-            //    talkFiles = new ME1Explorer.TalkFiles();
-            //    talkFiles.LoadGlobalTlk();
-            //    SObj.talkfiles = talkFiles;
-            //}
-            //else
-            //{
-            //    talkFiles = SObj.talkfiles;
-            //}
         }
 
         private void SequenceEditor_Load(object sender, EventArgs e)
@@ -921,10 +910,10 @@ namespace ME3Explorer
                                 temp = new ToolStripMenuItem("Break link from " + sBox.Varlinks[i].Desc + " to " + sBox.Varlinks[i].Links[j]);
                                 int linkConnection = i;
                                 int linkIndex = j;
-                                //temp.Click += (o, args) =>
-                                //{
-                                //    sBox.RemoveVarlink(linkConnection, linkIndex);
-                                //};
+                                temp.Click += (o, args) =>
+                                {
+                                    sBox.RemoveVarlink(linkConnection, linkIndex);
+                                };
                                 varLinkMenu.Items.Add(temp);
                             }
                         }
@@ -938,10 +927,10 @@ namespace ME3Explorer
                                 temp = new ToolStripMenuItem("Break link from " + sBox.Outlinks[i].Desc + " to " + sBox.Outlinks[i].Links[j] + " :" + sBox.Outlinks[i].InputIndices[j]);
                                 int linkConnection = i;
                                 int linkIndex = j;
-                                //temp.Click += (o, args) =>
-                                //{
-                                //    sBox.RemoveOutlink(linkConnection, linkIndex);
-                                //};
+                                temp.Click += (o, args) =>
+                                {
+                                    sBox.RemoveOutlink(linkConnection, linkIndex);
+                                };
                                 outLinkMenu.Items.Add(temp);
                             }
                         }
