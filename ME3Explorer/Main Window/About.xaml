@@ -40,13 +40,9 @@
                 </TextBlock>
                 <TextBlock Text="Additional contributors" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="14"/>
                 <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="7,0,0,0">
-                    <Run Text="• SirCxyrtyx - Developer&#10;• Benji - 3D Developer"/>
+                    <Run Text="• SirCxyrtyx - Developer&#10;• Aquadran - Developer&#10;• Benji - 3D Developer"/>
                 </TextBlock>
-                <Label FontFamily="{StaticResource TitilliumWeb-Light}"
-                       FontSize="14" Foreground="#FF808080" BorderBrush="#FFA8A8A8" BorderThickness="2" HorizontalAlignment="Center"
-                       VerticalAlignment="Center" Margin="0,1,0,0">
-                    <TextBlock TextWrapping="Wrap" Text="Credit also goes to toolset modders for their continued feedback &amp; support!" TextAlignment="Center"/>
-                </Label>
+
             </StackPanel>
             <TabControl Height="215" Width="385" HorizontalContentAlignment="Right" Grid.Column="1" Margin="0,0,0,0" BorderThickness="2" BorderBrush="#FFA8A8A8">
                 <TabControl.Resources>
