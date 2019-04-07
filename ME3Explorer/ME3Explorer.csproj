@@ -1471,9 +1471,7 @@
     <Resource Include="Resources\interpreter_icon_64x64.png" />
     <Resource Include="Resources\interp_viewer_icon_64x64.png" />
     <Resource Include="Resources\info.ico" />
-    <Resource Include="Resources\ImageEngine_icon_64x64.png" />
     <Resource Include="Resources\help-browser.png" />
-    <Resource Include="Resources\fxa_editor_64x64.png" />
     <Resource Include="Resources\folder.png" />
     <Resource Include="Resources\document-save.png" />
     <Resource Include="Resources\animation_explorer_64x64.png" />
@@ -1594,6 +1592,9 @@
     <Resource Include="Resources\ploteditor_256x256.ico" />
     <Resource Include="Resources\texplorer_256x256.ico" />
     <Resource Include="Resources\plotdatabase_256x256.ico" />
+    <Resource Include="Resources\ImageEngine_256x256.ico" />
+    <Resource Include="Resources\facefxa_256x256.ico" />
+    <Resource Include="Resources\memoryanalyzer_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -89,7 +89,7 @@ namespace ME3Explorer
             {
                 name = "Memory Analyzer",
                 type = typeof(ME3ExpMemoryAnalyzer.MemoryAnalyzer),
-                icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+                icon = Application.Current.FindResource("iconMemoryAnalyzer") as ImageSource,
                 open = () =>
                 {
                     (new ME3ExpMemoryAnalyzer.MemoryAnalyzer()).Show();
