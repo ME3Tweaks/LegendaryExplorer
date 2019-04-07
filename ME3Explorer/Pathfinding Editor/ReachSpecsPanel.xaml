@@ -1,0 +1,92 @@
+﻿<global:ExportLoaderControl
+             xmlns:global="clr-namespace:ME3Explorer" 
+             x:Class="ME3Explorer.Pathfinding_Editor.ReachSpecsPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ME3Explorer.Pathfinding_Editor"
+             mc:Ignorable="d" 
+    MinWidth="250"
+             d:DesignHeight="450" d:DesignWidth="250">
+    <StackPanel Margin="3">
+        <TextBlock Text="{Binding NodeName, FallbackValue=PathNode_X57}" FontWeight="Bold" FontSize="20"/>
+        <TextBlock Text="{Binding NodeNameSubText, FallbackValue=Export 57}" FontWeight="Bold" FontSize="10"/>
+
+        <ComboBox Name="NodeSize_ComboBox" ItemsSource="{Binding AvailableNodeSizes}" HorizontalContentAlignment="Stretch">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Header}" />
+                        <TextBlock Grid.Column="1" TextAlignment="Right">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0}x{1}">
+                                    <Binding Path="NodeWidth" />
+                                    <Binding Path="NodeHeight" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Grid>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+
+        </ComboBox>
+
+
+        <TextBlock Text="Reachable Nodes (ReachSpecs)"/>
+        <ListBox MinHeight="30" Name="ReachableNodes_ComboBox" ItemsSource="{Binding ReachSpecs}" SelectionChanged="ReachSpecs_SelectedItemChanged" HorizontalContentAlignment="Stretch">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="35" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="15"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="{Binding DestinationTextUI}" />
+                        <TextBlock Grid.Column="1" TextAlignment="Right">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="via {0}_{1}">
+                                    <Binding Path="SpecExport.ObjectName" />
+                                    <Binding Path="SpecExport.indexValue" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" FontSize="10" Text="{Binding DestinationTypeTextUI}" TextAlignment="Right"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <StackPanel Name="ReachSpecConnection_Panel">
+            <TextBlock Text="{Binding ReachSpecSizeToText,FallbackValue=Reachspec size to X}"/>
+            <ComboBox Name="ReachSpecSize_ComboBox" ItemsSource="{Binding AvailableReachSpecSizes}" HorizontalContentAlignment="Stretch">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Header}" />
+                            <TextBlock Grid.Column="1" TextAlignment="Right">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0}x{1}">
+                                        <Binding Path="SpecWidth" />
+                                        <Binding Path="SpecHeight" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </Grid>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+    </StackPanel>
+</global:ExportLoaderControl>

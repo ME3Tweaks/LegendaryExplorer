@@ -24,6 +24,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UMD.HCIL.PathingGraphEditor;
 using UMD.HCIL.Piccolo;
+using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
 using static ME3Explorer.PathfindingEditor;
 
@@ -410,9 +411,23 @@ namespace ME3Explorer.Pathfinding_Editor
             NodeTagListLoading = false;
             foreach (PNode o in GraphNodes)
             {
-                //o.MouseDown += node_MouseDown;
+                o.MouseDown += node_MouseDown;
             }
             return centerpoint;
+        }
+
+        private void node_MouseDown(object sender, PInputEventArgs e)
+        {
+            PathfindingNodeMaster node = (PathfindingNodeMaster)sender;
+            //int n = node.Index;
+            
+            ActiveNodes_ListBox.SelectedItem = node.export;
+            if ((node is SplinePoint0Node) || (node is SplinePoint1Node))
+            {
+                node.Select();
+            }
+            //CurrentlySelectedSplinePoint = null;
+            //selectedByNode = true;
         }
 
         public void LoadObject(IExportEntry exporttoLoad)
@@ -430,16 +445,11 @@ namespace ME3Explorer.Pathfinding_Editor
                 string s = exporttoLoad.ObjectName;
                 int index = exporttoLoad.Index; //Will change to UIndex later.
                 int x = 0, y = 0, z = int.MinValue;
-                //SaveData savedInfo = new SaveData(-1);
-                //                var props = 
                 var props = exporttoLoad.GetProperties();
                 StructProperty prop = props.GetProp<StructProperty>("location");
                 if (prop != null)
                 {
                     PropertyCollection nodelocprops = (prop as StructProperty).Properties;
-                    //X offset is 0x20
-                    //Y offset is 0x24
-                    //Z offset is 0x28 (unused as this is a 2D graph)
                     foreach (var locprop in nodelocprops)
                     {
                         switch (locprop.Name)
@@ -920,11 +930,17 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void ActiveNodesList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
+            foreach (PathfindingNodeMaster pfm in GraphNodes)
+            {
+                pfm.Deselect();
+            }
+
             if (ActiveNodes_ListBox.SelectedItem != null)
             {
                 IExportEntry export = (IExportEntry)ActiveNodes_ListBox.SelectedItem;
+                ActiveNodes_ListBox.ScrollIntoView(export);
                 Properties_InterpreterWPF.LoadExport(export);
-
+                PathfindingEditorWPF_ReachSpecsPanel.LoadExport(export);
                 //Clear coverlinknode highlighting.
                 /*foreach (PathfindingNodeMaster pnm in Objects)
                 {
@@ -945,7 +961,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     s.Select();
                     //if (!selectedByNode)
                     //    graphEditor.Camera.AnimateViewToPanToBounds(s.GlobalFullBounds, 0);
-                    graphEditor.Camera.AnimateViewToPanToBounds(s.GlobalFullBounds, 0);
+                    graphEditor.Camera.AnimateViewToPanToBounds(s.GlobalFullBounds, 1000);
                     //switch (s.export.ClassName)
                     //{
                     //    case "CoverLink":

@@ -9,7 +9,7 @@
         xmlns:pathfindinggraph="clr-namespace:UMD.HCIL.PathingGraphEditor;assembly=Piccolo"
         mc:Ignorable="d"
         Closing="PathfinderEditorWPF_Closing"
-        Title="Pathfinding Editor WPF" Height="450" Width="800">
+        Title="Pathfinding Editor WPF" Height="450" Width="900">
     <Window.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
@@ -47,8 +47,10 @@
         </StatusBar>
         <!-- Main Content panel-->
         <DockPanel>
-            <TabControl DockPanel.Dock="Right" MaxWidth="300">
-                <TabItem Header="ReachSpecs"/>
+            <TabControl DockPanel.Dock="Right" MaxWidth="300" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+                <TabItem Header="ReachSpecs">
+                    <local:ReachSpecsPanel x:Name="PathfindingEditorWPF_ReachSpecsPanel"/>
+                </TabItem>
                 <TabItem Header="Combat Zones"/>
 
             </TabControl>
@@ -58,10 +60,33 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="300"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <!--Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}"-->
-                <Grid HorizontalAlignment="Left" Margin="20,0,0,0"  Visibility="Collapsed">
+                <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
+                    <TextBlock Margin="5" Text="Welcome to Pathfinding Editor WPF, the rewritten version of Pathfinding Editor" FontWeight="Bold"/>
+                    <TextBlock Margin="5">
+                            Pathfinding Editor WPF is a bit different from the classic Pathfinding Editor.
+                                <LineBreak/>
+                                Indexes are done strictly by UIndex, which is how they appear in game code. (Not yet done)
+                                <LineBreak/>
+                                <LineBreak/>
+                            This means:
+                                <LineBreak/>
+                                -  Export references will be incremented by 1 from what you have seen in Package Editor
+                            <LineBreak/>
+                                -  Import references will remain the same
+                            <LineBreak/>
+                                -  0 indicates null, empty, or "Class", depending on the context
+                             <LineBreak/>
+                                <LineBreak/>
+                                Pathfinding Editor WPF is still in development and not all features are functional or ported
+                                <LineBreak/>
+                                over from the classic version.
+                    </TextBlock>
+                </StackPanel>
+
+                <Grid HorizontalAlignment="Center" Margin="20,0,20,15" Grid.Column="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
@@ -74,6 +99,7 @@
                         <ColumnDefinition Width="280"/>
                         <ColumnDefinition Width="280"/>
                     </Grid.ColumnDefinitions>
+                    
                     <TextBlock Text="Recently opened items" Grid.Row="0" Grid.ColumnSpan="5" TextAlignment="Center" FontSize="20" FontWeight="Light" Margin="10"/>
                     <Button Name="RecentButton1" Content="Item" Grid.Row="1" Grid.Column="0" Margin="3" Padding="3"/>
                     <Button Name="RecentButton2" Content="Item" Grid.Row="1" Grid.Column="1" Margin="3" Padding="3"/>
@@ -86,7 +112,7 @@
                     <Button Name="RecentButton9" Content="Item" Grid.Row="5" Grid.Column="0" Margin="3" Padding="3"/>
                     <Button Name="RecentButton10" Content="Item" Grid.Row="5" Grid.Column="1" Margin="3" Padding="3"/>
                 </Grid>
-                <ListBox Name="ActiveNodes_ListBox" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding ActiveNodes}" SelectionChanged="ActiveNodesList_SelectedItemChanged">
+                <ListBox Name="ActiveNodes_ListBox" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding ActiveNodes}" SelectionChanged="ActiveNodesList_SelectedItemChanged" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -95,12 +121,20 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding UIndex}" />
-                                <TextBlock Text="{Binding ObjectName}" Grid.Column="1"/>
+                                <TextBlock Grid.Column="1">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0}_{1}">
+                                            <Binding Path="ObjectName" />
+                                            <Binding Path="indexValue" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <global:InterpreterWPF x:Name="Properties_InterpreterWPF" Grid.Row="0" Grid.Column="1"/>
+                <!-- Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}" -->
+                <global:InterpreterWPF x:Name="Properties_InterpreterWPF" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}"/>
             </Grid>
             <WindowsFormsHost Name="GraphHost" VerticalAlignment="Stretch">
                 <pathfindinggraph:PathingGraphEditor/>

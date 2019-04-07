@@ -520,6 +520,9 @@
     <Compile Include="Pathfinding Editor\PathfindingEditorWPF.xaml.cs">
       <DependentUpon>PathfindingEditorWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pathfinding Editor\ReachSpecsPanel.xaml.cs">
+      <DependentUpon>ReachSpecsPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pathfinding Editor\SplineNodes.cs" />
     <Compile Include="Pathfinding Editor\ActorNodes.cs" />
     <Compile Include="Pathfinding Editor\DuplicateGUIDWindow.cs">
@@ -1039,6 +1042,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pathfinding Editor\PathfindingEditorWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pathfinding Editor\ReachSpecsPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
