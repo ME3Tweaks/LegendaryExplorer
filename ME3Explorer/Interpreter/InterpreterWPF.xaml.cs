@@ -88,6 +88,7 @@ namespace ME3Explorer
 
         public InterpreterWPF()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("InterpreterWPF", new WeakReference(this));
             LoadCommands();
             InitializeComponent();
             EditorSetElements.Add(Value_TextBox); //str, strref, int, float, obj
@@ -249,6 +250,13 @@ namespace ME3Explorer
             {
                 SetChildrenExpandedStateRecursive(tvi, IsExpanded);
             }
+        }
+
+        internal void hideHexBox()
+        {
+            Interpreter_Hexbox_Host.Visibility = HexProps_GridSplitter.Visibility = SaveHexChange_Button.Visibility = ToggleHexboxWidth_Button.Visibility = SaveToggle_Separator.Visibility = Visibility.Collapsed;
+            Grid.SetColumn(Interpreter_TreeView, 0);
+            Grid.SetColumnSpan(Interpreter_TreeView, 4);
         }
 
         private bool CanExpandOrCollapseChildren(object obj)

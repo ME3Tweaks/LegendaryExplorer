@@ -33,11 +33,12 @@ namespace ME3Explorer
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PathfindingEditor));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.graphPropertiesSplitPanel = new System.Windows.Forms.SplitContainer();
             this.graphEditor = new UMD.HCIL.PathingGraphEditor.PathingGraphEditor();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.activeExportsListbox = new System.Windows.Forms.ListBox();
-            this.interpreter1 = new ME3Explorer.Interpreter();
+            this.interpreterWPFElementHost = new System.Windows.Forms.Integration.ElementHost();
+            this.interpreterWPF = new ME3Explorer.InterpreterWPF();
             this.pathfindingNodeInfoPanel = new ME3Explorer.Pathfinding_Editor.PathfindingNodeInfoPanel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -121,10 +122,10 @@ namespace ME3Explorer
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
-            this.splitContainer2.Panel1.SuspendLayout();
-            this.splitContainer2.Panel2.SuspendLayout();
-            this.splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.graphPropertiesSplitPanel)).BeginInit();
+            this.graphPropertiesSplitPanel.Panel1.SuspendLayout();
+            this.graphPropertiesSplitPanel.Panel2.SuspendLayout();
+            this.graphPropertiesSplitPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
@@ -144,7 +145,7 @@ namespace ME3Explorer
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.splitContainer2);
+            this.splitContainer1.Panel1.Controls.Add(this.graphPropertiesSplitPanel);
             // 
             // splitContainer1.Panel2
             // 
@@ -153,24 +154,23 @@ namespace ME3Explorer
             this.splitContainer1.SplitterDistance = 825;
             this.splitContainer1.TabIndex = 0;
             // 
-            // splitContainer2
+            // graphPropertiesSplitPanel
             // 
-            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer2.Name = "splitContainer2";
-            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.graphPropertiesSplitPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.graphPropertiesSplitPanel.Location = new System.Drawing.Point(0, 0);
+            this.graphPropertiesSplitPanel.Name = "graphPropertiesSplitPanel";
+            this.graphPropertiesSplitPanel.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
-            // splitContainer2.Panel1
+            // graphPropertiesSplitPanel.Panel1
             // 
-            this.splitContainer2.Panel1.Controls.Add(this.graphEditor);
+            this.graphPropertiesSplitPanel.Panel1.Controls.Add(this.graphEditor);
             // 
-            // splitContainer2.Panel2
+            // graphPropertiesSplitPanel.Panel2
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.splitContainer3);
-            this.splitContainer2.Panel2Collapsed = true;
-            this.splitContainer2.Size = new System.Drawing.Size(825, 521);
-            this.splitContainer2.SplitterDistance = 379;
-            this.splitContainer2.TabIndex = 0;
+            this.graphPropertiesSplitPanel.Panel2.Controls.Add(this.splitContainer3);
+            this.graphPropertiesSplitPanel.Size = new System.Drawing.Size(825, 521);
+            this.graphPropertiesSplitPanel.SplitterDistance = 379;
+            this.graphPropertiesSplitPanel.TabIndex = 0;
             // 
             // graphEditor
             // 
@@ -181,10 +181,9 @@ namespace ME3Explorer
             this.graphEditor.Location = new System.Drawing.Point(0, 0);
             this.graphEditor.Name = "graphEditor";
             this.graphEditor.RegionManagement = true;
-            this.graphEditor.Size = new System.Drawing.Size(825, 521);
+            this.graphEditor.Size = new System.Drawing.Size(825, 379);
             this.graphEditor.TabIndex = 1;
             this.graphEditor.Text = "graphEditor1";
-
             // 
             // splitContainer3
             // 
@@ -198,9 +197,9 @@ namespace ME3Explorer
             // 
             // splitContainer3.Panel2
             // 
-            this.splitContainer3.Panel2.Controls.Add(this.interpreter1);
-            this.splitContainer3.Size = new System.Drawing.Size(150, 46);
-            this.splitContainer3.SplitterDistance = 74;
+            this.splitContainer3.Panel2.Controls.Add(this.interpreterWPFElementHost);
+            this.splitContainer3.Size = new System.Drawing.Size(825, 138);
+            this.splitContainer3.SplitterDistance = 406;
             this.splitContainer3.TabIndex = 0;
             // 
             // activeExportsListbox
@@ -215,20 +214,19 @@ namespace ME3Explorer
             this.activeExportsListbox.Location = new System.Drawing.Point(0, 0);
             this.activeExportsListbox.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1000);
             this.activeExportsListbox.Name = "activeExportsListbox";
-            this.activeExportsListbox.Size = new System.Drawing.Size(74, 22);
+            this.activeExportsListbox.Size = new System.Drawing.Size(406, 114);
             this.activeExportsListbox.TabIndex = 0;
             this.activeExportsListbox.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
-            // interpreter1
+            // interpreterWPFElementHost
             // 
-            this.interpreter1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.interpreter1.Location = new System.Drawing.Point(0, 0);
-            this.interpreter1.Name = "interpreter1";
-            this.interpreter1.Pcc = null;
-            this.interpreter1.Size = new System.Drawing.Size(68, 22);
-            this.interpreter1.TabIndex = 0;
+            this.interpreterWPFElementHost.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.interpreterWPFElementHost.Location = new System.Drawing.Point(0, 0);
+            this.interpreterWPFElementHost.Margin = new System.Windows.Forms.Padding(3, 3, 3, 20);
+            this.interpreterWPFElementHost.Name = "interpreterWPFElementHost";
+            this.interpreterWPFElementHost.Size = new System.Drawing.Size(415, 138);
+            this.interpreterWPFElementHost.TabIndex = 0;
+            this.interpreterWPFElementHost.Child = this.interpreterWPF;
             // 
             // pathfindingNodeInfoPanel
             // 
@@ -949,10 +947,10 @@ namespace ME3Explorer
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.splitContainer2.Panel1.ResumeLayout(false);
-            this.splitContainer2.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
-            this.splitContainer2.ResumeLayout(false);
+            this.graphPropertiesSplitPanel.Panel1.ResumeLayout(false);
+            this.graphPropertiesSplitPanel.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.graphPropertiesSplitPanel)).EndInit();
+            this.graphPropertiesSplitPanel.ResumeLayout(false);
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
@@ -974,7 +972,7 @@ namespace ME3Explorer
 
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ListBox activeExportsListbox;
-        private System.Windows.Forms.SplitContainer splitContainer2;
+        private System.Windows.Forms.SplitContainer graphPropertiesSplitPanel;
         public UMD.HCIL.PathingGraphEditor.PathingGraphEditor graphEditor;
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.MenuStrip menuStrip1;
@@ -998,7 +996,6 @@ namespace ME3Explorer
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private System.Windows.Forms.ToolStripMenuItem addObjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem;
-        private Interpreter interpreter1;
         private PathfindingNodeInfoPanel pathfindingNodeInfoPanel;
         private System.Windows.Forms.ToolStripMenuItem changeNodeTypeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toSFXEnemySpawnPointToolStripMenuItem;
@@ -1057,5 +1054,7 @@ namespace ME3Explorer
         private System.Windows.Forms.ToolStripMenuItem toSFXNavJumpDownNodeBottomToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addExportToLevelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem;
+        private System.Windows.Forms.Integration.ElementHost interpreterWPFElementHost;
+        private InterpreterWPF interpreterWPF;
     }
 }

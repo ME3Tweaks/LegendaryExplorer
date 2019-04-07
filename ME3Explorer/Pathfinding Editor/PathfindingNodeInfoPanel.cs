@@ -102,6 +102,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 foreach (ObjectProperty prop in PathList)
                 {
+                    if (prop.Value == 0) { continue;  } //unassigned, will cause issue in game, but will be better for editor to not throw errors
                     IExportEntry outgoingSpec = export.FileRef.Exports[prop.Value - 1];
                     StructProperty outgoingEndStructProp = outgoingSpec.GetProperty<StructProperty>("End"); //Embeds END
                     ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpec)); //END                    

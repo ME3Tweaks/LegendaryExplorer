@@ -28,6 +28,7 @@ using static ME3Explorer.BinaryInterpreter;
 using ME3Explorer.SplineNodes;
 using SharpDX;
 using ME3Explorer.SharedUI;
+using System.Windows.Threading;
 
 namespace ME3Explorer
 {
@@ -211,7 +212,7 @@ namespace ME3Explorer
 
         private void PathfindingEditor_Load(object sender, EventArgs e)
         {
-            interpreter1.hideHexBox();
+            interpreterWPF.hideHexBox();
         }
 
         private bool selectedByNode;
@@ -1122,15 +1123,7 @@ namespace ME3Explorer
         public void GetProperties(IExportEntry export)
         {
             pathfindingNodeInfoPanel.LoadExport(export);
-            if (!IsReloadSelecting)
-            {
-                if (interpreter1.Pcc != export.FileRef)
-                {
-                    interpreter1.Pcc = export.FileRef; //allows cross file references to work.
-                }
-                interpreter1.export = export;
-                interpreter1.InitInterpreter();
-            }
+            interpreterWPF.LoadExport(export);
             ObjectProperty combatZone = export.GetProperty<ObjectProperty>("CombatZone");
             if (combatZone != null && ActiveCombatZoneExportIndex != combatZone.Value - 1)
             {
@@ -1190,13 +1183,15 @@ namespace ME3Explorer
             selectedIndex = n;
             selectedByNode = false;
             graphEditor.Refresh();
-            splitContainer2.Panel2Collapsed = false;
+            graphPropertiesSplitPanel.Panel2Collapsed = false;
         }
 
         private void PathfindingEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
             //Nullify things to prevent memory leaks
-
+            interpreterWPF.Dispose();
+            interpreterWPFElementHost.Child = null;
+            interpreterWPFElementHost.Dispose();
             rightMouseButtonMenu = null;
             contextMenuStrip2 = null;
             showVolumesInsteadOfNodesToolStripMenuItem = null;
@@ -1557,7 +1552,7 @@ namespace ME3Explorer
             int postCount = CurrentObjects.Count;
             if (preCount == 0 && postCount != 0)
             {
-                splitContainer2.Panel2Collapsed = false;
+                graphPropertiesSplitPanel.Panel2Collapsed = false;
             }
         }
 
@@ -2721,7 +2716,7 @@ namespace ME3Explorer
             int postCount = CurrentObjects.Count;
             if (preCount == 0 && postCount != 0)
             {
-                splitContainer2.Panel2Collapsed = false;
+                graphPropertiesSplitPanel.Panel2Collapsed = false;
             }
         }
 
@@ -3488,7 +3483,7 @@ namespace ME3Explorer
 
         private void nodesPropertiesPanelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            splitContainer2.Panel2Collapsed = !splitContainer2.Panel2Collapsed;
+            graphPropertiesSplitPanel.Panel2Collapsed = !graphPropertiesSplitPanel.Panel2Collapsed;
         }
 
         private void removeFromLevelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3675,7 +3670,7 @@ namespace ME3Explorer
             int postCount = CurrentObjects.Count;
             if (preCount == 0 && postCount != 0)
             {
-                splitContainer2.Panel2Collapsed = false;
+                graphPropertiesSplitPanel.Panel2Collapsed = false;
             }
         }
 
