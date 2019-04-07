@@ -530,6 +530,19 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "Pathfinding Editor WPF",
+                type = typeof(Pathfinding_Editor.PathfindingEditorWPF),
+                icon = Application.Current.FindResource("iconPathfindingEditor") as ImageSource,
+                open = () =>
+                {
+                    new Pathfinding_Editor.PathfindingEditorWPF().Show();
+                },
+                tags = new List<string> { "user", "developer", "path", "ai", "combat", "spline", "spawn", "map", "path", "node", "cover", "level" },
+                subCategory = "Core",
+                description = "Pathfinding Editor WPF is a WPF version of Pathfinding Editor."
+            });
+            set.Add(new Tool
+            {
                 name = "Pathfinding Editor",
                 type = typeof(PathfindingEditor),
                 icon = Application.Current.FindResource("iconPathfindingEditor") as ImageSource,

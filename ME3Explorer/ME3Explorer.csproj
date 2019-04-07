@@ -517,6 +517,9 @@
     </Compile>
     <Compile Include="Packages\UDKPackage.cs" />
     <Compile Include="Packages\MEPackage.cs" />
+    <Compile Include="Pathfinding Editor\PathfindingEditorWPF.xaml.cs">
+      <DependentUpon>PathfindingEditorWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pathfinding Editor\SplineNodes.cs" />
     <Compile Include="Pathfinding Editor\ActorNodes.cs" />
     <Compile Include="Pathfinding Editor\DuplicateGUIDWindow.cs">
@@ -1032,6 +1035,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PackageEditor\TreeMergeDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pathfinding Editor\PathfindingEditorWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

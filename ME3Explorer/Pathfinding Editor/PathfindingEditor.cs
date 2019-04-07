@@ -148,7 +148,7 @@ namespace ME3Explorer
             }
         }
 
-        private void RefreshRecent(bool propogate, List<string> recents = null)
+        public void RefreshRecent(bool propogate, List<string> recents = null)
         {
             if (propogate && recents != null)
             {
@@ -733,9 +733,10 @@ namespace ME3Explorer
         private Dictionary<int, PointF> smacCoordinates;
         private bool IsReloadSelecting = false;
         private bool SplineNodesActive;
+        private bool EverythingElseActive;
+
         private PathfindingNodeMaster CurrentlySelectedSplinePoint;
         private List<int> CurrentlyHighlightedCoverlinkNodes = new List<int>();
-        private bool EverythingElseActive;
         private bool HighlightSequenceReferences;
         private bool NodeTagListLoading;
         private PathfindingMouseListener pathfindingMouseListener;
@@ -2681,29 +2682,49 @@ namespace ME3Explorer
 
         }
 
-        class PathfindingMouseListener : PBasicInputEventHandler
+        public class PathfindingMouseListener : PBasicInputEventHandler, IDisposable
         {
             private PathfindingEditor pathfinder;
+            private PathfindingEditorWPF pathfinderWPF;
 
             public PathfindingMouseListener(PathfindingEditor pathfinder)
             {
                 this.pathfinder = pathfinder;
             }
 
+            public PathfindingMouseListener(PathfindingEditorWPF pathfinderWPF)
+            {
+                this.pathfinderWPF = pathfinderWPF;
+            }
+
+            public void Dispose()
+            {
+                pathfinder = null;
+                pathfinderWPF = null;
+            }
+
             public override void OnMouseMove(object sender, PInputEventArgs e)
             {
+                PointF pos = e.Position;
+                int X = Convert.ToInt32(pos.X);
+                int Y = Convert.ToInt32(pos.Y);
                 if (pathfinder != null)
                 {
-                    PointF pos = e.Position;
                     string fname = Path.GetFileName(pathfinder.CurrentFile);
                     if (pathfinder.CurrentFilterType != HeightFilterForm.FILTER_Z_NONE)
                     {
                         fname += " | Hiding nodes " + (pathfinder.CurrentFilterType == HeightFilterForm.FILTER_Z_ABOVE ? "above" : "below") + " Z = " + pathfinder.CurrentZFilterValue + " | ";
                     }
 
-                    int X = Convert.ToInt32(pos.X);
-                    int Y = Convert.ToInt32(pos.Y);
+                    
                     pathfinder.filenameLabel.Text = fname + " [" + X + "," + Y + "]";
+
+                }
+                else
+                {
+                    //TODO: Height Filtering
+                    string fname = Path.GetFileName(pathfinderWPF.CurrentFile);
+                    pathfinderWPF.StatusText = $"{fname} [{X},{Y}]";
                 }
             }
         }
