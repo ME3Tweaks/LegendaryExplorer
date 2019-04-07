@@ -35,6 +35,7 @@ namespace ME3Explorer
         }
 
         public static TaskScheduler SYNCHRONIZATION_CONTEXT;
+        public static int CoreCount;
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
@@ -51,6 +52,14 @@ namespace ME3Explorer
             {
                 Directory.CreateDirectory(AppDataFolder);
             }
+
+            //This is in startup as it takes about 1 second to execute and will stall the UI.
+            CoreCount = 0;
+            foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_Processor").Get())
+            {
+                CoreCount += int.Parse(item["NumberOfCores"].ToString());
+            }
+            if (CoreCount == 0) { CoreCount = 2; }
 
 
             ME1UnrealObjectInfo.loadfromJSON();

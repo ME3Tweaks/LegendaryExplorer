@@ -42,8 +42,6 @@ namespace ME3Explorer.PackageDumper
         /// </summary>
         private List<PackageDumperSingleFileTask> AllDumpingItems;
 
-        private int CoreCount;
-
         private int _listViewHeight;
         public int ListViewHeight
         {
@@ -180,18 +178,10 @@ namespace ME3Explorer.PackageDumper
         public PackageDumper(Window owner = null)
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Package Dumper", new WeakReference(this));
-
             Owner = owner;
             DataContext = this;
             LoadCommands();
-
-            CoreCount = 0;
-            foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_Processor").Get())
-            {
-                CoreCount += int.Parse(item["NumberOfCores"].ToString());
-            }
-            if (CoreCount == 0) { CoreCount = 2; }
-            ListViewHeight = 25 * CoreCount;
+            ListViewHeight = 25 * App.CoreCount;
             InitializeComponent();
         }
 
@@ -286,7 +276,7 @@ namespace ME3Explorer.PackageDumper
                     CurrentDumpingItems.Remove(x);
                 }));
             },
-            new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = CoreCount }); // How many items at the same time
+            new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = App.CoreCount }); // How many items at the same time
 
             AllDumpingItems = new List<PackageDumperSingleFileTask>();
             CurrentDumpingItems.ClearEx();
