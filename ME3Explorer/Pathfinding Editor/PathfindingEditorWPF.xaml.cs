@@ -172,9 +172,6 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
 #endif
                 LoadFile(d.FileName);
-                AddRecent(d.FileName, false);
-                SaveRecentList();
-                RefreshRecent(true, RFiles);
 #if !DEBUG
                 }
                 catch (Exception ex)
@@ -272,6 +269,7 @@ namespace ME3Explorer.Pathfinding_Editor
         private void LoadFile(string fileName)
         {
             LoadMEPackage(fileName);
+            ActiveNodes.ClearEx();
             StatusText = System.IO.Path.GetFileName(fileName);
             graphEditor.nodeLayer.RemoveAllChildren();
             graphEditor.edgeLayer.RemoveAllChildren();
@@ -281,7 +279,13 @@ namespace ME3Explorer.Pathfinding_Editor
                 PointF graphcenter = GenerateGraph();
                 ActiveNodes_ListBox.SelectedIndex = 0;
                 CurrentFile = System.IO.Path.GetFileName(fileName);
-                ActiveNodesList_SelectedItemChanged(null, null);
+                RectangleF panToRectangle = new RectangleF(graphcenter, new SizeF(2000, 2000));
+                graphEditor.Camera.AnimateViewToCenterBounds(panToRectangle, false, 1000);
+
+                AddRecent(fileName, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
+                //ActiveNodesList_SelectedItemChanged(null, null);
             }
             else
             {
@@ -347,7 +351,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         start += 4;
                         itemcount = 2;
                     }
-
+                    List<IExportEntry> bulkActiveNodes = new List<IExportEntry>();
                     while (itemcount < numberofitems)
                     {
                         //get header.
@@ -371,7 +375,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                 isParsedByExistingLayer = true;
                                 if (PathfindingNodesActive)
                                 {
-                                    ActiveNodes.Add(exportEntry);
+                                    bulkActiveNodes.Add(exportEntry);
                                 }
                             }
 
@@ -380,7 +384,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                 isParsedByExistingLayer = true;
                                 if (ActorNodesActive)
                                 {
-                                    ActiveNodes.Add(exportEntry);
+                                    bulkActiveNodes.Add(exportEntry);
                                 }
                             }
 
@@ -390,14 +394,14 @@ namespace ME3Explorer.Pathfinding_Editor
 
                                 if (SplineNodesActive)
                                 {
-                                    ActiveNodes.Add(exportEntry);
+                                    bulkActiveNodes.Add(exportEntry);
                                     ArrayProperty<StructProperty> connectionsProp = exportEntry.GetProperty<ArrayProperty<StructProperty>>("Connections");
                                     if (connectionsProp != null)
                                     {
                                         foreach (StructProperty connectionProp in connectionsProp)
                                         {
                                             ObjectProperty splinecomponentprop = connectionProp.GetProp<ObjectProperty>("SplineComponent");
-                                            ActiveNodes.Add(Pcc.getUExport(splinecomponentprop.Value));
+                                            bulkActiveNodes.Add(Pcc.getUExport(splinecomponentprop.Value));
                                         }
                                     }
                                 }
@@ -472,7 +476,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                             if (EverythingElseActive && !isParsedByExistingLayer)
                             {
-                                ActiveNodes.Add(exportEntry);
+                                bulkActiveNodes.Add(exportEntry);
                             }
 
                             //}
@@ -494,7 +498,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         }
                     }
 
-
+                    ActiveNodes.ReplaceAll(bulkActiveNodes);
 
                     for (int i = 0; i < Pcc.ExportCount; i++)
                     {
@@ -523,17 +527,18 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             graphEditor.nodeLayer.RemoveAllChildren();
             graphEditor.edgeLayer.RemoveAllChildren();
-            PointF centerpoint = new PointF(0, 0);
             GraphNodes = new List<PathfindingNodeMaster>();
-            //  double fullx = 0;
-            //  double fully = 0;
+
+            double fullx = 0;
+            double fully = 0;
             int currentcount = ActiveNodes.Count(); //Some objects load additional objects. We need to count before we iterate over the graphsnode list as it may be appended to during this loop.
             for (int i = 0; i < currentcount; i++)
             {
-                LoadObject(ActiveNodes[i]);
-                //fullx += pos.X;
-                //fully += pos.Y;
+                PointF pos = LoadObject(ActiveNodes[i]);
+                fullx += pos.X;
+                fully += pos.Y;
             }
+            PointF centerpoint = new PointF((float)(fullx / GraphNodes.Count), (float)(fully / GraphNodes.Count));
             CreateConnections();
 
             NodeTagListLoading = true;
@@ -556,11 +561,12 @@ namespace ME3Explorer.Pathfinding_Editor
             foreach (var node in GraphNodes)
             {
                 node.MouseDown += node_MouseDown;
-                if (node.NodeTag != null && node.NodeTag != "")
+                if (node.NodeTag != null && node.NodeTag != "" && !TagsList.Contains(node.NodeTag))
                 {
                     TagsList.Add(node.NodeTag);
                 }
             }
+            TagsList.Sort(x=>x);
             return centerpoint;
         }
 
@@ -583,15 +589,17 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        public void LoadObject(IExportEntry exporttoLoad)
+        public PointF LoadObject(IExportEntry exporttoLoad)
         {
             PointF smacPos;
+
+            //Todo: impement SMAC
             bool found = false; // smacCoordinates.TryGetValue(index, out smacPos);
             if (found)
             {
                 //SMAC_ActorNode smac = new SMAC_ActorNode(index, smacPos.X, smacPos.Y, Pcc, graphEditor);
                 //GraphNodes.Add(smac);
-                return;
+                return new PointF(0, 0); //development mode only, fix later
             }
             else
             {
@@ -741,7 +749,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         //    }
                         //}
                         GraphNodes.Add(pathNode);
-                        return;
+                        return new PointF(x, y);
                     } //End if Pathnode Class 
 
                     else if (actorNodeClasses.Contains(exporttoLoad.ClassName))
@@ -834,7 +842,7 @@ namespace ME3Explorer.Pathfinding_Editor
                              }
                          }*/
                         GraphNodes.Add(actorNode);
-                        return;
+                        return new PointF(x, y);
                     }
 
                     else if (splineNodeClasses.Contains(exporttoLoad.ClassName))
@@ -885,18 +893,19 @@ namespace ME3Explorer.Pathfinding_Editor
                                 break;
                         }
                         GraphNodes.Add(splineNode);
-                        return;
+                        return new PointF(x, y);
                     }
 
                     else
                     {
                         //everything else
                         GraphNodes.Add(new EverythingElseNode(index, x, y, exporttoLoad.FileRef, graphEditor));
-                        return;
+                        return new PointF(x, y);
                     }
                 }
             }
-            return; //hopefully won't see you
+            //Hopefully we don't see this.
+            return new PointF(0, 0);
         }
 
         public void CreateConnections()
@@ -1176,7 +1185,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     s.Select();
                     //if (!selectedByNode)
                     //    graphEditor.Camera.AnimateViewToPanToBounds(s.GlobalFullBounds, 0);
-                    graphEditor.Camera.AnimateViewToPanToBounds(s.GlobalFullBounds, 1000);
+                    graphEditor.Camera.AnimateViewToCenterBounds(s.GlobalFullBounds, false, 1000);
                     //switch (s.export.ClassName)
                     //{
                     //    case "CoverLink":
@@ -1212,6 +1221,31 @@ namespace ME3Explorer.Pathfinding_Editor
             graphEditor.AllowDragging();
         }
 
+        private void FindByTag_Click(object sender, RoutedEventArgs e)
+        {
+            FindByTag();
+        }
+
+        private void FindByTag()
+        {
+            int currentIndex = ActiveNodes_ListBox.SelectedIndex;
+            if (currentIndex < 0 || currentIndex >= ActiveNodes.Count - 1) currentIndex = -1; //nothing selected or the final item is selected
+            currentIndex++; //search next item
+
+            string nodeTagToFind = FindByTag_ComboBox.SelectedItem as string;
+            if (nodeTagToFind is null) return; //empty
+
+            for (int i = 0; i < ActiveNodes.Count(); i++) //activenodes size should match graphnodes size... in theory of course.
+            {
+                PathfindingNodeMaster ci = GraphNodes[(i + currentIndex) % GraphNodes.Count()];
+                if (ci.NodeTag == nodeTagToFind)
+                {
+                    ActiveNodes_ListBox.SelectedItem = ci.export;
+                    break;
+                }
+            }
+        }
+
         private void FindByNumber_Click(object sender, RoutedEventArgs e)
         {
             FindByNumber();
@@ -1235,6 +1269,14 @@ namespace ME3Explorer.Pathfinding_Editor
             if (e.Key == Key.Return)
             {
                 FindByNumber();
+            }
+        }
+
+        private void FindByTag_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                FindByTag();
             }
         }
     }

@@ -146,8 +146,8 @@
                         </Grid.ColumnDefinitions>
                         <TextBox Grid.Column="0" Name="FindByNumber_TextBox" KeyUp="FindByNumber_OnKeyUp"/>
                         <Button Grid.Column="1" Name="FindByNumber_Button" Content="Find by #" Click="FindByNumber_Click"/>
-                        <ComboBox Grid.Column="2" Name="FindByTag_ComboBox" ItemsSource="{Binding TagsList}"/>
-                        <Button Grid.Column="3" Name="FindByTag_Button"  Content="Find by tag"/>
+                        <ComboBox Grid.Column="2" Name="FindByTag_ComboBox" ItemsSource="{Binding TagsList}" KeyUp="FindByTag_OnKeyUp"/>
+                        <Button Grid.Column="3" Name="FindByTag_Button"  Content="Find by tag" Click="FindByTag_Click"/>
                         
                     </Grid>
                 <ListBox Name="ActiveNodes_ListBox" ItemsSource="{Binding ActiveNodes}" SelectionChanged="ActiveNodesList_SelectedItemChanged">
