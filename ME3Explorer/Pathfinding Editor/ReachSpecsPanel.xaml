@@ -9,10 +9,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="250">
     <StackPanel Margin="3">
-        <TextBlock Text="{Binding NodeName, FallbackValue=PathNode_X57}" FontWeight="Bold" FontSize="20"/>
-        <TextBlock Text="{Binding NodeNameSubText, FallbackValue=Export 57}" FontWeight="Bold" FontSize="10"/>
-        <TextBlock Text="{Binding NodeTypeDescriptionText, FallbackValue=This is AsyncState}" TextWrapping="Wrap" FontStyle="Italic" FontSize="11" Height="60"/>
-
         <ComboBox Name="NodeSize_ComboBox" ItemsSource="{Binding AvailableNodeSizes}" HorizontalContentAlignment="Stretch">
             <ComboBox.ItemTemplate>
                 <DataTemplate>

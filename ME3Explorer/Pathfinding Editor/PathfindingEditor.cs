@@ -2726,9 +2726,9 @@ namespace ME3Explorer
                 }
                 else
                 {
+                    //Pathfinding Editor WPF
                     //TODO: Height Filtering
-                    string fname = Path.GetFileName(pathfinderWPF.CurrentFile);
-                    pathfinderWPF.StatusText = $"{fname} [{X},{Y}]";
+                    pathfinderWPF.StatusText = $"[{X},{Y}]";
                 }
             }
         }

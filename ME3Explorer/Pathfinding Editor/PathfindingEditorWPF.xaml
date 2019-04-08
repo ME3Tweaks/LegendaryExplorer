@@ -9,33 +9,41 @@
         xmlns:pathfindinggraph="clr-namespace:UMD.HCIL.PathingGraphEditor;assembly=Piccolo"
         mc:Ignorable="d"
         Closing="PathfinderEditorWPF_Closing"
-        Title="Pathfinding Editor WPF" Height="450" Width="1300" MinWidth="900" MinHeight="200">
+        Title="Pathfinding Editor WPF" Height="750" Width="1300" MinWidth="900" MinHeight="200">
     <Window.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
-        <ContextMenu x:Key="nodeContextMenu">
-            <MenuItem Header="Menu item 1" />
+        <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
+            <MenuItem Header="Set graph X,Y" />
             <MenuItem Header="Menu item 2" />
             <Separator />
             <MenuItem Header="Menu item 3" />
         </ContextMenu>
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key="F5" Command="{Binding RefreshCommand}"/>
+        <KeyBinding Key="F" Modifiers="Control" Command="{Binding FocusFindCommand}"/>
+        <KeyBinding Key="G" Modifiers="Control" Command="{Binding FocusGotoCommand}"/>
+    </Window.InputBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File" Padding="4" >
-                <MenuItem Header="_Open" Command="Open" InputGestureText="Ctrl+O" ToolTip="Open a package file"/>
-                <MenuItem Header="_Save"  Command="Save" InputGestureText="Ctrl+S" ToolTip="Save package file in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                <MenuItem Header="Save as" Command="SaveAs" InputGestureText="Ctrl+Shift+S" ToolTip="Save package file to another location" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                <MenuItem Header="_Open" Command="{Binding OpenCommand}" InputGestureText="Ctrl+O" ToolTip="Open a package file"/>
+                <MenuItem Header="_Save"  Command="{Binding SaveCommand}" InputGestureText="Ctrl+S" ToolTip="Save package file in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                <MenuItem Header="Save as" Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+Shift+S" ToolTip="Save package file to another location" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
                 <Separator />
                 <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
             </MenuItem>
 
             <MenuItem Header="Tools" Padding="4">
+                <MenuItem Header="Refresh" Command="{Binding RefreshCommand}" InputGestureText="F5" ToolTip="Refreshes the pathing graph"/>
+                <MenuItem Header="Find node via Tag" Command="{Binding FocusFindCommand}" InputGestureText="CTRL+F" ToolTip="Find a node by it's custom tag"/>
+                <MenuItem Header="Find node via UIndex" Command="{Binding FocusGotoCommand}" InputGestureText="CTRL+G" ToolTip="Find a node by it's UIndex"/>
 
             </MenuItem>
 
-            <MenuItem Header="Options" Padding="4">
+            <MenuItem Header="View Options" Padding="4">
             </MenuItem>
             <MenuItem Header="Experiments" Padding="4">
 
@@ -53,13 +61,23 @@
         </StatusBar>
         <!-- Main Content panel-->
         <DockPanel>
-            <TabControl DockPanel.Dock="Right" Width="300" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+            <DockPanel DockPanel.Dock="Right" Width="300" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+                <StackPanel DockPanel.Dock="Top" Margin="3">
+                    <Viewbox StretchDirection="DownOnly" Stretch="Uniform" HorizontalAlignment="Left" >
+                        <TextBlock Text="{Binding NodeName, FallbackValue=PathNode_X57}" FontWeight="Bold" FontSize="20" TextAlignment="Left"/>
+                    </Viewbox>
+                    <TextBlock Text="{Binding NodeNameSubText, FallbackValue=Export 57}" FontWeight="Bold" FontSize="10"/>
+                    <TextBlock Text="{Binding NodeTypeDescriptionText, FallbackValue=This is AsyncState}" TextWrapping="Wrap" FontStyle="Italic" FontSize="11" MinHeight="60"/>
+                </StackPanel>
+            <TabControl>
                 <TabItem Header="ReachSpecs">
                     <local:ReachSpecsPanel x:Name="PathfindingEditorWPF_ReachSpecsPanel"/>
                 </TabItem>
                 <TabItem Header="Combat Zones"/>
 
             </TabControl>
+            </DockPanel>
+
             <Grid DockPanel.Dock="Bottom">
                 <Grid.RowDefinitions>
                     <RowDefinition MinHeight="100" MaxHeight="300"/>
@@ -118,7 +136,21 @@
                     <Button Name="RecentButton9" Content="Item" Grid.Row="5" Grid.Column="0" Margin="3" Padding="3"/>
                     <Button Name="RecentButton10" Content="Item" Grid.Row="5" Grid.Column="1" Margin="3" Padding="3"/>
                 </Grid>
-                <ListBox Name="ActiveNodes_ListBox" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding ActiveNodes}" SelectionChanged="ActiveNodesList_SelectedItemChanged" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+                <DockPanel Grid.Row="0" Grid.Column="0" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+                    <Grid DockPanel.Dock="Bottom">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="39"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Name="FindByNumber_TextBox" KeyUp="FindByNumber_OnKeyUp"/>
+                        <Button Grid.Column="1" Name="FindByNumber_Button" Content="Find by #" Click="FindByNumber_Click"/>
+                        <ComboBox Grid.Column="2" Name="FindByTag_ComboBox" ItemsSource="{Binding TagsList}"/>
+                        <Button Grid.Column="3" Name="FindByTag_Button"  Content="Find by tag"/>
+                        
+                    </Grid>
+                <ListBox Name="ActiveNodes_ListBox" ItemsSource="{Binding ActiveNodes}" SelectionChanged="ActiveNodesList_SelectedItemChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -138,7 +170,17 @@
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
+                    <ListBox.ItemContainerStyle>
+                        <Style>
+                            <Style.Triggers>
+                                <Trigger Property="Selector.IsSelected" Value="True">
+                                    <Setter Property="TextElement.FontWeight" Value="Bold"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                 </ListBox>
+                </DockPanel>
                 <!-- Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}" -->
                 <global:InterpreterWPF x:Name="Properties_InterpreterWPF" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}"/>
             </Grid>

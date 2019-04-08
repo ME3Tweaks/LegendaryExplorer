@@ -31,19 +31,7 @@ namespace ME3Explorer.Pathfinding_Editor
             RefreshSelectedReachSpec();
         }
 
-        private string _nodeName;
-        public string NodeName
-        {
-            get => _nodeName;
-            set => SetProperty(ref _nodeName, value);
-        }
-
-        private string _nodeNameSubText;
-        public string NodeNameSubText
-        {
-            get => _nodeNameSubText;
-            set => SetProperty(ref _nodeNameSubText, value);
-        }
+        
 
         private string _reachSpecSizeToText;
         public string ReachSpecSizeToText
@@ -52,30 +40,7 @@ namespace ME3Explorer.Pathfinding_Editor
             set => SetProperty(ref _reachSpecSizeToText, value);
         }
 
-        public string NodeTypeDescriptionText
-        {
-            get
-            {
-                if (CurrentLoadedExport != null)
-                {
-                    switch (CurrentLoadedExport.ClassName)
-                    {
-                        case "PathNode": return "A basic pathing node that all basic movement can use.";
-                        case "SFXNav_LargeBoostNode": return "A node that allows large creatures to boost to another LargeBoostNode, such as a Banshee floating up or down vertical distances.";
-                        case "SFXNav_TurretPoint": return "A basic pathing node that a Cerberus Engineer can place a turret at.";
-
-                        case "CoverSlotMarker": return "A node where AI can take cover. It is owned by a CoverLink and is part of a chain of continuous CoverSlotMarkers.";
-                        case "BioPathPoint": return "A basic pathing node that can be enabled or disabled in Kismet.";
-                        case "SFXEnemySpawnPoint": return "A basic pathing node that can be used as a spawn point for Mass Effect 3 Multiplayer enemies. It contains a list of required sync actions that using this spawn point will require to enter the main area of the map.";
-                        case "SFXNav_LargeMantleNode": return "A node that can be large mantled over to reach another large mantle node. This action is used when climbing over large cover by AI.";
-                        default: return "This node type does not have any information detailed about it's purpose.";
-                    }
-                } else
-                {
-                    return null;
-                }
-            }
-        }
+        
 
         public ObservableCollectionExtended<ReachSpec> ReachSpecs { get; set; } = new ObservableCollectionExtended<ReachSpec>();
 
@@ -88,13 +53,12 @@ namespace ME3Explorer.Pathfinding_Editor
             return true;
         }
 
+        internal Dictionary<string, Dictionary<string, string>> ExportsDB;
+
         public override void LoadExport(IExportEntry export)
         {
             CurrentLoadedExport = export;
             var props = export.GetProperties();
-
-            NodeName = $"{export.ObjectName}_{export.indexValue}";
-            NodeNameSubText = $"Export {export.UIndex}";
 
             //Node size
             AvailableNodeSizes.ClearEx();
@@ -144,9 +108,6 @@ namespace ME3Explorer.Pathfinding_Editor
                     ReachSpecs.Add(spec);
                 }
             }
-
-            //Refresh binding
-            OnPropertyChanged(nameof(NodeTypeDescriptionText));
         }
 
 

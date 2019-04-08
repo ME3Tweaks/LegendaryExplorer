@@ -67,6 +67,7 @@ namespace ME3Explorer.Packages
 
         //reading
         bool isExport(int index);
+        bool isUExport(int uindex);
         bool isName(int index);
         /// <summary>
         ///     gets Export or Import entry, from unreal index

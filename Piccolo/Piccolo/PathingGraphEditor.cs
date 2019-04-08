@@ -47,7 +47,18 @@ namespace UMD.HCIL.PathingGraphEditor
             Root.AddChild(backLayer);
             backLayer.MoveToBack();
             this.Camera.AddLayer(1, backLayer);
-            nodeLayer.AddInputEventListener(new NodeDragHandler());
+            dragHandler = new NodeDragHandler();
+            nodeLayer.AddInputEventListener(dragHandler);
+        }
+
+        public void AllowDragging()
+        {
+            nodeLayer.AddInputEventListener(dragHandler);
+        }
+
+        public void DisableDragging()
+        {
+            nodeLayer.RemoveInputEventListener(dragHandler);
         }
 
         public void addBack(PNode p)
@@ -177,7 +188,7 @@ namespace UMD.HCIL.PathingGraphEditor
         {
             public override bool DoesAcceptEvent(PInputEventArgs e)
             {
-                return e.IsMouseEvent && (e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave);
+                return e.IsMouseEvent && (e.Button == MouseButtons.Left || e.IsMouseEnterOrMouseLeave); //(e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave);
             }
 
             protected override void OnStartDrag(object sender, PInputEventArgs e)
@@ -243,6 +254,7 @@ namespace UMD.HCIL.PathingGraphEditor
         public bool showVolume_BlockingVolume = false;
         public bool showVolume_SFXCombatZones = false;
         public bool showVolume_SFXBlockingVolume_Ledge = false;
+        private readonly NodeDragHandler dragHandler;
 
         protected override void OnPaint(PaintEventArgs e)
         {

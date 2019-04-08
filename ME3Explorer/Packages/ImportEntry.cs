@@ -72,7 +72,8 @@ namespace ME3Explorer.Packages
         //int ObjectNameNumber
 
         public string ClassName { get { return FileRef.Names[idxClassName]; } }
-        public string PackageFile { get { return FileRef.Names[idxPackageFile] + ".pcc"; } }
+        public string PackageFile { get { return FileRef.Names[idxPackageFile] + ".pcc"; } } //Is this valid for ME1?
+        public string PackageFileNoExtension { get { return FileRef.Names[idxPackageFile]; } }
         public string ObjectName { get { return FileRef.Names[idxObjectName]; } }
 
         public string PackageName

@@ -20,6 +20,7 @@ using ME3Explorer.PathfindingNodes;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SplineNodes;
 using ME3Explorer.Unreal;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UMD.HCIL.PathingGraphEditor;
@@ -56,6 +57,8 @@ namespace ME3Explorer.Pathfinding_Editor
         public static Dictionary<string, Dictionary<string, string>> importclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
         public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
         public ObservableCollectionExtended<IExportEntry> ActiveNodes { get; set; } = new ObservableCollectionExtended<IExportEntry>();
+        public ObservableCollectionExtended<string> TagsList { get; set; } = new ObservableCollectionExtended<string>();
+
         private List<IExportEntry> AllLevelObjects = new List<IExportEntry>();
         public string CurrentFile;
         private PathfindingMouseListener pathfindingMouseListener;
@@ -66,7 +69,9 @@ namespace ME3Explorer.Pathfinding_Editor
             DataContext = this;
 
             StatusText = "Select package file to load";
+            LoadCommands();
             InitializeComponent();
+
             graphEditor = (PathingGraphEditor)GraphHost.Child;
             graphEditor.BackColor = System.Drawing.Color.FromArgb(130, 130, 130);
             AllowRefresh = true;
@@ -117,10 +122,142 @@ namespace ME3Explorer.Pathfinding_Editor
             }
 
             InitializeComponent();
+            PathfindingEditorWPF_ReachSpecsPanel.ExportsDB = exportclassdb;
             pathfindingMouseListener = new PathfindingMouseListener(this); //Must be member so we can release reference
             graphEditor.AddInputEventListener(pathfindingMouseListener);
         }
 
+        #region Properties and Bindings
+
+        public ICommand RefreshCommand { get; set; }
+        public ICommand FocusGotoCommand { get; set; }
+        public ICommand FocusFindCommand { get; set; }
+        public ICommand OpenCommand { get; set; }
+        public ICommand SaveCommand { get; set; }
+        public ICommand SaveAsCommand { get; set; }
+
+        private void LoadCommands()
+        {
+            RefreshCommand = new RelayCommand(RefreshGraph, PackageIsLoaded);
+            FocusGotoCommand = new RelayCommand(FocusGoto, PackageIsLoaded);
+            FocusFindCommand = new RelayCommand(FocusFind, PackageIsLoaded);
+            OpenCommand = new RelayCommand(OpenPackage, (o) => { return true; });
+            SaveCommand = new RelayCommand(SavePackage, PackageIsLoaded);
+            SaveAsCommand = new RelayCommand(SavePackageAs, PackageIsLoaded);
+        }
+
+        private void SavePackageAs(object obj)
+        {
+            string extension = System.IO.Path.GetExtension(Pcc.FileName);
+            SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
+            if (d.ShowDialog() == true)
+            {
+                Pcc.save(d.FileName);
+                MessageBox.Show("Done.");
+            }
+        }
+
+        private void SavePackage(object obj)
+        {
+            Pcc.save();
+        }
+
+        private void OpenPackage(object obj)
+        {
+            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
+            if (d.ShowDialog() == true)
+            {
+#if !DEBUG
+                try
+                {
+#endif
+                LoadFile(d.FileName);
+                AddRecent(d.FileName, false);
+                SaveRecentList();
+                RefreshRecent(true, RFiles);
+#if !DEBUG
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to open file:\n" + ex.Message);
+                }
+#endif
+            }
+        }
+
+        private bool PackageIsLoaded(object obj)
+        {
+            return Pcc != null;
+        }
+
+        private void RefreshGraph(object obj)
+        {
+            if (AllowRefresh)
+            {
+                IExportEntry currentSelectedItem = (IExportEntry)ActiveNodes_ListBox.SelectedItem;
+                graphEditor.nodeLayer.RemoveAllChildren();
+                graphEditor.edgeLayer.RemoveAllChildren();
+                ActiveNodes.ClearEx();
+                LoadPathingNodesFromLevel();
+                GenerateGraph();
+            }
+        }
+
+        private void FocusGoto(object obj)
+        {
+            FindByNumber_TextBox.Focus();
+        }
+
+        private void FocusFind(object obj)
+        {
+            FindByTag_ComboBox.Focus();
+        }
+
+        private string _nodeName;
+        public string NodeName
+        {
+            get => _nodeName;
+            set => SetProperty(ref _nodeName, value);
+        }
+
+        private string _nodeNameSubText;
+        public string NodeNameSubText
+        {
+            get => _nodeNameSubText;
+            set => SetProperty(ref _nodeNameSubText, value);
+        }
+
+        public string NodeTypeDescriptionText
+        {
+            get
+            {
+                if (ActiveNodes_ListBox != null && ActiveNodes_ListBox.SelectedItem is IExportEntry CurrentLoadedExport)
+                {
+                    if (exportclassdb.TryGetValue(CurrentLoadedExport.ClassName, out var classinfo) && classinfo.TryGetValue("description", out var description))
+                    {
+                        return description;
+                    }
+                    switch (CurrentLoadedExport.ClassName)
+                    {
+                        case "PathNode": return "A basic pathing node that all basic movement can use.";
+                        case "SFXNav_LargeBoostNode": return "A node that allows large creatures to boost to another LargeBoostNode, such as a Banshee floating up or down vertical distances.";
+                        case "SFXNav_TurretPoint": return "A basic pathing node that a Cerberus Engineer can place a turret at.";
+
+                        case "CoverSlotMarker": return "A node where AI can take cover. It is owned by a CoverLink and is part of a chain of continuous CoverSlotMarkers.";
+                        case "BioPathPoint": return "A basic pathing node that can be enabled or disabled in Kismet.";
+                        case "SFXEnemySpawnPoint": return "A basic pathing node that can be used as a spawn point for Mass Effect 3 Multiplayer enemies. It contains a list of required sync actions that using this spawn point will require to enter the main area of the map.";
+                        case "SFXNav_LargeMantleNode": return "A node that can be large mantled over to reach another large mantle node. This action is used when climbing over large cover by AI.";
+                        default: return "This node type does not have any information detailed about it's purpose.";
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Called from winforms graph
@@ -129,24 +266,22 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             ContextMenu contextMenu = this.FindResource("nodeContextMenu") as ContextMenu;
             contextMenu.IsOpen = true;
+            graphEditor.DisableDragging();
         }
 
         private void LoadFile(string fileName)
         {
             LoadMEPackage(fileName);
             StatusText = System.IO.Path.GetFileName(fileName);
-            bool isFirstLoad = CurrentFile == null;
-
             graphEditor.nodeLayer.RemoveAllChildren();
             graphEditor.edgeLayer.RemoveAllChildren();
 
             if (LoadPathingNodesFromLevel())
             {
                 PointF graphcenter = GenerateGraph();
-                if (isFirstLoad && ActiveNodes.Count > 0)
-                {
-                    ActiveNodes_ListBox.SelectedIndex = 0;
-                }
+                ActiveNodes_ListBox.SelectedIndex = 0;
+                CurrentFile = System.IO.Path.GetFileName(fileName);
+                ActiveNodesList_SelectedItemChanged(null, null);
             }
             else
             {
@@ -416,10 +551,15 @@ namespace ME3Explorer.Pathfinding_Editor
             //tags.Insert(0, "Node tags list");
             //allTagsCombobox.Items.AddRange(tags.ToArray());
             //allTagsCombobox.SelectedIndex = 0;
+            TagsList.ClearEx();
             NodeTagListLoading = false;
-            foreach (PNode o in GraphNodes)
+            foreach (var node in GraphNodes)
             {
-                o.MouseDown += node_MouseDown;
+                node.MouseDown += node_MouseDown;
+                if (node.NodeTag != null && node.NodeTag != "")
+                {
+                    TagsList.Add(node.NodeTag);
+                }
             }
             return centerpoint;
         }
@@ -428,7 +568,7 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             PathfindingNodeMaster node = (PathfindingNodeMaster)sender;
             //int n = node.Index;
-            
+
             ActiveNodes_ListBox.SelectedItem = node.export;
             if ((node is SplinePoint0Node) || (node is SplinePoint1Node))
             {
@@ -498,66 +638,66 @@ namespace ME3Explorer.Pathfinding_Editor
                         switch (exporttoLoad.ClassName)
                         {
                             case "PathNode":
-                                pathNode = new PathfindingNodes.PathNode(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.PathNode(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXEnemySpawnPoint":
-                                pathNode = new PathfindingNodes.SFXEnemySpawnPoint(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXEnemySpawnPoint(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXNav_JumpNode":
-                                pathNode = new PathfindingNodes.SFXNav_JumpNode(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXNav_JumpNode(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXNav_LeapNodeHumanoid":
-                                pathNode = new PathfindingNodes.SFXNav_LeapNodeHumanoid(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXNav_LeapNodeHumanoid(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXDoorMarker":
-                                pathNode = new PathfindingNodes.SFXDoorMarker(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXDoorMarker(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXNav_LargeMantleNode":
-                                pathNode = new PathfindingNodes.SFXNav_LargeMantleNode(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXNav_LargeMantleNode(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "BioPathPoint":
-                                pathNode = new PathfindingNodes.BioPathPoint(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.BioPathPoint(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "PathNode_Dynamic":
-                                pathNode = new PathfindingNodes.PathNode_Dynamic(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.PathNode_Dynamic(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXNav_LargeBoostNode":
-                                pathNode = new PathfindingNodes.SFXNav_LargeBoostNode(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXNav_LargeBoostNode(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXNav_TurretPoint":
-                                pathNode = new PathfindingNodes.SFXNav_TurretPoint(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXNav_TurretPoint(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "CoverLink":
-                                pathNode = new PathfindingNodes.CoverLink(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.CoverLink(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXNav_JumpDownNode":
-                                pathNode = new PathfindingNodes.SFXNav_JumpDownNode(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXNav_JumpDownNode(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXNav_LadderNode":
-                                pathNode = new PathfindingNodes.SFXNav_LadderNode(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXNav_LadderNode(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXDynamicCoverLink":
-                                pathNode = new PathfindingNodes.SFXDynamicCoverLink(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXDynamicCoverLink(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
 
                             case "CoverSlotMarker":
-                                pathNode = new PathfindingNodes.CoverSlotMarker(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.CoverSlotMarker(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXDynamicCoverSlotMarker":
-                                pathNode = new PathfindingNodes.SFXDynamicCoverSlotMarker(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXDynamicCoverSlotMarker(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "MantleMarker":
-                                pathNode = new PathfindingNodes.MantleMarker(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.MantleMarker(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "TargetPoint":
-                                pathNode = new PathfindingNodes.TargetPoint(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.TargetPoint(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
 
                             case "SFXNav_HarvesterMoveNode":
-                                pathNode = new PathfindingNodes.SFXNav_HarvesterMoveNode(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXNav_HarvesterMoveNode(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXOperation_ObjectiveSpawnPoint":
-                                pathNode = new PathfindingNodes.SFXObjectiveSpawnPoint(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXObjectiveSpawnPoint(index, x, y, exporttoLoad.FileRef, graphEditor);
 
                                 //Create annex node if required
                                 var annexZoneLocProp = props.GetProp<ObjectProperty>("AnnexZoneLocation");
@@ -573,10 +713,10 @@ namespace ME3Explorer.Pathfinding_Editor
 
                                 break;
                             case "SFXNav_BoostNode":
-                                pathNode = new PathfindingNodes.SFXNav_BoostNode(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXNav_BoostNode(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             default:
-                                pathNode = new PathfindingNodes.PendingNode(index, x, y, Pcc, graphEditor);
+                                pathNode = new PathfindingNodes.PendingNode(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                         }
 
@@ -610,67 +750,67 @@ namespace ME3Explorer.Pathfinding_Editor
                         switch (exporttoLoad.ClassName)
                         {
                             case "BlockingVolume":
-                                actorNode = new BlockingVolumeNode(index, x, y, Pcc, graphEditor);
+                                actorNode = new BlockingVolumeNode(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "DynamicBlockingVolume":
-                                actorNode = new DynamicBlockingVolume(index, x, y, Pcc, graphEditor);
+                                actorNode = new DynamicBlockingVolume(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "InterpActor":
-                                actorNode = new InterpActorNode(index, x, y, Pcc, graphEditor);
+                                actorNode = new InterpActorNode(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "BioTriggerVolume":
-                                actorNode = new ActorNodes.BioTriggerVolume(index, x, y, Pcc, graphEditor);
+                                actorNode = new ActorNodes.BioTriggerVolume(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "BioTriggerStream":
-                                actorNode = new ActorNodes.BioTriggerStream(index, x, y, Pcc, graphEditor);
+                                actorNode = new ActorNodes.BioTriggerStream(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXGrenadeContainer":
-                                actorNode = new ActorNodes.SFXGrenadeContainer(index, x, y, Pcc, graphEditor);
+                                actorNode = new ActorNodes.SFXGrenadeContainer(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXAmmoContainer":
-                                actorNode = new ActorNodes.SFXAmmoContainer(index, x, y, Pcc, graphEditor);
+                                actorNode = new ActorNodes.SFXAmmoContainer(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXAmmoContainer_Simulator":
-                                actorNode = new ActorNodes.SFXAmmoContainer_Simulator(index, x, y, Pcc, graphEditor);
+                                actorNode = new ActorNodes.SFXAmmoContainer_Simulator(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXBlockingVolume_Ledge":
-                                actorNode = new ActorNodes.SFXBlockingVolume_Ledge(index, x, y, Pcc, graphEditor);
+                                actorNode = new ActorNodes.SFXBlockingVolume_Ledge(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXCombatZone":
-                                actorNode = new ActorNodes.SFXCombatZone(index, x, y, Pcc, graphEditor);
+                                actorNode = new ActorNodes.SFXCombatZone(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "BioStartLocation":
                             case "BioStartLocationMP":
-                                actorNode = new ActorNodes.BioStartLocation(index, x, y, Pcc, graphEditor);
+                                actorNode = new ActorNodes.BioStartLocation(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "StaticMeshActor":
-                                actorNode = new ActorNodes.StaticMeshActorNode(index, x, y, Pcc, graphEditor);
+                                actorNode = new ActorNodes.StaticMeshActorNode(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXStuntActor":
-                                actorNode = new ActorNodes.SFXStuntActor(index, x, y, Pcc, graphEditor);
+                                actorNode = new ActorNodes.SFXStuntActor(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SkeletalMeshActor":
-                                actorNode = new ActorNodes.SkeletalMeshActor(index, x, y, Pcc, graphEditor);
+                                actorNode = new ActorNodes.SkeletalMeshActor(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXPlaceable_Generator":
                             case "SFXPlaceable_ShieldGenerator":
-                                actorNode = new ActorNodes.SFXPlaceable(index, x, y, Pcc, graphEditor);
+                                actorNode = new ActorNodes.SFXPlaceable(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "WwiseAmbientSound":
-                                actorNode = new ActorNodes.WwiseAmbientSound(index, x, y, Pcc, graphEditor);
+                                actorNode = new ActorNodes.WwiseAmbientSound(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "WwiseAudioVolume":
-                                actorNode = new ActorNodes.WwiseAudioVolume(index, x, y, Pcc, graphEditor);
+                                actorNode = new ActorNodes.WwiseAudioVolume(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXArmorNode":
                             case "SFXTreasureNode":
-                                actorNode = new ActorNodes.SFXTreasureNode(index, x, y, Pcc, graphEditor);
+                                actorNode = new ActorNodes.SFXTreasureNode(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             case "SFXMedStation":
-                                actorNode = new ActorNodes.SFXMedStation(index, x, y, Pcc, graphEditor);
+                                actorNode = new ActorNodes.SFXMedStation(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                             default:
-                                actorNode = new PendingActorNode(index, x, y, Pcc, graphEditor);
+                                actorNode = new PendingActorNode(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                         }
 
@@ -703,7 +843,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         switch (exporttoLoad.ClassName)
                         {
                             case "SplineActor":
-                                splineNode = new SplineActorNode(index, x, y, Pcc, graphEditor);
+                                splineNode = new SplineActorNode(index, x, y, exporttoLoad.FileRef, graphEditor);
 
                                 ArrayProperty<StructProperty> connectionsProp = exporttoLoad.GetProperty<ArrayProperty<StructProperty>>("Connections");
                                 if (connectionsProp != null)
@@ -722,13 +862,13 @@ namespace ME3Explorer.Pathfinding_Editor
                                             double yf = point1.GetProp<FloatProperty>("Y");
                                             //double zf = point1.GetProp<FloatProperty>("Z");
                                             //Point3D point1_3d = new Point3D(xf, yf, zf);
-                                            SplinePoint0Node point0node = new SplinePoint0Node(splinecomponentprop.Value - 1, Convert.ToInt32(xf), Convert.ToInt32(yf), Pcc, graphEditor);
+                                            SplinePoint0Node point0node = new SplinePoint0Node(splinecomponentprop.Value - 1, Convert.ToInt32(xf), Convert.ToInt32(yf), exporttoLoad.FileRef, graphEditor);
                                             StructProperty point2 = pointsProp[1].GetProp<StructProperty>("OutVal");
                                             xf = point2.GetProp<FloatProperty>("X");
                                             yf = point2.GetProp<FloatProperty>("Y");
                                             //zf = point2.GetProp<FloatProperty>("Z");
                                             //Point3D point2_3d = new Point3D(xf, yf, zf);
-                                            SplinePoint1Node point1node = new SplinePoint1Node(splinecomponentprop.Value - 1, Convert.ToInt32(xf), Convert.ToInt32(yf), Pcc, graphEditor);
+                                            SplinePoint1Node point1node = new SplinePoint1Node(splinecomponentprop.Value - 1, Convert.ToInt32(xf), Convert.ToInt32(yf), exporttoLoad.FileRef, graphEditor);
                                             point0node.SetDestinationPoint(point1node);
 
                                             GraphNodes.Add(point0node);
@@ -741,7 +881,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                 }
                                 break;
                             default:
-                                splineNode = new PendingSplineNode(index, x, y, Pcc, graphEditor);
+                                splineNode = new PendingSplineNode(index, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
                         }
                         GraphNodes.Add(splineNode);
@@ -751,7 +891,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     else
                     {
                         //everything else
-                        GraphNodes.Add(new EverythingElseNode(index, x, y, Pcc, graphEditor));
+                        GraphNodes.Add(new EverythingElseNode(index, x, y, exporttoLoad.FileRef, graphEditor));
                         return;
                     }
                 }
@@ -797,7 +937,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public string StatusText
         {
             get => _statusText;
-            set => SetProperty(ref _statusText, value);
+            set => SetProperty(ref _statusText, CurrentFile + " " + value);
         }
         #endregion
 
@@ -939,6 +1079,10 @@ namespace ME3Explorer.Pathfinding_Editor
         private void PathfinderEditorWPF_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             graphEditor.RemoveInputEventListener(pathfindingMouseListener);
+            graphEditor.Dispose();
+            GraphHost.Dispose();
+            Properties_InterpreterWPF.Dispose();
+            PathfindingEditorWPF_ReachSpecsPanel.Dispose();
         }
 
         private void ActiveNodesList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
@@ -951,9 +1095,67 @@ namespace ME3Explorer.Pathfinding_Editor
             if (ActiveNodes_ListBox.SelectedItem != null)
             {
                 IExportEntry export = (IExportEntry)ActiveNodes_ListBox.SelectedItem;
+                NodeName = $"{export.ObjectName}_{export.indexValue}";
+                NodeNameSubText = $"Export {export.UIndex}";
                 ActiveNodes_ListBox.ScrollIntoView(export);
                 Properties_InterpreterWPF.LoadExport(export);
                 PathfindingEditorWPF_ReachSpecsPanel.LoadExport(export);
+
+#if DEBUG
+                //Populate the export/import database
+                if (!exportclassdb.ContainsKey(export.ClassName))
+                {
+                    Dictionary<string, string> data = new Dictionary<string, string>();
+                    data["class"] = export.FileRef.getEntry(export.idxClass).GetFullPath;
+                    data["name"] = export.ClassName;
+                    var collisioncomponent = export.GetProperty<ObjectProperty>("CollisionComponent");
+                    if (collisioncomponent != null)
+                    {
+                        IExportEntry collisionComp = export.FileRef.getUExport(collisioncomponent.Value);
+
+                        data["cylindercomponentarchetype"] = collisionComp.FileRef.getEntry(collisionComp.idxArchtype).GetFullPath;
+
+                        ////Add imports
+                        if (!importclassdb.ContainsKey(data["cylindercomponentarchetype"]))
+                        {
+                            //X.Default.CollisionCylinder
+                            Dictionary<string, string> cylindercompimp = new Dictionary<string, string>();
+                            ImportEntry collisionCylinderArchetype = collisionComp.FileRef.getEntry(collisionComp.idxArchtype) as ImportEntry;
+
+                            cylindercompimp["class"] = collisionCylinderArchetype.ClassName == "Class" ? "Class" : collisionCylinderArchetype.PackageFileNoExtension + "." + collisionCylinderArchetype.ClassName;
+                            cylindercompimp["packagefile"] = collisionCylinderArchetype.PackageFileNoExtension;
+                            importclassdb[data["cylindercomponentarchetype"]] = cylindercompimp;
+
+                            //X.Default
+                            Dictionary<string, string> nodetypeimp = new Dictionary<string, string>();
+                            ImportEntry collisionCylinderArchetypeDefault = collisionCylinderArchetype.FileRef.getEntry(collisionCylinderArchetype.idxLink) as ImportEntry;
+                            nodetypeimp["class"] = collisionCylinderArchetypeDefault.ClassName == "Class" ? "Class" : collisionCylinderArchetypeDefault.PackageFileNoExtension + "." + collisionCylinderArchetypeDefault.ClassName;
+                            nodetypeimp["packagefile"] = collisionCylinderArchetypeDefault.PackageFileNoExtension;
+                            importclassdb[collisionCylinderArchetypeDefault.GetFullPath] = nodetypeimp;
+                        }
+                    }
+                    data["description"] = "No data about this node type has been entered yet";
+                    exportclassdb[export.ClassName] = data;
+
+                    Dictionary<string, string> nodeclassimport = new Dictionary<string, string>();
+                    ImportEntry classImport = export.FileRef.getEntry(export.idxClass) as ImportEntry;
+
+                    nodeclassimport["class"] = classImport.ClassName == "Class" ? "Class" : classImport.PackageFileNoExtension + "." + classImport.ClassName;
+                    nodeclassimport["packagefile"] = classImport.PackageFileNoExtension;
+
+                    importclassdb[classImport.GetFullPath] = nodeclassimport;
+
+                    //Rename vars - debug only
+                    var exporttypes = exportclassdb;
+                    var importtypes = importclassdb;
+
+                    Debug.WriteLine("Adding to pathfinding database file: " + export.ClassName);
+                    File.WriteAllText(classDatabasePath,
+                JsonConvert.SerializeObject(new { exporttypes, importtypes }, Formatting.Indented));
+
+                }
+
+#endif
                 //Clear coverlinknode highlighting.
                 /*foreach (PathfindingNodeMaster pnm in Objects)
                 {
@@ -997,9 +1199,42 @@ namespace ME3Explorer.Pathfinding_Editor
                 //GetProperties(pcc.getExport(CurrentObjects[n]));
                 //selectedIndex = n;
                 //selectedByNode = false;
-                graphEditor.Refresh();
-                //graphPropertiesSplitPanel.Panel2Collapsed = false;
 
+                //Refresh binding
+                OnPropertyChanged(nameof(NodeTypeDescriptionText));
+
+                graphEditor.Refresh();
+            }
+        }
+
+        private void ContextMenu_Closed(object sender, RoutedEventArgs e)
+        {
+            graphEditor.AllowDragging();
+        }
+
+        private void FindByNumber_Click(object sender, RoutedEventArgs e)
+        {
+            FindByNumber();
+        }
+
+        private void FindByNumber()
+        {
+            if (int.TryParse(FindByNumber_TextBox.Text, out int result) && Pcc.isUExport(result))
+            {
+                var export = Pcc.getUExport(result);
+                int index = ActiveNodes.IndexOf(export);
+                if (index >= 0)
+                {
+                    ActiveNodes_ListBox.SelectedIndex = index;
+                }
+            }
+        }
+
+        private void FindByNumber_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                FindByNumber();
             }
         }
     }

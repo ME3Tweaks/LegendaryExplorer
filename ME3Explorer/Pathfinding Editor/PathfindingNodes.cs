@@ -15,6 +15,7 @@ using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.PathingGraphEditor;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SequenceObjects;
+using System.Diagnostics;
 
 namespace ME3Explorer.PathfindingNodes
 {
@@ -63,17 +64,23 @@ namespace ME3Explorer.PathfindingNodes
 
         protected PathfindingNode(int idx, IMEPackage p, PathingGraphEditor grapheditor)
         {
-            Tag = new ArrayList(); //outbound reachspec edges.
-            pcc = p;
-            g = grapheditor;
-            index = idx;
-            export = pcc.getExport(index);
-            comment = new SText(GetComment(), commentColor, false);
-            comment.X = 0;
-            comment.Y = 65 - comment.Height;
-            comment.Pickable = false;
-            this.AddChild(comment);
-            this.Pickable = true;
+            try
+            {
+                Tag = new ArrayList(); //outbound reachspec edges.
+                pcc = p;
+                g = grapheditor;
+                index = idx;
+                export = pcc.getExport(index);
+                comment = new SText(GetComment(), commentColor, false);
+                comment.X = 0;
+                comment.Y = 65 - comment.Height;
+                comment.Pickable = false;
+                this.AddChild(comment);
+                this.Pickable = true;
+            } catch (Exception e)
+            {
+                Debugger.Break();
+            }
         }
 
         protected PathfindingNode(int idx, IMEPackage p)
@@ -105,7 +112,7 @@ namespace ME3Explorer.PathfindingNodes
                     int reachspecexport = prop.Value;
                     if (reachspecexport != 0)
                     {
-                        ReachSpecs.Add(pcc.Exports[reachspecexport - 1]);
+                        ReachSpecs.Add(pcc.getUExport(reachspecexport));
                     }
                 }
 
@@ -171,7 +178,7 @@ namespace ME3Explorer.PathfindingNodes
                                     foreach (var path in otherNodePathList)
                                     {
                                         int reachspecexport = path.Value;
-                                        IExportEntry possibleIncomingSpec = pcc.Exports[reachspecexport - 1];
+                                        IExportEntry possibleIncomingSpec = pcc.getUExport(reachspecexport);
                                         PropertyCollection otherSpecProperties = possibleIncomingSpec.GetProperties();
                                         foreach (var otherSpecProp in otherSpecProperties)
                                         {

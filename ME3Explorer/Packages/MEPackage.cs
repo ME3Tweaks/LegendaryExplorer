@@ -199,6 +199,7 @@ namespace ME3Explorer.Packages
         public IReadOnlyList<IExportEntry> Exports => exports;
 
         public bool isExport(int index) => index >= 0 && index < exports.Count;
+        public bool isUExport(int uindex) => uindex > 0 && uindex <= exports.Count;
 
         public void addExport(IExportEntry exportEntry)
         {
