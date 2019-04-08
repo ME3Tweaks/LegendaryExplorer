@@ -42,9 +42,6 @@ namespace ME3Explorer.Pathfinding_Editor
         protected static Brush dynamicPathnodefindingNodeBrush = new SolidBrush(Color.FromArgb(80, 184, 25));
 
         protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
-        public static bool draggingOutlink = false;
-        public static bool draggingVarlink = false;
-        public static PNode dragTarget;
         public static bool OutputNumbers;
 
         public int Index { get { return index; } }

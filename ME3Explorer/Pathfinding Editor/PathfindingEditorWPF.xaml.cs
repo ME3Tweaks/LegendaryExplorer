@@ -122,6 +122,14 @@ namespace ME3Explorer.Pathfinding_Editor
         }
 
 
+        /// <summary>
+        /// Called from winforms graph
+        /// </summary>
+        public void OpenContextMenu()
+        {
+            ContextMenu contextMenu = this.FindResource("nodeContextMenu") as ContextMenu;
+            contextMenu.IsOpen = true;
+        }
 
         private void LoadFile(string fileName)
         {
@@ -428,6 +436,11 @@ namespace ME3Explorer.Pathfinding_Editor
             }
             //CurrentlySelectedSplinePoint = null;
             //selectedByNode = true;
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                Debug.WriteLine("Opening right mouse menu");
+                OpenContextMenu();
+            }
         }
 
         public void LoadObject(IExportEntry exporttoLoad)

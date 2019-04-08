@@ -723,6 +723,10 @@ namespace ME3Explorer
             foreach (PNode o in Objects)
             {
                 o.MouseDown += node_MouseDown;
+                o.MouseDrag += delegate
+                {
+                    Debug.WriteLine("MOUSE DRAG!");
+                };
             }
             return centerpoint;
         }
@@ -3583,6 +3587,7 @@ namespace ME3Explorer
             {
                 this.graphEditor = graphEditor;
                 this.camera = graphEditor.Camera;
+                camera.Canvas.ZoomEventHandler = null;
                 camera.ViewScale = 0.5f;
                 camera.MouseWheel += OnMouseWheel;
                 graphEditor.KeyDown += OnKeyDown;
@@ -3591,7 +3596,6 @@ namespace ME3Explorer
             public void Dispose()
             {
                 //Remove event handlers for memory cleanup
-                camera.Canvas.ZoomEventHandler = null;
                 camera.MouseWheel -= OnMouseWheel;
                 graphEditor.KeyDown -= OnKeyDown;
                 camera = null;

@@ -9,11 +9,17 @@
         xmlns:pathfindinggraph="clr-namespace:UMD.HCIL.PathingGraphEditor;assembly=Piccolo"
         mc:Ignorable="d"
         Closing="PathfinderEditorWPF_Closing"
-        Title="Pathfinding Editor WPF" Height="450" Width="900">
+        Title="Pathfinding Editor WPF" Height="450" Width="1300" MinWidth="900" MinHeight="200">
     <Window.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
+        <ContextMenu x:Key="nodeContextMenu">
+            <MenuItem Header="Menu item 1" />
+            <MenuItem Header="Menu item 2" />
+            <Separator />
+            <MenuItem Header="Menu item 3" />
+        </ContextMenu>
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -47,7 +53,7 @@
         </StatusBar>
         <!-- Main Content panel-->
         <DockPanel>
-            <TabControl DockPanel.Dock="Right" MaxWidth="300" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+            <TabControl DockPanel.Dock="Right" Width="300" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
                 <TabItem Header="ReachSpecs">
                     <local:ReachSpecsPanel x:Name="PathfindingEditorWPF_ReachSpecsPanel"/>
                 </TabItem>

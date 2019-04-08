@@ -189,8 +189,11 @@ namespace UMD.HCIL.PathingGraphEditor
 
             protected override void OnDrag(object sender, PInputEventArgs e)
             {
-                if (!e.Handled)
+                System.Diagnostics.Debug.WriteLine("ONDRAG");
+                if (!e.Handled && e.Button == MouseButtons.Left)
                 {
+                    System.Diagnostics.Debug.WriteLine("ONDRAG - HANDLED");
+
                     base.OnDrag(sender, e);
                     foreach (PNode node in e.PickedNode.AllNodes)
                     {
