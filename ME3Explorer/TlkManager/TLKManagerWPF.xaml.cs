@@ -30,9 +30,9 @@ namespace ME3Explorer.TlkManagerNS
     /// </summary>
     public partial class TLKManagerWPF : NotifyPropertyChangedWindowBase
     {
-        public ObservableCollectionExtended<LoadedTLK> ME1TLKItems { get; private set; } = new ObservableCollectionExtended<LoadedTLK>();
-        public ObservableCollectionExtended<LoadedTLK> ME2TLKItems { get; private set; } = new ObservableCollectionExtended<LoadedTLK>();
-        public ObservableCollectionExtended<LoadedTLK> ME3TLKItems { get; private set; } = new ObservableCollectionExtended<LoadedTLK>();
+        public ObservableCollectionExtended<LoadedTLK> ME1TLKItems { get; } = new ObservableCollectionExtended<LoadedTLK>();
+        public ObservableCollectionExtended<LoadedTLK> ME2TLKItems { get; } = new ObservableCollectionExtended<LoadedTLK>();
+        public ObservableCollectionExtended<LoadedTLK> ME3TLKItems { get; } = new ObservableCollectionExtended<LoadedTLK>();
 
         public TLKManagerWPF()
         {
@@ -106,7 +106,7 @@ namespace ME3Explorer.TlkManagerNS
         /// </summary>
         static TLKManagerWPF()
         {
-            StaticPropertyChanged += (send, e) => { return; };
+            StaticPropertyChanged += (send, e) => { };
         }
 
         private void LoadCommands()
@@ -267,7 +267,7 @@ namespace ME3Explorer.TlkManagerNS
             {
                 ME1TalkFiles.LoadTlkData(tlk.tlkPath, tlk.exportNumber);
             }
-            ME1LastReloaded = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
+            ME1LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
             ME1TalkFiles.SaveTLKList();
         }
 
@@ -277,7 +277,7 @@ namespace ME3Explorer.TlkManagerNS
             {
                 ME2TalkFiles.LoadTlkData(tlk.tlkPath);
             }
-            ME2LastReloaded = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
+            ME2LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
             ME2TalkFiles.SaveTLKList();
         }
 
@@ -287,7 +287,7 @@ namespace ME3Explorer.TlkManagerNS
             {
                 ME3TalkFiles.LoadTlkData(tlk.tlkPath);
             }
-            ME3LastReloaded = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
+            ME3LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
             ME3TalkFiles.SaveTLKList();
         }
 
@@ -308,18 +308,16 @@ namespace ME3Explorer.TlkManagerNS
             ME3TalkFiles.tlkList.Clear();
             Task.Run(() =>
             {
-                List<(string, int)> tlkmountmap = new List<(string, int)>();
+                var tlkmountmap = new List<(string, int)>();
                 var tlks = Directory.EnumerateFiles(ME3Directory.BIOGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false)).ToList();
                 tlks.ForEach(x => x.LoadMountPriority());
                 tlks.Sort((a, b) => a.mountpriority.CompareTo(b.mountpriority));
-                //Ugly, yes, but I would rather not have to add concurrent synchronization to ObservableCollectionExtended (yuck!)
-                Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    ME3TLKItems.ReplaceAll(tlks);
-                    SelectLoadedTLKsME3();
-                    IsBusy = false;
-                }));
-
+                return tlks;
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                ME3TLKItems.ReplaceAll(prevTask.Result);
+                SelectLoadedTLKsME3();
+                IsBusy = false;
             });
         }
 
@@ -328,20 +326,19 @@ namespace ME3Explorer.TlkManagerNS
         {
             BusyText = "Scanning for Mass Effect 2 TLK files";
             IsBusy = true;
-            ME3TalkFiles.tlkList.Clear();
+            ME2TalkFiles.tlkList.Clear();
             Task.Run(() =>
             {
-                List<(string, int)> tlkmountmap = new List<(string, int)>();
+                var tlkmountmap = new List<(string, int)>();
                 var tlks = Directory.EnumerateFiles(ME2Directory.BioGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false)).ToList();
                 tlks.ForEach(x => x.LoadMountPriority());
                 tlks.Sort((a, b) => a.mountpriority.CompareTo(b.mountpriority));
-                //Ugly, yes, but I would rather not have to add concurrent synchronization to ObservableCollectionExtended (yuck!)
-                Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    ME2TLKItems.ReplaceAll(tlks);
-                    SelectLoadedTLKsME2();
-                    IsBusy = false;
-                }));
+                return tlks;
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                ME2TLKItems.ReplaceAll(prevTask.Result);
+                SelectLoadedTLKsME2();
+                IsBusy = false;
             });
         }
 
@@ -349,28 +346,27 @@ namespace ME3Explorer.TlkManagerNS
         {
             BusyText = "Scanning for Mass Effect TLK files";
             IsBusy = true;
-            ME3TalkFiles.tlkList.Clear();
+            ME1TalkFiles.tlkList.Clear();
             Task.Run(() =>
             {
                 var tlkfiles = Directory.EnumerateFiles(ME1Directory.gamePath, "*Tlk*", SearchOption.AllDirectories).ToList();
-                List<LoadedTLK> tlks = new List<LoadedTLK>();
+                var tlks = new List<LoadedTLK>();
                 foreach (string tlk in tlkfiles)
                 {
-                    ME1Package upk = MEPackageHandler.OpenME1Package(tlk);
-                    foreach (IExportEntry exp in upk.Exports)
+                    using (ME1Package upk = MEPackageHandler.OpenME1Package(tlk))
                     {
-                        tlks.Add(new LoadedTLK(tlk, exp.UIndex, exp.ObjectName, false));
+                        foreach (IExportEntry exp in upk.Exports)
+                        {
+                            tlks.Add(new LoadedTLK(tlk, exp.UIndex, exp.ObjectName, false));
+                        }
                     }
-                    upk.Release();
                 }
-
-                //Ugly, yes, but I would rather not have to add concurrent synchronization to ObservableCollectionExtended (yuck!)
-                Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    ME1TLKItems.ReplaceAll(tlks);
-                    SelectLoadedTLKsME1();
-                    IsBusy = false;
-                }));
+                return tlks;
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                ME1TLKItems.ReplaceAll(prevTask.Result);
+                SelectLoadedTLKsME1();
+                IsBusy = false;
             });
         }
 
@@ -402,7 +398,7 @@ namespace ME3Explorer.TlkManagerNS
             public bool selectedForLoad
             {
                 get => _selectedForLoad;
-                set { if (_selectedForLoad != value) { _selectedForLoad = value; OnPropertyChanged(); } }
+                set => SetProperty(ref _selectedForLoad, value);
             }
 
             public LoadedTLK(string tlkPath, bool selectedForLoad)
@@ -433,7 +429,7 @@ namespace ME3Explorer.TlkManagerNS
                 if (File.Exists(mountPath))
                 {
                     mountpriority = new MountEditor.MountFile(mountPath).MountPriority;
-                    tlkDisplayPath = "Priority " + mountpriority + ": " + tlkDisplayPath;
+                    tlkDisplayPath = $"Priority {mountpriority}: {tlkDisplayPath}";
                 }
             }
         }

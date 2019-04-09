@@ -459,8 +459,7 @@ namespace ME3Explorer.Packages
                 Task task = Task.Delay(queuingDelay);
                 taskCompletion[task.Id] = false;
                 tasks.Add(task);
-                //var itemx = TaskScheduler.FromCurrentSynchronizationContext();
-                task.ContinueWith(x =>
+                task.ContinueWithOnUIThread(x =>
                 {
                     taskCompletion[x.Id] = true;
                     if (tasks.TrueForAll(t => taskCompletion[t.Id]))
@@ -474,7 +473,7 @@ namespace ME3Explorer.Packages
                         pendingUpdates.Clear();
                         OnPropertyChanged(nameof(IsModified));
                     }
-                }, App.SYNCHRONIZATION_CONTEXT); //TaskScheduler.FromCurrentSynchronizationContext());
+                });
             }
         }
 

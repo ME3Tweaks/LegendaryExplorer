@@ -22,6 +22,33 @@ using ME3Explorer.Unreal;
 
 namespace ME3Explorer
 {
+    public static class TaskExtensions
+    {
+        //no argument passed to continuation
+        public static Task ContinueWithOnUIThread(this Task task, Action<Task> continuationAction)
+        {
+            return task.ContinueWith(continuationAction, App.SYNCHRONIZATION_CONTEXT);
+        }
+
+        //no argument passed to and result returned from continuation
+        public static Task<TNewResult> ContinueWithOnUIThread<TNewResult>(this Task task, Func<Task, TNewResult> continuationAction)
+        {
+            return task.ContinueWith(continuationAction, App.SYNCHRONIZATION_CONTEXT);
+        }
+
+        //argument passed to continuationn>
+        public static Task ContinueWithOnUIThread<TResult>(this Task<TResult> task, Action<Task<TResult>> continuationAction)
+        {
+            return task.ContinueWith(continuationAction, App.SYNCHRONIZATION_CONTEXT);
+        }
+
+        //argument passed to and result returned from continuation
+        public static Task<TNewResult> ContinueWithOnUIThread<TResult, TNewResult>(this Task<TResult> task, Func<Task<TResult>, TNewResult> continuationAction)
+        {
+            return task.ContinueWith(continuationAction, App.SYNCHRONIZATION_CONTEXT);
+        }
+    }
+
     public static class TreeViewExtension
     {
         public static IEnumerable<System.Windows.Forms.TreeNode> FlattenTreeView(this System.Windows.Forms.TreeView tv)
