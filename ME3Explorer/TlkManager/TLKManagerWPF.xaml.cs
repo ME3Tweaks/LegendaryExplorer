@@ -353,12 +353,11 @@ namespace ME3Explorer.TlkManagerNS
                 var tlks = new List<LoadedTLK>();
                 foreach (string tlk in tlkfiles)
                 {
-                    using (ME1Package upk = MEPackageHandler.OpenME1Package(tlk))
+                    //don't dispose the ME1Package, as this will prvent the talkfile from working
+                    ME1Package upk = MEPackageHandler.OpenME1Package(tlk);
+                    foreach (IExportEntry exp in upk.Exports)
                     {
-                        foreach (IExportEntry exp in upk.Exports)
-                        {
-                            tlks.Add(new LoadedTLK(tlk, exp.UIndex, exp.ObjectName, false));
-                        }
+                        tlks.Add(new LoadedTLK(tlk, exp.UIndex, exp.ObjectName, false));
                     }
                 }
                 return tlks;

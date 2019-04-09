@@ -17,7 +17,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.QuestMap
 		
 		public static BioQuestMap Load( string path)
 		{
-			if (path.IsNullOrEmpty())
+			if (string.IsNullOrEmpty(path))
 			{
 				throw new ArgumentNullException(nameof(path));
 			}
@@ -252,7 +252,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.QuestMap
 							var xQuestTaskPlotItemIndices = from el in questsElement.Elements("PlotItemIndex") select el;
 
 							foreach (var xQuestTaskPlotItemIndex in
-								xQuestTaskPlotItemIndices.Where(xQuestTaskPlotItemIndex => !xQuestTaskPlotItemIndex.Value.IsNullOrWhiteSpace()))
+								xQuestTaskPlotItemIndices.Where(xQuestTaskPlotItemIndex => !string.IsNullOrEmpty(xQuestTaskPlotItemIndex.Value)))
 							{
 								questTask.PlotItemIndices.Add(xQuestTaskPlotItemIndex.Value.ToInt32());
 							}
@@ -270,7 +270,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.QuestMap
 
 		public void Save( string path)
 		{
-			if (path.IsNullOrEmpty())
+			if (string.IsNullOrEmpty(path))
 			{
 				throw new ArgumentNullException(nameof(path));
 			}

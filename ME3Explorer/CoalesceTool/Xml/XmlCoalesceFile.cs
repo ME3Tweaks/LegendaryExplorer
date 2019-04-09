@@ -45,7 +45,7 @@ namespace MassEffect3.Coalesce.Xml
 			
 			var result = new XmlCoalesceFile
 			{
-				BaseUri = (doc.BaseUri != "") ? doc.BaseUri : new Uri(sourcePath).AbsoluteUri,
+				BaseUri = doc.BaseUri != "" ? doc.BaseUri : new Uri(sourcePath).AbsoluteUri,
 				SourcePath = sourcePath,
 				SourceDirectory = Path.GetDirectoryName(sourcePath)
 			};
@@ -55,11 +55,6 @@ namespace MassEffect3.Coalesce.Xml
 			result.ReadAssets(doc);
 
 			return result;
-		}
-
-		public void Save(string path)
-		{
-			
 		}
 
 		public void ReadAssets(XElement element)
@@ -83,7 +78,7 @@ namespace MassEffect3.Coalesce.Xml
 			{
 				var source = (string) asset.Attribute("source");
 
-				if (source.IsNullOrEmpty())
+				if (string.IsNullOrEmpty(source))
 				{
 					continue;
 				}
@@ -98,7 +93,7 @@ namespace MassEffect3.Coalesce.Xml
 			{
 				var asset = XmlCoalesceAsset.Load(include.Source);
 
-				if (asset != null && !asset.Source.IsNullOrEmpty())
+				if (asset != null && !string.IsNullOrEmpty(asset.Source))
 				{
 					Assets.Add(asset);
 				}
@@ -135,7 +130,7 @@ namespace MassEffect3.Coalesce.Xml
 			{
 				var source = (string)include.Attribute("source");
 
-				if (source.IsNullOrEmpty())
+				if (string.IsNullOrEmpty(source))
 				{
 					continue;
 				}
@@ -150,7 +145,7 @@ namespace MassEffect3.Coalesce.Xml
 			{
 				var asset = XmlCoalesceAsset.Load(include.Source);
 
-				if (!asset.Source.IsNullOrEmpty())
+				if (!string.IsNullOrEmpty(asset.Source))
 				{
 					Assets.Add(asset);
 				}
@@ -188,12 +183,12 @@ namespace MassEffect3.Coalesce.Xml
 				var name = (string)setting.Attribute("name");
 				var value = (string)setting.Attribute("value");
 
-				if (name.IsNullOrEmpty())
+				if (string.IsNullOrEmpty(name))
 				{
 					continue;
 				}
 
-				if (value.IsNullOrEmpty())
+				if (string.IsNullOrEmpty(value))
 				{
 					value = setting.Value;
 				}

@@ -15,7 +15,7 @@ namespace MassEffect3.Coalesce.Xml
 		//private static readonly Regex WhitespacePattern = new Regex(@"\s+", RegexOptions.Compiled);
 		private static readonly Regex SpecialCharactersPattern = new Regex(@"[\r\n\t]+", RegexOptions.Compiled);
 
-		public XmlCoalesceAsset(string name = "", CoalesceSections sections = default(CoalesceSections), IList<CoalesceInclude> includes = null)
+		public XmlCoalesceAsset(string name = "", CoalesceSections sections = default, IList<CoalesceInclude> includes = null)
 			: base(name, sections)
 		{
 			Includes = includes ?? new List<CoalesceInclude>();
@@ -33,7 +33,7 @@ namespace MassEffect3.Coalesce.Xml
 
 		public static XmlCoalesceAsset Load(string path)
 		{
-			if (path.IsNullOrEmpty())
+			if (string.IsNullOrEmpty(path))
 			{
 				throw new ArgumentNullException(nameof(path));
 			}
@@ -95,7 +95,7 @@ namespace MassEffect3.Coalesce.Xml
 			{
 				var source = (string) include.Attribute("source");
 
-				if (source.IsNullOrEmpty())
+				if (string.IsNullOrEmpty(source))
 				{
 					continue;
 				}
@@ -137,7 +137,7 @@ namespace MassEffect3.Coalesce.Xml
 			var ignoreProperty = (bool?) propertyElement.Attribute("ignore") ?? false;
 			//var allowDuplicates = (bool?) propertyElement.Attribute("allowDuplicates") ?? false;
 
-			if (ignoreProperty || propertyName.IsNullOrWhiteSpace())
+			if (ignoreProperty || string.IsNullOrEmpty(propertyName))
 			{
 				return null;
 			}
@@ -155,7 +155,7 @@ namespace MassEffect3.Coalesce.Xml
 					var type = (int?) valueElement.Attribute("type");
 					//var ignoreValue = (bool?) valueElement.Attribute("ignore") ?? false;
 
-					if (!value.IsNullOrWhiteSpace())
+					if (!string.IsNullOrEmpty(value))
 					{
 						value = SpecialCharactersPattern.Replace(value.Trim(), "");
 					}
@@ -216,7 +216,7 @@ namespace MassEffect3.Coalesce.Xml
 				var value = propertyElement.Value;
 				var type = (int?) propertyElement.Attribute("type");
 
-				if (!value.IsNullOrWhiteSpace())
+				if (!string.IsNullOrEmpty(value))
 				{
 					value = SpecialCharactersPattern.Replace(value.Trim(), "");
 				}
@@ -246,12 +246,11 @@ namespace MassEffect3.Coalesce.Xml
 			// Loop through the sections
 			foreach (var sectionElement in sectionElements)
 			{
-				CoalesceSection section;
-				var currentSection = new CoalesceSection();
-				var sectionName = (string) sectionElement.Attribute("name");
+                var currentSection = new CoalesceSection();
+                var sectionName = (string) sectionElement.Attribute("name");
 				
 				// Make sure the section has a name
-				if (sectionName.IsNullOrEmpty())
+				if (string.IsNullOrEmpty(sectionName))
 				{
 					continue;
 				}
@@ -262,14 +261,13 @@ namespace MassEffect3.Coalesce.Xml
 				foreach (var propertyElement in propertyElements)
 				{
 					var currentProperty = ReadProperty(propertyElement);
-					CoalesceProperty property;
 
-					if (currentProperty == null)
+				    if (currentProperty == null)
 					{
 						continue;
 					}
 
-					if (!currentSection.TryGetValue(currentProperty.Name, out property))
+					if (!currentSection.TryGetValue(currentProperty.Name, out CoalesceProperty property))
 					{
 						property = new CoalesceProperty();
 						currentSection.Add(currentProperty.Name, property);
@@ -292,7 +290,7 @@ namespace MassEffect3.Coalesce.Xml
 					}*/
 				}
 
-				if (!Sections.TryGetValue(sectionName, out section))
+				if (!Sections.TryGetValue(sectionName, out CoalesceSection section))
 				{
 					section = new CoalesceSection();
 					Sections.Add(sectionName, section);

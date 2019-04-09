@@ -70,40 +70,40 @@
 		/// </summary>
 		public int CodexSound
 		{
-			get { return _codexSound; }
-			set { SetProperty(ref _codexSound, value); }
+			get => _codexSound;
+		    set => SetProperty(ref _codexSound, value);
 		}
 
 		/// <summary>
 		/// </summary>
 		public int Description
 		{
-			get { return _description; }
-			set { SetProperty(ref _description, value); }
+			get => _description;
+		    set => SetProperty(ref _description, value);
 		}
 
 		/// <summary>
 		/// </summary>
 		public int Priority
 		{
-			get { return _priority; }
-			set { SetProperty(ref _priority, value); }
+			get => _priority;
+		    set => SetProperty(ref _priority, value);
 		}
 
 		/// <summary>
 		/// </summary>
 		public int TextureIndex
 		{
-			get { return _textureIndex; }
-			set { SetProperty(ref _textureIndex, value); }
+			get => _textureIndex;
+		    set => SetProperty(ref _textureIndex, value);
 		}
 
 		/// <summary>
 		/// </summary>
 		public int Title
 		{
-			get { return _title; }
-			set { SetProperty(ref _title, value); }
+			get => _title;
+		    set => SetProperty(ref _title, value);
 		}
 	}
 }

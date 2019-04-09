@@ -11,8 +11,8 @@ namespace ME3Explorer
     /// </summary>
     class TLKEditorDebugTools
     {
-        private static SortedDictionary<char, string> lookupDict = new SortedDictionary<char, string>();
-        
+        private static readonly SortedDictionary<char, string> lookupDict = new SortedDictionary<char, string>();
+
         /* tags for unprintable Unicode characters (refer to wikipedia for meaning) */
         static readonly string[] LowNames = 
         {
@@ -22,7 +22,7 @@ namespace ME3Explorer
             "CAN", "EM", "SUB", "ESC", "FS", "GS", "RS", "US"
         };
 
-        static public string GetFixedLengthString(string input, int length)
+        public static string GetFixedLengthString(string input, int length)
         {
             input = input ?? string.Empty;
             input = input.Length > length ? input.Substring(0, length) : input;
@@ -33,7 +33,7 @@ namespace ME3Explorer
         /// Prints TLK Header from TalkFile.cs module.
         /// </summary>
         /// <param name="Header"></param>
-        static public void PrintHeader(TalkFile.TLKHeader Header)
+        public static void PrintHeader(TalkFile.TLKHeader Header)
         {
             Console.Write("Printing TLK Header info:");
             Console.WriteLine("magic: " + Header.magic);
@@ -55,7 +55,7 @@ namespace ME3Explorer
         /// <param name="HuffmanTree"></param>
         /// <param name="curNodeID"></param>
         /// <param name="curCode"></param>
-        static public void LoadHuffmanTree(List<TalkFile.HuffmanNode> HuffmanTree, int curNodeID, string curCode)
+        public static void LoadHuffmanTree(List<TalkFile.HuffmanNode> HuffmanTree, int curNodeID, string curCode)
         {
             if (curNodeID < 0)
             {
@@ -116,12 +116,12 @@ namespace ME3Explorer
                 if (c < 32)
                 {
                     string str = "<" + LowNames[c] + ">";
-                    Console.WriteLine("{0} | U+{1:x4}", GetFixedLengthString(str, 5), (int)c);
+                    Console.WriteLine($"{GetFixedLengthString(str, 5)} | U+{(int)c:x4}");
                 }
                 else
                 {
                     string str = "'" + c + "'";
-                    Console.WriteLine("{0} | U+{1:x4}", GetFixedLengthString(str, 5), (int)c);
+                    Console.WriteLine($"{GetFixedLengthString(str, 5)} | U+{(int)c:x4}");
                 }
             }
             
@@ -139,7 +139,7 @@ namespace ME3Explorer
             Console.WriteLine("**********************************");
             Console.WriteLine("TESTING Huffman Tree");
             Console.WriteLine("**********************************");
-            List<TalkFile.HuffmanNode> CharacterTree = new List<TalkFile.HuffmanNode>();
+            var CharacterTree = new List<TalkFile.HuffmanNode>();
             for (int i = 0; i < treeNodeCount; i++)
                 CharacterTree.Add(new TalkFile.HuffmanNode(r));
 

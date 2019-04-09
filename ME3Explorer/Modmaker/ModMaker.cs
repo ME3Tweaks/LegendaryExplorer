@@ -40,21 +40,9 @@ namespace ME3Explorer
         public MEDirectories MEExDirecs = new MEDirectories();
         string EmptyText = "Search in jobs, scripts, and pccs...";
 
-        string ExecFolder
-        {
-            get
-            {
-                return MEExDirecs.ExecFolder;
-            }
-        }
+        string ExecFolder => MEExDirecs.ExecFolder;
 
-        List<string> BIOGames
-        {
-            get
-            {
-                return MEExDirecs.BIOGames;
-            }
-        }
+        List<string> BIOGames => MEExDirecs.BIOGames;
 
         private void SaveProperties()
         {
@@ -101,7 +89,7 @@ namespace ME3Explorer
             SearchTextBox.Text = EmptyText;
 
             // KFreon: Display version
-            VersionLabel.Text = "Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            VersionLabel.Text = "Version: " + Assembly.GetExecutingAssembly().GetName().Version;
         }
 
         void SearchTextBox_LostFocus(object sender, EventArgs e)
@@ -333,7 +321,7 @@ namespace ME3Explorer
                 string size = UsefulThings.General.GetFileSizeAsString(len);
                 names[i] = (job.Name + "  --> Size: " + size);
 
-                DebugOutput.PrintLn(string.Format("Job: {0}  size:  {1}", job.Name, job.Length));
+                DebugOutput.PrintLn($"Job: {job.Name}  size:  {job.Length}");
                 DebugOutput.PrintLn("Getting further job info...");
 
                 var result = job.GetJobDetails(autoupdate == true, out versionConflict, version);

@@ -25,8 +25,7 @@ namespace MassEffect3.FileFormats.Huffman
 
 			foreach (var t in text)
 			{
-				int frequency;
-				if (frequencies.TryGetValue(t, out frequency) == false)
+			    if (frequencies.TryGetValue(t, out int frequency) == false)
 				{
 					frequency = 0;
 				}
@@ -69,12 +68,11 @@ namespace MassEffect3.FileFormats.Huffman
 
 			foreach (var frequency in frequencies)
 			{
-				var bits = Traverse(_root, frequency.Key, new List<bool>());
+				List<bool> bits = Traverse(_root, frequency.Key, new List<bool>());
 				
 				if (bits == null)
 				{
-					throw new InvalidOperationException(string.Format(
-						"could not traverse '{0}'", frequency.Key));
+					throw new InvalidOperationException($"could not traverse '{frequency.Key}'");
 				}
 
 				_codes.Add(frequency.Key, new BitArray(bits.ToArray()));
@@ -101,16 +99,12 @@ namespace MassEffect3.FileFormats.Huffman
 
 				totalBits += node.Frequency;
 
-				if (node.Left != null &&
-					node.Left.Left != null &&
-					node.Left.Right != null)
+				if (node.Left?.Left != null && node.Left.Right != null)
 				{
 					queue.Enqueue(node.Left);
 				}
 
-				if (node.Right != null &&
-					node.Right.Left != null &&
-					node.Right.Right != null)
+				if (node.Right?.Left != null && node.Right.Right != null)
 				{
 					queue.Enqueue(node.Right);
 				}
@@ -132,7 +126,7 @@ namespace MassEffect3.FileFormats.Huffman
 				path.AddRange(data);
 				path.Add(false);
 
-				var left = Traverse(node.Left, symbol, path);
+				List<bool> left = Traverse(node.Left, symbol, path);
 
 				if (left != null)
 				{
@@ -146,7 +140,7 @@ namespace MassEffect3.FileFormats.Huffman
 				path.AddRange(data);
 				path.Add(true);
 
-				var right = Traverse(node.Right, symbol, path);
+				List<bool> right = Traverse(node.Right, symbol, path);
 
 				if (right != null)
 				{
@@ -182,7 +176,7 @@ namespace MassEffect3.FileFormats.Huffman
 			{
 				if (_codes.ContainsKey(t) == false)
 				{
-					throw new ArgumentException(string.Format("could not lookup '{0}'", t), nameof(text));
+					throw new ArgumentException($"could not lookup '{t}'", nameof(text));
 				}
 
 				bitCount += Encode(t, bits, offset + bitCount);

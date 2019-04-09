@@ -34,8 +34,8 @@ namespace ME3Explorer
                 if (entry.Key > 0)
                 {
                     PropertyCollection transplantProps = importpcc.Exports[entry.Key].GetProperties();
-                    relinkResults.AddRange(relinkPropertiesRecursive(importpcc, pcc, transplantProps, crossPCCObjectMappingList));
-                    pcc.getExport(entry.Value).WriteProperties(transplantProps);
+                    relinkResults.AddRange(relinkPropertiesRecursive(importpcc, Pcc, transplantProps, crossPCCObjectMappingList));
+                    Pcc.getExport(entry.Value).WriteProperties(transplantProps);
                 }
             }
 
@@ -208,7 +208,7 @@ namespace ME3Explorer
             {
                 if (entry.Key > 0)
                 {
-                    IExportEntry exp = pcc.getExport(entry.Value);
+                    IExportEntry exp = Pcc.getExport(entry.Value);
                     byte[] binarydata = exp.getBinaryData();
                     if (binarydata.Length > 0)
                     {
@@ -714,7 +714,7 @@ namespace ME3Explorer
                         }
                         if (donorUpstreamExport == null)
                         {
-                            Debug.WriteLine("An error has occured. Could not find an upstream import or export for relinking: " + fullobjectname + " from " + pcc.FileName);
+                            Debug.WriteLine("An error has occured. Could not find an upstream import or export for relinking: " + fullobjectname + " from " + Pcc.FileName);
                             return null;
                         }
                     }

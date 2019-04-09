@@ -123,9 +123,9 @@ namespace ME3Explorer.Packages
         ObservableCollection<GenericWindow> Tools { get; }
         void RegisterTool(GenericWindow tool);
         void Release(System.Windows.Window wpfWindow = null, System.Windows.Forms.Form winForm = null);
-        event EventHandler noLongerOpenInTools;
+        event MEPackage.MEPackageEventHandler noLongerOpenInTools;
         void RegisterUse();
-        event EventHandler noLongerUsed;
+        event MEPackage.MEPackageEventHandler noLongerUsed;
         string GetEntryString(int index);
     }
 }

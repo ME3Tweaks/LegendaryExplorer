@@ -21,13 +21,13 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.QuestMap
 
 		public long QuestsOffset
 		{
-			get { return _questsOffset; }
-			set { SetProperty(ref _questsOffset, value); }
+			get => _questsOffset;
+		    set => SetProperty(ref _questsOffset, value);
 		}
 
 		public static BioQuestMap Load(string path)
 		{
-			if (path.IsNullOrEmpty())
+			if (string.IsNullOrEmpty(path))
 			{
 				throw new ArgumentNullException(nameof(path));
 			}
@@ -127,7 +127,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.QuestMap
 
 		public void Save(string path)
 		{
-			if (path.IsNullOrEmpty())
+			if (string.IsNullOrEmpty(path))
 			{
 				throw new ArgumentNullException(nameof(path));
 			}

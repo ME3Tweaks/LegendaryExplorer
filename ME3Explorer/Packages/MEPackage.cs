@@ -414,12 +414,13 @@ namespace ME3Explorer.Packages
             Tools.Remove(gen);
             if (Tools.Count == 0)
             {
-                noLongerOpenInTools?.Invoke(this, EventArgs.Empty);
+                noLongerOpenInTools?.Invoke(this);
             }
             gen.Dispose();
         }
 
-        public event EventHandler noLongerOpenInTools;
+        public delegate void MEPackageEventHandler(MEPackage sender);
+        public event MEPackageEventHandler noLongerOpenInTools;
 
         protected void exportChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -477,8 +478,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-
-        public event EventHandler noLongerUsed;
+        public event MEPackageEventHandler noLongerUsed;
         private int RefCount;
 
         public void RegisterUse() => RefCount++;
@@ -486,14 +486,14 @@ namespace ME3Explorer.Packages
         /// <summary>
         /// Doesn't neccesarily dispose the object.
         /// Will only do so once this has been called by every place that uses it.
-        /// Recommend using the using block.
+        /// HIGHLY Recommend using the using block instead of calling this directly.
         /// </summary>
         public void Dispose()
         {
             RefCount--;
             if (RefCount == 0)
             {
-                noLongerUsed?.Invoke(this, EventArgs.Empty);
+                noLongerUsed?.Invoke(this);
             }
         }
         #endregion

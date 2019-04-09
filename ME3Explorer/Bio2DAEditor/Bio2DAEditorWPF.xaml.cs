@@ -37,14 +37,8 @@ namespace ME3Explorer
         private Bio2DA _table2da;
         public Bio2DA Table2DA
         {
-            get
-            {
-                return _table2da;
-            }
-            private set
-            {
-                SetProperty(ref _table2da, value);
-            }
+            get => _table2da;
+            private set => SetProperty(ref _table2da, value);
         }
 
         public Bio2DAEditorWPF()
@@ -156,9 +150,11 @@ namespace ME3Explorer
 
         private void ExportToExcel_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog d = new SaveFileDialog();
-            d.Filter = $"Excel spreadsheet|*.xlsx";
-            d.FileName = CurrentLoadedExport.ObjectName;
+            SaveFileDialog d = new SaveFileDialog
+            {
+                Filter = "Excel spreadsheet|*.xlsx",
+                FileName = CurrentLoadedExport.ObjectName
+            };
             var result = d.ShowDialog();
             if (result.HasValue && result.Value)
             {

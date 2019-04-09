@@ -260,7 +260,7 @@ namespace ME3Explorer
             ScanWorker.WorkerReportsProgress = true;
             ScanWorker.RunWorkerCompleted += PerformScan_Completed;
             //We will not modify topleveltree in background thread, however we will pass it through to the completed method.
-            ScanWorker.RunWorkerAsync(new Tuple<BinaryInterpreterWPFTreeViewItem, byte[], int>(topLevelTree, data, binarystart));
+            ScanWorker.RunWorkerAsync((topLevelTree, data, binarystart));
         }
 
         private void PerformScan_Completed(object sender, RunWorkerCompletedEventArgs e)
@@ -274,12 +274,10 @@ namespace ME3Explorer
         private void PerformScanBackground(object sender, DoWorkEventArgs e)
         {
             if (CurrentLoadedExport == null) return; //Could happen due to multithread
-            Tuple<BinaryInterpreterWPFTreeViewItem, byte[], int> arguments = (Tuple<BinaryInterpreterWPFTreeViewItem, byte[], int>)e.Argument;
+            (var topLevelTree, byte[] data, int binarystart) = (ValueTuple<BinaryInterpreterWPFTreeViewItem, byte[], int>)e.Argument;
             try
             {
                 List<object> subNodes = null;
-                byte[] data = arguments.Item2;
-                int binarystart = arguments.Item3;
                 bool isGenericScan = false;
                 bool appendGenericScan = false;
                 switch (CurrentLoadedExport.ClassName)
@@ -401,20 +399,20 @@ namespace ME3Explorer
                 }
 
                 GenericEditorSetVisibility = (appendGenericScan || isGenericScan) ? Visibility.Visible : Visibility.Collapsed;
-                arguments.Item1.Items = subNodes;
+                topLevelTree.Items = subNodes;
                 foreach (object o in subNodes)
                 {
                     if (o is BinaryInterpreterWPFTreeViewItem b)
                     {
-                        b.Parent = arguments.Item1;
+                        b.Parent = topLevelTree;
                     }
                 }
             }
             catch (Exception ex)
             {
-                arguments.Item1.Items.Add(ExceptionHandlerDialogWPF.FlattenException(ex));
+                topLevelTree.Items.Add(ExceptionHandlerDialogWPF.FlattenException(ex));
             }
-            e.Result = arguments.Item1; //return topLevelTree
+            e.Result = topLevelTree; 
         }
 
         private bool AttemptSelectPreviousEntry(List<object> subNodes)
@@ -3245,7 +3243,7 @@ namespace ME3Explorer
                             if (dataOffset != 0 && parsedValueSucceeded)
                             {
                                 byte[] data = CurrentLoadedExport.Data;
-                                SharedPathfinding.WriteMem(data, dataOffset, BitConverter.GetBytes(parsedValue));
+                                data.OverwriteRange(dataOffset, BitConverter.GetBytes(parsedValue));
                                 CurrentLoadedExport.Data = data;
                             }
                             break;
@@ -3253,7 +3251,7 @@ namespace ME3Explorer
                             if (dataOffset != 0 && parsedFloatSucceeded)
                             {
                                 byte[] data = CurrentLoadedExport.Data;
-                                SharedPathfinding.WriteMem(data, dataOffset, BitConverter.GetBytes(parsedFloatValue));
+                                data.OverwriteRange(dataOffset, BitConverter.GetBytes(parsedFloatValue));
                                 CurrentLoadedExport.Data = data;
                             }
                             break;
@@ -3295,8 +3293,8 @@ namespace ME3Explorer
                             if (item != null && dataOffset != 0)
                             {
                                 byte[] data = CurrentLoadedExport.Data;
-                                SharedPathfinding.WriteMem(data, dataOffset, BitConverter.GetBytes(CurrentLoadedExport.FileRef.findName(item.Name.Name)));
-                                SharedPathfinding.WriteMem(data, dataOffset + 4, BitConverter.GetBytes(item.Name.Number));
+                                data.OverwriteRange(dataOffset, BitConverter.GetBytes(CurrentLoadedExport.FileRef.findName(item.Name.Name)));
+                                data.OverwriteRange(dataOffset + 4, BitConverter.GetBytes(item.Name.Number));
                                 CurrentLoadedExport.Data = data;
                                 Debug.WriteLine("Set data");
                             }
@@ -3429,7 +3427,7 @@ namespace ME3Explorer
                         int count = BitConverter.ToInt32(dataCopy, countOffset);
 
                         //Incrememnt Count
-                        SharedPathfinding.WriteMem(dataCopy, countOffset, BitConverter.GetBytes(count + 1));
+                        dataCopy.OverwriteRange(countOffset, BitConverter.GetBytes(count + 1));
 
                         //Insert new entry
                         List<byte> memList = dataCopy.ToList();

@@ -3,6 +3,7 @@ using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime;
 using System.Text;
@@ -26,33 +27,36 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
     {
 
         #region Static Reference Adding
-        private static List<MemoryAnalyzerObject> TrackedMemoryObjects = new List<MemoryAnalyzerObject>();
+        private static readonly List<MemoryAnalyzerObject> TrackedMemoryObjects = new List<MemoryAnalyzerObject>();
+
+        //All calls to this method will be removed in release builds
+        [Conditional("DEBUG")]
         public static void AddTrackedMemoryItem(string objectname, WeakReference reference)
         {
             //Force concurrency
-            Application.Current.Dispatcher.Invoke(new Action(() =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 TrackedMemoryObjects.Add(new MemoryAnalyzerObject(objectname, reference));
-            }));
+            });
         }
 
         #endregion
 
         public ObservableCollectionExtended<MemoryAnalyzerObject> InstancedTrackedMemoryObjects { get; set; } = new ObservableCollectionExtended<MemoryAnalyzerObject>();
 
-        DispatcherTimer dispatcherTimer;
+        readonly DispatcherTimer dispatcherTimer;
 
         public MemoryAnalyzer()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Memory Analyzer", new WeakReference(this));
+            AddTrackedMemoryItem("Memory Analyzer", new WeakReference(this));
 
             DataContext = this;
             Refresh();
             InitializeComponent();
 
             //  DispatcherTimer setup
-            dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-            dispatcherTimer.Tick += new EventHandler(automatedRefresh_Tick);
+            dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += automatedRefresh_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 3);
             dispatcherTimer.Start();
         }
@@ -80,11 +84,6 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
             GC.Collect();
         }
 
-        private void Refresh_Click(object sender, RoutedEventArgs e)
-        {
-            Refresh();
-        }
-
         private void Refresh()
         {
             InstancedTrackedMemoryObjects.ReplaceAll(TrackedMemoryObjects);
@@ -104,7 +103,7 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
 
         public class MemoryAnalyzerObject : NotifyPropertyChangedBase
         {
-            private WeakReference Reference;
+            private readonly WeakReference Reference;
             public string AllocationTime { get; }
             private string _referenceName;
             public string ReferenceName

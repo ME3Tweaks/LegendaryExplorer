@@ -19,11 +19,11 @@ namespace ME3Explorer
         {
             InitializeComponent();
             LoadMEPackage(fileName);
-            interpreter1.Pcc = pcc;
-            interpreter1.export = pcc.getExport(index);
+            interpreter1.Pcc = Pcc;
+            interpreter1.export = Pcc.getExport(index);
             interpreter1.InitInterpreter();
             toolStripStatusLabel1.Text = "Class: " + interpreter1.export.ClassName + ", Export Index: " + index;
-            toolStripStatusLabel2.Text = "@" + Path.GetFileName(pcc.FileName);
+            toolStripStatusLabel2.Text = "@" + Path.GetFileName(Pcc.FileName);
             interpreter1.hb1.ReadOnly = true;
             interpreter1.saveHexButton.Visible = false;
             interpreter1.exportButton.Visible = true;

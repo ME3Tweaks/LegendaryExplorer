@@ -350,13 +350,13 @@ namespace ME3Explorer
         {
             treeView1.Nodes.Clear();
             var prefabs = new Dictionary<string, TreeNode>();
-            for (int i = 0; i < pcc.ExportCount; i++)
+            for (int i = 0; i < Pcc.ExportCount; i++)
             {
-                IExportEntry exportEntry = pcc.getExport(i);
+                IExportEntry exportEntry = Pcc.getExport(i);
                 switch (exportEntry.ClassName)
                 {
-                    case "Sequence" when !pcc.getObjectClass(exportEntry.idxLink).Contains("Sequence"):
-                        treeView1.Nodes.Add(FindSequences(pcc, i, exportEntry.ObjectName != "Main_Sequence"));
+                    case "Sequence" when !Pcc.getObjectClass(exportEntry.idxLink).Contains("Sequence"):
+                        treeView1.Nodes.Add(FindSequences(Pcc, i, exportEntry.ObjectName != "Main_Sequence"));
                         SequenceExports.Add(exportEntry);
                         break;
                     case "Prefab":
@@ -373,15 +373,15 @@ namespace ME3Explorer
             }
             if (prefabs.Count > 0)
             {
-                for (int i = 0; i < pcc.ExportCount; i++)
+                for (int i = 0; i < Pcc.ExportCount; i++)
                 {
-                    IExportEntry exportEntry = pcc.getExport(i);
-                    if (exportEntry.ClassName == "PrefabSequence" && pcc.getObjectClass(exportEntry.idxLink) == "Prefab")
+                    IExportEntry exportEntry = Pcc.getExport(i);
+                    if (exportEntry.ClassName == "PrefabSequence" && Pcc.getObjectClass(exportEntry.idxLink) == "Prefab")
                     {
-                        string parentName = pcc.getObjectName(exportEntry.idxLink);
+                        string parentName = Pcc.getObjectName(exportEntry.idxLink);
                         if (prefabs.ContainsKey(parentName))
                         {
-                            prefabs[parentName].Nodes.Add(FindSequences(pcc, i, false));
+                            prefabs[parentName].Nodes.Add(FindSequences(Pcc, i, false));
                         }
                     }
                 }
@@ -448,7 +448,7 @@ namespace ME3Explorer
             SavedPositions = null;
             if (e.Node.Name != "")
             {
-                LoadSequence(pcc.getExport(Convert.ToInt32(e.Node.Name)));
+                LoadSequence(Pcc.getExport(Convert.ToInt32(e.Node.Name)));
             }
         }
 
@@ -496,7 +496,7 @@ namespace ME3Explorer
                 foreach (int seqObj in objIndices)
                 {
                     CurrentObjects.Add(seqObj);
-                    IExportEntry exportEntry = pcc.getExport(seqObj);
+                    IExportEntry exportEntry = Pcc.getExport(seqObj);
                     listBox1.Items.Add("#" + seqObj + " :" + exportEntry.ObjectName + " class: " + exportEntry.ClassName);
                 }
             }
@@ -515,7 +515,7 @@ namespace ME3Explorer
             string packageFullName = export.PackageFullName;
             if (useGlobalSequenceRefSavesToolStripMenuItem.Checked && packageFullName.Contains("SequenceReference") && !isClonedSeqRef)
             {
-                if (pcc.Game == MEGame.ME3)
+                if (Pcc.Game == MEGame.ME3)
                 {
                     JSONpath = ME3ViewsPath + packageFullName.Substring(packageFullName.LastIndexOf("SequenceReference")) + "." + objectName + ".JSON";
                 }
@@ -527,16 +527,16 @@ namespace ME3Explorer
                     string ObjName = "";
                     while (idx > 0)
                     {
-                        if (pcc.getExport(pcc.getExport(idx).idxLink - 1).ClassName == "SequenceReference")
+                        if (Pcc.getExport(Pcc.getExport(idx).idxLink - 1).ClassName == "SequenceReference")
                         {
-                            var objNameProp = pcc.getExport(idx).GetProperty<StrProperty>("ObjName");
+                            var objNameProp = Pcc.getExport(idx).GetProperty<StrProperty>("ObjName");
                             if (objNameProp != null)
                             {
                                 ObjName = objNameProp.Value;
                                 break;
                             }
                         }
-                        idx = pcc.getExport(idx).idxLink - 1;
+                        idx = Pcc.getExport(idx).idxLink - 1;
 
                     }
                     if (objectName == "Sequence")
@@ -546,7 +546,7 @@ namespace ME3Explorer
                     }
                     else
                         packageName = packageName.Replace("Sequence", ObjName) + ".";
-                    if (pcc.Game == MEGame.ME2)
+                    if (Pcc.Game == MEGame.ME2)
                     {
                         JSONpath = ME2ViewsPath + "SequenceReference" + packageName + objectName + ".JSON";
                     }
@@ -560,7 +560,7 @@ namespace ME3Explorer
             else
             {
                 string viewsPath = ME3ViewsPath;
-                switch (pcc.Game)
+                switch (Pcc.Game)
                 {
                     case MEGame.ME2:
                         viewsPath = ME2ViewsPath;
@@ -595,7 +595,7 @@ namespace ME3Explorer
             {
                 o.MouseDown += node_MouseDown;
             }
-            if (SavedPositions.Count == 0 && CurrentFile.Contains("_LOC_INT") && pcc.Game != MEGame.ME1)
+            if (SavedPositions.Count == 0 && CurrentFile.Contains("_LOC_INT") && Pcc.Game != MEGame.ME1)
             {
                 LoadDialogueObjects();
             }
@@ -606,14 +606,14 @@ namespace ME3Explorer
         public float StartPosVars;
         public void LoadObject(int index)
         {
-            string s = pcc.getExport(index).ObjectName;
+            string s = Pcc.getExport(index).ObjectName;
             int x = 0, y = 0;
             SaveData savedInfo = new SaveData(-1);
             if (SavedPositions.Count > 0)
             {
                 savedInfo = SavedPositions.FirstOrDefault(p => p.index == (RefOrRefChild ? CurrentObjects.IndexOf(index) : index));
             }
-            PropertyCollection props = pcc.getExport(index).GetProperties();
+            PropertyCollection props = Pcc.getExport(index).GetProperties();
             foreach (var prop in props)
             {
                 switch (prop)
@@ -631,17 +631,17 @@ namespace ME3Explorer
             {
                 if (savedInfo.index == (RefOrRefChild ? CurrentObjects.IndexOf(index) : index))
                 {
-                    Objects.Add(new SEvent(index, savedInfo.X, savedInfo.Y, pcc, graphEditor));
+                    Objects.Add(new SEvent(index, savedInfo.X, savedInfo.Y, Pcc, graphEditor));
                 }
                 else
                 {
-                    if (pcc.Game == MEGame.ME1)
+                    if (Pcc.Game == MEGame.ME1)
                     {
-                        Objects.Add(new SEvent(index, x, y, pcc, graphEditor));
+                        Objects.Add(new SEvent(index, x, y, Pcc, graphEditor));
                     }
                     else
                     {
-                        Objects.Add(new SEvent(index, StartPosEvents, 0, pcc, graphEditor));
+                        Objects.Add(new SEvent(index, StartPosEvents, 0, Pcc, graphEditor));
                         StartPosEvents += Objects[Objects.Count - 1].Width + 20;
                     }
                 }
@@ -649,33 +649,33 @@ namespace ME3Explorer
             else if (s.StartsWith("SeqVar_") || s.StartsWith("BioSeqVar_") || s.StartsWith("SFXSeqVar_") || s.StartsWith("InterpData"))
             {
                 if (savedInfo.index == (RefOrRefChild ? CurrentObjects.IndexOf(index) : index))
-                    Objects.Add(new SVar(index, savedInfo.X, savedInfo.Y, pcc, graphEditor));
+                    Objects.Add(new SVar(index, savedInfo.X, savedInfo.Y, Pcc, graphEditor));
                 else
                 {
-                    if (pcc.Game == MEGame.ME1)
+                    if (Pcc.Game == MEGame.ME1)
                     {
-                        Objects.Add(new SVar(index, x, y, pcc, graphEditor));
+                        Objects.Add(new SVar(index, x, y, Pcc, graphEditor));
                     }
                     else
                     {
-                        Objects.Add(new SVar(index, StartPosVars, 500, pcc, graphEditor));
+                        Objects.Add(new SVar(index, StartPosVars, 500, Pcc, graphEditor));
                         StartPosVars += Objects[Objects.Count - 1].Width + 20;
                     }
                 }
             }
-            else if (pcc.getExport(index).ClassName == "SequenceFrame" && pcc.Game == MEGame.ME1)
+            else if (Pcc.getExport(index).ClassName == "SequenceFrame" && Pcc.Game == MEGame.ME1)
             {
-                Objects.Add(new SFrame(index, x, y, pcc, graphEditor));
+                Objects.Add(new SFrame(index, x, y, Pcc, graphEditor));
             }
             else //if (s.StartsWith("BioSeqAct_") || s.StartsWith("SeqAct_") || s.StartsWith("SFXSeqAct_") || s.StartsWith("SeqCond_") || pcc.getExport(index).ClassName == "Sequence" || pcc.getExport(index).ClassName == "SequenceReference")
             {
-                if (pcc.Game == MEGame.ME1)
+                if (Pcc.Game == MEGame.ME1)
                 {
-                    Objects.Add(new SAction(index, x, y, pcc, graphEditor));
+                    Objects.Add(new SAction(index, x, y, Pcc, graphEditor));
                 }
                 else
                 {
-                    Objects.Add(new SAction(index, -1, -1, pcc, graphEditor));
+                    Objects.Add(new SAction(index, -1, -1, Pcc, graphEditor));
                 }
             }
         }
@@ -687,7 +687,7 @@ namespace ME3Explorer
             {
                 for (int i = 0; i < CurrentObjects.Count; i++)
                 {
-                    if (pcc.getExport(CurrentObjects[i]).ObjectName.StartsWith("BioSeqEvt_ConvNode"))
+                    if (Pcc.getExport(CurrentObjects[i]).ObjectName.StartsWith("BioSeqEvt_ConvNode"))
                     {
                         Objects[i].SetOffset(StartPosDialog, 600);//Startconv event
                         int InterpIndex = CurrentObjects.IndexOf(((SEvent)Objects[i]).Outlinks[0].Links[0]);
@@ -737,7 +737,7 @@ namespace ME3Explorer
                             o.Layout(savedInfo.X, savedInfo.Y);
                         else
                         {
-                            if (pcc.Game == MEGame.ME1)
+                            if (Pcc.Game == MEGame.ME1)
                             {
                                 o.Layout(-0.1f, -0.1f);
                             }
@@ -770,7 +770,7 @@ namespace ME3Explorer
                 pg = new PropGrid();
                 pg1.SelectedObject = pg;
                 foreach (var prop in p)
-                    pg.Add(PropertyReader.PropertyToGrid(prop, pcc));
+                    pg.Add(PropertyReader.PropertyToGrid(prop, Pcc));
 
                 pg1.Refresh();
             }
@@ -795,9 +795,9 @@ namespace ME3Explorer
                 }
                 s.Select();
                 if (!selectedByNode)
-                    graphEditor.Camera.AnimateViewToPanToBounds(s.GlobalFullBounds, 0);
+                    graphEditor.Camera.AnimateViewToCenterBounds(s.GlobalFullBounds, false, 100);
             }
-            GetProperties(pcc.getExport(CurrentObjects[n]));
+            GetProperties(Pcc.getExport(CurrentObjects[n]));
             selectedIndex = n;
             selectedByNode = false;
             graphEditor.Refresh();
@@ -867,7 +867,7 @@ namespace ME3Explorer
             }
             else
                 n = CurrentObjects[n];
-            InterpreterHost ip = new InterpreterHost(pcc.FileName, n)
+            InterpreterHost ip = new InterpreterHost(Pcc.FileName, n)
             {
                 Text = "Interpreter (SequenceEditor)"
             };
@@ -886,7 +886,7 @@ namespace ME3Explorer
             {
                 contextMenuStrip1.Show(MousePosition);
                 //open in InterpEditor
-                string className = pcc.getExport(((SObj)sender).Index).ClassName;
+                string className = Pcc.getExport(((SObj)sender).Index).ClassName;
                 if (className == "SeqAct_Interp" || className == "InterpData")
                     openInInterpEditorToolStripMenuItem.Visible = true;
                 else
@@ -966,7 +966,7 @@ namespace ME3Explorer
 
         private void removeAllLinks(int index)
         {
-            IExportEntry export = pcc.getExport(index);
+            IExportEntry export = Pcc.getExport(index);
             var props = export.GetProperties();
             var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
             if (outLinksProp != null)
@@ -1052,7 +1052,7 @@ namespace ME3Explorer
             if (CurrentObjects.Count == 0)
                 return;
 
-            using (ExportSelectorWinForms form = new ExportSelectorWinForms(pcc, ExportSelectorWinForms.SUPPORTS_EXPORTS_ONLY))
+            using (ExportSelectorWinForms form = new ExportSelectorWinForms(Pcc, ExportSelectorWinForms.SUPPORTS_EXPORTS_ONLY))
             {
                 DialogResult dr = form.ShowDialog(this);
                 if (dr != DialogResult.Yes)
@@ -1063,7 +1063,7 @@ namespace ME3Explorer
                 int i = form.SelectedItemIndex;
                 if (!CurrentObjects.Contains(i))
                 {
-                    if (pcc.getExport(i).inheritsFrom("SequenceObject"))
+                    if (Pcc.getExport(i).inheritsFrom("SequenceObject"))
                     {
                         addObject(i);
                     }
@@ -1132,7 +1132,7 @@ namespace ME3Explorer
             int n = listBox1.SelectedIndex;
             if (n == -1)
                 return;
-            PropGrid.propGridPropertyValueChanged(e, CurrentObjects[n], pcc);
+            PropGrid.propGridPropertyValueChanged(e, CurrentObjects[n], Pcc);
         }
 
         private void showOutputNumbersToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1147,7 +1147,7 @@ namespace ME3Explorer
 
         private void openInInterpEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc.Game != MEGame.ME3)
+            if (Pcc.Game != MEGame.ME3)
             {
                 MessageBox.Show("InterpViewer does not support ME1 or ME2 yet.", "Sorry!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -1158,7 +1158,7 @@ namespace ME3Explorer
             Matinee.InterpEditor p = new Matinee.InterpEditor();
             p.Show();
             p.LoadPCC(CurrentFile);
-            if (pcc.getExport(Objects[listBox1.SelectedIndex].Index).ObjectName == "InterpData")
+            if (Pcc.getExport(Objects[listBox1.SelectedIndex].Index).ObjectName == "InterpData")
             {
                 p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(n);
                 p.loadInterpData(n);
@@ -1206,21 +1206,21 @@ namespace ME3Explorer
 
         private void savePccToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            if (pcc == null)
+            if (Pcc == null)
                 return;
-            pcc.save();
+            Pcc.save();
             MessageBox.Show("Done");
         }
 
         private void savePCCAsMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc == null)
+            if (Pcc == null)
                 return;
-            string extension = Path.GetExtension(pcc.FileName);
+            string extension = Path.GetExtension(Pcc.FileName);
             SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == DialogResult.OK)
             {
-                pcc.save(d.FileName);
+                Pcc.save(d.FileName);
                 MessageBox.Show("Done");
             }
         }
@@ -1478,7 +1478,7 @@ namespace ME3Explorer
             }
             foreach (var i in updatedExports)
             {
-                if (pcc.getExport(i).ClassName.Contains("Sequence"))
+                if (Pcc.getExport(i).ClassName.Contains("Sequence"))
                 {
                     LoadSequences();
                     break;

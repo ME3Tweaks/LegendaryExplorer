@@ -18,7 +18,7 @@ namespace ME3Explorer
         private void findExportsWithSerialSizeMismatchToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<string> serialexportsbad = new List<string>();
-            foreach (IExportEntry entry in pcc.Exports)
+            foreach (IExportEntry entry in Pcc.Exports)
             {
                 Console.WriteLine(entry.Index + " " + entry.Data.Length + " " + entry.DataSize);
                 if (entry.Data.Length != entry.DataSize)
@@ -40,9 +40,9 @@ namespace ME3Explorer
 
         private void dEBUGEnumerateAllClassesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc != null)
+            if (Pcc != null)
             {
-                foreach (IExportEntry exp in pcc.Exports)
+                foreach (IExportEntry exp in Pcc.Exports)
                 {
                     if (exp.ClassName == "Class")
                     {
@@ -67,7 +67,7 @@ namespace ME3Explorer
             {
                 try
                 {
-                    IExportEntry exp = pcc.Exports[n];
+                    IExportEntry exp = Pcc.Exports[n];
                     exp.GetProperties(true); //force properties to reload
                 }
                 catch (Exception ex)
@@ -102,12 +102,12 @@ namespace ME3Explorer
                         foreach (string pccPath in pccs)
                         {
                             LoadMEPackage(pccPath);
-                            int numNames = pcc.Names.Count;
-                            pcc.FindNameOrAdd(name);
-                            int afternumNames = pcc.Names.Count;
+                            int numNames = Pcc.Names.Count;
+                            Pcc.FindNameOrAdd(name);
+                            int afternumNames = Pcc.Names.Count;
                             if (numNames != afternumNames)
                             {
-                                pcc.save();
+                                Pcc.save();
                                 Debug.WriteLine("Added " + name + " to " + pccPath);
                             }
                         }
@@ -118,17 +118,17 @@ namespace ME3Explorer
 
         private void dEBUGAddAPropertyToExportsMatchingCriteriaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc != null)
+            if (Pcc != null)
             {
                 int count = 0;
-                foreach (IExportEntry exp in pcc.Exports)
+                foreach (IExportEntry exp in Pcc.Exports)
                 {
                     if (exp.ObjectName == "StaticMeshCollectionActor")
                     {
                         var smas = exp.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
                         foreach (ObjectProperty item in smas)
                         {
-                            var export = pcc.getExport(item.Value - 1);
+                            var export = Pcc.getExport(item.Value - 1);
                             var props = export.GetProperties();
                             props.AddOrReplaceProp(new BoolProperty(false, "bUsePrecomputedShadows"));
                             export.WriteProperties(props);

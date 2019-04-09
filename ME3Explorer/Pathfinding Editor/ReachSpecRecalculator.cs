@@ -39,7 +39,7 @@ namespace ME3Explorer.Pathfinding_Editor
             worker.RunWorkerCompleted += reachSpecCalculatorThread_Done;
 
             BGThreadOptions bgo = new BGThreadOptions();
-            bgo.pcc = pe.pcc;
+            bgo.pcc = pe.Pcc;
             bgo.readOnly = readOnlyCheckbox.Checked;
 
             worker.RunWorkerAsync(bgo);

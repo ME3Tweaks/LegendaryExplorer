@@ -23,17 +23,17 @@ namespace ME3Explorer
     public partial class MainWindow : Window
     {
         private bool CICOpen = true;
-        private bool SearchOpen = false;
-        private bool AdvancedOpen = false;
-        private bool UtilitiesOpen = false;
-        private bool CreateModsOpen = false;
-        private bool TaskPaneOpen = false;
-        private bool ToolInfoPanelOpen = false;
-        private bool PathsPanelOpen = false;
-        private bool TaskPaneInfoPanelOpen = false;
+        private bool SearchOpen;
+        private bool AdvancedOpen;
+        private bool UtilitiesOpen;
+        private bool CreateModsOpen;
+        private bool TaskPaneOpen;
+        private bool ToolInfoPanelOpen;
+        private bool PathsPanelOpen;
+        private bool TaskPaneInfoPanelOpen;
 
-        Brush HighlightBrush = Application.Current.FindResource("HighlightColor") as Brush;
-        Brush LabelTextBrush = Application.Current.FindResource("LabelTextBrush") as Brush;
+        readonly Brush HighlightBrush = Application.Current.FindResource("HighlightColor") as Brush;
+        readonly Brush LabelTextBrush = Application.Current.FindResource("LabelTextBrush") as Brush;
         public static double dpiScaleX = 1;
         public static double dpiScaleY = 1;
 
@@ -46,14 +46,15 @@ namespace ME3Explorer
         {
             get
             {
-                string version = $"{Assembly.GetEntryAssembly().GetName().Version.Major}.{Assembly.GetEntryAssembly().GetName().Version.Minor}";
-                if (Assembly.GetEntryAssembly().GetName().Version.Build != 0)
+                Version assemblyVersion = Assembly.GetEntryAssembly().GetName().Version;
+                string version = $"{assemblyVersion.Major}.{assemblyVersion.Minor}";
+                if (assemblyVersion.Build != 0)
                 {
-                    version += "." + Assembly.GetEntryAssembly().GetName().Version.Build;
+                    version += "." + assemblyVersion.Build;
                 }
-                if (Assembly.GetEntryAssembly().GetName().Version.Revision != 0)
+                if (assemblyVersion.Revision != 0)
                 {
-                    version += "." + Assembly.GetEntryAssembly().GetName().Version.Revision;
+                    version += "." + assemblyVersion.Revision;
                 }
 
 #if DEBUG
@@ -76,7 +77,7 @@ namespace ME3Explorer
                 SystemCommands.CloseWindow(this);
             }
             var buildDate = SharedUI.BuildInfo.GetBuildDateTime(Assembly.GetExecutingAssembly().Location);
-            if (DateTime.Compare(buildDate, default(DateTime)) != 0)
+            if (DateTime.Compare(buildDate, default) != 0)
             {
                 VersionBar_BuildDate_Label.Content = buildDate.Date;
             }
@@ -113,15 +114,15 @@ namespace ME3Explorer
         private void StartLoadingTLKs()
         {
             BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += delegate (object o, DoWorkEventArgs args)
+            bw.DoWork += delegate
             {
                 // load TLK strings
                 try
                 {
                     ME1Explorer.ME1TalkFiles.LoadSavedTlkList();
-                    TlkManagerNS.TLKManagerWPF.ME1LastReloaded = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
+                    TlkManagerNS.TLKManagerWPF.ME1LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
                 }
-                catch (Exception ex)
+                catch
                 {
                     //?
                 }
@@ -129,9 +130,9 @@ namespace ME3Explorer
                 try
                 {
                     ME2Explorer.ME2TalkFiles.LoadSavedTlkList();
-                    TlkManagerNS.TLKManagerWPF.ME2LastReloaded = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
+                    TlkManagerNS.TLKManagerWPF.ME2LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
                 }
-                catch (Exception ex)
+                catch
                 {
                     //?
                 }
@@ -139,30 +140,34 @@ namespace ME3Explorer
                 try
                 {
                     ME3TalkFiles.LoadSavedTlkList();
-                    TlkManagerNS.TLKManagerWPF.ME3LastReloaded = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
+                    TlkManagerNS.TLKManagerWPF.ME3LastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
                 }
-                catch (Exception ex)
+                catch
                 {
                     //?
                 }
             };
-            bw.RunWorkerCompleted += delegate (object o, RunWorkerCompletedEventArgs args)
+            bw.RunWorkerCompleted += delegate
             {
                 //StartingUpPanel.Visibility = Visibility.Invisible;
-                DoubleAnimation fadeout = new DoubleAnimation();
-                fadeout.From = 1;
-                fadeout.To = 0;
-                fadeout.EasingFunction = new ExponentialEase();
-                fadeout.Duration = new Duration(TimeSpan.FromSeconds(1));
+                DoubleAnimation fadeout = new DoubleAnimation
+                {
+                    From = 1,
+                    To = 0,
+                    EasingFunction = new ExponentialEase(),
+                    Duration = new Duration(TimeSpan.FromSeconds(1))
+                };
                 fadeout.Completed += delegate
                 {
                     LoadingPanel.Visibility = Visibility.Collapsed;
                     ME3TweaksLogoButton.Visibility = Visibility.Visible;
-                    DoubleAnimation fadein = new DoubleAnimation();
-                    fadein.From = 0;
-                    fadein.To = 1;
-                    fadein.EasingFunction = new ExponentialEase();
-                    fadein.Duration = new Duration(TimeSpan.FromSeconds(1));
+                    DoubleAnimation fadein = new DoubleAnimation
+                    {
+                        From = 0,
+                        To = 1,
+                        EasingFunction = new ExponentialEase(),
+                        Duration = new Duration(TimeSpan.FromSeconds(1))
+                    };
                     ME3TweaksLogoButton.BeginAnimation(OpacityProperty, fadein);
                 };
                 //da.RepeatBehavior=new RepeatBehavior(3);
@@ -228,11 +233,6 @@ namespace ME3Explorer
         private void About_Click(object sender, RoutedEventArgs e)
         {
             (new About()).Show();
-        }
-
-        private void Debug_Click(object sender, RoutedEventArgs e)
-        {
-            KFreonLib.Debugging.DebugOutput.StartDebugger("ME3Explorer Main Window");
         }
 
         private void Logo_MouseDown(object sender, MouseButtonEventArgs e)
@@ -309,20 +309,16 @@ namespace ME3Explorer
                 searchPanel.BeginDoubleAnimation(WidthProperty, 300, 200);
             }
 
-            List<Tool> results = new List<Tool>();
+            var results = new List<Tool>();
             string[] words = SearchBox.Text.ToLower().Split(' ');
             foreach (Tool tool in Tools.Items)
             {
                 if (tool.open != null)
                 {
                     //for each word we've typed in
-                    foreach (string word in words)
+                    if (words.Any(word => tool.tags.FuzzyMatch(word) || tool.name.ToLower().Contains(word) || tool.name.ToLower().Split(' ').FuzzyMatch(word)))
                     {
-                        if (tool.tags.FuzzyMatch(word) || tool.name.ToLower().Contains(word) || tool.name.ToLower().Split(' ').FuzzyMatch(word))
-                        {
-                            results.Add(tool);
-                            break;
-                        }
+                        results.Add(tool);
                     }
                 }
             }
@@ -341,7 +337,7 @@ namespace ME3Explorer
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            List<GenericWindow> tools = new List<GenericWindow>();
+            var tools = new List<GenericWindow>();
             foreach (var package in MEPackageHandler.packagesInTools)
             {
                 foreach (var tool in package.Tools)
@@ -494,7 +490,7 @@ namespace ME3Explorer
         {
             if (ToolInfoPanelOpen)
             {
-                closeToolInfo(50);
+                closeToolInfo();
             }
             CreateModsOpen = false;
             createModsPanel.BeginDoubleAnimation(WidthProperty, 0, duration);
@@ -558,7 +554,7 @@ namespace ME3Explorer
             {
                 me3Path = me3PathBox.Text;
             }
-            List<string> directories = new List<string> { me1Path, me2Path, me3Path };
+            var directories = new List<string> { me1Path, me2Path, me3Path };
             MEDirectories.SaveSettings(directories);
 
             gamePathsWarningIcon.Visibility = directories.All(item => item == null || !Directory.Exists(item)) ? Visibility.Visible : Visibility.Collapsed;
@@ -586,8 +582,10 @@ namespace ME3Explorer
             }
             if (game != "")
             {
-                OpenFileDialog ofd = new OpenFileDialog();
-                ofd.Title = $"Select {game} executable.";
+                OpenFileDialog ofd = new OpenFileDialog
+                {
+                    Title = $"Select {game} executable."
+                };
                 game = game.Replace(" ", "");
                 ofd.Filter = $"{game}.exe|{game}.exe";
 
@@ -748,7 +746,7 @@ namespace ME3Explorer
 
         private void ME3TweaksDiscord_Clicked(object sender, RoutedEventArgs e)
         {
-            string link = "https://discordapp.com/invite/s8HA6dc";
+            const string link = "https://discordapp.com/invite/s8HA6dc";
             try
             {
                 System.Diagnostics.Process.Start(link);
@@ -757,7 +755,7 @@ namespace ME3Explorer
             {
                 try
                 {
-                    System.Windows.Clipboard.SetText(link);
+                    Clipboard.SetText(link);
                 }
                 catch
                 {

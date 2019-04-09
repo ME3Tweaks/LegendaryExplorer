@@ -31,7 +31,7 @@ namespace MassEffect3.Coalesce
 
 		public bool CompareId(string id, bool ignoreCase = false)
 		{
-			if (!HasId || id.IsNullOrEmpty())
+			if (!HasId || string.IsNullOrEmpty(id))
 			{
 				return false;
 			}
@@ -56,7 +56,7 @@ namespace MassEffect3.Coalesce
 
 		public bool CompareName(string name, bool ignoreCase = false)
 		{
-			if (!HasName || name.IsNullOrEmpty())
+			if (!HasName || string.IsNullOrEmpty(name))
 			{
 				return false;
 			}
@@ -81,7 +81,7 @@ namespace MassEffect3.Coalesce
 
 		public bool CompareSource(string source, bool ignoreCase = false)
 		{
-			if (!HasSource || source.IsNullOrEmpty())
+			if (!HasSource || string.IsNullOrEmpty(source))
 			{
 				return false;
 			}
@@ -94,22 +94,13 @@ namespace MassEffect3.Coalesce
 			return !ignoreCase && Source.Equals(source);
 		}
 
-		public bool HasId
-		{
-			get { return !Id.IsNullOrEmpty(); }
-		}
+		public bool HasId => !string.IsNullOrEmpty(Id);
 
-		public bool HasName
-		{
-			get { return !Name.IsNullOrEmpty(); }
-		}
+	    public bool HasName => !string.IsNullOrEmpty(Name);
 
-		public bool HasSource
-		{
-			get { return !Source.IsNullOrEmpty(); }
-		}
+	    public bool HasSource => !string.IsNullOrEmpty(Source);
 
-		public void Combine(CoalesceAsset asset)
+	    public void Combine(CoalesceAsset asset)
 		{
 			if (asset == null)
 			{

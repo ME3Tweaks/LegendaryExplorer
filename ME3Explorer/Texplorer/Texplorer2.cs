@@ -1025,7 +1025,7 @@ namespace ME3Explorer
                 }
             }
 
-            DebugOutput.PrintLn(string.Format("Starting FTS Window with parameters: Game: {0}  DLCPath: {1}  Cooked: {2}", WhichGame, DLCPath, pathCooked));
+            DebugOutput.PrintLn($"Starting FTS Window with parameters: Game: {WhichGame}  DLCPath: {DLCPath}  Cooked: {pathCooked}");
 
             using (TexplorerFirstTimeSetup fts = new TexplorerFirstTimeSetup(WhichGame, DLCPath, pathCooked))
             {
