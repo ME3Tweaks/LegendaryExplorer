@@ -39,7 +39,7 @@ namespace ME3Explorer.SplineNodes
             pcc = p;
             g = grapheditor;
             index = idx;
-            export = pcc.getExport(index);
+            export = pcc.getUExport(index);
             comment = new SText(GetComment(), commentColor, false);
             comment.X = 0;
             comment.Y = 52 + comment.Height;
@@ -54,7 +54,7 @@ namespace ME3Explorer.SplineNodes
             index = idx;
             if (idx >= 0)
             {
-                export = pcc.getExport(index);
+                export = pcc.getUExport(index);
                 comment = new SText(GetComment(), commentColor, false);
             }
 

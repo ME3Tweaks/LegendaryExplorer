@@ -7,7 +7,8 @@
         xmlns:local="clr-namespace:ME3Explorer.Pathfinding_Editor"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:pathfindinggraph="clr-namespace:UMD.HCIL.PathingGraphEditor;assembly=Piccolo"
-        mc:Ignorable="d"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    mc:Ignorable="d"
         Closing="PathfinderEditorWPF_Closing"
         Title="Pathfinding Editor WPF" Height="750" Width="1300" MinWidth="900" MinHeight="200">
     <Window.Resources>
@@ -24,88 +25,98 @@
         </ContextMenu>
     </Window.Resources>
     <Window.InputBindings>
+        <KeyBinding Key="F1" Command="{Binding TogglePathfindingCommand}"/>
+        <KeyBinding Key="F2" Command="{Binding ToggleActorsCommand}"/>
+        <KeyBinding Key="F3" Command="{Binding ToggleSplinesCommand}"/>
+        <KeyBinding Key="F4" Command="{Binding ToggleEverythingElseCommand}"/>
+
+
         <KeyBinding Key="F5" Command="{Binding RefreshCommand}"/>
         <KeyBinding Key="F" Modifiers="Control" Command="{Binding FocusFindCommand}"/>
         <KeyBinding Key="G" Modifiers="Control" Command="{Binding FocusGotoCommand}"/>
     </Window.InputBindings>
-    <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="File" Padding="4" >
-                <MenuItem Header="_Open" Command="{Binding OpenCommand}" InputGestureText="Ctrl+O" ToolTip="Open a package file"/>
-                <MenuItem Header="_Save"  Command="{Binding SaveCommand}" InputGestureText="Ctrl+S" ToolTip="Save package file in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                <MenuItem Header="Save as" Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+Shift+S" ToolTip="Save package file to another location" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
-                <Separator />
-                <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
-            </MenuItem>
-
-            <MenuItem Header="Tools" Padding="4">
-                <MenuItem Header="Refresh" Command="{Binding RefreshCommand}" InputGestureText="F5" ToolTip="Refreshes the pathing graph"/>
-                <MenuItem Header="Find node via Tag" Command="{Binding FocusFindCommand}" InputGestureText="CTRL+F" ToolTip="Find a node by it's custom tag"/>
-                <MenuItem Header="Find node via UIndex" Command="{Binding FocusGotoCommand}" InputGestureText="CTRL+G" ToolTip="Find a node by it's UIndex"/>
-
-            </MenuItem>
-
-            <MenuItem Header="View Options" Padding="4">
-            </MenuItem>
-            <MenuItem Header="Experiments" Padding="4">
-
-            </MenuItem>
-        </Menu>
-        <StatusBar Height="23" DockPanel.Dock="Bottom">
-            <StatusBarItem VerticalContentAlignment="Center" Name="StatusBar_GameID_Container" Visibility="Collapsed">
-                <Border BorderBrush="Gray" BorderThickness="2,2,2,2" CornerRadius="3,3,3,3" VerticalAlignment="Center">
-                    <TextBlock Name="StatusBar_GameID_Text" Background="Red" Text="Game ID" FontSize="11" Foreground="White" Padding="4,3,4,3" FontFamily="Consolas" VerticalAlignment="Center"/>
-                </Border>
-            </StatusBarItem>
-            <StatusBarItem>
-                <TextBlock Name="StatusBar_LeftMostText" Text="{Binding StatusText}"/>
-            </StatusBarItem>
-        </StatusBar>
-        <!-- Main Content panel-->
         <DockPanel>
-            <DockPanel DockPanel.Dock="Right" Width="300" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
-                <StatusBar DockPanel.Dock="Bottom">
-                    <Label Margin="0,6,0,0"/>
-                </StatusBar>
-                <StackPanel DockPanel.Dock="Top" Margin="3">
-                    <Viewbox StretchDirection="DownOnly" Stretch="Uniform" HorizontalAlignment="Left" >
-                        <TextBlock Text="{Binding NodeName, FallbackValue=PathNode_X57}" FontWeight="Bold" FontSize="20" TextAlignment="Left"/>
-                    </Viewbox>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding NodeNameSubText, FallbackValue=Export 57}" FontWeight="Bold" FontSize="10" VerticalAlignment="Center"/>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <TextBlock Text="X:" FontWeight="Bold" FontSize="10" Margin="10,0,4,0"  VerticalAlignment="Center"/>
-                            <TextBox Width="50" Name="NodePositionX_TextBox" KeyUp="PositionBoxes_KeyUp"/>
-                            <TextBlock Text="Y:" FontWeight="Bold" FontSize="10" Margin="10,0,4,0" VerticalAlignment="Center"/>
-                            <TextBox Width="50" Name="NodePositionY_TextBox" KeyUp="PositionBoxes_KeyUp"/>
-                            <TextBlock Text="Z:" FontWeight="Bold" FontSize="10" Margin="10,0,4,0" VerticalAlignment="Center"/>
-                            <TextBox Width="50" Name="NodePositionZ_TextBox" KeyUp="PositionBoxes_KeyUp"/>
-                        </StackPanel>
-                    </StackPanel>
-                    <TextBlock Text="{Binding NodeTypeDescriptionText, FallbackValue=This is AsyncState}" TextWrapping="Wrap" FontStyle="Italic" FontSize="11" MinHeight="60"/>
-                    
-                </StackPanel>
-                
-                <TabControl>
-                <TabItem Header="ReachSpecs">
-                    <local:ReachSpecsPanel x:Name="PathfindingEditorWPF_ReachSpecsPanel"/>
-                </TabItem>
-                    <TabItem Header="Combat Zones"/>
-                </TabControl>
-            </DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="File" Padding="4" >
+                    <MenuItem Header="_Open" Command="{Binding OpenCommand}" InputGestureText="Ctrl+O" ToolTip="Open a package file"/>
+                    <MenuItem Header="_Save"  Command="{Binding SaveCommand}" InputGestureText="Ctrl+S" ToolTip="Save package file in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="Save as" Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+Shift+S" ToolTip="Save package file to another location" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                    <Separator />
+                    <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
+                </MenuItem>
 
-            <Grid DockPanel.Dock="Bottom">
-                <Grid.RowDefinitions>
-                    <RowDefinition MinHeight="100" MaxHeight="300"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="300"/>
-                    <ColumnDefinition Width="300"/>
-                    <ColumnDefinition Width="1*"/>
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
-                    <TextBlock Margin="5" Text="Welcome to Pathfinding Editor WPF, the rewritten version of Pathfinding Editor" FontWeight="Bold"/>
-                    <TextBlock Margin="5">
+                <MenuItem Header="Tools" Padding="4">
+                    <MenuItem Header="Find node via Tag" Command="{Binding FocusFindCommand}" InputGestureText="CTRL+F" ToolTip="Find a node by it's custom tag"/>
+                    <MenuItem Header="Find node via UIndex" Command="{Binding FocusGotoCommand}" InputGestureText="CTRL+G" ToolTip="Find a node by it's UIndex"/>
+
+                </MenuItem>
+
+                <MenuItem Header="View Options" Padding="4">
+                    <MenuItem Header="Refresh" Command="{Binding RefreshCommand}" InputGestureText="F5" ToolTip="Refreshes the pathing graph"/>
+                    <MenuItem Header="Pathfinding" Command="{Binding TogglePathfindingCommand}" IsChecked="{Binding ShowPathfindingNodesLayer}" StaysOpenOnClick="True" InputGestureText="F1" ToolTip="Refreshes the pathing graph"/>
+                    <MenuItem Header="Actors" Command="{Binding ToggleActorsCommand}" IsChecked="{Binding ShowActorsLayer}" StaysOpenOnClick="True" InputGestureText="F2" ToolTip="Refreshes the pathing graph"/>
+                    <MenuItem Header="Splines" Command="{Binding ToggleSplinesCommand}" IsChecked="{Binding ShowSplinesLayer}" StaysOpenOnClick="True" InputGestureText="F3" ToolTip="Refreshes the pathing graph"/>
+                    <MenuItem Header="Everything else" Command="{Binding ToggleEverythingElseCommand}" IsChecked="{Binding ShowEverythingElseLayer}" StaysOpenOnClick="True" InputGestureText="F4" ToolTip="Refreshes the pathing graph"/>
+                </MenuItem>
+                <MenuItem Header="Experiments" Padding="4">
+
+                </MenuItem>
+            </Menu>
+            <StatusBar Height="23" DockPanel.Dock="Bottom">
+                <StatusBarItem VerticalContentAlignment="Center" Name="StatusBar_GameID_Container" Visibility="Collapsed">
+                    <Border BorderBrush="Gray" BorderThickness="2,2,2,2" CornerRadius="3,3,3,3" VerticalAlignment="Center">
+                        <TextBlock Name="StatusBar_GameID_Text" Background="Red" Text="Game ID" FontSize="11" Foreground="White" Padding="4,3,4,3" FontFamily="Consolas" VerticalAlignment="Center"/>
+                    </Border>
+                </StatusBarItem>
+                <StatusBarItem>
+                    <TextBlock Name="StatusBar_LeftMostText" Text="{Binding StatusText}"/>
+                </StatusBarItem>
+            </StatusBar>
+            <!-- Main Content panel-->
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Right" Width="300" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+                    <StatusBar DockPanel.Dock="Bottom">
+                        <Label Margin="0,6,0,0"/>
+                    </StatusBar>
+                    <StackPanel DockPanel.Dock="Top" Margin="3">
+                        <Viewbox StretchDirection="DownOnly" Stretch="Uniform" HorizontalAlignment="Left" >
+                            <TextBlock Text="{Binding NodeName, FallbackValue=PathNode_X57}" FontWeight="Bold" FontSize="20" TextAlignment="Left"/>
+                        </Viewbox>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding NodeNameSubText, FallbackValue=Export 57}" FontWeight="Bold" FontSize="10" VerticalAlignment="Center"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Text="X:" FontWeight="Bold" FontSize="10" Margin="10,0,4,0"  VerticalAlignment="Center"/>
+                                <TextBox Width="50" Name="NodePositionX_TextBox" KeyUp="PositionBoxes_KeyUp"/>
+                                <TextBlock Text="Y:" FontWeight="Bold" FontSize="10" Margin="10,0,4,0" VerticalAlignment="Center"/>
+                                <TextBox Width="50" Name="NodePositionY_TextBox" KeyUp="PositionBoxes_KeyUp"/>
+                                <TextBlock Text="Z:" FontWeight="Bold" FontSize="10" Margin="10,0,4,0" VerticalAlignment="Center"/>
+                                <TextBox Width="50" Name="NodePositionZ_TextBox" KeyUp="PositionBoxes_KeyUp"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <TextBlock Text="{Binding NodeTypeDescriptionText, FallbackValue=This is AsyncState}" TextWrapping="Wrap" FontStyle="Italic" FontSize="11" MinHeight="60"/>
+
+                    </StackPanel>
+
+                    <TabControl Name="PathfindingNodeTabControl">
+                        <TabItem Header="ReachSpecs">
+                            <local:ReachSpecsPanel x:Name="PathfindingEditorWPF_ReachSpecsPanel"/>
+                        </TabItem>
+                        <TabItem Header="Combat Zones"/>
+                    </TabControl>
+                </DockPanel>
+
+                <Grid DockPanel.Dock="Bottom">
+                    <Grid.RowDefinitions>
+                        <RowDefinition MinHeight="100" MaxHeight="300"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
+                        <TextBlock Margin="5" Text="Welcome to Pathfinding Editor WPF, the rewritten version of Pathfinding Editor" FontWeight="Bold"/>
+                        <TextBlock Margin="5">
                             Pathfinding Editor WPF is a bit different from the classic Pathfinding Editor.
                                 <LineBreak/>
                                 Indexes are done strictly by UIndex, which is how they appear in game code. (Not yet done)
@@ -123,96 +134,96 @@
                                 Pathfinding Editor WPF is still in development and not all features are functional or ported
                                 <LineBreak/>
                                 over from the classic version.
-                    </TextBlock>
-                </StackPanel>
+                        </TextBlock>
+                    </StackPanel>
 
-                <Grid HorizontalAlignment="Center" Margin="20,0,20,15" Grid.Column="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="280"/>
-                        <ColumnDefinition Width="280"/>
-                    </Grid.ColumnDefinitions>
-                    
-                    <TextBlock Text="Recently opened items" Grid.Row="0" Grid.ColumnSpan="5" TextAlignment="Center" FontSize="20" FontWeight="Light" Margin="10"/>
-                    <Button Name="RecentButton1" Content="Item" Grid.Row="1" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton2" Content="Item" Grid.Row="1" Grid.Column="1" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton3" Content="Item" Grid.Row="2" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton4" Content="Item" Grid.Row="2" Grid.Column="1" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton5" Content="Item" Grid.Row="3" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton6" Content="Item" Grid.Row="3" Grid.Column="1" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton7" Content="Item" Grid.Row="4" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton8" Content="Item" Grid.Row="4" Grid.Column="1" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton9" Content="Item" Grid.Row="5" Grid.Column="0" Margin="3" Padding="3"/>
-                    <Button Name="RecentButton10" Content="Item" Grid.Row="5" Grid.Column="1" Margin="3" Padding="3"/>
-                </Grid>
-                <DockPanel Grid.Row="0" Grid.Column="0" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
-                    <Grid DockPanel.Dock="Bottom">
+                    <Grid HorizontalAlignment="Center" Margin="20,0,20,15" Grid.Column="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="39"/>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="3*"/>
-                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="280"/>
+                            <ColumnDefinition Width="280"/>
                         </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0" Name="FindByNumber_TextBox" KeyUp="FindByNumber_OnKeyUp"/>
-                        <Button Grid.Column="1" Name="FindByNumber_Button" Content="Find by #" Click="FindByNumber_Click"/>
-                        <ComboBox Grid.Column="2" Name="FindByTag_ComboBox" ItemsSource="{Binding TagsList}" KeyUp="FindByTag_OnKeyUp"/>
-                        <Button Grid.Column="3" Name="FindByTag_Button"  Content="Find by tag" Click="FindByTag_Click"/>
-                        
+
+                        <TextBlock Text="Recently opened items" Grid.Row="0" Grid.ColumnSpan="5" TextAlignment="Center" FontSize="20" FontWeight="Light" Margin="10"/>
+                        <Button Name="RecentButton1" Content="Item" Grid.Row="1" Grid.Column="0" Margin="3" Padding="3"/>
+                        <Button Name="RecentButton2" Content="Item" Grid.Row="1" Grid.Column="1" Margin="3" Padding="3"/>
+                        <Button Name="RecentButton3" Content="Item" Grid.Row="2" Grid.Column="0" Margin="3" Padding="3"/>
+                        <Button Name="RecentButton4" Content="Item" Grid.Row="2" Grid.Column="1" Margin="3" Padding="3"/>
+                        <Button Name="RecentButton5" Content="Item" Grid.Row="3" Grid.Column="0" Margin="3" Padding="3"/>
+                        <Button Name="RecentButton6" Content="Item" Grid.Row="3" Grid.Column="1" Margin="3" Padding="3"/>
+                        <Button Name="RecentButton7" Content="Item" Grid.Row="4" Grid.Column="0" Margin="3" Padding="3"/>
+                        <Button Name="RecentButton8" Content="Item" Grid.Row="4" Grid.Column="1" Margin="3" Padding="3"/>
+                        <Button Name="RecentButton9" Content="Item" Grid.Row="5" Grid.Column="0" Margin="3" Padding="3"/>
+                        <Button Name="RecentButton10" Content="Item" Grid.Row="5" Grid.Column="1" Margin="3" Padding="3"/>
                     </Grid>
-                <ListBox Name="ActiveNodes_ListBox" ItemsSource="{Binding ActiveNodes}" SelectionChanged="ActiveNodesList_SelectedItemChanged" HorizontalContentAlignment="Stretch">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0">
-                                <Grid.Style>
-                                    <Style TargetType="{x:Type Grid}">
-                                       <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}" Value="true">
-                                                <Setter Property="Background" Value="Yellow"/>
-                                                <Setter Property="ToolTip" Value="This export has been modified but the file has not yet been saved"/>
-                                            </DataTrigger>
-                                       </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="40" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding UIndex}" />
-                                <TextBlock Grid.Column="1">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0}_{1}">
-                                            <Binding Path="ObjectName" />
-                                            <Binding Path="indexValue" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                    <ListBox.ItemContainerStyle>
-                        <Style>
-                            <Style.Triggers>
-                                <Trigger Property="Selector.IsSelected" Value="True">
-                                    <Setter Property="TextElement.FontWeight" Value="Bold"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                </ListBox>
-                </DockPanel>
-                <!-- Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}" -->
-                <global:InterpreterWPF x:Name="Properties_InterpreterWPF" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}"/>
-            </Grid>
-            <WindowsFormsHost Name="GraphHost" VerticalAlignment="Stretch">
-                <pathfindinggraph:PathingGraphEditor/>
-            </WindowsFormsHost>
+                    <DockPanel Grid.Row="0" Grid.Column="0" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+                        <Grid DockPanel.Dock="Bottom">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="39"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" Name="FindByNumber_TextBox" KeyUp="FindByNumber_OnKeyUp"/>
+                            <Button Grid.Column="1" Name="FindByNumber_Button" Content="Find by #" Click="FindByNumber_Click"/>
+                            <ComboBox Grid.Column="2" Name="FindByTag_ComboBox" ItemsSource="{Binding TagsList}" KeyUp="FindByTag_OnKeyUp"/>
+                            <Button Grid.Column="3" Name="FindByTag_Button"  Content="Find by tag" Click="FindByTag_Click"/>
+
+                        </Grid>
+                        <ListBox Name="ActiveNodes_ListBox" ItemsSource="{Binding ActiveNodes}" SelectionChanged="ActiveNodesList_SelectedItemChanged" HorizontalContentAlignment="Stretch">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0">
+                                        <Grid.Style>
+                                            <Style TargetType="{x:Type Grid}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}" Value="true">
+                                                        <Setter Property="Background" Value="Yellow"/>
+                                                        <Setter Property="ToolTip" Value="This export has been modified but the file has not yet been saved"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="40" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding UIndex}" />
+                                        <TextBlock Grid.Column="1">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0}_{1}">
+                                                    <Binding Path="ObjectName" />
+                                                    <Binding Path="indexValue" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ItemContainerStyle>
+                                <Style>
+                                    <Style.Triggers>
+                                        <Trigger Property="Selector.IsSelected" Value="True">
+                                            <Setter Property="TextElement.FontWeight" Value="Bold"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                    </DockPanel>
+                    <!-- Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}" -->
+                    <global:InterpreterWPF x:Name="Properties_InterpreterWPF" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                </Grid>
+                <WindowsFormsHost Name="GraphHost" VerticalAlignment="Stretch">
+                    <pathfindinggraph:PathingGraphEditor/>
+                </WindowsFormsHost>
+            </DockPanel>
         </DockPanel>
-    </DockPanel>
 </global:WPFBase>

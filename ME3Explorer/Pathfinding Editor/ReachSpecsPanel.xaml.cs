@@ -218,6 +218,15 @@ namespace ME3Explorer.Pathfinding_Editor
         private void ReachSpecs_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
             RefreshSelectedReachSpec();
+            ReachSpec selectedSpec = ReachableNodes_ComboBox.SelectedItem as ReachSpec;
+            if (selectedSpec != null && !selectedSpec.ExternalTarget)
+            {
+                if (ParentWindow != null)
+                {
+                    //Parse
+                    ParentWindow.FocusNode(selectedSpec.EndNode, false, 500);
+                }
+            }
         }
 
         private void RefreshSelectedReachSpec()
@@ -244,6 +253,10 @@ namespace ME3Explorer.Pathfinding_Editor
                     AvailableReachSpecSizes.Add(specSize);
                     ReachSpecSize_ComboBox.SelectedItem = specSize;
                 }
+            }
+            else
+            {
+                ReachSpecSizeToText = "Select a reachspec above";
             }
         }
 

@@ -16,6 +16,7 @@ namespace ME3Explorer.ActorNodes
     {
         public PathingGraphEditor g;
         static Color commentColor = Color.FromArgb(74, 63, 190);
+        protected static Pen annexZoneLocPen = Pens.Lime;
 
         protected ActorNode(int idx, IMEPackage p, PathingGraphEditor grapheditor)
         {
@@ -23,7 +24,7 @@ namespace ME3Explorer.ActorNodes
             pcc = p;
             g = grapheditor;
             index = idx;
-            export = pcc.getExport(index);
+            export = pcc.getUExport(index);
             comment = new SText(GetComment(), commentColor, false);
             comment.X = 0;
             comment.Y = 52 + comment.Height;
@@ -36,7 +37,7 @@ namespace ME3Explorer.ActorNodes
         {
             pcc = p;
             index = idx;
-            export = pcc.getExport(index);
+            export = pcc.getUExport(index);
             comment = new SText(GetComment(), commentColor, false);
             comment.X = 0;
             comment.Y = 0 - comment.Height;
@@ -187,6 +188,102 @@ namespace ME3Explorer.ActorNodes
         }
     }
 
+
+    //This is technically not a pathnode...
+    public class SFXObjectiveSpawnPoint : ActorNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(0, 255, 0);
+        PointF[] triangleshape = new PointF[] { new PointF(0, 50), new PointF(25, 0), new PointF(50, 50) };
+
+        public SFXObjectiveSpawnPoint(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+            : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+            string commentText = comment.Text + "\nSpawnLocation: ";
+
+            var spawnLocation = export.GetProperty<EnumProperty>("SpawnLocation");
+            if (spawnLocation == null)
+            {
+                commentText += "Table";
+            }
+            else
+            {
+                commentText += spawnLocation.Value;
+            }
+            commentText += "\n";
+            var spawnTagsProp = export.GetProperty<ArrayProperty<StrProperty>>("SupportedSpawnTags");
+            if (spawnTagsProp != null)
+            {
+                foreach (string str in spawnTagsProp)
+                {
+                    commentText += str + "\n";
+                }
+            }
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreatePolygon(triangleshape);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = pathfindingNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            comment.Text = commentText;
+
+            this.AddChild(val);
+            this.TranslateBy(x, y);
+
+
+        }
+
+        /// <summary>
+        /// Creates the connection to the annex node.
+        /// </summary>
+        public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
+        {
+            var annexZoneLocProp = export.GetProperty<ObjectProperty>("AnnexZoneLocation");
+            if (annexZoneLocProp != null)
+            {
+                //IExportEntry annexzonelocexp = pcc.Exports[annexZoneLocProp.Value - 1];
+
+                PathfindingNodeMaster othernode = null;
+                int othernodeidx = annexZoneLocProp.Value;
+                if (othernodeidx != 0)
+                {
+                    foreach (PathfindingNodeMaster node in Objects)
+                    {
+                        if (node.export.UIndex == othernodeidx)
+                        {
+                            othernode = node;
+                            break;
+                        }
+                    }
+                }
+
+                if (othernode != null)
+                {
+                    PPath edge = new PPath();
+                    edge.Pen = annexZoneLocPen;
+                    ((ArrayList)Tag).Add(edge);
+                    ((ArrayList)othernode.Tag).Add(edge);
+                    edge.Tag = new ArrayList();
+                    ((ArrayList)edge.Tag).Add(this);
+                    ((ArrayList)edge.Tag).Add(othernode);
+                    g.edgeLayer.AddChild(edge);
+                }
+            }
+        }
+    }
+
     public class SFXBlockingVolume_Ledge : ActorNode
     {
         public VarTypes type { get; set; }
@@ -239,6 +336,48 @@ namespace ME3Explorer.ActorNodes
             this.TranslateBy(x, y);
 
 
+        }
+    }
+
+
+    public class TargetPoint : ActorNode
+    {
+        public VarTypes type { get; set; }
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(30, 255, 30);
+        PointF[] soundShape = new PointF[] { new PointF(20, 0), new PointF(30, 0), //top side
+            new PointF(30, 15),new PointF(35, 15),new PointF(35, 20), //top right
+            new PointF(50, 20), new PointF(50, 30), //right side
+            new PointF(35, 30),new PointF(35, 35),new PointF(30, 35), //bottom right
+
+            new PointF(30, 50), new PointF(20, 50), //bottom
+            new PointF(20, 35),new PointF(15, 35),new PointF(15, 30), //bottom left
+            new PointF(0, 30), new PointF(0, 20), //left
+            new PointF(15, 20),new PointF(15, 15), new PointF(20, 15) };
+
+        public TargetPoint(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreatePolygon(soundShape);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = dynamicPathfindingNodeBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            var props = export.GetProperties();
+            this.TranslateBy(x, y);
         }
     }
 

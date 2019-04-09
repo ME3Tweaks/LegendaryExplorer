@@ -76,8 +76,8 @@ namespace ME3Explorer
         public static Dictionary<string, Dictionary<string, string>> importclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
         public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
 
-        public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "SFXNav_HarvesterMoveNode", "SFXNav_LeapNodeHumanoid", "MantleMarker", "TargetPoint", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode",
-                "SFXNav_InteractionHenchOmniTool", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionHenchBeckonFront", "SFXNav_InteractionHenchBeckonRear", "SFXNav_InteractionHenchCustom", "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow", "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping", "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionInspectWeapon", "SFXNav_InteractionOmniToolScan" };
+        public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "SFXNav_HarvesterMoveNode", "SFXNav_LeapNodeHumanoid", "MantleMarker", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker",  "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode",
+                "SFXNav_InteractionHenchOmniTool", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionHenchBeckonFront", "SFXNav_InteractionHenchBeckonRear", "TargetPoint", "SFXNav_InteractionHenchCustom", "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow", "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping", "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard", "SFXNav_InteractionHenchOmniToolCrouch", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_InteractionInspectWeapon", "SFXNav_InteractionOmniToolScan" };
         public string[] actorNodeClasses = { "BlockingVolume", "DynamicBlockingVolume", "StaticMeshActor", "SFXMedStation", "InterpActor", "SFXDoor", "BioTriggerVolume", "SFXArmorNode", "BioTriggerStream", "SFXTreasureNode", "SFXPointOfInterest", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer_Simulator", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume" };
         public string[] splineNodeClasses = { "SplineActor" };
         public string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
@@ -856,29 +856,29 @@ namespace ME3Explorer
                             case "MantleMarker":
                                 pathNode = new PathfindingNodes.MantleMarker(index, x, y, pcc, graphEditor);
                                 break;
-                            case "TargetPoint":
-                                pathNode = new PathfindingNodes.TargetPoint(index, x, y, pcc, graphEditor);
-                                break;
+                            //case "TargetPoint":
+                            //    pathNode = new PathfindingNodes.TargetPoint(index, x, y, pcc, graphEditor);
+                            //    break;
 
                             case "SFXNav_HarvesterMoveNode":
                                 pathNode = new PathfindingNodes.SFXNav_HarvesterMoveNode(index, x, y, pcc, graphEditor);
                                 break;
-                            case "SFXOperation_ObjectiveSpawnPoint":
-                                pathNode = new PathfindingNodes.SFXObjectiveSpawnPoint(index, x, y, pcc, graphEditor);
+                            //case "SFXOperation_ObjectiveSpawnPoint":
+                            //    pathNode = new PathfindingNodes.SFXObjectiveSpawnPoint(index, x, y, pcc, graphEditor);
 
-                                //Create annex node if required
-                                var annexZoneLocProp = props.GetProp<ObjectProperty>("AnnexZoneLocation");
-                                if (annexZoneLocProp != null)
-                                {
-                                    int ind = annexZoneLocProp.Value - 1;
-                                    if (ind < 0 || ind > pcc.Exports.Count)
-                                    {
-                                        pathNode.comment.Text += "\nBAD ANNEXZONELOC!";
-                                        pathNode.comment.TextBrush = new SolidBrush(System.Drawing.Color.Red);
-                                    }
-                                }
+                            //    //Create annex node if required
+                            //    var annexZoneLocProp = props.GetProp<ObjectProperty>("AnnexZoneLocation");
+                            //    if (annexZoneLocProp != null)
+                            //    {
+                            //        int ind = annexZoneLocProp.Value - 1;
+                            //        if (ind < 0 || ind > pcc.Exports.Count)
+                            //        {
+                            //            pathNode.comment.Text += "\nBAD ANNEXZONELOC!";
+                            //            pathNode.comment.TextBrush = new SolidBrush(System.Drawing.Color.Red);
+                            //        }
+                            //    }
 
-                                break;
+                            //    break;
                             case "SFXNav_BoostNode":
                                 pathNode = new PathfindingNodes.SFXNav_BoostNode(index, x, y, pcc, graphEditor);
                                 break;
