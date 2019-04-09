@@ -23,6 +23,8 @@ namespace ME3Explorer.Pathfinding_Editor
     /// </summary>
     public partial class ReachSpecsPanel : ExportLoaderControl
     {
+        public PathfindingEditorWPF ParentWindow;
+
         public ReachSpecsPanel()
         {
             DataContext = this;
@@ -31,7 +33,7 @@ namespace ME3Explorer.Pathfinding_Editor
             RefreshSelectedReachSpec();
         }
 
-        
+
 
         private string _reachSpecSizeToText;
         public string ReachSpecSizeToText
@@ -40,7 +42,7 @@ namespace ME3Explorer.Pathfinding_Editor
             set => SetProperty(ref _reachSpecSizeToText, value);
         }
 
-        
+
 
         public ObservableCollectionExtended<ReachSpec> ReachSpecs { get; set; } = new ObservableCollectionExtended<ReachSpec>();
 
@@ -48,12 +50,25 @@ namespace ME3Explorer.Pathfinding_Editor
         public ObservableCollectionExtended<NodeSize> AvailableNodeSizes { get; set; } = new ObservableCollectionExtended<NodeSize>();
         public ObservableCollectionExtended<ReachSpecSize> AvailableReachSpecSizes { get; set; } = new ObservableCollectionExtended<ReachSpecSize>();
 
+
         public override bool CanParse(IExportEntry export)
         {
             return true;
         }
 
         internal Dictionary<string, Dictionary<string, string>> ExportsDB;
+
+        private string _destinationNodeName;
+        private string _newReachSpecDistance;
+        private string _newReachSpecDirectionX;
+        private string _newReachSpecDirectionY;
+        private string _newReachSpecDirectionZ;
+
+        public string DestinationNodeName { get => _destinationNodeName; private set => SetProperty(ref _destinationNodeName, value); }
+        public string NewReachSpecDistance { get => _newReachSpecDistance; private set => SetProperty(ref _newReachSpecDistance, value); }
+        public string NewReachSpecDirectionX { get => _newReachSpecDirectionX; private set => SetProperty(ref _newReachSpecDirectionX, value); }
+        public string NewReachSpecDirectionY { get => _newReachSpecDirectionY; private set => SetProperty(ref _newReachSpecDirectionY, value); }
+        public string NewReachSpecDirectionZ { get => _newReachSpecDirectionZ; private set => SetProperty(ref _newReachSpecDirectionZ, value); }
 
         public override void LoadExport(IExportEntry export)
         {
@@ -118,7 +133,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public override void Dispose()
         {
-
+            ParentWindow = null;
         }
 
         public class ReachSpec
@@ -228,6 +243,108 @@ namespace ME3Explorer.Pathfinding_Editor
                     };
                     AvailableReachSpecSizes.Add(specSize);
                     ReachSpecSize_ComboBox.SelectedItem = specSize;
+                }
+            }
+        }
+
+        private void CreateReachSpecDestination_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            if (int.TryParse(CreateReachSpecDestination_TextBox.Text, out int destIndex) && CurrentLoadedExport.FileRef.isUExport(destIndex))
+            {
+                //Parse
+                IExportEntry destExport = CurrentLoadedExport.FileRef.getUExport(destIndex);
+                if (ParentWindow != null && ParentWindow.ActiveNodes.Contains(destExport))
+                {
+                    var destPoint = PathfindingEditorWPF.GetLocation(destExport);
+
+                    if (destPoint != null)
+                    {
+                        var sourcePoint = PathfindingEditorWPF.GetLocation(CurrentLoadedExport);
+                        double distance = sourcePoint.getDistanceToOtherPoint(destPoint);
+
+                        //Calculate direction vectors
+                        if (distance != 0)
+                        {
+                            ReachSpecDestinationNode_TextBlock.Text = $"{destExport.ObjectName}_{destExport.indexValue}";
+
+                            float dirX = (float)((destPoint.X - sourcePoint.X) / distance);
+                            float dirY = (float)((destPoint.Y - sourcePoint.Y) / distance);
+                            float dirZ = (float)((destPoint.Z - sourcePoint.Z) / distance);
+
+                            DestinationNodeName = $"{destExport.ObjectName}_{destExport.indexValue}";
+                            NewReachSpecDistance = "Distance: " + distance.ToString("0.##");
+                            NewReachSpecDirectionX = "Direction X: " + dirX.ToString("0.#####");
+                            NewReachSpecDirectionY = "Direction Y: " + dirY.ToString("0.#####");
+                            NewReachSpecDirectionZ = "Direction Z: " + dirZ.ToString("0.#####");
+                        }
+                        else
+                        {
+                            //Distance 0
+                            DestinationNodeName = $"{destExport.ObjectName}_{destExport.indexValue}";
+                            NewReachSpecDistance = "Distance: 0 - Move node";
+                            NewReachSpecDirectionX = "Direction X: N/A";
+                            NewReachSpecDirectionY = "Direction Y: N/A";
+                            NewReachSpecDirectionZ = "Direction Z: N/A";
+                        }
+                    }
+                    else
+                    {
+                        //Does not have location
+                        DestinationNodeName = $"Not a valid node";
+                        NewReachSpecDistance = "Distance: N/A";
+                        NewReachSpecDirectionX = "Direction X: N/A";
+                        NewReachSpecDirectionY = "Direction Y: N/A";
+                        NewReachSpecDirectionZ = "Direction Z: N/A";
+                    }
+                }
+                else
+                {
+                    //Not in level
+                    DestinationNodeName = $"Export not part of level";
+                    NewReachSpecDistance = "Distance: N/A";
+                    NewReachSpecDirectionX = "Direction X: N/A";
+                    NewReachSpecDirectionY = "Direction Y: N/A";
+                    NewReachSpecDirectionZ = "Direction Z: N/A";
+                }
+            }
+            else
+            {
+                //invalid input
+                DestinationNodeName = $"Not a valid node";
+                NewReachSpecDistance = "Distance: N/A";
+                NewReachSpecDirectionX = "Direction X: N/A";
+                NewReachSpecDirectionY = "Direction Y: N/A";
+                NewReachSpecDirectionZ = "Direction Z: N/A";
+            }
+        }
+
+        private void CreateReachSpecDestination_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            // Use SelectionStart property to find the caret position.
+            // Insert the previewed text into the existing text in the textbox.
+            var fullText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
+            // If parsing is successful, set Handled to false
+            e.Handled = !(int.TryParse(fullText, out int val) && val > 0 && val <= CurrentLoadedExport.FileRef.ExportCount);
+        }
+
+        private void ReachSpecsPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (ParentWindow == null)
+            {
+                ParentWindow = Window.GetWindow(this) as PathfindingEditorWPF;
+            }
+        }
+
+        private void FocusDestinationNode_Click(object sender, RoutedEventArgs e)
+        {
+            if (int.TryParse(CreateReachSpecDestination_TextBox.Text, out int destIndex) && CurrentLoadedExport.FileRef.isUExport(destIndex))
+            {
+                IExportEntry destExport = CurrentLoadedExport.FileRef.getUExport(destIndex);
+                if (ParentWindow != null && ParentWindow.ActiveNodes.Contains(destExport))
+                {
+                    //Parse
+                    ParentWindow.FocusNode(destExport, false);
                 }
             }
         }

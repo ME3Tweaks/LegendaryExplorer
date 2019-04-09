@@ -59,9 +59,6 @@ namespace ME3Explorer.PathfindingNodes
         //public IExportEntry export;
         //protected Pen outlinePen;
         //protected SText comment;
-        public List<IExportEntry> ReachSpecs = new List<IExportEntry>();
-
-
         protected PathfindingNode(int idx, IMEPackage p, PathingGraphEditor grapheditor)
         {
             try
@@ -70,7 +67,7 @@ namespace ME3Explorer.PathfindingNodes
                 pcc = p;
                 g = grapheditor;
                 index = idx;
-                export = pcc.getExport(index);
+                export = pcc.getUExport(index);
                 comment = new SText(GetComment(), commentColor, false);
                 comment.X = 0;
                 comment.Y = 65 - comment.Height;
@@ -87,7 +84,7 @@ namespace ME3Explorer.PathfindingNodes
         {
             pcc = p;
             index = idx;
-            export = pcc.getExport(index);
+            export = pcc.getUExport(index);
             comment = new SText(GetComment(), commentColor, false);
             comment.X = 0;
             comment.Y = 0 - comment.Height;
@@ -813,12 +810,12 @@ namespace ME3Explorer.PathfindingNodes
                 //IExportEntry annexzonelocexp = pcc.Exports[annexZoneLocProp.Value - 1];
 
                 PathfindingNodeMaster othernode = null;
-                int othernodeidx = annexZoneLocProp.Value - 1;
+                int othernodeidx = annexZoneLocProp.Value;
                 if (othernodeidx != 0)
                 {
                     foreach (PathfindingNodeMaster node in Objects)
                     {
-                        if (node.export.Index == othernodeidx)
+                        if (node.export.UIndex == othernodeidx)
                         {
                             othernode = node;
                             break;

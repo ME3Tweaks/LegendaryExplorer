@@ -9,6 +9,8 @@ using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
+using System.Reflection;
+using System.Collections.Generic;
 
 namespace UMD.HCIL.PathingGraphEditor
 {
@@ -53,6 +55,7 @@ namespace UMD.HCIL.PathingGraphEditor
 
         public void AllowDragging()
         {
+            nodeLayer.RemoveInputEventListener(dragHandler);
             nodeLayer.AddInputEventListener(dragHandler);
         }
 
@@ -200,11 +203,8 @@ namespace UMD.HCIL.PathingGraphEditor
 
             protected override void OnDrag(object sender, PInputEventArgs e)
             {
-                System.Diagnostics.Debug.WriteLine("ONDRAG");
                 if (!e.Handled && e.Button == MouseButtons.Left)
                 {
-                    System.Diagnostics.Debug.WriteLine("ONDRAG - HANDLED");
-
                     base.OnDrag(sender, e);
                     foreach (PNode node in e.PickedNode.AllNodes)
                     {
@@ -272,6 +272,31 @@ namespace UMD.HCIL.PathingGraphEditor
                     updatingCount = 0;
                 }
             }
+        }
+
+        public void DebugEventHandlers()
+        {
+            EventHandlerList events = (EventHandlerList)typeof(Component)
+                           .GetField("events", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField)
+                           .GetValue(this);
+
+            object current = events.GetType()
+                   .GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField)[0]
+                   .GetValue(events);
+
+            List<Delegate> delegates = new List<Delegate>();
+            while (current != null)
+            {
+                delegates.Add((Delegate)GetField(current, "handler"));
+                current = GetField(current, "next");
+            }
+        }
+
+        public static object GetField(object listItem, string fieldName)
+        {
+            return listItem.GetType()
+               .GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField)
+               .GetValue(listItem);
         }
     }
 }

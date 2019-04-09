@@ -22,13 +22,15 @@
       "class": "SFXGame.SFXNav_BoostNode",
       "name": "SFXNav_BoostNode",
       "cylindercomponentarchetype": "SFXGame.Default__SFXNav_BoostNode.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "description": "Enemies can use boost nodes to transition up or down a vertical space. Note there is also a LargeBoostNode type for large enemies such as Banshees."
     },
     "SFXNav_JumpDownNode": {
       "class": "SFXGame.SFXNav_JumpDownNode",
       "name": "SFXNav_JumpDownNode",
       "cylindercomponentarchetype": "SFXGame.Default__SFXNav_JumpDownNode.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "description": "AI can jump down from this node to another node. The top one must be marked as bTop."
     },
     "SFXNav_LargeBoostNode": {
       "class": "SFXGame.SFXNav_LargeBoostNode",

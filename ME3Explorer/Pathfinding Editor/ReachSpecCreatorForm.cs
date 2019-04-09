@@ -202,7 +202,7 @@ namespace ME3Explorer.Pathfinding_Editor
         }
     }
 
-    class Point3D
+    public class Point3D
     {
         public double X { get; set; }
         public double Y { get; set; }

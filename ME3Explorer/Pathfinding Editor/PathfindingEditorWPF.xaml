@@ -15,10 +15,12 @@
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
-            <MenuItem Header="Set graph X,Y" />
-            <MenuItem Header="Menu item 2" />
+            <MenuItem Header="Set node coordiantes from graph X,Y" Click="SetGraphXY_Clicked" ToolTip="Sets the X,Y position of this node to the same coordinates as on the graph."/>
+            <MenuItem Header="Clone node" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
+            <MenuItem Header="Remove from level" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
+
             <Separator />
-            <MenuItem Header="Menu item 3" />
+            <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds." Click="OpenInPackageEditor_Clicked" />
         </ContextMenu>
     </Window.Resources>
     <Window.InputBindings>
@@ -62,20 +64,34 @@
         <!-- Main Content panel-->
         <DockPanel>
             <DockPanel DockPanel.Dock="Right" Width="300" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+                <StatusBar DockPanel.Dock="Bottom">
+                    <Label Margin="0,6,0,0"/>
+                </StatusBar>
                 <StackPanel DockPanel.Dock="Top" Margin="3">
                     <Viewbox StretchDirection="DownOnly" Stretch="Uniform" HorizontalAlignment="Left" >
                         <TextBlock Text="{Binding NodeName, FallbackValue=PathNode_X57}" FontWeight="Bold" FontSize="20" TextAlignment="Left"/>
                     </Viewbox>
-                    <TextBlock Text="{Binding NodeNameSubText, FallbackValue=Export 57}" FontWeight="Bold" FontSize="10"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding NodeNameSubText, FallbackValue=Export 57}" FontWeight="Bold" FontSize="10" VerticalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Text="X:" FontWeight="Bold" FontSize="10" Margin="10,0,4,0"  VerticalAlignment="Center"/>
+                            <TextBox Width="50" Name="NodePositionX_TextBox" KeyUp="PositionBoxes_KeyUp"/>
+                            <TextBlock Text="Y:" FontWeight="Bold" FontSize="10" Margin="10,0,4,0" VerticalAlignment="Center"/>
+                            <TextBox Width="50" Name="NodePositionY_TextBox" KeyUp="PositionBoxes_KeyUp"/>
+                            <TextBlock Text="Z:" FontWeight="Bold" FontSize="10" Margin="10,0,4,0" VerticalAlignment="Center"/>
+                            <TextBox Width="50" Name="NodePositionZ_TextBox" KeyUp="PositionBoxes_KeyUp"/>
+                        </StackPanel>
+                    </StackPanel>
                     <TextBlock Text="{Binding NodeTypeDescriptionText, FallbackValue=This is AsyncState}" TextWrapping="Wrap" FontStyle="Italic" FontSize="11" MinHeight="60"/>
+                    
                 </StackPanel>
-            <TabControl>
+                
+                <TabControl>
                 <TabItem Header="ReachSpecs">
                     <local:ReachSpecsPanel x:Name="PathfindingEditorWPF_ReachSpecsPanel"/>
                 </TabItem>
-                <TabItem Header="Combat Zones"/>
-
-            </TabControl>
+                    <TabItem Header="Combat Zones"/>
+                </TabControl>
             </DockPanel>
 
             <Grid DockPanel.Dock="Bottom">
@@ -150,12 +166,22 @@
                         <Button Grid.Column="3" Name="FindByTag_Button"  Content="Find by tag" Click="FindByTag_Click"/>
                         
                     </Grid>
-                <ListBox Name="ActiveNodes_ListBox" ItemsSource="{Binding ActiveNodes}" SelectionChanged="ActiveNodesList_SelectedItemChanged">
+                <ListBox Name="ActiveNodes_ListBox" ItemsSource="{Binding ActiveNodes}" SelectionChanged="ActiveNodesList_SelectedItemChanged" HorizontalContentAlignment="Stretch">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
+                            <Grid Margin="0">
+                                <Grid.Style>
+                                    <Style TargetType="{x:Type Grid}">
+                                       <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}" Value="true">
+                                                <Setter Property="Background" Value="Yellow"/>
+                                                <Setter Property="ToolTip" Value="This export has been modified but the file has not yet been saved"/>
+                                            </DataTrigger>
+                                       </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="40" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding UIndex}" />

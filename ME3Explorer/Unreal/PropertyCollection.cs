@@ -25,9 +25,10 @@ namespace ME3Explorer.Unreal
         public int endOffset;
 
         /// <summary>
-        /// Gets the UProperty with the specified name, returns null if not found
+        /// Gets the UProperty with the specified name, returns null if not found. The property name is checked case insensitively. 
+        /// Ensure the generic type matches the result you want or you will receive a null object back.
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">Name of property to find</param>
         /// <returns>specified UProperty or null if not found</returns>
         public T GetProp<T>(string name) where T : UProperty
         {

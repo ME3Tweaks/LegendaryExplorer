@@ -566,7 +566,7 @@ namespace ME3Explorer
                 PathfindingNodeMaster nodeMaster = null;
                 if (selectednodeindex >= 0 && selectednodeindex < CurrentObjects.Count())
                 {
-                    nodeMaster = Objects.FirstOrDefault(o => o.Index == CurrentObjects[selectednodeindex]);
+                    nodeMaster = Objects.FirstOrDefault(o => o.UIndex == CurrentObjects[selectednodeindex]);
                 }
                 graphEditor.nodeLayer.RemoveAllChildren();
                 graphEditor.edgeLayer.RemoveAllChildren();
@@ -575,7 +575,7 @@ namespace ME3Explorer
                 GenerateGraph();
                 if (nodeMaster != null)
                 {
-                    int n = nodeMaster.Index;
+                    int n = nodeMaster.UIndex;
                     int selected = CurrentObjects.IndexOf(n);
                     if (selected == -1)
                         return;
@@ -653,7 +653,7 @@ namespace ME3Explorer
                         if (referencemap.TryGetValue(CurrentObjects[i], out list))
                         {
                             //node is referenced
-                            PathfindingNodeMaster nodeMaster = Objects.FirstOrDefault(o => o.Index == CurrentObjects[i]);
+                            PathfindingNodeMaster nodeMaster = Objects.FirstOrDefault(o => o.UIndex == CurrentObjects[i]);
                             nodeMaster.comment.Text += "\nReferenced in " + list.Count() + " sequence object" + (list.Count() != 1 ? "s" : "");
                             foreach (int x in list)
                             {
@@ -1152,12 +1152,12 @@ namespace ME3Explorer
                     pnm.shape.Brush = pathfindingNodeBrush;
                 }
             }
-            PathfindingNodeMaster s = Objects.FirstOrDefault(o => o.Index == CurrentObjects[n]);
+            PathfindingNodeMaster s = Objects.FirstOrDefault(o => o.UIndex == CurrentObjects[n]);
             if (s != null)
             {
                 if (selectedIndex != -1)
                 {
-                    PathfindingNodeMaster d = Objects.FirstOrDefault(o => o.Index == CurrentObjects[selectedIndex]);
+                    PathfindingNodeMaster d = Objects.FirstOrDefault(o => o.UIndex == CurrentObjects[selectedIndex]);
                     if (d != null)
                         d.Deselect();
                 }
@@ -1273,7 +1273,7 @@ namespace ME3Explorer
         protected void node_MouseDown(object sender, PInputEventArgs e)
         {
             PathfindingNodeMaster node = (PathfindingNodeMaster)sender;
-            int n = node.Index;
+            int n = node.UIndex;
             foreach (PathfindingNodeMaster pfm in Objects)
             {
                 pfm.Deselect();
@@ -1401,7 +1401,7 @@ namespace ME3Explorer
 
                     rightMouseButtonMenu.Show(MousePosition);
                     //open in InterpEditor
-                    string className = pcc.getExport(((PathfindingNodes.PathfindingNode)sender).Index).ClassName;
+                    string className = pcc.getExport(((PathfindingNodes.PathfindingNode)sender).UIndex).ClassName;
                     //break links
                     breakLinksToolStripMenuItem.Visible = false;
                     breakLinksToolStripMenuItem.DropDown = null;
@@ -2606,7 +2606,7 @@ namespace ME3Explorer
             PathfindingNodeMaster node = null;
             foreach (PathfindingNodeMaster n in Objects)
             {
-                if (n.Index == sourceExportIndex)
+                if (n.UIndex == sourceExportIndex)
                 {
                     node = n;
                     break;
@@ -3737,7 +3737,7 @@ namespace ME3Explorer
                 PathfindingNodeMaster ci = Objects[(i + currentIndex) % Objects.Count()];
                 if (ci.NodeTag == nodeTagToFind)
                 {
-                    int n = ci.Index;
+                    int n = ci.UIndex;
                     activeExportsListbox.SelectedIndex = CurrentObjects.IndexOf(n);
                     break;
                 }

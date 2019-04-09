@@ -1905,6 +1905,8 @@ namespace ME3Explorer
             }
         }
 
+       
+
         private void RefreshNames(List<PackageUpdate> updates = null)
         {
             if (updates == null)

@@ -7,77 +7,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ME3Explorer.Pathfinding_Editor"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="250">
-    <StackPanel Margin="3">
-        <ComboBox Name="NodeSize_ComboBox" ItemsSource="{Binding AvailableNodeSizes}" HorizontalContentAlignment="Stretch">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid HorizontalAlignment="Stretch">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="1*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Header}" />
-                        <TextBlock Grid.Column="1" TextAlignment="Right">
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0}x{1}">
-                                    <Binding Path="NodeWidth" />
-                                    <Binding Path="NodeHeight" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </Grid>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-
-        </ComboBox>
-
-
-        <TextBlock Text="Reachable Nodes (ReachSpecs)"/>
-        <ListBox Height="200" Name="ReachableNodes_ComboBox" ItemsSource="{Binding ReachSpecs}" SelectionChanged="ReachSpecs_SelectedItemChanged" HorizontalContentAlignment="Stretch">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="35" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="15"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Text="{Binding DestinationTextUI}" />
-                        <TextBlock Grid.Column="1" TextAlignment="Right">
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="via {0}_{1}">
-                                    <Binding Path="SpecExport.ObjectName" />
-                                    <Binding Path="SpecExport.indexValue" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                        <TextBlock Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" FontSize="10" Text="{Binding DestinationTypeTextUI}" TextAlignment="Right"/>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <StackPanel Name="ReachSpecConnection_Panel">
-            <TextBlock Text="{Binding ReachSpecSizeToText,FallbackValue=Reachspec size to X}">
-                <TextBlock.Style>
-                    <Style TargetType="TextBlock">
-
-                        <Style.Triggers>
-                            <Trigger Property="IsEnabled" Value="True">
-                                <Setter Property="Opacity" Value="1" />
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Opacity" Value=".5" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBlock.Style>
-                    
-            </TextBlock>
-            <ComboBox Name="ReachSpecSize_ComboBox" ItemsSource="{Binding AvailableReachSpecSizes}" HorizontalContentAlignment="Stretch">
+    Loaded="ReachSpecsPanel_Loaded"
+             d:DesignHeight="700" d:DesignWidth="250">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="3">
+            <ComboBox Name="NodeSize_ComboBox" ItemsSource="{Binding AvailableNodeSizes}" HorizontalContentAlignment="Stretch">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <Grid HorizontalAlignment="Stretch">
@@ -89,15 +23,109 @@
                             <TextBlock Grid.Column="1" TextAlignment="Right">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0}x{1}">
-                                        <Binding Path="SpecWidth" />
-                                        <Binding Path="SpecHeight" />
+                                        <Binding Path="NodeWidth" />
+                                        <Binding Path="NodeHeight" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
                         </Grid>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
+
             </ComboBox>
+            <TextBlock Foreground="Gray" Text="Change dropdown to change node size" FontSize="10"/>
+            <TextBlock Text="Reachable Nodes (ReachSpecs)" Margin="0,10,0,0" FontWeight="Bold" FontSize="14"/>
+            <ListBox Height="200" Name="ReachableNodes_ComboBox" ItemsSource="{Binding ReachSpecs}" SelectionChanged="ReachSpecs_SelectedItemChanged" HorizontalContentAlignment="Stretch">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="35" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="15"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{Binding DestinationTextUI}" />
+                            <TextBlock Grid.Column="1" TextAlignment="Right">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="via {0}_{1}">
+                                        <Binding Path="SpecExport.ObjectName" />
+                                        <Binding Path="SpecExport.indexValue" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            <TextBlock Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" FontSize="10" Text="{Binding DestinationTypeTextUI}" TextAlignment="Right"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <StackPanel Name="ReachSpecConnection_Panel">
+                <TextBlock Text="{Binding ReachSpecSizeToText,FallbackValue=Reachspec size to X}" Margin="0,10,0,0" FontWeight="Bold" FontSize="12">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+
+                            <Style.Triggers>
+                                <Trigger Property="IsEnabled" Value="True">
+                                    <Setter Property="Opacity" Value="1" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value=".5" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <ComboBox Name="ReachSpecSize_ComboBox" ItemsSource="{Binding AvailableReachSpecSizes}" HorizontalContentAlignment="Stretch">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="1*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Header}" />
+                                <TextBlock Grid.Column="1" TextAlignment="Right">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0}x{1}">
+                                            <Binding Path="SpecWidth" />
+                                            <Binding Path="SpecHeight" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBlock Foreground="Gray" Text="Change dropdown to change reachspec size" FontSize="10"/>
+            </StackPanel>
+
+            <StackPanel Name="CreateNewReachSpecPanel">
+                <TextBlock Text="Create a new reachspec" Margin="0,10,0,0" FontWeight="Bold" FontSize="14"/>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="To node: " Margin="10,0,0,0" FontStyle="Italic" />
+                    <TextBox Margin="5,0,0,0" VerticalContentAlignment="Stretch" Width="40" Name="CreateReachSpecDestination_TextBox" PreviewTextInput="CreateReachSpecDestination_PreviewTextInput" KeyUp="CreateReachSpecDestination_OnKeyUp"/>
+
+
+                </StackPanel>
+                <TextBlock Text="Destination node" FontWeight="Bold"/>
+                <TextBlock>
+                    <Hyperlink Click="FocusDestinationNode_Click">
+                        <TextBlock Text="{Binding DestinationNodeName, FallbackValue=DestinationNodeName}" Name="ReachSpecDestinationNode_TextBlock"/>
+                    </Hyperlink>
+                </TextBlock>
+                <StackPanel Margin="10,0,0,0">
+                    <TextBlock Text="{Binding NewReachSpecDirectionX, FallbackValue=Direction X}"/>
+                    <TextBlock Text="{Binding NewReachSpecDirectionY, FallbackValue=Direction Y}"/>
+                    <TextBlock Text="{Binding NewReachSpecDirectionZ, FallbackValue=Direction Z}"/>
+                    <TextBlock Text="{Binding NewReachSpecDistance, FallbackValue=Distance}"/>
+                </StackPanel>
+                <TextBlock Text="ReachSpec type" Margin="0,10,0,0" FontWeight="Bold"/>
+                <ComboBox ItemsSource="{Binding AvailableReachspecTypes}" Name="CreateReachspecType_ComboBox"/>
+                <CheckBox Content="Create returning reachspec" Margin="0,10,0,0" Name="CreateReturningReachSpec_CheckBox"/>
+                <Button Content="Create ReachSpec" Margin="0,10,0,0" Command="{Binding CreateReachSpecCommand}"/>
+            </StackPanel>
         </StackPanel>
-    </StackPanel>
+    </ScrollViewer>
 </global:ExportLoaderControl>

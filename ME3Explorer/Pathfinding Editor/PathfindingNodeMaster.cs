@@ -44,7 +44,7 @@ namespace ME3Explorer.Pathfinding_Editor
         protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
         public static bool OutputNumbers;
 
-        public int Index { get { return index; } }
+        public int UIndex { get { return index; } }
         //public float Width { get { return shape.Width; } }
         //public float Height { get { return shape.Height; } }
 
