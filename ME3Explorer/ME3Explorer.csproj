@@ -536,6 +536,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Propertydb\PropertyDB.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Propertydb\PropertyDB.Designer.cs">
+      <DependentUpon>PropertyDB.cs</DependentUpon>
+    </Compile>
     <Compile Include="RelayCommand.cs" />
     <Compile Include="SharedUI\AddPropertyDialogWPF.xaml.cs">
       <DependentUpon>AddPropertyDialogWPF.xaml</DependentUpon>
@@ -1322,6 +1328,9 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Propertydb\PropertyDB.resx">
+      <DependentUpon>PropertyDB.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PSAViewer\PSAViewer.resx">
       <DependentUpon>PSAViewer.cs</DependentUpon>
     </EmbeddedResource>
@@ -1595,6 +1604,7 @@
     <Resource Include="Resources\ImageEngine_256x256.ico" />
     <Resource Include="Resources\facefxa_256x256.ico" />
     <Resource Include="Resources\memoryanalyzer_256x256.ico" />
+    <Resource Include="Resources\propertydatabase_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
