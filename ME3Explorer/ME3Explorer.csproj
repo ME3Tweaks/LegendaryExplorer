@@ -588,7 +588,7 @@
       <DependentUpon>ReachSpecRecalculator.cs</DependentUpon>
     </Compile>
     <Compile Include="Pathfinding Editor\SharedPathfinding.cs" />
-    <Compile Include="PeriodicUpdater.cs" />
+    <Compile Include="SharedUI\PeriodicUpdater.cs" />
     <Compile Include="Main Window\SearchPanel.xaml.cs">
       <DependentUpon>SearchPanel.xaml</DependentUpon>
     </Compile>
@@ -846,7 +846,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="WPFBase.cs" />
-    <Compile Include="WPFConverters.cs" />
+    <Compile Include="SharedUI\Converters\WPFConverters.cs" />
     <Compile Include="WwiseBankViewer\WwiseViewer.cs">
       <SubType>Form</SubType>
     </Compile>

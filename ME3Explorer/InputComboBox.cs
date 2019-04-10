@@ -31,7 +31,7 @@ namespace ME3Explorer
             InputComboBox prompt = new InputComboBox();
             prompt.TopMost = topMost;
             prompt.label1.Text = promptText;
-            prompt.comboBox1.Items.AddRange(items.ToArray());
+            prompt.comboBox1.Items.AddRange(items.Cast<object>().ToArray());
             prompt.comboBox1.SelectedItem = defaultValue;
 
             return prompt.ShowDialog() == DialogResult.OK ? prompt.comboBox1.Text : "";

@@ -10,6 +10,7 @@ using System.Windows.Data;
 
 namespace ME3Explorer.SharedUI.Converters
 {
+    [ValueConversion(typeof(IMEPackage), typeof(MEGame))]
     public class GameTypeConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

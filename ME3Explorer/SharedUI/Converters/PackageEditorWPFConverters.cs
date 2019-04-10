@@ -18,9 +18,9 @@ namespace ME3Explorer.SharedUI.Converters
         {
             if (!(value is PackageEditorWPF.CurrentViewMode))
             {
-                return Brushes.Transparent; ;
+                return Brushes.Transparent;
             }
-            if (parameter == null || !(parameter is string))
+            if (!(parameter is string))
             {
                 return Brushes.Transparent;
             }
