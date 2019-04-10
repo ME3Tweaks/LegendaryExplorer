@@ -61,6 +61,9 @@ namespace ME3Explorer.Pathfinding_Editor
         public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
         public ObservableCollectionExtended<IExportEntry> ActiveNodes { get; set; } = new ObservableCollectionExtended<IExportEntry>();
         public ObservableCollectionExtended<string> TagsList { get; set; } = new ObservableCollectionExtended<string>();
+        public ObservableCollectionExtended<StaticMeshCollection> StaticMeshCollections { get; set; } = new ObservableCollectionExtended<StaticMeshCollection>();
+        public ObservableCollectionExtended<CombatZone> CombatZones { get; } = new ObservableCollectionExtended<CombatZone>();
+
 
         private List<IExportEntry> AllLevelObjects = new List<IExportEntry>();
         public string CurrentFile;
@@ -269,6 +272,8 @@ namespace ME3Explorer.Pathfinding_Editor
                 graphEditor.nodeLayer.RemoveAllChildren();
                 graphEditor.edgeLayer.RemoveAllChildren();
                 ActiveNodes.ClearEx();
+                StaticMeshCollections.ClearEx();
+                CombatZones.ClearEx();
                 LoadPathingNodesFromLevel();
                 GenerateGraph();
             }
@@ -344,6 +349,8 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             CurrentFile = null;
             ActiveNodes.ClearEx();
+            StaticMeshCollections.ClearEx();
+            CombatZones.ClearEx();
             StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
             StatusText = "Loading " + System.IO.Path.GetFileName(fileName);
             Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
@@ -552,8 +559,10 @@ namespace ME3Explorer.Pathfinding_Editor
 
 
 
-                    //if (exportEntry.ObjectName == "StaticMeshCollectionActor")
-                    //{
+                    if (exportEntry.ObjectName == "StaticMeshCollectionActor")
+                    {
+                        StaticMeshCollections.Add(new StaticMeshCollection(exportEntry));
+                    }
                     //    isParsedByExistingLayer = true;
                     //    ToolStripMenuItem collectionItem = new ToolStripMenuItem(exportEntry.Index + " " + exportEntry.ObjectName + "_" + exportEntry.indexValue);
                     //    collectionItem.ImageScaling = ToolStripItemImageScaling.None;
@@ -798,7 +807,7 @@ namespace ME3Explorer.Pathfinding_Editor
                                 break;
 
 
-                            
+
                             case "CoverSlotMarker":
                                 pathNode = new PathfindingNodes.CoverSlotMarker(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
@@ -813,7 +822,7 @@ namespace ME3Explorer.Pathfinding_Editor
                             case "SFXNav_HarvesterMoveNode":
                                 pathNode = new PathfindingNodes.SFXNav_HarvesterMoveNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
-                            
+
                             case "SFXNav_BoostNode":
                                 pathNode = new PathfindingNodes.SFXNav_BoostNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                                 break;
@@ -1275,6 +1284,8 @@ namespace ME3Explorer.Pathfinding_Editor
             graphEditor.DebugEventHandlers();
             GraphHost.Dispose();
             ActiveNodes.ClearEx();
+            StaticMeshCollections.ClearEx();
+            CombatZones.ClearEx();
             GraphNodes?.Clear();
             Properties_InterpreterWPF.Dispose();
             PathfindingEditorWPF_ReachSpecsPanel.Dispose();
@@ -1697,6 +1708,56 @@ namespace ME3Explorer.Pathfinding_Editor
                     index++;
                 }
             }
+        }
+
+        public class StaticMeshCollection : NotifyPropertyChangedBase
+        {
+            List<KeyValuePair<IExportEntry, string>> CollectionItems = new List<KeyValuePair<IExportEntry, string>>();
+            public IExportEntry export { get; private set; }
+            public string DisplayString { get => $"{export.UIndex}\t{CollectionItems.Count} items"; }
+            public StaticMeshCollection(IExportEntry smac)
+            {
+                this.export = smac;
+                byte[] smacData = smac.Data;
+                //Make new nodes for each item...
+                ArrayProperty<ObjectProperty> smacItems = smac.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
+                if (smacItems != null)
+                {
+                    int binarypos = smac.propsEnd();
+
+                    //Read exports...
+                    foreach (ObjectProperty obj in smacItems)
+                    {
+                        if (obj.Value > 0)
+                        {
+                            IExportEntry item = smac.FileRef.getUExport(obj.Value);
+                            CollectionItems.Add(new KeyValuePair<IExportEntry, string>(item, item.GetProperty<NameProperty>("Tag")?.Value));
+                        }
+                        else
+                        {
+                            //this is a blank entry, or an import, somehow.
+                            CollectionItems.Add(new KeyValuePair<IExportEntry, string>(null, null));
+                        }
+                        //Read location and put in position map
+                        //int offset = binarypos + 12 * 4;
+                        //float x = BitConverter.ToSingle(smacData, offset);
+                        //float y = BitConverter.ToSingle(smacData, offset + 4);
+                        ////Debug.WriteLine(offset.ToString("X4") + " " + x + "," + y);
+                        //smacCoordinates[obj.Value - 1] = new PointF(x, y);
+                    }
+                    binarypos += 64;
+                }
+            }
+        }
+
+        public class CombatZone : NotifyPropertyChangedBase
+        {
+            public CombatZone(IExportEntry combatZone)
+            {
+                this.export = combatZone;
+            }
+
+            public IExportEntry export { get; private set; }
         }
     }
 }

@@ -104,7 +104,7 @@
                     <TabItem Header="Combat Zones"/>
                 </TabControl>
             </DockPanel>
-            <DockPanel DockPanel.Dock="Bottom" MaxHeight="300" HorizontalAlignment="Stretch" LastChildFill="True" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed', FallbackValue=Visible}">
+            <DockPanel DockPanel.Dock="Bottom" MaxHeight="300" HorizontalAlignment="Stretch" LastChildFill="True" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed', FallbackValue=Collapsed}">
                 <StackPanel DockPanel.Dock="Left">
                     <TextBlock Margin="5" Text="Welcome to Pathfinding Editor WPF, the rewritten version of Pathfinding Editor" FontWeight="Bold"/>
                     <TextBlock Margin="5">
@@ -156,7 +156,7 @@
                     </Grid>
                 </StackPanel>
             </DockPanel>
-            <DockPanel DockPanel.Dock="Bottom" MaxHeight="300" HorizontalAlignment="Stretch" LastChildFill="True" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Collapsed}">
+            <DockPanel DockPanel.Dock="Bottom" MaxHeight="300" HorizontalAlignment="Stretch" LastChildFill="True" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Visible}">
                 <DockPanel DockPanel.Dock="Left">
                     <DockPanel DockPanel.Dock="Left">
                         <Expander Name="CombatZonesSMC_Expander" ExpandDirection="Right" IsExpanded="False" Background="Orange" Padding="2" DockPanel.Dock="Top">
@@ -168,18 +168,10 @@
                                 </TextBlock>
                             </Expander.Header>
                             <StackPanel Background="White"  Margin="0,3,4,3">
-                                <CheckBox Content="Pathfinding Nodes"  Margin="5" FontWeight="Bold"/>
-                                <CheckBox Content="Actor Nodes" Margin="5" FontWeight="Bold"/>
-                                <CheckBox Content="Spline Nodes"  Margin="5" FontWeight="Bold"/>
-                                <CheckBox Content="Everything else" Margin="5" FontWeight="Bold"/>
-                                <TextBlock Text="Combat Zones"/>
-                                <StackPanel Background="White"  Margin="0,3,4,3">
-
-                                    <RadioButton Content="Combat Zone 1"  Margin="5" FontWeight="Bold"/>
-                                    <RadioButton Content="Combat Zone 2" Margin="5" FontWeight="Bold"/>
-                                    <RadioButton Content="Combat Zone 3"  Margin="5" FontWeight="Bold"/>
+                                <TextBlock Text="Static Mesh Collections" Margin="5" FontWeight="Bold"/>
+                                <xctk:CheckListBox MinHeight="50" ItemsSource="{Binding StaticMeshCollections}" DisplayMemberPath="DisplayString" SelectedMemberPath="Active"/>
+                                <TextBlock Text="Combat Zones"  Margin="5" FontWeight="Bold"/>
                                     <RadioButton Content="Combat Zone 4" Margin="5" FontWeight="Bold"/>
-                                </StackPanel>
                             </StackPanel>
                         </Expander>
                     </DockPanel>
