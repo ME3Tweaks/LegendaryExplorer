@@ -116,14 +116,6 @@
     <Reference Include="Gu.Wpf.DataGrid2D, Version=0.2.1.6, Culture=neutral, PublicKeyToken=34988ea4e73235be, processorArchitecture=MSIL">
       <HintPath>..\packages\Gu.Wpf.DataGrid2D.0.2.1.6\lib\net45\Gu.Wpf.DataGrid2D.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
-    <Reference Include="Ionic.Zip.Reduced, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\Ionic.Zip.Reduced.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
     </Reference>
@@ -1477,11 +1469,8 @@
     <Resource Include="Resources\taskbar.ico" />
     <Resource Include="Resources\wwisebank_editor_64x64.png" />
     <Resource Include="Resources\subtitle_scanner_64x64.png" />
-    <Resource Include="Resources\sfar_editor2_icon_64x64.png" />
     <Resource Include="Resources\psk_viewer_64x64.png" />
     <Resource Include="Resources\psa_viewer_64x64.png" />
-    <Resource Include="Resources\meshplorer2_64x64.png" />
-    <Resource Include="Resources\meshplorer_64x64.png" />
     <Resource Include="Resources\interpreter_icon_64x64.png" />
     <Resource Include="Resources\interp_viewer_icon_64x64.png" />
     <Resource Include="Resources\info.ico" />
@@ -1609,6 +1598,12 @@
     <Resource Include="Resources\ImageEngine_256x256.ico" />
     <Resource Include="Resources\facefxa_256x256.ico" />
     <Resource Include="Resources\memoryanalyzer_256x256.ico" />
+    <Resource Include="Resources\BikExtractor_256x256.ico" />
+    <Resource Include="Resources\InterpViewer_256x256.ico" />
+    <Resource Include="Resources\sfareditor_256x256.ico" />
+    <Resource Include="Resources\udkexplorer_256x256.ico" />
+    <Resource Include="Resources\wwisebankeditor_256x256.ico" />
+    <Resource Include="Resources\meshdatabase_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -466,7 +466,7 @@ namespace ME3Explorer
             {
                 name = "Mesh Database",
                 type = typeof(Meshplorer2.MeshDatabase),
-                icon = Application.Current.FindResource("iconMeshplorer2") as ImageSource,
+                icon = Application.Current.FindResource("iconMeshDatabase") as ImageSource,
                 open = () =>
                 {
                     (new Meshplorer2.MeshDatabase()).Show();
@@ -583,16 +583,16 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "SFAR Editor 2",
+                name = "SFAR Editor",
                 type = typeof(SFAREditor2),
-                icon = Application.Current.FindResource("iconSFAREditor2") as ImageSource,
+                icon = Application.Current.FindResource("iconSFAREditor") as ImageSource,
                 open = () =>
                 {
                     (new SFAREditor2()).Show();
                 },
                 tags = new List<string> { "developer", "dlc" },
                 subCategory = other,
-                description = "SFAR Editor 2 allows you to explore SFAR files in Mass Effect 3. This tool has been deprecated as DLC unpacking and AutoTOC has replaced the need to inspect SFAR files.",
+                description = "SFAR Editor allows you to explore SFAR files in Mass Effect 3. This tool has been deprecated as DLC unpacking and AutoTOC has replaced the need to inspect SFAR files.",
             });
             set.Add(new Tool
             {
