@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="ME3Explorer.StatusBarGameIDIndicator"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ME3Explorer"
+             mc:Ignorable="d" 
+             d:DesignHeight="23" d:DesignWidth="0">
+    <Grid>
+        <StatusBarItem VerticalContentAlignment="Center" x:Name="StatusBar_GameID_Container" Visibility="Visible" Margin="0,0,0,0">
+            <Border BorderBrush="Gray" BorderThickness="2,2,2,2" CornerRadius="3,3,3,3" VerticalAlignment="Center">
+                <TextBlock x:Name="StatusBar_GameID_Text" Background="Red" Text="Game ID" FontSize="11" Foreground="White" Padding="4,3,4,3" FontFamily="Consolas" VerticalAlignment="Center"/>
+            </Border>
+        </StatusBarItem>
+    </Grid>
+</UserControl>

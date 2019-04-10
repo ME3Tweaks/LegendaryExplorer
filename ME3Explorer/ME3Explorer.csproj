@@ -542,6 +542,7 @@
     </Compile>
     <Compile Include="SharedUI\BuildInfo.cs" />
     <Compile Include="SharedUI\Converters\EntryTypeVisibiltyConverter.cs" />
+    <Compile Include="SharedUI\Converters\GameTypeConverter.cs" />
     <Compile Include="SharedUI\Converters\UnsavedChangesForegroundConverter.cs" />
     <Compile Include="SharedUI\Converters\NullVisibilityConverter.cs" />
     <Compile Include="SharedUI\Converters\NullOrEmptyStringVisibilityConverter.cs" />
@@ -711,6 +712,9 @@
       <DependentUpon>SoundReplaceOptionsDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Soundplorer\XboxADPCMDecoder.cs" />
+    <Compile Include="StatusBarGameIDIndicator.xaml.cs">
+      <DependentUpon>StatusBarGameIDIndicator.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SubtitleScanner\FileHelpers.cs" />
     <Compile Include="SubtitleScanner\SubtitleScanner.cs">
       <SubType>Form</SubType>
@@ -1060,6 +1064,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Soundplorer\SoundReplaceOptionsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StatusBarGameIDIndicator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

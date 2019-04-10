@@ -1348,30 +1348,9 @@ namespace ME3Explorer
                 ClassDropdownList.ClearEx();
 
                 currentFile = s;
-                StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
                 StatusBar_LeftMostText.Text = $"Loading {System.IO.Path.GetFileName(s)} ({ByteSize.FromBytes(new System.IO.FileInfo(s).Length)})";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 LoadMEPackage(s);
-                StatusBar_GameID_Container.Visibility = Visibility.Visible;
-                switch (Pcc.Game)
-                {
-                    case MEGame.ME1:
-                        StatusBar_GameID_Text.Text = "ME1";
-                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
-                        break;
-                    case MEGame.ME2:
-                        StatusBar_GameID_Text.Text = "ME2";
-                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Maroon);
-                        break;
-                    case MEGame.ME3:
-                        StatusBar_GameID_Text.Text = "ME3";
-                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.DarkSeaGreen);
-                        break;
-                    case MEGame.UDK:
-                        StatusBar_GameID_Text.Text = "UDK";
-                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.IndianRed);
-                        break;
-                }
 
                 RefreshView();
                 InitStuff();
