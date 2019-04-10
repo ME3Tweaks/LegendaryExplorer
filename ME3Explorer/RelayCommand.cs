@@ -19,7 +19,7 @@ namespace ME3Explorer
         }
         public bool CanExecute(object parameter)
         {
-            bool result = _canExecute == null ? true : _canExecute(parameter);
+            bool result = _canExecute?.Invoke(parameter) ?? true;
             return result;
         }
 
@@ -30,8 +30,8 @@ namespace ME3Explorer
 
         public event EventHandler CanExecuteChanged
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
         }
     }
 }

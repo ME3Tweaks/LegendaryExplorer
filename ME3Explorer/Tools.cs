@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 using KFreonLib.MEDirectories;
+using ME3Explorer.Sequence_Editor;
 using Newtonsoft.Json;
 
 namespace ME3Explorer
@@ -563,6 +564,19 @@ namespace ME3Explorer
                 open = () =>
                 {
                     (new SequenceEditor()).Show();
+                },
+                tags = new List<string> { "user", "developer", "kismet", "me1", "me2", "me3" },
+                subCategory = "Core",
+                description = "Sequence Editor is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
+            });
+            set.Add(new Tool
+            {
+                name = "Sequence Editor WPF",
+                type = typeof(SequenceEditorWPF),
+                icon = Application.Current.FindResource("iconSequenceEditor") as ImageSource,
+                open = () =>
+                {
+                    (new SequenceEditorWPF()).Show();
                 },
                 tags = new List<string> { "user", "developer", "kismet", "me1", "me2", "me3" },
                 subCategory = "Core",

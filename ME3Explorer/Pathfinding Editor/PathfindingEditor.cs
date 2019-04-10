@@ -1337,7 +1337,7 @@ namespace ME3Explorer
                         breaklLinkItem.Click += (object o, EventArgs args) =>
                         {
                             //sequence editor load
-                            var editor = new SequenceEditor(referencing);
+                            var editor = new Sequence_Editor.SequenceEditor(referencing);
                             editor.BringToFront();
                             editor.Show();
                         };

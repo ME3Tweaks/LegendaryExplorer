@@ -22,7 +22,7 @@ using Gibbed.IO;
 using System.Diagnostics;
 using ME3Explorer.SharedUI;
 
-namespace ME3Explorer
+namespace ME3Explorer.Sequence_Editor
 {
     public partial class SequenceEditor : WinFormsBase
     {
@@ -222,7 +222,7 @@ namespace ME3Explorer
             File.WriteAllLines(path, RFiles);
         }
 
-        private void RefreshRecent(bool propogate, List<string> recents = null)
+        public void RefreshRecent(bool propogate, List<string> recents = null)
         {
             if (propogate && recents != null)
             {
@@ -269,19 +269,6 @@ namespace ME3Explorer
             else
             {
                 MessageBox.Show("File does not exist: " + s);
-            }
-        }
-
-        private struct SaveData
-        {
-            public bool absoluteIndex;
-            public int index;
-            public float X;
-            public float Y;
-
-            public SaveData(int i) : this()
-            {
-                index = i;
             }
         }
 
@@ -1487,65 +1474,16 @@ namespace ME3Explorer
         }
     }
 
-    public class ZoomController : IDisposable
+    internal struct SaveData
     {
-        public static float MIN_SCALE = .005f;
-        public static float MAX_SCALE = 15;
-        private PCamera camera;
-        private GraphEditor graphEditor;
+        public bool absoluteIndex;
+        public int index;
+        public float X;
+        public float Y;
 
-        public ZoomController(GraphEditor graphEditor)
+        public SaveData(int i) : this()
         {
-            this.graphEditor = graphEditor;
-            this.camera = graphEditor.Camera;
-            camera.Canvas.ZoomEventHandler = null;
-            camera.MouseWheel += OnMouseWheel;
-            graphEditor.KeyDown += OnKeyDown;
-        }
-
-        public void Dispose()
-        {
-            //Remove event handlers for memory cleanup
-            graphEditor = null;
-            camera = null;
-        }
-
-        public void OnKeyDown(object o, KeyEventArgs e)
-        {
-            if (e.Control)
-            {
-                switch (e.KeyCode)
-                {
-                    case Keys.OemMinus:
-                        scaleView(0.8f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
-                        break;
-                    case Keys.Oemplus:
-                        scaleView(1.2f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
-                        break;
-                }
-            }
-        }
-
-        public void OnMouseWheel(object o, PInputEventArgs ea)
-        {
-            scaleView(1.0f + (0.001f * ea.WheelDelta), ea.Position);
-        }
-
-        private void scaleView(float scaleDelta, PointF p)
-        {
-            float currentScale = camera.ViewScale;
-            float newScale = currentScale * scaleDelta;
-            if (newScale < MIN_SCALE)
-            {
-                camera.ViewScale = MIN_SCALE;
-                return;
-            }
-            if ((MAX_SCALE > 0) && (newScale > MAX_SCALE))
-            {
-                camera.ViewScale = MAX_SCALE;
-                return;
-            }
-            camera.ScaleViewBy(scaleDelta, p.X, p.Y);
+            index = i;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ME3Explorer
+﻿namespace ME3Explorer.Sequence_Editor
 {
     partial class SequenceEditor
     {

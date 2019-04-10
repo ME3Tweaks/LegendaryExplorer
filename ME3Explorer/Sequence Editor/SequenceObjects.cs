@@ -41,6 +41,7 @@ namespace ME3Explorer.SequenceObjects
         public int Index => index;
         //public float Width { get { return shape.Width; } }
         //public float Height { get { return shape.Height; } }
+        public IExportEntry Export => export;
 
         protected int index;
         protected IExportEntry export;

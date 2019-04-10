@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ME3Explorer.Packages;
 
-namespace ME3Explorer
+namespace ME3Explorer.SharedUI
 {
     /// <summary>
     /// Interaction logic for StatusBarGameIDIndicator.xaml

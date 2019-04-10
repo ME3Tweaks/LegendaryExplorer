@@ -2186,7 +2186,7 @@ namespace ME3Explorer
         {
             if (Pcc != null)
             {
-                SequenceEditor editor = new SequenceEditor();
+                var editor = new Sequence_Editor.SequenceEditor();
                 editor.LoadFile(Pcc.FileName);
                 editor.BringToFront();
                 editor.Show();

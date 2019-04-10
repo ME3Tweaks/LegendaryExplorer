@@ -25,7 +25,7 @@ namespace MassEffect3.FileFormats.Huffman
 
 			foreach (var t in text)
 			{
-			    if (frequencies.TryGetValue(t, out int frequency) == false)
+			    if (!frequencies.TryGetValue(t, out int frequency))
 				{
 					frequency = 0;
 				}

@@ -198,4 +198,66 @@ namespace UMD.HCIL.GraphEditor
             }
         }
     }
+
+    public class ZoomController : IDisposable
+    {
+        public static float MIN_SCALE = .005f;
+        public static float MAX_SCALE = 15;
+        private PCamera camera;
+        private GraphEditor graphEditor;
+
+        public ZoomController(GraphEditor graphEditor)
+        {
+            this.graphEditor = graphEditor;
+            this.camera = graphEditor.Camera;
+            camera.Canvas.ZoomEventHandler = null;
+            camera.MouseWheel += OnMouseWheel;
+            graphEditor.KeyDown += OnKeyDown;
+        }
+
+        public void Dispose()
+        {
+            //Remove event handlers for memory cleanup
+            graphEditor = null;
+            camera = null;
+        }
+
+        public void OnKeyDown(object o, KeyEventArgs e)
+        {
+            if (e.Control)
+            {
+                switch (e.KeyCode)
+                {
+                    case Keys.OemMinus:
+                        scaleView(0.8f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                        break;
+                    case Keys.Oemplus:
+                        scaleView(1.2f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                        break;
+                }
+            }
+        }
+
+        public void OnMouseWheel(object o, PInputEventArgs ea)
+        {
+            scaleView(1.0f + (0.001f * ea.WheelDelta), ea.Position);
+        }
+
+        private void scaleView(float scaleDelta, PointF p)
+        {
+            float currentScale = camera.ViewScale;
+            float newScale = currentScale * scaleDelta;
+            if (newScale < MIN_SCALE)
+            {
+                camera.ViewScale = MIN_SCALE;
+                return;
+            }
+            if ((MAX_SCALE > 0) && (newScale > MAX_SCALE))
+            {
+                camera.ViewScale = MAX_SCALE;
+                return;
+            }
+            camera.ScaleViewBy(scaleDelta, p.X, p.Y);
+        }
+    }
 }

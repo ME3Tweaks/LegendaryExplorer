@@ -11,6 +11,7 @@ using KFreonLib.MEDirectories;
 using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
 using ME3Explorer.Packages;
+using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
@@ -22,11 +23,11 @@ namespace ME3Explorer
     /// </summary>
     public partial class App : Application
     {
-        public static string AppDataFolder { get { return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\ME3Explorer\"; } }
+        public static string AppDataFolder => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\ME3Explorer\";
 
         public static readonly string FileFilter = "*.pcc;*.u;*.upk;*sfm|*.pcc;*.u;*.upk;*sfm|All Files (*.*)|*.*";
 
-        public static string Version { get { return GetVersion(); } }
+        public static string Version => GetVersion();
 
         public static string GetVersion()
         {
