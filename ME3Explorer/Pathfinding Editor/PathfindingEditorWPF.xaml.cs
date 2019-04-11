@@ -135,6 +135,22 @@ namespace ME3Explorer.Pathfinding_Editor
 
         #region Properties and Bindings
 
+        private bool _showVolumes_BioTriggerVolumes;
+        private bool _showVolumes_BioTriggerStreams;
+        private bool _showVolumes_BlockingVolumes;
+        private bool _showVolumes_DynamicBlockingVolumes;
+        private bool _showVolumes_SFXBlockingVolume_Ledges;
+        private bool _showVolumes_SFXCombatZones;
+        private bool _showVolumes_WwiseAudioVolumes;
+
+        public bool ShowVolumes_BioTriggerVolumes { get => _showVolumes_BioTriggerVolumes; set => SetProperty(ref _showVolumes_BioTriggerVolumes, value); }
+        public bool ShowVolumes_BioTriggerStreamss { get => _showVolumes_BioTriggerStreams; set => SetProperty(ref _showVolumes_BioTriggerStreams, value); }
+        public bool ShowVolumes_BlockingVolumes { get => _showVolumes_BlockingVolumes; set => SetProperty(ref _showVolumes_BlockingVolumes, value); }
+        public bool ShowVolumes_DynamicBlockingVolumes { get => _showVolumes_DynamicBlockingVolumes; set => SetProperty(ref _showVolumes_DynamicBlockingVolumes, value); }
+        public bool ShowVolumes_SFXBlockingVolume_Ledges { get => _showVolumes_SFXBlockingVolume_Ledges; set => SetProperty(ref _showVolumes_SFXBlockingVolume_Ledges, value); }
+        public bool ShowVolumes_SFXCombatZones { get => _showVolumes_SFXCombatZones; set => SetProperty(ref _showVolumes_SFXCombatZones, value); }
+        public bool ShowVolumes_WwiseAudioVolumes { get => _showVolumes_WwiseAudioVolumes; set => SetProperty(ref _showVolumes_WwiseAudioVolumes, value); }
+
         private bool _showActorsLayer;
         private bool _showSplinesLayer;
         private bool _showPathfindingNodesLayer = true;
@@ -276,6 +292,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 CombatZones.ClearEx();
                 LoadPathingNodesFromLevel();
                 GenerateGraph();
+                graphEditor.Refresh();
             }
         }
 
@@ -401,7 +418,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 ChangingSelectionByGraphClick = true;
                 ActiveNodes_ListBox.SelectedIndex = 0;
                 CurrentFile = System.IO.Path.GetFileName(fileName);
-                RectangleF panToRectangle = new RectangleF(graphcenter, new SizeF(2000, 2000));
+                RectangleF panToRectangle = new RectangleF(graphcenter, new SizeF(200, 200));
                 graphEditor.Camera.AnimateViewToCenterBounds(panToRectangle, false, 1000);
                 ChangingSelectionByGraphClick = false;
 
@@ -924,7 +941,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         var annexZoneLocProp = props.GetProp<ObjectProperty>("AnnexZoneLocation");
                         if (annexZoneLocProp != null)
                         {
-                            if (Pcc.isUExport(annexZoneLocProp.Value))
+                            if (!Pcc.isUExport(annexZoneLocProp.Value))
                             {
                                 actorNode.comment.Text += "\nBAD ANNEXZONELOC!";
                                 actorNode.comment.TextBrush = new SolidBrush(System.Drawing.Color.Red);
@@ -938,7 +955,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         actorNode = new PendingActorNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                 }
-
+                actorNode.DoubleClick += actornode_DoubleClick;
                 GraphNodes.Add(actorNode);
                 return new PointF(x, y);
             }
@@ -1001,6 +1018,18 @@ namespace ME3Explorer.Pathfinding_Editor
             }
             //Hopefully we don't see this.
             return new PointF(0, 0);
+        }
+
+        private void actornode_DoubleClick(object sender, PInputEventArgs e)
+        {
+            ActorNode an = sender as ActorNode;
+            if (an != null)
+            {
+                an.SetShape(!an.ShowAsPolygon);
+            }
+            an.InvalidateFullBounds();
+            graphEditor.Refresh();
+            //throw new NotImplementedException();
         }
 
         public void CreateConnections()
@@ -1790,7 +1819,6 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     if (zone != e.Item)
                     {
-                        Debug.WriteLine("changing");
                         zone.Active = false;
                     }
                     else

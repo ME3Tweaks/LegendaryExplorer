@@ -2,6 +2,7 @@
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SequenceObjects;
 using ME3Explorer.Unreal;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,11 +11,13 @@ using UMD.HCIL.Piccolo.Nodes;
 
 namespace ME3Explorer.ActorNodes
 {
-    public class ActorNode : PathfindingNodeMaster
+    public abstract class ActorNode : PathfindingNodeMaster
     {
         public PathingGraphEditor g;
         static Color commentColor = Color.FromArgb(74, 63, 190);
         protected static Pen annexZoneLocPen = Pens.Lime;
+        private bool ShowingAsPolygon;
+        internal bool ShowAsPolygon;
 
         protected ActorNode(int idx, IMEPackage p, PathingGraphEditor grapheditor)
         {
@@ -58,11 +61,25 @@ namespace ME3Explorer.ActorNodes
             }
         }
 
+        public abstract void SetShape(bool polygon);
+
         public virtual void CreateConnections(ref List<ActorNode> Objects)
         {
 
         }
         public virtual void Layout(float x, float y) { }
+
+        public static PointF GetAveragePoint(PointF[] polygonShape)
+        {
+            double X = 0;
+            double Y = 0;
+            foreach (PointF point in polygonShape)
+            {
+                X += point.X;
+                Y += point.Y;
+            }
+            return new PointF((float)(X / polygonShape.Length), (float)(Y / polygonShape.Length));
+        }
     }
 
     public class BlockingVolumeNode : ActorNode
@@ -74,42 +91,59 @@ namespace ME3Explorer.ActorNodes
         public BlockingVolumeNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
-            string s = export.ObjectName;
-            if (grapheditor.showVolumeBrushes && grapheditor.showVolume_BlockingVolume)
+            this.Bounds = new RectangleF(0, 0, 50, 50);
+            val = new SText(idx.ToString());
+            SetShape(false);
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            this.AddChild(val);
+            this.TranslateBy(x, y);
+        }
+
+        public override void SetShape(bool polygon)
+        {
+            if (shape != null)
             {
-                var TShape = get3DBrushShape();
+                RemoveChild(shape);
+            }
+
+            ShowAsPolygon = polygon;
+            Pen outlinePen = new Pen(color);
+
+            PPath defaultShape = PPath.CreateRectangle(0, 0, 50, 50);
+            if (polygon)
+            {
+                var polygonShape = get3DBrushShape();
                 int calculatedHeight = get3DBrushHeight();
-                if (TShape != null)
+                if (polygonShape != null)
                 {
-                    shape = PPath.CreatePolygon(TShape);
-                }
-                else
-                {
-                    shape = PPath.CreateRectangle(0, 0, 50, 50);
-                }
-                if (calculatedHeight >= 0)
-                {
-                    comment.Text += "\nBrush total height: " + calculatedHeight;
+                    shape = PPath.CreatePolygon(polygonShape);
+                    var AveragePoint = GetAveragePoint(polygonShape);
+                    val.X = AveragePoint.X - val.Width / 2;
+                    val.Y = AveragePoint.Y - val.Height / 2;
+                    if (calculatedHeight >= 0)
+                    {
+                        comment.Text += "\nBrush total height: " + calculatedHeight;
+                    }
+                    shape.Pen = outlinePen;
+                    shape.Brush = actorNodeBrush;
+                    shape.Pickable = false;
                 }
             }
             else
             {
-                shape = PPath.CreateRectangle(0, 0, 50, 50);
+                shape = defaultShape;
+                shape.Pen = outlinePen;
+                shape.Brush = actorNodeBrush;
+                shape.Pickable = true;
+                val.X = 50 / 2 - val.Width / 2;
+                val.Y = 50 / 2 - val.Height / 2;
             }
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = actorNodeBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, 50, 50);
-            val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = 50 / 2 - val.Width / 2;
-            val.Y = 50 / 2 - val.Height / 2;
-            this.AddChild(val);
-            this.TranslateBy(x, y);
+            AddChild(shape);
+            val.MoveInFrontOf(shape);
         }
+
+
     }
 
     public class DynamicBlockingVolume : ActorNode
@@ -126,27 +160,7 @@ namespace ME3Explorer.ActorNodes
             // = getType(s);
             float w = 50;
             float h = 50;
-            if (grapheditor.showVolumeBrushes && grapheditor.showVolume_DynamicBlockingVolume)
-            {
-                var TShape = get3DBrushShape();
-                int calculatedHeight = get3DBrushHeight();
-                if (TShape != null)
-                {
-                    shape = PPath.CreatePolygon(TShape);
-                }
-                else
-                {
-                    shape = PPath.CreateRectangle(0, 0, 50, 50);
-                }
-                if (calculatedHeight >= 0)
-                {
-                    comment.Text += "\nBrush total height: " + calculatedHeight;
-                }
-            }
-            else
-            {
-                shape = PPath.CreateRectangle(0, 0, 50, 50);
-            }
+            SetShape(false);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
             shape.Brush = dynamicPathfindingNodeBrush;
@@ -162,6 +176,27 @@ namespace ME3Explorer.ActorNodes
             this.TranslateBy(x, y);
 
 
+        }
+
+        public override void SetShape(bool polygon)
+        {
+            ShowAsPolygon = polygon;
+            PPath defaultShape = PPath.CreateRectangle(0, 0, 50, 50);
+            if (polygon)
+            {
+                var TShape = get3DBrushShape();
+                int calculatedHeight = get3DBrushHeight();
+                if (TShape != null)
+                {
+                    shape = PPath.CreatePolygon(TShape);
+                    if (calculatedHeight >= 0)
+                    {
+                        comment.Text += "\nBrush total height: " + calculatedHeight;
+                    }
+                    return;
+                }
+            }
+            shape = defaultShape;
         }
     }
 
@@ -259,6 +294,11 @@ namespace ME3Explorer.ActorNodes
                 }
             }
         }
+
+        public override void SetShape(bool polygon)
+        {
+            //nothing
+        }
     }
 
     public class SFXBlockingVolume_Ledge : ActorNode
@@ -314,6 +354,11 @@ namespace ME3Explorer.ActorNodes
 
 
         }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
 
@@ -356,6 +401,11 @@ namespace ME3Explorer.ActorNodes
             var props = export.GetProperties();
             this.TranslateBy(x, y);
         }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public class SFXMedKit : ActorNode
@@ -392,6 +442,11 @@ namespace ME3Explorer.ActorNodes
             var props = export.GetProperties();
             this.TranslateBy(x, y);
         }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public class BioStartLocation : ActorNode
@@ -425,6 +480,11 @@ namespace ME3Explorer.ActorNodes
             this.TranslateBy(x, y);
 
 
+        }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
         }
     }
 
@@ -461,6 +521,11 @@ namespace ME3Explorer.ActorNodes
 
 
         }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public class SkeletalMeshActor : ActorNode
@@ -496,6 +561,11 @@ namespace ME3Explorer.ActorNodes
 
 
         }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public class PendingActorNode : ActorNode
@@ -530,6 +600,11 @@ namespace ME3Explorer.ActorNodes
             this.TranslateBy(x, y);
 
 
+        }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
         }
     }
 
@@ -571,6 +646,11 @@ namespace ME3Explorer.ActorNodes
                 s += "\n";
             }
             comment.Text = s + comment.Text;
+        }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
         }
     }
 
@@ -618,6 +698,11 @@ namespace ME3Explorer.ActorNodes
                 }
             }
         }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public class WwiseAmbientSound : ActorNode
@@ -653,7 +738,10 @@ namespace ME3Explorer.ActorNodes
 
         }
 
-
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public class WwiseAudioVolume : ActorNode
@@ -706,6 +794,11 @@ namespace ME3Explorer.ActorNodes
             this.AddChild(val);
             this.TranslateBy(x, y);
         }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public class SFXTreasureNode : ActorNode
@@ -740,6 +833,11 @@ namespace ME3Explorer.ActorNodes
             val.Y = h / 2 - val.Height / 2;
             this.AddChild(val);
             this.TranslateBy(x, y);
+        }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
         }
     }
 
@@ -788,6 +886,11 @@ namespace ME3Explorer.ActorNodes
 
             comment.Text = commentText;
         }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public class SFXAmmoContainer_Simulator : ActorNode
@@ -835,6 +938,11 @@ namespace ME3Explorer.ActorNodes
 
             comment.Text = commentText;
         }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public class SFXGrenadeContainer : ActorNode
@@ -880,6 +988,11 @@ namespace ME3Explorer.ActorNodes
                 commentText += "\nRespawn time: 20s";
             }
             comment.Text = commentText;
+        }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
         }
     }
 
@@ -936,6 +1049,11 @@ namespace ME3Explorer.ActorNodes
 
 
         }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public class SFXPlaceable : ActorNode
@@ -970,6 +1088,11 @@ namespace ME3Explorer.ActorNodes
             this.TranslateBy(x, y);
 
 
+        }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
         }
     }
 
@@ -1006,6 +1129,11 @@ namespace ME3Explorer.ActorNodes
 
 
         }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public class InterpActorNode : ActorNode
@@ -1040,6 +1168,11 @@ namespace ME3Explorer.ActorNodes
             this.TranslateBy(x, y);
 
 
+        }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
         }
     }
 
@@ -1088,6 +1221,11 @@ namespace ME3Explorer.ActorNodes
                 }
                 comment.Text = text + meshexp.ObjectName;
             }
+        }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
         }
     }
 
@@ -1165,6 +1303,11 @@ namespace ME3Explorer.ActorNodes
         public override void CreateConnections(ref List<ActorNode> Objects)
         {
 
+        }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
         }
     }
 
@@ -1288,6 +1431,11 @@ namespace ME3Explorer.ActorNodes
         {
 
         }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public class PendingNode : ActorNode
@@ -1322,6 +1470,11 @@ namespace ME3Explorer.ActorNodes
             this.TranslateBy(x, y);
 
 
+        }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
         }
     }
 
@@ -1365,6 +1518,11 @@ namespace ME3Explorer.ActorNodes
 
 
         }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
 
@@ -1404,6 +1562,11 @@ namespace ME3Explorer.ActorNodes
 
 
         }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public class SFXNav_TurretPoint : ActorNode
@@ -1440,6 +1603,11 @@ namespace ME3Explorer.ActorNodes
             this.TranslateBy(x, y);
 
 
+        }
+
+        public override void SetShape(bool polygon)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

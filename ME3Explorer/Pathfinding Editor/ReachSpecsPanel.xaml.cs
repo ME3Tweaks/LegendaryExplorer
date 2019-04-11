@@ -29,6 +29,20 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             DataContext = this;
             ReachSpecSizeToText = "Select a reachspec above";
+
+            AvailableReachspecTypes.AddRange(new string[] {
+            "Engine.ReachSpec",
+            "Engine.CoverSlipReachSpec",
+            "Engine.CoverTurnReachSpec",
+            "Engine.MantleReachSpec",
+            "SFXGame.SFXBoostReachSpec",
+            "SFXGame.SFXClimbWallReachSpec",
+            "SFXGame.SFXLadderReachSpec",
+            "SFXGame.SFXJumpDownReachSpec",
+            "SFXGame.SFXLargeBoostReachSpec",
+            "SFXGame.SFXLargeMantleReachSpec",
+            "Engine.SlotToSlotReachSpec" });
+
             InitializeComponent();
             RefreshSelectedReachSpec();
         }
@@ -44,12 +58,12 @@ namespace ME3Explorer.Pathfinding_Editor
 
 
 
-        public ObservableCollectionExtended<ReachSpec> ReachSpecs { get; set; } = new ObservableCollectionExtended<ReachSpec>();
+        public ObservableCollectionExtended<ReachSpec> ReachSpecs { get; } = new ObservableCollectionExtended<ReachSpec>();
 
         //Todo: change to proper types
-        public ObservableCollectionExtended<NodeSize> AvailableNodeSizes { get; set; } = new ObservableCollectionExtended<NodeSize>();
-        public ObservableCollectionExtended<ReachSpecSize> AvailableReachSpecSizes { get; set; } = new ObservableCollectionExtended<ReachSpecSize>();
-
+        public ObservableCollectionExtended<NodeSize> AvailableNodeSizes { get; } = new ObservableCollectionExtended<NodeSize>();
+        public ObservableCollectionExtended<ReachSpecSize> AvailableReachSpecSizes { get; } = new ObservableCollectionExtended<ReachSpecSize>();
+        public ObservableCollectionExtended<string> AvailableReachspecTypes { get; } = new ObservableCollectionExtended<string>();
 
         public override bool CanParse(IExportEntry export)
         {
