@@ -158,77 +158,120 @@
             </DockPanel>
             <DockPanel DockPanel.Dock="Bottom" MaxHeight="300" HorizontalAlignment="Stretch" LastChildFill="True" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Visible}">
                 <DockPanel DockPanel.Dock="Left">
-                    <DockPanel DockPanel.Dock="Left">
-                        <Expander Name="CombatZonesSMC_Expander" ExpandDirection="Right" IsExpanded="False" Background="Orange" Padding="2" DockPanel.Dock="Top">
-                            <Expander.Header>
-                                <TextBlock Text="Combat Zones &amp; Static Mesh Collections" VerticalAlignment="Center" Margin="0,0,4,0">
-                                    <TextBlock.LayoutTransform>
-                                        <RotateTransform Angle="-90"/>
-                                    </TextBlock.LayoutTransform>
-                                </TextBlock>
-                            </Expander.Header>
-                            <StackPanel Background="White"  Margin="0,3,4,3">
-                                <TextBlock Text="Static Mesh Collections" Margin="5" FontWeight="Bold"/>
-                                <xctk:CheckListBox MinHeight="50" ItemsSource="{Binding StaticMeshCollections}" DisplayMemberPath="DisplayString" SelectedMemberPath="Active"/>
-                                <TextBlock Text="Combat Zones"  Margin="5" FontWeight="Bold"/>
-                                    <RadioButton Content="Combat Zone 4" Margin="5" FontWeight="Bold"/>
-                            </StackPanel>
-                        </Expander>
-                    </DockPanel>
-                    <Grid DockPanel.Dock="Bottom">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="45"/>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="3*"/>
-                            <ColumnDefinition Width="2*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0" Name="FindByNumber_TextBox" KeyUp="FindByNumber_OnKeyUp"/>
-                        <Button Grid.Column="1" Name="FindByNumber_Button" Content="Find by #" Click="FindByNumber_Click" Padding="4,0"/>
-                        <ComboBox Grid.Column="2" Name="FindByTag_ComboBox" ItemsSource="{Binding TagsList}" KeyUp="FindByTag_OnKeyUp"/>
-                        <Button Grid.Column="3" Name="FindByTag_Button"  Content="Find by tag" Click="FindByTag_Click" Padding="4,0"/>
-                    </Grid>
+                    <Expander DockPanel.Dock="Left" Name="CombatZonesSMC_Expander" ExpandDirection="Right" IsExpanded="False" Background="Orange" Padding="2" MaxWidth="210">
+                        <Expander.Header>
+                            <TextBlock Text="Combat Zones &amp; Static Mesh Collections" VerticalAlignment="Center" Margin="0,0,4,0">
+                                <TextBlock.LayoutTransform>
+                                    <RotateTransform Angle="-90"/>
+                                </TextBlock.LayoutTransform>
+                            </TextBlock>
+                        </Expander.Header>
+                        <StackPanel Background="White"  Margin="0,3,4,3">
+                            <TextBlock Text="Static Mesh Collections" Margin="5,5,5,0" FontWeight="Bold" TextAlignment="Center"/>
+                            <TextBlock Text="Select items to show items in that collection" Foreground="Gray" FontSize="10" TextWrapping="Wrap" TextAlignment="Center"/>
+                            <xctk:CheckListBox MinHeight="70" ItemsSource="{Binding StaticMeshCollections}" DisplayMemberPath="DisplayString" SelectedMemberPath="Active" ItemSelectionChanged="StaticMeshCollectionActors_ItemSelectionChanged"/>
+                            <TextBlock Text="Combat Zones" FontWeight="Bold"  TextAlignment="Center" Margin="0,10,0,0"/>
+                            <TextBlock Text="Select an item to highlight nodes in that combat zone" Foreground="Gray" FontSize="10" Margin="3,0" TextWrapping="Wrap"  TextAlignment="Center"/>
+                            <xctk:CheckListBox MinHeight="70" ItemsSource="{Binding CombatZones}" DisplayMemberPath="DisplayString" SelectedMemberPath="Active" ItemSelectionChanged="CombatZones_ItemSelectionChanged"/>
+                        </StackPanel>
+                    </Expander>
+                    <!--<DockPanel>-->
+                        <!-- Control to use if there are items.-->
+                    <DockPanel Width="330">
+                        <Grid DockPanel.Dock="Bottom">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="45"/>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" Name="FindByNumber_TextBox" KeyUp="FindByNumber_OnKeyUp"/>
+                                <Button Grid.Column="1" Name="FindByNumber_Button" Content="Find by #" Click="FindByNumber_Click" Padding="4,0"/>
+                                <ComboBox Grid.Column="2" Name="FindByTag_ComboBox" ItemsSource="{Binding TagsList}" KeyUp="FindByTag_OnKeyUp"/>
+                                <Button Grid.Column="3" Name="FindByTag_Button"  Content="Find by tag" Click="FindByTag_Click" Padding="4,0"/>
+                            </Grid>
 
-                    <ListBox Name="ActiveNodes_ListBox" ItemsSource="{Binding ActiveNodes}" SelectionChanged="ActiveNodesList_SelectedItemChanged" HorizontalContentAlignment="Stretch">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="0">
-                                    <Grid.Style>
-                                        <Style TargetType="{x:Type Grid}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}" Value="true">
-                                                    <Setter Property="Background" Value="Yellow"/>
-                                                    <Setter Property="ToolTip" Value="This export has been modified but the file has not yet been saved"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Grid.Style>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="40" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding UIndex}" />
-                                    <TextBlock Grid.Column="1">
-                                        <TextBlock.Text>
-                                            <MultiBinding StringFormat="{}{0}_{1}">
-                                                <Binding Path="ObjectName" />
-                                                <Binding Path="indexValue" />
-                                            </MultiBinding>
-                                        </TextBlock.Text>
-                                    </TextBlock>
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                        <ListBox.ItemContainerStyle>
-                            <Style>
-                                <Style.Triggers>
-                                    <Trigger Property="Selector.IsSelected" Value="True">
-                                        <Setter Property="TextElement.FontWeight" Value="Bold"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                    </ListBox>
+                            <ListBox Name="ActiveNodes_ListBox" ItemsSource="{Binding ActiveNodes}" SelectionChanged="ActiveNodesList_SelectedItemChanged" HorizontalContentAlignment="Stretch">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0">
+                                            <Grid.Style>
+                                                <Style TargetType="{x:Type Grid}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}" Value="true">
+                                                            <Setter Property="Background" Value="Yellow"/>
+                                                            <Setter Property="ToolTip" Value="This export has been modified but the file has not yet been saved"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Grid.Style>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="40" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding UIndex}" />
+                                            <TextBlock Grid.Column="1">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0}_{1}">
+                                                        <Binding Path="ObjectName" />
+                                                        <Binding Path="indexValue" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                                <ListBox.ItemContainerStyle>
+                                    <Style>
+                                        <Style.Triggers>
+                                            <Trigger Property="Selector.IsSelected" Value="True">
+                                                <Setter Property="TextElement.FontWeight" Value="Bold"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                                <ListBox.Resources>
+                                    <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+                                        <Style.Triggers>
+                                            <DataTrigger 
+            Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=Items.Count}" 
+            Value="0"
+            >
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate>
+                                                            <StackPanel VerticalAlignment="Center" Width="330">
+                                                            <StackPanel VerticalAlignment="Center" Width="220">
+
+                                                                <TextBlock Text="No items displayable with the current view options" FontSize="12" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap"/>
+                                                                <TextBlock Text="Turn additional layers on in View Options or enable Static Mesh Collection Actors to the left." FontSize="10" Foreground="Gray" TextWrapping="Wrap" TextAlignment="Center"/>
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListBox.Resources>
+                            </ListBox>
+                        </DockPanel>
+                        <!-- Control to use if there are no items.
+                        <DockPanel MaxWidth="200" Visibility="Collapsed">
+                            <DockPanel.Style>
+                                <Style TargetType="DockPanel">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ActiveNodes.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DockPanel.Style>
+
+                        </DockPanel>-->
+                    <!--</DockPanel>-->
                 </DockPanel>
+
                 <!-- Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}" -->
                 <global:InterpreterWPF x:Name="Properties_InterpreterWPF"/>
             </DockPanel>

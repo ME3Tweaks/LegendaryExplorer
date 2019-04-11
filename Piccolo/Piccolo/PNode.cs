@@ -45,6 +45,7 @@ using System.Windows.Forms;
 using UMD.HCIL.Piccolo.Util;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Activities;
+using System.Collections.Generic;
 
 namespace UMD.HCIL.Piccolo
 {
@@ -4304,6 +4305,21 @@ namespace UMD.HCIL.Piccolo
         {
             RemoveChildren((ICollection)childrenNodes);
         }
+
+        /// <summary>
+        /// Remove all the children in the given list from this node’s list
+        /// of children.
+        /// </summary>
+        /// <param name="childrenNodes">The list of children to remove.</param>
+        /// <remarks>All removed nodes will have their parent set to null.</remarks>
+        public virtual void RemoveChildrenList(List<PNode> childrenNodes)
+        {
+            foreach (PNode each in childrenNodes)
+            {
+                RemoveChild(each);
+            }
+        }
+
 
         /// <summary>
         /// Remove all the children in the given collection from this node’s

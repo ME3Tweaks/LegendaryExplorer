@@ -58,6 +58,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public void Select()
         {
             shape.Pen = selectedPen;
+            MoveToFront();
         }
 
         public void Deselect()

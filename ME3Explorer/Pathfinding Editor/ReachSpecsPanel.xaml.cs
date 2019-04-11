@@ -128,6 +128,11 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public override void UnloadExport()
         {
+            NewReachSpecDistance = "No node selected";
+            NewReachSpecDirectionX = "No node selected";
+            NewReachSpecDirectionY = "No node selected";
+            NewReachSpecDirectionZ = "No node selected";
+            ReachSpecs.ClearEx();
             CurrentLoadedExport = null;
         }
 

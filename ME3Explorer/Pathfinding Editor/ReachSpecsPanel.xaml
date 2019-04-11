@@ -6,11 +6,27 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ME3Explorer.Pathfinding_Editor"
-             mc:Ignorable="d" 
+    xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+    mc:Ignorable="d" 
     Loaded="ReachSpecsPanel_Loaded"
              d:DesignHeight="700" d:DesignWidth="250">
+    <UserControl.Resources>
+        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+        <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
+        <Style TargetType="{x:Type TextBlock}">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Opacity" Value="1" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value=".5" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="3">
+        <StackPanel Margin="3"  IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}">
             <ComboBox Name="NodeSize_ComboBox" ItemsSource="{Binding AvailableNodeSizes}" HorizontalContentAlignment="Stretch">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
@@ -34,8 +50,8 @@
 
             </ComboBox>
             <TextBlock Foreground="Gray" Text="Change dropdown to change node size" FontSize="10"/>
-            <TextBlock Text="Reachable Nodes (ReachSpecs)" Margin="0,10,0,0" FontWeight="Bold" FontSize="14"/>
-            <ListBox Height="200" Name="ReachableNodes_ComboBox" ItemsSource="{Binding ReachSpecs}" SelectionChanged="ReachSpecs_SelectedItemChanged" HorizontalContentAlignment="Stretch">
+            <TextBlock Text="Reachable Nodes (ReachSpecs)" Margin="0,10,0,0" FontWeight="Bold" FontSize="14" />
+            <ListBox Height="200" Name="ReachableNodes_ComboBox" ItemsSource="{Binding ReachSpecs}" SelectionChanged="ReachSpecs_SelectedItemChanged" HorizontalContentAlignment="Stretch" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -101,7 +117,7 @@
                 <TextBlock Foreground="Gray" Text="Change dropdown to change reachspec size" FontSize="10"/>
             </StackPanel>
 
-            <StackPanel Name="CreateNewReachSpecPanel">
+            <StackPanel Name="CreateNewReachSpecPanel"  IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}">
                 <TextBlock Text="Create a new reachspec" Margin="0,10,0,0" FontWeight="Bold" FontSize="14"/>
                 <StackPanel Orientation="Horizontal" Margin="5">
                     <TextBlock Text="To node: " Margin="10,0,0,0" FontStyle="Italic" />

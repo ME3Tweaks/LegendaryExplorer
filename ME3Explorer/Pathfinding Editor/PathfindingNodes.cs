@@ -43,6 +43,8 @@ namespace ME3Explorer.PathfindingNodes
         static Pen sfxLargeBoostPen = Pens.DeepPink;
 
         private Pen edgePen = blackPen;
+
+        public List<Volume> Volumes = new List<Volume>();
         //protected static Brush mostlyTransparentBrush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
         //protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
         //public static bool draggingOutlink = false;
@@ -71,6 +73,16 @@ namespace ME3Explorer.PathfindingNodes
                 comment.X = 0;
                 comment.Y = 65 - comment.Height;
                 comment.Pickable = false;
+
+                var volsArray = export.GetProperty<ArrayProperty<StructProperty>>("Volumes");
+                if (volsArray != null)
+                {
+                    foreach(var volumestruct in volsArray)
+                    {
+                        Volumes.Add(new Volume(volumestruct));
+                    }
+                }
+
                 this.AddChild(comment);
                 this.Pickable = true;
             } catch (Exception e)
@@ -88,6 +100,16 @@ namespace ME3Explorer.PathfindingNodes
             comment.X = 0;
             comment.Y = 0 - comment.Height;
             comment.Pickable = false;
+
+            var volsArray = export.GetProperty<ArrayProperty<StructProperty>>("Volumes");
+            if (volsArray != null)
+            {
+                foreach (var volumestruct in volsArray)
+                {
+                    Volumes.Add(new Volume(volumestruct));
+                }
+            }
+
             this.AddChild(comment);
             this.Pickable = true;
         }
@@ -281,6 +303,21 @@ namespace ME3Explorer.PathfindingNodes
                 return VarTypes.String;
             else
                 return VarTypes.Extern;
+        }
+
+
+        /// <summary>
+        /// Class for storing Volumes information. THIS IS NOT A NODE TYPE.
+        /// </summary>
+        public class Volume
+        {
+            public int ActorUIndex;
+            public UnrealGUID ActorReference;
+            public Volume(StructProperty volumestruct)
+            {
+                ActorReference = SharedPathfinding.GetGUIDFromStruct(volumestruct.GetProp<StructProperty>("Guid"));
+                ActorUIndex = volumestruct.GetProp<ObjectProperty>("Actor").Value;
+            }
         }
     }
 
