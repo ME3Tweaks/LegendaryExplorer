@@ -10,8 +10,6 @@ using UMD.HCIL.Piccolo.Nodes;
 
 namespace ME3Explorer.ActorNodes
 {
-    public enum VarTypes { Int, Bool, Object, Float, StrRef, MatineeData, Extern, String };
-
     public class ActorNode : PathfindingNodeMaster
     {
         public PathingGraphEditor g;
@@ -65,31 +63,10 @@ namespace ME3Explorer.ActorNodes
 
         }
         public virtual void Layout(float x, float y) { }
-
-        protected VarTypes getType(string s)
-        {
-            if (s.Contains("InterpData"))
-                return VarTypes.MatineeData;
-            else if (s.Contains("Int"))
-                return VarTypes.Int;
-            else if (s.Contains("Bool"))
-                return VarTypes.Bool;
-            else if (s.Contains("Object") || s.Contains("Player"))
-                return VarTypes.Object;
-            else if (s.Contains("Float"))
-                return VarTypes.Float;
-            else if (s.Contains("StrRef"))
-                return VarTypes.StrRef;
-            else if (s.Contains("String"))
-                return VarTypes.String;
-            else
-                return VarTypes.Extern;
-        }
     }
 
     public class BlockingVolumeNode : ActorNode
     {
-        public VarTypes type { get; set; }
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(255, 0, 0);
@@ -137,7 +114,7 @@ namespace ME3Explorer.ActorNodes
 
     public class DynamicBlockingVolume : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(255, 0, 0);
@@ -192,7 +169,7 @@ namespace ME3Explorer.ActorNodes
     //This is technically not a pathnode...
     public class SFXObjectiveSpawnPoint : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(0, 255, 0);
@@ -286,7 +263,7 @@ namespace ME3Explorer.ActorNodes
 
     public class SFXBlockingVolume_Ledge : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(255, 30, 30);
@@ -342,11 +319,11 @@ namespace ME3Explorer.ActorNodes
 
     public class TargetPoint : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(30, 255, 30);
-        PointF[] soundShape = new PointF[] { new PointF(20, 0), new PointF(30, 0), //top side
+        PointF[] targetShape = new PointF[] { new PointF(20, 0), new PointF(30, 0), //top side
             new PointF(30, 15),new PointF(35, 15),new PointF(35, 20), //top right
             new PointF(50, 20), new PointF(50, 30), //right side
             new PointF(35, 30),new PointF(35, 35),new PointF(30, 35), //bottom right
@@ -363,7 +340,7 @@ namespace ME3Explorer.ActorNodes
             // = getType(s);
             float w = 50;
             float h = 50;
-            shape = PPath.CreatePolygon(soundShape);
+            shape = PPath.CreatePolygon(targetShape);
             outlinePen = new Pen(color);
             shape.Pen = outlinePen;
             shape.Brush = dynamicPathfindingNodeBrush;
@@ -381,9 +358,45 @@ namespace ME3Explorer.ActorNodes
         }
     }
 
+    public class SFXMedKit : ActorNode
+    {
+        private SText val;
+        public string Value { get { return val.Text; } set { val.Text = value; } }
+        private static Color color = Color.FromArgb(255, 10, 10);
+        PointF[] plusShape = new PointF[] {
+            new PointF(35, 0), new PointF(35, 15),new PointF(50, 15), //top right
+            new PointF(50, 35),new PointF(35, 35), new PointF(35, 50), //bottom right
+            new PointF(15, 50),new PointF(15, 35),new PointF(0, 35), //bottom left
+            new PointF(0, 15), new PointF(15, 15), new PointF(15, 0), }; //top left
+
+        public SFXMedKit(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
+        {
+            string s = export.ObjectName;
+
+            // = getType(s);
+            float w = 50;
+            float h = 50;
+            shape = PPath.CreatePolygon(plusShape);
+            outlinePen = new Pen(color);
+            shape.Pen = outlinePen;
+            shape.Brush = medkitBrush;
+            shape.Pickable = false;
+            this.AddChild(shape);
+            this.Bounds = new RectangleF(0, 0, w, h);
+            val = new SText(idx.ToString());
+            val.Pickable = false;
+            val.TextAlignment = StringAlignment.Center;
+            val.X = w / 2 - val.Width / 2;
+            val.Y = h / 2 - val.Height / 2;
+            this.AddChild(val);
+            var props = export.GetProperties();
+            this.TranslateBy(x, y);
+        }
+    }
+
     public class BioStartLocation : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(128, 255, 60);
@@ -417,7 +430,7 @@ namespace ME3Explorer.ActorNodes
 
     public class SFXStuntActor : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(128, 255, 60);
@@ -452,7 +465,7 @@ namespace ME3Explorer.ActorNodes
 
     public class SkeletalMeshActor : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(200, 200, 200);
@@ -487,7 +500,7 @@ namespace ME3Explorer.ActorNodes
 
     public class PendingActorNode : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(34, 218, 218);
@@ -525,7 +538,7 @@ namespace ME3Explorer.ActorNodes
     /// </summary>
     public class EverythingElseNode : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(34, 218, 218);
@@ -563,7 +576,7 @@ namespace ME3Explorer.ActorNodes
 
     public class StaticMeshActorNode : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(34, 218, 218);
@@ -609,7 +622,7 @@ namespace ME3Explorer.ActorNodes
 
     public class WwiseAmbientSound : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(0, 255, 0);
@@ -645,7 +658,7 @@ namespace ME3Explorer.ActorNodes
 
     public class WwiseAudioVolume : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(0, 255, 0);
@@ -697,7 +710,7 @@ namespace ME3Explorer.ActorNodes
 
     public class SFXTreasureNode : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(100, 155, 0);
@@ -732,7 +745,7 @@ namespace ME3Explorer.ActorNodes
 
     public class SFXAmmoContainer : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(178, 34, 34);
@@ -779,7 +792,7 @@ namespace ME3Explorer.ActorNodes
 
     public class SFXAmmoContainer_Simulator : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(178, 34, 34);
@@ -826,7 +839,7 @@ namespace ME3Explorer.ActorNodes
 
     public class SFXGrenadeContainer : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(0, 100, 0);
@@ -872,7 +885,7 @@ namespace ME3Explorer.ActorNodes
 
     public class SFXCombatZone : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(20, 34, 34);
@@ -927,7 +940,7 @@ namespace ME3Explorer.ActorNodes
 
     public class SFXPlaceable : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(20, 200, 34);
@@ -962,7 +975,7 @@ namespace ME3Explorer.ActorNodes
 
     public class SFXDoorMarker : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(0, 100, 0);
@@ -997,7 +1010,7 @@ namespace ME3Explorer.ActorNodes
 
     public class InterpActorNode : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(0, 130, 255);
@@ -1033,7 +1046,7 @@ namespace ME3Explorer.ActorNodes
     //This is technically not a BlockingVolumeNode...
     public class SMAC_ActorNode : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(0, 255, 0);
@@ -1080,7 +1093,7 @@ namespace ME3Explorer.ActorNodes
 
     public class BioTriggerVolume : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(0, 0, 255);
@@ -1157,7 +1170,7 @@ namespace ME3Explorer.ActorNodes
 
     public class BioTriggerStream : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(0, 0, 255);
@@ -1279,7 +1292,7 @@ namespace ME3Explorer.ActorNodes
 
     public class PendingNode : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(0, 0, 255);
@@ -1314,7 +1327,7 @@ namespace ME3Explorer.ActorNodes
 
     public class SFXMedStation : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(255, 0, 0);
@@ -1358,7 +1371,7 @@ namespace ME3Explorer.ActorNodes
 
     public class SFXNav_JumpNode : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(148, 0, 211);
@@ -1395,7 +1408,7 @@ namespace ME3Explorer.ActorNodes
 
     public class SFXNav_TurretPoint : ActorNode
     {
-        public VarTypes type { get; set; }
+
         private SText val;
         public string Value { get { return val.Text; } set { val.Text = value; } }
         private static Color color = Color.FromArgb(139, 69, 19);

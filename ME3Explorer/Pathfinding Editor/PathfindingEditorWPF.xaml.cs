@@ -42,7 +42,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public static string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "SFXNav_HarvesterMoveNode", "SFXNav_LeapNodeHumanoid", "MantleMarker", "SFXDynamicPathNode","BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode",
                 "SFXNav_InteractionHenchOmniTool", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionHenchBeckonFront", "SFXNav_InteractionHenchBeckonRear", "SFXNav_InteractionHenchCustom", "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow", "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping", "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionInspectWeapon", "SFXNav_InteractionOmniToolScan"};
-        public static string[] actorNodeClasses = { "BlockingVolume", "DynamicBlockingVolume", "StaticMeshActor", "SFXMedStation", "InterpActor", "SFXDoor", "BioTriggerVolume", "TargetPoint", "SFXArmorNode", "BioTriggerStream", "SFXTreasureNode", "SFXPointOfInterest", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer_Simulator", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume", "SFXOperation_ObjectiveSpawnPoint" };
+        public static string[] actorNodeClasses = { "BlockingVolume", "DynamicBlockingVolume", "SFXMedkit","StaticMeshActor", "SFXMedStation", "InterpActor", "SFXDoor", "BioTriggerVolume", "TargetPoint", "SFXArmorNode", "BioTriggerStream", "SFXTreasureNode", "SFXPointOfInterest", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer_Simulator", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume", "SFXOperation_ObjectiveSpawnPoint" };
         public static string[] splineNodeClasses = { "SplineActor" };
         public static string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
 
@@ -930,32 +930,15 @@ namespace ME3Explorer.Pathfinding_Editor
                                 actorNode.comment.TextBrush = new SolidBrush(System.Drawing.Color.Red);
                             }
                         }
-
+                        break;
+                    case "SFXMedkit":
+                        actorNode = new ActorNodes.SFXMedKit(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     default:
                         actorNode = new PendingActorNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                 }
 
-
-
-                /* if (ActiveCombatZoneExportIndex >= 0)
-                 {
-                     ArrayProperty<StructProperty> volumes = props.GetProp<ArrayProperty<StructProperty>>("Volumes");
-                     if (volumes != null)
-                     {
-                         foreach (StructProperty volume in volumes)
-                         {
-                             ObjectProperty actorRef = volume.GetProp<ObjectProperty>("Actor");
-                             if (actorRef != null && actorRef.Value == ActiveCombatZoneExportIndex - 1)
-                             {
-                                 //Debug.WriteLine("FOUND ACTIVE COMBAT NODE!");
-                                 actorNode.shape.Brush = PathfindingNodeMaster.sfxCombatZoneBrush;
-                                 break;
-                             }
-                         }
-                     }
-                 }*/
                 GraphNodes.Add(actorNode);
                 return new PointF(x, y);
             }
