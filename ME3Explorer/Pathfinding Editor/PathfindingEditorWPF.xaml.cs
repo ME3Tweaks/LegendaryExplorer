@@ -1904,5 +1904,159 @@ namespace ME3Explorer.Pathfinding_Editor
             }
             graphEditor.Refresh();
         }
+
+        private void createReachSpec(IExportEntry startNode, bool createTwoWay, int destinationIndex, string reachSpecClass, int size, int destinationType)
+        {
+            IExportEntry reachSpectoClone = Pcc.Exports.FirstOrDefault(x => x.ClassName == "ReachSpec");
+
+
+            /*if (destinationType == 1) //EXTERNAL
+            {
+                //external node
+
+                //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
+                int outgoingSpec = pcc.ExportCount;
+                int incomingSpec = pcc.ExportCount + 1;
+
+
+                if (reachSpectoClone != null)
+                {
+                    pcc.addExport(reachSpectoClone.Clone()); //outgoing
+
+                    IExportEntry outgoingSpecExp = pcc.Exports[outgoingSpec]; //cloned outgoing
+                    ImportEntry reachSpecClassImp = getOrAddImport(reachSpecClass); //new class type.
+
+                    outgoingSpecExp.idxClass = reachSpecClassImp.UIndex;
+                    outgoingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
+
+                    ObjectProperty outgoingSpecStartProp = outgoingSpecExp.GetProperty<ObjectProperty>("Start"); //START
+                    StructProperty outgoingEndStructProp = outgoingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
+                    ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpecExp)); //END
+                    outgoingSpecStartProp.Value = startNode.UIndex;
+                    outgoingSpecEndProp.Value = 0; //we will have to set the GUID - maybe through form or something
+
+
+                    //Add to source node prop
+                    ArrayProperty<ObjectProperty> PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                    byte[] memory = startNode.Data;
+                    memory = addObjectArrayLeaf(memory, (int)PathList.ValueOffset, outgoingSpecExp.UIndex);
+                    startNode.Data = memory;
+                    outgoingSpecExp.WriteProperty(outgoingSpecStartProp);
+                    outgoingSpecExp.WriteProperty(outgoingEndStructProp);
+
+                    //Write Spec Size
+                    int radVal = -1;
+                    int heightVal = -1;
+
+                    System.Drawing.Point sizePair = PathfindingNodeInfoPanel.getDropdownSizePair(size);
+                    radVal = sizePair.X;
+                    heightVal = sizePair.Y;
+                    setReachSpecSize(outgoingSpecExp, radVal, heightVal);
+
+                    //Reindex reachspecs.
+                    reindexObjectsWithName(reachSpecClass);
+                }
+            }
+            else
+            {*/
+            //Debug.WriteLine("Source Node: " + startNode.Index);
+
+            //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
+            //int outgoingSpec = pcc.ExportCount;
+            //int incomingSpec = pcc.ExportCount + 1;
+
+
+            if (reachSpectoClone != null)
+            {
+                IExportEntry destNode = Pcc.getUExport(destinationIndex);
+                IExportEntry outgoingSpec = reachSpectoClone.Clone();
+                Pcc.addExport(outgoingSpec);
+                IExportEntry incomingSpec = null;
+                if (createTwoWay)
+                {
+                    incomingSpec = reachSpectoClone.Clone();
+                    Pcc.addExport(incomingSpec);
+                }
+
+                ImportEntry reachSpecClassImp = getOrAddImport(reachSpecClass); //new class type.
+
+                outgoingSpec.idxClass = reachSpecClassImp.UIndex;
+                outgoingSpec.idxObjectName = reachSpecClassImp.idxObjectName;
+
+                if (reachSpecClass == "Engine.SlotToSlotReachSpec")
+                {
+                    var props = outgoingSpec.GetProperties();
+                    props.Add(new ByteProperty(1, "SpecDirection")); //We might need to find a way to support this edit
+                    outgoingSpec.WriteProperties(props);
+                }
+
+                //Debug.WriteLine("Outgoing UIndex: " + outgoingSpecExp.UIndex);
+
+                ObjectProperty outgoingSpecStartProp = outgoingSpec.GetProperty<ObjectProperty>("Start"); //START
+                StructProperty outgoingEndStructProp = outgoingSpec.GetProperty<StructProperty>("End"); //Embeds END
+                ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpecExp)); //END
+                outgoingSpecStartProp.Value = startNode.UIndex;
+                outgoingSpecEndProp.Value = destNode.UIndex;
+
+
+                //Add to source node prop
+                ArrayProperty<ObjectProperty> PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                byte[] memory = startNode.Data;
+                memory = addObjectArrayLeaf(memory, (int)PathList.ValueOffset, outgoingSpecExp.UIndex);
+                startNode.Data = memory;
+                outgoingSpec.WriteProperty(outgoingSpecStartProp);
+                outgoingSpec.WriteProperty(outgoingEndStructProp);
+
+                //Write Spec Size
+                int radVal = -1;
+                int heightVal = -1;
+
+                System.Drawing.Point sizePair = PathfindingNodeInfoPanel.getDropdownSizePair(size);
+                radVal = sizePair.X;
+                heightVal = sizePair.Y;
+                setReachSpecSize(outgoingSpecExp, radVal, heightVal);
+
+
+                if (createTwoWay)
+                {
+                    IExportEntry incomingSpecExp = pcc.Exports[incomingSpec];
+                    incomingSpecExp.idxClass = reachSpecClassImp.UIndex;
+                    incomingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
+
+                    if (reachSpecClass == "Engine.SlotToSlotReachSpec")
+                    {
+                        var props = incomingSpecExp.GetProperties();
+                        props.Add(new ByteProperty(2, "SpecDirection"));
+                        incomingSpecExp.WriteProperties(props);
+                    }
+
+                    ObjectProperty incomingSpecStartProp = incomingSpecExp.GetProperty<ObjectProperty>("Start"); //START
+                    StructProperty incomingEndStructProp = incomingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
+                    ObjectProperty incomingSpecEndProp = incomingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(incomingSpecExp)); //END
+
+                    incomingSpecStartProp.Value = destNode.UIndex;//Uindex
+                    incomingSpecEndProp.Value = startNode.UIndex;
+
+
+                    //Add to source node prop
+                    ArrayProperty<ObjectProperty> DestPathList = pcc.Exports[destinationIndex].GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                    memory = destNode.Data;
+                    memory = addObjectArrayLeaf(memory, (int)DestPathList.ValueOffset, incomingSpecExp.UIndex);
+                    destNode.Data = memory;
+                    //destNode.WriteProperty(DestPathList);
+                    incomingSpecExp.WriteProperty(incomingSpecStartProp);
+                    incomingSpecExp.WriteProperty(incomingEndStructProp);
+                    setReachSpecSize(incomingSpecExp, radVal, heightVal);
+
+
+                    //verify
+                    destNode.GetProperties();
+                }
+                //incomingSpecStartProp.Value =
+
+                //Reindex reachspecs.
+                reindexObjectsWithName(reachSpecClass);
+            }
+        }
     }
 }
