@@ -55,15 +55,18 @@ namespace ME3Explorer.Pathfinding_Editor
         public SText comment;
         public List<IExportEntry> ReachSpecs = new List<IExportEntry>();
         public string NodeTag;
+        internal bool Selected;
 
         public void Select()
         {
+            Selected = true;
             shape.Pen = selectedPen;
             MoveToFront();
         }
 
         public void Deselect()
         {
+            Selected = false;
             if (shape.Pen != outlinePen)
             {
                 shape.Pen = outlinePen;
