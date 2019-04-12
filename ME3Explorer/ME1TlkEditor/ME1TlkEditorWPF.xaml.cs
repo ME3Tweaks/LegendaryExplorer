@@ -50,5 +50,34 @@ namespace ME3Explorer.ME1TlkEditor
         {
 
         }
+
+        private void evt_EditOn(object sender, RoutedEventArgs e)
+        {
+            btnEdit.Content = "Cancel";
+            btnEdit.ToolTip = "Cancel and revert to original";
+            btnEdit.Click += evt_EditOff;
+            btnEdit.Click -= evt_EditOn;
+            btnCommit.IsEnabled = true;
+            // TEMP
+            LoadedStrings.Add("Edit On");
+        }
+
+        private void evt_Commit(object sender, RoutedEventArgs e)
+        {
+            evt_EditOff(sender, e);
+            // TEMP
+            LoadedStrings.Add("Committed");
+        }
+
+        private void evt_EditOff(object sender, RoutedEventArgs e)
+        {
+            btnEdit.Content = "Edit";
+            btnEdit.ToolTip = "Edit the TLK";
+            btnEdit.Click += evt_EditOn;
+            btnEdit.Click -= evt_EditOff;
+            btnCommit.IsEnabled = false;
+            // TEMP
+            LoadedStrings.Add("Edit Off");
+        }
     }
 }

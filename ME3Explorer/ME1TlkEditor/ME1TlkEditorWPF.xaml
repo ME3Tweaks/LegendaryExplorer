@@ -10,9 +10,9 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel>
         <!-- Edit button that controls whether tlk can be edited. When pressed changes to cancel. Click cancel stops edit mode without saving to object. -->
-        <Button FontWeight="Normal" Content="Edit" IsDefault="True" Cursor="No" Margin="5,5,5,5" Width="80" HorizontalAlignment="Left" AutomationProperties.HelpText="Edit the TLK." />
+        <Button Name="btnEdit" Click="evt_EditOn" Content="Edit" IsDefault="True" Cursor="Arrow" Margin="5,5,5,5" Width="80" HorizontalAlignment="Left" ToolTip="Edit the TLK" FontWeight="Normal"/>
         <!-- Commit button saves edits. disabled by default. Enabled when editing. Ends edit mode with saving to object -->
-        <Button FontWeight="Normal" Content="Commit" IsDefault="False" Cursor="No" Margin="5,5,5,5" Width="80" HorizontalAlignment="Left" IsEnabled="False" AutomationProperties.HelpText="Commit changes."/>
+        <Button Name="btnCommit" Click="evt_Commit" Content="Commit" IsDefault="False" Cursor="Arrow" Margin="5,5,5,5" Width="80" HorizontalAlignment="Left" IsEnabled="False" ToolTip="Commit changes" FontWeight="Normal"/>
         <!-- Search text -->
         <TextBox Height="23" Width="160" TextWrapping="Wrap" Margin="5,5,5,5" HorizontalAlignment="Left" Text="Search Text" />
         <!-- Input string # -->
