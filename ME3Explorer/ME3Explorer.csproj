@@ -393,6 +393,9 @@
     <Compile Include="Main Window\MainToolPanel.xaml.cs">
       <DependentUpon>MainToolPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ME1TlkEditor\ME1TlkEditorWPF.xaml.cs">
+      <DependentUpon>ME1TlkEditorWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ME1\ITalkFile.cs" />
     <Compile Include="ME1\Unreal\UnhoodBytecode\BytecodeReader.cs" />
     <Compile Include="ME1\Unreal\UnhoodBytecode\FlagSet.cs" />
@@ -964,6 +967,10 @@
     <Page Include="Main Window\TaskPaneInfoPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ME1TlkEditor\ME1TlkEditorWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ME3ExpMemoryAnalyzer\MemoryAnalyzer.xaml">
       <SubType>Designer</SubType>
