@@ -150,12 +150,12 @@ namespace ME3Explorer.ActorNodes
         }
     }
 
-    public class BlockingVolumeNode : ActorNode
+    public class BlockingVolume : ActorNode
     {
         private static Color outlinePenColor = Color.Red;
-        private static PointF[] outlineShape = new PointF[] { new PointF(0, 50), new PointF(25, 0), new PointF(50, 50) };
+        private static PointF[] outlineShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 50), new PointF(0, 50) };
 
-        public BlockingVolumeNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+        public BlockingVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
             Bounds = new RectangleF(0, 0, 50, 50);
@@ -177,7 +177,7 @@ namespace ME3Explorer.ActorNodes
     public class DynamicBlockingVolume : ActorNode
     {
         private static Color outlinePenColor = Color.FromArgb(255, 0, 0);
-        private static PointF[] outlineShape = new PointF[] { new PointF(0, 50), new PointF(25, 0), new PointF(50, 50) };
+        private static PointF[] outlineShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 50), new PointF(0, 50) };
 
         public DynamicBlockingVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
@@ -545,131 +545,86 @@ namespace ME3Explorer.ActorNodes
 
     public class WwiseAmbientSound : ActorNode
     {
-        private static Color color = Color.FromArgb(0, 255, 0);
-        PointF[] soundShape = new PointF[] { new PointF(10, 10), new PointF(40, 10), new PointF(40, 0), new PointF(50, 0), new PointF(50, 10), new PointF(40, 10), new PointF(25, 50), new PointF(10, 10), new PointF(0, 10), new PointF(0, 0), new PointF(10, 0) };
+        private static Color outlinePenColor = Color.FromArgb(0, 255, 0);
+        private static PointF[] outlineShape = new PointF[] { new PointF(10, 10), new PointF(40, 10), new PointF(40, 0), new PointF(50, 0), new PointF(50, 10), new PointF(40, 10), new PointF(25, 50), new PointF(10, 10), new PointF(0, 10), new PointF(0, 0), new PointF(10, 0) };
 
         public WwiseAmbientSound(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
         {
-            string s = export.ObjectName;
+            Bounds = new RectangleF(0, 0, 50, 50);
+            SetShape(false);
+            TranslateBy(x, y);
+        }
 
-            // = getType(s);
-            float w = 50;
-            float h = 50;
-            shape = PPath.CreatePolygon(soundShape);
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = actorNodeBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            this.TranslateBy(x, y);
+        public override Color GetDefaultShapeColor()
+        {
+            return outlinePenColor;
+        }
+
+        public override PointF[] GetDefaultShapePoints()
+        {
+            return outlineShape;
         }
     }
 
     public class WwiseAudioVolume : ActorNode
     {
-        private static Color color = Color.FromArgb(0, 255, 0);
-        PointF[] soundShape = new PointF[] { new PointF(10, 10), new PointF(40, 10), new PointF(40, 0), new PointF(50, 0), new PointF(50, 10), new PointF(40, 10), new PointF(25, 50), new PointF(10, 10), new PointF(0, 10), new PointF(0, 0), new PointF(10, 0) };
+        private static Color outlinePenColor = Color.FromArgb(0, 255, 0);
+        private static PointF[] outlineShape = new PointF[] { new PointF(10, 10), new PointF(40, 10), new PointF(40, 0), new PointF(50, 0), new PointF(50, 10), new PointF(40, 10), new PointF(25, 50), new PointF(10, 10), new PointF(0, 10), new PointF(0, 0), new PointF(10, 0) };
 
         public WwiseAudioVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
         {
-            float w = 50;
-            float h = 50;
-            if (grapheditor.showVolumeBrushes && grapheditor.showVolume_WwiseAudioVolume)
-            {
-                var TShape = get3DBrushShape();
-                int calculatedHeight = get3DBrushHeight();
-                if (TShape != null)
-                {
-                    shape = PPath.CreatePolygon(TShape);
-                }
-                else
-                {
-                    shape = PPath.CreateRectangle(0, 0, 50, 50);
-                }
-                if (calculatedHeight >= 0)
-                {
-                    comment.Text += "\nBrush total height: " + calculatedHeight;
-                }
-            }
-            else
-            {
-                shape = PPath.CreatePolygon(soundShape);
-            }
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = actorNodeBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            this.TranslateBy(x, y);
+            Bounds = new RectangleF(0, 0, 50, 50);
+            SetShape(false);
+            TranslateBy(x, y);
+        }
+
+        public override Color GetDefaultShapeColor()
+        {
+            return outlinePenColor;
+        }
+
+        public override PointF[] GetDefaultShapePoints()
+        {
+            return outlineShape;
         }
     }
 
     public class SFXTreasureNode : ActorNode
     {
-        private static Color color = Color.FromArgb(100, 155, 0);
+        private static Color outlinePenColor = Color.FromArgb(100, 155, 0);
         protected static Brush backgroundBrush = new SolidBrush(Color.FromArgb(160, 120, 0));
 
-        PointF[] soundShape = new PointF[] { new PointF(0, 50), new PointF(0, 15), new PointF(15, 0), new PointF(35, 0), new PointF(50, 15), new PointF(50, 50) };
+        private static PointF[] outlineShape = new PointF[] { new PointF(0, 50), new PointF(0, 15), new PointF(15, 0), new PointF(35, 0), new PointF(50, 15), new PointF(50, 50) };
 
         public SFXTreasureNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
         {
-            float w = 50;
-            float h = 50;
-            shape = PPath.CreatePolygon(soundShape);
-
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
+            Bounds = new RectangleF(0, 0, 50, 50);
+            SetShape(false);
             shape.Brush = backgroundBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            this.TranslateBy(x, y);
+            TranslateBy(x, y);
+        }
+
+        public override Color GetDefaultShapeColor()
+        {
+            return outlinePenColor;
+        }
+
+        public override PointF[] GetDefaultShapePoints()
+        {
+            return outlineShape;
         }
     }
 
     public class SFXAmmoContainer : ActorNode
     {
-        private static Color color = Color.FromArgb(178, 34, 34);
-        PointF[] ammoShape = new PointF[] { new PointF(0, 10), new PointF(10, 10), new PointF(10, 0), new PointF(50, 0), new PointF(50, 50), new PointF(10, 50), new PointF(10, 40), new PointF(0, 40) };
+        private static Color outlinePenColor = Color.FromArgb(178, 34, 34);
+        private static PointF[] outlineShape = new PointF[] { new PointF(0, 10), new PointF(10, 10), new PointF(10, 0), new PointF(50, 0), new PointF(50, 50), new PointF(10, 50), new PointF(10, 40), new PointF(0, 40) };
 
         public SFXAmmoContainer(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
         {
-            float w = 50;
-            float h = 50;
-            shape = PPath.CreatePolygon(ammoShape);
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = actorNodeBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            this.TranslateBy(x, y);
+            Bounds = new RectangleF(0, 0, 50, 50);
+            SetShape(false);
+            TranslateBy(x, y);
 
             var bRespawns = export.GetProperty<BoolProperty>("bRespawns");
             var respawnTime = export.GetProperty<IntProperty>("RespawnTime");
@@ -684,32 +639,29 @@ namespace ME3Explorer.ActorNodes
                 commentText += "\nRespawn time: 20s";
             }
             comment.Text = commentText;
+        }
+
+        public override Color GetDefaultShapeColor()
+        {
+            return outlinePenColor;
+        }
+
+        public override PointF[] GetDefaultShapePoints()
+        {
+            return outlineShape;
         }
     }
 
     public class SFXAmmoContainer_Simulator : ActorNode
     {
-        private static Color color = Color.FromArgb(178, 34, 34);
-        PointF[] ammoShape = new PointF[] { new PointF(10, 10), new PointF(40, 10), new PointF(50, 20), new PointF(50, 40), new PointF(0, 40), new PointF(0, 20) };
+        private static Color outlinePenColor = Color.FromArgb(178, 34, 34);
+        private static PointF[] outlineShape = new PointF[] { new PointF(10, 10), new PointF(40, 10), new PointF(50, 20), new PointF(50, 40), new PointF(0, 40), new PointF(0, 20) };
 
         public SFXAmmoContainer_Simulator(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
         {
-            float w = 50;
-            float h = 50;
-            shape = PPath.CreatePolygon(ammoShape);
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = actorNodeBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            this.TranslateBy(x, y);
+            Bounds = new RectangleF(0, 0, 50, 50);
+            SetShape(false);
+            TranslateBy(x, y);
 
             var bRespawns = export.GetProperty<BoolProperty>("bRespawns");
             var respawnTime = export.GetProperty<IntProperty>("RespawnTime");
@@ -724,32 +676,29 @@ namespace ME3Explorer.ActorNodes
                 commentText += "\nRespawn time: 20s";
             }
             comment.Text = commentText;
+        }
+
+        public override Color GetDefaultShapeColor()
+        {
+            return outlinePenColor;
+        }
+
+        public override PointF[] GetDefaultShapePoints()
+        {
+            return outlineShape;
         }
     }
 
     public class SFXGrenadeContainer : ActorNode
     {
-        private static Color color = Color.FromArgb(0, 100, 0);
-        PointF[] grenadeShape = new PointF[] { new PointF(0, 10), new PointF(15, 10), new PointF(15, 0), new PointF(35, 0), new PointF(35, 10), new PointF(50, 10), new PointF(50, 50), new PointF(0, 50) };
+        private static Color outlinePenColor = Color.FromArgb(0, 100, 0);
+        private static PointF[] outlineShape = new PointF[] { new PointF(0, 10), new PointF(15, 10), new PointF(15, 0), new PointF(35, 0), new PointF(35, 10), new PointF(50, 10), new PointF(50, 50), new PointF(0, 50) };
 
         public SFXGrenadeContainer(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
         {
-            float w = 50;
-            float h = 50;
-            shape = PPath.CreatePolygon(grenadeShape);
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = actorNodeBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            this.TranslateBy(x, y);
+            Bounds = new RectangleF(0, 0, 50, 50);
+            SetShape(false);
+            TranslateBy(x, y);
 
             var bRespawns = export.GetProperty<BoolProperty>("bRespawns");
             var respawnTime = export.GetProperty<IntProperty>("RespawnTime");
@@ -766,172 +715,124 @@ namespace ME3Explorer.ActorNodes
             comment.Text = commentText;
         }
 
+        public override Color GetDefaultShapeColor()
+        {
+            return outlinePenColor;
+        }
 
+        public override PointF[] GetDefaultShapePoints()
+        {
+            return outlineShape;
+        }
     }
 
     public class SFXCombatZone : ActorNode
     {
-        private static Color color = Color.FromArgb(20, 34, 34);
-        PointF[] cShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 8), new PointF(8, 8), new PointF(8, 42), new PointF(50, 42), new PointF(50, 50), new PointF(0, 50) };
+        private static Color outlinePenColor = Color.FromArgb(20, 34, 34);
+        private static PointF[] outlineShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 8), new PointF(8, 8), new PointF(8, 42), new PointF(50, 42), new PointF(50, 50), new PointF(0, 50) };
 
         public SFXCombatZone(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
         {
-            float w = 50;
-            float h = 50;
-            if (grapheditor.showVolumeBrushes && grapheditor.showVolume_SFXCombatZones)
-            {
-                var TShape = get3DBrushShape();
-                int calculatedHeight = get3DBrushHeight();
-                if (TShape != null)
-                {
-                    shape = PPath.CreatePolygon(TShape);
-                }
-                else
-                {
-                    shape = PPath.CreateRectangle(0, 0, 50, 50);
-                }
-                if (calculatedHeight >= 0)
-                {
-                    comment.Text += "\nBrush total height: " + calculatedHeight;
-                }
-            }
-            else
-            {
-                shape = PPath.CreatePolygon(cShape);
-            }
+            Bounds = new RectangleF(0, 0, 50, 50);
+            SetShape(false);
+            TranslateBy(x, y);
+        }
 
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = actorNodeBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            this.TranslateBy(x, y);
+        public override Color GetDefaultShapeColor()
+        {
+            return outlinePenColor;
+        }
+
+        public override PointF[] GetDefaultShapePoints()
+        {
+            return outlineShape;
         }
     }
 
     public class SFXPlaceable : ActorNode
     {
-
-        private SText val;
-        private static Color color = Color.FromArgb(20, 200, 34);
-        PointF[] pShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 20), new PointF(10, 20), new PointF(10, 50), new PointF(0, 50) };
+        private static Color outlinePenColor = Color.FromArgb(20, 200, 34);
+        private static PointF[] outlineShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 20), new PointF(10, 20), new PointF(10, 50), new PointF(0, 50) };
 
         public SFXPlaceable(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
         {
-            float w = 50;
-            float h = 50;
-            shape = PPath.CreatePolygon(pShape);
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = actorNodeBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            comment.Text = export.ObjectName;
-            this.AddChild(val);
-            this.TranslateBy(x, y);
+            Bounds = new RectangleF(0, 0, 50, 50);
+            SetShape(false);
+            TranslateBy(x, y);
+            comment.Text = export.ObjectName + "_" + export.indexValue;
+        }
+
+        public override Color GetDefaultShapeColor()
+        {
+            return outlinePenColor;
+        }
+
+        public override PointF[] GetDefaultShapePoints()
+        {
+            return outlineShape;
         }
     }
 
     public class SFXDoorMarker : ActorNode
     {
-        private static Color color = Color.FromArgb(0, 100, 0);
-        PointF[] doorshape = new PointF[] { new PointF(0, 25), new PointF(10, 0), new PointF(10, 13), new PointF(40, 13), new PointF(40, 0), new PointF(50, 25), new PointF(40, 50), new PointF(40, 37), new PointF(10, 37), new PointF(10, 50) };
+        private static Color outlinePenColor = Color.FromArgb(0, 100, 0);
+        private static PointF[] outlineShape = new PointF[] { new PointF(0, 25), new PointF(10, 0), new PointF(10, 13), new PointF(40, 13), new PointF(40, 0), new PointF(50, 25), new PointF(40, 50), new PointF(40, 37), new PointF(10, 37), new PointF(10, 50) };
 
         public SFXDoorMarker(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
-            string s = export.ObjectName;
+            Bounds = new RectangleF(0, 0, 50, 50);
+            SetShape(false);
+            TranslateBy(x, y);
+        }
 
-            // = getType(s);
-            float w = 50;
-            float h = 50;
-            shape = PPath.CreatePolygon(doorshape);
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = actorNodeBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            this.TranslateBy(x, y);
+        public override Color GetDefaultShapeColor()
+        {
+            return outlinePenColor;
+        }
+
+        public override PointF[] GetDefaultShapePoints()
+        {
+            return outlineShape;
         }
     }
 
     public class InterpActorNode : ActorNode
     {
-        private static Color color = Color.FromArgb(0, 130, 255);
-        PointF[] iShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 10), new PointF(35, 10), new PointF(35, 40), new PointF(50, 40), new PointF(50, 50), new PointF(0, 50), new PointF(0, 40), new PointF(10, 40), new PointF(10, 10), new PointF(0, 10) };
+        private static Color outlinePenColor = Color.FromArgb(0, 130, 255);
+        private static PointF[] outlineShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 10), new PointF(35, 10), new PointF(35, 40), new PointF(50, 40), new PointF(50, 50), new PointF(0, 50), new PointF(0, 40), new PointF(10, 40), new PointF(10, 10), new PointF(0, 10) };
 
         public InterpActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
-            float w = 50;
-            float h = 50;
-            shape = PPath.CreatePolygon(iShape);
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = actorNodeBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            this.TranslateBy(x, y);
+            Bounds = new RectangleF(0, 0, 50, 50);
+            SetShape(false);
+            TranslateBy(x, y);
+        }
+
+        public override Color GetDefaultShapeColor()
+        {
+            return outlinePenColor;
+        }
+
+        public override PointF[] GetDefaultShapePoints()
+        {
+            return outlineShape;
         }
     }
 
     //This is technically not a BlockingVolumeNode...
     public class SMAC_ActorNode : ActorNode
     {
-        private static Color color = Color.FromArgb(0, 255, 0);
-        PointF[] SShape = new PointF[] { new PointF(50, 0), new PointF(0, 17), new PointF(35, 33), new PointF(0, 50), new PointF(50, 33), new PointF(15, 17) };
+        private static Color outlinePenColor = Color.FromArgb(0, 255, 0);
+        private static PointF[] outlineShape = new PointF[] { new PointF(50, 0), new PointF(0, 17), new PointF(35, 33), new PointF(0, 50), new PointF(50, 33), new PointF(15, 17) };
 
         public SMAC_ActorNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
-            string s = export.ObjectName;
-
-            // = getType(s);
-            float w = 50;
-            float h = 50;
-            shape = PPath.CreatePolygon(SShape);
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = actorNodeBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            var props = export.GetProperties();
-            this.TranslateBy(x, y);
-
+            Bounds = new RectangleF(0, 0, 50, 50);
+            SetShape(false);
+            TranslateBy(x, y);
 
             ObjectProperty sm = export.GetProperty<ObjectProperty>("StaticMesh");
             if (sm != null)
@@ -945,70 +846,69 @@ namespace ME3Explorer.ActorNodes
                 comment.Text = text + meshexp.ObjectName;
             }
         }
+        public override Color GetDefaultShapeColor()
+        {
+            return outlinePenColor;
+        }
 
+        public override PointF[] GetDefaultShapePoints()
+        {
+            return outlineShape;
+        }
 
     }
 
     public class BioTriggerVolume : ActorNode
     {
-
-        private SText val;
-        private static Color color = Color.FromArgb(0, 0, 255);
-        //private static PointF[] TShape = ;
-        private readonly static PointF[] TShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 15), new PointF(35, 15), new PointF(35, 50), new PointF(15, 50), new PointF(15, 15), new PointF(0, 15) };
+        private static Color outlinePenColor = Color.FromArgb(0, 0, 255);
+        private static PointF[] outlineShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 15), new PointF(35, 15), new PointF(35, 50), new PointF(15, 50), new PointF(15, 15), new PointF(0, 15) };
 
         public BioTriggerVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
         : base(idx, p, grapheditor)
         {
-            string s = export.ObjectName;
-            float w = 50;
-            float h = 50;
+            Bounds = new RectangleF(0, 0, 50, 50);
+            SetShape(false);
+            TranslateBy(x, y);
+        }
+        public override Color GetDefaultShapeColor()
+        {
+            return outlinePenColor;
+        }
 
-            if (grapheditor.showVolumeBrushes && grapheditor.showVolume_BioTriggerVolume)
-            {
-                var TShape = get3DBrushShape();
-                int calculatedHeight = get3DBrushHeight();
-                if (TShape != null)
-                {
-                    shape = PPath.CreatePolygon(TShape);
-                }
-                else
-                {
-                    shape = PPath.CreateRectangle(0, 0, 50, 50);
-                }
-                if (calculatedHeight >= 0)
-                {
-                    comment.Text += "\nBrush total height: " + calculatedHeight;
-                }
-            }
-            else
-            {
-                shape = PPath.CreatePolygon(TShape);
-            }
+        public override PointF[] GetDefaultShapePoints()
+        {
+            return outlineShape;
+        }
+    }
 
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = actorNodeBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            var props = export.GetProperties();
-            this.TranslateBy(x, y);
+    public class DynamicTriggerVolume : ActorNode
+    {
+        private static Color outlinePenColor = Color.FromArgb(20, 255, 20);
+        private static PointF[] outlineShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 15), new PointF(35, 15), new PointF(35, 50), new PointF(15, 50), new PointF(15, 15), new PointF(0, 15) };
+
+        public DynamicTriggerVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+        : base(idx, p, grapheditor)
+        {
+            Bounds = new RectangleF(0, 0, 50, 50);
+            SetShape(false);
+            shape.Brush = dynamicPathfindingNodeBrush;
+            TranslateBy(x, y);
+        }
+        public override Color GetDefaultShapeColor()
+        {
+            return outlinePenColor;
+        }
+
+        public override PointF[] GetDefaultShapePoints()
+        {
+            return outlineShape;
         }
     }
 
     public class BioTriggerStream : ActorNode
     {
-
-        private SText val;
-        private static Color color = Color.FromArgb(0, 0, 255);
-        private readonly static PointF[] TShape = new PointF[] {
+        private static Color outlinePenColor = Color.FromArgb(0, 0, 255);
+        private static PointF[] outlineShape = new PointF[] {
             new PointF(15, 0), //top left of S, top left of T column
             new PointF(50, 0),//top right of S
             new PointF(50, 10), //going down
@@ -1034,53 +934,11 @@ namespace ME3Explorer.ActorNodes
         public BioTriggerStream(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
-            string s = export.ObjectName;
-
-            // = getType(s);
-            float w = 50;
-            float h = 50;
-            outlinePen = new Pen(color);
-            if (grapheditor.showVolumeBrushes && grapheditor.showVolume_BioTriggerStream)
-            {
-                var TShape = get3DBrushShape();
-                int calculatedHeight = get3DBrushHeight();
-                if (TShape != null)
-                {
-                    shape = PPath.CreatePolygon(TShape);
-                }
-                else
-                {
-                    shape = PPath.CreateRectangle(0, 0, 50, 50);
-                }
-                if (calculatedHeight >= 0)
-                {
-                    comment.Text += "\nBrush total height: " + calculatedHeight;
-                }
-            }
-            else
-            {
-                shape = PPath.CreatePolygon(TShape);
-            }
-
-            shape.Pen = outlinePen;
-            shape.Brush = actorNodeBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-
-            this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            var props = export.GetProperties();
-            this.TranslateBy(x, y);
-
+            Bounds = new RectangleF(0, 0, 50, 50);
+            SetShape(false);
+            TranslateBy(x, y);
 
             var exportProps = export.GetProperties();
-
-
             var streamingStates = exportProps.GetProp<ArrayProperty<StructProperty>>("StreamingStates");
             if (streamingStates != null)
             {
@@ -1113,43 +971,48 @@ namespace ME3Explorer.ActorNodes
                 comment.Text = commentText;
             }
         }
+
+        public override Color GetDefaultShapeColor()
+        {
+            return outlinePenColor;
+        }
+
+        public override PointF[] GetDefaultShapePoints()
+        {
+            return outlineShape;
+        }
     }
 
     public class PendingNode : ActorNode
     {
-        private static Color color = Color.FromArgb(0, 0, 255);
+        private static Color outlinePenColor = Color.FromArgb(0, 0, 255);
+        private static PointF[] outlineShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 50), new PointF(0, 50) };
 
         public PendingNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
-            string s = export.ObjectName;
+            Bounds = new RectangleF(0, 0, 50, 50);
+            SetShape(false);
+            TranslateBy(x, y);
+        }
 
-            // = getType(s);
-            float w = 50;
-            float h = 50;
-            shape = PPath.CreateRectangle(0, 0, w, h);
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = actorNodeBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            var props = export.GetProperties();
-            this.TranslateBy(x, y);
+
+        public override Color GetDefaultShapeColor()
+        {
+            return outlinePenColor;
+        }
+
+        public override PointF[] GetDefaultShapePoints()
+        {
+            return outlineShape;
         }
     }
 
     public class SFXMedStation : ActorNode
     {
-        private static Color color = Color.FromArgb(255, 0, 0);
-        protected static Brush backgroundBrush = new SolidBrush(Color.FromArgb(128, 0, 0));
-        protected static PointF[] medShape = new PointF[] { new PointF(17, 0), new PointF(33, 0), //top side
+        private static Color outlinePenColor = Color.FromArgb(255, 0, 0);
+        private static Brush backgroundBrush = new SolidBrush(Color.FromArgb(128, 0, 0));
+        private static PointF[] outlineShape = new PointF[] { new PointF(17, 0), new PointF(33, 0), //top side
             new PointF(33, 17),new PointF(50, 17),new PointF(50, 33), //right side
             
             new PointF(33, 33),new PointF(33, 50),new PointF(17, 50), //bottom side
@@ -1159,92 +1022,19 @@ namespace ME3Explorer.ActorNodes
         public SFXMedStation(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
             : base(idx, p, grapheditor)
         {
-            string s = export.ObjectName;
-
-            // = getType(s);
-            float w = 50;
-            float h = 50;
-            shape = PPath.CreatePolygon(medShape);
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = backgroundBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            var props = export.GetProperties();
-            this.TranslateBy(x, y);
+            Bounds = new RectangleF(0, 0, 50, 50);
+            SetShape(false);
+            TranslateBy(x, y);
         }
-    }
 
-
-
-    public class SFXNav_JumpNode : ActorNode
-    {
-        private static Color color = Color.FromArgb(148, 0, 211);
-        PointF[] forkshape = new PointF[] { new PointF(25, 0), new PointF(50, 50), new PointF(25, 37), new PointF(0, 50) };
-
-        public SFXNav_JumpNode(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, p, grapheditor)
+        public override Color GetDefaultShapeColor()
         {
-            string s = export.ObjectName;
-
-            // = getType(s);
-            float w = 50;
-            float h = 50;
-            PPath nodeShape = PPath.CreatePolygon(forkshape);
-            shape = nodeShape;
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = actorNodeBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            var props = export.GetProperties();
-            this.TranslateBy(x, y);
+            return outlinePenColor;
         }
-    }
 
-    public class SFXNav_TurretPoint : ActorNode
-    {
-        private static Color color = Color.FromArgb(139, 69, 19);
-        PointF[] diamondshape = new PointF[] { new PointF(25, 0), new PointF(50, 25), new PointF(25, 50), new PointF(0, 25) };
-
-        public SFXNav_TurretPoint(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
-            : base(idx, p, grapheditor)
+        public override PointF[] GetDefaultShapePoints()
         {
-            string s = export.ObjectName;
-
-            // = getType(s);
-            float w = 50;
-            float h = 50;
-            PPath nodeShape = PPath.CreatePolygon(diamondshape);
-            shape = nodeShape;
-            outlinePen = new Pen(color);
-            shape.Pen = outlinePen;
-            shape.Brush = actorNodeBrush;
-            shape.Pickable = false;
-            this.AddChild(shape);
-            this.Bounds = new RectangleF(0, 0, w, h);
-            val = new SText(idx.ToString());
-            val.Pickable = false;
-            val.TextAlignment = StringAlignment.Center;
-            val.X = w / 2 - val.Width / 2;
-            val.Y = h / 2 - val.Height / 2;
-            this.AddChild(val);
-            var props = export.GetProperties();
-            this.TranslateBy(x, y);
+            return outlineShape;
         }
     }
 }

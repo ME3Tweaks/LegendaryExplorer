@@ -916,7 +916,7 @@ namespace ME3Explorer
                         switch (exporttoLoad.ClassName)
                         {
                             case "BlockingVolume":
-                                actorNode = new BlockingVolumeNode(index, x, y, pcc, graphEditor);
+                                actorNode = new ActorNodes.BlockingVolume(index, x, y, pcc, graphEditor);
                                 break;
                             case "DynamicBlockingVolume":
                                 actorNode = new DynamicBlockingVolume(index, x, y, pcc, graphEditor);
