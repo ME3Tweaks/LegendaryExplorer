@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
 
 namespace ME3Explorer.ME1TlkEditor
 {
@@ -21,9 +22,13 @@ namespace ME3Explorer.ME1TlkEditor
     /// </summary>
     public partial class ME1TlkEditorWPF : ExportLoaderControl
     {
+        public ObservableCollectionExtended<string> LoadedStrings { get; } = new ObservableCollectionExtended<string>();
+
         public ME1TlkEditorWPF()
         {
+            DataContext = this;
             InitializeComponent();
+            LoadedStrings.Add("hello");
         }
 
         public override bool CanParse(IExportEntry exportEntry)
