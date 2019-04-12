@@ -1316,6 +1316,7 @@ namespace ME3Explorer
             ExportLoaders[ScriptTab_UnrealScriptEditor] = Script_Tab;
             ExportLoaders[BinaryInterpreterTab_BinaryInterpreter] = BinaryInterpreter_Tab;
             ExportLoaders[EmbeddedTextureViewerTab_EmbededTextureViewer] = EmbeddedTextureViewer_Tab;
+            ExportLoaders[ME1TlkEditorWPFTab_ME1TlkEditor] = ME1TlkEditorWPF_Tab;
 
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
             BinaryInterpreterTab_BinaryInterpreter.SetParentNameList(NamesList); //reference to this control for name editor set
