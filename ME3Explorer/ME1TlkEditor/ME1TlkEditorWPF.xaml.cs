@@ -12,8 +12,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
+using System.Xml;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using ME1Explorer.Unreal.Classes;
+using TalkFile = ME1Explorer.Unreal.Classes.TalkFile;
+using ME1Explorer;
 
 namespace ME3Explorer.ME1TlkEditor
 {
@@ -22,19 +27,20 @@ namespace ME3Explorer.ME1TlkEditor
     /// </summary>
     public partial class ME1TlkEditorWPF : ExportLoaderControl
     {
+
+        public ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef[] StringRefs;
         public ObservableCollectionExtended<string> LoadedStrings { get; } = new ObservableCollectionExtended<string>();
 
         public ME1TlkEditorWPF()
         {
             DataContext = this;
             InitializeComponent();
+            // TEMP
             LoadedStrings.Add("hello");
+                                          
         }
 
-        public override bool CanParse(IExportEntry exportEntry)
-        {
-            return exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "BioTlkFile";
-        }
+        public override bool CanParse(IExportEntry exportEntry) => exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "BioTlkFile";
 
         public override void Dispose()
         {
@@ -43,7 +49,10 @@ namespace ME3Explorer.ME1TlkEditor
 
         public override void LoadExport(IExportEntry exportEntry)
         {
-
+            var tlkFile = new ME1Explorer.Unreal.Classes.TalkFile(exportEntry);
+            var xmlTlk = tlkFile.toXmlstring();
+            //   LoadedStrings.Add(xmlTlk);
+            xmlBox.Text = xmlTlk;
         }
 
         public override void UnloadExport()
@@ -78,6 +87,16 @@ namespace ME3Explorer.ME1TlkEditor
             btnCommit.IsEnabled = false;
             // TEMP
             LoadedStrings.Add("Edit Off");
+        }
+
+        private void XmlBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void DisplayedString_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

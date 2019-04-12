@@ -296,7 +296,6 @@ namespace ME1Explorer.Unreal.Classes
                 xr.WriteStartElement("id");
                 xr.WriteValue(StringRefs[i].StringID);
                 xr.WriteEndElement(); // </id>
-
                 xr.WriteStartElement("flags");
                 xr.WriteValue(BitConverter.ToInt32(StringRefs[i].Flags, 0));
                 xr.WriteEndElement(); // </flags>
@@ -313,6 +312,39 @@ namespace ME1Explorer.Unreal.Classes
             xr.Flush();
             xr.Close();
         }
+        public string toXmlstring()
+        {
+            StringBuilder InputTLK = new StringBuilder();
+            using (StringWriter stringWriter = new StringWriter(InputTLK))
+            {
+                using (XmlTextWriter writer = new XmlTextWriter(stringWriter))
+                {
+                    writer.Formatting = Formatting.Indented;
+                    writer.Indentation = 4;
 
+                    writer.WriteStartDocument();
+                    writer.WriteStartElement("tlkFile");
+                    writer.WriteAttributeString("Name", Name);
+
+                    for (int i = 0; i < StringRefs.Length; i++)
+                    {
+                        writer.WriteStartElement("string");
+                        writer.WriteStartElement("id");
+                        writer.WriteValue(StringRefs[i].StringID);
+                        writer.WriteEndElement(); // </id>
+                        writer.WriteStartElement("flags");
+                        writer.WriteValue(BitConverter.ToInt32(StringRefs[i].Flags, 0));
+                        writer.WriteEndElement(); // </flags>
+                        if (StringRefs[i].Flags[0] != 1)
+                            writer.WriteElementString("data", "-1");
+                        else
+                            writer.WriteElementString("data", StringRefs[i].Data);
+                        writer.WriteEndElement(); // </string>
+                    }
+                    writer.WriteEndElement(); // </tlkFile>
+                }
+            }
+            return InputTLK.ToString();
+        }
     }
 }
