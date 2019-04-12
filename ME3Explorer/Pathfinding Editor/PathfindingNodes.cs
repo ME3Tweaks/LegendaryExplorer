@@ -45,6 +45,8 @@ namespace ME3Explorer.PathfindingNodes
         private Pen edgePen = blackPen;
 
         public List<Volume> Volumes = new List<Volume>();
+        public List<IExportEntry> ReachSpecs = new List<IExportEntry>();
+
         //protected static Brush mostlyTransparentBrush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
         //protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
         //public static bool draggingOutlink = false;

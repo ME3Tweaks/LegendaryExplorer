@@ -43,17 +43,13 @@ namespace ME3Explorer.Pathfinding_Editor
         protected static Brush dynamicPathnodefindingNodeBrush = new SolidBrush(Color.FromArgb(80, 184, 25));
 
         protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
-        public static bool OutputNumbers;
 
         public int UIndex { get { return index; } }
-        //public float Width { get { return shape.Width; } }
-        //public float Height { get { return shape.Height; } }
 
         protected int index;
         public IExportEntry export;
         protected Pen outlinePen;
         public SText comment;
-        public List<IExportEntry> ReachSpecs = new List<IExportEntry>();
         public string NodeTag;
         internal bool Selected;
 
