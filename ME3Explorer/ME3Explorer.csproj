@@ -515,6 +515,9 @@
     <Compile Include="PackageEditor\TreeMergeDialog.xaml.cs">
       <DependentUpon>TreeMergeDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Sequence Editor\GraphEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="SharedUI\TreeViewEntry.cs" />
     <Compile Include="Packages\UDKPackage.cs" />
     <Compile Include="Packages\MEPackage.cs" />

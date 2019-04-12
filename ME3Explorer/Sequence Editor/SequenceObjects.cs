@@ -38,10 +38,13 @@ namespace ME3Explorer.SequenceObjects
         public static PNode dragTarget;
         public static bool OutputNumbers;
 
+        public RectangleF posAtDragStart;
+
         public int Index => index;
         //public float Width { get { return shape.Width; } }
         //public float Height { get { return shape.Height; } }
         public IExportEntry Export => export;
+        public virtual bool IsSelected { get; set; }
 
         protected int index;
         protected IExportEntry export;
@@ -77,10 +80,9 @@ namespace ME3Explorer.SequenceObjects
             Pickable = true;
         }
 
-        public virtual void CreateConnections(ref List<SObj> objects) { }
-        public virtual void Layout(float x, float y) { }
-        public virtual void Select() { }
-        public virtual void Deselect() { }
+        public virtual void CreateConnections(IList<SObj> objects) { }
+        public virtual void Layout() { }
+        public virtual void Layout(float x, float y) => TranslateBy(x, y);
 
         protected string GetComment()
         {
@@ -337,14 +339,23 @@ namespace ME3Explorer.SequenceObjects
             }
         }
 
-        public override void Select()
+        private bool _isSelected;
+        public override bool IsSelected
         {
-            shape.Pen = selectedPen;
-        }
-
-        public override void Deselect()
-        {
-            shape.Pen = outlinePen;
+            get => _isSelected;
+            set
+            {
+                _isSelected = value;
+                if (value)
+                {
+                    shape.Pen = selectedPen;
+                    MoveToFront();
+                }
+                else
+                {
+                    shape.Pen = outlinePen;
+                }
+            }
         }
 
         public override bool Intersects(RectangleF bounds)
@@ -492,7 +503,7 @@ namespace ME3Explorer.SequenceObjects
 
         }
 
-        public override void CreateConnections(ref List<SObj> objects)
+        public override void CreateConnections(IList<SObj> objects)
         {
             foreach (OutputLink outLink in Outlinks)
             {
@@ -994,18 +1005,27 @@ namespace ME3Explorer.SequenceObjects
             this.TranslateBy(x, y);
         }
 
-        public override void Select()
+        private bool _isSelected;
+        public override bool IsSelected
         {
-            titleBox.Pen = selectedPen;
-            varLinkBox.Pen = selectedPen;
-            outLinkBox.Pen = selectedPen;
-        }
-
-        public override void Deselect()
-        {
-            titleBox.Pen = outlinePen;
-            varLinkBox.Pen = outlinePen;
-            outLinkBox.Pen = outlinePen;
+            get => _isSelected;
+            set
+            {
+                _isSelected = value;
+                if (value)
+                {
+                    titleBox.Pen = selectedPen;
+                    varLinkBox.Pen = selectedPen;
+                    outLinkBox.Pen = selectedPen;
+                    MoveToFront();
+                }
+                else
+                {
+                    titleBox.Pen = outlinePen;
+                    varLinkBox.Pen = outlinePen;
+                    outLinkBox.Pen = outlinePen;
+                }
+            }
         }
 
         public override void Dispose()
@@ -1053,38 +1073,35 @@ namespace ME3Explorer.SequenceObjects
             originalX = x;
             originalY = y;
         }
-        public override void Select()
+
+        private bool _isSelected;
+        public override bool IsSelected
         {
-            titleBox.Pen = selectedPen;
-            ((PPath)this[1]).Pen = selectedPen;
+            get => _isSelected;
+            set
+            {
+                _isSelected = value;
+                if (value)
+                {
+                    titleBox.Pen = selectedPen;
+                    ((PPath)this[1]).Pen = selectedPen;
+                    MoveToFront();
+                }
+                else
+                {
+                    titleBox.Pen = outlinePen;
+                    ((PPath)this[1]).Pen = outlinePen;
+                }
+            }
         }
 
-        public override void Deselect()
+        public override void Layout()
         {
-            titleBox.Pen = outlinePen;
-            ((PPath)this[1]).Pen = outlinePen;
+            Layout(originalX, originalY);
         }
 
         public override void Layout(float x, float y)
         {
-            if (pcc.Game == MEGame.ME1)
-            {
-                // ==
-                if (Math.Abs(x - -0.1f) < float.Epsilon)
-                    x = originalX;
-                // ==
-                if (Math.Abs(y - -0.1f) < float.Epsilon)
-                    y = originalY;
-            }
-            else
-            {
-                // ==
-                if (Math.Abs(originalX - -1) > float.Epsilon)
-                    x = originalX;
-                // ==
-                if (Math.Abs(originalY - -1) > float.Epsilon)
-                    y = originalY;
-            }
             outlinePen = new Pen(Color.Black);
             string s = export.ObjectName;
             s = s.Replace("BioSeqAct_", "");

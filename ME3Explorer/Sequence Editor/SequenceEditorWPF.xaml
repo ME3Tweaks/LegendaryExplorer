@@ -8,7 +8,7 @@
         xmlns:local="clr-namespace:ME3Explorer.Sequence_Editor"
         xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
-        xmlns:grapheditor="clr-namespace:UMD.HCIL.GraphEditor;assembly=Piccolo"
+        xmlns:grapheditor="clr-namespace:UMD.HCIL.GraphEditor"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
         xmlns:vhelp="clr-namespace:ME3Explorer.SharedUI.PeregrineTreeView"
@@ -59,16 +59,27 @@
                 </StatusBarItem>
             </StatusBar>
             <!-- Main Content panel-->
-            <DockPanel>
-                <DockPanel DockPanel.Dock="Right" Width="300" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
-                    <ListBox Name="CurrentObjects_ListBox" ItemsSource="{Binding CurrentObjects}" SelectionChanged="CurrentObjectsList_SelectedItemChanged" HorizontalContentAlignment="Stretch">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <DockPanel Grid.Column="2" Grid.RowSpan="3" Width="300" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+                    <ListBox Name="CurrentObjects_ListBox" ItemsSource="{Binding CurrentObjects}" SelectionChanged="CurrentObjectsList_SelectedItemChanged" HorizontalContentAlignment="Stretch"
+                             SelectionMode="Extended">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="0">
                                     <Grid.Style>
                                         <Style TargetType="{x:Type Grid}">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}" Value="true">
+                                                <DataTrigger Binding="{Binding Path=Export.EntryHasPendingChanges}" Value="true">
                                                     <Setter Property="Background" Value="Yellow"/>
                                                     <Setter Property="ToolTip" Value="This export has been modified but the file has not yet been saved"/>
                                                 </DataTrigger>
@@ -79,12 +90,12 @@
                                         <ColumnDefinition Width="40" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding UIndex}" />
+                                    <TextBlock Text="{Binding Export.UIndex}" />
                                     <TextBlock Grid.Column="1">
                                         <TextBlock.Text>
                                             <MultiBinding StringFormat="{}{0}_{1}">
-                                                <Binding Path="ObjectName" />
-                                                <Binding Path="indexValue" />
+                                                <Binding Path="Export.ObjectName" />
+                                                <Binding Path="Export.indexValue" />
                                             </MultiBinding>
                                         </TextBlock.Text>
                                     </TextBlock>
@@ -102,10 +113,11 @@
                         </ListBox.ItemContainerStyle>
                     </ListBox>
                 </DockPanel>
-
-                <Grid DockPanel.Dock="Bottom">
+                <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Grid.Column="0"/>
+                <GridSplitter Grid.Row="0" Grid.RowSpan="3" Width="5" HorizontalAlignment="Stretch" Grid.Column="1"/>
+                <Grid Column="0" Row="2">
                     <Grid.RowDefinitions>
-                        <RowDefinition MinHeight="100" MaxHeight="300"/>
+                        <RowDefinition MinHeight="100"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="300"/>
@@ -149,7 +161,7 @@
                             <ColumnDefinition Width="280"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="Recently opened items" Grid.Row="0" Grid.ColumnSpan="5" TextAlignment="Center" FontSize="20" FontWeight="Light" Margin="10"/>
+                        <TextBlock Text="Recently opened items" Grid.Row="0" Grid.ColumnSpan="5" TextAlignment="Center" FontSize="20" FontWeight="Light" Margin="0"/>
                         <Button Name="RecentButton1" Content="Item" Grid.Row="1" Grid.Column="0" Margin="3" Padding="3"/>
                         <Button Name="RecentButton2" Content="Item" Grid.Row="1" Grid.Column="1" Margin="3" Padding="3"/>
                         <Button Name="RecentButton3" Content="Item" Grid.Row="2" Grid.Column="0" Margin="3" Padding="3"/>
@@ -217,10 +229,10 @@
                     <!-- Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}" -->
                     <global:InterpreterWPF x:Name="Properties_InterpreterWPF" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}"/>
                 </Grid>
-                <WindowsFormsHost Name="GraphHost" VerticalAlignment="Stretch">
+                <WindowsFormsHost Grid.Column="0" Grid.Row="0" Name="GraphHost" VerticalAlignment="Stretch">
                     <grapheditor:GraphEditor/>
                 </WindowsFormsHost>
-            </DockPanel>
+            </Grid>
         </DockPanel>
     </xctk:BusyIndicator>
 </global:WPFBase>

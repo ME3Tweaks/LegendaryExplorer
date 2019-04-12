@@ -706,7 +706,7 @@ namespace ME3Explorer.Sequence_Editor
                 }
                 foreach (SObj o in graphEditor.nodeLayer)
                 {
-                    o.CreateConnections(ref Objects);
+                    o.CreateConnections(Objects);
                 }
                 foreach (SObj o in graphEditor.nodeLayer)
                 {
@@ -778,9 +778,9 @@ namespace ME3Explorer.Sequence_Editor
                 if (selectedIndex != -1)
                 {
                     SObj d = Objects.FirstOrDefault(o => o.Index == CurrentObjects[selectedIndex]);
-                    d?.Deselect();
+                    if (d != null) d.IsSelected = false;
                 }
-                s.Select();
+                s.IsSelected = true;
                 if (!selectedByNode)
                     graphEditor.Camera.AnimateViewToCenterBounds(s.GlobalFullBounds, false, 100);
             }
