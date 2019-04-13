@@ -4,6 +4,7 @@ using ME3Explorer.Unreal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,11 +26,44 @@ namespace ME3Explorer.Pathfinding_Editor
     {
         public PathfindingEditorWPF ParentWindow;
 
+        private string _reachSpecSizeToText;
+        public string ReachSpecSizeToText
+        {
+            get => _reachSpecSizeToText;
+            set => SetProperty(ref _reachSpecSizeToText, value);
+        }
+
+        public ObservableCollectionExtended<ReachSpec> ReachSpecs { get; } = new ObservableCollectionExtended<ReachSpec>();
+        public ObservableCollectionExtended<NodeSize> AvailableNodeSizes { get; } = new ObservableCollectionExtended<NodeSize>();
+        public ObservableCollectionExtended<ReachSpecSize> AvailableReachSpecSizes { get; } = new ObservableCollectionExtended<ReachSpecSize>();
+        public ObservableCollectionExtended<ReachSpecSize> AvailableCreateReachSpecSizes { get; } = new ObservableCollectionExtended<ReachSpecSize>();
+        public ObservableCollectionExtended<string> AvailableReachspecTypes { get; } = new ObservableCollectionExtended<string>();
+
+        private string _destinationNodeName;
+        private string _newReachSpecDistance;
+        private string _newReachSpecDirectionX;
+        private string _newReachSpecDirectionY;
+        private string _newReachSpecDirectionZ;
+
+        public string DestinationNodeName { get => _destinationNodeName; private set => SetProperty(ref _destinationNodeName, value); }
+        public string NewReachSpecDistance { get => _newReachSpecDistance; private set => SetProperty(ref _newReachSpecDistance, value); }
+        public string NewReachSpecDirectionX { get => _newReachSpecDirectionX; private set => SetProperty(ref _newReachSpecDirectionX, value); }
+        public string NewReachSpecDirectionY { get => _newReachSpecDirectionY; private set => SetProperty(ref _newReachSpecDirectionY, value); }
+        public string NewReachSpecDirectionZ { get => _newReachSpecDirectionZ; private set => SetProperty(ref _newReachSpecDirectionZ, value); }
+
+        private bool _createReturningReachSpec = true;
+        public bool CreateReturningReachSpec { get => _createReturningReachSpec; set => SetProperty(ref _createReturningReachSpec, value); }
+
+
         public ReachSpecsPanel()
         {
             DataContext = this;
             ReachSpecSizeToText = "Select a reachspec above";
-
+            DestinationNodeName = "Enter a node index above";
+            NewReachSpecDistance = "No node selected";
+            NewReachSpecDirectionX = "No node selected";
+            NewReachSpecDirectionY = "No node selected";
+            NewReachSpecDirectionZ = "No node selected";
             AvailableReachspecTypes.AddRange(new string[] {
             "Engine.ReachSpec",
             "Engine.CoverSlipReachSpec",
@@ -43,46 +77,26 @@ namespace ME3Explorer.Pathfinding_Editor
             "SFXGame.SFXLargeMantleReachSpec",
             "Engine.SlotToSlotReachSpec" });
 
+            AvailableReachSpecSizes.Add(new ReachSpecSize("Banshee", ReachSpecSize.BANSHEE_HEIGHT, ReachSpecSize.BANSHEE_RADIUS));
+            AvailableReachSpecSizes.Add(new ReachSpecSize("Bosses", ReachSpecSize.BOSS_HEIGHT, ReachSpecSize.BOSS_RADIUS));
+            AvailableReachSpecSizes.Add(new ReachSpecSize("Minibosses", ReachSpecSize.MINIBOSS_HEIGHT, ReachSpecSize.MINIBOSS_RADIUS));
+            AvailableReachSpecSizes.Add(new ReachSpecSize("Mooks", ReachSpecSize.MOOK_HEIGHT, ReachSpecSize.MOOK_RADIUS));
+
+            AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Banshee", ReachSpecSize.BANSHEE_HEIGHT, ReachSpecSize.BANSHEE_RADIUS));
+            AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Bosses", ReachSpecSize.BOSS_HEIGHT, ReachSpecSize.BOSS_RADIUS));
+            AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Minibosses", ReachSpecSize.MINIBOSS_HEIGHT, ReachSpecSize.MINIBOSS_RADIUS));
+            AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Mooks", ReachSpecSize.MOOK_HEIGHT, ReachSpecSize.MOOK_RADIUS));
+
             InitializeComponent();
+            CreateReachspecType_ComboBox.SelectedIndex = 0;
+            CreateReachSpecSize_ComboBox.SelectedIndex = 0;
             RefreshSelectedReachSpec();
         }
-
-
-
-        private string _reachSpecSizeToText;
-        public string ReachSpecSizeToText
-        {
-            get => _reachSpecSizeToText;
-            set => SetProperty(ref _reachSpecSizeToText, value);
-        }
-
-
-
-        public ObservableCollectionExtended<ReachSpec> ReachSpecs { get; } = new ObservableCollectionExtended<ReachSpec>();
-
-        //Todo: change to proper types
-        public ObservableCollectionExtended<NodeSize> AvailableNodeSizes { get; } = new ObservableCollectionExtended<NodeSize>();
-        public ObservableCollectionExtended<ReachSpecSize> AvailableReachSpecSizes { get; } = new ObservableCollectionExtended<ReachSpecSize>();
-        public ObservableCollectionExtended<string> AvailableReachspecTypes { get; } = new ObservableCollectionExtended<string>();
 
         public override bool CanParse(IExportEntry export)
         {
             return true;
         }
-
-        internal Dictionary<string, Dictionary<string, string>> ExportsDB;
-
-        private string _destinationNodeName;
-        private string _newReachSpecDistance;
-        private string _newReachSpecDirectionX;
-        private string _newReachSpecDirectionY;
-        private string _newReachSpecDirectionZ;
-
-        public string DestinationNodeName { get => _destinationNodeName; private set => SetProperty(ref _destinationNodeName, value); }
-        public string NewReachSpecDistance { get => _newReachSpecDistance; private set => SetProperty(ref _newReachSpecDistance, value); }
-        public string NewReachSpecDirectionX { get => _newReachSpecDirectionX; private set => SetProperty(ref _newReachSpecDirectionX, value); }
-        public string NewReachSpecDirectionY { get => _newReachSpecDirectionY; private set => SetProperty(ref _newReachSpecDirectionY, value); }
-        public string NewReachSpecDirectionZ { get => _newReachSpecDirectionZ; private set => SetProperty(ref _newReachSpecDirectionZ, value); }
 
         public override void LoadExport(IExportEntry export)
         {
@@ -155,84 +169,7 @@ namespace ME3Explorer.Pathfinding_Editor
             ParentWindow = null;
         }
 
-        public class ReachSpec
-        {
-            public IExportEntry SpecExport { get; internal set; }
-            public IExportEntry StartNode { get; internal set; }
-            public IExportEntry EndNode { get; internal set; }
-            public bool ExternalTarget { get; internal set; }
-            public string DestinationTextUI
-            {
-                get
-                {
-                    return ExternalTarget ? "Ext" : EndNode.UIndex.ToString();
-                }
-            }
-            public string DestinationTypeTextUI
-            {
-                get
-                {
-                    return ExternalTarget ? "External Node" : $"{EndNode.ObjectName}_{ EndNode.indexValue}";
-                }
-            }
-        }
 
-        public class NodeSize : NotifyPropertyChangedBase
-        {
-            private string _header;
-            public string Header
-            {
-                get => _header;
-                set => SetProperty(ref _header, value);
-            }
-
-            private int _nodeWidth;
-            public int NodeWidth
-            {
-                get => _nodeWidth;
-                set => SetProperty(ref _nodeWidth, value);
-            }
-
-            private int _nodeHeight;
-            public int NodeHeight
-            {
-                get => _nodeHeight;
-                set => SetProperty(ref _nodeHeight, value);
-            }
-        }
-
-        public class ReachSpecSize : NotifyPropertyChangedBase
-        {
-            public const int MOOK_RADIUS = 34;
-            public const int MOOK_HEIGHT = 90;
-            public const int MINIBOSS_RADIUS = 105;
-            public const int MINIBOSS_HEIGHT = 145;
-            public const int BOSS_RADIUS = 140;
-            public const int BOSS_HEIGHT = 195;
-            public const int BANSHEE_RADIUS = 50;
-            public const int BANSHEE_HEIGHT = 125;
-
-            private string _header;
-            public string Header
-            {
-                get => _header;
-                set => SetProperty(ref _header, value);
-            }
-
-            private int _specWidth;
-            public int SpecWidth
-            {
-                get => _specWidth;
-                set => SetProperty(ref _specWidth, value);
-            }
-
-            private int _specHeight;
-            public int SpecHeight
-            {
-                get => _specHeight;
-                set => SetProperty(ref _specHeight, value);
-            }
-        }
 
         private void ReachSpecs_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -250,8 +187,8 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void RefreshSelectedReachSpec()
         {
-            AvailableReachSpecSizes.ClearEx();
             ReachSpec selectedSpec = ReachableNodes_ComboBox.SelectedItem as ReachSpec;
+            AvailableReachSpecSizes.RemoveRange(AvailableReachSpecSizes.Where(x => x.CustomSized).ToList());
             ReachSpecConnection_Panel.IsEnabled = selectedSpec != null;
             if (selectedSpec != null)
             {
@@ -266,10 +203,11 @@ namespace ME3Explorer.Pathfinding_Editor
                     ReachSpecSize specSize = new ReachSpecSize
                     {
                         Header = "Current size",
-                        SpecWidth = radius,
-                        SpecHeight = height
+                        SpecRadius = radius,
+                        SpecHeight = height,
+                        CustomSized = true
                     };
-                    AvailableReachSpecSizes.Add(specSize);
+                    AvailableReachSpecSizes.Insert(0,specSize);
                     ReachSpecSize_ComboBox.SelectedItem = specSize;
                 }
             }
@@ -378,6 +316,330 @@ namespace ME3Explorer.Pathfinding_Editor
                     //Parse
                     ParentWindow.FocusNode(destExport, false);
                 }
+            }
+        }
+
+        private void createReachSpec(IExportEntry startNode, bool createTwoWay, int destinationIndex, string reachSpecClass, int size, int destinationType)
+        {
+            IExportEntry reachSpectoClone = CurrentLoadedExport.FileRef.Exports.FirstOrDefault(x => x.ClassName == "ReachSpec");
+
+
+            /*if (destinationType == 1) //EXTERNAL
+            {
+                //external node
+
+                //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
+                int outgoingSpec = pcc.ExportCount;
+                int incomingSpec = pcc.ExportCount + 1;
+
+
+                if (reachSpectoClone != null)
+                {
+                    pcc.addExport(reachSpectoClone.Clone()); //outgoing
+
+                    IExportEntry outgoingSpecExp = pcc.Exports[outgoingSpec]; //cloned outgoing
+                    ImportEntry reachSpecClassImp = getOrAddImport(reachSpecClass); //new class type.
+
+                    outgoingSpecExp.idxClass = reachSpecClassImp.UIndex;
+                    outgoingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
+
+                    ObjectProperty outgoingSpecStartProp = outgoingSpecExp.GetProperty<ObjectProperty>("Start"); //START
+                    StructProperty outgoingEndStructProp = outgoingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
+                    ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpecExp)); //END
+                    outgoingSpecStartProp.Value = startNode.UIndex;
+                    outgoingSpecEndProp.Value = 0; //we will have to set the GUID - maybe through form or something
+
+
+                    //Add to source node prop
+                    ArrayProperty<ObjectProperty> PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                    byte[] memory = startNode.Data;
+                    memory = addObjectArrayLeaf(memory, (int)PathList.ValueOffset, outgoingSpecExp.UIndex);
+                    startNode.Data = memory;
+                    outgoingSpecExp.WriteProperty(outgoingSpecStartProp);
+                    outgoingSpecExp.WriteProperty(outgoingEndStructProp);
+
+                    //Write Spec Size
+                    int radVal = -1;
+                    int heightVal = -1;
+
+                    System.Drawing.Point sizePair = PathfindingNodeInfoPanel.getDropdownSizePair(size);
+                    radVal = sizePair.X;
+                    heightVal = sizePair.Y;
+                    setReachSpecSize(outgoingSpecExp, radVal, heightVal);
+
+                    //Reindex reachspecs.
+                    reindexObjectsWithName(reachSpecClass);
+                }
+            }
+            else
+            {*/
+            //Debug.WriteLine("Source Node: " + startNode.Index);
+
+            //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
+            //int outgoingSpec = pcc.ExportCount;
+            //int incomingSpec = pcc.ExportCount + 1;
+
+
+            if (reachSpectoClone != null)
+            {
+                IExportEntry destNode = CurrentLoadedExport.FileRef.getUExport(destinationIndex);
+                IExportEntry outgoingSpec = reachSpectoClone.Clone();
+                CurrentLoadedExport.FileRef.addExport(outgoingSpec);
+                IExportEntry incomingSpec = null;
+                if (createTwoWay)
+                {
+                    incomingSpec = reachSpectoClone.Clone();
+                    CurrentLoadedExport.FileRef.addExport(incomingSpec);
+                }
+
+                ImportEntry reachSpecClassImp = getOrAddImport(reachSpecClass); //new class type.
+
+                outgoingSpec.idxClass = reachSpecClassImp.UIndex;
+                outgoingSpec.idxObjectName = reachSpecClassImp.idxObjectName;
+
+                if (reachSpecClass == "Engine.SlotToSlotReachSpec")
+                {
+                    var props = outgoingSpec.GetProperties();
+                    props.Add(new ByteProperty(1, "SpecDirection")); //We might need to find a way to support this edit
+                    outgoingSpec.WriteProperties(props);
+                }
+
+                //Debug.WriteLine("Outgoing UIndex: " + outgoingSpecExp.UIndex);
+
+                ObjectProperty outgoingSpecStartProp = outgoingSpec.GetProperty<ObjectProperty>("Start"); //START
+                StructProperty outgoingEndStructProp = outgoingSpec.GetProperty<StructProperty>("End"); //Embeds END
+                ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpec)); //END
+                outgoingSpecStartProp.Value = startNode.UIndex;
+                outgoingSpecEndProp.Value = destNode.UIndex;
+
+
+                //Add to source node prop
+                ArrayProperty<ObjectProperty> PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                PathList.Add(new ObjectProperty(outgoingSpec.UIndex));
+                startNode.WriteProperty(PathList);
+
+                //Write Spec Size
+                int radVal = -1;
+                int heightVal = -1;
+
+                System.Drawing.Point sizePair = PathfindingNodeInfoPanel.getDropdownSizePair(size);
+                radVal = sizePair.X;
+                heightVal = sizePair.Y;
+                //setReachSpecSize(outgoingSpecExp, radVal, heightVal);
+
+
+                //if (createTwoWay)
+                //{
+                //    IExportEntry incomingSpecExp = CurrentLoadedExport.FileRef.[incomingSpec];
+                //    incomingSpecExp.idxClass = reachSpecClassImp.UIndex;
+                //    incomingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
+
+                //    if (reachSpecClass == "Engine.SlotToSlotReachSpec")
+                //    {
+                //        var props = incomingSpecExp.GetProperties();
+                //        props.Add(new ByteProperty(2, "SpecDirection"));
+                //        incomingSpecExp.WriteProperties(props);
+                //    }
+
+                //    ObjectProperty incomingSpecStartProp = incomingSpecExp.GetProperty<ObjectProperty>("Start"); //START
+                //    StructProperty incomingEndStructProp = incomingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
+                //    ObjectProperty incomingSpecEndProp = incomingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(incomingSpecExp)); //END
+
+                //    incomingSpecStartProp.Value = destNode.UIndex;//Uindex
+                //    incomingSpecEndProp.Value = startNode.UIndex;
+
+
+                //    //Add to source node prop
+                //    ArrayProperty<ObjectProperty> DestPathList = pcc.Exports[destinationIndex].GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                //    memory = destNode.Data;
+                //    memory = addObjectArrayLeaf(memory, (int)DestPathList.ValueOffset, incomingSpecExp.UIndex);
+                //    destNode.Data = memory;
+                //    //destNode.WriteProperty(DestPathList);
+                //    incomingSpecExp.WriteProperty(incomingSpecStartProp);
+                //    incomingSpecExp.WriteProperty(incomingEndStructProp);
+                //    setReachSpecSize(incomingSpecExp, radVal, heightVal);
+
+
+                //    //verify
+                //    destNode.GetProperties();
+                //}
+                //incomingSpecStartProp.Value =
+
+                //Reindex reachspecs.
+                SharedPathfinding.ReindexMatchingObjects(outgoingSpec);
+            }
+        }
+
+        private ImportEntry getOrAddImport(string importFullName)
+        {
+            foreach (ImportEntry imp in CurrentLoadedExport.FileRef.Imports)
+            {
+                if (imp.GetFullPath == importFullName)
+                {
+                    return imp;
+                }
+            }
+
+            //Import doesn't exist, so we're gonna need to add it
+            //But first we need to figure out what needs to be added.
+            string[] importParts = importFullName.Split('.');
+            List<int> upstreamLinks = new List<int>(); //0 = top level, 1 = next level... n = what we wanted to import
+            int upstreamCount = 1;
+
+            ImportEntry upstreamImport = null;
+            while (upstreamCount < importParts.Count())
+            {
+                string upstream = string.Join(".", importParts, 0, importParts.Count() - upstreamCount);
+                foreach (ImportEntry imp in CurrentLoadedExport.FileRef.Imports)
+                {
+                    if (imp.GetFullPath == upstream)
+                    {
+                        upstreamImport = imp;
+                        break;
+                    }
+                }
+
+                if (upstreamImport != null)
+                {
+                    break;
+                }
+                upstreamCount++;
+            }
+
+            if (upstreamImport == null)
+            {
+                //There is no top level import, which is very unlikely (engine, sfxgame)
+                return null;
+            }
+
+            //Have an upstream import, now we need to add downstream imports.
+            ImportEntry mostdownstreamimport = null;
+
+            while (upstreamCount > 0)
+            {
+                upstreamCount--;
+                string fullobjectname = String.Join(".", importParts, 0, importParts.Count() - upstreamCount);
+                Dictionary<string, string> importdbinfo = SharedPathfinding.ImportClassDB[fullobjectname];
+
+                int downstreamName = CurrentLoadedExport.FileRef.FindNameOrAdd(importParts[importParts.Count() - upstreamCount - 1]);
+                Debug.WriteLine(CurrentLoadedExport.FileRef.Names[downstreamName]);
+                int downstreamLinkIdx = upstreamImport.UIndex;
+                Debug.WriteLine(upstreamImport.GetFullPath);
+
+                int downstreamPackageName = CurrentLoadedExport.FileRef.FindNameOrAdd(importdbinfo["packagefile"]);
+                int downstreamClassName = CurrentLoadedExport.FileRef.FindNameOrAdd(importdbinfo["class"]);
+
+                //ImportEntry classImport = getOrAddImport();
+                //int downstreamClass = 0;
+                //if (classImport != null) {
+                //    downstreamClass = classImport.UIndex; //no recursion pls
+                //} else
+                //{
+                //    throw new Exception("No class was found for importing");
+                //}
+
+                mostdownstreamimport = new ImportEntry(CurrentLoadedExport.FileRef);
+                mostdownstreamimport.idxLink = downstreamLinkIdx;
+                mostdownstreamimport.idxClassName = downstreamClassName;
+                mostdownstreamimport.idxObjectName = downstreamName;
+                mostdownstreamimport.idxPackageFile = downstreamPackageName;
+                CurrentLoadedExport.FileRef.addImport(mostdownstreamimport);
+                upstreamImport = mostdownstreamimport;
+            }
+            return mostdownstreamimport;
+        }
+
+        public class ReachSpec
+        {
+            public IExportEntry SpecExport { get; internal set; }
+            public IExportEntry StartNode { get; internal set; }
+            public IExportEntry EndNode { get; internal set; }
+            public bool ExternalTarget { get; internal set; }
+            public string DestinationTextUI
+            {
+                get
+                {
+                    return ExternalTarget ? "Ext" : EndNode.UIndex.ToString();
+                }
+            }
+            public string DestinationTypeTextUI
+            {
+                get
+                {
+                    return ExternalTarget ? "External Node" : $"{EndNode.ObjectName}_{ EndNode.indexValue}";
+                }
+            }
+        }
+
+        public class NodeSize : NotifyPropertyChangedBase
+        {
+            private string _header;
+            public string Header
+            {
+                get => _header;
+                set => SetProperty(ref _header, value);
+            }
+
+            private int _nodeWidth;
+            public int NodeWidth
+            {
+                get => _nodeWidth;
+                set => SetProperty(ref _nodeWidth, value);
+            }
+
+            private int _nodeHeight;
+            public int NodeHeight
+            {
+                get => _nodeHeight;
+                set => SetProperty(ref _nodeHeight, value);
+            }
+        }
+
+        public class ReachSpecSize : NotifyPropertyChangedBase
+        {
+            public const int MOOK_RADIUS = 34;
+            public const int MOOK_HEIGHT = 90;
+            public const int MINIBOSS_RADIUS = 105;
+            public const int MINIBOSS_HEIGHT = 145;
+            public const int BOSS_RADIUS = 140;
+            public const int BOSS_HEIGHT = 195;
+            public const int BANSHEE_RADIUS = 50;
+            public const int BANSHEE_HEIGHT = 125;
+
+            public bool CustomSized;
+
+            public ReachSpecSize()
+            {
+
+            }
+
+            public ReachSpecSize(string header, int height, int radius, bool customsized = false)
+            {
+                Header = header;
+                SpecHeight = height;
+                SpecRadius = radius;
+                CustomSized = customsized;
+            }
+
+            private string _header;
+            public string Header
+            {
+                get => _header;
+                set => SetProperty(ref _header, value);
+            }
+
+            private int _specRadius;
+            public int SpecRadius
+            {
+                get => _specRadius;
+                set => SetProperty(ref _specRadius, value);
+            }
+
+            private int _specHeight;
+            public int SpecHeight
+            {
+                get => _specHeight;
+                set => SetProperty(ref _specHeight, value);
             }
         }
     }

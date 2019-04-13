@@ -73,8 +73,8 @@ namespace ME3Explorer
         private readonly string RECENTFILES_FILE = "RECENTFILES";
         private static string classDatabasePath = "";
 
-        public static Dictionary<string, Dictionary<string, string>> importclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
-        public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
+        //public static Dictionary<string, Dictionary<string, string>> importclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
+        //public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
 
         public string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "SFXNav_HarvesterMoveNode", "SFXNav_LeapNodeHumanoid", "MantleMarker", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker",  "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode",
                 "SFXNav_InteractionHenchOmniTool", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionHenchBeckonFront", "SFXNav_InteractionHenchBeckonRear", "TargetPoint", "SFXNav_InteractionHenchCustom", "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow", "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping", "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard", "SFXNav_InteractionHenchOmniToolCrouch", "SFXOperation_ObjectiveSpawnPoint", "SFXNav_InteractionInspectWeapon", "SFXNav_InteractionOmniToolScan" };
@@ -118,21 +118,21 @@ namespace ME3Explorer
             CurrentZFilterValue = 0;
 
 
-            if (importclassdb.Count() == 0 || exportclassdb.Count() == 0)
-            {
+            //if (importclassdb.Count() == 0 || exportclassdb.Count() == 0)
+            //{
 
-                if (File.Exists(classDatabasePath))
-                {
+            //    if (File.Exists(classDatabasePath))
+            //    {
 
-                    string raw = File.ReadAllText(classDatabasePath);
-                    JObject o = JObject.Parse(raw);
-                    JToken exportjson = o.SelectToken("exporttypes");
-                    JToken importjson = o.SelectToken("importtypes");
-                    exportclassdb = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(exportjson.ToString());
-                    importclassdb = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(importjson.ToString());
-                }
+            //        string raw = File.ReadAllText(classDatabasePath);
+            //        JObject o = JObject.Parse(raw);
+            //        JToken exportjson = o.SelectToken("exporttypes");
+            //        JToken importjson = o.SelectToken("importtypes");
+            //        exportclassdb = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(exportjson.ToString());
+            //        importclassdb = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(importjson.ToString());
+            //    }
 
-            }
+            //}
         }
 
         /// <summary>
@@ -1844,7 +1844,7 @@ namespace ME3Explorer
             }
 
             //lookup requirements in DB
-            Dictionary<string, string> exportclassinfo = exportclassdb[exportclassdbkey];
+            Dictionary<string, string> exportclassinfo = null;// exportclassdb[exportclassdbkey];
             string newclass = exportclassinfo["class"];
             string newname = exportclassinfo["name"];
             string newcylindercomponentarchetype = exportclassinfo["cylindercomponentarchetype"];
@@ -2172,7 +2172,7 @@ namespace ME3Explorer
             {
                 upstreamCount--;
                 string fullobjectname = String.Join(".", importParts, 0, importParts.Count() - upstreamCount);
-                Dictionary<string, string> importdbinfo = importclassdb[fullobjectname];
+                Dictionary<string, string> importdbinfo = null; // importclassdb[fullobjectname];
 
                 int downstreamName = pcc.FindNameOrAdd(importParts[importParts.Count() - upstreamCount - 1]);
                 Debug.WriteLine(pcc.Names[downstreamName]);

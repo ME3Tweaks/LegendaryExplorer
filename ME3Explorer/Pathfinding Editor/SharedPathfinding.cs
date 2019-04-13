@@ -1,11 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
     class SharedPathfinding
     {
+        public static Dictionary<string, Dictionary<string, string>> ImportClassDB = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
+        public static Dictionary<string, Dictionary<string, string>> ExportClassDB = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
+        private static bool ClassesDBLoaded;
+        private static string ClassesDatabasePath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "exec", "pathfindingclassdb.json");
+
         public static void GenerateNewRandomGUID(IExportEntry export)
         {
             StructProperty guidProp = export.GetProperty<StructProperty>("NavGuid");
@@ -41,6 +50,11 @@ namespace ME3Explorer.Pathfinding_Editor
             return memory;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="export"></param>
+        /// <returns></returns>
         public static string GetReachSpecEndName(IExportEntry export)
         {
             return export.FileRef.Game != MEGame.ME1 ? "Actor" : "Nav";
@@ -82,6 +96,43 @@ namespace ME3Explorer.Pathfinding_Editor
             guid.D = d;
             return guid;
         }
+
+
+        /// <summary>
+        /// Reindexes all objects in this pcc that have the same full path.
+        /// USE WITH CAUTION!
+        /// </summary>
+        /// <param name="exportToReindex">Export that contains the path you want to reindex</param>
+        public static void ReindexMatchingObjects(IExportEntry exportToReindex)
+        {
+            string fullpath = exportToReindex.GetFullPath;
+            int index = 1; //we'll start at 1.
+            foreach (IExportEntry export in exportToReindex.FileRef.Exports)
+            {
+                if (fullpath == export.GetFullPath && export.ClassName != "Class")
+                {
+                    export.indexValue = index;
+                    index++;
+                }
+            }
+        }
+
+        internal static void LoadClassesDB()
+        {
+            if (!ClassesDBLoaded)
+            {
+                if (File.Exists(ClassesDatabasePath))
+                {
+                    string raw = File.ReadAllText(ClassesDatabasePath);
+                    JObject o = JObject.Parse(raw);
+                    JToken exportjson = o.SelectToken("exporttypes");
+                    JToken importjson = o.SelectToken("importtypes");
+                    ExportClassDB = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(exportjson.ToString());
+                    ImportClassDB = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(importjson.ToString());
+                    ClassesDBLoaded = true;
+                }
+            }
+        }
     }
 
     public class UnrealGUID
@@ -107,4 +158,6 @@ namespace ME3Explorer.Pathfinding_Editor
             return A + " " + B + " " + C + " " + D;
         }
     }
+
+
 }

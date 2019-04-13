@@ -57,8 +57,7 @@ namespace ME3Explorer.Pathfinding_Editor
         private bool AllowRefresh;
         private PathingZoomController zoomController;
         private readonly string classDatabasePath;
-        public static Dictionary<string, Dictionary<string, string>> importclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
-        public static Dictionary<string, Dictionary<string, string>> exportclassdb = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
+
         public ObservableCollectionExtended<IExportEntry> ActiveNodes { get; set; } = new ObservableCollectionExtended<IExportEntry>();
         public ObservableCollectionExtended<string> TagsList { get; set; } = new ObservableCollectionExtended<string>();
         public ObservableCollectionExtended<StaticMeshCollection> StaticMeshCollections { get; set; } = new ObservableCollectionExtended<StaticMeshCollection>();
@@ -84,7 +83,6 @@ namespace ME3Explorer.Pathfinding_Editor
 
 
 
-            classDatabasePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "exec", "pathfindingclassdb.json");
 
             //pathfindingMouseListener = new PathfindingMouseListener(this); //Must be member so we can release reference
 
@@ -111,24 +109,9 @@ namespace ME3Explorer.Pathfinding_Editor
             //CurrentZFilterValue = 0;
 
 
-            if (importclassdb.Count() == 0 || exportclassdb.Count() == 0)
-            {
-
-                if (File.Exists(classDatabasePath))
-                {
-
-                    string raw = File.ReadAllText(classDatabasePath);
-                    JObject o = JObject.Parse(raw);
-                    JToken exportjson = o.SelectToken("exporttypes");
-                    JToken importjson = o.SelectToken("importtypes");
-                    exportclassdb = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(exportjson.ToString());
-                    importclassdb = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(importjson.ToString());
-                }
-
-            }
+            SharedPathfinding.LoadClassesDB();
 
             InitializeComponent();
-            PathfindingEditorWPF_ReachSpecsPanel.ExportsDB = exportclassdb;
             pathfindingMouseListener = new PathfindingMouseListener(this); //Must be member so we can release reference
             graphEditor.AddInputEventListener(pathfindingMouseListener);
         }
@@ -326,7 +309,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 if (ActiveNodes_ListBox != null && ActiveNodes_ListBox.SelectedItem is IExportEntry CurrentLoadedExport)
                 {
-                    if (exportclassdb.TryGetValue(CurrentLoadedExport.ClassName, out var classinfo) && classinfo.TryGetValue("description", out var description))
+                    if (SharedPathfinding.ExportClassDB.TryGetValue(CurrentLoadedExport.ClassName, out var classinfo) && classinfo.TryGetValue("description", out var description))
                     {
                         return description;
                     }
@@ -1320,7 +1303,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
 #if DEBUG
                 //Populate the export/import database
-                if (!exportclassdb.ContainsKey(export.ClassName))
+                if (!SharedPathfinding.ExportClassDB.ContainsKey(export.ClassName))
                 {
                     Dictionary<string, string> data = new Dictionary<string, string>();
                     data["class"] = export.FileRef.getEntry(export.idxClass).GetFullPath;
@@ -1333,7 +1316,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         data["cylindercomponentarchetype"] = collisionComp.FileRef.getEntry(collisionComp.idxArchtype).GetFullPath;
 
                         ////Add imports
-                        if (!importclassdb.ContainsKey(data["cylindercomponentarchetype"]) && collisionComp.idxArchtype < 0)
+                        if (!SharedPathfinding.ImportClassDB.ContainsKey(data["cylindercomponentarchetype"]) && collisionComp.idxArchtype < 0)
                         {
                             //X.Default.CollisionCylinder
                             Dictionary<string, string> cylindercompimp = new Dictionary<string, string>();
@@ -1341,18 +1324,18 @@ namespace ME3Explorer.Pathfinding_Editor
 
                             cylindercompimp["class"] = collisionCylinderArchetype.ClassName == "Class" ? "Class" : collisionCylinderArchetype.PackageFileNoExtension + "." + collisionCylinderArchetype.ClassName;
                             cylindercompimp["packagefile"] = collisionCylinderArchetype.PackageFileNoExtension;
-                            importclassdb[data["cylindercomponentarchetype"]] = cylindercompimp;
+                            SharedPathfinding.ImportClassDB[data["cylindercomponentarchetype"]] = cylindercompimp;
 
                             //X.Default
                             Dictionary<string, string> nodetypeimp = new Dictionary<string, string>();
                             ImportEntry collisionCylinderArchetypeDefault = collisionCylinderArchetype.FileRef.getEntry(collisionCylinderArchetype.idxLink) as ImportEntry;
                             nodetypeimp["class"] = collisionCylinderArchetypeDefault.ClassName == "Class" ? "Class" : collisionCylinderArchetypeDefault.PackageFileNoExtension + "." + collisionCylinderArchetypeDefault.ClassName;
                             nodetypeimp["packagefile"] = collisionCylinderArchetypeDefault.PackageFileNoExtension;
-                            importclassdb[collisionCylinderArchetypeDefault.GetFullPath] = nodetypeimp;
+                            SharedPathfinding.ImportClassDB[collisionCylinderArchetypeDefault.GetFullPath] = nodetypeimp;
                         }
                     }
                     data["description"] = "No data about this node type has been entered yet";
-                    exportclassdb[export.ClassName] = data;
+                    SharedPathfinding.ExportClassDB[export.ClassName] = data;
 
                     Dictionary<string, string> nodeclassimport = new Dictionary<string, string>();
                     ImportEntry classImport = export.FileRef.getEntry(export.idxClass) as ImportEntry;
@@ -1362,11 +1345,11 @@ namespace ME3Explorer.Pathfinding_Editor
                         nodeclassimport["class"] = classImport.ClassName == "Class" ? "Class" : classImport.PackageFileNoExtension + "." + classImport.ClassName;
                         nodeclassimport["packagefile"] = classImport.PackageFileNoExtension;
 
-                        importclassdb[classImport.GetFullPath] = nodeclassimport;
+                        SharedPathfinding.ImportClassDB[classImport.GetFullPath] = nodeclassimport;
 
                         //Rename vars - debug only
-                        var exporttypes = exportclassdb;
-                        var importtypes = importclassdb;
+                        var exporttypes = SharedPathfinding.ExportClassDB;
+                        var importtypes = SharedPathfinding.ImportClassDB;
 
                         Debug.WriteLine("Adding to pathfinding database file: " + export.ClassName);
                         File.WriteAllText(classDatabasePath,
@@ -1709,32 +1692,12 @@ namespace ME3Explorer.Pathfinding_Editor
                 data = memList.ToArray();
                 PersisentLevelExport.Data = data;
 
-                reindexMatchingObjects(newNodeEntry);
-                reindexMatchingObjects(newCollisionEntry);
+                SharedPathfinding.ReindexMatchingObjects(newNodeEntry);
+                SharedPathfinding.ReindexMatchingObjects(newCollisionEntry);
                 return newNodeEntry;
             }
             return null;
         }
-
-        /// <summary>
-        /// Reindexes all objects in this pcc that have the same full path.
-        /// USE WITH CAUTION!
-        /// </summary>
-        /// <param name="exportToReindex">Export that contains the path you want to reindex</param>
-        private void reindexMatchingObjects(IExportEntry exportToReindex)
-        {
-            string fullpath = exportToReindex.GetFullPath;
-            int index = 1; //we'll start at 1.
-            foreach (IExportEntry export in Pcc.Exports)
-            {
-                if (fullpath == export.GetFullPath && export.ClassName != "Class")
-                {
-                    export.indexValue = index;
-                    index++;
-                }
-            }
-        }
-
 
         [DebuggerDisplay("{export.UIndex} Static Mesh Collection")]
         public class StaticMeshCollection : NotifyPropertyChangedBase
@@ -1903,160 +1866,6 @@ namespace ME3Explorer.Pathfinding_Editor
                 graphEditor.nodeLayer.RemoveChildrenList(graphNodesToRemove.ToList<PNode>()); // sigh.
             }
             graphEditor.Refresh();
-        }
-
-        private void createReachSpec(IExportEntry startNode, bool createTwoWay, int destinationIndex, string reachSpecClass, int size, int destinationType)
-        {
-            IExportEntry reachSpectoClone = Pcc.Exports.FirstOrDefault(x => x.ClassName == "ReachSpec");
-
-
-            /*if (destinationType == 1) //EXTERNAL
-            {
-                //external node
-
-                //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
-                int outgoingSpec = pcc.ExportCount;
-                int incomingSpec = pcc.ExportCount + 1;
-
-
-                if (reachSpectoClone != null)
-                {
-                    pcc.addExport(reachSpectoClone.Clone()); //outgoing
-
-                    IExportEntry outgoingSpecExp = pcc.Exports[outgoingSpec]; //cloned outgoing
-                    ImportEntry reachSpecClassImp = getOrAddImport(reachSpecClass); //new class type.
-
-                    outgoingSpecExp.idxClass = reachSpecClassImp.UIndex;
-                    outgoingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
-
-                    ObjectProperty outgoingSpecStartProp = outgoingSpecExp.GetProperty<ObjectProperty>("Start"); //START
-                    StructProperty outgoingEndStructProp = outgoingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
-                    ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpecExp)); //END
-                    outgoingSpecStartProp.Value = startNode.UIndex;
-                    outgoingSpecEndProp.Value = 0; //we will have to set the GUID - maybe through form or something
-
-
-                    //Add to source node prop
-                    ArrayProperty<ObjectProperty> PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-                    byte[] memory = startNode.Data;
-                    memory = addObjectArrayLeaf(memory, (int)PathList.ValueOffset, outgoingSpecExp.UIndex);
-                    startNode.Data = memory;
-                    outgoingSpecExp.WriteProperty(outgoingSpecStartProp);
-                    outgoingSpecExp.WriteProperty(outgoingEndStructProp);
-
-                    //Write Spec Size
-                    int radVal = -1;
-                    int heightVal = -1;
-
-                    System.Drawing.Point sizePair = PathfindingNodeInfoPanel.getDropdownSizePair(size);
-                    radVal = sizePair.X;
-                    heightVal = sizePair.Y;
-                    setReachSpecSize(outgoingSpecExp, radVal, heightVal);
-
-                    //Reindex reachspecs.
-                    reindexObjectsWithName(reachSpecClass);
-                }
-            }
-            else
-            {*/
-            //Debug.WriteLine("Source Node: " + startNode.Index);
-
-            //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
-            //int outgoingSpec = pcc.ExportCount;
-            //int incomingSpec = pcc.ExportCount + 1;
-
-
-            if (reachSpectoClone != null)
-            {
-                IExportEntry destNode = Pcc.getUExport(destinationIndex);
-                IExportEntry outgoingSpec = reachSpectoClone.Clone();
-                Pcc.addExport(outgoingSpec);
-                IExportEntry incomingSpec = null;
-                if (createTwoWay)
-                {
-                    incomingSpec = reachSpectoClone.Clone();
-                    Pcc.addExport(incomingSpec);
-                }
-
-                ImportEntry reachSpecClassImp = getOrAddImport(reachSpecClass); //new class type.
-
-                outgoingSpec.idxClass = reachSpecClassImp.UIndex;
-                outgoingSpec.idxObjectName = reachSpecClassImp.idxObjectName;
-
-                if (reachSpecClass == "Engine.SlotToSlotReachSpec")
-                {
-                    var props = outgoingSpec.GetProperties();
-                    props.Add(new ByteProperty(1, "SpecDirection")); //We might need to find a way to support this edit
-                    outgoingSpec.WriteProperties(props);
-                }
-
-                //Debug.WriteLine("Outgoing UIndex: " + outgoingSpecExp.UIndex);
-
-                ObjectProperty outgoingSpecStartProp = outgoingSpec.GetProperty<ObjectProperty>("Start"); //START
-                StructProperty outgoingEndStructProp = outgoingSpec.GetProperty<StructProperty>("End"); //Embeds END
-                ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpecExp)); //END
-                outgoingSpecStartProp.Value = startNode.UIndex;
-                outgoingSpecEndProp.Value = destNode.UIndex;
-
-
-                //Add to source node prop
-                ArrayProperty<ObjectProperty> PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-                byte[] memory = startNode.Data;
-                memory = addObjectArrayLeaf(memory, (int)PathList.ValueOffset, outgoingSpecExp.UIndex);
-                startNode.Data = memory;
-                outgoingSpec.WriteProperty(outgoingSpecStartProp);
-                outgoingSpec.WriteProperty(outgoingEndStructProp);
-
-                //Write Spec Size
-                int radVal = -1;
-                int heightVal = -1;
-
-                System.Drawing.Point sizePair = PathfindingNodeInfoPanel.getDropdownSizePair(size);
-                radVal = sizePair.X;
-                heightVal = sizePair.Y;
-                setReachSpecSize(outgoingSpecExp, radVal, heightVal);
-
-
-                if (createTwoWay)
-                {
-                    IExportEntry incomingSpecExp = pcc.Exports[incomingSpec];
-                    incomingSpecExp.idxClass = reachSpecClassImp.UIndex;
-                    incomingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
-
-                    if (reachSpecClass == "Engine.SlotToSlotReachSpec")
-                    {
-                        var props = incomingSpecExp.GetProperties();
-                        props.Add(new ByteProperty(2, "SpecDirection"));
-                        incomingSpecExp.WriteProperties(props);
-                    }
-
-                    ObjectProperty incomingSpecStartProp = incomingSpecExp.GetProperty<ObjectProperty>("Start"); //START
-                    StructProperty incomingEndStructProp = incomingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
-                    ObjectProperty incomingSpecEndProp = incomingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(incomingSpecExp)); //END
-
-                    incomingSpecStartProp.Value = destNode.UIndex;//Uindex
-                    incomingSpecEndProp.Value = startNode.UIndex;
-
-
-                    //Add to source node prop
-                    ArrayProperty<ObjectProperty> DestPathList = pcc.Exports[destinationIndex].GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-                    memory = destNode.Data;
-                    memory = addObjectArrayLeaf(memory, (int)DestPathList.ValueOffset, incomingSpecExp.UIndex);
-                    destNode.Data = memory;
-                    //destNode.WriteProperty(DestPathList);
-                    incomingSpecExp.WriteProperty(incomingSpecStartProp);
-                    incomingSpecExp.WriteProperty(incomingEndStructProp);
-                    setReachSpecSize(incomingSpecExp, radVal, heightVal);
-
-
-                    //verify
-                    destNode.GetProperties();
-                }
-                //incomingSpecStartProp.Value =
-
-                //Reindex reachspecs.
-                reindexObjectsWithName(reachSpecClass);
-            }
         }
     }
 }
