@@ -35,12 +35,18 @@ namespace ME1Explorer.Unreal.Classes
             }
         }
 
-        public class TLKStringRef
+        public class TLKStringRef : ME3Explorer.NotifyPropertyChangedBase
         {
-            public int StringID;
-            public string Data;
-            public int Flags;
-            public int Index;
+            private int _stringID;
+            private string _data;
+            private int _flags;
+            private int _index;
+
+
+            public int StringID { get => _stringID; set => SetProperty(ref _stringID, value); }
+            public string Data { get => _data; set => SetProperty(ref _data, value); }
+            public int Flags { get => _flags; set => SetProperty(ref _flags, value); }
+            public int Index { get => _index; set => SetProperty(ref _index, value); }
 
             public TLKStringRef(BinaryReader r)
             {
