@@ -10,15 +10,15 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid MinWidth="10" MinHeight="10" Cursor="ScrollNS" Margin="0,338,0,0">
         <!-- Edit button that controls whether tlk can be edited. When pressed changes to cancel. Click cancel stops edit mode without saving to object. -->
-        <Button Name="btnEdit" Click="evt_EditOn" Content="Edit" IsDefault="True" Cursor="Arrow" Margin="5,-332,0,0" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Edit the TLK" FontWeight="Normal" Height="29"/>
+        <Button Name="btnEdit" Click="Evt_EditOn" Content="Edit" IsDefault="True" Cursor="Arrow" Margin="5,-332,0,0" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Edit the TLK" FontWeight="Normal" Height="29"/>
         <!-- Commit button saves edits. disabled by default. Enabled when editing. Ends edit mode with saving to object -->
-        <Button Name="btnCommit" Click="evt_Commit" Content="Commit" IsDefault="False" Cursor="Arrow" Margin="90,-332,0,415" Width="80" HorizontalAlignment="Left" IsEnabled="False" ToolTip="Commit changes." FontWeight="Normal"/>
+        <Button Name="btnCommit" Click="Evt_Commit" Content="Commit" IsDefault="False" Cursor="Arrow" Margin="90,-332,0,0" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" IsEnabled="False" ToolTip="Commit changes." FontWeight="Normal" Height="29"/>
         <!-- Search text -->
         <TextBox Height="23" Width="160" TextWrapping="Wrap" Margin="340,-332,0,421" HorizontalAlignment="Left" Text="Search Text" RenderTransformOrigin="2.038,-10.37" />
         <!-- Input string # -->
         <TextBox Height="23" Width="160" TextWrapping="Wrap" Margin="175,-332,0,421" HorizontalAlignment="Left" Text="Goto String" RenderTransformOrigin="0.612,-6.891" />
         <ListBox Name="DisplayedString_ListBox" ItemsSource="{Binding LoadedStrings}" HorizontalContentAlignment="Stretch" SelectionChanged="DisplayedString_ListBox_SelectionChanged" Margin="5,-298,4,207" />
-        <TextBox Name="xmlBox" Text="No strings loaded" FontFamily="Courier New" FontSize="14" Focusable="True" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible" TextChanged="XmlBox_TextChanged" Margin="5,-90,4,0"/>
+        <TextBox Name="xmlBox" Text="No strings loaded" FontFamily="Courier New" FontSize="14" Focusable="True" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible" TextChanged="XmlBox_TextChanged" Margin="5,-90,4,0" IsReadOnly="True" Background="LightGray"/>
 
     </Grid>
 </global:ExportLoaderControl>

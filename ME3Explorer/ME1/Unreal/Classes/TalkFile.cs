@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using ME3Explorer.Packages;
+using ME1Explorer;
 
 namespace ME1Explorer.Unreal.Classes
 {
@@ -127,7 +128,7 @@ namespace ME1Explorer.Unreal.Classes
             return data;
         }
 
-        public string getStringRefData(int count)
+        public string GetStringRefData(int count)
         {
             string data = "No Data";
             for (int i = 0; i < StringRefs.Length; i++)
@@ -360,5 +361,7 @@ namespace ME1Explorer.Unreal.Classes
             }
             return InputTLK.ToString();
         }
+
+
     }
 }
