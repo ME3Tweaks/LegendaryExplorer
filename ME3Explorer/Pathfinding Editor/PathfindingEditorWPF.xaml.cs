@@ -56,7 +56,6 @@ namespace ME3Explorer.Pathfinding_Editor
         private readonly PathingGraphEditor graphEditor;
         private bool AllowRefresh;
         private PathingZoomController zoomController;
-        private readonly string classDatabasePath;
 
         public ObservableCollectionExtended<IExportEntry> ActiveNodes { get; set; } = new ObservableCollectionExtended<IExportEntry>();
         public ObservableCollectionExtended<string> TagsList { get; set; } = new ObservableCollectionExtended<string>();
@@ -707,7 +706,13 @@ namespace ME3Explorer.Pathfinding_Editor
             PathfindingNodeMaster node = (PathfindingNodeMaster)sender;
             //int n = node.Index;
 
-            ChangingSelectionByGraphClick = true;
+            if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            {
+                PathfindingEditorWPF_ReachSpecsPanel.SetDestinationNode(node.UIndex);
+                return;
+            }
+
+                ChangingSelectionByGraphClick = true;
 
             ActiveNodes_ListBox.SelectedItem = node.export;
             if ((node is SplinePoint0Node) || (node is SplinePoint1Node))
@@ -1352,7 +1357,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         var importtypes = SharedPathfinding.ImportClassDB;
 
                         Debug.WriteLine("Adding to pathfinding database file: " + export.ClassName);
-                        File.WriteAllText(classDatabasePath,
+                        File.WriteAllText(SharedPathfinding.ClassesDatabasePath,
                     JsonConvert.SerializeObject(new { exporttypes, importtypes }, Formatting.Indented));
                     }
                 }

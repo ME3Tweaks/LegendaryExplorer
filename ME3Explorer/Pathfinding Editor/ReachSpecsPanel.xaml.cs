@@ -169,6 +169,14 @@ namespace ME3Explorer.Pathfinding_Editor
             ParentWindow = null;
         }
 
+        public void SetDestinationNode(int destinationUIndex)
+        {
+            if (CurrentLoadedExport != null && CurrentLoadedExport.UIndex != destinationUIndex)
+            {
+                CreateReachSpecDestination_TextBox.Text = destinationUIndex.ToString();
+                RecalculateDestinationUI();
+            }
+        }
 
 
         private void ReachSpecs_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
@@ -218,6 +226,11 @@ namespace ME3Explorer.Pathfinding_Editor
         }
 
         private void CreateReachSpecDestination_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            RecalculateDestinationUI();
+        }
+
+        private void RecalculateDestinationUI()
         {
             if (int.TryParse(CreateReachSpecDestination_TextBox.Text, out int destIndex) && CurrentLoadedExport.FileRef.isUExport(destIndex))
             {
