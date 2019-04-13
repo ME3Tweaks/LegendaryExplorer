@@ -28,7 +28,7 @@ namespace ME3Explorer.ME1TlkEditor
     {
         public ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef[] StringRefs;
         public string newXml;
-        public ObservableCollectionExtended<string> LoadedStrings { get; } = new ObservableCollectionExtended<string>();
+        public ObservableCollectionExtended<ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef> LoadedStrings { get; } = new ObservableCollectionExtended<ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef>();
 
         public ME1TlkEditorWPF()
         {
@@ -48,7 +48,10 @@ namespace ME3Explorer.ME1TlkEditor
         public override void LoadExport(IExportEntry exportEntry)
         {
             var tlkFile = new ME1Explorer.Unreal.Classes.TalkFile(exportEntry); // Setup object as TalkFile
-            RefreshTLKPanel(tlkFile);
+            LoadedStrings.ClearEx(); //clear strings Ex does this in bulk (faster)
+            LoadedStrings.AddRange(tlkFile.StringRefs);
+
+            //RefreshTLKPanel(tlkFile);
         }
 
         public override void UnloadExport()
@@ -56,72 +59,50 @@ namespace ME3Explorer.ME1TlkEditor
 
         }
 
-        public void RefreshTLKPanel(ME1Explorer.Unreal.Classes.TalkFile tlkObject)
-        {
+        //public void RefreshTLKPanel(ME1Explorer.Unreal.Classes.TalkFile tlkObject)
+        //{
 
 
-            LoadedStrings.Clear(); //reset
-            //cycle through strings;
-            for (int str_i = 1; str_i < tlkObject.StringRefs.Length; str_i++)
-            {
-                var iString = tlkObject.GetStringRefData(str_i);
-                LoadedStrings.Add(iString);
-            }
-            DisplayedString_ListBox.Items.SortDescriptions.Clear(); //sort
-            DisplayedString_ListBox.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("", System.ComponentModel.ListSortDirection.Ascending));
+        //    LoadedStrings.Clear(); //reset
+        //    //cycle through strings;
+        //    for (int str_i = 1; str_i < tlkObject.StringRefs.Length; str_i++)
+        //    {
+        //        var iString = tlkObject.GetStringRefData(str_i);
+        //        {
+        //            LoadedStrings.Add(iString);
+        //        }
+        //    }
+        //    DisplayedString_ListBox.Items.SortDescriptions.Clear(); //sort
+        //    DisplayedString_ListBox.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("", System.ComponentModel.ListSortDirection.Ascending));
 
-            var xmlTlk = tlkObject.TLKtoXmlstring();  // Convert to XML
-            xmlBox.Text = xmlTlk; // write to XML box
+        //    var xmlTlk = tlkObject.TLKtoXmlstring();  // Convert to XML
+        //    xmlBox.Text = xmlTlk; // write to XML box
 
-        }
-
-        private void Evt_EditOn(object sender, RoutedEventArgs e)
-        {
-            btnEdit.Content = "Cancel";
-            btnEdit.ToolTip = "Cancel and revert to original";
-            btnEdit.Click += Evt_EditOff;
-            btnEdit.Click -= Evt_EditOn;
-            btnCommit.IsEnabled = true;
-            xmlBox.IsReadOnly = false;
-            xmlBox.Background = Brushes.White;
-            // TEMP
-            LoadedStrings.Add("Edit On");
-        }
+        //}
 
         private void Evt_Commit(object sender, RoutedEventArgs e)
         {
-            Evt_EditOff(sender, e);
-
-
-
-
-
-            //TEMP
-                LoadedStrings.Add("Committed");
-        }
-
-        private void Evt_EditOff(object sender, RoutedEventArgs e)
-        {
-            btnEdit.Content = "Edit";
-            btnEdit.ToolTip = "Edit the TLK";
-            btnEdit.Click += Evt_EditOn;
-            btnEdit.Click -= Evt_EditOff;
-            btnCommit.IsEnabled = false;
-            xmlBox.IsReadOnly = true;
-            xmlBox.Background = Brushes.LightGray;
-            // TEMP
-            LoadedStrings.Add("Edit Off");
-        }
-
-        private void XmlBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            newXml = xmlBox.Text; //Update current xml
+ 
         }
 
         private void DisplayedString_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ;
+            var selectedItem = DisplayedString_ListBox.SelectedItem as ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef;
+
+            if (selectedItem != null)
+            {
+                xmlBox.Text = selectedItem.Data;
+            }
         }
 
+        private void SaveButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            var selectedItem = DisplayedString_ListBox.SelectedItem as ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef;
+
+            if (selectedItem != null)
+            {
+                selectedItem.Data = xmlBox.Text;
+            }
+        }
     }
 }
