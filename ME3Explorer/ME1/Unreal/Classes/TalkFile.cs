@@ -127,6 +127,20 @@ namespace ME1Explorer.Unreal.Classes
             return data;
         }
 
+        public string getStringRefData(int count)
+        {
+            string data = "No Data";
+            for (int i = 0; i < StringRefs.Length; i++)
+            {
+                if (StringRefs[i].Index == count)
+                {
+                    data = " " + StringRefs[i].StringID + "   \"" + StringRefs[i].Data + "\"";
+                    break;
+                }
+            }
+            return data;
+        }
+
         #region IEquatable
         public bool Equals(TalkFile other)
         {
@@ -312,7 +326,7 @@ namespace ME1Explorer.Unreal.Classes
             xr.Flush();
             xr.Close();
         }
-        public string toXmlstring()
+        public string TLKtoXmlstring()
         {
             StringBuilder InputTLK = new StringBuilder();
             using (StringWriter stringWriter = new StringWriter(InputTLK))

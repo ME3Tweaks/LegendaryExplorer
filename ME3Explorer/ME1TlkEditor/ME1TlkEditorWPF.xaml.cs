@@ -27,7 +27,6 @@ namespace ME3Explorer.ME1TlkEditor
     /// </summary>
     public partial class ME1TlkEditorWPF : ExportLoaderControl
     {
-
         public ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef[] StringRefs;
         public ObservableCollectionExtended<string> LoadedStrings { get; } = new ObservableCollectionExtended<string>();
 
@@ -35,11 +34,10 @@ namespace ME3Explorer.ME1TlkEditor
         {
             DataContext = this;
             InitializeComponent();
-            // TEMP
-            LoadedStrings.Add("hello");
                                           
         }
 
+        //SirC "efficiency is next to godliness" way of Checking export is ME1/TLK
         public override bool CanParse(IExportEntry exportEntry) => exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "BioTlkFile";
 
         public override void Dispose()
@@ -49,10 +47,20 @@ namespace ME3Explorer.ME1TlkEditor
 
         public override void LoadExport(IExportEntry exportEntry)
         {
-            var tlkFile = new ME1Explorer.Unreal.Classes.TalkFile(exportEntry);
-            var xmlTlk = tlkFile.toXmlstring();
-            //   LoadedStrings.Add(xmlTlk);
-            xmlBox.Text = xmlTlk;
+            var tlkFile = new ME1Explorer.Unreal.Classes.TalkFile(exportEntry); // Setup object as TalkFile
+
+
+            //cycle through strings;
+            for (int str_i = 1; str_i < tlkFile.StringRefs.Length; str_i++)
+            {
+            var iString = tlkFile.getStringRefData(str_i);
+            LoadedStrings.Add(iString);
+            }
+
+            
+            var xmlTlk = tlkFile.TLKtoXmlstring();  // Convert to XML
+            xmlBox.Text = xmlTlk; // write to XML box
+
         }
 
         public override void UnloadExport()
