@@ -35,19 +35,26 @@ namespace ME1Explorer.Unreal.Classes
             }
         }
 
-        public struct TLKStringRef
+        public class TLKStringRef
         {
             public int StringID;
             public string Data;
-            public byte[] Flags;
+            public int Flags;
             public int Index;
 
             public TLKStringRef(BinaryReader r)
-                : this()
             {
                 StringID = r.ReadInt32();
-                Flags = r.ReadBytes(4);
+                Flags = r.ReadInt32();
                 Index = r.ReadInt32();
+            }
+
+            public TLKStringRef(int id, int flags, string data)
+            {
+                StringID = id;
+                Flags = flags;
+                Data = data;
+                Index = -1;
             }
         } 
         #endregion
@@ -219,7 +226,7 @@ namespace ME1Explorer.Unreal.Classes
             //associate StringIDs with strings
             for (int i = 0; i < StringRefs.Length; i++)
             {
-                if (StringRefs[i].Flags[0] == 1)
+                if (StringRefs[i].Flags == 1)
                 {
                     StringRefs[i].Data = rawStrings[StringRefs[i].Index];
                 }
@@ -312,10 +319,10 @@ namespace ME1Explorer.Unreal.Classes
                 xr.WriteValue(StringRefs[i].StringID);
                 xr.WriteEndElement(); // </id>
                 xr.WriteStartElement("flags");
-                xr.WriteValue(BitConverter.ToInt32(StringRefs[i].Flags, 0));
+                xr.WriteValue(StringRefs[i].Flags);
                 xr.WriteEndElement(); // </flags>
 
-                if (StringRefs[i].Flags[0] != 1)
+                if (StringRefs[i].Flags != 1)
                     xr.WriteElementString("data", "-1");
                 else
                     xr.WriteElementString("data", StringRefs[i].Data);
@@ -348,9 +355,9 @@ namespace ME1Explorer.Unreal.Classes
                         writer.WriteValue(StringRefs[i].StringID);
                         writer.WriteEndElement(); // </id>
                         writer.WriteStartElement("flags");
-                        writer.WriteValue(BitConverter.ToInt32(StringRefs[i].Flags, 0));
+                        writer.WriteValue(StringRefs[i].Flags);
                         writer.WriteEndElement(); // </flags>
-                        if (StringRefs[i].Flags[0] != 1)
+                        if (StringRefs[i].Flags != 1)
                             writer.WriteElementString("data", "-1");
                         else
                             writer.WriteElementString("data", StringRefs[i].Data);
