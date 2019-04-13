@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ME3Explorer.PathfindingNodes;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -77,20 +78,90 @@ namespace ME3Explorer.Pathfinding_Editor
             "SFXGame.SFXLargeMantleReachSpec",
             "Engine.SlotToSlotReachSpec" });
 
-            AvailableReachSpecSizes.Add(new ReachSpecSize("Banshee", ReachSpecSize.BANSHEE_HEIGHT, ReachSpecSize.BANSHEE_RADIUS));
             AvailableReachSpecSizes.Add(new ReachSpecSize("Bosses", ReachSpecSize.BOSS_HEIGHT, ReachSpecSize.BOSS_RADIUS));
+            AvailableReachSpecSizes.Add(new ReachSpecSize("Banshee", ReachSpecSize.BANSHEE_HEIGHT, ReachSpecSize.BANSHEE_RADIUS));
             AvailableReachSpecSizes.Add(new ReachSpecSize("Minibosses", ReachSpecSize.MINIBOSS_HEIGHT, ReachSpecSize.MINIBOSS_RADIUS));
             AvailableReachSpecSizes.Add(new ReachSpecSize("Mooks", ReachSpecSize.MOOK_HEIGHT, ReachSpecSize.MOOK_RADIUS));
 
-            AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Banshee", ReachSpecSize.BANSHEE_HEIGHT, ReachSpecSize.BANSHEE_RADIUS));
             AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Bosses", ReachSpecSize.BOSS_HEIGHT, ReachSpecSize.BOSS_RADIUS));
+            AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Banshee", ReachSpecSize.BANSHEE_HEIGHT, ReachSpecSize.BANSHEE_RADIUS));
             AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Minibosses", ReachSpecSize.MINIBOSS_HEIGHT, ReachSpecSize.MINIBOSS_RADIUS));
             AvailableCreateReachSpecSizes.Add(new ReachSpecSize("Mooks", ReachSpecSize.MOOK_HEIGHT, ReachSpecSize.MOOK_RADIUS));
 
+            AvailableNodeSizes.Add(new NodeSize("Bosses", ReachSpecSize.BOSS_HEIGHT, ReachSpecSize.BOSS_RADIUS));
+            AvailableNodeSizes.Add(new NodeSize("Banshee", ReachSpecSize.BANSHEE_HEIGHT, ReachSpecSize.BANSHEE_RADIUS));
+            AvailableNodeSizes.Add(new NodeSize("Minibosses", ReachSpecSize.MINIBOSS_HEIGHT, ReachSpecSize.MINIBOSS_RADIUS));
+            AvailableNodeSizes.Add(new NodeSize("Mooks", ReachSpecSize.MOOK_HEIGHT, ReachSpecSize.MOOK_RADIUS));
+
+            LoadCommands();
             InitializeComponent();
             CreateReachspecType_ComboBox.SelectedIndex = 0;
             CreateReachSpecSize_ComboBox.SelectedIndex = 0;
             RefreshSelectedReachSpec();
+        }
+
+        public ICommand CreateReachSpecCommand { get; set; }
+        //public ICommand ToggleSplinesCommand { get; set; }
+
+        private void LoadCommands()
+        {
+            CreateReachSpecCommand = new RelayCommand(CreateReachSpec, CanCreateReachSpec);
+            //FocusGotoCommand = new RelayCommand(FocusGoto, PackageIsLoaded);
+        }
+
+        private bool CanCreateReachSpec(object obj)
+        {
+            //Validation
+            if (CurrentLoadedExport != null && int.TryParse(CreateReachSpecDestination_TextBox.Text, out int destIndex) && CurrentLoadedExport.FileRef.isUExport(destIndex))
+            {
+                //Parse
+                IExportEntry destExport = CurrentLoadedExport.FileRef.getUExport(destIndex);
+                if (ParentWindow != null && ParentWindow.ActiveNodes.Contains(destExport))
+                {
+
+                    var destPoint = PathfindingEditorWPF.GetLocation(destExport);
+
+                    if (destPoint != null)
+                    {
+                        var pathlist = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                        if (pathlist != null)
+                        {
+                            foreach (ObjectProperty specref in pathlist)
+                            {
+                                if (specref.Value != 0)
+                                {
+
+                                    IExportEntry spec = CurrentLoadedExport.FileRef.getUExport(specref.Value);
+                                    StructProperty outgoingEndStructProp = spec.GetProperty<StructProperty>("End"); //Embeds END
+                                    ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(spec)); //END  
+                                    if (outgoingSpecEndProp.Value == destIndex)
+                                    {
+                                        return false; //DUPLICATE SPEC
+                                    }
+                                }
+                            }
+                        }
+                        var sourcePoint = PathfindingEditorWPF.GetLocation(CurrentLoadedExport);
+                        double distance = sourcePoint.getDistanceToOtherPoint(destPoint);
+
+                        if (distance > 0.01)
+                        {
+                            return CreateReachSpecSize_ComboBox.SelectedIndex >= 0 && CreateReachspecType_ComboBox.SelectedIndex >= 0;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        private void CreateReachSpec(object obj)
+        {
+            if (int.TryParse(CreateReachSpecDestination_TextBox.Text, out int destIndex) && CurrentLoadedExport.FileRef.isUExport(destIndex))
+            {
+                //Parse
+                IExportEntry destExport = CurrentLoadedExport.FileRef.getUExport(destIndex);
+                createReachSpec(CurrentLoadedExport, CreateReturningReachSpec, destExport, (string)CreateReachspecType_ComboBox.SelectedItem, (ReachSpecSize)CreateReachSpecSize_ComboBox.SelectedItem);
+            }
         }
 
         public override bool CanParse(IExportEntry export)
@@ -104,7 +175,7 @@ namespace ME3Explorer.Pathfinding_Editor
             var props = export.GetProperties();
 
             //Node size
-            AvailableNodeSizes.ClearEx();
+            AvailableNodeSizes.RemoveRange(AvailableNodeSizes.Where(x => x.CustomSized).ToList());
             StructProperty maxPathSize = props.GetProp<StructProperty>("MaxPathSize");
             if (maxPathSize != null)
             {
@@ -113,11 +184,14 @@ namespace ME3Explorer.Pathfinding_Editor
                 NodeSize nodeSize = new NodeSize
                 {
                     Header = "Current size",
-                    NodeWidth = (int)radius,
+                    NodeRadius = (int)radius,
                     NodeHeight = (int)height
                 };
-                AvailableNodeSizes.Add(nodeSize);
-                NodeSize_ComboBox.SelectedItem = nodeSize;
+                if (!AvailableNodeSizes.Contains(nodeSize))
+                {
+                    AvailableNodeSizes.Insert(0, nodeSize);
+                }
+                NodeSize_ComboBox.SelectedIndex = AvailableNodeSizes.IndexOf(nodeSize);
                 //exportTitleLabel.Text += " - " + radius + "x" + height;
                 //pathNodeSizeComboBox.SelectedIndex = findClosestNextSizeIndex((int)radius, (int)height);
                 //pathNodeSizeComboBox.Enabled = true;
@@ -215,7 +289,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         SpecHeight = height,
                         CustomSized = true
                     };
-                    AvailableReachSpecSizes.Insert(0,specSize);
+                    AvailableReachSpecSizes.Insert(0, specSize);
                     ReachSpecSize_ComboBox.SelectedItem = specSize;
                 }
             }
@@ -332,12 +406,11 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        private void createReachSpec(IExportEntry startNode, bool createTwoWay, int destinationIndex, string reachSpecClass, int size, int destinationType)
+        private void createReachSpec(IExportEntry startNode, bool createTwoWay, IExportEntry destinationNode, string reachSpecClass, ReachSpecSize size, UnrealGUID externalGUID = null)
         {
             IExportEntry reachSpectoClone = CurrentLoadedExport.FileRef.Exports.FirstOrDefault(x => x.ClassName == "ReachSpec");
 
-
-            /*if (destinationType == 1) //EXTERNAL
+            /*if (externalGUID != null) //EXTERNAL
             {
                 //external node
 
@@ -395,7 +468,6 @@ namespace ME3Explorer.Pathfinding_Editor
 
             if (reachSpectoClone != null)
             {
-                IExportEntry destNode = CurrentLoadedExport.FileRef.getUExport(destinationIndex);
                 IExportEntry outgoingSpec = reachSpectoClone.Clone();
                 CurrentLoadedExport.FileRef.addExport(outgoingSpec);
                 IExportEntry incomingSpec = null;
@@ -410,21 +482,19 @@ namespace ME3Explorer.Pathfinding_Editor
                 outgoingSpec.idxClass = reachSpecClassImp.UIndex;
                 outgoingSpec.idxObjectName = reachSpecClassImp.idxObjectName;
 
+                var outgoingSpecProperties = outgoingSpec.GetProperties();
                 if (reachSpecClass == "Engine.SlotToSlotReachSpec")
                 {
-                    var props = outgoingSpec.GetProperties();
-                    props.Add(new ByteProperty(1, "SpecDirection")); //We might need to find a way to support this edit
-                    outgoingSpec.WriteProperties(props);
+                    outgoingSpecProperties.Add(new ByteProperty(1, "SpecDirection")); //We might need to find a way to support this edit
                 }
 
                 //Debug.WriteLine("Outgoing UIndex: " + outgoingSpecExp.UIndex);
 
-                ObjectProperty outgoingSpecStartProp = outgoingSpec.GetProperty<ObjectProperty>("Start"); //START
-                StructProperty outgoingEndStructProp = outgoingSpec.GetProperty<StructProperty>("End"); //Embeds END
+                ObjectProperty outgoingSpecStartProp = outgoingSpecProperties.GetProp<ObjectProperty>("Start"); //START
+                StructProperty outgoingEndStructProp = outgoingSpecProperties.GetProp<StructProperty>("End"); //Embeds END
                 ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpec)); //END
                 outgoingSpecStartProp.Value = startNode.UIndex;
-                outgoingSpecEndProp.Value = destNode.UIndex;
-
+                outgoingSpecEndProp.Value = destinationNode.UIndex;
 
                 //Add to source node prop
                 ArrayProperty<ObjectProperty> PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
@@ -432,55 +502,74 @@ namespace ME3Explorer.Pathfinding_Editor
                 startNode.WriteProperty(PathList);
 
                 //Write Spec Size
-                int radVal = -1;
-                int heightVal = -1;
+                setReachSpecSize(outgoingSpecProperties, size.SpecRadius, size.SpecHeight);
+                outgoingSpec.WriteProperties(outgoingSpecProperties);
 
-                System.Drawing.Point sizePair = PathfindingNodeInfoPanel.getDropdownSizePair(size);
-                radVal = sizePair.X;
-                heightVal = sizePair.Y;
-                //setReachSpecSize(outgoingSpecExp, radVal, heightVal);
+                if (createTwoWay)
+                {
+                    incomingSpec.idxClass = reachSpecClassImp.UIndex;
+                    incomingSpec.idxObjectName = reachSpecClassImp.idxObjectName;
+                    var incomingSpecProperties = incomingSpec.GetProperties();
+                    if (reachSpecClass == "Engine.SlotToSlotReachSpec")
+                    {
+                        incomingSpecProperties.Add(new ByteProperty(2, "SpecDirection"));
+                    }
 
+                    ObjectProperty incomingSpecStartProp = incomingSpecProperties.GetProp<ObjectProperty>("Start"); //START
+                    StructProperty incomingEndStructProp = incomingSpecProperties.GetProp<StructProperty>("End"); //Embeds END
+                    ObjectProperty incomingSpecEndProp = incomingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(incomingSpec)); //END
 
-                //if (createTwoWay)
-                //{
-                //    IExportEntry incomingSpecExp = CurrentLoadedExport.FileRef.[incomingSpec];
-                //    incomingSpecExp.idxClass = reachSpecClassImp.UIndex;
-                //    incomingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
-
-                //    if (reachSpecClass == "Engine.SlotToSlotReachSpec")
-                //    {
-                //        var props = incomingSpecExp.GetProperties();
-                //        props.Add(new ByteProperty(2, "SpecDirection"));
-                //        incomingSpecExp.WriteProperties(props);
-                //    }
-
-                //    ObjectProperty incomingSpecStartProp = incomingSpecExp.GetProperty<ObjectProperty>("Start"); //START
-                //    StructProperty incomingEndStructProp = incomingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
-                //    ObjectProperty incomingSpecEndProp = incomingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(incomingSpecExp)); //END
-
-                //    incomingSpecStartProp.Value = destNode.UIndex;//Uindex
-                //    incomingSpecEndProp.Value = startNode.UIndex;
+                    incomingSpecStartProp.Value = destinationNode.UIndex;//Uindex
+                    incomingSpecEndProp.Value = startNode.UIndex;
 
 
-                //    //Add to source node prop
-                //    ArrayProperty<ObjectProperty> DestPathList = pcc.Exports[destinationIndex].GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-                //    memory = destNode.Data;
-                //    memory = addObjectArrayLeaf(memory, (int)DestPathList.ValueOffset, incomingSpecExp.UIndex);
-                //    destNode.Data = memory;
-                //    //destNode.WriteProperty(DestPathList);
-                //    incomingSpecExp.WriteProperty(incomingSpecStartProp);
-                //    incomingSpecExp.WriteProperty(incomingEndStructProp);
-                //    setReachSpecSize(incomingSpecExp, radVal, heightVal);
+                    //Add reachspec to destination node's path list (returning)
+                    ArrayProperty<ObjectProperty> DestPathList = destinationNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                    DestPathList.Add(new ObjectProperty(incomingSpec.UIndex));
+                    destinationNode.WriteProperty(DestPathList);
 
+                    //destNode.WriteProperty(DestPathList);
+                    setReachSpecSize(incomingSpecProperties, size.SpecRadius, size.SpecHeight);
 
-                //    //verify
-                //    destNode.GetProperties();
-                //}
-                //incomingSpecStartProp.Value =
+                    incomingSpec.WriteProperties(incomingSpecProperties);
+                }
 
                 //Reindex reachspecs.
                 SharedPathfinding.ReindexMatchingObjects(outgoingSpec);
             }
+        }
+
+        /// <summary>
+        /// Modifies the incoming properties collection to update teh sepc size
+        /// </summary>
+        /// <param name="specProperties"></param>
+        /// <param name="radius"></param>
+        /// <param name="height"></param>
+        private void setReachSpecSize(PropertyCollection specProperties, int radius, int height)
+        {
+            IntProperty radiusProp = specProperties.GetProp<IntProperty>("CollisionRadius");
+            IntProperty heightProp = specProperties.GetProp<IntProperty>("CollisionHeight");
+            if (radiusProp != null)
+            {
+                radiusProp.Value = radius;
+            }
+            if (heightProp != null)
+            {
+                heightProp.Value = height;
+            }
+        }
+
+        /// <summary>
+        /// Sets the reach spec size and commits the results back to the export
+        /// </summary>
+        /// <param name="spec"></param>
+        /// <param name="radius"></param>
+        /// <param name="height"></param>
+        private void setReachSpecSize(IExportEntry spec, int radius, int height)
+        {
+            PropertyCollection specProperties = spec.GetProperties();
+            setReachSpecSize(specProperties, radius, height);
+            spec.WriteProperties(specProperties); //write it back.
         }
 
         private ImportEntry getOrAddImport(string importFullName)
@@ -562,6 +651,7 @@ namespace ME3Explorer.Pathfinding_Editor
             return mostdownstreamimport;
         }
 
+        [DebuggerDisplay("ReachSpec | {SpecExport.ObjectName} outbound from {StartNode.UIndex}")]
         public class ReachSpec
         {
             public IExportEntry SpecExport { get; internal set; }
@@ -584,7 +674,8 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        public class NodeSize : NotifyPropertyChangedBase
+        [DebuggerDisplay("NodeSize | {Header} {NodeHeight}x{NodeRadius}")]
+        public class NodeSize : NotifyPropertyChangedBase, IEquatable<NodeSize>
         {
             private string _header;
             public string Header
@@ -593,11 +684,11 @@ namespace ME3Explorer.Pathfinding_Editor
                 set => SetProperty(ref _header, value);
             }
 
-            private int _nodeWidth;
-            public int NodeWidth
+            private int _nodeRadius;
+            public int NodeRadius
             {
-                get => _nodeWidth;
-                set => SetProperty(ref _nodeWidth, value);
+                get => _nodeRadius;
+                set => SetProperty(ref _nodeRadius, value);
             }
 
             private int _nodeHeight;
@@ -606,9 +697,30 @@ namespace ME3Explorer.Pathfinding_Editor
                 get => _nodeHeight;
                 set => SetProperty(ref _nodeHeight, value);
             }
+
+            public bool CustomSized;
+
+            public NodeSize()
+            {
+
+            }
+
+            public NodeSize(string header, int height, int radius, bool customsized = false)
+            {
+                Header = header;
+                NodeHeight = height;
+                NodeRadius = radius;
+                CustomSized = customsized;
+            }
+
+            public bool Equals(NodeSize other)
+            {
+                return NodeRadius == other.NodeRadius && NodeHeight == other.NodeHeight;
+            }
         }
 
-        public class ReachSpecSize : NotifyPropertyChangedBase
+        [DebuggerDisplay("ReachSpecSize | {Header} {SpecHeight}x{SpecRadius}")]
+        public class ReachSpecSize : NotifyPropertyChangedBase, IEquatable<ReachSpecSize>
         {
             public const int MOOK_RADIUS = 34;
             public const int MOOK_HEIGHT = 90;
@@ -653,6 +765,11 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 get => _specHeight;
                 set => SetProperty(ref _specHeight, value);
+            }
+
+            public bool Equals(ReachSpecSize other)
+            {
+                return SpecRadius == other.SpecRadius && SpecHeight == other.SpecHeight;
             }
         }
     }

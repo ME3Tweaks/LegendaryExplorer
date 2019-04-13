@@ -288,7 +288,7 @@ namespace ME3Explorer.Pathfinding_Editor
             FindByTag_ComboBox.Focus();
         }
 
-        private string _nodeName;
+        private string _nodeName = "Loading...";
         public string NodeName
         {
             get => _nodeName;
@@ -327,7 +327,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 }
                 else
                 {
-                    return null;
+                    return "No node is currently selected";
                 }
             }
         }
@@ -1065,7 +1065,9 @@ namespace ME3Explorer.Pathfinding_Editor
             if (exportsAdded || exportNonDataChanges) //may optimize by checking if chagnes include anything we care about
             {
                 //Do a full refresh
+                IExportEntry selectedExport = ActiveNodes_ListBox.SelectedItem as IExportEntry;
                 RefreshGraph();
+                ActiveNodes_ListBox.SelectedItem = selectedExport;
                 return;
             }
 
@@ -1424,16 +1426,18 @@ namespace ME3Explorer.Pathfinding_Editor
                 //selectedByNode = false;
 
                 //Refresh binding
-                OnPropertyChanged(nameof(NodeTypeDescriptionText));
-
+                NodePosition_Panel.IsEnabled = true;
                 graphEditor.Refresh();
             }
             else
             {
                 Properties_InterpreterWPF.UnloadExport();
                 PathfindingEditorWPF_ReachSpecsPanel.UnloadExport();
-
+                NodeName = "No node selected";
+                NodeNameSubText = "N/A";
+                NodePosition_Panel.IsEnabled = false;
             }
+            OnPropertyChanged(nameof(NodeTypeDescriptionText));
         }
 
         private void ContextMenu_Closed(object sender, RoutedEventArgs e)

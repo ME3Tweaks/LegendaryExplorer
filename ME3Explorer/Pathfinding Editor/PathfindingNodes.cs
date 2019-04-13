@@ -129,10 +129,9 @@ namespace ME3Explorer.PathfindingNodes
                 foreach (var prop in outLinksProp)
                 {
                     //System.Diagnostics.Debug.WriteLine("Outlink: " + prop.Value);
-                    int reachspecexport = prop.Value;
-                    if (reachspecexport != 0)
+                    if (prop.Value != 0)
                     {
-                        ReachSpecs.Add(pcc.getUExport(reachspecexport));
+                        ReachSpecs.Add(pcc.getUExport(prop.Value));
                     }
                 }
 

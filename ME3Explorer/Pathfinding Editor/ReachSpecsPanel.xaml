@@ -39,7 +39,7 @@
                             <TextBlock Grid.Column="1" TextAlignment="Right">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0}x{1}">
-                                        <Binding Path="NodeWidth" />
+                                        <Binding Path="NodeRadius" />
                                         <Binding Path="NodeHeight" />
                                     </MultiBinding>
                                 </TextBlock.Text>
