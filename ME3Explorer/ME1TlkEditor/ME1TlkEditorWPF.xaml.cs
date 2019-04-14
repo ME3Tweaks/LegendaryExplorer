@@ -77,7 +77,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void SaveButton_Clicked(object sender, RoutedEventArgs e)
         {
-            var selectedItem = DisplayedString_ListBox.SelectedItem as ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef;
+            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
 
             if (selectedItem != null)
             {
@@ -87,7 +87,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void Evt_SetID(object sender, RoutedEventArgs e)
         {
-            var selectedItem = DisplayedString_ListBox.SelectedItem as ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef;
+            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
 
             //Run popout box to set tlkstring id
         }
@@ -99,7 +99,8 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void Evt_DeleteString(object sender, RoutedEventArgs e)
         {
-
+            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
+            CleanedStrings.Remove(selectedItem);
         }
 
         private void Evt_ExportXML(object sender, RoutedEventArgs e)
