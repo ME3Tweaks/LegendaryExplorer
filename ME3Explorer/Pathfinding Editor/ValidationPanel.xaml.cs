@@ -38,6 +38,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public IMEPackage Pcc { get => _pcc; private set => SetProperty(ref _pcc, value); }
         BackgroundWorker fixAndValidateWorker;
         public ObservableCollectionExtended<ValidationTask> ValidationTasks { get; } = new ObservableCollectionExtended<ValidationTask>();
+        private object _myCollectionLock = new object();
 
         private string _lastRunOnText;
         public string LastRunOnText { get => _lastRunOnText; set => SetProperty(ref _lastRunOnText, value); }
@@ -47,6 +48,7 @@ namespace ME3Explorer.Pathfinding_Editor
             DataContext = this;
             LoadCommands();
             InitializeComponent();
+            BindingOperations.EnableCollectionSynchronization(ValidationTasks, _myCollectionLock);
         }
 
         public void SetLevel(IExportEntry PersistentLevel)

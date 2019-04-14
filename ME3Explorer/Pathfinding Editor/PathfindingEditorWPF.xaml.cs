@@ -1345,6 +1345,9 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void PathfinderEditorWPF_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            //todo: handle user saying "don't close" if changes are unsaved.
+
+
             graphEditor.RemoveInputEventListener(pathfindingMouseListener);
             graphEditor.DebugEventHandlers();
             graphEditor.Dispose();
