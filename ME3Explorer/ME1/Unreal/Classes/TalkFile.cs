@@ -7,6 +7,7 @@ using System.Text;
 using System.Xml;
 using ME3Explorer.Packages;
 using ME1Explorer;
+using System.Diagnostics;
 
 namespace ME1Explorer.Unreal.Classes
 {
@@ -35,6 +36,7 @@ namespace ME1Explorer.Unreal.Classes
             }
         }
 
+        [DebuggerDisplay("TLKStringRef {StringID} {Data}")]
         public class TLKStringRef : ME3Explorer.NotifyPropertyChangedBase
         {
             private int _stringID;
@@ -47,6 +49,10 @@ namespace ME1Explorer.Unreal.Classes
             public string Data { get => _data; set => SetProperty(ref _data, value); }
             public int Flags { get => _flags; set => SetProperty(ref _flags, value); }
             public int Index { get => _index; set => SetProperty(ref _index, value); }
+            /// <summary>
+            /// This is used by huffman compression
+            /// </summary>
+            public string ASCIIData { get => Data == null ? "\0" : Data + "\0"; }
 
             public TLKStringRef(BinaryReader r)
             {

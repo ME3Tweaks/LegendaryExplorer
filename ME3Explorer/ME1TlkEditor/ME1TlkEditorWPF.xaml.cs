@@ -52,6 +52,7 @@ namespace ME3Explorer.ME1TlkEditor
             LoadedStrings = tlkFile.StringRefs.ToList(); //This is not binded to so reassigning is fine
             CleanedStrings.ClearEx(); //clear strings Ex does this in bulk (faster)
             CleanedStrings.AddRange(LoadedStrings.Where(x => x.StringID > 0).ToList()); //nest it remove 0 strings.
+            CurrentLoadedExport = exportEntry;
         }
 
         public override void UnloadExport()
@@ -62,7 +63,9 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void Evt_Commit(object sender, RoutedEventArgs e)
         {
- 
+            ME1Explorer.HuffmanCompression huff = new ME1Explorer.HuffmanCompression();
+            huff.LoadInputData(LoadedStrings);
+            huff.serializeTalkfileToExport(CurrentLoadedExport);
         }
 
         private void DisplayedString_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

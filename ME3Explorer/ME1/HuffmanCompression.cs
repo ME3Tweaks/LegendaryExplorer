@@ -124,14 +124,15 @@ namespace ME1Explorer
                     i++;
                     List<BitArray> binaryData = new List<BitArray>();
                     int binaryLength = 0;
+                    
                     /* for every character in a string, put it's binary code into data array */
-                    foreach (char c in entry.Data)
+                    foreach (char c in entry.ASCIIData)
                     {
                         binaryData.Add(_huffmanCodes[c]);
                         binaryLength += _huffmanCodes[c].Count;
                     }
                     byte[] buffer = BitArrayListToByteArray(binaryData, binaryLength);
-                    encodedStrings.Add(new EncodedString(entry.Data.Length, buffer.Length, buffer));
+                    encodedStrings.Add(new EncodedString(entry.ASCIIData.Length, buffer.Length, buffer));
                 }
             }
 
@@ -222,7 +223,7 @@ namespace ME1Explorer
             {
                 if (entry.StringID <= 0)
                     continue;
-                foreach (char c in entry.Data)
+                foreach (char c in entry.ASCIIData)
                 {
                     if (!frequencyCount.ContainsKey(c))
                         frequencyCount.Add(c, 0);
