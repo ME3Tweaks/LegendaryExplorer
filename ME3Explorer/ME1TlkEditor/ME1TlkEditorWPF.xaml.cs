@@ -51,7 +51,7 @@ namespace ME3Explorer.ME1TlkEditor
             var tlkFile = new ME1Explorer.Unreal.Classes.TalkFile(exportEntry); // Setup object as TalkFile
             LoadedStrings = tlkFile.StringRefs.ToList(); //This is not binded to so reassigning is fine
             CleanedStrings.ClearEx(); //clear strings Ex does this in bulk (faster)
-            CleanedStrings.AddRange(LoadedStrings.Where(x => x.StringID > 0).ToList()); //nest it remove 0 strings.
+            CleanedStrings.AddRange(LoadedStrings.Where(x => x.StringID > 0).ToList()); //nest it remove 0 strings from display.
         }
 
         public override void UnloadExport()
@@ -62,7 +62,9 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void Evt_Commit(object sender, RoutedEventArgs e)
         {
- 
+            ME1Explorer.HuffmanCompression huff = new ME1Explorer.HuffmanCompression();
+            huff.LoadInputData(LoadedStrings);
+            huff.serializeTalkfileToExport(CurrentLoadedExport);
         }
 
         private void DisplayedString_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -94,13 +96,16 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void Evt_AddString(object sender, RoutedEventArgs e)
         {
-            //CleanedStrings.Add(TLKStringRef(0,0,1,"NewData"))
+            var blankstringref = new TLKStringRef(100, 1, "Blank Line");
+            LoadedStrings.Add(blankstringref);
+            CleanedStrings.Add(blankstringref);
         }
 
         private void Evt_DeleteString(object sender, RoutedEventArgs e)
         {
             var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
             CleanedStrings.Remove(selectedItem);
+            LoadedStrings.Remove(selectedItem);
         }
 
         private void Evt_ExportXML(object sender, RoutedEventArgs e)
