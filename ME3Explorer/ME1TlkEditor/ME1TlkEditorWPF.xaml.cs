@@ -51,7 +51,7 @@ namespace ME3Explorer.ME1TlkEditor
             var tlkFile = new ME1Explorer.Unreal.Classes.TalkFile(exportEntry); // Setup object as TalkFile
             LoadedStrings = tlkFile.StringRefs.ToList(); //This is not binded to so reassigning is fine
             CleanedStrings.ClearEx(); //clear strings Ex does this in bulk (faster)
-            CleanedStrings.AddRange(LoadedStrings.Where(x => x.StringID > 0).ToList()); //nest it
+            CleanedStrings.AddRange(LoadedStrings.Where(x => x.StringID > 0).ToList()); //nest it remove 0 strings.
         }
 
         public override void UnloadExport()
@@ -87,12 +87,14 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void Evt_SetID(object sender, RoutedEventArgs e)
         {
+            var selectedItem = DisplayedString_ListBox.SelectedItem as ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef;
 
+            //Run popout box to set tlkstring id
         }
 
         private void Evt_AddString(object sender, RoutedEventArgs e)
         {
-
+            //CleanedStrings.Add(TLKStringRef(0,0,1,"NewData"))
         }
 
         private void Evt_DeleteString(object sender, RoutedEventArgs e)
