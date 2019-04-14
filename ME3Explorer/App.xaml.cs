@@ -34,16 +34,14 @@ namespace ME3Explorer
             return "v" + ver.Major + "." + ver.Minor + "." + ver.Build + "." + ver.Revision;
         }
 
-        public static SynchronizationContext SYNCHRONIZATION_CONTEXT_UI;
-        public static TaskScheduler SYNCHRONIZATION_CONTEXT_TASKSCHEDULER;
+        public static TaskScheduler SYNCHRONIZATION_CONTEXT;
         public static int CoreCount;
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             //Peregrine's Dispatcher (for WPF Treeview selecting on virtualized lists)
             DispatcherHelper.Initialize();
-            SYNCHRONIZATION_CONTEXT_UI = SynchronizationContext.Current;
-            SYNCHRONIZATION_CONTEXT_TASKSCHEDULER = TaskScheduler.FromCurrentSynchronizationContext();
+            SYNCHRONIZATION_CONTEXT = TaskScheduler.FromCurrentSynchronizationContext();
             //Winforms interop
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);

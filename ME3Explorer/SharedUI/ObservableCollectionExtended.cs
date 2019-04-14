@@ -7,7 +7,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace ME3Explorer.SharedUI
@@ -16,44 +15,13 @@ namespace ME3Explorer.SharedUI
     {
         //INotifyPropertyChanged inherited from ObservableCollection<T>
         #region INotifyPropertyChanged
-        protected override void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            if (SynchronizationContext.Current == App.SYNCHRONIZATION_CONTEXT_UI)
-            {
-                // Execute the PropertyChanged event on the current thread
-                RaisePropertyChanged(e);
-            }
-            else
-            {
-                // Raises the PropertyChanged event on the creator thread
-                App.SYNCHRONIZATION_CONTEXT_UI.Send(RaisePropertyChanged, e);
-            }
-        }
 
-        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
-        {
-            if (SynchronizationContext.Current == App.SYNCHRONIZATION_CONTEXT_UI)
-            {
-                // Execute the CollectionChanged event on the current thread
-                RaiseCollectionChanged(e);
-            }
-            else
-            {
-                // Raises the CollectionChanged event on the creator thread
-                App.SYNCHRONIZATION_CONTEXT_UI.Send(RaiseCollectionChanged, e);
-            }
-        }
+        protected override event PropertyChangedEventHandler PropertyChanged;
 
-        private void RaiseCollectionChanged(object param)
+        [NotifyPropertyChangedInvocator]
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            // We are in the creator thread, call the base implementation directly
-            base.OnCollectionChanged((NotifyCollectionChangedEventArgs)param);
-        }
-
-        private void RaisePropertyChanged(object param)
-        {
-            // We are in the creator thread, call the base implementation directly
-            base.OnPropertyChanged((PropertyChangedEventArgs)param);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion INotifyPropertyChanged
