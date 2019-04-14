@@ -51,13 +51,27 @@ namespace ME3Explorer.Pathfinding_Editor
         }
 
         /// <summary>
-        /// 
+        /// Gets the end name of a ReachSpec for property parsing. ME1 uses Nav, while ME2 and above use Actor.
         /// </summary>
-        /// <param name="export"></param>
-        /// <returns></returns>
+        /// <param name="export">export used to determine which game is being parsed</param>
+        /// <returns>Actor for ME2/ME3, Nav for ME1</returns>
         public static string GetReachSpecEndName(IExportEntry export)
         {
             return export.FileRef.Game != MEGame.ME1 ? "Actor" : "Nav";
+        }
+
+        /// <summary>
+        /// Rounds a double to an int. Because apparently Microsoft doesn't know how to round numbers.
+        /// </summary>
+        /// <param name="d">Double to round</param>
+        /// <returns>Rounded int</returns>
+        public static int RoundDoubleToInt(double d)
+        {
+            if (d < 0)
+            {
+                return (int)(d - 0.5);
+            }
+            return (int)(d + 0.5);
         }
 
         /// <summary>

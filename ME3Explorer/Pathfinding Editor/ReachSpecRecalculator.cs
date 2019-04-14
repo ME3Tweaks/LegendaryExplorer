@@ -131,7 +131,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     numNeedingRecalc++;
                 }
                 double percent = (currentCalculationNum / reachSpecExportIndexes.Count) * 100;
-                int feedPercent = RoundDoubleToInt(percent);
+                int feedPercent = SharedPathfinding.RoundDoubleToInt(percent);
                 worker.ReportProgress(feedPercent);
                 currentCalculationNum++;
             }
@@ -248,7 +248,7 @@ namespace ME3Explorer.Pathfinding_Editor
                             if (origDistanceProp != null)
                             {
                                 int origDistance = origDistanceProp.Value;
-                                int calculatedProperDistance = RoundDoubleToInt(distance);
+                                int calculatedProperDistance = SharedPathfinding.RoundDoubleToInt(distance);
                                 int distanceDiff = Math.Abs(origDistance - calculatedProperDistance);
                                 ReachSpecUpdaterUIThreadOptions recalcOption = new ReachSpecUpdaterUIThreadOptions(reachSpecExport, calculatedProperDistance, dirX, dirY, dirZ);
 
@@ -330,19 +330,7 @@ namespace ME3Explorer.Pathfinding_Editor
             reachSpecExport.WriteProperties(props);
         }
 
-        /// <summary>
-        /// Rounds a double to an int. Because apparently Microsoft doesn't know how to round numbers.
-        /// </summary>
-        /// <param name="d">Double to round</param>
-        /// <returns>Rounded int</returns>
-        static int RoundDoubleToInt(double d)
-        {
-            if (d < 0)
-            {
-                return (int)(d - 0.5);
-            }
-            return (int)(d + 0.5);
-        }
+
 
 
     }

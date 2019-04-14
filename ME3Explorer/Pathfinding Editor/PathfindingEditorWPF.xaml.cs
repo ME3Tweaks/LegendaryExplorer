@@ -477,7 +477,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 RefreshRecent(true, RFiles);
                 Title = "Pathfinding Editor WPF - " + fileName;
                 StatusText = null; //Nothing to prepend.
-                PathfindingEditorWPF_ValidationPanel.LoadPackage(Pcc);
+                PathfindingEditorWPF_ValidationPanel.SetLevel(PersisentLevelExport);
             }
             else
             {
