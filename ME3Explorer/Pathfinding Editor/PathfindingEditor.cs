@@ -916,19 +916,19 @@ namespace ME3Explorer
                         switch (exporttoLoad.ClassName)
                         {
                             case "BlockingVolume":
-                                actorNode = new ActorNodes.BlockingVolume(index, x, y, pcc, graphEditor);
+                                //actorNode = new ActorNodes.BlockingVolume(index, x, y, pcc, graphEditor);
                                 break;
                             case "DynamicBlockingVolume":
-                                actorNode = new DynamicBlockingVolume(index, x, y, pcc, graphEditor);
+                                //actorNode = new DynamicBlockingVolume(index, x, y, pcc, graphEditor);
                                 break;
                             case "InterpActor":
                                 actorNode = new InterpActorNode(index, x, y, pcc, graphEditor);
                                 break;
                             case "BioTriggerVolume":
-                                actorNode = new ActorNodes.BioTriggerVolume(index, x, y, pcc, graphEditor);
+                                //actorNode = new ActorNodes.BioTriggerVolume(index, x, y, pcc, graphEditor);
                                 break;
                             case "BioTriggerStream":
-                                actorNode = new ActorNodes.BioTriggerStream(index, x, y, pcc, graphEditor);
+                                //actorNode = new ActorNodes.BioTriggerStream(index, x, y, pcc, graphEditor);
                                 break;
                             case "SFXGrenadeContainer":
                                 actorNode = new ActorNodes.SFXGrenadeContainer(index, x, y, pcc, graphEditor);
@@ -943,7 +943,7 @@ namespace ME3Explorer
                                 actorNode = new ActorNodes.SFXBlockingVolume_Ledge(index, x, y, pcc, graphEditor);
                                 break;
                             case "SFXCombatZone":
-                                actorNode = new ActorNodes.SFXCombatZone(index, x, y, pcc, graphEditor);
+                                //actorNode = new ActorNodes.SFXCombatZone(index, x, y, pcc, graphEditor);
                                 break;
                             case "BioStartLocation":
                             case "BioStartLocationMP":
@@ -966,7 +966,7 @@ namespace ME3Explorer
                                 actorNode = new ActorNodes.WwiseAmbientSound(index, x, y, pcc, graphEditor);
                                 break;
                             case "WwiseAudioVolume":
-                                actorNode = new ActorNodes.WwiseAudioVolume(index, x, y, pcc, graphEditor);
+                                //actorNode = new ActorNodes.WwiseAudioVolume(index, x, y, pcc, graphEditor);
                                 break;
                             case "SFXArmorNode":
                             case "SFXTreasureNode":

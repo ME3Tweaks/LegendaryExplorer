@@ -128,7 +128,7 @@
                 <TextBlock Text="Destination node" FontWeight="Bold"/>
                 <TextBlock>
                     <Hyperlink Click="FocusDestinationNode_Click">
-                        <TextBlock Text="{Binding DestinationNodeName, FallbackValue=DestinationNodeName}" Name="ReachSpecDestinationNode_TextBlock"/>
+                        <TextBlock Text="{Binding DestinationNodeName}" ToolTip="{Binding DestinationNodeName}" Name="ReachSpecDestinationNode_TextBlock"/>
                     </Hyperlink>
                 </TextBlock>
                 <StackPanel Margin="10,0,0,0">

@@ -225,6 +225,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     ReachSpecs.Add(spec);
                 }
             }
+            RecalculateDestinationUI();
         }
 
 
@@ -322,7 +323,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         //Calculate direction vectors
                         if (distance != 0)
                         {
-                            ReachSpecDestinationNode_TextBlock.Text = $"{destExport.ObjectName}_{destExport.indexValue}";
+                            DestinationNodeName = $"{destExport.ObjectName}_{destExport.indexValue}";
 
                             float dirX = (float)((destPoint.X - sourcePoint.X) / distance);
                             float dirY = (float)((destPoint.Y - sourcePoint.Y) / distance);

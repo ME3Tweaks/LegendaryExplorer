@@ -126,7 +126,7 @@ namespace ME3Explorer.Pathfinding_Editor
         private bool _showVolumes_WwiseAudioVolumes;
 
         public bool ShowVolumes_BioTriggerVolumes { get => _showVolumes_BioTriggerVolumes; set => SetProperty(ref _showVolumes_BioTriggerVolumes, value); }
-        public bool ShowVolumes_BioTriggerStreamss { get => _showVolumes_BioTriggerStreams; set => SetProperty(ref _showVolumes_BioTriggerStreams, value); }
+        public bool ShowVolumes_BioTriggerStreams { get => _showVolumes_BioTriggerStreams; set => SetProperty(ref _showVolumes_BioTriggerStreams, value); }
         public bool ShowVolumes_BlockingVolumes { get => _showVolumes_BlockingVolumes; set => SetProperty(ref _showVolumes_BlockingVolumes, value); }
         public bool ShowVolumes_DynamicBlockingVolumes { get => _showVolumes_DynamicBlockingVolumes; set => SetProperty(ref _showVolumes_DynamicBlockingVolumes, value); }
         public bool ShowVolumes_SFXBlockingVolume_Ledges { get => _showVolumes_SFXBlockingVolume_Ledges; set => SetProperty(ref _showVolumes_SFXBlockingVolume_Ledges, value); }
@@ -155,6 +155,15 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand ToggleActorsCommand { get; set; }
         public ICommand ToggleSplinesCommand { get; set; }
 
+        public ICommand ShowBioTriggerVolumesCommand { get; set; }
+        public ICommand ShowBioTriggerStreamsCommand { get; set; }
+        public ICommand ShowBlockingVolumesCommand { get; set; }
+        public ICommand ShowDynamicBlockingVolumesCommand { get; set; }
+
+        public ICommand ShowSFXBlockingVolumeLedgesCommand { get; set; }
+        public ICommand ShowSFXCombatZonesCommand { get; set; }
+        public ICommand ShowWwiseAudioVolumesCommand { get; set; }
+
         private void LoadCommands()
         {
             RefreshCommand = new RelayCommand(RefreshGraph, PackageIsLoaded);
@@ -168,6 +177,63 @@ namespace ME3Explorer.Pathfinding_Editor
             ToggleEverythingElseCommand = new RelayCommand(ToggleEverythingElse, PackageIsLoaded);
             ToggleActorsCommand = new RelayCommand(ToggleActors, PackageIsLoaded);
             ToggleSplinesCommand = new RelayCommand(ToggleSplines, PackageIsLoaded);
+
+            ShowBioTriggerVolumesCommand = new RelayCommand(ShowBioTriggerVolumes, PackageIsLoaded);
+            ShowBioTriggerStreamsCommand = new RelayCommand(ShowBioTriggerStreams, PackageIsLoaded);
+            ShowBlockingVolumesCommand = new RelayCommand(ShowBlockingVolumes, PackageIsLoaded);
+            ShowDynamicBlockingVolumesCommand = new RelayCommand(ShowDynamicBlockingVolumes, PackageIsLoaded);
+            ShowSFXBlockingVolumeLedgesCommand = new RelayCommand(ShowSFXBlockingVolumeLedges, PackageIsLoaded);
+            ShowSFXCombatZonesCommand = new RelayCommand(ShowSFXCombatZones, PackageIsLoaded);
+            ShowWwiseAudioVolumesCommand = new RelayCommand(ShowWwiseAudioVolumes, PackageIsLoaded);
+        }
+
+        private void ShowWwiseAudioVolumes(object obj)
+        {
+            var WwiseAudioVolumes = GraphNodes.Where(x => x is WwiseAudioVolume).Select(x => x as WwiseAudioVolume).ToList();
+            WwiseAudioVolumes.ForEach(x => x.SetShape(ShowVolumes_WwiseAudioVolumes));
+            graphEditor.Refresh();
+        }
+
+        private void ShowSFXCombatZones(object obj)
+        {
+            var CombatZones = GraphNodes.Where(x => x is SFXCombatZone).Select(x => x as SFXCombatZone).ToList();
+            CombatZones.ForEach(x => x.SetShape(ShowVolumes_SFXCombatZones));
+            graphEditor.Refresh();
+        }
+
+        private void ShowSFXBlockingVolumeLedges(object obj)
+        {
+            var Ledges = GraphNodes.Where(x => x is SFXBlockingVolume_Ledge).Select(x => x as SFXBlockingVolume_Ledge).ToList();
+            Ledges.ForEach(x => x.SetShape(ShowVolumes_SFXBlockingVolume_Ledges));
+            graphEditor.Refresh();
+        }
+
+        private void ShowDynamicBlockingVolumes(object obj)
+        {
+            var DynamicBlockingVolumes = GraphNodes.Where(x => x is DynamicBlockingVolume).Select(x => x as DynamicBlockingVolume).ToList();
+            DynamicBlockingVolumes.ForEach(x => x.SetShape(ShowVolumes_DynamicBlockingVolumes));
+            graphEditor.Refresh();
+        }
+
+        private void ShowBlockingVolumes(object obj)
+        {
+            var BlockingVolumes = GraphNodes.Where(x => x is BlockingVolume).Select(x => x as BlockingVolume).ToList();
+            BlockingVolumes.ForEach(x => x.SetShape(ShowVolumes_BlockingVolumes));
+            graphEditor.Refresh();
+        }
+
+        private void ShowBioTriggerVolumes(object obj)
+        {
+            var BioTriggerVolumes = GraphNodes.Where(x => x is BioTriggerVolume).Select(x => x as BioTriggerVolume).ToList();
+            BioTriggerVolumes.ForEach(x => x.SetShape(ShowVolumes_BioTriggerVolumes));
+            graphEditor.Refresh();
+        }
+
+        private void ShowBioTriggerStreams(object obj)
+        {
+            var BioTriggerStreams = GraphNodes.Where(x => x is BioTriggerStream).Select(x => x as BioTriggerStream).ToList();
+            BioTriggerStreams.ForEach(x => x.SetShape(ShowVolumes_BioTriggerStreams));
+            graphEditor.Refresh();
         }
 
         private void ToggleActors(object obj)
@@ -712,7 +778,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 return;
             }
 
-                ChangingSelectionByGraphClick = true;
+            ChangingSelectionByGraphClick = true;
 
             ActiveNodes_ListBox.SelectedItem = node.export;
             if ((node is SplinePoint0Node) || (node is SplinePoint1Node))
@@ -860,10 +926,10 @@ namespace ME3Explorer.Pathfinding_Editor
                 switch (exporttoLoad.ClassName)
                 {
                     case "BlockingVolume":
-                        actorNode = new BlockingVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new BlockingVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_BlockingVolumes);
                         break;
                     case "DynamicBlockingVolume":
-                        actorNode = new DynamicBlockingVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new DynamicBlockingVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_DynamicBlockingVolumes);
                         break;
                     case "DynamicTriggerVolume":
                         actorNode = new DynamicTriggerVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor);
@@ -872,10 +938,10 @@ namespace ME3Explorer.Pathfinding_Editor
                         actorNode = new InterpActorNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "BioTriggerVolume":
-                        actorNode = new ActorNodes.BioTriggerVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new ActorNodes.BioTriggerVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_BioTriggerVolumes);
                         break;
                     case "BioTriggerStream":
-                        actorNode = new ActorNodes.BioTriggerStream(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new ActorNodes.BioTriggerStream(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_BioTriggerStreams);
                         break;
                     case "SFXGrenadeContainer":
                         actorNode = new ActorNodes.SFXGrenadeContainer(uindex, x, y, exporttoLoad.FileRef, graphEditor);
@@ -890,7 +956,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         actorNode = new ActorNodes.SFXBlockingVolume_Ledge(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXCombatZone":
-                        actorNode = new ActorNodes.SFXCombatZone(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new ActorNodes.SFXCombatZone(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_SFXCombatZones);
                         break;
                     case "BioStartLocation":
                     case "BioStartLocationMP":
@@ -913,7 +979,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         actorNode = new ActorNodes.WwiseAmbientSound(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "WwiseAudioVolume":
-                        actorNode = new ActorNodes.WwiseAudioVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new ActorNodes.WwiseAudioVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_WwiseAudioVolumes);
                         break;
                     case "SFXArmorNode":
                     case "SFXTreasureNode":

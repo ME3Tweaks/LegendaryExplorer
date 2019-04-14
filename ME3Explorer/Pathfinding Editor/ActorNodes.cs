@@ -155,11 +155,11 @@ namespace ME3Explorer.ActorNodes
         private static Color outlinePenColor = Color.Red;
         private static PointF[] outlineShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 50), new PointF(0, 50) };
 
-        public BlockingVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+        public BlockingVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool drawAsPolygon)
             : base(idx, p, grapheditor)
         {
             Bounds = new RectangleF(0, 0, 50, 50);
-            SetShape(false);
+            SetShape(drawAsPolygon);
             TranslateBy(x, y);
         }
 
@@ -179,11 +179,11 @@ namespace ME3Explorer.ActorNodes
         private static Color outlinePenColor = Color.FromArgb(255, 0, 0);
         private static PointF[] outlineShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 50), new PointF(0, 50) };
 
-        public DynamicBlockingVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+        public DynamicBlockingVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool drawPolygon)
             : base(idx, p, grapheditor)
         {
             Bounds = new RectangleF(0, 0, 50, 50);
-            SetShape(false);
+            SetShape(drawPolygon);
             TranslateBy(x, y);
         }
 
@@ -571,10 +571,10 @@ namespace ME3Explorer.ActorNodes
         private static Color outlinePenColor = Color.FromArgb(0, 255, 0);
         private static PointF[] outlineShape = new PointF[] { new PointF(10, 10), new PointF(40, 10), new PointF(40, 0), new PointF(50, 0), new PointF(50, 10), new PointF(40, 10), new PointF(25, 50), new PointF(10, 10), new PointF(0, 10), new PointF(0, 0), new PointF(10, 0) };
 
-        public WwiseAudioVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
+        public WwiseAudioVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool drawAsPolygon) : base(idx, p, grapheditor)
         {
             Bounds = new RectangleF(0, 0, 50, 50);
-            SetShape(false);
+            SetShape(drawAsPolygon);
             TranslateBy(x, y);
         }
 
@@ -731,10 +731,10 @@ namespace ME3Explorer.ActorNodes
         private static Color outlinePenColor = Color.FromArgb(20, 34, 34);
         private static PointF[] outlineShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 8), new PointF(8, 8), new PointF(8, 42), new PointF(50, 42), new PointF(50, 50), new PointF(0, 50) };
 
-        public SFXCombatZone(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor) : base(idx, p, grapheditor)
+        public SFXCombatZone(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool drawPolygon) : base(idx, p, grapheditor)
         {
             Bounds = new RectangleF(0, 0, 50, 50);
-            SetShape(false);
+            SetShape(drawPolygon);
             TranslateBy(x, y);
         }
 
@@ -863,11 +863,11 @@ namespace ME3Explorer.ActorNodes
         private static Color outlinePenColor = Color.FromArgb(0, 0, 255);
         private static PointF[] outlineShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 15), new PointF(35, 15), new PointF(35, 50), new PointF(15, 50), new PointF(15, 15), new PointF(0, 15) };
 
-        public BioTriggerVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+        public BioTriggerVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool drawPolygon)
         : base(idx, p, grapheditor)
         {
             Bounds = new RectangleF(0, 0, 50, 50);
-            SetShape(false);
+            SetShape(drawPolygon);
             TranslateBy(x, y);
         }
         public override Color GetDefaultShapeColor()
@@ -931,11 +931,11 @@ namespace ME3Explorer.ActorNodes
             new PointF(15, 20)
         };
 
-        public BioTriggerStream(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor)
+        public BioTriggerStream(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool drawPolygon)
             : base(idx, p, grapheditor)
         {
             Bounds = new RectangleF(0, 0, 50, 50);
-            SetShape(false);
+            SetShape(drawPolygon);
             TranslateBy(x, y);
 
             var exportProps = export.GetProperties();

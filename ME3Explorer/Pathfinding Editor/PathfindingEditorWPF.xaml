@@ -60,13 +60,13 @@
                 <MenuItem Header="Everything else" Command="{Binding ToggleEverythingElseCommand}" IsChecked="{Binding ShowEverythingElseLayer}" StaysOpenOnClick="True" InputGestureText="F4" ToolTip="Refreshes the pathing graph"/>
                 <Separator/>
                 <MenuItem Header="Show volumes instead of nodes for...">
-                    <MenuItem Header="BioTriggerVolumes" IsChecked="{Binding ShowVolumes_BioTriggerVolumes}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
-                    <MenuItem Header="BioTriggerStream" IsChecked="{Binding ShowVolumes_BioTriggerStream}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
-                    <MenuItem Header="BlockingVolume" IsChecked="{Binding ShowVolumes_BlockingVolume}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
-                    <MenuItem Header="DynamiceBlockingVolume" IsChecked="{Binding ShowVolumes_DynamicBlockingVolume}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
-                    <MenuItem Header="SFXBlockingVolume_Ledge" IsChecked="{Binding ShowVolumes_SFXBlockingVolume_Ledge}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
-                    <MenuItem Header="SFXCombatZone" IsChecked="{Binding ShowVolumes_SFXCombatZone}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
-                    <MenuItem Header="WwiseAudioVolume" IsChecked="{Binding ShowVolumes_WwiseAudioVolume}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
+                    <MenuItem Header="BioTriggerVolumes" Command="{Binding ShowBioTriggerVolumesCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_BioTriggerVolumes}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
+                    <MenuItem Header="BioTriggerStream" Command="{Binding ShowBioTriggerStreamsCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_BioTriggerStreams}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
+                    <MenuItem Header="BlockingVolume" Command="{Binding ShowBlockingVolumesCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_BlockingVolumes}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
+                    <MenuItem Header="DynamiceBlockingVolume" Command="{Binding ShowDynamicBlockingVolumesCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_DynamicBlockingVolumes}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
+                    <MenuItem Header="SFXBlockingVolume_Ledge" IsCheckable="True" IsChecked="{Binding ShowVolumes_SFXBlockingVolume_Ledges}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
+                    <MenuItem Header="SFXCombatZone" IsCheckable="True" IsChecked="{Binding ShowVolumes_SFXCombatZones}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
+                    <MenuItem Header="WwiseAudioVolume" Command="{Binding ShowWwiseAudioVolumeCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_WwiseAudioVolumes}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Experiments" Padding="4">
