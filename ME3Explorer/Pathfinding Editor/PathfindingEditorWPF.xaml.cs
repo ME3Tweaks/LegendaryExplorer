@@ -427,6 +427,8 @@ namespace ME3Explorer.Pathfinding_Editor
                 Pcc.Release();
                 Pcc = null;
                 StatusText = "Select a package file to load";
+                PathfindingEditorWPF_ReachSpecsPanel.UnloadExport();
+                PathfindingEditorWPF_ValidationPanel.UnloadPackage();
                 MessageBox.Show("This file does not contain a Level export.");
                 return;
             }
@@ -475,10 +477,11 @@ namespace ME3Explorer.Pathfinding_Editor
                 RefreshRecent(true, RFiles);
                 Title = "Pathfinding Editor WPF - " + fileName;
                 StatusText = null; //Nothing to prepend.
+                PathfindingEditorWPF_ValidationPanel.LoadPackage(Pcc);
             }
             else
             {
-                CurrentFile = null;
+                CurrentFile = null; //may need to expand this. idk if any level's have nothing though.
             }
             FileLoading = false;
         }

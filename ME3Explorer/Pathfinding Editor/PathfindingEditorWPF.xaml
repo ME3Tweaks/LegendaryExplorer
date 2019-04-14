@@ -46,6 +46,7 @@
             </MenuItem>
 
             <MenuItem Header="Tools" Padding="4">
+                <MenuItem Header="Add export to level" Command="{Binding AddExportToLevelCommand}" ToolTip="Add an export to this file's level"/>
                 <MenuItem Header="Find node via Tag" Command="{Binding FocusFindCommand}" InputGestureText="CTRL+F" ToolTip="Find a node by it's custom tag"/>
                 <MenuItem Header="Find node via UIndex" Command="{Binding FocusGotoCommand}" InputGestureText="CTRL+G" ToolTip="Find a node by it's UIndex"/>
 
@@ -53,6 +54,8 @@
 
             <MenuItem Header="View Options" Padding="4">
                 <MenuItem Header="Refresh" Command="{Binding RefreshCommand}" InputGestureText="F5" ToolTip="Refreshes the pathing graph"/>
+                <MenuItem Header="Filter by Z" Command="{Binding RefreshCommand}" InputGestureText="CTRL + H" ToolTip="Filter visible nodes by Z value"/>
+
                 <Separator/>
                 <MenuItem Header="Pathfinding" Command="{Binding TogglePathfindingCommand}" IsChecked="{Binding ShowPathfindingNodesLayer}" StaysOpenOnClick="True" InputGestureText="F1" ToolTip="Refreshes the pathing graph"/>
                 <MenuItem Header="Actors" Command="{Binding ToggleActorsCommand}" IsChecked="{Binding ShowActorsLayer}" StaysOpenOnClick="True" InputGestureText="F2" ToolTip="Refreshes the pathing graph"/>
@@ -70,7 +73,8 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Experiments" Padding="4">
-
+                <MenuItem Header="Flip level upside down" Command="{Binding FlipLevelCommand}"/>
+                <MenuItem Header="Build linear pathfinding chain from path logger (ASI)" Command="{Binding BuildPathfindingChainCommand}"/>
             </MenuItem>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
@@ -113,6 +117,9 @@
                         <local:ReachSpecsPanel x:Name="PathfindingEditorWPF_ReachSpecsPanel"/>
                     </TabItem>
                     <TabItem Header="Combat Zones"/>
+                    <TabItem Header="Validation">
+                        <local:ValidationPanel x:Name="PathfindingEditorWPF_ValidationPanel"/>
+                    </TabItem>
                 </TabControl>
             </DockPanel>
             <DockPanel DockPanel.Dock="Bottom" MaxHeight="300" HorizontalAlignment="Stretch" LastChildFill="True" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed', FallbackValue=Collapsed}">

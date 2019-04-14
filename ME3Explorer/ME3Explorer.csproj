@@ -529,6 +529,9 @@
     <Compile Include="Pathfinding Editor\HeightFilterForm.Designer.cs">
       <DependentUpon>HeightFilterForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Pathfinding Editor\ValidationPanel.xaml.cs">
+      <DependentUpon>ValidationPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1038,6 +1041,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pathfinding Editor\ReachSpecsPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pathfinding Editor\ValidationPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
