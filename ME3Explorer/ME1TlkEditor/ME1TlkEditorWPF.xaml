@@ -16,10 +16,15 @@
         <TextBox Height="23" Width="160" TextWrapping="Wrap" HorizontalAlignment="Left" Text="Search Text"  />
         <!-- Input string # -->
         <TextBox Height="23" Width="160" TextWrapping="Wrap" HorizontalAlignment="Left" Text="Goto String" />
+        <Button Name="btnSetID" Click="Evt_SetID" Content="ID" IsDefault="False"  Width="40" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Set StringRef ID." FontWeight="Normal" Height="29"/>
+        <Button Name="btnAddNew" Click="Evt_AddString" Content="Add" IsDefault="False"  Width="40" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Add a new string." FontWeight="Normal" Height="29"/>
+        <Button Name="btnDelete" Click="Evt_DeleteString" Content="Del" IsDefault="False"  Width="40" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Delete selected string." FontWeight="Normal" Height="29"/>
+        <Button Name="btnExportXML" Click="Evt_ExportXML" Content="Export" IsDefault="False"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Export to XML." FontWeight="Normal" Height="29"/>
+        <Button Name="btnImportXML" Click="Evt_ImportXML" Content="Import" IsDefault="False"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Import from XML." FontWeight="Normal" Height="29"/>
         </StackPanel>
-        <DockPanel DockPanel.Dock="Bottom">
+        <DockPanel DockPanel.Dock="Bottom" MinHeight="120">
             <Button Content="Save" DockPanel.Dock="Right"  Click="SaveButton_Clicked"/>
-            <TextBox Name="xmlBox" Text="No strings loaded" FontFamily="Courier New" FontSize="14" Focusable="True" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible" IsReadOnly="False"/>
+            <TextBox Name="xmlBox" Text="No strings loaded" FontFamily="Courier New" FontSize="14" Focusable="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" IsReadOnly="False" TextWrapping="Wrap"/>
         </DockPanel>
         <ListBox Name="DisplayedString_ListBox" ItemsSource="{Binding LoadedStrings}" HorizontalContentAlignment="Stretch" SelectionChanged="DisplayedString_ListBox_SelectionChanged" >
             <ListBox.ItemTemplate>
@@ -29,12 +34,20 @@
                             <ColumnDefinition Width="90" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding StringID}" Grid.Column="0" TextAlignment="Center"/>
-                        <TextBlock Text="{Binding Data}" Grid.Column="1"/>
+                        <TextBlock Text="{Binding StringID}" Grid.Column="0" TextAlignment="Center"></TextBlock>
+                        <TextBlock Text="{Binding Data}" Grid.Column="1" TextWrapping="Wrap"/>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True" >
+                            <Setter Property="FontWeight" Value="Bold" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
         </ListBox>
-
     </DockPanel>
 </global:ExportLoaderControl>

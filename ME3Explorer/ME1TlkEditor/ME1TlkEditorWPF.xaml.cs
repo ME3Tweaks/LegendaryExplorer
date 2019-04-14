@@ -51,7 +51,6 @@ namespace ME3Explorer.ME1TlkEditor
             LoadedStrings.ClearEx(); //clear strings Ex does this in bulk (faster)
             LoadedStrings.AddRange(tlkFile.StringRefs);
 
-            //RefreshTLKPanel(tlkFile);
         }
 
         public override void UnloadExport()
@@ -59,26 +58,6 @@ namespace ME3Explorer.ME1TlkEditor
 
         }
 
-        //public void RefreshTLKPanel(ME1Explorer.Unreal.Classes.TalkFile tlkObject)
-        //{
-
-
-        //    LoadedStrings.Clear(); //reset
-        //    //cycle through strings;
-        //    for (int str_i = 1; str_i < tlkObject.StringRefs.Length; str_i++)
-        //    {
-        //        var iString = tlkObject.GetStringRefData(str_i);
-        //        {
-        //            LoadedStrings.Add(iString);
-        //        }
-        //    }
-        //    DisplayedString_ListBox.Items.SortDescriptions.Clear(); //sort
-        //    DisplayedString_ListBox.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("", System.ComponentModel.ListSortDirection.Ascending));
-
-        //    var xmlTlk = tlkObject.TLKtoXmlstring();  // Convert to XML
-        //    xmlBox.Text = xmlTlk; // write to XML box
-
-        //}
 
         private void Evt_Commit(object sender, RoutedEventArgs e)
         {
@@ -103,6 +82,31 @@ namespace ME3Explorer.ME1TlkEditor
             {
                 selectedItem.Data = xmlBox.Text;
             }
+        }
+
+        private void Evt_SetID(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Evt_AddString(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Evt_DeleteString(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Evt_ExportXML(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Evt_ImportXML(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
