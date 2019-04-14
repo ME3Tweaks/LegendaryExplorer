@@ -475,7 +475,7 @@ namespace ME3Explorer.Packages
                         pendingUpdates.Clear();
                         OnPropertyChanged(nameof(IsModified));
                     }
-                }, App.SYNCHRONIZATION_CONTEXT); //TaskScheduler.FromCurrentSynchronizationContext());
+                }, App.SYNCHRONIZATION_CONTEXT_TASKSCHEDULER); //TaskScheduler.FromCurrentSynchronizationContext());
             }
         }
 
