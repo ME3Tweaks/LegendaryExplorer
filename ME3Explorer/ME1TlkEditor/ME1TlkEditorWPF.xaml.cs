@@ -17,7 +17,7 @@ using System.Xml;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME1Explorer.Unreal.Classes;
-using TalkFile = ME1Explorer.Unreal.Classes.TalkFile;
+using static ME1Explorer.Unreal.Classes.TalkFile;
 
 namespace ME3Explorer.ME1TlkEditor
 {
@@ -26,9 +26,10 @@ namespace ME3Explorer.ME1TlkEditor
     /// </summary>
     public partial class ME1TlkEditorWPF : ExportLoaderControl
     {
-        public ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef[] StringRefs;
+        public TLKStringRef[] StringRefs;
         public string newXml;
-        public ObservableCollectionExtended<ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef> LoadedStrings { get; } = new ObservableCollectionExtended<ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef>();
+        public List<TLKStringRef> LoadedStrings; //Loaded TLK
+        public ObservableCollectionExtended<TLKStringRef> CleanedStrings { get; } = new ObservableCollectionExtended<TLKStringRef>(); // Displayed
 
         public ME1TlkEditorWPF()
         {
@@ -48,9 +49,9 @@ namespace ME3Explorer.ME1TlkEditor
         public override void LoadExport(IExportEntry exportEntry)
         {
             var tlkFile = new ME1Explorer.Unreal.Classes.TalkFile(exportEntry); // Setup object as TalkFile
-            LoadedStrings.ClearEx(); //clear strings Ex does this in bulk (faster)
-            LoadedStrings.AddRange(tlkFile.StringRefs);
-
+            LoadedStrings = tlkFile.StringRefs.ToList(); //This is not binded to so reassigning is fine
+            CleanedStrings.ClearEx(); //clear strings Ex does this in bulk (faster)
+            CleanedStrings.AddRange(LoadedStrings.Where(x => x.StringID > 0).ToList()); //nest it
         }
 
         public override void UnloadExport()
