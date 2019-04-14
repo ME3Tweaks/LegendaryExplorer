@@ -26,7 +26,7 @@
             <Button Content="Save" DockPanel.Dock="Right"  Click="SaveButton_Clicked"/>
             <TextBox Name="xmlBox" Text="No strings loaded" FontFamily="Courier New" FontSize="14" Focusable="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" IsReadOnly="False" TextWrapping="Wrap"/>
         </DockPanel>
-        <ListBox Name="DisplayedString_ListBox" ItemsSource="{Binding CleanedStrings}" HorizontalContentAlignment="Stretch" SelectionChanged="DisplayedString_ListBox_SelectionChanged" >
+        <ListBox Name="DisplayedString_ListBox" ItemsSource="{Binding CleanedStrings}" HorizontalContentAlignment="Stretch" SelectionChanged="DisplayedString_ListBox_SelectionChanged" IsTextSearchEnabled="True" TextSearch.TextPath="StringID">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid>

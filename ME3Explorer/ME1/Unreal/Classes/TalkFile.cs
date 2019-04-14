@@ -52,7 +52,7 @@ namespace ME1Explorer.Unreal.Classes
             /// <summary>
             /// This is used by huffman compression
             /// </summary>
-            public string ASCIIData { get => Data == null ? "\0" : Data + "\0"; }
+            public string ASCIIData { get => Data == null ? ("-1\0") : (Data + '\0'); }
 
             public TLKStringRef(BinaryReader r)
             {
@@ -334,6 +334,11 @@ namespace ME1Explorer.Unreal.Classes
                 xr.WriteValue(StringRefs[i].Flags);
                 xr.WriteEndElement(); // </flags>
 
+                if ( i == StringRefs.Length -1 )
+                {
+                    Debugger.Break();
+                }
+                TLKStringRef tref = StringRefs[i];
                 if (StringRefs[i].Flags != 1)
                     xr.WriteElementString("data", "-1");
                 else
