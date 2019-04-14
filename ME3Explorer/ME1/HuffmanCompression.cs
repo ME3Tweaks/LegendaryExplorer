@@ -93,6 +93,15 @@ namespace ME1Explorer
             PrepareHuffmanCoding();
         }
 
+        public void serializeTalkfileToExport(IExportEntry export, bool savePackage = false)
+        {
+            if (export.FileRef.Game != MEGame.ME1)
+            {
+                throw new Exception("Cannot save a ME1 TLK to a game that is not Mass Effect 1.");
+            }
+            serializeTalkfileToExport(export.FileRef as ME1Package, export.Index, savePackage);
+        }
+
         public void serializeTalkfileToExport(ME1Package pcc, int Index, bool savePackage = false)
         {
             /* converts Huffmann Tree to binary form */
@@ -102,13 +111,13 @@ namespace ME1Explorer
             int i = 0;
             foreach (var entry in _inputData)
             {
-                    if (entry.Flags == 0)
-                    {
-                        if (entry.StringID > 0)
-                            entry.Index = -1;
-                        else
-                            entry.Index = 0;
-                    }
+                if (entry.Flags == 0)
+                {
+                    if (entry.StringID > 0)
+                        entry.Index = -1;
+                    else
+                        entry.Index = 0;
+                }
                 else
                 {
                     entry.Index = i;
