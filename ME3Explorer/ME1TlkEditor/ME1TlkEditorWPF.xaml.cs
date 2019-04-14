@@ -91,15 +91,58 @@ namespace ME3Explorer.ME1TlkEditor
         private void Evt_SetID(object sender, RoutedEventArgs e)
         {
             var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
+            if (selectedItem != null)
+            { 
+            //var curID = selectedItem.StringID;
+            var stringRefNewID = DlgStringID(selectedItem.StringID); //Run popout box to set tlkstring id
 
-            //Run popout box to set tlkstring id
+            selectedItem.StringID = stringRefNewID;
+            }
+        }
+
+        public int DlgStringID(int curID) //Dialog tlkstring id
+        {
+
+            PromptDialog inst = new PromptDialog("Set new string ID", "TLK Editor", curID.ToString(), false, PromptDialog.InputType.Text);
+            var newID = 0;
+            bool isValid = false;
+            while (!isValid)
+            {
+                inst.ShowDialog();
+
+                if (int.TryParse(inst.ResponseText, out int newIDInt))
+                {
+                    //test result is an acceptable input
+                    if (newIDInt > 0) //BROKEN - will crash (B) with negative number
+                    {
+                        isValid = true;
+                        newID = newIDInt;
+                        break;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("String ID must be a positive whole number");
+                    continue;  //BROKEN - will crash (A) continue (break works here)
+                }
+            }
+
+            if (isValid)
+            {
+                return newID;
+            }
+            return curID;
         }
 
         private void Evt_AddString(object sender, RoutedEventArgs e)
         {
-            var blankstringref = new TLKStringRef(100, 1, "Blank Line");
+            var blankstringref = new TLKStringRef(100, 1, "New Blank Line");
             LoadedStrings.Add(blankstringref);
             CleanedStrings.Add(blankstringref);
+            int cntStrings = CleanedStrings.Count(); // Find number of strings.
+            DisplayedString_ListBox.SelectedIndex = cntStrings - 1; //Set focus to new line (which is the last one)
+            DisplayedString_ListBox.ScrollIntoView(DisplayedString_ListBox.SelectedItem); //Scroll to last item
+
         }
 
         private void Evt_DeleteString(object sender, RoutedEventArgs e)
