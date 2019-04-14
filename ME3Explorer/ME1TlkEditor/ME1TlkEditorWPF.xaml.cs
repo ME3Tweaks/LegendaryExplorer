@@ -93,37 +93,35 @@ namespace ME3Explorer.ME1TlkEditor
             var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
             if (selectedItem != null)
             { 
-            //var curID = selectedItem.StringID;
-            var stringRefNewID = DlgStringID(selectedItem.StringID); //Run popout box to set tlkstring id
 
+            var stringRefNewID = DlgStringID(selectedItem.StringID); //Run popout box to set tlkstring id
             selectedItem.StringID = stringRefNewID;
             }
         }
 
         public int DlgStringID(int curID) //Dialog tlkstring id
         {
-
-            PromptDialog inst = new PromptDialog("Set new string ID", "TLK Editor", curID.ToString(), false, PromptDialog.InputType.Text);
             var newID = 0;
             bool isValid = false;
             while (!isValid)
             {
+                PromptDialog inst = new PromptDialog("Set new string ID", "TLK Editor", curID.ToString(), false, PromptDialog.InputType.Text);
                 inst.ShowDialog();
 
                 if (int.TryParse(inst.ResponseText, out int newIDInt))
                 {
                     //test result is an acceptable input
-                    if (newIDInt > 0) //BROKEN - will crash (B) with negative number
+                    if (newIDInt > 0)
                     {
                         isValid = true;
                         newID = newIDInt;
                         break;
                     }
+                    MessageBox.Show("String ID must be a positive whole number");
                 }
                 else
                 {
                     MessageBox.Show("String ID must be a positive whole number");
-                    continue;  //BROKEN - will crash (A) continue (break works here)
                 }
             }
 
