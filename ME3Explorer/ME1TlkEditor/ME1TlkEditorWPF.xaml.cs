@@ -66,7 +66,7 @@ namespace ME3Explorer.ME1TlkEditor
         {
             ME1Explorer.HuffmanCompression huff = new ME1Explorer.HuffmanCompression();
             huff.LoadInputData(LoadedStrings);
-            huff.serializeTalkfileToExport(CurrentLoadedExport, false, true);
+            huff.serializeTalkfileToExport(CurrentLoadedExport);
         }
 
         private void DisplayedString_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -178,7 +178,7 @@ namespace ME3Explorer.ME1TlkEditor
             {
                 ME1Explorer.HuffmanCompression compressor = new ME1Explorer.HuffmanCompression();
                 compressor.LoadInputData(openFileDialog.FileName);
-                compressor.serializeTalkfileToExport(CurrentLoadedExport, false, false);
+                compressor.serializeTalkfileToExport(CurrentLoadedExport);
             }
         }
 
