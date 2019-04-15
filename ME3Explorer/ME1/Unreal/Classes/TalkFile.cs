@@ -37,7 +37,7 @@ namespace ME1Explorer.Unreal.Classes
         }
 
         [DebuggerDisplay("TLKStringRef {StringID} {Data}")]
-        public class TLKStringRef : ME3Explorer.NotifyPropertyChangedBase
+        public class TLKStringRef : ME3Explorer.NotifyPropertyChangedBase, IEquatable<TLKStringRef>
         {
             private int _stringID;
             private string _data;
@@ -52,7 +52,21 @@ namespace ME1Explorer.Unreal.Classes
             /// <summary>
             /// This is used by huffman compression
             /// </summary>
-            public string ASCIIData { get => Data == null ? ("-1\0") : (Data + '\0'); }
+            public string ASCIIData
+            {
+                get
+                {
+                    if (Data == null)
+                    {
+                        return "-1\0";
+                    }
+                    if (Data.EndsWith("\0"))
+                    {
+                        return Data;
+                    }
+                    return Data + '\0';
+                }
+            }
 
             public TLKStringRef(BinaryReader r)
             {
@@ -68,7 +82,12 @@ namespace ME1Explorer.Unreal.Classes
                 Data = data;
                 Index = -1;
             }
-        } 
+
+            public bool Equals(TLKStringRef other)
+            {
+                return StringID == other.StringID && ASCIIData == other.ASCIIData && Flags == other.Flags /*&& Index == other.Index*/;
+            }
+        }
         #endregion
 
         private List<HuffmanNode> nodes;
@@ -139,7 +158,7 @@ namespace ME1Explorer.Unreal.Classes
                     data = "\"" + StringRefs[i].Data + "\"";
                     if (withFileName)
                     {
-                        data += " (" + Path.GetFileName(pcc.FileName) + " -> " + BioTlkSetName +  Name + ")";
+                        data += " (" + Path.GetFileName(pcc.FileName) + " -> " + BioTlkSetName + Name + ")";
                     }
                     break;
                 }
@@ -310,7 +329,7 @@ namespace ME1Explorer.Unreal.Classes
                 TraverseHuffmanTree(nodes[node.RightNodeID], code);
                 code.RemoveAt(code.Count() - 1);
             }
-        } 
+        }
         #endregion
 
         public void saveToFile(string fileName)
@@ -334,10 +353,10 @@ namespace ME1Explorer.Unreal.Classes
                 xr.WriteValue(StringRefs[i].Flags);
                 xr.WriteEndElement(); // </flags>
 
-                if ( i == StringRefs.Length -1 )
-                {
-                    Debugger.Break();
-                }
+                //if (i == StringRefs.Length - 1)
+                //{
+                //    Debugger.Break();
+                //}
                 TLKStringRef tref = StringRefs[i];
                 if (StringRefs[i].Flags != 1)
                     xr.WriteElementString("data", "-1");
