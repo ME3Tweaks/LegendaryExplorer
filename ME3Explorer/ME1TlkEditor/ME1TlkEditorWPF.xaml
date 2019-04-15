@@ -21,10 +21,16 @@
         <Button Name="btnDelete" Click="Evt_DeleteString" Content="Del" IsDefault="False"  Width="40" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Delete selected string." FontWeight="Normal" Height="29"/>
         <Button Name="btnExportXML" Click="Evt_ExportXML" Content="Export" IsDefault="False"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Export to XML." FontWeight="Normal" Height="29"/>
         <Button Name="btnImportXML" Click="Evt_ImportXML" Content="Import" IsDefault="False"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Import from XML." FontWeight="Normal" Height="29"/>
+        <Button Name="btnViewXML" Click="Evt_ViewXML" Content="XML" IsDefault="False"  Width="40" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="View as XML." FontWeight="Normal" Height="29"/>
+          <Popup Name="popupDlg"  Placement="Bottom"  Width="740" Height="800" Margin="0,20,0,0">
+            <Border BorderBrush = "Black" BorderThickness="2" Background="AliceBlue" >
+              <TextBox Name="popoutXmlBox" Text="No xml loaded" Margin="15,0,15,0" VerticalAlignment = "Center" FontFamily = "Courier New" FontSize = "14" Focusable = "True" ScrollViewer.CanContentScroll = "True" ScrollViewer.VerticalScrollBarVisibility = "Visible" IsReadOnly = "True" TextWrapping = "Wrap" />
+             </Border>
+          </Popup>
         </StackPanel>
         <DockPanel DockPanel.Dock="Bottom" MinHeight="120">
             <Button Content="Save" DockPanel.Dock="Right"  Click="SaveButton_Clicked"/>
-            <TextBox Name="xmlBox" Text="No strings loaded" FontFamily="Courier New" FontSize="14" Focusable="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" IsReadOnly="False" TextWrapping="Wrap"/>
+            <TextBox Name="editBox" Text="No strings loaded" FontFamily="Courier New" FontSize="14" Focusable="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" IsReadOnly="False" TextWrapping="Wrap" Visibility="Visible" />
         </DockPanel>
         <ListBox Name="DisplayedString_ListBox" ItemsSource="{Binding CleanedStrings}" HorizontalContentAlignment="Stretch" SelectionChanged="DisplayedString_ListBox_SelectionChanged" IsTextSearchEnabled="True" TextSearch.TextPath="StringID">
             <ListBox.ItemTemplate>
