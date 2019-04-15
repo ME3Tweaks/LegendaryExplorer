@@ -28,15 +28,15 @@ namespace ME3Explorer.ME1TlkEditor
     public partial class ME1TlkEditorWPF : ExportLoaderControl
     {
         public TLKStringRef[] StringRefs;
-        public string newXml;
         public List<TLKStringRef> LoadedStrings; //Loaded TLK
         public ObservableCollectionExtended<TLKStringRef> CleanedStrings { get; } = new ObservableCollectionExtended<TLKStringRef>(); // Displayed
+        private bool itemSelected;
 
         public ME1TlkEditorWPF()
         {
             DataContext = this;
             InitializeComponent();
-
+            itemSelected = false;
         }
 
         //SirC "efficiency is next to godliness" way of Checking export is ME1/TLK
@@ -54,6 +54,10 @@ namespace ME3Explorer.ME1TlkEditor
             CleanedStrings.ClearEx(); //clear strings Ex does this in bulk (faster)
             CleanedStrings.AddRange(LoadedStrings.Where(x => x.StringID > 0).ToList()); //nest it remove 0 strings.
             CurrentLoadedExport = exportEntry;
+            itemSelected = false;
+            EnableSave(false);
+            EnableCommit(false);
+            editBox.Text = "No strings loaded"; //Reset ability to save, reset edit box if export changed.
         }
 
         public override void UnloadExport()
@@ -67,6 +71,7 @@ namespace ME3Explorer.ME1TlkEditor
             ME1Explorer.HuffmanCompression huff = new ME1Explorer.HuffmanCompression();
             huff.LoadInputData(LoadedStrings);
             huff.serializeTalkfileToExport(CurrentLoadedExport);
+            EnableCommit(false);
         }
 
         private void DisplayedString_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -76,7 +81,24 @@ namespace ME3Explorer.ME1TlkEditor
             if (selectedItem != null)
             {
                 editBox.Text = selectedItem.Data;
+                itemSelected = true;
+                EnableSave(false);
             }
+        }
+
+        private void Evt_TextEdited(object sender, TextChangedEventArgs e)
+        {
+            
+            if (itemSelected)
+            {
+                var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
+                if (editBox.Text != selectedItem.Data)
+                {
+                    EnableSave(true);
+                }
+            }
+
+
         }
 
         private void SaveButton_Clicked(object sender, RoutedEventArgs e)
@@ -86,6 +108,8 @@ namespace ME3Explorer.ME1TlkEditor
             if (selectedItem != null)
             {
                 selectedItem.Data = editBox.Text;
+                EnableSave(false);
+                EnableCommit(true);
             }
         }
 
@@ -97,6 +121,7 @@ namespace ME3Explorer.ME1TlkEditor
 
                 var stringRefNewID = DlgStringID(selectedItem.StringID); //Run popout box to set tlkstring id
                 selectedItem.StringID = stringRefNewID;
+                EnableCommit(true);
             }
         }
 
@@ -141,7 +166,7 @@ namespace ME3Explorer.ME1TlkEditor
             int cntStrings = CleanedStrings.Count(); // Find number of strings.
             DisplayedString_ListBox.SelectedIndex = cntStrings - 1; //Set focus to new line (which is the last one)
             DisplayedString_ListBox.ScrollIntoView(DisplayedString_ListBox.SelectedItem); //Scroll to last item
-
+            EnableCommit(true);
         }
 
         private void Evt_DeleteString(object sender, RoutedEventArgs e)
@@ -149,6 +174,8 @@ namespace ME3Explorer.ME1TlkEditor
             var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
             CleanedStrings.Remove(selectedItem);
             LoadedStrings.Remove(selectedItem);
+            itemSelected = false;
+            EnableCommit(true);
         }
 
         private void Evt_ExportXML(object sender, RoutedEventArgs e)
@@ -227,6 +254,25 @@ namespace ME3Explorer.ME1TlkEditor
                 btnViewXML.ToolTip = "Close XML View.";
             popupDlg.IsOpen = true;
             }
+        }
+        private void EnableSave(bool enableSave)
+        {
+            btnSaveEdit.IsEnabled = enableSave;
+            if (enableSave)
+            {
+                btnSaveEdit.FontWeight = FontWeights.Bold; //Enable save button
+            }
+            btnSaveEdit.FontWeight = FontWeights.Normal; //Reset save button
+        }
+
+        private void EnableCommit(bool enableCmt)
+        {
+            btnCommit.IsEnabled = enableCmt;
+            if (enableCmt)
+            {
+                btnCommit.FontWeight = FontWeights.Bold; //Enabled
+            }
+            btnSaveEdit.FontWeight = FontWeights.Normal; //Reset
         }
     }
 }

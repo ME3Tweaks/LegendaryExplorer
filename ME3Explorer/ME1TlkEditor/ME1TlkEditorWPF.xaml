@@ -12,7 +12,7 @@
     <DockPanel MinWidth="10" MinHeight="10">
         <ToolBar ToolBarTray.IsLocked="True" Height="30" DockPanel.Dock="Top">
         <!-- Commit button saves edits. disabled by default. Enabled when editing. Ends edit mode with saving to object -->
-        <Button Name="btnCommit" Click="Evt_Commit" Content="Commit" IsDefault="False"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Commit changes." FontWeight="Normal" Height="29"/>
+        <Button Name="btnCommit" Click="Evt_Commit" Content="Commit" IsEnabled="False"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Commit changes." FontWeight="Normal" Height="29"/>
         <!-- Search text -->
         <TextBox Height="23" Width="160" TextWrapping="Wrap" HorizontalAlignment="Left" Text="Search Text"  />
         <!-- Input string # -->
@@ -25,8 +25,8 @@
             <Button Name="btnViewXML" Click="Evt_ViewXML" Content="XML" IsDefault="False"  Width="30" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="View as XML." FontWeight="Normal" Height="29"/>
         </ToolBar>
         <DockPanel Name="LowerDock" DockPanel.Dock="Bottom" MinHeight="120">
-            <Button Content="Save" DockPanel.Dock="Right"  Click="SaveButton_Clicked"/>
-            <TextBox Name="editBox" Text="No strings loaded" FontFamily="Courier New" FontSize="14" Focusable="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" IsReadOnly="False" TextWrapping="Wrap" Visibility="Visible" />
+            <Button Name="btnSaveEdit" Content="Save" DockPanel.Dock="Right"  Click="SaveButton_Clicked" IsEnabled="False" FontWeight="Normal"/>
+            <TextBox Name="editBox" Text="No strings loaded" FontFamily="Courier New" FontSize="14" Focusable="True" TextChanged="Evt_TextEdited" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" IsReadOnly="False" TextWrapping="Wrap" Visibility="Visible" />
         </DockPanel>
         <Popup Name="popupDlg" Placement="Center" VerticalOffset="15" Width="640" Height="800" Margin="0,12,0,0">
             <Border BorderBrush = "Black" BorderThickness="2" Background="AliceBlue" >
