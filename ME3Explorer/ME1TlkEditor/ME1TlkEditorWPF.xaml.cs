@@ -115,14 +115,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void Evt_SetID(object sender, RoutedEventArgs e)
         {
-            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
-            if (selectedItem != null)
-            {
-
-                var stringRefNewID = DlgStringID(selectedItem.StringID); //Run popout box to set tlkstring id
-                selectedItem.StringID = stringRefNewID;
-                EnableCommit(true);
-            }
+            SetNewID();
         }
 
         public int DlgStringID(int curID) //Dialog tlkstring id
@@ -166,6 +159,7 @@ namespace ME3Explorer.ME1TlkEditor
             int cntStrings = CleanedStrings.Count(); // Find number of strings.
             DisplayedString_ListBox.SelectedIndex = cntStrings - 1; //Set focus to new line (which is the last one)
             DisplayedString_ListBox.ScrollIntoView(DisplayedString_ListBox.SelectedItem); //Scroll to last item
+            SetNewID();
             EnableCommit(true);
         }
 
@@ -273,6 +267,18 @@ namespace ME3Explorer.ME1TlkEditor
                 btnCommit.FontWeight = FontWeights.Bold; //Enabled
             }
             btnSaveEdit.FontWeight = FontWeights.Normal; //Reset
+        }
+
+        private void SetNewID()
+        { 
+            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
+            if (selectedItem != null)
+            {
+
+                var stringRefNewID = DlgStringID(selectedItem.StringID); //Run popout box to set tlkstring id
+                selectedItem.StringID = stringRefNewID;
+                EnableCommit(true);
+            }
         }
     }
 }
