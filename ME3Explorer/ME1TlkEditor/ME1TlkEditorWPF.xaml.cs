@@ -187,7 +187,7 @@ namespace ME3Explorer.ME1TlkEditor
             if (popupDlg.IsOpen)
             {
                 popupDlg.IsOpen = false;
-                
+                btnViewXML.ToolTip = "View as XML.";
             }
             else
             { 
@@ -222,6 +222,9 @@ namespace ME3Explorer.ME1TlkEditor
                 }
             }
             popoutXmlBox.Text = xmlTLK.ToString();
+                popupDlg.Height = LowerDock.ActualHeight + DisplayedString_ListBox.ActualHeight;
+                popupDlg.Width = DisplayedString_ListBox.ActualWidth;
+                btnViewXML.ToolTip = "Close XML View.";
             popupDlg.IsOpen = true;
             }
         }
