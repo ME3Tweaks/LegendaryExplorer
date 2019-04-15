@@ -166,20 +166,6 @@ namespace ME1Explorer.Unreal.Classes
             return data;
         }
 
-        public string GetStringRefData(int count)
-        {
-            string data = "No Data";
-            for (int i = 0; i < StringRefs.Length; i++)
-            {
-                if (StringRefs[i].Index == count)
-                {
-                    data = " " + StringRefs[i].StringID + "   \"" + StringRefs[i].Data + "\"";
-                    break;
-                }
-            }
-            return data;
-        }
-
         #region IEquatable
         public bool Equals(TalkFile other)
         {

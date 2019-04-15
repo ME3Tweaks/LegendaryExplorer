@@ -31,6 +31,7 @@ namespace ME3Explorer.ME1TlkEditor
         public List<TLKStringRef> LoadedStrings; //Loaded TLK
         public ObservableCollectionExtended<TLKStringRef> CleanedStrings { get; } = new ObservableCollectionExtended<TLKStringRef>(); // Displayed
         private bool itemSelected;
+        private int lastSearchIndex;
 
         public ME1TlkEditorWPF()
         {
@@ -55,6 +56,7 @@ namespace ME3Explorer.ME1TlkEditor
             CleanedStrings.AddRange(LoadedStrings.Where(x => x.StringID > 0).ToList()); //nest it remove 0 strings.
             CurrentLoadedExport = exportEntry;
             itemSelected = false;
+            lastSearchIndex = 0;
             EnableSave(false);
             EnableCommit(false);
             editBox.Text = "No strings loaded"; //Reset ability to save, reset edit box if export changed.
@@ -88,7 +90,6 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void Evt_TextEdited(object sender, TextChangedEventArgs e)
         {
-            
             if (itemSelected)
             {
                 var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
@@ -97,8 +98,6 @@ namespace ME3Explorer.ME1TlkEditor
                     EnableSave(true);
                 }
             }
-
-
         }
 
         private void SaveButton_Clicked(object sender, RoutedEventArgs e)
@@ -249,6 +248,7 @@ namespace ME3Explorer.ME1TlkEditor
             popupDlg.IsOpen = true;
             }
         }
+
         private void EnableSave(bool enableSave)
         {
             btnSaveEdit.IsEnabled = enableSave;
@@ -278,6 +278,40 @@ namespace ME3Explorer.ME1TlkEditor
                 var stringRefNewID = DlgStringID(selectedItem.StringID); //Run popout box to set tlkstring id
                 selectedItem.StringID = stringRefNewID;
                 EnableCommit(true);
+            }
+        }
+
+        private void Evt_Search(object sender, RoutedEventArgs e)
+        {
+
+            int foundIndex = -1;
+            for (int i = lastSearchIndex; i < CleanedStrings.Count; i++)
+            {
+                if (CleanedStrings[i].StringID.ToString().Contains(boxSearch.Text))             //ID Search
+                {
+                    foundIndex = i;
+                    break;
+                }
+                else if (CleanedStrings[i].Data != null)
+                {
+                    if (CleanedStrings[i].Data.Contains(boxSearch.Text))             //Data Search
+                    {
+                        foundIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            if (foundIndex <= -1)
+            {
+                MessageBox.Show("Not Found");
+                lastSearchIndex = 0;
+            }
+            else
+            {
+                DisplayedString_ListBox.SelectedIndex = foundIndex;
+                DisplayedString_ListBox.ScrollIntoView(DisplayedString_ListBox.SelectedItem);
+                lastSearchIndex = foundIndex + 1;
             }
         }
     }

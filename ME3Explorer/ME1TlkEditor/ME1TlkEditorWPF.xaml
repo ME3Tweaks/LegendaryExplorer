@@ -14,13 +14,15 @@
         <!-- Commit button saves edits. disabled by default. Enabled when editing. Ends edit mode with saving to object -->
         <Button Name="btnCommit" Click="Evt_Commit" Content="Commit" IsEnabled="False"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Commit changes." FontWeight="Normal" Height="29"/>
         <!-- Search text -->
-        <TextBox Height="23" Width="160" TextWrapping="Wrap" HorizontalAlignment="Left" Text="Search Text"  />
-        <!-- Input string # -->
-        <TextBox Height="23" Width="160" TextWrapping="Wrap" HorizontalAlignment="Left" Text="Goto String" />
+            <!-- Input string # -->
+        <TextBox Name="boxSearch" Height="26" Width="160" TextWrapping="Wrap" HorizontalAlignment="Left" />
+        <Button Name="btnSearch" Click="Evt_Search" Content="Search" IsDefault="False"  Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Search strings." FontWeight="Normal" Height="29"/>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
         <Button Name="btnSetID" Click="Evt_SetID" Content="ID" IsDefault="False"  Width="35" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Set StringRef ID." FontWeight="Normal" Height="29"/>
         <Button Name="btnAddNew" Click="Evt_AddString" Content="Add" IsDefault="False"  Width="35" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Add a new string." FontWeight="Normal" Height="29"/>
         <Button Name="btnDelete" Click="Evt_DeleteString" Content="Del" IsDefault="False"  Width="35" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Delete selected string." FontWeight="Normal" Height="29"/>
-        <Button Name="btnExportXML" Click="Evt_ExportXML" Content="Export" IsDefault="False"  Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Export to XML." FontWeight="Normal" Height="29"/>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+         <Button Name="btnExportXML" Click="Evt_ExportXML" Content="Export" IsDefault="False"  Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Export to XML." FontWeight="Normal" Height="29"/>
         <Button Name="btnImportXML" Click="Evt_ImportXML" Content="Import" IsDefault="False"  Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Import from XML." FontWeight="Normal" Height="29"/>
             <Button Name="btnViewXML" Click="Evt_ViewXML" Content="XML" IsDefault="False"  Width="30" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="View as XML." FontWeight="Normal" Height="29"/>
         </ToolBar>
