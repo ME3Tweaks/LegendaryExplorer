@@ -283,18 +283,18 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void Evt_Search(object sender, RoutedEventArgs e)
         {
-
+            string searchTerm = boxSearch.Text.ToLower();
             int foundIndex = -1;
             for (int i = lastSearchIndex; i < CleanedStrings.Count; i++)
             {
-                if (CleanedStrings[i].StringID.ToString().Contains(boxSearch.Text))             //ID Search
+                if (CleanedStrings[i].StringID.ToString().Contains(searchTerm))             //ID Search
                 {
                     foundIndex = i;
                     break;
                 }
                 else if (CleanedStrings[i].Data != null)
                 {
-                    if (CleanedStrings[i].Data.Contains(boxSearch.Text))             //Data Search
+                    if (CleanedStrings[i].Data.ToLower().Contains(searchTerm))             //Data Search
                     {
                         foundIndex = i;
                         break;
