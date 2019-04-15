@@ -70,11 +70,11 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void DisplayedString_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedItem = DisplayedString_ListBox.SelectedItem as ME1Explorer.Unreal.Classes.TalkFile.TLKStringRef;
+            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
 
             if (selectedItem != null)
             {
-                xmlBox.Text = selectedItem.Data;
+                editBox.Text = selectedItem.Data;
             }
         }
 
@@ -84,7 +84,7 @@ namespace ME3Explorer.ME1TlkEditor
 
             if (selectedItem != null)
             {
-                selectedItem.Data = xmlBox.Text;
+                selectedItem.Data = editBox.Text;
             }
         }
 
@@ -158,6 +158,50 @@ namespace ME3Explorer.ME1TlkEditor
         private void Evt_ImportXML(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void Evt_ViewXML(object sender, RoutedEventArgs e)
+        {
+            if (popupDlg.IsOpen)
+            {
+                popupDlg.IsOpen = false;
+                
+            }
+            else
+            { 
+            StringBuilder xmlTLK = new StringBuilder();
+            using (StringWriter stringWriter = new StringWriter(xmlTLK))
+            {
+                using (XmlTextWriter writer = new XmlTextWriter(stringWriter))
+                {
+                    writer.Formatting = Formatting.Indented;
+                    writer.Indentation = 4;
+
+                    writer.WriteStartDocument();
+                    writer.WriteStartElement("tlkFile");
+                    writer.WriteAttributeString("Name", Name);
+
+                    for (int i = 0; i < LoadedStrings.Count; i++)
+                    {
+                        writer.WriteStartElement("string");
+                        writer.WriteStartElement("id");
+                        writer.WriteValue(LoadedStrings[i].StringID);
+                        writer.WriteEndElement(); // </id>
+                        writer.WriteStartElement("flags");
+                        writer.WriteValue(LoadedStrings[i].Flags);
+                        writer.WriteEndElement(); // </flags>
+                        if (LoadedStrings[i].Flags != 1)
+                            writer.WriteElementString("data", "-1");
+                        else
+                            writer.WriteElementString("data", LoadedStrings[i].Data);
+                        writer.WriteEndElement(); // </string>
+                    }
+                    writer.WriteEndElement(); // </tlkFile>
+                }
+            }
+            popoutXmlBox.Text = xmlTLK.ToString();
+            popupDlg.IsOpen = true;
+            }
         }
     }
 }
