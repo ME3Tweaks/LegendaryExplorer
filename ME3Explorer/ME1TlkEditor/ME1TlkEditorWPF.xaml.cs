@@ -18,6 +18,7 @@ using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME1Explorer.Unreal.Classes;
 using static ME1Explorer.Unreal.Classes.TalkFile;
+using Microsoft.Win32;
 
 namespace ME3Explorer.ME1TlkEditor
 {
@@ -35,7 +36,7 @@ namespace ME3Explorer.ME1TlkEditor
         {
             DataContext = this;
             InitializeComponent();
-                                          
+
         }
 
         //SirC "efficiency is next to godliness" way of Checking export is ME1/TLK
@@ -65,7 +66,7 @@ namespace ME3Explorer.ME1TlkEditor
         {
             ME1Explorer.HuffmanCompression huff = new ME1Explorer.HuffmanCompression();
             huff.LoadInputData(LoadedStrings);
-            huff.serializeTalkfileToExport(CurrentLoadedExport);
+            huff.serializeTalkfileToExport(CurrentLoadedExport, false, true);
         }
 
         private void DisplayedString_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -92,10 +93,10 @@ namespace ME3Explorer.ME1TlkEditor
         {
             var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
             if (selectedItem != null)
-            { 
+            {
 
-            var stringRefNewID = DlgStringID(selectedItem.StringID); //Run popout box to set tlkstring id
-            selectedItem.StringID = stringRefNewID;
+                var stringRefNewID = DlgStringID(selectedItem.StringID); //Run popout box to set tlkstring id
+                selectedItem.StringID = stringRefNewID;
             }
         }
 
@@ -153,11 +154,32 @@ namespace ME3Explorer.ME1TlkEditor
         private void Evt_ExportXML(object sender, RoutedEventArgs e)
         {
 
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "XML Files (*.xml)|*.xml",
+                FileName = CurrentLoadedExport.ObjectName + ".xml"
+            };
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                ME1Explorer.Unreal.Classes.TalkFile talkfile = new ME1Explorer.Unreal.Classes.TalkFile(CurrentLoadedExport);
+                talkfile.saveToFile(saveFileDialog.FileName);
+            }
+
         }
 
         private void Evt_ImportXML(object sender, RoutedEventArgs e)
         {
-
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Multiselect = false,
+                Filter = "XML Files (*.xml)|*.xml"
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                ME1Explorer.HuffmanCompression compressor = new ME1Explorer.HuffmanCompression();
+                compressor.LoadInputData(openFileDialog.FileName);
+                compressor.serializeTalkfileToExport(CurrentLoadedExport, false, false);
+            }
         }
     }
 }
