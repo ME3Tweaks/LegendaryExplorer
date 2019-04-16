@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -124,10 +125,18 @@ namespace ME1Explorer
                     i++;
                     List<BitArray> binaryData = new List<BitArray>();
                     int binaryLength = 0;
-                    
+
+                    if (entry == _inputData[_inputData.Count - 1])
+                    {
+                        Debugger.Break();
+                    }
                     /* for every character in a string, put it's binary code into data array */
                     foreach (char c in entry.ASCIIData)
                     {
+                        if (entry == _inputData[_inputData.Count - 1])
+                        {
+                            Debug.WriteLine("Adding: "+c);
+                        }
                         binaryData.Add(_huffmanCodes[c]);
                         binaryLength += _huffmanCodes[c].Count;
                     }
@@ -149,8 +158,14 @@ namespace ME1Explorer
 
             /* writing entries */
             m.Write(BitConverter.GetBytes(_inputData.Count), 0, 4);
-            foreach (TLKStringRef entry in _inputData)
+            //foreach (TLKStringRef entry in _inputData)
+            for (int z = 0; z < _inputData.Count; z++)
             {
+                TLKStringRef entry = _inputData[z];
+                if (z == _inputData.Count - 1)
+                {
+                    Debugger.Break();
+                }
                 m.Write(BitConverter.GetBytes(entry.StringID), 0, 4);
                 m.Write(BitConverter.GetBytes(entry.Flags), 0, 4);
                 m.Write(BitConverter.GetBytes(entry.Index), 0, 4);
@@ -161,14 +176,20 @@ namespace ME1Explorer
 
             /* writing data */
             m.Write(BitConverter.GetBytes(encodedStrings.Count), 0, 4);
-            foreach (EncodedString enc in encodedStrings)
+            for (int z = 0; z < encodedStrings.Count; z++)
             {
+                EncodedString enc = encodedStrings[z];
+                if (z == encodedStrings.Count - 1)
+                {
+                    Debugger.Break();
+                }
                 m.Write(BitConverter.GetBytes(enc.stringLength), 0, 4);
                 m.Write(BitConverter.GetBytes(enc.encodedLength), 0, 4);
                 m.Write(enc.binaryData, 0, enc.encodedLength);
             }
 
             byte[] buff = m.ToArray();
+            File.WriteAllBytes(@"C:\users\public\serializedtlk.bin", buff);
             pcc.Exports[Index].Data = buff;
             if (savePackage)
             {

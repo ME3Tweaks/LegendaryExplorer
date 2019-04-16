@@ -27,7 +27,6 @@ namespace ME3Explorer.ME1TlkEditor
     /// </summary>
     public partial class ME1TlkEditorWPF : ExportLoaderControl
     {
-        public TLKStringRef[] StringRefs;
         public List<TLKStringRef> LoadedStrings; //Loaded TLK
         public ObservableCollectionExtended<TLKStringRef> CleanedStrings { get; } = new ObservableCollectionExtended<TLKStringRef>(); // Displayed
         private bool itemSelected;

@@ -56,9 +56,15 @@ namespace ME1Explorer.Unreal.Classes
             {
                 get
                 {
-                    if (Data == null)
+                    if (Flags != 1)
                     {
                         return "-1\0";
+                    }
+                    if (Data == null)
+                    {
+                        //DATA NOT INITIALIZED!
+                        Debug.WriteLine("DATA NOT INITIALIZED FOR TLKSTRREF "+StringID);
+                        return null;
                     }
                     if (Data.EndsWith("\0"))
                     {
@@ -237,6 +243,11 @@ namespace ME1Explorer.Unreal.Classes
                 offset += 4;
                 string s = GetString(offset * 8);
                 offset += size + 4;
+                if (string.IsNullOrEmpty(s))
+                {
+                    Debugger.Break();
+                }
+                Debug.WriteLine("String: " + s);
                 rawStrings.Add(s);
             }
 
@@ -250,46 +261,47 @@ namespace ME1Explorer.Unreal.Classes
             }
         }
 
-        private string GetString(int bitOffset)
+private string GetString(int bitOffset)
+{
+    HuffmanNode root = nodes[0];
+    HuffmanNode curNode = root;
+
+    string curString = "";
+    int i;
+    for (i = bitOffset; i < Bits.Length; i++)
+    {
+        /* reading bits' sequence and decoding it to Strings while traversing Huffman Tree */
+        int nextNodeID;
+        if (Bits[i])
+            nextNodeID = curNode.RightNodeID;
+        else
+            nextNodeID = curNode.LeftNodeID;
+
+        /* it's an internal node - keep looking for a leaf */
+        if (nextNodeID >= 0)
+            curNode = nodes[nextNodeID];
+        else
+        /* it's a leaf! */
         {
-            HuffmanNode root = nodes[0];
-            HuffmanNode curNode = root;
-
-            string curString = "";
-            int i;
-            for (i = bitOffset; i < Bits.Length; i++)
+            char c = curNode.data;
+            if (c != '\0')
             {
-                /* reading bits' sequence and decoding it to Strings while traversing Huffman Tree */
-                int nextNodeID;
-                if (Bits[i])
-                    nextNodeID = curNode.RightNodeID;
-                else
-                    nextNodeID = curNode.LeftNodeID;
-
-                /* it's an internal node - keep looking for a leaf */
-                if (nextNodeID >= 0)
-                    curNode = nodes[nextNodeID];
-                else
-                /* it's a leaf! */
-                {
-                    char c = curNode.data;
-                    if (c != '\0')
-                    {
-                        /* it's not NULL */
-                        curString += c;
-                        curNode = root;
-                        i--;
-                    }
-                    else
-                    {
-                        /* it's a NULL terminating processed string, we're done */
-                        //skip ahead approximately 9 bytes to the next string
-                        return curString;
-                    }
-                }
+                /* it's not NULL */
+                curString += c;
+                curNode = root;
+                i--;
             }
-            return null;
+            else
+            {
+                /* it's a NULL terminating processed string, we're done */
+                //skip ahead approximately 9 bytes to the next string
+                return curString;
+            }
         }
+    }
+    Debug.WriteLine("RETURNING NULL!");
+    return null;
+}
 
         private void TraverseHuffmanTree(HuffmanNode node, List<bool> code)
         {
