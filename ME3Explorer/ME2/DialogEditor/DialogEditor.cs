@@ -31,19 +31,7 @@ namespace ME2Explorer
             d.Filter = "*.pcc|*.pcc";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                try
-                {
-                    LoadME2Package(d.FileName);
-                    Objs = new List<int>();
-                    for (int i = 0; i < pcc.Exports.Count; i++)
-                        if (pcc.Exports[i].ClassName == "BioConversation")
-                            Objs.Add(i);
-                    RefreshCombo();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error:\n" + ex.Message);
-                }
+                LoadFile(d.FileName);
             }
         }
 
