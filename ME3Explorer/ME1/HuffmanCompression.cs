@@ -93,7 +93,7 @@ namespace ME1Explorer
             PrepareHuffmanCoding();
         }
 
-        public void serializeTalkfileToExport(IExportEntry export, bool savePackage = false)
+        public void serializeTLKStrListToExport(IExportEntry export, bool savePackage = false)
         {
             if (export.FileRef.Game != MEGame.ME1)
             {

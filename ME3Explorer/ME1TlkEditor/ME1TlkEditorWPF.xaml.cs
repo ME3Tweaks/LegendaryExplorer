@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +18,7 @@ using ME3Explorer.SharedUI;
 using ME1Explorer.Unreal.Classes;
 using static ME1Explorer.Unreal.Classes.TalkFile;
 using Microsoft.Win32;
+using System.Threading;
 
 namespace ME3Explorer.ME1TlkEditor
 {
@@ -32,6 +32,7 @@ namespace ME3Explorer.ME1TlkEditor
         public ObservableCollectionExtended<TLKStringRef> CleanedStrings { get; } = new ObservableCollectionExtended<TLKStringRef>(); // Displayed
         private bool itemSelected;
         private int lastSearchIndex;
+        private bool xmlUp;
 
         public ME1TlkEditorWPF()
         {
@@ -64,7 +65,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         public override void UnloadExport()
         {
-
+            EnableCommit(false);
         }
 
 
@@ -72,7 +73,7 @@ namespace ME3Explorer.ME1TlkEditor
         {
             ME1Explorer.HuffmanCompression huff = new ME1Explorer.HuffmanCompression();
             huff.LoadInputData(LoadedStrings);
-            huff.serializeTalkfileToExport(CurrentLoadedExport);
+            huff.serializeTLKStrListToExport(CurrentLoadedExport);
             EnableCommit(false);
         }
 
@@ -198,55 +199,59 @@ namespace ME3Explorer.ME1TlkEditor
             {
                 ME1Explorer.HuffmanCompression compressor = new ME1Explorer.HuffmanCompression();
                 compressor.LoadInputData(openFileDialog.FileName);
-                compressor.serializeTalkfileToExport(CurrentLoadedExport);
+                compressor.serializeTLKStrListToExport(CurrentLoadedExport);
             }
         }
 
         private void Evt_ViewXML(object sender, RoutedEventArgs e)
         {
-            if (popupDlg.IsOpen)
-            {
-                popupDlg.IsOpen = false;
-                btnViewXML.ToolTip = "View as XML.";
-            }
-            else
-            { 
-            StringBuilder xmlTLK = new StringBuilder();
-            using (StringWriter stringWriter = new StringWriter(xmlTLK))
-            {
-                using (XmlTextWriter writer = new XmlTextWriter(stringWriter))
+            if (!xmlUp)
                 {
-                    writer.Formatting = Formatting.Indented;
-                    writer.Indentation = 4;
-
-                    writer.WriteStartDocument();
-                    writer.WriteStartElement("tlkFile");
-                    writer.WriteAttributeString("Name", Name);
-
-                    for (int i = 0; i < LoadedStrings.Count; i++)
+                StringBuilder xmlTLK = new StringBuilder();
+                using (StringWriter stringWriter = new StringWriter(xmlTLK))
+                {
+                    using (XmlTextWriter writer = new XmlTextWriter(stringWriter))
                     {
-                        writer.WriteStartElement("string");
-                        writer.WriteStartElement("id");
-                        writer.WriteValue(LoadedStrings[i].StringID);
-                        writer.WriteEndElement(); // </id>
-                        writer.WriteStartElement("flags");
-                        writer.WriteValue(LoadedStrings[i].Flags);
-                        writer.WriteEndElement(); // </flags>
-                        if (LoadedStrings[i].Flags != 1)
-                            writer.WriteElementString("data", "-1");
-                        else
-                            writer.WriteElementString("data", LoadedStrings[i].Data);
-                        writer.WriteEndElement(); // </string>
+                        writer.Formatting = Formatting.Indented;
+                        writer.Indentation = 4;
+
+                        writer.WriteStartDocument();
+                        writer.WriteStartElement("tlkFile");
+                        writer.WriteAttributeString("Name", Name);
+
+                        for (int i = 0; i < LoadedStrings.Count; i++)
+                        {
+                            writer.WriteStartElement("string");
+                            writer.WriteStartElement("id");
+                            writer.WriteValue(LoadedStrings[i].StringID);
+                            writer.WriteEndElement(); // </id>
+                            writer.WriteStartElement("flags");
+                            writer.WriteValue(LoadedStrings[i].Flags);
+                            writer.WriteEndElement(); // </flags>
+                            if (LoadedStrings[i].Flags != 1)
+                                writer.WriteElementString("data", "-1");
+                            else
+                                writer.WriteElementString("data", LoadedStrings[i].Data);
+                            writer.WriteEndElement(); // </string>
+                        }
+                        writer.WriteEndElement(); // </tlkFile>
                     }
-                    writer.WriteEndElement(); // </tlkFile>
                 }
-            }
-            popoutXmlBox.Text = xmlTLK.ToString();
+                popoutXmlBox.Text = xmlTLK.ToString();
                 popupDlg.Height = LowerDock.ActualHeight + DisplayedString_ListBox.ActualHeight;
                 popupDlg.Width = DisplayedString_ListBox.ActualWidth;
                 btnViewXML.ToolTip = "Close XML View.";
-            popupDlg.IsOpen = true;
+                popupDlg.IsOpen = true;
+                xmlUp = true;
             }
+        }
+
+        private async void Evt_CloseXML(object sender, EventArgs e)
+        {
+            await System.Threading.Tasks.Task.Delay(100);  //Catch double clicks of XML button 
+            xmlUp = false;
+            btnViewXML.ToolTip = "View as XML.";
+
         }
 
         private void EnableSave(bool enableSave)
@@ -256,7 +261,11 @@ namespace ME3Explorer.ME1TlkEditor
             {
                 btnSaveEdit.FontWeight = FontWeights.Bold; //Enable save button
             }
-            btnSaveEdit.FontWeight = FontWeights.Normal; //Reset save button
+            else
+            {
+                btnSaveEdit.FontWeight = FontWeights.Normal; //Reset save button
+            }
+
         }
 
         private void EnableCommit(bool enableCmt)
@@ -264,9 +273,14 @@ namespace ME3Explorer.ME1TlkEditor
             btnCommit.IsEnabled = enableCmt;
             if (enableCmt)
             {
+                btnCommit.Foreground = Brushes.Red;
                 btnCommit.FontWeight = FontWeights.Bold; //Enabled
             }
-            btnSaveEdit.FontWeight = FontWeights.Normal; //Reset
+            else
+            {
+                btnCommit.Foreground = Brushes.DarkGray;
+                btnCommit.FontWeight = FontWeights.Normal; //Reset
+            }
         }
 
         private void SetNewID()
@@ -283,6 +297,15 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void Evt_Search(object sender, RoutedEventArgs e)
         {
+            //if (DisplayedString_ListBox.SelectedIndex >= 0)
+            //{
+            //    lastSearchIndex = DisplayedString_ListBox.SelectedIndex + 1;
+            //}
+            //else
+            //{
+            //    lastSearchIndex = 0;
+            //}
+
             string searchTerm = boxSearch.Text.ToLower();
             int foundIndex = -1;
             for (int i = lastSearchIndex; i < CleanedStrings.Count; i++)
@@ -314,5 +337,6 @@ namespace ME3Explorer.ME1TlkEditor
                 lastSearchIndex = foundIndex + 1;
             }
         }
+
     }
 }
