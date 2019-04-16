@@ -47,6 +47,23 @@ namespace ME2Explorer
             }
         }
 
+        public void LoadFile(string fileName)
+        {
+            try
+            {
+                LoadME2Package(fileName);
+                Objs = new List<int>();
+                for (int i = 0; i < pcc.Exports.Count; i++)
+                    if (pcc.Exports[i].ClassName == "BioConversation")
+                        Objs.Add(i);
+                RefreshCombo();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
+            }
+        }
+
         public void RefreshCombo()
         {
             if (Objs == null)
