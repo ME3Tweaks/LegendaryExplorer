@@ -63,7 +63,7 @@ namespace ME1Explorer.Unreal.Classes
                     if (Data == null)
                     {
                         //DATA NOT INITIALIZED!
-                        Debug.WriteLine("DATA NOT INITIALIZED FOR TLKSTRREF "+StringID);
+                        Debug.WriteLine("DATA NOT INITIALIZED FOR TLKSTRREF " + StringID);
                         return null;
                     }
                     if (Data.EndsWith("\0"))
@@ -231,23 +231,26 @@ namespace ME1Explorer.Unreal.Classes
             int stringCount = r.ReadInt32();
             byte[] data = new byte[r.BaseStream.Length - r.BaseStream.Position];
             r.Read(data, 0, data.Length);
+            File.WriteAllBytes(@"C:\users\public\readinenc.bin", data);
             Bits = new BitArray(data);
 
             //decompress encoded data with huffman tree
             int offset = 4;
             int size;
             List<string> rawStrings = new List<string>(stringCount);
+            int debugi = 0;
             while (offset * 8 < Bits.Length)
             {
+                debugi++;
                 size = BitConverter.ToInt32(data, offset);
                 offset += 4;
-                string s = GetString(offset * 8);
+                string s = GetString(offset * 8, debugi == 1412);
                 offset += size + 4;
                 if (string.IsNullOrEmpty(s))
                 {
                     Debugger.Break();
                 }
-                Debug.WriteLine("String: " + s);
+                //Debug.WriteLine("String: " + s);
                 rawStrings.Add(s);
             }
 
@@ -261,15 +264,19 @@ namespace ME1Explorer.Unreal.Classes
             }
         }
 
-private string GetString(int bitOffset)
+private string GetString(int bitOffset, bool showDebug = false)
 {
     HuffmanNode root = nodes[0];
     HuffmanNode curNode = root;
 
     string curString = "";
     int i;
-    for (i = bitOffset; i < Bits.Length; i++)
+    for (i = bitOffset; i <= Bits.Length; i++)
     {
+        if (i == Bits.Length)
+        {
+            Debugger.Break();
+        }
         /* reading bits' sequence and decoding it to Strings while traversing Huffman Tree */
         int nextNodeID;
         if (Bits[i])
@@ -290,9 +297,17 @@ private string GetString(int bitOffset)
                 curString += c;
                 curNode = root;
                 i--;
+                if (showDebug)
+                {
+                    Debug.WriteLine("Found " + c + ", index now " + i);
+                }
             }
             else
             {
+                if (showDebug)
+                {
+                    Debug.WriteLine("Found \\0, returning string.");
+                }
                 /* it's a NULL terminating processed string, we're done */
                 //skip ahead approximately 9 bytes to the next string
                 return curString;

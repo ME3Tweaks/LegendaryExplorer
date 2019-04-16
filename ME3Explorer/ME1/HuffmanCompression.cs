@@ -123,24 +123,32 @@ namespace ME1Explorer
                 {
                     entry.Index = i;
                     i++;
-                    List<BitArray> binaryData = new List<BitArray>();
-                    int binaryLength = 0;
+                    List<KeyValuePair<char, BitArray>> huffmanCodesForthisStr = new List<KeyValuePair<char, BitArray>>();
+                    int numberOfHuffmanBytes = 0;
 
+                    bool finalx = false;
                     if (entry == _inputData[_inputData.Count - 1])
                     {
-                        Debugger.Break();
+                        finalx = true;
+                        //Debugger.Break();
                     }
                     /* for every character in a string, put it's binary code into data array */
                     foreach (char c in entry.ASCIIData)
                     {
+                        var code = _huffmanCodes[c];
+
                         if (entry == _inputData[_inputData.Count - 1])
                         {
-                            Debug.WriteLine("Adding: "+c);
+                            Debug.WriteLine("Adding: " + c);
                         }
-                        binaryData.Add(_huffmanCodes[c]);
-                        binaryLength += _huffmanCodes[c].Count;
+                        if (finalx && entry.ASCIIData.Last() == c)
+                        {
+                            Debugger.Break();
+                        }
+                        huffmanCodesForthisStr.Add(new KeyValuePair<char, BitArray>(c, code));
+                        numberOfHuffmanBytes += code.Count;
                     }
-                    byte[] buffer = BitArrayListToByteArray(binaryData, binaryLength);
+                    byte[] buffer = BitArrayListToByteArray(huffmanCodesForthisStr, numberOfHuffmanBytes, finalx);
                     encodedStrings.Add(new EncodedString(entry.ASCIIData.Length, buffer.Length, buffer));
                 }
             }
@@ -164,7 +172,7 @@ namespace ME1Explorer
                 TLKStringRef entry = _inputData[z];
                 if (z == _inputData.Count - 1)
                 {
-                    Debugger.Break();
+                    //Debugger.Break();
                 }
                 m.Write(BitConverter.GetBytes(entry.StringID), 0, 4);
                 m.Write(BitConverter.GetBytes(entry.Flags), 0, 4);
@@ -176,20 +184,33 @@ namespace ME1Explorer
 
             /* writing data */
             m.Write(BitConverter.GetBytes(encodedStrings.Count), 0, 4);
+            MemoryStream encodedStringsDEBUG = new MemoryStream();
             for (int z = 0; z < encodedStrings.Count; z++)
             {
                 EncodedString enc = encodedStrings[z];
                 if (z == encodedStrings.Count - 1)
                 {
-                    Debugger.Break();
+                    Debug.WriteLine("Writing final encoded string len uncomp at 0x" + encodedStringsDEBUG.Position.ToString("X8"));
+                    //Debugger.Break();
                 }
                 m.Write(BitConverter.GetBytes(enc.stringLength), 0, 4);
+                encodedStringsDEBUG.Write(BitConverter.GetBytes(enc.stringLength), 0, 4);
+                if (z == encodedStrings.Count - 1)
+                {
+                    Debug.WriteLine("Writing final encoded string len comp at 0x" + encodedStringsDEBUG.Position.ToString("X8"));
+                }
                 m.Write(BitConverter.GetBytes(enc.encodedLength), 0, 4);
+                encodedStringsDEBUG.Write(BitConverter.GetBytes(enc.encodedLength), 0, 4);
+                if (z == encodedStrings.Count - 1)
+                {
+                    Debug.WriteLine("Writing final encoded string at 0x" + encodedStringsDEBUG.Position.ToString("X8"));
+                }
                 m.Write(enc.binaryData, 0, enc.encodedLength);
+                encodedStringsDEBUG.Write(enc.binaryData, 0, enc.encodedLength);
             }
 
             byte[] buff = m.ToArray();
-            File.WriteAllBytes(@"C:\users\public\serializedtlk.bin", buff);
+            File.WriteAllBytes(@"C:\users\public\serializing-encodedstrings.bin", encodedStringsDEBUG.ToArray());
             pcc.Exports[Index].Data = buff;
             if (savePackage)
             {
@@ -363,39 +384,51 @@ namespace ME1Explorer
             return output.ToArray();
         }
 
+        public static byte[] BitArrayToByteArray(BitArray bits)
+        {
+            byte[] ret = new byte[(bits.Length - 1) / 8 + 1];
+            bits.CopyTo(ret, 0);
+            return ret;
+        }
+
         /// <summary>
         /// Converts bits in a BitArray to an array with bytes.
         /// Such array is ready to be written to a file.
         /// </summary>
-        /// <param name="bitsList"></param>
-        /// <param name="bitsCount"></param>
+        /// <param name="huffmanCodes"></param>
+        /// <param name="totalNumBits"></param>
         /// <returns></returns>
-        private static byte[] BitArrayListToByteArray(List<BitArray> bitsList, int bitsCount)
+        private static byte[] BitArrayListToByteArray(List<KeyValuePair<char, BitArray>> huffmanCodesMap, int totalNumBits, bool debug = false)
         {
             const int BITSPERBYTE = 8;
 
-            int bytesize = bitsCount / BITSPERBYTE;
-            if (bitsCount % BITSPERBYTE > 0)
-                bytesize++;
+            int finalEncodedSize = totalNumBits / BITSPERBYTE;
+            if (totalNumBits % BITSPERBYTE > 0)
+                finalEncodedSize++;
 
-            byte[] bytes = new byte[bytesize];
+            byte[] bytes = new byte[finalEncodedSize];
             int bytepos = 0;
             int bitsRead = 0;
             byte value = 0;
             byte significance = 1;
 
-            foreach (BitArray bits in bitsList)
+            foreach (KeyValuePair<char, BitArray> codePair in huffmanCodesMap)
             {
                 int bitpos = 0;
-
-                while (bitpos < bits.Length)
+                if (debug)
                 {
-                    if (bits[bitpos])
+                    Debug.WriteLine("Compacting " + codePair.Key);
+                }
+                while (bitpos < codePair.Value.Length)
+                {
+                    if (codePair.Value[bitpos])
                     {
+                        //If the next significant bit is set, add this to the current byte value to set the bits
                         value += significance;
                     }
                     ++bitpos;
                     ++bitsRead;
+                    //Write the byte out as this byte has filled
                     if (bitsRead % BITSPERBYTE == 0)
                     {
                         bytes[bytepos] = value;
@@ -406,10 +439,12 @@ namespace ME1Explorer
                     }
                     else
                     {
+                        //Keep shifting into the current byte
                         significance <<= 1;
                     }
                 }
             }
+            //Write any remaining byte out
             if (bitsRead % BITSPERBYTE != 0)
                 bytes[bytepos] = value;
             return bytes;
