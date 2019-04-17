@@ -43,24 +43,28 @@ namespace ME1Explorer
             d.Filter = "*.u;*.upk;*sfm|*.u;*.upk;*sfm";
             if (d.ShowDialog() == DialogResult.OK)
             {
-                try
-                {
-                    LoadME1Package(d.FileName);
-                    manageTLKSetToolStripMenuItem.Enabled = true;
-                    InitBioTlkFileSet();
-                    Objs = new List<int>();
-                    for (int i = 0; i < pcc.Exports.Count; i++)
-                        if (pcc.Exports[i].ClassName == "BioConversation")
-                            Objs.Add(i);
-                    RefreshCombo();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error:\n" + ex.Message);
-                }
+                LoadFile(d.FileName);
             }
         }
 
+        public void LoadFile(string fileName)
+        {
+            try
+            {
+                LoadME1Package(fileName);
+                manageTLKSetToolStripMenuItem.Enabled = true;
+                InitBioTlkFileSet();
+                Objs = new List<int>();
+                for (int i = 0; i < pcc.Exports.Count; i++)
+                    if (pcc.Exports[i].ClassName == "BioConversation")
+                        Objs.Add(i);
+                RefreshCombo();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:\n" + ex.Message);
+            }
+        }
         public void RefreshCombo()
         {
             if (Objs == null)
