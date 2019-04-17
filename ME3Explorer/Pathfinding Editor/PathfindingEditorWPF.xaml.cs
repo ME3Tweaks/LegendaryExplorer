@@ -163,7 +163,8 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand ShowSFXBlockingVolumeLedgesCommand { get; set; }
         public ICommand ShowSFXCombatZonesCommand { get; set; }
         public ICommand ShowWwiseAudioVolumesCommand { get; set; }
-
+        public ICommand FlipLevelCommand { get; set; }
+        public ICommand BuildPathfindingChainCommand { get; set; }
         private void LoadCommands()
         {
             RefreshCommand = new RelayCommand(RefreshGraph, PackageIsLoaded);
@@ -185,6 +186,201 @@ namespace ME3Explorer.Pathfinding_Editor
             ShowSFXBlockingVolumeLedgesCommand = new RelayCommand(ShowSFXBlockingVolumeLedges, PackageIsLoaded);
             ShowSFXCombatZonesCommand = new RelayCommand(ShowSFXCombatZones, PackageIsLoaded);
             ShowWwiseAudioVolumesCommand = new RelayCommand(ShowWwiseAudioVolumes, PackageIsLoaded);
+
+            FlipLevelCommand = new RelayCommand(FlipLevel, PackageIsLoaded);
+            BuildPathfindingChainCommand = new RelayCommand(BuildPathfindingChainExperiment, PackageIsLoaded);
+        }
+
+        private void BuildPathfindingChainExperiment(object obj)
+        {
+            OpenFileDialog d = new OpenFileDialog();
+            d.Filter = "Point Logger ASI file output (txt)|*txt";
+            string pathfindingChainFile = null;
+            var result = d.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                pathfindingChainFile = d.FileName;
+
+
+                var pointsStrs = File.ReadAllLines(pathfindingChainFile);
+                var points = new List<Point3D>();
+                int lineIndex = 0;
+                foreach (var point in pointsStrs)
+                {
+                    lineIndex++;
+                    if (lineIndex <= 4)
+                    {
+                        continue; //skip header of file
+                    }
+                    string[] coords = point.Split(',');
+                    points.Add(new Point3D(float.Parse(coords[0]), float.Parse(coords[1]), float.Parse(coords[2])));
+                }
+                var basePathNode = Pcc.Exports.First(x => x.ObjectName == "PathNode" && x.ClassName == "PathNode");
+                IExportEntry firstNode = null;
+                IExportEntry previousNode = null;
+
+
+                foreach (var point in points)
+                {
+                    IExportEntry newNode = cloneNode(basePathNode);
+                    StructProperty prop = newNode.GetProperty<StructProperty>("location");
+                    if (prop != null)
+                    {
+                        PropertyCollection nodelocprops = (prop as StructProperty).Properties;
+                        foreach (var locprop in nodelocprops)
+                        {
+                            switch (locprop.Name)
+                            {
+                                case "X":
+                                    (locprop as FloatProperty).Value = (float)point.X;
+                                    break;
+                                case "Y":
+                                    (locprop as FloatProperty).Value = (float)point.Y;
+                                    break;
+                                case "Z":
+                                    (locprop as FloatProperty).Value = (float)point.Z;
+                                    break;
+                            }
+                        }
+                        newNode.WriteProperty(prop);
+
+                        if (previousNode != null)
+                        {
+                            createReachSpec(previousNode, true, newNode.Index, "Engine.ReachSpec", 1, 0);
+                        }
+                        if (firstNode == null)
+                        {
+                            firstNode = newNode;
+                        }
+                        previousNode = newNode;
+                    }
+                }
+                //createReachSpec(previousNode, true, firstNode.Index, "Engine.ReachSpec", 1, 0);
+
+                fixStackHeaders(false);
+                relinkingPathfindingChain();
+                ReachSpecRecalculator rsr = new ReachSpecRecalculator(this);
+                rsr.ShowDialog(this);
+                Debug.WriteLine("Done");
+            }
+        }
+
+        private void FlipLevel(object obj)
+        {
+            foreach (IExportEntry exp in Pcc.Exports)
+            {
+                switch (exp.ObjectName)
+                {
+                    case "StaticMeshCollectionActor":
+                        {
+                            //This is going to get ugly.
+
+                            byte[] data = exp.Data;
+                            //get a list of staticmesh stuff from the props.
+                            int listsize = System.BitConverter.ToInt32(data, 28);
+                            List<IExportEntry> smacitems = new List<IExportEntry>();
+                            for (int i = 0; i < listsize; i++)
+                            {
+                                int offset = (32 + i * 4);
+                                //fetch exports
+                                int entryval = BitConverter.ToInt32(data, offset);
+                                if (entryval > 0 && entryval < Pcc.ExportCount)
+                                {
+                                    IExportEntry export = (IExportEntry)Pcc.getEntry(entryval);
+                                    smacitems.Add(export);
+                                }
+                                else if (entryval == 0)
+                                {
+                                    smacitems.Add(null);
+                                }
+                            }
+
+                            //find start of class binary (end of props)
+                            int start = exp.propsEnd();
+
+                            if (data.Length - start < 4)
+                            {
+                                return;
+                            }
+
+                            //Lets make sure this binary is divisible by 64.
+                            if ((data.Length - start) % 64 != 0)
+                            {
+                                return;
+                            }
+
+                            int smcaindex = 0;
+                            while (start < data.Length && smcaindex < listsize - 1)
+                            {
+                                float x = BitConverter.ToSingle(data, start + smcaindex * 64 + (12 * 4));
+                                float y = BitConverter.ToSingle(data, start + smcaindex * 64 + (13 * 4));
+                                float z = BitConverter.ToSingle(data, start + smcaindex * 64 + (14 * 4));
+                                data = SharedPathfinding.WriteMem(data, start + smcaindex * 64 + (12 * 4), BitConverter.GetBytes(x * -1));
+                                data = SharedPathfinding.WriteMem(data, start + smcaindex * 64 + (13 * 4), BitConverter.GetBytes(y * -1));
+                                data = SharedPathfinding.WriteMem(data, start + smcaindex * 64 + (14 * 4), BitConverter.GetBytes(z * -1));
+
+                                InvertScalingOnExport(smacitems[smcaindex], "Scale3D");
+                                smcaindex++;
+                                Debug.WriteLine(exp.Index + " " + smcaindex + " SMAC Flipping " + x + "," + y + "," + z);
+                            }
+                            exp.Data = data;
+                        }
+                        break;
+                    default:
+                        {
+                            var props = exp.GetProperties();
+                            StructProperty locationProp = props.GetProp<StructProperty>("location");
+                            if (locationProp != null)
+                            {
+                                FloatProperty xProp = locationProp.Properties.GetProp<FloatProperty>("X");
+                                FloatProperty yProp = locationProp.Properties.GetProp<FloatProperty>("Y");
+                                FloatProperty zProp = locationProp.Properties.GetProp<FloatProperty>("Z");
+                                Debug.WriteLine(exp.Index + " " + exp.ObjectName + "Flipping " + xProp.Value + "," + yProp.Value + "," + zProp.Value);
+
+                                xProp.Value = xProp.Value * -1;
+                                yProp.Value = yProp.Value * -1;
+                                zProp.Value = zProp.Value * -1;
+
+                                exp.WriteProperty(locationProp);
+                                InvertScalingOnExport(exp, "DrawScale3D");
+                            }
+                            break;
+                        }
+                }
+            }
+            MessageBox.Show("Items flipped.", "Flipping complete");
+        }
+
+        private void InvertScalingOnExport(IExportEntry exp, string propname)
+        {
+            var drawScale3D = exp.GetProperty<StructProperty>(propname);
+            bool hasDrawScale = drawScale3D != null;
+            if (drawScale3D == null)
+            {
+                Interpreter addPropInterp = new Interpreter();
+                addPropInterp.Pcc = exp.FileRef;
+                addPropInterp.export = exp;
+                addPropInterp.InitInterpreter();
+                addPropInterp.AddProperty(propname); //Assuming interpreter shows current item.
+                addPropInterp.Dispose();
+                drawScale3D = exp.GetProperty<StructProperty>(propname);
+            }
+            var drawScaleX = drawScale3D.GetProp<FloatProperty>("X");
+            var drawScaleY = drawScale3D.GetProp<FloatProperty>("Y");
+            var drawScaleZ = drawScale3D.GetProp<FloatProperty>("Z");
+            if (!hasDrawScale)
+            {
+                drawScaleX.Value = -1;
+                drawScaleY.Value = -1;
+                drawScaleZ.Value = -1;
+            }
+            else
+            {
+                drawScaleX.Value = -drawScaleX.Value;
+                drawScaleY.Value = -drawScaleY.Value;
+                drawScaleZ.Value = -drawScaleZ.Value;
+            }
+            exp.WriteProperty(drawScale3D);
         }
 
         private void ShowWwiseAudioVolumes(object obj)

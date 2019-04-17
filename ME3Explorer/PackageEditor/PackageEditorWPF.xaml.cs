@@ -1905,7 +1905,7 @@ namespace ME3Explorer
             }
         }
 
-       
+
 
         private void RefreshNames(List<PackageUpdate> updates = null)
         {
@@ -3062,7 +3062,7 @@ namespace ME3Explorer
         private void PackageEditorWPF_Closing(object sender, CancelEventArgs e)
         {
             SoundTab_Soundpanel.FreeAudioResources();
-            foreach(var el in ExportLoaders.Keys)
+            foreach (var el in ExportLoaders.Keys)
             {
                 el.Dispose(); //Remove hosted winforms references
             }
@@ -3377,6 +3377,8 @@ namespace ME3Explorer
                 }
             }
         }
+
+
 
         private void GenerateNewGUIDForPackageFile_Clicked(object sender, RoutedEventArgs e)
         {

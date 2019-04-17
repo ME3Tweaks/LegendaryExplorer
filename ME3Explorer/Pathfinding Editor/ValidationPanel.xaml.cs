@@ -345,22 +345,22 @@ namespace ME3Explorer.Pathfinding_Editor
                     idOffset = 0x1A;
                 }
 
-
-                int maybe_MPID = BitConverter.ToInt32(exportEntry.Data, idOffset);
-                List<int> idList;
-                if (mpIDs.TryGetValue(maybe_MPID, out idList))
-                {
-                    //Debug.WriteLine(itemcount);
-                    idList.Add(exportEntry.Index);
-                }
-                else
-                {
-                    mpIDs[maybe_MPID] = new List<int>();
-                    mpIDs[maybe_MPID].Add(exportEntry.Index);
-                }
+                //Maybe MP IDs??
+                //int maybe_MPID = BitConverter.ToInt32(exportEntry.Data, idOffset);
+                //List<int> idList;
+                //if (mpIDs.TryGetValue(maybe_MPID, out idList))
+                //{
+                //    //Debug.WriteLine(itemcount);
+                //    idList.Add(exportEntry.Index);
+                //}
+                //else
+                //{
+                //    mpIDs[maybe_MPID] = new List<int>();
+                //    mpIDs[maybe_MPID].Add(exportEntry.Index);
+                //}
                 itemcount++;
             }
-
+/*
             //Update IDs
             for (int index = 0; index < mpIDs.Count; index++)
             {
@@ -404,21 +404,24 @@ namespace ME3Explorer.Pathfinding_Editor
 
 
                             maybe_MPID = BitConverter.ToInt32(exportData, idOffset); //read new fixed id
-                            Debug.WriteLine("Updated MPID " + origId + " -> " + maybe_MPID + " " + export.ObjectName + " in exp " + export.Index);
                             export.Data = exportData;
 
+                            if (export.EntryHasPendingChanges)
+                            {
+                                Debug.WriteLine("Updated MPID " + origId + " -> " + maybe_MPID + " " + export.ObjectName + " in exp " + export.Index);
+                            }
                             //add to new list to prevent rewrite of dupes.
                             mpIDs[maybe_MPID] = new List<int>();
                             mpIDs[maybe_MPID].Add(export.Index);
                         }
 
                     }
-                    Debug.WriteLine(itemlist);
+                    //Debug.WriteLine(itemlist);
                 }
-            }
+            }*/
             //if (showUI)
             //{
-            task.Complete(numUpdated + " export" + (numUpdated != 1 ? "s" : "") + " had stack headers updated");
+            task.Complete(numUpdated + " export" + (numUpdated != 1 ? "s" : "") + " stack headers updated");
             //}
         }
 
