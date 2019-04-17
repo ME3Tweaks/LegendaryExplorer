@@ -257,11 +257,12 @@ namespace ME3Explorer.PackageDumper
             path = Path.GetFullPath(path);
             var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc" };
             List<string> files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower()))).ToList();
-            await dumpPackages(files);
+            await dumpPackages(files, outputfolder);
         }
 
         private async Task dumpPackages(List<string> files, string outputfolder = null)
         {
+
             CurrentOverallOperationText = "Dumping packages...";
             OverallProgressMaximum = files.Count;
             OverallProgressValue = 0;
@@ -287,6 +288,7 @@ namespace ME3Explorer.PackageDumper
                 {
                     string relative = GetRelativePath(Path.GetFullPath(item), Directory.GetParent(item).ToString());
                     outfolder = Path.Combine(outfolder, relative);
+
                 }
 
                 var threadtask = new PackageDumperSingleFileTask(item, outfolder);
