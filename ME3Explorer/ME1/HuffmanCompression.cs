@@ -178,7 +178,7 @@ namespace ME1Explorer
                         {
                             if (finalx && entry.ASCIIData.Last() == c)
                             {
-                                Debugger.Break();
+                                //Debugger.Break();
                             }
                             var letterDisp = c == '\0' ? "[NullTerm \\0]" : c.ToString();
                             Debug.WriteLine("Adding: " + letterDisp + " " + code.DebugString());
@@ -227,59 +227,59 @@ namespace ME1Explorer
             MemoryStream encodedStringsDEBUG = new MemoryStream();
 
             //OLD
-            //for (int z = 0; z < encodedStrings.Count; z++)
-            //{
-            //    EncodedString enc = encodedStrings[z];
-            //    if (z == encodedStrings.Count - 1)
-            //    {
-            //        Debug.WriteLine("Writing final encoded string len uncomp at 0x" + encodedStringsDEBUG.Position.ToString("X8"));
-            //        //Debugger.Break();
-            //    }
-            //    m.Write(BitConverter.GetBytes(enc.stringLength), 0, 4);
-            //    encodedStringsDEBUG.Write(BitConverter.GetBytes(enc.stringLength), 0, 4);
-            //    if (z == encodedStrings.Count - 1)
-            //    {
-            //        Debug.WriteLine("Writing final encoded string len comp at 0x" + encodedStringsDEBUG.Position.ToString("X8"));
-            //    }
-            //    m.Write(BitConverter.GetBytes(enc.encodedLength), 0, 4);
-            //    encodedStringsDEBUG.Write(BitConverter.GetBytes(enc.encodedLength), 0, 4);
-            //    if (z == encodedStrings.Count - 1)
-            //    {
-            //        Debug.WriteLine("Writing final encoded string at 0x" + encodedStringsDEBUG.Position.ToString("X8"));
-            //    }
-            //    m.Write(enc.binaryData, 0, enc.encodedLength);
-            //    encodedStringsDEBUG.Write(enc.binaryData, 0, enc.encodedLength);
-            //}
-
-            //NEW
-            for (int z = 0; z < pendingEncodedStrings.Count; z++)
+            for (int z = 0; z < encodedStrings.Count; z++)
             {
-                PendingEncodedString enc = pendingEncodedStrings[z];
-                if (z == pendingEncodedStrings.Count - 1)
+                EncodedString enc = encodedStrings[z];
+                if (z == encodedStrings.Count - 1)
                 {
-                    Debug.WriteLine("Writing final encoded string len uncomp at 0x" + m.Position.ToString("X8"));
+                    Debug.WriteLine("Writing final encoded string len uncomp at 0x" + encodedStringsDEBUG.Position.ToString("X8"));
                     //Debugger.Break();
                 }
-                m.Write(BitConverter.GetBytes(enc.originalString.Length), 0, 4);
-                //encodedStringsDEBUG.Write(BitConverter.GetBytes(enc.stringLength), 0, 4);
+                m.Write(BitConverter.GetBytes(enc.stringLength), 0, 4);
+                encodedStringsDEBUG.Write(BitConverter.GetBytes(enc.stringLength), 0, 4);
                 if (z == encodedStrings.Count - 1)
                 {
-                    Debug.WriteLine("Writing final encoded string len comp at 0x" + m.Position.ToString("X8"));
+                    Debug.WriteLine("Writing final encoded string len comp at 0x" + encodedStringsDEBUG.Position.ToString("X8"));
                 }
-
-                var encodedBytes = enc.GetFullStringAsBits();
-
-                m.Write(BitConverter.GetBytes(encodedBytes.Length), 0, 4);
-                //encodedStringsDEBUG.Write(BitConverter.GetBytes(enc.encodedLength), 0, 4);
+                m.Write(BitConverter.GetBytes(enc.encodedLength), 0, 4);
+                encodedStringsDEBUG.Write(BitConverter.GetBytes(enc.encodedLength), 0, 4);
                 if (z == encodedStrings.Count - 1)
                 {
-                    Debug.WriteLine("Writing final encoded string at 0x" + m.Position.ToString("X8"));
-                    Debug.WriteLine(encodedBytes.DebugString()); 
+                    Debug.WriteLine("Writing final encoded string at 0x" + encodedStringsDEBUG.Position.ToString("X8"));
                 }
-                var array = BitArrayToByteArray(encodedBytes);
-                m.Write(array, 0, array.Count());
-                //encodedStringsDEBUG.Write(enc.binaryData, 0, enc.encodedLength);
+                m.Write(enc.binaryData, 0, enc.encodedLength);
+                encodedStringsDEBUG.Write(enc.binaryData, 0, enc.encodedLength);
             }
+
+            //NEW
+            //for (int z = 0; z < pendingEncodedStrings.Count; z++)
+            //{
+            //    PendingEncodedString enc = pendingEncodedStrings[z];
+            //    if (z == pendingEncodedStrings.Count - 1)
+            //    {
+            //        Debug.WriteLine("Writing final encoded string len uncomp at 0x" + m.Position.ToString("X8"));
+            //        //Debugger.Break();
+            //    }
+            //    m.Write(BitConverter.GetBytes(enc.originalString.Length), 0, 4);
+            //    //encodedStringsDEBUG.Write(BitConverter.GetBytes(enc.stringLength), 0, 4);
+            //    if (z == encodedStrings.Count - 1)
+            //    {
+            //        Debug.WriteLine("Writing final encoded string len comp at 0x" + m.Position.ToString("X8"));
+            //    }
+
+            //    var encodedBytes = enc.GetFullStringAsBits();
+
+            //    m.Write(BitConverter.GetBytes(encodedBytes.Length), 0, 4);
+            //    //encodedStringsDEBUG.Write(BitConverter.GetBytes(enc.encodedLength), 0, 4);
+            //    if (z == encodedStrings.Count - 1)
+            //    {
+            //        Debug.WriteLine("Writing final encoded string at 0x" + m.Position.ToString("X8"));
+            //        Debug.WriteLine(encodedBytes.DebugString()); 
+            //    }
+            //    var array = BitArrayToByteArray(encodedBytes);
+            //    m.Write(array, 0, array.Count());
+            //    //encodedStringsDEBUG.Write(enc.binaryData, 0, enc.encodedLength);
+            //}
 
             byte[] buff = m.ToArray();
             File.WriteAllBytes(@"C:\users\public\serializing-encodedstrings.bin", m.ToArray());

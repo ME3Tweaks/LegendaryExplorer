@@ -102,6 +102,32 @@ namespace ME3Explorer
             }
             return print;
         }
+
+        public static string DebugEnd(this BitArray array)
+        {
+            int numTilSpace = 8;
+            string print = "";
+            bool first = true;
+            for (int i = array.Length - 32; i< array.Length; i++)
+            {
+                if (first)
+                {
+                    numTilSpace = i % 8;
+                    if (numTilSpace == 0) numTilSpace = 8;
+                    first = false;
+                }
+
+                bool b = array[i];
+                print += b ? "1" : "0";
+                numTilSpace--;
+                if (numTilSpace <= 0)
+                {
+                    print += " ";
+                    numTilSpace = 8;
+                }
+            }
+            return print;
+        }
     }
 
     public static class TreeViewItemExtension

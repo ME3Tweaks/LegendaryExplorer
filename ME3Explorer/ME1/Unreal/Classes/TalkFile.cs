@@ -8,12 +8,14 @@ using System.Xml;
 using ME3Explorer.Packages;
 using ME1Explorer;
 using System.Diagnostics;
+using ME3Explorer;
 
 namespace ME1Explorer.Unreal.Classes
 {
     public class TalkFile : ITalkFile, IEquatable<TalkFile>
     {
         #region structs
+        [DebuggerDisplay("HuffmanNode [{(LeftNodeID == 0 && RightNodeID==0) ? data : 'Internal'}] LeftID: {LeftNodeID} RightID: {RightNodeID}")]
         public struct HuffmanNode
         {
             public int LeftNodeID;
@@ -231,6 +233,7 @@ namespace ME1Explorer.Unreal.Classes
             int stringCount = r.ReadInt32();
             byte[] data = new byte[r.BaseStream.Length - r.BaseStream.Position];
             r.Read(data, 0, data.Length);
+            //r.ReadByte();
             File.WriteAllBytes(@"C:\users\public\readinenc.bin", data);
             Bits = new BitArray(data);
 
@@ -264,59 +267,67 @@ namespace ME1Explorer.Unreal.Classes
             }
         }
 
-private string GetString(int bitOffset, bool showDebug = false)
-{
-    HuffmanNode root = nodes[0];
-    HuffmanNode curNode = root;
-
-    string curString = "";
-    int i;
-    for (i = bitOffset; i <= Bits.Length; i++)
-    {
-        if (i == Bits.Length)
+        private string GetString(int bitOffset, bool showDebug = false)
         {
-            Debugger.Break();
-        }
-        /* reading bits' sequence and decoding it to Strings while traversing Huffman Tree */
-        int nextNodeID;
-        if (Bits[i])
-            nextNodeID = curNode.RightNodeID;
-        else
-            nextNodeID = curNode.LeftNodeID;
+            HuffmanNode root = nodes[0];
+            HuffmanNode curNode = root;
 
-        /* it's an internal node - keep looking for a leaf */
-        if (nextNodeID >= 0)
-            curNode = nodes[nextNodeID];
-        else
-        /* it's a leaf! */
-        {
-            char c = curNode.data;
-            if (c != '\0')
+            string curString = "";
+            int i;
+            for (i = bitOffset; i < Bits.Length; i++)
             {
-                /* it's not NULL */
-                curString += c;
-                curNode = root;
-                i--;
-                if (showDebug)
+                if (i == Bits.Length - 1)
                 {
-                    Debug.WriteLine("Found " + c + ", index now " + i);
+                    Debugger.Break();
+                    Debug.WriteLine("Final 32 bits: "+Bits.DebugEnd());
+                }
+                int bytenum = i / 8;
+                int offset = i % 8;
+                /* reading bits' sequence and decoding it to Strings while traversing Huffman Tree */
+                int nextNodeID;
+
+                if (Bits[i])
+                    nextNodeID = curNode.RightNodeID;
+                else
+                    nextNodeID = curNode.LeftNodeID;
+
+                /* it's an internal node - keep looking for a leaf */
+                if (nextNodeID >= 0)
+                    curNode = nodes[nextNodeID];
+                else
+                /* it's a leaf! */
+                {
+                    char c = curNode.data;
+                    if (c != '\0')
+                    {
+                        /* it's not NULL */
+                        curString += c;
+                        curNode = root;
+                        i--;
+                        if (showDebug)
+                        {
+                            if (bytenum == 0x0ACC4)
+                            {
+                                Debugger.Break();
+                            }
+                            Debug.WriteLine("Found " + c + ", cursor now at 0x" + bytenum.ToString("X5") + " offset "+offset);
+                        }
+                    }
+                    else
+                    {
+                        if (showDebug)
+                        {
+                            Debug.WriteLine("Found \\0, returning string.");
+                        }
+                        /* it's a NULL terminating processed string, we're done */
+                        //skip ahead approximately 9 bytes to the next string
+                        return curString;
+                    }
                 }
             }
-            else
-            {
-                if (showDebug)
-                {
-                    Debug.WriteLine("Found \\0, returning string.");
-                }
-                /* it's a NULL terminating processed string, we're done */
-                //skip ahead approximately 9 bytes to the next string
-                return curString;
-            }
+            Debug.WriteLine("RETURNING NULL!");
+            return null;
         }
-    }
-    Debug.WriteLine("RETURNING NULL!");
-    return null;
-}
 
         private void TraverseHuffmanTree(HuffmanNode node, List<bool> code)
         {
