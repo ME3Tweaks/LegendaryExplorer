@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -64,6 +65,42 @@ namespace ME3Explorer
                 }
                 return nodes;
             }
+        }
+    }
+
+    public static class BitArrayExtensions
+    {
+        public static BitArray Prepend(this BitArray current, BitArray before)
+        {
+            var bools = new bool[current.Count + before.Count];
+            before.CopyTo(bools, 0);
+            current.CopyTo(bools, before.Count);
+            return new BitArray(bools);
+        }
+
+        public static BitArray Append(this BitArray current, BitArray after)
+        {
+            var bools = new bool[current.Count + after.Count];
+            current.CopyTo(bools, 0);
+            after.CopyTo(bools, current.Count);
+            return new BitArray(bools);
+        }
+
+        public static string DebugString(this BitArray array)
+        {
+            int numTilSpace = 8;
+            string print = "";
+            foreach (bool b in array)
+            {
+                print += b ? "1" : "0";
+                numTilSpace--;
+                if (numTilSpace <= 0)
+                {
+                    print += " ";
+                    numTilSpace = 8;
+                }
+            }
+            return print;
         }
     }
 

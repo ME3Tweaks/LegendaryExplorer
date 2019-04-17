@@ -269,7 +269,7 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void EnableCommit(bool enableCmt)
         {
-            btnCommit.IsEnabled = enableCmt;
+            btnCommit.IsEnabled = true;
             if (enableCmt)
             {
                 btnCommit.Foreground = Brushes.Red;

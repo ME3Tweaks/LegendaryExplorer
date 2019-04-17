@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using ME3Explorer;
 using ME3Explorer.Packages;
 using static ME1Explorer.Unreal.Classes.TalkFile;
 
@@ -65,11 +66,45 @@ namespace ME1Explorer
             public int encodedLength;
             public byte[] binaryData;
 
+
             public EncodedString(int _stringLength, int _encodedLength, byte[] _data)
             {
                 stringLength = _stringLength;
                 encodedLength = _encodedLength;
                 binaryData = _data;
+            }
+        }
+
+        private class PendingEncodedString
+        {
+            public string originalString;
+            public List<BitArray> huffmanCodes;
+
+
+            public PendingEncodedString(string originalString, List<BitArray> huffmanCodes)
+            {
+                this.originalString = originalString;
+                this.huffmanCodes = huffmanCodes;
+            }
+
+            public BitArray GetFullStringAsBits()
+            {
+                int fullsize = 0;
+                huffmanCodes.ForEach(x => fullsize += x.Count); //get size of resulting bitarray
+
+                var result = new BitArray(fullsize);
+
+                var first = huffmanCodes[0];
+                for (int i = 1; i < huffmanCodes.Count; i++)
+                {
+                    first = first.Append(huffmanCodes[i]);
+                }
+
+                return first;
+                //foreach (var value in first.Cast<bool>().Concat(second.Cast<bool>()))
+                //{
+                //    result[i++] = value;
+                //}
             }
         }
 
@@ -109,6 +144,8 @@ namespace ME1Explorer
             byte[] treeBuffer = ConvertHuffmanTreeToBuffer();
 
             List<EncodedString> encodedStrings = new List<EncodedString>();
+            List<PendingEncodedString> pendingEncodedStrings = new List<PendingEncodedString>();
+
             int i = 0;
             foreach (var entry in _inputData)
             {
@@ -139,17 +176,20 @@ namespace ME1Explorer
 
                         if (entry == _inputData[_inputData.Count - 1])
                         {
-                            Debug.WriteLine("Adding: " + c);
+                            if (finalx && entry.ASCIIData.Last() == c)
+                            {
+                                Debugger.Break();
+                            }
+                            var letterDisp = c == '\0' ? "[NullTerm \\0]" : c.ToString();
+                            Debug.WriteLine("Adding: " + letterDisp + " " + code.DebugString());
                         }
-                        if (finalx && entry.ASCIIData.Last() == c)
-                        {
-                            Debugger.Break();
-                        }
+                        
                         huffmanCodesForthisStr.Add(new KeyValuePair<char, BitArray>(c, code));
                         numberOfHuffmanBytes += code.Count;
                     }
                     byte[] buffer = BitArrayListToByteArray(huffmanCodesForthisStr, numberOfHuffmanBytes, finalx);
                     encodedStrings.Add(new EncodedString(entry.ASCIIData.Length, buffer.Length, buffer));
+                    pendingEncodedStrings.Add(new PendingEncodedString(entry.ASCIIData, huffmanCodesForthisStr.Select(x => x.Value).ToList()));
                 }
             }
 
@@ -185,37 +225,76 @@ namespace ME1Explorer
             /* writing data */
             m.Write(BitConverter.GetBytes(encodedStrings.Count), 0, 4);
             MemoryStream encodedStringsDEBUG = new MemoryStream();
-            for (int z = 0; z < encodedStrings.Count; z++)
+
+            //OLD
+            //for (int z = 0; z < encodedStrings.Count; z++)
+            //{
+            //    EncodedString enc = encodedStrings[z];
+            //    if (z == encodedStrings.Count - 1)
+            //    {
+            //        Debug.WriteLine("Writing final encoded string len uncomp at 0x" + encodedStringsDEBUG.Position.ToString("X8"));
+            //        //Debugger.Break();
+            //    }
+            //    m.Write(BitConverter.GetBytes(enc.stringLength), 0, 4);
+            //    encodedStringsDEBUG.Write(BitConverter.GetBytes(enc.stringLength), 0, 4);
+            //    if (z == encodedStrings.Count - 1)
+            //    {
+            //        Debug.WriteLine("Writing final encoded string len comp at 0x" + encodedStringsDEBUG.Position.ToString("X8"));
+            //    }
+            //    m.Write(BitConverter.GetBytes(enc.encodedLength), 0, 4);
+            //    encodedStringsDEBUG.Write(BitConverter.GetBytes(enc.encodedLength), 0, 4);
+            //    if (z == encodedStrings.Count - 1)
+            //    {
+            //        Debug.WriteLine("Writing final encoded string at 0x" + encodedStringsDEBUG.Position.ToString("X8"));
+            //    }
+            //    m.Write(enc.binaryData, 0, enc.encodedLength);
+            //    encodedStringsDEBUG.Write(enc.binaryData, 0, enc.encodedLength);
+            //}
+
+            //NEW
+            for (int z = 0; z < pendingEncodedStrings.Count; z++)
             {
-                EncodedString enc = encodedStrings[z];
-                if (z == encodedStrings.Count - 1)
+                PendingEncodedString enc = pendingEncodedStrings[z];
+                if (z == pendingEncodedStrings.Count - 1)
                 {
-                    Debug.WriteLine("Writing final encoded string len uncomp at 0x" + encodedStringsDEBUG.Position.ToString("X8"));
+                    Debug.WriteLine("Writing final encoded string len uncomp at 0x" + m.Position.ToString("X8"));
                     //Debugger.Break();
                 }
-                m.Write(BitConverter.GetBytes(enc.stringLength), 0, 4);
-                encodedStringsDEBUG.Write(BitConverter.GetBytes(enc.stringLength), 0, 4);
+                m.Write(BitConverter.GetBytes(enc.originalString.Length), 0, 4);
+                //encodedStringsDEBUG.Write(BitConverter.GetBytes(enc.stringLength), 0, 4);
                 if (z == encodedStrings.Count - 1)
                 {
-                    Debug.WriteLine("Writing final encoded string len comp at 0x" + encodedStringsDEBUG.Position.ToString("X8"));
+                    Debug.WriteLine("Writing final encoded string len comp at 0x" + m.Position.ToString("X8"));
                 }
-                m.Write(BitConverter.GetBytes(enc.encodedLength), 0, 4);
-                encodedStringsDEBUG.Write(BitConverter.GetBytes(enc.encodedLength), 0, 4);
+
+                var encodedBytes = enc.GetFullStringAsBits();
+
+                m.Write(BitConverter.GetBytes(encodedBytes.Length), 0, 4);
+                //encodedStringsDEBUG.Write(BitConverter.GetBytes(enc.encodedLength), 0, 4);
                 if (z == encodedStrings.Count - 1)
                 {
-                    Debug.WriteLine("Writing final encoded string at 0x" + encodedStringsDEBUG.Position.ToString("X8"));
+                    Debug.WriteLine("Writing final encoded string at 0x" + m.Position.ToString("X8"));
+                    Debug.WriteLine(encodedBytes.DebugString()); 
                 }
-                m.Write(enc.binaryData, 0, enc.encodedLength);
-                encodedStringsDEBUG.Write(enc.binaryData, 0, enc.encodedLength);
+                var array = BitArrayToByteArray(encodedBytes);
+                m.Write(array, 0, array.Count());
+                //encodedStringsDEBUG.Write(enc.binaryData, 0, enc.encodedLength);
             }
 
             byte[] buff = m.ToArray();
-            File.WriteAllBytes(@"C:\users\public\serializing-encodedstrings.bin", encodedStringsDEBUG.ToArray());
+            File.WriteAllBytes(@"C:\users\public\serializing-encodedstrings.bin", m.ToArray());
             pcc.Exports[Index].Data = buff;
             if (savePackage)
             {
                 pcc.save(pcc.FileName);
             }
+        }
+
+        public static byte[] BitArrayToByteArray(BitArray bits)
+        {
+            byte[] ret = new byte[(bits.Length - 1) / 8 + 1];
+            bits.CopyTo(ret, 0);
+            return ret;
         }
 
         /// <summary>
@@ -384,12 +463,6 @@ namespace ME1Explorer
             return output.ToArray();
         }
 
-        public static byte[] BitArrayToByteArray(BitArray bits)
-        {
-            byte[] ret = new byte[(bits.Length - 1) / 8 + 1];
-            bits.CopyTo(ret, 0);
-            return ret;
-        }
 
         /// <summary>
         /// Converts bits in a BitArray to an array with bytes.
