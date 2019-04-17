@@ -9,6 +9,7 @@ using ME3Explorer.Packages;
 using ME1Explorer;
 using System.Diagnostics;
 using ME3Explorer;
+using ME3Explorer.HuffmanTreeViewer;
 
 namespace ME1Explorer.Unreal.Classes
 {
@@ -226,6 +227,10 @@ namespace ME1Explorer.Unreal.Classes
                 {
                     nodes.Add(new HuffmanNode(r.ReadInt16(), r.ReadInt16()));
                 }
+            }
+            if (Path.GetFileName(pcc.FileName) == "DLC_Vegas_GlobalTlk.upk") {
+                HuffmanTreeViewerForm htvf = new HuffmanTreeViewerForm(nodes);
+                htvf.Show();
             }
             //TraverseHuffmanTree(nodes[0], new List<bool>());
 

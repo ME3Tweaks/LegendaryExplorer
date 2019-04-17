@@ -319,6 +319,16 @@
       <DependentUpon>DLCUnpacker.xaml</DependentUpon>
     </Compile>
     <Compile Include="FaceFXAnimSetEditor\ME1FaceFXAnimSet.cs" />
+    <Compile Include="HuffmanTreeViewer\HuffmanClassNodes.cs" />
+    <Compile Include="HuffmanTreeViewer\HuffmanGraph.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="HuffmanTreeViewer\HuffmanTreeViewerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HuffmanTreeViewer\HuffmanTreeViewerForm.Designer.cs">
+      <DependentUpon>HuffmanTreeViewerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interpreter\AltPropertyEditor.xaml.cs">
       <DependentUpon>AltPropertyEditor.xaml</DependentUpon>
     </Compile>
@@ -1230,6 +1240,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DialogEditor\DialogEditor.resx">
       <DependentUpon>DialogEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HuffmanTreeViewer\HuffmanTreeViewerForm.resx">
+      <DependentUpon>HuffmanTreeViewerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InputComboBox.resx">
       <DependentUpon>InputComboBox.cs</DependentUpon>

@@ -11,7 +11,7 @@ using static ME1Explorer.Unreal.Classes.TalkFile;
 
 namespace ME1Explorer
 {
-    class HuffmanCompression
+    public class HuffmanCompression
     {
         private List<TLKStringRef> _inputData = new List<TLKStringRef>();
         private Dictionary<char, int> frequencyCount = new Dictionary<char, int>();
@@ -34,7 +34,7 @@ namespace ME1Explorer
         //    }
         //}
 
-        private class HuffmanNode
+        public class HuffmanNode
         {
             public char Data;
             public readonly int FrequencyCount;
