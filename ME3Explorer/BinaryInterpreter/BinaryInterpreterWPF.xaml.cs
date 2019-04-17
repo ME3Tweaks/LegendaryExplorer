@@ -2169,9 +2169,8 @@ namespace ME3Explorer
                     Header = $"0x{binarypos:X4} GUID count: {guidcount}",
                     Name = "_" + binarypos
                 });
-                int cappedGuidCount = Math.Min(guidcount, 1); //QUICK AND DIRTY BUG FIX #99
                 binarypos += 4;
-                for (int i = 0; i < cappedGuidCount; i++)
+                for (int i = 0; i < guidcount; i++)
                 {
                     byte[] guidData = data.Skip(binarypos).Take(16).ToArray();
                     Guid guid = new Guid(guidData);
