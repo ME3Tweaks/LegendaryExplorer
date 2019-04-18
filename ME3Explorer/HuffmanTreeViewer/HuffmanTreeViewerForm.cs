@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ME3Explorer.Packages;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -21,28 +22,31 @@ namespace ME3Explorer.HuffmanTreeViewer
         private HuffmanZoomController zoomController;
         private List<HuffmanNodeGraphObject> Objects;
 
-        public HuffmanTreeViewerForm(List<HuffmanNode> nodes)
+        public HuffmanTreeViewerForm(IExportEntry tlkEntry)
         {
-            {
-                InitializeComponent();
-                zoomController = new HuffmanZoomController(graphEditor1);
+            var tlkFile = new ME1Explorer.Unreal.Classes.TalkFile(tlkEntry); // Setup object as TalkFile
 
-                Objects = new List<HuffmanNodeGraphObject>();
-                foreach (HuffmanNode node in nodes)
-                {
-                    Objects.Add(new HuffmanNodeGraphObject(node, graphEditor1));
-                }
-                LayoutTree();
-                CreateConnections();
+
+            InitializeComponent();
+            zoomController = new HuffmanZoomController(graphEditor1);
+
+            Objects = new List<HuffmanNodeGraphObject>();
+            HuffmanNodeGraphObject root = new HuffmanNodeGraphObject(tlkFile.nodes, 0, graphEditor1, "");
+            //LayoutTree();
+            //CreateConnections();
+            graphEditor1.addNode(root);
+            foreach (PPath edge in graphEditor1.edgeLayer)
+            {
+                HuffmanGraph.UpdateEdgeStraight(edge);
             }
+
         }
 
         private void LayoutTree()
         {
             int numleafs = Objects.Count(x => x.node.LeftNodeID == x.node.RightNodeID);
-            Debug.WriteLine("Num leafs: " + numleafs);
-            LayoutSubnode(Objects[0].node.LeftNodeID, (numleafs * 55) / 2 * -1, 0);
-            LayoutSubnode(Objects[0].node.RightNodeID, (numleafs * 55) / 2, 0);
+            LayoutSubnode(Objects[0].node.LeftNodeID, -55, 0);
+            LayoutSubnode(Objects[0].node.RightNodeID, 55, 0);
         }
 
         private void LayoutSubnode(int nodeID, int xOffset, int y)
@@ -54,31 +58,11 @@ namespace ME3Explorer.HuffmanTreeViewer
             var parentalWidthSplit = Math.Abs(xOffset);
             if (nodegraphobj.node.LeftNodeID >= 0)
             {
-                LayoutSubnode(nodegraphobj.node.LeftNodeID, xOffset + (parentalWidthSplit / 2 * -1), y + 70);
+                LayoutSubnode(nodegraphobj.node.LeftNodeID, xOffset + ((parentalWidthSplit / 2) * -1), y + 70);
             }
             if (nodegraphobj.node.RightNodeID >= 0)
             {
-                LayoutSubnode(nodegraphobj.node.RightNodeID, xOffset + (parentalWidthSplit/ 2), y + 70);
-            }
-        }
-
-        public void CreateConnections()
-        {
-            if (Objects != null && Objects.Count != 0)
-            {
-                for (int i = 0; i < Objects.Count; i++)
-                {
-                    graphEditor1.addNode(Objects[i]);
-                }
-                foreach (HuffmanNodeGraphObject o in graphEditor1.nodeLayer)
-                {
-                    o.CreateConnections(ref Objects);
-                }
-
-                foreach (PPath edge in graphEditor1.edgeLayer)
-                {
-                    HuffmanGraph.UpdateEdgeStraight(edge);
-                }
+                LayoutSubnode(nodegraphobj.node.RightNodeID, xOffset + (parentalWidthSplit / 2), y + 70);
             }
         }
 

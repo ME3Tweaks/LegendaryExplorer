@@ -19,6 +19,7 @@ using ME1Explorer.Unreal.Classes;
 using static ME1Explorer.Unreal.Classes.TalkFile;
 using Microsoft.Win32;
 using System.Threading;
+using ME3Explorer.HuffmanTreeViewer;
 
 namespace ME3Explorer.ME1TlkEditor
 {
@@ -205,7 +206,7 @@ namespace ME3Explorer.ME1TlkEditor
         private void Evt_ViewXML(object sender, RoutedEventArgs e)
         {
             if (!xmlUp)
-                {
+            {
                 StringBuilder xmlTLK = new StringBuilder();
                 using (StringWriter stringWriter = new StringWriter(xmlTLK))
                 {
@@ -283,7 +284,7 @@ namespace ME3Explorer.ME1TlkEditor
         }
 
         private void SetNewID()
-        { 
+        {
             var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
             if (selectedItem != null)
             {
@@ -337,5 +338,11 @@ namespace ME3Explorer.ME1TlkEditor
             }
         }
 
+        private void ShowHuffmanTree_Click(object sender, RoutedEventArgs e)
+        {
+
+            HuffmanTreeViewerForm htvf = new HuffmanTreeViewerForm(CurrentLoadedExport);
+            htvf.Show();
+        }
     }
 }

@@ -99,7 +99,7 @@ namespace ME1Explorer.Unreal.Classes
         }
         #endregion
 
-        private List<HuffmanNode> nodes;
+        public List<HuffmanNode> nodes;
         private BitArray Bits;
         private int langRef;
         private int tlkSetIndex;
@@ -228,10 +228,7 @@ namespace ME1Explorer.Unreal.Classes
                     nodes.Add(new HuffmanNode(r.ReadInt16(), r.ReadInt16()));
                 }
             }
-            if (Path.GetFileName(pcc.FileName) == "DLC_Vegas_GlobalTlk.upk") {
-                HuffmanTreeViewerForm htvf = new HuffmanTreeViewerForm(nodes);
-                htvf.Show();
-            }
+
             //TraverseHuffmanTree(nodes[0], new List<bool>());
 
             //encoded data
@@ -256,7 +253,7 @@ namespace ME1Explorer.Unreal.Classes
                 offset += size + 4;
                 if (string.IsNullOrEmpty(s))
                 {
-                    Debugger.Break();
+                    //Debugger.Break();
                 }
                 //Debug.WriteLine("String: " + s);
                 rawStrings.Add(s);
@@ -311,10 +308,10 @@ namespace ME1Explorer.Unreal.Classes
                         i--;
                         if (showDebug)
                         {
-                            if (bytenum == 0x0ACC4)
-                            {
-                                Debugger.Break();
-                            }
+                            //if (bytenum == 0x0ACC4)
+                            //{
+                            //    Debugger.Break();
+                            //}
                             Debug.WriteLine("Found " + c + ", cursor now at 0x" + bytenum.ToString("X5") + " offset "+offset);
                         }
                     }
@@ -330,6 +327,24 @@ namespace ME1Explorer.Unreal.Classes
                     }
                 }
             }
+            if (curNode.LeftNodeID == curNode.RightNodeID)
+            {
+                char c = curNode.data;
+                //We hit edge case where final bit is on a byte boundary and there is nothing left to read. This is a leaf node.
+                if (c != '\0')
+                {
+                    /* it's not NULL */
+                    curString += c;
+                    curNode = root;
+                }
+                else
+                {
+                    /* it's a NULL terminating processed string, we're done */
+                    //skip ahead approximately 9 bytes to the next string
+                    return curString;
+                }
+            }
+
             Debug.WriteLine("RETURNING NULL!");
             return null;
         }

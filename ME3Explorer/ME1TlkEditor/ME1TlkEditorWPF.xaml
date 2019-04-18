@@ -24,6 +24,7 @@
             <Button Name="btnExportXML" Click="Evt_ExportXML" Content="Export" IsDefault="False"  Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Export to XML." FontWeight="Normal" Height="29"/>
             <Button Name="btnImportXML" Click="Evt_ImportXML" Content="Import" IsDefault="False"  Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Import from XML." FontWeight="Normal" Height="29"/>
             <Button Name="btnViewXML" Click="Evt_ViewXML" Content="XML" IsDefault="False"  Width="30" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="View as XML." FontWeight="Normal" Height="29"/>
+            <Button Content="Show Huffman Tree" Click="ShowHuffmanTree_Click"/>
         </ToolBar>
         <DockPanel Name="LowerDock" DockPanel.Dock="Bottom" MinHeight="120">
             <Button Name="btnSaveEdit" Content="Save" DockPanel.Dock="Right"  Click="SaveButton_Clicked" IsEnabled="False" FontWeight="Normal"/>

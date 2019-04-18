@@ -23,6 +23,8 @@ namespace ME3Explorer
 
         static SplashScreen splashScreen;
 
+        public static bool DoDebugStuff { get; internal set; }
+
         /// <summary>
         /// Application Entry Point.
         /// </summary>

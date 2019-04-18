@@ -1329,6 +1329,7 @@ namespace ME3Explorer
 
         public void LoadFile(string s)
         {
+            App.DoDebugStuff = true;
             try
             {
                 BusyText = "Loading " + System.IO.Path.GetFileName(s);
