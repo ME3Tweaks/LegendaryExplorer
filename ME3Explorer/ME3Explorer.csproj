@@ -653,12 +653,6 @@
       <DependentUpon>PathfindingEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Pathfinding Editor\PathfindingNodes.cs" />
-    <Compile Include="Sequence Editor\SequenceEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Sequence Editor\SequenceEditor.Designer.cs">
-      <DependentUpon>SequenceEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Sequence Editor\SequenceObjects.cs" />
     <Compile Include="SFAREditor2\SFAREditor2.cs">
       <SubType>Form</SubType>
@@ -1348,9 +1342,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Pathfinding Editor\PathfindingEditor.resx">
       <DependentUpon>PathfindingEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sequence Editor\SequenceEditor.resx">
-      <DependentUpon>SequenceEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SFAREditor2\SFAREditor2.resx">
       <DependentUpon>SFAREditor2.cs</DependentUpon>

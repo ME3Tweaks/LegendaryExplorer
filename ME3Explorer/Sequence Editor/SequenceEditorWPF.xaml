@@ -141,16 +141,12 @@
                                 <LineBreak/>
                             This means:
                                 <LineBreak/>
-                                -  Export references will be incremented by 1 from what you have seen in Package Editor
+                                -  Export references will be incremented by 1 from what you have seen in the old Sequence Editor
                             <LineBreak/>
                                 -  Import references will remain the same
                             <LineBreak/>
                                 -  0 indicates null, empty, or "Class", depending on the context
                              <LineBreak/>
-                                <LineBreak/>
-                                Sequence Editor WPF is still in development and not all features are functional or ported
-                                <LineBreak/>
-                                over from the classic version.
                         </TextBlock>
                     </StackPanel>
 

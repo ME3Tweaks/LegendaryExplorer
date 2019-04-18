@@ -3079,7 +3079,7 @@ namespace ME3Explorer
                     soundplorerWPF.Show();
                     break;
                 case "SequenceEditor":
-                    var seqEditor = new Sequence_Editor.SequenceEditor();
+                    var seqEditor = new Sequence_Editor.SequenceEditorWPF();
                     seqEditor.LoadFile(Pcc.FileName);
                     seqEditor.Show();
                     break;

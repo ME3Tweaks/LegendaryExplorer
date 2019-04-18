@@ -114,9 +114,9 @@ namespace ME3Explorer
             }
             if (arg == "JUMPLIST_SEQUENCE_EDITOR")
             {
-                SequenceEditor editor = new SequenceEditor();
-                editor.BringToFront();
+                var editor = new SequenceEditorWPF();
                 editor.Show();
+                editor.Focus();
                 exitCode = 0;
                 return 1;
             }

@@ -39,6 +39,19 @@ namespace ME3Explorer.Sequence_Editor
     /// </summary>
     public partial class SequenceEditorWPF : WPFBase, IBusyUIHost
     {
+        private struct SaveData
+        {
+            public bool absoluteIndex;
+            public int index;
+            public float X;
+            public float Y;
+
+            public SaveData(int i) : this()
+            {
+                index = i;
+            }
+        }
+
         private const float CLONED_SEQREF_MAGIC = 2.237777E-35f;
 
         private readonly GraphEditor graphEditor;
@@ -663,19 +676,9 @@ namespace ME3Explorer.Sequence_Editor
             if (propogate && recents != null)
             {
                 //we are posting an update to other instances of SeqEd
-
-                //This code can be removed when non-WPF sequence editor is removed.
-                var forms = System.Windows.Forms.Application.OpenForms;
-                foreach (System.Windows.Forms.Form form in forms)
+                foreach (var window in Application.Current.Windows)
                 {
-                    if (form is SequenceEditor editor) //it will never be "this"
-                    {
-                        editor.RefreshRecent(false, RFiles);
-                    }
-                }
-                foreach (var form in Application.Current.Windows)
-                {
-                    if (form is SequenceEditorWPF wpf && this != wpf)
+                    if (window is SequenceEditorWPF wpf && this != wpf)
                     {
                         wpf.RefreshRecent(false, RFiles);
                     }
@@ -1454,6 +1457,7 @@ namespace ME3Explorer.Sequence_Editor
                 if (!exportToAdd.inheritsFrom("SequenceObject"))
                 {
                     MessageBox.Show($"#{exportToAdd.UIndex}: {exportToAdd.ObjectName} is not a sequence object.");
+                    return;
                 }
                 if (CurrentObjects.All(obj => obj.Export != exportToAdd))
                 {

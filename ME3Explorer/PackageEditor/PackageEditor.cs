@@ -2186,10 +2186,10 @@ namespace ME3Explorer
         {
             if (Pcc != null)
             {
-                var editor = new Sequence_Editor.SequenceEditor();
+                var editor = new Sequence_Editor.SequenceEditorWPF();
                 editor.LoadFile(Pcc.FileName);
-                editor.BringToFront();
                 editor.Show();
+                editor.Focus();
             }
         }
 

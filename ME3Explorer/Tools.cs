@@ -560,19 +560,6 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Sequence Editor",
-                type = typeof(SequenceEditor),
-                icon = Application.Current.FindResource("iconSequenceEditor") as ImageSource,
-                open = () =>
-                {
-                    (new SequenceEditor()).Show();
-                },
-                tags = new List<string> { "user", "developer", "kismet", "me1", "me2", "me3" },
-                subCategory = "Core",
-                description = "Sequence Editor is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
-            });
-            set.Add(new Tool
-            {
-                name = "Sequence Editor WPF",
                 type = typeof(SequenceEditorWPF),
                 icon = Application.Current.FindResource("iconSequenceEditor") as ImageSource,
                 open = () =>
