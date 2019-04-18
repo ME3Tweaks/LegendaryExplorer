@@ -288,6 +288,26 @@ namespace ME1Explorer.Unreal.Classes
                     }
                 }
             }
+
+            if (curNode.LeftNodeID == curNode.RightNodeID)
+            {
+                char c = curNode.data;
+                //We hit edge case where final bit is on a byte boundary and there is nothing left to read. This is a leaf node.
+                if (c != '\0')
+                {
+                    /* it's not NULL */
+                    curString += c;
+                    curNode = root;
+                }
+                else
+                {
+                    /* it's a NULL terminating processed string, we're done */
+                    //skip ahead approximately 9 bytes to the next string
+                    return curString;
+                }
+            }
+
+            Debug.WriteLine("RETURNING NULL STRING (NOT NULL TERMINATED)!");
             return null;
         }
 
