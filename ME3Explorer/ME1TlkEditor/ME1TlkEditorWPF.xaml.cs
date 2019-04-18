@@ -20,6 +20,7 @@ using static ME1Explorer.Unreal.Classes.TalkFile;
 using Microsoft.Win32;
 using System.Threading;
 
+
 namespace ME3Explorer.ME1TlkEditor
 {
     /// <summary>
@@ -295,17 +296,21 @@ namespace ME3Explorer.ME1TlkEditor
             }
         }
 
+        private void Evt_KeyDown(object sender, KeyEventArgs k)
+        {
+            if (k.Key == Key.Return)
+            {
+                TextSearch();
+            }
+        }
+
         private void Evt_Search(object sender, RoutedEventArgs e)
         {
-            //if (DisplayedString_ListBox.SelectedIndex >= 0)
-            //{
-            //    lastSearchIndex = DisplayedString_ListBox.SelectedIndex + 1;
-            //}
-            //else
-            //{
-            //    lastSearchIndex = 0;
-            //}
+            TextSearch();
+        }
 
+        private void TextSearch()
+        {
             string searchTerm = boxSearch.Text.ToLower();
             int foundIndex = -1;
             for (int i = lastSearchIndex; i < CleanedStrings.Count; i++)
@@ -337,6 +342,5 @@ namespace ME3Explorer.ME1TlkEditor
                 lastSearchIndex = foundIndex + 1;
             }
         }
-
     }
 }

@@ -14,7 +14,7 @@
             <!-- Commit button saves edits. disabled by default. Enabled when editing. Ends edit mode with saving to object -->
             <Button Name="btnCommit" Click="Evt_Commit" Content="Commit" IsEnabled="False"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Commit changes." FontWeight="Normal" Height="29"/>
             <!-- Search text -->
-            <TextBox Name="boxSearch" Height="26" Width="160" TextWrapping="Wrap" HorizontalAlignment="Left" />
+            <TextBox Name="boxSearch" Height="26" Width="160" TextWrapping="Wrap" HorizontalAlignment="Left" KeyDown="Evt_KeyDown" />
             <Button Name="btnSearch" Click="Evt_Search" Content="Search" IsDefault="False"  Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Search strings." FontWeight="Normal" Height="29"/>
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
             <Button Name="btnSetID" Click="Evt_SetID" Content="ID" IsDefault="False"  Width="35" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Set StringRef ID." FontWeight="Normal" Height="29"/>
