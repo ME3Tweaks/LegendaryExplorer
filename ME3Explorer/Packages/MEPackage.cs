@@ -199,6 +199,7 @@ namespace ME3Explorer.Packages
         public IReadOnlyList<IExportEntry> Exports => exports;
 
         public bool isExport(int index) => index >= 0 && index < exports.Count;
+        public bool isUExport(int index) => index > 0 && index <= exports.Count;
 
         public void addExport(IExportEntry exportEntry)
         {
@@ -224,10 +225,8 @@ namespace ME3Explorer.Packages
         protected List<ImportEntry> imports;
         public IReadOnlyList<ImportEntry> Imports => imports;
 
-        public bool isImport(int Index)
-        {
-            return (Index >= 0 && Index < ImportCount);
-        }
+        public bool isImport(int Index) => (Index >= 0 && Index < ImportCount);
+        public bool isUImport(int Index) => (Index < 0 && -Index <= ImportCount);
 
         public void addImport(ImportEntry importEntry)
         {
@@ -245,6 +244,7 @@ namespace ME3Explorer.Packages
         }
 
         public ImportEntry getImport(int index) => imports[index];
+        public ImportEntry getUImport(int index) => imports[-index - 1];
 
         #endregion
 

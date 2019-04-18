@@ -165,6 +165,10 @@ namespace ME3Explorer.Sequence_Editor
             get => _selectedItem;
             set
             {
+                if (AutoSaveView_MenuItem.IsChecked)
+                {
+                    saveView();
+                }
                 if (SetProperty(ref _selectedItem, value) && value != null)
                 {
                     LoadSequence((IExportEntry)value.Entry);
@@ -440,7 +444,7 @@ namespace ME3Explorer.Sequence_Editor
                         viewsPath = ME1ViewsPath;
                         break;
                 }
-                JSONpath = $"{viewsPath}{CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1)}.#{export.Index}{objectName}.JSON";
+                JSONpath = $"{viewsPath}{CurrentFile}.#{export.Index}{objectName}.JSON";
                 RefOrRefChild = false;
             }
         }
@@ -1408,7 +1412,7 @@ namespace ME3Explorer.Sequence_Editor
             SaveFileDialog d = new SaveFileDialog
             {
                 Filter = "PNG Files (*.png)|*.png",
-                FileName = $"{CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1)}.{objectName}"
+                FileName = $"{CurrentFile}.{objectName}"
             };
             if (d.ShowDialog() == true)
             {
@@ -1438,7 +1442,7 @@ namespace ME3Explorer.Sequence_Editor
 
         private void AddObject_Clicked(object sender, RoutedEventArgs e)
         {
-            using (ExportSelectorWinForms form = new ExportSelectorWinForms(Pcc, ExportSelectorWinForms.SUPPORTS_EXPORTS_ONLY))
+            using (ExportSelectorWinForms form = new ExportSelectorWinForms(Pcc, ExportSelectorWinForms.SupportedTypes.Exports))
             {
                 System.Windows.Forms.DialogResult dr = form.ShowDialog();
                 if (dr != System.Windows.Forms.DialogResult.Yes)
@@ -1446,7 +1450,7 @@ namespace ME3Explorer.Sequence_Editor
                     return; //user cancel
                 }
 
-                IExportEntry exportToAdd = Pcc.getExport(form.SelectedItemIndex);
+                IExportEntry exportToAdd = form.SelectedExport;
                 if (!exportToAdd.inheritsFrom("SequenceObject"))
                 {
                     MessageBox.Show($"#{exportToAdd.UIndex}: {exportToAdd.ObjectName} is not a sequence object.");
@@ -1495,6 +1499,14 @@ namespace ME3Explorer.Sequence_Editor
                     p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(((SAction)obj).Varlinks[0].Links[0]);
                     p.loadInterpData(((SAction)obj).Varlinks[0].Links[0]);
                 }
+            }
+        }
+
+        private void GlobalSeqRefViewSavesMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (CurrentObjects.Any())
+            {
+                SetupJSON(SelectedSequence);
             }
         }
     }

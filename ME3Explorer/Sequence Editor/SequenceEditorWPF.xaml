@@ -55,7 +55,7 @@
                 <MenuItem Header="View Options" Padding="4">
                     <MenuItem Name="ShowOutputNumbers_MenuItem" Header="Show Output Numbers" IsCheckable="True" Click="showOutputNumbers_Click"/>
                     <MenuItem Name="AutoSaveView_MenuItem" Header="Auto-Save View" IsCheckable="True"/>
-                    <MenuItem Name="GlobalSeqRefViewSavesMenuItem" Header="Use Global Sequence Ref View Saves" IsCheckable="True"/>
+                    <MenuItem Name="GlobalSeqRefViewSavesMenuItem" Header="Use Global Sequence Ref View Saves" IsCheckable="True" Click="GlobalSeqRefViewSavesMenuItem_OnClick"/>
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">

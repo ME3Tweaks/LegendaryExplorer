@@ -1039,7 +1039,7 @@ namespace ME3Explorer.Sequence_Editor
             if (CurrentObjects.Count == 0)
                 return;
 
-            using (ExportSelectorWinForms form = new ExportSelectorWinForms(Pcc, ExportSelectorWinForms.SUPPORTS_EXPORTS_ONLY))
+            using (ExportSelectorWinForms form = new ExportSelectorWinForms(Pcc, ExportSelectorWinForms.SupportedTypes.Exports))
             {
                 DialogResult dr = form.ShowDialog(this);
                 if (dr != DialogResult.Yes)
@@ -1047,7 +1047,7 @@ namespace ME3Explorer.Sequence_Editor
                     return; //user cancel
                 }
 
-                int i = form.SelectedItemIndex;
+                int i = form.SelectedExport.Index;
                 if (!CurrentObjects.Contains(i))
                 {
                     if (Pcc.getExport(i).inheritsFrom("SequenceObject"))

@@ -3777,7 +3777,7 @@ namespace ME3Explorer
 
             if (levelExport != null)
             {
-                using (ExportSelectorWinForms form = new ExportSelectorWinForms(Pcc, ExportSelectorWinForms.SUPPORTS_EXPORTS_ONLY))
+                using (ExportSelectorWinForms form = new ExportSelectorWinForms(Pcc, ExportSelectorWinForms.SupportedTypes.Exports))
                 {
                     DialogResult dr = form.ShowDialog(this);
                     if (dr != DialogResult.Yes)
@@ -3785,8 +3785,7 @@ namespace ME3Explorer
                         return; //user cancel
                     }
 
-                    int i = form.SelectedItemIndex;
-                    IExportEntry addingExport = Pcc.getExport(i);
+                    IExportEntry addingExport = form.SelectedExport;
                     if (!AllLevelObjects.Contains(addingExport))
                     {
                         byte[] leveldata = levelExport.Data;
@@ -3811,7 +3810,7 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        MessageBox.Show(i + " is already in the level.");
+                        MessageBox.Show(addingExport.Index + " is already in the level.");
                     }
                 }
             }
