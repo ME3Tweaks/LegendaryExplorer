@@ -11,6 +11,7 @@ using ME1Explorer.Unreal.Classes;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
 using ME3Explorer;
+using ME3Explorer.SharedUI;
 using ME3Explorer.TlkManagerNS;
 
 namespace ME1Explorer

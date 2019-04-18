@@ -14,7 +14,6 @@
         xmlns:vhelp="clr-namespace:ME3Explorer.SharedUI.PeregrineTreeView"
         mc:Ignorable="d"
         Closing="SequenceEditorWPF_Closing"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="Sequence Editor WPF" Height="750" Width="1300" MinWidth="900" MinHeight="200">
     <Window.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
@@ -23,8 +22,17 @@
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
             <MenuItem Header="Clone Object" Click="CloneObject_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
+            <MenuItem Header="Break Links" Name="breakLinksMenuItem">
+                <MenuItem Header="Output Links" Name="outputLinksMenuItem"></MenuItem>
+                <MenuItem Header="Var Links" Name="varLinksMenuItem"></MenuItem>
+                <MenuItem Header="Break All Links" Name="breakAllLinksMenuItem" Click="removeAllLinks"/>
+            </MenuItem>
             <Separator />
             <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds." Click="OpenInPackageEditor_Clicked" />
+            <MenuItem Header="Open in Interp Viewer" ToolTip="Open this export in Interp Viewer" Click="OpenInInterpViewer_Clicked" Name="interpViewerMenuItem"/>
+        </ContextMenu>
+        <ContextMenu x:Key="backContextMenu">
+            <MenuItem Header="Add Object" Click="AddObject_Clicked" ToolTip="Add existing Sequence Object to this Sequence"/>
         </ContextMenu>
     </Window.Resources>
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
@@ -39,16 +47,15 @@
                 </MenuItem>
 
                 <MenuItem Header="Tools" Padding="4">
-
+                    <MenuItem Header="Add Object" Click="AddObject_Clicked" ToolTip="Add existing Sequence Object to this Sequence" IsEnabled="{Binding SelectedSequence, Converter={StaticResource NullEnabledConverter}}"/>
+                    <MenuItem Header="Save View" Command="{Binding SaveViewCommand}" ToolTip="Save the node layout"/>
+                    <MenuItem Header="Save Image" Command="{Binding SaveImageCommand}" ToolTip="Save image of full Sequence"/>
                 </MenuItem>
 
                 <MenuItem Header="View Options" Padding="4">
-                    <MenuItem Name="ShowOutputNumbers_MenuItem" Header="Show Output Numbers" IsCheckable="True"/>
+                    <MenuItem Name="ShowOutputNumbers_MenuItem" Header="Show Output Numbers" IsCheckable="True" Click="showOutputNumbers_Click"/>
                     <MenuItem Name="AutoSaveView_MenuItem" Header="Auto-Save View" IsCheckable="True"/>
                     <MenuItem Name="GlobalSeqRefViewSavesMenuItem" Header="Use Global Sequence Ref View Saves" IsCheckable="True"/>
-                </MenuItem>
-                <MenuItem Header="Experiments" Padding="4">
-
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">

@@ -28,6 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
+using ME3Explorer.SharedUI;
 
 namespace ME3Explorer.DLCUnpacker
 {

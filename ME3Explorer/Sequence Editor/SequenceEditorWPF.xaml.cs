@@ -3,17 +3,20 @@ using ME3Explorer.Packages;
 using ME3Explorer.SequenceObjects;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
+using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Unreal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Gammtek.Conduit.Extensions;
 using UMD.HCIL.GraphEditor;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
@@ -21,11 +24,13 @@ using UMD.HCIL.Piccolo.Nodes;
 using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using Color = System.Drawing.Color;
+using ContextMenu = System.Windows.Controls.ContextMenu;
 using MenuItem = System.Windows.Controls.MenuItem;
 using MessageBox = System.Windows.MessageBox;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using Path = System.IO.Path;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
+using InterpEditor = ME3Explorer.Matinee.InterpEditor; 
 
 namespace ME3Explorer.Sequence_Editor
 {
@@ -59,6 +64,7 @@ namespace ME3Explorer.Sequence_Editor
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Sequence Editor WPF", new WeakReference(this));
             LoadCommands();
+            DataContext = this;
             InitializeComponent();
 
             LoadRecentList();
@@ -112,6 +118,8 @@ namespace ME3Explorer.Sequence_Editor
         public ICommand OpenCommand { get; set; }
         public ICommand SaveCommand { get; set; }
         public ICommand SaveAsCommand { get; set; }
+        public ICommand SaveImageCommand { get; set; }
+        public ICommand SaveViewCommand { get; set; }
 
         #region Busy variables
 
@@ -135,9 +143,11 @@ namespace ME3Explorer.Sequence_Editor
 
         private void LoadCommands()
         {
-            OpenCommand = new RelayCommand(OpenPackage, o => true);
-            SaveCommand = new RelayCommand(SavePackage, PackageIsLoaded);
-            SaveAsCommand = new RelayCommand(SavePackageAs, PackageIsLoaded);
+            OpenCommand = new GenericCommand(OpenPackage);
+            SaveCommand = new GenericCommand(SavePackage, PackageIsLoaded);
+            SaveAsCommand = new GenericCommand(SavePackageAs, PackageIsLoaded);
+            SaveImageCommand = new GenericCommand(SaveImage, CurrentObjects.Any);
+            SaveViewCommand = new GenericCommand(() => saveView(), CurrentObjects.Any);
         }
 
         private string _statusText;
@@ -162,7 +172,7 @@ namespace ME3Explorer.Sequence_Editor
             }
         }
 
-        private void SavePackageAs(object obj)
+        private void SavePackageAs()
         {
             string extension = Path.GetExtension(Pcc.FileName);
             SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
@@ -173,12 +183,12 @@ namespace ME3Explorer.Sequence_Editor
             }
         }
 
-        private void SavePackage(object obj)
+        private void SavePackage()
         {
             Pcc.save();
         }
 
-        private void OpenPackage(object obj)
+        private void OpenPackage()
         {
             OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
             if (d.ShowDialog() == true)
@@ -194,7 +204,7 @@ namespace ME3Explorer.Sequence_Editor
             }
         }
 
-        private bool PackageIsLoaded(object obj)
+        private bool PackageIsLoaded()
         {
             return Pcc != null;
         }
@@ -332,19 +342,29 @@ namespace ME3Explorer.Sequence_Editor
             graphEditor.UseWaitCursor = true;
             SelectedSequence = seqExport;
             SetupJSON(SelectedSequence);
+            var selectedExports = SelectedObjects.Select(o => o.Export).ToList();
             if (fromFile)
             {
                 Properties_InterpreterWPF.LoadExport(seqExport);
                 if (File.Exists(JSONpath))
                 {
-                    if (SavedPositions == null)
-                        SavedPositions = new List<SaveData>();
                     SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(File.ReadAllText(JSONpath));
                 }
+                else
+                {
+                    SavedPositions = new List<SaveData>();
+                }
+                extraSaveData.Clear();
+                selectedExports.Clear();
             }
             try
             {
                 GenerateGraph();
+                if (selectedExports.Count == 1 && CurrentObjects.FirstOrDefault(obj => obj.Export == selectedExports[0]) is SObj selectedObj)
+                {
+                    panToSelection = false;
+                    CurrentObjects_ListBox.SelectedItem = selectedObj;
+                }
             }
             catch (Exception e)
             {
@@ -568,7 +588,7 @@ namespace ME3Explorer.Sequence_Editor
                         {
                             case SEvent _:
                                 obj.Layout(StartPosEvents, 0);
-                                StartPosVars += obj.Width + 20;
+                                StartPosEvents += obj.Width + 20;
                                 break;
                             case SAction _:
                                 obj.Layout(StartPosActions, 250);
@@ -732,9 +752,12 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (!(e.PickedNode is PCamera)) return;
 
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            if (e.Button == System.Windows.Forms.MouseButtons.Right && SelectedSequence != null)
             {
-                throw new NotImplementedException();
+                if (FindResource("backContextMenu") is ContextMenu contextMenu)
+                {
+                    contextMenu.IsOpen = true;
+                }
             }
             else if (e.Shift)
             {
@@ -811,8 +834,8 @@ namespace ME3Explorer.Sequence_Editor
             }
         }
 
-        private List<SaveData> extraSaveData;
-        private bool selectedByNode;
+        private readonly List<SaveData> extraSaveData = new List<SaveData>();
+        private bool panToSelection = true;
 
         private void saveView(bool toFile = true)
         {
@@ -834,11 +857,8 @@ namespace ME3Explorer.Sequence_Editor
                 }
             }
 
-            if (extraSaveData != null)
-            {
-                SavedPositions.AddRange(extraSaveData);
-                extraSaveData = null;
-            }
+            SavedPositions.AddRange(extraSaveData);
+            extraSaveData.Clear();
 
             if (toFile)
             {
@@ -850,13 +870,123 @@ namespace ME3Explorer.Sequence_Editor
             }
         }
 
-        public void OpenContextMenu()
+        public void OpenNodeContextMenu(SObj obj)
         {
             if (FindResource("nodeContextMenu") is ContextMenu contextMenu)
             {
+                if (obj is SBox sBox && (sBox.Varlinks.Any() || sBox.Outlinks.Any()) 
+                 && contextMenu.GetChild("breakLinksMenuItem") is MenuItem breakLinksMenuItem)
+                {
+                    bool hasLinks = false;
+                    if (breakLinksMenuItem.GetChild("outputLinksMenuItem") is MenuItem outputLinksMenuItem)
+                    {
+                        outputLinksMenuItem.Visibility = Visibility.Collapsed;
+                        outputLinksMenuItem.Items.Clear();
+                        for (int i = 0; i < sBox.Outlinks.Count; i++)
+                        {
+                            for (int j = 0; j < sBox.Outlinks[i].Links.Count; j++)
+                            {
+                                if (sBox.Outlinks[i].Links[j] != -1)
+                                {
+                                    outputLinksMenuItem.Visibility = Visibility.Visible;
+                                    hasLinks = true;
+                                    var temp = new MenuItem
+                                    {
+                                        Header = $"Break link from {sBox.Outlinks[i].Desc} to {sBox.Outlinks[i].Links[j]}"
+                                    };
+                                    int linkConnection = i;
+                                    int linkIndex = j;
+                                    temp.Click += (o, args) =>
+                                    {
+                                        sBox.RemoveOutlink(linkConnection, linkIndex);
+                                    };
+                                    outputLinksMenuItem.Items.Add(temp);
+                                }
+                            }
+                        }
+                    }
+                    if (breakLinksMenuItem.GetChild("varLinksMenuItem") is MenuItem varLinksMenuItem)
+                    {
+                        varLinksMenuItem.Visibility = Visibility.Collapsed;
+                        varLinksMenuItem.Items.Clear();
+                        for (int i = 0; i < sBox.Varlinks.Count; i++)
+                        {
+                            for (int j = 0; j < sBox.Varlinks[i].Links.Count; j++)
+                            {
+                                if (sBox.Varlinks[i].Links[j] != -1)
+                                {
+                                    varLinksMenuItem.Visibility = Visibility.Visible;
+                                    hasLinks = true;
+                                    var temp = new MenuItem
+                                    {
+                                        Header = $"Break link from {sBox.Varlinks[i].Desc} to {sBox.Varlinks[i].Links[j]}"
+                                    };
+                                    int linkConnection = i;
+                                    int linkIndex = j;
+                                    temp.Click += (o, args) =>
+                                    {
+                                        sBox.RemoveVarlink(linkConnection, linkIndex);
+                                    };
+                                    varLinksMenuItem.Items.Add(temp);
+                                }
+                            }
+                        }
+                    }
+                    if (breakLinksMenuItem.GetChild("breakAllLinksMenuItem") is MenuItem breakAllLinksMenuItem)
+                    {
+                        if (hasLinks)
+                        {
+                            breakLinksMenuItem.Visibility = Visibility.Visible;
+                            breakAllLinksMenuItem.Visibility = Visibility.Visible;
+                            breakAllLinksMenuItem.Tag = obj.Export;
+                        }
+                        else
+                        {
+                            breakLinksMenuItem.Visibility = Visibility.Collapsed;
+                            breakAllLinksMenuItem.Visibility = Visibility.Collapsed;
+                        }
+                    }
+                }
+                if (contextMenu.GetChild("interpViewerMenuItem") is MenuItem interpViewerMenuItem)
+                {
+                    string className = obj.Export.ClassName;
+                    if (className == "InterpData"
+                    || (className == "SeqAct_Interp" && obj is SAction action && action.Varlinks.Any() && action.Varlinks[0].Links.Any()
+                                                     && action.Varlinks[0].Links[0] != -1 && Pcc.getExport(action.Varlinks[0].Links[0]).ClassName == "InterpData"))
+                    {
+                        interpViewerMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        interpViewerMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
                 contextMenu.IsOpen = true;
                 graphEditor.DisableDragging();
             }
+        }
+
+        private void removeAllLinks(object sender, RoutedEventArgs args)
+        {
+            IExportEntry export = (IExportEntry) ((MenuItem) sender).Tag;
+            var props = export.GetProperties();
+            var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+            if (outLinksProp != null)
+            {
+                foreach (var prop in outLinksProp)
+                {
+                    prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
+                }
+            }
+            var varLinksProp = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
+            if (varLinksProp != null)
+            {
+                foreach (var prop in varLinksProp)
+                {
+                    prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
+                }
+            }
+            export.WriteProperties(props);
         }
 
         protected void node_MouseDown(object sender, PInputEventArgs e)
@@ -866,18 +996,18 @@ namespace ME3Explorer.Sequence_Editor
                 obj.posAtDragStart = obj.GlobalFullBounds;
                 if (e.Button == System.Windows.Forms.MouseButtons.Right)
                 {
-                    selectedByNode = true;
+                    panToSelection = false;
                     if (SelectedObjects.Count > 1)
                     {
                         CurrentObjects_ListBox.SelectedItems.Clear();
-                        selectedByNode = true;
+                        panToSelection = false;
                     }
                     CurrentObjects_ListBox.SelectedItem = obj;
-                    OpenContextMenu();
+                    OpenNodeContextMenu(obj);
                 }
                 else if (e.Shift || e.Control)
                 {
-                    selectedByNode = true;
+                    panToSelection = false;
                     if (obj.IsSelected)
                     {
                         CurrentObjects_ListBox.SelectedItems.Remove(obj);
@@ -889,7 +1019,7 @@ namespace ME3Explorer.Sequence_Editor
                 }
                 else if (!obj.IsSelected)
                 {
-                    selectedByNode = true;
+                    panToSelection = false;
                     CurrentObjects_ListBox.SelectedItem = obj;
                 }
             }
@@ -899,16 +1029,16 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (sender is SObj obj)
             {
-                if (obj.GlobalFullBounds == obj.posAtDragStart)
+                if (e.Button != System.Windows.Forms.MouseButtons.Left && obj.GlobalFullBounds == obj.posAtDragStart)
                 {
                     if (!e.Shift && !e.Control)
                     {
                         if (SelectedObjects.Count == 1 && obj.IsSelected) return;
-                        selectedByNode = true;
+                        panToSelection = false;
                         if (SelectedObjects.Count > 1)
                         {
                             CurrentObjects_ListBox.SelectedItems.Clear();
-                            selectedByNode = true;
+                            panToSelection = false;
                         }
 
                         CurrentObjects_ListBox.SelectedItem = obj;
@@ -919,6 +1049,9 @@ namespace ME3Explorer.Sequence_Editor
 
         private void SequenceEditorWPF_Closing(object sender, CancelEventArgs e)
         {
+            if (e.Cancel)
+                return;
+
             if (AutoSaveView_MenuItem.IsChecked)
                 saveView();
 
@@ -939,12 +1072,20 @@ namespace ME3Explorer.Sequence_Editor
             graphEditor.DragDrop -= SequenceEditor_DragDrop;
             graphEditor.DragEnter -= SequenceEditor_DragEnter;
             zoomController.Dispose();
-            CurrentObjects.ForEach(x => { x.MouseDown -= node_MouseDown; x.Dispose(); });
+            CurrentObjects.ForEach(x =>
+            {
+                x.MouseDown -= node_MouseDown;
+                x.Click -= node_Click;
+                x.Dispose();
+            });
             CurrentObjects.Clear();
             graphEditor.Dispose();
             Properties_InterpreterWPF.Dispose();
             GraphHost.Child = null; //This seems to be required to clear OnChildGotFocus handler from WinFormsHost
             GraphHost.Dispose();
+            DataContext = null;
+
+            DispatcherHelper.EmptyQueue();
         }
 
         private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)
@@ -960,7 +1101,250 @@ namespace ME3Explorer.Sequence_Editor
 
         private void CloneObject_Clicked(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (CurrentObjects_ListBox.SelectedItem is SObj obj)
+            {
+                cloneObject(obj.Export, SelectedSequence);
+            }
+        }
+
+        static void cloneObject(IExportEntry old, IExportEntry sequence, bool topLevel = true)
+        {
+            IMEPackage pcc = sequence.FileRef;
+            IExportEntry exp = old.Clone();
+            //needs to have the same index to work properly
+            if (exp.ClassName == "SeqVar_External")
+            {
+                exp.indexValue = old.indexValue;
+            }
+            pcc.addExport(exp);
+            addObjectToSequence(exp, topLevel, sequence);
+            cloneSequence(exp, sequence);
+        }
+
+        static void addObjectToSequence(IExportEntry newObject, bool removeLinks, IExportEntry sequenceExport)
+        {
+            var seqObjs = sequenceExport.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+            if (seqObjs != null)
+            {
+                seqObjs.Add(new ObjectProperty(newObject));
+                sequenceExport.WriteProperty(seqObjs);
+
+                PropertyCollection newObjectProps = newObject.GetProperties();
+                newObjectProps.AddOrReplaceProp(new ObjectProperty(sequenceExport, "ParentSequence"));
+                if (removeLinks)
+                {
+                    var outLinksProp = newObjectProps.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                    if (outLinksProp != null)
+                    {
+                        foreach (var prop in outLinksProp)
+                        {
+                            prop.GetProp<ArrayProperty<StructProperty>>("Links").Clear();
+                        }
+                    }
+                    var varLinksProp = newObjectProps.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
+                    if (varLinksProp != null)
+                    {
+                        foreach (var prop in varLinksProp)
+                        {
+                            prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Clear();
+                        }
+                    }
+                }
+                newObject.WriteProperties(newObjectProps);
+                newObject.idxLink = sequenceExport.UIndex;
+            }
+        }
+
+        static void cloneSequence(IExportEntry exp, IExportEntry parentSequence)
+        {
+            IMEPackage pcc = exp.FileRef;
+            if (exp.ClassName == "Sequence")
+            {
+                var seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                if (seqObjs == null || seqObjs.Count == 0)
+                {
+                    return;
+                }
+
+                //store original list of sequence objects;
+                List<int> oldObjects = seqObjs.Select(x => x.Value).ToList();
+
+                //clear original sequence objects
+                seqObjs.Clear();
+                exp.WriteProperty(seqObjs);
+
+                //clone all children
+                foreach (var obj in oldObjects)
+                {
+                    cloneObject(pcc.getUExport(obj), exp, false);
+                }
+
+                //re-point children's links to new objects
+                seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                foreach (var seqObj in seqObjs)
+                {
+                    IExportEntry obj = pcc.getUExport(seqObj.Value);
+                    var props = obj.GetProperties();
+                    var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                    if (outLinksProp != null)
+                    {
+                        foreach (var outLinkStruct in outLinksProp)
+                        {
+                            var links = outLinkStruct.GetProp<ArrayProperty<StructProperty>>("Links");
+                            foreach (var link in links)
+                            {
+                                var linkedOp = link.GetProp<ObjectProperty>("LinkedOp");
+                                linkedOp.Value = seqObjs[oldObjects.IndexOf(linkedOp.Value)].Value;
+                            }
+                        }
+                    }
+                    var varLinksProp = props.GetProp<ArrayProperty<StructProperty>>("VariableLinks");
+                    if (varLinksProp != null)
+                    {
+                        foreach (var varLinkStruct in varLinksProp)
+                        {
+                            var links = varLinkStruct.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables");
+                            foreach (var link in links)
+                            {
+                                link.Value = seqObjs[oldObjects.IndexOf(link.Value)].Value;
+                            }
+                        }
+                    }
+                    var eventLinksProp = props.GetProp<ArrayProperty<StructProperty>>("EventLinks");
+                    if (eventLinksProp != null)
+                    {
+                        foreach (var eventLinkStruct in eventLinksProp)
+                        {
+                            var links = eventLinkStruct.GetProp<ArrayProperty<ObjectProperty>>("LinkedEvents");
+                            foreach (var link in links)
+                            {
+                                link.Value = seqObjs[oldObjects.IndexOf(link.Value)].Value;
+                            }
+                        }
+                    }
+                    obj.WriteProperties(props);
+                }
+
+                //re-point sequence links to new objects
+                int oldObj;
+                int newObj;
+                var propCollection = exp.GetProperties();
+                var inputLinksProp = propCollection.GetProp<ArrayProperty<StructProperty>>("InputLinks");
+                if (inputLinksProp != null)
+                {
+                    foreach (var inLinkStruct in inputLinksProp)
+                    {
+                        var linkedOp = inLinkStruct.GetProp<ObjectProperty>("LinkedOp");
+                        oldObj = linkedOp.Value;
+                        if (oldObj != 0)
+                        {
+                            newObj = seqObjs[oldObjects.IndexOf(oldObj)].Value;
+                            linkedOp.Value = newObj;
+
+                            NameProperty linkAction = inLinkStruct.GetProp<NameProperty>("LinkAction");
+                            var nameRef = linkAction.Value;
+                            nameRef.Number = pcc.getUExport(newObj).indexValue;
+                            linkAction.Value = nameRef;
+                        }
+                    }
+                }
+                var outputLinksProp = propCollection.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                if (outputLinksProp != null)
+                {
+                    foreach (var outLinkStruct in outputLinksProp)
+                    {
+                        var linkedOp = outLinkStruct.GetProp<ObjectProperty>("LinkedOp");
+                        oldObj = linkedOp.Value;
+                        if (oldObj != 0)
+                        {
+                            newObj = seqObjs[oldObjects.IndexOf(oldObj)].Value;
+                            linkedOp.Value = newObj;
+
+                            NameProperty linkAction = outLinkStruct.GetProp<NameProperty>("LinkAction");
+                            var nameRef = linkAction.Value;
+                            nameRef.Number = pcc.getUExport(newObj).indexValue;
+                            linkAction.Value = nameRef;
+                        }
+                    }
+                }
+                exp.WriteProperties(propCollection);
+            }
+            else if (exp.ClassName == "SequenceReference")
+            {
+                //set OSequenceReference to new sequence
+                var oSeqRefProp = exp.GetProperty<ObjectProperty>("oSequenceReference");
+                if (oSeqRefProp == null || oSeqRefProp.Value == 0)
+                {
+                    return;
+                }
+                int oldSeqIndex = oSeqRefProp.Value;
+                oSeqRefProp.Value = exp.UIndex + 1;
+                exp.WriteProperty(oSeqRefProp);
+
+                //clone sequence
+                cloneObject(pcc.getUExport(oldSeqIndex), parentSequence, false);
+
+                //remove cloned sequence from SeqRef's parent's sequenceobjects
+                var seqObjs = parentSequence.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                seqObjs.RemoveAt(seqObjs.Count - 1);
+                parentSequence.WriteProperty(seqObjs);
+
+                //set SequenceReference's linked name indices
+                var inputIndices = new List<int>();
+                var outputIndices = new List<int>();
+
+                IExportEntry newSequence = pcc.getUExport(exp.UIndex + 1);
+                var props = newSequence.GetProperties();
+                var inLinksProp = props.GetProp<ArrayProperty<StructProperty>>("InputLinks");
+                if (inLinksProp != null)
+                {
+                    foreach (var inLink in inLinksProp)
+                    {
+                        inputIndices.Add(inLink.GetProp<NameProperty>("LinkAction").Value.Number);
+                    }
+                }
+                var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                if (outLinksProp != null)
+                {
+                    foreach (var outLinks in outLinksProp)
+                    {
+                        outputIndices.Add(outLinks.GetProp<NameProperty>("LinkAction").Value.Number);
+                    }
+                }
+
+                props = exp.GetProperties();
+                inLinksProp = props.GetProp<ArrayProperty<StructProperty>>("InputLinks");
+                if (inLinksProp != null)
+                {
+                    for (int i = 0; i < inLinksProp.Count; i++)
+                    {
+                        NameProperty linkAction = inLinksProp[i].GetProp<NameProperty>("LinkAction");
+                        var nameRef = linkAction.Value;
+                        nameRef.Number = inputIndices[i];
+                        linkAction.Value = nameRef;
+                    }
+                }
+                outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
+                if (outLinksProp != null)
+                {
+                    for (int i = 0; i < outLinksProp.Count; i++)
+                    {
+                        NameProperty linkAction = outLinksProp[i].GetProp<NameProperty>("LinkAction");
+                        var nameRef = linkAction.Value;
+                        nameRef.Number = outputIndices[i];
+                        linkAction.Value = nameRef;
+                    }
+                }
+                exp.WriteProperties(props);
+
+                //set new Sequence's link and ParentSequence prop to SeqRef
+                newSequence.WriteProperty(new ObjectProperty(exp.UIndex, "ParentSequence"));
+                newSequence.idxLink = exp.UIndex;
+
+                //set DefaultViewZoom to magic number to flag that this is a cloned Sequence Reference and global saves cannot be used with it
+                //ugly, but it should work
+                newSequence.WriteProperty(new FloatProperty(CLONED_SEQREF_MAGIC, "DefaultViewZoom"));
+            }
         }
 
         private void ContextMenu_Closed(object sender, RoutedEventArgs e)
@@ -999,7 +1383,7 @@ namespace ME3Explorer.Sequence_Editor
 
             if (SelectedObjects.Any())
             {
-                if (!selectedByNode)
+                if (panToSelection)
                 {
                     if (SelectedObjects.Count == 1)
                     {
@@ -1012,8 +1396,106 @@ namespace ME3Explorer.Sequence_Editor
                     }
                 }
             }
-            selectedByNode = false;
+            panToSelection = true;
             graphEditor.Refresh();
+        }
+
+        private void SaveImage()
+        {
+            if (CurrentObjects.Count == 0)
+                return;
+            string objectName = System.Text.RegularExpressions.Regex.Replace(SelectedSequence.ObjectName, @"[<>:""/\\|?*]", "");
+            SaveFileDialog d = new SaveFileDialog
+            {
+                Filter = "PNG Files (*.png)|*.png",
+                FileName = $"{CurrentFile.Substring(CurrentFile.LastIndexOf(@"\") + 1)}.{objectName}"
+            };
+            if (d.ShowDialog() == true)
+            {
+                PNode r = graphEditor.Root;
+                RectangleF rr = r.GlobalFullBounds;
+                PNode p = PPath.CreateRectangle(rr.X, rr.Y, rr.Width, rr.Height);
+                p.Brush = Brushes.White;
+                graphEditor.addBack(p);
+                graphEditor.Camera.Visible = false;
+                System.Drawing.Image image = graphEditor.Root.ToImage();
+                graphEditor.Camera.Visible = true;
+                image.Save(d.FileName, ImageFormat.Png);
+                graphEditor.backLayer.RemoveAllChildren();
+                MessageBox.Show("Done.");
+            }
+        }
+        private void addObject(IExportEntry exportToAdd, bool removeLinks = true)
+        {
+            extraSaveData.Add(new SaveData
+            {
+                index = exportToAdd.Index,
+                X = graphEditor.Camera.Bounds.X + graphEditor.Camera.Bounds.Width / 2,
+                Y = graphEditor.Camera.Bounds.Y + graphEditor.Camera.Bounds.Height / 2
+            });
+            addObjectToSequence(exportToAdd, removeLinks, SelectedSequence);
+        }
+
+        private void AddObject_Clicked(object sender, RoutedEventArgs e)
+        {
+            using (ExportSelectorWinForms form = new ExportSelectorWinForms(Pcc, ExportSelectorWinForms.SUPPORTS_EXPORTS_ONLY))
+            {
+                System.Windows.Forms.DialogResult dr = form.ShowDialog();
+                if (dr != System.Windows.Forms.DialogResult.Yes)
+                {
+                    return; //user cancel
+                }
+
+                IExportEntry exportToAdd = Pcc.getExport(form.SelectedItemIndex);
+                if (!exportToAdd.inheritsFrom("SequenceObject"))
+                {
+                    MessageBox.Show($"#{exportToAdd.UIndex}: {exportToAdd.ObjectName} is not a sequence object.");
+                }
+                if (CurrentObjects.All(obj => obj.Export != exportToAdd))
+                {
+                    addObject(exportToAdd);
+                }
+                else
+                {
+                    MessageBox.Show($"#{exportToAdd.UIndex}: {exportToAdd.ObjectName} is already in the sequence.");
+                }
+            }
+        }
+
+        private void showOutputNumbers_Click(object sender, EventArgs e)
+        {
+            SObj.OutputNumbers = ShowOutputNumbers_MenuItem.IsChecked;
+            if (CurrentObjects.Any())
+            {
+                RefreshView();
+            }
+
+        }
+
+        private void OpenInInterpViewer_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (Pcc.Game != MEGame.ME3)
+            {
+                MessageBox.Show("InterpViewer does not support ME1 or ME2 yet.", "Sorry!", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (CurrentObjects_ListBox.SelectedItem is SObj obj)
+            {
+                var p = new InterpEditor();
+                p.Show();
+                p.LoadPCC(Pcc.FileName);
+                IExportEntry exportEntry = obj.Export;
+                if (exportEntry.ObjectName == "InterpData")
+                {
+                    p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(exportEntry.Index);
+                    p.loadInterpData(exportEntry.Index);
+                }
+                else
+                {
+                    p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(((SAction)obj).Varlinks[0].Links[0]);
+                    p.loadInterpData(((SAction)obj).Varlinks[0].Links[0]);
+                }
+            }
         }
     }
 }

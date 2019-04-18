@@ -272,6 +272,16 @@ namespace ME3Explorer
             }
             return -1;
         }
+
+        public static bool IsEmpty<T>(this ICollection<T> list)
+        {
+            return list.Count == 0;
+        }
+
+        public static bool IsEmpty<T>(this IEnumerable<T> enumerable)
+        {
+            return !enumerable.Any();
+        }
     }
 
     public static class StringExtensions
@@ -397,6 +407,11 @@ namespace ME3Explorer
             bitmapImage.EndInit();
             bitmapImage.Freeze();
             return bitmapImage;
+        }
+
+        public static FrameworkElement GetChild(this ItemsControl itemsControl, string withName)
+        {
+            return itemsControl.Items.OfType<FrameworkElement>().FirstOrDefault(m => m.Name == withName);
         }
     }
 

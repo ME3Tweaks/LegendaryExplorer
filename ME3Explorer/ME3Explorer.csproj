@@ -540,7 +540,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RelayCommand.cs" />
+    <Compile Include="SharedUI\Commands.cs" />
     <Compile Include="Sequence Editor\SequenceEditorWPF.xaml.cs">
       <DependentUpon>SequenceEditorWPF.xaml</DependentUpon>
     </Compile>
@@ -918,10 +918,10 @@
     <Compile Include="DialogEditor\DialogEditor.Designer.cs">
       <DependentUpon>DialogEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="InputComboBox.cs">
+    <Compile Include="SharedUI\InputComboBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InputComboBox.Designer.cs">
+    <Compile Include="SharedUI\InputComboBox.Designer.cs">
       <DependentUpon>InputComboBox.cs</DependentUpon>
     </Compile>
     <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.cs">
@@ -1241,7 +1241,7 @@
     <EmbeddedResource Include="DialogEditor\DialogEditor.resx">
       <DependentUpon>DialogEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InputComboBox.resx">
+    <EmbeddedResource Include="SharedUI\InputComboBox.resx">
       <DependentUpon>InputComboBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.resx">

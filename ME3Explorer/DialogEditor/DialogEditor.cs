@@ -10,6 +10,7 @@ using ME3Explorer.Unreal;
 using ME3Explorer.Unreal.Classes;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Packages;
+using ME3Explorer.SharedUI;
 using ME3Explorer.TlkManagerNS;
 
 namespace ME3Explorer.DialogEditor

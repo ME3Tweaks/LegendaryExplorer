@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ME3Explorer
+namespace ME3Explorer.SharedUI
 {
     public partial class InputComboBox : Form
     {

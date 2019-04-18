@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Media;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Sequence_Editor;
+using ME3Explorer.SharedUI;
 using Newtonsoft.Json;
 
 namespace ME3Explorer
