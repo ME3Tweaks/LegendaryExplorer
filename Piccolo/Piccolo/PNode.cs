@@ -4307,6 +4307,20 @@ namespace UMD.HCIL.Piccolo
         }
 
         /// <summary>
+        /// Remove all the children in the given list from this ArrayList
+        /// of children.
+        /// </summary>
+        /// <param name="childrenNodes">The list of children to remove.</param>
+        /// <remarks>All removed nodes will have their parent set to null.</remarks>
+        public virtual void RemoveChildren(ArrayList childrenNodes)
+        {
+            foreach (PNode each in childrenNodes)
+            {
+                RemoveChild(each);
+            }
+        }
+
+        /// <summary>
         /// Remove all the children in the given list from this node’s list
         /// of children.
         /// </summary>
