@@ -27,7 +27,7 @@
     </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="3"  IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}">
-            <ComboBox Name="NodeSize_ComboBox" ItemsSource="{Binding AvailableNodeSizes}" HorizontalContentAlignment="Stretch">
+            <ComboBox Name="NodeSize_ComboBox" ItemsSource="{Binding AvailableNodeSizes}" HorizontalContentAlignment="Stretch" SelectionChanged="NodeSizeComboBox_SelectedItemChanged">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <Grid HorizontalAlignment="Stretch">
@@ -56,7 +56,7 @@
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="35" />
+                                <ColumnDefinition Width="50" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
@@ -69,6 +69,14 @@
                                     <MultiBinding StringFormat="via {0}_{1}">
                                         <Binding Path="SpecExport.ObjectName" />
                                         <Binding Path="SpecExport.indexValue" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            <TextBlock Grid.Row="1" Grid.Column="0" TextAlignment="Left" FontSize="10" Foreground="Gray">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0}x{1}">
+                                        <Binding Path="SpecSize.SpecRadius" />
+                                        <Binding Path="SpecSize.SpecHeight" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
@@ -93,7 +101,7 @@
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
-                <ComboBox Name="ReachSpecSize_ComboBox" ItemsSource="{Binding AvailableReachSpecSizes}" HorizontalContentAlignment="Stretch">
+                <ComboBox Name="ReachSpecSize_ComboBox" ItemsSource="{Binding AvailableReachSpecSizes}" HorizontalContentAlignment="Stretch" SelectionChanged="ReachSpecSizeCombobox_SelectedItemChanged">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <Grid HorizontalAlignment="Stretch">

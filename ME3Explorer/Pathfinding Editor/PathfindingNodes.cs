@@ -19,8 +19,6 @@ using System.Diagnostics;
 
 namespace ME3Explorer.PathfindingNodes
 {
-    public enum VarTypes { Int, Bool, Object, Float, StrRef, MatineeData, Extern, String };
-
     public abstract class PathfindingNode : PathfindingNodeMaster
     {
         //protected PPath shape;

@@ -246,7 +246,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                         if (previousNode != null)
                         {
-                            SharedPathfinding.CreateReachSpec(previousNode, true, newNode, "Engine.ReachSpec", new ReachSpecSize(null, ReachSpecSize.BOSS_HEIGHT,ReachSpecSize.BOSS_RADIUS));
+                            SharedPathfinding.CreateReachSpec(previousNode, true, newNode, "Engine.ReachSpec", new ReachSpecSize(null, ReachSpecSize.BOSS_HEIGHT, ReachSpecSize.BOSS_RADIUS));
                         }
                         if (firstNode == null)
                         {
@@ -1798,6 +1798,26 @@ namespace ME3Explorer.Pathfinding_Editor
                             }
                     }
                     graphEditor.Refresh(); //repaint invalidated areas
+                }
+            }
+        }
+
+        public void UpdateEdgesForCurrentNode()
+        {
+            if (ActiveNodes_ListBox.SelectedItem != null)
+            {
+                IExportEntry export = (IExportEntry)ActiveNodes_ListBox.SelectedItem;
+                PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
+                if (s != null)
+                {
+                    graphEditor.edgeLayer.RemoveChildren(s.Tag as ArrayList);
+                    s.Tag = new ArrayList();
+                    s.CreateConnections(ref GraphNodes);
+
+                    //Todo: Make this refresh properly
+                    graphEditor.edgeLayer.InvalidateFullBounds();
+                    graphEditor.edgeLayer.Repaint();
+                    graphEditor.Refresh();
                 }
             }
         }

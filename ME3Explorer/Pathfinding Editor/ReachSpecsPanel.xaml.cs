@@ -53,6 +53,8 @@ namespace ME3Explorer.Pathfinding_Editor
         public string NewReachSpecDirectionZ { get => _newReachSpecDirectionZ; private set => SetProperty(ref _newReachSpecDirectionZ, value); }
 
         private bool _createReturningReachSpec = true;
+        private bool AllowChanges;
+
         public bool CreateReturningReachSpec { get => _createReturningReachSpec; set => SetProperty(ref _createReturningReachSpec, value); }
 
 
@@ -154,7 +156,7 @@ namespace ME3Explorer.Pathfinding_Editor
             return false;
         }
 
-        
+
 
 
         private void CreateReachSpec(object obj)
@@ -174,6 +176,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public override void LoadExport(IExportEntry export)
         {
+            AllowChanges = false;
             CurrentLoadedExport = export;
             var props = export.GetProperties();
 
@@ -213,6 +216,8 @@ namespace ME3Explorer.Pathfinding_Editor
                     ReachSpec spec = new ReachSpec();
                     IExportEntry outgoingSpec = export.FileRef.getUExport(prop.Value);
 
+
+
                     spec.SpecExport = outgoingSpec;
                     spec.StartNode = export;
                     StructProperty outgoingEndStructProp = outgoingSpec.GetProperty<StructProperty>("End"); //Embeds END
@@ -225,15 +230,27 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         spec.ExternalTarget = true;
                     }
+
+                    IntProperty radius = outgoingSpec.GetProperty<IntProperty>("CollisionRadius");
+                    IntProperty height = outgoingSpec.GetProperty<IntProperty>("CollisionHeight");
+
+                    spec.SpecSize = new ReachSpecSize
+                    {
+                        Header = null,
+                        SpecRadius = radius,
+                        SpecHeight = height
+                    };
                     ReachSpecs.Add(spec);
                 }
             }
             RecalculateDestinationUI();
+            AllowChanges = true;
         }
 
 
         public override void UnloadExport()
         {
+            AllowChanges = false;
             NewReachSpecDistance = "No node selected";
             NewReachSpecDirectionX = "No node selected";
             NewReachSpecDirectionY = "No node selected";
@@ -261,18 +278,24 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             RefreshSelectedReachSpec();
             ReachSpec selectedSpec = ReachableNodes_ComboBox.SelectedItem as ReachSpec;
-            if (selectedSpec != null && !selectedSpec.ExternalTarget)
+            if (selectedSpec != null)
             {
-                if (ParentWindow != null)
+                if (ParentWindow != null && !selectedSpec.ExternalTarget)
                 {
                     //Parse
                     ParentWindow.FocusNode(selectedSpec.EndNode, false, 500);
                 }
             }
+            else
+            {
+                ReachableNodes_ComboBox.SelectedItem = null;
+            }
         }
 
         private void RefreshSelectedReachSpec()
         {
+            bool preAllow = AllowChanges;
+            AllowChanges = false;
             ReachSpec selectedSpec = ReachableNodes_ComboBox.SelectedItem as ReachSpec;
             AvailableReachSpecSizes.RemoveRange(AvailableReachSpecSizes.Where(x => x.CustomSized).ToList());
             ReachSpecConnection_Panel.IsEnabled = selectedSpec != null;
@@ -293,14 +316,19 @@ namespace ME3Explorer.Pathfinding_Editor
                         SpecHeight = height,
                         CustomSized = true
                     };
-                    AvailableReachSpecSizes.Insert(0, specSize);
-                    ReachSpecSize_ComboBox.SelectedItem = specSize;
+
+                    if (!AvailableReachSpecSizes.Contains(specSize))
+                    {
+                        AvailableReachSpecSizes.Insert(0, specSize);
+                    }
+                    ReachSpecSize_ComboBox.SelectedIndex = AvailableReachSpecSizes.IndexOf(specSize);
                 }
             }
             else
             {
                 ReachSpecSizeToText = "Select a reachspec above";
             }
+            AllowChanges = preAllow;
         }
 
         private void CreateReachSpecDestination_OnKeyUp(object sender, KeyEventArgs e)
@@ -410,11 +438,12 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        
+
 
         [DebuggerDisplay("ReachSpec | {SpecExport.ObjectName} outbound from {StartNode.UIndex}")]
         public class ReachSpec
         {
+            public ReachSpecSize SpecSize { get; internal set; }
             public IExportEntry SpecExport { get; internal set; }
             public IExportEntry StartNode { get; internal set; }
             public IExportEntry EndNode { get; internal set; }
@@ -480,6 +509,52 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        
+        private void ReachSpecSizeCombobox_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (AllowChanges)
+            {
+                ReachSpecSize newSize = ReachSpecSize_ComboBox.SelectedItem as ReachSpecSize;
+                ReachSpec spec = ReachableNodes_ComboBox.SelectedItem as ReachSpec;
+                PropertyCollection props = spec.SpecExport.GetProperties();
+
+                IntProperty radius = props.GetProp<IntProperty>("CollisionRadius");
+                IntProperty height = props.GetProp<IntProperty>("CollisionHeight");
+
+                if (radius != null && height != null)
+                {
+                    radius.Value = spec.SpecSize.SpecRadius = newSize.SpecRadius;
+                    height.Value = spec.SpecSize.SpecHeight = newSize.SpecHeight;
+                    spec.SpecExport.WriteProperties(props);
+                    if (ParentWindow != null)
+                    {
+                        ParentWindow.UpdateEdgesForCurrentNode();
+                    }
+                }
+            }
+        }
+
+        private void NodeSizeComboBox_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (AllowChanges)
+            {
+                NodeSize size = NodeSize_ComboBox.SelectedItem as NodeSize;
+
+                PropertyCollection props = CurrentLoadedExport.GetProperties();
+                StructProperty maxPathSize = props.GetProp<StructProperty>("MaxPathSize");
+                if (maxPathSize != null)
+                {
+                    FloatProperty height = maxPathSize.GetProp<FloatProperty>("Height");
+                    FloatProperty radius = maxPathSize.GetProp<FloatProperty>("Radius");
+                    if (radius != null && height != null)
+                    {
+                        height.Value = size.NodeHeight;
+                        radius.Value = size.NodeRadius;
+                        CurrentLoadedExport.WriteProperties(props);
+                        RefreshSelectedReachSpec();
+                        
+                    }
+                }
+            }
+        }
     }
 }
