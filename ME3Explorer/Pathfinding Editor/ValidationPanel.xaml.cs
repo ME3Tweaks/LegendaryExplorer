@@ -116,7 +116,7 @@ namespace ME3Explorer.Pathfinding_Editor
             LastRunOnText = "Last ran at " + DateTime.Now;
         }
 
-        private void recalculateReachspecs(ValidationTask task)
+        public void recalculateReachspecs(ValidationTask task = null)
         {
             //Figure out which exports have PathList.
             HashSet<int> reachSpecExportIndexes = new HashSet<int>();
@@ -130,7 +130,10 @@ namespace ME3Explorer.Pathfinding_Editor
                 ArrayProperty<ObjectProperty> pathList = exp.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
                 if (pathList != null)
                 {
-                    task.Header = $"Recalculating reachspecs {(int)(i * 100.0 / Pcc.ExportCount)}%";
+                    if (task != null)
+                    {
+                        task.Header = $"Recalculating reachspecs {(int)(i * 100.0 / Pcc.ExportCount)}%";
+                    }
                     foreach (ObjectProperty reachSpecObj in pathList)
                     {
                         //reachSpecExportIndexes.Add(reachSpecObj.Value - 1);
@@ -181,7 +184,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 }
             }
-            task.Complete(numNeedingRecalc + " ReachSpec" + (numNeedingRecalc == 1 ? "" : "s") + " were recalculated");
+            task?.Complete(numNeedingRecalc + " ReachSpec" + (numNeedingRecalc == 1 ? "" : "s") + " were recalculated");
         }
 
         private bool calculateReachSpec(IExportEntry reachSpecExport, IExportEntry startNodeExport = null)
@@ -301,7 +304,7 @@ namespace ME3Explorer.Pathfinding_Editor
             return false;
         }
 
-        private void fixStackHeaders(ValidationTask task)
+        public void fixStackHeaders(ValidationTask task = null)
         {
             int itemcount = 2;
             int numUpdated = 0;
@@ -421,11 +424,11 @@ namespace ME3Explorer.Pathfinding_Editor
             }*/
             //if (showUI)
             //{
-            task.Complete(numUpdated + " export" + (numUpdated != 1 ? "s" : "") + " stack headers updated");
+            task?.Complete(numUpdated + " export" + (numUpdated != 1 ? "s" : "") + " stack headers updated");
             //}
         }
 
-        private void relinkPathfindingChain(ValidationTask task)
+        public void relinkPathfindingChain(ValidationTask task = null)
         {
             List<IExportEntry> pathfindingChain = new List<IExportEntry>();
 
@@ -506,11 +509,11 @@ namespace ME3Explorer.Pathfinding_Editor
                 chainItem.Data = expData;
                 //Debug.WriteLine(chainItem.UIndex + " Chain link -> " + nextchainItem.UIndex);
             }
-            task.Complete("NavigationPoint chain has been updated");
+            task?.Complete("NavigationPoint chain has been updated");
         }
 
 
-        private void findDuplicateGUIDs(ValidationTask task)
+        private void findDuplicateGUIDs(ValidationTask task = null)
         {
             var navGuidLists = new Dictionary<string, List<UnrealGUID>>();
             var duplicateGuids = new List<UnrealGUID>();
@@ -593,7 +596,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     }
                 }
             }
-            task.Complete(numduplicates + " duplicate GUID" + (numduplicates != 1 ? "s" : "") + " were found");
+            task?.Complete(numduplicates + " duplicate GUID" + (numduplicates != 1 ? "s" : "") + " were found");
         }
         #region PropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;

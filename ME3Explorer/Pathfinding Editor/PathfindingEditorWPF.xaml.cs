@@ -246,7 +246,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                         if (previousNode != null)
                         {
-                            createReachSpec(previousNode, true, newNode.Index, "Engine.ReachSpec", 1, 0);
+                            SharedPathfinding.CreateReachSpec(previousNode, true, newNode, "Engine.ReachSpec", new ReachSpecSize(null, ReachSpecSize.BOSS_HEIGHT,ReachSpecSize.BOSS_RADIUS));
                         }
                         if (firstNode == null)
                         {
@@ -257,10 +257,11 @@ namespace ME3Explorer.Pathfinding_Editor
                 }
                 //createReachSpec(previousNode, true, firstNode.Index, "Engine.ReachSpec", 1, 0);
 
-                fixStackHeaders(false);
-                relinkingPathfindingChain();
-                ReachSpecRecalculator rsr = new ReachSpecRecalculator(this);
-                rsr.ShowDialog(this);
+                PathfindingEditorWPF_ValidationPanel.fixStackHeaders();
+                PathfindingEditorWPF_ValidationPanel.relinkPathfindingChain();
+                PathfindingEditorWPF_ValidationPanel.recalculateReachspecs();
+                //ReachSpecRecalculator rsr = new ReachSpecRecalculator(this);
+                //rsr.ShowDialog(this);
                 Debug.WriteLine("Done");
             }
         }
