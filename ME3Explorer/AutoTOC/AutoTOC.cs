@@ -177,5 +177,78 @@ namespace ME3Explorer
                 prepareToCreateTOC(path, rtb1);
             }
         }
+
+        private void Evt_RunAutoFileBtn_Click(object sender, EventArgs e)
+        {
+            string dirFL = GenerateFileListDlg(true);
+
+            if (dirFL != null)
+            {
+                rtb1.AppendText($"Creating FileList in {dirFL}\n");
+                GenerateFileList(dirFL);
+                rtb1.AppendText("Done.\n");
+                rtb1.AppendText("***********************\n* Filelist Created *\n***********************\n");
+            }
+        }
+
+        public string GenerateFileListDlg(bool passbackdir) //Open dlg to created file
+        {
+            FolderBrowserDialog dlg = new FolderBrowserDialog();
+            dlg.SelectedPath = ME1Directory.DLCPath;
+            dlg.Description = "Select DLC Cooked Folder to create Filelist";
+            
+            bool cookPath = true;
+            while (cookPath)
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    string path = dlg.SelectedPath;
+                    if (path.Substring(path.Length - Math.Min(8, path.Length)) == "CookedPC")
+                        {
+                        cookPath = false;
+
+                        }
+                    else
+                        {
+                        MessageBox.Show("Please select a CookedPC folder.");
+                        }
+                }
+                else { return null; }
+            string dirFL = Path.GetDirectoryName(dlg.SelectedPath) + "\\";
+
+
+            if (passbackdir)
+            {
+                return dirFL;
+            }
+            else
+            {
+                GenerateFileList(dirFL);
+                return null;
+            }
+        }
+
+        public static void GenerateFileList(string dlcCookedDir) //Point to Cooked Directory only
+        {
+            if (dlcCookedDir != null)
+            {
+                List<string> files = new List<string>();
+
+                int rootLength = dlcCookedDir.Length + (dlcCookedDir[dlcCookedDir.Length - 1] == '\\' ? 0 : 1);
+
+                files.AddRange(Directory.GetFiles(dlcCookedDir, "*", SearchOption.AllDirectories).Select(p => p.Remove(0, rootLength)));  //get all the files
+
+                for (int i = 0; i < files.Count; i++) //Clean out filelist.txt
+                {
+                    if (files[i].Contains("FileList.txt"))
+                    {
+                        files.RemoveAt(i);
+                    }
+                }
+
+                string fileName = dlcCookedDir + "FileList.txt";
+                File.WriteAllLines(fileName, files);
+
+            }
+        }
     }
 }
