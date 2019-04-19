@@ -213,7 +213,7 @@ namespace ME3Explorer
                         }
                 }
                 else { return null; }
-            string dirFL = Path.GetDirectoryName(dlg.SelectedPath) + "\\";
+            string dirFL = dlg.SelectedPath + "\\";
 
 
             if (passbackdir)
@@ -231,21 +231,13 @@ namespace ME3Explorer
         {
             if (dlcCookedDir != null)
             {
-                List<string> files = new List<string>();
+                string[] extensions = { ".sfm", ".upk", ".bik", ".u" };
 
                 int rootLength = dlcCookedDir.Length + (dlcCookedDir[dlcCookedDir.Length - 1] == '\\' ? 0 : 1);
 
-                files.AddRange(Directory.GetFiles(dlcCookedDir, "*", SearchOption.AllDirectories).Select(p => p.Remove(0, rootLength)));  //get all the files
+                var files = (Directory.EnumerateFiles(dlcCookedDir, "*.*", SearchOption.AllDirectories).Select(p => p.Remove(0, rootLength)).Where(s => extensions.Any(ext => ext == Path.GetExtension(s).ToLower()))).ToList();
 
-                for (int i = 0; i < files.Count; i++) //Clean out filelist.txt
-                {
-                    if (files[i].Contains("FileList.txt"))
-                    {
-                        files.RemoveAt(i);
-                    }
-                }
-
-                string fileName = dlcCookedDir + "FileList.txt";
+                string fileName = dlcCookedDir + "\\FileIndex.txt";
                 File.WriteAllLines(fileName, files);
 
             }
