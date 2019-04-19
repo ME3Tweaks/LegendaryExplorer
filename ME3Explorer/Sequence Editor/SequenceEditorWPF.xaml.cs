@@ -37,7 +37,7 @@ namespace ME3Explorer.Sequence_Editor
     /// <summary>
     /// Interaction logic for SequenceEditorWPF.xaml
     /// </summary>
-    public partial class SequenceEditorWPF : WPFBase, IBusyUIHost
+    public partial class SequenceEditorWPF : WPFBase
     {
         private struct SaveData
         {
@@ -134,26 +134,6 @@ namespace ME3Explorer.Sequence_Editor
         public ICommand SaveImageCommand { get; set; }
         public ICommand SaveViewCommand { get; set; }
 
-        #region Busy variables
-
-        private bool _isBusy;
-
-        public bool IsBusy
-        {
-            get => _isBusy;
-            set => SetProperty(ref _isBusy, value);
-        }
-
-        private string _busyText;
-
-        public string BusyText
-        {
-            get => _busyText;
-            set => SetProperty(ref _busyText, value);
-        }
-
-        #endregion Busy variables
-
         private void LoadCommands()
         {
             OpenCommand = new GenericCommand(OpenPackage);
@@ -232,7 +212,6 @@ namespace ME3Explorer.Sequence_Editor
         {
             try
             {
-                IsBusy = true;
                 CurrentObjects.ClearEx();
                 SequenceExports.ClearEx();
                 SelectedObjects.ClearEx();
@@ -261,10 +240,6 @@ namespace ME3Explorer.Sequence_Editor
                 MessageBox.Show("Error:\n" + ex.Message);
                 Title = "Sequence Editor WPF";
                 CurrentFile = null;
-            }
-            finally
-            {
-                IsBusy = false;
             }
         }
 
@@ -513,23 +488,22 @@ namespace ME3Explorer.Sequence_Editor
                         break;
                 }
             }
-
-            int index = export.Index;
+            
             if (s.StartsWith("BioSeqEvt_") || s.StartsWith("SeqEvt_") || s.StartsWith("SFXSeqEvt_") || s.StartsWith("SeqEvent_"))
             {
-                return new SEvent(index, x, y, Pcc, graphEditor);
+                return new SEvent(export, x, y, graphEditor);
             }
             else if (s.StartsWith("SeqVar_") || s.StartsWith("BioSeqVar_") || s.StartsWith("SFXSeqVar_") || s.StartsWith("InterpData"))
             {
-                return new SVar(index, x, y, Pcc, graphEditor);
+                return new SVar(export, x, y, graphEditor);
             }
             else if (export.ClassName == "SequenceFrame" && Pcc.Game == MEGame.ME1)
             {
-                return new SFrame(index, x, y, Pcc, graphEditor);
+                return new SFrame(export, x, y, graphEditor);
             }
             else //if (s.StartsWith("BioSeqAct_") || s.StartsWith("SeqAct_") || s.StartsWith("SFXSeqAct_") || s.StartsWith("SeqCond_") || pcc.getExport(index).ClassName == "Sequence" || pcc.getExport(index).ClassName == "SequenceReference")
             {
-                return new SAction(index, x, y, Pcc, graphEditor);
+                return new SAction(export, x, y, graphEditor);
             }
         }
 
@@ -543,11 +517,11 @@ namespace ME3Explorer.Sequence_Editor
                     if (obj.Export.ObjectName.StartsWith("BioSeqEvt_ConvNode"))
                     {
                         obj.SetOffset(StartPosDialog, 600);//Startconv event
-                        SAction interp = (SAction)CurrentObjects.First(o => o.Index == ((SEvent)obj).Outlinks[0].Links[0]);
+                        SAction interp = (SAction)CurrentObjects.First(o => o.UIndex == ((SEvent)obj).Outlinks[0].Links[0]);
                         interp.SetOffset(StartPosDialog + 150, 600);//Interp
-                        CurrentObjects.First(o => o.Index == interp.Varlinks[0].Links[0]).SetOffset(StartPosDialog + 165, 770);//Interpdata
+                        CurrentObjects.First(o => o.UIndex == interp.Varlinks[0].Links[0]).SetOffset(StartPosDialog + 165, 770);//Interpdata
                         StartPosDialog += interp.Width + 200;
-                        CurrentObjects.First(o => o.Index == interp.Outlinks[0].Links[0]).SetOffset(StartPosDialog, 600);//Endconv node
+                        CurrentObjects.First(o => o.UIndex == interp.Outlinks[0].Links[0]).SetOffset(StartPosDialog, 600);//Endconv node
                         StartPosDialog += 270;
                     }
                 }
@@ -827,7 +801,7 @@ namespace ME3Explorer.Sequence_Editor
                 return;
             }
 
-            if (updatedExports.Intersect(CurrentObjects.Select(obj => obj.Export.Index)).Any())
+            if (updatedExports.Intersect(CurrentObjects.Select(obj => obj.Index)).Any())
             {
                 RefreshView();
             }
@@ -893,22 +867,19 @@ namespace ME3Explorer.Sequence_Editor
                         {
                             for (int j = 0; j < sBox.Outlinks[i].Links.Count; j++)
                             {
-                                if (sBox.Outlinks[i].Links[j] != -1)
+                                outputLinksMenuItem.Visibility = Visibility.Visible;
+                                hasLinks = true;
+                                var temp = new MenuItem
                                 {
-                                    outputLinksMenuItem.Visibility = Visibility.Visible;
-                                    hasLinks = true;
-                                    var temp = new MenuItem
-                                    {
-                                        Header = $"Break link from {sBox.Outlinks[i].Desc} to {sBox.Outlinks[i].Links[j]}"
-                                    };
-                                    int linkConnection = i;
-                                    int linkIndex = j;
-                                    temp.Click += (o, args) =>
-                                    {
-                                        sBox.RemoveOutlink(linkConnection, linkIndex);
-                                    };
-                                    outputLinksMenuItem.Items.Add(temp);
-                                }
+                                    Header = $"Break link from {sBox.Outlinks[i].Desc} to {sBox.Outlinks[i].Links[j]}"
+                                };
+                                int linkConnection = i;
+                                int linkIndex = j;
+                                temp.Click += (o, args) =>
+                                {
+                                    sBox.RemoveOutlink(linkConnection, linkIndex);
+                                };
+                                outputLinksMenuItem.Items.Add(temp);
                             }
                         }
                     }
@@ -920,22 +891,19 @@ namespace ME3Explorer.Sequence_Editor
                         {
                             for (int j = 0; j < sBox.Varlinks[i].Links.Count; j++)
                             {
-                                if (sBox.Varlinks[i].Links[j] != -1)
+                                varLinksMenuItem.Visibility = Visibility.Visible;
+                                hasLinks = true;
+                                var temp = new MenuItem
                                 {
-                                    varLinksMenuItem.Visibility = Visibility.Visible;
-                                    hasLinks = true;
-                                    var temp = new MenuItem
-                                    {
-                                        Header = $"Break link from {sBox.Varlinks[i].Desc} to {sBox.Varlinks[i].Links[j]}"
-                                    };
-                                    int linkConnection = i;
-                                    int linkIndex = j;
-                                    temp.Click += (o, args) =>
-                                    {
-                                        sBox.RemoveVarlink(linkConnection, linkIndex);
-                                    };
-                                    varLinksMenuItem.Items.Add(temp);
-                                }
+                                    Header = $"Break link from {sBox.Varlinks[i].Desc} to {sBox.Varlinks[i].Links[j]}"
+                                };
+                                int linkConnection = i;
+                                int linkIndex = j;
+                                temp.Click += (o, args) =>
+                                {
+                                    sBox.RemoveVarlink(linkConnection, linkIndex);
+                                };
+                                varLinksMenuItem.Items.Add(temp);
                             }
                         }
                     }
@@ -959,7 +927,7 @@ namespace ME3Explorer.Sequence_Editor
                     string className = obj.Export.ClassName;
                     if (className == "InterpData"
                     || (className == "SeqAct_Interp" && obj is SAction action && action.Varlinks.Any() && action.Varlinks[0].Links.Any()
-                                                     && action.Varlinks[0].Links[0] != -1 && Pcc.getExport(action.Varlinks[0].Links[0]).ClassName == "InterpData"))
+                                                     && Pcc.isUExport(action.Varlinks[0].Links[0]) && Pcc.getUExport(action.Varlinks[0].Links[0]).ClassName == "InterpData"))
                     {
                         interpViewerMenuItem.Visibility = Visibility.Visible;
                     }
@@ -1102,7 +1070,7 @@ namespace ME3Explorer.Sequence_Editor
                 PackageEditorWPF p = new PackageEditorWPF();
                 p.Show();
                 p.LoadFile(obj.Export.FileRef.FileName);
-                p.GoToNumber(obj.Export.UIndex);
+                p.GoToNumber(obj.UIndex);
             }
         }
 
@@ -1500,8 +1468,9 @@ namespace ME3Explorer.Sequence_Editor
                 }
                 else
                 {
-                    p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(((SAction)obj).Varlinks[0].Links[0]);
-                    p.loadInterpData(((SAction)obj).Varlinks[0].Links[0]);
+                    int i = ((SAction)obj).Varlinks[0].Links[0] - 1; //0-based index because Interp Viewer is old
+                    p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(i);
+                    p.loadInterpData(i);
                 }
             }
         }

@@ -40,42 +40,29 @@ namespace ME3Explorer.SequenceObjects
 
         public RectangleF posAtDragStart;
 
-        public int Index => index;
+        public int Index => export.Index;
+
+        public int UIndex => export.UIndex;
         //public float Width { get { return shape.Width; } }
         //public float Height { get { return shape.Height; } }
         public IExportEntry Export => export;
         public virtual bool IsSelected { get; set; }
 
-        protected int index;
         protected IExportEntry export;
         protected Pen outlinePen;
         protected SText comment;
 
-        protected SObj(int idx, IMEPackage p, GraphEditor grapheditor)
+        protected SObj(IExportEntry entry, GraphEditor grapheditor)
         {
-            pcc = p;
+            pcc = entry.FileRef;
+            export = entry;
             g = grapheditor;
-            index = idx;
-            export = pcc.getExport(index);
             comment = new SText(GetComment(), commentColor, false)
             {
                 Pickable = false,
                 X = 0
             };
             comment.Y = 0 - comment.Height;
-            AddChild(comment);
-            Pickable = true;
-        }
-
-        protected SObj(int idx, IMEPackage p)
-        {
-            pcc = p;
-            index = idx;
-            export = pcc.getExport(index);
-            comment = new SText(GetComment(), commentColor, false);
-            comment.X = 0;
-            comment.Y = 0 - comment.Height;
-            comment.Pickable = false;
             AddChild(comment);
             Pickable = true;
         }
@@ -155,8 +142,8 @@ namespace ME3Explorer.SequenceObjects
             set => val.Text = value;
         }
 
-        public SVar(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
-            : base(idx, p, grapheditor)
+        public SVar(IExportEntry entry, float x, float y, GraphEditor grapheditor)
+            : base(entry, grapheditor)
         {
             string s = export.ObjectName;
             s = s.Replace("BioSeqVar_", "");
@@ -319,7 +306,7 @@ namespace ME3Explorer.SequenceObjects
                         }
                         return "???";
                     case VarTypes.MatineeData:
-                        return $"#{index}\nInterpData";
+                        return $"#{UIndex}\nInterpData";
                     default:
                         return "???";
                 }
@@ -399,8 +386,8 @@ namespace ME3Explorer.SequenceObjects
     {
         protected PPath shape;
         protected PPath titleBox;
-        public SFrame(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
-            : base(idx, p, grapheditor)
+        public SFrame(IExportEntry entry, float x, float y, GraphEditor grapheditor)
+            : base(entry, grapheditor)
         {
             string s = $"{export.ObjectName}_{export.indexValue}";
             float w = 0;
@@ -440,7 +427,7 @@ namespace ME3Explorer.SequenceObjects
 
         protected void MakeTitleBox(string s)
         {
-            s = "#" + index + " : " + s;
+            s = $"#{UIndex} : {s}";
             SText title = new SText(s, Color.FromArgb(255, 255, 128))
             {
                 TextAlignment = StringAlignment.Center,
@@ -497,14 +484,8 @@ namespace ME3Explorer.SequenceObjects
         public List<VarLink> Varlinks;
         protected VarDragHandler varDragHandler = new VarDragHandler();
         protected OutputDragHandler outputDragHandler = new OutputDragHandler();
-        protected SBox(int idx, IMEPackage p, GraphEditor grapheditor)
-            : base(idx, p, grapheditor)
-        {
-
-        }
-
-        protected SBox(int idx, IMEPackage p)
-            : base(idx, p)
+        protected SBox(IExportEntry entry, GraphEditor grapheditor)
+            : base(entry, grapheditor)
         {
 
         }
@@ -517,7 +498,7 @@ namespace ME3Explorer.SequenceObjects
                 {
                     for (int j = 0; j < outLink.Links.Count; j++)
                     {
-                        if (objects[i].Index == outLink.Links[j])
+                        if (objects[i].UIndex == outLink.Links[j])
                         {
                             PPath p1 = outLink.node;
                             SObj p2 = (SObj)g.nodeLayer[i];
@@ -543,7 +524,7 @@ namespace ME3Explorer.SequenceObjects
                 {
                     foreach (int link in v.Links)
                     {
-                        if (objects[i].Index == link)
+                        if (objects[i].UIndex == link)
                         {
                             PPath p1 = v.node;
                             PNode p2 = g.nodeLayer[i];
@@ -569,7 +550,7 @@ namespace ME3Explorer.SequenceObjects
 
         protected float GetTitleBox(string s, float w)
         {
-            s = "#" + index + " : " + s;
+            s = $"#{UIndex} : {s}";
             SText title = new SText(s, titleBrush)
             {
                 TextAlignment = StringAlignment.Center,
@@ -612,12 +593,8 @@ namespace ME3Explorer.SequenceObjects
                         {
                             foreach (var objProp in linkedVars)
                             {
-                                l.Links.Add(objProp.Value - 1);
+                                l.Links.Add(objProp.Value);
                             }
-                        }
-                        else
-                        {
-                            l.Links.Add(-1);
                         }
                         l.type = getType(pcc.getObjectName(props.GetProp<ObjectProperty>("ExpectedType").Value));
                         l.writeable = props.GetProp<BoolProperty>("bWriteable").Value;
@@ -668,19 +645,12 @@ namespace ME3Explorer.SequenceObjects
                         {
                             for (int i = 0; i < linksProp.Count; i += 1)
                             {
-                                int linkedOp = linksProp[i].GetProp<ObjectProperty>("LinkedOp").Value - 1;
+                                int linkedOp = linksProp[i].GetProp<ObjectProperty>("LinkedOp").Value;
                                 l.Links.Add(linkedOp);
                                 l.InputIndices.Add(linksProp[i].GetProp<IntProperty>("InputLinkIdx"));
                                 if (OutputNumbers)
-                                    l.Desc = l.Desc + (i > 0 ? "," : ": ") + "#" + (linkedOp);
+                                    l.Desc = l.Desc + (i > 0 ? "," : ": ") + "#" + linkedOp;
                             }
-                        }
-                        else
-                        {
-                            l.Links.Add(-1);
-                            l.InputIndices.Add(0);
-                            if (OutputNumbers)
-                                l.Desc = l.Desc + ": #-1";
                         }
                         l.node = PPath.CreateRectangle(0, -4, 10, 8);
                         l.node.Brush = outputBrush;
@@ -805,13 +775,13 @@ namespace ME3Explorer.SequenceObjects
         {
             SBox start = (SBox)n1.Parent.Parent.Parent;
             SAction end = (SAction)n2.Parent.Parent.Parent;
-            IExportEntry startExport = pcc.getExport(start.Index);
+            IExportEntry startExport = start.export;
             string linkDesc = null;
             foreach (OutputLink l in start.Outlinks)
             {
                 if (l.node == n1)
                 {
-                    if (l.Links.Contains(end.Index))
+                    if (l.Links.Contains(end.UIndex))
                         return;
                     linkDesc = l.Desc;
                     break;
@@ -839,7 +809,7 @@ namespace ME3Explorer.SequenceObjects
                     {
                         var linksProp = prop.GetProp<ArrayProperty<StructProperty>>("Links");
                         linksProp.Add(new StructProperty("SeqOpOutputInputLink", false,
-                            new ObjectProperty(end.index + 1, "LinkedOp"),
+                            new ObjectProperty(end.export, "LinkedOp"),
                             new IntProperty(inputIndex, "InputLinkIdx")));
                         startExport.WriteProperty(outLinksProp);
                         return;
@@ -851,13 +821,13 @@ namespace ME3Explorer.SequenceObjects
         public void CreateVarlink(PNode p1, SVar end)
         {
             SBox start = (SBox)p1.Parent.Parent.Parent;
-            IExportEntry startExport = pcc.getExport(start.Index);
+            IExportEntry startExport = start.export;
             string linkDesc = null;
             foreach (VarLink l in start.Varlinks)
             {
                 if (l.node == p1)
                 {
-                    if (l.Links.Contains(end.Index))
+                    if (l.Links.Contains(end.UIndex))
                         return;
                     linkDesc = l.Desc;
                     break;
@@ -872,7 +842,7 @@ namespace ME3Explorer.SequenceObjects
                 {
                     if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
                     {
-                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Add(new ObjectProperty(end.Index + 1));
+                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Add(new ObjectProperty(end.Export));
                         startExport.WriteProperty(varLinksProp);
                     }
                 }
@@ -932,8 +902,8 @@ namespace ME3Explorer.SequenceObjects
 
     public class SEvent : SBox
     {
-        public SEvent(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
-            : base(idx, p, grapheditor)
+        public SEvent(IExportEntry entry, float x, float y, GraphEditor grapheditor)
+            : base(entry, grapheditor)
         {
             outlinePen = new Pen(Color.FromArgb(214, 30, 28));
             string s = export.ObjectName;
@@ -947,21 +917,18 @@ namespace ME3Explorer.SequenceObjects
             float midW = 0;
             varLinkBox = new PPath();
             GetVarLinks();
-            for (int i = 0; i < Varlinks.Count; i++)
+            foreach(var varLink in Varlinks)
             {
-                string d = "";
-                foreach (int l in Varlinks[i].Links)
-                    d = d + "#" + l + ",";
-                d = d.Remove(d.Length - 1);
-                SText t2 = new SText(d + "\n" + Varlinks[i].Desc)
+                string d = string.Join(",", varLink.Links.Select(l => $"#{l}"));
+                SText t2 = new SText(d + "\n" + varLink.Desc)
                 {
                     X = w,
                     Y = 0,
                     Pickable = false
                 };
                 w += t2.Width + 20;
-                Varlinks[i].node.TranslateBy(t2.X + t2.Width / 2, t2.Y + t2.Height);
-                t2.AddChild(Varlinks[i].node);
+                varLink.node.TranslateBy(t2.X + t2.Width / 2, t2.Y + t2.Height);
+                t2.AddChild(varLink.node);
                 varLinkBox.AddChild(t2);
             }
             if (Varlinks.Count != 0)
@@ -1065,17 +1032,8 @@ namespace ME3Explorer.SequenceObjects
 
         protected InputDragHandler inputDragHandler = new InputDragHandler();
 
-        public SAction(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
-            : base(idx, p, grapheditor)
-        {
-            GetVarLinks();
-            GetOutputLinks();
-            originalX = x;
-            originalY = y;
-        }
-
-        public SAction(int idx, float x, float y, IMEPackage p)
-            : base(idx, p)
+        public SAction(IExportEntry entry, float x, float y, GraphEditor grapheditor)
+            : base(entry, grapheditor)
         {
             GetVarLinks();
             GetOutputLinks();
@@ -1113,19 +1071,14 @@ namespace ME3Explorer.SequenceObjects
         {
             outlinePen = new Pen(Color.Black);
             string s = export.ObjectName;
-            s = s.Replace("BioSeqAct_", "");
-            s = s.Replace("SFXSeqAct_", "");
-            s = s.Replace("SeqAct_", "");
-            s = s.Replace("SeqCond_", "");
+            s = s.Replace("BioSeqAct_", "").Replace("SFXSeqAct_", "")
+                 .Replace("SeqAct_", "").Replace("SeqCond_", "");
             float starty = 8;
             float w = 20;
             varLinkBox = new PPath();
             for (int i = 0; i < Varlinks.Count; i++)
             {
-                string d = "";
-                foreach (int l in Varlinks[i].Links)
-                    d = d + "#" + l + ",";
-                d = d.Remove(d.Length - 1);
+                string d = string.Join(",", Varlinks[i].Links.Select(l => $"#{l}"));
                 SText t2 = new SText(d + "\n" + Varlinks[i].Desc)
                 {
                     X = w,

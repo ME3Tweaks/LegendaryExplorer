@@ -17,16 +17,17 @@ namespace UMD.HCIL.GraphEditor
     /// Creates a simple graph control with some random nodes and connected edges.
     /// An event handler allows users to drag nodes around, keeping the edges connected.
     /// </summary>
-    public class GraphEditor : PCanvas
+    public sealed class GraphEditor : PCanvas
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
-        private static int DEFAULT_WIDTH = 1;
-        private static int DEFAULT_HEIGHT = 1;
+        private System.ComponentModel.Container components;
 
-        public bool updating = false;
+        private const int DEFAULT_WIDTH = 1;
+        private const int DEFAULT_HEIGHT = 1;
+
+        public bool updating;
 
         /// <summary>
         /// Empty Constructor is necessary so that this control can be used as an applet.
@@ -156,12 +157,13 @@ namespace UMD.HCIL.GraphEditor
                     base.OnDrag(sender, e);
                     foreach (PNode node in e.PickedNode.AllNodes)
                     {
-                        ArrayList edges = (ArrayList)node.Tag;
-                        if (edges != null)
+                        if (node.Tag is ArrayList edges)
+                        {
                             foreach (PPath edge in edges)
                             {
                                 edgesToUpdate.Add(edge);
                             }
+                        }
                     }
 
                     if (e.Canvas is GraphEditor g)
@@ -175,12 +177,13 @@ namespace UMD.HCIL.GraphEditor
                                 obj.OffsetBy(s.Width, s.Height);
                                 foreach (PNode n in obj.AllNodes)
                                 {
-                                    ArrayList edges = (ArrayList)n.Tag;
-                                    if (edges != null)
+                                    if (n.Tag is ArrayList edges)
+                                    {
                                         foreach (PPath edge in edges)
                                         {
                                             edgesToUpdate.Add(edge);
                                         }
+                                    }
                                 }
                             }
                         }
