@@ -1813,10 +1813,10 @@ namespace ME3Explorer.Pathfinding_Editor
                     graphEditor.edgeLayer.RemoveChildren(s.Tag as ArrayList);
                     s.Tag = new ArrayList();
                     s.CreateConnections(ref GraphNodes);
-
-                    //Todo: Make this refresh properly
-                    graphEditor.edgeLayer.InvalidateFullBounds();
-                    graphEditor.edgeLayer.Repaint();
+                    foreach (PPath edge in (ArrayList) s.Tag)
+                    {
+                        PathingGraphEditor.UpdateEdgeStraight(edge);
+                    }
                     graphEditor.Refresh();
                 }
             }
