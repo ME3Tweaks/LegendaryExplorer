@@ -1544,21 +1544,23 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             //todo: handle user saying "don't close" if changes are unsaved.
 
-
-            graphEditor.RemoveInputEventListener(pathfindingMouseListener);
-            graphEditor.DebugEventHandlers();
-            graphEditor.Dispose();
-            GraphHost.Child = null; //This seems to be required to clear OnChildGotFocus handler from WinFormsHost
-            graphEditor.DebugEventHandlers();
-            GraphHost.Dispose();
-            ActiveNodes.ClearEx();
-            StaticMeshCollections.ClearEx();
-            CombatZones.ClearEx();
-            GraphNodes?.Clear();
-            Properties_InterpreterWPF.Dispose();
-            PathfindingEditorWPF_ReachSpecsPanel.Dispose();
-            zoomController.Dispose();
-            graphEditor.DebugEventHandlers();
+            if (!e.Cancel)
+            {
+                graphEditor.RemoveInputEventListener(pathfindingMouseListener);
+                graphEditor.DebugEventHandlers();
+                graphEditor.Dispose();
+                GraphHost.Child = null; //This seems to be required to clear OnChildGotFocus handler from WinFormsHost
+                graphEditor.DebugEventHandlers();
+                GraphHost.Dispose();
+                ActiveNodes.ClearEx();
+                StaticMeshCollections.ClearEx();
+                CombatZones.ClearEx();
+                GraphNodes?.Clear();
+                Properties_InterpreterWPF.Dispose();
+                PathfindingEditorWPF_ReachSpecsPanel.Dispose();
+                zoomController.Dispose();
+                graphEditor.DebugEventHandlers();
+            }
         }
 
         private void ActiveNodesList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
