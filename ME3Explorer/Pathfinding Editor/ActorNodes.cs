@@ -38,33 +38,6 @@ namespace ME3Explorer.ActorNodes
             this.Pickable = true;
         }
 
-        protected ActorNode(int idx, IMEPackage p)
-        {
-            pcc = p;
-            index = idx;
-            export = pcc.getUExport(index);
-            comment = new SText(GetComment(), commentColor, false);
-            comment.X = 0;
-            comment.Y = 0 - comment.Height;
-            comment.Pickable = false;
-            this.AddChild(comment);
-            this.Pickable = true;
-        }
-
-        void appendToComment(string s)
-        {
-            if (comment.Text.Length > 0)
-            {
-                comment.TranslateBy(0, -1 * comment.Height);
-                comment.Text += s + "\n";
-            }
-            else
-            {
-                comment.Text += s + "\n";
-                comment.TranslateBy(0, -1 * comment.Height);
-            }
-        }
-
         public void SetShape(bool polygon)
         {
             if (shape != null)
