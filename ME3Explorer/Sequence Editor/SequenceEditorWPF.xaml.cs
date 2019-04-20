@@ -1069,8 +1069,7 @@ namespace ME3Explorer.Sequence_Editor
             {
                 PackageEditorWPF p = new PackageEditorWPF();
                 p.Show();
-                p.LoadFile(obj.Export.FileRef.FileName);
-                p.GoToNumber(obj.UIndex);
+                p.LoadFile(obj.Export.FileRef.FileName, obj.UIndex);
             }
         }
 

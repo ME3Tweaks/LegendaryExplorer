@@ -116,14 +116,6 @@
     <Reference Include="Gu.Wpf.DataGrid2D, Version=0.2.1.6, Culture=neutral, PublicKeyToken=34988ea4e73235be, processorArchitecture=MSIL">
       <HintPath>..\packages\Gu.Wpf.DataGrid2D.0.2.1.6\lib\net45\Gu.Wpf.DataGrid2D.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
-    <Reference Include="Ionic.Zip.Reduced, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\Ionic.Zip.Reduced.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
     </Reference>
@@ -202,10 +194,6 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="lib3ds.Net">
       <HintPath>..\Libraries\lib3ds.Net.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IO.RecyclableMemoryStream.1.1.0.0\lib\net45\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.VisualC" />

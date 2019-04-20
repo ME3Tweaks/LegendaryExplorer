@@ -69,7 +69,7 @@ namespace ME3Explorer.SequenceObjects
 
         public virtual void CreateConnections(IList<SObj> objects) { }
         public virtual void Layout() { }
-        public virtual void Layout(float x, float y) => TranslateBy(x, y);
+        public virtual void Layout(float x, float y) => this.SetOffset(x, y);
 
         protected string GetComment()
         {
@@ -484,6 +484,8 @@ namespace ME3Explorer.SequenceObjects
         public List<VarLink> Varlinks;
         protected VarDragHandler varDragHandler = new VarDragHandler();
         protected OutputDragHandler outputDragHandler = new OutputDragHandler();
+        private static readonly PointF[] downwardTrianglePoly = { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) };
+
         protected SBox(IExportEntry entry, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
@@ -601,8 +603,8 @@ namespace ME3Explorer.SequenceObjects
                         if (l.writeable)
                         {
                             //downward pointing triangle
-                            l.node = PPath.CreatePolygon(new[] { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) });
-                            l.node.AddChild(PPath.CreatePolygon(new[] { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) }));
+                            l.node = PPath.CreatePolygon(downwardTrianglePoly);
+                            l.node.AddChild(PPath.CreatePolygon(downwardTrianglePoly));
                         }
                         else
                         {
@@ -1181,7 +1183,7 @@ namespace ME3Explorer.SequenceObjects
             this.AddChild(varLinkBox);
             this.AddChild(outLinkBox);
             this.AddChild(inputLinkBox);
-            this.TranslateBy(x, y);
+            SetOffset(x, y);
         }
 
         private void GetInputLinks()
