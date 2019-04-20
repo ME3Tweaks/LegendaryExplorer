@@ -558,6 +558,9 @@
     <Compile Include="SharedUI\EditableTextBlock.cs" />
     <Compile Include="SharedUI\EditableComboBoxAdorner.cs" />
     <Compile Include="SharedUI\EditableTextBlockAdorner.cs" />
+    <Compile Include="SharedUI\EntrySelectorDialogWPF.xaml.cs">
+      <DependentUpon>EntrySelectorDialogWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SharedUI\ExceptionHandlerDialogWPF.xaml.cs">
       <DependentUpon>ExceptionHandlerDialogWPF.xaml</DependentUpon>
     </Compile>
@@ -1050,6 +1053,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SharedUI\AddPropertyDialogWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedUI\EntrySelectorDialogWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

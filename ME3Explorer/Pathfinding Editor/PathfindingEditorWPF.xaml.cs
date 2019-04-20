@@ -169,6 +169,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand FlipLevelCommand { get; set; }
         public ICommand BuildPathfindingChainCommand { get; set; }
         public ICommand ShowNodeSizesCommand { get; set; }
+        public ICommand AddExportToLevelCommand { get; set; }
         private void LoadCommands()
         {
             RefreshCommand = new RelayCommand(RefreshGraph, PackageIsLoaded);
@@ -195,6 +196,43 @@ namespace ME3Explorer.Pathfinding_Editor
             BuildPathfindingChainCommand = new RelayCommand(BuildPathfindingChainExperiment, PackageIsLoaded);
 
             ShowNodeSizesCommand = new RelayCommand(ToggleNodeSizesDisplay, (o) => { return true; });
+            AddExportToLevelCommand = new RelayCommand(AddExportToLevel, PackageIsLoaded);
+        }
+
+        private void AddExportToLevel(object obj)
+        {
+            using (EntrySelectorDialogWPF dialog = new EntrySelectorDialogWPF(Pcc, EntrySelectorDialogWPF.SupportedTypes.Exports))
+            {
+                if (dialog.ShowDialog().Value && dialog.ChosenEntry is IExportEntry selectedEntry)
+                {
+
+                    if (!AllLevelObjects.Contains(selectedEntry))
+                    {
+                        byte[] leveldata = PersisentLevelExport.Data;
+                        int start = PersisentLevelExport.propsEnd();
+                        //Console.WriteLine("Found start of binary at {start.ToString("X8"));
+
+                        uint exportid = BitConverter.ToUInt32(leveldata, start);
+                        start += 4;
+                        uint numberofitems = BitConverter.ToUInt32(leveldata, start);
+                        numberofitems++;
+                        SharedPathfinding.WriteMem(leveldata, start, BitConverter.GetBytes(numberofitems));
+
+                        //Debug.WriteLine("Size before: {memory.Length);
+                        //memory = RemoveIndices(memory, offset, size);
+                        int offset = (int)(start + numberofitems * 4); //will be at the very end of the list as it is now +1
+                        List<byte> memList = leveldata.ToList();
+                        memList.InsertRange(offset, BitConverter.GetBytes(selectedEntry.UIndex));
+                        leveldata = memList.ToArray();
+                        PersisentLevelExport.Data = leveldata;
+                        RefreshGraph();
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show($"{selectedEntry.UIndex} {selectedEntry}_{selectedEntry.indexValue} is already in the level.");
+                    }
+                }
+            }
         }
 
         private void ToggleNodeSizesDisplay(object obj)
