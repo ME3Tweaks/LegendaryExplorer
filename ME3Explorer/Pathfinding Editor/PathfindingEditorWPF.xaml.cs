@@ -67,6 +67,8 @@ namespace ME3Explorer.Pathfinding_Editor
         public string CurrentFile;
         private PathfindingMouseListener pathfindingMouseListener;
 
+        private string _currentNodeXY = "Undefined";
+        public string CurrentNodeXY { get => _currentNodeXY; set => SetProperty(ref _currentNodeXY, value); }
         public PathfindingEditorWPF()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Pathfinding Editor WPF", new WeakReference(this));
@@ -75,7 +77,8 @@ namespace ME3Explorer.Pathfinding_Editor
             StatusText = "Select package file to load";
             LoadCommands();
             InitializeComponent();
-
+            ContextMenu contextMenu = this.FindResource("nodeContextMenu") as ContextMenu;
+            contextMenu.DataContext = this;
             graphEditor = (PathingGraphEditor)GraphHost.Child;
             graphEditor.BackColor = System.Drawing.Color.FromArgb(130, 130, 130);
             AllowRefresh = true;
@@ -614,6 +617,13 @@ namespace ME3Explorer.Pathfinding_Editor
         public void OpenContextMenu()
         {
             ContextMenu contextMenu = this.FindResource("nodeContextMenu") as ContextMenu;
+            IExportEntry export = ActiveNodes_ListBox.SelectedItem as IExportEntry;
+            if (export != null)
+            {
+                PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
+                var currentlocation = GetLocation(export);
+                CurrentNodeXY = s.GlobalBounds.X + "," + s.GlobalBounds.Y;
+            }
             contextMenu.IsOpen = true;
             graphEditor.DisableDragging();
         }
@@ -672,13 +682,19 @@ namespace ME3Explorer.Pathfinding_Editor
             if (LoadPathingNodesFromLevel())
             {
                 PointF graphcenter = GenerateGraph();
-                ChangingSelectionByGraphClick = true;
-                ActiveNodes_ListBox.SelectedIndex = 0;
+                if (GraphNodes.Count > 0)
+                {
+                    ChangingSelectionByGraphClick = true;
+                    ActiveNodes_ListBox.SelectedIndex = 0;
+                    RectangleF panToRectangle = new RectangleF(graphcenter, new SizeF(200, 200));
+                    graphEditor.Camera.AnimateViewToCenterBounds(panToRectangle, false, 1000);
+                    ChangingSelectionByGraphClick = false;
+                }
+                else
+                {
+                    NodeName = "No node selected";
+                }
                 CurrentFile = System.IO.Path.GetFileName(fileName);
-                RectangleF panToRectangle = new RectangleF(graphcenter, new SizeF(200, 200));
-                graphEditor.Camera.AnimateViewToCenterBounds(panToRectangle, false, 1000);
-                ChangingSelectionByGraphClick = false;
-
                 AddRecent(fileName, false);
                 SaveRecentList();
                 RefreshRecent(true, RFiles);
@@ -913,8 +929,7 @@ namespace ME3Explorer.Pathfinding_Editor
             bool oneViewActive = ShowPathfindingNodesLayer || ShowActorsLayer || ShowEverythingElseLayer;
             if (oneViewActive && ActiveNodes.Count == 0)
             {
-                //Change to non-modal TODO
-                MessageBox.Show("No nodes visible with current view options.\nChange view options to see if there are any viewable nodes.");
+                //MessageBox.Show("No nodes visible with current view options.\nChange view options to see if there are any viewable nodes.");
                 graphEditor.Enabled = true;
                 graphEditor.UseWaitCursor = false;
                 return true; //file still loaded.
@@ -2184,6 +2199,68 @@ namespace ME3Explorer.Pathfinding_Editor
                 graphEditor.nodeLayer.RemoveChildrenList(graphNodesToRemove.ToList<PNode>()); // sigh.
             }
             graphEditor.Refresh();
+        }
+
+        /// <summary>
+        /// The current Z filtering value. This only is used if ZFilteringMode is not equal to None.
+        /// </summary>
+        public double ZFilteringValue { get => _zfilteringvalue; set => SetProperty(ref _zfilteringvalue, value); }
+        private double _zfilteringvalue = 0;
+
+        private EZFilterIncludeDirection _zfilteringmode = EZFilterIncludeDirection.None;
+        /// <summary>
+        /// The current Z filtering mode
+        /// </summary>
+        public EZFilterIncludeDirection ZFilteringMode { get => _zfilteringmode; set => SetProperty(ref _zfilteringmode, value); }
+
+        /// <summary>
+        /// Enum containing different INCLUSION criteria for Z filtering. 
+        /// </summary>
+        public enum EZFilterIncludeDirection
+        {
+            None,
+            Above,
+            Below,
+            AboveEquals,
+            BelowEquals
+        }
+
+
+        private void ShowNodes_Below_Click(object sender, RoutedEventArgs e)
+        {
+            SetFilteringMode(EZFilterIncludeDirection.Below);
+        }
+
+        private void ShowNodes_Above_Click(object sender, RoutedEventArgs e)
+        {
+            SetFilteringMode(EZFilterIncludeDirection.Above);
+        }
+
+        private void ShowNodes_BelowEqual_Click(object sender, RoutedEventArgs e)
+        {
+            SetFilteringMode(EZFilterIncludeDirection.BelowEquals);
+        }
+
+        private void ShowNodes_AboveEqual_Click(object sender, RoutedEventArgs e)
+        {
+            SetFilteringMode(EZFilterIncludeDirection.AboveEquals);
+        }
+
+        private void SetFilteringMode(EZFilterIncludeDirection newfilter)
+        {
+            IExportEntry export = ActiveNodes_ListBox.SelectedItem as IExportEntry;
+            if (export != null)
+            {
+                PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
+                var currentlocation = GetLocation(export);
+                ZFilteringMode = newfilter;
+                ZFilteringValue = currentlocation.Z;
+            }
+        }
+
+        private void ShowNodes_All_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

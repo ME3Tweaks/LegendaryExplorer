@@ -509,6 +509,7 @@
     </Compile>
     <Compile Include="Packages\UDKPackage.cs" />
     <Compile Include="Packages\MEPackage.cs" />
+    <Compile Include="Pathfinding Editor\PathfindingEditorConverters.cs" />
     <Compile Include="Pathfinding Editor\PathfindingEditorWPF.xaml.cs">
       <DependentUpon>PathfindingEditorWPF.xaml</DependentUpon>
     </Compile>

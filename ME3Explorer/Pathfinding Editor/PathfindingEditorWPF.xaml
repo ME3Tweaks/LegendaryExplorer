@@ -16,11 +16,18 @@
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
+        <local:EZFilteringActiveConverter x:Key="EZFilteringActiveConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
-            <MenuItem Header="Set node X,Y to graph position" Click="SetGraphXY_Clicked" ToolTip="Sets the X,Y position of this node to the same coordinates as on the graph."/>
-            <MenuItem Header="Clone node" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
+            <MenuItem Header="{Binding CurrentNodeXY}" HeaderStringFormat="Set node X,Y to graph position ({0})" Click="SetGraphXY_Clicked" ToolTip="Sets the X,Y position of this node to the same coordinates as on the graph."/>
+            <MenuItem Header="Clone node" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one" />
             <MenuItem Header="Remove from level" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
-
+            <MenuItem Header="Filter nodes by Z value">
+                <MenuItem Header="Show all nodes" Click="ShowNodes_All_Click" IsChecked="{Binding ZFilteringMode, Converter={StaticResource EZFilteringActiveConverter}, ConverterParameter='None'}"/>
+                <MenuItem Header="Above this one" Click="ShowNodes_Above_Click" IsChecked="{Binding ZFilteringMode, Converter={StaticResource EZFilteringActiveConverter}, ConverterParameter='Above'}"/>
+                <MenuItem Header="Below this one" Click="ShowNodes_Below_Click" IsChecked="{Binding ZFilteringMode, Converter={StaticResource EZFilteringActiveConverter}, ConverterParameter='Below'}"/>
+                <MenuItem Header="At and above this one" Click="ShowNodes_AboveEqual_Click" IsChecked="{Binding ZFilteringMode, Converter={StaticResource EZFilteringActiveConverter}, ConverterParameter='AboveEqual'}"/>
+                <MenuItem Header="At and below this one" Click="ShowNodes_BelowEqual_Click" IsChecked="{Binding ZFilteringMode, Converter={StaticResource EZFilteringActiveConverter}, ConverterParameter='BelowEqual'}"/>
+            </MenuItem>
             <Separator />
             <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds." Click="OpenInPackageEditor_Clicked" />
         </ContextMenu>
@@ -99,7 +106,7 @@
                     <Viewbox StretchDirection="DownOnly" Stretch="Uniform" HorizontalAlignment="Left" >
                         <TextBlock Text="{Binding NodeName, FallbackValue=PathNode_X57}" FontWeight="Bold" FontSize="20" TextAlignment="Left"/>
                     </Viewbox>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Name="NodePosition_Panel">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Name="NodePosition_Panel" IsEnabled="False">
                         <TextBlock Text="{Binding NodeNameSubText, FallbackValue=Export 57}" FontWeight="Bold" FontSize="10" VerticalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock Text="X:" FontWeight="Bold" FontSize="10" Margin="10,0,4,0"  VerticalAlignment="Center"/>
