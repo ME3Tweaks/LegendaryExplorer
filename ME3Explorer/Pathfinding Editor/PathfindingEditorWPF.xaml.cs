@@ -61,7 +61,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ObservableCollectionExtended<string> TagsList { get; set; } = new ObservableCollectionExtended<string>();
         public ObservableCollectionExtended<StaticMeshCollection> StaticMeshCollections { get; set; } = new ObservableCollectionExtended<StaticMeshCollection>();
         public ObservableCollectionExtended<CombatZone> CombatZones { get; } = new ObservableCollectionExtended<CombatZone>();
-
+        public ObservableCollectionExtended<CombatZone> CurrentNodeCombatZones { get; } = new ObservableCollectionExtended<CombatZone>();
 
         private List<IExportEntry> AllLevelObjects = new List<IExportEntry>();
         public string CurrentFile;
@@ -1595,6 +1595,39 @@ namespace ME3Explorer.Pathfinding_Editor
                 NodeNameSubText = $"Export {export.UIndex}";
                 ActiveNodes_ListBox.ScrollIntoView(export);
                 Properties_InterpreterWPF.LoadExport(export);
+                CurrentNodeCombatZones.ClearEx();
+
+                PathfindingNodeMaster selectedNode = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
+
+                if (selectedNode is PathfindingNode)
+                {
+                    CombatZones_TabItem.IsEnabled = true;
+
+                    CurrentNodeCombatZones.AddRange(CloneCombatZonesForSelections());
+
+                    var participatingCombatZones = export.GetProperty<ArrayProperty<StructProperty>>("Volumes");
+                    if (participatingCombatZones != null)
+                    {
+                        foreach (StructProperty volume in participatingCombatZones)
+                        {
+                            ObjectProperty actorRef = volume.GetProp<ObjectProperty>("Actor");
+                            if (actorRef != null && actorRef.Value > 0)
+                            {
+                                CombatZone clonedZone = CurrentNodeCombatZones.FirstOrDefault(x => x.export.UIndex == actorRef.Value);
+                                if (clonedZone != null) clonedZone.Active = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //No participation in any combat zones
+                    }
+                }
+                else
+                {
+                    CombatZones_TabItem.IsEnabled = false;
+                }
+
                 PathfindingEditorWPF_ReachSpecsPanel.LoadExport(export);
 
 #if DEBUG
@@ -1662,8 +1695,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         pnm.shape.Brush = pathfindingNodeBrush;
                     }
                 }*/
-                PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
-                if (s != null)
+                if (selectedNode != null)
                 {
                     //if (selectedIndex != -1)
                     //{
@@ -1671,10 +1703,10 @@ namespace ME3Explorer.Pathfinding_Editor
                     //    if (d != null)
                     //        d.Deselect();
                     //}
-                    s.Select();
+                    selectedNode.Select();
                     if (!ChangingSelectionByGraphClick)
                     {
-                        graphEditor.Camera.AnimateViewToCenterBounds(s.GlobalFullBounds, false, 1000);
+                        graphEditor.Camera.AnimateViewToCenterBounds(selectedNode.GlobalFullBounds, false, 1000);
                     }
 
                     Point3D position = GetLocation(export);
@@ -1727,6 +1759,17 @@ namespace ME3Explorer.Pathfinding_Editor
                 NodePosition_Panel.IsEnabled = false;
             }
             OnPropertyChanged(nameof(NodeTypeDescriptionText));
+        }
+
+        private List<CombatZone> CloneCombatZonesForSelections()
+        {
+            List<CombatZone> clones = new List<CombatZone>();
+            foreach (CombatZone z in CombatZones)
+            {
+                clones.Add(new CombatZone(z));
+            }
+
+            return clones;
         }
 
         private void ContextMenu_Closed(object sender, RoutedEventArgs e)
@@ -2083,6 +2126,8 @@ namespace ME3Explorer.Pathfinding_Editor
         [DebuggerDisplay("{export.UIndex} Combat Zone (Active: {Active})")]
         public class CombatZone : NotifyPropertyChangedBase
         {
+            public IExportEntry export { get; private set; }
+
             private bool _active;
             public bool Active { get => _active; set => SetProperty(ref _active, value); }
             public string DisplayString { get => $"{export.UIndex} {export.ObjectName}_{export.indexValue}"; }
@@ -2092,7 +2137,15 @@ namespace ME3Explorer.Pathfinding_Editor
                 this.export = combatZone;
             }
 
-            public IExportEntry export { get; private set; }
+            /// <summary>
+            /// Copy constructor
+            /// </summary>
+            /// <param name="combatZone"></param>
+            public CombatZone(CombatZone combatZone)
+            {
+                export = combatZone.export;
+                Active = combatZone.Active;
+            }
         }
 
         private void CombatZones_ItemSelectionChanged(object sender, Xceed.Wpf.Toolkit.Primitives.ItemSelectionChangedEventArgs e)
