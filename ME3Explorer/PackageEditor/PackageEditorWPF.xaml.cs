@@ -1328,7 +1328,7 @@ namespace ME3Explorer
             RefreshRecent(false);
         }
 
-        public void LoadFile(string s)
+        public void LoadFile(string s, int goToIndex = 0)
         {
             try
             {
@@ -1359,6 +1359,7 @@ namespace ME3Explorer
                 InterpreterTab_Interpreter.UnloadExport();
                 //InitializeTreeView();
 
+                QueuedGotoNumber = goToIndex;
                 BackgroundWorker bg = new BackgroundWorker();
                 bg.DoWork += InitializeTreeViewBackground;
                 bg.RunWorkerCompleted += InitializeTreeViewBackground_Completed;
@@ -1411,6 +1412,17 @@ namespace ME3Explorer
             {
                 return;
             }
+
+            int link = QueuedGotoNumber;
+            var entriesToExpand = new List<int>();
+            if (Pcc.isEntry(link))
+            {
+                while (link != 0)
+                {
+                    entriesToExpand.Add(link);
+                    link = Pcc.getEntry(link)?.idxLink ?? 0;
+                }
+            }
             IReadOnlyList<ImportEntry> Imports = Pcc.Imports;
             IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
             int importsOffset = Exports.Count;
@@ -1442,6 +1454,11 @@ namespace ME3Explorer
                     parent.Sublinks.Add(entry);
                     entry.Parent = parent;
                     itemsToRemove.Add(entry); //remove from this level as we have added it to another already
+
+                    if (entriesToExpand.Contains(parent.UIndex))
+                    {
+                        parent.IsExpanded = true;
+                    }
                 }
             }
             e.Result = new ObservableCollectionExtended<TreeViewEntry>(rootNodes.Except(itemsToRemove).ToList());
@@ -2108,6 +2125,7 @@ namespace ME3Explorer
                         Dispatcher.BeginInvoke(DispatcherPriority.Background, (NoArgDelegate)delegate { nodes[0].ParentNodeValue.SelectItem(nodes[0]); });
                     }
                 }*/
+                DispatcherHelper.EmptyQueue();
                 var list = AllTreeViewNodesX[0].FlattenTree();
                 List<TreeViewEntry> selectNode = list.Where(s => s.Entry != null && s.UIndex == entryIndex).ToList();
                 if (selectNode.Any())

@@ -289,6 +289,8 @@ namespace ME3Explorer.Packages
                 return imports[-index - 1];
             return null;
         }
+        public bool isEntry(int index) => index > 0 && index <= ExportCount || -index > 0 && -index <= ImportCount;
+
         #endregion
 
         public string FollowLink(int Link)
