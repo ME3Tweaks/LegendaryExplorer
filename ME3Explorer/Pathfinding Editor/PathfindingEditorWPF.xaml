@@ -5,10 +5,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ME3Explorer.Pathfinding_Editor"
+        xmlns:properties="clr-namespace:ME3Explorer.Properties"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:pathfindinggraph="clr-namespace:UMD.HCIL.PathingGraphEditor;assembly=Piccolo"
-    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-    mc:Ignorable="d"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
         Closing="PathfinderEditorWPF_Closing"
         Title="Pathfinding Editor WPF" Height="750" Width="1300" MinWidth="900" MinHeight="200">
     <Window.Resources>
@@ -71,6 +72,7 @@
                     <MenuItem Header="SFXCombatZone" IsCheckable="True" IsChecked="{Binding ShowVolumes_SFXCombatZones}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
                     <MenuItem Header="WwiseAudioVolume" Command="{Binding ShowWwiseAudioVolumeCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_WwiseAudioVolumes}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
                 </MenuItem>
+                <MenuItem Header="Show node sizes" Name="ShowNodeSizes_MenuItem"  Command="{Binding ShowNodeSizesCommand}" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PathfindingEditorShowNodeSizes, Mode=TwoWay}" StaysOpenOnClick="True" ToolTip="Toggles the size of nodes being listed beneath their UIndex. BS = Boss, MB = Miniboss, M = Mooks."/>
             </MenuItem>
             <MenuItem Header="Experiments" Padding="4">
                 <MenuItem Header="Flip level upside down" Command="{Binding FlipLevelCommand}"/>

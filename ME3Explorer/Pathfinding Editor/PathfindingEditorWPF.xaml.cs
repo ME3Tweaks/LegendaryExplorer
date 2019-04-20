@@ -165,6 +165,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand ShowWwiseAudioVolumesCommand { get; set; }
         public ICommand FlipLevelCommand { get; set; }
         public ICommand BuildPathfindingChainCommand { get; set; }
+        public ICommand ShowNodeSizesCommand { get; set; }
         private void LoadCommands()
         {
             RefreshCommand = new RelayCommand(RefreshGraph, PackageIsLoaded);
@@ -189,6 +190,16 @@ namespace ME3Explorer.Pathfinding_Editor
 
             FlipLevelCommand = new RelayCommand(FlipLevel, PackageIsLoaded);
             BuildPathfindingChainCommand = new RelayCommand(BuildPathfindingChainExperiment, PackageIsLoaded);
+
+            ShowNodeSizesCommand = new RelayCommand(ToggleNodeSizesDisplay, (o) => { return true; });
+        }
+
+        private void ToggleNodeSizesDisplay(object obj)
+        {
+            ShowNodeSizes_MenuItem.IsChecked = !ShowNodeSizes_MenuItem.IsChecked;
+            Properties.Settings.Default.PathfindingEditorShowNodeSizes = ShowNodeSizes_MenuItem.IsChecked;
+            Properties.Settings.Default.Save();
+            RefreshGraph();
         }
 
         private void BuildPathfindingChainExperiment(object obj)

@@ -251,6 +251,29 @@ namespace ME3Explorer.PathfindingNodes
             if (val == null)
             {
                 val = new SText(index.ToString());
+
+                if (Properties.Settings.Default.PathfindingEditorShowNodeSizes)
+                {
+                    StructProperty maxPathSize = export.GetProperty<StructProperty>("MaxPathSize");
+                    if (maxPathSize != null)
+                    {
+                        float height = maxPathSize.GetProp<FloatProperty>("Height");
+                        float radius = maxPathSize.GetProp<FloatProperty>("Radius");
+
+                        if (radius >= 135)
+                        {
+                            val.Text += "\nBS";
+                        }
+                        else if (radius >= 90)
+                        {
+                            val.Text += "\nMB";
+                        }
+                        else
+                        {
+                            val.Text += "\nM";
+                        }
+                    }
+                }
                 val.Pickable = false;
                 val.TextAlignment = StringAlignment.Center;
             }
