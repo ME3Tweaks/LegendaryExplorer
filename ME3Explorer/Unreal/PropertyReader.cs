@@ -218,7 +218,25 @@ namespace ME3Explorer.Unreal
             int start = detectStart(export.FileRef, data, export.ObjectFlags);
             return ReadProp(export.FileRef, data, start);
         }
-        
+
+        public static string TypeToString(int type)
+        {
+            switch (type)
+            {
+                case 1: return "Struct Property";
+                case 2: return "Integer Property";
+                case 3: return "Float Property";
+                case 4: return "Object Property";
+                case 5: return "Name Property";
+                case 6: return "Bool Property";
+                case 7: return "Byte Property";
+                case 8: return "Array Property";
+                case 9: return "String Property";
+                case 10: return "String Ref Property";
+                default: return "Unknown/None";
+            }
+        }
+
         public static CustomProperty PropertyToGrid(Property p, IMEPackage pcc)
         {
             string cat = p.TypeVal.ToString();
