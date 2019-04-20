@@ -231,7 +231,7 @@ namespace ME3Explorer
         {
             if (dlcCookedDir != null)
             {
-                string[] extensions = { ".sfm", ".upk", ".bik", ".u" };
+                string[] extensions = { ".sfm", ".upk", ".bik", ".u", ".isb" };
 
                 int rootLength = dlcCookedDir.Length + (dlcCookedDir[dlcCookedDir.Length - 1] == '\\' ? 0 : 1);
 
