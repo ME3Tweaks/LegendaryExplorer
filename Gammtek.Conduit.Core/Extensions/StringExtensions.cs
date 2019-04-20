@@ -4,54 +4,6 @@ namespace Gammtek.Conduit.Extensions
 {
 	public static class StringExtensions
 	{
-		[StringFormatMethod("value")]
-		public static string Format(this string value, IFormatProvider provider, params object[] args)
-		{
-			return string.Format(provider, value, args);
-		}
-
-		[StringFormatMethod("value")]
-		public static string Format(this string value, object arg0)
-		{
-			return string.Format(value, arg0);
-		}
-
-		[StringFormatMethod("value")]
-		public static string Format(this string value, object arg0, object arg1)
-		{
-			return string.Format(value, arg0, arg1);
-		}
-
-		[StringFormatMethod("value")]
-		public static string Format(this string value, object arg0, object arg1, object arg2)
-		{
-			return string.Format(value, arg0, arg1, arg2);
-		}
-
-		[StringFormatMethod("value")]
-		public static string Format(this string value, params object[] args)
-		{
-			return string.Format(value, args);
-		}
-
-		[ContractAnnotation("value:null => true")]
-		public static bool IsNull(this string value)
-		{
-			return value == null;
-		}
-
-		[ContractAnnotation("value:null => true")]
-		public static bool IsNullOrEmpty(this string value)
-		{
-			return string.IsNullOrEmpty(value);
-		}
-
-		[ContractAnnotation("value:null => true")]
-		public static bool IsNullOrWhiteSpace(this string value)
-		{
-			return string.IsNullOrWhiteSpace(value);
-		}
-
 		public static string Left(this string value, int count)
 		{
 			if (value == null)
@@ -172,7 +124,7 @@ namespace Gammtek.Conduit.Extensions
         {
             if (length < 0)
             {
-                throw new ArgumentOutOfRangeException("length", "Length must be >= 0");
+                throw new ArgumentOutOfRangeException(nameof(length), "Length must be >= 0");
             }
 
             if (str == null)

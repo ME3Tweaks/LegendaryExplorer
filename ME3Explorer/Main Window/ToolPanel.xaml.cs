@@ -22,56 +22,56 @@ namespace ME3Explorer
     {
         public string Category
         {
-            get { return (string)GetValue(CategoryProperty); }
-            set { SetValue(CategoryProperty, value); }
+            get => (string)GetValue(CategoryProperty);
+            set => SetValue(CategoryProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Category.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CategoryProperty =
-            DependencyProperty.Register("Category", typeof(string), typeof(ToolPanel), new PropertyMetadata(""));
+            DependencyProperty.Register(nameof(Category), typeof(string), typeof(ToolPanel), new PropertyMetadata(""));
 
         public Thickness ItemMargin
         {
-            get { return (Thickness)GetValue(ItemMarginProperty); }
-            set { SetValue(ItemMarginProperty, value); }
+            get => (Thickness)GetValue(ItemMarginProperty);
+            set => SetValue(ItemMarginProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for ItemMargin.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemMarginProperty =
-            DependencyProperty.Register("ItemMargin", typeof(Thickness), typeof(ToolPanel), new PropertyMetadata(new Thickness(0,15,15,0)));
+            DependencyProperty.Register(nameof(ItemMargin), typeof(Thickness), typeof(ToolPanel), new PropertyMetadata(new Thickness(0,15,15,0)));
 
         public Thickness ItemControlMargin
         {
-            get { return (Thickness)GetValue(ItemControlMarginProperty); }
-            set { SetValue(ItemControlMarginProperty, value); }
+            get => (Thickness)GetValue(ItemControlMarginProperty);
+            set => SetValue(ItemControlMarginProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for ItemControlMargin.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemControlMarginProperty =
-            DependencyProperty.Register("ItemControlMargin", typeof(Thickness), typeof(ToolPanel), new PropertyMetadata(new Thickness(0)));
+            DependencyProperty.Register(nameof(ItemControlMargin), typeof(Thickness), typeof(ToolPanel), new PropertyMetadata(new Thickness(0)));
         
         public int Rows
         {
-            get { return (int)GetValue(RowsProperty); }
-            set { SetValue(RowsProperty, value); }
+            get => (int)GetValue(RowsProperty);
+            set => SetValue(RowsProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Rows.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RowsProperty =
-            DependencyProperty.Register("Rows", typeof(int), typeof(ToolPanel), new PropertyMetadata(1));
+            DependencyProperty.Register(nameof(Rows), typeof(int), typeof(ToolPanel), new PropertyMetadata(1));
 
         public int Columns
         {
-            get { return (int)GetValue(ColumnsProperty); }
-            set { SetValue(ColumnsProperty, value); }
+            get => (int)GetValue(ColumnsProperty);
+            set => SetValue(ColumnsProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Columns.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ColumnsProperty =
-            DependencyProperty.Register("Columns", typeof(int), typeof(ToolPanel), new PropertyMetadata(1));
+            DependencyProperty.Register(nameof(Columns), typeof(int), typeof(ToolPanel), new PropertyMetadata(1));
 
-        public int viewCapacity { get { return Rows * Columns; } }
-        
+        public int viewCapacity => Rows * Columns;
+
         public event EventHandler<Tool> ToolMouseOver;
 
         private int index;
@@ -111,7 +111,7 @@ namespace ME3Explorer
         private void updateContents()
         {
             ToolList.ItemsSource = tools.Skip(index).Take(viewCapacity);
-            if (tools.Count() > index + viewCapacity)
+            if (tools.Count > index + viewCapacity)
             {
                 forwardButton.Visibility = Visibility.Visible;
             }

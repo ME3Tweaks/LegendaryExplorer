@@ -51,19 +51,19 @@ namespace ME3Explorer.Matinee
         public void RefreshCombo()
         {
             objects.Clear();
-            for (int i = 0; i < pcc.Exports.Count; i++)
-                if (pcc.Exports[i].ClassName == "InterpData")
+            for (int i = 0; i < Pcc.Exports.Count; i++)
+                if (Pcc.Exports[i].ClassName == "InterpData")
                     objects.Add(i);
             toolStripComboBox1.Items.Clear();
             foreach (int i in objects)
-                toolStripComboBox1.Items.Add("#" + i + " : " + pcc.Exports[i].ObjectName);
+                toolStripComboBox1.Items.Add("#" + i + " : " + Pcc.Exports[i].ObjectName);
             if (toolStripComboBox1.Items.Count != 0)
                 toolStripComboBox1.SelectedIndex = 0;
         }
 
         public void loadInterpData(int index)
         {
-            timeline.GroupList.LoadInterpData(index, pcc as ME3Package);
+            timeline.GroupList.LoadInterpData(index, Pcc as ME3Package);
             timeline.GroupList.OnCameraChanged(timeline.Camera);
         }
 
@@ -160,9 +160,9 @@ namespace ME3Explorer.Matinee
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc == null)
+            if (Pcc == null)
                 return;
-            pcc.save();
+            Pcc.save();
             MessageBox.Show("Done");
         }
 
@@ -175,13 +175,13 @@ namespace ME3Explorer.Matinee
             if (updatedExports.Contains(timeline.GroupList.index))
             {
                 //loaded InterpData is no longer an InterpData
-                if (pcc.getExport(timeline.GroupList.index).ClassName != "InterpData")
+                if (Pcc.getExport(timeline.GroupList.index).ClassName != "InterpData")
                 {
                     //?
                 }
                 else
                 {
-                    timeline.GroupList.LoadInterpData(timeline.GroupList.index, pcc as ME3Package);
+                    timeline.GroupList.LoadInterpData(timeline.GroupList.index, Pcc as ME3Package);
                 }
                 updatedExports.Remove(timeline.GroupList.index);
             }
@@ -193,7 +193,7 @@ namespace ME3Explorer.Matinee
             {
                 foreach (var i in updatedExports)
                 {
-                    if (pcc.getExport(i).ClassName == "InterpData")
+                    if (Pcc.getExport(i).ClassName == "InterpData")
                     {
                         RefreshCombo();
                         break;

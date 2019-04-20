@@ -44,13 +44,13 @@ namespace ME3Explorer.FaceFX
         public void ListRefresh()
         {
             Objects = new List<int>();
-            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
             for (int i = 0; i < Exports.Count; i++)
                 if (Exports[i].ClassName == "FaceFXAnimSet")
                     Objects.Add(i);
             listBox1.Items.Clear();
             foreach(int n in Objects)
-                listBox1.Items.Add("#" + n + " : " + pcc.Exports[n].GetFullPath);
+                listBox1.Items.Add("#" + n + " : " + Pcc.Exports[n].GetFullPath);
         }
 
         private void FaceFXRefresh(int n)
@@ -69,8 +69,8 @@ namespace ME3Explorer.FaceFX
                 topNodeName = treeView2.TopNode.Name;
 
             }
-            IExportEntry exportEntry = pcc.Exports[n];
-            FaceFX = new ME3FaceFXAnimSet(pcc, exportEntry);
+            IExportEntry exportEntry = Pcc.Exports[n];
+            FaceFX = new ME3FaceFXAnimSet(Pcc, exportEntry);
             hb1.ByteProvider = new DynamicByteProvider(exportEntry.Data);
             treeView1.Nodes.Clear();
             treeView1.Nodes.Add(FaceFX.HeaderToTree());
@@ -135,9 +135,9 @@ namespace ME3Explorer.FaceFX
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc == null)
+            if (Pcc == null)
                 return;
-            pcc.save();
+            Pcc.save();
             MessageBox.Show("Done.");
         }
 
@@ -350,7 +350,7 @@ namespace ME3Explorer.FaceFX
             {
                 foreach (var i in updatedExports)
                 {
-                    if (pcc.getExport(i).ClassName == "FaceFXAnimSet")
+                    if (Pcc.getExport(i).ClassName == "FaceFXAnimSet")
                     {
                         ListRefresh();
                         break;

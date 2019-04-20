@@ -13,10 +13,8 @@ namespace ME3Explorer
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            MEGame game;
-            if (value is MEGame)
+            if (value is MEGame game)
             {
-                game = (MEGame)value;
                 switch (game)
                 {
                     case MEGame.ME1:
@@ -41,9 +39,9 @@ namespace ME3Explorer
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value is string)
+            if (value is string s)
             {
-                return System.IO.Path.GetFileName((string)value);
+                return System.IO.Path.GetFileName(s);
             }
             return "";
         }
@@ -59,18 +57,17 @@ namespace ME3Explorer
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value is string)
+            if (value is string path)
             {
-                string path = (string)value;
                 if (path.StartsWith(ME3Directory.cookedPath) || path.StartsWith(ME2Directory.cookedPath) || path.StartsWith(ME1Directory.cookedPath))
                 {
                     return "Basegame";
                 }
-                else if (path.StartsWith(ME3Directory.DLCPath) || path.StartsWith(ME2Directory.DLCPath))
+                if (path.StartsWith(ME3Directory.DLCPath) || path.StartsWith(ME2Directory.DLCPath))
                 {
                     return System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(path)));
                 }
-                else if (path.StartsWith(ME1Directory.DLCPath))
+                if (path.StartsWith(ME1Directory.DLCPath))
                 {
                     int startIndex = path.IndexOf("DLC_");
                     return path.Substring(startIndex, path.Skip(startIndex).ToList().IndexOf('\\'));
@@ -92,9 +89,9 @@ namespace ME3Explorer
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value is long)
+            if (value is long l)
             {
-                return UsefulThings.General.GetFileSizeAsString((long)value);
+                return UsefulThings.General.GetFileSizeAsString(l);
             }
             return "";
         }
@@ -110,12 +107,12 @@ namespace ME3Explorer
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value is int)
+            if (value is int num)
             {
-                int val = (int)value;
-                if (parameter is string)
+                if (parameter is string obj)
                 {
-                    return val + " " + (string)parameter + (val != 1 ? "s" : "");
+                    //eg: num = 3, obj = "tool"; return  "3 tools"
+                    return $"{num} {obj}{(num != 1 ? "s" : "")}";
                 }
             }
             return "";
@@ -133,19 +130,11 @@ namespace ME3Explorer
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (values[0] is DateTime)
+            if (values[0] is DateTime d)
             {
-                DateTime d = (DateTime)values[0];
                 DateTime now = DateTime.Now;
                 TimeSpan t = now - d;
-                if (t.TotalDays < 1)
-                {
-                    return d.ToString("h:mm tt");
-                }
-                else
-                {
-                    return d.ToString("dd MMM yy");
-                }
+                return d.ToString(t.TotalDays < 1 ? "h:mm tt" : "dd MMM yy");
             }
             return "";
         }

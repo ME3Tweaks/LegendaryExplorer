@@ -63,8 +63,7 @@ namespace ME3Explorer.TlkManagerNS
 
         private void ExportTLK(object obj)
         {
-            LoadedTLK tlk = TLKList.SelectedItem as LoadedTLK;
-            if (tlk != null)
+            if (TLKList.SelectedItem is LoadedTLK tlk)
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
@@ -109,8 +108,7 @@ namespace ME3Explorer.TlkManagerNS
 
         private void ReplaceTLK(object obj)
         {
-            LoadedTLK tlk = TLKList.SelectedItem as LoadedTLK;
-            if (tlk != null)
+            if (TLKList.SelectedItem is LoadedTLK tlk)
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog
                 {

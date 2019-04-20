@@ -1,0 +1,239 @@
+﻿<global:WPFBase
+    xmlns:global="clr-namespace:ME3Explorer" x:Class="ME3Explorer.Sequence_Editor.SequenceEditorWPF"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:local="clr-namespace:ME3Explorer.Sequence_Editor"
+        xmlns:SharedUI="clr-namespace:ME3Explorer.SharedUI"
+        xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
+        xmlns:grapheditor="clr-namespace:UMD.HCIL.GraphEditor"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+        xmlns:vhelp="clr-namespace:ME3Explorer.SharedUI.PeregrineTreeView"
+        mc:Ignorable="d"
+        Closing="SequenceEditorWPF_Closing"
+        Title="Sequence Editor WPF" Height="750" Width="1300" MinWidth="900" MinHeight="200">
+    <Window.Resources>
+        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+        <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
+        <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
+        <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
+            <MenuItem Header="Clone Object" Click="CloneObject_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
+            <MenuItem Header="Break Links" Name="breakLinksMenuItem">
+                <MenuItem Header="Output Links" Name="outputLinksMenuItem"></MenuItem>
+                <MenuItem Header="Var Links" Name="varLinksMenuItem"></MenuItem>
+                <MenuItem Header="Break All Links" Name="breakAllLinksMenuItem" Click="removeAllLinks"/>
+            </MenuItem>
+            <Separator />
+            <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds." Click="OpenInPackageEditor_Clicked" />
+            <MenuItem Header="Open in Interp Viewer" ToolTip="Open this export in Interp Viewer" Click="OpenInInterpViewer_Clicked" Name="interpViewerMenuItem"/>
+        </ContextMenu>
+        <ContextMenu x:Key="backContextMenu">
+            <MenuItem Header="Add Object" Click="AddObject_Clicked" ToolTip="Add existing Sequence Object to this Sequence"/>
+        </ContextMenu>
+    </Window.Resources>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File" Padding="4" >
+                <MenuItem Header="_Open" Command="{Binding OpenCommand}" InputGestureText="Ctrl+O" ToolTip="Open a package file"/>
+                <MenuItem Header="_Save"  Command="{Binding SaveCommand}" InputGestureText="Ctrl+S" ToolTip="Save package file in-place" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                <MenuItem Header="Save as" Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+Shift+S" ToolTip="Save package file to another location" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"/>
+                <Separator />
+                <MenuItem Name="Recents_MenuItem" Header="Recent" IsEnabled="false"/>
+            </MenuItem>
+
+            <MenuItem Header="Tools" Padding="4">
+                <MenuItem Header="Add Object" Click="AddObject_Clicked" ToolTip="Add existing Sequence Object to this Sequence" IsEnabled="{Binding SelectedSequence, Converter={StaticResource NullEnabledConverter}}"/>
+                <MenuItem Header="Save View" Command="{Binding SaveViewCommand}" ToolTip="Save the node layout"/>
+                <MenuItem Header="Save Image" Command="{Binding SaveImageCommand}" ToolTip="Save image of full Sequence"/>
+            </MenuItem>
+
+            <MenuItem Header="View Options" Padding="4">
+                <MenuItem Name="ShowOutputNumbers_MenuItem" Header="Show Output Numbers" IsCheckable="True" Click="showOutputNumbers_Click"/>
+                <MenuItem Name="AutoSaveView_MenuItem" Header="Auto-Save View" IsCheckable="True"/>
+                <MenuItem Name="GlobalSeqRefViewSavesMenuItem" Header="Use Global Sequence Ref View Saves" IsCheckable="True" Click="GlobalSeqRefViewSavesMenuItem_OnClick"/>
+            </MenuItem>
+        </Menu>
+        <StatusBar Height="23" DockPanel.Dock="Bottom">
+            <SharedUI:StatusBarGameIDIndicator Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"
+                                             GameType="{Binding Pcc, Converter={StaticResource GameTypeConverter}}" Margin="0,-4"/>
+            <StatusBarItem>
+                <TextBlock Name="StatusBar_LeftMostText" Text="{Binding StatusText}"/>
+            </StatusBarItem>
+        </StatusBar>
+        <!-- Main Content panel-->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <DockPanel Grid.Column="2" Grid.RowSpan="3" Width="300" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+                <ListBox Name="CurrentObjects_ListBox" ItemsSource="{Binding CurrentObjects}" SelectionChanged="CurrentObjectsList_SelectedItemChanged" HorizontalContentAlignment="Stretch"
+                             SelectionMode="Extended">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0">
+                                <Grid.Style>
+                                    <Style TargetType="{x:Type Grid}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=Export.EntryHasPendingChanges}" Value="true">
+                                                <Setter Property="Background" Value="Yellow"/>
+                                                <Setter Property="ToolTip" Value="This export has been modified but the file has not yet been saved"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Export.UIndex}" />
+                                <TextBlock Grid.Column="1">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0}_{1}">
+                                            <Binding Path="Export.ObjectName" />
+                                            <Binding Path="Export.indexValue" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemContainerStyle>
+                        <Style>
+                            <Style.Triggers>
+                                <Trigger Property="Selector.IsSelected" Value="True">
+                                    <Setter Property="TextElement.FontWeight" Value="Bold"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+            </DockPanel>
+            <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Grid.Column="0"/>
+            <GridSplitter Grid.Row="0" Grid.RowSpan="3" Width="5" HorizontalAlignment="Stretch" Grid.Column="1"/>
+            <Grid Column="0" Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition MinHeight="100"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
+                    <TextBlock Margin="5" Text="Welcome to Sequence Editor WPF, the rewritten version of Sequence Editor" FontWeight="Bold"/>
+                    <TextBlock Margin="5">
+                            Sequence Editor WPF is a bit different from the classic Sequence Editor.
+                                <LineBreak/>
+                                Indexes are done strictly by UIndex, which is how they appear in game code.
+                                <LineBreak/>
+                                <LineBreak/>
+                            This means:
+                                <LineBreak/>
+                                -  Export references will be incremented by 1 from what you have seen in the old Sequence Editor
+                            <LineBreak/>
+                                -  Import references will remain the same
+                            <LineBreak/>
+                                -  0 indicates null, empty, or "Class", depending on the context
+                             <LineBreak/>
+                    </TextBlock>
+                </StackPanel>
+
+                <Grid HorizontalAlignment="Center" Margin="20,0,20,15" Grid.Column="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="280"/>
+                        <ColumnDefinition Width="280"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Recently opened items" Grid.Row="0" Grid.ColumnSpan="5" TextAlignment="Center" FontSize="20" FontWeight="Light" Margin="0"/>
+                    <Button Name="RecentButton1" Content="Item" Grid.Row="1" Grid.Column="0" Margin="3" Padding="3"/>
+                    <Button Name="RecentButton2" Content="Item" Grid.Row="1" Grid.Column="1" Margin="3" Padding="3"/>
+                    <Button Name="RecentButton3" Content="Item" Grid.Row="2" Grid.Column="0" Margin="3" Padding="3"/>
+                    <Button Name="RecentButton4" Content="Item" Grid.Row="2" Grid.Column="1" Margin="3" Padding="3"/>
+                    <Button Name="RecentButton5" Content="Item" Grid.Row="3" Grid.Column="0" Margin="3" Padding="3"/>
+                    <Button Name="RecentButton6" Content="Item" Grid.Row="3" Grid.Column="1" Margin="3" Padding="3"/>
+                    <Button Name="RecentButton7" Content="Item" Grid.Row="4" Grid.Column="0" Margin="3" Padding="3"/>
+                    <Button Name="RecentButton8" Content="Item" Grid.Row="4" Grid.Column="1" Margin="3" Padding="3"/>
+                    <Button Name="RecentButton9" Content="Item" Grid.Row="5" Grid.Column="0" Margin="3" Padding="3"/>
+                    <Button Name="RecentButton10" Content="Item" Grid.Row="5" Grid.Column="1" Margin="3" Padding="3"/>
+                </Grid>
+                <TreeView x:Name="Sequences_TreeView" Grid.Row="0" Grid.Column="0" FontFamily="Consolas" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"
+                              ItemsSource="{Binding TreeViewRootNodes}" FocusManager.IsFocusScope="True">
+                    <TreeView.Resources>
+                        <HierarchicalDataTemplate DataType="{x:Type global:TreeViewEntry}" ItemsSource="{Binding Sublinks}">
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding DisplayName}" Foreground="{Binding Path=ForegroundColor}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="{x:Type TextBlock}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=Entry.EntryHasPendingChanges}" Value="true">
+                                                        <Setter Property="Background" Value="Yellow"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                </StackPanel>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                        <ei:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                      Color="LightBlue" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                      Color="Black" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                      Color="LightBlue" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+                      Color="Black" />
+
+                    </TreeView.Resources>
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
+                            <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
+                            <Setter Property="vhelp:TreeViewItemHelper.BringSelectedItemIntoView" Value="True" />
+                            <Setter Property="vhelp:TreeViewItemHelper.BringExpandedChildrenIntoView" Value="True" />
+                        </Style>
+                    </TreeView.ItemContainerStyle>
+                    <TreeView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Clone" Command="{Binding CloneCommand}"/>
+                        </ContextMenu>
+                    </TreeView.ContextMenu>
+                    <i:Interaction.Behaviors>
+                        <vhelp:TreeViewHelper BoundSelectedItem="{Binding SelectedItem}" />
+                    </i:Interaction.Behaviors>
+                </TreeView>
+                <!-- Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}" -->
+                <global:InterpreterWPF x:Name="Properties_InterpreterWPF" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}"/>
+            </Grid>
+            <WindowsFormsHost Grid.Column="0" Grid.Row="0" Name="GraphHost" VerticalAlignment="Stretch">
+                <grapheditor:GraphEditor/>
+            </WindowsFormsHost>
+        </Grid>
+    </DockPanel>
+</global:WPFBase>

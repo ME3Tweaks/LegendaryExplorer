@@ -7,6 +7,8 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 using KFreonLib.MEDirectories;
+using ME3Explorer.Sequence_Editor;
+using ME3Explorer.SharedUI;
 using Newtonsoft.Json;
 
 namespace ME3Explorer
@@ -571,11 +573,11 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Sequence Editor",
-                type = typeof(SequenceEditor),
+                type = typeof(SequenceEditorWPF),
                 icon = Application.Current.FindResource("iconSequenceEditor") as ImageSource,
                 open = () =>
                 {
-                    (new SequenceEditor()).Show();
+                    (new SequenceEditorWPF()).Show();
                 },
                 tags = new List<string> { "user", "developer", "kismet", "me1", "me2", "me3" },
                 subCategory = "Core",

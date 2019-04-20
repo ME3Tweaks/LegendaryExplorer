@@ -429,8 +429,7 @@ namespace ME3Explorer
             {
                 TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
 
-                List<TreeViewEntry> itemsToTrash = selected.FlattenTree();
-                itemsToTrash.OrderByDescending(x => x.UIndex);
+                List<TreeViewEntry> itemsToTrash = selected.FlattenTree().OrderByDescending(x => x.UIndex).ToList();
 
                 if (itemsToTrash[0].Entry is ImportEntry)
                 {
@@ -492,7 +491,7 @@ namespace ME3Explorer
                     int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
                     int count = BitConverter.ToInt32(header, preguidcountoffset);
                     int headerguidoffset = (preguidcountoffset + 4) + (count * 4);
-                    SharedPathfinding.WriteMem(header, headerguidoffset, trashGuid.ToByteArray());
+                    header.OverwriteRange(headerguidoffset, trashGuid.ToByteArray());
                     exp.Header = header;
                     return exp;
                 }
@@ -511,7 +510,7 @@ namespace ME3Explorer
                     int count = BitConverter.ToInt32(header, preguidcountoffset);
                     int headerguidoffset = header.Length - 20;// + 4) + (count * 4);
 
-                    SharedPathfinding.WriteMem(header, headerguidoffset, new byte[16]); //erase guid
+                    header.OverwriteRange(headerguidoffset, new byte[16]); //erase guid
                     exp.Header = header;
                 }
             }
@@ -1229,70 +1228,73 @@ namespace ME3Explorer
                         MessageBox.Show("You selected the same file as the one already open.");
                         return;
                     }
-                    IMEPackage compareFile = MEPackageHandler.OpenMEPackage(d.FileName);
-                    if (Pcc.Game != compareFile.Game)
+
+                    using (IMEPackage compareFile = MEPackageHandler.OpenMEPackage(d.FileName))
                     {
-                        MessageBox.Show("Files are for different games.");
-                        return;
-                    }
-
-                    int numExportsToEnumerate = Math.Min(Pcc.ExportCount, compareFile.ExportCount);
-
-                    var changedExports = new List<string>();
-                    Stopwatch sw = Stopwatch.StartNew();
-                    for (int i = 0; i < numExportsToEnumerate; i++)
-                    {
-                        IExportEntry exp1 = Pcc.Exports[i];
-                        IExportEntry exp2 = compareFile.Exports[i];
-
-                        //make data offset and data size the same, as the exports could be the same even if it was appended later.
-                        //The datasize being different is a data difference not a true header difference so we won't list it here.
-                        byte[] header1 = exp1.Header.TypedClone();
-                        byte[] header2 = exp2.Header.TypedClone();
-                        Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header1, 32, sizeof(long));
-                        Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header2, 32, sizeof(long));
-
-                        //if (!StructuralComparisons.StructuralEqualityComparer.Equals(header1, header2))
-                        if (!header1.SequenceEqual(header2))
-
+                        if (Pcc.Game != compareFile.Game)
                         {
-                            //foreach (byte b in header1)
-                            //{
-                            //    Debug.Write(" " + b.ToString("X2"));
-                            //}
-                            //Debug.WriteLine("");
-                            //foreach (byte b in header2)
-                            //{
-                            //    //Debug.Write(" " + b.ToString("X2"));
-                            //}
-                            //Debug.WriteLine("");
-                            changedExports.Add("Export header has changed: " + exp1.UIndex + " " + exp1.GetFullPath);
+                            MessageBox.Show("Files are for different games.");
+                            return;
                         }
-                        if (!exp1.Data.SequenceEqual(exp2.Data))
+
+                        int numExportsToEnumerate = Math.Min(Pcc.ExportCount, compareFile.ExportCount);
+
+                        var changedExports = new List<string>();
+                        Stopwatch sw = Stopwatch.StartNew();
+                        for (int i = 0; i < numExportsToEnumerate; i++)
                         {
-                            changedExports.Add("Export data has changed: " + exp1.UIndex + " " + exp1.GetFullPath);
+                            IExportEntry exp1 = Pcc.Exports[i];
+                            IExportEntry exp2 = compareFile.Exports[i];
+
+                            //make data offset and data size the same, as the exports could be the same even if it was appended later.
+                            //The datasize being different is a data difference not a true header difference so we won't list it here.
+                            byte[] header1 = exp1.Header.TypedClone();
+                            byte[] header2 = exp2.Header.TypedClone();
+                            Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header1, 32, sizeof(long));
+                            Buffer.BlockCopy(BitConverter.GetBytes((long)0), 0, header2, 32, sizeof(long));
+
+                            //if (!StructuralComparisons.StructuralEqualityComparer.Equals(header1, header2))
+                            if (!header1.SequenceEqual(header2))
+
+                            {
+                                //foreach (byte b in header1)
+                                //{
+                                //    Debug.Write(" " + b.ToString("X2"));
+                                //}
+                                //Debug.WriteLine("");
+                                //foreach (byte b in header2)
+                                //{
+                                //    //Debug.Write(" " + b.ToString("X2"));
+                                //}
+                                //Debug.WriteLine("");
+                                changedExports.Add($"Export header has changed: {exp1.UIndex} {exp1.GetFullPath}");
+                            }
+                            if (!exp1.Data.SequenceEqual(exp2.Data))
+                            {
+                                changedExports.Add($"Export data has changed: {exp1.UIndex} {exp1.GetFullPath}");
+                            }
                         }
+
+                        IMEPackage enumerateExtras = Pcc;
+                        string file = "this file";
+                        if (compareFile.ExportCount > numExportsToEnumerate)
+                        {
+                            file = "other file";
+                            enumerateExtras = compareFile;
+                        }
+
+                        for (int i = numExportsToEnumerate; i < enumerateExtras.ExportCount; i++)
+                        {
+                            Debug.WriteLine($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].GetFullPath}");
+                            changedExports.Add($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].GetFullPath}");
+                        }
+
+                        sw.Stop();
+                        Debug.WriteLine($"Time: {sw.ElapsedMilliseconds}ms");
+
+                        ListDialog ld = new ListDialog(changedExports, "Changed exports between files", "The following exports are different between the files.", this);
+                        ld.Show();
                     }
-
-                    IMEPackage enumerateExtras = Pcc;
-                    string file = "this file";
-                    if (compareFile.ExportCount > numExportsToEnumerate)
-                    {
-                        file = "other file";
-                        enumerateExtras = compareFile;
-                    }
-
-                    for (int i = numExportsToEnumerate; i < enumerateExtras.ExportCount; i++)
-                    {
-                        Debug.WriteLine($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].GetFullPath}");
-                        changedExports.Add($"Export only exists in {file}: {i + 1} {enumerateExtras.Exports[i].GetFullPath}");
-                    }
-
-                    sw.Stop();
-                    Debug.WriteLine("Time: " + sw.ElapsedMilliseconds + "ms");
-
-                    ListDialog ld = new ListDialog(changedExports, "Changed exports between files", "The following exports are different between the files.", this);
-                    ld.Show();
                 }
             }
         }
@@ -1347,30 +1349,9 @@ namespace ME3Explorer
                 ClassDropdownList.ClearEx();
 
                 currentFile = s;
-                StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
                 StatusBar_LeftMostText.Text = $"Loading {System.IO.Path.GetFileName(s)} ({ByteSize.FromBytes(new System.IO.FileInfo(s).Length)})";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 LoadMEPackage(s);
-                StatusBar_GameID_Container.Visibility = Visibility.Visible;
-                switch (Pcc.Game)
-                {
-                    case MEGame.ME1:
-                        StatusBar_GameID_Text.Text = "ME1";
-                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
-                        break;
-                    case MEGame.ME2:
-                        StatusBar_GameID_Text.Text = "ME2";
-                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Maroon);
-                        break;
-                    case MEGame.ME3:
-                        StatusBar_GameID_Text.Text = "ME3";
-                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.DarkSeaGreen);
-                        break;
-                    case MEGame.UDK:
-                        StatusBar_GameID_Text.Text = "UDK";
-                        StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.IndianRed);
-                        break;
-                }
 
                 RefreshView();
                 InitStuff();
@@ -3079,9 +3060,27 @@ namespace ME3Explorer
             switch (myValue)
             {
                 case "DialogueEditor":
-                    var diaEditor = new DialogEditor.DialogEditor();
-                    diaEditor.LoadFile(Pcc.FileName);
-                    diaEditor.Show();
+                    if (Pcc.Game == MEGame.ME3)
+                    {
+                        var diaEditor = new DialogEditor.DialogEditor();
+                        diaEditor.LoadFile(Pcc.FileName);
+                        diaEditor.Show();
+                        break;
+                    }
+                    else if (Pcc.Game == MEGame.ME2)
+                    {
+                        var dia2Editor = new ME2Explorer.DialogEditor();
+                        dia2Editor.LoadFile(Pcc.FileName);
+                        dia2Editor.Show();
+                        break;
+                    }
+                    else if (Pcc.Game == MEGame.ME1)
+                    {
+                        var dia1Editor = new ME1Explorer.DialogEditor();
+                        dia1Editor.LoadFile(Pcc.FileName);
+                        dia1Editor.Show();
+                        break;
+                    }
                     break;
                 case "FaceFXEditor":
                     var facefxEditor = new FaceFX.FaceFXEditor();
@@ -3099,7 +3098,7 @@ namespace ME3Explorer
                     soundplorerWPF.Show();
                     break;
                 case "SequenceEditor":
-                    var seqEditor = new SequenceEditor();
+                    var seqEditor = new Sequence_Editor.SequenceEditorWPF();
                     seqEditor.LoadFile(Pcc.FileName);
                     seqEditor.Show();
                     break;
@@ -3167,107 +3166,109 @@ namespace ME3Explorer
             }
             OpenFileDialog d = new OpenFileDialog { Title = "Select source file", Filter = "*.pcc|*.pcc" };
             bool? result = d.ShowDialog();
-            IMEPackage sourceFile = null;
-
-            if (result.HasValue && result.Value)
+            if (!result.HasValue || !result.Value)
             {
-                if (d.FileName == Pcc.FileName)
+                Debug.WriteLine("No source file selected");
+                return;
+            }
+            if (d.FileName == Pcc.FileName)
+            {
+                Debug.WriteLine("Same input/target file");
+                return;
+            }
+
+            IExportEntry targetPersistentLevel;
+            using (IMEPackage sourceFile = MEPackageHandler.OpenMEPackage(d.FileName))
+            {
+                targetPersistentLevel = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
+
+                if (targetPersistentLevel == null)
                 {
-                    Debug.WriteLine("Same input/target file");
+                    Debug.WriteLine("Could not find persistent level in current file");
                     return;
                 }
-                sourceFile = MEPackageHandler.OpenMEPackage(d.FileName);
-            }
 
-            var targetPersistentLevel = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
-
-            if (targetPersistentLevel == null)
-            {
-                Debug.WriteLine("Could not find persistent level in current file");
-                return;
-            }
-
-            var pathnodeForPositioning = Pcc.Exports.FirstOrDefault(x => x.ClassName == "PathNode" && x.ObjectName == "PathNode");
-            if (pathnodeForPositioning == null)
-            {
-
-                Debug.WriteLine("Could not find pathnode to position objectives around");
-                return;
-            }
-            StructProperty pathnodePos = pathnodeForPositioning.GetProperty<StructProperty>("location");
-            float xPos = pathnodePos.GetProp<FloatProperty>("X");
-            float y = pathnodePos.GetProp<FloatProperty>("Y") + 80;
-            float z = pathnodePos.GetProp<FloatProperty>("Z");
-
-            Debug.WriteLine("Base coordinate for positioning: " + xPos + "," + y + "," + z);
-
-            crossPCCObjectMap = new SortedDictionary<int, int>();
-
-            var itemsToAddToLevel = new List<IExportEntry>();
-            foreach (IExportEntry export in sourceFile.Exports)
-            {
-                if (export.ObjectName == "SFXOperation_ObjectiveSpawnPoint")
+                var pathnodeForPositioning = Pcc.Exports.FirstOrDefault(x => x.ClassName == "PathNode" && x.ObjectName == "PathNode");
+                if (pathnodeForPositioning == null)
                 {
-                    Debug.WriteLine("Porting " + export.GetFullPath + "_" + export.indexValue);
-                    importExport(export, targetPersistentLevel.UIndex, out IExportEntry portedObjective);
-                    crossPCCObjectMap[export.Index] = portedObjective.Index; //0 based. map old index to new index
-                    itemsToAddToLevel.Add(portedObjective);
-                    var child = export.GetProperty<ObjectProperty>("CollisionComponent");
-                    IExportEntry collCyl = sourceFile.Exports[child.Value - 1];
-                    Debug.WriteLine("Porting " + collCyl.GetFullPath + "_" + collCyl.indexValue);
-                    importExport(collCyl, portedObjective.UIndex, out IExportEntry portedCollisionCylinder);
-                    crossPCCObjectMap[collCyl.Index] = portedCollisionCylinder.Index; //0 based. map old index to new index
+
+                    Debug.WriteLine("Could not find pathnode to position objectives around");
+                    return;
                 }
-            }
+                StructProperty pathnodePos = pathnodeForPositioning.GetProperty<StructProperty>("location");
+                float xPos = pathnodePos.GetProp<FloatProperty>("X");
+                float y = pathnodePos.GetProp<FloatProperty>("Y") + 80;
+                float z = pathnodePos.GetProp<FloatProperty>("Z");
 
-            relinkObjects2(sourceFile);
+                Debug.WriteLine($"Base coordinate for positioning: {xPos},{y},{z}");
 
-            xPos -= (itemsToAddToLevel.Count / 2) * 55.0f;
-            foreach (IExportEntry addingExport in itemsToAddToLevel)
-            {
-                StructProperty locationProp = addingExport.GetProperty<StructProperty>("location");
-                if (locationProp != null)
+                crossPCCObjectMap = new SortedDictionary<int, int>();
+
+                var itemsToAddToLevel = new List<IExportEntry>();
+                foreach (IExportEntry export in sourceFile.Exports)
                 {
-                    FloatProperty xProp = locationProp.GetProp<FloatProperty>("X");
-                    FloatProperty yProp = locationProp.GetProp<FloatProperty>("Y");
-                    FloatProperty zProp = locationProp.GetProp<FloatProperty>("Z");
-                    Debug.WriteLine("Original coordinate of objective: " + xProp.Value + "," + yProp.Value + "," + zProp.Value);
-
-                    xProp.Value = xPos;
-                    yProp.Value = y;
-                    zProp.Value = z;
-
-                    Debug.WriteLine("--New coordinate for positioning: " + xPos + "," + y + "," + z);
-
-                    xPos += 55;
-                    addingExport.WriteProperty(locationProp);
+                    if (export.ObjectName == "SFXOperation_ObjectiveSpawnPoint")
+                    {
+                        Debug.WriteLine("Porting " + export.GetFullPath + "_" + export.indexValue);
+                        importExport(export, targetPersistentLevel.UIndex, out IExportEntry portedObjective);
+                        crossPCCObjectMap[export.Index] = portedObjective.Index; //0 based. map old index to new index
+                        itemsToAddToLevel.Add(portedObjective);
+                        var child = export.GetProperty<ObjectProperty>("CollisionComponent");
+                        IExportEntry collCyl = sourceFile.Exports[child.Value - 1];
+                        Debug.WriteLine($"Porting {collCyl.GetFullPath}_{collCyl.indexValue}");
+                        importExport(collCyl, portedObjective.UIndex, out IExportEntry portedCollisionCylinder);
+                        crossPCCObjectMap[collCyl.Index] = portedCollisionCylinder.Index; //0 based. map old index to new index
+                    }
                 }
+
+                relinkObjects2(sourceFile);
+
+                xPos -= (itemsToAddToLevel.Count / 2) * 55.0f;
+                foreach (IExportEntry addingExport in itemsToAddToLevel)
+                {
+                    StructProperty locationProp = addingExport.GetProperty<StructProperty>("location");
+                    if (locationProp != null)
+                    {
+                        FloatProperty xProp = locationProp.GetProp<FloatProperty>("X");
+                        FloatProperty yProp = locationProp.GetProp<FloatProperty>("Y");
+                        FloatProperty zProp = locationProp.GetProp<FloatProperty>("Z");
+                        Debug.WriteLine($"Original coordinate of objective: {xProp.Value},{yProp.Value},{zProp.Value}");
+
+                        xProp.Value = xPos;
+                        yProp.Value = y;
+                        zProp.Value = z;
+
+                        Debug.WriteLine($"--New coordinate for positioning: {xPos},{y},{z}");
+
+                        xPos += 55;
+                        addingExport.WriteProperty(locationProp);
+                    }
+                }
+
+                byte[] leveldata = targetPersistentLevel.Data;
+                int start = targetPersistentLevel.propsEnd();
+                //Console.WriteLine("Found start of binary at {start.ToString("X8"));
+
+                uint exportid = BitConverter.ToUInt32(leveldata, start);
+                start += 4;
+                uint numberofitems = BitConverter.ToUInt32(leveldata, start);
+                leveldata.OverwriteRange(start, BitConverter.GetBytes(numberofitems + (uint)itemsToAddToLevel.Count));
+                var readback = BitConverter.ToUInt32(leveldata, start);
+
+                //Debug.WriteLine("Size before: {memory.Length);
+                //memory = RemoveIndices(memory, offset, size);
+                int offset = (int)(start + (numberofitems + 1) * 4); //will be at the very end of the list as it is now +1
+
+                List<byte> memList = leveldata.ToList();
+                foreach (IExportEntry addingExport in itemsToAddToLevel)
+                {
+                    memList.InsertRange(offset, BitConverter.GetBytes(addingExport.UIndex));
+                    offset += 4;
+                }
+                leveldata = memList.ToArray();
+                targetPersistentLevel.Data = leveldata;
             }
 
-            byte[] leveldata = targetPersistentLevel.Data;
-            int start = targetPersistentLevel.propsEnd();
-            //Console.WriteLine("Found start of binary at {start.ToString("X8"));
-
-            uint exportid = BitConverter.ToUInt32(leveldata, start);
-            start += 4;
-            uint numberofitems = BitConverter.ToUInt32(leveldata, start);
-            SharedPathfinding.WriteMem(leveldata, start, BitConverter.GetBytes(numberofitems + ((uint)itemsToAddToLevel.Count)));
-            var readback = BitConverter.ToUInt32(leveldata, start);
-
-            //Debug.WriteLine("Size before: {memory.Length);
-            //memory = RemoveIndices(memory, offset, size);
-            int offset = (int)(start + (numberofitems + 1) * 4); //will be at the very end of the list as it is now +1
-
-            List<byte> memList = leveldata.ToList();
-            foreach (IExportEntry addingExport in itemsToAddToLevel)
-            {
-                memList.InsertRange(offset, BitConverter.GetBytes(addingExport.UIndex));
-                offset += 4;
-            }
-            leveldata = memList.ToArray();
-            targetPersistentLevel.Data = leveldata;
-
-            sourceFile.Release();
             Debug.WriteLine("Done");
             crossPCCObjectMap = null;
             GoToNumber(targetPersistentLevel.UIndex);
@@ -3306,37 +3307,39 @@ namespace ME3Explorer
                             continue; //skip localizations
                         }
                         Debug.WriteLine(Path.GetFileName(file));
-                        var package = MEPackageHandler.OpenMEPackage(file);
                         bool hasPackageNamingItself = false;
-                        var filesToSkip = new[] { "BioD_Cit004_270ShuttleBay1", "BioD_Cit003_600MechEvent", "CAT6_Executioner", "SFXPawn_Demo", "SFXPawn_Sniper", "SFXPawn_Heavy", "GethAssassin", "BioD_OMG003_125LitExtra" };
-                        foreach (IExportEntry exp in package.Exports)
+                        using (var package = MEPackageHandler.OpenMEPackage(file))
                         {
-                            if (exp.ClassName == "Package" && exp.idxLink == 0 && !filesToSkip.Contains(exp.ObjectName))
+                            var filesToSkip = new[] { "BioD_Cit004_270ShuttleBay1", "BioD_Cit003_600MechEvent", "CAT6_Executioner", "SFXPawn_Demo", "SFXPawn_Sniper", "SFXPawn_Heavy", "GethAssassin", "BioD_OMG003_125LitExtra" };
+                            foreach (IExportEntry exp in package.Exports)
                             {
-                                if (string.Equals(exp.ObjectName, fname, StringComparison.InvariantCultureIgnoreCase))
+                                if (exp.ClassName == "Package" && exp.idxLink == 0 && !filesToSkip.Contains(exp.ObjectName))
                                 {
-                                    hasPackageNamingItself = true;
-                                }
-
-                                int preguidcountoffset = package.Game == MEGame.ME3 ? 0x2C : 0x30;
-                                int count = BitConverter.ToInt32(exp.Header, preguidcountoffset);
-                                byte[] guidbytes = exp.Header.Skip(preguidcountoffset + 4 + (count * 4)).Take(16).ToArray();
-                                if (guidbytes.Any(singleByte => singleByte != 0))
-                                {
-                                    Guid guid = new Guid(guidbytes);
-                                    GuidPackageMap.TryGetValue(guid, out string packagename);
-                                    if (packagename != null && packagename != exp.ObjectName)
+                                    if (string.Equals(exp.ObjectName, fname, StringComparison.InvariantCultureIgnoreCase))
                                     {
-                                        Debug.WriteLine($"-> {exp.UIndex} {exp.ObjectName} has a guid different from already found one ({packagename})! {guid}");
+                                        hasPackageNamingItself = true;
                                     }
-                                    if (packagename == null)
+
+                                    int preguidcountoffset = package.Game == MEGame.ME3 ? 0x2C : 0x30;
+                                    int count = BitConverter.ToInt32(exp.Header, preguidcountoffset);
+                                    byte[] guidbytes = exp.Header.Skip(preguidcountoffset + 4 + (count * 4)).Take(16).ToArray();
+                                    if (guidbytes.Any(singleByte => singleByte != 0))
                                     {
-                                        GuidPackageMap[guid] = exp.ObjectName;
+                                        Guid guid = new Guid(guidbytes);
+                                        GuidPackageMap.TryGetValue(guid, out string packagename);
+                                        if (packagename != null && packagename != exp.ObjectName)
+                                        {
+                                            Debug.WriteLine($"-> {exp.UIndex} {exp.ObjectName} has a guid different from already found one ({packagename})! {guid}");
+                                        }
+                                        if (packagename == null)
+                                        {
+                                            GuidPackageMap[guid] = exp.ObjectName;
+                                        }
                                     }
                                 }
                             }
                         }
-                        package.Release();
+
                         if (!hasPackageNamingItself)
                         {
                             Debug.WriteLine("----HAS NO SELF NAMING EXPORT");
@@ -3350,25 +3353,26 @@ namespace ME3Explorer
                     if (guidcachefile != null)
                     {
                         Debug.WriteLine("Opening GuidCache file " + guidcachefile);
-                        var package = MEPackageHandler.OpenMEPackage(guidcachefile);
-                        var cacheExp = package.Exports.FirstOrDefault(x => x.ObjectName == "GuidCache");
-                        if (cacheExp != null)
+                        using (var package = MEPackageHandler.OpenMEPackage(guidcachefile))
                         {
-                            var data = new MemoryStream();
-                            var expPre = cacheExp.Data.Take(12).ToArray();
-                            data.Write(expPre, 0, 12); //4 byte header, None
-                            data.WriteInt32(GuidPackageMap.Count);
-                            foreach (KeyValuePair<Guid, string> entry in GuidPackageMap)
+                            var cacheExp = package.Exports.FirstOrDefault(x => x.ObjectName == "GuidCache");
+                            if (cacheExp != null)
                             {
-                                int nametableIndex = cacheExp.FileRef.FindNameOrAdd(entry.Value);
-                                data.WriteInt32(nametableIndex);
-                                data.WriteInt32(0);
-                                data.Write(entry.Key.ToByteArray(), 0, 16);
+                                var data = new MemoryStream();
+                                var expPre = cacheExp.Data.Take(12).ToArray();
+                                data.Write(expPre, 0, 12); //4 byte header, None
+                                data.WriteInt32(GuidPackageMap.Count);
+                                foreach (KeyValuePair<Guid, string> entry in GuidPackageMap)
+                                {
+                                    int nametableIndex = cacheExp.FileRef.FindNameOrAdd(entry.Value);
+                                    data.WriteInt32(nametableIndex);
+                                    data.WriteInt32(0);
+                                    data.Write(entry.Key.ToByteArray(), 0, 16);
+                                }
+                                cacheExp.Data = data.ToArray();
                             }
-                            cacheExp.Data = data.ToArray();
+                            package.save();
                         }
-                        package.save();
-                        package.Release();
                     }
                     Debug.WriteLine("Done. Cache size: " + GuidPackageMap.Count);
 
@@ -3387,38 +3391,40 @@ namespace ME3Explorer
             };
             if (d.ShowDialog() == true)
             {
-                IMEPackage sourceFile = MEPackageHandler.OpenMEPackage(d.FileName);
-                string fname = Path.GetFileNameWithoutExtension(d.FileName);
-                Guid newGuid = Guid.NewGuid();
-                IExportEntry selfNamingExport = null;
-                foreach (IExportEntry exp in sourceFile.Exports)
+                Guid newGuid;
+                using (IMEPackage sourceFile = MEPackageHandler.OpenMEPackage(d.FileName))
                 {
-                    if (exp.ClassName == "Package"
-                     && exp.idxLink == 0
-                     && string.Equals(exp.ObjectName, fname, StringComparison.InvariantCultureIgnoreCase))
+                    string fname = Path.GetFileNameWithoutExtension(d.FileName);
+                    newGuid = Guid.NewGuid();
+                    IExportEntry selfNamingExport = null;
+                    foreach (IExportEntry exp in sourceFile.Exports)
                     {
-                        selfNamingExport = exp;
-                        break;
+                        if (exp.ClassName == "Package"
+                         && exp.idxLink == 0
+                         && string.Equals(exp.ObjectName, fname, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            selfNamingExport = exp;
+                            break;
+                        }
                     }
+
+                    if (selfNamingExport == null)
+                    {
+                        MessageBox.Show("Selected package does not contain a self-naming package export.\nCannot regenerate package file-level GUID if it doesn't contain self-named export.");
+                        return;
+                    }
+                    byte[] header = selfNamingExport.GetHeader();
+                    int preguidcountoffset = selfNamingExport.FileRef.Game == MEGame.ME3 ? 0x2C : 0x30;
+                    int count = BitConverter.ToInt32(header, preguidcountoffset);
+                    int headerguidoffset = preguidcountoffset + 4 + (count * 4);
+
+                    header.OverwriteRange(headerguidoffset, newGuid.ToByteArray());
+                    selfNamingExport.Header = header;
+                    sourceFile.save();
                 }
 
-                if (selfNamingExport == null)
-                {
-                    sourceFile.Release();
-                    MessageBox.Show("Selected package does not contain a self-naming package export.\nCannot regenerate package file-level GUID if it doesn't contain self-named export.");
-                    return;
-                }
-                byte[] header = selfNamingExport.GetHeader();
-                int preguidcountoffset = selfNamingExport.FileRef.Game == MEGame.ME3 ? 0x2C : 0x30;
-                int count = BitConverter.ToInt32(header, preguidcountoffset);
-                int headerguidoffset = preguidcountoffset + 4 + (count * 4);
-
-                SharedPathfinding.WriteMem(header, headerguidoffset, newGuid.ToByteArray());
-                selfNamingExport.Header = header;
-                sourceFile.save();
-                sourceFile.Release();
                 var fileAsBytes = File.ReadAllBytes(d.FileName);
-                SharedPathfinding.WriteMem(fileAsBytes, 0x4E, newGuid.ToByteArray());
+                fileAsBytes.OverwriteRange(0x4E, newGuid.ToByteArray());
                 File.WriteAllBytes(d.FileName, fileAsBytes);
                 MessageBox.Show("Generated a new GUID for package.");
             }
@@ -3453,52 +3459,52 @@ namespace ME3Explorer
                 Debug.WriteLine("Number of files: " + filesToSearch.Length);
                 foreach (FileInfo fi in filesToSearch)
                 {
-                    var package = MEPackageHandler.OpenME1Package(fi.FullName);
-                    Debug.WriteLine(fi.Name);
-                    foreach (IExportEntry export in package.Exports)
+                    using (var package = MEPackageHandler.OpenME1Package(fi.FullName))
                     {
-                        if (export.ClassName == "Function")
+                        Debug.WriteLine(fi.Name);
+                        foreach (IExportEntry export in package.Exports)
                         {
-
-                            BinaryReader reader = new BinaryReader(new MemoryStream(export.Data));
-                            reader.ReadBytes(12);
-                            int super = reader.ReadInt32();
-                            int children = reader.ReadInt32();
-                            reader.ReadBytes(12);
-                            int line = reader.ReadInt32();
-                            int textPos = reader.ReadInt32();
-                            int scriptSize = reader.ReadInt32();
-                            byte[] bytecode = reader.ReadBytes(scriptSize);
-                            int nativeIndex = reader.ReadInt16();
-                            int operatorPrecedence = reader.ReadByte();
-                            int functionFlags = reader.ReadInt32();
-                            if ((functionFlags & UE3FunctionReader._flagSet.GetMask("Net")) != 0)
+                            if (export.ClassName == "Function")
                             {
-                                reader.ReadInt16();  // repOffset
-                            }
-                            int friendlyNameIndex = reader.ReadInt32();
-                            reader.ReadInt32();
-                            var function = new UnFunction(export, package.getNameEntry(friendlyNameIndex),
-                                new FlagValues(functionFlags, UE3FunctionReader._flagSet), bytecode, nativeIndex, operatorPrecedence);
 
-                            if (nativeIndex != 0)
-                            {
-                                Debug.WriteLine(">>NATIVE Function " + nativeIndex + " " + export.ObjectName);
-                                var newInfo = new CachedNativeFunctionInfo
+                                BinaryReader reader = new BinaryReader(new MemoryStream(export.Data));
+                                reader.ReadBytes(12);
+                                int super = reader.ReadInt32();
+                                int children = reader.ReadInt32();
+                                reader.ReadBytes(12);
+                                int line = reader.ReadInt32();
+                                int textPos = reader.ReadInt32();
+                                int scriptSize = reader.ReadInt32();
+                                byte[] bytecode = reader.ReadBytes(scriptSize);
+                                int nativeIndex = reader.ReadInt16();
+                                int operatorPrecedence = reader.ReadByte();
+                                int functionFlags = reader.ReadInt32();
+                                if ((functionFlags & UE3FunctionReader._flagSet.GetMask("Net")) != 0)
                                 {
-                                    nativeIndex = nativeIndex,
-                                    Name = export.ObjectName,
-                                    Filename = fi.Name,
-                                    Operator = function.Operator,
-                                    PreOperator = function.PreOperator,
-                                    PostOperator = function.PostOperator
-                                };
-                                newCachedInfo[nativeIndex] = newInfo;
+                                    reader.ReadInt16();  // repOffset
+                                }
+                                int friendlyNameIndex = reader.ReadInt32();
+                                reader.ReadInt32();
+                                var function = new UnFunction(export, package.getNameEntry(friendlyNameIndex),
+                                                              new FlagValues(functionFlags, UE3FunctionReader._flagSet), bytecode, nativeIndex, operatorPrecedence);
+
+                                if (nativeIndex != 0)
+                                {
+                                    Debug.WriteLine(">>NATIVE Function " + nativeIndex + " " + export.ObjectName);
+                                    var newInfo = new CachedNativeFunctionInfo
+                                    {
+                                        nativeIndex = nativeIndex,
+                                        Name = export.ObjectName,
+                                        Filename = fi.Name,
+                                        Operator = function.Operator,
+                                        PreOperator = function.PreOperator,
+                                        PostOperator = function.PostOperator
+                                    };
+                                    newCachedInfo[nativeIndex] = newInfo;
+                                }
                             }
                         }
                     }
-
-                    package.Release();
                 }
                 File.WriteAllText(System.Windows.Forms.Application.StartupPath + "//exec//ME1NativeFunctionInfo.json", JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
                 Debug.WriteLine("Done");
@@ -3515,17 +3521,17 @@ namespace ME3Explorer
                 Debug.WriteLine("Number of files: " + filesToSearch.Length);
                 foreach (FileInfo fi in filesToSearch)
                 {
-                    var package = MEPackageHandler.OpenME1Package(fi.FullName);
-                    foreach (IExportEntry export in package.Exports)
+                    using (var package = MEPackageHandler.OpenME1Package(fi.FullName))
                     {
-                        if ((export.ClassName == "BioSWF"))
-                        //|| export.ClassName == "Bio2DANumberedRows") && export.ObjectName.Contains("BOS"))
+                        foreach (IExportEntry export in package.Exports)
                         {
-                            Debug.WriteLine($"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
+                            if ((export.ClassName == "BioSWF"))
+                                //|| export.ClassName == "Bio2DANumberedRows") && export.ObjectName.Contains("BOS"))
+                            {
+                                Debug.WriteLine($"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
+                            }
                         }
                     }
-
-                    package.Release();
                 }
                 //File.WriteAllText(System.Windows.Forms.Application.StartupPath + "//exec//ME1NativeFunctionInfo.json", JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
                 Debug.WriteLine("Done");
@@ -3534,7 +3540,7 @@ namespace ME3Explorer
 
         private void FindAllME3PowerCustomAction_Click(object sender, RoutedEventArgs e)
         {
-            if (ME1Directory.gamePath != null)
+            if (ME3Directory.gamePath != null)
             {
                 var newCachedInfo = new SortedDictionary<string, List<string>>();
                 var dir = new DirectoryInfo(ME3Directory.gamePath);
@@ -3542,26 +3548,24 @@ namespace ME3Explorer
                 Debug.WriteLine("Number of files: " + filesToSearch.Length);
                 foreach (FileInfo fi in filesToSearch)
                 {
-                    var package = MEPackageHandler.OpenME3Package(fi.FullName);
-                    foreach (IExportEntry export in package.Exports)
+                    using (var package = MEPackageHandler.OpenME3Package(fi.FullName))
                     {
-                        if (export.ClassParent == "SFXPowerCustomAction")
+                        foreach (IExportEntry export in package.Exports)
                         {
-                            Debug.WriteLine($"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
-                            if (newCachedInfo.TryGetValue(export.ObjectName, out List<string> instances))
+                            if (export.ClassParent == "SFXPowerCustomAction")
                             {
-                                instances.Add($"{fi.Name} at export { export.UIndex}");
-                            }
-                            else
-                            {
-                                var list = new List<string>();
-                                list.Add($"{fi.Name} at export { export.UIndex}");
-                                newCachedInfo[export.ObjectName] = list;
+                                Debug.WriteLine($"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
+                                if (newCachedInfo.TryGetValue(export.ObjectName, out List<string> instances))
+                                {
+                                    instances.Add($"{fi.Name} at export { export.UIndex}");
+                                }
+                                else
+                                {
+                                    newCachedInfo[export.ObjectName] = new List<string> { $"{fi.Name} at export {export.UIndex}" };
+                                }
                             }
                         }
                     }
-
-                    package.Release();
                 }
 
 
@@ -3704,181 +3708,6 @@ namespace ME3Explorer
         private void MountEditor_Click(object sender, RoutedEventArgs e)
         {
             new MountEditor.MountEditorWPF().Show();
-        }
-    }
-
-    [DebuggerDisplay("TreeViewEntry {" + nameof(DisplayName) + "}")]
-    public class TreeViewEntry : NotifyPropertyChangedBase
-    {
-        private System.Windows.Media.Brush _foregroundColor = System.Windows.Media.Brushes.DarkSeaGreen;
-
-        public bool IsProgramaticallySelecting;
-
-        private bool isSelected;
-        public bool IsSelected
-        {
-            get => isSelected;
-            set
-            {
-                if (!IsProgramaticallySelecting && isSelected != value)
-                {
-                    //user is selecting
-                    isSelected = value;
-                    OnPropertyChanged();
-                    return;
-                }
-                // build a priority queue of dispatcher operations
-
-                // All operations relating to tree item expansion are added with priority = DispatcherPriority.ContextIdle, so that they are
-                // sorted before any operations relating to selection (which have priority = DispatcherPriority.ApplicationIdle).
-                // This ensures that the visual container for all items are created before any selection operation is carried out.
-                // First expand all ancestors of the selected item - those closest to the root first
-                // Expanding a node will scroll as many of its children as possible into view - see perTreeViewItemHelper, but these scrolling
-                // operations will be added to the queue after all of the parent expansions.
-                if (value)
-                {
-                    var ancestorsToExpand = new Stack<TreeViewEntry>();
-
-                    var parent = Parent;
-                    while (parent != null)
-                    {
-                        if (!parent.IsExpanded)
-                            ancestorsToExpand.Push(parent);
-
-                        parent = parent.Parent;
-                    }
-
-                    while (ancestorsToExpand.Any())
-                    {
-                        var parentToExpand = ancestorsToExpand.Pop();
-                        DispatcherHelper.AddToQueue(() => parentToExpand.IsExpanded = true, DispatcherPriority.ContextIdle);
-                    }
-                }
-
-                //cancel if we're currently selected.
-                if (isSelected == value)
-                    return;
-
-                // Set the item's selected state - use DispatcherPriority.ApplicationIdle so this operation is executed after all
-                // expansion operations, no matter when they were added to the queue.
-                // Selecting a node will also scroll it into view - see perTreeViewItemHelper
-                DispatcherHelper.AddToQueue(() =>
-                {
-                    if (value != isSelected)
-                    {
-                        this.isSelected = value;
-                        OnPropertyChanged(nameof(IsSelected));
-                        IsProgramaticallySelecting = false;
-                    }
-                }, DispatcherPriority.ApplicationIdle);
-
-                // note that by rule, a TreeView can only have one selected item, but this is handled automatically by 
-                // the control - we aren't required to manually unselect the previously selected item.
-
-                // execute all of the queued operations in descending DipatecherPriority order (expansion before selection)
-                var unused = DispatcherHelper.ProcessQueueAsync();
-            }
-        }
-
-        private bool isExpanded;
-        public bool IsExpanded
-        {
-            get => this.isExpanded;
-            set => SetProperty(ref isExpanded, value);
-        }
-
-        public void ExpandParents()
-        {
-            if (Parent != null)
-            {
-                Parent.ExpandParents();
-                Parent.IsExpanded = true;
-            }
-        }
-
-        /// <summary>
-        /// Flattens the tree into depth first order. Use this method for searching the list.
-        /// </summary>
-        /// <returns></returns>
-        public List<TreeViewEntry> FlattenTree()
-        {
-            var nodes = new List<TreeViewEntry> { this };
-            foreach (TreeViewEntry tve in Sublinks)
-            {
-                nodes.AddRange(tve.FlattenTree());
-            }
-            return nodes;
-        }
-
-        public TreeViewEntry Parent { get; set; }
-
-        /// <summary>
-        /// The entry object from the file that this node represents
-        /// </summary>
-        public IEntry Entry { get; set; }
-        /// <summary>
-        /// List of entries that link to this node
-        /// </summary>
-        public ObservableCollectionExtended<TreeViewEntry> Sublinks { get; set; }
-        public TreeViewEntry(IEntry entry, string displayName = null)
-        {
-            Entry = entry;
-            DisplayName = displayName;
-            Sublinks = new ObservableCollectionExtended<TreeViewEntry>();
-        }
-
-        public void RefreshDisplayName()
-        {
-            OnPropertyChanged(nameof(DisplayName));
-        }
-
-        private string _displayName;
-        public string DisplayName
-        {
-            get
-            {
-                try
-                {
-                    if (_displayName != null) return _displayName;
-                    string type = UIndex < 0 ? "Imp" : "Exp";
-                    return $"({type}) {UIndex} {Entry.ObjectName}({Entry.ClassName})";
-                }
-                catch (Exception e)
-                {
-                    return "ERROR!";
-                }
-            }
-            set { _displayName = value; OnPropertyChanged(); }
-        }
-
-        public int UIndex => Entry?.UIndex ?? 0;
-
-        public System.Windows.Media.Brush ForegroundColor
-        {
-            get => Entry == null ? System.Windows.Media.Brushes.Black : UIndex > 0 ? System.Windows.Media.Brushes.Black : System.Windows.Media.Brushes.Gray;
-            set
-            {
-                _foregroundColor = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public override string ToString()
-        {
-            return "TreeViewEntry " + DisplayName;
-        }
-
-        /// <summary>
-        /// Sorts this node's children in ascending positives first, then descending negatives
-        /// </summary>
-        internal void SortChildren()
-        {
-            var exportNodes = Sublinks.Where(x => x.Entry.UIndex > 0).OrderBy(x => x.UIndex).ToList();
-            var importNodes = Sublinks.Where(x => x.Entry.UIndex < 0).OrderBy(x => x.UIndex).Reverse().ToList(); //we want this in descending order
-
-            exportNodes.AddRange(importNodes);
-            Sublinks.ClearEx();
-            Sublinks.AddRange(exportNodes);
         }
     }
 }

@@ -283,7 +283,7 @@ namespace ME3Explorer
 
         private bool LoadPathingNodesFromLevel()
         {
-            if (pcc == null)
+            if (Pcc == null)
             {
                 return false;
             }
@@ -298,7 +298,7 @@ namespace ME3Explorer
             CurrentObjects = new List<int>();
             activeExportsListbox.Items.Clear();
             AllLevelObjects.Clear();
-            foreach (IExportEntry exp in pcc.Exports)
+            foreach (IExportEntry exp in Pcc.Exports)
             {
                 if (exp.ClassName == "Level" && exp.ObjectName == "PersistentLevel")
                 {
@@ -318,7 +318,7 @@ namespace ME3Explorer
                     start += 4;
                     uint bioworldinfoexportid = BitConverter.ToUInt32(data, start);
 
-                    IExportEntry bioworldinfo = pcc.Exports[(int)bioworldinfoexportid - 1];
+                    IExportEntry bioworldinfo = Pcc.Exports[(int)bioworldinfoexportid - 1];
                     if (bioworldinfo.ObjectName != "BioWorldInfo")
                     {
                         //INVALID!!
@@ -328,13 +328,13 @@ namespace ME3Explorer
 
                     start += 4;
                     uint shouldbezero = BitConverter.ToUInt32(data, start);
-                    if (shouldbezero != 0 && pcc.Game != MEGame.ME1)
+                    if (shouldbezero != 0 && Pcc.Game != MEGame.ME1)
                     {
                         //INVALID!!!
                         return false;
                     }
                     int itemcount = 1; //Skip bioworldinfo and Class
-                    if (pcc.Game != MEGame.ME1)
+                    if (Pcc.Game != MEGame.ME1)
                     {
                         start += 4;
                         itemcount = 2;
@@ -344,9 +344,9 @@ namespace ME3Explorer
                     {
                         //get header.
                         uint itemexportid = BitConverter.ToUInt32(data, start);
-                        if (itemexportid - 1 < pcc.Exports.Count)
+                        if (itemexportid - 1 < Pcc.Exports.Count)
                         {
-                            IExportEntry exportEntry = pcc.Exports[(int)itemexportid - 1];
+                            IExportEntry exportEntry = Pcc.Exports[(int)itemexportid - 1];
                             AllLevelObjects.Add(exportEntry);
 
                             if (ignoredobjectnames.Contains(exportEntry.ObjectName))
@@ -392,7 +392,7 @@ namespace ME3Explorer
                                         foreach (StructProperty connectionProp in connectionsProp)
                                         {
                                             ObjectProperty splinecomponentprop = connectionProp.GetProp<ObjectProperty>("SplineComponent");
-                                            IExportEntry splineComponentExport = pcc.getExport(splinecomponentprop.Value - 1);
+                                            IExportEntry splineComponentExport = Pcc.getExport(splinecomponentprop.Value - 1);
                                             CurrentObjects.Add(splinecomponentprop.Value - 1);
                                             activeExportsListbox.Items.Add("#" + (splineComponentExport.Index) + " " + splineComponentExport.ObjectName + " - Class: " + splineComponentExport.ClassName);
                                         }
@@ -496,9 +496,9 @@ namespace ME3Explorer
 
 
 
-                    for (int i = 0; i < pcc.ExportCount; i++)
+                    for (int i = 0; i < Pcc.ExportCount; i++)
                     {
-                        IExportEntry exportEntry = pcc.getExport(i);
+                        IExportEntry exportEntry = Pcc.getExport(i);
                     }
 
                     bool oneViewActive = PathfindingNodesActive || ActorNodesActive || EverythingElseActive;
@@ -612,7 +612,7 @@ namespace ME3Explorer
                 {
 
                     var referencemap = new Dictionary<int, List<int>>(); //node index mapped to list of things referencing it
-                    foreach (IExportEntry export in pcc.Exports)
+                    foreach (IExportEntry export in Pcc.Exports)
                     {
                         if (export.ClassName == "SFXSeqEvt_Touch" || export.ClassName.StartsWith("SeqVar") || export.ClassName.StartsWith("SFXSeq"))
                         {
@@ -745,16 +745,16 @@ namespace ME3Explorer
             bool found = smacCoordinates.TryGetValue(index, out smacPos);
             if (found)
             {
-                SMAC_ActorNode smac = new SMAC_ActorNode(index, smacPos.X, smacPos.Y, pcc, graphEditor);
+                SMAC_ActorNode smac = new SMAC_ActorNode(index, smacPos.X, smacPos.Y, Pcc, graphEditor);
                 Objects.Add(smac);
                 return;
             }
             else
             {
-                string s = pcc.getExport(index).ObjectName;
+                string s = Pcc.getExport(index).ObjectName;
                 int x = 0, y = 0, z = int.MinValue;
                 //SaveData savedInfo = new SaveData(-1);
-                IExportEntry exporttoLoad = pcc.getExport(index);
+                IExportEntry exporttoLoad = Pcc.getExport(index);
                 //                var props = 
                 var props = exporttoLoad.GetProperties();
                 StructProperty prop = props.GetProp<StructProperty>("location");
@@ -799,73 +799,73 @@ namespace ME3Explorer
                         switch (exporttoLoad.ClassName)
                         {
                             case "PathNode":
-                                pathNode = new PathfindingNodes.PathNode(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.PathNode(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXEnemySpawnPoint":
-                                pathNode = new PathfindingNodes.SFXEnemySpawnPoint(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXEnemySpawnPoint(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXNav_JumpNode":
-                                pathNode = new PathfindingNodes.SFXNav_JumpNode(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXNav_JumpNode(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXNav_LeapNodeHumanoid":
-                                pathNode = new PathfindingNodes.SFXNav_LeapNodeHumanoid(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXNav_LeapNodeHumanoid(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXDoorMarker":
-                                pathNode = new PathfindingNodes.SFXDoorMarker(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXDoorMarker(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXNav_LargeMantleNode":
-                                pathNode = new PathfindingNodes.SFXNav_LargeMantleNode(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXNav_LargeMantleNode(index, x, y, Pcc, graphEditor);
                                 break;
                             case "BioPathPoint":
-                                pathNode = new PathfindingNodes.BioPathPoint(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.BioPathPoint(index, x, y, Pcc, graphEditor);
                                 break;
                             case "PathNode_Dynamic":
-                                pathNode = new PathfindingNodes.PathNode_Dynamic(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.PathNode_Dynamic(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXNav_LargeBoostNode":
-                                pathNode = new PathfindingNodes.SFXNav_LargeBoostNode(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXNav_LargeBoostNode(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXNav_TurretPoint":
-                                pathNode = new PathfindingNodes.SFXNav_TurretPoint(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXNav_TurretPoint(index, x, y, Pcc, graphEditor);
                                 break;
                             case "CoverLink":
-                                pathNode = new PathfindingNodes.CoverLink(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.CoverLink(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXNav_JumpDownNode":
-                                pathNode = new PathfindingNodes.SFXNav_JumpDownNode(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXNav_JumpDownNode(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXNav_LadderNode":
-                                pathNode = new PathfindingNodes.SFXNav_LadderNode(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXNav_LadderNode(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXDynamicCoverLink":
-                                pathNode = new PathfindingNodes.SFXDynamicCoverLink(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXDynamicCoverLink(index, x, y, Pcc, graphEditor);
                                 break;
 
                             case "CoverSlotMarker":
-                                pathNode = new PathfindingNodes.CoverSlotMarker(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.CoverSlotMarker(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXDynamicCoverSlotMarker":
-                                pathNode = new PathfindingNodes.SFXDynamicCoverSlotMarker(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXDynamicCoverSlotMarker(index, x, y, Pcc, graphEditor);
                                 break;
                             case "MantleMarker":
-                                pathNode = new PathfindingNodes.MantleMarker(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.MantleMarker(index, x, y, Pcc, graphEditor);
                                 break;
                             case "TargetPoint":
-                                pathNode = new PathfindingNodes.TargetPoint(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.TargetPoint(index, x, y, Pcc, graphEditor);
                                 break;
 
                             case "SFXNav_HarvesterMoveNode":
-                                pathNode = new PathfindingNodes.SFXNav_HarvesterMoveNode(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXNav_HarvesterMoveNode(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXOperation_ObjectiveSpawnPoint":
-                                pathNode = new PathfindingNodes.SFXObjectiveSpawnPoint(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXObjectiveSpawnPoint(index, x, y, Pcc, graphEditor);
 
                                 //Create annex node if required
                                 var annexZoneLocProp = props.GetProp<ObjectProperty>("AnnexZoneLocation");
                                 if (annexZoneLocProp != null)
                                 {
                                     int ind = annexZoneLocProp.Value - 1;
-                                    if (ind < 0 || ind > pcc.Exports.Count)
+                                    if (ind < 0 || ind > Pcc.Exports.Count)
                                     {
                                         pathNode.comment.Text += "\nBAD ANNEXZONELOC!";
                                         pathNode.comment.TextBrush = new SolidBrush(System.Drawing.Color.Red);
@@ -874,10 +874,10 @@ namespace ME3Explorer
 
                                 break;
                             case "SFXNav_BoostNode":
-                                pathNode = new PathfindingNodes.SFXNav_BoostNode(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.SFXNav_BoostNode(index, x, y, Pcc, graphEditor);
                                 break;
                             default:
-                                pathNode = new PathfindingNodes.PendingNode(index, x, y, pcc, graphEditor);
+                                pathNode = new PathfindingNodes.PendingNode(index, x, y, Pcc, graphEditor);
                                 break;
                         }
                         if (ActiveCombatZoneExportIndex >= 0 && exporttoLoad.ClassName == "CoverSlotMarker")
@@ -910,67 +910,67 @@ namespace ME3Explorer
                         switch (exporttoLoad.ClassName)
                         {
                             case "BlockingVolume":
-                                actorNode = new BlockingVolumeNode(index, x, y, pcc, graphEditor);
+                                actorNode = new BlockingVolumeNode(index, x, y, Pcc, graphEditor);
                                 break;
                             case "DynamicBlockingVolume":
-                                actorNode = new DynamicBlockingVolume(index, x, y, pcc, graphEditor);
+                                actorNode = new DynamicBlockingVolume(index, x, y, Pcc, graphEditor);
                                 break;
                             case "InterpActor":
-                                actorNode = new InterpActorNode(index, x, y, pcc, graphEditor);
+                                actorNode = new InterpActorNode(index, x, y, Pcc, graphEditor);
                                 break;
                             case "BioTriggerVolume":
-                                actorNode = new ActorNodes.BioTriggerVolume(index, x, y, pcc, graphEditor);
+                                actorNode = new ActorNodes.BioTriggerVolume(index, x, y, Pcc, graphEditor);
                                 break;
                             case "BioTriggerStream":
-                                actorNode = new ActorNodes.BioTriggerStream(index, x, y, pcc, graphEditor);
+                                actorNode = new ActorNodes.BioTriggerStream(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXGrenadeContainer":
-                                actorNode = new ActorNodes.SFXGrenadeContainer(index, x, y, pcc, graphEditor);
+                                actorNode = new ActorNodes.SFXGrenadeContainer(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXAmmoContainer":
-                                actorNode = new ActorNodes.SFXAmmoContainer(index, x, y, pcc, graphEditor);
+                                actorNode = new ActorNodes.SFXAmmoContainer(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXAmmoContainer_Simulator":
-                                actorNode = new ActorNodes.SFXAmmoContainer_Simulator(index, x, y, pcc, graphEditor);
+                                actorNode = new ActorNodes.SFXAmmoContainer_Simulator(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXBlockingVolume_Ledge":
-                                actorNode = new ActorNodes.SFXBlockingVolume_Ledge(index, x, y, pcc, graphEditor);
+                                actorNode = new ActorNodes.SFXBlockingVolume_Ledge(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXCombatZone":
-                                actorNode = new ActorNodes.SFXCombatZone(index, x, y, pcc, graphEditor);
+                                actorNode = new ActorNodes.SFXCombatZone(index, x, y, Pcc, graphEditor);
                                 break;
                             case "BioStartLocation":
                             case "BioStartLocationMP":
-                                actorNode = new ActorNodes.BioStartLocation(index, x, y, pcc, graphEditor);
+                                actorNode = new ActorNodes.BioStartLocation(index, x, y, Pcc, graphEditor);
                                 break;
                             case "StaticMeshActor":
-                                actorNode = new ActorNodes.StaticMeshActorNode(index, x, y, pcc, graphEditor);
+                                actorNode = new ActorNodes.StaticMeshActorNode(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXStuntActor":
-                                actorNode = new ActorNodes.SFXStuntActor(index, x, y, pcc, graphEditor);
+                                actorNode = new ActorNodes.SFXStuntActor(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SkeletalMeshActor":
-                                actorNode = new ActorNodes.SkeletalMeshActor(index, x, y, pcc, graphEditor);
+                                actorNode = new ActorNodes.SkeletalMeshActor(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXPlaceable_Generator":
                             case "SFXPlaceable_ShieldGenerator":
-                                actorNode = new ActorNodes.SFXPlaceable(index, x, y, pcc, graphEditor);
+                                actorNode = new ActorNodes.SFXPlaceable(index, x, y, Pcc, graphEditor);
                                 break;
                             case "WwiseAmbientSound":
-                                actorNode = new ActorNodes.WwiseAmbientSound(index, x, y, pcc, graphEditor);
+                                actorNode = new ActorNodes.WwiseAmbientSound(index, x, y, Pcc, graphEditor);
                                 break;
                             case "WwiseAudioVolume":
-                                actorNode = new ActorNodes.WwiseAudioVolume(index, x, y, pcc, graphEditor);
+                                actorNode = new ActorNodes.WwiseAudioVolume(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXArmorNode":
                             case "SFXTreasureNode":
-                                actorNode = new ActorNodes.SFXTreasureNode(index, x, y, pcc, graphEditor);
+                                actorNode = new ActorNodes.SFXTreasureNode(index, x, y, Pcc, graphEditor);
                                 break;
                             case "SFXMedStation":
-                                actorNode = new ActorNodes.SFXMedStation(index, x, y, pcc, graphEditor);
+                                actorNode = new ActorNodes.SFXMedStation(index, x, y, Pcc, graphEditor);
                                 break;
                             default:
-                                actorNode = new PendingActorNode(index, x, y, pcc, graphEditor);
+                                actorNode = new PendingActorNode(index, x, y, Pcc, graphEditor);
                                 break;
                         }
 
@@ -1003,7 +1003,7 @@ namespace ME3Explorer
                         switch (exporttoLoad.ClassName)
                         {
                             case "SplineActor":
-                                splineNode = new SplineActorNode(index, x, y, pcc, graphEditor);
+                                splineNode = new SplineActorNode(index, x, y, Pcc, graphEditor);
 
                                 ArrayProperty<StructProperty> connectionsProp = exporttoLoad.GetProperty<ArrayProperty<StructProperty>>("Connections");
                                 if (connectionsProp != null)
@@ -1011,7 +1011,7 @@ namespace ME3Explorer
                                     foreach (StructProperty connectionProp in connectionsProp)
                                     {
                                         ObjectProperty splinecomponentprop = connectionProp.GetProp<ObjectProperty>("SplineComponent");
-                                        IExportEntry splineComponentExport = pcc.getExport(splinecomponentprop.Value - 1);
+                                        IExportEntry splineComponentExport = Pcc.getExport(splinecomponentprop.Value - 1);
                                         //Debug.WriteLine(splineComponentExport.GetFullPath + " " + splinecomponentprop.Value);
                                         StructProperty splineInfo = splineComponentExport.GetProperty<StructProperty>("SplineInfo");
                                         if (splineInfo != null)
@@ -1022,13 +1022,13 @@ namespace ME3Explorer
                                             double yf = point1.GetProp<FloatProperty>("Y");
                                             //double zf = point1.GetProp<FloatProperty>("Z");
                                             //Point3D point1_3d = new Point3D(xf, yf, zf);
-                                            SplinePoint0Node point0node = new SplinePoint0Node(splinecomponentprop.Value - 1, Convert.ToInt32(xf), Convert.ToInt32(yf), pcc, graphEditor);
+                                            SplinePoint0Node point0node = new SplinePoint0Node(splinecomponentprop.Value - 1, Convert.ToInt32(xf), Convert.ToInt32(yf), Pcc, graphEditor);
                                             StructProperty point2 = pointsProp[1].GetProp<StructProperty>("OutVal");
                                             xf = point2.GetProp<FloatProperty>("X");
                                             yf = point2.GetProp<FloatProperty>("Y");
                                             //zf = point2.GetProp<FloatProperty>("Z");
                                             //Point3D point2_3d = new Point3D(xf, yf, zf);
-                                            SplinePoint1Node point1node = new SplinePoint1Node(splinecomponentprop.Value - 1, Convert.ToInt32(xf), Convert.ToInt32(yf), pcc, graphEditor);
+                                            SplinePoint1Node point1node = new SplinePoint1Node(splinecomponentprop.Value - 1, Convert.ToInt32(xf), Convert.ToInt32(yf), Pcc, graphEditor);
                                             point0node.SetDestinationPoint(point1node);
 
                                             Objects.Add(point0node);
@@ -1041,7 +1041,7 @@ namespace ME3Explorer
                                 }
                                 break;
                             default:
-                                splineNode = new PendingSplineNode(index, x, y, pcc, graphEditor);
+                                splineNode = new PendingSplineNode(index, x, y, Pcc, graphEditor);
                                 break;
                         }
                         Objects.Add(splineNode);
@@ -1051,7 +1051,7 @@ namespace ME3Explorer
                     else
                     {
                         //everything else
-                        Objects.Add(new EverythingElseNode(index, x, y, pcc, graphEditor));
+                        Objects.Add(new EverythingElseNode(index, x, y, Pcc, graphEditor));
                         return;
                     }
                 }
@@ -1177,16 +1177,16 @@ namespace ME3Explorer
                         if (sp != null)
                         {
                             ObjectProperty op = sp.GetProp<ObjectProperty>("Link");
-                            if (op != null && op.Value - 1 < pcc.ExportCount)
+                            if (op != null && op.Value - 1 < Pcc.ExportCount)
                             {
-                                HighlightCoverlinkSlots(pcc.Exports[op.Value - 1]);
+                                HighlightCoverlinkSlots(Pcc.Exports[op.Value - 1]);
                             }
                         }
                         break;
                 }
             }
 
-            GetProperties(pcc.getExport(CurrentObjects[n]));
+            GetProperties(Pcc.getExport(CurrentObjects[n]));
             selectedIndex = n;
             selectedByNode = false;
             graphEditor.Refresh();
@@ -1304,12 +1304,12 @@ namespace ME3Explorer
                 addToSFXCombatZoneToolStripMenuItem.Visible = false;
                 exportsReferencingThisNodeToolStripMenuItem.DropDownItems.Clear();
                 exportsReferencingThisNodeToolStripMenuItem.Visible = false;
-                IExportEntry nodeExp = pcc.Exports[n];
+                IExportEntry nodeExp = Pcc.Exports[n];
                 var properties = nodeExp.GetProperties();
                 List<IExportEntry> sequenceObjectsReferencingThisItem = new List<IExportEntry>();
 
                 #region SequenceEditorReferences
-                foreach (IExportEntry export in pcc.Exports)
+                foreach (IExportEntry export in Pcc.Exports)
                 {
                     if (export.ClassName == "SFXSeqEvt_Touch" || export.ClassName.StartsWith("SeqVar") || export.ClassName.StartsWith("SFXSeq"))
                     {
@@ -1337,9 +1337,9 @@ namespace ME3Explorer
                         breaklLinkItem.Click += (object o, EventArgs args) =>
                         {
                             //sequence editor load
-                            var editor = new SequenceEditor(referencing);
-                            editor.BringToFront();
+                            var editor = new Sequence_Editor.SequenceEditorWPF(referencing);
                             editor.Show();
+                            editor.Focus();
                         };
                         submenu.Items.Add(breaklLinkItem);
                     }
@@ -1386,7 +1386,7 @@ namespace ME3Explorer
                             }
                             Debug.WriteLine("not part of combat zone already: " + expid);
 
-                            IExportEntry combatZoneExp = pcc.Exports[expid];
+                            IExportEntry combatZoneExp = Pcc.Exports[expid];
                             combatZoneItem = new ToolStripMenuItem(combatZoneExp.Index + " " + combatZoneExp.ObjectName + "_" + combatZoneExp.indexValue);
                             combatZoneItem.Click += (object o, EventArgs args) =>
                             {
@@ -1401,7 +1401,7 @@ namespace ME3Explorer
 
                     rightMouseButtonMenu.Show(MousePosition);
                     //open in InterpEditor
-                    string className = pcc.getExport(((PathfindingNodes.PathfindingNode)sender).Index).ClassName;
+                    string className = Pcc.getExport(((PathfindingNodes.PathfindingNode)sender).Index).ClassName;
                     //break links
                     breakLinksToolStripMenuItem.Visible = false;
                     breakLinksToolStripMenuItem.DropDown = null;
@@ -1412,11 +1412,11 @@ namespace ME3Explorer
                     {
                         foreach (ObjectProperty prop in PathList)
                         {
-                            IExportEntry outgoingSpec = pcc.Exports[prop.Value - 1];
+                            IExportEntry outgoingSpec = Pcc.Exports[prop.Value - 1];
                             StructProperty outgoingEndStructProp = outgoingSpec.GetProperty<StructProperty>("End"); //Embeds END
                             ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpec)); //END                    
 
-                            IEntry dest = pcc.getEntry(outgoingSpecEndProp.Value);
+                            IEntry dest = Pcc.getEntry(outgoingSpecEndProp.Value);
                             breaklLinkItem = new ToolStripMenuItem("Break " + outgoingSpec.ObjectName + " to " + (outgoingSpecEndProp.Value - 1) + " " + dest.ObjectName);
                             breaklLinkItem.Click += (object o, EventArgs args) =>
                             {
@@ -1546,7 +1546,7 @@ namespace ME3Explorer
             int n = activeExportsListbox.SelectedIndex;
             if (n == -1)
                 return;
-            PropGrid.propGridPropertyValueChanged(e, CurrentObjects[n], pcc);
+            PropGrid.propGridPropertyValueChanged(e, CurrentObjects[n], Pcc);
         }
 
         private void togglePathfindingNodes_Click(object sender, EventArgs e)
@@ -1588,23 +1588,23 @@ namespace ME3Explorer
 
         private void savePccToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            if (pcc == null)
+            if (Pcc == null)
                 return;
-            pcc.save();
+            Pcc.save();
             MessageBox.Show("Done");
         }
 
         private void savePCCAsMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc == null)
+            if (Pcc == null)
                 return;
             SaveFileDialog d = new SaveFileDialog();
-            string extension = Path.GetExtension(pcc.FileName);
+            string extension = Path.GetExtension(Pcc.FileName);
             d.Filter = $"*{extension}|*{extension}";
-            d.FileName = Path.GetFileName(pcc.FileName);
+            d.FileName = Path.GetFileName(Pcc.FileName);
             if (d.ShowDialog() == DialogResult.OK)
             {
-                pcc.save(d.FileName);
+                Pcc.save(d.FileName);
                 MessageBox.Show("Done");
             }
         }
@@ -1616,7 +1616,7 @@ namespace ME3Explorer
                 return;
 
             AllowRefresh = false;
-            IExportEntry nodeEntry = pcc.Exports[n];
+            IExportEntry nodeEntry = Pcc.Exports[n];
             cloneNode(nodeEntry);
             AllowRefresh = true;
 
@@ -1742,7 +1742,7 @@ namespace ME3Explorer
             }
             foreach (var i in updatedExports)
             {
-                if (pathfindingNodeClasses.Contains(pcc.getExport(i).ClassName))
+                if (pathfindingNodeClasses.Contains(Pcc.getExport(i).ClassName))
                 {
                     LoadPathingNodesFromLevel();
                     break;
@@ -1852,7 +1852,7 @@ namespace ME3Explorer
             //Get current cylinder component export.
             PropertyCollection props = nodeEntry.GetProperties();
             ObjectProperty cylindercomponent = props.GetProp<ObjectProperty>("CollisionComponent");
-            IExportEntry cylindercomponentexp = pcc.getExport(cylindercomponent.Value - 1);
+            IExportEntry cylindercomponentexp = Pcc.getExport(cylindercomponent.Value - 1);
 
             //Ensure all classes are imported.
             ImportEntry newnodeclassimp = getOrAddImport(newclass);
@@ -1861,7 +1861,7 @@ namespace ME3Explorer
             if (newnodeclassimp != null)
             {
                 nodeEntry.idxClass = newnodeclassimp.UIndex;
-                nodeEntry.idxObjectName = pcc.FindNameOrAdd(newname);
+                nodeEntry.idxObjectName = Pcc.FindNameOrAdd(newname);
                 cylindercomponentexp.idxArchtype = newcylindercomponentimp.UIndex;
             }
 
@@ -1926,7 +1926,7 @@ namespace ME3Explorer
                         {
                             for (int i = 0; i < pathList.Count; i++)
                             {
-                                IExportEntry spec = pcc.Exports[pathList[i].Value - 1];
+                                IExportEntry spec = Pcc.Exports[pathList[i].Value - 1];
                                 //Get ending
                                 int othernodeidx = 0;
                                 PropertyCollection specprops = spec.GetProperties();
@@ -1953,7 +1953,7 @@ namespace ME3Explorer
                                 if (othernodeidx != 0)
                                 {
                                     bool keepParsing = true;
-                                    IExportEntry specDest = pcc.Exports[othernodeidx - 1];
+                                    IExportEntry specDest = Pcc.Exports[othernodeidx - 1];
                                     if (specDest.ClassName == "SFXNav_LargeBoostNode" && spec.ClassName != "SFXLargeBoostReachSpec")
                                     {
                                         //Change the reachspec info outgoing to this node...
@@ -1962,7 +1962,7 @@ namespace ME3Explorer
                                         if (newReachSpecClass != null)
                                         {
                                             spec.idxClass = newReachSpecClass.UIndex;
-                                            spec.idxObjectName = pcc.FindNameOrAdd("SFXLargeBoostReachSpec");
+                                            spec.idxObjectName = Pcc.FindNameOrAdd("SFXLargeBoostReachSpec");
                                             //set spec to banshee sized
                                             setReachSpecSize(spec, PathfindingNodeInfoPanel.BANSHEE_RADIUS, PathfindingNodeInfoPanel.BANSHEE_HEIGHT);
                                         }
@@ -1973,7 +1973,7 @@ namespace ME3Explorer
                                         {
                                             for (int on = 0; on < otherNodePathlist.Count; on++)
                                             {
-                                                IExportEntry inboundSpec = pcc.Exports[otherNodePathlist[on].Value - 1];
+                                                IExportEntry inboundSpec = Pcc.Exports[otherNodePathlist[on].Value - 1];
                                                 //Get ending
                                                 //PropertyCollection inboundProps = inboundSpec.GetProperties();
                                                 var prop = inboundSpec.GetProperty<StructProperty>("End");
@@ -1989,7 +1989,7 @@ namespace ME3Explorer
                                                             {
                                                                 //The node is inbound to me.
                                                                 inboundSpec.idxClass = newReachSpecClass.UIndex;
-                                                                inboundSpec.idxObjectName = pcc.FindNameOrAdd("SFXLargeBoostReachSpec");
+                                                                inboundSpec.idxObjectName = Pcc.FindNameOrAdd("SFXLargeBoostReachSpec");
                                                                 //widen spec
                                                                 setReachSpecSize(inboundSpec, PathfindingNodeInfoPanel.BANSHEE_RADIUS, PathfindingNodeInfoPanel.BANSHEE_HEIGHT);
                                                                 keepParsing = false; //stop the outer loop
@@ -2065,7 +2065,7 @@ namespace ME3Explorer
         private void reindexObjectsWithName(string objectname)
         {
             int index = 1; //we'll start at 1.
-            foreach (IExportEntry export in pcc.Exports)
+            foreach (IExportEntry export in Pcc.Exports)
             {
                 if (objectname == export.ObjectName && export.ClassName != "Class")
                 {
@@ -2083,9 +2083,9 @@ namespace ME3Explorer
                 if (n == -1)
                     return;
 
-                if (pcc.Exports[n].ClassName != "SFXEnemySpawnPoint")
+                if (Pcc.Exports[n].ClassName != "SFXEnemySpawnPoint")
                 {
-                    changeNodeType(pcc.Exports[n], NODETYPE_SFXENEMYSPAWNPOINT);
+                    changeNodeType(Pcc.Exports[n], NODETYPE_SFXENEMYSPAWNPOINT);
                     RefreshView();
                 }
             }
@@ -2099,9 +2099,9 @@ namespace ME3Explorer
                 if (n == -1)
                     return;
 
-                if (pcc.Exports[n].ClassName != "SFXNav_TurretPoint")
+                if (Pcc.Exports[n].ClassName != "SFXNav_TurretPoint")
                 {
-                    changeNodeType(pcc.Exports[n], NODETYPE_SFXNAV_TURRETPOINT);
+                    changeNodeType(Pcc.Exports[n], NODETYPE_SFXNAV_TURRETPOINT);
                     RefreshView();
                 }
             }
@@ -2114,7 +2114,7 @@ namespace ME3Explorer
                 int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
-                IExportEntry selectednodeexp = pcc.Exports[n];
+                IExportEntry selectednodeexp = Pcc.Exports[n];
                 if (selectednodeexp.ClassName != "PathNode")
                 {
                     changeNodeType(selectednodeexp, NODETYPE_PATHNODE);
@@ -2125,7 +2125,7 @@ namespace ME3Explorer
 
         private ImportEntry getOrAddImport(string importFullName)
         {
-            foreach (ImportEntry imp in pcc.Imports)
+            foreach (ImportEntry imp in Pcc.Imports)
             {
                 if (imp.GetFullPath == importFullName)
                 {
@@ -2143,7 +2143,7 @@ namespace ME3Explorer
             while (upstreamCount < importParts.Count())
             {
                 string upstream = String.Join(".", importParts, 0, importParts.Count() - upstreamCount);
-                foreach (ImportEntry imp in pcc.Imports)
+                foreach (ImportEntry imp in Pcc.Imports)
                 {
                     if (imp.GetFullPath == upstream)
                     {
@@ -2174,13 +2174,13 @@ namespace ME3Explorer
                 string fullobjectname = String.Join(".", importParts, 0, importParts.Count() - upstreamCount);
                 Dictionary<string, string> importdbinfo = importclassdb[fullobjectname];
 
-                int downstreamName = pcc.FindNameOrAdd(importParts[importParts.Count() - upstreamCount - 1]);
-                Debug.WriteLine(pcc.Names[downstreamName]);
+                int downstreamName = Pcc.FindNameOrAdd(importParts[importParts.Count() - upstreamCount - 1]);
+                Debug.WriteLine(Pcc.Names[downstreamName]);
                 int downstreamLinkIdx = upstreamImport.UIndex;
                 Debug.WriteLine(upstreamImport.GetFullPath);
 
-                int downstreamPackageName = pcc.FindNameOrAdd(importdbinfo["packagefile"]);
-                int downstreamClassName = pcc.FindNameOrAdd(importdbinfo["class"]);
+                int downstreamPackageName = Pcc.FindNameOrAdd(importdbinfo["packagefile"]);
+                int downstreamClassName = Pcc.FindNameOrAdd(importdbinfo["class"]);
 
                 //ImportEntry classImport = getOrAddImport();
                 //int downstreamClass = 0;
@@ -2191,12 +2191,12 @@ namespace ME3Explorer
                 //    throw new Exception("No class was found for importing");
                 //}
 
-                mostdownstreamimport = new ImportEntry(pcc);
+                mostdownstreamimport = new ImportEntry(Pcc);
                 mostdownstreamimport.idxLink = downstreamLinkIdx;
                 mostdownstreamimport.idxClassName = downstreamClassName;
                 mostdownstreamimport.idxObjectName = downstreamName;
                 mostdownstreamimport.idxPackageFile = downstreamPackageName;
-                pcc.addImport(mostdownstreamimport);
+                Pcc.addImport(mostdownstreamimport);
                 upstreamImport = mostdownstreamimport;
             }
             return mostdownstreamimport;
@@ -2219,7 +2219,7 @@ namespace ME3Explorer
             bool createTwoWay = true;
             int size = 1; //Minibosses by default
             int destinationType = 0; //local by default
-            using (ReachSpecCreatorForm form = new ReachSpecCreatorForm(pcc, sourceExportIndex))
+            using (ReachSpecCreatorForm form = new ReachSpecCreatorForm(Pcc, sourceExportIndex))
             {
                 DialogResult dr = form.ShowDialog(this);
                 if (dr != DialogResult.Yes)
@@ -2233,7 +2233,7 @@ namespace ME3Explorer
                 size = form.SpecSize;
                 destinationType = form.DestinationType;
             }
-            IExportEntry startNode = pcc.Exports[sourceExportIndex];
+            IExportEntry startNode = Pcc.Exports[sourceExportIndex];
             createReachSpec(startNode, createTwoWay, destinationIndex, reachSpecClass, size, destinationType);
         }
 
@@ -2241,7 +2241,7 @@ namespace ME3Explorer
         {
             //func
             IExportEntry reachSpectoClone = null;
-            foreach (IExportEntry exp in pcc.Exports)
+            foreach (IExportEntry exp in Pcc.Exports)
             {
                 if (exp.ClassName == "ReachSpec") //clone basic reachspec, set class later
                 {
@@ -2254,15 +2254,15 @@ namespace ME3Explorer
                 //external node
 
                 //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
-                int outgoingSpec = pcc.ExportCount;
-                int incomingSpec = pcc.ExportCount + 1;
+                int outgoingSpec = Pcc.ExportCount;
+                int incomingSpec = Pcc.ExportCount + 1;
 
 
                 if (reachSpectoClone != null)
                 {
-                    pcc.addExport(reachSpectoClone.Clone()); //outgoing
+                    Pcc.addExport(reachSpectoClone.Clone()); //outgoing
 
-                    IExportEntry outgoingSpecExp = pcc.Exports[outgoingSpec]; //cloned outgoing
+                    IExportEntry outgoingSpecExp = Pcc.Exports[outgoingSpec]; //cloned outgoing
                     ImportEntry reachSpecClassImp = getOrAddImport(reachSpecClass); //new class type.
 
                     outgoingSpecExp.idxClass = reachSpecClassImp.UIndex;
@@ -2301,17 +2301,17 @@ namespace ME3Explorer
                 //Debug.WriteLine("Source Node: " + startNode.Index);
 
                 //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
-                int outgoingSpec = pcc.ExportCount;
-                int incomingSpec = pcc.ExportCount + 1;
+                int outgoingSpec = Pcc.ExportCount;
+                int incomingSpec = Pcc.ExportCount + 1;
 
 
                 if (reachSpectoClone != null)
                 {
-                    IExportEntry destNode = pcc.Exports[destinationIndex];
+                    IExportEntry destNode = Pcc.Exports[destinationIndex];
                     //Debug.WriteLine("Destination Node: " + destNode.Index);
 
                     //time to clone.
-                    pcc.addExport(reachSpectoClone.Clone()); //outgoing
+                    Pcc.addExport(reachSpectoClone.Clone()); //outgoing
 
                     //Have to do this manually because tools firing the clone seem to bust it.
 
@@ -2319,13 +2319,13 @@ namespace ME3Explorer
                     //Debug.WriteLine("Clone 1 UIndex: " + pcc.Exports[outgoingSpec].UIndex);
                     if (createTwoWay)
                     {
-                        pcc.addExport(reachSpectoClone.Clone()); //incoming
+                        Pcc.addExport(reachSpectoClone.Clone()); //incoming
                                                                  //Debug.WriteLine("Clone 2 Num Exports: " + pcc.Exports.Count);
                                                                  //Debug.WriteLine("Clone 2 UIndex: " + pcc.Exports[incomingSpec].UIndex);
 
                     }
 
-                    IExportEntry outgoingSpecExp = pcc.Exports[outgoingSpec]; //cloned outgoing
+                    IExportEntry outgoingSpecExp = Pcc.Exports[outgoingSpec]; //cloned outgoing
                     ImportEntry reachSpecClassImp = getOrAddImport(reachSpecClass); //new class type.
 
                     outgoingSpecExp.idxClass = reachSpecClassImp.UIndex;
@@ -2367,7 +2367,7 @@ namespace ME3Explorer
 
                     if (createTwoWay)
                     {
-                        IExportEntry incomingSpecExp = pcc.Exports[incomingSpec];
+                        IExportEntry incomingSpecExp = Pcc.Exports[incomingSpec];
                         incomingSpecExp.idxClass = reachSpecClassImp.UIndex;
                         incomingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
 
@@ -2387,7 +2387,7 @@ namespace ME3Explorer
 
 
                         //Add to source node prop
-                        ArrayProperty<ObjectProperty> DestPathList = pcc.Exports[destinationIndex].GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                        ArrayProperty<ObjectProperty> DestPathList = Pcc.Exports[destinationIndex].GetProperty<ArrayProperty<ObjectProperty>>("PathList");
                         memory = destNode.Data;
                         memory = addObjectArrayLeaf(memory, (int)DestPathList.ValueOffset, incomingSpecExp.UIndex);
                         destNode.Data = memory;
@@ -2647,7 +2647,7 @@ namespace ME3Explorer
                 int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
-                IExportEntry selectednodeexp = pcc.Exports[n];
+                IExportEntry selectednodeexp = Pcc.Exports[n];
                 if (selectednodeexp.ClassName != "SFXNav_BoostNode")
                 {
                     changeNodeType(selectednodeexp, NODETYPE_SFXNAV_BOOSTNODE_TOP);
@@ -2663,7 +2663,7 @@ namespace ME3Explorer
                 int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
-                IExportEntry selectednodeexp = pcc.Exports[n];
+                IExportEntry selectednodeexp = Pcc.Exports[n];
                 if (selectednodeexp.ClassName != "SFXNav_BoostNode")
                 {
                     changeNodeType(selectednodeexp, NODETYPE_SFXNAV_BOOSTNODE_BOTTOM);
@@ -2679,7 +2679,7 @@ namespace ME3Explorer
                 return;
 
             AllowRefresh = false;
-            IExportEntry nodeEntry = pcc.Exports[n];
+            IExportEntry nodeEntry = Pcc.Exports[n];
             SharedPathfinding.GenerateNewRandomGUID(nodeEntry);
             AllowRefresh = true;
 
@@ -2801,7 +2801,7 @@ namespace ME3Explorer
                 int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
-                IExportEntry selectednodeexp = pcc.Exports[n];
+                IExportEntry selectednodeexp = Pcc.Exports[n];
                 if (selectednodeexp.ClassName != "SFXNav_LargeBoostNode")
                 {
                     changeNodeType(selectednodeexp, NODETYPE_SFXNAV_LAREGEBOOSTNODE);
@@ -2855,7 +2855,7 @@ namespace ME3Explorer
                 int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
-                IExportEntry selectednodeexp = pcc.Exports[n];
+                IExportEntry selectednodeexp = Pcc.Exports[n];
                 if (selectednodeexp.ClassName != "SFXNav_LargeMantleNode")
                 {
                     changeNodeType(selectednodeexp, NODETYPE_SFXNAV_LARGEMANTLENODE);
@@ -2871,7 +2871,7 @@ namespace ME3Explorer
                 int n = CurrentObjects[activeExportsListbox.SelectedIndex];
                 if (n == -1)
                     return;
-                IExportEntry selectednodeexp = pcc.Exports[n];
+                IExportEntry selectednodeexp = Pcc.Exports[n];
                 if (selectednodeexp.ClassName != "SFXNav_ClimbWallNode")
                 {
                     changeNodeType(selectednodeexp, NODETYPE_SFXNAV_CLIMBWALLNODE);
@@ -2882,7 +2882,7 @@ namespace ME3Explorer
 
         private void fixStackHeadersToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc == null)
+            if (Pcc == null)
             {
                 return;
             }
@@ -2906,7 +2906,7 @@ namespace ME3Explorer
             //start full scan.
             itemcount = 2;
 
-            foreach (IExportEntry exportEntry in pcc.Exports)
+            foreach (IExportEntry exportEntry in Pcc.Exports)
             {
                 string path = exportEntry.GetFullPath;
                 string[] pieces = path.Split('.');
@@ -2974,13 +2974,13 @@ namespace ME3Explorer
                 List<int> valueList = item.Value;
                 if (valueList.Count > 1 && item.Key != 0 && item.Key != -1)
                 {
-                    string itemlist = pcc.Exports[valueList[0]].ObjectName;
+                    string itemlist = Pcc.Exports[valueList[0]].ObjectName;
                     for (int i = 1; i < valueList.Count; i++)
                     // for (int i = valueList.Count - 1; i > 1; i--)
                     {
                         int max = mpIDs.Keys.Max();
                         //Debug.WriteLine("New max key size: " + max);
-                        IExportEntry export = pcc.Exports[valueList[i]];
+                        IExportEntry export = Pcc.Exports[valueList[i]];
                         itemlist += " " + export.ObjectName;
                         string exportname = export.ObjectName;
                         if (exportname.Contains("SFXOperation") || exportname.Contains("ReachSpec"))
@@ -2995,7 +2995,7 @@ namespace ME3Explorer
 
                             int nameId = BitConverter.ToInt32(exportData, 4);
 
-                            if (pcc.isName(nameId) && pcc.getNameEntry(nameId) == export.ObjectName)
+                            if (Pcc.isName(nameId) && Pcc.getNameEntry(nameId) == export.ObjectName)
                             {
                                 //It's a primitive component header
                                 idOffset += 8;
@@ -3030,17 +3030,17 @@ namespace ME3Explorer
 
         private void validateReachToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc == null)
+            if (Pcc == null)
             {
                 return;
             }
 
-            new DuplicateGUIDWindow(pcc).Show(this);
+            new DuplicateGUIDWindow(Pcc).Show(this);
         }
 
         private void gotoButton_Clicked(object sender, EventArgs e)
         {
-            if (pcc == null)
+            if (Pcc == null)
             {
                 return;
             }
@@ -3048,7 +3048,7 @@ namespace ME3Explorer
             int exportNum;
             if (int.TryParse(searchText, out exportNum))
             {
-                if (exportNum < pcc.ExportCount && exportNum >= 0)
+                if (exportNum < Pcc.ExportCount && exportNum >= 0)
                 {
                     int index = 0;
                     foreach (int item in CurrentObjects)
@@ -3088,7 +3088,7 @@ namespace ME3Explorer
             List<IExportEntry> pathfindingChain = new List<IExportEntry>();
 
             //Get list of all pathfinding nodes
-            foreach (IExportEntry exp in pcc.Exports)
+            foreach (IExportEntry exp in Pcc.Exports)
             {
                 if (exp.ClassName == "Level" && exp.ObjectName == "PersistentLevel")
                 {
@@ -3106,9 +3106,9 @@ namespace ME3Explorer
                     {
                         //get header.
                         uint itemexportid = BitConverter.ToUInt32(data, start);
-                        if (itemexportid - 1 < pcc.Exports.Count)
+                        if (itemexportid - 1 < Pcc.Exports.Count)
                         {
-                            IExportEntry exportEntry = pcc.Exports[(int)itemexportid - 1];
+                            IExportEntry exportEntry = Pcc.Exports[(int)itemexportid - 1];
                             StructProperty navGuid = exportEntry.GetProperty<StructProperty>("NavGuid");
                             if (navGuid != null)
                             {
@@ -3145,7 +3145,7 @@ namespace ME3Explorer
 
                     while (nextNavPoint != null)
                     {
-                        nodeEntry = pcc.Exports[nextNavPoint.Value - 1];
+                        nodeEntry = Pcc.Exports[nextNavPoint.Value - 1];
                         nextNavPoint = nodeEntry.GetProperty<ObjectProperty>("nextNavigationPoint");
                     }
 
@@ -3184,9 +3184,9 @@ namespace ME3Explorer
                 if (n == -1)
                     return;
 
-                if (pcc.Exports[n].ClassName != "BioPathPoint")
+                if (Pcc.Exports[n].ClassName != "BioPathPoint")
                 {
-                    changeNodeType(pcc.Exports[n], NODETYPE_BIOPATHPOINT);
+                    changeNodeType(Pcc.Exports[n], NODETYPE_BIOPATHPOINT);
                     RefreshView();
                 }
             }
@@ -3200,9 +3200,9 @@ namespace ME3Explorer
                 if (n == -1)
                     return;
 
-                if (pcc.Exports[n].ClassName != "SFXDynamicCoverLink")
+                if (Pcc.Exports[n].ClassName != "SFXDynamicCoverLink")
                 {
-                    changeNodeType(pcc.Exports[n], NODETYPE_SFXDYNAMICCOVERLINK);
+                    changeNodeType(Pcc.Exports[n], NODETYPE_SFXDYNAMICCOVERLINK);
                     RefreshView();
                 }
             }
@@ -3216,9 +3216,9 @@ namespace ME3Explorer
                 if (n == -1)
                     return;
 
-                if (pcc.Exports[n].ClassName != "SFXDynamicCovertSlotMarker")
+                if (Pcc.Exports[n].ClassName != "SFXDynamicCovertSlotMarker")
                 {
-                    changeNodeType(pcc.Exports[n], NODETYPE_SFXDYNAMICCOVERSLOTMARKER);
+                    changeNodeType(Pcc.Exports[n], NODETYPE_SFXDYNAMICCOVERSLOTMARKER);
                     RefreshView();
                 }
             }
@@ -3226,7 +3226,7 @@ namespace ME3Explorer
 
         private void flipLevelUpsidedownEXPERIMENTALToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            foreach (IExportEntry exp in pcc.Exports)
+            foreach (IExportEntry exp in Pcc.Exports)
             {
                 switch (exp.ObjectName)
                 {
@@ -3243,9 +3243,9 @@ namespace ME3Explorer
                                 int offset = (32 + i * 4);
                                 //fetch exports
                                 int entryval = BitConverter.ToInt32(data, offset);
-                                if (entryval > 0 && entryval < pcc.ExportCount)
+                                if (entryval > 0 && entryval < Pcc.ExportCount)
                                 {
-                                    IExportEntry export = (IExportEntry)pcc.getEntry(entryval);
+                                    IExportEntry export = (IExportEntry)Pcc.getEntry(entryval);
                                     smacitems.Add(export);
                                 }
                                 else if (entryval == 0)
@@ -3482,7 +3482,7 @@ namespace ME3Explorer
             int l = CurrentObjects[activeExportsListbox.SelectedIndex];
             if (l == -1)
                 return;
-            CurveEd.CurveEditorHost c = new CurveEd.CurveEditorHost(pcc.getExport(l));
+            CurveEd.CurveEditorHost c = new CurveEd.CurveEditorHost(Pcc.getExport(l));
             c.Show();
         }
 
@@ -3493,7 +3493,7 @@ namespace ME3Explorer
 
         private void removeFromLevelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc == null)
+            if (Pcc == null)
             {
                 return;
             }
@@ -3503,11 +3503,11 @@ namespace ME3Explorer
                 return;
 
             AllowRefresh = false;
-            IExportEntry nodeEntry = pcc.Exports[n];
+            IExportEntry nodeEntry = Pcc.Exports[n];
 
             //This can probably be optimized if we make class that reads this and stores data for us rather than having
             //to reread everything.
-            foreach (IExportEntry exp in pcc.Exports)
+            foreach (IExportEntry exp in Pcc.Exports)
             {
                 if (exp.ClassName == "Level" && exp.ObjectName == "PersistentLevel")
                 {
@@ -3732,9 +3732,9 @@ namespace ME3Explorer
                 if (n == -1)
                     return;
 
-                if (pcc.Exports[n].ClassName != "SFXNav_JumpDownNode")
+                if (Pcc.Exports[n].ClassName != "SFXNav_JumpDownNode")
                 {
-                    changeNodeType(pcc.Exports[n], NODETYPE_SFXNAV_JUMPDOWNNODE_TOP);
+                    changeNodeType(Pcc.Exports[n], NODETYPE_SFXNAV_JUMPDOWNNODE_TOP);
                     RefreshView();
                 }
             }
@@ -3748,9 +3748,9 @@ namespace ME3Explorer
                 if (n == -1)
                     return;
 
-                if (pcc.Exports[n].ClassName != "SFXNav_JumpDownNode")
+                if (Pcc.Exports[n].ClassName != "SFXNav_JumpDownNode")
                 {
-                    changeNodeType(pcc.Exports[n], NODETYPE_SFXNAV_JUMPDOWNNODE_BOTTOM);
+                    changeNodeType(Pcc.Exports[n], NODETYPE_SFXNAV_JUMPDOWNNODE_BOTTOM);
                     RefreshView();
                 }
             }
@@ -3758,13 +3758,13 @@ namespace ME3Explorer
 
         private void addExportToLevelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc == null)
+            if (Pcc == null)
             {
                 return;
             }
 
             IExportEntry levelExport = null;
-            foreach (IExportEntry exp in pcc.Exports)
+            foreach (IExportEntry exp in Pcc.Exports)
             {
                 if (exp.ClassName == "Level" && exp.ObjectName == "PersistentLevel")
                 {
@@ -3777,7 +3777,7 @@ namespace ME3Explorer
 
             if (levelExport != null)
             {
-                using (ExportSelectorWinForms form = new ExportSelectorWinForms(pcc, ExportSelectorWinForms.SUPPORTS_EXPORTS_ONLY))
+                using (ExportSelectorWinForms form = new ExportSelectorWinForms(Pcc, ExportSelectorWinForms.SupportedTypes.Exports))
                 {
                     DialogResult dr = form.ShowDialog(this);
                     if (dr != DialogResult.Yes)
@@ -3785,8 +3785,7 @@ namespace ME3Explorer
                         return; //user cancel
                     }
 
-                    int i = form.SelectedItemIndex;
-                    IExportEntry addingExport = pcc.getExport(i);
+                    IExportEntry addingExport = form.SelectedExport;
                     if (!AllLevelObjects.Contains(addingExport))
                     {
                         byte[] leveldata = levelExport.Data;
@@ -3811,7 +3810,7 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        MessageBox.Show(i + " is already in the level.");
+                        MessageBox.Show(addingExport.Index + " is already in the level.");
                     }
                 }
             }
@@ -3823,7 +3822,7 @@ namespace ME3Explorer
 
         private void buildLinearPathfindnigChainFromLogfileEXPERIMENTALToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc == null)
+            if (Pcc == null)
             {
                 return;
             }
@@ -3849,7 +3848,7 @@ namespace ME3Explorer
                     string[] coords = point.Split(',');
                     points.Add(new Point3D(float.Parse(coords[0]), float.Parse(coords[1]), float.Parse(coords[2])));
                 }
-                var basePathNode = pcc.Exports.First(x => x.ObjectName == "PathNode" && x.ClassName == "PathNode");
+                var basePathNode = Pcc.Exports.First(x => x.ObjectName == "PathNode" && x.ClassName == "PathNode");
                 IExportEntry firstNode = null;
                 IExportEntry previousNode = null;
 

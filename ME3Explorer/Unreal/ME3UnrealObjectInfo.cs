@@ -28,29 +28,26 @@ namespace ME3Explorer.Unreal
                     return ME3UnrealObjectInfo.isImmutableStruct(structType);
                 case MEGame.UDK:
                     return ME3UnrealObjectInfo.isImmutableStruct(structType);
+                default:
+                    return false;
             }
-            return false; //unknown game
         }
 
         public static bool inheritsFrom(this IExportEntry entry, string baseClass)
         {
-            if (entry.FileRef.Game == MEGame.ME1)
+            switch (entry.FileRef.Game)
             {
-                return ME1UnrealObjectInfo.inheritsFrom(entry as ME1ExportEntry, baseClass);
+                case MEGame.ME1:
+                    return ME1UnrealObjectInfo.inheritsFrom(entry as ME1ExportEntry, baseClass);
+                case MEGame.ME2:
+                    return ME2UnrealObjectInfo.inheritsFrom(entry as ME2ExportEntry, baseClass);
+                case MEGame.ME3:
+                    return ME3UnrealObjectInfo.inheritsFrom(entry as ME3ExportEntry, baseClass);
+                case MEGame.UDK:
+                    return ME3UnrealObjectInfo.inheritsFrom(entry as UDKExportEntry, baseClass); //use me3?
+                default:
+                    return false;
             }
-            else if (entry.FileRef.Game == MEGame.ME2)
-            {
-                return ME2UnrealObjectInfo.inheritsFrom(entry as ME2ExportEntry, baseClass);
-            }
-            else if (entry.FileRef.Game == MEGame.ME3)
-            {
-                return ME3UnrealObjectInfo.inheritsFrom(entry as ME3ExportEntry, baseClass);
-            }
-            else if (entry.FileRef.Game == MEGame.UDK)
-            {
-                return ME3UnrealObjectInfo.inheritsFrom(entry as UDKExportEntry, baseClass); //use me3?
-            }
-            return false;
         }
 
         public static string GetEnumType(MEGame game, string propName, string typeName, ClassInfo nonVanillaClassInfo = null)

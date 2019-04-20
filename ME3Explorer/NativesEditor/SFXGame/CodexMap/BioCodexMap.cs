@@ -16,14 +16,14 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
 
 		public IDictionary<int, BioCodexPage> Pages
 		{
-			get { return _pages; }
-			set { SetProperty(ref _pages, value); }
+			get => _pages;
+		    set => SetProperty(ref _pages, value);
 		}
 
 		public IDictionary<int, BioCodexSection> Sections
 		{
-			get { return _sections; }
-			set { SetProperty(ref _sections, value); }
+			get => _sections;
+		    set => SetProperty(ref _sections, value);
 		}
 	}
 }

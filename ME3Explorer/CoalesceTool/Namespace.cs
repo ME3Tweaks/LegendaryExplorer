@@ -22,18 +22,12 @@ namespace MassEffect3.Coalesce
 			NameOnLevel = nameOnLevel;
 			_subNamespaces = new Dictionary<string, Namespace>();
 
-			if (Parent != null)
-			{
-				Parent.Add(NameOnLevel, this);
-			}
+		    Parent?.Add(NameOnLevel, this);
 		}
 
-		public int Count
-		{
-			get { return _subNamespaces.Count; }
-		}
+		public int Count => _subNamespaces.Count;
 
-		public string FullName
+	    public string FullName
 		{
 			get
 			{
@@ -42,61 +36,42 @@ namespace MassEffect3.Coalesce
 					return NameOnLevel;
 				}
 
-				return string.Format("{0}.{1}",
-					Parent.FullName,
-					NameOnLevel);
+				return $"{Parent.FullName}.{NameOnLevel}";
 			}
 		}
 
-		public bool IsReadOnly
-		{
-			get { return false; }
-		}
+		public bool IsReadOnly => false;
 
-		public ICollection<string> Keys
-		{
-			get { return _subNamespaces.Keys; }
-		}
+	    public ICollection<string> Keys => _subNamespaces.Keys;
 
-		public String NameOnLevel { get; private set; }
+	    public string NameOnLevel { get; private set; }
 
 		public Namespace Parent
 		{
-			get { return _parent; }
-			private set
+			get => _parent;
+		    private set
 			{
-				if (Parent != null)
-				{
-					Parent.Remove(NameOnLevel);
-				}
+			    Parent?.Remove(NameOnLevel);
 
-				_parent = value;
+			    _parent = value;
 			}
 		}
 
-		public ICollection<Namespace> Subnamespaces
-		{
-			get { return _subNamespaces.Values; }
-		}
+		public ICollection<Namespace> Subnamespaces => _subNamespaces.Values;
 
-		public ICollection<Namespace> Values
-		{
-			get { return _subNamespaces.Values; }
-		}
+	    public ICollection<Namespace> Values => _subNamespaces.Values;
 
-		public Namespace this[string nameOnLevel]
+	    public Namespace this[string nameOnLevel]
 		{
-			get { return _subNamespaces[nameOnLevel]; }
-			set
+			get => _subNamespaces[nameOnLevel];
+	        set
 			{
 				if (value == null)
 				{
 					throw new ArgumentException("value");
 				}
 
-				Namespace toReplace;
-
-				if (TryGetValue(nameOnLevel, out toReplace))
+			    if (TryGetValue(nameOnLevel, out Namespace toReplace))
 				{
 					toReplace.Parent = null;
 				}
@@ -105,7 +80,7 @@ namespace MassEffect3.Coalesce
 			}
 		}
 
-		public static IEnumerable<Namespace> FromSplitStrings(Namespace root, IEnumerable<IEnumerable<String>> splitSubNamespaces)
+		public static IEnumerable<Namespace> FromSplitStrings(Namespace root, IEnumerable<IEnumerable<string>> splitSubNamespaces)
 		{
 			if (splitSubNamespaces == null)
 			{
@@ -142,7 +117,7 @@ namespace MassEffect3.Coalesce
 				.ToArray();
 		}
 
-		public static IEnumerable<Namespace> FromStrings(IEnumerable<String> namespaceStrings)
+		public static IEnumerable<Namespace> FromStrings(IEnumerable<string> namespaceStrings)
 		{
 			// Split all strings
 			var splitSubNamespaces = namespaceStrings

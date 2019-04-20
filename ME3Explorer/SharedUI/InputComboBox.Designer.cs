@@ -1,4 +1,4 @@
-﻿namespace ME3Explorer
+﻿namespace ME3Explorer.SharedUI
 {
     partial class InputComboBox
     {

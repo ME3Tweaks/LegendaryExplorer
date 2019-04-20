@@ -8,75 +8,70 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Gammtek.Conduit.Extensions;
 
 namespace ME3Explorer.SharedUI
 {
     public partial class ExportSelectorWinForms : Form
     {
-        public const int SUPPORTS_EXPORTS_ONLY = 1;
-        public const int SUPPORTS_IMPORTS_ONLY = 2;
-        public const int SUPPORTS_BOTH_IMPORTS_EXPORTS = 3;
-        private int SupportedInputTypes = 0;
-        public int SelectedItemIndex = int.MinValue;
-        private IMEPackage pcc;
+        [Flags]
+        public enum SupportedTypes
+        {
+            Exports = 1,
+            Imports = 2,
+            ExportsAndImports = 3
+        }
 
-        public ExportSelectorWinForms(IMEPackage pcc, int inputTypesSupported)
+        private readonly SupportedTypes SupportedInputTypes = 0;
+        public IEntry SelectedEntry;
+        public IExportEntry SelectedExport;
+        public ImportEntry SelectedImport;
+        private readonly IMEPackage pcc;
+
+        public ExportSelectorWinForms(IMEPackage pcc, SupportedTypes inputTypesSupported)
         {
             InitializeComponent();
-            StartPosition = FormStartPosition.CenterParent;
+            StartPosition = FormStartPosition.CenterScreen;
             this.pcc = pcc;
             SupportedInputTypes = inputTypesSupported;
             switch (SupportedInputTypes)
             {
-                case SUPPORTS_EXPORTS_ONLY:
+                case SupportedTypes.Exports:
                     instructionsLabel.Text = "Enter an export index.";
                     Text = "Export Selector";
                     break;
-                case SUPPORTS_IMPORTS_ONLY:
+                case SupportedTypes.Imports:
                     instructionsLabel.Text = "Enter an import index.";
                     Text = "Import Selector";
                     break;
-                case SUPPORTS_BOTH_IMPORTS_EXPORTS:
+                case SupportedTypes.ExportsAndImports:
                     instructionsLabel.Text = "Enter an import or export index.";
                     Text = "Import/Export Selector";
                     break;
             }
+            acceptButton.Enabled = false;
         }
 
         private void IndexBox_TextChanged(object sender, EventArgs e)
         {
-            int destIndex = -1;
-            bool succeeded = Int32.TryParse(indexField.Text, out destIndex);
-
-            if (succeeded)
+            if (int.TryParse(indexField.Text, out int destIndex))
             {
-                if (((SupportedInputTypes & SUPPORTS_EXPORTS_ONLY) != 0))
+                if (SupportedInputTypes.HasFlag(SupportedTypes.Exports) && pcc.isUExport(destIndex))
                 {
-                    if (destIndex >= 0 && destIndex < pcc.Exports.Count)
-                    {
-                        //Parse
-                        IExportEntry destExport = pcc.Exports[destIndex];
-                        selectedItemLabel.Text = destExport.GetFullPath + " (EXPORT)"; ;
-                        acceptButton.Enabled = true;
-                    } else
-                    {
-                        selectedItemLabel.Text = "Invalid export index (out of bounds)";
-                        acceptButton.Enabled = false;
-                    }
+                    IExportEntry destExport = pcc.getUExport(destIndex);
+                    selectedItemLabel.Text = destExport.GetFullPath + " (EXPORT)"; ;
+                    acceptButton.Enabled = true;
                 }
-                else if (((SupportedInputTypes & SUPPORTS_IMPORTS_ONLY) != 0))
+                else if (SupportedInputTypes.HasFlag(SupportedTypes.Imports) && pcc.isUImport(destIndex))
                 {
-                    if (destIndex < 0 && -destIndex + 1 < pcc.Imports.Count)
-                    {
-                        //Parse
-                        ImportEntry import = pcc.Imports[-destIndex + 1];
-                        selectedItemLabel.Text = import.GetFullPath + " (IMPORT)";
-                        acceptButton.Enabled = true;
-                    } else
-                    {
-                        selectedItemLabel.Text = "Invalid import index (out of bounds)";
-                        acceptButton.Enabled = false;
-                    }
+                    ImportEntry import = pcc.Imports[-destIndex + 1];
+                    selectedItemLabel.Text = import.GetFullPath + " (IMPORT)";
+                    acceptButton.Enabled = true;
+                }
+                else
+                {
+                    selectedItemLabel.Text = "Invalid index (out of bounds)";
+                    acceptButton.Enabled = false;
                 }
             }
             else
@@ -88,8 +83,18 @@ namespace ME3Explorer.SharedUI
 
         private void acceptButton_Click(object sender, EventArgs e)
         {
-            this.DialogResult = System.Windows.Forms.DialogResult.Yes;
-            SelectedItemIndex = Convert.ToInt32(indexField.Text);
+            this.DialogResult = DialogResult.Yes;
+            int uIndex = Convert.ToInt32(indexField.Text);
+            switch (SupportedInputTypes)
+            {
+                case SupportedTypes.Exports:
+                    SelectedExport = pcc.getUExport(uIndex);
+                    break;
+                case SupportedTypes.Imports:
+                    SelectedImport = pcc.getUImport(uIndex);
+                    break;
+            }
+            SelectedEntry = pcc.getEntry(uIndex);
             Close();
         }
 
@@ -99,9 +104,8 @@ namespace ME3Explorer.SharedUI
             {
                 e.Handled = true;
                 acceptButton.PerformClick();
-                return;
             }
-            if ((SupportedInputTypes & SUPPORTS_EXPORTS_ONLY) != 0)
+            else if (!SupportedInputTypes.HasFlag(SupportedTypes.Imports))
             {
                 e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar); //prevent non digit entry
             }

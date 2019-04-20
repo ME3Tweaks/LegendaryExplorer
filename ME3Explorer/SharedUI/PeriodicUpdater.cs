@@ -35,8 +35,7 @@ namespace ME3Explorer
         public void Start(double interval)
         {
             Stop();
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(interval);
+            timer = new DispatcherTimer {Interval = TimeSpan.FromSeconds(interval)};
             timer.Tick += Timer_Tick;
             timer.Start();
         }

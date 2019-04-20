@@ -22,23 +22,23 @@ namespace ME3Explorer
     {
         public ImageSource Icon
         {
-            get { return (ImageSource)GetValue(IconProperty); }
-            set { SetValue(IconProperty, value); }
+            get => (ImageSource)GetValue(IconProperty);
+            set => SetValue(IconProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Icon.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IconProperty =
-            DependencyProperty.Register("Icon", typeof(ImageSource), typeof(SearchPanel), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(Icon), typeof(ImageSource), typeof(SearchPanel), new PropertyMetadata(null));
 
         public string Title
         {
-            get { return (string)GetValue(TitleProperty); }
-            set { SetValue(TitleProperty, value); }
+            get => (string)GetValue(TitleProperty);
+            set => SetValue(TitleProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Title.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TitleProperty =
-            DependencyProperty.Register("Title", typeof(string), typeof(SearchPanel), new PropertyMetadata(""));
+            DependencyProperty.Register(nameof(Title), typeof(string), typeof(SearchPanel), new PropertyMetadata(""));
         
 
         public SearchPanel()

@@ -94,7 +94,7 @@ namespace MassEffect3.Coalesce
 
 		public void SetValue(string name, object value)
 		{
-			if (name.IsNullOrEmpty())
+			if (string.IsNullOrEmpty(name))
 			{
 				throw new ArgumentNullException(nameof(name));
 			}
@@ -133,7 +133,7 @@ namespace MassEffect3.Coalesce
 
 		public bool TrySetValue(string name, object value)
 		{
-			if (name.IsNullOrEmpty())
+			if (string.IsNullOrEmpty(name))
 			{
 				throw new ArgumentNullException(nameof(name));
 			}

@@ -53,7 +53,7 @@ namespace ME3Explorer.WwiseBankEditor
         public void ListRefresh()
         {
             objects = new List<int>();
-            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
             for (int i = 0; i < Exports.Count; i++)
                 if (Exports[i].ClassName == "WwiseBank")
                     objects.Add(i);
@@ -61,7 +61,7 @@ namespace ME3Explorer.WwiseBankEditor
             listBox1.Items.Clear();
             listBox2.Items.Clear();
             for (int i = 0; i < objects.Count; i++)
-                listBox1.Items.Add(objects[i] + " : " + pcc.Exports[objects[i]].ObjectName);
+                listBox1.Items.Add(objects[i] + " : " + Pcc.Exports[objects[i]].ObjectName);
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -85,15 +85,15 @@ namespace ME3Explorer.WwiseBankEditor
                     {
                         int val = BitConverter.ToInt32(memory, start);
                         s += $", Int: {val} (0x{val.ToString("X8")})";
-                        if (pcc.isName(val))
+                        if (Pcc.isName(val))
                         {
-                            s += $", Name: {pcc.getNameEntry(val)}";
+                            s += $", Name: {Pcc.getNameEntry(val)}";
                         }
-                        if (pcc.getEntry(val) is IExportEntry exp)
+                        if (Pcc.getEntry(val) is IExportEntry exp)
                         {
                             s += $", Export: {exp.ObjectName}";
                         }
-                        else if (pcc.getEntry(val) is ImportEntry imp)
+                        else if (Pcc.getEntry(val) is ImportEntry imp)
                         {
                             s += $", Import: {imp.ObjectName}";
                         }
@@ -122,7 +122,7 @@ namespace ME3Explorer.WwiseBankEditor
             if (n == -1)
                 return;
             int index = objects[n];
-            bank = new WwiseBank(pcc.Exports[index]);
+            bank = new WwiseBank(Pcc.Exports[index]);
             hb1.ByteProvider = new DynamicByteProvider(bank.export.getBinaryData());
             rtb1.Text = bank.GetQuickScan();
             ListRefresh2();
@@ -266,7 +266,7 @@ namespace ME3Explorer.WwiseBankEditor
                 return;
             int n = bank.MyIndex;
             byte[] tmp = bank.RecreateBinary();
-            pcc.Exports[n].Data = tmp;
+            Pcc.Exports[n].Data = tmp;
         }
 
         private void savePccToolStripMenuItem_Click(object sender, EventArgs e)
@@ -274,7 +274,7 @@ namespace ME3Explorer.WwiseBankEditor
             SaveFileDialog d = new SaveFileDialog { Filter = "*.pcc|*.pcc" };
             if (d.ShowDialog() == DialogResult.OK)
             {
-                pcc.save(d.FileName);
+                Pcc.save(d.FileName);
                 MessageBox.Show("Done.");
             }
         }
@@ -356,7 +356,7 @@ namespace ME3Explorer.WwiseBankEditor
             {
                 int index = bank.MyIndex;
                 //loaded sequence is no longer a sequence
-                if (pcc.getExport(index).ClassName != "WwiseBank")
+                if (Pcc.getExport(index).ClassName != "WwiseBank")
                 {
                     bank = null;
                     listBox2.Items.Clear();
@@ -373,7 +373,7 @@ namespace ME3Explorer.WwiseBankEditor
             }
             foreach (var i in updatedExports)
             {
-                if (pcc.getExport(i).ClassName.Contains("WwiseBank"))
+                if (Pcc.getExport(i).ClassName.Contains("WwiseBank"))
                 {
                     ListRefresh();
                     break;

@@ -81,10 +81,10 @@ namespace ME3Explorer.Meshplorer
             {
                 //LoadME3Package(path);
                 LoadMEPackage(path);
-                if (pcc.Game != MEGame.ME3)
+                if (Pcc.Game != MEGame.ME3)
                 {
                     MessageBox.Show(this, "Only files from Mass Effect 3 are supported.\nIf you want to help us debug loading ME1/ME2 files, please come to the ME3Tweaks Discord server.", "Unsupported game");
-                    pcc.Release();
+                    Pcc.Release();
                     return;
                 }
                 MeshplorerMode = 0;
@@ -107,7 +107,7 @@ namespace ME3Explorer.Meshplorer
             view.TextureCache.Dispose(); // Clear out the loaded textures from the previous pcc
             listBox1.Items.Clear();
             Objects.Clear();
-            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
             IExportEntry exportEntry;
             for (int i = 0; i < Exports.Count(); i++)
             {
@@ -129,7 +129,7 @@ namespace ME3Explorer.Meshplorer
         {
             Materials.Clear();
             MaterialBox.Items.Clear();
-            IReadOnlyList<IExportEntry> Exports = pcc.Exports;
+            IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
             IExportEntry exportEntry;
             for (int i = 0; i < Exports.Count(); i++)
             {
@@ -154,7 +154,7 @@ namespace ME3Explorer.Meshplorer
                     string desc = "";
                     if (skm.Materials[i] > 0)
                     { // Material is export
-                        IExportEntry export = pcc.getExport(skm.Materials[i] - 1);
+                        IExportEntry export = Pcc.getExport(skm.Materials[i] - 1);
                         desc = " Export #" + skm.Materials[i] + " : " + export.ObjectName;
                     }
                     else if (skm.Materials[i] < 0)
@@ -168,7 +168,7 @@ namespace ME3Explorer.Meshplorer
 
         public void LoadStaticMesh(int index)
         {
-            stm = new StaticMesh(pcc, index);
+            stm = new StaticMesh(Pcc, index);
 
             // Load meshes for the LODs
             preview?.Dispose();
@@ -192,7 +192,7 @@ namespace ME3Explorer.Meshplorer
         {
             DisableLODs();
             UnCheckLODs();
-            skm = new SkeletalMesh(pcc as ME3Package, index);
+            skm = new SkeletalMesh(Pcc as ME3Package, index);
 
             // Load preview model
             preview?.Dispose();
@@ -270,7 +270,7 @@ namespace ME3Explorer.Meshplorer
             {
                 return;
             }
-            if (pcc.Exports[n].ClassName == "StaticMesh")
+            if (Pcc.Exports[n].ClassName == "StaticMesh")
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.psk|*.psk";
@@ -280,7 +280,7 @@ namespace ME3Explorer.Meshplorer
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
-            if (pcc.Exports[n].ClassName == "SkeletalMesh")
+            if (Pcc.Exports[n].ClassName == "SkeletalMesh")
             {
                 /*SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.psk|*.psk";
@@ -317,15 +317,15 @@ namespace ME3Explorer.Meshplorer
             {
                 return;
             }
-            if (pcc.Exports[n].ClassName == "StaticMesh")
+            if (Pcc.Exports[n].ClassName == "StaticMesh")
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.bin|*.bin";
-                d.FileName = pcc.Exports[n].ObjectName + ".bin";
+                d.FileName = Pcc.Exports[n].ObjectName + ".bin";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                    byte[] buff = pcc.Exports[n].Data;
+                    byte[] buff = Pcc.Exports[n].Data;
                     int start = stm.props[stm.props.Count - 1].offend;
                     for (int i = start; i < buff.Length; i++)
                         fs.WriteByte(buff[i]);
@@ -333,15 +333,15 @@ namespace ME3Explorer.Meshplorer
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
-            if (pcc.Exports[n].ClassName == "SkeletalMesh")
+            if (Pcc.Exports[n].ClassName == "SkeletalMesh")
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.bin|*.bin";
-                d.FileName = pcc.Exports[n].ObjectName + ".bin";
+                d.FileName = Pcc.Exports[n].ObjectName + ".bin";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                    byte[] buff = pcc.Exports[n].Data;
+                    byte[] buff = Pcc.Exports[n].Data;
                     int start = skm.GetPropertyEnd();
                     for (int i = start; i < buff.Length; i++)
                         fs.WriteByte(buff[i]);
@@ -366,22 +366,22 @@ namespace ME3Explorer.Meshplorer
             {
                 return;
             }
-            if (pcc.Exports[n].ClassName == "StaticMesh")
+            if (Pcc.Exports[n].ClassName == "StaticMesh")
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.bin|*.bin";
-                d.FileName = pcc.Exports[n].ObjectName + ".bin";
+                d.FileName = Pcc.Exports[n].ObjectName + ".bin";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     stm.SerializeToFile(d.FileName);
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
-            if (pcc.Exports[n].ClassName == "SkeletalMesh")
+            if (Pcc.Exports[n].ClassName == "SkeletalMesh")
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.bin|*.bin";
-                d.FileName = pcc.Exports[n].ObjectName + ".bin";
+                d.FileName = Pcc.Exports[n].ObjectName + ".bin";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     SerializingContainer c = new SerializingContainer();
@@ -411,7 +411,7 @@ namespace ME3Explorer.Meshplorer
             {
                 return;
             }
-            if (pcc.Exports[n].ClassName == "StaticMesh")
+            if (Pcc.Exports[n].ClassName == "StaticMesh")
             {
                 OpenFileDialog d = new OpenFileDialog();
                 d.Filter = "*.psk|*.psk;*.pskx";
@@ -421,13 +421,13 @@ namespace ME3Explorer.Meshplorer
                     stm.ImportPSK(d.FileName);
                     byte[] buff = stm.SerializeToBuffer();
                     int idx = n;
-                    IExportEntry en = pcc.Exports[idx];
+                    IExportEntry en = Pcc.Exports[idx];
                     en.Data = buff;
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                     timer1.Enabled = true;
                 }
             }
-            if (pcc.Exports[n].ClassName == "SkeletalMesh")
+            if (Pcc.Exports[n].ClassName == "SkeletalMesh")
             {
                 /*OpenFileDialog d = new OpenFileDialog();
                 d.Filter = "*.psk|*.psk;*.pskx";
@@ -559,7 +559,7 @@ namespace ME3Explorer.Meshplorer
             {
                 return;
             }
-            if (pcc.Exports[n].ClassName == "StaticMesh")
+            if (Pcc.Exports[n].ClassName == "StaticMesh")
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.3ds|*.3ds";
@@ -591,9 +591,9 @@ namespace ME3Explorer.Meshplorer
             MaterialApplyButton.Visible = false;
             MaterialIndexBox.Visible = false;
             MaterialIndexApplyButton.Visible = false;
-            if (pcc.getExport(n).ClassName == "StaticMesh")
+            if (Pcc.getExport(n).ClassName == "StaticMesh")
                 LoadStaticMesh(n);
-            if (pcc.getExport(n).ClassName == "SkeletalMesh")
+            if (Pcc.getExport(n).ClassName == "SkeletalMesh")
                 LoadSkeletalMesh(n);
         }
 
@@ -669,15 +669,15 @@ namespace ME3Explorer.Meshplorer
             {
                 return;
             }
-            if (pcc.Exports[n].ClassName == "StaticMesh")
+            if (Pcc.Exports[n].ClassName == "StaticMesh")
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.bin|*.bin";
-                d.FileName = pcc.Exports[n].ObjectName + ".bin";
+                d.FileName = Pcc.Exports[n].ObjectName + ".bin";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                    byte[] buff = pcc.Exports[n].Data;
+                    byte[] buff = Pcc.Exports[n].Data;
                     int start = stm.props[stm.props.Count - 1].offend;
                     for (int i = start; i < buff.Length; i++)
                         fs.WriteByte(buff[i]);
@@ -685,15 +685,15 @@ namespace ME3Explorer.Meshplorer
                     MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
-            if (pcc.Exports[n].ClassName == "SkeletalMesh")
+            if (Pcc.Exports[n].ClassName == "SkeletalMesh")
             {
                 SaveFileDialog d = new SaveFileDialog();
                 d.Filter = "*.bin|*.bin";
-                d.FileName = pcc.Exports[n].ObjectName + ".bin";
+                d.FileName = Pcc.Exports[n].ObjectName + ".bin";
                 if (d.ShowDialog() == DialogResult.OK)
                 {
                     FileStream fs = new FileStream(d.FileName, FileMode.Create, FileAccess.Write);
-                    byte[] buff = pcc.Exports[n].Data;
+                    byte[] buff = Pcc.Exports[n].Data;
                     int start = skm.GetPropertyEnd();
                     for (int i = start; i < buff.Length; i++)
                         fs.WriteByte(buff[i]);
@@ -718,7 +718,7 @@ namespace ME3Explorer.Meshplorer
             {
                 return;
             }
-            UDKCopy u = new UDKCopy(pcc as ME3Package, n, getLOD());
+            UDKCopy u = new UDKCopy(Pcc as ME3Package, n, getLOD());
             u.Show();
         }
 
@@ -763,9 +763,9 @@ namespace ME3Explorer.Meshplorer
                 skm.Serialize(con);
                 int end = skm.GetPropertyEnd();
                 MemoryStream mem = new MemoryStream();
-                mem.Write(pcc.Exports[exp].Data, 0, end);
+                mem.Write(Pcc.Exports[exp].Data, 0, end);
                 mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
-                pcc.Exports[exp].Data = mem.ToArray();
+                Pcc.Exports[exp].Data = mem.ToArray();
             }
         }
 
@@ -773,7 +773,7 @@ namespace ME3Explorer.Meshplorer
         {
             int n = MaterialBox.SelectedIndex;
             TreeNode t = treeView1.SelectedNode;
-            if (n == -1 || pcc == null || t == null || t.Parent == null)
+            if (n == -1 || Pcc == null || t == null || t.Parent == null)
                 return;
 
             if (stm != null && t.Parent.Text == "Sections")
@@ -781,7 +781,7 @@ namespace ME3Explorer.Meshplorer
                 stm.SetSectionMaterial(CurrentLOD, t.Index, Materials[n] + 1);
                 //SerializingCont
                 MemoryStream ms = new MemoryStream();
-                pcc.Exports[stm.index].Data = stm.SerializeToBuffer();
+                Pcc.Exports[stm.index].Data = stm.SerializeToBuffer();
                 // Update treeview
 
                 // Update preview
@@ -797,9 +797,9 @@ namespace ME3Explorer.Meshplorer
                 skm.Serialize(con);
                 int end = skm.GetPropertyEnd();
                 MemoryStream mem = new MemoryStream();
-                mem.Write(pcc.Exports[skm.MyIndex].Data, 0, end);
+                mem.Write(Pcc.Exports[skm.MyIndex].Data, 0, end);
                 mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
-                pcc.Exports[skm.MyIndex].Data = mem.ToArray();
+                Pcc.Exports[skm.MyIndex].Data = mem.ToArray();
             }
         }
 
@@ -818,9 +818,9 @@ namespace ME3Explorer.Meshplorer
                 skm.Serialize(con);
                 int end = skm.GetPropertyEnd();
                 MemoryStream mem = new MemoryStream();
-                mem.Write(pcc.Exports[skm.MyIndex].Data, 0, end);
+                mem.Write(Pcc.Exports[skm.MyIndex].Data, 0, end);
                 mem.Write(con.Memory.ToArray(), 0, (int)con.Memory.Length);
-                pcc.Exports[skm.MyIndex].Data = mem.ToArray();
+                Pcc.Exports[skm.MyIndex].Data = mem.ToArray();
             }
         }
 
@@ -834,7 +834,7 @@ namespace ME3Explorer.Meshplorer
             {
                 int index = skm.MyIndex;
                 //loaded SkeletalMesh is no longer a SkeletalMesh
-                if (pcc.getExport(index).ClassName != "SkeletalMesh")
+                if (Pcc.getExport(index).ClassName != "SkeletalMesh")
                 {
                     skm = null;
                     preview?.Dispose();
@@ -852,7 +852,7 @@ namespace ME3Explorer.Meshplorer
             {
                 int index = stm.index;
                 //loaded SkeletalMesh is no longer a SkeletalMesh
-                if (pcc.getExport(index).ClassName != "StaticMesh")
+                if (Pcc.getExport(index).ClassName != "StaticMesh")
                 {
                     stm = null;
                     preview?.Dispose();
@@ -874,7 +874,7 @@ namespace ME3Explorer.Meshplorer
             {
                 foreach (var i in updatedExports)
                 {
-                    string className = pcc.getExport(i).ClassName;
+                    string className = Pcc.getExport(i).ClassName;
                     if (className == "MaterialInstanceConstant" || className == "Material")
                     {
                         RefreshMaterialList();
@@ -890,7 +890,7 @@ namespace ME3Explorer.Meshplorer
             {
                 foreach (var i in updatedExports)
                 {
-                    string className = pcc.getExport(i).ClassName;
+                    string className = Pcc.getExport(i).ClassName;
                     if (className == "SkeletalMesh" || className == "StaticMesh")
                     {
                         RefreshMeshList();
@@ -902,9 +902,9 @@ namespace ME3Explorer.Meshplorer
 
         private void savePCCToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (pcc == null)
+            if (Pcc == null)
                 return;
-            pcc.save();
+            Pcc.save();
             MessageBox.Show("Done.", "Meshplorer", MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
         }
 
@@ -1127,7 +1127,7 @@ namespace ME3Explorer.Meshplorer
                 timer1.Enabled = false;
                 stm.ImportOBJ(dialog.FileName);
                 byte[] buff = stm.SerializeToBuffer();
-                IExportEntry en = pcc.Exports[stm.index];
+                IExportEntry en = Pcc.Exports[stm.index];
                 en.Data = buff;
                 MessageBox.Show("OBJ import complete.");
                 timer1.Enabled = true;

@@ -17,7 +17,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
 		
 		public static BioCodexMap Load( string path)
 		{
-			if (path.IsNullOrEmpty())
+			if (string.IsNullOrEmpty(path))
 			{
 				throw new ArgumentNullException(nameof(path));
 			}
@@ -102,7 +102,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
 
 		public void Save( string path)
 		{
-			if (path.IsNullOrEmpty())
+			if (string.IsNullOrEmpty(path))
 			{
 				throw new ArgumentNullException(nameof(path));
 			}

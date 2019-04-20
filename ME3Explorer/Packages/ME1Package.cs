@@ -11,17 +11,33 @@ namespace ME3Explorer.Packages
     {
         const uint packageTag = 0x9E2A83C1;
 
-        public MEGame Game { get { return MEGame.ME1;} }
+        public MEGame Game => MEGame.ME1;
 
-        public override int NameCount { get { return BitConverter.ToInt32(header, nameSize + 20); } protected set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 20, sizeof(int)); } }
-        int NameOffset { get { return BitConverter.ToInt32(header, nameSize + 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 24, sizeof(int)); } }
-        public override int ExportCount { get { return BitConverter.ToInt32(header, nameSize + 28); } protected set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 28, sizeof(int)); } }
-        int ExportOffset { get { return BitConverter.ToInt32(header, nameSize + 32); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 32, sizeof(int)); } }
-        public override int ImportCount { get { return BitConverter.ToInt32(header, nameSize + 36); } protected set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 36, sizeof(int)); } }
-        public int ImportOffset { get { return BitConverter.ToInt32(header, nameSize + 40); } private set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 40, sizeof(int)); } }
-        int FreeZoneStart { get { return BitConverter.ToInt32(header, nameSize + 44); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 44, sizeof(int)); } }
-        int Generations { get { return BitConverter.ToInt32(header, nameSize + 64); } }
-        int Compression { get { return BitConverter.ToInt32(header, header.Length - 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, header.Length - 4, sizeof(int)); } }
+        public override int NameCount { get => BitConverter.ToInt32(header, nameSize + 20);
+            protected set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 20, sizeof(int));
+        }
+        int NameOffset { get => BitConverter.ToInt32(header, nameSize + 24);
+            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 24, sizeof(int));
+        }
+        public override int ExportCount { get => BitConverter.ToInt32(header, nameSize + 28);
+            protected set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 28, sizeof(int));
+        }
+        int ExportOffset { get => BitConverter.ToInt32(header, nameSize + 32);
+            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 32, sizeof(int));
+        }
+        public override int ImportCount { get => BitConverter.ToInt32(header, nameSize + 36);
+            protected set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 36, sizeof(int));
+        }
+        public int ImportOffset { get => BitConverter.ToInt32(header, nameSize + 40);
+            private set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 40, sizeof(int));
+        }
+        int FreeZoneStart { get => BitConverter.ToInt32(header, nameSize + 44);
+            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, nameSize + 44, sizeof(int));
+        }
+        int Generations => BitConverter.ToInt32(header, nameSize + 64);
+        int Compression { get => BitConverter.ToInt32(header, header.Length - 4);
+            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, header.Length - 4, sizeof(int));
+        }
        
         static bool isInitialized;
         public static Func<string, ME1Package> Initialize()

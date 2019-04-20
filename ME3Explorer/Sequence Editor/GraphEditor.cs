@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Windows.Forms;
-
+using ME3Explorer.SequenceObjects;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
@@ -16,16 +17,17 @@ namespace UMD.HCIL.GraphEditor
     /// Creates a simple graph control with some random nodes and connected edges.
     /// An event handler allows users to drag nodes around, keeping the edges connected.
     /// </summary>
-    public class GraphEditor : PCanvas
+    public sealed class GraphEditor : PCanvas
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
-        private static int DEFAULT_WIDTH = 1;
-        private static int DEFAULT_HEIGHT = 1;
+        private System.ComponentModel.Container components;
 
-        public bool updating = false;
+        private const int DEFAULT_WIDTH = 1;
+        private const int DEFAULT_HEIGHT = 1;
+
+        public bool updating;
 
         /// <summary>
         /// Empty Constructor is necessary so that this control can be used as an applet.
@@ -46,7 +48,19 @@ namespace UMD.HCIL.GraphEditor
             Root.AddChild(backLayer);
             backLayer.MoveToBack();
             this.Camera.AddLayer(1, backLayer);
-            nodeLayer.AddInputEventListener(new NodeDragHandler());
+            dragHandler = new NodeDragHandler();
+            nodeLayer.AddInputEventListener(dragHandler);
+        }
+
+        public void AllowDragging()
+        {
+            nodeLayer.RemoveInputEventListener(dragHandler);
+            nodeLayer.AddInputEventListener(dragHandler);
+        }
+
+        public void DisableDragging()
+        {
+            nodeLayer.RemoveInputEventListener(dragHandler);
         }
 
         public void addBack(PNode p)
@@ -113,6 +127,7 @@ namespace UMD.HCIL.GraphEditor
             this.Camera.ViewScale = scale;
         }
 
+        private readonly NodeDragHandler dragHandler;
         /// <summary>
         /// Simple event handler which applies the following actions to every node it is called on:
         ///   * Drag the node, and associated edges on mousedrag
@@ -138,15 +153,45 @@ namespace UMD.HCIL.GraphEditor
             {
                 if (!e.Handled)
                 {
+                    var edgesToUpdate = new HashSet<PPath>();
                     base.OnDrag(sender, e);
                     foreach (PNode node in e.PickedNode.AllNodes)
                     {
-                        ArrayList edges = (ArrayList)node.Tag;
-                        if (edges != null)
+                        if (node.Tag is ArrayList edges)
+                        {
                             foreach (PPath edge in edges)
                             {
-                                GraphEditor.UpdateEdge(edge);
+                                edgesToUpdate.Add(edge);
                             }
+                        }
+                    }
+
+                    if (e.Canvas is GraphEditor g)
+                    {
+                        foreach (PNode node in g.nodeLayer)
+                        {
+                            if (node is SObj obj && obj.IsSelected && obj != e.PickedNode)
+                            {
+                                SizeF s = e.GetDeltaRelativeTo(obj);
+                                s = obj.LocalToParent(s);
+                                obj.OffsetBy(s.Width, s.Height);
+                                foreach (PNode n in obj.AllNodes)
+                                {
+                                    if (n.Tag is ArrayList edges)
+                                    {
+                                        foreach (PPath edge in edges)
+                                        {
+                                            edgesToUpdate.Add(edge);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (PPath edge in edgesToUpdate)
+                    {
+                        UpdateEdge(edge);
                     }
                 }
             }
@@ -159,8 +204,7 @@ namespace UMD.HCIL.GraphEditor
         {
             if (disposing)
             {
-                if (components != null)
-                    components.Dispose();
+                components?.Dispose();
                 nodeLayer.RemoveAllChildren();
                 edgeLayer.RemoveAllChildren();
                 backLayer.RemoveAllChildren();
@@ -188,7 +232,7 @@ namespace UMD.HCIL.GraphEditor
             }
             else
             {
-                string msg = "Updating, please wait............";
+                const string msg = "Updating, please wait............";
                 e.Graphics.DrawString(msg.Substring(0, updatingCount + 21), SystemFonts.DefaultFont, Brushes.Black, Width - Width / 2, Height - Height / 2);
                 updatingCount++;
                 if (updatingCount + 21 > msg.Length)
@@ -196,6 +240,71 @@ namespace UMD.HCIL.GraphEditor
                     updatingCount = 0;
                 }
             }
+        }
+    }
+
+    public class ZoomController : IDisposable
+    {
+        public static float MIN_SCALE = .005f;
+        public static float MAX_SCALE = 15;
+        private PCamera camera;
+        private GraphEditor graphEditor;
+
+        public ZoomController(GraphEditor graphEditor)
+        {
+            this.graphEditor = graphEditor;
+            this.camera = graphEditor.Camera;
+            camera.Canvas.ZoomEventHandler = null;
+            camera.MouseWheel += OnMouseWheel;
+            graphEditor.KeyDown += OnKeyDown;
+        }
+
+        public void Dispose()
+        {
+            //Remove event handlers for memory cleanup
+            graphEditor.KeyDown -= OnKeyDown;
+            graphEditor.Camera.MouseWheel -= OnMouseWheel;
+            graphEditor = null;
+            camera = null;
+
+        }
+
+        public void OnKeyDown(object o, KeyEventArgs e)
+        {
+            if (e.Control)
+            {
+                switch (e.KeyCode)
+                {
+                    case Keys.OemMinus:
+                        scaleView(0.8f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                        break;
+                    case Keys.Oemplus:
+                        scaleView(1.2f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                        break;
+                }
+            }
+        }
+
+        public void OnMouseWheel(object o, PInputEventArgs ea)
+        {
+            scaleView(1.0f + (0.001f * ea.WheelDelta), ea.Position);
+        }
+
+        private void scaleView(float scaleDelta, PointF p)
+        {
+            float currentScale = camera.ViewScale;
+            float newScale = currentScale * scaleDelta;
+            if (newScale < MIN_SCALE)
+            {
+                camera.ViewScale = MIN_SCALE;
+                return;
+            }
+            if ((MAX_SCALE > 0) && (newScale > MAX_SCALE))
+            {
+                camera.ViewScale = MAX_SCALE;
+                return;
+            }
+            camera.ScaleViewBy(scaleDelta, p.X, p.Y);
         }
     }
 }

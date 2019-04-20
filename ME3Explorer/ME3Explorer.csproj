@@ -16,6 +16,8 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -30,8 +32,6 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -518,6 +518,10 @@
     <Compile Include="PackageEditor\TreeMergeDialog.xaml.cs">
       <DependentUpon>TreeMergeDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Sequence Editor\GraphEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SharedUI\TreeViewEntry.cs" />
     <Compile Include="Packages\UDKPackage.cs" />
     <Compile Include="Packages\MEPackage.cs" />
     <Compile Include="Pathfinding Editor\SplineNodes.cs" />
@@ -545,12 +549,16 @@
     <Compile Include="Propertydb\PropertyDB.Designer.cs">
       <DependentUpon>PropertyDB.cs</DependentUpon>
     </Compile>
-    <Compile Include="RelayCommand.cs" />
+    <Compile Include="SharedUI\Commands.cs" />
+    <Compile Include="Sequence Editor\SequenceEditorWPF.xaml.cs">
+      <DependentUpon>SequenceEditorWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SharedUI\AddPropertyDialogWPF.xaml.cs">
       <DependentUpon>AddPropertyDialogWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="SharedUI\BuildInfo.cs" />
     <Compile Include="SharedUI\Converters\EntryTypeVisibiltyConverter.cs" />
+    <Compile Include="SharedUI\Converters\GameTypeConverter.cs" />
     <Compile Include="SharedUI\Converters\UnsavedChangesForegroundConverter.cs" />
     <Compile Include="SharedUI\Converters\NullVisibilityConverter.cs" />
     <Compile Include="SharedUI\Converters\NullOrEmptyStringVisibilityConverter.cs" />
@@ -592,7 +600,7 @@
       <DependentUpon>ReachSpecRecalculator.cs</DependentUpon>
     </Compile>
     <Compile Include="Pathfinding Editor\SharedPathfinding.cs" />
-    <Compile Include="PeriodicUpdater.cs" />
+    <Compile Include="SharedUI\PeriodicUpdater.cs" />
     <Compile Include="Main Window\SearchPanel.xaml.cs">
       <DependentUpon>SearchPanel.xaml</DependentUpon>
     </Compile>
@@ -654,12 +662,6 @@
       <DependentUpon>PathfindingEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Pathfinding Editor\PathfindingNodes.cs" />
-    <Compile Include="Sequence Editor\SequenceEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Sequence Editor\SequenceEditor.Designer.cs">
-      <DependentUpon>SequenceEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Sequence Editor\SequenceObjects.cs" />
     <Compile Include="SFAREditor2\SFAREditor2.cs">
       <SubType>Form</SubType>
@@ -720,6 +722,9 @@
       <DependentUpon>SoundReplaceOptionsDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Soundplorer\XboxADPCMDecoder.cs" />
+    <Compile Include="SharedUI\StatusBarGameIDIndicator.xaml.cs">
+      <DependentUpon>StatusBarGameIDIndicator.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SubtitleScanner\FileHelpers.cs" />
     <Compile Include="SubtitleScanner\SubtitleScanner.cs">
       <SubType>Form</SubType>
@@ -847,7 +852,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="WPFBase.cs" />
-    <Compile Include="WPFConverters.cs" />
+    <Compile Include="SharedUI\Converters\WPFConverters.cs" />
     <Compile Include="WwiseBankViewer\WwiseViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -916,14 +921,10 @@
     <Compile Include="DialogEditor\DialogEditor.Designer.cs">
       <DependentUpon>DialogEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="DialogEditor\DialogVis.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="DialogEditor\DialogVisObjects.cs" />
-    <Compile Include="InputComboBox.cs">
+    <Compile Include="SharedUI\InputComboBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InputComboBox.Designer.cs">
+    <Compile Include="SharedUI\InputComboBox.Designer.cs">
       <DependentUpon>InputComboBox.cs</DependentUpon>
     </Compile>
     <Compile Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.cs">
@@ -1048,6 +1049,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Sequence Editor\SequenceEditorWPF.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="SharedUI\AddPropertyDialogWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1077,6 +1082,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Soundplorer\SoundReplaceOptionsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedUI\StatusBarGameIDIndicator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1239,7 +1248,7 @@
     <EmbeddedResource Include="DialogEditor\DialogEditor.resx">
       <DependentUpon>DialogEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InputComboBox.resx">
+    <EmbeddedResource Include="SharedUI\InputComboBox.resx">
       <DependentUpon>InputComboBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FaceFXAnimSetEditor\FaceFXAnimSetEditor.resx">
@@ -1349,9 +1358,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Pathfinding Editor\PathfindingEditor.resx">
       <DependentUpon>PathfindingEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sequence Editor\SequenceEditor.resx">
-      <DependentUpon>SequenceEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SFAREditor2\SFAREditor2.resx">
       <DependentUpon>SFAREditor2.cs</DependentUpon>
