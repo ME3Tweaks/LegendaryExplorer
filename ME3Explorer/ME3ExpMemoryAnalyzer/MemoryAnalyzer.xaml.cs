@@ -35,9 +35,10 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
             {
                 TrackedMemoryObjects.Add(new MemoryAnalyzerObject(objectname, reference));
             }));
-        }
 #endif
-#endregion
+        }
+
+        #endregion
 
         public ObservableCollectionExtended<MemoryAnalyzerObject> InstancedTrackedMemoryObjects { get; set; } = new ObservableCollectionExtended<MemoryAnalyzerObject>();
 
