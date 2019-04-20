@@ -19,7 +19,7 @@ using ME1Explorer.Unreal.Classes;
 using static ME1Explorer.Unreal.Classes.TalkFile;
 using Microsoft.Win32;
 using System.Threading;
-
+using System.Media;
 
 namespace ME3Explorer.ME1TlkEditor
 {
@@ -31,23 +31,100 @@ namespace ME3Explorer.ME1TlkEditor
         public TLKStringRef[] StringRefs;
         public List<TLKStringRef> LoadedStrings; //Loaded TLK
         public ObservableCollectionExtended<TLKStringRef> CleanedStrings { get; } = new ObservableCollectionExtended<TLKStringRef>(); // Displayed
-        private bool itemSelected;
-        private int lastSearchIndex;
         private bool xmlUp;
+
+        private static string NO_STRING_SELECTED = "No string selected";
+
+        public bool StringSelected
+        {
+            get
+            {
+                if (DisplayedString_ListBox == null) return false;
+                return DisplayedString_ListBox.SelectedIndex >= 0;
+            }
+        }
 
         public ME1TlkEditorWPF()
         {
             DataContext = this;
+            LoadCommands();
             InitializeComponent();
-            itemSelected = false;
+        }
+
+
+        public ICommand SaveCommand { get; set; }
+        public ICommand CommitCommand { get; set; }
+        public ICommand SetIDCommand { get; set; }
+        public ICommand DeleteStringCommand { get; set; }
+        public bool hasPendingChanges { get; private set; }
+
+        private void LoadCommands()
+        {
+            SaveCommand = new RelayCommand(SaveString, CanSaveString);
+            CommitCommand = new RelayCommand(CommitTLK, CanCommitTLK);
+            SetIDCommand = new RelayCommand(SetStringID, StringIsSelected);
+            DeleteStringCommand = new RelayCommand(DeleteString, StringIsSelected);
+        }
+
+        private void DeleteString(object obj)
+        {
+            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
+            CleanedStrings.Remove(selectedItem);
+            LoadedStrings.Remove(selectedItem);
+            hasPendingChanges = true;
+        }
+
+        private void SetStringID(object obj)
+        {
+            SetNewID();
+        }
+
+        private bool StringIsSelected(object obj)
+        {
+            return StringSelected;
+        }
+
+        private bool CanCommitTLK(object obj)
+        {
+            return hasPendingChanges;
+        }
+
+        private void CommitTLK(object obj)
+        {
+            ME1Explorer.HuffmanCompression huff = new ME1Explorer.HuffmanCompression();
+            huff.LoadInputData(LoadedStrings);
+            huff.serializeTLKStrListToExport(CurrentLoadedExport);
+            hasPendingChanges = false;
+        }
+
+        private void SaveString(object obj)
+        {
+            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
+            if (selectedItem != null)
+            {
+                selectedItem.Data = editBox.Text.Trim();
+                hasPendingChanges = true;
+            }
+        }
+
+        private bool CanSaveString(object obj)
+        {
+            if (DisplayedString_ListBox == null) return false;
+            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
+            return selectedItem != null && selectedItem.Data != null && editBox.Text.Trim() != selectedItem.Data;
         }
 
         //SirC "efficiency is next to godliness" way of Checking export is ME1/TLK
         public override bool CanParse(IExportEntry exportEntry) => exportEntry.FileRef.Game == MEGame.ME1 && exportEntry.ClassName == "BioTlkFile";
 
+        /// <summary>
+        /// Memory cleanup when this control is unloaded
+        /// </summary>
         public override void Dispose()
         {
-
+            CurrentLoadedExport = null;
+            LoadedStrings.Clear();
+            CleanedStrings.ClearEx();
         }
 
         public override void LoadExport(IExportEntry exportEntry)
@@ -57,25 +134,18 @@ namespace ME3Explorer.ME1TlkEditor
             CleanedStrings.ClearEx(); //clear strings Ex does this in bulk (faster)
             CleanedStrings.AddRange(LoadedStrings.Where(x => x.StringID > 0).ToList()); //nest it remove 0 strings.
             CurrentLoadedExport = exportEntry;
-            itemSelected = false;
-            lastSearchIndex = 0;
-            EnableSave(false);
-            EnableCommit(false);
-            editBox.Text = "No strings loaded"; //Reset ability to save, reset edit box if export changed.
+            //EnableSave(false);
+            //EnableCommit(false);
+            editBox.Text = NO_STRING_SELECTED; //Reset ability to save, reset edit box if export changed.
+            hasPendingChanges = false;
+
         }
 
         public override void UnloadExport()
         {
-            EnableCommit(false);
-        }
+            //EnableCommit(false);
+            hasPendingChanges = false;
 
-
-        private void Evt_Commit(object sender, RoutedEventArgs e)
-        {
-            ME1Explorer.HuffmanCompression huff = new ME1Explorer.HuffmanCompression();
-            huff.LoadInputData(LoadedStrings);
-            huff.serializeTLKStrListToExport(CurrentLoadedExport);
-            EnableCommit(false);
         }
 
         private void DisplayedString_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -85,38 +155,8 @@ namespace ME3Explorer.ME1TlkEditor
             if (selectedItem != null)
             {
                 editBox.Text = selectedItem.Data;
-                itemSelected = true;
-                EnableSave(false);
             }
-        }
-
-        private void Evt_TextEdited(object sender, TextChangedEventArgs e)
-        {
-            if (itemSelected)
-            {
-                var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
-                if (editBox.Text != selectedItem.Data)
-                {
-                    EnableSave(true);
-                }
-            }
-        }
-
-        private void SaveButton_Clicked(object sender, RoutedEventArgs e)
-        {
-            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
-
-            if (selectedItem != null)
-            {
-                selectedItem.Data = editBox.Text;
-                EnableSave(false);
-                EnableCommit(true);
-            }
-        }
-
-        private void Evt_SetID(object sender, RoutedEventArgs e)
-        {
-            SetNewID();
+            OnPropertyChanged(nameof(StringSelected)); //Propogate this change
         }
 
         public int DlgStringID(int curID) //Dialog tlkstring id
@@ -125,23 +165,34 @@ namespace ME3Explorer.ME1TlkEditor
             bool isValid = false;
             while (!isValid)
             {
-                PromptDialog inst = new PromptDialog("Set new string ID", "TLK Editor", curID.ToString(), false, PromptDialog.InputType.Text);
-                inst.ShowDialog();
-
-                if (int.TryParse(inst.ResponseText, out int newIDInt))
+                PromptDialog inst = new PromptDialog("Set new string ID", "TLK Editor", curID.ToString(), true);
+                inst.Owner = Window.GetWindow(this); //center to parent
+                if (inst.ShowDialog().Value)
                 {
-                    //test result is an acceptable input
-                    if (newIDInt > 0)
+                    if (int.TryParse(inst.ResponseText, out int newIDInt))
                     {
-                        isValid = true;
-                        newID = newIDInt;
-                        break;
+                        //test result is an acceptable input
+                        if (newIDInt > 0)
+                        {
+                            if (!LoadedStrings.Any(x => x.StringID == newIDInt))
+                            {
+                                isValid = true;
+                                newID = newIDInt;
+                                break;
+                            }
+                            else
+                            {
+                                MessageBox.Show($"String ID must be unique.\n{newIDInt} is currently in use in this TLK.");
+                                continue;
+                            }
+                        }
                     }
-                    MessageBox.Show("String ID must be a positive whole number");
+
+                    MessageBox.Show("String ID must be a positive integer");
                 }
                 else
                 {
-                    MessageBox.Show("String ID must be a positive whole number");
+                    return curID; //cancel
                 }
             }
 
@@ -157,20 +208,10 @@ namespace ME3Explorer.ME1TlkEditor
             var blankstringref = new TLKStringRef(100, 1, "New Blank Line");
             LoadedStrings.Add(blankstringref);
             CleanedStrings.Add(blankstringref);
-            int cntStrings = CleanedStrings.Count(); // Find number of strings.
-            DisplayedString_ListBox.SelectedIndex = cntStrings - 1; //Set focus to new line (which is the last one)
+            DisplayedString_ListBox.SelectedIndex = CleanedStrings.Count() - 1; //Set focus to new line (which is the last one)
             DisplayedString_ListBox.ScrollIntoView(DisplayedString_ListBox.SelectedItem); //Scroll to last item
             SetNewID();
-            EnableCommit(true);
-        }
-
-        private void Evt_DeleteString(object sender, RoutedEventArgs e)
-        {
-            var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
-            CleanedStrings.Remove(selectedItem);
-            LoadedStrings.Remove(selectedItem);
-            itemSelected = false;
-            EnableCommit(true);
+            hasPendingChanges = true;
         }
 
         private void Evt_ExportXML(object sender, RoutedEventArgs e)
@@ -201,13 +242,14 @@ namespace ME3Explorer.ME1TlkEditor
                 ME1Explorer.HuffmanCompression compressor = new ME1Explorer.HuffmanCompression();
                 compressor.LoadInputData(openFileDialog.FileName);
                 compressor.serializeTLKStrListToExport(CurrentLoadedExport);
+                hasPendingChanges = true; //this is not always technically true, but we'll assume it is
             }
         }
 
         private void Evt_ViewXML(object sender, RoutedEventArgs e)
         {
             if (!xmlUp)
-                {
+            {
                 StringBuilder xmlTLK = new StringBuilder();
                 using (StringWriter stringWriter = new StringWriter(xmlTLK))
                 {
@@ -255,48 +297,22 @@ namespace ME3Explorer.ME1TlkEditor
 
         }
 
-        private void EnableSave(bool enableSave)
-        {
-            btnSaveEdit.IsEnabled = enableSave;
-            if (enableSave)
-            {
-                btnSaveEdit.FontWeight = FontWeights.Bold; //Enable save button
-            }
-            else
-            {
-                btnSaveEdit.FontWeight = FontWeights.Normal; //Reset save button
-            }
-
-        }
-
-        private void EnableCommit(bool enableCmt)
-        {
-            btnCommit.IsEnabled = enableCmt;
-            if (enableCmt)
-            {
-                btnCommit.Foreground = Brushes.Red;
-                btnCommit.FontWeight = FontWeights.Bold; //Enabled
-            }
-            else
-            {
-                btnCommit.Foreground = Brushes.DarkGray;
-                btnCommit.FontWeight = FontWeights.Normal; //Reset
-            }
-        }
-
         private void SetNewID()
-        { 
+        {
             var selectedItem = DisplayedString_ListBox.SelectedItem as TLKStringRef;
             if (selectedItem != null)
             {
 
                 var stringRefNewID = DlgStringID(selectedItem.StringID); //Run popout box to set tlkstring id
-                selectedItem.StringID = stringRefNewID;
-                EnableCommit(true);
+                if (selectedItem.StringID != stringRefNewID)
+                {
+                    selectedItem.StringID = stringRefNewID;
+                    hasPendingChanges = true;
+                }
             }
         }
 
-        private void Evt_KeyDown(object sender, KeyEventArgs k)
+        private void Evt_KeyUp(object sender, KeyEventArgs k)
         {
             if (k.Key == Key.Return)
             {
@@ -311,36 +327,31 @@ namespace ME3Explorer.ME1TlkEditor
 
         private void TextSearch()
         {
-            string searchTerm = boxSearch.Text.ToLower();
-            int foundIndex = -1;
-            for (int i = lastSearchIndex; i < CleanedStrings.Count; i++)
-            {
-                if (CleanedStrings[i].StringID.ToString().Contains(searchTerm))             //ID Search
-                {
-                    foundIndex = i;
-                    break;
-                }
-                else if (CleanedStrings[i].Data != null)
-                {
-                    if (CleanedStrings[i].Data.ToLower().Contains(searchTerm))             //Data Search
-                    {
-                        foundIndex = i;
-                        break;
-                    }
-                }
-            }
+            string searchTerm = boxSearch.Text.Trim().ToLower();
+            if (searchTerm == "") return; //don't search blank
 
-            if (foundIndex <= -1)
+            int pos = DisplayedString_ListBox.SelectedIndex;
+            pos += 1; //search this and 1 forward
+            for (int i = 0; i < CleanedStrings.Count; i++)
             {
-                MessageBox.Show("Not Found");
-                lastSearchIndex = 0;
+                int curIndex = (i + pos) % CleanedStrings.Count;
+                TLKStringRef node = CleanedStrings[curIndex];
+
+                if (CleanedStrings[curIndex].StringID.ToString().Contains(searchTerm))
+                {
+                    //ID Search
+                    DisplayedString_ListBox.SelectedIndex = curIndex;
+                    return;
+                }
+                else if (CleanedStrings[curIndex].Data != null && CleanedStrings[curIndex].Data.ToLower().Contains(searchTerm))
+                {
+                    DisplayedString_ListBox.SelectedIndex = curIndex;
+                    DisplayedString_ListBox.ScrollIntoView(DisplayedString_ListBox.SelectedItem);
+                    return;
+                }
             }
-            else
-            {
-                DisplayedString_ListBox.SelectedIndex = foundIndex;
-                DisplayedString_ListBox.ScrollIntoView(DisplayedString_ListBox.SelectedItem);
-                lastSearchIndex = foundIndex + 1;
-            }
+            //Not found
+            SystemSounds.Beep.Play();
         }
     }
 }

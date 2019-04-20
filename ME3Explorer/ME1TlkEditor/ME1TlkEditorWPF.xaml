@@ -10,24 +10,36 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel MinWidth="10" MinHeight="10">
-        <ToolBar ToolBarTray.IsLocked="True" Height="30" DockPanel.Dock="Top">
+        <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
             <!-- Commit button saves edits. disabled by default. Enabled when editing. Ends edit mode with saving to object -->
-            <Button Name="btnCommit" Click="Evt_Commit" Content="Commit" IsEnabled="False"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Commit changes." FontWeight="Normal" Height="29"/>
+            <Button Name="btnCommit" Command="{Binding CommitCommand}" Content="Commit" ToolTip="Commit changes to this TLK file back to the export" VerticalAlignment="Stretch" Padding="7,0">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Style.Triggers>
+                            <Trigger Property="IsEnabled" Value="True">
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Foreground" Value="Red"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
             <!-- Search text -->
-            <TextBox Name="boxSearch" Height="26" Width="160" TextWrapping="Wrap" HorizontalAlignment="Left" KeyDown="Evt_KeyDown" />
-            <Button Name="btnSearch" Click="Evt_Search" Content="Search" IsDefault="False"  Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Search strings." FontWeight="Normal" Height="29"/>
+            <TextBox Name="boxSearch" Height="26" Width="160" TextWrapping="Wrap" HorizontalAlignment="Left" KeyUp="Evt_KeyUp" VerticalAlignment="Stretch"/>
+            <Button Name="btnSearch" Click="Evt_Search" Content="Search" ToolTip="Search strings" Padding="5,0" VerticalAlignment="Stretch"/>
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-            <Button Name="btnSetID" Click="Evt_SetID" Content="ID" IsDefault="False"  Width="35" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Set StringRef ID." FontWeight="Normal" Height="29"/>
-            <Button Name="btnAddNew" Click="Evt_AddString" Content="Add" IsDefault="False"  Width="35" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Add a new string." FontWeight="Normal" Height="29"/>
-            <Button Name="btnDelete" Click="Evt_DeleteString" Content="Del" IsDefault="False"  Width="35" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Delete selected string." FontWeight="Normal" Height="29"/>
+            <Button Name="btnAddNew" Click="Evt_AddString" Content="Add String" ToolTip="Add a new string"  Padding="5,0" VerticalAlignment="Stretch"/>
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-            <Button Name="btnExportXML" Click="Evt_ExportXML" Content="Export" IsDefault="False"  Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Export to XML." FontWeight="Normal" Height="29"/>
-            <Button Name="btnImportXML" Click="Evt_ImportXML" Content="Import" IsDefault="False"  Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Import from XML." FontWeight="Normal" Height="29"/>
-            <Button Name="btnViewXML" Click="Evt_ViewXML" Content="XML" IsDefault="False"  Width="30" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="View as XML." FontWeight="Normal" Height="29"/>
+            <Button Name="btnSetID" Command="{Binding SetIDCommand}" Content="Change ID" ToolTip="Set StringRef ID"  Padding="5,0" VerticalAlignment="Stretch"/>
+            <Button Name="btnDelete" Command="{Binding DeleteStringCommand}" Content="Delete String" ToolTip="Delete selected string"  Padding="5,0" VerticalAlignment="Stretch"/>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            <Button Name="btnExportXML" Click="Evt_ExportXML" Content="Export" ToolTip="Export to XML"  Padding="5,0" VerticalAlignment="Stretch"/>
+            <Button Name="btnImportXML" Click="Evt_ImportXML" Content="Import" ToolTip="Import from XML"  Padding="5,0" VerticalAlignment="Stretch"/>
+            <Button Name="btnViewXML" Click="Evt_ViewXML" Content="View XML" ToolTip="View as XML"  Padding="5,0" VerticalAlignment="Stretch"/>
         </ToolBar>
         <DockPanel Name="LowerDock" DockPanel.Dock="Bottom" MinHeight="120">
-            <Button Name="btnSaveEdit" Content="Save" DockPanel.Dock="Right"  Click="SaveButton_Clicked" IsEnabled="False" FontWeight="Normal"/>
-            <TextBox Name="editBox" Text="No strings loaded" FontFamily="Courier New" FontSize="14" Focusable="True" TextChanged="Evt_TextEdited" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" IsReadOnly="False" TextWrapping="Wrap" Visibility="Visible" />
+            <Button Name="btnSaveEdit" Content="Save" DockPanel.Dock="Right" Width="50"  Command="{Binding SaveCommand}"/>
+            <TextBox Name="editBox" Text="No string selected" FontFamily="Courier New" FontSize="14" Focusable="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" IsEnabled="{Binding StringSelected, FallbackValue=False}" TextWrapping="Wrap" Visibility="Visible" />
         </DockPanel>
         <Popup Name="popupDlg" Placement="Center" VerticalOffset="15" Width="640" Height="800" Margin="0,12,0,0" Closed="Evt_CloseXML" StaysOpen="false">
             <Border BorderBrush = "Black" BorderThickness="2" Background="AliceBlue" >
