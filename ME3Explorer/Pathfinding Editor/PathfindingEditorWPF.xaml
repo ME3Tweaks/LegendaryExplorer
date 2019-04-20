@@ -16,11 +16,20 @@
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
+        <local:EZFilteringActiveConverter x:Key="EZFilteringActiveConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
-            <MenuItem Header="Set node X,Y to graph position" Click="SetGraphXY_Clicked" ToolTip="Sets the X,Y position of this node to the same coordinates as on the graph."/>
-            <MenuItem Header="Clone node" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
+            <MenuItem Header="{Binding CurrentNodeXY}" HeaderStringFormat="Set node X,Y to graph position ({0})" Click="SetGraphXY_Clicked" ToolTip="Sets the X,Y position of this node to the same coordinates as on the graph."/>
+            <MenuItem Header="Clone node" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one" />
             <MenuItem Header="Remove from level" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
-
+            <MenuItem Header="Filter nodes by Z value"  IsChecked="{Binding ZFilteringMode, Converter={StaticResource EZFilteringActiveConverter}, ConverterParameter='NotNone'}">
+                <MenuItem IsEnabled="False" Header="{Binding CurrentFilteringText}"/>
+                <Separator/>
+                <MenuItem Header="Show all nodes" Click="ShowNodes_All_Click"/>
+                <MenuItem Header="Show only nodes above this one" Click="ShowNodes_Above_Click"/>
+                <MenuItem Header="Show only nodes below this one" Click="ShowNodes_Below_Click"/>
+                <MenuItem Header="Show only nodes at or above this one" Click="ShowNodes_AboveEqual_Click"/>
+                <MenuItem Header="Show only nodes at or below this one" Click="ShowNodes_BelowEqual_Click"/>
+            </MenuItem>
             <Separator />
             <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds." Click="OpenInPackageEditor_Clicked" />
         </ContextMenu>
@@ -55,8 +64,15 @@
 
             <MenuItem Header="View Options" Padding="4">
                 <MenuItem Header="Refresh" Command="{Binding RefreshCommand}" InputGestureText="F5" ToolTip="Refreshes the pathing graph"/>
-                <MenuItem Header="Filter by Z" Command="{Binding RefreshCommand}" InputGestureText="CTRL + H" ToolTip="Filter visible nodes by Z value"/>
-
+                <MenuItem Header="Filter nodes by Z value"  IsChecked="{Binding ZFilteringMode, Converter={StaticResource EZFilteringActiveConverter}, ConverterParameter='NotNone'}">
+                    <MenuItem IsEnabled="False" Header="{Binding CurrentFilteringText}"/>
+                    <Separator/>
+                    <MenuItem Header="Show all nodes" Click="ShowNodes_All_Click"/>
+                    <MenuItem Header="Show only nodes above this one" Click="ShowNodes_Above_Click"/>
+                    <MenuItem Header="Show only nodes below this one" Click="ShowNodes_Below_Click"/>
+                    <MenuItem Header="Show only nodes at or above this one" Click="ShowNodes_AboveEqual_Click"/>
+                    <MenuItem Header="Show only nodes at or below this one" Click="ShowNodes_BelowEqual_Click"/>
+                </MenuItem>
                 <Separator/>
                 <MenuItem Header="Pathfinding" Command="{Binding TogglePathfindingCommand}" IsChecked="{Binding ShowPathfindingNodesLayer}" StaysOpenOnClick="True" InputGestureText="F1" ToolTip="Refreshes the pathing graph"/>
                 <MenuItem Header="Actors" Command="{Binding ToggleActorsCommand}" IsChecked="{Binding ShowActorsLayer}" StaysOpenOnClick="True" InputGestureText="F2" ToolTip="Refreshes the pathing graph"/>
@@ -88,18 +104,25 @@
             <StatusBarItem>
                 <TextBlock Name="StatusBar_LeftMostText" Text="{Binding StatusText}"/>
             </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Name="StatusBar_RightSide_LastSaved" Text="{Binding Pcc.LastSaved, StringFormat='Last saved at {0}'}" Foreground="Gray"/>
+                </StackPanel>
+            </StatusBarItem>
         </StatusBar>
         <!-- Main Content panel-->
         <DockPanel>
             <DockPanel DockPanel.Dock="Right" Width="300" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
                 <StatusBar DockPanel.Dock="Bottom">
-                    <Label Margin="0,6,0,0"/>
+                    <StatusBarItem HorizontalAlignment="Right">
+                    <TextBlock Name="StatusBar_RightSideFiltering" Text="{Binding CurrentFilteringText}"/>
+                    </StatusBarItem>
                 </StatusBar>
                 <StackPanel DockPanel.Dock="Top" Margin="3">
                     <Viewbox StretchDirection="DownOnly" Stretch="Uniform" HorizontalAlignment="Left" >
                         <TextBlock Text="{Binding NodeName, FallbackValue=PathNode_X57}" FontWeight="Bold" FontSize="20" TextAlignment="Left"/>
                     </Viewbox>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Name="NodePosition_Panel">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Name="NodePosition_Panel" IsEnabled="False">
                         <TextBlock Text="{Binding NodeNameSubText, FallbackValue=Export 57}" FontWeight="Bold" FontSize="10" VerticalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock Text="X:" FontWeight="Bold" FontSize="10" Margin="10,0,4,0"  VerticalAlignment="Center"/>

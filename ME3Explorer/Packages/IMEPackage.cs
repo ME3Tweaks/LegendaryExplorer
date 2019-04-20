@@ -67,8 +67,9 @@ namespace ME3Explorer.Packages
 
         //reading
         bool isExport(int index);
-        bool isUExport(int uindex);
+        bool isUExport(int index);
         bool isName(int index);
+        bool isUImport(int index);
         /// <summary>
         ///     gets Export or Import entry, from unreal index
         /// </summary>
@@ -84,11 +85,21 @@ namespace ME3Explorer.Packages
         /// <summary>
         /// Gets an export based on it's unreal based index in the export list.
         /// </summary>
-        /// <param name="index">unreal-based index in the export list</param>
-        /// <returns></returns>
-        IExportEntry getUExport(int uindex);
+        /// <param name="uIndex">unreal-based index in the export list</param>
+        IExportEntry getUExport(int uIndex);
 
+        /// <summary>
+        /// Gets an import based on it's 0 based index in the import list. (Not unreal indexing)
+        /// </summary>
+        /// <param name="index">0-based index in the import list</param>
+        /// <returns></returns>
         ImportEntry getImport(int index);
+
+        /// <summary>
+        /// Gets an import based on it's unreal based index.
+        /// </summary>
+        /// <param name="uIndex">unreal-based index</param>
+        ImportEntry getUImport(int uIndex);
         int findName(string nameToFind);
         /// <summary>
         ///     gets Export or Import name, from unreal index
@@ -124,9 +135,9 @@ namespace ME3Explorer.Packages
         ObservableCollection<GenericWindow> Tools { get; }
         void RegisterTool(GenericWindow tool);
         void Release(System.Windows.Window wpfWindow = null, System.Windows.Forms.Form winForm = null);
-        event EventHandler noLongerOpenInTools;
+        event MEPackage.MEPackageEventHandler noLongerOpenInTools;
         void RegisterUse();
-        event EventHandler noLongerUsed;
+        event MEPackage.MEPackageEventHandler noLongerUsed;
         string GetEntryString(int index);
     }
 }

@@ -15,7 +15,7 @@ namespace ME3Explorer.Packages
 {
     public static class MEPackageHandler
     {
-        static ConcurrentDictionary<string, IMEPackage> openPackages = new ConcurrentDictionary<string, IMEPackage>();
+        static readonly ConcurrentDictionary<string, IMEPackage> openPackages = new ConcurrentDictionary<string, IMEPackage>();
         public static ObservableCollection<IMEPackage> packagesInTools = new ObservableCollection<IMEPackage>();
 
         static Func<string, UDKPackage> UDKConstructorDelegate;
@@ -33,7 +33,7 @@ namespace ME3Explorer.Packages
 
         public static IMEPackage OpenMEPackage(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null)
         {
-            IMEPackage package = null;
+            IMEPackage package;
             pathToFile = Path.GetFullPath(pathToFile); //STANDARDIZE INPUT
             if (!openPackages.ContainsKey(pathToFile))
             {
@@ -94,13 +94,12 @@ namespace ME3Explorer.Packages
             return package;
         }
 
-        private static void Package_noLongerUsed(object sender, EventArgs e)
+        private static void Package_noLongerUsed(MEPackage sender)
         {
-            IMEPackage ime;
-            var package = (sender as IMEPackage).FileName;
+            var package = sender.FileName;
             if (Path.GetFileNameWithoutExtension(package) != "Core") //Keep Core loaded as it is very often referenced
             {
-                openPackages.TryRemove(package, out ime);
+                openPackages.TryRemove(package, out IMEPackage _);
             }
         }
 
@@ -113,7 +112,7 @@ namespace ME3Explorer.Packages
             }
         }
 
-        private static void Package_noLongerOpenInTools(object sender, EventArgs e)
+        private static void Package_noLongerOpenInTools(MEPackage sender)
         {
             IMEPackage package = sender as IMEPackage;
             packagesInTools.Remove(package);
@@ -124,37 +123,37 @@ namespace ME3Explorer.Packages
         public static ME3Package OpenME3Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null)
         {
             IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm);
-            ME3Package pcc = pck as ME3Package;
-            if (pcc == null)
+            if (pck is ME3Package pcc)
             {
-                pck.Release(wpfWindow, winForm);
-                throw new FormatException("Not an ME3 package file.");
+                return pcc;
             }
-            return pcc;
+
+            pck.Release(wpfWindow, winForm);
+            throw new FormatException("Not an ME3 package file.");
         }
 
         public static ME2Package OpenME2Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null)
         {
             IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm);
-            ME2Package pcc = pck as ME2Package;
-            if (pcc == null)
+            if (pck is ME2Package pcc)
             {
-                pck.Release(wpfWindow, winForm);
-                throw new FormatException("Not an ME2 package file.");
+                return pcc;
             }
-            return pcc;
+
+            pck.Release(wpfWindow, winForm);
+            throw new FormatException("Not an ME2 package file.");
         }
 
         public static ME1Package OpenME1Package(string pathToFile, WPFBase wpfWindow = null, WinFormsBase winForm = null)
         {
             IMEPackage pck = OpenMEPackage(pathToFile, wpfWindow, winForm);
-            ME1Package pcc = pck as ME1Package;
-            if (pcc == null)
+            if (pck is ME1Package pcc)
             {
-                pck.Release(wpfWindow, winForm);
-                throw new FormatException("Not an ME1 package file.");
+                return pcc;
             }
-            return pcc;
+
+            pck.Release(wpfWindow, winForm);
+            throw new FormatException("Not an ME1 package file.");
         }
 
         internal static void PrintOpenPackages()
