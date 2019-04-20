@@ -3,6 +3,7 @@ using ME1Explorer;
 using ME2Explorer;
 using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
+using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -202,16 +203,19 @@ namespace ME3Explorer.TlkManagerNS
                 EnsurePathExists = true,
                 Title = "Select UPK containing TLK",
             };
-            m.Filters.Add(new CommonFileDialogFilter("Unreal Package File (ME1)", "*.upk")); //Maybe include SFM, though IDK if anyone would load an SFM. Maybe if they want to export ME1 TLKs for dialogue? Are the local ones even used?
+            m.Filters.Add(new CommonFileDialogFilter("Unreal Package File (ME1)", "*.upk;*.sfm")); //Maybe include SFM, though IDK if anyone would load an SFM. Maybe if they want to export ME1 TLKs for dialogue? Are the local ones even used?
             if (m.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 using (ME1Package upk = MEPackageHandler.OpenME1Package(m.FileName))
                 {
                     foreach (IExportEntry exp in upk.Exports)
                     {
-                        LoadedTLK lTLK = new LoadedTLK(m.FileName, exp.UIndex, exp.ObjectName, false);
-                        ME1TLKItems.Add(lTLK);
-                        ME1TLKList.SelectedItems.Add(lTLK);
+                        if (exp.ClassName == "BioTlkFile")
+                        {
+                            LoadedTLK lTLK = new LoadedTLK(m.FileName, exp.UIndex, exp.ObjectName, false);
+                            ME1TLKItems.Add(lTLK);
+                            ME1TLKList.SelectedItems.Add(lTLK);
+                        }
                     }
                     SelectLoadedTLKsME1();
                 }

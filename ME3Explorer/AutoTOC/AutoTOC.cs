@@ -177,5 +177,70 @@ namespace ME3Explorer
                 prepareToCreateTOC(path, rtb1);
             }
         }
+
+        private void Evt_RunAutoFileBtn_Click(object sender, EventArgs e)
+        {
+            string dirFL = GenerateFileListDlg(true);
+
+            if (dirFL != null)
+            {
+                rtb1.AppendText($"Creating FileList in {dirFL}\n");
+                GenerateFileList(dirFL);
+                rtb1.AppendText("Done.\n");
+                rtb1.AppendText("***********************\n* Filelist Created *\n***********************\n");
+            }
+        }
+
+        public string GenerateFileListDlg(bool passbackdir) //Open dlg to created file
+        {
+            FolderBrowserDialog dlg = new FolderBrowserDialog();
+            dlg.SelectedPath = ME1Directory.DLCPath;
+            dlg.Description = "Select DLC Cooked Folder to create Filelist";
+            
+            bool cookPath = true;
+            while (cookPath)
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    string path = dlg.SelectedPath;
+                    if (path.Substring(path.Length - Math.Min(8, path.Length)) == "CookedPC")
+                        {
+                        cookPath = false;
+
+                        }
+                    else
+                        {
+                        MessageBox.Show("Please select a CookedPC folder.");
+                        }
+                }
+                else { return null; }
+            string dirFL = dlg.SelectedPath + "\\";
+
+
+            if (passbackdir)
+            {
+                return dirFL;
+            }
+            else
+            {
+                GenerateFileList(dirFL);
+                return null;
+            }
+        }
+
+        public static void GenerateFileList(string dlcCookedDir) //Point to Cooked Directory only
+        {
+            if (dlcCookedDir != null)
+            {
+                string[] extensions = { ".sfm", ".upk", ".bik", ".u" };
+
+                int rootLength = dlcCookedDir.Length + (dlcCookedDir[dlcCookedDir.Length - 1] == '\\' ? 0 : 1);
+
+                var files = (Directory.EnumerateFiles(dlcCookedDir, "*.*", SearchOption.AllDirectories).Select(p => p.Remove(0, rootLength)).Where(s => extensions.Any(ext => ext == Path.GetExtension(s).ToLower()))).ToList();
+
+                string fileName = dlcCookedDir + "\\FileIndex.txt";
+                File.WriteAllLines(fileName, files);
+
+            }
+        }
     }
 }

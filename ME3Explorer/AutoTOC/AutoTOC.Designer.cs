@@ -33,6 +33,7 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.generateAllTOCsButton = new System.Windows.Forms.ToolStripButton();
             this.createTOCButton = new System.Windows.Forms.ToolStripButton();
+            this.RunAutoFileListBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,7 +51,8 @@
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.generateAllTOCsButton,
-            this.createTOCButton});
+            this.createTOCButton,
+            this.RunAutoFileListBtn });
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(481, 25);
@@ -63,7 +65,7 @@
             this.generateAllTOCsButton.Image = ((System.Drawing.Image)(resources.GetObject("generateAllTOCsButton.Image")));
             this.generateAllTOCsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.generateAllTOCsButton.Name = "generateAllTOCsButton";
-            this.generateAllTOCsButton.Size = new System.Drawing.Size(107, 22);
+            this.generateAllTOCsButton.Size = new System.Drawing.Size(106, 22);
             this.generateAllTOCsButton.Text = "Generate All TOCs";
             this.generateAllTOCsButton.Click += new System.EventHandler(this.generateAllTOCsButton_Click);
             // 
@@ -73,9 +75,19 @@
             this.createTOCButton.Image = ((System.Drawing.Image)(resources.GetObject("createTOCButton.Image")));
             this.createTOCButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.createTOCButton.Name = "createTOCButton";
-            this.createTOCButton.Size = new System.Drawing.Size(72, 22);
+            this.createTOCButton.Size = new System.Drawing.Size(71, 22);
             this.createTOCButton.Text = "Create TOC";
             this.createTOCButton.Click += new System.EventHandler(this.createTOCButton_Click);
+            // 
+            // RunAutoFileListBtn
+            // 
+            this.RunAutoFileListBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.RunAutoFileListBtn.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.RunAutoFileListBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.RunAutoFileListBtn.Name = "RunAutoFileListBtn";
+            this.RunAutoFileListBtn.Size = new System.Drawing.Size(71, 22);
+            this.RunAutoFileListBtn.Text = "Create ME1 FileList";
+            this.RunAutoFileListBtn.Click += new System.EventHandler(this.Evt_RunAutoFileBtn_Click);
             // 
             // AutoTOC
             // 
@@ -100,5 +112,6 @@
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton generateAllTOCsButton;
         private System.Windows.Forms.ToolStripButton createTOCButton;
+        private System.Windows.Forms.ToolStripButton RunAutoFileListBtn;
     }
 }
