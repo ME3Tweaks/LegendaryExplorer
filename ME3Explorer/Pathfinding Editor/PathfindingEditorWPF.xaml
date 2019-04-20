@@ -17,7 +17,7 @@
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
-            <MenuItem Header="Set node coordiantes from graph X,Y" Click="SetGraphXY_Clicked" ToolTip="Sets the X,Y position of this node to the same coordinates as on the graph."/>
+            <MenuItem Header="Set node X,Y to graph position" Click="SetGraphXY_Clicked" ToolTip="Sets the X,Y position of this node to the same coordinates as on the graph."/>
             <MenuItem Header="Clone node" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
             <MenuItem Header="Remove from level" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
 

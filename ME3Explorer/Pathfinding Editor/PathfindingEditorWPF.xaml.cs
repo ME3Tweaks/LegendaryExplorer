@@ -514,7 +514,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 try
                 {
 #endif
-                    LoadFile(d.FileName);
+                LoadFile(d.FileName);
 #if !DEBUG
                 }
                 catch (Exception ex)
@@ -669,7 +669,6 @@ namespace ME3Explorer.Pathfinding_Editor
             //Update the "Loading file..." text, since drawing has to be done on the UI thread.
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Render,
                                       new Action(delegate { }));
-            FileLoading = true;
             if (LoadPathingNodesFromLevel())
             {
                 PointF graphcenter = GenerateGraph();
@@ -691,7 +690,6 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 CurrentFile = null; //may need to expand this. idk if any level's have nothing though.
             }
-            FileLoading = false;
         }
 
         private bool LoadPathingNodesFromLevel()
@@ -1298,7 +1296,6 @@ namespace ME3Explorer.Pathfinding_Editor
             an.InvalidateFullBounds();
             graphEditor.Refresh();
             graphEditor.Camera.AnimateViewToCenterBounds(an.GlobalFullBounds, false, 500);
-            //throw new NotImplementedException();
         }
 
         public void CreateConnections()
@@ -1419,7 +1416,6 @@ namespace ME3Explorer.Pathfinding_Editor
         #region Recents
         private readonly List<Button> RecentButtons = new List<Button>();
         public List<string> RFiles;
-        private bool FileLoading;
         private bool IsCombatZonesSingleSelecting;
         private bool IsReadingLevel;
         public static readonly string PathfindingEditorDataFolder = System.IO.Path.Combine(App.AppDataFolder, @"PathfindingEditor\");
@@ -1579,9 +1575,9 @@ namespace ME3Explorer.Pathfinding_Editor
                 Properties_InterpreterWPF.Dispose();
                 PathfindingEditorWPF_ReachSpecsPanel.Dispose();
                 zoomController.Dispose();
-                #if DEBUG
-                 graphEditor.DebugEventHandlers();
-                #endif
+#if DEBUG
+                graphEditor.DebugEventHandlers();
+#endif
             }
         }
 
