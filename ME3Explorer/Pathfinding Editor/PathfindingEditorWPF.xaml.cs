@@ -2260,23 +2260,20 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void SetFilteringMode(EZFilterIncludeDirection newfilter)
         {
-            IExportEntry export = ActiveNodes_ListBox.SelectedItem as IExportEntry;
             bool shouldRefresh = newfilter != ZFilteringMode;
-            if (export != null)
+            IExportEntry export = ActiveNodes_ListBox.SelectedItem as IExportEntry;
+            if (export != null && newfilter != EZFilterIncludeDirection.None)
             {
-                if (newfilter != EZFilterIncludeDirection.None)
-                {
-                    PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
-                    var currentlocation = GetLocation(export);
-                    shouldRefresh |= currentlocation.Z == ZFilteringValue;
-                    ZFilteringValue = currentlocation.Z;
-                }
-                ZFilteringMode = newfilter;
-                OnPropertyChanged(nameof(CurrentFilteringText));
-                if (shouldRefresh)
-                {
-                    RefreshGraph();
-                }
+                PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
+                var currentlocation = GetLocation(export);
+                shouldRefresh |= currentlocation.Z == ZFilteringValue;
+                ZFilteringValue = currentlocation.Z;
+            }
+            ZFilteringMode = newfilter;
+            OnPropertyChanged(nameof(CurrentFilteringText));
+            if (shouldRefresh)
+            {
+                RefreshGraph();
             }
         }
 
