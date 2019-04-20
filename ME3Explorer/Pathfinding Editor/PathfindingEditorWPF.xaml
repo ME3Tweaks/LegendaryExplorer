@@ -21,12 +21,14 @@
             <MenuItem Header="{Binding CurrentNodeXY}" HeaderStringFormat="Set node X,Y to graph position ({0})" Click="SetGraphXY_Clicked" ToolTip="Sets the X,Y position of this node to the same coordinates as on the graph."/>
             <MenuItem Header="Clone node" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one" />
             <MenuItem Header="Remove from level" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
-            <MenuItem Header="Filter nodes by Z value">
-                <MenuItem Header="Show all nodes" Click="ShowNodes_All_Click" IsChecked="{Binding ZFilteringMode, Converter={StaticResource EZFilteringActiveConverter}, ConverterParameter='None'}"/>
-                <MenuItem Header="Above this one" Click="ShowNodes_Above_Click" IsChecked="{Binding ZFilteringMode, Converter={StaticResource EZFilteringActiveConverter}, ConverterParameter='Above'}"/>
-                <MenuItem Header="Below this one" Click="ShowNodes_Below_Click" IsChecked="{Binding ZFilteringMode, Converter={StaticResource EZFilteringActiveConverter}, ConverterParameter='Below'}"/>
-                <MenuItem Header="At and above this one" Click="ShowNodes_AboveEqual_Click" IsChecked="{Binding ZFilteringMode, Converter={StaticResource EZFilteringActiveConverter}, ConverterParameter='AboveEqual'}"/>
-                <MenuItem Header="At and below this one" Click="ShowNodes_BelowEqual_Click" IsChecked="{Binding ZFilteringMode, Converter={StaticResource EZFilteringActiveConverter}, ConverterParameter='BelowEqual'}"/>
+            <MenuItem Header="Filter nodes by Z value"  IsChecked="{Binding ZFilteringMode, Converter={StaticResource EZFilteringActiveConverter}, ConverterParameter='NotNone'}">
+                <MenuItem IsEnabled="False" Header="{Binding CurrentFilteringText}"/>
+                <Separator/>
+                <MenuItem Header="Show all nodes" Click="ShowNodes_All_Click"/>
+                <MenuItem Header="Show only nodes above this one" Click="ShowNodes_Above_Click"/>
+                <MenuItem Header="Show only nodes below this one" Click="ShowNodes_Below_Click"/>
+                <MenuItem Header="Show only nodes at or above this one" Click="ShowNodes_AboveEqual_Click"/>
+                <MenuItem Header="Show only nodes at or below this one" Click="ShowNodes_BelowEqual_Click"/>
             </MenuItem>
             <Separator />
             <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds." Click="OpenInPackageEditor_Clicked" />
@@ -95,12 +97,19 @@
             <StatusBarItem>
                 <TextBlock Name="StatusBar_LeftMostText" Text="{Binding StatusText}"/>
             </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Name="StatusBar_RightSide_LastSaved" Text="{Binding Pcc.LastSaved, StringFormat='Last saved at {0}'}" Foreground="Gray"/>
+                </StackPanel>
+            </StatusBarItem>
         </StatusBar>
         <!-- Main Content panel-->
         <DockPanel>
             <DockPanel DockPanel.Dock="Right" Width="300" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
                 <StatusBar DockPanel.Dock="Bottom">
-                    <Label Margin="0,6,0,0"/>
+                    <StatusBarItem HorizontalAlignment="Right">
+                    <TextBlock Name="StatusBar_RightSideFiltering" Text="{Binding CurrentFilteringText}"/>
+                    </StatusBarItem>
                 </StatusBar>
                 <StackPanel DockPanel.Dock="Top" Margin="3">
                     <Viewbox StretchDirection="DownOnly" Stretch="Uniform" HorizontalAlignment="Left" >

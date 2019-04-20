@@ -579,6 +579,35 @@ namespace ME3Explorer.Pathfinding_Editor
             set => SetProperty(ref _nodeNameSubText, value);
         }
 
+        private string _lastSavedAtText;
+        public string LastSavedAtText
+        {
+            get => _lastSavedAtText;
+            set => SetProperty(ref _lastSavedAtText, value);
+        }
+
+
+        public string CurrentFilteringText
+        {
+            get
+            {
+                switch (ZFilteringMode)
+                {
+                    case EZFilterIncludeDirection.None:
+                        return "Showing all nodes";
+                    case EZFilterIncludeDirection.Above:
+                        return "Showing all nodes above Z=" + ZFilteringValue;
+                    case EZFilterIncludeDirection.AboveEquals:
+                        return "Showing all nodes at or above Z=" + ZFilteringValue;
+                    case EZFilterIncludeDirection.Below:
+                        return "Showing all nodes below Z=" + ZFilteringValue;
+                    case EZFilterIncludeDirection.BelowEquals:
+                        return "Showing all nodes at or below Z=" + ZFilteringValue;
+                }
+                return "Unknown";
+            }
+        }
+
         public string NodeTypeDescriptionText
         {
             get
@@ -795,7 +824,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     if (pathfindingNodeClasses.Contains(exportEntry.ClassName))
                     {
                         isParsedByExistingLayer = true;
-                        if (ShowPathfindingNodesLayer)
+                        if (ShowPathfindingNodesLayer && isAllowedVisibleByZFiltering(exportEntry))
                         {
                             bulkActiveNodes.Add(exportEntry);
                         }
@@ -804,7 +833,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     if (actorNodeClasses.Contains(exportEntry.ClassName))
                     {
                         isParsedByExistingLayer = true;
-                        if (ShowActorsLayer)
+                        if (ShowActorsLayer && isAllowedVisibleByZFiltering(exportEntry))
                         {
                             bulkActiveNodes.Add(exportEntry);
                         }
@@ -814,7 +843,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         isParsedByExistingLayer = true;
 
-                        if (ShowSplinesLayer)
+                        if (ShowSplinesLayer && isAllowedVisibleByZFiltering(exportEntry))
                         {
                             bulkActiveNodes.Add(exportEntry);
                             ArrayProperty<StructProperty> connectionsProp = exportEntry.GetProperty<ArrayProperty<StructProperty>>("Connections");
@@ -829,26 +858,6 @@ namespace ME3Explorer.Pathfinding_Editor
                         }
                     }
 
-                    //SFXCombatZone 
-                    //if (exportEntry.ClassName == "SFXCombatZone")
-                    //{
-                    //    isParsedByExistingLayer = true;
-                    //    sfxCombatZones.Add(exportEntry.Index);
-                    //    ToolStripMenuItem combatZoneItem = new ToolStripMenuItem(exportEntry.Index + " " + exportEntry.ObjectName + "_" + exportEntry.indexValue);
-                    //    combatZoneItem.ImageScaling = ToolStripItemImageScaling.None;
-                    //    if (exportEntry.Index == ActiveCombatZoneExportIndex)
-                    //    {
-                    //        combatZoneItem.Checked = true;
-                    //    }
-                    //    combatZoneItem.Click += (object o, EventArgs args) =>
-                    //    {
-                    //        setSFXCombatZoneBGActive(combatZoneItem, exportEntry, combatZoneItem.Checked);
-                    //    };
-                    //    sFXCombatZonesToolStripMenuItem.DropDown.Items.Add(combatZoneItem);
-                    //    sFXCombatZonesToolStripMenuItem.Enabled = true;
-                    //    sFXCombatZonesToolStripMenuItem.ToolTipText = "Select a SFXCombatZone to highlight coverslots that are part of it";
-                    //}
-
                     if (exportEntry.ObjectName == "StaticMeshCollectionActor")
                     {
                         StaticMeshCollections.Add(new StaticMeshCollection(exportEntry));
@@ -858,54 +867,11 @@ namespace ME3Explorer.Pathfinding_Editor
                         CombatZones.Add(new CombatZone(exportEntry));
                     }
 
-                    //    isParsedByExistingLayer = true;
-                    //    ToolStripMenuItem collectionItem = new ToolStripMenuItem(exportEntry.Index + " " + exportEntry.ObjectName + "_" + exportEntry.indexValue);
-                    //    collectionItem.ImageScaling = ToolStripItemImageScaling.None;
-                    //    collectionItem.Click += (object o, EventArgs args) =>
-                    //    {
-                    //        staticMeshCollectionActor_ToggleVisibility(collectionItem, exportEntry, collectionItem.Checked);
-                    //    };
-                    //    if (VisibleActorCollections.Contains(exportEntry.Index))
-                    //    {
-                    //        byte[] smacData = exportEntry.Data;
-                    //        collectionItem.Checked = true;
-                    //        //Make new nodes for each item...
-                    //        ArrayProperty<ObjectProperty> smacItems = exportEntry.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
-                    //        if (smacItems != null)
-                    //        {
-                    //            int binarypos = findEndOfProps(exportEntry);
-
-                    //            //Read exports...
-                    //            foreach (ObjectProperty obj in smacItems)
-                    //            {
-                    //                if (obj.Value > 0)
-                    //                {
-                    //                    CurrentObjects.Add(obj.Value - 1);
-                    //                    activeExportsListbox.Items.Add("#" + (exportEntry.Index) + " " + exportEntry.ObjectName + " - Class: " + exportEntry.ClassName);
-
-                    //                    //Read location and put in position map
-                    //                    int offset = binarypos + 12 * 4;
-                    //                    float x = BitConverter.ToSingle(smacData, offset);
-                    //                    float y = BitConverter.ToSingle(smacData, offset + 4);
-                    //                    //Debug.WriteLine(offset.ToString("X4") + " " + x + "," + y);
-                    //                    smacCoordinates[obj.Value - 1] = new PointF(x, y);
-                    //                }
-                    //                binarypos += 64;
-                    //            }
-                    //        }
-                    //    }
-                    //    //staticMeshCollectionActorsToolStripMenuItem.DropDown.Items.Add(collectionItem);
-                    //    //staticMeshCollectionActorsToolStripMenuItem.Enabled = true;
-                    //    //staticMeshCollectionActorsToolStripMenuItem.ToolTipText = "Select a StaticMeshCollectionActor to add it to the editor";
-
-                    //}
-
-                    if (ShowEverythingElseLayer && !isParsedByExistingLayer)
+                    if (ShowEverythingElseLayer && !isParsedByExistingLayer && isAllowedVisibleByZFiltering(exportEntry))
                     {
                         bulkActiveNodes.Add(exportEntry);
                     }
 
-                    //}
                     start += 4;
                     itemcount++;
                 }
@@ -938,6 +904,27 @@ namespace ME3Explorer.Pathfinding_Editor
             graphEditor.UseWaitCursor = false;
             IsReadingLevel = false;
             return true;
+        }
+
+        private bool isAllowedVisibleByZFiltering(IExportEntry exportEntry)
+        {
+            if (ZFilteringMode == EZFilterIncludeDirection.None) { return true; }
+            Point3D position = GetLocation(exportEntry);
+            if (position != null)
+            {
+                switch (ZFilteringMode)
+                {
+                    case EZFilterIncludeDirection.Above:
+                        return position.Z > ZFilteringValue;
+                    case EZFilterIncludeDirection.AboveEquals:
+                        return position.Z >= ZFilteringValue;
+                    case EZFilterIncludeDirection.Below:
+                        return position.Z < ZFilteringValue;
+                    case EZFilterIncludeDirection.BelowEquals:
+                        return position.Z <= ZFilteringValue;
+                }
+            }
+            return false;
         }
 
         public PointF GenerateGraph()
@@ -1031,6 +1018,31 @@ namespace ME3Explorer.Pathfinding_Editor
                 x = (int)position.X;
                 y = (int)position.Y;
                 z = (int)position.Z;
+
+                //if (ZFilteringMode != EZFilterIncludeDirection.None)
+                //{
+                //    bool includedInView = false;
+                //    switch (ZFilteringMode)
+                //    {
+                //        case EZFilterIncludeDirection.Above:
+                //            includedInView = z > ZFilteringValue;
+                //            break;
+                //        case EZFilterIncludeDirection.AboveEquals:
+                //            includedInView = z >= ZFilteringValue;
+                //            break;
+                //        case EZFilterIncludeDirection.Below:
+                //            includedInView = z < ZFilteringValue;
+                //            break;
+                //        case EZFilterIncludeDirection.BelowEquals:
+                //            includedInView = z <= ZFilteringValue;
+                //            break;
+                //    }
+                //    //Don't add as graph node, but add average point anyways.
+                //    if (!includedInView)
+                //    {
+                //        return new PointF(x, y);
+                //    }
+                //}
             }
 
             //if (CurrentFilterType != HeightFilterForm.FILTER_Z_NONE)
@@ -2249,18 +2261,29 @@ namespace ME3Explorer.Pathfinding_Editor
         private void SetFilteringMode(EZFilterIncludeDirection newfilter)
         {
             IExportEntry export = ActiveNodes_ListBox.SelectedItem as IExportEntry;
+            bool shouldRefresh = newfilter != ZFilteringMode;
             if (export != null)
             {
-                PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
-                var currentlocation = GetLocation(export);
+                if (newfilter != EZFilterIncludeDirection.None)
+                {
+                    PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
+                    var currentlocation = GetLocation(export);
+                    shouldRefresh |= currentlocation.Z == ZFilteringValue;
+                    ZFilteringValue = currentlocation.Z;
+                }
                 ZFilteringMode = newfilter;
-                ZFilteringValue = currentlocation.Z;
+                OnPropertyChanged(nameof(CurrentFilteringText));
+                if (shouldRefresh)
+                {
+                    RefreshGraph();
+                }
             }
         }
 
         private void ShowNodes_All_Click(object sender, RoutedEventArgs e)
         {
-
+            SetFilteringMode(EZFilterIncludeDirection.None);
         }
+
     }
 }

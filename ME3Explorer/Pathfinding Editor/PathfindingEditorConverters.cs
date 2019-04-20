@@ -28,6 +28,15 @@ namespace ME3Explorer.Pathfinding_Editor
                     case PathfindingEditorWPF.EZFilterIncludeDirection.None when condition == "None":
                         return true;
                 }
+
+                if (condition.StartsWith("Not"))
+                {
+                    condition = condition.Substring(3);
+                    if (condition != filter.ToString())
+                    {
+                        return true;
+                    }
+                }
             }
             return false;
         }
