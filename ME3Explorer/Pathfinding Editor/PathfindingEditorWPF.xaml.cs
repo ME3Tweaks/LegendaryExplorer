@@ -503,7 +503,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 try
                 {
 #endif
-                LoadFile(d.FileName);
+                    LoadFile(d.FileName);
 #if !DEBUG
                 }
                 catch (Exception ex)
@@ -1550,16 +1550,27 @@ namespace ME3Explorer.Pathfinding_Editor
                 graphEditor.DebugEventHandlers();
                 graphEditor.Dispose();
                 GraphHost.Child = null; //This seems to be required to clear OnChildGotFocus handler from WinFormsHost
-                graphEditor.DebugEventHandlers();
                 GraphHost.Dispose();
                 ActiveNodes.ClearEx();
                 StaticMeshCollections.ClearEx();
                 CombatZones.ClearEx();
+                if (GraphNodes != null)
+                {
+                    foreach (var node in GraphNodes)
+                    {
+                        node.MouseDown -= node_MouseDown;
+                    }
+                }
+
                 GraphNodes?.Clear();
+                graphEditor.edgeLayer.RemoveAllChildren();
+                graphEditor.nodeLayer.RemoveAllChildren();
                 Properties_InterpreterWPF.Dispose();
                 PathfindingEditorWPF_ReachSpecsPanel.Dispose();
                 zoomController.Dispose();
-                graphEditor.DebugEventHandlers();
+                #if DEBUG
+                 graphEditor.DebugEventHandlers();
+                #endif
             }
         }
 
@@ -1815,7 +1826,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     graphEditor.edgeLayer.RemoveChildren(s.Tag as ArrayList);
                     s.Tag = new ArrayList();
                     s.CreateConnections(ref GraphNodes);
-                    foreach (PPath edge in (ArrayList) s.Tag)
+                    foreach (PPath edge in (ArrayList)s.Tag)
                     {
                         PathingGraphEditor.UpdateEdgeStraight(edge);
                     }
