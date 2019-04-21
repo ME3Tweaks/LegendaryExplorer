@@ -529,12 +529,12 @@ namespace ME3Explorer.Sequence_Editor
                     }
                 }
 
-                foreach (PPath edge in graphEditor.edgeLayer)
+                foreach (SeqEdEdge edge in graphEditor.edgeLayer)
                     GraphEditor.UpdateEdge(edge);
             }
             catch (Exception)
             {
-                foreach (PPath edge in graphEditor.edgeLayer)
+                foreach (SeqEdEdge edge in graphEditor.edgeLayer)
                     GraphEditor.UpdateEdge(edge);
                 return false;
             }
@@ -596,7 +596,7 @@ namespace ME3Explorer.Sequence_Editor
                     }
                 }
 
-                foreach (PPath edge in graphEditor.edgeLayer)
+                foreach (SeqEdEdge edge in graphEditor.edgeLayer)
                 {
                     GraphEditor.UpdateEdge(edge);
                 }

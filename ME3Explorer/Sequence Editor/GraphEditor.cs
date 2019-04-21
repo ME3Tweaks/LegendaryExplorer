@@ -68,7 +68,7 @@ namespace UMD.HCIL.GraphEditor
             backLayer.AddChild(p);
         }
 
-        public void addEdge(PPath p)
+        public void addEdge(SeqEdEdge p)
         {
             edgeLayer.AddChild(p);
             UpdateEdge(p);
@@ -79,19 +79,18 @@ namespace UMD.HCIL.GraphEditor
             nodeLayer.AddChild(p);
         }
 
-        public static void UpdateEdge(PPath edge)
+        public static void UpdateEdge(SeqEdEdge edge)
         {
             // Note that the node's "FullBounds" must be used (instead of just the "Bound") 
             // because the nodes have non-identity transforms which must be included when
             // determining their position.
 
-            ArrayList nodes = (ArrayList)edge.Tag;
-            PNode node1 = (PNode)nodes[0];
-            PNode node2 = (PNode)nodes[1];
+            PNode node1 = edge.start;
+            PNode node2 = edge.end;
             PointF start = node1.GlobalBounds.Location;
             PointF end = node2.GlobalBounds.Location;
             float h1x, h1y, h2x;
-            if (nodes.Count > 2 && (int)nodes[2] == -1) //var link
+            if (edge is VarEdge)
             {
                 start.X += node1.GlobalBounds.Width * 0.5f;
                 start.Y += node1.GlobalBounds.Height;
@@ -153,13 +152,13 @@ namespace UMD.HCIL.GraphEditor
             {
                 if (!e.Handled)
                 {
-                    var edgesToUpdate = new HashSet<PPath>();
+                    var edgesToUpdate = new HashSet<SeqEdEdge>();
                     base.OnDrag(sender, e);
                     foreach (PNode node in e.PickedNode.AllNodes)
                     {
                         if (node.Tag is ArrayList edges)
                         {
-                            foreach (PPath edge in edges)
+                            foreach (SeqEdEdge edge in edges)
                             {
                                 edgesToUpdate.Add(edge);
                             }
@@ -179,7 +178,7 @@ namespace UMD.HCIL.GraphEditor
                                 {
                                     if (n.Tag is ArrayList edges)
                                     {
-                                        foreach (PPath edge in edges)
+                                        foreach (SeqEdEdge edge in edges)
                                         {
                                             edgesToUpdate.Add(edge);
                                         }
@@ -189,7 +188,7 @@ namespace UMD.HCIL.GraphEditor
                         }
                     }
 
-                    foreach (PPath edge in edgesToUpdate)
+                    foreach (SeqEdEdge edge in edgesToUpdate)
                     {
                         UpdateEdge(edge);
                     }
