@@ -78,6 +78,7 @@ namespace ME3Explorer.Sequence_Editor
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Sequence Editor WPF", new WeakReference(this));
             LoadCommands();
             DataContext = this;
+            StatusText = "Select package file to load";
             InitializeComponent();
 
             LoadRecentList();
@@ -223,6 +224,7 @@ namespace ME3Explorer.Sequence_Editor
                     Pcc.Release();
                     Pcc = null;
                     MessageBox.Show("This file does not contain any Sequences!");
+                    StatusText = "Select a package file to load";
                     return;
                 }
 
@@ -234,6 +236,7 @@ namespace ME3Explorer.Sequence_Editor
                 RefreshRecent(true, RFiles);
 
                 Title = $"Sequence Editor WPF - {fileName}";
+                StatusText = null; //no status
             }
             catch (Exception ex)
             {

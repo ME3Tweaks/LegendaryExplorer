@@ -63,6 +63,11 @@
             <StatusBarItem>
                 <TextBlock Name="StatusBar_LeftMostText" Text="{Binding StatusText}"/>
             </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Name="StatusBar_RightSide_LastSaved" Text="{Binding Pcc.LastSaved, StringFormat='Last saved at {0}'}" Foreground="Gray"/>
+                </StackPanel>
+            </StatusBarItem>
         </StatusBar>
         <!-- Main Content panel-->
         <Grid>
