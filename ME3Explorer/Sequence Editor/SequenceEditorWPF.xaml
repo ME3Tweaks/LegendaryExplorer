@@ -56,6 +56,10 @@
                 <MenuItem Name="AutoSaveView_MenuItem" Header="Auto-Save View" IsCheckable="True"/>
                 <MenuItem Name="GlobalSeqRefViewSavesMenuItem" Header="Use Global Sequence Ref View Saves" IsCheckable="True" Click="GlobalSeqRefViewSavesMenuItem_OnClick"/>
             </MenuItem>
+
+            <MenuItem Header="Experiments" Padding="4">
+                <MenuItem Header="Auto Layout" Command="{Binding AutoLayoutCommand}" ToolTip="Attempt to layout sequence objects in a comprehensible fashion"/>
+            </MenuItem>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
             <SharedUI:StatusBarGameIDIndicator Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"

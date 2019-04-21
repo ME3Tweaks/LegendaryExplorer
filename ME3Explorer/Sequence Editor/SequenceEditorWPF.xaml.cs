@@ -134,6 +134,7 @@ namespace ME3Explorer.Sequence_Editor
         public ICommand SaveAsCommand { get; set; }
         public ICommand SaveImageCommand { get; set; }
         public ICommand SaveViewCommand { get; set; }
+        public ICommand AutoLayoutCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -142,6 +143,7 @@ namespace ME3Explorer.Sequence_Editor
             SaveAsCommand = new GenericCommand(SavePackageAs, PackageIsLoaded);
             SaveImageCommand = new GenericCommand(SaveImage, CurrentObjects.Any);
             SaveViewCommand = new GenericCommand(() => saveView(), CurrentObjects.Any);
+            AutoLayoutCommand = new GenericCommand(AutoLayout, CurrentObjects.Any);
         }
 
         private string _statusText;
@@ -600,6 +602,108 @@ namespace ME3Explorer.Sequence_Editor
                 {
                     GraphEditor.UpdateEdge(edge);
                 }
+            }
+        }
+
+        private void AutoLayout()
+        {
+            foreach (SObj obj in CurrentObjects)
+            {
+                obj.SetOffset(0,0); //remove existing positioning
+            }
+            const float HORIZONTAL_SPACING = 40;
+            const float VERTICAL_SPACING = 20;
+            const float VAR_SPACING = 10;
+            var visitedNodes = new HashSet<int>();
+            var eventNodes = CurrentObjects.OfType<SEvent>().ToList();
+            var varNodeLookup = CurrentObjects.OfType<SVar>().ToDictionary(obj => obj.UIndex);
+            var opNodeLookup = CurrentObjects.OfType<SBox>().ToDictionary(obj => obj.UIndex);
+            float vertOffset = 0;
+            foreach (SEvent eventNode in eventNodes)
+            {
+                visitedNodes.Add(eventNode.UIndex);
+                var tree = LayoutTree(eventNode);
+                foreach (var obj in tree) obj.TranslateBy(0, vertOffset);
+                vertOffset += tree.BoundingRect().Height + VERTICAL_SPACING;
+            }
+
+            //some Sequence Objects are orphans, stick them below everything else
+            var orphans = CurrentObjects.OfType<SBox>().Where(obj => !visitedNodes.Contains(obj.UIndex));
+            foreach (SBox orphan in orphans)
+            {
+                visitedNodes.Add(orphan.UIndex);
+                var tree = LayoutTree(orphan);
+                foreach (var obj in tree) obj.TranslateBy(0, vertOffset);
+                vertOffset += tree.BoundingRect().Height + VERTICAL_SPACING;
+            }
+
+            var unusedVars = CurrentObjects.OfType<SVar>().Where(obj => !visitedNodes.Contains(obj.UIndex));
+            float varOffset = 0;
+            foreach (SVar unusedVar in unusedVars)
+            {
+                unusedVar.TranslateBy(varOffset, vertOffset);
+                varOffset += unusedVar.GlobalFullWidth + HORIZONTAL_SPACING;
+            }
+
+            foreach (SeqEdEdge edge in graphEditor.edgeLayer)
+                GraphEditor.UpdateEdge(edge);
+
+            List<SObj> LayoutTree(SBox root)
+            {
+                var tree = new List<SObj>();
+                var vars = new List<SVar>();
+                foreach (var varLink in root.Varlinks)
+                {
+                    float dx = varLink.node.GlobalFullBounds.X - SVar.RADIUS;
+                    float dy = root.GlobalFullHeight + VAR_SPACING;
+                    foreach (int uIndex in varLink.Links.Where(uIndex => !visitedNodes.Contains(uIndex)))
+                    {
+                        visitedNodes.Add(uIndex);
+                        if (varNodeLookup.TryGetValue(uIndex, out SVar sVar))
+                        {
+                            sVar.TranslateBy(dx, dy);
+                            dy += sVar.GlobalFullHeight + VAR_SPACING;
+                            vars.Add(sVar);
+                        }
+                    }
+                }
+
+                var childTrees = new List<List<SObj>>();
+                var children = root.Outlinks.SelectMany(link => link.Links).Where(uIndex => !visitedNodes.Contains(uIndex));
+                foreach (int uIndex in children)
+                {
+                    visitedNodes.Add(uIndex);
+                    if (opNodeLookup.TryGetValue(uIndex, out SBox node))
+                    {
+                        List<SObj> subTree = LayoutTree(node);
+                        childTrees.Add(subTree);
+                        tree.AddRange(subTree);
+                    }
+                }
+                if (childTrees.Any())
+                {
+                    float dx = root.GlobalFullWidth + (HORIZONTAL_SPACING * (1 + childTrees.Count * 0.5f));
+                    float dy = 0;
+                    foreach (List<SObj> kids in childTrees)
+                    {
+                        foreach (var obj in kids) obj.TranslateBy(dx, dy);
+                        dy += kids.BoundingRect().Height + VERTICAL_SPACING;
+                    }
+                }
+
+                //center the root if there is more than one child
+                if (childTrees.Count > 1)
+                {
+                    float centerOffset = tree.OfType<SBox>().BoundingRect().Height / 2 - root.GlobalFullHeight / 2;
+                    root.TranslateBy(0, centerOffset);
+                    foreach (SVar sVar in vars)
+                    {
+                        sVar.TranslateBy(0, centerOffset);
+                    }
+                }
+                tree.AddRange(vars);
+                tree.Add(root);
+                return tree;
             }
         }
 

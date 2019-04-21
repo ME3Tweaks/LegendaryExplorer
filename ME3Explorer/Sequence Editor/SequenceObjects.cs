@@ -148,6 +148,7 @@ namespace ME3Explorer.SequenceObjects
 
     public class SVar : SObj
     {
+        public const float RADIUS = 30;
         public VarTypes type { get; set; }
         readonly SText val;
         protected PPath shape;
@@ -165,8 +166,8 @@ namespace ME3Explorer.SequenceObjects
             s = s.Replace("SFXSeqVar_", "");
             s = s.Replace("SeqVar_", "");
             type = getType(s);
-            const float w = 60;
-            const float h = 60;
+            const float w = RADIUS * 2;
+            const float h = RADIUS * 2;
             shape = PPath.CreateEllipse(0, 0, w, h);
             outlinePen = new Pen(getColor(type));
             shape.Pen = outlinePen;

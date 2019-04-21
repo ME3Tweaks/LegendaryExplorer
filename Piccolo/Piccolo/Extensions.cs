@@ -9,6 +9,10 @@ namespace UMD.HCIL.Piccolo
 {
     public static class Extensions
     {
+        public static RectangleF BoundingRect(this IEnumerable<PNode> nodes)
+        {
+            return nodes.Select(node => node.GlobalFullBounds).BoundingRect();
+        }
 
         /// <summary>
         /// Creates the smallest possible rectangle that contains all the provided rectangles
