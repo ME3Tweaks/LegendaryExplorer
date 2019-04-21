@@ -4,159 +4,189 @@
       "class": "SFXGame.SFXEnemySpawnPoint",
       "name": "SFXEnemySpawnPoint",
       "cylindercomponentarchetype": "SFXGame.Default__SFXEnemySpawnPoint.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "pathnode":  true 
     },
     "SFXNav_TurretPoint": {
       "class": "SFXGame.SFXNav_TurretPoint",
       "name": "SFXNav_TurretPoint",
       "cylindercomponentarchetype": "SFXGame.Default__SFXNav_TurretPoint.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "description": "A basic pathfinding node that can be used by enemies to place turrets and other spawnable objects at.",
+      "pathnode": true
     },
     "PathNode": {
       "class": "Engine.PathNode",
       "name": "PathNode",
       "cylindercomponentarchetype": "Engine.Default__PathNode.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "description": "A basic pathfinding node that can be used by nearly all AI.", 
+      "pathnode": true
     },
     "SFXNav_BoostNode": {
       "class": "SFXGame.SFXNav_BoostNode",
       "name": "SFXNav_BoostNode",
       "cylindercomponentarchetype": "SFXGame.Default__SFXNav_BoostNode.CollisionCylinder",
       "incomingreachspecclass": "Engine.ReachSpec",
-      "description": "Enemies can use boost nodes to transition up or down a vertical space. Note there is also a LargeBoostNode type for large enemies such as Banshees."
+      "description": "Enemies can use boost nodes to transition up or down a vertical space. Note there is also a LargeBoostNode type for large enemies such as Banshees.",
+      "pathnode": true
     },
     "SFXNav_JumpDownNode": {
       "class": "SFXGame.SFXNav_JumpDownNode",
       "name": "SFXNav_JumpDownNode",
       "cylindercomponentarchetype": "SFXGame.Default__SFXNav_JumpDownNode.CollisionCylinder",
       "incomingreachspecclass": "Engine.ReachSpec",
-      "description": "AI can jump down from this node to another node. The top one must be marked as bTop."
+      "description": "AI can jump down from this node to another node. The top one must be marked as bTop.",
+      "pathnode": true
     },
     "SFXNav_LargeBoostNode": {
       "class": "SFXGame.SFXNav_LargeBoostNode",
       "name": "SFXNav_LargeBoostNode",
       "cylindercomponentarchetype": "SFXGame.Default__SFXNav_LargeBoostNode.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "description": "Node that can be used for large boosts by enemies such as the Banshee.",
+      "pathnode": true
     },
     "SFXNav_LargeMantleNode": {
       "class": "SFXGame.SFXNav_LargeMantleNode",
       "name": "SFXNav_LargeMantleNode",
       "cylindercomponentarchetype": "SFXGame.Default__SFXNav_LargeMantleNode.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "pathnode": true
     },
     "SFXNav_ClimbWallNode": {
       "class": "SFXGame.SFXNav_ClimbWallNode",
       "name": "SFXNav_ClimbWallNode",
       "cylindercomponentarchetype": "SFXGame.Default__SFXNav_ClimbWallNode.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "description":  "Node that can be used as the start or end of a climbing action.",
+      "pathnode": true
     },
     "BioPathPoint": {
       "class": "SFXGame.BioPathPoint",
       "name": "BioPathPoint",
       "cylindercomponentarchetype": "SFXGame.Default__BioPathPoint.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "pathnode": true
     },
     "SFXDynamicCoverLink": {
       "class": "Engine.SFXDynamicCoverLink",
       "name": "SFXDynamicCoverLink",
       "cylindercomponentarchetype": "Engine.Default__SFXDynamicCoverLink.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "pathnode": true
     },
     "SFXDynamicCoverSlotMarker": {
       "class": "Engine.SFXDynamicCoverSlotMarker",
       "name": "SFXDynamicCoverSlotMarker",
       "cylindercomponentarchetype": "Engine.Default__SFXDynamicCoverSlotMarker.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "pathnode": true
     },
     "SFXNav_InteractionHenchOmniTool": {
       "class": "SFXGameContent.SFXNav_InteractionHenchOmniTool",
       "name": "SFXNav_InteractionHenchOmniTool",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchOmniTool.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "pathnode": true
     },
     "SFXNav_InteractionHenchOmniToolCrouch": {
       "class": "SFXGameContent.SFXNav_InteractionHenchOmniToolCrouch",
       "name": "SFXNav_InteractionHenchOmniToolCrouch",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchOmniToolCrouch.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "pathnode": true
     },
     "SFXNav_InteractionHenchBeckonFront": {
       "class": "SFXGameContent.SFXNav_InteractionHenchBeckonFront",
       "name": "SFXNav_InteractionHenchBeckonFront",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchBeckonFront.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "pathnode": true
     },
     "SFXNav_InteractionHenchBeckonRear": {
       "class": "SFXGameContent.SFXNav_InteractionHenchBeckonRear",
       "name": "SFXNav_InteractionHenchBeckonRear",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchBeckonRear.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "pathnode": true
     },
     "SFXNav_InteractionHenchCustom": {
       "class": "SFXGameContent.SFXNav_InteractionHenchCustom",
       "name": "SFXNav_InteractionHenchCustom",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchCustom.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "pathnode": true
     },
     "SFXNav_InteractionHenchCover": {
       "class": "SFXGameContent.SFXNav_InteractionHenchCover",
       "name": "SFXNav_InteractionHenchCover",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchCover.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "pathnode": true
     },
     "SFXNav_InteractionHenchCrouch": {
       "class": "SFXGameContent.SFXNav_InteractionHenchCrouch",
       "name": "SFXNav_InteractionHenchCrouch",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchCrouch.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "pathnode": true
     },
     "SFXNav_InteractionHenchInteractLow": {
       "class": "SFXGameContent.SFXNav_InteractionHenchInteractLow",
       "name": "SFXNav_InteractionHenchInteractLow",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchInteractLow.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "pathnode": true
     },
     "SFXNav_InteractionHenchManual": {
       "class": "SFXGameContent.SFXNav_InteractionHenchManual",
       "name": "SFXNav_InteractionHenchManual",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchManual.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "pathnode": true
     },
     "SFXNav_InteractionHenchStandIdle": {
       "class": "SFXGameContent.SFXNav_InteractionHenchStandIdle",
       "name": "SFXNav_InteractionHenchStandIdle",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchStandIdle.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "pathnode": true
     },
     "SFXNav_InteractionHenchStandTyping": {
       "class": "SFXGameContent.SFXNav_InteractionHenchStandTyping",
       "name": "SFXNav_InteractionHenchStandTyping",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchStandTyping.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "pathnode": true
     },
     "SFXNav_InteractionUseConsole": {
       "class": "SFXGameContent.SFXNav_InteractionUseConsole",
       "name": "SFXNav_InteractionUseConsole",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionUseConsole.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "pathnode": true
     },
     "SFXNav_InteractionStandGuard": {
       "class": "SFXGameContent.SFXNav_InteractionStandGuard",
       "name": "SFXNav_InteractionStandGuard",
       "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionStandGuard.CollisionCylinder",
-      "incomingreachspecclass": "Engine.ReachSpec"
+      "incomingreachspecclass": "Engine.ReachSpec",
+      "pathnode": true
     },
     "CoverLink": {
       "class": "Engine.CoverLink",
       "name": "CoverLink",
       "cylindercomponentarchetype": "Engine.Default__CoverLink.CollisionCylinder",
-      "description": "A standard pathfinding node that contains information about a continuous line of cover, defined by a list of CoverSlotMarkers. Information for AI to use cover is defined in this node, however it is significantly optimized and not well understood."
+      "description": "A standard pathfinding node that contains information about a continuous line of cover, defined by a list of CoverSlotMarkers. Information for AI to use cover is defined in this node, however it is significantly optimized and not well understood.",
+      "pathnode": true
     },
     "CoverSlotMarker": {
       "class": "Engine.CoverSlotMarker",
       "name": "CoverSlotMarker",
       "cylindercomponentarchetype": "Engine.Default__CoverSlotMarker.CollisionCylinder",
-      "description": "A node indicating where cover may be used. Information about this point of cover is defined in the owning CoverLink."
+      "description": "A node indicating where cover may be used. Information about this point of cover is defined in the owning CoverLink.",
+      "pathnode": true
     },
     "TargetPoint": {
       "class": "Engine.TargetPoint",

@@ -72,7 +72,6 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Pathfinding Editor WPF", new WeakReference(this));
             DataContext = this;
-
             StatusText = "Select package file to load";
             LoadCommands();
             InitializeComponent();
@@ -81,37 +80,17 @@ namespace ME3Explorer.Pathfinding_Editor
             graphEditor = (PathingGraphEditor)GraphHost.Child;
             graphEditor.BackColor = System.Drawing.Color.FromArgb(130, 130, 130);
             AllowRefresh = true;
-
-
-
-
-            //pathfindingMouseListener = new PathfindingMouseListener(this); //Must be member so we can release reference
-
-            //Stuff that can't be done in designer view easily
-            //showVolumesInsteadOfNodesToolStripMenuItem.DropDown.Closing += new ToolStripDropDownClosingEventHandler(DropDown_Closing);
-            //ViewingModesMenuItem.DropDown.Closing += new ToolStripDropDownClosingEventHandler(DropDown_Closing);
-            //sFXCombatZonesToolStripMenuItem.DropDown.Closing += new ToolStripDropDownClosingEventHandler(DropDown_Closing);
-            //staticMeshCollectionActorsToolStripMenuItem.DropDown.Closing += new ToolStripDropDownClosingEventHandler(DropDown_Closing);
-
-            //
-
             LoadRecentList();
             RefreshRecent(false);
-            //pathfindingNodeInfoPanel.PassPathfindingNodeEditorIn(this);
-
-            //graphEditor.AddInputEventListener(pathfindingMouseListener);
-
-            //graphEditor.Click += graphEditor_Click;
-            //graphEditor.DragDrop += PathfindingEditor_DragDrop;
-            //graphEditor.DragEnter += PathfindingEditor_DragEnter;
-
             zoomController = new PathingZoomController(graphEditor);
-            //CurrentFilterType = HeightFilterForm.FILTER_Z_NONE;
-            //CurrentZFilterValue = 0;
-
-
             SharedPathfinding.LoadClassesDB();
-
+            var types = SharedPathfinding.ExportClassDB.Where(x => x.Value.TryGetValue("pathnode", out string val) && val == "true").ToList();
+            foreach (var type in types)
+            {
+                NodeType nt = new NodeType(type.Key);
+                AvailableNodeChangeableTypes.Add(nt);
+            }
+            AvailableNodeChangeableTypes.Sort(x => x.ClassName);
             InitializeComponent();
             pathfindingMouseListener = new PathfindingMouseListener(this); //Must be member so we can release reference
             graphEditor.AddInputEventListener(pathfindingMouseListener);
@@ -1603,7 +1582,9 @@ namespace ME3Explorer.Pathfinding_Editor
                 graphEditor.RemoveInputEventListener(pathfindingMouseListener);
                 graphEditor.DragDrop -= GraphEditor_DragDrop;
                 graphEditor.DragEnter -= GraphEditor_DragEnter;
+#if DEBUG
                 graphEditor.DebugEventHandlers();
+#endif
                 graphEditor.Dispose();
                 GraphHost.Child = null; //This seems to be required to clear OnChildGotFocus handler from WinFormsHost
                 GraphHost.Dispose();
@@ -1653,6 +1634,11 @@ namespace ME3Explorer.Pathfinding_Editor
                 if (selectedNode is PathfindingNode)
                 {
                     CombatZones_TabItem.IsEnabled = true;
+                    NodeType_TabItem.IsEnabled = true;
+                    foreach (var availableNodeChangeableType in AvailableNodeChangeableTypes)
+                    {
+                        availableNodeChangeableType.Active = availableNodeChangeableType.ClassName == export.ClassName;
+                    }
 
                     CurrentNodeCombatZones.AddRange(CloneCombatZonesForSelections());
 
@@ -1677,6 +1663,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 else
                 {
                     CombatZones_TabItem.IsEnabled = false;
+                    NodeType_TabItem.IsEnabled = false;
                 }
 
                 CombatZonesLoading = false;
@@ -2508,6 +2495,29 @@ namespace ME3Explorer.Pathfinding_Editor
             else
             {
                 e.Effect = System.Windows.Forms.DragDropEffects.None;
+            }
+        }
+
+        public ObservableCollectionExtended<NodeType> AvailableNodeChangeableTypes { get; } = new ObservableCollectionExtended<NodeType>();
+        public class NodeType : NotifyPropertyChangedBase
+        {
+            private bool _active;
+            public bool Active
+            {
+                get => _active;
+                set => SetProperty(ref _active, value);
+            }
+
+            private string _className;
+            public string ClassName
+            {
+                get => _className;
+                set => SetProperty(ref _className, value);
+            }
+
+            public NodeType(string ClassName)
+            {
+                this.ClassName = ClassName;
             }
         }
     }

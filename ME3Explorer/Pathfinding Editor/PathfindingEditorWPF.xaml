@@ -9,7 +9,8 @@
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
         xmlns:pathfindinggraph="clr-namespace:UMD.HCIL.PathingGraphEditor;assembly=Piccolo"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        mc:Ignorable="d"
+    xmlns:fa="http://schemas.fontawesome.io/icons/"
+    mc:Ignorable="d"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         AllowDrop="True"
@@ -118,7 +119,7 @@
             <DockPanel DockPanel.Dock="Right" Width="300" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
                 <StatusBar DockPanel.Dock="Bottom">
                     <StatusBarItem HorizontalAlignment="Right">
-                    <TextBlock Name="StatusBar_RightSideFiltering" Text="{Binding CurrentFilteringText}"/>
+                        <TextBlock Name="StatusBar_RightSideFiltering" Text="{Binding CurrentFilteringText}"/>
                     </StatusBarItem>
                 </StatusBar>
                 <StackPanel DockPanel.Dock="Top" Margin="3">
@@ -148,6 +149,57 @@
                         <StackPanel Margin="3">
                             <TextBlock Text="This node is part of the following combat zones and playpens:" TextWrapping="Wrap" FontWeight="Bold"/>
                             <xctk:CheckListBox ItemsSource="{Binding CurrentNodeCombatZones}" DisplayMemberPath="DisplayString" SelectedMemberPath="Active" MinHeight="150" ItemSelectionChanged="CurrentCombatZones_SelectionChanged"/>
+                        </StackPanel>
+                    </TabItem>
+                    <TabItem Name="NodeType_TabItem" Header="Type">
+                        <StackPanel Margin="3">
+                            <TextBlock Text="Double click a type below to change this node to that type." TextWrapping="Wrap" FontWeight="Bold" Margin="3"/>
+                            <ListBox Name="AvailableNodeTypes_ListBox" MinHeight="50" ItemsSource="{Binding AvailableNodeChangeableTypes}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0">
+
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="20" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <fa:ImageAwesome Icon="CheckSquare" Grid.Column="0" Foreground="Gray" Height="16" HorizontalAlignment="Left">
+                                                <fa:ImageAwesome.Style>
+                                                    <Style TargetType="{x:Type fa:ImageAwesome}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Path=Active}" Value="false">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </fa:ImageAwesome.Style>
+                                            </fa:ImageAwesome>
+
+                                            <TextBlock Text="{Binding ClassName}" Grid.Column="1" >
+                                                <TextBlock.Style>
+                                                    <Style TargetType="{x:Type TextBlock}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Path=Active}" Value="true">
+                                                                <Setter Property="FontWeight" Value="Bold"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+
+
+                                            <!--<TextBlock Grid.Column="1">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0}_{1}">
+                                                        <Binding Path="ClassName" />
+                                                        <Binding Path="indexValue" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>-->
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
                         </StackPanel>
                     </TabItem>
                     <TabItem Header="Validation">
@@ -307,20 +359,6 @@
                             </ListBox.Resources>
                         </ListBox>
                     </DockPanel>
-                    <!-- Control to use if there are no items.
-                        <DockPanel MaxWidth="200" Visibility="Collapsed">
-                            <DockPanel.Style>
-                                <Style TargetType="DockPanel">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ActiveNodes.Count}" Value="0">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DockPanel.Style>
-
-                        </DockPanel>-->
-                    <!--</DockPanel>-->
                 </DockPanel>
 
                 <!-- Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}" -->
