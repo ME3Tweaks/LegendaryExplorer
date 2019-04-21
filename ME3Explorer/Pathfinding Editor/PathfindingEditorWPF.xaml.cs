@@ -1601,6 +1601,8 @@ namespace ME3Explorer.Pathfinding_Editor
             if (!e.Cancel)
             {
                 graphEditor.RemoveInputEventListener(pathfindingMouseListener);
+                graphEditor.DragDrop -= GraphEditor_DragDrop;
+                graphEditor.DragEnter -= GraphEditor_DragEnter;
                 graphEditor.DebugEventHandlers();
                 graphEditor.Dispose();
                 GraphHost.Child = null; //This seems to be required to clear OnChildGotFocus handler from WinFormsHost
@@ -2436,6 +2438,76 @@ namespace ME3Explorer.Pathfinding_Editor
                     var removed = nodeExport.RemoveProperty("Volumes");
                     Debug.WriteLine("prop removed: " + removed);
                 }
+            }
+        }
+
+        private void Window_DragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string ext = System.IO.Path.GetExtension(files[0]).ToLower();
+                if (ext != ".upk" && ext != ".pcc" && ext != ".sfm")
+                {
+                    e.Effects = DragDropEffects.None;
+                    e.Handled = true;
+                }
+            }
+            else
+            {
+                e.Effects = DragDropEffects.None;
+                e.Handled = true;
+            }
+        }
+
+        private void Window_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string ext = System.IO.Path.GetExtension(files[0]).ToLower();
+                if (ext == ".upk" || ext == ".pcc" || ext == ".sfm")
+                {
+                    LoadFile(files[0]);
+                }
+            }
+        }
+
+        private void GraphEditor_DragDrop(object sender, System.Windows.Forms.DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string ext = System.IO.Path.GetExtension(files[0]).ToLower();
+                if (ext == ".upk" || ext == ".pcc" || ext == ".sfm")
+                {
+                    LoadFile(files[0]);
+                }
+            }
+        }
+
+        private void GraphEditor_DragEnter(object sender, System.Windows.Forms.DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string ext = System.IO.Path.GetExtension(files[0]).ToLower();
+                if (ext != ".upk" && ext != ".pcc" && ext != ".sfm")
+                {
+                    e.Effect = System.Windows.Forms.DragDropEffects.None;
+                }
+                else
+                {
+                    e.Effect = System.Windows.Forms.DragDropEffects.All;
+                }
+            }
+            else
+            {
+                e.Effect = System.Windows.Forms.DragDropEffects.None;
             }
         }
     }

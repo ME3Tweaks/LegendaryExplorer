@@ -10,6 +10,9 @@
         xmlns:pathfindinggraph="clr-namespace:UMD.HCIL.PathingGraphEditor;assembly=Piccolo"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
+        DragOver="Window_DragOver"
+        Drop="Window_Drop"
+        AllowDrop="True"
         Closing="PathfinderEditorWPF_Closing"
         Title="Pathfinding Editor WPF" Height="750" Width="1300" MinWidth="900" MinHeight="200">
     <Window.Resources>
@@ -324,7 +327,7 @@
                 <global:InterpreterWPF x:Name="Properties_InterpreterWPF"/>
             </DockPanel>
             <WindowsFormsHost Name="GraphHost" VerticalAlignment="Stretch">
-                <pathfindinggraph:PathingGraphEditor/>
+                <pathfindinggraph:PathingGraphEditor DragEnter="GraphEditor_DragEnter" DragDrop="GraphEditor_DragDrop"/>
             </WindowsFormsHost>
         </DockPanel>
     </DockPanel>
