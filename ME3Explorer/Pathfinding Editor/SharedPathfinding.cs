@@ -204,7 +204,7 @@ namespace ME3Explorer.Pathfinding_Editor
             spec.WriteProperties(specProperties); //write it back.
         }
 
-        private static ImportEntry GetOrAddImport(IMEPackage Pcc, string importFullName)
+        public static ImportEntry GetOrAddImport(IMEPackage Pcc, string importFullName)
         {
             foreach (ImportEntry imp in Pcc.Imports)
             {

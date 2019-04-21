@@ -164,6 +164,9 @@
                                                 <ColumnDefinition Width="20" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
+                                            <Grid.InputBindings>
+                                                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding NodeTypeChangeCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+                                            </Grid.InputBindings>
                                             <fa:ImageAwesome Icon="CheckSquare" Grid.Column="0" Foreground="Gray" Height="16" HorizontalAlignment="Left">
                                                 <fa:ImageAwesome.Style>
                                                     <Style TargetType="{x:Type fa:ImageAwesome}">

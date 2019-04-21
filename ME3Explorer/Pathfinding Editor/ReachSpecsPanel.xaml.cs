@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ME3Explorer.PathfindingNodes;
+using Microsoft.Win32;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -32,6 +33,37 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             get => _reachSpecSizeToText;
             set => SetProperty(ref _reachSpecSizeToText, value);
+        }
+
+        private string _externalFileShortNameText;
+
+        private IMEPackage _externalFile;
+        public IMEPackage ExternalFile
+        {
+            get => _externalFile;
+            set => SetProperty(ref _externalFile, value);
+        }
+
+        private IExportEntry _externalPersisentLevelExport;
+        public IExportEntry ExternalPersisentLevelExport
+        {
+            get => _externalPersisentLevelExport;
+            set => SetProperty(ref _externalPersisentLevelExport, value);
+        }
+
+        public string ExternalFileShortNameText
+        {
+            get => _externalFileShortNameText;
+            set => SetProperty(ref _externalFileShortNameText, value);
+        }
+
+
+
+        private bool _toExternalNodeChecked;
+        public bool ToExternalNodeChecked
+        {
+            get => _toExternalNodeChecked;
+            set => SetProperty(ref _toExternalNodeChecked, value);
         }
 
         public ObservableCollectionExtended<ReachSpec> ReachSpecs { get; } = new ObservableCollectionExtended<ReachSpec>();
@@ -103,12 +135,80 @@ namespace ME3Explorer.Pathfinding_Editor
         }
 
         public ICommand CreateReachSpecCommand { get; set; }
+        public ICommand ChangeExternalFileCommand { get; set; }
+        public ICommand ToExternalNodeCommand { get; set; }
         //public ICommand ToggleSplinesCommand { get; set; }
 
         private void LoadCommands()
         {
             CreateReachSpecCommand = new RelayCommand(CreateReachSpec, CanCreateReachSpec);
+            ChangeExternalFileCommand = new RelayCommand(ChangeExternalFile, CanChangeExternalFile);
+            ToExternalNodeCommand = new RelayCommand(ToExternalCommandChanging, ExportIsLoaded);
             //FocusGotoCommand = new RelayCommand(FocusGoto, PackageIsLoaded);
+        }
+
+        private void ToExternalCommandChanging(object obj)
+        {
+            if (ExternalFile == null)
+            {
+                LoadExternalFile();
+            }
+
+            if (ExternalFile == null)
+            {
+                ToExternalNodeChecked = false;
+            }
+        }
+
+        private bool ExportIsLoaded(object obj)
+        {
+            return CurrentLoadedExport != null;
+        }
+
+        private bool CanChangeExternalFile(object obj)
+        {
+            return ToExternalNodeChecked;
+        }
+
+        private void ChangeExternalFile(object obj)
+        {
+            LoadExternalFile();
+            if (ExternalFile == null)
+            {
+                ToExternalNodeChecked = false;
+            }
+        }
+
+        private void LoadExternalFile()
+        {
+            OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
+            if (d.ShowDialog() == true)
+            {
+                try
+                {
+                    ExternalFile?.Release();
+                    ExternalFile = MEPackageHandler.OpenMEPackage(d.FileName);
+                    ExternalPersisentLevelExport = ExternalFile.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
+                    if (ExternalPersisentLevelExport == null)
+                    {
+                        ExternalFile.Release();
+                        ExternalFile = null;
+                        MessageBox.Show(d.FileName + " does not have a PersistentLevel export.");
+                        return;
+                    }
+
+                    ExternalFileShortNameText = System.IO.Path.GetFileName(d.FileName);
+
+                    //LoadFile(d.FileName);
+                }
+                catch (Exception ex)
+                {
+                    ExternalFile = null;
+                    ExternalFileShortNameText = "Error opening file";
+                    MessageBox.Show("Unable to open file:\n" + ex.Message);
+
+                }
+            }
         }
 
         private bool CanCreateReachSpec(object obj)
@@ -262,6 +362,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public override void Dispose()
         {
             ParentWindow = null;
+            ExternalFile?.Release();
         }
 
         public void SetDestinationNode(int destinationUIndex)
@@ -338,11 +439,12 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void RecalculateDestinationUI()
         {
-            if (int.TryParse(CreateReachSpecDestination_TextBox.Text, out int destIndex) && CurrentLoadedExport.FileRef.isUExport(destIndex))
+            var DestinationPackageToUse = ToExternalNodeChecked ? ExternalFile : CurrentLoadedExport.FileRef;
+            if (int.TryParse(CreateReachSpecDestination_TextBox.Text, out int destIndex) && DestinationPackageToUse.isUExport(destIndex))
             {
                 //Parse
-                IExportEntry destExport = CurrentLoadedExport.FileRef.getUExport(destIndex);
-                if (ParentWindow != null && ParentWindow.ActiveNodes.Contains(destExport))
+                IExportEntry destExport = DestinationPackageToUse.getUExport(destIndex);
+                if (ToExternalNodeChecked || (ParentWindow != null && ParentWindow.ActiveNodes.Contains(destExport)))
                 {
                     var destPoint = PathfindingEditorWPF.GetLocation(destExport);
 
@@ -551,7 +653,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         radius.Value = size.NodeRadius;
                         CurrentLoadedExport.WriteProperties(props);
                         RefreshSelectedReachSpec();
-                        
+
                     }
                 }
             }
