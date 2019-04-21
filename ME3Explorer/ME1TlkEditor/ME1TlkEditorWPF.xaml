@@ -44,6 +44,7 @@
         <Popup Name="popupDlg" Placement="Center" VerticalOffset="15" Width="640" Height="800" Margin="0,12,0,0" Closed="Evt_CloseXML" StaysOpen="false">
             <Border BorderBrush = "Black" BorderThickness="2" Background="AliceBlue" >
                 <TextBox Name="popoutXmlBox" Text="No xml loaded" Margin="15,0,15,0" VerticalAlignment = "Center" FontFamily = "Courier New" FontSize = "14" Focusable = "True" ScrollViewer.CanContentScroll = "True" ScrollViewer.VerticalScrollBarVisibility = "Visible" IsReadOnly = "True" TextWrapping = "Wrap" LostFocus="Evt_ViewXML"/>
+                <!--<RichTextBox Name="popoutXmlBox" Margin="15,0,15,0" VerticalAlignment = "Center" FontFamily = "Courier New" FontSize = "14" Focusable = "True" ScrollViewer.CanContentScroll = "True" ScrollViewer.VerticalScrollBarVisibility = "Visible" IsReadOnly = "True" LostFocus="Evt_ViewXML"/>-->
             </Border>
         </Popup>
         <ListBox Name="DisplayedString_ListBox" ItemsSource="{Binding CleanedStrings}" HorizontalContentAlignment="Stretch" SelectionChanged="DisplayedString_ListBox_SelectionChanged" IsTextSearchEnabled="True" TextSearch.TextPath="StringID" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
