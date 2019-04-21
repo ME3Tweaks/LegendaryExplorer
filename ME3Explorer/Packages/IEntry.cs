@@ -54,5 +54,6 @@ namespace ME3Explorer.Packages
         void setBinaryData(byte[] binaryData);
         T GetProperty<T>(string name) where T : UProperty;
         void WriteProperty(UProperty prop);
+        bool RemoveProperty(string propertyName);
     }
 }

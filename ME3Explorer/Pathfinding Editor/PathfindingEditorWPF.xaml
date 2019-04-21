@@ -144,7 +144,7 @@
                     <TabItem Name="CombatZones_TabItem" Header="Combat Zones">
                         <StackPanel Margin="3">
                             <TextBlock Text="This node is part of the following combat zones and playpens:" TextWrapping="Wrap" FontWeight="Bold"/>
-                            <xctk:CheckListBox ItemsSource="{Binding CurrentNodeCombatZones}" DisplayMemberPath="DisplayString" SelectedMemberPath="Active" MinHeight="150"/>
+                            <xctk:CheckListBox ItemsSource="{Binding CurrentNodeCombatZones}" DisplayMemberPath="DisplayString" SelectedMemberPath="Active" MinHeight="150" ItemSelectionChanged="CurrentCombatZones_SelectionChanged"/>
                         </StackPanel>
                     </TabItem>
                     <TabItem Header="Validation">

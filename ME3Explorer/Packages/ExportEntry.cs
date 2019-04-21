@@ -271,6 +271,30 @@ namespace ME3Explorer.Packages
             WriteProperties(props);
         }
 
+        public bool RemoveProperty(string propname)
+        {
+            var props = GetProperties();
+            UProperty propToRemove = null;
+            foreach (UProperty prop in props)
+            {
+                if (prop.Name.Name == propname)
+                {
+                    propToRemove = prop;
+                    break;
+                }
+            }
+
+            //outside for concurrent collection modification
+            if (propToRemove != null)
+            {
+                props.Remove(propToRemove);
+                WriteProperties(props);
+                return true;
+            }
+            return false;
+        }
+
+
         public int GetPropertyStart()
         {
             IMEPackage pcc = FileRef;

@@ -31,6 +31,7 @@ using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
 using static ME3Explorer.PathfindingEditor;
+using static ME3Explorer.PathfindingNodes.PathfindingNode;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -48,8 +49,6 @@ namespace ME3Explorer.Pathfinding_Editor
 
         //Layers
         private List<PathfindingNodeMaster> GraphNodes;
-        private bool NodeTagListLoading;
-        private bool isFirstLoad = true;
         private bool ChangingSelectionByGraphClick;
         private IExportEntry PersisentLevelExport;
 
@@ -982,24 +981,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
             PointF centerpoint = new PointF((float)(fullx / GraphNodes.Count), (float)(fully / GraphNodes.Count));
             CreateConnections();
-
-            NodeTagListLoading = true;
-            //allTagsCombobox.Items.Clear();
-            //List<string> tags = new List<string>();
-            //foreach (PathfindingNodeMaster n in GraphNodes)
-            //{
-            //    if (n.NodeTag != null && n.NodeTag != "")
-            //    {
-            //        tags.Add(n.NodeTag);
-            //    }
-            //}
-            //tags = tags.Distinct().ToList();
-            //tags.Sort();
-            //tags.Insert(0, "Node tags list");
-            //allTagsCombobox.Items.AddRange(tags.ToArray());
-            //allTagsCombobox.SelectedIndex = 0;
             TagsList.ClearEx();
-            NodeTagListLoading = false;
             foreach (var node in GraphNodes)
             {
                 node.MouseDown += node_MouseDown;
@@ -1655,6 +1637,8 @@ namespace ME3Explorer.Pathfinding_Editor
 
             if (ActiveNodes_ListBox.SelectedItem != null)
             {
+                CombatZonesLoading = true;
+
                 IExportEntry export = (IExportEntry)ActiveNodes_ListBox.SelectedItem;
                 NodeName = $"{export.ObjectName}_{export.indexValue}";
                 NodeNameSubText = $"Export {export.UIndex}";
@@ -1692,6 +1676,8 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     CombatZones_TabItem.IsEnabled = false;
                 }
+
+                CombatZonesLoading = false;
 
                 PathfindingEditorWPF_ReachSpecsPanel.LoadExport(export);
 
@@ -2311,6 +2297,8 @@ namespace ME3Explorer.Pathfinding_Editor
         private double _zfilteringvalue = 0;
 
         private EZFilterIncludeDirection _zfilteringmode = EZFilterIncludeDirection.None;
+        private bool CombatZonesLoading;
+
         /// <summary>
         /// The current Z filtering mode
         /// </summary>
@@ -2373,5 +2361,82 @@ namespace ME3Explorer.Pathfinding_Editor
             SetFilteringMode(EZFilterIncludeDirection.None);
         }
 
+        private void CurrentCombatZones_SelectionChanged(object sender,
+            Xceed.Wpf.Toolkit.Primitives.ItemSelectionChangedEventArgs e)
+        {
+            if (!CombatZonesLoading && e.Item is CombatZone itemChanging &&
+                ActiveNodes_ListBox.SelectedItem is IExportEntry nodeExport)
+            {
+                ArrayProperty<StructProperty> volumesList =
+                    nodeExport.GetProperty<ArrayProperty<StructProperty>>("Volumes");
+                if (e.IsSelected && volumesList == null)
+                {
+                    volumesList = new ArrayProperty<StructProperty>(ArrayType.Struct, "Volumes");
+                }
+
+                if (e.IsSelected)
+                {
+                    PropertyCollection actorRefProps = new PropertyCollection();
+
+                    //Get GUID
+                    var guid = itemChanging.export.GetProperty<StructProperty>("CombatZoneGuid");
+                    guid.Name = "Guid";
+                    actorRefProps.AddOrReplaceProp(guid);
+                    actorRefProps.AddOrReplaceProp(new ObjectProperty(itemChanging.export.UIndex, "Actor"));
+                    StructProperty actorReference = new StructProperty("ActorReference", actorRefProps, isImmutable: true);
+                    volumesList.Add(actorReference);
+
+                    PathfindingNode s = GraphNodes.FirstOrDefault(o => o.UIndex == nodeExport.UIndex) as PathfindingNode;
+                    if (s != null)
+                    {
+                        s.Volumes.Add(new Volume(actorReference));
+                        //todo: update and active combat zone pen for this node
+                    }
+                }
+                else
+                {
+                    //Removing
+                    StructProperty itemToRemove = null;
+                    foreach (StructProperty actorReference in volumesList)
+                    {
+                        var actor = actorReference.GetProp<ObjectProperty>("Actor");
+                        if (actor.Value == itemChanging.export.UIndex)
+                        {
+                            itemToRemove = actorReference;
+                            break;
+                        }
+                    }
+
+                    if (itemToRemove != null)
+                    {
+                        volumesList.Remove(itemToRemove);
+                        PathfindingNode s = GraphNodes.FirstOrDefault(o => o.UIndex == nodeExport.UIndex) as PathfindingNode;
+                        if (s != null)
+                        {
+                            foreach (Volume v in s.Volumes)
+                            {
+                                if (v.ActorUIndex == itemChanging.export.UIndex)
+                                {
+                                    s.Volumes.Remove(v);
+                                    //todo: update and active combat zone pen for this node
+                                    break;
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+                if (volumesList.Count > 0)
+                {
+                    nodeExport.WriteProperty(volumesList);
+                }
+                else
+                {
+                    var removed = nodeExport.RemoveProperty("Volumes");
+                    Debug.WriteLine("prop removed: " + removed);
+                }
+            }
+        }
     }
 }
