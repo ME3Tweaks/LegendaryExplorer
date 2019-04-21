@@ -21,13 +21,57 @@ namespace ME3Explorer.SharedUI
     public partial class EntrySelectorDialogWPF : NotifyPropertyChangedWindowBase, IDisposable
     {
         private IMEPackage Pcc;
+        public ObservableCollectionExtended<object> AllEntriesList { get; } = new ObservableCollectionExtended<object>();
 
-        public EntrySelectorDialogWPF(IMEPackage pcc, SupportedTypes SupportedInputTypes)
+        /// <summary>
+        /// Instantiates a EntrySelectorDialog WPF dialog
+        /// </summary>
+        /// <param name="owner">WPF owning window. Used for centering. Set to null if the calling window is not WPF based</param>
+        /// <param name="pcc">Package file to load entries from</param>
+        /// <param name="SupportedInputTypes">Supported selection types</param>
+        public EntrySelectorDialogWPF(Window owner, IMEPackage pcc, SupportedTypes SupportedInputTypes)
         {
             this.Pcc = pcc;
             this.SupportedInputTypes = SupportedInputTypes;
+
+            var allEntriesBuilding = new List<object>();
+            if (SupportedInputTypes.HasFlag(SupportedTypes.Imports))
+            {
+                for (int i = Pcc.Imports.Count - 1; i >= 0; i--)
+                {
+                    allEntriesBuilding.Add(Pcc.Imports[i]);
+                }
+            }
+            if (SupportedInputTypes.HasFlag(SupportedTypes.Exports))
+            {
+                foreach (IExportEntry exp in Pcc.Exports)
+                {
+                    allEntriesBuilding.Add(exp);
+                }
+            }
+            AllEntriesList.ReplaceAll(allEntriesBuilding);
+            Owner = owner;
             DataContext = this;
+            LoadCommands();
             InitializeComponent();
+        }
+
+        public ICommand OKCommand { get; private set; }
+        private void LoadCommands()
+        {
+            OKCommand = new RelayCommand(AcceptSelection, CanAcceptSelection);
+        }
+
+        private bool CanAcceptSelection(object obj)
+        {
+            return EntrySelector_ComboBox.SelectedItem is IEntry;
+        }
+
+        private void AcceptSelection(object obj)
+        {
+            DialogResult = true;
+            ChosenEntry = EntrySelector_ComboBox.SelectedItem as IEntry;
+            Dispose();
         }
 
         public IEntry ChosenEntry;
@@ -49,61 +93,14 @@ namespace ME3Explorer.SharedUI
                 switch (SupportedInputTypes)
                 {
                     case SupportedTypes.Exports:
-                        return "Enter an export UIndex";
+                        return "Select an export";
                     case SupportedTypes.Imports:
-                        return "Enter an import UIndex";
+                        return "Select an import";
                     case SupportedTypes.ExportsAndImports:
-                        return "Enter an import or export UIndex";
+                        return "Select an import or export";
                 }
                 return "Unknown input type selected";
             }
-        }
-
-        private string _entryPreviewText = "Enter a value";
-        public string EntryPreviewText { get => _entryPreviewText; set => SetProperty(ref _entryPreviewText, value); }
-
-        private void EntryUIndex_TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-            if (int.TryParse(EntryUIndex_TextBox.Text, out int uindex) && uindex != 0)
-            {
-
-                if ((SupportedInputTypes & SupportedTypes.Exports) != 0)
-                {
-                    if (Pcc.isUExport(uindex))
-                    {
-                        //Parse
-                        IExportEntry destExport = Pcc.getUExport(uindex);
-                        EntryPreviewText = $"{destExport.GetFullPath}_{destExport.indexValue} (EXPORT)";
-                        OK_Button.IsEnabled = true;
-                        return;
-                    }
-                    else if (uindex > Pcc.ExportCount)
-                    {
-                        EntryPreviewText = "Invalid export index (out of bounds)";
-                    }
-                }
-                else if ((SupportedInputTypes & SupportedTypes.Imports) != 0)
-                {
-                    if (Pcc.isUImport(uindex))
-                    {
-                        //Parse
-                        ImportEntry destImport = Pcc.getUImport(uindex);
-                        EntryPreviewText = $"{destImport.GetFullPath}_{destImport.indexValue} (IMPORT)";
-                        OK_Button.IsEnabled = true;
-                        return;
-                    }
-                    else if (Math.Abs(uindex) > Pcc.ImportCount)
-                    {
-                        EntryPreviewText = "Invalid import index (out of bounds)";
-                    }
-                }
-            }
-            else
-            {
-                EntryPreviewText = "Invalid input";
-            }
-            OK_Button.IsEnabled = false;
         }
 
         #region IDisposable Support
@@ -144,9 +141,7 @@ namespace ME3Explorer.SharedUI
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
-            ChosenEntry = Pcc.getEntry(int.Parse(EntryUIndex_TextBox.Text));
-            Dispose();
+            
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

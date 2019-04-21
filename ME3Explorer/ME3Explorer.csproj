@@ -554,6 +554,9 @@
     <Compile Include="SharedUI\Converters\NullEnabledConverter.cs" />
     <Compile Include="SharedUI\Converters\PackageEditorWPFConverters.cs" />
     <Compile Include="SharedUI\Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="SharedUI\ExportLoaderHostedWindow.xaml.cs">
+      <DependentUpon>ExportLoaderHostedWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SharedUI\EditableComboBox.cs" />
     <Compile Include="SharedUI\EditableTextBlock.cs" />
     <Compile Include="SharedUI\EditableComboBoxAdorner.cs" />
@@ -1055,6 +1058,10 @@
     <Page Include="SharedUI\AddPropertyDialogWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedUI\ExportLoaderHostedWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="SharedUI\EntrySelectorDialogWPF.xaml">
       <SubType>Designer</SubType>
