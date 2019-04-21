@@ -279,26 +279,6 @@ namespace ME3Explorer.ME1TlkEditor
                 }
                 popoutXmlBox.Text = xmlTLK.ToString();
 
-                //popoutXmlBox.Document = new FlowDocument();
-                //for (int i = 0; i < LoadedStrings.Count; i++)
-                //{
-                //    AppendText("<string>\r\n", "Blue");
-                //    AppendText("<id>", "Blue");
-                //    AppendText(LoadedStrings[i].StringID.ToString(), "Black");
-                //    AppendText("</id>\r\n", "Blue");
-                //    AppendText("<flags>", "Blue");
-                //    AppendText(LoadedStrings[i].Flags.ToString(), "Black");
-                //    AppendText("</flags>\r\n", "Blue");
-                //    AppendText("<data>", "Blue");
-                //    if (LoadedStrings[i].Flags != 1)
-                //        AppendText("-1", "Black");
-                //    else
-                //        AppendText(LoadedStrings[i].Data.ToString(), "Black");
-                //    AppendText("</data>\r\n", "Blue");
-                //    AppendText("</string>\r\n", "Blue");
-                //}
-
-
                 popupDlg.Height = LowerDock.ActualHeight + DisplayedString_ListBox.ActualHeight;
                 popupDlg.Width = DisplayedString_ListBox.ActualWidth;
                 btnViewXML.ToolTip = "Close XML View.";
@@ -306,19 +286,6 @@ namespace ME3Explorer.ME1TlkEditor
                 xmlUp = true;
             }
         }
-
-        //private void AppendText(string text, string color)
-        //{
-        //    BrushConverter bc = new BrushConverter();
-        //    TextRange tr = new TextRange(popoutXmlBox.Document.ContentEnd, popoutXmlBox.Document.ContentEnd);
-        //    tr.Text = text;
-        //    try
-        //    {
-        //        tr.ApplyPropertyValue(TextElement.ForegroundProperty,
-        //            bc.ConvertFromString(color));
-        //    }
-        //    catch (FormatException) { }
-        //}
 
         private async void Evt_CloseXML(object sender, EventArgs e)
         {
