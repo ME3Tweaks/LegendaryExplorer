@@ -147,6 +147,31 @@ namespace ME3Explorer.ActorNodes
         }
     }
 
+    public class BioPlaypenVolumeAdditive : ActorNode
+    {
+
+        private static Color outlinePenColor = Color.Orange;
+        private static PointF[] outlineShape = new PointF[] { new PointF(10, 0), new PointF(50, 10), new PointF(40, 50), new PointF(0, 40) };
+
+        public BioPlaypenVolumeAdditive(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool drawAsPolygon = false)
+            : base(idx, p, grapheditor)
+        {
+            Bounds = new RectangleF(0, 0, 50, 50);
+            SetShape(drawAsPolygon);
+            TranslateBy(x, y);
+        }
+
+        public override Color GetDefaultShapeColor()
+        {
+            return outlinePenColor;
+        }
+
+        public override PointF[] GetDefaultShapePoints()
+        {
+            return outlineShape;
+        }
+    }
+
     public class DynamicBlockingVolume : ActorNode
     {
         private static Color outlinePenColor = Color.FromArgb(255, 0, 0);

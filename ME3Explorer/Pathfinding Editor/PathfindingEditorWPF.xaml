@@ -24,7 +24,7 @@
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
             <MenuItem Header="{Binding CurrentNodeXY}" HeaderStringFormat="Set node X,Y to graph position ({0})" Click="SetGraphXY_Clicked" ToolTip="Sets the X,Y position of this node to the same coordinates as on the graph."/>
             <MenuItem Header="Clone node" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one" />
-            <MenuItem Header="Remove from level" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one"/>
+            <MenuItem Header="Remove from level" Click="RemoveFromLevel_Clicked" ToolTip="Removes this object from the level"/>
             <MenuItem Header="Filter nodes by Z value"  IsChecked="{Binding ZFilteringMode, Converter={StaticResource EZFilteringActiveConverter}, ConverterParameter='NotNone'}">
                 <MenuItem IsEnabled="False" Header="{Binding CurrentFilteringText}"/>
                 <Separator/>
@@ -97,6 +97,7 @@
             <MenuItem Header="Experiments" Padding="4">
                 <MenuItem Header="Flip level upside down" Command="{Binding FlipLevelCommand}"/>
                 <MenuItem Header="Build linear pathfinding chain from path logger (ASI)" Command="{Binding BuildPathfindingChainCommand}"/>
+                <MenuItem Header="Pop out interpreter for current node" Command="{Binding PopoutInterpreterCommand}"/>
             </MenuItem>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
@@ -142,18 +143,18 @@
                 </StackPanel>
 
                 <TabControl Name="PathfindingNodeTabControl">
-                    <TabItem Header="ReachSpecs">
+                    <TabItem Name="ReachSpecs_TabItem" Header="ReachSpecs">
                         <local:ReachSpecsPanel x:Name="PathfindingEditorWPF_ReachSpecsPanel"/>
                     </TabItem>
-                    <TabItem Name="CombatZones_TabItem" Header="Combat Zones">
-                        <StackPanel Margin="3">
-                            <TextBlock Text="This node is part of the following combat zones and playpens:" TextWrapping="Wrap" FontWeight="Bold"/>
+                    <TabItem Name="CombatZones_TabItem" Header="Zones">
+                        <DockPanel Margin="3">
+                            <TextBlock DockPanel.Dock="Top" Text="This node is part of the following combat zones and playpens:" TextWrapping="Wrap" FontWeight="Bold"/>
                             <xctk:CheckListBox ItemsSource="{Binding CurrentNodeCombatZones}" DisplayMemberPath="DisplayString" SelectedMemberPath="Active" MinHeight="150" ItemSelectionChanged="CurrentCombatZones_SelectionChanged"/>
-                        </StackPanel>
+                        </DockPanel>
                     </TabItem>
                     <TabItem Name="NodeType_TabItem" Header="Type">
-                        <StackPanel Margin="3">
-                            <TextBlock Text="Double click a type below to change this node to that type." TextWrapping="Wrap" FontWeight="Bold" Margin="3"/>
+                        <DockPanel Margin="3">
+                            <TextBlock DockPanel.Dock="Top" Text="Double click a type below to change this node to that type." TextWrapping="Wrap" FontWeight="Bold" Margin="3"/>
                             <ListBox Name="AvailableNodeTypes_ListBox" MinHeight="50" ItemsSource="{Binding AvailableNodeChangeableTypes}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
@@ -200,7 +201,7 @@
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
-                        </StackPanel>
+                        </DockPanel>
                     </TabItem>
                     <TabItem Header="Validation">
                         <local:ValidationPanel x:Name="PathfindingEditorWPF_ValidationPanel"/>
@@ -261,9 +262,9 @@
             </DockPanel>
             <DockPanel DockPanel.Dock="Bottom" MaxHeight="300" HorizontalAlignment="Stretch" LastChildFill="True" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Visible}">
                 <DockPanel DockPanel.Dock="Left">
-                    <Expander DockPanel.Dock="Left" Name="CombatZonesSMC_Expander" ExpandDirection="Right" IsExpanded="False" Background="Orange" Padding="2" MaxWidth="210">
+                    <Expander DockPanel.Dock="Left" Name="CombatZonesSMC_Expander" ExpandDirection="Right" IsExpanded="False" Background="Orange" Padding="2" MaxWidth="310">
                         <Expander.Header>
-                            <TextBlock Text="Combat Zones &amp; Static Mesh Collections" VerticalAlignment="Center" Margin="0,0,4,0">
+                            <TextBlock Text="Zones &amp; Static Mesh Collections" VerticalAlignment="Center" Margin="0,0,4,0">
                                 <TextBlock.LayoutTransform>
                                     <RotateTransform Angle="-90"/>
                                 </TextBlock.LayoutTransform>
@@ -273,7 +274,7 @@
                             <TextBlock Text="Static Mesh Collections" Margin="5,5,5,0" FontWeight="Bold" TextAlignment="Center"/>
                             <TextBlock Text="Select items to show items in that collection" Foreground="Gray" FontSize="10" TextWrapping="Wrap" TextAlignment="Center"/>
                             <xctk:CheckListBox MinHeight="70" ItemsSource="{Binding StaticMeshCollections}" DisplayMemberPath="DisplayString" SelectedMemberPath="Active" ItemSelectionChanged="StaticMeshCollectionActors_ItemSelectionChanged"/>
-                            <TextBlock Text="Combat Zones" FontWeight="Bold"  TextAlignment="Center" Margin="0,10,0,0"/>
+                            <TextBlock Text="Zones" FontWeight="Bold"  TextAlignment="Center" Margin="0,10,0,0"/>
                             <TextBlock Text="Select an item to highlight nodes in that combat zone" Foreground="Gray" FontSize="10" Margin="3,0" TextWrapping="Wrap"  TextAlignment="Center"/>
                             <xctk:CheckListBox MinHeight="70" ItemsSource="{Binding CombatZones}" DisplayMemberPath="DisplayString" SelectedMemberPath="Active" ItemSelectionChanged="CombatZones_ItemSelectionChanged"/>
                         </StackPanel>

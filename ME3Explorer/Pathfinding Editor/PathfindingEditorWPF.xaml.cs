@@ -5,16 +5,10 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using ME3Explorer.ActorNodes;
 using ME3Explorer.Packages;
@@ -25,7 +19,6 @@ using ME3Explorer.SplineNodes;
 using ME3Explorer.Unreal;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using UMD.HCIL.PathingGraphEditor;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
@@ -43,7 +36,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public static string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "SFXNav_HarvesterMoveNode", "SFXNav_LeapNodeHumanoid", "MantleMarker", "SFXDynamicPathNode","BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode",
                 "SFXNav_InteractionHenchOmniTool", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionHenchBeckonFront", "SFXNav_InteractionHenchBeckonRear", "SFXNav_InteractionHenchCustom", "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow", "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping", "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionInspectWeapon", "SFXNav_InteractionOmniToolScan"};
-        public static string[] actorNodeClasses = { "BlockingVolume", "DynamicBlockingVolume", "DynamicTriggerVolume", "SFXMedkit", "StaticMeshActor", "SFXMedStation", "InterpActor", "SFXDoor", "BioTriggerVolume", "TargetPoint", "SFXArmorNode", "BioTriggerStream", "SFXTreasureNode", "SFXPointOfInterest", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer_Simulator", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume", "SFXOperation_ObjectiveSpawnPoint" };
+        public static string[] actorNodeClasses = { "BlockingVolume", "BioPlaypenVolumeAdditive", "DynamicBlockingVolume", "DynamicTriggerVolume", "SFXMedkit", "StaticMeshActor", "SFXMedStation", "InterpActor", "SFXDoor", "BioTriggerVolume", "TargetPoint", "SFXArmorNode", "BioTriggerStream", "SFXTreasureNode", "SFXPointOfInterest", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer_Simulator", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume", "SFXOperation_ObjectiveSpawnPoint" };
         public static string[] splineNodeClasses = { "SplineActor" };
         public static string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
 
@@ -59,8 +52,8 @@ namespace ME3Explorer.Pathfinding_Editor
         public ObservableCollectionExtended<IExportEntry> ActiveNodes { get; set; } = new ObservableCollectionExtended<IExportEntry>();
         public ObservableCollectionExtended<string> TagsList { get; set; } = new ObservableCollectionExtended<string>();
         public ObservableCollectionExtended<StaticMeshCollection> StaticMeshCollections { get; set; } = new ObservableCollectionExtended<StaticMeshCollection>();
-        public ObservableCollectionExtended<CombatZone> CombatZones { get; } = new ObservableCollectionExtended<CombatZone>();
-        public ObservableCollectionExtended<CombatZone> CurrentNodeCombatZones { get; } = new ObservableCollectionExtended<CombatZone>();
+        public ObservableCollectionExtended<Zone> CombatZones { get; } = new ObservableCollectionExtended<Zone>();
+        public ObservableCollectionExtended<Zone> CurrentNodeCombatZones { get; } = new ObservableCollectionExtended<Zone>();
 
         private List<IExportEntry> AllLevelObjects = new List<IExportEntry>();
         public string CurrentFile;
@@ -148,6 +141,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand BuildPathfindingChainCommand { get; set; }
         public ICommand ShowNodeSizesCommand { get; set; }
         public ICommand AddExportToLevelCommand { get; set; }
+        public ICommand PopoutInterpreterCommand { get; set; }
         private void LoadCommands()
         {
             RefreshCommand = new RelayCommand(RefreshGraph, PackageIsLoaded);
@@ -175,11 +169,26 @@ namespace ME3Explorer.Pathfinding_Editor
 
             ShowNodeSizesCommand = new RelayCommand(ToggleNodeSizesDisplay, (o) => { return true; });
             AddExportToLevelCommand = new RelayCommand(AddExportToLevel, PackageIsLoaded);
+
+            PopoutInterpreterCommand = new RelayCommand(PopoutInterpreterWPF, NodeIsSelected);
+        }
+
+        private void PopoutInterpreterWPF(object obj)
+        {
+            IExportEntry export = ActiveNodes_ListBox.SelectedItem as IExportEntry;
+            ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), export);
+            elhw.Title = $"Interpreter - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {Pcc.FileName}";
+            elhw.Show();
+        }
+
+        private bool NodeIsSelected(object obj)
+        {
+            return ActiveNodes_ListBox.SelectedItem is IExportEntry;
         }
 
         private void AddExportToLevel(object obj)
         {
-            using (EntrySelectorDialogWPF dialog = new EntrySelectorDialogWPF(Pcc, EntrySelectorDialogWPF.SupportedTypes.Exports))
+            using (EntrySelectorDialogWPF dialog = new EntrySelectorDialogWPF(this, Pcc, EntrySelectorDialogWPF.SupportedTypes.Exports))
             {
                 if (dialog.ShowDialog().Value && dialog.ChosenEntry is IExportEntry selectedEntry)
                 {
@@ -207,7 +216,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show($"{selectedEntry.UIndex} {selectedEntry}_{selectedEntry.indexValue} is already in the level.");
+                        System.Windows.MessageBox.Show($"{selectedEntry.UIndex} {selectedEntry.GetFullPath}_{selectedEntry.indexValue} is already in the level.");
                     }
                 }
             }
@@ -874,13 +883,13 @@ namespace ME3Explorer.Pathfinding_Editor
                         }
                     }
 
-                    if (exportEntry.ObjectName == "StaticMeshCollectionActor")
+                    if (exportEntry.ClassName == "StaticMeshCollectionActor")
                     {
                         StaticMeshCollections.Add(new StaticMeshCollection(exportEntry));
                     }
-                    else if (exportEntry.ObjectName == "SFXCombatZone")
+                    else if (exportEntry.ClassName == "SFXCombatZone" || exportEntry.ClassName == "BioPlaypenVolumeAdditive")
                     {
-                        CombatZones.Add(new CombatZone(exportEntry));
+                        CombatZones.Add(new Zone(exportEntry));
                     }
 
                     if (ShowEverythingElseLayer && !isParsedByExistingLayer && isAllowedVisibleByZFiltering(exportEntry))
@@ -1162,6 +1171,9 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     case "BlockingVolume":
                         actorNode = new BlockingVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_BlockingVolumes);
+                        break;
+                    case "BioPlaypenVolumeAdditive":
+                        actorNode = new BioPlaypenVolumeAdditive(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "DynamicBlockingVolume":
                         actorNode = new DynamicBlockingVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_DynamicBlockingVolumes);
@@ -1633,6 +1645,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 if (selectedNode is PathfindingNode)
                 {
+                    ReachSpecs_TabItem.IsEnabled = true;
                     CombatZones_TabItem.IsEnabled = true;
                     NodeType_TabItem.IsEnabled = true;
                     foreach (var availableNodeChangeableType in AvailableNodeChangeableTypes)
@@ -1650,7 +1663,7 @@ namespace ME3Explorer.Pathfinding_Editor
                             ObjectProperty actorRef = volume.GetProp<ObjectProperty>("Actor");
                             if (actorRef != null && actorRef.Value > 0)
                             {
-                                CombatZone clonedZone = CurrentNodeCombatZones.FirstOrDefault(x => x.export.UIndex == actorRef.Value);
+                                Zone clonedZone = CurrentNodeCombatZones.FirstOrDefault(x => x.export.UIndex == actorRef.Value);
                                 if (clonedZone != null) clonedZone.Active = true;
                             }
                         }
@@ -1662,6 +1675,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 }
                 else
                 {
+                    ReachSpecs_TabItem.IsEnabled = false;
                     CombatZones_TabItem.IsEnabled = false;
                     NodeType_TabItem.IsEnabled = false;
                 }
@@ -1801,12 +1815,12 @@ namespace ME3Explorer.Pathfinding_Editor
             OnPropertyChanged(nameof(NodeTypeDescriptionText));
         }
 
-        private List<CombatZone> CloneCombatZonesForSelections()
+        private List<Zone> CloneCombatZonesForSelections()
         {
-            List<CombatZone> clones = new List<CombatZone>();
-            foreach (CombatZone z in CombatZones)
+            List<Zone> clones = new List<Zone>();
+            foreach (Zone z in CombatZones)
             {
-                clones.Add(new CombatZone(z));
+                clones.Add(new Zone(z));
             }
 
             return clones;
@@ -2164,7 +2178,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
 
         [DebuggerDisplay("{export.UIndex} Combat Zone (Active: {Active})")]
-        public class CombatZone : NotifyPropertyChangedBase
+        public class Zone : NotifyPropertyChangedBase
         {
             public IExportEntry export { get; private set; }
 
@@ -2172,7 +2186,7 @@ namespace ME3Explorer.Pathfinding_Editor
             public bool Active { get => _active; set => SetProperty(ref _active, value); }
             public string DisplayString { get => $"{export.UIndex} {export.ObjectName}_{export.indexValue}"; }
 
-            public CombatZone(IExportEntry combatZone)
+            public Zone(IExportEntry combatZone)
             {
                 this.export = combatZone;
             }
@@ -2181,7 +2195,7 @@ namespace ME3Explorer.Pathfinding_Editor
             /// Copy constructor
             /// </summary>
             /// <param name="combatZone"></param>
-            public CombatZone(CombatZone combatZone)
+            public Zone(Zone combatZone)
             {
                 export = combatZone.export;
                 Active = combatZone.Active;
@@ -2208,7 +2222,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 IsCombatZonesSingleSelecting = false;
 
                 //Highlight active combat zone
-                CombatZone activeZone = CombatZones.FirstOrDefault(x => x.Active);
+                Zone activeZone = CombatZones.FirstOrDefault(x => x.Active);
 
                 //These statements are split into two groups for optimization purposes
                 if (activeZone != null)
@@ -2353,7 +2367,7 @@ namespace ME3Explorer.Pathfinding_Editor
         private void CurrentCombatZones_SelectionChanged(object sender,
             Xceed.Wpf.Toolkit.Primitives.ItemSelectionChangedEventArgs e)
         {
-            if (!CombatZonesLoading && e.Item is CombatZone itemChanging &&
+            if (!CombatZonesLoading && e.Item is Zone itemChanging &&
                 ActiveNodes_ListBox.SelectedItem is IExportEntry nodeExport)
             {
                 ArrayProperty<StructProperty> volumesList =
@@ -2518,6 +2532,50 @@ namespace ME3Explorer.Pathfinding_Editor
             public NodeType(string ClassName)
             {
                 this.ClassName = ClassName;
+            }
+        }
+
+        private void RemoveFromLevel_Clicked(object sender, RoutedEventArgs e)
+        {
+            AllowRefresh = false;
+            IExportEntry nodeEntry = ActiveNodes_ListBox.SelectedItem as IExportEntry;
+
+            //Read persistent level binary
+            byte[] data = PersisentLevelExport.Data;
+
+            //find start of class binary (end of props)
+            int start = PersisentLevelExport.propsEnd();
+
+            start += 4; //skip export id
+            uint numberofitems = BitConverter.ToUInt32(data, start);
+            int countoffset = start;
+
+            start += 12; //skip bioworldinfo, 0;
+
+            int itemcount = 2; //Skip bioworldinfo and class (0) objects
+
+            //if the node we are removing is a pathfinding node, I am not sure if we are supposed to remove inbound reachspecs to it.
+            //This may be something to test to see how game handles reachspecs to nodes not in the level
+            while (itemcount < numberofitems)
+            {
+                //get header.
+                uint itemexportid = BitConverter.ToUInt32(data, start);
+                if (itemexportid == nodeEntry.UIndex)
+                {
+                    SharedPathfinding.WriteMem(data, countoffset, BitConverter.GetBytes(numberofitems - 1));
+                    byte[] destarray = new byte[data.Length - 4];
+                    Buffer.BlockCopy(data, 0, destarray, 0, start);
+                    Buffer.BlockCopy(data, start + 4, destarray, start, data.Length - (start + 4));
+                    //Debug.WriteLine(data.Length);
+                    //Debug.WriteLine("DA " + destarray.Length);
+                    PersisentLevelExport.Data = destarray;
+                    AllowRefresh = true;
+                    RefreshGraph();
+                    MessageBox.Show("Removed item from level.");
+                    return;
+                }
+                itemcount++;
+                start += 4;
             }
         }
     }
