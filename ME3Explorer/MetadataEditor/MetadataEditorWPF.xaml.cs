@@ -49,7 +49,7 @@ namespace ME3Explorer.MetadataEditor
         private const int HEADER_OFFSET_IMP_IDXOBJECTNAME = 0x14;
         private const int HEADER_OFFSET_IMP_IDXPACKAGEFILE = 0x0;
         private IEntry CurrentLoadedEntry;
-        public ObservableCollectionExtended<object> AllEntriesList { get; set; } = new ObservableCollectionExtended<object>();
+        public ObservableCollectionExtended<object> AllEntriesList { get; } = new ObservableCollectionExtended<object>();
         private HexBox Header_Hexbox;
         private bool loadingNewData = false;
 
