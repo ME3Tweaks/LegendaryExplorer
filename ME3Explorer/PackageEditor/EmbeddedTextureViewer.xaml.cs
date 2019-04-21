@@ -293,7 +293,6 @@ namespace ME3Explorer
                 bitmapImage.StreamSource = memory;
                 bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                 bitmapImage.EndInit();
-
                 TextureImage.Source = bitmapImage; //image1 is your control            }
             }
         }
