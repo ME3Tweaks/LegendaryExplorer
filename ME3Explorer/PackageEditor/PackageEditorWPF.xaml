@@ -20,7 +20,8 @@
         xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:metadataeditor="clr-namespace:ME3Explorer.MetadataEditor"
-        Title="Package Editor WPF" Height="650" Width="1100"
+                xmlns:me1tlkeditor="clr-namespace:ME3Explorer.ME1TlkEditor"
+                Title="Package Editor WPF" Height="650" Width="1100"
         Icon="..\Resources\packageeditorwpf_256x256.ico"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
@@ -464,6 +465,12 @@
                             <TextBlock Text="Sound" ToolTip="Edit and play audio"/>
                         </TabItem.Header>
                         <global:Soundpanel x:Name="SoundTab_Soundpanel" HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+                    </TabItem>
+                    <TabItem Name="ME1TlkEditorWPF_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Talktable" ToolTip="Edit entries in this BioTLKFile"/>
+                        </TabItem.Header>
+                        <me1tlkeditor:ME1TlkEditorWPF x:Name="ME1TlkEditorWPFTab_ME1TlkEditor"/>
                     </TabItem>
                 </TabControl>
             </Grid>
