@@ -113,7 +113,7 @@ namespace ME3Explorer
         public ICommand SortParsedArrayDescendingCommand { get; set; } //obj, name only
         public ICommand SortValueArrayAscendingCommand { get; set; }
         public ICommand SortValueArrayDescendingCommand { get; set; }
-
+        public ICommand PopoutInterpreterForObjectValueCommand { get; set; }
         private void LoadCommands()
         {
             RemovePropertyCommand = new RelayCommand(RemoveProperty, CanRemoveProperty);
@@ -126,7 +126,24 @@ namespace ME3Explorer
             SortParsedArrayDescendingCommand = new RelayCommand(SortParsedArrayDescending, CanSortArrayPropByParsedValue);
             SortValueArrayAscendingCommand = new RelayCommand(SortValueArrayAscending, CanSortArrayPropByValue);
             SortValueArrayDescendingCommand = new RelayCommand(SortValueArrayDescending, CanSortArrayPropByValue);
+            PopoutInterpreterForObjectValueCommand = new RelayCommand(PopoutInterpreterForObj, ObjectPropertyExportIsSelected);
+        }
 
+        private void PopoutInterpreterForObj(object obj)
+        {
+            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property is ObjectProperty op && CurrentLoadedExport.FileRef.isUExport(op.Value))
+            {
+                IExportEntry export = CurrentLoadedExport.FileRef.getUExport(op.Value);
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), export);
+                elhw.Title = $"Interpreter - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                elhw.Show();
+            }
+        }
+
+        private bool ObjectPropertyExportIsSelected(object obj)
+        {
+            UPropertyTreeViewEntry tvi = Interpreter_TreeView.SelectedItem as UPropertyTreeViewEntry;
+            return tvi?.Property is ObjectProperty op && CurrentLoadedExport.FileRef.isUExport(op.Value);
         }
 
         private void SortParsedArrayAscending(object obj)
