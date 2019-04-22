@@ -222,9 +222,10 @@ namespace ME3Explorer.Pathfinding_Editor
             int upstreamCount = 1;
 
             ImportEntry upstreamImport = null;
+            string upstream = null;
             while (upstreamCount < importParts.Count())
             {
-                string upstream = string.Join(".", importParts, 0, importParts.Count() - upstreamCount);
+                upstream = string.Join(".", importParts, 0, importParts.Count() - upstreamCount);
                 foreach (ImportEntry imp in Pcc.Imports)
                 {
                     if (imp.GetFullPath == upstream)
@@ -241,9 +242,15 @@ namespace ME3Explorer.Pathfinding_Editor
                 upstreamCount++;
             }
 
-            if (upstreamImport == null)
+            if (upstreamImport == null && upstream != null)
             {
-                //There is no top level import, which is very unlikely (engine, sfxgame)
+                //There is no top level import.
+
+                //See if there is a top level export
+                IExportEntry topLevelExport = Pcc.Exports.FirstOrDefault(x => x.GetFullPath == upstream);
+                if (topLevelExport != null){
+                    Debug.WriteLine("We found an export instead");
+                }
                 return null;
             }
 
