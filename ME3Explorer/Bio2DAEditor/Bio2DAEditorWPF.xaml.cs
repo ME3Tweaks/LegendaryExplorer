@@ -175,7 +175,7 @@ namespace ME3Explorer
 
         private void ImportToExcel_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Excel sheet must be formatted with the same column headings as current sheet. The sheet tab must be named 'Import'.", "IMPORTANT INFORMATION:" );
+            MessageBox.Show("Excel sheet must be formatted so: \r\nFIRST ROW must have the column data types.  \r\nSECOND ROW must have the same column headings as current sheet. \r\nThe sheet tab must be named 'Import'.", "IMPORTANT INFORMATION:" );
             OpenFileDialog oDlg = new OpenFileDialog
             {
                 Filter = "Excel Files (*.xlsx)|*.xlsx"

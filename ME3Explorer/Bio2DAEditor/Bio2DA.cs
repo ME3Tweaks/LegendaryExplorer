@@ -306,13 +306,85 @@ namespace ME3Explorer
             var Workbook = new XLWorkbook(Filename);
             try
             {
-                var iWorksheet = Workbook.Worksheet("Import");
+                var Test_iWorksheet = Workbook.Worksheet("Import");
             }
             catch
             {
                 MessageBox.Show("Import Sheet not found");
                 return false; // there must be a better way to exit a function if an error is caught
             }
+            var iWorksheet = Workbook.Worksheet("Import"); // Why do we need to repeat this?
+
+            //Do we want to limit user to importing same column structure as existing?  Who would be stupid enough to do something else???
+
+            //STEP 0 Clear existing data
+            
+            ColumnNames.Clear();
+            RowNames.Clear();
+            // Cells.IsNull();
+            int i = 0; //debug
+
+            //STEP 1 Add columns
+            //Table2DA.ColumnNames  
+            IXLRow hRow = iWorksheet.Row(2);
+            foreach (IXLCell cell in hRow.Cells(hRow.FirstCellUsed().Address.ColumnNumber, hRow.LastCellUsed().Address.ColumnNumber))
+            {
+                if (cell.Address.ColumnNumber > 1) //ignore excel column 1
+                {
+                    ColumnNames.Add(cell.Value.ToString()); 
+                    //i++; //debug column count
+                }
+            }
+
+
+            //STEP 2 Write row labels  Table2DA.RowNames  
+            IXLColumn column = iWorksheet.Column(1);
+            foreach (IXLCell cell in column.Cells())
+            {
+                if (cell.Address.RowNumber > 2) //ignore excel row 1-2
+                {
+                    RowNames.Add(cell.Value.ToString());
+                    i++; //debug row count
+                }
+            }
+
+            //STEP 3 Add data Table2DA.Data 
+            int rowindex = 0;
+            int columnindex = 0;
+            
+            foreach (IXLRow row in iWorksheet.Rows())
+            {
+                foreach (IXLCell cell in row.Cells(row.FirstCellUsed().Address.ColumnNumber, row.LastCellUsed().Address.ColumnNumber))
+                {
+                    columnindex = cell.Address.ColumnNumber - 2;
+                    rowindex = cell.Address.RowNumber - 3;
+                    if ((columnindex >= 0) & (rowindex >= 0)) //Make sure start from excel column 2, row 3
+                    {
+                        //i++; //debug count cells
+                        var nCell = Cells[rowindex, columnindex];
+                        var xlHeader = iWorksheet.Cell(cell.Address.ColumnNumber, 1).Value.ToString(); //LOOKS UP TYPE FROM SPREADSHEET - CONVERT TO BYTE?
+                        nCell.Type = Bio2DACell.Bio2DADataType.TYPE_INT;   /// NEED TO CONVERT xlHeader
+
+                        try { nCell.DisplayableValue = cell.Value.ToString(); }
+                        catch
+                        {
+                            MessageBox.Show("Data Error");
+                            return false;
+                        }
+                        nCell.DisplayableValue = cell.Value.ToString();
+                    }
+                }
+            }
+            
+            MessageBox.Show(i.ToString()); //debug
+            //CURRENT ISSUES:
+            // 1. ROW HEADERS DON'T UPDATE - go blank?
+            // 2. TABLE IS ONLY DOING INTS - HOW TO CONVERT to Byte the xlHeader value
+            // 3. ONCE FILLED THE TABLE DOESN'T REFRESH UNTIL SAVE
+            // 4. ROWS DO NOT UPDATE - EVEN ON SAVE THE UNREAL PROP IS NOT SAVING
+            
+            
+            //Does this update Unreal prop?
 
 
             return true;
