@@ -755,45 +755,48 @@ namespace ME3Explorer.Pathfinding_Editor
             if (specprops.FirstOrDefault(x => x.Name == "End") is StructProperty reachspecendprop)
             {
                 PropertyCollection reachspecprops = reachspecendprop.Properties;
-                var otherNodeIdxProp = reachspecprops.FirstOrDefault(x => x.Name == reachspecendname) as ObjectProperty;
-                int othernodeidx = otherNodeIdxProp.Value;
-
-                if (othernodeidx <= 0) return; //skip as this is not proper data
-                IExportEntry specDest = Pcc.getUExport(othernodeidx);
-
-                //Check for same as changing to type, ensure spec type is correct
-                if (specDest.ClassName == exportTypeInfo.nodetypename && spec.ClassName != exportTypeInfo.inboundspectype)
+                if (reachspecprops.FirstOrDefault(x => x.Name == reachspecendname) is ObjectProperty otherNodeIdxProp)
                 {
-                    //Change the reachspec info outgoing to this node...
-                    ImportEntry newReachSpecClass = SharedPathfinding.GetOrAddImport(Pcc, exportTypeInfo.inboundspectype);
+                    int othernodeidx = otherNodeIdxProp.Value;
 
-                    if (newReachSpecClass != null)
-                    {
-                        spec.idxClass = newReachSpecClass.UIndex;
-                        spec.idxObjectName = Pcc.FindNameOrAdd(exportTypeInfo.nodetypename);
-                        //set spec to banshee sized
-                        SharedPathfinding.SetReachSpecSize(spec,
-                            PathfindingNodeInfoPanel.BANSHEE_RADIUS,
-                            PathfindingNodeInfoPanel.BANSHEE_HEIGHT);
-                    }
+                    if (!Pcc.isUExport(othernodeidx)) return; //skip as this is not proper data
+                    IExportEntry specDest = Pcc.getUExport(othernodeidx);
 
-                    if (outbound)
+                    //Check for same as changing to type, ensure spec type is correct
+                    if (specDest.ClassName == exportTypeInfo.nodetypename && spec.ClassName != exportTypeInfo.inboundspectype)
                     {
-                        ArrayProperty<ObjectProperty> pathList = specDest.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-                        if (pathList != null)
+                        //Change the reachspec info outgoing to this node...
+                        ImportEntry newReachSpecClass = SharedPathfinding.GetOrAddImport(Pcc, exportTypeInfo.inboundspectype);
+
+                        if (newReachSpecClass != null)
                         {
-                            foreach (ObjectProperty pathObj in pathList)
+                            spec.idxClass = newReachSpecClass.UIndex;
+                            spec.idxObjectName = Pcc.FindNameOrAdd(exportTypeInfo.nodetypename);
+                            //set spec to banshee sized
+                            SharedPathfinding.SetReachSpecSize(spec,
+                                PathfindingNodeInfoPanel.BANSHEE_RADIUS,
+                                PathfindingNodeInfoPanel.BANSHEE_HEIGHT);
+                        }
+
+                        if (outbound)
+                        {
+                            ArrayProperty<ObjectProperty> pathList = specDest.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                            if (pathList != null)
                             {
-                                if (pathObj.Value == start)
+                                foreach (ObjectProperty pathObj in pathList)
                                 {
-                                    spec = Pcc.getUExport(pathObj.Value);
-                                    EnsureLargeAndReturning(spec, exportTypeInfo, false);
-                                    break; //this will only need to run once since there is only 1:1 reach specs
+                                    if (pathObj.Value == start)
+                                    {
+                                        spec = Pcc.getUExport(pathObj.Value);
+                                        EnsureLargeAndReturning(spec, exportTypeInfo, false);
+                                        break; //this will only need to run once since there is only 1:1 reach specs
+                                    }
                                 }
                             }
                         }
+
+                        SharedPathfinding.ReindexMatchingObjects(spec);
                     }
-                    SharedPathfinding.ReindexMatchingObjects(spec);
                 }
             }
         }
