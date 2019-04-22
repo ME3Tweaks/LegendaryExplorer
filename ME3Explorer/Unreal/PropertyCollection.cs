@@ -68,7 +68,7 @@ namespace ME3Explorer.Unreal
         }
 
         /// <summary>
-        /// Checks if a property with the specified name exists in this propery collection
+        /// Checks if a property with the specified name exists in this property collection
         /// </summary>
         /// <param name="name">Name of property to find. If an empty name is passed in, any property without a name will cause this to return true.</param>
         /// <returns>True if property is found, false if list is empty or not found</returns>
