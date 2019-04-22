@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ME3Explorer
 {
@@ -298,6 +299,23 @@ namespace ME3Explorer
                 }
                 export.Data = newExportData;
             }
+        }
+
+        public bool WriteExcelTo2DA(string Filename)
+        {
+            var Workbook = new XLWorkbook(Filename);
+            try
+            {
+                var iWorksheet = Workbook.Worksheet("Import");
+            }
+            catch
+            {
+                MessageBox.Show("Import Sheet not found");
+                return false; // there must be a better way to exit a function if an error is caught
+            }
+
+
+            return true;
         }
 
         public Bio2DACell this[int rowindex, int colindex]

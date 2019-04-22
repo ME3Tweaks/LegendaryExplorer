@@ -172,6 +172,23 @@ namespace ME3Explorer
         {
             //Nothing to dispose in this control
         }
-    }
 
+        private void ImportToExcel_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Excel sheet must be formatted with the same column headings as current sheet. The sheet tab must be named 'Import'.", "IMPORTANT INFORMATION:" );
+            OpenFileDialog oDlg = new OpenFileDialog
+            {
+                Filter = "Excel Files (*.xlsx)|*.xlsx"
+            };
+            oDlg.Title = "Import Excel table";
+            var result = oDlg.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                if (MessageBox.Show("This will overwrite the existing 2DA table.", "WARNING", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                {
+                    if (Table2DA.WriteExcelTo2DA(oDlg.FileName)) { MessageBox.Show("Done"); };
+                }
+            }
+        }
+    }
 }
