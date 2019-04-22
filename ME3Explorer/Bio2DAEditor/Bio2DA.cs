@@ -52,8 +52,7 @@ namespace ME3Explorer
             }
             else
             {
-                string rowLabelsVar = "m_lstRowNumbers"; //Bio2DANumberedRows
-                var props = export.GetProperty<ArrayProperty<IntProperty>>(rowLabelsVar);
+                var props = export.GetProperty<ArrayProperty<IntProperty>>("m_lstRowNumbers");//Bio2DANumberedRows
                 if (props != null)
                 {
                     foreach (IntProperty n in props)
@@ -63,7 +62,7 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    Console.WriteLine("Unable to find row names property!");
+                    Debug.WriteLine("Unable to find row names property (m_lstRowNumbers)!");
                     Debugger.Break();
                     return;
                 }
@@ -141,11 +140,20 @@ namespace ME3Explorer
             //Console.WriteLine("Finished loading " + export.ObjectName);
         }
 
+        /// <summary>
+        /// Initializes a blank Bio2DA. Cells is not initialized, the caller must set up this Bio2DA.
+        /// </summary>
+        public Bio2DA()
+        {
+            ColumnNames = new List<string>();
+            RowNames = new List<string>();
+        }
+
         internal string GetColumnNameByIndex(int columnIndex)
         {
             if (columnIndex < ColumnNames.Count && columnIndex >= 0)
             {
-             return   ColumnNames[columnIndex];
+                return ColumnNames[columnIndex];
             }
             return null;
         }
@@ -262,7 +270,9 @@ namespace ME3Explorer
                             }
                             else
                             {
-                                Console.WriteLine("THIS SHOULDN'T OCCUR!");
+                                Debug.WriteLine("THIS SHOULDN'T OCCUR!");
+                                Debugger.Break();
+                                throw new Exception("A non-indexed Bio2DA cannot have null cells.");
                             }
                         }
                     }
@@ -286,68 +296,123 @@ namespace ME3Explorer
 
                 int propsEnd = export.propsEnd();
                 byte[] binarydata = stream.ToArray();
-                byte[] propertydata = export.Data.Take(propsEnd).ToArray();
-                var newExportData = new byte[propertydata.Length + binarydata.Length];
-                propertydata.CopyTo(newExportData, 0);
-                binarydata.CopyTo(newExportData, propertydata.Length);
+
+                //Todo: Rewrite properties here
+                PropertyCollection props = new PropertyCollection();
+                if (export.ClassName == "Bio2DA")
+                {
+                    ArrayProperty<NameProperty> indicies = new ArrayProperty<NameProperty>(ArrayType.Name, "m_sRowLabel");
+                    foreach (var rowname in RowNames)
+                    {
+                        indicies.Add(new NameProperty(rowname));
+                    }
+                    props.Add(indicies);
+                }
+                else
+                {
+                    ArrayProperty<IntProperty> indices = new ArrayProperty<IntProperty>(ArrayType.Int, "m_lstRowNumbers");
+                    foreach(var rowname in RowNames)
+                    {
+                        indices.Add(new IntProperty(int.Parse(rowname)));
+                    }
+                    props.Add(indices);
+                }
+
+                MemoryStream propsStream = new MemoryStream();
+                props.WriteTo(propsStream, export.FileRef);
+                MemoryStream currentDataStream = new MemoryStream(export.Data);
+                byte[] propertydata = propsStream.ToArray();
+                int propertyStartOffset = export.GetPropertyStart();
+                var newExportData = new byte[propertyStartOffset + propertydata.Length + binarydata.Length];
+                Buffer.BlockCopy(export.Data, 0, newExportData, 0, propertyStartOffset);
+                propertydata.CopyTo(newExportData, propertyStartOffset);
+                binarydata.CopyTo(newExportData, propertyStartOffset + propertydata.Length);
                 //Console.WriteLine("Old data size: " + export.Data.Length);
                 //Console.WriteLine("NEw data size: " + newExportData.Length);
-                if (export.Data.Length != newExportData.Length)
-                {
-                    Console.WriteLine("FILES ARE WRONG SIZE");
-                    Debugger.Break();
-                }
+
+                //This assumes the input and output data sizes are the same. We should not assume this with new functionality
+                //if (export.Data.Length != newExportData.Length)
+                //{
+                //    Debug.WriteLine("FILES ARE WRONG SIZE");
+                //    Debugger.Break();
+                //}
                 export.Data = newExportData;
             }
         }
 
-        public bool WriteExcelTo2DA(string Filename)
+        public static Bio2DA ReadExcelTo2DA(IExportEntry export, string Filename)
         {
             var Workbook = new XLWorkbook(Filename);
             IXLWorksheet iWorksheet = null;
             try
             {
+                //You could just have it check only the first sheet. This way you would not need to rename exported sheets
+                //If you wanted to be really crazy you could do a sheet selector. I don't know how useful that is though since we only export single sheet
                 iWorksheet = Workbook.Worksheet("Import");
             }
             catch
             {
                 MessageBox.Show("Import Sheet not found");
-                return false; //Used for "Done".
+                return null; //Used for "Done".
             }
 
             //Do we want to limit user to importing same column structure as existing?  Who would be stupid enough to do something else??? ME.
+            // - Kinkojiro, 2019
 
             //STEP 0 Clear existing data
-            
-            ColumnNames.Clear();
-            RowNames.Clear();
-            // Cells.IsNull();
+            Bio2DA bio2da = new Bio2DA();
+            bio2da.export = export;
+
             int i = 0; //debug
 
-            //STEP 1 Add columns
-            //Table2DA.ColumnNames  
+            //STEP 1 Read columns and row names
+
+            //Column names
             IXLRow hRow = iWorksheet.Row(1);
             foreach (IXLCell cell in hRow.Cells(hRow.FirstCellUsed().Address.ColumnNumber, hRow.LastCellUsed().Address.ColumnNumber))
             {
                 if (cell.Address.ColumnNumber > 1) //ignore excel column 1
                 {
-                    ColumnNames.Add(cell.Value.ToString()); 
+                    bio2da.ColumnNames.Add(cell.Value.ToString());
                     //i++; //debug column count
                 }
             }
 
 
-            //STEP 2 Write row labels  Table2DA.RowNames  
+            //Row names 
             IXLColumn column = iWorksheet.Column(1);
             foreach (IXLCell cell in column.Cells())
             {
                 if (cell.Address.RowNumber > 1) //ignore excel row 1
                 {
-                    RowNames.Add(cell.Value.ToString());
+                    bio2da.RowNames.Add(cell.Value.ToString());
                     i++; //debug row count
                 }
             }
 
+            //Populate the Bio2DA now that we know the size
+            bio2da.Cells = new Bio2DACell[bio2da.RowNames.Count(), bio2da.ColumnNames.Count()];
+
+
+            //Step 3 Populate the table.
+            /*
+             * if string.isemptyornull(READVALUEFROMEXCEL) continue reading next cell; (skip)
+             * if (int.TryParse(READVALUEFROMEXCEL, out int value) {
+             *  cell.datatype = int
+             *  cell.data = BitConverter.GetBytes(value)
+             * } else if float.try...
+             * 
+             * } else {
+             *  its a string. treat it as a name
+             * }
+             */
+
+            //Step 4 return table
+            return bio2da;
+
+
+            //Old stuff, can be deleted maybe:
+            /*
             //STEP2b Update the row labels/unreal property
             string rowLabelsVar = "m_lstRowNumbers";
             var props = export.GetProperty<ArrayProperty<IntProperty>>(rowLabelsVar);
@@ -415,8 +480,8 @@ namespace ME3Explorer
 
 
             //Does this update Unreal prop?
-            Write2DAToExport();
-            return true;
+            Write2DAToEWxport();
+            return true;*/
         }
 
         public Bio2DACell this[int rowindex, int colindex]

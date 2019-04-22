@@ -186,11 +186,18 @@ namespace ME3Explorer
             {
                 if (MessageBox.Show("This will overwrite the existing 2DA table.", "WARNING", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
-                    if (Table2DA.WriteExcelTo2DA(oDlg.FileName)) {
-                        MessageBox.Show("Done");
+                    Bio2DA resulting2DA = Bio2DA.ReadExcelTo2DA(CurrentLoadedExport, oDlg.FileName);
+                    if (resulting2DA != null)
+                    {
+                        resulting2DA.Write2DAToExport();
+                        //Package handler in theory for package editor wpf should have refreshed this.
+                        //In theory of course.
+                    }
+                    //if (Table2DA.WriteExcelTo2DA(oDlg.FileName)) {
+                    //    MessageBox.Show("Done");
 
-                        Bio2DA_DataGrid.Focus();
-                    };
+                    //    Bio2DA_DataGrid.Focus();
+                    //};
                 }
             }
         }
