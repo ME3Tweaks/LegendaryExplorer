@@ -193,11 +193,6 @@ namespace ME3Explorer
                         //Package handler in theory for package editor wpf should have refreshed this.
                         //In theory of course.
                     }
-                    //if (Table2DA.WriteExcelTo2DA(oDlg.FileName)) {
-                    //    MessageBox.Show("Done");
-
-                    //    Bio2DA_DataGrid.Focus();
-                    //};
                 }
             }
         }

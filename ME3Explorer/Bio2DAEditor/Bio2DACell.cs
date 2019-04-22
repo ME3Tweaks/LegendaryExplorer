@@ -31,9 +31,17 @@ namespace ME3Explorer
         }
 
         public Bio2DADataType Type { get; set; }
+
         public Bio2DACell(IMEPackage pcc, int offset, byte type, byte[] data)
         {
             Offset = offset;
+            Pcc = pcc;
+            Type = (Bio2DADataType)type;
+            Data = data;
+        }
+
+        public Bio2DACell(IMEPackage pcc, byte type, byte[] data) //No need for offset in Excel import
+        {
             Pcc = pcc;
             Type = (Bio2DADataType)type;
             Data = data;

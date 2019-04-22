@@ -346,14 +346,14 @@ namespace ME3Explorer
             IXLWorksheet iWorksheet = null;
             try
             {
-                //You could just have it check only the first sheet. This way you would not need to rename exported sheets
-                //If you wanted to be really crazy you could do a sheet selector. I don't know how useful that is though since we only export single sheet
+                //You could just have it check only the first sheet. This way you would not need to rename exported sheets  //A: This way I can have a single excel file with all the references, notes etc and just autocreate a page to import.
+                //If you wanted to be really crazy you could do a sheet selector. [By naming you already have that] I don't know how useful that is though since we only export single sheet [I use large spreadsheets for tracking all my modding stuff.]
                 iWorksheet = Workbook.Worksheet("Import");
             }
             catch
             {
                 MessageBox.Show("Import Sheet not found");
-                return null; //Used for "Done".
+                return null; 
             }
 
             //Do we want to limit user to importing same column structure as existing?  Who would be stupid enough to do something else??? ME.
@@ -386,13 +386,13 @@ namespace ME3Explorer
                 if (cell.Address.RowNumber > 1) //ignore excel row 1
                 {
                     bio2da.RowNames.Add(cell.Value.ToString());
-                    i++; //debug row count
+                    //i++; //debug row count
                 }
             }
 
             //Populate the Bio2DA now that we know the size
             bio2da.Cells = new Bio2DACell[bio2da.RowNames.Count(), bio2da.ColumnNames.Count()];
-
+            
 
             //Step 3 Populate the table.
             /*
@@ -407,40 +407,9 @@ namespace ME3Explorer
              * }
              */
 
-            //Step 4 return table
-            return bio2da;
-
-
-            //Old stuff, can be deleted maybe:
-            /*
-            //STEP2b Update the row labels/unreal property
-            string rowLabelsVar = "m_lstRowNumbers";
-            var props = export.GetProperty<ArrayProperty<IntProperty>>(rowLabelsVar);
-            if (props != null)
-            {
-                props.Clear();
-                for ( int r = 0; r < RowNames.Count; r++)
-                {
-                    props.Add(RowNames[r].ToUInt16());
-                }
-                export.WriteProperty(props);
-            }
-            else
-            {
-                Console.WriteLine("Unable to find row names property!");
-                Debugger.Break();
-                return false;
-            }
-            
-
-            //STEP 3 Add data Table2DA.Data 
-            //3a need to expand the size of the array. Add rows as above.
-
-
-
             int rowindex = 0;
             int columnindex = 0;
-            
+
             foreach (IXLRow row in iWorksheet.Rows())
             {
                 foreach (IXLCell cell in row.Cells(row.FirstCellUsed().Address.ColumnNumber, row.LastCellUsed().Address.ColumnNumber))
@@ -449,39 +418,50 @@ namespace ME3Explorer
                     rowindex = cell.Address.RowNumber - 2;
                     if ((columnindex >= 0) & (rowindex >= 0)) //Make sure start from excel column 2, row 2
                     {
-                        //i++; //debug count cells
-                        var nCell = Cells[rowindex, columnindex];
-                        // var xlHeader = iWorksheet.Cell(cell.Address.ColumnNumber, 1).Value.ToString(); //LOOKS UP TYPE FROM SPREADSHEET - CONVERT TO BYTE?
-                        nCell.Type = Bio2DACell.Bio2DADataType.TYPE_INT;   /// NEED TO CONVERT xlHeader
-
-                        try { nCell.DisplayableValue = cell.Value.ToString(); }
-                        catch
+                        string debugCell = cell.Value.ToString(); //debug
+                        if (!String.IsNullOrEmpty(cell.Value.ToString()))
                         {
-                            MessageBox.Show("Data Error");
-                            return false;
+                            var nCellType = Bio2DACell.Bio2DADataType.TYPE_INT;
+                            byte[] nCellData;
+
+                            if (int.TryParse(cell.Value.ToString(), out int intData)) //Test int
+                            {
+                                nCellData = BitConverter.GetBytes(intData);
+                            }
+                            else if (float.TryParse(cell.Value.ToString(), out float fltData)) //Test float
+                            {
+                                nCellType = Bio2DACell.Bio2DADataType.TYPE_FLOAT;
+                                nCellData = BitConverter.GetBytes(fltData);
+                            }
+                            else  //Is name
+                            {
+                                int nameData = export.FileRef.FindNameOrAdd(cell.Value.ToString());
+                                nCellType = Bio2DACell.Bio2DADataType.TYPE_NAME;
+                                nCellData = BitConverter.GetBytes(nameData);
+                            }
+                            byte wtfByte = 0; //HOW DO YOU GET nCellType 0,1,2 to a Byte boolean?>?????
+                            Bio2DACell nCell = new Bio2DACell(export.FileRef, wtfByte, nCellData);
+                            bio2da.Cells[rowindex, columnindex] = nCell;
+
+                            nCell.DisplayableValue = cell.Value.ToString(); //Debug write again to be sure.
                         }
-                        //nCell.DisplayableValue = cell.Value.ToString();
+                        else //TEMPORARY DEBUG GET AROUND EMPTY CELLS
+                        {
+                            //byte wtfByte = 0;
+                            //Bio2DACell nCell = new Bio2DACell(export.FileRef, wtfByte, BitConverter.GetBytes(0));
+                            //bio2da.Cells[columnindex, rowindex] = nCell;
+                        }
                     }
                 }
+                //CURRENT ISSUES:
+                // 1. DONE
+                // 2. TABLE IS ONLY DOING INTS - HOW TO CONVERT to Byte the DataType.  Also dealing with nulls.
+                // 3. DONE
+                // 4. DONE
+
             }
-
-            var dbgTxt = "Start";  //DEBUG COLUMN NAMES
-            foreach (string rn in ColumnNames)
-            {
-                dbgTxt += rn.ToString();
-                dbgTxt += ",";
-            }
-            MessageBox.Show(dbgTxt); //debug
-                                           //CURRENT ISSUES:
-                                           // 1. COLUMN HEADERS DON'T UPDATE - go blank?
-                                           // 2. TABLE IS ONLY DOING INTS - HOW TO CONVERT to Byte the xlHeader value
-                                           // 3. ONCE FILLED THE TABLE DOESN'T REFRESH UNTIL SAVE
-                                           // 4. DONE
-
-
-            //Does this update Unreal prop?
-            Write2DAToEWxport();
-            return true;*/
+            //Step 4 return table
+            return bio2da;
         }
 
         public Bio2DACell this[int rowindex, int colindex]
