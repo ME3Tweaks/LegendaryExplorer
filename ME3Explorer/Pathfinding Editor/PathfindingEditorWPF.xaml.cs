@@ -19,6 +19,7 @@ using ME3Explorer.SplineNodes;
 using ME3Explorer.Unreal;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UMD.HCIL.PathingGraphEditor;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
@@ -34,11 +35,39 @@ namespace ME3Explorer.Pathfinding_Editor
     public partial class PathfindingEditorWPF : WPFBase, IBusyUIHost
     {
 
-        public static string[] pathfindingNodeClasses = { "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "SFXNav_HarvesterMoveNode", "SFXNav_LeapNodeHumanoid", "MantleMarker", "SFXDynamicPathNode","BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode", "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink", "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker", "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXNav_BoostNode", "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode",
-                "SFXNav_InteractionHenchOmniTool", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionHenchBeckonFront", "SFXNav_InteractionHenchBeckonRear", "SFXNav_InteractionHenchCustom", "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow", "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping", "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard", "SFXNav_InteractionHenchOmniToolCrouch", "SFXNav_InteractionInspectWeapon", "SFXNav_InteractionOmniToolScan"};
-        public static string[] actorNodeClasses = { "BlockingVolume", "BioPlaypenVolumeAdditive", "DynamicBlockingVolume", "DynamicTriggerVolume", "SFXMedkit", "StaticMeshActor", "SFXMedStation", "InterpActor", "SFXDoor", "BioTriggerVolume", "TargetPoint", "SFXArmorNode", "BioTriggerStream", "SFXTreasureNode", "SFXPointOfInterest", "SFXPlaceable_Generator", "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer_Simulator", "SFXAmmoContainer", "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor", "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume", "SFXOperation_ObjectiveSpawnPoint" };
+        public static string[] pathfindingNodeClasses =
+        {
+            "PathNode", "SFXEnemySpawnPoint", "PathNode_Dynamic", "SFXNav_HarvesterMoveNode", "SFXNav_LeapNodeHumanoid",
+            "MantleMarker", "SFXDynamicPathNode", "BioPathPoint", "SFXNav_LargeBoostNode", "SFXNav_LargeMantleNode",
+            "SFXNav_InteractionStandGuard", "SFXNav_TurretPoint", "CoverLink", "SFXDynamicCoverLink",
+            "SFXDynamicCoverSlotMarker", "SFXNav_SpawnEntrance", "SFXNav_LadderNode", "SFXDoorMarker",
+            "SFXNav_JumpNode", "SFXNav_JumpDownNode", "NavigationPoint", "CoverSlotMarker", "SFXNav_BoostNode",
+            "SFXNav_LargeClimbNode", "SFXNav_LargeMantleNode", "SFXNav_ClimbWallNode",
+            "SFXNav_InteractionHenchOmniTool", "SFXNav_InteractionHenchOmniToolCrouch",
+            "SFXNav_InteractionHenchBeckonFront", "SFXNav_InteractionHenchBeckonRear", "SFXNav_InteractionHenchCustom",
+            "SFXNav_InteractionHenchCover", "SFXNav_InteractionHenchCrouch", "SFXNav_InteractionHenchInteractLow",
+            "SFXNav_InteractionHenchManual", "SFXNav_InteractionHenchStandIdle", "SFXNav_InteractionHenchStandTyping",
+            "SFXNav_InteractionUseConsole", "SFXNav_InteractionStandGuard", "SFXNav_InteractionHenchOmniToolCrouch",
+            "SFXNav_InteractionInspectWeapon", "SFXNav_InteractionOmniToolScan"
+        };
+
+        public static string[] actorNodeClasses =
+        {
+            "BlockingVolume", "BioPlaypenVolumeAdditive", "DynamicBlockingVolume", "DynamicTriggerVolume", "SFXMedkit",
+            "StaticMeshActor", "SFXMedStation", "InterpActor", "SFXDoor", "BioTriggerVolume", "TargetPoint",
+            "SFXArmorNode", "BioTriggerStream", "SFXTreasureNode", "SFXPointOfInterest", "SFXPlaceable_Generator",
+            "SFXPlaceable_ShieldGenerator", "SFXBlockingVolume_Ledge", "SFXAmmoContainer_Simulator", "SFXAmmoContainer",
+            "SFXGrenadeContainer", "SFXCombatZone", "BioStartLocation", "BioStartLocationMP", "SFXStuntActor",
+            "SkeletalMeshActor", "WwiseAmbientSound", "WwiseAudioVolume", "SFXOperation_ObjectiveSpawnPoint"
+        };
+
         public static string[] splineNodeClasses = { "SplineActor" };
-        public static string[] ignoredobjectnames = { "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1" }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
+
+        public static string[]
+            ignoredobjectnames =
+            {
+                "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1"
+            }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
 
         //Layers
         private List<PathfindingNodeMaster> GraphNodes;
@@ -49,18 +78,31 @@ namespace ME3Explorer.Pathfinding_Editor
         private bool AllowRefresh;
         private PathingZoomController zoomController;
 
-        public ObservableCollectionExtended<IExportEntry> ActiveNodes { get; set; } = new ObservableCollectionExtended<IExportEntry>();
+        public ObservableCollectionExtended<IExportEntry> ActiveNodes { get; set; } =
+            new ObservableCollectionExtended<IExportEntry>();
+
         public ObservableCollectionExtended<string> TagsList { get; set; } = new ObservableCollectionExtended<string>();
-        public ObservableCollectionExtended<StaticMeshCollection> StaticMeshCollections { get; set; } = new ObservableCollectionExtended<StaticMeshCollection>();
+
+        public ObservableCollectionExtended<StaticMeshCollection> StaticMeshCollections { get; set; } =
+            new ObservableCollectionExtended<StaticMeshCollection>();
+
         public ObservableCollectionExtended<Zone> CombatZones { get; } = new ObservableCollectionExtended<Zone>();
-        public ObservableCollectionExtended<Zone> CurrentNodeCombatZones { get; } = new ObservableCollectionExtended<Zone>();
+
+        public ObservableCollectionExtended<Zone> CurrentNodeCombatZones { get; } =
+            new ObservableCollectionExtended<Zone>();
 
         private List<IExportEntry> AllLevelObjects = new List<IExportEntry>();
         public string CurrentFile;
         private PathfindingMouseListener pathfindingMouseListener;
 
         private string _currentNodeXY = "Undefined";
-        public string CurrentNodeXY { get => _currentNodeXY; set => SetProperty(ref _currentNodeXY, value); }
+
+        public string CurrentNodeXY
+        {
+            get => _currentNodeXY;
+            set => SetProperty(ref _currentNodeXY, value);
+        }
+
         public PathfindingEditorWPF()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Pathfinding Editor WPF", new WeakReference(this));
@@ -77,12 +119,18 @@ namespace ME3Explorer.Pathfinding_Editor
             RefreshRecent(false);
             zoomController = new PathingZoomController(graphEditor);
             SharedPathfinding.LoadClassesDB();
-            var types = SharedPathfinding.ExportClassDB.Where(x => x.Value.TryGetValue("pathnode", out string val) && val == "true").ToList();
+            var types = SharedPathfinding.ExportClassDB.Where(x => x.pathnode).ToList();
             foreach (var type in types)
             {
-                NodeType nt = new NodeType(type.Key);
+                NodeType nt = new NodeType(type.nodetypename, false);
                 AvailableNodeChangeableTypes.Add(nt);
+                if (type.usesbtop)
+                {
+                    nt = new NodeType(type.nodetypename, true);
+                    AvailableNodeChangeableTypes.Add(nt);
+                }
             }
+
             AvailableNodeChangeableTypes.Sort(x => x.ClassName);
             InitializeComponent();
             pathfindingMouseListener = new PathfindingMouseListener(this); //Must be member so we can release reference
@@ -99,23 +147,76 @@ namespace ME3Explorer.Pathfinding_Editor
         private bool _showVolumes_SFXCombatZones;
         private bool _showVolumes_WwiseAudioVolumes;
 
-        public bool ShowVolumes_BioTriggerVolumes { get => _showVolumes_BioTriggerVolumes; set => SetProperty(ref _showVolumes_BioTriggerVolumes, value); }
-        public bool ShowVolumes_BioTriggerStreams { get => _showVolumes_BioTriggerStreams; set => SetProperty(ref _showVolumes_BioTriggerStreams, value); }
-        public bool ShowVolumes_BlockingVolumes { get => _showVolumes_BlockingVolumes; set => SetProperty(ref _showVolumes_BlockingVolumes, value); }
-        public bool ShowVolumes_DynamicBlockingVolumes { get => _showVolumes_DynamicBlockingVolumes; set => SetProperty(ref _showVolumes_DynamicBlockingVolumes, value); }
-        public bool ShowVolumes_SFXBlockingVolume_Ledges { get => _showVolumes_SFXBlockingVolume_Ledges; set => SetProperty(ref _showVolumes_SFXBlockingVolume_Ledges, value); }
-        public bool ShowVolumes_SFXCombatZones { get => _showVolumes_SFXCombatZones; set => SetProperty(ref _showVolumes_SFXCombatZones, value); }
-        public bool ShowVolumes_WwiseAudioVolumes { get => _showVolumes_WwiseAudioVolumes; set => SetProperty(ref _showVolumes_WwiseAudioVolumes, value); }
+        public bool ShowVolumes_BioTriggerVolumes
+        {
+            get => _showVolumes_BioTriggerVolumes;
+            set => SetProperty(ref _showVolumes_BioTriggerVolumes, value);
+        }
+
+        public bool ShowVolumes_BioTriggerStreams
+        {
+            get => _showVolumes_BioTriggerStreams;
+            set => SetProperty(ref _showVolumes_BioTriggerStreams, value);
+        }
+
+        public bool ShowVolumes_BlockingVolumes
+        {
+            get => _showVolumes_BlockingVolumes;
+            set => SetProperty(ref _showVolumes_BlockingVolumes, value);
+        }
+
+        public bool ShowVolumes_DynamicBlockingVolumes
+        {
+            get => _showVolumes_DynamicBlockingVolumes;
+            set => SetProperty(ref _showVolumes_DynamicBlockingVolumes, value);
+        }
+
+        public bool ShowVolumes_SFXBlockingVolume_Ledges
+        {
+            get => _showVolumes_SFXBlockingVolume_Ledges;
+            set => SetProperty(ref _showVolumes_SFXBlockingVolume_Ledges, value);
+        }
+
+        public bool ShowVolumes_SFXCombatZones
+        {
+            get => _showVolumes_SFXCombatZones;
+            set => SetProperty(ref _showVolumes_SFXCombatZones, value);
+        }
+
+        public bool ShowVolumes_WwiseAudioVolumes
+        {
+            get => _showVolumes_WwiseAudioVolumes;
+            set => SetProperty(ref _showVolumes_WwiseAudioVolumes, value);
+        }
 
         private bool _showActorsLayer;
         private bool _showSplinesLayer;
         private bool _showPathfindingNodesLayer = true;
         private bool _showEverythingElseLayer;
 
-        public bool ShowActorsLayer { get => _showActorsLayer; set => SetProperty(ref _showActorsLayer, value); }
-        public bool ShowSplinesLayer { get => _showSplinesLayer; set => SetProperty(ref _showSplinesLayer, value); }
-        public bool ShowPathfindingNodesLayer { get => _showPathfindingNodesLayer; set => SetProperty(ref _showPathfindingNodesLayer, value); }
-        public bool ShowEverythingElseLayer { get => _showEverythingElseLayer; set => SetProperty(ref _showEverythingElseLayer, value); }
+        public bool ShowActorsLayer
+        {
+            get => _showActorsLayer;
+            set => SetProperty(ref _showActorsLayer, value);
+        }
+
+        public bool ShowSplinesLayer
+        {
+            get => _showSplinesLayer;
+            set => SetProperty(ref _showSplinesLayer, value);
+        }
+
+        public bool ShowPathfindingNodesLayer
+        {
+            get => _showPathfindingNodesLayer;
+            set => SetProperty(ref _showPathfindingNodesLayer, value);
+        }
+
+        public bool ShowEverythingElseLayer
+        {
+            get => _showEverythingElseLayer;
+            set => SetProperty(ref _showEverythingElseLayer, value);
+        }
 
         public ICommand RefreshCommand { get; set; }
         public ICommand FocusGotoCommand { get; set; }
@@ -143,6 +244,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand AddExportToLevelCommand { get; set; }
         public ICommand PopoutInterpreterCommand { get; set; }
         public ICommand NodeTypeChangeCommand { get; set; }
+
         private void LoadCommands()
         {
             RefreshCommand = new RelayCommand(RefreshGraph, PackageIsLoaded);
@@ -178,7 +280,8 @@ namespace ME3Explorer.Pathfinding_Editor
         private void ChangeNodeType(object obj)
         {
             Debug.WriteLine("Changing node type");
-            if (ActiveNodes_ListBox.SelectedItem is IExportEntry exp && AvailableNodeTypes_ListBox.SelectedItem is NodeType type)
+            if (ActiveNodes_ListBox.SelectedItem is IExportEntry exp &&
+                AvailableNodeTypes_ListBox.SelectedItem is NodeType type)
             {
                 changeNodeType(exp, type);
             }
@@ -202,278 +305,497 @@ namespace ME3Explorer.Pathfinding_Editor
         private void changeNodeType(IExportEntry nodeEntry, NodeType newNodeType)
         {
             var newType = newNodeType.ClassName;
-            if (nodeEntry.ClassName == newType) { return; } //don't care
-
-            return; //CURRENTLY BUSTED AF
-
-            List<UProperty> propertiesToAdd = new List<UProperty>();
-            List<string> propertiesToRemoveIfPresent = new List<string>();
-
-            string exportclassdbkey = "";
-            /*switch (newType)
+            if (nodeEntry.ClassName == newType)
             {
-                case NODETYPE_SFXENEMYSPAWNPOINT:
-                    exportclassdbkey = "SFXEnemySpawnPoint";
-                    break;
-                case NODETYPE_PATHNODE:
-                    exportclassdbkey = "PathNode";
-                    break;
-                case NODETYPE_SFXNAV_LAREGEBOOSTNODE:
-                    exportclassdbkey = "SFXNav_LargeBoostNode";
-                    propertiesToRemoveIfPresent.Add("bTopNode"); //if coming from boost node
-                    break;
-                case NODETYPE_SFXNAV_TURRETPOINT:
-                    exportclassdbkey = "SFXNav_TurretPoint";
-                    break;
-                case NODETYPE_SFXNAV_BOOSTNODE_TOP:
-                    {
-                        exportclassdbkey = "SFXNav_BoostNode";
-                        BoolProperty bTopNode = new BoolProperty(true, "bTopNode");
-                        propertiesToAdd.Add(bTopNode);
-                        propertiesToRemoveIfPresent.Add("JumpDownDest");
-                    }
-                    break;
-                case NODETYPE_SFXNAV_BOOSTNODE_BOTTOM:
-                    exportclassdbkey = "SFXNav_BoostNode";
-                    propertiesToRemoveIfPresent.Add("bTopNode");
-                    propertiesToRemoveIfPresent.Add("JumpDownDest");
-                    break;
-                case NODETYPE_SFXNAV_JUMPDOWNNODE_TOP:
-                    {
-                        exportclassdbkey = "SFXNav_JumpDownNode";
-                        BoolProperty bTopNode = new BoolProperty(true, "bTopNode");
-                        propertiesToAdd.Add(bTopNode);
-                        propertiesToRemoveIfPresent.Add("BoostDest");
-                    }
-                    break;
-                case NODETYPE_SFXNAV_JUMPDOWNNODE_BOTTOM:
-                    exportclassdbkey = "SFXNav_JumpDownNode";
-                    propertiesToRemoveIfPresent.Add("bTopNode");
-                    propertiesToRemoveIfPresent.Add("BoostDest");
-                    break;
-                case NODETYPE_SFXNAV_LARGEMANTLENODE:
-                    exportclassdbkey = "SFXNav_LargeMantleNode";
-                    ObjectProperty mantleDest = new ObjectProperty(0, "MantleDest");
-                    propertiesToAdd.Add(mantleDest);
-                    break;
-                case NODETYPE_SFXNAV_CLIMBWALLNODE:
-                    exportclassdbkey = "SFXNav_ClimbWallNode";
-                    //propertiesToRemoveIfPresent.Add("ClimbDest");
-                    break;
-                case NODETYPE_BIOPATHPOINT:
-                    {
-                        exportclassdbkey = "BioPathPoint";
-                        BoolProperty bEnabled = new BoolProperty(true, "bEnabled");
-                        propertiesToAdd.Add(bEnabled);
-                        break;
-                    }
-                case NODETYPE_SFXDYNAMICCOVERLINK:
-                    {
-                        exportclassdbkey = "SFXDynamicCoverLink";
-                        //BoolProperty bEnabled = new BoolProperty(true, "bEnabled");
-                        //propertiesToAdd.Add(bEnabled);
-                        break;
-                    }
-                case NODETYPE_SFXDYNAMICCOVERSLOTMARKER:
-                    {
-                        exportclassdbkey = "SFXDynamicCoverSlotMarker";
-                        //coverslot property blows up adding properties
-                        BoolProperty bEnabled = new BoolProperty(true, "bEnabled");
-                        propertiesToAdd.Add(bEnabled);
-                        break;
-                    }
-                default:
-                    return;
-            }*/
-
-            //lookup requirements in DB
-            Dictionary<string, string> exportclassinfo = null;// exportclassdb[exportclassdbkey];
-            string newclass = exportclassinfo["class"];
-            string newname = exportclassinfo["name"];
-            string newcylindercomponentarchetype = exportclassinfo["cylindercomponentarchetype"];
-
-            //Get current cylinder component export.
-            PropertyCollection props = nodeEntry.GetProperties();
-            ObjectProperty cylindercomponent = props.GetProp<ObjectProperty>("CollisionComponent");
-            IExportEntry cylindercomponentexp = Pcc.getUExport(cylindercomponent.Value);
-
-            //Ensure all classes are imported.
-            ImportEntry newnodeclassimp = SharedPathfinding.GetOrAddImport(Pcc,newclass);
-            ImportEntry newcylindercomponentimp = SharedPathfinding.GetOrAddImport(Pcc, newcylindercomponentarchetype);
-
-            if (newnodeclassimp != null)
-            {
-                nodeEntry.idxClass = newnodeclassimp.UIndex;
-                nodeEntry.idxObjectName = Pcc.FindNameOrAdd(newname);
-                cylindercomponentexp.idxArchtype = newcylindercomponentimp.UIndex;
+                return; //don't care
             }
 
-            //Write new properties
-            if (propertiesToAdd.Count() > 0 || propertiesToRemoveIfPresent.Count() > 0)
+            PathfindingDB_ExportType exportTypeInfo = SharedPathfinding.ExportClassDB.FirstOrDefault(x => x.nodetypename == newNodeType.ClassName);
+            if (exportTypeInfo != null)
             {
-                foreach (UProperty prop in propertiesToAdd)
+                List<UProperty> ensuredProperties = new List<UProperty>();
+                foreach (var ensuredProp in exportTypeInfo.ensuredproperties)
                 {
-                    nodeEntry.WriteProperty(prop);
+                    switch (ensuredProp.type)
+                    {
+                        case "BoolProperty":
+                            ensuredProperties.Add(new BoolProperty(bool.Parse(ensuredProp.defaultvalue),
+                                ensuredProp.name));
+                            break;
+                        case "ObjectProperty":
+                            ensuredProperties.Add(new ObjectProperty(int.Parse(ensuredProp.defaultvalue),
+                                ensuredProp.name));
+                            break;
+                    }
                 }
 
-                //Remove specific properties
-                if (propertiesToRemoveIfPresent.Count > 0)
+                if (newNodeType.Top)
                 {
-                    PropertyCollection properties = nodeEntry.GetProperties();
-                    List<UProperty> propertiesToRemove = new List<UProperty>();
-                    foreach (UProperty prop in properties)
+                    ensuredProperties.Add(new BoolProperty(true, "bTop"));
+                }
+
+                //Add ensured properties
+                PropertyCollection nodeProperties = nodeEntry.GetProperties();
+                foreach (UProperty prop in ensuredProperties)
+                {
+                    if (!nodeProperties.ContainsNamedProp(prop.Name))
                     {
-                        if (propertiesToRemoveIfPresent.Contains(prop.Name))
+                        nodeProperties.Add(prop);
+                    }
+                }
+
+                //Change collision cylinder
+                ObjectProperty cylindercomponent = nodeProperties.GetProp<ObjectProperty>("CollisionComponent");
+                IExportEntry cylindercomponentexp = Pcc.getUExport(cylindercomponent.Value);
+
+                //Ensure all classes are imported.
+                ImportEntry newnodeclassimp = SharedPathfinding.GetOrAddImport(Pcc, exportTypeInfo.fullclasspath);
+                ImportEntry newcylindercomponentimp = SharedPathfinding.GetOrAddImport(Pcc, exportTypeInfo.cylindercomponentarchetype);
+
+                if (newnodeclassimp != null)
+                {
+                    nodeEntry.idxClass = newnodeclassimp.UIndex;
+                    nodeEntry.idxObjectName = Pcc.FindNameOrAdd(exportTypeInfo.nodetypename);
+                    SharedPathfinding.ReindexMatchingObjects(nodeEntry);
+                    cylindercomponentexp.idxArchtype = newcylindercomponentimp.UIndex;
+                }
+
+                if (exportTypeInfo.upgradetomaxpathsize)
+                {
+                    StructProperty maxpathsize = nodeProperties.GetProp<StructProperty>("MaxPathSize");
+
+                    //Upgrade node size
+                    if (maxpathsize != null)
+                    {
+                        FloatProperty radius = maxpathsize.GetProp<FloatProperty>("Radius");
+                        FloatProperty height = maxpathsize.GetProp<FloatProperty>("Height");
+
+                        if (radius != null)
                         {
-                            propertiesToRemove.Add(prop);
+                            radius.Value = 140;
+                        }
+
+                        if (height != null)
+                        {
+                            height.Value = 195;
                         }
                     }
 
-                    foreach (UProperty prop in propertiesToRemove)
+                    //If items on the other end of a reachspec are also the same type,
+                    //Ensure outbound and returning reachspec type and sizes are correct.
+                    ArrayProperty<ObjectProperty> pathList = nodeProperties.GetProp<ArrayProperty<ObjectProperty>>("PathList");
+                    if (pathList != null)
                     {
-                        properties.Remove(prop);
-                    }
-                    nodeEntry.WriteProperties(properties);
-                }
-            }
-
-            //perform special tasks here.
-            switch (newType)
-            {
-                case /*NODETYPE_SFXNAV_LAREGEBOOSTNODE*/ "-1":
-                    {
-                        //Maximize MaxPathSize
-                        StructProperty maxpathsize = nodeEntry.GetProperty<StructProperty>("MaxPathSize");
-                        if (maxpathsize != null)
+                        foreach (ObjectProperty pathObj in pathList)
                         {
-                            FloatProperty radius = maxpathsize.GetProp<FloatProperty>("Radius");
-                            FloatProperty height = maxpathsize.GetProp<FloatProperty>("Height");
-
-                            if (radius != null)
-                            {
-                                radius.Value = 140;
-                            }
-                            if (height != null)
-                            {
-                                height.Value = 195;
-                            }
-                            nodeEntry.WriteProperty(maxpathsize);
+                            IExportEntry spec = Pcc.getUExport(pathObj.Value);
+                            EnsureLargeAndReturning(spec, exportTypeInfo);
                         }
+                    }
+                }
+                nodeEntry.WriteProperties(nodeProperties);
+            }
+        }
+        /*
 
-
-                        //If items on the other end of a reachspec are also SFXNav_LargeBoostNode,
-                        //Ensure the reachspec is SFXLargeBoostReachSpec.
-                        //Ensure maxpath sizes are set to max size.
-                        ArrayProperty<ObjectProperty> pathList = nodeEntry.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-                        if (pathList != null)
+        //Change the reachspec incoming to this node...
+                    ArrayProperty<ObjectProperty> otherNodePathlist =  specDest.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                    if (otherNodePathlist != null)
+                    {
+                        for (int on = 0; on < otherNodePathlist.Count; on++)
                         {
-                            for (int i = 0; i < pathList.Count; i++)
+                            IExportEntry inboundSpec = Pcc.getUExport(otherNodePathlist[on].Value);
+                            //Get end
+                            if (inboundSpec.GetProperty<StructProperty>("End") is StructProperty prop)
                             {
-                                IExportEntry spec = Pcc.getUExport(pathList[i].Value);
-                                //Get ending
-                                int othernodeidx = 0;
-                                PropertyCollection specprops = spec.GetProperties();
-                                foreach (var prop in specprops)
+                                PropertyCollection inboundSpecProps = prop.Properties;
+                                foreach (var rprop in inboundSpecProps)
                                 {
-                                    if (prop.Name == "End")
+                                    if (rprop.Name ==
+                                    )
                                     {
-                                        PropertyCollection reachspecprops = (prop as StructProperty).Properties;
-                                        foreach (var rprop in reachspecprops)
+                                        int inboundSpecDest = (rprop as ObjectProperty).Value;
+                                        if (inboundSpecDest == nodeEntry.UIndex)
                                         {
-                                            if (rprop.Name == SharedPathfinding.GetReachSpecEndName(spec))
-                                            {
-                                                othernodeidx = (rprop as ObjectProperty).Value;
-                                                break;
-                                            }
+                                            //The node is inbound to me.
+                                            inboundSpec.idxClass = newReachSpecClass.UIndex;
+                                            inboundSpec.idxObjectName =
+                                                Pcc.FindNameOrAdd("SFXLargeBoostReachSpec");
+                                            //widen spec
+                                            SharedPathfinding.SetReachSpecSize(inboundSpec,
+                                                PathfindingNodeInfoPanel.BANSHEE_RADIUS,
+                                                PathfindingNodeInfoPanel.BANSHEE_HEIGHT);
+                                            keepParsing = false; //stop the outer loop
+                                            break;
                                         }
                                     }
-                                    if (othernodeidx != 0)
+                                }
+                            }
+
+                            if (!keepParsing)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //Todo: Strip unused properties
+        nodeEntry.WriteProperties(nodeProperties);
+    }*/
+
+        /*switch (newType)
+        {
+            case NODETYPE_SFXENEMYSPAWNPOINT:
+                exportclassdbkey = "SFXEnemySpawnPoint";
+                break;
+            case NODETYPE_PATHNODE:
+                exportclassdbkey = "PathNode";
+                break;
+            case NODETYPE_SFXNAV_LAREGEBOOSTNODE:
+                exportclassdbkey = "SFXNav_LargeBoostNode";
+                propertiesToRemoveIfPresent.Add("bTopNode"); //if coming from boost node
+                break;
+            case NODETYPE_SFXNAV_TURRETPOINT:
+                exportclassdbkey = "SFXNav_TurretPoint";
+                break;
+            case NODETYPE_SFXNAV_BOOSTNODE_TOP:
+                {
+                    exportclassdbkey = "SFXNav_BoostNode";
+                    BoolProperty bTopNode = new BoolProperty(true, "bTopNode");
+                    propertiesToAdd.Add(bTopNode);
+                    propertiesToRemoveIfPresent.Add("JumpDownDest");
+                }
+                break;
+            case NODETYPE_SFXNAV_BOOSTNODE_BOTTOM:
+                exportclassdbkey = "SFXNav_BoostNode";
+                propertiesToRemoveIfPresent.Add("bTopNode");
+                propertiesToRemoveIfPresent.Add("JumpDownDest");
+                break;
+            case NODETYPE_SFXNAV_JUMPDOWNNODE_TOP:
+                {
+                    exportclassdbkey = "SFXNav_JumpDownNode";
+                    BoolProperty bTopNode = new BoolProperty(true, "bTopNode");
+                    propertiesToAdd.Add(bTopNode);
+                    propertiesToRemoveIfPresent.Add("BoostDest");
+                }
+                break;
+            case NODETYPE_SFXNAV_JUMPDOWNNODE_BOTTOM:
+                exportclassdbkey = "SFXNav_JumpDownNode";
+                propertiesToRemoveIfPresent.Add("bTopNode");
+                propertiesToRemoveIfPresent.Add("BoostDest");
+                break;
+            case NODETYPE_SFXNAV_LARGEMANTLENODE:
+                exportclassdbkey = "SFXNav_LargeMantleNode";
+                ObjectProperty mantleDest = new ObjectProperty(0, "MantleDest");
+                propertiesToAdd.Add(mantleDest);
+                break;
+            case NODETYPE_SFXNAV_CLIMBWALLNODE:
+                exportclassdbkey = "SFXNav_ClimbWallNode";
+                //propertiesToRemoveIfPresent.Add("ClimbDest");
+                break;
+            case NODETYPE_BIOPATHPOINT:
+                {
+                    exportclassdbkey = "BioPathPoint";
+                    BoolProperty bEnabled = new BoolProperty(true, "bEnabled");
+                    propertiesToAdd.Add(bEnabled);
+                    break;
+                }
+            case NODETYPE_SFXDYNAMICCOVERLINK:
+                {
+                    exportclassdbkey = "SFXDynamicCoverLink";
+                    //BoolProperty bEnabled = new BoolProperty(true, "bEnabled");
+                    //propertiesToAdd.Add(bEnabled);
+                    break;
+                }
+            case NODETYPE_SFXDYNAMICCOVERSLOTMARKER:
+                {
+                    exportclassdbkey = "SFXDynamicCoverSlotMarker";
+                    //coverslot property blows up adding properties
+                    BoolProperty bEnabled = new BoolProperty(true, "bEnabled");
+                    propertiesToAdd.Add(bEnabled);
+                    break;
+                }
+            default:
+                return;
+        }
+    }
+
+    return;
+
+    //lookup requirements in DB
+    {
+        Dictionary<string, string> exportclassinfo = null; // exportclassdb[exportclassdbkey];
+        string newclass = exportclassinfo["class"];
+        string newname = exportclassinfo["name"];
+        string newcylindercomponentarchetype = exportclassinfo["cylindercomponentarchetype"];
+
+        //Get current cylinder component export.
+        PropertyCollection props = nodeEntry.GetProperties();
+
+        ObjectProperty cylindercomponent = props.GetProp<ObjectProperty>("CollisionComponent");
+        IExportEntry cylindercomponentexp = Pcc.getUExport(cylindercomponent.Value);
+
+        //Ensure all classes are imported.
+        ImportEntry newnodeclassimp = SharedPathfinding.GetOrAddImport(Pcc, newclass);
+        ImportEntry newcylindercomponentimp =
+            SharedPathfinding.GetOrAddImport(Pcc, newcylindercomponentarchetype);
+
+        if (newnodeclassimp != null)
+        {
+            nodeEntry.idxClass = newnodeclassimp.UIndex;
+            nodeEntry.idxObjectName = Pcc.FindNameOrAdd(newname);
+            cylindercomponentexp.idxArchtype = newcylindercomponentimp.UIndex;
+        }
+
+        //Write new properties
+        /*if (propertiesToAdd.Count() > 0 || propertiesToRemoveIfPresent.Count() > 0)
+        {
+            foreach (UProperty prop in propertiesToAdd)
+            {
+                nodeEntry.WriteProperty(prop);
+            }
+
+            //Remove specific properties
+            if (propertiesToRemoveIfPresent.Count > 0)
+            {
+                PropertyCollection properties = nodeEntry.GetProperties();
+                List<UProperty> propertiesToRemove = new List<UProperty>();
+                foreach (UProperty prop in properties)
+                {
+                    if (propertiesToRemoveIfPresent.Contains(prop.Name))
+                    {
+                        propertiesToRemove.Add(prop);
+                    }
+                }
+
+                foreach (UProperty prop in propertiesToRemove)
+                {
+                    properties.Remove(prop);
+                }
+
+                nodeEntry.WriteProperties(properties);
+            }
+        }
+
+        //perform special tasks here.
+        switch (newType)
+        {
+            case /*NODETYPE_SFXNAV_LAREGEBOOSTNODE "-1":
+                {
+                    //Maximize MaxPathSize
+                    StructProperty maxpathsize = nodeEntry.GetProperty<StructProperty>("MaxPathSize");
+                    if (maxpathsize != null)
+                    {
+                        FloatProperty radius = maxpathsize.GetProp<FloatProperty>("Radius");
+                        FloatProperty height = maxpathsize.GetProp<FloatProperty>("Height");
+
+                        if (radius != null)
+                        {
+                            radius.Value = 140;
+                        }
+
+                        if (height != null)
+                        {
+                            height.Value = 195;
+                        }
+
+                        nodeEntry.WriteProperty(maxpathsize);
+                    }
+
+
+                    //If items on the other end of a reachspec are also SFXNav_LargeBoostNode,
+                    //Ensure the reachspec is SFXLargeBoostReachSpec.
+                    //Ensure maxpath sizes are set to max size.
+                    ArrayProperty<ObjectProperty> pathList =
+                        nodeEntry.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                    if (pathList != null)
+                    {
+                        for (int i = 0; i < pathList.Count; i++)
+                        {
+                            IExportEntry spec = Pcc.getUExport(pathList[i].Value);
+                            //Get ending
+                            int othernodeidx = 0;
+                            PropertyCollection specprops = spec.GetProperties();
+                            foreach (var prop in specprops)
+                            {
+                                if (prop.Name == "End")
+                                {
+                                    PropertyCollection reachspecprops = (prop as StructProperty).Properties;
+                                    foreach (var rprop in reachspecprops)
                                     {
-                                        break;
+                                        if (rprop.Name == SharedPathfinding.GetReachSpecEndName(spec))
+                                        {
+                                            othernodeidx = (rprop as ObjectProperty).Value;
+                                            break;
+                                        }
                                     }
                                 }
 
                                 if (othernodeidx != 0)
                                 {
-                                    bool keepParsing = true;
-                                    IExportEntry specDest = Pcc.getUExport(othernodeidx);
-                                    if (specDest.ClassName == "SFXNav_LargeBoostNode" && spec.ClassName != "SFXLargeBoostReachSpec")
+                                    break;
+                                }
+                            }
+
+                            if (othernodeidx != 0)
+                            {
+                                bool keepParsing = true;
+                                IExportEntry specDest = Pcc.getUExport(othernodeidx);
+                                if (specDest.ClassName == "SFXNav_LargeBoostNode" &&
+                                    spec.ClassName != "SFXLargeBoostReachSpec")
+                                {
+                                    //Change the reachspec info outgoing to this node...
+                                    ImportEntry newReachSpecClass =
+                                        SharedPathfinding.GetOrAddImport(Pcc,
+                                            "SFXGame.SFXLargeBoostReachSpec");
+
+                                    if (newReachSpecClass != null)
                                     {
-                                        //Change the reachspec info outgoing to this node...
-                                        ImportEntry newReachSpecClass = SharedPathfinding.GetOrAddImport(Pcc, "SFXGame.SFXLargeBoostReachSpec");
+                                        spec.idxClass = newReachSpecClass.UIndex;
+                                        spec.idxObjectName = Pcc.FindNameOrAdd("SFXLargeBoostReachSpec");
+                                        //set spec to banshee sized
+                                        SharedPathfinding.SetReachSpecSize(spec,
+                                            PathfindingNodeInfoPanel.BANSHEE_RADIUS,
+                                            PathfindingNodeInfoPanel.BANSHEE_HEIGHT);
+                                    }
 
-                                        if (newReachSpecClass != null)
+                                    //Change the reachspec incoming to this node...
+                                    ArrayProperty<ObjectProperty> otherNodePathlist =
+                                        specDest.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                                    if (otherNodePathlist != null)
+                                    {
+                                        for (int on = 0; on < otherNodePathlist.Count; on++)
                                         {
-                                            spec.idxClass = newReachSpecClass.UIndex;
-                                            spec.idxObjectName = Pcc.FindNameOrAdd("SFXLargeBoostReachSpec");
-                                            //set spec to banshee sized
-                                            SharedPathfinding.SetReachSpecSize(spec, PathfindingNodeInfoPanel.BANSHEE_RADIUS, PathfindingNodeInfoPanel.BANSHEE_HEIGHT);
-                                        }
-
-                                        //Change the reachspec incoming to this node...
-                                        ArrayProperty<ObjectProperty> otherNodePathlist = specDest.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-                                        if (otherNodePathlist != null)
-                                        {
-                                            for (int on = 0; on < otherNodePathlist.Count; on++)
+                                            IExportEntry inboundSpec =
+                                                Pcc.getUExport(otherNodePathlist[on].Value);
+                                            //Get ending
+                                            //PropertyCollection inboundProps = inboundSpec.GetProperties();
+                                            var prop = inboundSpec.GetProperty<StructProperty>("End");
+                                            if (prop != null)
                                             {
-                                                IExportEntry inboundSpec = Pcc.getUExport(otherNodePathlist[on].Value);
-                                                //Get ending
-                                                //PropertyCollection inboundProps = inboundSpec.GetProperties();
-                                                var prop = inboundSpec.GetProperty<StructProperty>("End");
-                                                if (prop != null)
+                                                PropertyCollection reachspecprops =
+                                                    (prop as StructProperty).Properties;
+                                                foreach (var rprop in reachspecprops)
                                                 {
-                                                    PropertyCollection reachspecprops = (prop as StructProperty).Properties;
-                                                    foreach (var rprop in reachspecprops)
+                                                    if (rprop.Name ==
+                                                        SharedPathfinding.GetReachSpecEndName(inboundSpec))
                                                     {
-                                                        if (rprop.Name == SharedPathfinding.GetReachSpecEndName(inboundSpec))
+                                                        int inboundSpecDest =
+                                                            (rprop as ObjectProperty).Value;
+                                                        if (inboundSpecDest == nodeEntry.UIndex)
                                                         {
-                                                            int inboundSpecDest = (rprop as ObjectProperty).Value;
-                                                            if (inboundSpecDest == nodeEntry.UIndex)
-                                                            {
-                                                                //The node is inbound to me.
-                                                                inboundSpec.idxClass = newReachSpecClass.UIndex;
-                                                                inboundSpec.idxObjectName = Pcc.FindNameOrAdd("SFXLargeBoostReachSpec");
-                                                                //widen spec
-                                                                SharedPathfinding.SetReachSpecSize(inboundSpec, PathfindingNodeInfoPanel.BANSHEE_RADIUS, PathfindingNodeInfoPanel.BANSHEE_HEIGHT);
-                                                                keepParsing = false; //stop the outer loop
-                                                                break;
-                                                            }
+                                                            //The node is inbound to me.
+                                                            inboundSpec.idxClass = newReachSpecClass.UIndex;
+                                                            inboundSpec.idxObjectName =
+                                                                Pcc.FindNameOrAdd("SFXLargeBoostReachSpec");
+                                                            //widen spec
+                                                            SharedPathfinding.SetReachSpecSize(inboundSpec,
+                                                                PathfindingNodeInfoPanel.BANSHEE_RADIUS,
+                                                                PathfindingNodeInfoPanel.BANSHEE_HEIGHT);
+                                                            keepParsing = false; //stop the outer loop
+                                                            break;
                                                         }
                                                     }
                                                 }
-                                                if (!keepParsing)
-                                                {
-                                                    break;
-                                                }
+                                            }
+
+                                            if (!keepParsing)
+                                            {
+                                                break;
                                             }
                                         }
                                     }
                                 }
                             }
                         }
-
-
-                        //var outLinksProp = nodeEntry.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-                        //if (outLinksProp != null)
-                        //{
-                        //    foreach (var prop in outLinksProp)
-                        //    {
-                        //        int reachspecexport = prop.Value;
-                        //        ReachSpecs.Add(pcc.Exports[reachspecexport - 1]);
-                        //    }
-
-                        //    foreach (IExportEntry spec in ReachSpecs)
-                        //    {
-
-                        //    }
-                        //}
                     }
 
-                    break;
 
+                    //var outLinksProp = nodeEntry.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                    //if (outLinksProp != null)
+                    //{
+                    //    foreach (var prop in outLinksProp)
+                    //    {
+                    //        int reachspecexport = prop.Value;
+                    //        ReachSpecs.Add(pcc.Exports[reachspecexport - 1]);
+                    //    }
+
+                    //    foreach (IExportEntry spec in ReachSpecs)
+                    //    {
+
+                    //    }
+                    //}
+                }
+
+                break;
+
+        }
+
+    }
+}
+}
+}*/
+
+        /// <summary>
+        /// Ensures the specified spec and returning spec are of full size and of the specified type if the end node matches the information in the exportTypeInfo
+        /// </summary>
+        /// <param name="spec"></param>
+        /// <param name="exportTypeInfo"></param>
+        /// <param name="outbound">If this is the initial outbound connection. Prevents infinite loops.</param>
+        private void EnsureLargeAndReturning(IExportEntry spec, PathfindingDB_ExportType exportTypeInfo, bool outbound = true)
+        {
+            var reachspecendname = SharedPathfinding.GetReachSpecEndName(spec);
+
+            //Get destination
+            PropertyCollection specprops = spec.GetProperties();
+            int start = specprops.GetProp<ObjectProperty>("Start").Value;
+            if (specprops.FirstOrDefault(x => x.Name == "End") is StructProperty reachspecendprop)
+            {
+                PropertyCollection reachspecprops = reachspecendprop.Properties;
+                var otherNodeIdxProp = reachspecprops.FirstOrDefault(x => x.Name == reachspecendname) as ObjectProperty;
+                int othernodeidx = otherNodeIdxProp.Value;
+
+                if (othernodeidx <= 0) return; //skip as this is not proper data
+                IExportEntry specDest = Pcc.getUExport(othernodeidx);
+
+                //Check for same as changing to type, ensure spec type is correct
+                if (specDest.ClassName == exportTypeInfo.nodetypename && spec.ClassName != exportTypeInfo.inboundspectype)
+                {
+                    //Change the reachspec info outgoing to this node...
+                    ImportEntry newReachSpecClass = SharedPathfinding.GetOrAddImport(Pcc, exportTypeInfo.inboundspectype);
+
+                    if (newReachSpecClass != null)
+                    {
+                        spec.idxClass = newReachSpecClass.UIndex;
+                        spec.idxObjectName = Pcc.FindNameOrAdd(exportTypeInfo.nodetypename);
+                        //set spec to banshee sized
+                        SharedPathfinding.SetReachSpecSize(spec,
+                            PathfindingNodeInfoPanel.BANSHEE_RADIUS,
+                            PathfindingNodeInfoPanel.BANSHEE_HEIGHT);
+                    }
+
+                    if (outbound)
+                    {
+                        ArrayProperty<ObjectProperty> pathList = specDest.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                        if (pathList != null)
+                        {
+                            foreach (ObjectProperty pathObj in pathList)
+                            {
+                                if (pathObj.Value == start)
+                                {
+                                    spec = Pcc.getUExport(pathObj.Value);
+                                    EnsureLargeAndReturning(spec, exportTypeInfo, false);
+                                    break; //this will only need to run once since there is only 1:1 reach specs
+                                }
+                            }
+                        }
+                    }
+                    SharedPathfinding.ReindexMatchingObjects(spec);
+                }
             }
-
-            SharedPathfinding.ReindexMatchingObjects(nodeEntry);
         }
 
         private void PopoutInterpreterWPF(object obj)
@@ -942,11 +1264,15 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 if (ActiveNodes_ListBox != null && ActiveNodes_ListBox.SelectedItem is IExportEntry CurrentLoadedExport)
                 {
-                    if (SharedPathfinding.ExportClassDB.TryGetValue(CurrentLoadedExport.ClassName, out var classinfo) && classinfo.TryGetValue("description", out var description))
+                    if (SharedPathfinding.ExportClassDB.FirstOrDefault(x => x.nodetypename == CurrentLoadedExport.ClassName) is PathfindingDB_ExportType classinfo)
                     {
-                        return description;
+                        return classinfo.description;
                     }
-                    switch (CurrentLoadedExport.ClassName)
+                    else
+                    {
+                        return "This node type does not have any information detailed about its purpose.";
+                    }
+                    /*switch (CurrentLoadedExport.ClassName)
                     {
                         case "PathNode": return "A basic pathing node that all basic movement can use.";
                         case "SFXNav_LargeBoostNode": return "A node that allows large creatures to boost to another LargeBoostNode, such as a Banshee floating up or down vertical distances.";
@@ -956,8 +1282,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         case "BioPathPoint": return "A basic pathing node that can be enabled or disabled in Kismet.";
                         case "SFXEnemySpawnPoint": return "A basic pathing node that can be used as a spawn point for Mass Effect 3 Multiplayer enemies. It contains a list of required sync actions that using this spawn point will require to enter the main area of the map.";
                         case "SFXNav_LargeMantleNode": return "A node that can be large mantled over to reach another large mantle node. This action is used when climbing over large cover by AI.";
-                        default: return "This node type does not have any information detailed about it's purpose.";
-                    }
+                    }*/
                 }
                 else
                 {
@@ -1960,7 +2285,19 @@ namespace ME3Explorer.Pathfinding_Editor
                     NodeType_TabItem.IsEnabled = true;
                     foreach (var availableNodeChangeableType in AvailableNodeChangeableTypes)
                     {
-                        availableNodeChangeableType.Active = availableNodeChangeableType.ClassName == export.ClassName;
+                        bool sameClass = availableNodeChangeableType.ClassName == export.ClassName;
+                        if (sameClass && availableNodeChangeableType.Top)
+                        {
+                            availableNodeChangeableType.Active = export.GetProperty<BoolProperty>("bTop") is BoolProperty b && b;
+                        }
+                        else if (sameClass && !availableNodeChangeableType.Top)
+                        {
+                            availableNodeChangeableType.Active = export.GetProperty<BoolProperty>("bTop") is BoolProperty b && !b;
+                        }
+                        else
+                        {
+                            availableNodeChangeableType.Active = sameClass;
+                        }
                     }
 
                     CurrentNodeCombatZones.AddRange(CloneCombatZonesForSelections());
@@ -1996,7 +2333,9 @@ namespace ME3Explorer.Pathfinding_Editor
 
 #if DEBUG
                 //Populate the export/import database
-                if (!SharedPathfinding.ExportClassDB.ContainsKey(export.ClassName))
+
+                /*
+                if (!(SharedPathfinding.ExportClassDB.FirstOrDefault(x=>x.nodetypename == export.ClassName) is PathfindingDB_ExportType))
                 {
                     Dictionary<string, string> data = new Dictionary<string, string>();
                     data["class"] = export.FileRef.getEntry(export.idxClass).GetFullPath;
@@ -2048,7 +2387,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         File.WriteAllText(SharedPathfinding.ClassesDatabasePath,
                     JsonConvert.SerializeObject(new { exporttypes, importtypes }, Formatting.Indented));
                     }
-                }
+                }*/
 
 #endif
                 //Clear coverlinknode highlighting.
@@ -2836,12 +3175,30 @@ namespace ME3Explorer.Pathfinding_Editor
             public string ClassName
             {
                 get => _className;
-                set => SetProperty(ref _className, value);
+                set
+                {
+                    SetProperty(ref _className, value);
+                    OnPropertyChanged(nameof(DisplayString));
+                }
             }
 
-            public NodeType(string ClassName)
+            public string DisplayString
+            {
+                get
+                {
+                    string retval = ClassName;
+                    if (Top)
+                        retval += " (Top)";
+                    return retval;
+                }
+            }
+
+            public bool Top;
+
+            public NodeType(string ClassName, bool Top)
             {
                 this.ClassName = ClassName;
+                this.Top = Top;
             }
         }
 

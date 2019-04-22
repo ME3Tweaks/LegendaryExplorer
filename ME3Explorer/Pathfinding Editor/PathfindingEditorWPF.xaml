@@ -155,7 +155,7 @@
                     <TabItem Name="NodeType_TabItem" Header="Type">
                         <DockPanel Margin="3">
                             <TextBlock DockPanel.Dock="Top" Text="Double click a type below to change this node to that type." TextWrapping="Wrap" FontWeight="Bold" Margin="3"/>
-                            <ListBox Name="AvailableNodeTypes_ListBox" MinHeight="50" ItemsSource="{Binding AvailableNodeChangeableTypes}">
+                            <ListBox Name="AvailableNodeTypes_ListBox" MinHeight="50" ItemsSource="{Binding AvailableNodeChangeableTypes}" HorizontalContentAlignment="Stretch">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <Grid Margin="0">
@@ -179,7 +179,7 @@
                                                 </fa:ImageAwesome.Style>
                                             </fa:ImageAwesome>
 
-                                            <TextBlock Text="{Binding ClassName}" Grid.Column="1" >
+                                            <TextBlock Text="{Binding DisplayString}" Grid.Column="1" >
                                                 <TextBlock.Style>
                                                     <Style TargetType="{x:Type TextBlock}">
                                                         <Style.Triggers>

@@ -12,8 +12,9 @@ namespace ME3Explorer.Pathfinding_Editor
 {
     class SharedPathfinding
     {
+        //Defaults to empty to prevent issues
         public static Dictionary<string, Dictionary<string, string>> ImportClassDB = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
-        public static Dictionary<string, Dictionary<string, string>> ExportClassDB = new Dictionary<string, Dictionary<string, string>>(); //SFXEnemy SpawnPoint -> class, name, ...etc
+        public static List<PathfindingDB_ExportType> ExportClassDB = new List<PathfindingDB_ExportType>(); //SFXEnemy SpawnPoint -> class, name, ...etc
         private static bool ClassesDBLoaded;
         internal static string ClassesDatabasePath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "exec", "pathfindingclassdb.json");
 
@@ -134,7 +135,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 startNode.WriteProperty(PathList);
 
                 //Write Spec Size
-                SetReachSpecSize(Pcc,outgoingSpecProperties, size.SpecRadius, size.SpecHeight);
+                SetReachSpecSize(Pcc, outgoingSpecProperties, size.SpecRadius, size.SpecHeight);
                 outgoingSpec.WriteProperties(outgoingSpecProperties);
 
                 if (createTwoWay)
@@ -161,7 +162,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     destinationNode.WriteProperty(DestPathList);
 
                     //destNode.WriteProperty(DestPathList);
-                    SetReachSpecSize(Pcc,incomingSpecProperties, size.SpecRadius, size.SpecHeight);
+                    SetReachSpecSize(Pcc, incomingSpecProperties, size.SpecRadius, size.SpecHeight);
 
                     incomingSpec.WriteProperties(incomingSpecProperties);
                 }
@@ -261,8 +262,16 @@ namespace ME3Explorer.Pathfinding_Editor
                 Debug.WriteLine(upstreamImport.GetFullPath);
 
                 int downstreamPackageName = Pcc.FindNameOrAdd(importdbinfo["packagefile"]);
-                int downstreamClassName = Pcc.FindNameOrAdd(importdbinfo["class"]);
+                string downstreamClassName = importdbinfo["fullclasspath"];
+                int lastPeriodIndex = downstreamClassName.LastIndexOf(".");
+                if (lastPeriodIndex > 0)
+                {
+                    downstreamClassName = importdbinfo["fullclasspath"].Substring(lastPeriodIndex);
 
+                }
+
+                int downstreamClassNameIdx = Pcc.FindNameOrAdd(downstreamClassName);
+                Debug.WriteLine("Finding name "+ downstreamClassName);
                 //ImportEntry classImport = getOrAddImport();
                 //int downstreamClass = 0;
                 //if (classImport != null) {
@@ -274,7 +283,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 mostdownstreamimport = new ImportEntry(Pcc);
                 mostdownstreamimport.idxLink = downstreamLinkIdx;
-                mostdownstreamimport.idxClassName = downstreamClassName;
+                mostdownstreamimport.idxClassName = downstreamClassNameIdx;
                 mostdownstreamimport.idxObjectName = downstreamName;
                 mostdownstreamimport.idxPackageFile = downstreamPackageName;
                 Pcc.addImport(mostdownstreamimport);
@@ -389,7 +398,9 @@ namespace ME3Explorer.Pathfinding_Editor
                     JObject o = JObject.Parse(raw);
                     JToken exportjson = o.SelectToken("exporttypes");
                     JToken importjson = o.SelectToken("importtypes");
-                    ExportClassDB = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(exportjson.ToString());
+                    var obj = JsonConvert.DeserializeObject<dynamic>(exportjson.ToString());
+
+                    ExportClassDB = JsonConvert.DeserializeObject<List<PathfindingDB_ExportType>>(exportjson.ToString());
                     ImportClassDB = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(importjson.ToString());
                     ClassesDBLoaded = true;
                 }
@@ -475,4 +486,24 @@ namespace ME3Explorer.Pathfinding_Editor
         }
     }
 
+    public class PathfindingDB_ExportType_EnsuredProperty
+    {
+        public string name { get; set; }
+        public string type { get; set; }
+        public string defaultvalue { get; set; }
+    }
+
+    public class PathfindingDB_ExportType
+    {
+        public string nodetypename { get; set; }
+        public string fullclasspath { get; set; }
+        public string name { get; set; }
+        public string cylindercomponentarchetype { get; set; }
+        public bool pathnode { get; set; }
+        public string description { get; set; }
+        public bool usesbtop { get; set; }
+        public bool upgradetomaxpathsize { get; set; }
+        public List<PathfindingDB_ExportType_EnsuredProperty> ensuredproperties { get; set; } = new List<PathfindingDB_ExportType_EnsuredProperty>();
+        public string inboundspectype { get; set; }
+    }
 }

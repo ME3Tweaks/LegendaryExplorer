@@ -67,6 +67,16 @@ namespace ME3Explorer.Unreal
             }
         }
 
+        /// <summary>
+        /// Checks if a property with the specified name exists in this propery collection
+        /// </summary>
+        /// <param name="name">Name of property to find. If an empty name is passed in, any property without a name will cause this to return true.</param>
+        /// <returns>True if property is found, false if list is empty or not found</returns>
+        public bool ContainsNamedProp(NameReference name)
+        {
+            return Count > 0 && this.Any(x => x.Name == name);
+        }
+
         public static PropertyCollection ReadProps(IMEPackage pcc, MemoryStream stream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null)
         {
             //Uncomment this for debugging property engine
