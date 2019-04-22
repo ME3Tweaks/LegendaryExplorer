@@ -122,16 +122,16 @@ namespace ME3Explorer.Pathfinding_Editor
             var types = SharedPathfinding.ExportClassDB.Where(x => x.pathnode).ToList();
             foreach (var type in types)
             {
-                NodeType nt = new NodeType(type.nodetypename, false);
+                NodeType nt = new NodeType(type, false);
                 AvailableNodeChangeableTypes.Add(nt);
                 if (type.usesbtop)
                 {
-                    nt = new NodeType(type.nodetypename, true);
+                    nt = new NodeType(type, true);
                     AvailableNodeChangeableTypes.Add(nt);
                 }
             }
 
-            AvailableNodeChangeableTypes.Sort(x => x.ClassName);
+            AvailableNodeChangeableTypes.Sort(x => x.DisplayString);
             InitializeComponent();
             pathfindingMouseListener = new PathfindingMouseListener(this); //Must be member so we can release reference
             graphEditor.AddInputEventListener(pathfindingMouseListener);
@@ -304,13 +304,18 @@ namespace ME3Explorer.Pathfinding_Editor
         /// <param name="newType"></param>
         private void changeNodeType(IExportEntry nodeEntry, NodeType newNodeType)
         {
-            var newType = newNodeType.ClassName;
-            if (nodeEntry.ClassName == newType)
+            var exportTypeInfo = newNodeType.TypeInfo;
+            PropertyCollection nodeProperties = nodeEntry.GetProperties();
+
+            if (nodeEntry.ClassName == exportTypeInfo.nodetypename)
             {
-                return; //don't care
+                if (!exportTypeInfo.usesbtop || (nodeProperties.FirstOrDefault(x => x.Name == "bTopNode") is BoolProperty bTop
+                        && bTop.Value == newNodeType.Top))
+                {
+                    return; //same, not changing.
+                }
             }
 
-            PathfindingDB_ExportType exportTypeInfo = SharedPathfinding.ExportClassDB.FirstOrDefault(x => x.nodetypename == newNodeType.ClassName);
             if (exportTypeInfo != null)
             {
                 List<UProperty> ensuredProperties = new List<UProperty>();
@@ -329,13 +334,23 @@ namespace ME3Explorer.Pathfinding_Editor
                     }
                 }
 
-                if (newNodeType.Top)
+                if (newNodeType.TypeInfo.usesbtop)
                 {
-                    ensuredProperties.Add(new BoolProperty(true, "bTop"));
+                    if (newNodeType.Top)
+                    {
+                        ensuredProperties.Add(new BoolProperty(true, "bTopNode"));
+                    }
+                    else
+                    {
+                        var bTop = nodeProperties.FirstOrDefault(x => x.Name == "bTopNode");
+                        if (bTop != null)
+                        {
+                            nodeProperties.Remove(bTop);
+                        }
+                    }
                 }
 
                 //Add ensured properties
-                PropertyCollection nodeProperties = nodeEntry.GetProperties();
                 foreach (UProperty prop in ensuredProperties)
                 {
                     if (!nodeProperties.ContainsNamedProp(prop.Name))
@@ -2288,18 +2303,23 @@ namespace ME3Explorer.Pathfinding_Editor
                     NodeType_TabItem.IsEnabled = true;
                     foreach (var availableNodeChangeableType in AvailableNodeChangeableTypes)
                     {
-                        bool sameClass = availableNodeChangeableType.ClassName == export.ClassName;
-                        if (sameClass && availableNodeChangeableType.Top)
+                        bool sameClass = availableNodeChangeableType.TypeInfo.nodetypename == export.ClassName;
+                        if (sameClass)
                         {
-                            availableNodeChangeableType.Active = export.GetProperty<BoolProperty>("bTop") is BoolProperty b && b;
-                        }
-                        else if (sameClass && !availableNodeChangeableType.Top)
-                        {
-                            availableNodeChangeableType.Active = export.GetProperty<BoolProperty>("bTop") is BoolProperty b && !b;
+                            if (availableNodeChangeableType.TypeInfo.usesbtop)
+                            {
+                                var b = export.GetProperty<BoolProperty>("bTopNode");
+                                availableNodeChangeableType.Active = (b == null && !availableNodeChangeableType.Top) || (b != null && b == availableNodeChangeableType.Top);
+
+                            }
+                            else
+                            {
+                                availableNodeChangeableType.Active = true;
+                            }
                         }
                         else
                         {
-                            availableNodeChangeableType.Active = sameClass;
+                            availableNodeChangeableType.Active = false;
                         }
                     }
 
@@ -3174,13 +3194,13 @@ namespace ME3Explorer.Pathfinding_Editor
                 set => SetProperty(ref _active, value);
             }
 
-            private string _className;
-            public string ClassName
+            private PathfindingDB_ExportType _typeInfo;
+            public PathfindingDB_ExportType TypeInfo
             {
-                get => _className;
+                get => _typeInfo;
                 set
                 {
-                    SetProperty(ref _className, value);
+                    SetProperty(ref _typeInfo, value);
                     OnPropertyChanged(nameof(DisplayString));
                 }
             }
@@ -3189,18 +3209,22 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 get
                 {
-                    string retval = ClassName;
-                    if (Top)
-                        retval += " (Top)";
+                    string retval = TypeInfo.nodetypename;
+                    if (TypeInfo.usesbtop)
+                    {
+                        if (Top)
+                            retval += " (Top)";
+                        else
+                            retval += " (Bottom)";
+                    }
                     return retval;
                 }
             }
 
             public bool Top;
-
-            public NodeType(string ClassName, bool Top)
+            public NodeType(PathfindingDB_ExportType TypeInfo, bool Top)
             {
-                this.ClassName = ClassName;
+                this.TypeInfo = TypeInfo;
                 this.Top = Top;
             }
         }

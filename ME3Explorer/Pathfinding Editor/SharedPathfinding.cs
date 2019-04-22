@@ -266,12 +266,12 @@ namespace ME3Explorer.Pathfinding_Editor
                 int lastPeriodIndex = downstreamClassName.LastIndexOf(".");
                 if (lastPeriodIndex > 0)
                 {
-                    downstreamClassName = importdbinfo["fullclasspath"].Substring(lastPeriodIndex);
+                    downstreamClassName = importdbinfo["fullclasspath"].Substring(lastPeriodIndex + 1);
 
                 }
 
                 int downstreamClassNameIdx = Pcc.FindNameOrAdd(downstreamClassName);
-                Debug.WriteLine("Finding name "+ downstreamClassName);
+                Debug.WriteLine("Finding name " + downstreamClassName);
                 //ImportEntry classImport = getOrAddImport();
                 //int downstreamClass = 0;
                 //if (classImport != null) {
