@@ -304,18 +304,18 @@ namespace ME3Explorer
         public bool WriteExcelTo2DA(string Filename)
         {
             var Workbook = new XLWorkbook(Filename);
+            IXLWorksheet iWorksheet = null;
             try
             {
-                var Test_iWorksheet = Workbook.Worksheet("Import");
+                iWorksheet = Workbook.Worksheet("Import");
             }
             catch
             {
                 MessageBox.Show("Import Sheet not found");
-                return false; // there must be a better way to exit a function if an error is caught
+                return false; //Used for "Done".
             }
-            var iWorksheet = Workbook.Worksheet("Import"); // Why do we need to repeat this?
 
-            //Do we want to limit user to importing same column structure as existing?  Who would be stupid enough to do something else???
+            //Do we want to limit user to importing same column structure as existing?  Who would be stupid enough to do something else??? ME.
 
             //STEP 0 Clear existing data
             
@@ -326,7 +326,7 @@ namespace ME3Explorer
 
             //STEP 1 Add columns
             //Table2DA.ColumnNames  
-            IXLRow hRow = iWorksheet.Row(2);
+            IXLRow hRow = iWorksheet.Row(1);
             foreach (IXLCell cell in hRow.Cells(hRow.FirstCellUsed().Address.ColumnNumber, hRow.LastCellUsed().Address.ColumnNumber))
             {
                 if (cell.Address.ColumnNumber > 1) //ignore excel column 1
@@ -341,14 +341,38 @@ namespace ME3Explorer
             IXLColumn column = iWorksheet.Column(1);
             foreach (IXLCell cell in column.Cells())
             {
-                if (cell.Address.RowNumber > 2) //ignore excel row 1-2
+                if (cell.Address.RowNumber > 1) //ignore excel row 1
                 {
                     RowNames.Add(cell.Value.ToString());
                     i++; //debug row count
                 }
             }
 
+            //STEP2b Update the row labels/unreal property
+            string rowLabelsVar = "m_lstRowNumbers";
+            var props = export.GetProperty<ArrayProperty<IntProperty>>(rowLabelsVar);
+            if (props != null)
+            {
+                props.Clear();
+                for ( int r = 0; r < RowNames.Count; r++)
+                {
+                    props.Add(RowNames[r].ToUInt16());
+                }
+                export.WriteProperty(props);
+            }
+            else
+            {
+                Console.WriteLine("Unable to find row names property!");
+                Debugger.Break();
+                return false;
+            }
+            
+
             //STEP 3 Add data Table2DA.Data 
+            //3a need to expand the size of the array. Add rows as above.
+
+
+
             int rowindex = 0;
             int columnindex = 0;
             
@@ -357,12 +381,12 @@ namespace ME3Explorer
                 foreach (IXLCell cell in row.Cells(row.FirstCellUsed().Address.ColumnNumber, row.LastCellUsed().Address.ColumnNumber))
                 {
                     columnindex = cell.Address.ColumnNumber - 2;
-                    rowindex = cell.Address.RowNumber - 3;
-                    if ((columnindex >= 0) & (rowindex >= 0)) //Make sure start from excel column 2, row 3
+                    rowindex = cell.Address.RowNumber - 2;
+                    if ((columnindex >= 0) & (rowindex >= 0)) //Make sure start from excel column 2, row 2
                     {
                         //i++; //debug count cells
                         var nCell = Cells[rowindex, columnindex];
-                        var xlHeader = iWorksheet.Cell(cell.Address.ColumnNumber, 1).Value.ToString(); //LOOKS UP TYPE FROM SPREADSHEET - CONVERT TO BYTE?
+                        // var xlHeader = iWorksheet.Cell(cell.Address.ColumnNumber, 1).Value.ToString(); //LOOKS UP TYPE FROM SPREADSHEET - CONVERT TO BYTE?
                         nCell.Type = Bio2DACell.Bio2DADataType.TYPE_INT;   /// NEED TO CONVERT xlHeader
 
                         try { nCell.DisplayableValue = cell.Value.ToString(); }
@@ -371,22 +395,27 @@ namespace ME3Explorer
                             MessageBox.Show("Data Error");
                             return false;
                         }
-                        nCell.DisplayableValue = cell.Value.ToString();
+                        //nCell.DisplayableValue = cell.Value.ToString();
                     }
                 }
             }
-            
-            MessageBox.Show(i.ToString()); //debug
-            //CURRENT ISSUES:
-            // 1. ROW HEADERS DON'T UPDATE - go blank?
-            // 2. TABLE IS ONLY DOING INTS - HOW TO CONVERT to Byte the xlHeader value
-            // 3. ONCE FILLED THE TABLE DOESN'T REFRESH UNTIL SAVE
-            // 4. ROWS DO NOT UPDATE - EVEN ON SAVE THE UNREAL PROP IS NOT SAVING
-            
-            
+
+            var dbgTxt = "Start";  //DEBUG COLUMN NAMES
+            foreach (string rn in ColumnNames)
+            {
+                dbgTxt += rn.ToString();
+                dbgTxt += ",";
+            }
+            MessageBox.Show(dbgTxt); //debug
+                                           //CURRENT ISSUES:
+                                           // 1. COLUMN HEADERS DON'T UPDATE - go blank?
+                                           // 2. TABLE IS ONLY DOING INTS - HOW TO CONVERT to Byte the xlHeader value
+                                           // 3. ONCE FILLED THE TABLE DOESN'T REFRESH UNTIL SAVE
+                                           // 4. DONE
+
+
             //Does this update Unreal prop?
-
-
+            Write2DAToExport();
             return true;
         }
 

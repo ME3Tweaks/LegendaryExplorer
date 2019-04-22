@@ -175,7 +175,7 @@ namespace ME3Explorer
 
         private void ImportToExcel_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Excel sheet must be formatted so: \r\nFIRST ROW must have the column data types.  \r\nSECOND ROW must have the same column headings as current sheet. \r\nThe sheet tab must be named 'Import'.", "IMPORTANT INFORMATION:" );
+            MessageBox.Show("Excel sheet must be formatted so: \r\nFIRST ROW must have the same column headings as current sheet. \r\nFIRST COLUMN has row numbers. \r\nThe sheet tab must be named 'Import'.", "IMPORTANT INFORMATION:" );
             OpenFileDialog oDlg = new OpenFileDialog
             {
                 Filter = "Excel Files (*.xlsx)|*.xlsx"
@@ -186,7 +186,11 @@ namespace ME3Explorer
             {
                 if (MessageBox.Show("This will overwrite the existing 2DA table.", "WARNING", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
-                    if (Table2DA.WriteExcelTo2DA(oDlg.FileName)) { MessageBox.Show("Done"); };
+                    if (Table2DA.WriteExcelTo2DA(oDlg.FileName)) {
+                        MessageBox.Show("Done");
+
+                        Bio2DA_DataGrid.Focus();
+                    };
                 }
             }
         }
