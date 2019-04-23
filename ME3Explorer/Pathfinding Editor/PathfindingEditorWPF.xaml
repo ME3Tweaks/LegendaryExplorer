@@ -19,6 +19,8 @@
     <Window.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
+        <Converters:IsIntEqualConverter x:Key="IsIntEqualConverter"/>
+        <Converters:IsIntNotEqualConverter x:Key="IsIntNotEqualConverter"/>
         <Converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <local:EZFilteringActiveConverter x:Key="EZFilteringActiveConverter"/>
         <ContextMenu x:Key="nodeContextMenu" Closed="ContextMenu_Closed">
@@ -35,6 +37,15 @@
                 <MenuItem Header="Show only nodes at or below this one" Click="ShowNodes_BelowEqual_Click"/>
             </MenuItem>
             <Separator />
+            <MenuItem Header="Open sequence reference in Sequence Editor" ItemsSource="{Binding CurrentNodeSequenceReferences}" IsEnabled="{Binding Path=CurrentNodeSequenceReferences.Count, Converter={StaticResource IsIntNotEqualConverter}, ConverterParameter=0}">
+                <MenuItem.ItemContainerStyle>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="Header" Value="{Binding GetNetIndexedFullPath}"/>
+                        <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=MenuItem}, Path=DataContext.OpenRefInSequenceEditorCommand}" />
+                        <Setter Property="CommandParameter" Value="{Binding}" />
+                    </Style>
+                </MenuItem.ItemContainerStyle>
+            </MenuItem>
             <MenuItem Header="Open in Package Editor" ToolTip="Open this export in Package Editor WPF. Initialization of the tree may take a few seconds." Click="OpenInPackageEditor_Clicked" />
         </ContextMenu>
     </Window.Resources>
@@ -78,19 +89,20 @@
                     <MenuItem Header="Show only nodes at or below this one" Click="ShowNodes_BelowEqual_Click"/>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="Pathfinding" Command="{Binding TogglePathfindingCommand}" IsChecked="{Binding ShowPathfindingNodesLayer}" StaysOpenOnClick="True" InputGestureText="F1" ToolTip="Refreshes the pathing graph"/>
-                <MenuItem Header="Actors" Command="{Binding ToggleActorsCommand}" IsChecked="{Binding ShowActorsLayer}" StaysOpenOnClick="True" InputGestureText="F2" ToolTip="Refreshes the pathing graph"/>
-                <MenuItem Header="Splines" Command="{Binding ToggleSplinesCommand}" IsChecked="{Binding ShowSplinesLayer}" StaysOpenOnClick="True" InputGestureText="F3" ToolTip="Refreshes the pathing graph"/>
-                <MenuItem Header="Everything else" Command="{Binding ToggleEverythingElseCommand}" IsChecked="{Binding ShowEverythingElseLayer}" StaysOpenOnClick="True" InputGestureText="F4" ToolTip="Refreshes the pathing graph"/>
+                <MenuItem Header="Pathfinding" Command="{Binding TogglePathfindingCommand}" IsChecked="{Binding ShowPathfindingNodesLayer}" StaysOpenOnClick="True" InputGestureText="F1" ToolTip="Shows the pathing network that AI uses to traverse a 3D space"/>
+                <MenuItem Header="Actors" Command="{Binding ToggleActorsCommand}" IsChecked="{Binding ShowActorsLayer}" StaysOpenOnClick="True" InputGestureText="F2" ToolTip="Shows non-pathing nodes that serve as actors in the level"/>
+                <MenuItem Header="Splines" Command="{Binding ToggleSplinesCommand}" IsChecked="{Binding ShowSplinesLayer}" StaysOpenOnClick="True" InputGestureText="F3" ToolTip="Shows splines and their layout"/>
+                <MenuItem Header="Everything else" Command="{Binding ToggleEverythingElseCommand}" IsChecked="{Binding ShowEverythingElseLayer}" StaysOpenOnClick="True" InputGestureText="F4" ToolTip="Shows everything else that is not parsed by the other layers"/>
+                <MenuItem Header="Sequence References" Command="{Binding ToggleSequenceReferencesCommand}" IsChecked="{Binding ShowSequenceReferences}" StaysOpenOnClick="True"  ToolTip="Adds comments and right click options for sequences that reference this node"/>
                 <Separator/>
                 <MenuItem Header="Show volumes instead of nodes for...">
-                    <MenuItem Header="BioTriggerVolumes" Command="{Binding ShowBioTriggerVolumesCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_BioTriggerVolumes}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
-                    <MenuItem Header="BioTriggerStream" Command="{Binding ShowBioTriggerStreamsCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_BioTriggerStreams}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
-                    <MenuItem Header="BlockingVolume" Command="{Binding ShowBlockingVolumesCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_BlockingVolumes}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
-                    <MenuItem Header="DynamiceBlockingVolume" Command="{Binding ShowDynamicBlockingVolumesCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_DynamicBlockingVolumes}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
-                    <MenuItem Header="SFXBlockingVolume_Ledge" IsCheckable="True" IsChecked="{Binding ShowVolumes_SFXBlockingVolume_Ledges}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
-                    <MenuItem Header="SFXCombatZone" IsCheckable="True" IsChecked="{Binding ShowVolumes_SFXCombatZones}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
-                    <MenuItem Header="WwiseAudioVolume" Command="{Binding ShowWwiseAudioVolumeCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_WwiseAudioVolumes}" StaysOpenOnClick="True" ToolTip="Refreshes the pathing graph"/>
+                    <MenuItem Header="BioTriggerVolumes" Command="{Binding ShowBioTriggerVolumesCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_BioTriggerVolumes}" StaysOpenOnClick="True" ToolTip="Shows BioTriggerVolumes as top down polygons of their brush"/>
+                    <MenuItem Header="BioTriggerStream" Command="{Binding ShowBioTriggerStreamsCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_BioTriggerStreams}" StaysOpenOnClick="True" ToolTip="Shows BioTriggerStreams as top down polygons of their brush"/>
+                    <MenuItem Header="BlockingVolume" Command="{Binding ShowBlockingVolumesCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_BlockingVolumes}" StaysOpenOnClick="True" ToolTip="Shows BlockingVolumes as top down polygons of their brush"/>
+                    <MenuItem Header="DynamiceBlockingVolume" Command="{Binding ShowDynamicBlockingVolumesCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_DynamicBlockingVolumes}" StaysOpenOnClick="True" ToolTip="Shows DynamicBlockingVolumes as top down polygons of their brush"/>
+                    <MenuItem Header="SFXBlockingVolume_Ledge" IsCheckable="True" IsChecked="{Binding ShowVolumes_SFXBlockingVolume_Ledges}" StaysOpenOnClick="True" ToolTip="Shows ledge SFXBlockingVolumes as top down polygons of their brush"/>
+                    <MenuItem Header="SFXCombatZone" IsCheckable="True" IsChecked="{Binding ShowVolumes_SFXCombatZones}" StaysOpenOnClick="True" ToolTip="Shows SFXCombatZones as top down polygons of their brush"/>
+                    <MenuItem Header="WwiseAudioVolume" Command="{Binding ShowWwiseAudioVolumesCommand}" IsCheckable="True" IsChecked="{Binding ShowVolumes_WwiseAudioVolumes}" StaysOpenOnClick="True" ToolTip="Shows WwiseAudioVolumes as top down polygons of their brush"/>
                 </MenuItem>
                 <MenuItem Header="Show node sizes" Name="ShowNodeSizes_MenuItem"  Command="{Binding ShowNodeSizesCommand}" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PathfindingEditorShowNodeSizes, Mode=TwoWay}" StaysOpenOnClick="True" ToolTip="Toggles the size of nodes being listed beneath their UIndex. BS = Boss, MB = Miniboss, M = Mooks."/>
             </MenuItem>

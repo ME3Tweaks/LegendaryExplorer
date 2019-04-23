@@ -1,4 +1,12 @@
-﻿using System;
+﻿using ME3Explorer.ActorNodes;
+using ME3Explorer.Packages;
+using ME3Explorer.PathfindingNodes;
+using ME3Explorer.SharedUI;
+using ME3Explorer.SharedUI.Interfaces;
+using ME3Explorer.SplineNodes;
+using ME3Explorer.Unreal;
+using Microsoft.Win32;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,16 +18,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using ME3Explorer.ActorNodes;
-using ME3Explorer.Packages;
-using ME3Explorer.PathfindingNodes;
-using ME3Explorer.SharedUI;
-using ME3Explorer.SharedUI.Interfaces;
-using ME3Explorer.SplineNodes;
-using ME3Explorer.Unreal;
-using Microsoft.Win32;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using UMD.HCIL.PathingGraphEditor;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
@@ -146,6 +144,13 @@ namespace ME3Explorer.Pathfinding_Editor
         private bool _showVolumes_SFXBlockingVolume_Ledges;
         private bool _showVolumes_SFXCombatZones;
         private bool _showVolumes_WwiseAudioVolumes;
+        private bool _showSeqeunceReferences;
+
+        public bool ShowSequenceReferences
+        {
+            get => _showSeqeunceReferences;
+            set => SetProperty(ref _showSeqeunceReferences, value);
+        }
 
         public bool ShowVolumes_BioTriggerVolumes
         {
@@ -229,7 +234,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand ToggleEverythingElseCommand { get; set; }
         public ICommand ToggleActorsCommand { get; set; }
         public ICommand ToggleSplinesCommand { get; set; }
-
+        public ICommand ToggleSequenceReferencesCommand { get; set; }
         public ICommand ShowBioTriggerVolumesCommand { get; set; }
         public ICommand ShowBioTriggerStreamsCommand { get; set; }
         public ICommand ShowBlockingVolumesCommand { get; set; }
@@ -244,7 +249,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand AddExportToLevelCommand { get; set; }
         public ICommand PopoutInterpreterCommand { get; set; }
         public ICommand NodeTypeChangeCommand { get; set; }
-
+        public ICommand OpenRefInSequenceEditorCommand { get; set; }
         private void LoadCommands()
         {
             RefreshCommand = new RelayCommand(RefreshGraph, PackageIsLoaded);
@@ -258,7 +263,7 @@ namespace ME3Explorer.Pathfinding_Editor
             ToggleEverythingElseCommand = new RelayCommand(ToggleEverythingElse, PackageIsLoaded);
             ToggleActorsCommand = new RelayCommand(ToggleActors, PackageIsLoaded);
             ToggleSplinesCommand = new RelayCommand(ToggleSplines, PackageIsLoaded);
-
+            ToggleSequenceReferencesCommand = new RelayCommand(ToggleSequenceReferences, PackageIsLoaded);
             ShowBioTriggerVolumesCommand = new RelayCommand(ShowBioTriggerVolumes, PackageIsLoaded);
             ShowBioTriggerStreamsCommand = new RelayCommand(ShowBioTriggerStreams, PackageIsLoaded);
             ShowBlockingVolumesCommand = new RelayCommand(ShowBlockingVolumes, PackageIsLoaded);
@@ -275,6 +280,23 @@ namespace ME3Explorer.Pathfinding_Editor
 
             PopoutInterpreterCommand = new RelayCommand(PopoutInterpreterWPF, NodeIsSelected);
             NodeTypeChangeCommand = new RelayCommand(ChangeNodeType, CanChangeNodetype);
+            OpenRefInSequenceEditorCommand = new RelayCommand(OpenRefInSequenceEditor, NodeIsSelected);
+        }
+
+        private void OpenRefInSequenceEditor(object obj)
+        {
+            //Will change to sequence editor wpf on merge
+            if (obj is IExportEntry exp)
+            {
+                SequenceEditor seqed = new SequenceEditor(exp);
+                seqed.Show();
+            }
+        }
+
+        private void ToggleSequenceReferences(object obj)
+        {
+            ShowSequenceReferences = !ShowSequenceReferences;
+            RefreshGraph();
         }
 
         private void ChangeNodeType(object obj)
@@ -820,7 +842,7 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             IExportEntry export = ActiveNodes_ListBox.SelectedItem as IExportEntry;
             ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), export);
-            elhw.Title = $"Interpreter - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {Pcc.FileName}";
+            elhw.Title = $"Interpreter - {export.UIndex} {export.GetNetIndexedFullPath} - {Pcc.FileName}";
             elhw.Show();
         }
 
@@ -859,7 +881,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show($"{selectedEntry.UIndex} {selectedEntry.GetFullPath}_{selectedEntry.indexValue} is already in the level.");
+                        System.Windows.MessageBox.Show($"{selectedEntry.UIndex} {selectedEntry.GetNetIndexedFullPath} is already in the level.");
                     }
                 }
             }
@@ -1473,10 +1495,10 @@ namespace ME3Explorer.Pathfinding_Editor
                 itemcount = 2;
             }
             List<IExportEntry> bulkActiveNodes = new List<IExportEntry>();
-            bool hasPathNode = false;
-            bool hasActorNode = false;
-            bool hasSplineNode = false;
-            bool hasEverythingElseNode = false;
+            //bool hasPathNode = false;
+            //bool hasActorNode = false;
+            //bool hasSplineNode = false;
+            //bool hasEverythingElseNode = false;
             //todo: figure out a way to activate a layer if file is loading and the current views don't show anything to avoid modal dialog "nothing in this file".
             //seems like it would require two passes unless each level object type was put into a specific list and then the lists were appeneded to form the final list.
             //That would ruin ordering of exports, but does that really matter?
@@ -1622,6 +1644,68 @@ namespace ME3Explorer.Pathfinding_Editor
             }
             PointF centerpoint = new PointF((float)(fullx / GraphNodes.Count), (float)(fully / GraphNodes.Count));
             CreateConnections();
+
+            #region Sequence References to nodes
+            if (ShowSequenceReferences)
+            {
+
+                var referencemap = new Dictionary<int, List<IExportEntry>>(); //node index mapped to list of things referencing it
+                foreach (IExportEntry export in Pcc.Exports)
+                {
+                    if (export.ClassName == "SFXSeqEvt_Touch" || export.ClassName.StartsWith("SeqVar") || export.ClassName.StartsWith("SFXSeq"))
+                    {
+                        var props = export.GetProperties();
+                        var originator = props.GetProp<ObjectProperty>("Originator");
+                        var objvalue = props.GetProp<ObjectProperty>("ObjValue");
+
+                        if (originator != null)
+                        {
+                            var uindex = originator.Value; //0-based indexing is used here
+                            List<IExportEntry> list;
+                            if (!referencemap.TryGetValue(uindex, out list))
+                            {
+                                list = new List<IExportEntry>();
+                                referencemap[uindex] = list;
+                            }
+                            list.Add(export);
+                        }
+                        if (objvalue != null)
+                        {
+                            var uindex = objvalue.Value;
+                            List<IExportEntry> list;
+                            if (!referencemap.TryGetValue(uindex, out list))
+                            {
+                                list = new List<IExportEntry>();
+                                referencemap[uindex] = list;
+                            }
+                            list.Add(export);
+                        }
+                    }
+                }
+
+                //Add references to nodes
+                foreach (PathfindingNodeMaster pnm in GraphNodes)
+                {
+                    if (referencemap.TryGetValue(pnm.UIndex, out List<IExportEntry> list))
+                    {
+                        //node is referenced
+                        pnm.SequenceReferences.AddRange(list);
+                        pnm.comment.Text += "\nReferenced in " + list.Count() + " sequence object" + (list.Count() != 1 ? "s" : "") + ":";
+                        foreach (IExportEntry x in list)
+                        {
+                            string shortpath = x.GetFullPath;
+                            if (shortpath.StartsWith("TheWorld.PersistentLevel."))
+                            {
+                                shortpath = shortpath.Substring("TheWorld.PersistentLevel.".Length);
+                            }
+                            pnm.comment.Text += "\n  " + x.UIndex + " " + shortpath + "_" + x.indexValue;
+                        }
+                    }
+                }
+            }
+            #endregion
+
+
             TagsList.ClearEx();
             foreach (var node in GraphNodes)
             {
@@ -2295,7 +2379,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 CurrentNodeCombatZones.ClearEx();
 
                 PathfindingNodeMaster selectedNode = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
-
+                CurrentNodeSequenceReferences.ReplaceAll(selectedNode.SequenceReferences);
                 if (selectedNode is PathfindingNode)
                 {
                     ReachSpecs_TabItem.IsEnabled = true;
@@ -3184,6 +3268,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
+        public ObservableCollectionExtended<IExportEntry> CurrentNodeSequenceReferences { get; } = new ObservableCollectionExtended<IExportEntry>();
         public ObservableCollectionExtended<NodeType> AvailableNodeChangeableTypes { get; } = new ObservableCollectionExtended<NodeType>();
         public class NodeType : NotifyPropertyChangedBase
         {
