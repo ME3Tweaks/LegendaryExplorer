@@ -31,6 +31,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Data;
@@ -405,7 +406,7 @@ namespace UMD.HCIL.Piccolo {
 		protected virtual void PaintDebugInfo(PPaintContext paintContext) {
 			if (PDebug.DebugBounds || PDebug.DebugFullBounds) {
 
-				PNodeList nodes = new PNodeList();
+				List<PNode> nodes = new List<PNode>();
 				RectangleF nodeBounds = RectangleF.Empty;
 				
 				for (int i = 0; i < LayerCount; i++) {

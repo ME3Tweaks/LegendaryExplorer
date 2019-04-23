@@ -13,6 +13,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -61,7 +62,6 @@ namespace ME3Explorer.Sequence_Editor
         public ObservableCollectionExtended<TreeViewEntry> TreeViewRootNodes { get; set; } = new ObservableCollectionExtended<TreeViewEntry>();
         public string CurrentFile;
         public string JSONpath;
-        private readonly ZoomController zoomController;
 
         private List<SaveData> SavedPositions;
         private IExportEntry SelectedSequence;
@@ -86,11 +86,11 @@ namespace ME3Explorer.Sequence_Editor
             graphEditor = (GraphEditor)GraphHost.Child;
             graphEditor.BackColor = Color.FromArgb(167, 167, 167);
             graphEditor.Camera.MouseDown += backMouseDown_Handler;
+            graphEditor.Camera.MouseUp += back_MouseUp;
 
             this.graphEditor.Click += graphEditor_Click;
             this.graphEditor.DragDrop += SequenceEditor_DragDrop;
             this.graphEditor.DragEnter += SequenceEditor_DragEnter;
-            zoomController = new ZoomController(graphEditor);
 
             if (File.Exists(OptionsPath))
             {
@@ -618,13 +618,17 @@ namespace ME3Explorer.Sequence_Editor
             var eventNodes = CurrentObjects.OfType<SEvent>().ToList();
             var varNodeLookup = CurrentObjects.OfType<SVar>().ToDictionary(obj => obj.UIndex);
             var opNodeLookup = CurrentObjects.OfType<SBox>().ToDictionary(obj => obj.UIndex);
-            float vertOffset = 0;
+            var rootTree = new List<SObj>();
             foreach (SEvent eventNode in eventNodes)
             {
                 visitedNodes.Add(eventNode.UIndex);
-                var tree = LayoutTree(eventNode);
-                foreach (var obj in tree) obj.TranslateBy(0, vertOffset);
-                vertOffset += tree.BoundingRect().Height + VERTICAL_SPACING;
+                var subTree = LayoutTree(eventNode);
+                float width = subTree.BoundingRect().Width + HORIZONTAL_SPACING;
+                //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
+                float dy = rootTree.Where(node => node.GlobalFullBounds.Left < width).BoundingRect().Bottom;
+                if (dy > 0) dy += 10 * VERTICAL_SPACING;
+                foreach (var obj in subTree) obj.TranslateBy(0, dy);
+                rootTree.AddRange(subTree);
             }
 
             //some Sequence Objects are orphans, stick them below everything else
@@ -632,13 +636,18 @@ namespace ME3Explorer.Sequence_Editor
             foreach (SBox orphan in orphans)
             {
                 visitedNodes.Add(orphan.UIndex);
-                var tree = LayoutTree(orphan);
-                foreach (var obj in tree) obj.TranslateBy(0, vertOffset);
-                vertOffset += tree.BoundingRect().Height + VERTICAL_SPACING;
+                var subTree = LayoutTree(orphan);
+                float width = subTree.BoundingRect().Width + HORIZONTAL_SPACING;
+                //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
+                float dy = rootTree.Where(node => node.GlobalFullBounds.Left < width).BoundingRect().Bottom;
+                if (dy > 0) dy += VERTICAL_SPACING;
+                foreach (var obj in subTree) obj.TranslateBy(0, dy);
+                rootTree.AddRange(subTree);
             }
 
             var unusedVars = CurrentObjects.OfType<SVar>().Where(obj => !visitedNodes.Contains(obj.UIndex));
             float varOffset = 0;
+            float vertOffset = rootTree.BoundingRect().Bottom + VERTICAL_SPACING;
             foreach (SVar unusedVar in unusedVars)
             {
                 unusedVar.TranslateBy(varOffset, vertOffset);
@@ -661,7 +670,7 @@ namespace ME3Explorer.Sequence_Editor
                         visitedNodes.Add(uIndex);
                         if (varNodeLookup.TryGetValue(uIndex, out SVar sVar))
                         {
-                            sVar.TranslateBy(dx, dy);
+                            sVar.OffsetBy(dx, dy);
                             dy += sVar.GlobalFullHeight + VAR_SPACING;
                             vars.Add(sVar);
                         }
@@ -677,28 +686,30 @@ namespace ME3Explorer.Sequence_Editor
                     {
                         List<SObj> subTree = LayoutTree(node);
                         childTrees.Add(subTree);
-                        tree.AddRange(subTree);
                     }
                 }
                 if (childTrees.Any())
                 {
-                    float dx = root.GlobalFullWidth + (HORIZONTAL_SPACING * (1 + childTrees.Count * 0.5f));
-                    float dy = 0;
-                    foreach (List<SObj> kids in childTrees)
+                    float dx = root.GlobalFullWidth + (HORIZONTAL_SPACING * (1 + childTrees.Count * 0.4f));
+                    foreach (List<SObj> subTree in childTrees)
                     {
-                        foreach (var obj in kids) obj.TranslateBy(dx, dy);
-                        dy += kids.BoundingRect().Height + VERTICAL_SPACING;
+                        float width = subTree.BoundingRect().Width + HORIZONTAL_SPACING + dx;
+                        //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
+                        float dy = tree.Where(node => node.GlobalFullBounds.Left < width).BoundingRect().Bottom;
+                        if (dy > 0) dy += VERTICAL_SPACING;
+                        foreach (var obj in subTree) obj.OffsetBy(dx, dy);
+                        tree.AddRange(subTree);
                     }
                 }
 
                 //center the root if there is more than one child
-                if (childTrees.Count > 1)
+                if (childTrees.Any())
                 {
                     float centerOffset = tree.OfType<SBox>().BoundingRect().Height / 2 - root.GlobalFullHeight / 2;
-                    root.TranslateBy(0, centerOffset);
+                    root.OffsetBy(0, centerOffset);
                     foreach (SVar sVar in vars)
                     {
-                        sVar.TranslateBy(0, centerOffset);
+                        sVar.OffsetBy(0, centerOffset);
                     }
                 }
                 tree.AddRange(vars);
@@ -838,9 +849,9 @@ namespace ME3Explorer.Sequence_Editor
 
         private void backMouseDown_Handler(object sender, PInputEventArgs e)
         {
-            if (!(e.PickedNode is PCamera)) return;
+            if (!(e.PickedNode is PCamera) || SelectedSequence == null) return;
 
-            if (e.Button == System.Windows.Forms.MouseButtons.Right && SelectedSequence != null)
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
                 if (FindResource("backContextMenu") is ContextMenu contextMenu)
                 {
@@ -849,11 +860,23 @@ namespace ME3Explorer.Sequence_Editor
             }
             else if (e.Shift)
             {
+                //graphEditor.StartBoxSelection(e);
+                //e.Handled = true;
             }
             else
             {
                 CurrentObjects_ListBox.SelectedItems.Clear();
             }
+        }
+
+        private void back_MouseUp(object sender, PInputEventArgs e)
+        {
+            //var nodesToSelect = graphEditor.EndBoxSelection().OfType<SObj>();
+            //foreach (SObj sObj in nodesToSelect)
+            //{
+            //    panToSelection = false;
+            //    CurrentObjects_ListBox.SelectedItems.Add(sObj);
+            //}
         }
 
         private void graphEditor_Click(object sender, EventArgs e)
@@ -1150,10 +1173,10 @@ namespace ME3Explorer.Sequence_Editor
 
             //Code here remove these objects from leaking the window memory
             graphEditor.Camera.MouseDown -= backMouseDown_Handler;
+            graphEditor.Camera.MouseUp -= back_MouseUp;
             graphEditor.Click -= graphEditor_Click;
             graphEditor.DragDrop -= SequenceEditor_DragDrop;
             graphEditor.DragEnter -= SequenceEditor_DragEnter;
-            zoomController.Dispose();
             CurrentObjects.ForEach(x =>
             {
                 x.MouseDown -= node_MouseDown;

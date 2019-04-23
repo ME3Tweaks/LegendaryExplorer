@@ -84,7 +84,7 @@ namespace ME3Explorer.SequenceObjects
 
         public virtual void CreateConnections(IList<SObj> objects) { }
         public virtual void Layout() { }
-        public virtual void Layout(float x, float y) => this.SetOffset(x, y);
+        public virtual void Layout(float x, float y) => SetOffset(x, y);
 
         protected string GetComment()
         {
@@ -198,7 +198,7 @@ namespace ME3Explorer.SequenceObjects
                     break;
                 }
             }
-            this.TranslateBy(x, y);
+            SetOffset(x, y);
             this.MouseEnter += OnMouseEnter;
             this.MouseLeave += OnMouseLeave;
         }
@@ -431,7 +431,7 @@ namespace ME3Explorer.SequenceObjects
             this.AddChild(titleBox);
             comment.Y -= titleBox.Height;
             this.Bounds = new RectangleF(0, -titleBox.Height, titleBox.Width, titleBox.Height);
-            this.TranslateBy(x, y);
+            SetOffset(x, y);
         }
 
         public override void Dispose()
@@ -1007,7 +1007,7 @@ namespace ME3Explorer.SequenceObjects
             this.AddChild(titleBox);
             this.AddChild(varLinkBox);
             this.AddChild(outLinkBox);
-            this.TranslateBy(x, y);
+            this.SetOffset(x, y);
         }
 
         private bool _isSelected;

@@ -31,6 +31,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Printing;
@@ -409,7 +410,7 @@ namespace UMD.HCIL.Piccolo {
 		public const int PROPERTY_CODE_PARENT = 1 << 9;
 
 		[NonSerialized] private PNode parent;
-		private PNodeList children;
+		private List<PNode> children;
 
 		/// <summary>
 		/// The bounds of this node, stored in local coordinates.
@@ -2247,19 +2248,19 @@ namespace UMD.HCIL.Piccolo {
 				// their bounds.
 				return true;
 			}
-			return false;		
-		}
+			return false;
+        }
 
-		/// <summary>
-		/// Gives nodes a chance to update their internal structure before bounds changed
-		/// notifications are sent. When this message is received, the node's bounds field
-		/// will contain the new value.
-		/// </summary>
-		/// <param name="x">The new x coordinate of the bounds.</param>
-		/// <param name="y">The new y coordinate of the bounds.</param>
-		/// <param name="width">The new width of the bounds.</param>
-		/// <param name="height">The new height of the bounds.</param>
-		protected virtual void InternalUpdateBounds(float x, float y, float width, float height) {
+        /// <summary>
+        /// Gives nodes a chance to update their internal structure before bounds changed
+        /// notifications are sent. When this message is received, the node's bounds field
+        /// will contain the new value.
+        /// </summary>
+        /// <param name="x">The new x coordinate of the bounds.</param>
+        /// <param name="y">The new y coordinate of the bounds.</param>
+        /// <param name="width">The new width of the bounds.</param>
+        /// <param name="height">The new height of the bounds.</param>
+        protected virtual void InternalUpdateBounds(float x, float y, float width, float height) {
 		}
 
 		/// <summary>
@@ -3693,7 +3694,9 @@ namespace UMD.HCIL.Piccolo {
 		/// <param name="results">
 		/// The resulting list of nodes.
 		/// </param>
-		public void FindIntersectingNodes(RectangleF fullBounds, PNodeList results) {
+		public List<PNode> FindIntersectingNodes(RectangleF fullBounds)
+        {
+            var results = new List<PNode>();
 			if (FullIntersects(fullBounds)) {
 				RectangleF bounds = ParentToLocal(fullBounds);
 
@@ -3704,10 +3707,12 @@ namespace UMD.HCIL.Piccolo {
 				int count = ChildrenCount;
 				for (int i = count - 1; i >= 0; i--) {
 					PNode each = children[i];
-					each.FindIntersectingNodes(bounds, results);
+					results.AddRange(each.FindIntersectingNodes(bounds));
 				}
 			}
-		}
+
+            return results;
+        }
 
 		/// <summary>
 		/// Try to pick this node after its children have had a chance to be picked.
@@ -3803,37 +3808,19 @@ namespace UMD.HCIL.Piccolo {
 			FirePropertyChangedEvent(PROPERTY_KEY_CHILDREN, PROPERTY_CODE_CHILDREN, null, children);
 		}
 
-		/// <summary>
-		/// Add a list of nodes to be children of this node.
-		/// </summary>
-		/// <param name="nodes">A list of nodes to be added to this node.</param>
-		/// <remarks>
-		/// If these nodes already have parents they will first be removed from
-		/// those parents.
-		/// </remarks>
-		public virtual void AddChildren(PNodeList nodes) {
-			AddChildren((ICollection)nodes);
-		}
-
-		/// <summary>
-		/// Add a collection of nodes to be children of this node.
-		/// </summary>
-		/// <param name="nodes">
-		/// A collection of nodes to be added to this node.
-		/// </param>
-		/// <remarks>
-		/// This method allows you to pass in any <see cref="ICollection"/>, rather than a
-		/// <see cref="PNodeList"/>.  This can be useful if you are using an ArrayList
-		/// or some other collection type to store PNodes.  Note, however, that this list
-		/// still must contain only objects that extend PNode otherwise you will get a
-		/// runtime error.  To protect against problems of this type, use the
-		/// <see cref="AddChildren(PNodeList)">AddChildren(PNodeList)</see> method instead.
-		/// <para>
-		/// If these nodes already have parents they will first be removed from
-		/// those parents.
-		/// </para>
-		/// </remarks>
-		protected virtual void AddChildren(ICollection nodes) {
+        /// <summary>
+        /// Add a collection of nodes to be children of this node.
+        /// </summary>
+        /// <param name="nodes">
+        /// A collection of nodes to be added to this node.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// If these nodes already have parents they will first be removed from
+        /// those parents.
+        /// </para>
+        /// </remarks>
+        protected virtual void AddChildren(IEnumerable<PNode> nodes) {
 			foreach (PNode each in nodes) {
 				AddChild(each);
 			}
@@ -3996,36 +3983,19 @@ namespace UMD.HCIL.Piccolo {
 			return child;
 		}
 
-		/// <summary>
-		/// Remove all the children in the given list from this node’s list
-		/// of children.
-		/// </summary>
-		/// <param name="childrenNodes">The list of children to remove.</param>
-		/// <remarks>All removed nodes will have their parent set to null.</remarks>
-		public virtual void RemoveChildren(PNodeList childrenNodes) {
-			RemoveChildren((ICollection)childrenNodes);
-		}
-
-		/// <summary>
-		/// Remove all the children in the given collection from this node’s
-		/// list of children.
-		/// </summary>
-		/// <param name="childrenNodes">
-		/// The collection of children to remove.
-		/// </param>
-		/// <remarks>
-		/// This method allows you to pass in any <see cref="ICollection"/>, rather than a
-		/// <see cref="PNodeList"/>.  This can be useful if you are using an ArrayList
-		/// or some other collection type to store PNodes.  Note, however, that this list
-		/// still must contain only objects that extend PNode otherwise you will get a
-		/// runtime error.  To protect against problems of this type, use the
-		/// <see cref="RemoveChildren(PNodeList)">RemoveChildren(PNodeList)</see> method
-		/// instead.
-		/// <para>
-		/// All removed nodes will have their parent set to null.
-		/// </para>
-		/// </remarks>
-		protected virtual void RemoveChildren(ICollection childrenNodes) {
+        /// <summary>
+        /// Remove all the children in the given enumerable from this node’s
+        /// list of children.
+        /// </summary>
+        /// <param name="childrenNodes">
+        /// The collection of children to remove.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// All removed nodes will have their parent set to null.
+        /// </para>
+        /// </remarks>
+        protected virtual void RemoveChildren(IEnumerable<PNode> childrenNodes) {
 			foreach (PNode each in childrenNodes) {
 				RemoveChild(each);
 			}
@@ -4146,10 +4116,10 @@ namespace UMD.HCIL.Piccolo {
 		/// </summary>
 		/// <value>A reference to the list of children.</value>
 		/// <remarks>This list should not be modified.</remarks>
-		public virtual PNodeList ChildrenReference {
+		public virtual List<PNode> ChildrenReference {
 			get {
 				if (children == null) {
-					children = new PNodeList();
+					children = new List<PNode>();
 				}
 				return children;
 			}
@@ -4209,7 +4179,7 @@ namespace UMD.HCIL.Piccolo {
 		/// Gets a list containing this node and all of its descendent nodes.
 		/// </summary>
 		/// <value>A list containing this node and all its descendents.</value>
-		public virtual PNodeList AllNodes {
+		public virtual List<PNode> AllNodes {
 			get { return GetAllNodes(null, null); }
 		}
 
@@ -4227,9 +4197,9 @@ namespace UMD.HCIL.Piccolo {
 		/// If the filter is null then all nodes will be accepted. If the results parameter is not
 		/// null then it will be used to store this subset instead of creating a new list.
 		/// </remarks>
-		public virtual PNodeList GetAllNodes(PNodeFilter filter, PNodeList results) {
+		public virtual List<PNode> GetAllNodes(PNodeFilter filter, List<PNode> results) {
 			if (results == null) {
-				results = new PNodeList();
+				results = new List<PNode>();
 			}
 			if (filter == null || filter.Accept(this)) {
 				results.Add(this);

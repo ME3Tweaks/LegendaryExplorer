@@ -38,5 +38,21 @@ namespace UMD.HCIL.Piccolo
             }
             return result;
         }
+
+        public static float Difference(this float a, float b)
+        {
+            return Math.Abs(a - b);
+        }
+
+        public static void Deconstruct(this PointF point, out float x, out float y)
+        {
+            x = point.X;
+            y = point.Y;
+        }
+        public static void Deconstruct(this RectangleF rect, out float x, out float y)
+        {
+            x = rect.X;
+            y = rect.Y;
+        }
     }
 }

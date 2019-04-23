@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.Diagnostics;
 using System.Windows.Forms;
 using ME3Explorer.SequenceObjects;
+using SharpDX.Direct2D1.Effects;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
 using UMD.HCIL.Piccolo.Event;
@@ -23,6 +25,8 @@ namespace UMD.HCIL.GraphEditor
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.Container components;
+
+        private readonly ZoomController zoomController;
 
         private const int DEFAULT_WIDTH = 1;
         private const int DEFAULT_HEIGHT = 1;
@@ -50,6 +54,7 @@ namespace UMD.HCIL.GraphEditor
             this.Camera.AddLayer(1, backLayer);
             dragHandler = new NodeDragHandler();
             nodeLayer.AddInputEventListener(dragHandler);
+            zoomController = new ZoomController(this);
         }
 
         public void AllowDragging()
@@ -121,9 +126,91 @@ namespace UMD.HCIL.GraphEditor
             edge.AddBezier(start.X, start.Y, start.X + h1x, start.Y + h1y, end.X - h2x, end.Y, end.X, end.Y);
         }
 
-        public void ScaleViewTo(float scale)
+        private PNode boxSelectOriginNode;
+        private PNode boxSelectExtentNode;
+        private readonly PDragEventHandler boxSelectDragEventHandler = new BoxSelectDragHandler();
+        public void StartBoxSelection(PInputEventArgs e)
         {
-            this.Camera.ViewScale = scale;
+            var (x, y) = e.Position;
+            boxSelectOriginNode = new PNode
+            {
+                X = x,
+                Y = y
+            };
+            boxSelectExtentNode = new PNode
+            {
+                X = x,
+                Y = y
+            };
+            nodeLayer.AddChild(boxSelectOriginNode);
+            nodeLayer.AddChild(boxSelectExtentNode);
+            boxSelectExtentNode.AddInputEventListener(boxSelectDragEventHandler);
+            e.PickedNode = boxSelectExtentNode;
+            boxSelectExtentNode.OnMouseDown(e);
+        }
+
+        public List<PNode> EndBoxSelection()
+        {
+            if (boxSelectExtentNode != null)
+            {
+                var (x1, y1) = boxSelectOriginNode.GlobalFullBounds;
+                var (x2, y2) = boxSelectExtentNode.GlobalFullBounds;
+                boxSelectExtentNode.RemoveInputEventListener(boxSelectDragEventHandler);
+                nodeLayer.RemoveChild(boxSelectOriginNode);
+                nodeLayer.RemoveChild(boxSelectExtentNode);
+                boxSelectExtentNode = boxSelectOriginNode = null;
+
+                var size = new SizeF(x2.Difference(x1), y2.Difference(y1));
+                var origin = new PointF(Math.Min(x1, x2), Math.Min(y1, y2));
+                return nodeLayer.FindIntersectingNodes(new RectangleF(origin, size));
+            }
+
+            return new List<PNode>();
+        }
+        public class BoxSelectDragHandler : PDragEventHandler
+        {
+            public override bool DoesAcceptEvent(PInputEventArgs e)
+            {
+                return e.IsMouseEvent && (e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave);
+            }
+
+            protected override void OnStartDrag(object sender, PInputEventArgs e)
+            {
+
+                base.OnStartDrag(sender, e);
+                e.Handled = true;
+            }
+
+            protected override void OnDrag(object sender, PInputEventArgs e)
+            {
+                Debug.WriteLine($"dragging: {e.Position}");
+                base.OnDrag(sender, e);
+                if (false &&!e.Handled)
+                {
+                    var edgesToUpdate = new HashSet<SeqEdEdge>();
+                    base.OnDrag(sender, e);
+                    foreach (PNode node in e.PickedNode.AllNodes)
+                    {
+                        if (node.Tag is ArrayList edges)
+                        {
+                            foreach (SeqEdEdge edge in edges)
+                            {
+                                edgesToUpdate.Add(edge);
+                            }
+                        }
+                    }
+
+                    foreach (SeqEdEdge edge in edgesToUpdate)
+                    {
+                        UpdateEdge(edge);
+                    }
+                }
+            }
+
+            protected override void OnEndDrag(object sender, PInputEventArgs e)
+            {
+                ((PNode)sender).SetOffset(e.Position);
+            }
         }
 
         private readonly NodeDragHandler dragHandler;
@@ -143,6 +230,7 @@ namespace UMD.HCIL.GraphEditor
 
             protected override void OnStartDrag(object sender, PInputEventArgs e)
             {
+
                 base.OnStartDrag(sender, e);
                 e.Handled = true;
                 e.PickedNode.MoveToFront();
@@ -207,6 +295,7 @@ namespace UMD.HCIL.GraphEditor
                 nodeLayer.RemoveAllChildren();
                 edgeLayer.RemoveAllChildren();
                 backLayer.RemoveAllChildren();
+                zoomController.Dispose();
             }
             base.Dispose(disposing);
         }
