@@ -364,8 +364,8 @@ namespace ME3Explorer.Pathfinding_Editor
                 IExportEntry cylindercomponentexp = Pcc.getUExport(cylindercomponent.Value);
 
                 //Ensure all classes are imported.
-                ImportEntry newnodeclassimp = SharedPathfinding.GetOrAddImport(Pcc, exportTypeInfo.fullclasspath);
-                ImportEntry newcylindercomponentimp = SharedPathfinding.GetOrAddImport(Pcc, exportTypeInfo.cylindercomponentarchetype);
+                IEntry newnodeclassimp = SharedPathfinding.GetEntryOrAddImport(Pcc, exportTypeInfo.fullclasspath);
+                IEntry newcylindercomponentimp = SharedPathfinding.GetEntryOrAddImport(Pcc, exportTypeInfo.cylindercomponentarchetype);
 
                 if (newnodeclassimp != null)
                 {
@@ -781,7 +781,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     if (specDest.ClassName == exportTypeInfo.nodetypename && spec.ClassName != exportTypeInfo.inboundspectype)
                     {
                         //Change the reachspec info outgoing to this node...
-                        ImportEntry newReachSpecClass = SharedPathfinding.GetOrAddImport(Pcc, exportTypeInfo.inboundspectype);
+                        IEntry newReachSpecClass = SharedPathfinding.GetEntryOrAddImport(Pcc, exportTypeInfo.inboundspectype);
 
                         if (newReachSpecClass != null)
                         {

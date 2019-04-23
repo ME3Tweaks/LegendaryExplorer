@@ -110,7 +110,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     Pcc.addExport(incomingSpec);
                 }
 
-                ImportEntry reachSpecClassImp = GetOrAddImport(Pcc, reachSpecClass); //new class type.
+                IEntry reachSpecClassImp = GetEntryOrAddImport(Pcc, reachSpecClass); //new class type.
 
                 outgoingSpec.idxClass = reachSpecClassImp.UIndex;
                 outgoingSpec.idxObjectName = reachSpecClassImp.idxObjectName;
@@ -205,7 +205,7 @@ namespace ME3Explorer.Pathfinding_Editor
             spec.WriteProperties(specProperties); //write it back.
         }
 
-        public static ImportEntry GetOrAddImport(IMEPackage Pcc, string importFullName)
+        public static IEntry GetEntryOrAddImport(IMEPackage Pcc, string importFullName)
         {
             foreach (ImportEntry imp in Pcc.Imports)
             {
@@ -213,6 +213,13 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     return imp;
                 }
+            }
+
+            //Check if this is an export instead
+            IExportEntry itemAsImport = Pcc.Exports.FirstOrDefault(x => x.GetFullPath == importFullName && x.indexValue == 0);
+            if (itemAsImport != null)
+            {
+                return itemAsImport;
             }
 
             //Import doesn't exist, so we're gonna need to add it
@@ -248,7 +255,8 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 //See if there is a top level export
                 IExportEntry topLevelExport = Pcc.Exports.FirstOrDefault(x => x.GetFullPath == upstream);
-                if (topLevelExport != null){
+                if (topLevelExport != null)
+                {
                     Debug.WriteLine("We found an export instead");
                 }
                 return null;
