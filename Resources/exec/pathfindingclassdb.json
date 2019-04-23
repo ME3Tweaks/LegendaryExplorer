@@ -399,147 +399,159 @@
       "fullclasspath": "Engine.CylinderComponent",
       "packagefile": "Engine"
     },
-    "SFXGame.SFXNav_InteractionHenchOmniTool": {
+    "SFXGameContent.SFXNav_InteractionHenchOmniTool": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchOmniTool": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchOmniTool": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchOmniTool.CollisionCylinder": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchOmniTool.CollisionCylinder": {
       "fullclasspath": "Engine.CylinderComponent",
       "packagefile": "Engine"
     },
-    "SFXGame.SFXNav_InteractionHenchOmniToolCrouch": {
+    "SFXGameContent.SFXNav_InteractionHenchOmniToolCrouch": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchOmniToolCrouch": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchOmniToolCrouch": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchOmniToolCrouch.CollisionCylinder": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchOmniToolCrouch.CollisionCylinder": {
       "fullclasspath": "Engine.CylinderComponent",
       "packagefile": "Engine"
     },
-    "SFXGame.SFXNav_InteractionHenchBeckonFront": {
+    "SFXGameContent.SFXNav_InteractionHenchBeckonFront": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchBeckonFront": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchBeckonFront": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchBeckonFront.CollisionCylinder": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchBeckonFront.CollisionCylinder": {
       "fullclasspath": "Engine.CylinderComponent",
       "packagefile": "Engine"
     },
-    "SFXGame.SFXNav_InteractionHenchBeckonRear": {
+    "SFXGameContent.SFXNav_InteractionHenchBeckonRear": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchBeckonRear": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchBeckonRear": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchBeckonRear.CollisionCylinder": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchBeckonRear.CollisionCylinder": {
       "fullclasspath": "Engine.CylinderComponent",
       "packagefile": "Engine"
     },
-    "SFXGame.SFXNav_InteractionHenchCustom": {
+    "SFXGameContent.SFXNav_InteractionHenchCustom": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchCustom": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchCustom": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchCustom.CollisionCylinder": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchCustom.CollisionCylinder": {
       "fullclasspath": "Engine.CylinderComponent",
       "packagefile": "Engine"
     },
-    "SFXGame.SFXNav_InteractionHenchCover": {
+    "SFXGameContent.SFXNav_InteractionHenchCover": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchCover": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchCover": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchCover.CollisionCylinder": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchCover.CollisionCylinder": {
       "fullclasspath": "Engine.CylinderComponent",
       "packagefile": "Engine"
     },
-    "SFXGame.SFXNav_InteractionHenchCrouch": {
+    "SFXGameContent.SFXNav_InteractionHenchCrouch": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchCrouch": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchCrouch": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchCrouch.CollisionCylinder": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchCrouch.CollisionCylinder": {
       "fullclasspath": "Engine.CylinderComponent",
       "packagefile": "Engine"
     },
-    "SFXGame.SFXNav_InteractionHenchManual": {
+    "SFXGameContent.SFXNav_InteractionHenchInteractLow": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchManual": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchInteractLow": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchManual.CollisionCylinder": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchInteractLow.CollisionCylinder": {
       "fullclasspath": "Engine.CylinderComponent",
       "packagefile": "Engine"
     },
-    "SFXGame.SFXNav_InteractionHenchStandIdle": {
+    "SFXGameContent.SFXNav_InteractionHenchManual": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchStandIdle": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchManual": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchStandIdle.CollisionCylinder": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchManual.CollisionCylinder": {
       "fullclasspath": "Engine.CylinderComponent",
       "packagefile": "Engine"
     },
-    "SFXGame.SFXNav_InteractionHenchStandTyping": {
+    "SFXGameContent.SFXNav_InteractionHenchStandIdle": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchStandTyping": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchStandIdle": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionHenchStandTyping.CollisionCylinder": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchStandIdle.CollisionCylinder": {
       "fullclasspath": "Engine.CylinderComponent",
       "packagefile": "Engine"
     },
-    "SFXGame.SFXNav_InteractionUseConsole": {
+    "SFXGameContent.SFXNav_InteractionHenchStandTyping": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionUseConsole": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchStandTyping": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionUseConsole.CollisionCylinder": {
+    "SFXGameContent.Default__SFXNav_InteractionHenchStandTyping.CollisionCylinder": {
       "fullclasspath": "Engine.CylinderComponent",
       "packagefile": "Engine"
     },
-    "SFXGame.SFXNav_InteractionStandGuard": {
+    "SFXGameContent.SFXNav_InteractionUseConsole": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionStandGuard": {
+    "SFXGameContent.Default__SFXNav_InteractionUseConsole": {
       "fullclasspath": "Class",
       "packagefile": "Core"
     },
-    "SFXGame.Default__SFXNav_InteractionStandGuard.CollisionCylinder": {
+    "SFXGameContent.Default__SFXNav_InteractionUseConsole.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGameContent.SFXNav_InteractionStandGuard": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionStandGuard": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionStandGuard.CollisionCylinder": {
       "fullclasspath": "Engine.CylinderComponent",
       "packagefile": "Engine"
     },
