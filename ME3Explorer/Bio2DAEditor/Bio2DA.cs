@@ -26,14 +26,6 @@ namespace ME3Explorer
         public List<string> RowNames { get; set; }
         public List<string> ColumnNames { get; set; }
 
-        public void SetCellAt(int row, int column, Bio2DACell cell)
-        {
-            if (Cells[row, column] == null)
-            {
-                PopulatedCellCount++;
-            }
-            Cells[row, column] = cell;
-        }
         public int RowCount
         {
             get
@@ -436,7 +428,6 @@ namespace ME3Explorer
              * }
              */
 
-            int numberOfPopulatedCells = 0;
             //indices here are excel based. Subtract two to get Bio2DA based.
             for (int rowIndex = 2; rowIndex < (bio2da.RowCount + 2); rowIndex++)
             {
@@ -463,12 +454,10 @@ namespace ME3Explorer
                             newCell.Pcc = export.FileRef; //for displaying, if this displays before the export is reloaded and 2da is refreshed
                             newCell.Data = BitConverter.GetBytes((long)export.FileRef.FindNameOrAdd(xlCellContents)); //long because names are 8 bytes not 4
                         }
-                        numberOfPopulatedCells++;
                         bio2da[rowIndex - 2, columnIndex - 2] = newCell;
                     }
                 }
             }
-            bio2da.PopulatedCellCount = numberOfPopulatedCells;
             return bio2da;
             /*
 
@@ -536,6 +525,10 @@ namespace ME3Explorer
             set
             {
                 // set the item for this index. value will be of type Bio2DACell.
+                if (Cells[rowindex, colindex] == null)
+                {
+                    PopulatedCellCount++;
+                }
                 Cells[rowindex, colindex] = value;
             }
         }
