@@ -131,7 +131,7 @@ namespace ME3Explorer
                         curroffset += dataSize;
                     }
                 }
-                PopulatedCellCount = RowCount * ColumnCount;
+                //PopulatedCellCount = RowCount * ColumnCount;
             }
             else
             {
@@ -154,7 +154,7 @@ namespace ME3Explorer
                     Buffer.BlockCopy(data, curroffset, celldata, 0, dataSize);
                     Bio2DACell cell = new Bio2DACell(pcc, curroffset, dataType, celldata);
                     Cells[row, col] = cell;
-                    PopulatedCellCount++;
+                    //PopulatedCellCount++;
                     curroffset += dataSize;
                 }
             }
