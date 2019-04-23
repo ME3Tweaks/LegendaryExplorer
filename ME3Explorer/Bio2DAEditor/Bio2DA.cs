@@ -309,7 +309,7 @@ namespace ME3Explorer
                 for (int colindex = 0; colindex < ColumnCount; colindex++)
                 {
                     //Console.WriteLine("Writing column definition " + columnNames[colindex]);
-                    int nameIndexForCol = export.FileRef.findName(ColumnNames[colindex]);
+                    int nameIndexForCol = export.FileRef.FindNameOrAdd(ColumnNames[colindex]);
                     stream.WriteBytes(BitConverter.GetBytes(nameIndexForCol));
                     stream.WriteBytes(BitConverter.GetBytes(0)); //second half of name reference in 2da is always zero since they're always indexed at 0
                     stream.WriteBytes(BitConverter.GetBytes(colindex));
@@ -365,28 +365,31 @@ namespace ME3Explorer
         {
             var Workbook = new XLWorkbook(Filename);
             IXLWorksheet iWorksheet = null;
-            try
+            if ( Workbook.Worksheets.Count() > 1)
             {
-                //You could just have it check only the first sheet. This way you would not need to rename exported sheets  //A: This way I can have a single excel file with all the references, notes etc and just autocreate a page to import.
-                //If you wanted to be really crazy you could do a sheet selector. [By naming you already have that] I don't know how useful that is though since we only export single sheet [I use large spreadsheets for tracking all my modding stuff.]
-                iWorksheet = Workbook.Worksheet("Import");
+                try
+                {
+                    iWorksheet = Workbook.Worksheet("Import");
+                }
+                catch
+                {
+                    MessageBox.Show("Import Sheet not found");
+                    return null;
+                }
             }
-            catch
+            else
             {
-                MessageBox.Show("Import Sheet not found");
-                return null;
+                iWorksheet = Workbook.Worksheet(1);
             }
 
             //Do we want to limit user to importing same column structure as existing?  Who would be stupid enough to do something else??? ME.
             // - Kinkojiro, 2019
 
-            //STEP 0 Clear existing data
+            //STEP 1 Clear existing data
             Bio2DA bio2da = new Bio2DA();
             bio2da.export = export;
 
-            int i = 0; //debug
-
-            //STEP 1 Read columns and row names
+            //STEP 2 Read columns and row names
 
             //Column names
             IXLRow hRow = iWorksheet.Row(1);
@@ -395,10 +398,9 @@ namespace ME3Explorer
                 if (cell.Address.ColumnNumber > 1) //ignore excel column 1
                 {
                     bio2da.ColumnNames.Add(cell.Value.ToString());
-                    //i++; //debug column count
+                    i++; //debug column count
                 }
             }
-
 
             //Row names 
             IXLColumn column = iWorksheet.Column(1);
@@ -416,25 +418,13 @@ namespace ME3Explorer
 
 
             //Step 3 Populate the table.
-            /*
-             * if string.isemptyornull(READVALUEFROMEXCEL) continue reading next cell; (skip)
-             * if (int.TryParse(READVALUEFROMEXCEL, out int value) {
-             *  cell.datatype = int
-             *  cell.data = BitConverter.GetBytes(value)
-             * } else if float.try...
-             * 
-             * } else {
-             *  its a string. treat it as a name
-             * }
-             */
-
             //indices here are excel based. Subtract two to get Bio2DA based.
             for (int rowIndex = 2; rowIndex < (bio2da.RowCount + 2); rowIndex++)
             {
                 for (int columnIndex = 2; columnIndex < bio2da.ColumnCount + 2; columnIndex++)
                 {
                     IXLCell xlCell = iWorksheet.Cell(rowIndex, columnIndex);
-                    string xlCellContents = xlCell.Value.ToString(); //debug
+                    string xlCellContents = xlCell.Value.ToString();
                     if (!string.IsNullOrEmpty(xlCellContents))
                     {
                         Bio2DACell newCell = new Bio2DACell();
@@ -459,60 +449,6 @@ namespace ME3Explorer
                 }
             }
             return bio2da;
-            /*
-
-            foreach (IXLRow row in iWorksheet.Rows())
-            {
-                foreach (IXLCell cell in row.Cells(row.FirstCellUsed().Address.ColumnNumber, row.LastCellUsed().Address.ColumnNumber))
-                {
-                    columnindex = cell.Address.ColumnNumber - 2;
-                    rowindex = cell.Address.RowNumber - 2;
-                    if ((columnindex >= 0) & (rowindex >= 0)) //Make sure start from excel column 2, row 2
-                    {
-                        string debugCell = cell.Value.ToString(); //debug
-                        if (!String.IsNullOrEmpty(cell.Value.ToString()))
-                        {
-                            var nCellType = Bio2DACell.Bio2DADataType.TYPE_INT;
-                            byte[] nCellData;
-
-                            if (int.TryParse(cell.Value.ToString(), out int intData)) //Test int
-                            {
-                                nCellData = BitConverter.GetBytes(intData);
-                            }
-                            else if (float.TryParse(cell.Value.ToString(), out float fltData)) //Test float
-                            {
-                                nCellType = Bio2DACell.Bio2DADataType.TYPE_FLOAT;
-                                nCellData = BitConverter.GetBytes(fltData);
-                            }
-                            else  //Is name
-                            {
-                                int nameData = export.FileRef.FindNameOrAdd(cell.Value.ToString());
-                                nCellType = Bio2DACell.Bio2DADataType.TYPE_NAME;
-                                nCellData = BitConverter.GetBytes(nameData);
-                            }
-                            byte wtfByte = 0; //HOW DO YOU GET nCellType 0,1,2 to a Byte boolean?>?????
-                            Bio2DACell nCell = new Bio2DACell(export.FileRef, wtfByte, nCellData);
-                            bio2da.Cells[rowindex, columnindex] = nCell;
-
-                            nCell.DisplayableValue = cell.Value.ToString(); //Debug write again to be sure.
-                        }
-                        else //TEMPORARY DEBUG GET AROUND EMPTY CELLS
-                        {
-                            //byte wtfByte = 0;
-                            //Bio2DACell nCell = new Bio2DACell(export.FileRef, wtfByte, BitConverter.GetBytes(0));
-                            //bio2da.Cells[columnindex, rowindex] = nCell;
-                        }
-                    }
-                }
-                //CURRENT ISSUES:
-                // 1. DONE
-                // 2. TABLE IS ONLY DOING INTS - HOW TO CONVERT to Byte the DataType.  Also dealing with nulls.
-                // 3. DONE
-                // 4. DONE
-
-            }
-            //Step 4 return table
-            return bio2da;*/
         }
 
         public Bio2DACell this[int rowindex, int colindex]

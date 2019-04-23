@@ -175,7 +175,7 @@ namespace ME3Explorer
 
         private void ImportToExcel_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Excel sheet must be formatted so: \r\nFIRST ROW must have the same column headings as current sheet. \r\nFIRST COLUMN has row numbers. \r\nThe sheet tab must be named 'Import'.", "IMPORTANT INFORMATION:" );
+            MessageBox.Show("Excel sheet must be formatted so: \r\nFIRST ROW must have the same column headings as current sheet. \r\nFIRST COLUMN has row numbers. \r\nIf using a multisheet excel file, the sheet tab must be named 'Import'.", "IMPORTANT INFORMATION:" );
             OpenFileDialog oDlg = new OpenFileDialog
             {
                 Filter = "Excel Files (*.xlsx)|*.xlsx"
@@ -190,8 +190,6 @@ namespace ME3Explorer
                     if (resulting2DA != null)
                     {
                         resulting2DA.Write2DAToExport();
-                        //Package handler in theory for package editor wpf should have refreshed this.
-                        //In theory of course.
                     }
                 }
             }
