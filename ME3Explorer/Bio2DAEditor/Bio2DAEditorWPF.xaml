@@ -108,24 +108,26 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="60"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="110"/>
-                <ColumnDefinition Width="110"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Button Name="Save_Button" Grid.Row="0" Grid.Column="0" Content="Save" Click="Save_Button_Click"/>
 
             <TextBlock  VerticalAlignment="Center" Margin="3" FontWeight="Bold" Grid.Row="0" Grid.Column="1" Text="{Binding Path=CurrentLoadedExport.ObjectName}"/>
-            <Button Margin="5,0,3,0" Name="ExportToExcel_Button" Grid.Row="0" Grid.Column="4" Click="ExportToExcel_Click">
+            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" Margin="3,0">
+                <Button Margin="5,0,5,0" Name="ImportFromExcel_Button" Padding="5,0" Click="ImportToExcel_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
+                        <TextBlock Text="Import from Excel"/>
+                    </StackPanel>
+                </Button>
+                <Button Padding="5,0" Name="ExportToExcel_Button" Click="ExportToExcel_Click">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16"/>
+                        <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16" Margin="0,0,2,0"/>
                     <TextBlock Text="Export to Excel"/>
                 </StackPanel>
             </Button>
-            <Button Margin="0,0,0,0" Name="ImportFromExcel_Button" Grid.Row="0" Grid.Column="2" Click="ImportToExcel_Click">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="/ME3Explorer;component/Resources/excel.png" Width="16" Height="16"/>
-                    <TextBlock Text="Import Excel"/>
-                </StackPanel>
-            </Button>
+            
+            </StackPanel>
         </Grid>
         <DataGrid Name="Bio2DA_DataGrid" Margin="0,3,3,3" SelectionUnit="Cell" 
                   SelectionMode="Single"  dataGrid2D:ItemsSource.Array2D="{Binding Path=Table2DA.Cells}" 

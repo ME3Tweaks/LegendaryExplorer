@@ -13,7 +13,7 @@ namespace ME3Explorer
     {
         public byte[] Data { get; set; }
         public int Offset { get; private set; }
-        public IMEPackage Pcc { get; private set; }
+        public IMEPackage Pcc { get; set; }
         private bool _isModified = false;
         public bool IsModified
         {
@@ -25,6 +25,7 @@ namespace ME3Explorer
 
         public enum Bio2DADataType
         {
+            TYPE_UNDEFINED = -1,
             TYPE_INT = 0,
             TYPE_NAME = 1,
             TYPE_FLOAT = 2
@@ -40,10 +41,14 @@ namespace ME3Explorer
             Data = data;
         }
 
-        public Bio2DACell(IMEPackage pcc, byte type, byte[] data) //No need for offset in Excel import
+        public Bio2DACell()
         {
-            Pcc = pcc;
-            Type = (Bio2DADataType)type;
+
+        }
+
+        public Bio2DACell(Bio2DADataType type, byte[] data)
+        {
+            Type = type;
             Data = data;
         }
 
