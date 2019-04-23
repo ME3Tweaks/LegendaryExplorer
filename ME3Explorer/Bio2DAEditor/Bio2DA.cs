@@ -525,9 +525,13 @@ namespace ME3Explorer
             set
             {
                 // set the item for this index. value will be of type Bio2DACell.
-                if (Cells[rowindex, colindex] == null)
+                if (Cells[rowindex, colindex] == null && value != null)
                 {
                     PopulatedCellCount++;
+                }
+                if (Cells[rowindex, colindex] != null && value == null)
+                {
+                    PopulatedCellCount--;
                 }
                 Cells[rowindex, colindex] = value;
             }
