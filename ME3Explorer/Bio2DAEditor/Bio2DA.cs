@@ -398,7 +398,6 @@ namespace ME3Explorer
                 if (cell.Address.ColumnNumber > 1) //ignore excel column 1
                 {
                     bio2da.ColumnNames.Add(cell.Value.ToString());
-                    i++; //debug column count
                 }
             }
 
@@ -409,7 +408,6 @@ namespace ME3Explorer
                 if (cell.Address.RowNumber > 1) //ignore excel row 1
                 {
                     bio2da.RowNames.Add(cell.Value.ToString());
-                    //i++; //debug row count
                 }
             }
 
