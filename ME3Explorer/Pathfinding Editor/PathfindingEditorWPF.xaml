@@ -124,7 +124,7 @@
                     </StatusBarItem>
                 </StatusBar>
                 <StackPanel DockPanel.Dock="Top" Margin="3">
-                    <Viewbox StretchDirection="DownOnly" Stretch="Uniform" HorizontalAlignment="Left" >
+                    <Viewbox StretchDirection="DownOnly" Stretch="Uniform" HorizontalAlignment="Left" Height="24" >
                         <TextBlock Text="{Binding NodeName, FallbackValue=PathNode_X57}" FontWeight="Bold" FontSize="20" TextAlignment="Left"/>
                     </Viewbox>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Name="NodePosition_Panel" IsEnabled="False">

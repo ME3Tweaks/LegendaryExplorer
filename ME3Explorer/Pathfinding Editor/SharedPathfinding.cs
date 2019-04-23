@@ -207,58 +207,83 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public static IEntry GetEntryOrAddImport(IMEPackage Pcc, string importFullName)
         {
+            //foreach (ImportEntry imp in Pcc.Imports)
+            //{
+            //    if (imp.GetFullPath == importFullName)
+            //    {
+            //        return imp;
+            //    }
+            //}
+
+            var fullPathMappingList = new List<(string fullpath, IEntry entry)>();
             foreach (ImportEntry imp in Pcc.Imports)
             {
-                if (imp.GetFullPath == importFullName)
-                {
-                    return imp;
-                }
+                fullPathMappingList.Add((imp.GetFullPath, imp));
+            }
+            foreach (IExportEntry exp in Pcc.Exports)
+            {
+                fullPathMappingList.Add((exp.GetFullPath, exp));
             }
 
+            var directMapping = fullPathMappingList.Where(x => x.fullpath == importFullName).ToList();
+            if (directMapping.Count == 1) return directMapping[0].entry; //direct single match
+
+            //Find an upstream entry to attach our import to (we can't add exports)
+            string[] importParts = importFullName.Split('.');
+            int upstreamCount = 1;
+
+            IEntry upstreamEntryToAttachTo = null;
+            string upstreamfullpath = null;
+            while (upstreamCount < importParts.Count())
+            {
+                upstreamfullpath = string.Join(".", importParts, 0, importParts.Count() - upstreamCount);
+                var upstreammatchinglist = fullPathMappingList.Where(x => x.fullpath == upstreamfullpath).ToList();
+                if (upstreammatchinglist.Count == 1)
+                {
+                    upstreamEntryToAttachTo = upstreammatchinglist[0].entry;
+                    break;
+                }
+                /*if (upstreamEntryToAttachTo != null)
+                {
+                    break;
+                }*/
+                upstreamCount++;
+            }
+
+            //upstreamImport = Pcc.Imports.FirstOrDefault(x => x.GetFullPath == upstream);
+
+
+
             //Check if this is an export instead
-            IExportEntry itemAsImport = Pcc.Exports.FirstOrDefault(x => x.GetFullPath == importFullName && x.indexValue == 0);
+            /* itemAsImport = Pcc.Exports.FirstOrDefault(x => x.GetFullPath == importFullName && x.indexValue == 0);
             if (itemAsImport != null)
             {
                 return itemAsImport;
-            }
+            }*/
 
             //Import doesn't exist, so we're gonna need to add it
             //But first we need to figure out what needs to be added.
-            string[] importParts = importFullName.Split('.');
-            List<int> upstreamLinks = new List<int>(); //0 = top level, 1 = next level... n = what we wanted to import
-            int upstreamCount = 1;
+            //string[] importParts = importFullName.Split('.');
+            //List<int> upstreamLinks = new List<int>(); //0 = top level, 1 = next level... n = what we wanted to import
 
-            ImportEntry upstreamImport = null;
+            /*ImportEntry upstreamImport = null;
             string upstream = null;
             while (upstreamCount < importParts.Count())
             {
-                upstream = string.Join(".", importParts, 0, importParts.Count() - upstreamCount);
-                foreach (ImportEntry imp in Pcc.Imports)
-                {
-                    if (imp.GetFullPath == upstream)
-                    {
-                        upstreamImport = imp;
-                        break;
-                    }
-                }
+                upstreamfullpath = string.Join(".", importParts, 0, importParts.Count() - upstreamCount);
+                upstreamImport = Pcc.Imports.FirstOrDefault(x => x.GetFullPath == upstreamfullpath);
 
                 if (upstreamImport != null)
                 {
                     break;
                 }
                 upstreamCount++;
-            }
+            }*/
 
-            if (upstreamImport == null && upstream != null)
+            if (upstreamEntryToAttachTo == null)
             {
-                //There is no top level import.
-
-                //See if there is a top level export
-                IExportEntry topLevelExport = Pcc.Exports.FirstOrDefault(x => x.GetFullPath == upstream);
-                if (topLevelExport != null)
-                {
-                    Debug.WriteLine("We found an export instead");
-                }
+                //There is nothing we can attach to.
+                Debug.WriteLine("cannot find a top level item to attach to for " + importFullName);
                 return null;
             }
 
@@ -273,8 +298,8 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 int downstreamName = Pcc.FindNameOrAdd(importParts[importParts.Count() - upstreamCount - 1]);
                 Debug.WriteLine(Pcc.Names[downstreamName]);
-                int downstreamLinkIdx = upstreamImport.UIndex;
-                Debug.WriteLine(upstreamImport.GetFullPath);
+                int downstreamLinkIdx = upstreamEntryToAttachTo.UIndex;
+                Debug.WriteLine(upstreamEntryToAttachTo.GetFullPath);
 
                 int downstreamPackageName = Pcc.FindNameOrAdd(importdbinfo["packagefile"]);
                 string downstreamClassName = importdbinfo["fullclasspath"];
@@ -302,7 +327,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 mostdownstreamimport.idxObjectName = downstreamName;
                 mostdownstreamimport.idxPackageFile = downstreamPackageName;
                 Pcc.addImport(mostdownstreamimport);
-                upstreamImport = mostdownstreamimport;
+                upstreamEntryToAttachTo = mostdownstreamimport;
             }
             return mostdownstreamimport;
         }
