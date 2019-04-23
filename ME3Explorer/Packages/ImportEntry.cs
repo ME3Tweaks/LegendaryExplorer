@@ -119,6 +119,13 @@ namespace ME3Explorer.Packages
                 return s;
             }
         }
+        public string GetNetIndexedFullPath
+        {
+            get
+            {
+                return GetFullPath + "_" + indexValue;
+            }
+        }
 
         bool headerChanged;
         public bool HeaderChanged

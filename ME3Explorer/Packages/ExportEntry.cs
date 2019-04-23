@@ -128,6 +128,14 @@ namespace ME3Explorer.Packages
             }
         }
 
+        public string GetNetIndexedFullPath
+        {
+            get
+            {
+                return GetFullPath + "_" + indexValue;
+            }
+        }
+
         //NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
         protected byte[] _data;
         /// <summary>
