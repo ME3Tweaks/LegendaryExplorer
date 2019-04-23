@@ -1062,13 +1062,14 @@ namespace ME3Explorer.Pathfinding_Editor
             bool hasDrawScale = drawScale3D != null;
             if (drawScale3D == null)
             {
-                Interpreter addPropInterp = new Interpreter();
-                addPropInterp.Pcc = exp.FileRef;
-                addPropInterp.export = exp;
-                addPropInterp.InitInterpreter();
-                addPropInterp.AddProperty(propname); //Assuming interpreter shows current item.
-                addPropInterp.Dispose();
-                drawScale3D = exp.GetProperty<StructProperty>(propname);
+
+                //What in god's name is this still doing here
+                PropertyCollection threeDProps = new PropertyCollection();
+                threeDProps.Add(new FloatProperty(0, "X"));
+                threeDProps.Add(new FloatProperty(0, "Y"));
+                threeDProps.Add(new FloatProperty(0, "Z"));
+                drawScale3D = new StructProperty("Vector", threeDProps, "DrawScale3D", true);
+                exp.WriteProperty(drawScale3D);
             }
             var drawScaleX = drawScale3D.GetProp<FloatProperty>("X");
             var drawScaleY = drawScale3D.GetProp<FloatProperty>("Y");
@@ -2324,8 +2325,6 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void PathfinderEditorWPF_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            //todo: handle user saying "don't close" if changes are unsaved.
-
             if (!e.Cancel)
             {
                 graphEditor.RemoveInputEventListener(pathfindingMouseListener);
@@ -2338,6 +2337,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 GraphHost.Child = null; //This seems to be required to clear OnChildGotFocus handler from WinFormsHost
                 GraphHost.Dispose();
                 ActiveNodes.ClearEx();
+                CurrentNodeSequenceReferences.ClearEx();
                 StaticMeshCollections.ClearEx();
                 CombatZones.ClearEx();
                 if (GraphNodes != null)
