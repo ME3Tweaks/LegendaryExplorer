@@ -189,6 +189,10 @@ namespace ME3Explorer
                     Bio2DA resulting2DA = Bio2DA.ReadExcelTo2DA(CurrentLoadedExport, oDlg.FileName);
                     if (resulting2DA != null)
                     {
+                        if (resulting2DA.IsIndexed != Table2DA.IsIndexed)
+                        {
+                            MessageBox.Show("Warning: Imported sheet contains blank cells. Underlying sheet does not.");
+                        }
                         resulting2DA.Write2DAToExport();
                     }
                 }

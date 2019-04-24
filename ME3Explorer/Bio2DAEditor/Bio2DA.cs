@@ -16,7 +16,7 @@ namespace ME3Explorer
 {
     public class Bio2DA
     {
-        bool IsIndexed = false;
+        public bool IsIndexed = false;
         /// <summary>
         /// Number of cells that the Bio2DA says exist in the table
         /// </summary>
