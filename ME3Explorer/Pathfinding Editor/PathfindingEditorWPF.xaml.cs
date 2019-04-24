@@ -2250,7 +2250,6 @@ namespace ME3Explorer.Pathfinding_Editor
                 //we are posting an update to other instances of packed
 
                 //This code can be removed when non-WPF package editor is removed.
-                var forms = System.Windows.Forms.Application.OpenForms;
                 foreach (var form in App.Current.Windows)
                 {
                     if (form is PathfindingEditorWPF wpf && this != wpf)
