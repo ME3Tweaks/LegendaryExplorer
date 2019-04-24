@@ -17,9 +17,10 @@ Some highlights of features that were developed on this fork:
   
 You can get these releases in Mass Effect 3 Mod Manager from the tools menu, or you can download from the releases tab above.
 
-## Powered by JetBrains
+## Enhanced by JetBrains
 JetBrains has kindly given us several open source licenses for their tools that allow us to create better modding tools for you. Thanks, JetBrains!
-[![Go to JetBrains](https://raw.githubusercontent.com/ME3Tweaks/ME3Explorer/resources/jetbrains-variant-4.png | width=100)][https://jetbrains.com]
+
+[<img src="https://raw.githubusercontent.com/ME3Tweaks/ME3Explorer/resources/jetbrains-variant-4.png" height="250"/>](https://jetbrains.com)
 
 ## Contributing
 [You can check out my contributing guidelines and tips document](https://github.com/Mgamerz/ME3Explorer/blob/Beta/CONTRIBUTING.md), for both developers and end-users who need features.
