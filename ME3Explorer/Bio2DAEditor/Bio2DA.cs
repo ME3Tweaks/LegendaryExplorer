@@ -112,7 +112,7 @@ namespace ME3Explorer
             int curroffset = binstartoffset;
 
             int cellcount = BitConverter.ToInt32(data, curroffset);
-            if (cellcount == 0) Debugger.Break();
+            //if (cellcount == 0) Debugger.Break();
             if (cellcount > 0)
             {
                 curroffset += 4;
@@ -154,7 +154,7 @@ namespace ME3Explorer
                     Buffer.BlockCopy(data, curroffset, celldata, 0, dataSize);
                     Bio2DACell cell = new Bio2DACell(pcc, curroffset, dataType, celldata);
                     Cells[row, col] = cell;
-                    //PopulatedCellCount++;
+                    PopulatedCellCount++;
                     curroffset += dataSize;
                 }
             }
@@ -443,6 +443,10 @@ namespace ME3Explorer
                             newCell.Data = BitConverter.GetBytes((long)export.FileRef.FindNameOrAdd(xlCellContents)); //long because names are 8 bytes not 4
                         }
                         bio2da[rowIndex - 2, columnIndex - 2] = newCell;
+                    }
+                    else
+                    {
+                        bio2da.IsIndexed = true;  //Null cells = indexing
                     }
                 }
             }
