@@ -120,8 +120,7 @@ namespace ME3Explorer
                 {
                     for (int colindex = 0; colindex < ColumnCount && curroffset < data.Length - currentcoloffset; colindex++)
                     {
-                        byte dataType = 255;
-                        dataType = data[curroffset];
+                        byte dataType = data[curroffset];
                         curroffset++;
                         int dataSize = dataType == (byte)Bio2DACell.Bio2DADataType.TYPE_NAME ? 8 : 4;
                         byte[] celldata = new byte[dataSize];
@@ -153,8 +152,7 @@ namespace ME3Explorer
                     byte[] celldata = new byte[dataSize];
                     Buffer.BlockCopy(data, curroffset, celldata, 0, dataSize);
                     Bio2DACell cell = new Bio2DACell(pcc, curroffset, dataType, celldata);
-                    Cells[row, col] = cell;
-                    PopulatedCellCount++;
+                    this[row, col] = cell;
                     curroffset += dataSize;
                 }
             }
