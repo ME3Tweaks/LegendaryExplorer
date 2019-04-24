@@ -1069,7 +1069,6 @@ namespace ME3Explorer.Pathfinding_Editor
                 threeDProps.Add(new FloatProperty(0, "Y"));
                 threeDProps.Add(new FloatProperty(0, "Z"));
                 drawScale3D = new StructProperty("Vector", threeDProps, "DrawScale3D", true);
-                exp.WriteProperty(drawScale3D);
             }
             var drawScaleX = drawScale3D.GetProp<FloatProperty>("X");
             var drawScaleY = drawScale3D.GetProp<FloatProperty>("Y");
