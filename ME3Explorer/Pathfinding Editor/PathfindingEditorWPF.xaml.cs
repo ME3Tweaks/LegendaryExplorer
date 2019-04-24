@@ -2096,7 +2096,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 }
                 foreach (PathfindingNodeMaster o in graphEditor.nodeLayer)
                 {
-                    o.CreateConnections(ref GraphNodes);
+                    o.CreateConnections(GraphNodes);
                 }
 
                 foreach (PPath edge in graphEditor.edgeLayer)
@@ -2668,7 +2668,10 @@ namespace ME3Explorer.Pathfinding_Editor
                     s.SetOffset(x, y);
 
                     //TODO: Figure out what this does
-
+                    if (s is PathfindingNode pn)
+                    {
+                        pn.RefreshConnections(GraphNodes);
+                    }
                     //foreach (PNode node in s.AllNodes)
                     //{
                     //    ArrayList edges = (ArrayList)node.Tag;
@@ -2691,17 +2694,20 @@ namespace ME3Explorer.Pathfinding_Editor
                 nodeToUpdate = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
             }
 
-            if (nodeToUpdate != null)
+            if (nodeToUpdate != null && nodeToUpdate is PathfindingNode pn)
             {
-                graphEditor.edgeLayer.RemoveChildrenList(new List<PNode>(nodeToUpdate.Edges.Cast<PNode>()));
-                nodeToUpdate.Edges.Clear();
-                nodeToUpdate.CreateConnections(ref GraphNodes);
-                foreach (PathfindingEditorEdge edge in nodeToUpdate.Edges)
-                {
-                    PathingGraphEditor.UpdateEdgeStraight(edge);
-                }
+                pn.RefreshConnections(GraphNodes);
                 graphEditor.Refresh();
             }
+            /*   nodeToUpdate.Refres
+               graphEditor.edgeLayer.RemoveChildrenList(new List<PNode>(nodeToUpdate.Edges.Cast<PNode>()));
+               nodeToUpdate.Edges.Clear();
+               nodeToUpdate.CreateConnections(GraphNodes);
+               foreach (PathfindingEditorEdge edge in nodeToUpdate.Edges)
+               {
+                   PathingGraphEditor.UpdateEdgeStraight(edge);
+               }*/
+        
         }
 
         private void SetLocation(IExportEntry export, float x, float y, float z)

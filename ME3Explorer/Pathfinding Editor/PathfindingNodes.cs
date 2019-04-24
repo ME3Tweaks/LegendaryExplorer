@@ -87,18 +87,43 @@ namespace ME3Explorer.PathfindingNodes
         }
 
         /// <summary>
-        /// Clears all edges on this node, and removes connecting nodes incoming connections, and then ref
+        /// Clears all edges on this node, and removes connecting nodes incoming connections, and then recreates them and triggers an edge update on them
         /// </summary>
-        public void RefreshConnections()
+        public void RefreshConnections(List<PathfindingNodeMaster> graphNodes)
         {
+            foreach (PathfindingEditorEdge edge in Edges)
+            {
+                //Remove remote connections
+                if (edge.EndPoints[0] != this && edge.EndPoints[0] is PathfindingNode pn0)
+                {
+                    var removed = pn0.Edges.Remove(edge);
+                    if (removed)
+                    {
+                        Debug.WriteLine("Removed edge during refresh on endpoint 0");
+                    }
+                }
+                if (edge.EndPoints[1] != this && edge.EndPoints[1] is PathfindingNode pn1)
+                {
+                    pn1.Edges.Remove(edge);
+                    Debug.WriteLine("Removed edge during refresh on endpoint 1");
 
+                }
+            }
+            Debug.WriteLine("Remaining edges: " + Edges.Count);
+            //don't know why i have to cast since my edge class is subclass of pnode already
+            g.edgeLayer.RemoveChildrenList(Edges.Cast<UMD.HCIL.Piccolo.PNode>().ToList());
+            Edges.Clear();
+
+            CreateConnections(graphNodes);
+            Edges.ForEach(x => PathingGraphEditor.UpdateEdgeStraight(x));
         }
 
         /// <summary>
         /// Creates the reachspec connections from this pathfinding node to others.
         /// </summary>
-        public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
+        public override void CreateConnections(List<PathfindingNodeMaster> graphNodes)
         {
+            ReachSpecs.Clear();
             var outLinksProp = export.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
             if (outLinksProp != null)
             {
@@ -139,54 +164,47 @@ namespace ME3Explorer.PathfindingNodes
                     PathfindingNodeMaster othernode = null;
                     int othernodeidx = 0;
                     PropertyCollection props = spec.GetProperties();
-                    if (props.GetProp<StructProperty>("End") is StructProperty endProperty)
+                    if (props.GetProp<StructProperty>("End") is StructProperty endProperty &&
+                        endProperty.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(spec)) is ObjectProperty otherNodeValue)
                     {
-                        if (endProperty.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(spec)) is ObjectProperty otherNodeValue)
-                        {
-                            othernodeidx = otherNodeValue.Value;
-                        }
+                        othernodeidx = otherNodeValue.Value;
                     }
 
                     if (othernodeidx != 0)
                     {
-                        foreach (PathfindingNodeMaster node in Objects)
+                        othernode = graphNodes.FirstOrDefault(x => x.export.UIndex == othernodeidx);
+                        if (othernode != null)
                         {
-                            if (node.export.UIndex == othernodeidx)
+                            //Check for returning reachspec for pen drawing. This is going to incur a significant performance penalty...
+                            IExportEntry otherNode = othernode.export;
+                            var otherNodePathList = otherNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                            if (otherNodePathList != null)
                             {
-                                othernode = node;
-
-                                //Check for returning reachspec for pen drawing. This is going to incur a significant performance penalty...
-                                IExportEntry otherNode = node.export;
-                                var otherNodePathList = otherNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-                                if (otherNodePathList != null)
+                                foreach (var path in otherNodePathList)
                                 {
-                                    foreach (var path in otherNodePathList)
-                                    {
-                                        int reachspecexport = path.Value;
-                                        IExportEntry possibleIncomingSpec = pcc.getUExport(reachspecexport);
-                                        PropertyCollection otherSpecProperties = possibleIncomingSpec.GetProperties();
+                                    int reachspecexport = path.Value;
+                                    IExportEntry possibleIncomingSpec = pcc.getUExport(reachspecexport);
+                                    PropertyCollection otherSpecProperties = possibleIncomingSpec.GetProperties();
 
-                                        if (otherSpecProperties.GetProp<StructProperty>("End") is StructProperty endStruct)
+                                    if (otherSpecProperties.GetProp<StructProperty>("End") is StructProperty endStruct)
+                                    {
+                                        if (endStruct.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(possibleIncomingSpec)) is ObjectProperty incomingTargetIdx)
                                         {
-                                            if (endStruct.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(possibleIncomingSpec)) is ObjectProperty incomingTargetIdx)
+                                            if (incomingTargetIdx.Value == export.UIndex)
                                             {
-                                                if (incomingTargetIdx.Value == export.UIndex)
+                                                if (penToUse == halfReachSpecPen)
                                                 {
-                                                    if (penToUse == halfReachSpecPen)
-                                                    {
-                                                        penToUse = blackPen;
-                                                    }
-                                                    break;
+                                                    penToUse = blackPen;
                                                 }
+                                                break;
                                             }
                                         }
                                     }
-                                    break;
                                 }
                             }
-                        }
-                        if (othernode != null)
-                        {
+
+                            //if (othernode != null)
+                            //{
                             IntProperty radius = props.GetProp<IntProperty>("CollisionRadius");
                             IntProperty height = props.GetProp<IntProperty>("CollisionHeight");
 

@@ -87,7 +87,7 @@ namespace ME3Explorer.SplineNodes
         /// <summary>
         /// Creates the reachspec connections from this pathfinding node to others.
         /// </summary>
-        public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
+        public override void CreateConnections(List<PathfindingNodeMaster> Objects)
         {
             var outLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("Connections");
             if (outLinksProp != null)
@@ -266,7 +266,7 @@ namespace ME3Explorer.SplineNodes
         /// <summary>
         /// This beginning node of the spline connects to the destination point over a bezier curve.
         /// </summary>
-        public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
+        public override void CreateConnections(List<PathfindingNodeMaster> Objects)
         {
             PathfindingEditorEdge edge = new PathfindingEditorEdge();
             edge.Pen = splineconnnectorPen;
@@ -319,7 +319,7 @@ namespace ME3Explorer.SplineNodes
         /// <summary>
         /// This has no outbound connections.
         /// </summary>
-        public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
+        public override void CreateConnections(List<PathfindingNodeMaster> Objects)
         {
 
         }

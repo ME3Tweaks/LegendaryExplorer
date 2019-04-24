@@ -75,7 +75,7 @@ namespace ME3Explorer.Pathfinding_Editor
         }
 
         //Empty implementation
-        public virtual void CreateConnections(ref List<PathfindingNodeMaster> Objects)
+        public virtual void CreateConnections(List<PathfindingNodeMaster> Objects)
         {
 
         }

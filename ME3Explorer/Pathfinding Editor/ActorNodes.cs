@@ -233,7 +233,7 @@ namespace ME3Explorer.ActorNodes
         /// <summary>
         /// Creates the connection to the annex node.
         /// </summary>
-        public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
+        public override void CreateConnections(List<PathfindingNodeMaster> Objects)
         {
             var annexZoneLocProp = export.GetProperty<ObjectProperty>("AnnexZoneLocation");
             if (annexZoneLocProp != null)

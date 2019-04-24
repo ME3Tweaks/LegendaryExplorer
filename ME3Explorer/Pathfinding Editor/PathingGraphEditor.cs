@@ -11,6 +11,7 @@ using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Util;
 using System.Reflection;
 using System.Collections.Generic;
+using ME3Explorer.PathfindingNodes;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -209,12 +210,22 @@ namespace ME3Explorer.Pathfinding_Editor
                     base.OnDrag(sender, e);
                     foreach (PNode node in e.PickedNode.AllNodes)
                     {
-                        ArrayList edges = (ArrayList)node.Tag;
-                        if (edges != null)
-                            foreach (PathfindingEditorEdge edge in edges)
+                        if (node is PathfindingNode pn)
+                        {
+                            foreach (PathfindingEditorEdge edge in pn.Edges)
                             {
                                 PathingGraphEditor.UpdateEdgeStraight(edge);
                             }
+                        }
+                        else
+                        {
+                            ArrayList edges = (ArrayList)node.Tag;
+                            if (edges != null)
+                                foreach (PathfindingEditorEdge edge in edges)
+                                {
+                                    PathingGraphEditor.UpdateEdgeStraight(edge);
+                                }
+                        }
                     }
                 }
             }
