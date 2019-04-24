@@ -7,6 +7,7 @@ using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SharpDX;
 using StreamHelpers;
 
 namespace ME3Explorer.Pathfinding_Editor
@@ -18,6 +19,33 @@ namespace ME3Explorer.Pathfinding_Editor
         public static List<PathfindingDB_ExportType> ExportClassDB = new List<PathfindingDB_ExportType>(); //SFXEnemy SpawnPoint -> class, name, ...etc
         private static bool ClassesDBLoaded;
         internal static string ClassesDatabasePath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "exec", "pathfindingclassdb.json");
+
+        /// <summary>
+        /// Converts struct property to SharpDX Vector 3
+        /// </summary>
+        /// <param name="vectorStruct">Vector Struct to convert</param>
+        /// <returns></returns>
+        public static Vector3 GetVector3(StructProperty vectorStruct)
+        {
+            Vector3 v = new Vector3();
+            v.X = vectorStruct.GetProp<FloatProperty>("X");
+            v.Y = vectorStruct.GetProp<FloatProperty>("Y");
+            v.Z = vectorStruct.GetProp<FloatProperty>("Z");
+            return v;
+        }
+
+        /// <summary>
+        /// Converts struct property to SharpDX Vector 2
+        /// </summary>
+        /// <param name="vectorStruct">Vector Struct to convert</param>
+        /// <returns></returns>
+        public static Vector2 GetVector2(StructProperty vectorStruct)
+        {
+            Vector2 v = new Vector2();
+            v.X = vectorStruct.GetProp<FloatProperty>("X");
+            v.Y = vectorStruct.GetProp<FloatProperty>("Y");
+            return v;
+        }
 
         public static void GenerateNewRandomGUID(IExportEntry export)
         {
@@ -443,7 +471,7 @@ namespace ME3Explorer.Pathfinding_Editor
             this.originalGUID = guid;
         }
 
-        public static bool operator == (UnrealGUID b1, UnrealGUID b2)
+        public static bool operator ==(UnrealGUID b1, UnrealGUID b2)
         {
             if ((object)null == b1)
                 return (null == b2);
@@ -451,7 +479,7 @@ namespace ME3Explorer.Pathfinding_Editor
             return b1.Equals(b2);
         }
 
-        public static bool operator != (UnrealGUID b1, UnrealGUID b2)
+        public static bool operator !=(UnrealGUID b1, UnrealGUID b2)
         {
             return !(b1 == b2);
         }
@@ -553,5 +581,39 @@ namespace ME3Explorer.Pathfinding_Editor
         public bool upgradetomaxpathsize { get; set; }
         public List<PathfindingDB_ExportType_EnsuredProperty> ensuredproperties { get; set; } = new List<PathfindingDB_ExportType_EnsuredProperty>();
         public string inboundspectype { get; set; }
+    }
+
+
+    public class Point3D
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
+
+        public Point3D()
+        {
+
+        }
+
+        public Point3D(double X, double Y, double Z)
+        {
+            this.X = X;
+            this.Y = Y;
+            this.Z = Z;
+        }
+
+        public double getDistanceToOtherPoint(Point3D other)
+        {
+            double deltaX = X - other.X;
+            double deltaY = Y - other.Y;
+            double deltaZ = Z - other.Z;
+
+            return (double)Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+        }
+
+        public override string ToString()
+        {
+            return X + "," + Y + "," + Z;
+        }
     }
 }

@@ -143,16 +143,25 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand CreateReachSpecCommand { get; set; }
         public ICommand ChangeExternalFileCommand { get; set; }
         public ICommand ToExternalNodeCommand { get; set; }
+        public ICommand DeleteSelectedReachSpecCommand { get; set; }
 
-
-        //public ICommand ToggleSplinesCommand { get; set; }
 
         private void LoadCommands()
         {
             CreateReachSpecCommand = new RelayCommand(CreateReachSpec, CanCreateReachSpec);
             ChangeExternalFileCommand = new RelayCommand(ChangeExternalFile, CanChangeExternalFile);
             ToExternalNodeCommand = new RelayCommand(ToExternalCommandChanging, ExportIsLoaded);
-            //FocusGotoCommand = new RelayCommand(FocusGoto, PackageIsLoaded);
+            DeleteSelectedReachSpecCommand = new RelayCommand(DeleteSelectedReachSpec, (o) => true); //will be fixed in merge
+        }
+
+        private void DeleteSelectedReachSpec(object obj)
+        {
+            if (obj is ReachSpec spec)
+            {
+                var speclist = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                speclist.Remove(new ObjectProperty(spec.SpecExport.UIndex));
+                CurrentLoadedExport.WriteProperty(speclist);
+            }
         }
 
         private void ToExternalCommandChanging(object obj)

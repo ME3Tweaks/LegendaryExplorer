@@ -1,18 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Drawing;
-using System.Drawing.Text;
 using System.Linq;
-using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
-
-using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
-using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Util;
-using UMD.HCIL.PathingGraphEditor;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SequenceObjects;
 using System.Diagnostics;
@@ -32,7 +24,7 @@ namespace ME3Explorer.PathfindingNodes
         static Color objectColor = Color.FromArgb(219, 39, 217);//purple
         static Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
         static Pen blackPen = Pens.Black;
-        static Pen halfReachSpecPen = new Pen(Color.FromArgb(60, 60, 60));
+        static Pen halfReachSpecPen = new Pen(Color.FromArgb(90, 90, 90));
         static Pen slotToSlotPen = Pens.DarkOrange;
         static Pen coverSlipPen = Pens.OrangeRed;
         static Pen sfxLadderPen = Pens.Purple;
@@ -67,7 +59,6 @@ namespace ME3Explorer.PathfindingNodes
         {
             try
             {
-                Tag = new ArrayList(); //outbound reachspec edges.
                 pcc = p;
                 g = grapheditor;
                 index = idx;
@@ -93,6 +84,14 @@ namespace ME3Explorer.PathfindingNodes
             {
                 Debugger.Break();
             }
+        }
+
+        /// <summary>
+        /// Clears all edges on this node, and removes connecting nodes incoming connections, and then ref
+        /// </summary>
+        public void RefreshConnections()
+        {
+
         }
 
         /// <summary>
@@ -137,23 +136,14 @@ namespace ME3Explorer.PathfindingNodes
                             break;
                     }
                     //Get ending
-                    PNode othernode = null;
+                    PathfindingNodeMaster othernode = null;
                     int othernodeidx = 0;
                     PropertyCollection props = spec.GetProperties();
-                    foreach (var prop in props)
+                    if (props.GetProp<StructProperty>("End") is StructProperty endProperty)
                     {
-                        if (prop.Name == "End")
+                        if (endProperty.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(spec)) is ObjectProperty otherNodeValue)
                         {
-                            PropertyCollection reachspecprops = (prop as StructProperty).Properties;
-                            foreach (var rprop in reachspecprops)
-                            {
-                                if (rprop.Name == SharedPathfinding.GetReachSpecEndName(spec))
-                                {
-                                    othernodeidx = (rprop as ObjectProperty).Value;
-                                    break;
-                                }
-                            }
-                            break;
+                            othernodeidx = otherNodeValue.Value;
                         }
                     }
 
@@ -170,38 +160,25 @@ namespace ME3Explorer.PathfindingNodes
                                 var otherNodePathList = otherNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
                                 if (otherNodePathList != null)
                                 {
-                                    bool keepParsing = true;
                                     foreach (var path in otherNodePathList)
                                     {
                                         int reachspecexport = path.Value;
                                         IExportEntry possibleIncomingSpec = pcc.getUExport(reachspecexport);
                                         PropertyCollection otherSpecProperties = possibleIncomingSpec.GetProperties();
-                                        foreach (var otherSpecProp in otherSpecProperties)
+
+                                        if (otherSpecProperties.GetProp<StructProperty>("End") is StructProperty endStruct)
                                         {
-                                            if (otherSpecProp.Name == "End")
+                                            if (endStruct.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(possibleIncomingSpec)) is ObjectProperty incomingTargetIdx)
                                             {
-                                                PropertyCollection reachspecprops = (otherSpecProp as StructProperty).Properties;
-                                                foreach (var rprop in reachspecprops)
+                                                if (incomingTargetIdx.Value == export.UIndex)
                                                 {
-                                                    if (rprop.Name == SharedPathfinding.GetReachSpecEndName(possibleIncomingSpec))
+                                                    if (penToUse == halfReachSpecPen)
                                                     {
-                                                        othernodeidx = (rprop as ObjectProperty).Value;
-                                                        if (othernodeidx == export.UIndex)
-                                                        {
-                                                            keepParsing = false;
-                                                            if (penToUse == halfReachSpecPen)
-                                                            {
-                                                                penToUse = blackPen;
-                                                            }
-                                                            break;
-                                                        }
+                                                        penToUse = blackPen;
                                                     }
+                                                    break;
                                                 }
                                             }
-                                        }
-                                        if (!keepParsing)
-                                        {
-                                            break;
                                         }
                                     }
                                     break;
@@ -213,10 +190,10 @@ namespace ME3Explorer.PathfindingNodes
                             IntProperty radius = props.GetProp<IntProperty>("CollisionRadius");
                             IntProperty height = props.GetProp<IntProperty>("CollisionHeight");
 
-                            if (radius != null && height != null && (radius >= PathfindingNodeInfoPanel.MINIBOSS_RADIUS || height >= PathfindingNodeInfoPanel.MINIBOSS_HEIGHT))
+                            if (radius != null && height != null && (radius >= ReachSpecSize.MINIBOSS_RADIUS || height >= ReachSpecSize.MINIBOSS_HEIGHT))
                             {
                                 penToUse = (Pen)penToUse.Clone();
-                                if (radius >= PathfindingNodeInfoPanel.BOSS_RADIUS && height >= PathfindingNodeInfoPanel.BOSS_HEIGHT)
+                                if (radius >= ReachSpecSize.BOSS_RADIUS && height >= ReachSpecSize.BOSS_HEIGHT)
                                 {
                                     penToUse.Width = 3;
                                 }
@@ -226,16 +203,26 @@ namespace ME3Explorer.PathfindingNodes
                                 }
                             }
 
-                            PPath edge = new PPath();
+                            PathfindingEditorEdge edge = new PathfindingEditorEdge();
                             edge.Pen = penToUse;
-                            ((ArrayList)Tag).Add(edge);
-                            ((ArrayList)othernode.Tag).Add(edge);
-                            edge.Tag = new ArrayList();
-                            ((ArrayList)edge.Tag).Add(this);
-                            ((ArrayList)edge.Tag).Add(othernode);
-
-                            g.edgeLayer.AddChild(edge);
+                            edge.EndPoints.Add(this);
+                            edge.EndPoints.Add(othernode);
+                            if (!Edges.Any(x => x.DoesEdgeConnectSameNodes(edge)) && !othernode.Edges.Any(x => x.DoesEdgeConnectSameNodes(edge)))
+                            {
+                                Edges.Add(edge);
+                                othernode.Edges.Add(edge);
+                                g.edgeLayer.AddChild(edge);
+                            }
                         }
+                        //if ()
+
+                        //((ArrayList)Tag).Add(edge); //add edge to my tracked items
+                        //((ArrayList)othernode.Tag).Add(edge); //add edge to other node's tracked items
+                        //edge.Tag = new ArrayList();
+                        //((ArrayList)edge.Tag).Add(this); //Add edge's tracked item for me
+                        //((ArrayList)edge.Tag).Add(othernode); //Add edge's tracked item for the other
+
+                        //g.edgeLayer.AddChild(edge);
                     }
                 }
             }
@@ -305,7 +292,7 @@ namespace ME3Explorer.PathfindingNodes
             }
         }
     }
-
+    [DebuggerDisplay("PathNode - {UIndex}")]
     public class PathNode : PathfindingNode
     {
         public string Value { get { return val.Text; } set { val.Text = value; } }

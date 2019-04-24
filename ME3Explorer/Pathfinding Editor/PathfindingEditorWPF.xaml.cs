@@ -18,11 +18,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using UMD.HCIL.PathingGraphEditor;
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
-using static ME3Explorer.PathfindingEditor;
 using static ME3Explorer.PathfindingNodes.PathfindingNode;
 
 namespace ME3Explorer.Pathfinding_Editor
@@ -824,8 +822,8 @@ namespace ME3Explorer.Pathfinding_Editor
                             spec.idxObjectName = Pcc.FindNameOrAdd(exportTypeInfo.nodetypename);
                             //set spec to banshee sized
                             SharedPathfinding.SetReachSpecSize(spec,
-                                PathfindingNodeInfoPanel.BANSHEE_RADIUS,
-                                PathfindingNodeInfoPanel.BANSHEE_HEIGHT);
+                                ReachSpecSize.BANSHEE_RADIUS,
+                                ReachSpecSize.BANSHEE_HEIGHT);
                         }
 
                         if (outbound)
@@ -1357,8 +1355,10 @@ namespace ME3Explorer.Pathfinding_Editor
             if (export != null)
             {
                 PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
+                var debug = s.Tag;
                 var currentlocation = GetLocation(export);
                 CurrentNodeXY = s.GlobalBounds.X + "," + s.GlobalBounds.Y;
+
             }
             contextMenu.IsOpen = true;
             graphEditor.DisableDragging();
@@ -2102,15 +2102,15 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 foreach (PPath edge in graphEditor.edgeLayer)
                 {
-                    if (edge.BezierPoints != null)
-                    {
-                        //Currently not implemented, will hopefully come in future update
-                        PathingGraphEditor.UpdateEdgeBezier(edge);
-                    }
-                    else
-                    {
-                        PathingGraphEditor.UpdateEdgeStraight(edge);
-                    }
+                    //if (edge.BezierPoints != null)
+                    //{
+                    //    //Currently not implemented, will hopefully come in future update
+                    //    PathingGraphEditor.UpdateEdgeBezier(edge);
+                    //}
+                    //else
+                    //{
+                    PathingGraphEditor.UpdateEdgeStraight(edge as PathfindingEditorEdge);
+                    //}
                 }
             }
         }
@@ -2147,17 +2147,18 @@ namespace ME3Explorer.Pathfinding_Editor
                         var newlocation = GetLocation(node);
                         PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == node.UIndex);
                         s.SetOffset((float)newlocation.X, (float)newlocation.Y);
-                        foreach (PNode i in s.AllNodes)
-                        {
-                            ArrayList edges = (ArrayList)i.Tag;
-                            if (edges != null)
-                            {
-                                foreach (PPath edge in edges)
-                                {
-                                    PathingGraphEditor.UpdateEdgeStraight(edge);
-                                }
-                            }
-                        }
+                        UpdateEdgesForCurrentNode(s);
+                        //foreach (PNode i in s.AllNodes)
+                        //{
+                        //    ArrayList edges = (ArrayList)i.Tag;
+                        //    if (edges != null)
+                        //    {
+                        //        foreach (PPath edge in edges)
+                        //        {
+                        //            PathingGraphEditor.UpdateEdgeStraight(edge);
+                        //        }
+                        //    }
+                        //}
 
                         if (node == activeNode)
                         {
@@ -2250,13 +2251,6 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 //This code can be removed when non-WPF package editor is removed.
                 var forms = System.Windows.Forms.Application.OpenForms;
-                foreach (System.Windows.Forms.Form form in forms)
-                {
-                    if (form is PathfindingEditor editor) //it will never be "this"
-                    {
-                        editor.RefreshRecent(false, RFiles);
-                    }
-                }
                 foreach (var form in App.Current.Windows)
                 {
                     if (form is PathfindingEditorWPF wpf && this != wpf)
@@ -2674,37 +2668,41 @@ namespace ME3Explorer.Pathfinding_Editor
                     SetLocation(export, x, y, z);
                     PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
                     s.SetOffset(x, y);
-                    foreach (PNode node in s.AllNodes)
-                    {
-                        ArrayList edges = (ArrayList)node.Tag;
-                        if (edges != null)
-                            foreach (PPath edge in edges)
-                            {
-                                PathingGraphEditor.UpdateEdgeStraight(edge);
-                            }
-                    }
+
+                    //TODO: Figure out what this does
+
+                    //foreach (PNode node in s.AllNodes)
+                    //{
+                    //    ArrayList edges = (ArrayList)node.Tag;
+                    //    if (edges != null)
+                    //        foreach (PPath edge in edges)
+                    //        {
+                    //            PathingGraphEditor.UpdateEdgeStraight(edge);
+                    //        }
+                    //}
                     graphEditor.Refresh(); //repaint invalidated areas
                 }
             }
         }
 
-        public void UpdateEdgesForCurrentNode()
+        public void UpdateEdgesForCurrentNode(PathfindingNodeMaster node = null)
         {
-            if (ActiveNodes_ListBox.SelectedItem != null)
+            PathfindingNodeMaster nodeToUpdate = node;
+            if (nodeToUpdate == null && ActiveNodes_ListBox.SelectedItem is IExportEntry export)
             {
-                IExportEntry export = (IExportEntry)ActiveNodes_ListBox.SelectedItem;
-                PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
-                if (s != null)
+                nodeToUpdate = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
+            }
+
+            if (nodeToUpdate != null)
+            {
+                graphEditor.edgeLayer.RemoveChildrenList(new List<PNode>(nodeToUpdate.Edges.Cast<PNode>()));
+                nodeToUpdate.Edges.Clear();
+                nodeToUpdate.CreateConnections(ref GraphNodes);
+                foreach (PathfindingEditorEdge edge in nodeToUpdate.Edges)
                 {
-                    graphEditor.edgeLayer.RemoveChildren(s.Tag as ArrayList);
-                    s.Tag = new ArrayList();
-                    s.CreateConnections(ref GraphNodes);
-                    foreach (PPath edge in (ArrayList)s.Tag)
-                    {
-                        PathingGraphEditor.UpdateEdgeStraight(edge);
-                    }
-                    graphEditor.Refresh();
+                    PathingGraphEditor.UpdateEdgeStraight(edge);
                 }
+                graphEditor.Refresh();
             }
         }
 
@@ -3327,6 +3325,93 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
+        public class PathingZoomController : IDisposable
+        {
+            public static float MIN_SCALE = .005f;
+            public static float MAX_SCALE = 15;
+            PathingGraphEditor graphEditor;
+            PCamera camera;
+
+            public PathingZoomController(PathingGraphEditor graphEditor)
+            {
+                this.graphEditor = graphEditor;
+                this.camera = graphEditor.Camera;
+                camera.Canvas.ZoomEventHandler = null;
+                camera.ViewScale = 0.5f;
+                camera.MouseWheel += OnMouseWheel;
+                graphEditor.KeyDown += OnKeyDown;
+            }
+
+            public void Dispose()
+            {
+                //Remove event handlers for memory cleanup
+                camera.MouseWheel -= OnMouseWheel;
+                graphEditor.KeyDown -= OnKeyDown;
+                camera = null;
+                graphEditor = null;
+            }
+
+            public void OnKeyDown(object o, System.Windows.Forms.KeyEventArgs e)
+            {
+                if (e.Control)
+                {
+                    if (e.KeyCode == System.Windows.Forms.Keys.OemMinus)
+                    {
+                        scaleView(0.8f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                    }
+                    else if (e.KeyCode == System.Windows.Forms.Keys.Oemplus)
+                    {
+                        scaleView(1.2f, new PointF(camera.ViewBounds.X + (camera.ViewBounds.Height / 2), camera.ViewBounds.Y + (camera.ViewBounds.Width / 2)));
+                    }
+                }
+            }
+
+            public void OnMouseWheel(object o, PInputEventArgs ea)
+            {
+                scaleView(1.0f + (0.001f * ea.WheelDelta), ea.Position);
+            }
+
+            public void scaleView(float scaleDelta, PointF p)
+            {
+                float currentScale = camera.ViewScale;
+                float newScale = currentScale * scaleDelta;
+                if (newScale < MIN_SCALE)
+                {
+                    camera.ViewScale = MIN_SCALE;
+                    return;
+                }
+                if ((MAX_SCALE > 0) && (newScale > MAX_SCALE))
+                {
+                    camera.ViewScale = MAX_SCALE;
+                    return;
+                }
+                camera.ScaleViewBy(scaleDelta, p.X, p.Y);
+            }
+        }
+
+        public class PathfindingMouseListener : PBasicInputEventHandler, IDisposable
+        {
+            private PathfindingEditorWPF pathfinderWPF;
+
+            public PathfindingMouseListener(PathfindingEditorWPF pathfinderWPF)
+            {
+                this.pathfinderWPF = pathfinderWPF;
+            }
+
+            public void Dispose()
+            {
+                pathfinderWPF = null;
+            }
+
+            public override void OnMouseMove(object sender, PInputEventArgs e)
+            {
+                PointF pos = e.Position;
+                int X = Convert.ToInt32(pos.X);
+                int Y = Convert.ToInt32(pos.Y);
+                pathfinderWPF.StatusText = $"[{X},{Y}]";
+            }
+        }
+
         private void RemoveFromLevel_Clicked(object sender, RoutedEventArgs e)
         {
             AllowRefresh = false;
@@ -3382,6 +3467,14 @@ namespace ME3Explorer.Pathfinding_Editor
                     FileQueuedForLoad = null;
                     Activate();
                 }));
+            }
+        }
+
+        private void RegenerateGUID_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (ActiveNodes_ListBox.SelectedItem is IExportEntry nodeEntry)
+            {
+                SharedPathfinding.GenerateNewRandomGUID(nodeEntry);
             }
         }
     }

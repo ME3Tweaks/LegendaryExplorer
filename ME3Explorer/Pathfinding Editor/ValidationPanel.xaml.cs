@@ -258,7 +258,6 @@ namespace ME3Explorer.Pathfinding_Editor
                                 int origDistance = origDistanceProp.Value;
                                 int calculatedProperDistance = SharedPathfinding.RoundDoubleToInt(distance);
                                 int distanceDiff = Math.Abs(origDistance - calculatedProperDistance);
-                                ReachSpecUpdaterUIThreadOptions recalcOption = new ReachSpecUpdaterUIThreadOptions(reachSpecExport, calculatedProperDistance, dirX, dirY, dirZ);
 
                                 if (distanceDiff > MAX_DISTANCE_TOLERANCE)
                                 {

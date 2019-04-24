@@ -14,6 +14,7 @@ using ME3Explorer.SharedUI;
 using Gibbed.IO;
 using System.Globalization;
 using System.Collections;
+using ME3Explorer.Pathfinding_Editor;
 
 namespace ME3Explorer
 {
@@ -2175,9 +2176,7 @@ namespace ME3Explorer
         {
             if (pcc != null)
             {
-                PathfindingEditor editor = new PathfindingEditor();
-                editor.LoadFile(pcc.FileName);
-                editor.BringToFront();
+                PathfindingEditorWPF editor = new PathfindingEditorWPF(pcc.FileName);
                 editor.Show();
             }
         }

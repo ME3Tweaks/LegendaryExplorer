@@ -509,23 +509,14 @@
     <Compile Include="Pathfinding Editor\PathfindingEditorWPF.xaml.cs">
       <DependentUpon>PathfindingEditorWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pathfinding Editor\PathingGraphEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Pathfinding Editor\ReachSpecsPanel.xaml.cs">
       <DependentUpon>ReachSpecsPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pathfinding Editor\SplineNodes.cs" />
     <Compile Include="Pathfinding Editor\ActorNodes.cs" />
-    <Compile Include="Pathfinding Editor\DuplicateGUIDWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Pathfinding Editor\DuplicateGUIDWindow.Designer.cs">
-      <DependentUpon>DuplicateGUIDWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Pathfinding Editor\HeightFilterForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Pathfinding Editor\HeightFilterForm.Designer.cs">
-      <DependentUpon>HeightFilterForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Pathfinding Editor\ValidationPanel.xaml.cs">
       <DependentUpon>ValidationPanel.xaml</DependentUpon>
     </Compile>
@@ -569,25 +560,7 @@
     <Compile Include="SharedUI\ListDialog.xaml.cs">
       <DependentUpon>ListDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pathfinding Editor\PathfindingNodeInfoPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Pathfinding Editor\PathfindingNodeInfoPanel.Designer.cs">
-      <DependentUpon>PathfindingNodeInfoPanel.cs</DependentUpon>
-    </Compile>
     <Compile Include="Pathfinding Editor\PathfindingNodeMaster.cs" />
-    <Compile Include="Pathfinding Editor\ReachSpecCreatorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Pathfinding Editor\ReachSpecCreatorForm.Designer.cs">
-      <DependentUpon>ReachSpecCreatorForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Pathfinding Editor\ReachSpecRecalculator.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Pathfinding Editor\ReachSpecRecalculator.Designer.cs">
-      <DependentUpon>ReachSpecRecalculator.cs</DependentUpon>
-    </Compile>
     <Compile Include="Pathfinding Editor\SharedPathfinding.cs" />
     <Compile Include="PeriodicUpdater.cs" />
     <Compile Include="Main Window\SearchPanel.xaml.cs">
@@ -643,12 +616,6 @@
     </Compile>
     <Compile Include="ScriptDB\ScriptDB.Designer.cs">
       <DependentUpon>ScriptDB.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Pathfinding Editor\PathfindingEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Pathfinding Editor\PathfindingEditor.Designer.cs">
-      <DependentUpon>PathfindingEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Pathfinding Editor\PathfindingNodes.cs" />
     <Compile Include="Sequence Editor\SequenceEditor.cs">
@@ -1325,21 +1292,6 @@
       <DependentUpon>PackageEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Pathfinding Editor\DuplicateGUIDWindow.resx">
-      <DependentUpon>DuplicateGUIDWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Pathfinding Editor\HeightFilterForm.resx">
-      <DependentUpon>HeightFilterForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Pathfinding Editor\PathfindingNodeInfoPanel.resx">
-      <DependentUpon>PathfindingNodeInfoPanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Pathfinding Editor\ReachSpecCreatorForm.resx">
-      <DependentUpon>ReachSpecCreatorForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Pathfinding Editor\ReachSpecRecalculator.resx">
-      <DependentUpon>ReachSpecRecalculator.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="PlotVarDB\PlotVarDB.resx">
       <DependentUpon>PlotVarDB.cs</DependentUpon>
     </EmbeddedResource>
@@ -1356,9 +1308,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ScriptDB\ScriptDB.resx">
       <DependentUpon>ScriptDB.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Pathfinding Editor\PathfindingEditor.resx">
-      <DependentUpon>PathfindingEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Sequence Editor\SequenceEditor.resx">
       <DependentUpon>SequenceEditor.cs</DependentUpon>

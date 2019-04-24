@@ -3090,8 +3090,7 @@ namespace ME3Explorer
                     facefxEditor.Show();
                     break;
                 case "PathfindingEditor":
-                    var pathEditor = new PathfindingEditor();
-                    pathEditor.LoadFile(Pcc.FileName);
+                    var pathEditor = new PathfindingEditorWPF(Pcc.FileName);
                     pathEditor.Show();
                     break;
                 case "SoundplorerWPF":
