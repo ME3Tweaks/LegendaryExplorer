@@ -471,9 +471,9 @@ namespace ME3Explorer.Sequence_Editor
                 o.MouseDown += node_MouseDown;
                 o.Click += node_Click;
             }
-            if (SavedPositions.IsEmpty())
+            if (SavedPositions.IsEmpty() && Pcc.Game != MEGame.ME1)
             {
-                if (CurrentFile.Contains("_LOC_INT") && Pcc.Game != MEGame.ME1)
+                if (CurrentFile.Contains("_LOC_INT"))
                 {
                     LoadDialogueObjects();
                 }
