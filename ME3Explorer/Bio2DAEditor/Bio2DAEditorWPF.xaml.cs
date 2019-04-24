@@ -191,7 +191,8 @@ namespace ME3Explorer
                     {
                         if (resulting2DA.IsIndexed != Table2DA.IsIndexed)
                         {
-                            MessageBox.Show("Warning: Imported sheet contains blank cells. Underlying sheet does not.");
+                            if (resulting2DA.IsIndexed == true) { MessageBox.Show("Warning: Imported sheet contains blank cells. Underlying sheet does not."); }
+                            else { MessageBox.Show("Warning: Underlying sheet contains blank cells. Imported sheet does not."); }
                         }
                         resulting2DA.Write2DAToExport();
                     }
