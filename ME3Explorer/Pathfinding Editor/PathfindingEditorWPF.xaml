@@ -7,13 +7,13 @@
         xmlns:local="clr-namespace:ME3Explorer.Pathfinding_Editor"
         xmlns:properties="clr-namespace:ME3Explorer.Properties"
         xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
-        xmlns:pathfindinggraph="clr-namespace:UMD.HCIL.PathingGraphEditor;assembly=Piccolo"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     xmlns:fa="http://schemas.fontawesome.io/icons/"
     mc:Ignorable="d"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         AllowDrop="True"
+        Loaded="PathfindingEditorWPF_Loaded"
         Closing="PathfinderEditorWPF_Closing"
         Title="Pathfinding Editor WPF" Height="750" Width="1300" MinWidth="900" MinHeight="200">
     <Window.Resources>
@@ -27,6 +27,8 @@
             <MenuItem Header="{Binding CurrentNodeXY}" HeaderStringFormat="Set node X,Y to graph position ({0})" Click="SetGraphXY_Clicked" ToolTip="Sets the X,Y position of this node to the same coordinates as on the graph."/>
             <MenuItem Header="Clone node" Click="CloneNode_Clicked" ToolTip="Create a new node as a duplicate of this one" />
             <MenuItem Header="Remove from level" Click="RemoveFromLevel_Clicked" ToolTip="Removes this object from the level"/>
+            <MenuItem Header="Generate new nav GUID" Click="RegenerateGUID_Clicked" ToolTip="Generates a new GUID for this navigation point. If there are external nodes referencing this node, they will no longer work"/>
+
             <MenuItem Header="Filter nodes by Z value"  IsChecked="{Binding ZFilteringMode, Converter={StaticResource EZFilteringActiveConverter}, ConverterParameter='NotNone'}">
                 <MenuItem IsEnabled="False" Header="{Binding CurrentFilteringText}"/>
                 <Separator/>
@@ -381,7 +383,7 @@
                 <global:InterpreterWPF x:Name="Properties_InterpreterWPF"/>
             </DockPanel>
             <WindowsFormsHost Name="GraphHost" VerticalAlignment="Stretch">
-                <pathfindinggraph:PathingGraphEditor DragEnter="GraphEditor_DragEnter" DragDrop="GraphEditor_DragDrop"/>
+                <local:PathingGraphEditor DragEnter="GraphEditor_DragEnter" DragDrop="GraphEditor_DragDrop"/>
             </WindowsFormsHost>
         </DockPanel>
     </DockPanel>

@@ -2,11 +2,9 @@
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SequenceObjects;
 using ME3Explorer.Unreal;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using UMD.HCIL.PathingGraphEditor;
+using System.Linq;
 using UMD.HCIL.Piccolo.Nodes;
 
 namespace ME3Explorer.ActorNodes
@@ -25,7 +23,6 @@ namespace ME3Explorer.ActorNodes
 
         protected ActorNode(int idx, IMEPackage p, PathingGraphEditor grapheditor)
         {
-            Tag = new ArrayList(); //outbound reachspec edges.
             pcc = p;
             g = grapheditor;
             index = idx;
@@ -259,14 +256,16 @@ namespace ME3Explorer.ActorNodes
 
                 if (othernode != null)
                 {
-                    PPath edge = new PPath();
+                    PathfindingEditorEdge edge = new PathfindingEditorEdge();
                     edge.Pen = annexZoneLocPen;
-                    ((ArrayList)Tag).Add(edge);
-                    ((ArrayList)othernode.Tag).Add(edge);
-                    edge.Tag = new ArrayList();
-                    ((ArrayList)edge.Tag).Add(this);
-                    ((ArrayList)edge.Tag).Add(othernode);
-                    g.edgeLayer.AddChild(edge);
+                    edge.EndPoints.Add(this);
+                    edge.EndPoints.Add(othernode);
+                    if (!Edges.Any(x => x.DoesEdgeConnectSameNodes(edge)) && othernode.Edges.Any(x=>x.DoesEdgeConnectSameNodes(edge)))
+                    {
+                        Edges.Add(edge);
+                        othernode.Edges.Add(edge);
+                        g.edgeLayer.AddChild(edge);
+                    }
                 }
             }
         }

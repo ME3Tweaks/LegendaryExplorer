@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Drawing;
-using System.Drawing.Text;
 using System.Linq;
-using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
 
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
-using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Util;
-using UMD.HCIL.PathingGraphEditor;
 using ME3Explorer.SequenceObjects;
 using System.Numerics;
 using System.Diagnostics;
@@ -53,6 +47,10 @@ namespace ME3Explorer.Pathfinding_Editor
         public SText comment;
         public string NodeTag;
         internal bool Selected;
+        /// <summary>
+        /// List of all outbound connections between two PNodes (since some code requires this)
+        /// </summary>
+        public List<PathfindingEditorEdge> Edges = new List<PathfindingEditorEdge>();
 
         public void Select()
         {
@@ -276,5 +274,32 @@ namespace ME3Explorer.Pathfinding_Editor
             return "";
         }
 
+        public override string ToString()
+        {
+            return this.GetType().Name + " - " + UIndex;
+        }
+    }
+
+    [DebuggerDisplay("PathfindingEdge - {DebugTarget}")]
+    public class PathfindingEditorEdge : PPath
+    {
+        public List<PNode> EndPoints = new List<PNode>(2); //initialize to 2 as that is how much they will need to store. optimization <<
+        public PathfindingEditorEdge()
+        {
+        }
+
+        public string DebugTarget
+        {
+            get
+            {
+                return EndPoints[0] + " to " + EndPoints[1] + ", " + EndPoints.Count + " tags";
+
+            }
+        }
+
+        public bool DoesEdgeConnectSameNodes(PathfindingEditorEdge otherEdge)
+        {
+            return EndPoints.All(otherEdge.EndPoints.Contains);
+        }
     }
 }

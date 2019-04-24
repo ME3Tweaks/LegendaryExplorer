@@ -156,7 +156,7 @@ namespace ME3Explorer.Pathfinding_Editor
                             badSpecs.Add(reachSpecObj.Value.ToString() + " " + spec.ObjectName + " start and end property is the same. This will crash the game.");
                         }
 
-                        var guid = SharedPathfinding.GetGUIDFromStruct(end.GetProp<StructProperty>("Guid"));
+                        var guid = new UnrealGUID(end.GetProp<StructProperty>("Guid"));
                         if ((guid.A | guid.B | guid.C | guid.D) == 0 && endActorObj.Value == 0)
                         {
                             isBad = true;
@@ -258,7 +258,6 @@ namespace ME3Explorer.Pathfinding_Editor
                                 int origDistance = origDistanceProp.Value;
                                 int calculatedProperDistance = SharedPathfinding.RoundDoubleToInt(distance);
                                 int distanceDiff = Math.Abs(origDistance - calculatedProperDistance);
-                                ReachSpecUpdaterUIThreadOptions recalcOption = new ReachSpecUpdaterUIThreadOptions(reachSpecExport, calculatedProperDistance, dirX, dirY, dirZ);
 
                                 if (distanceDiff > MAX_DISTANCE_TOLERANCE)
                                 {
@@ -538,17 +537,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     StructProperty navguid = exportEntry.GetProperty<StructProperty>("NavGuid");
                     if (navguid != null)
                     {
-                        int a = navguid.GetProp<IntProperty>("A");
-                        int b = navguid.GetProp<IntProperty>("B");
-                        int c = navguid.GetProp<IntProperty>("C");
-                        int d = navguid.GetProp<IntProperty>("D");
-                        UnrealGUID nav = new UnrealGUID();
-                        nav.A = a;
-                        nav.B = b;
-                        nav.C = c;
-                        nav.D = d;
-                        nav.export = exportEntry;
-                        nav.levelListIndex = itemcount;
+                        UnrealGUID nav = new UnrealGUID(navguid);
 
                         List<UnrealGUID> list;
                         if (navGuidLists.TryGetValue(nav.ToString(), out list))

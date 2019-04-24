@@ -12,7 +12,7 @@ using UMD.HCIL.Piccolo.Util;
 using System.Reflection;
 using System.Collections.Generic;
 
-namespace UMD.HCIL.PathingGraphEditor
+namespace ME3Explorer.Pathfinding_Editor
 {
     /// <summary>
     /// Creates a simple graph control with some random nodes and connected edges.
@@ -69,13 +69,13 @@ namespace UMD.HCIL.PathingGraphEditor
             backLayer.AddChild(p);
         }
 
-        public void addEdge(PPath p)
+        public void addEdge(PathfindingEditorEdge p)
         {
             edgeLayer.AddChild(p);
             UpdateEdgeStraight(p);
         }
 
-        public void addEdgeBezier(PPath p)
+        public void addEdgeBezier(PathfindingEditorEdge p)
         {
             edgeLayer.AddChild(p);
             UpdateEdgeBezier(p);
@@ -86,7 +86,7 @@ namespace UMD.HCIL.PathingGraphEditor
             nodeLayer.AddChild(p);
         }
 
-        public static void UpdateEdgeBezier(PPath edge)
+        public static void UpdateEdgeBezier(PathfindingEditorEdge edge)
         {
             // Note that the node's "FullBounds" must be used (instead of just the "Bound") 
             // because the nodes have non-identity transforms which must be included when
@@ -131,15 +131,16 @@ namespace UMD.HCIL.PathingGraphEditor
         /// Creates straight edged lines, from the center of the node.
         /// </summary>
         /// <param name="edge"></param>
-        public static void UpdateEdgeStraight(PPath edge)
+        public static void UpdateEdgeStraight(PathfindingEditorEdge edge)
         {
             // Note that the node's "FullBounds" must be used (instead of just the "Bound") 
             // because the nodes have non-identity transforms which must be included when
             // determining their position.
 
-            ArrayList nodes = (ArrayList)edge.Tag;
-            PNode node1 = (PNode)nodes[0];
-            PNode node2 = (PNode)nodes[1];
+            PNode node1 = edge.EndPoints[0];
+            PNode node2 = edge.EndPoints[1];
+
+
             PointF start = node1.GlobalBounds.Location;
             PointF end = node2.GlobalBounds.Location;
 
@@ -184,7 +185,7 @@ namespace UMD.HCIL.PathingGraphEditor
         /// Simple event handler which applies the following actions to every node it is called on:
         ///   * Drag the node, and associated edges on mousedrag
         /// It assumes that the node's Tag references an ArrayList with a list of associated
-        /// edges where each edge is a PPath which each have a Tag that references an ArrayList
+        /// edges where each edge is a PathfindingEditorEdge which each have a Tag that references an ArrayList
         /// with a list of associated nodes.
         /// </summary>
         public class NodeDragHandler : PDragEventHandler
@@ -210,7 +211,7 @@ namespace UMD.HCIL.PathingGraphEditor
                     {
                         ArrayList edges = (ArrayList)node.Tag;
                         if (edges != null)
-                            foreach (PPath edge in edges)
+                            foreach (PathfindingEditorEdge edge in edges)
                             {
                                 PathingGraphEditor.UpdateEdgeStraight(edge);
                             }
