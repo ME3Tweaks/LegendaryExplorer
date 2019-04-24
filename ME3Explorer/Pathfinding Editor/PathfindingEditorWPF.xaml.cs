@@ -72,9 +72,11 @@ namespace ME3Explorer.Pathfinding_Editor
         private bool ChangingSelectionByGraphClick;
         private IExportEntry PersisentLevelExport;
 
-        private readonly PathingGraphEditor graphEditor;
+        private PathingGraphEditor graphEditor;
         private bool AllowRefresh;
         private PathingZoomController zoomController;
+
+        private string FileQueuedForLoad;
 
         public ObservableCollectionExtended<IExportEntry> ActiveNodes { get; set; } =
             new ObservableCollectionExtended<IExportEntry>();
@@ -102,6 +104,17 @@ namespace ME3Explorer.Pathfinding_Editor
         }
 
         public PathfindingEditorWPF()
+        {
+            Initialize();
+        }
+
+        public PathfindingEditorWPF(string fileName)
+        {
+            FileQueuedForLoad = fileName;
+            Initialize();
+        }
+
+        private void Initialize()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Pathfinding Editor WPF", new WeakReference(this));
             DataContext = this;
@@ -3355,6 +3368,20 @@ namespace ME3Explorer.Pathfinding_Editor
                 }
                 itemcount++;
                 start += 4;
+            }
+        }
+
+        private void PathfindingEditorWPF_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (FileQueuedForLoad != null)
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
+                {
+                    //Wait for all children to finish loading
+                    LoadFile(FileQueuedForLoad);
+                    FileQueuedForLoad = null;
+                    Activate();
+                }));
             }
         }
     }

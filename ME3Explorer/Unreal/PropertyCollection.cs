@@ -889,7 +889,7 @@ namespace ME3Explorer.Unreal
         public readonly bool IsImmutable;
 
         public string StructType { get; }
-        public PropertyCollection Properties { get; }
+        public PropertyCollection Properties { get; set; }
 
         public StructProperty(string structType, PropertyCollection props, NameReference? name = null, bool isImmutable = false) : base(name)
         {

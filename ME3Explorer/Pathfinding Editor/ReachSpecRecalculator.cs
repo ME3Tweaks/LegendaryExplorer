@@ -92,7 +92,7 @@ namespace ME3Explorer.Pathfinding_Editor
                             badSpecs.Add((reachSpecObj.Value - 1).ToString() + " " + spec.ObjectName + " start and end property is the same. This will crash the game.");
                         }
 
-                        var guid = SharedPathfinding.GetGUIDFromStruct(end.GetProp<StructProperty>("Guid"));
+                        var guid = new UnrealGUID(end.GetProp<StructProperty>("Guid"));
                         if ((guid.A | guid.B | guid.C | guid.D) == 0 && endActorObj.Value == 0)
                         {
                             badSpecs.Add((reachSpecObj.Value - 1).ToString() + " " + spec.ObjectName + " has no guid and has no endactor.");

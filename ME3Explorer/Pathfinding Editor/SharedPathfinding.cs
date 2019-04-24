@@ -7,6 +7,7 @@ using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using StreamHelpers;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -38,137 +39,130 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        public static void CreateReachSpec(IExportEntry startNode, bool createTwoWay, IExportEntry destinationNode, string reachSpecClass, ReachSpecSize size, UnrealGUID externalGUID = null)
+        public static void CreateReachSpec(IExportEntry startNode, bool createTwoWay, IExportEntry destinationNode, string reachSpecClass, ReachSpecSize size, PropertyCollection externalGUIDProperties = null)
         {
             IMEPackage Pcc = startNode.FileRef;
             IExportEntry reachSpectoClone = Pcc.Exports.FirstOrDefault(x => x.ClassName == "ReachSpec");
 
-            /*if (externalGUID != null) //EXTERNAL
+            if (externalGUIDProperties != null) //EXTERNAL
             {
                 //external node
 
                 //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
-                int outgoingSpec = pcc.ExportCount;
-                int incomingSpec = pcc.ExportCount + 1;
+                if (reachSpectoClone != null)
+                {
+                    IExportEntry outgoingSpec = reachSpectoClone.Clone();
+                    Pcc.addExport(outgoingSpec);
+
+                    IEntry reachSpecClassImp = GetEntryOrAddImport(Pcc, reachSpecClass); //new class type.
+
+                    outgoingSpec.idxClass = reachSpecClassImp.UIndex;
+                    outgoingSpec.idxObjectName = reachSpecClassImp.idxObjectName;
+
+                    var properties = outgoingSpec.GetProperties();
+                    ObjectProperty outgoingSpecStartProp = properties.GetProp<ObjectProperty>("Start"); //START
+                    StructProperty outgoingEndStructProp = properties.GetProp<StructProperty>("End"); //Embeds END
+                    ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpec)); //END
+                    outgoingSpecStartProp.Value = startNode.UIndex;
+                    outgoingSpecEndProp.Value = 0;
+                    var endGuid = outgoingEndStructProp.GetProp<StructProperty>("Guid");
+                    endGuid.Properties = externalGUIDProperties; //set the other guid values to our guid values
+
+                    //Add to source node prop
+                    ArrayProperty<ObjectProperty> PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                    PathList.Add(new ObjectProperty(outgoingSpec.UIndex));
+                    startNode.WriteProperty(PathList);
+                    outgoingSpec.WriteProperties(properties);
+
+
+                    //Write Spec Size
+                    SharedPathfinding.SetReachSpecSize(outgoingSpec, size.SpecRadius, size.SpecHeight);
+
+                    //Reindex reachspecs.
+                    SharedPathfinding.ReindexMatchingObjects(outgoingSpec);
+
+                }
+            }
+            else
+            {
+                //Debug.WriteLine("Source Node: " + startNode.Index);
+
+                //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
+                //int outgoingSpec = pcc.ExportCount;
+                //int incomingSpec = pcc.ExportCount + 1;
 
 
                 if (reachSpectoClone != null)
                 {
-                    pcc.addExport(reachSpectoClone.Clone()); //outgoing
+                    IExportEntry outgoingSpec = reachSpectoClone.Clone();
+                    Pcc.addExport(outgoingSpec);
+                    IExportEntry incomingSpec = null;
+                    if (createTwoWay)
+                    {
+                        incomingSpec = reachSpectoClone.Clone();
+                        Pcc.addExport(incomingSpec);
+                    }
 
-                    IExportEntry outgoingSpecExp = pcc.Exports[outgoingSpec]; //cloned outgoing
-                    ImportEntry reachSpecClassImp = getOrAddImport(reachSpecClass); //new class type.
+                    IEntry reachSpecClassImp = GetEntryOrAddImport(Pcc, reachSpecClass); //new class type.
 
-                    outgoingSpecExp.idxClass = reachSpecClassImp.UIndex;
-                    outgoingSpecExp.idxObjectName = reachSpecClassImp.idxObjectName;
+                    outgoingSpec.idxClass = reachSpecClassImp.UIndex;
+                    outgoingSpec.idxObjectName = reachSpecClassImp.idxObjectName;
 
-                    ObjectProperty outgoingSpecStartProp = outgoingSpecExp.GetProperty<ObjectProperty>("Start"); //START
-                    StructProperty outgoingEndStructProp = outgoingSpecExp.GetProperty<StructProperty>("End"); //Embeds END
-                    ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpecExp)); //END
+                    var outgoingSpecProperties = outgoingSpec.GetProperties();
+                    if (reachSpecClass == "Engine.SlotToSlotReachSpec")
+                    {
+                        outgoingSpecProperties.Add(new ByteProperty(1, "SpecDirection")); //We might need to find a way to support this edit
+                    }
+
+                    //Debug.WriteLine("Outgoing UIndex: " + outgoingSpecExp.UIndex);
+
+                    ObjectProperty outgoingSpecStartProp = outgoingSpecProperties.GetProp<ObjectProperty>("Start"); //START
+                    StructProperty outgoingEndStructProp = outgoingSpecProperties.GetProp<StructProperty>("End"); //Embeds END
+                    ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpec)); //END
                     outgoingSpecStartProp.Value = startNode.UIndex;
-                    outgoingSpecEndProp.Value = 0; //we will have to set the GUID - maybe through form or something
-
+                    outgoingSpecEndProp.Value = destinationNode.UIndex;
 
                     //Add to source node prop
                     ArrayProperty<ObjectProperty> PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-                    byte[] memory = startNode.Data;
-                    memory = addObjectArrayLeaf(memory, (int)PathList.ValueOffset, outgoingSpecExp.UIndex);
-                    startNode.Data = memory;
-                    outgoingSpecExp.WriteProperty(outgoingSpecStartProp);
-                    outgoingSpecExp.WriteProperty(outgoingEndStructProp);
+                    PathList.Add(new ObjectProperty(outgoingSpec.UIndex));
+                    startNode.WriteProperty(PathList);
 
                     //Write Spec Size
-                    int radVal = -1;
-                    int heightVal = -1;
+                    SetReachSpecSize(Pcc, outgoingSpecProperties, size.SpecRadius, size.SpecHeight);
+                    outgoingSpec.WriteProperties(outgoingSpecProperties);
 
-                    System.Drawing.Point sizePair = PathfindingNodeInfoPanel.getDropdownSizePair(size);
-                    radVal = sizePair.X;
-                    heightVal = sizePair.Y;
-                    setReachSpecSize(outgoingSpecExp, radVal, heightVal);
-
-                    //Reindex reachspecs.
-                    reindexObjectsWithName(reachSpecClass);
-                }
-            }
-            else
-            {*/
-            //Debug.WriteLine("Source Node: " + startNode.Index);
-
-            //Debug.WriteLine("Num Exports: " + pcc.Exports.Count);
-            //int outgoingSpec = pcc.ExportCount;
-            //int incomingSpec = pcc.ExportCount + 1;
-
-
-            if (reachSpectoClone != null)
-            {
-                IExportEntry outgoingSpec = reachSpectoClone.Clone();
-                Pcc.addExport(outgoingSpec);
-                IExportEntry incomingSpec = null;
-                if (createTwoWay)
-                {
-                    incomingSpec = reachSpectoClone.Clone();
-                    Pcc.addExport(incomingSpec);
-                }
-
-                IEntry reachSpecClassImp = GetEntryOrAddImport(Pcc, reachSpecClass); //new class type.
-
-                outgoingSpec.idxClass = reachSpecClassImp.UIndex;
-                outgoingSpec.idxObjectName = reachSpecClassImp.idxObjectName;
-
-                var outgoingSpecProperties = outgoingSpec.GetProperties();
-                if (reachSpecClass == "Engine.SlotToSlotReachSpec")
-                {
-                    outgoingSpecProperties.Add(new ByteProperty(1, "SpecDirection")); //We might need to find a way to support this edit
-                }
-
-                //Debug.WriteLine("Outgoing UIndex: " + outgoingSpecExp.UIndex);
-
-                ObjectProperty outgoingSpecStartProp = outgoingSpecProperties.GetProp<ObjectProperty>("Start"); //START
-                StructProperty outgoingEndStructProp = outgoingSpecProperties.GetProp<StructProperty>("End"); //Embeds END
-                ObjectProperty outgoingSpecEndProp = outgoingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(outgoingSpec)); //END
-                outgoingSpecStartProp.Value = startNode.UIndex;
-                outgoingSpecEndProp.Value = destinationNode.UIndex;
-
-                //Add to source node prop
-                ArrayProperty<ObjectProperty> PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-                PathList.Add(new ObjectProperty(outgoingSpec.UIndex));
-                startNode.WriteProperty(PathList);
-
-                //Write Spec Size
-                SetReachSpecSize(Pcc, outgoingSpecProperties, size.SpecRadius, size.SpecHeight);
-                outgoingSpec.WriteProperties(outgoingSpecProperties);
-
-                if (createTwoWay)
-                {
-                    incomingSpec.idxClass = reachSpecClassImp.UIndex;
-                    incomingSpec.idxObjectName = reachSpecClassImp.idxObjectName;
-                    var incomingSpecProperties = incomingSpec.GetProperties();
-                    if (reachSpecClass == "Engine.SlotToSlotReachSpec")
+                    if (createTwoWay)
                     {
-                        incomingSpecProperties.Add(new ByteProperty(2, "SpecDirection"));
+                        incomingSpec.idxClass = reachSpecClassImp.UIndex;
+                        incomingSpec.idxObjectName = reachSpecClassImp.idxObjectName;
+                        var incomingSpecProperties = incomingSpec.GetProperties();
+                        if (reachSpecClass == "Engine.SlotToSlotReachSpec")
+                        {
+                            incomingSpecProperties.Add(new ByteProperty(2, "SpecDirection"));
+                        }
+
+                        ObjectProperty incomingSpecStartProp = incomingSpecProperties.GetProp<ObjectProperty>("Start"); //START
+                        StructProperty incomingEndStructProp = incomingSpecProperties.GetProp<StructProperty>("End"); //Embeds END
+                        ObjectProperty incomingSpecEndProp = incomingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(incomingSpec)); //END
+
+                        incomingSpecStartProp.Value = destinationNode.UIndex; //Uindex
+                        incomingSpecEndProp.Value = startNode.UIndex;
+
+
+                        //Add reachspec to destination node's path list (returning)
+                        ArrayProperty<ObjectProperty> DestPathList = destinationNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                        DestPathList.Add(new ObjectProperty(incomingSpec.UIndex));
+                        destinationNode.WriteProperty(DestPathList);
+
+                        //destNode.WriteProperty(DestPathList);
+                        SetReachSpecSize(Pcc, incomingSpecProperties, size.SpecRadius, size.SpecHeight);
+
+                        incomingSpec.WriteProperties(incomingSpecProperties);
                     }
 
-                    ObjectProperty incomingSpecStartProp = incomingSpecProperties.GetProp<ObjectProperty>("Start"); //START
-                    StructProperty incomingEndStructProp = incomingSpecProperties.GetProp<StructProperty>("End"); //Embeds END
-                    ObjectProperty incomingSpecEndProp = incomingEndStructProp.Properties.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(incomingSpec)); //END
-
-                    incomingSpecStartProp.Value = destinationNode.UIndex;//Uindex
-                    incomingSpecEndProp.Value = startNode.UIndex;
-
-
-                    //Add reachspec to destination node's path list (returning)
-                    ArrayProperty<ObjectProperty> DestPathList = destinationNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-                    DestPathList.Add(new ObjectProperty(incomingSpec.UIndex));
-                    destinationNode.WriteProperty(DestPathList);
-
-                    //destNode.WriteProperty(DestPathList);
-                    SetReachSpecSize(Pcc, incomingSpecProperties, size.SpecRadius, size.SpecHeight);
-
-                    incomingSpec.WriteProperties(incomingSpecProperties);
+                    //Reindex reachspecs.
+                    SharedPathfinding.ReindexMatchingObjects(outgoingSpec);
                 }
-
-                //Reindex reachspecs.
-                SharedPathfinding.ReindexMatchingObjects(outgoingSpec);
             }
         }
 
@@ -381,31 +375,12 @@ namespace ME3Explorer.Pathfinding_Editor
             StructProperty navGuid = export.GetProperty<StructProperty>("NavGuid");
             if (navGuid != null)
             {
-                UnrealGUID guid = GetGUIDFromStruct(navGuid);
+                UnrealGUID guid = new UnrealGUID(navGuid);
                 guid.export = export;
                 return guid;
             }
 
             return null;
-        }
-
-        /// <summary>
-        /// Fetches an UnrealGUID object from a GUID struct.
-        /// </summary>
-        /// <param name="guidStruct"></param>
-        /// <returns></returns>
-        public static UnrealGUID GetGUIDFromStruct(StructProperty guidStruct)
-        {
-            int a = guidStruct.GetProp<IntProperty>("A");
-            int b = guidStruct.GetProp<IntProperty>("B");
-            int c = guidStruct.GetProp<IntProperty>("C");
-            int d = guidStruct.GetProp<IntProperty>("D");
-            UnrealGUID guid = new UnrealGUID();
-            guid.A = a;
-            guid.B = b;
-            guid.C = c;
-            guid.D = d;
-            return guid;
         }
 
 
@@ -450,10 +425,38 @@ namespace ME3Explorer.Pathfinding_Editor
 
     public class UnrealGUID
     {
-        public int A, B, C, D, levelListIndex;
+        public int A, B, C, D;
         public IExportEntry export;
+        private StructProperty originalGUID;
 
-        public override bool Equals(Object obj)
+        public UnrealGUID(StructProperty guid)
+        {
+            if (guid.StructType != "Guid")
+            {
+                throw new Exception("Can't parse non-guid struct with UnrealGUID");
+            }
+
+            A = guid.GetProp<IntProperty>("A");
+            B = guid.GetProp<IntProperty>("B");
+            C = guid.GetProp<IntProperty>("C");
+            D = guid.GetProp<IntProperty>("D");
+            this.originalGUID = guid;
+        }
+
+        public static bool operator == (UnrealGUID b1, UnrealGUID b2)
+        {
+            if ((object)null == b1)
+                return (null == b2);
+
+            return b1.Equals(b2);
+        }
+
+        public static bool operator != (UnrealGUID b1, UnrealGUID b2)
+        {
+            return !(b1 == b2);
+        }
+
+        public override bool Equals(object obj)
         {
             if (obj == null || GetType() != obj.GetType())
                 return false;
@@ -461,14 +464,19 @@ namespace ME3Explorer.Pathfinding_Editor
             return other.A == A && other.B == B && other.C == C && other.D == D;
         }
 
-        //public override int GetHashCode()
-        //{
-        //    return x ^ y;
-        //}
+        public override int GetHashCode()
+        {
+            return (A, B, C, D).GetHashCode();
+        }
 
         public override string ToString()
         {
-            return A + " " + B + " " + C + " " + D;
+            MemoryStream ms = new MemoryStream();
+            ms.WriteInt32(A);
+            ms.WriteInt32(B);
+            ms.WriteInt32(C);
+            ms.WriteInt32(D);
+            return new Guid(ms.ToArray()).ToString();
         }
     }
 

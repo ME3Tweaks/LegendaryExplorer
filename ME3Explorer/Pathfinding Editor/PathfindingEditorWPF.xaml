@@ -14,6 +14,7 @@
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         AllowDrop="True"
+        Loaded="PathfindingEditorWPF_Loaded"
         Closing="PathfinderEditorWPF_Closing"
         Title="Pathfinding Editor WPF" Height="750" Width="1300" MinWidth="900" MinHeight="200">
     <Window.Resources>

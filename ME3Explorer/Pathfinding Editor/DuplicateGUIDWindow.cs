@@ -63,17 +63,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     StructProperty navguid = exportEntry.GetProperty<StructProperty>("NavGuid");
                     if (navguid != null)
                     {
-                        int a = navguid.GetProp<IntProperty>("A");
-                        int b = navguid.GetProp<IntProperty>("B");
-                        int c = navguid.GetProp<IntProperty>("C");
-                        int d = navguid.GetProp<IntProperty>("D");
-                        UnrealGUID nav = new UnrealGUID();
-                        nav.A = a;
-                        nav.B = b;
-                        nav.C = c;
-                        nav.D = d;
-                        nav.export = exportEntry;
-                        nav.levelListIndex = itemcount;
+                        UnrealGUID nav = new UnrealGUID(navguid);
 
                         List<UnrealGUID> list;
                         if (navGuidLists.TryGetValue(nav.ToString(), out list))
@@ -110,12 +100,11 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         //Debug.WriteLine(guid.levelListIndex + " Duplicate: " + guid.export.ObjectName);
                         duplicateGuids.Add(guid);
-                        duplicatesListBox.Items.Add(guid.levelListIndex + " " + guid.export.Index + " " + guid.export.ObjectName + "_" + guid.export.indexValue);
+                        //duplicatesListBox.Items.Add(guid.levelListIndex + " " + guid.export.Index + " " + guid.export.ObjectName + "_" + guid.export.indexValue);
                     }
                 } else
                 {
                     Debug.WriteLine("Not a duplicate ");
-
                 }
             }
         }

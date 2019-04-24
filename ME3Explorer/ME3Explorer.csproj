@@ -540,6 +540,7 @@
     </Compile>
     <Compile Include="SharedUI\BuildInfo.cs" />
     <Compile Include="SharedUI\Converters\EntryTypeVisibiltyConverter.cs" />
+    <Compile Include="SharedUI\Converters\InverseBooleanConverter.cs" />
     <Compile Include="SharedUI\Converters\IsIntEqualConverters.cs" />
     <Compile Include="SharedUI\Converters\UnsavedChangesForegroundConverter.cs" />
     <Compile Include="SharedUI\Converters\NullVisibilityConverter.cs" />
