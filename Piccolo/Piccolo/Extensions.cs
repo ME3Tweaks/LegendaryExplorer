@@ -9,6 +9,14 @@ namespace UMD.HCIL.Piccolo
 {
     public static class Extensions
     {
+        public static void OffsetBy(this IEnumerable<PNode> nodes, float dx, float dy)
+        {
+            foreach (PNode node in nodes)
+            {
+                node.OffsetBy(dx, dy);
+            }
+        }
+
         public static RectangleF BoundingRect(this IEnumerable<PNode> nodes)
         {
             return nodes.Select(node => node.GlobalFullBounds).BoundingRect();
