@@ -1,6 +1,7 @@
 ﻿using ME3Explorer.ActorNodes;
 using ME3Explorer.Packages;
 using ME3Explorer.PathfindingNodes;
+using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.SharedUI.Interfaces;
 using ME3Explorer.SplineNodes;
@@ -301,8 +302,9 @@ namespace ME3Explorer.Pathfinding_Editor
             //Will change to sequence editor wpf on merge
             if (obj is IExportEntry exp)
             {
-                SequenceEditor seqed = new SequenceEditor(exp);
+                SequenceEditorWPF seqed = new SequenceEditorWPF(exp);
                 seqed.Show();
+                seqed.Activate();
             }
         }
 

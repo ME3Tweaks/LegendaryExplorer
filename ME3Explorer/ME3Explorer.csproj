@@ -1334,12 +1334,6 @@
     <EmbeddedResource Include="ScriptDB\ScriptDB.resx">
       <DependentUpon>ScriptDB.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Pathfinding Editor\PathfindingEditor.resx">
-      <DependentUpon>PathfindingEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sequence Editor\SequenceEditor.resx">
-      <DependentUpon>SequenceEditor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="SFAREditor2\SFAREditor2.resx">
       <DependentUpon>SFAREditor2.cs</DependentUpon>
     </EmbeddedResource>

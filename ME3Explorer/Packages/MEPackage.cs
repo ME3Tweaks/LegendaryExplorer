@@ -290,7 +290,7 @@ namespace ME3Explorer.Packages
                 return imports[-index - 1];
             return null;
         }
-        public bool isEntry(int uindex) => (uindex > 0 && uindex <= ExportCount) || (Math.abs(index) > 0 && Math.Abs(index) <= ImportCount);
+        public bool isEntry(int uindex) => (uindex > 0 && uindex <= ExportCount) || (Math.Abs(uindex) > 0 && Math.Abs(uindex) <= ImportCount);
 
         #endregion
 

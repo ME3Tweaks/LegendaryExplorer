@@ -2458,15 +2458,6 @@ namespace UMD.HCIL.Piccolo
 			get { return Bounds.Height; }
 			set { SetBounds(X, Y, Width, value); }
         }
-        /// <summary>
-        /// Gets the height (in local coordinates) of this node's bounds.
-        /// </summary>
-        /// <value>The height of this node's bounds.</value>
-        public virtual float Height
-        {
-            get { return Bounds.Height; }
-            set { SetBounds(X, Y, Width, value); }
-        }
 
         /// <summary>
         /// Gets the width (in global coordinates) of the union of this node and all of its descendants' bounds.
