@@ -59,7 +59,7 @@
             </MenuItem>
 
             <MenuItem Header="Layout" Padding="4">
-                <MenuItem Header="Re-Run Auto Layout" Command="{Binding AutoLayoutCommand}" ToolTip="Attempt to layout sequence objects in a comprehensible fashion"/>
+                <MenuItem Header="Re-Run Auto Layout" Command="{Binding AutoLayoutCommand}" InputGestureText="Ctrl+L" ToolTip="Attempt to layout sequence objects in a comprehensible fashion"/>
             </MenuItem>
         </Menu>
         <StatusBar Height="23" DockPanel.Dock="Bottom">
@@ -86,49 +86,47 @@
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <DockPanel Grid.Column="2" Grid.RowSpan="3" Width="300" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
-                <ListBox Name="CurrentObjects_ListBox" ItemsSource="{Binding CurrentObjects}" SelectionChanged="CurrentObjectsList_SelectedItemChanged" HorizontalContentAlignment="Stretch"
-                             SelectionMode="Extended">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0">
-                                <Grid.Style>
-                                    <Style TargetType="{x:Type Grid}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=Export.EntryHasPendingChanges}" Value="true">
-                                                <Setter Property="Background" Value="Yellow"/>
-                                                <Setter Property="ToolTip" Value="This export has been modified but the file has not yet been saved"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Style>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="40" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Export.UIndex}" />
-                                <TextBlock Grid.Column="1">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0}_{1}">
-                                            <Binding Path="Export.ObjectName" />
-                                            <Binding Path="Export.indexValue" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                    <ListBox.ItemContainerStyle>
-                        <Style>
-                            <Style.Triggers>
-                                <Trigger Property="Selector.IsSelected" Value="True">
-                                    <Setter Property="TextElement.FontWeight" Value="Bold"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                </ListBox>
-            </DockPanel>
+            <ListBox Name="CurrentObjects_ListBox" Grid.Column="2" Grid.RowSpan="3" ItemsSource="{Binding CurrentObjects}" SelectionChanged="CurrentObjectsList_SelectedItemChanged" HorizontalContentAlignment="Stretch"
+                             SelectionMode="Extended" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,0,5,0">
+                            <Grid.Style>
+                                <Style TargetType="{x:Type Grid}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=Export.EntryHasPendingChanges}" Value="true">
+                                            <Setter Property="Background" Value="Yellow"/>
+                                            <Setter Property="ToolTip" Value="This export has been modified but the file has not yet been saved"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Export.UIndex}" />
+                            <TextBlock Grid.Column="1">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0}_{1}">
+                                        <Binding Path="Export.ObjectName" />
+                                        <Binding Path="Export.indexValue" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemContainerStyle>
+                    <Style>
+                        <Style.Triggers>
+                            <Trigger Property="Selector.IsSelected" Value="True">
+                                <Setter Property="TextElement.FontWeight" Value="Bold"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
             <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Grid.Column="0"/>
             <GridSplitter Grid.Row="0" Grid.RowSpan="3" Width="5" HorizontalAlignment="Stretch" Grid.Column="1"/>
             <Grid Column="0" Row="2">

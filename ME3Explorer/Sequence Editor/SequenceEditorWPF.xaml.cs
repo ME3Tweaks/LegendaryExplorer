@@ -1638,18 +1638,18 @@ namespace ME3Explorer.Sequence_Editor
                     {
                         foreach (IExportEntry exp in SequenceExports)
                         {
-                            var seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                            if (seqObjs != null)
+                            if (ExportQueuedForFocusing == exp)
                             {
-                                foreach (ObjectProperty seqObj in seqObjs)
-                                {
-                                    if (ExportQueuedForFocusing.UIndex == seqObj.Value)
-                                    {
-                                        //This is our sequence
-                                        LoadSequence(exp);
-                                        CurrentObjects_ListBox.SelectedItem = CurrentObjects.FirstOrDefault(x => x.Export == ExportQueuedForFocusing); ;
-                                    }
-                                }
+                                SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == exp.UIndex);
+                                break;
+                            }
+                            var seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                            if (seqObjs != null && seqObjs.Any(objProp => objProp.Value == ExportQueuedForFocusing.UIndex))
+                            {
+                                //This is our sequence
+                                SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == exp.UIndex);
+                                CurrentObjects_ListBox.SelectedItem = CurrentObjects.FirstOrDefault(x => x.Export == ExportQueuedForFocusing);
+                                break;
                             }
                         }
 
