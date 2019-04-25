@@ -232,6 +232,14 @@ namespace ME3Explorer.PathfindingNodes
                             penToUse.DashStyle = DashStyle.Dash;
                         }
 
+                        if (!penCloned)
+                        {
+                            //This will prevent immutable modifications later if we delete or modify reachspecs without a full
+                            //graph redraw
+                            penToUse = (Pen)penToUse.Clone();
+                            penCloned = true;
+                        }
+
                         PathfindingEditorEdge edge = new PathfindingEditorEdge();
                         edge.Pen = penToUse;
                         edge.EndPoints[0] = this;
