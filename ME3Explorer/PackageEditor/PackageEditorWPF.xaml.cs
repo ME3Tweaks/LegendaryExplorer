@@ -439,7 +439,28 @@ namespace ME3Explorer
                 }
 
                 IExportEntry existingTrashTopLevel = Pcc.Exports.FirstOrDefault(x => x.idxLink == 0 && x.ObjectName == "ME3ExplorerTrashPackage");
-                ImportEntry packageImport = Pcc.Imports.First(x => x.GetFullPath == "Core.Package");
+                ImportEntry packageImport = Pcc.Imports.FirstOrDefault(x => x.GetFullPath == "Core.Package");
+                if (packageImport == null)
+                {
+                    ImportEntry coreImport = Pcc.Imports.FirstOrDefault(x => x.GetFullPath == "Core");
+                    if (coreImport == null)
+                    {
+                        //really small file
+                        coreImport = new ImportEntry(Pcc);
+                        coreImport.idxObjectName = Pcc.FindNameOrAdd("Core");
+                        coreImport.idxClassName = Pcc.FindNameOrAdd("Package");
+                        coreImport.idxLink = 0;
+                        coreImport.idxPackageFile = Pcc.FindNameOrAdd("Core");
+                        Pcc.addImport(coreImport);
+                    }
+                    //Package isn't an import, could be one of the 2DA files or other small ones
+                    packageImport = new ImportEntry(Pcc);
+                    packageImport.idxObjectName = Pcc.FindNameOrAdd("Package");
+                    packageImport.idxClassName = Pcc.FindNameOrAdd("Class");
+                    packageImport.idxLink = coreImport.UIndex;
+                    packageImport.idxPackageFile = Pcc.FindNameOrAdd("Core");
+                    Pcc.addImport(packageImport);
+                }
                 foreach (TreeViewEntry entry in itemsToTrash)
                 {
                     IExportEntry newTrash = TrashEntry(entry.Entry, existingTrashTopLevel, packageImport.UIndex);
