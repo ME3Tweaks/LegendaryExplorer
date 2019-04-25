@@ -16,8 +16,7 @@ namespace ME3Explorer.SharedUI.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            //Debug.WriteLine("booltocollapsed: " + ((bool)value == true).ToString());
-            return ((bool)value) ? Visibility.Visible : Visibility.Collapsed; //not sure why this is reversed...?
+            return ((bool)value) ? Visibility.Visible : Visibility.Collapsed; 
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -25,4 +24,20 @@ namespace ME3Explorer.SharedUI.Converters
             return null;
         }
     }
+
+    [ValueConversion(typeof(bool), typeof(Visibility))]
+    public class BoolToHiddenVisibleConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return ((bool)value) ? Visibility.Visible : Visibility.Hidden; 
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {    // Don't need any convert back
+            return null;
+        }
+    }
+    
 }

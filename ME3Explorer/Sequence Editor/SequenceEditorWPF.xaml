@@ -13,6 +13,7 @@
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
         xmlns:vhelp="clr-namespace:ME3Explorer.SharedUI.PeregrineTreeView"
         mc:Ignorable="d"
+        Loaded="SequenceEditorWPF_Loaded"
         Closing="SequenceEditorWPF_Closing"
         Title="Sequence Editor WPF" Height="750" Width="1300" MinWidth="900" MinHeight="200">
     <Window.Resources>

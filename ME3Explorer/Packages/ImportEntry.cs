@@ -74,11 +74,14 @@ namespace ME3Explorer.Packages
         public int indexValue { get => BitConverter.ToInt32(Header, 24);
             set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 24, sizeof(int)); HeaderChanged = true; } }
 
-        //int ObjectNameNumber
+
+
 
         public string ClassName => FileRef.Names[idxClassName];
-        public string PackageFile => FileRef.Names[idxPackageFile] + ".pcc";
+        public string PackageFile => FileRef.Names[idxPackageFile] + ".pcc"; //Is this valid for ME1?
         public string ObjectName => FileRef.Names[idxObjectName];
+        public string PackageFileNoExtension { get { return FileRef.Names[idxPackageFile]; } }
+
 
         public string PackageName
         {
@@ -121,6 +124,13 @@ namespace ME3Explorer.Packages
                     s += PackageFullName + ".";
                 s += ObjectName;
                 return s;
+            }
+        }
+        public string GetNetIndexedFullPath
+        {
+            get
+            {
+                return GetFullPath + "_" + indexValue;
             }
         }
 

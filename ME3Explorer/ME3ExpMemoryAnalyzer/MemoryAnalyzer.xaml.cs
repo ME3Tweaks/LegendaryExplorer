@@ -61,7 +61,7 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
             dispatcherTimer.Start();
         }
 
-        
+
 
         private string _lastRefreshText;
         public string LastRefreshText { get => _lastRefreshText; set => SetProperty(ref _lastRefreshText, value); }
@@ -86,6 +86,8 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
 
         private void Refresh()
         {
+            TrackedMemoryObjects.Where(x => !x.IsAlive()).ToList().ForEach(x => x.RemainingLifetimeAfterGC--);
+            TrackedMemoryObjects.RemoveAll(x => !x.IsAlive() && x.RemainingLifetimeAfterGC < 0);
             InstancedTrackedMemoryObjects.ReplaceAll(TrackedMemoryObjects);
             LastRefreshText = "Last refreshed: " + DateTime.Now;
             CurrentMemoryUsageText = "Current process allocation: " + ByteSize.FromBytes(System.Diagnostics.Process.GetCurrentProcess().PrivateMemorySize64);
@@ -106,6 +108,22 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
             private readonly WeakReference Reference;
             public string AllocationTime { get; }
             private string _referenceName;
+            public System.Windows.Media.Brush DrawColor
+            {
+                get
+                {
+                    if (RemainingLifetimeAfterGC < 5)
+                    {
+                        //Fadeout
+                        return new SolidColorBrush(Color.FromArgb((byte)(128 + (RemainingLifetimeAfterGC * 25)), 0, 0, 0));
+                    }
+                    else
+                    {
+                        return Brushes.Black;
+                    }
+                }
+            }
+            public int RemainingLifetimeAfterGC = 10;
             public string ReferenceName
             {
                 get => _referenceName;
@@ -118,7 +136,8 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
                 {
                     if (Reference.IsAlive)
                     {
-                        if (Reference.Target is FrameworkElement w) {
+                        if (Reference.Target is FrameworkElement w)
+                        {
                             return w.IsLoaded ? "In Memory, Open" : "In Memory, Closed";
                         }
                         if (Reference.Target is System.Windows.Forms.Control f)
@@ -126,7 +145,8 @@ namespace ME3Explorer.ME3ExpMemoryAnalyzer
                             return f.IsDisposed ? "In Memory, Disposed" : "In Memory, Active";
                         }
                         return "In Memory";
-                    } else
+                    }
+                    else
                     {
                         return "Garbage Collected";
                     }

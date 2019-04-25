@@ -12,6 +12,7 @@ using ME1Explorer.Unreal;
 using ME2Explorer.Unreal;
 using ME3Explorer.Packages;
 using ME3Explorer.Sequence_Editor;
+using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SharedUI.PeregrineTreeView;
 using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
@@ -122,9 +123,9 @@ namespace ME3Explorer
             }
             if (arg == "JUMPLIST_PATHFINDING_EDITOR")
             {
-                PathfindingEditor editor = new PathfindingEditor();
+                PathfindingEditorWPF editor = new PathfindingEditorWPF();
                 editor.Show();
-                editor.RestoreAndBringToFront();
+                editor.Activate();
                 exitCode = 0;
                 return 1;
             }

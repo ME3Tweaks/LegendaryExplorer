@@ -77,5 +77,8 @@
     <Setting Name="PropertyParsingME1UnknownArrayAsObject" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="PathfindingEditorShowNodeSizes" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

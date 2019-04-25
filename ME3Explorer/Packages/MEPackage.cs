@@ -70,7 +70,8 @@ namespace ME3Explorer.Packages
         protected uint magic => BitConverter.ToUInt32(header, 0);
         protected ushort lowVers => BitConverter.ToUInt16(header, 4);
         protected ushort highVers => BitConverter.ToUInt16(header, 6);
-        protected int expDataBegOffset {
+        protected int expDataBegOffset
+        {
             get => BitConverter.ToInt32(header, 8);
             set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, header, 8, sizeof(int));
         }
@@ -199,7 +200,7 @@ namespace ME3Explorer.Packages
         public IReadOnlyList<IExportEntry> Exports => exports;
 
         public bool isExport(int index) => index >= 0 && index < exports.Count;
-        public bool isUExport(int index) => index > 0 && index <= exports.Count;
+        public bool isUExport(int uindex) => uindex > 0 && uindex <= exports.Count;
 
         public void addExport(IExportEntry exportEntry)
         {
@@ -217,7 +218,7 @@ namespace ME3Explorer.Packages
         }
 
         public IExportEntry getExport(int index) => exports[index];
-        public IExportEntry getUExport(int uindex) => exports[uindex-1];
+        public IExportEntry getUExport(int uindex) => exports[uindex - 1];
 
         #endregion
 
@@ -225,8 +226,8 @@ namespace ME3Explorer.Packages
         protected List<ImportEntry> imports;
         public IReadOnlyList<ImportEntry> Imports => imports;
 
-        public bool isImport(int Index) => (Index >= 0 && Index < ImportCount);
-        public bool isUImport(int Index) => (Index < 0 && -Index <= ImportCount);
+        public bool isImport(int index) => (index >= 0 && index < ImportCount);
+        public bool isUImport(int uindex) => (uindex < 0 && Math.Abs(uindex) <= ImportCount);
 
         public void addImport(ImportEntry importEntry)
         {
@@ -244,7 +245,7 @@ namespace ME3Explorer.Packages
         }
 
         public ImportEntry getImport(int index) => imports[index];
-        public ImportEntry getUImport(int index) => imports[-index - 1];
+        public ImportEntry getUImport(int uindex) => imports[Math.Abs(uindex) - 1];
 
         #endregion
 
@@ -289,7 +290,7 @@ namespace ME3Explorer.Packages
                 return imports[-index - 1];
             return null;
         }
-        public bool isEntry(int index) => index > 0 && index <= ExportCount || -index > 0 && -index <= ImportCount;
+        public bool isEntry(int uindex) => (uindex > 0 && uindex <= ExportCount) || (Math.Abs(uindex) > 0 && Math.Abs(uindex) <= ImportCount);
 
         #endregion
 
@@ -442,7 +443,7 @@ namespace ME3Explorer.Packages
 
         protected void importChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (sender is ImportEntry imp 
+            if (sender is ImportEntry imp
              && e.PropertyName == nameof(ImportEntry.HeaderChanged))
             {
                 updateTools(PackageChange.Import, imp.Index);
@@ -484,7 +485,7 @@ namespace ME3Explorer.Packages
         private int RefCount;
 
         public void RegisterUse() => RefCount++;
-    
+
         /// <summary>
         /// Doesn't neccesarily dispose the object.
         /// Will only do so once this has been called by every place that uses it.

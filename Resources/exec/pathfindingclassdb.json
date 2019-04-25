@@ -1,467 +1,587 @@
 {
-   "exporttypes":{
-      "SFXEnemySpawnPoint":{
-         "class":"SFXGame.SFXEnemySpawnPoint",
-         "name":"SFXEnemySpawnPoint",
-         "cylindercomponentarchetype":"SFXGame.Default__SFXEnemySpawnPoint.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_TurretPoint":{
-         "class":"SFXGame.SFXNav_TurretPoint",
-         "name":"SFXNav_TurretPoint",
-         "cylindercomponentarchetype":"SFXGame.Default__SFXNav_TurretPoint.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "PathNode": {
-        "class":"Engine.PathNode",
-         "name":"PathNode",
-         "cylindercomponentarchetype":"Engine.Default__PathNode.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_BoostNode":{
-         "class":"SFXGame.SFXNav_BoostNode",
-         "name":"SFXNav_BoostNode",
-         "cylindercomponentarchetype":"SFXGame.Default__SFXNav_BoostNode.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_JumpDownNode":{
-         "class":"SFXGame.SFXNav_JumpDownNode",
-         "name":"SFXNav_JumpDownNode",
-         "cylindercomponentarchetype":"SFXGame.Default__SFXNav_JumpDownNode.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_LargeBoostNode":{
-         "class":"SFXGame.SFXNav_LargeBoostNode",
-         "name":"SFXNav_LargeBoostNode",
-         "cylindercomponentarchetype":"SFXGame.Default__SFXNav_LargeBoostNode.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_LargeMantleNode":{
-         "class":"SFXGame.SFXNav_LargeMantleNode",
-         "name":"SFXNav_LargeMantleNode",
-         "cylindercomponentarchetype":"SFXGame.Default__SFXNav_LargeMantleNode.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_ClimbWallNode":{
-         "class":"SFXGame.SFXNav_ClimbWallNode",
-         "name":"SFXNav_ClimbWallNode",
-         "cylindercomponentarchetype":"SFXGame.Default__SFXNav_ClimbWallNode.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "BioPathPoint":{
-         "class":"SFXGame.BioPathPoint",
-         "name":"BioPathPoint",
-         "cylindercomponentarchetype":"SFXGame.Default__BioPathPoint.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXDynamicCoverLink":{
-         "class":"Engine.SFXDynamicCoverLink",
-         "name":"SFXDynamicCoverLink",
-         "cylindercomponentarchetype":"Engine.Default__SFXDynamicCoverLink.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXDynamicCoverSlotMarker":{
-         "class":"Engine.SFXDynamicCoverSlotMarker",
-         "name":"SFXDynamicCoverSlotMarker",
-         "cylindercomponentarchetype":"Engine.Default__SFXDynamicCoverSlotMarker.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_InteractionHenchOmniTool":{
-         "class":"SFXGameContent.SFXNav_InteractionHenchOmniTool",
-         "name":"SFXNav_InteractionHenchOmniTool",
-         "cylindercomponentarchetype":"SFXGameContent.Default__SFXNav_InteractionHenchOmniTool.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_InteractionHenchOmniToolCrouch":{
-         "class":"SFXGameContent.SFXNav_InteractionHenchOmniToolCrouch",
-         "name":"SFXNav_InteractionHenchOmniToolCrouch",
-         "cylindercomponentarchetype":"SFXGameContent.Default__SFXNav_InteractionHenchOmniToolCrouch.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_InteractionHenchBeckonFront":{
-         "class":"SFXGameContent.SFXNav_InteractionHenchBeckonFront",
-         "name":"SFXNav_InteractionHenchBeckonFront",
-         "cylindercomponentarchetype":"SFXGameContent.Default__SFXNav_InteractionHenchBeckonFront.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_InteractionHenchBeckonRear":{
-         "class":"SFXGameContent.SFXNav_InteractionHenchBeckonRear",
-         "name":"SFXNav_InteractionHenchBeckonRear",
-         "cylindercomponentarchetype":"SFXGameContent.Default__SFXNav_InteractionHenchBeckonRear.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_InteractionHenchCustom":{
-         "class":"SFXGameContent.SFXNav_InteractionHenchCustom",
-         "name":"SFXNav_InteractionHenchCustom",
-         "cylindercomponentarchetype":"SFXGameContent.Default__SFXNav_InteractionHenchCustom.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_InteractionHenchCover":{
-         "class":"SFXGameContent.SFXNav_InteractionHenchCover",
-         "name":"SFXNav_InteractionHenchCover",
-         "cylindercomponentarchetype":"SFXGameContent.Default__SFXNav_InteractionHenchCover.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_InteractionHenchCrouch":{
-         "class":"SFXGameContent.SFXNav_InteractionHenchCrouch",
-         "name":"SFXNav_InteractionHenchCrouch",
-         "cylindercomponentarchetype":"SFXGameContent.Default__SFXNav_InteractionHenchCrouch.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_InteractionHenchInteractLow":{
-         "class":"SFXGameContent.SFXNav_InteractionHenchInteractLow",
-         "name":"SFXNav_InteractionHenchInteractLow",
-         "cylindercomponentarchetype":"SFXGameContent.Default__SFXNav_InteractionHenchInteractLow.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_InteractionHenchManual":{
-         "class":"SFXGameContent.SFXNav_InteractionHenchManual",
-         "name":"SFXNav_InteractionHenchManual",
-         "cylindercomponentarchetype":"SFXGameContent.Default__SFXNav_InteractionHenchManual.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_InteractionHenchStandIdle":{
-         "class":"SFXGameContent.SFXNav_InteractionHenchStandIdle",
-         "name":"SFXNav_InteractionHenchStandIdle",
-         "cylindercomponentarchetype":"SFXGameContent.Default__SFXNav_InteractionHenchStandIdle.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_InteractionHenchStandTyping":{
-         "class":"SFXGameContent.SFXNav_InteractionHenchStandTyping",
-         "name":"SFXNav_InteractionHenchStandTyping",
-         "cylindercomponentarchetype":"SFXGameContent.Default__SFXNav_InteractionHenchStandTyping.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_InteractionUseConsole":{
-         "class":"SFXGameContent.SFXNav_InteractionUseConsole",
-         "name":"SFXNav_InteractionUseConsole",
-         "cylindercomponentarchetype":"SFXGameContent.Default__SFXNav_InteractionUseConsole.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      },
-      "SFXNav_InteractionStandGuard":{
-         "class":"SFXGameContent.SFXNav_InteractionStandGuard",
-         "name":"SFXNav_InteractionStandGuard",
-         "cylindercomponentarchetype":"SFXGameContent.Default__SFXNav_InteractionStandGuard.CollisionCylinder",
-         "incomingreachspecclass":"Engine.ReachSpec"
-      }
+  "exporttypes": [
+    {
+      "nodetypename": "SFXEnemySpawnPoint",
+      "fullclasspath": "SFXGame.SFXEnemySpawnPoint",
+      "name": "SFXEnemySpawnPoint",
+      "cylindercomponentarchetype": "SFXGame.Default__SFXEnemySpawnPoint.CollisionCylinder",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "SFXNav_TurretPoint",
+      "fullclasspath": "SFXGame.SFXNav_TurretPoint",
+      "name": "SFXNav_TurretPoint",
+      "cylindercomponentarchetype": "SFXGame.Default__SFXNav_TurretPoint.CollisionCylinder",
+      "description": "A basic pathfinding node that can be used by enemies to place turrets and other spawnable objects at.",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "PathNode",
+      "fullclasspath": "Engine.PathNode",
+      "name": "PathNode",
+      "cylindercomponentarchetype": "Engine.Default__PathNode.CollisionCylinder",
+      "description": "A basic pathfinding node that can be used by nearly all AI.",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "SFXNav_BoostNode",
+      "fullclasspath": "SFXGame.SFXNav_BoostNode",
+      "name": "SFXNav_BoostNode",
+      "cylindercomponentarchetype": "SFXGame.Default__SFXNav_BoostNode.CollisionCylinder",
+      "description": "Enemies can use boost nodes to transition up or down a vertical space. Note there is also a LargeBoostNode type for large enemies such as Banshees.",
+      "pathnode": true,
+      "usesbtop": true,
 
-   },
-   "importtypes":{
-      "Engine.ReachSpec":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "Engine.CoverSlipReachSpec":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "Engine.CoverTurnReachSpec":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "Engine.MantleReachSpec":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.SFXBoostReachSpec":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.SFXClimbWallReachSpec":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.SFXLadderReachSpec":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.SFXLargeBoostReachSpec":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.SFXLargeMantleReachSpec":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "Engine.SlotToSlotReachSpec":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.SFXEnemySpawnPoint":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXEnemySpawnPoint":{
-         "class":"SFXGame.SFXEnemySpawnPoint",
-         "packagefile":"SFXGame"
-      },
-      "SFXGame.Default__SFXEnemySpawnPoint.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.SFXNav_TurretPoint":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_TurretPoint":{
-         "class":"SFXGame.SFXNav_TurretPoint",
-         "packagefile":"SFXGame"
-      },
-      "SFXGame.Default__SFXNav_TurretPoint.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.SFXNav_LargeMantleNode":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_LargeMantleNode":{
-         "class":"SFXGame.SFXNav_LargeMantleNode",
-         "packagefile":"SFXGame"
-      },
-      "SFXGame.Default__SFXNav_LargeMantleNode.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.SFXNav_ClimbWallNode":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_ClimbWallNode":{
-         "class":"SFXGame.Default__SFXNav_ClimbWallNode",
-         "packagefile":"SFXGame"
-      },
-      "SFXGame.Default__SFXNav_ClimbWallNode.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.SFXNav_LargeBoostNode":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_LargeBoostNode":{
-         "class":"SFXGame.SFXNav_LargeBoostNode",
-         "packagefile":"SFXGame"
-      },
-      "SFXGame.Default__SFXNav_LargeBoostNode.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "Engine.PathNode":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "Engine.Default__PathNode":{
-         "class":"Engine.PathNode",
-         "packagefile":"Engine"
-      },
-      "Engine.Default__PathNode.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.SFXNav_BoostNode":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_BoostNode":{
-         "class":"SFXGame.SFXNav_BoostNode",
-         "packagefile":"SFXGame"
-      },
-      "SFXGame.Default__SFXNav_BoostNode.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.SFXNav_JumpDownNode":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_JumpDownNode":{
-         "class":"SFXGame.SFXNav_JumpDownNode",
-         "packagefile":"SFXGame"
-      },
-      "SFXGame.Default__SFXNav_JumpDownNode.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.BioPathPoint":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__BioPathPoint":{
-         "class":"SFXGame.BioPathPoint",
-         "packagefile":"SFXGame"
-      },
-      "SFXGame.Default__BioPathPoint.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "Engine.SFXDynamicCoverLink":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "Engine.Default__SFXDynamicCoverLink":{
-         "class":"Engine.SFXDynamicCoverLink",
-         "packagefile":"Engine"
-      },
-      "Engine.Default__SFXDynamicCoverLink.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "Engine.SFXDynamicCoverSlotMarker":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "Engine.Default__SFXDynamicCoverSlotMarker":{
-         "class":"Engine.SFXDynamicCoverSlotMarker",
-         "packagefile":"Engine"
-      },
-      "Engine.Default__SFXDynamicCoverSlotMarker.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.SFXNav_InteractionHenchOmniTool":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchOmniTool":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchOmniTool.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.SFXNav_InteractionHenchOmniToolCrouch":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchOmniToolCrouch":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchOmniToolCrouch.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.SFXNav_InteractionHenchBeckonFront":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchBeckonFront":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchBeckonFront.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.SFXNav_InteractionHenchBeckonRear":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchBeckonRear":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchBeckonRear.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.SFXNav_InteractionHenchCustom":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchCustom":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchCustom.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.SFXNav_InteractionHenchCover":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchCover":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchCover.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.SFXNav_InteractionHenchCrouch":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchCrouch":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchCrouch.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.SFXNav_InteractionHenchManual":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchManual":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchManual.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.SFXNav_InteractionHenchStandIdle":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchStandIdle":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchStandIdle.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.SFXNav_InteractionHenchStandTyping":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchStandTyping":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionHenchStandTyping.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.SFXNav_InteractionUseConsole":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionUseConsole":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionUseConsole.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      },
-      "SFXGame.SFXNav_InteractionStandGuard":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionStandGuard":{
-         "class":"Class",
-         "packagefile":"Core"
-      },
-      "SFXGame.Default__SFXNav_InteractionStandGuard.CollisionCylinder":{
-         "class":"Engine.CylinderComponent",
-         "packagefile":"Engine"
-      }
-   }
+    },
+    {
+      "nodetypename": "SFXNav_JumpDownNode",
+      "fullclasspath": "SFXGame.SFXNav_JumpDownNode",
+      "name": "SFXNav_JumpDownNode",
+      "cylindercomponentarchetype": "SFXGame.Default__SFXNav_JumpDownNode.CollisionCylinder",
+      "description": "AI can jump down from this node to another node. The top one must be marked as bTop.",
+      "pathnode": true,
+      "usesbtop": true
+    },
+    {
+      "nodetypename": "SFXNav_LargeBoostNode",
+      "fullclasspath": "SFXGame.SFXNav_LargeBoostNode",
+      "name": "SFXNav_LargeBoostNode",
+      "cylindercomponentarchetype": "SFXGame.Default__SFXNav_LargeBoostNode.CollisionCylinder",
+
+      "description": "Node that can be used for large boosts by enemies such as the Banshee.",
+      "pathnode": true,
+      "upgradetomaxpathsize": true,
+      "inboundspectype": "SFXGame.SFXLargeBoostReachSpec"
+    },
+    {
+      "nodetypename": "SFXNav_LargeMantleNode",
+      "fullclasspath": "SFXGame.SFXNav_LargeMantleNode",
+      "name": "SFXNav_LargeMantleNode",
+      "cylindercomponentarchetype": "SFXGame.Default__SFXNav_LargeMantleNode.CollisionCylinder",
+      "pathnode": true,
+      "ensuredproperties": [
+        {
+          "name": "MantleDest",
+          "type": "ObjectProperty",
+          "defaultvalue":  "0" 
+        }
+      ]
+    },
+    {
+      "nodetypename": "SFXNav_ClimbWallNode",
+      "fullclasspath": "SFXGame.SFXNav_ClimbWallNode",
+      "name": "SFXNav_ClimbWallNode",
+      "cylindercomponentarchetype": "SFXGame.Default__SFXNav_ClimbWallNode.CollisionCylinder",
+      "description": "Node that can be used as the start or end of a climbing action.",
+      "pathnode": true,
+      "usesbtop": true
+
+    },
+    {
+      "nodetypename": "BioPathPoint",
+      "fullclasspath": "SFXGame.BioPathPoint",
+      "name": "BioPathPoint",
+      "cylindercomponentarchetype": "SFXGame.Default__BioPathPoint.CollisionCylinder",
+      "pathnode": true,
+      "ensuredproperties": [
+        {
+          "name": "bEnabled",
+          "type": "BoolProperty",
+          "defaultvalue": "true"
+        }
+      ]
+    },
+    {
+      "nodetypename": "SFXDynamicCoverLink",
+      "fullclasspath": "Engine.SFXDynamicCoverLink",
+      "name": "SFXDynamicCoverLink",
+      "cylindercomponentarchetype": "Engine.Default__SFXDynamicCoverLink.CollisionCylinder",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "SFXDynamicCoverSlotMarker",
+      "fullclasspath": "Engine.SFXDynamicCoverSlotMarker",
+      "name": "SFXDynamicCoverSlotMarker",
+      "cylindercomponentarchetype": "Engine.Default__SFXDynamicCoverSlotMarker.CollisionCylinder",
+      "pathnode": true,
+      "ensuredproperties": [
+        {
+          "name": "bEnabled",
+          "type": "BoolProperty",
+          "defaultvalue": "true"
+        }
+      ]
+    },
+    {
+      "nodetypename": "SFXNav_InteractionHenchOmniTool",
+      "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchOmniTool",
+      "name": "SFXNav_InteractionHenchOmniTool",
+      "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchOmniTool.CollisionCylinder",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "SFXNav_InteractionHenchOmniToolCrouch",
+      "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchOmniToolCrouch",
+      "name": "SFXNav_InteractionHenchOmniToolCrouch",
+      "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchOmniToolCrouch.CollisionCylinder",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "SFXNav_InteractionHenchBeckonFront",
+      "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchBeckonFront",
+      "name": "SFXNav_InteractionHenchBeckonFront",
+      "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchBeckonFront.CollisionCylinder",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "SFXNav_InteractionHenchBeckonRear",
+      "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchBeckonRear",
+      "name": "SFXNav_InteractionHenchBeckonRear",
+      "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchBeckonRear.CollisionCylinder",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "SFXNav_InteractionHenchCustom",
+      "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchCustom",
+      "name": "SFXNav_InteractionHenchCustom",
+      "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchCustom.CollisionCylinder",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "SFXNav_InteractionHenchCover",
+      "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchCover",
+      "name": "SFXNav_InteractionHenchCover",
+      "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchCover.CollisionCylinder",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "SFXNav_InteractionHenchCrouch",
+      "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchCrouch",
+      "name": "SFXNav_InteractionHenchCrouch",
+      "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchCrouch.CollisionCylinder",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "SFXNav_InteractionHenchInteractLow",
+      "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchInteractLow",
+      "name": "SFXNav_InteractionHenchInteractLow",
+      "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchInteractLow.CollisionCylinder",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "SFXNav_InteractionHenchManual",
+      "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchManual",
+      "name": "SFXNav_InteractionHenchManual",
+      "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchManual.CollisionCylinder",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "SFXNav_InteractionHenchStandIdle",
+      "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchStandIdle",
+      "name": "SFXNav_InteractionHenchStandIdle",
+      "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchStandIdle.CollisionCylinder",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "SFXNav_InteractionHenchStandTyping",
+      "fullclasspath": "SFXGameContent.SFXNav_InteractionHenchStandTyping",
+      "name": "SFXNav_InteractionHenchStandTyping",
+      "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionHenchStandTyping.CollisionCylinder",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "SFXNav_InteractionUseConsole",
+      "fullclasspath": "SFXGameContent.SFXNav_InteractionUseConsole",
+      "name": "SFXNav_InteractionUseConsole",
+      "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionUseConsole.CollisionCylinder",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "SFXNav_InteractionStandGuard",
+      "fullclasspath": "SFXGameContent.SFXNav_InteractionStandGuard",
+      "name": "SFXNav_InteractionStandGuard",
+      "cylindercomponentarchetype": "SFXGameContent.Default__SFXNav_InteractionStandGuard.CollisionCylinder",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "CoverLink",
+      "fullclasspath": "Engine.CoverLink",
+      "name": "CoverLink",
+      "cylindercomponentarchetype": "Engine.Default__CoverLink.CollisionCylinder",
+      "description": "A standard pathfinding node that contains information about a continuous line of cover, defined by a list of CoverSlotMarkers. Information for AI to use cover is defined in this node, however it is significantly optimized and not well understood.",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "CoverSlotMarker",
+      "fullclasspath": "Engine.CoverSlotMarker",
+      "name": "CoverSlotMarker",
+      "cylindercomponentarchetype": "Engine.Default__CoverSlotMarker.CollisionCylinder",
+      "description": "A node indicating where cover may be used. Information about this point of cover is defined in the owning CoverLink.",
+      "pathnode": true
+    },
+    {
+      "nodetypename": "TargetPoint",
+      "fullclasspath": "Engine.TargetPoint",
+      "name": "TargetPoint",
+      "description": "An object used to denote a position in 3D space. Used for things like positioning of objects."
+    }
+  ],
+  "importtypes": {
+    "Engine.ReachSpec": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "Engine.CoverSlipReachSpec": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "Engine.CoverTurnReachSpec": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "Engine.MantleReachSpec": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGame.SFXBoostReachSpec": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGame.SFXClimbWallReachSpec": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGame.SFXLadderReachSpec": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGame.SFXLargeBoostReachSpec": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGame.SFXLargeMantleReachSpec": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "Engine.SlotToSlotReachSpec": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGame.SFXEnemySpawnPoint": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGame.Default__SFXEnemySpawnPoint": {
+      "fullclasspath": "SFXGame.SFXEnemySpawnPoint",
+      "packagefile": "SFXGame"
+    },
+    "SFXGame.Default__SFXEnemySpawnPoint.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGame.SFXNav_TurretPoint": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGame.Default__SFXNav_TurretPoint": {
+      "fullclasspath": "SFXGame.SFXNav_TurretPoint",
+      "packagefile": "SFXGame"
+    },
+    "SFXGame.Default__SFXNav_TurretPoint.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGame.SFXNav_LargeMantleNode": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGame.Default__SFXNav_LargeMantleNode": {
+      "fullclasspath": "SFXGame.SFXNav_LargeMantleNode",
+      "packagefile": "SFXGame"
+    },
+    "SFXGame.Default__SFXNav_LargeMantleNode.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGame.SFXNav_ClimbWallNode": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGame.Default__SFXNav_ClimbWallNode": {
+      "fullclasspath": "SFXGame.Default__SFXNav_ClimbWallNode",
+      "packagefile": "SFXGame"
+    },
+    "SFXGame.Default__SFXNav_ClimbWallNode.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGame.SFXNav_LargeBoostNode": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGame.Default__SFXNav_LargeBoostNode": {
+      "fullclasspath": "SFXGame.SFXNav_LargeBoostNode",
+      "packagefile": "SFXGame"
+    },
+    "SFXGame.Default__SFXNav_LargeBoostNode.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "Engine.PathNode": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "Engine.Default__PathNode": {
+      "fullclasspath": "Engine.PathNode",
+      "packagefile": "Engine"
+    },
+    "Engine.Default__PathNode.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGame.SFXNav_BoostNode": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGame.Default__SFXNav_BoostNode": {
+      "fullclasspath": "SFXGame.SFXNav_BoostNode",
+      "packagefile": "SFXGame"
+    },
+    "SFXGame.Default__SFXNav_BoostNode.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGame.SFXNav_JumpDownNode": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGame.Default__SFXNav_JumpDownNode": {
+      "fullclasspath": "SFXGame.SFXNav_JumpDownNode",
+      "packagefile": "SFXGame"
+    },
+    "SFXGame.Default__SFXNav_JumpDownNode.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGame.BioPathPoint": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGame.Default__BioPathPoint": {
+      "fullclasspath": "SFXGame.BioPathPoint",
+      "packagefile": "SFXGame"
+    },
+    "SFXGame.Default__BioPathPoint.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "Engine.SFXDynamicCoverLink": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "Engine.Default__SFXDynamicCoverLink": {
+      "fullclasspath": "Engine.SFXDynamicCoverLink",
+      "packagefile": "Engine"
+    },
+    "Engine.Default__SFXDynamicCoverLink.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "Engine.SFXDynamicCoverSlotMarker": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "Engine.Default__SFXDynamicCoverSlotMarker": {
+      "fullclasspath": "Engine.SFXDynamicCoverSlotMarker",
+      "packagefile": "Engine"
+    },
+    "Engine.Default__SFXDynamicCoverSlotMarker.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGameContent.SFXNav_InteractionHenchOmniTool": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchOmniTool": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchOmniTool.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGameContent.SFXNav_InteractionHenchOmniToolCrouch": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchOmniToolCrouch": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchOmniToolCrouch.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGameContent.SFXNav_InteractionHenchBeckonFront": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchBeckonFront": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchBeckonFront.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGameContent.SFXNav_InteractionHenchBeckonRear": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchBeckonRear": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchBeckonRear.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGameContent.SFXNav_InteractionHenchCustom": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchCustom": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchCustom.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGameContent.SFXNav_InteractionHenchCover": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchCover": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchCover.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGameContent.SFXNav_InteractionHenchCrouch": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchCrouch": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchCrouch.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGameContent.SFXNav_InteractionHenchInteractLow": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchInteractLow": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchInteractLow.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGameContent.SFXNav_InteractionHenchManual": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchManual": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchManual.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGameContent.SFXNav_InteractionHenchStandIdle": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchStandIdle": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchStandIdle.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGameContent.SFXNav_InteractionHenchStandTyping": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchStandTyping": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionHenchStandTyping.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGameContent.SFXNav_InteractionUseConsole": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionUseConsole": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionUseConsole.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "SFXGameContent.SFXNav_InteractionStandGuard": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionStandGuard": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "SFXGameContent.Default__SFXNav_InteractionStandGuard.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "Engine.Default__CoverLink.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "Engine.Default__CoverLink": {
+      "fullclasspath": "Engine.CoverLink",
+      "packagefile": "Engine"
+    },
+    "Engine.CoverLink": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "Engine.Default__CoverSlotMarker.CollisionCylinder": {
+      "fullclasspath": "Engine.CylinderComponent",
+      "packagefile": "Engine"
+    },
+    "Engine.Default__CoverSlotMarker": {
+      "fullclasspath": "Engine.CoverSlotMarker",
+      "packagefile": "Engine"
+    },
+    "Engine.CoverSlotMarker": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    },
+    "Engine.TargetPoint": {
+      "fullclasspath": "Class",
+      "packagefile": "Core"
+    }
+  }
 }

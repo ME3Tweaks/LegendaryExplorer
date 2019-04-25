@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Composition.Primitives;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -31,7 +32,8 @@ using MessageBox = System.Windows.MessageBox;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using Path = System.IO.Path;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
-using InterpEditor = ME3Explorer.Matinee.InterpEditor; 
+using InterpEditor = ME3Explorer.Matinee.InterpEditor;
+using System.Windows.Threading;
 
 namespace ME3Explorer.Sequence_Editor
 {
@@ -107,24 +109,8 @@ namespace ME3Explorer.Sequence_Editor
 
         public SequenceEditorWPF(IExportEntry export) : this()
         {
-            LoadFile(export.FileRef.FileName);
-            foreach (IExportEntry exp in SequenceExports)
-            {
-                var seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                if (seqObjs != null)
-                {
-                    foreach (ObjectProperty seqObj in seqObjs)
-                    {
-                        if (export.UIndex == seqObj.Value)
-                        {
-                            //This is our sequence
-                            LoadSequence(exp);
-                            CurrentObjects_ListBox.SelectedItem = export;
-                            return;
-                        }
-                    }
-                }
-            }
+            FileQueuedForLoad = export.FileRef.FileName;
+            ExportQueuedForFocusing = export;
         }
 
         #region Properties and Bindings
@@ -504,7 +490,7 @@ namespace ME3Explorer.Sequence_Editor
                         break;
                 }
             }
-            
+
             if (s.StartsWith("BioSeqEvt_") || s.StartsWith("SeqEvt_") || s.StartsWith("SFXSeqEvt_") || s.StartsWith("SeqEvent_"))
             {
                 return new SEvent(export, x, y, graphEditor);
@@ -620,7 +606,7 @@ namespace ME3Explorer.Sequence_Editor
         {
             foreach (SObj obj in CurrentObjects)
             {
-                obj.SetOffset(0,0); //remove existing positioning
+                obj.SetOffset(0, 0); //remove existing positioning
             }
             const float HORIZONTAL_SPACING = 40;
             const float VERTICAL_SPACING = 20;
@@ -971,6 +957,8 @@ namespace ME3Explorer.Sequence_Editor
 
         private readonly List<SaveData> extraSaveData = new List<SaveData>();
         private bool panToSelection = true;
+        private string FileQueuedForLoad;
+        private IExportEntry ExportQueuedForFocusing;
 
         private void saveView(bool toFile = true)
         {
@@ -1009,7 +997,7 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (FindResource("nodeContextMenu") is ContextMenu contextMenu)
             {
-                if (obj is SBox sBox && (sBox.Varlinks.Any() || sBox.Outlinks.Any()) 
+                if (obj is SBox sBox && (sBox.Varlinks.Any() || sBox.Outlinks.Any())
                  && contextMenu.GetChild("breakLinksMenuItem") is MenuItem breakLinksMenuItem)
                 {
                     bool hasLinks = false;
@@ -1097,7 +1085,7 @@ namespace ME3Explorer.Sequence_Editor
 
         private void removeAllLinks(object sender, RoutedEventArgs args)
         {
-            IExportEntry export = (IExportEntry) ((MenuItem) sender).Tag;
+            IExportEntry export = (IExportEntry)((MenuItem)sender).Tag;
             var props = export.GetProperties();
             var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
             if (outLinksProp != null)
@@ -1633,6 +1621,42 @@ namespace ME3Explorer.Sequence_Editor
             if (CurrentObjects.Any())
             {
                 SetupJSON(SelectedSequence);
+            }
+        }
+
+        private void SequenceEditorWPF_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (FileQueuedForLoad != null)
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
+                {
+                    //Wait for all children to finish loading
+                    LoadFile(FileQueuedForLoad);
+                    FileQueuedForLoad = null;
+
+                    if (ExportQueuedForFocusing != null)
+                    {
+                        foreach (IExportEntry exp in SequenceExports)
+                        {
+                            var seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                            if (seqObjs != null)
+                            {
+                                foreach (ObjectProperty seqObj in seqObjs)
+                                {
+                                    if (ExportQueuedForFocusing.UIndex == seqObj.Value)
+                                    {
+                                        //This is our sequence
+                                        LoadSequence(exp);
+                                        CurrentObjects_ListBox.SelectedItem = CurrentObjects.FirstOrDefault(x => x.Export == ExportQueuedForFocusing); ;
+                                    }
+                                }
+                            }
+                        }
+
+                        ExportQueuedForFocusing = null;
+                    }
+                    Activate();
+                }));
             }
         }
     }

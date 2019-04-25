@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Drawing;
-using System.Drawing.Text;
 using System.Linq;
-using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
 
 using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
-using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Util;
-using UMD.HCIL.PathingGraphEditor;
 using ME3Explorer.SequenceObjects;
 using System.Numerics;
 using System.Diagnostics;
+using ME3Explorer.PathfindingNodes;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -39,32 +34,35 @@ namespace ME3Explorer.Pathfinding_Editor
         protected static Brush splineNodeBrush = new SolidBrush(Color.FromArgb(255, 60, 200));
         public static Brush pathfindingNodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
         protected static Brush dynamicPathfindingNodeBrush = new SolidBrush(Color.FromArgb(46, 184, 25));
+        protected static Brush medkitBrush = new SolidBrush(Color.FromArgb(200, 15, 15));
         protected static Brush dynamicPathnodefindingNodeBrush = new SolidBrush(Color.FromArgb(80, 184, 25));
 
         protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
-        public static bool draggingOutlink = false;
-        public static bool draggingVarlink = false;
-        public static PNode dragTarget;
-        public static bool OutputNumbers;
+        public List<IExportEntry> SequenceReferences = new List<IExportEntry>();
 
-        public int Index { get { return index; } }
-        //public float Width { get { return shape.Width; } }
-        //public float Height { get { return shape.Height; } }
+        public int UIndex { get { return index; } }
 
         protected int index;
         public IExportEntry export;
         protected Pen outlinePen;
         public SText comment;
-        public List<IExportEntry> ReachSpecs = new List<IExportEntry>();
         public string NodeTag;
+        internal bool Selected;
+        /// <summary>
+        /// List of all outbound connections between two PNodes (since some code requires this)
+        /// </summary>
+        public List<PathfindingEditorEdge> Edges = new List<PathfindingEditorEdge>();
 
         public void Select()
         {
+            Selected = true;
             shape.Pen = selectedPen;
+            MoveToFront();
         }
 
         public void Deselect()
         {
+            Selected = false;
             if (shape.Pen != outlinePen)
             {
                 shape.Pen = outlinePen;
@@ -78,7 +76,7 @@ namespace ME3Explorer.Pathfinding_Editor
         }
 
         //Empty implementation
-        public virtual void CreateConnections(ref List<PathfindingNodeMaster> Objects)
+        public virtual void CreateConnections(List<PathfindingNodeMaster> Objects)
         {
 
         }
@@ -277,5 +275,72 @@ namespace ME3Explorer.Pathfinding_Editor
             return "";
         }
 
+        public override string ToString()
+        {
+            return this.GetType().Name + " - " + UIndex;
+        }
+    }
+
+    [DebuggerDisplay("PathfindingEdge - {DebugTarget}")]
+    public class PathfindingEditorEdge : PPath
+    {
+        public bool[] OutboundConnections = new bool[2];
+        public PNode[] EndPoints = new PNode[2];
+        public PathfindingEditorEdge()
+        {
+        }
+
+        public string DebugTarget
+        {
+            get
+            {
+                return EndPoints[0] + " to " + EndPoints[1] + ", " + EndPoints.Count() + " tags";
+
+            }
+        }
+
+        public bool DoesEdgeConnectSameNodes(PathfindingEditorEdge otherEdge)
+        {
+            return EndPoints.All(otherEdge.EndPoints.Contains);
+        }
+
+        internal bool HasAnyOutboundConnections()
+        {
+            return OutboundConnections[0] || OutboundConnections[1];
+        }
+
+        internal bool IsOneWayOnly()
+        {
+            return OutboundConnections[0] != OutboundConnections[1]; //one has to be true here
+        }
+
+        internal PNode GetOtherEnd(PathfindingNodeMaster currentPoint)
+        {
+            return EndPoints[0] == currentPoint ? EndPoints[1] : EndPoints[0];
+        }
+
+        internal void RemoveOutboundFrom(PathfindingNode pn)
+        {
+            if (EndPoints[0] == pn)
+            {
+                OutboundConnections[0] = false;
+            }
+            else if (EndPoints[1] == pn)
+            {
+                OutboundConnections[1] = false;
+            }
+        }
+
+        internal void ReAttachEdgesToEndpoints()
+        {
+            if (EndPoints[0] is PathfindingNode pn0 && !pn0.Edges.Contains(this))
+            {
+                pn0.Edges.Add(this);
+            }
+            if (EndPoints[1] is PathfindingNode pn1 && !pn1.Edges.Contains(this))
+            {
+                pn1.Edges.Add(this);
+            }
+        }
     }
 }

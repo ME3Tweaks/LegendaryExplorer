@@ -60,9 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Piccolo\Extensions.cs" />
-    <Compile Include="Piccolo\PathingGraphEditor.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Piccolo\Activities\NamespaceDoc.cs" />
     <Compile Include="Piccolo\Activities\PActivity.cs" />
     <Compile Include="Piccolo\Activities\PActivityScheduler.cs" />
