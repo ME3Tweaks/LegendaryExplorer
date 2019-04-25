@@ -27,8 +27,8 @@
     <DockPanel Name="InterpreterWPF_DockPanel">
         <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
             <Button Name="SaveHexChange_Button" ToolTip="Commit hex changes to the export" Content="Save Hex Changes" Foreground="{Binding HasUnsavedChanges, Converter={StaticResource UnsavedChangesForegroundConverter}}" Click="Interpreter_SaveHexChanges_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
-            <Button Content="Toggle Hexbox Width" ToolTip="Toggle between 4 and 16 byte widths" Click="Interpreter_ToggleHexboxWidth_Click"/>
-            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            <Button Name="ToggleHexboxWidth_Button" Content="Toggle Hexbox Width" ToolTip="Toggle between 4 and 16 byte widths" Click="Interpreter_ToggleHexboxWidth_Click"/>
+            <Separator Name="SaveToggle_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
             <Button Content="Add Property" ToolTip="Add a property from this class or a superclass to this object" Command="{Binding AddPropertyCommand}"/>
             <Separator Name="EditorSet_ArraySetSeparator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
             <Button Name="AddArrayElement_Button" ToolTip="Add a new element to the selected array" Content="Add Array Element" Click="AddArrayElement_Button_Click" VerticalAlignment="Center"/>
@@ -60,21 +60,23 @@
                 <TextBlock Name="StatusBar_LeftMostText" Text="Nothing selected"/>
             </StatusBarItem>
         </StatusBar>
-<Grid Margin="0,1,0,-1">
-    <Grid.RowDefinitions>
-        <RowDefinition Height="*" MaxHeight="1080"/>
-    </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-        <ColumnDefinition MinWidth="220" MaxWidth="718" Width="285" Name="HexboxColumnDefinition" />
-        <ColumnDefinition Width="1" />
-        <ColumnDefinition Width="*" />
-    </Grid.ColumnDefinitions>
-    <!--<control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />-->
-    <WindowsFormsHost Grid.Row="0" Grid.ColumnSpan="2"   Name="Interpreter_Hexbox_Host" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" SelectionLengthChanged="hb1_SelectionChanged" VScrollBarVisible="True">
-        </hb1:HexBox>
-    </WindowsFormsHost>
-            <GridSplitter Grid.Column="1" 
+        <Grid Margin="0,1,0,-1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" MaxHeight="1080"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="220" MaxWidth="718" Width="285" Name="HexboxColumnDefinition" />
+                <ColumnDefinition Width="1" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <!--<control:HexEditor Name="Interpreter_HexBox" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" BytePerLine="4" AllowAutoHightLighSelectionByte="False" StatusBarVisibility="Collapsed" AllowDeleteByte="True" AllowExtend="True" />-->
+            <WindowsFormsHost Grid.Row="0" Grid.ColumnSpan="2"   Name="Interpreter_Hexbox_Host" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" SelectionLengthChanged="hb1_SelectionChanged" VScrollBarVisible="True">
+                </hb1:HexBox>
+            </WindowsFormsHost>
+            <GridSplitter 
+                Name="HexProps_GridSplitter"      
+                Grid.Column="1" 
                       Grid.Row="1" HorizontalAlignment="Stretch" 
                       Margin="-5,0"
                       BorderThickness="5,0"
@@ -173,7 +175,7 @@
                         <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
                         <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
                     </Style>
-                    
+
                 </SharedUI:StretchingTreeView.ItemContainerStyle>
                 <SharedUI:StretchingTreeView.ContextMenu>
                     <ContextMenu>
@@ -183,6 +185,7 @@
                         <MenuItem Header="Array sorting: By ascending value" ToolTip="Sorts an array property by its value, in ascending order." Command="{Binding SortValueArrayAscendingCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <MenuItem Header="Array sorting: By descending value" ToolTip="Sorts an array property by its value, in descending order." Command="{Binding SortValueArrayDescendingCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
+                        <MenuItem Header="View referenced object in pop out Interpreter" ToolTip="Opens a new Interpreter window displaying the referenced object value" Command="{Binding PopoutInterpreterForObjectValueCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                         <MenuItem Header="Expand children" ToolTip="Expands all children of this property" Command="{Binding ExpandChildrenCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <MenuItem Header="Collapse children" ToolTip="Collapses all children of this property" Command="{Binding CollapseChildrenCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>

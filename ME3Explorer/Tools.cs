@@ -9,6 +9,7 @@ using System.Windows.Media;
 using KFreonLib.MEDirectories;
 using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;
+using ME3Explorer.Pathfinding_Editor;
 using Newtonsoft.Json;
 
 namespace ME3Explorer
@@ -481,7 +482,7 @@ namespace ME3Explorer
             {
                 name = "Mesh Database",
                 type = typeof(Meshplorer2.MeshDatabase),
-                icon = Application.Current.FindResource("iconMeshplorer2") as ImageSource,
+                icon = Application.Current.FindResource("iconMeshDatabase") as ImageSource,
                 open = () =>
                 {
                     (new Meshplorer2.MeshDatabase()).Show();
@@ -518,7 +519,7 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Package Editor",
+                name = "Package Editor (Old)",
                 type = typeof(PackageEditor),
                 icon = Application.Current.FindResource("iconPackageEditorClassic") as ImageSource,
                 open = () =>
@@ -528,11 +529,11 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
                 subCategory = "Core",
-                description = "Package Editor Classic is a tool for editing trilogy package files in various formats (PCC, SFM, UPK). Properties, arrays, names, curve data, and more can all be easily added and edited.\n\nPackage Editor Classic has been mostly replaced by Package Editor WPF, and will eventually placed into a deprecated status."
+                description = "Package Editor Classic is a tool for editing trilogy package files in various formats (PCC, SFM, UPK). Properties, arrays, names, curve data, and more can all be easily added and edited.\n\nPackage Editor Classic has been deprecated and is scheduled for removal in the next release."
             });
             set.Add(new Tool
             {
-                name = "Package Editor WPF",
+                name = "Package Editor",
                 type = typeof(PackageEditorWPF),
                 icon = Application.Current.FindResource("iconPackageEditor") as ImageSource,
                 open = () =>
@@ -546,15 +547,15 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Pathfinding Editor",
-                type = typeof(PathfindingEditor),
+                type = typeof(PathfindingEditorWPF),
                 icon = Application.Current.FindResource("iconPathfindingEditor") as ImageSource,
                 open = () =>
                 {
-                    (new PathfindingEditor()).Show();
+                    (new PathfindingEditorWPF()).Show();
                 },
                 tags = new List<string> { "user", "developer", "path", "ai", "combat", "spline", "spawn", "map", "path", "node", "cover", "level" },
                 subCategory = "Core",
-                description = "Pathfinding Editor allows you to modify pathing nodes so squadmates and enemies can move around a map. You can also edit placement of several different types of level objects such as StaticMeshes, Splines, CoverSlots, and more.",
+                description = "Pathfinding Editor WPF allows you to modify pathing nodes so squadmates and enemies can move around a map. You can also edit placement of several different types of level objects such as StaticMeshes, Splines, CoverSlots, and more.",
             });
             set.Add(new Tool
             {
@@ -585,16 +586,16 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "SFAR Editor 2",
+                name = "SFAR Editor",
                 type = typeof(SFAREditor2),
-                icon = Application.Current.FindResource("iconSFAREditor2") as ImageSource,
+                icon = Application.Current.FindResource("iconSFAREditor") as ImageSource,
                 open = () =>
                 {
                     (new SFAREditor2()).Show();
                 },
                 tags = new List<string> { "developer", "dlc" },
                 subCategory = other,
-                description = "SFAR Editor 2 allows you to explore SFAR files in Mass Effect 3. This tool has been deprecated as DLC unpacking and AutoTOC has replaced the need to inspect SFAR files.",
+                description = "SFAR Editor allows you to explore SFAR files in Mass Effect 3. This tool has been deprecated as DLC unpacking and AutoTOC has replaced the need to inspect SFAR files.",
             });
             set.Add(new Tool
             {
@@ -611,7 +612,7 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "Soundplorer WPF",
+                name = "Soundplorer",
                 type = typeof(Soundplorer.SoundplorerWPF),
                 icon = Application.Current.FindResource("iconSoundplorer") as ImageSource,
                 open = () =>
@@ -620,7 +621,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "user", "developer", "audio", "dialogue", "music", "wav", "ogg", "sound" },
                 subCategory = "Scene Shop",
-                description = "Soundplorer WPF is the newly rewritten version of Soundplorer. Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
+                description = "Soundplorer WPF is a complete rewrite of the original  Soundplorer. Extract and play audio from all 3 games, and replace audio directly in Mass Effect 3.",
             });
             set.Add(new Tool
             {

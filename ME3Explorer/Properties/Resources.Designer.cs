@@ -63,16 +63,6 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap BIK_movie_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("BIK_movie_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap document_save {
             get {
                 object obj = ResourceManager.GetObject("document-save", resourceCulture);
@@ -183,29 +173,9 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap meshplorer2_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("meshplorer2_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap modmaker_64x64 {
             get {
                 object obj = ResourceManager.GetObject("modmaker_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap plot_DB_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("plot_DB_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -226,16 +196,6 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap psk_viewer_64x64 {
             get {
                 object obj = ResourceManager.GetObject("psk_viewer_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap sfar_editor2_icon_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("sfar_editor2_icon_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -284,36 +244,6 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap subtitle_scanner_64x64 {
             get {
                 object obj = ResourceManager.GetObject("subtitle_scanner_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap TPFTools_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("TPFTools_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap udk_explorer_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("udk_explorer_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap wwisebank_editor_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("wwisebank_editor_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

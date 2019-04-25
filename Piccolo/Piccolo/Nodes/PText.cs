@@ -282,6 +282,8 @@ namespace UMD.HCIL.Piccolo.Nodes {
 					Font renderFont = font;
 
 					// The font needs to be adjusted for printing.
+
+                    //TODO: Remove HighDPI scaling for this as we have zoom controller
 					if (g.DpiY != GRAPHICS.DpiY) {
 						float fPrintedFontRatio = GRAPHICS.DpiY / 100;
 						renderFont = new Font(font.Name, font.Size * fPrintedFontRatio,
