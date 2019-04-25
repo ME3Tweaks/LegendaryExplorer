@@ -30,7 +30,7 @@ namespace ME3Explorer.CurveEd
 
         // Using a DependencyProperty as the backing store for Y.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty YProperty =
-            DependencyProperty.Register("Y", typeof(double), typeof(Anchor), new PropertyMetadata(0.0, OnYChanged));
+            DependencyProperty.Register(nameof(Y), typeof(double), typeof(Anchor), new PropertyMetadata(0.0, OnYChanged));
 
         private static void OnYChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -56,7 +56,7 @@ namespace ME3Explorer.CurveEd
 
         // Using a DependencyProperty as the backing store for X.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty XProperty =
-            DependencyProperty.Register("X", typeof(double), typeof(Anchor), new PropertyMetadata(0.0, OnXChanged));
+            DependencyProperty.Register(nameof(X), typeof(double), typeof(Anchor), new PropertyMetadata(0.0, OnXChanged));
 
         private static void OnXChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -74,7 +74,7 @@ namespace ME3Explorer.CurveEd
 
         // Using a DependencyProperty as the backing store for IsSelected.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsSelectedProperty =
-            DependencyProperty.Register("IsSelected", typeof(bool), typeof(Anchor), new PropertyMetadata(false, OnIsSelectedChange));
+            DependencyProperty.Register(nameof(IsSelected), typeof(bool), typeof(Anchor), new PropertyMetadata(false, OnIsSelectedChange));
 
         private static void OnIsSelectedChange(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -267,9 +267,9 @@ namespace ME3Explorer.CurveEd
 
         private void OnDragDelta(object sender, DragDeltaEventArgs e)
         {
-            Y = Y - e.VerticalChange;
-            leftHandle.Y = leftHandle.Y - e.VerticalChange;
-            rightHandle.Y = rightHandle.Y - e.VerticalChange;
+            Y -= e.VerticalChange;
+            leftHandle.Y -= e.VerticalChange;
+            rightHandle.Y -= e.VerticalChange;
         }
     }
 }

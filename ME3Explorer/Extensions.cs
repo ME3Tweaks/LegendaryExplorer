@@ -128,11 +128,18 @@ namespace ME3Explorer
 
         public static IEnumerable<T> Concat<T>(this IEnumerable<T> first, T second)
         {
-            foreach (T element in first)
+            if (first == null) throw new ArgumentNullException(nameof(first));
+            if (second == null) throw new ArgumentNullException(nameof(second));
+            return ConcatIterator();
+
+            IEnumerable<T> ConcatIterator()
             {
-                yield return element;
+                foreach (T element in first)
+                {
+                    yield return element;
+                }
+                yield return second;
             }
-            yield return second;
         }
 
         /// <summary>
@@ -655,11 +662,16 @@ namespace ME3Explorer
         }
     }
 
-    public static class EnumExtensions
+    public static class Enums
     {
         public static T[] GetValues<T>() where T : Enum
         {
             return (T[])Enum.GetValues(typeof(T));
+        }
+
+        public static T Parse<T>(string val) where T : Enum
+        {
+            return (T)Enum.Parse(typeof(T), val);
         }
     }
 

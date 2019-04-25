@@ -27,7 +27,7 @@ namespace ME3Explorer.CurveEd
 
         // Using a DependencyProperty as the backing store for Y.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty YProperty =
-            DependencyProperty.Register("Y", typeof(double), typeof(Handle), new PropertyMetadata(0.0));
+            DependencyProperty.Register(nameof(Y), typeof(double), typeof(Handle), new PropertyMetadata(0.0));
 
         public double X
         {
@@ -37,7 +37,7 @@ namespace ME3Explorer.CurveEd
 
         // Using a DependencyProperty as the backing store for X.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty XProperty =
-            DependencyProperty.Register("X", typeof(double), typeof(Handle), new PropertyMetadata(0.0));
+            DependencyProperty.Register(nameof(X), typeof(double), typeof(Handle), new PropertyMetadata(0.0));
 
         public double Slope
         {
@@ -47,7 +47,7 @@ namespace ME3Explorer.CurveEd
 
         // Using a DependencyProperty as the backing store for Slope.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SlopeProperty =
-            DependencyProperty.Register("Slope", typeof(double), typeof(Handle), new PropertyMetadata(0.0, OnSlopeChanged));
+            DependencyProperty.Register(nameof(Slope), typeof(double), typeof(Handle), new PropertyMetadata(0.0, OnSlopeChanged));
 
         private static void OnSlopeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -78,11 +78,11 @@ namespace ME3Explorer.CurveEd
             Left = left;
             Slope = Left ? a.point.Value.ArriveTangent : a.point.Value.LeaveTangent;
             Line line = new Line();
-            line.bind(Line.X1Property, a, "X");
-            line.bind(Line.Y1Property, a, "Y", new YConverter(), a.graph.ActualHeight);
-            line.bind(Line.X2Property, this, "X");
-            line.bind(Line.Y2Property, this, "Y", new YConverter(), a.graph.ActualHeight);
-            line.bind(VisibilityProperty, this, "Visibility");
+            line.bind(Line.X1Property, a, nameof(X));
+            line.bind(Line.Y1Property, a, nameof(Y), new YConverter(), a.graph.ActualHeight);
+            line.bind(Line.X2Property, this, nameof(X));
+            line.bind(Line.Y2Property, this, nameof(Y), new YConverter(), a.graph.ActualHeight);
+            line.bind(VisibilityProperty, this, nameof(Visibility));
             line.Style = a.graph.FindResource("HandleLine") as Style;
             a.graph.graph.Children.Add(line); 
             this.DragDelta += OnDragDelta;

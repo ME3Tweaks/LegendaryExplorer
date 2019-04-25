@@ -19,7 +19,6 @@ using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using Xceed.Wpf.Toolkit.Primitives;
-using static ME3Explorer.EnumExtensions;
 using static ME3Explorer.PackageEditorWPF;
 using static ME3Explorer.Unreal.UnrealFlags;
 
@@ -143,7 +142,7 @@ namespace ME3Explorer.MetadataEditor
                 {
                     InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
                 }
-                var flagsList = GetValues<EObjectFlags>().Distinct().ToList();
+                var flagsList = Enums.GetValues<EObjectFlags>().Distinct().ToList();
                 //Don't even get me started on how dumb it is that SelectedItems is read only...
                 string selectedFlags = "";
                 foreach (EObjectFlags flag in flagsList)
