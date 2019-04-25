@@ -63,8 +63,7 @@ namespace ME3Explorer.TlkManagerNS
 
         private void ExportTLK(object obj)
         {
-            LoadedTLK tlk = TLKList.SelectedItem as LoadedTLK;
-            if (tlk != null)
+            if (TLKList.SelectedItem is LoadedTLK tlk)
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
@@ -109,8 +108,7 @@ namespace ME3Explorer.TlkManagerNS
 
         private void ReplaceTLK(object obj)
         {
-            LoadedTLK tlk = TLKList.SelectedItem as LoadedTLK;
-            if (tlk != null)
+            if (TLKList.SelectedItem is LoadedTLK tlk)
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog
                 {
@@ -132,7 +130,7 @@ namespace ME3Explorer.TlkManagerNS
                             compressor.LoadInputData(openFileDialog.FileName);
                             using (ME1Package pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath))
                             {
-                                compressor.replaceTlkwithFile(pcc, tlk.exportNumber - 1); //Code uses 0 based
+                                compressor.serializeTalkfileToExport(pcc, tlk.exportNumber - 1, true); //Code uses 0 based
                             };
                         };
                     }

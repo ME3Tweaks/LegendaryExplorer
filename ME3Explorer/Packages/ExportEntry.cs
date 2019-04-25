@@ -15,7 +15,7 @@ namespace ME3Explorer.Packages
         public IMEPackage FileRef { get; protected set; }
 
         public int Index { get; set; }
-        public int UIndex { get { return Index + 1; } }
+        public int UIndex => Index + 1;
 
         protected ExportEntry(IMEPackage file)
         {
@@ -33,7 +33,7 @@ namespace ME3Explorer.Packages
         /// </summary>
         public byte[] Header
         {
-            get { return _header; }
+            get => _header;
             set
             {
                 if (_header != null && value != null && _header.SequenceEqual(value))
@@ -62,15 +62,26 @@ namespace ME3Explorer.Packages
 
         public uint HeaderOffset { get; set; }
 
-        public int idxClass { get { return BitConverter.ToInt32(Header, 0); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 0, sizeof(int)); HeaderChanged = true; } }
-        public int idxClassParent { get { return BitConverter.ToInt32(Header, 4); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 4, sizeof(int)); HeaderChanged = true; } }
-        public int idxLink { get { return BitConverter.ToInt32(Header, 8); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 8, sizeof(int)); HeaderChanged = true; } }
-        public int idxObjectName { get { return BitConverter.ToInt32(Header, 12); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 12, sizeof(int)); HeaderChanged = true; } }
-        public int indexValue { get { return BitConverter.ToInt32(Header, 16); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 16, sizeof(int)); HeaderChanged = true; } }
-        public int idxArchtype { get { return BitConverter.ToInt32(Header, 20); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 20, sizeof(int)); HeaderChanged = true; } }
-        public ulong ObjectFlags { get { return BitConverter.ToUInt64(Header, 24); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 24, sizeof(long)); HeaderChanged = true; } }
-        public int DataSize { get { return BitConverter.ToInt32(Header, 32); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 32, sizeof(int)); } }
-        public int DataOffset { get { return BitConverter.ToInt32(Header, 36); } set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 36, sizeof(int)); } }
+        public int idxClass { get => BitConverter.ToInt32(Header, 0);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 0, sizeof(int)); HeaderChanged = true; } }
+        public int idxClassParent { get => BitConverter.ToInt32(Header, 4);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 4, sizeof(int)); HeaderChanged = true; } }
+        public int idxLink { get => BitConverter.ToInt32(Header, 8);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 8, sizeof(int)); HeaderChanged = true; } }
+        public int idxObjectName { get => BitConverter.ToInt32(Header, 12);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 12, sizeof(int)); HeaderChanged = true; } }
+        public int indexValue { get => BitConverter.ToInt32(Header, 16);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 16, sizeof(int)); HeaderChanged = true; } }
+        public int idxArchtype { get => BitConverter.ToInt32(Header, 20);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 20, sizeof(int)); HeaderChanged = true; } }
+        public ulong ObjectFlags { get => BitConverter.ToUInt64(Header, 24);
+            set { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 24, sizeof(long)); HeaderChanged = true; } }
+        public int DataSize { get => BitConverter.ToInt32(Header, 32);
+            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 32, sizeof(int));
+        }
+        public int DataOffset { get => BitConverter.ToInt32(Header, 36);
+            set => Buffer.BlockCopy(BitConverter.GetBytes(value), 0, Header, 36, sizeof(int));
+        }
         //if me1 or me2: int unkcount1
         byte[][] unkList1;//if me1 or me2: unkcount1 * 12 bytes
         int unk1; //int unk1 
@@ -79,7 +90,7 @@ namespace ME3Explorer.Packages
         public Guid PackageGUID { get; set; } //GUID
         int[] unkList2;//unkcount2 * 4 bytes 
 
-        public string ObjectName { get { return FileRef.Names[idxObjectName]; } }
+        public string ObjectName => FileRef.Names[idxObjectName];
         public string ClassName { get { int val = idxClass; if (val != 0) return FileRef.Names[FileRef.getEntry(val).idxObjectName]; else return "Class"; } }
         public string ClassParent { get { int val = idxClassParent; if (val != 0) return FileRef.Names[FileRef.getEntry(val).idxObjectName]; else return "Class"; } }
         public string ArchtypeName { get { int val = idxArchtype; if (val != 0) return FileRef.getNameEntry(FileRef.getEntry(val).idxObjectName); else return "None"; } }
@@ -143,7 +154,7 @@ namespace ME3Explorer.Packages
         /// </summary>
         public byte[] Data
         {
-            get { return _data.TypedClone(); }
+            get => _data.TypedClone();
 
             set
             {
@@ -167,10 +178,7 @@ namespace ME3Explorer.Packages
         bool dataChanged;
         public bool DataChanged
         {
-            get
-            {
-                return dataChanged;
-            }
+            get => dataChanged;
 
             set
             {
@@ -189,10 +197,7 @@ namespace ME3Explorer.Packages
         bool headerChanged;
         public bool HeaderChanged
         {
-            get
-            {
-                return headerChanged;
-            }
+            get => headerChanged;
 
             set
             {
@@ -210,7 +215,7 @@ namespace ME3Explorer.Packages
         private bool _entryHasPendingChanges = false;
         public bool EntryHasPendingChanges
         {
-            get { return _entryHasPendingChanges; }
+            get => _entryHasPendingChanges;
             set
             {
                 if (value != _entryHasPendingChanges)
@@ -227,7 +232,7 @@ namespace ME3Explorer.Packages
         /// Gets properties of an export. You can force it to reload which is useful when debugging the property engine.
         /// </summary>
         /// <param name="forceReload">Forces full property release rather than using the property collection cache</param>
-        /// <param name="includeNoneProeprty">Include NoneProperties in the resulting property collection</param>
+        /// <param name="includeNoneProperties">Include NoneProperties in the resulting property collection</param>
         /// <returns></returns>
         public PropertyCollection GetProperties(bool forceReload = false, bool includeNoneProperties = false)
         {

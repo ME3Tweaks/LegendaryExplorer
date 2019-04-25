@@ -32,29 +32,21 @@ namespace MassEffect.NativesEditor.Views
         
         public string FileName
         {
-            get { return _fileName; }
-            set
-            {
-                SetProperty(ref _fileName, value);
-            }
+            get => _fileName;
+            set => SetProperty(ref _fileName, value);
         }
 
         public string WindowTitle
         {
-            get { return _windowTitle; }
-            set
-            {
-                SetProperty(ref _windowTitle, value);
-            }
+            get => _windowTitle;
+            set => SetProperty(ref _windowTitle, value);
         }
 
         public void OpenFile()
         {
-            var dlg = new OpenFileDialog();
-			dlg.Filter = "ME3 PCC Files|*.pcc";
-			dlg.Multiselect = false;
+            var dlg = new OpenFileDialog {Filter = "ME3 PCC Files|*.pcc", Multiselect = false};
 
-			if (dlg.ShowDialog() != true)
+            if (dlg.ShowDialog() != true)
 			{
 				return;
 			}
@@ -80,20 +72,11 @@ namespace MassEffect.NativesEditor.Views
             FileName = path;
             LoadME3Package(path);
 
-            if (CodexMapControl != null)
-            {
-                CodexMapControl.Open(Pcc);
-            }
+            CodexMapControl?.Open(Pcc);
 
-            if (QuestMapControl != null)
-            {
-                QuestMapControl.Open(Pcc);
-            }
+            QuestMapControl?.Open(Pcc);
 
-            if (StateEventMapControl != null)
-            {
-                StateEventMapControl.Open(Pcc);
-            }
+            StateEventMapControl?.Open(Pcc);
         }
 
         public void SaveFile()
@@ -105,10 +88,8 @@ namespace MassEffect.NativesEditor.Views
 
             if (CodexMapControl != null)
             {
-                IExportEntry export;
-                int dataOffset;
 
-                if (CodexMapView.TryFindCodexMap(Pcc, out export, out dataOffset))
+                if (CodexMapView.TryFindCodexMap(Pcc, out IExportEntry export, out int _))
                 {
                     using (var stream = new MemoryStream())
                     {
@@ -124,10 +105,8 @@ namespace MassEffect.NativesEditor.Views
 
             if (QuestMapControl != null)
             {
-                IExportEntry export;
-                int dataOffset;
 
-                if (QuestMapControl.TryFindQuestMap(Pcc, out export, out dataOffset))
+                if (QuestMapControl.TryFindQuestMap(Pcc, out IExportEntry export, out int _))
                 {
                     using (var stream = new MemoryStream())
                     {
@@ -143,10 +122,8 @@ namespace MassEffect.NativesEditor.Views
 
             if (StateEventMapControl != null)
             {
-                IExportEntry export;
-                int dataOffset;
 
-                if (StateEventMapControl.TryFindStateEventMap(Pcc, out export, out dataOffset))
+                if (StateEventMapControl.TryFindStateEventMap(Pcc, out IExportEntry export, out int _))
                 {
                     using (var stream = new MemoryStream())
                     {
@@ -163,25 +140,6 @@ namespace MassEffect.NativesEditor.Views
             Pcc.save(FileName);
         }
 
-        public void SaveFileAs()
-        {
-            var dlg = new SaveFileDialog();
-            dlg.Filter = "PCC File |*.pcc";
-
-            if (!FileName.IsNullOrWhiteSpace())
-            {
-                dlg.InitialDirectory = Path.GetDirectoryName(FileName);
-                dlg.FileName = Path.GetFileName(FileName);
-            }
-
-            if (dlg.ShowDialog() != true || dlg.FileName.IsNullOrWhiteSpace())
-            {
-                return;
-            }
-
-            var fileName = dlg.FileName;
-        }
-
         public override void handleUpdate(List<PackageUpdate> updates)
         {
             //TODO: implement handleUpdate
@@ -189,7 +147,7 @@ namespace MassEffect.NativesEditor.Views
 
         private void Save_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute =  Pcc != null && !FileName.IsNullOrWhiteSpace();
+            e.CanExecute =  Pcc != null && !string.IsNullOrEmpty(FileName);
         }
 
         private void Save_Executed(object sender, ExecutedRoutedEventArgs e)

@@ -22,6 +22,33 @@ using ME3Explorer.Unreal;
 
 namespace ME3Explorer
 {
+    public static class TaskExtensions
+    {
+        //no argument passed to continuation
+        public static Task ContinueWithOnUIThread(this Task task, Action<Task> continuationAction)
+        {
+            return task.ContinueWith(continuationAction, App.SYNCHRONIZATION_CONTEXT);
+        }
+
+        //no argument passed to and result returned from continuation
+        public static Task<TNewResult> ContinueWithOnUIThread<TNewResult>(this Task task, Func<Task, TNewResult> continuationAction)
+        {
+            return task.ContinueWith(continuationAction, App.SYNCHRONIZATION_CONTEXT);
+        }
+
+        //argument passed to continuationn>
+        public static Task ContinueWithOnUIThread<TResult>(this Task<TResult> task, Action<Task<TResult>> continuationAction)
+        {
+            return task.ContinueWith(continuationAction, App.SYNCHRONIZATION_CONTEXT);
+        }
+
+        //argument passed to and result returned from continuation
+        public static Task<TNewResult> ContinueWithOnUIThread<TResult, TNewResult>(this Task<TResult> task, Func<Task<TResult>, TNewResult> continuationAction)
+        {
+            return task.ContinueWith(continuationAction, App.SYNCHRONIZATION_CONTEXT);
+        }
+    }
+
     public static class TreeViewExtension
     {
         public static IEnumerable<System.Windows.Forms.TreeNode> FlattenTreeView(this System.Windows.Forms.TreeView tv)
@@ -245,6 +272,16 @@ namespace ME3Explorer
             }
             return -1;
         }
+
+        public static bool IsEmpty<T>(this ICollection<T> list)
+        {
+            return list.Count == 0;
+        }
+
+        public static bool IsEmpty<T>(this IEnumerable<T> enumerable)
+        {
+            return !enumerable.Any();
+        }
     }
 
     public static class StringExtensions
@@ -370,6 +407,11 @@ namespace ME3Explorer
             bitmapImage.EndInit();
             bitmapImage.Freeze();
             return bitmapImage;
+        }
+
+        public static FrameworkElement GetChild(this ItemsControl itemsControl, string withName)
+        {
+            return itemsControl.Items.OfType<FrameworkElement>().FirstOrDefault(m => m.Name == withName);
         }
     }
 

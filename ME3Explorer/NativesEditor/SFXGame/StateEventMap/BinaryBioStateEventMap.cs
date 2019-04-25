@@ -15,13 +15,13 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 
 		public long StateEventsOffset
 		{
-			get { return _stateEventsOffset; }
-			set { SetProperty(ref _stateEventsOffset, value); }
+			get => _stateEventsOffset;
+		    set => SetProperty(ref _stateEventsOffset, value);
 		}
 
 		public static BinaryBioStateEventMap Load(string path)
 		{
-			if (path.IsNullOrEmpty())
+			if (string.IsNullOrEmpty(path))
 			{
 				throw new ArgumentNullException(nameof(path));
 			}
@@ -64,7 +64,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.StateEventMap
 
 		public void Save(string path)
 		{
-			if (path.IsNullOrEmpty())
+			if (string.IsNullOrEmpty(path))
 			{
 				throw new ArgumentNullException(nameof(path));
 			}

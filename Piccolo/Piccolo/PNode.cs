@@ -2450,6 +2450,14 @@ namespace UMD.HCIL.Piccolo
             set { SetBounds(X, Y, value, Height); }
         }
 
+		/// <summary>
+		/// Gets the height (in local coordinates) of this node's bounds.
+		/// </summary>
+		/// <value>The height of this node's bounds.</value>
+		public virtual float Height {
+			get { return Bounds.Height; }
+			set { SetBounds(X, Y, Width, value); }
+        }
         /// <summary>
         /// Gets the height (in local coordinates) of this node's bounds.
         /// </summary>
@@ -2461,13 +2469,30 @@ namespace UMD.HCIL.Piccolo
         }
 
         /// <summary>
+        /// Gets the width (in global coordinates) of the union of this node and all of its descendants' bounds.
+        /// </summary>
+        /// <value>The width of this node's bounds.</value>
+        public virtual float GlobalFullWidth
+        {
+            get { return GlobalFullBounds.Width; }
+        }
+
+        /// <summary>
+        /// Gets the height (in global coordinates) of the union of this node and all of its descendants' bounds.
+        /// </summary>
+        /// <value>The height of this node's bounds.</value>
+        public virtual float GlobalFullHeight
+        {
+            get { return GlobalFullBounds.Height; }
+        }
+
+        /// <summary>
         /// Gets a copy of the bounds of this node in the global coordinate system.
         /// </summary>
         /// <value>The bounds in the global coordinate system.</value>
-        public RectangleF GlobalBounds
-        {
-            get { return LocalToGlobal(Bounds); }
-        }
+        public RectangleF GlobalBounds {
+			get { return LocalToGlobal(Bounds); }
+		}
 
         /// <summary>
         /// Adjust the bounds of this node so that they are centered on the given point

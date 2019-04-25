@@ -342,30 +342,31 @@ namespace ME3Explorer.Meshplorer2
                 preview = null;
                 try
                 {
-                    int i = 0;
-                    if (Int32.TryParse(t.Name, out i))
+                    if (int.TryParse(t.Name, out int i))
                     {
                         EntryStruct en = Entries[i];
                         if (!en.isDLC)
                         {
-                            ME3Package pcc = MEPackageHandler.OpenME3Package(ME3Directory.cookedPath + en.Filename);
-                            if (en.isSkeletal)
+                            using (ME3Package pcc = MEPackageHandler.OpenME3Package(ME3Directory.cookedPath + en.Filename))
                             {
-                                SkeletalMesh skmesh = new SkeletalMesh(pcc, en.Index); // TODO: pass device
-                                preview = new ModelPreview(view.Device, skmesh, view.TextureCache);
-                                CenterView();
-                                treeView2.Nodes.Clear();
-                                if (previewWithTreeToolStripMenuItem.Checked)
+                                if (en.isSkeletal)
                                 {
-                                    treeView2.Visible = false;
-                                    Application.DoEvents();
-                                    treeView2.Nodes.Add(skmesh.ToTree());
-                                    treeView2.Visible = true;
+                                    SkeletalMesh skmesh = new SkeletalMesh(pcc, en.Index); // TODO: pass device
+                                    preview = new ModelPreview(view.Device, skmesh, view.TextureCache);
+                                    CenterView();
+                                    treeView2.Nodes.Clear();
+                                    if (previewWithTreeToolStripMenuItem.Checked)
+                                    {
+                                        treeView2.Visible = false;
+                                        Application.DoEvents();
+                                        treeView2.Nodes.Add(skmesh.ToTree());
+                                        treeView2.Visible = true;
+                                    }
                                 }
-                            }
-                            else
-                            {
+                                else
+                                {
 
+                                }
                             }
                         }
                         else
@@ -389,23 +390,22 @@ namespace ME3Explorer.Meshplorer2
                                         {
                                             try
                                             {
-                                                ME3Package pcc = MEPackageHandler.OpenME3Package(loc + filename);
+
                                                 if (en.isSkeletal)
                                                 {
-                                                    SkeletalMesh skmesh = new SkeletalMesh(pcc, en.Index);
-                                                    CenterView();
-                                                    treeView2.Nodes.Clear();
-                                                    if (previewWithTreeToolStripMenuItem.Checked)
+                                                    using (ME3Package pcc = MEPackageHandler.OpenME3Package(loc + filename))
                                                     {
-                                                        treeView2.Visible = false;
-                                                        Application.DoEvents();
-                                                        treeView2.Nodes.Add(skmesh.ToTree());
-                                                        treeView2.Visible = true;
+                                                        SkeletalMesh skmesh = new SkeletalMesh(pcc, en.Index);
+                                                        CenterView();
+                                                        treeView2.Nodes.Clear();
+                                                        if (previewWithTreeToolStripMenuItem.Checked)
+                                                        {
+                                                            treeView2.Visible = false;
+                                                            Application.DoEvents();
+                                                            treeView2.Nodes.Add(skmesh.ToTree());
+                                                            treeView2.Visible = true;
+                                                        }
                                                     }
-                                                }
-                                                else
-                                                {
-
                                                 }
                                             }
                                             catch (Exception)
@@ -492,15 +492,14 @@ namespace ME3Explorer.Meshplorer2
                 if (m == -1)
                     return;
                 TreeNode t1 = treeView1.SelectedNode;
-                if (t1 == null || t1.Parent == null || t1.Name == "")
+                if (t1?.Parent == null || t1.Name == "")
                     return;
                 SkeletalMesh skm = new SkeletalMesh();
                 EntryStruct en;
                 string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec\\";
                 if (DisplayStyle == 0)
                 {
-                    int o = 0;
-                    if (!Int32.TryParse(t1.Name, out o))
+                    if (!int.TryParse(t1.Name, out int o))
                         return;
                     en = Entries[o];
                     if (!en.isDLC)

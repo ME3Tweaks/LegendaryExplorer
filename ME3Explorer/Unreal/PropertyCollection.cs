@@ -1092,6 +1092,12 @@ namespace ME3Explorer.Unreal
             PropType = PropertyType.ObjectProperty;
         }
 
+        public ObjectProperty(IEntry referencedEntry, NameReference? name = null) : base(name)
+        {
+            Value = referencedEntry.UIndex;
+            PropType = PropertyType.ObjectProperty;
+        }
+
         public override void WriteTo(Stream stream, IMEPackage pcc, bool valueOnly = false)
         {
             if (!valueOnly)

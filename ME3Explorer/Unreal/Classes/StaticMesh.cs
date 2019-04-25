@@ -54,7 +54,7 @@ namespace ME3Explorer.Unreal.Classes
         public struct IndexBuffer
         {
             public int size, count;
-            public List<UInt16> Indexes;
+            public List<ushort> Indexes;
             public TreeNode t;
         }
 
@@ -145,10 +145,10 @@ namespace ME3Explorer.Unreal.Classes
 
         public struct RawTriangle
         {
-            public Int16 v0;
-            public Int16 v1;
-            public Int16 v2;
-            public Int16 mat;
+            public short v0;
+            public short v1;
+            public short v2;
+            public short mat;
         }
         public struct Buffers
         {
@@ -216,29 +216,37 @@ namespace ME3Explorer.Unreal.Classes
             }
             catch (Exception e)
             {
-                DebugOutput.PrintLn("StaticMesh Error: " + e.Message);
+                DebugOutput.PrintLn($"StaticMesh Error: {e.Message}");
             }
         }
 
         public void ReadBoundings(byte[] memory)
         {
-            TreeNode res = new TreeNode("Bounding pos: 0x" + readerpos.ToString("X4"));
-            Bounding b = new Bounding();
-            b.Origin.X = BitConverter.ToSingle(memory, readerpos);
-            b.Origin.Y = BitConverter.ToSingle(memory, readerpos + 4);
-            b.Origin.Z = BitConverter.ToSingle(memory, readerpos + 8);
-            b.Box.X = BitConverter.ToSingle(memory, readerpos + 12);
-            b.Box.Y = BitConverter.ToSingle(memory, readerpos + 16);
-            b.Box.Z = BitConverter.ToSingle(memory, readerpos + 20);
-            b.R = BitConverter.ToSingle(memory, readerpos + 24);
-            b.RB_BodySetup = BitConverter.ToInt32(memory, readerpos + 28);
-            b.unk = new float[6];
+            TreeNode res = new TreeNode($"Bounding pos: 0x{readerpos:X4}");
+            Bounding b = new Bounding
+            {
+                Origin =
+                {
+                    X = BitConverter.ToSingle(memory, readerpos),
+                    Y = BitConverter.ToSingle(memory, readerpos + 4),
+                    Z = BitConverter.ToSingle(memory, readerpos + 8)
+                },
+                Box =
+                {
+                    X = BitConverter.ToSingle(memory, readerpos + 12),
+                    Y = BitConverter.ToSingle(memory, readerpos + 16),
+                    Z = BitConverter.ToSingle(memory, readerpos + 20)
+                },
+                R = BitConverter.ToSingle(memory, readerpos + 24),
+                RB_BodySetup = BitConverter.ToInt32(memory, readerpos + 28),
+                unk = new float[6]
+            };
             int pos = readerpos + 32;
             string unk = "Unknown{";
             for (int i = 0; i < 6; i++)
             {
                 b.unk[i] = BitConverter.ToSingle(memory, pos);
-                unk += b.unk[i] + " ";
+                unk += $"{b.unk[i]} ";
                 pos += 4;
             }
             unk += "}";
@@ -248,10 +256,10 @@ namespace ME3Explorer.Unreal.Classes
                 b.raw[i] = memory[readerpos];
                 readerpos++;
             }
-            res.Nodes.Add(new TreeNode("Origin: {" + b.Origin.X + " ; " + b.Origin.Y + " ; " + b.Origin.Z + "}"));
-            res.Nodes.Add(new TreeNode("Box: {" + b.Box.X + " ; " + b.Box.Y + " ; " + b.Box.Z + "}"));
-            res.Nodes.Add(new TreeNode("Radius: {" + b.R + "}"));
-            res.Nodes.Add(new TreeNode("RB_BodySetup: {" + (pcc.getEntry(b.RB_BodySetup)?.GetFullPath ?? "None") + "}"));
+            res.Nodes.Add(new TreeNode($"Origin: {{{b.Origin.X} ; {b.Origin.Y} ; {b.Origin.Z}}}"));
+            res.Nodes.Add(new TreeNode($"Box: {{{b.Box.X} ; {b.Box.Y} ; {b.Box.Z}}}"));
+            res.Nodes.Add(new TreeNode($"Radius: {{{b.R}}}"));
+            res.Nodes.Add(new TreeNode($"RB_BodySetup: {{{pcc.getEntry(b.RB_BodySetup)?.GetFullPath ?? "None"}}}"));
             res.Nodes.Add(unk);
             b.t = res;
             Mesh.Bounds = b;
@@ -259,32 +267,40 @@ namespace ME3Explorer.Unreal.Classes
 
         public void ReadkDOPTree(byte[] memory)
         {
-            TreeNode res = new TreeNode("kDOP-tree pos: 0x" + readerpos.ToString("X4"));
-            UnknownList l = new UnknownList();
-            l.size = BitConverter.ToInt32(memory, readerpos);
-            l.count = BitConverter.ToInt32(memory, readerpos + 4);
+            TreeNode res = new TreeNode($"kDOP-tree pos: 0x{readerpos:X4}");
+            UnknownList l = new UnknownList
+            {
+                size = BitConverter.ToInt32(memory, readerpos),
+                count = BitConverter.ToInt32(memory, readerpos + 4)
+            };
             readerpos += 8;
             int len = l.size * l.count;
             l.data = new byte[len];
             for (int i = 0; i < len; i++)
                 l.data[i] = memory[readerpos + i];
-            res.Nodes.Add(new TreeNode("Size : " + l.size));
-            res.Nodes.Add(new TreeNode("Count : " + l.count.ToString()));
+            res.Nodes.Add(new TreeNode($"Size : {l.size}"));
+            res.Nodes.Add(new TreeNode("Count : " + l.count));
             TreeNode t = new TreeNode("Data");
             kdNodes = new List<kDOPNode>();
             for (int i = 0; i < l.count; i++)
             {
-                kDOPNode nd = new kDOPNode();
-                nd.min = new Vector3(memory[readerpos] / 256f, memory[readerpos + 1] / 256f, memory[readerpos + 2] / 256f);
-                nd.max = new Vector3(memory[readerpos + 3] / 256f, memory[readerpos + 4] / 256f, memory[readerpos + 5] / 256f);
+                kDOPNode nd = new kDOPNode
+                {
+                    min = new Vector3(memory[readerpos] / 256f,
+                                      memory[readerpos + 1] / 256f,
+                                      memory[readerpos + 2] / 256f),
+                    max = new Vector3(memory[readerpos + 3] / 256f,
+                                      memory[readerpos + 4] / 256f,
+                                      memory[readerpos + 5] / 256f)
+                };
                 kdNodes.Add(nd);
                 string s = "";
                 for (int j = 0; j < l.size; j++)
                 {
-                    s += (memory[readerpos] / 256f).ToString() + " ";
+                    s += $"{memory[readerpos] / 256f} ";
                     readerpos++;
                 }
-                t.Nodes.Add(new TreeNode("#" + i.ToString("D4") + " : " + s));
+                t.Nodes.Add(new TreeNode($"#{i:D4} : {s}"));
             }
             //ReadkdNodes(Meshplorer.Preview3D.Cubes[0], memory);
             res.Nodes.Add(t);
@@ -318,116 +334,118 @@ namespace ME3Explorer.Unreal.Classes
 
         public void ReadRawTris(byte[] memory)
         {
-            TreeNode res = new TreeNode("Raw triangles pos: 0x" + readerpos.ToString("X4"));
-            UnknownList l = new UnknownList();
-            l.size = BitConverter.ToInt32(memory, readerpos);
-            l.count = BitConverter.ToInt32(memory, readerpos + 4);
+            TreeNode res = new TreeNode($"Raw triangles pos: 0x{readerpos:X4}");
+            UnknownList l = new UnknownList
+            {
+                size = BitConverter.ToInt32(memory, readerpos),
+                count = BitConverter.ToInt32(memory, readerpos + 4)
+            };
             readerpos += 8;
             int len = l.size * l.count;
             l.data = new byte[len];
             for (int i = 0; i < len; i++)
                 l.data[i] = memory[readerpos + i];
-            res.Nodes.Add(new TreeNode("Size : " + l.size.ToString()));
-            res.Nodes.Add(new TreeNode("Count : " + l.count));
+            res.Nodes.Add(new TreeNode($"Size : {l.size}"));
+            res.Nodes.Add(new TreeNode($"Count : {l.count}"));
             TreeNode t = new TreeNode("Data");
             RawTriangles = new List<RawTriangle>();
             for (int i = 0; i < l.count; i++)
             {
-                RawTriangle r = new RawTriangle();
-                r.v0 = BitConverter.ToInt16(memory, readerpos);
-                r.v1 = BitConverter.ToInt16(memory, readerpos + 2);
-                r.v2 = BitConverter.ToInt16(memory, readerpos + 4);
-                r.mat = BitConverter.ToInt16(memory, readerpos + 6);
+                RawTriangle r = new RawTriangle
+                {
+                    v0 = BitConverter.ToInt16(memory, readerpos),
+                    v1 = BitConverter.ToInt16(memory, readerpos + 2),
+                    v2 = BitConverter.ToInt16(memory, readerpos + 4),
+                    mat = BitConverter.ToInt16(memory, readerpos + 6)
+                };
                 RawTriangles.Add(r);
                 string s = "";
                 for (int j = 0; j < l.size; j++)
                 {
-                    s += memory[readerpos].ToString("X2") + " ";
+                    s += $"{memory[readerpos]:X2} ";
                     readerpos++;
                 }
-                t.Nodes.Add(new TreeNode("#" + i.ToString("D4") + " : " + s));
+                t.Nodes.Add(new TreeNode($"#{i:D4} : {s}"));
             }
             res.Nodes.Add(t);
-            RawTris rt = new RawTris();
-            rt.RawTriangles = RawTriangles;
-            rt.t = res;
-            Mesh.RawTris = rt;
+            Mesh.RawTris = new RawTris { RawTriangles = RawTriangles, t = res };
         }
 
         public void ReadMaterials(byte[] memory)
         {
-            TreeNode res = new TreeNode("Materials pos: 0x" + readerpos.ToString("X4"));
-            Materials m = new Materials();
+            TreeNode res = new TreeNode($"Materials pos: 0x{readerpos:X4}");
             Mesh.InternalVersion = BitConverter.ToInt32(memory, readerpos);
-            m.LodCount = BitConverter.ToInt32(memory, readerpos + 4);
-            res.Nodes.Add("LodCount : " + m.LodCount);
+            Materials m = new Materials
+            {
+                LodCount = BitConverter.ToInt32(memory, readerpos + 4),
+                Lods = new List<Lod>(),
+                MatInst = new List<MaterialInstanceConstant>()
+            };
+            res.Nodes.Add($"LodCount : {m.LodCount}");
             TreeNode t1 = new TreeNode("Lods");
             readerpos += 8;
-            m.Lods = new List<Lod>();
-            m.MatInst = new List<MaterialInstanceConstant>();
             for (int i = 0; i < m.LodCount; i++)
             {
-                Lod l = new Lod();
-                l.Guid = new byte[16];
+                Lod l = new Lod {Guid = new byte[16]};
                 string t = "Guid: ";
                 for (int j = 0; j < 16; j++)
                 {
                     l.Guid[j] = memory[readerpos];
-                    t += l.Guid[j].ToString("X2") + " ";
+                    t += $"{l.Guid[j]:X2} ";
                     readerpos++;
                 }
                 t1.Nodes.Add(new TreeNode(t));
                 l.SectionCount = BitConverter.ToInt32(memory, readerpos);
-                t1.Nodes.Add(new TreeNode("Section Count : " + l.SectionCount));
+                t1.Nodes.Add(new TreeNode($"Section Count : {l.SectionCount}"));
                 l.Sections = new List<Section>();
                 readerpos += 4;
                 TreeNode t2 = new TreeNode("Sections");
                 for (int j = 0; j < l.SectionCount; j++)
                 {
                     Section s = new Section();
-                    string q = "Section [" + j + "] : {Name = ";
+                    string q = $"Section [{j}] : {{Name = ";
                     s.Name = BitConverter.ToInt32(memory, readerpos);
                     q += s.Name;
                     if (s.Name > 0)
                     {
                         m.MatInst.Add(new MaterialInstanceConstant(pcc, s.Name - 1));
-                        q += "('" + pcc.getObjectName(s.Name) + "'), ";
+                        q += $"(\'{pcc.getObjectName(s.Name)}\'), ";
                     }
 
                     s.Unk1 = BitConverter.ToInt32(memory, readerpos + 4);
-                    q += "Unk1 = " + s.Unk1 + ", ";
+                    q += $"Unk1 = {s.Unk1}, ";
                     s.Unk2 = BitConverter.ToInt32(memory, readerpos + 8);
-                    q += "Unk2 = " + s.Unk2 + ", ";
+                    q += $"Unk2 = {s.Unk2}, ";
                     s.Unk3 = BitConverter.ToInt32(memory, readerpos + 12);
-                    q += "Unk3 = " + s.Unk3 + ", ";
+                    q += $"Unk3 = {s.Unk3}, ";
                     s.FirstIdx1 = BitConverter.ToInt32(memory, readerpos + 16);
-                    q += "FirstIdx1 = " + s.FirstIdx1 + ", ";
+                    q += $"FirstIdx1 = {s.FirstIdx1}, ";
                     s.NumFaces1 = BitConverter.ToInt32(memory, readerpos + 20);
-                    q += "NumFaces1 = " + s.NumFaces1 + ", ";
+                    q += $"NumFaces1 = {s.NumFaces1}, ";
                     s.MatEff1 = BitConverter.ToInt32(memory, readerpos + 24);
-                    q += "MatEff1 = " + s.MatEff1 + ", ";
+                    q += $"MatEff1 = {s.MatEff1}, ";
                     s.MatEff2 = BitConverter.ToInt32(memory, readerpos + 28);
-                    q += "MatEff2 = " + s.MatEff2 + ", ";
+                    q += $"MatEff2 = {s.MatEff2}, ";
                     s.Unk4 = BitConverter.ToInt32(memory, readerpos + 32);
-                    q += "Unk4 = " + s.Unk4 + ", ";
+                    q += $"Unk4 = {s.Unk4}, ";
                     s.Unk5 = BitConverter.ToInt32(memory, readerpos + 36);
-                    q += "Unk5 = " + s.Unk5 + ", ";
+                    q += $"Unk5 = {s.Unk5}, ";
                     if (s.Unk5 == 1)
                     {
                         s.FirstIdx2 = BitConverter.ToInt32(memory, readerpos + 40);
-                        q += "FirstIdx2 = " + s.FirstIdx2 + ", ";
+                        q += $"FirstIdx2 = {s.FirstIdx2}, ";
                         s.NumFaces2 = BitConverter.ToInt32(memory, readerpos + 44);
-                        q += "NumFaces2 = " + s.NumFaces2 + ", ";
+                        q += $"NumFaces2 = {s.NumFaces2}, ";
                         s.Unk6 = memory[readerpos + 48];
-                        q += "Unk6 = " + s.Unk6 + "}";
+                        q += $"Unk6 = {s.Unk6}}}";
                     }
                     else
                     {
                         s.Unk6 = memory[readerpos + 40];
                         s.FirstIdx2 = BitConverter.ToInt32(memory, readerpos + 41);
-                        q += "FirstIdx2 = " + s.FirstIdx2 + ", ";
+                        q += $"FirstIdx2 = {s.FirstIdx2}, ";
                         s.NumFaces2 = BitConverter.ToInt32(memory, readerpos + 45);
-                        q += "NumFaces2 = " + s.NumFaces2 + ", ";                        
+                        q += $"NumFaces2 = {s.NumFaces2}, ";                        
                         q += "Unk6 = " + s.Unk6 + "}";
                     }
                     t2.Nodes.Add(q);
@@ -436,11 +454,11 @@ namespace ME3Explorer.Unreal.Classes
                 }
                 t1.Nodes.Add(t2);
                 l.SizeVert = BitConverter.ToInt32(memory, readerpos);
-                t1.Nodes.Add(new TreeNode("Size Verts : " + l.SizeVert.ToString()));
+                t1.Nodes.Add(new TreeNode($"Size Verts : {l.SizeVert}"));
                 l.NumVert = BitConverter.ToInt32(memory, readerpos + 4);
-                t1.Nodes.Add(new TreeNode("Num Vert : " + l.NumVert));
+                t1.Nodes.Add(new TreeNode($"Num Vert : {l.NumVert}"));
                 l.LodCount = BitConverter.ToInt32(memory, readerpos + 8);
-                t1.Nodes.Add(new TreeNode("Lod Count : " + l.LodCount));
+                t1.Nodes.Add(new TreeNode($"Lod Count : {l.LodCount}"));
                 if(l.Sections[0].Unk5 == 1)
                     readerpos += 12;
                 else
@@ -449,8 +467,8 @@ namespace ME3Explorer.Unreal.Classes
             }
             res.Nodes.Add(t1);
             TreeNode t3 = new TreeNode("Materials");
-            for (int i = 0; i < m.MatInst.Count(); i++)
-                t3.Nodes.Add(m.MatInst[i].ToTree());
+            foreach (MaterialInstanceConstant mic in m.MatInst)
+                t3.Nodes.Add(mic.ToTree());
             res.Nodes.Add(t3);
             m.t = res;
             Mesh.Mat = m;
@@ -458,17 +476,19 @@ namespace ME3Explorer.Unreal.Classes
 
         public void ReadVerts(byte[] memory)
         {
-            TreeNode res = new TreeNode("Vertices pos: 0x" + readerpos.ToString("X4"));
-            UnknownList l = new UnknownList();
-            l.size = BitConverter.ToInt32(memory, readerpos);
-            l.count = BitConverter.ToInt32(memory, readerpos + 4);
+            TreeNode res = new TreeNode($"Vertices pos: 0x{readerpos:X4}");
+            UnknownList l = new UnknownList
+            {
+                size = BitConverter.ToInt32(memory, readerpos),
+                count = BitConverter.ToInt32(memory, readerpos + 4)
+            };
             readerpos += 8;
             int len = l.size * l.count;
             l.data = new byte[len];
             for (int i = 0; i < len; i++)
                 l.data[i] = memory[readerpos + i];
-            res.Nodes.Add(new TreeNode("Size : " + l.size.ToString()));
-            res.Nodes.Add(new TreeNode("Count : " + l.count));
+            res.Nodes.Add(new TreeNode($"Size : {l.size}"));
+            res.Nodes.Add(new TreeNode($"Count : {l.count}"));
             TreeNode t = new TreeNode("Data");
             Vertices = new List<Vector3>();
             for (int i = 0; i < l.count; i++)
@@ -477,31 +497,27 @@ namespace ME3Explorer.Unreal.Classes
                 float f2 = BitConverter.ToSingle(memory, readerpos + 4);
                 float f3 = BitConverter.ToSingle(memory, readerpos + 8);
                 Vertices.Add(new Vector3(f1, f2, f3));
-                string s = f1 + " " + f2 + " " + f3;
+                string s = $"{f1} {f2} {f3}";
                 readerpos += l.size;
-                t.Nodes.Add(new TreeNode("#" + i.ToString("D4") + " : " + s));
+                t.Nodes.Add(new TreeNode($"#{i:D4} : {s}"));
             }
             res.Nodes.Add(t);
-            Verts v = new Verts();
-            v.Points = Vertices;
-            v.t = res;
-            Mesh.Vertices = v;
+            Mesh.Vertices = new Verts { Points = Vertices, t = res };
         }
 
         public void ReadBuffers(byte[] memory)
         {
-            Buffers X = new Buffers();
-            X.Wireframe1 = new byte[4];
+            Buffers X = new Buffers {Wireframe1 = new byte[4]};
 
-            TreeNode res = new TreeNode("Buffers (?), Position: 0x" + readerpos.ToString("X4"));
-            byte[] buffer = new byte[20];
-            int[] output = new int[3];
+            var res = new TreeNode($"Buffers (?), Position: 0x{readerpos:X4}");
+            var buffer = new byte[20];
+            var output = new int[3];
             for (int i = 0; i < 20; i++)
             {
                 buffer[i] = memory[readerpos];
                 readerpos += 1;
             }
-            /// Here using struct Buffers
+            // Here using struct Buffers
             output[0] = BitConverter.ToInt32(buffer, 0);
             X.UV1 = output[0];
             output[1] = BitConverter.ToInt32(buffer, 4);
@@ -514,7 +530,7 @@ namespace ME3Explorer.Unreal.Classes
             {
                 X.Wireframe1[counter] = buffer[i];
                 counter += 1;
-            };
+            }
             X.Wireframe2 = new byte[4];
             counter = 0;
             for (int i = 16; i < 20; i++)
@@ -522,12 +538,12 @@ namespace ME3Explorer.Unreal.Classes
                 X.Wireframe2[counter] = buffer[i];
                 counter += 1;
             }
-            /// Here displaying all data
-            res.Nodes.Add(new TreeNode("UV Buffer 1 [INT32]: " + output[0]));
-            res.Nodes.Add(new TreeNode("UV Buffer 2 [INT32]: " + output[1]));
-            res.Nodes.Add(new TreeNode("Index Buffer [INT32]: " + output[2]));
-            res.Nodes.Add(new TreeNode("Wireframe buffer 1[four bytes] : " + buffer[12].ToString("X4") + " " + buffer[14].ToString("X4")));
-            res.Nodes.Add(new TreeNode("Wireframe buffer 2 [four bytes] : " + buffer[16].ToString("X4") + " " + buffer[18].ToString("X4")));
+            // Here displaying all data
+            res.Nodes.Add(new TreeNode($"UV Buffer 1 [INT32]: {output[0]}"));
+            res.Nodes.Add(new TreeNode($"UV Buffer 2 [INT32]: {output[1]}"));
+            res.Nodes.Add(new TreeNode($"Index Buffer [INT32]: {output[2]}"));
+            res.Nodes.Add(new TreeNode($"Wireframe buffer 1[four bytes] : {buffer[12]:X4} {buffer[14]:X4}"));
+            res.Nodes.Add(new TreeNode($"Wireframe buffer 2 [four bytes] : {buffer[16]:X4} {buffer[18]:X4}"));
 
             Mesh.Buffers = X;
             Mesh.Buffers.t = res;
@@ -537,46 +553,48 @@ namespace ME3Explorer.Unreal.Classes
         public string packedNorm(int off)
         {
             string s = "(x ";
-            s += string.Format("{0:0.0000}", memory[off] / 256f) + " ; y ";
-            s += string.Format("{0:0.0000}", memory[off + 1] / 256f) + " ; z ";
-            s += string.Format("{0:0.0000}", memory[off + 2] / 256f) + " ; w ";
-            s += string.Format("{0:0.0000}", memory[off + 3] / 256f) + ")";
+            s += $"{memory[off] / 256f:0.0000}" + " ; y ";
+            s += $"{memory[off + 1] / 256f:0.0000}" + " ; z ";
+            s += $"{memory[off + 2] / 256f:0.0000}" + " ; w ";
+            s += $"{memory[off + 3] / 256f:0.0000}" + ")";
             return s;
         }
 
         public void ReadEdges(byte[] memory)
         {
-            TreeNode res = new TreeNode("Edges list, start: 0x" + readerpos.ToString("X4"));
-            UnknownList edges = new UnknownList(); //here using struct unknown list, later we're just filling up data array byte by byte
-            Edges e = new Edges();
-            edges.size = BitConverter.ToInt32(memory, readerpos);
-            edges.count = BitConverter.ToInt32(memory, readerpos + 4);
-            e.size = edges.size;
-            e.count = edges.count;
+            TreeNode res = new TreeNode($"Edges list, start: 0x{readerpos:X4}");
+            UnknownList edges = new UnknownList //here using struct unknown list, later we're just filling up data array byte by byte
+            {
+                size = BitConverter.ToInt32(memory, readerpos),
+                count = BitConverter.ToInt32(memory, readerpos + 4)
+            };
+            Edges e = new Edges {size = edges.size, count = edges.count};
             //quick'n'dirty fix above, need work! <--------------
             readerpos += 8;
             int len = edges.size * edges.count;
             edges.data = new byte[len];
-            res.Nodes.Add(new TreeNode("Size : " + edges.size));
-            res.Nodes.Add(new TreeNode("Count : " + edges.count.ToString()));
+            res.Nodes.Add(new TreeNode($"Size : {edges.size}"));
+            res.Nodes.Add(new TreeNode($"Count : {edges.count}"));
             TreeNode data = new TreeNode("Data");
             int datacounter = 0;
 
             e.UVSet = new List<UVSet>();
             for (int i = 0; i < edges.count; i++)
             {
-                UVSet uv = new UVSet();
-                uv.UVs = new List<Vector2>();
+                UVSet uv = new UVSet
+                {
+                    UVs = new List<Vector2>(),
 
-                //here adding packed normals
-                uv.x1 = memory[readerpos];
-                uv.y1 = memory[readerpos + 1];
-                uv.z1 = memory[readerpos + 2];
-                uv.w1 = memory[readerpos + 3];
-                uv.x2 = memory[readerpos + 4];
-                uv.y2 = memory[readerpos + 5];
-                uv.z2 = memory[readerpos + 6];
-                uv.w2 = memory[readerpos + 7];
+                    //here adding packed normals
+                    x1 = memory[readerpos],
+                    y1 = memory[readerpos + 1],
+                    z1 = memory[readerpos + 2],
+                    w1 = memory[readerpos + 3],
+                    x2 = memory[readerpos + 4],
+                    y2 = memory[readerpos + 5],
+                    z2 = memory[readerpos + 6],
+                    w2 = memory[readerpos + 7]
+                };
 
                 //string rawdata = "";
                 //string n1 = packedNorm(readerpos);
@@ -604,7 +622,7 @@ namespace ME3Explorer.Unreal.Classes
                     datacounter += 1;
                 }
                 e.UVSet.Add(uv);
-                data.Nodes.Add(new TreeNode(i.ToString("d4") + ": " ));
+                data.Nodes.Add(new TreeNode($"{i:d4}: "));
             }
 
             res.Nodes.Add(data);
@@ -614,10 +632,12 @@ namespace ME3Explorer.Unreal.Classes
 
         public void UnknownPart(byte[] memory)
         {
-            TreeNode res = new TreeNode("Unknown 28 bytes, start: 0x" + readerpos.ToString("X4"));
+            TreeNode res = new TreeNode($"Unknown 28 bytes, start: 0x{readerpos:X4}");
             TreeNode unknowndata = new TreeNode("Data");
-            UnknownP p = new UnknownP();
-            p.data = new byte[28];
+            UnknownP p = new UnknownP
+            {
+                data = new byte[28]
+            };
 
             int tempReader = readerpos;
 
@@ -631,37 +651,37 @@ namespace ME3Explorer.Unreal.Classes
             string s = "";
             for (int i = 0; i < 8; i++)
             {
-                s += memory[readerpos].ToString("X2") + " ";
+                s += $"{memory[readerpos]:X2} ";
                 readerpos += 1;
             }
-            unknowndata.Nodes.Add("Block 1 [8]: " + s);
+            unknowndata.Nodes.Add($"Block 1 [8]: {s}");
 
             s = "";
             for (int i = 0; i < 8; i++)
             {
-                s += memory[readerpos].ToString("X2") + " ";
+                s += $"{memory[readerpos]:X2} ";
                 readerpos += 1;
 
             }
-            unknowndata.Nodes.Add("Block 2 [8]: " + s);
+            unknowndata.Nodes.Add($"Block 2 [8]: {s}");
 
             s = "";
             for (int i = 0; i < 8; i++)
             {
-                s += memory[readerpos].ToString("X2") + " ";
+                s += $"{memory[readerpos]:X2} ";
                 readerpos += 1;
 
             }
-            unknowndata.Nodes.Add("Block 3 [8]: " + s);
+            unknowndata.Nodes.Add($"Block 3 [8]: {s}");
 
             s = "";
             for (int i = 0; i < 4; i++)
             {
-                s += memory[readerpos].ToString("X2") + " ";
+                s += $"{memory[readerpos]:X2} ";
                 readerpos += 1;
 
             }
-            unknowndata.Nodes.Add("Block 4 [4]: " + s);
+            unknowndata.Nodes.Add($"Block 4 [4]: {s}");
 
             res.Nodes.Add(unknowndata);
 
@@ -671,21 +691,23 @@ namespace ME3Explorer.Unreal.Classes
 
         public void ReadIndexBuffer(byte[] memory)
         {
-            TreeNode res = new TreeNode("Index data, start: 0x" + readerpos.ToString("X4"));
-            IndexBuffer idx = new IndexBuffer();
-            idx.Indexes = new List<UInt16>();
-            idx.size = BitConverter.ToInt32(memory, readerpos);
-            idx.count = BitConverter.ToInt32(memory, readerpos + 4);
+            TreeNode res = new TreeNode($"Index data, start: 0x{readerpos:X4}");
+            IndexBuffer idx = new IndexBuffer
+            {
+                Indexes = new List<ushort>(),
+                size = BitConverter.ToInt32(memory, readerpos),
+                count = BitConverter.ToInt32(memory, readerpos + 4)
+            };
             readerpos += 8;
-            res.Nodes.Add(new TreeNode("Size :" + idx.size));
-            res.Nodes.Add(new TreeNode("Count :" + idx.count));
+            res.Nodes.Add(new TreeNode($"Size :{idx.size}"));
+            res.Nodes.Add(new TreeNode($"Count :{idx.count}"));
             TreeNode data = new TreeNode();
 
             for (int count = 0; count < idx.count; count++)
             {
-                UInt16 v = BitConverter.ToUInt16(memory, readerpos);
+                ushort v = BitConverter.ToUInt16(memory, readerpos);
                 idx.Indexes.Add(v);
-                string s = v.ToString("X2");
+                string s = $"{v:X2}";
                 readerpos += 2;
                 data.Nodes.Add("Data row " + count + ": " + s);
             }
@@ -698,10 +720,10 @@ namespace ME3Explorer.Unreal.Classes
         public void ReadEnd(byte[] memory)
         {
             #region End
-            EndOfStruct endChunk = new EndOfStruct();
-            endChunk.data = new byte[memory.Length - readerpos];
 
-            TreeNode res = new TreeNode("Last chunk, 0x" + readerpos.ToString("X4"));
+            EndOfStruct endChunk = new EndOfStruct {data = new byte[memory.Length - readerpos]};
+
+            TreeNode res = new TreeNode($"Last chunk, 0x{readerpos:X4}");
 
             TreeNode End = new TreeNode("Data");
             string s = ""; //here start some unknown chunks
@@ -710,10 +732,10 @@ namespace ME3Explorer.Unreal.Classes
             for (int i = 0; i < 8; i++)
             {
                 endChunk.data[i] = memory[readerpos];
-                s += memory[readerpos].ToString("X2") + " ";
+                s += $"{memory[readerpos]:X2} ";
                 readerpos += 1;
             }
-            End.Nodes.Add("Unknown 1 [6]: " + s);
+            End.Nodes.Add($"Unknown 1 [6]: {s}");
 
 
             // same, 8 byte int
@@ -721,17 +743,17 @@ namespace ME3Explorer.Unreal.Classes
             for (int i = 8; i < 16; i++)
             {
                 endChunk.data[i] = memory[readerpos];
-                s += memory[readerpos].ToString("X2") + " ";
+                s += $"{memory[readerpos]:X2} ";
                 readerpos += 1;
             }
-            End.Nodes.Add("Unknown 2 [8]: " + s);
+            End.Nodes.Add($"Unknown 2 [8]: {s}");
 
             // 4 bytes, always zero
             s = "";
             for (int i = 16; i < 20; i++)
             {
                 endChunk.data[i] = memory[readerpos];
-                s += memory[readerpos].ToString("X2") + " ";
+                s += $"{memory[readerpos]:X2} ";
                 readerpos += 1;
             }
             End.Nodes.Add("Unknown 3 [4]: " + s);
@@ -741,50 +763,50 @@ namespace ME3Explorer.Unreal.Classes
             for (int i = 20; i < 24; i++)
             {
                 endChunk.data[i] = memory[readerpos];
-                s += memory[readerpos].ToString("X2") + " ";
+                s += $"{memory[readerpos]:X2} ";
                 readerpos += 1;
             }
-            End.Nodes.Add("Unknown 4 [4]: " + s);
+            End.Nodes.Add($"Unknown 4 [4]: {s}");
 
             //then some 8 bytes of unknown data
             s = "";
             for (int i = 24; i < 32; i++)
             {
                 endChunk.data[i] = memory[readerpos];
-                s += memory[readerpos].ToString("X2") + " ";
+                s += $"{memory[readerpos]:X2} ";
                 readerpos += 1;
             }
-            End.Nodes.Add("Unknown 5 [8]: " + s);
+            End.Nodes.Add($"Unknown 5 [8]: {s}");
 
             // 6 bytes, always zero
             s = "";
             for (int i = 32; i < 38; i++)
             {
                 endChunk.data[i] = memory[readerpos];
-                s += memory[readerpos].ToString("X2") + " ";
+                s += $"{memory[readerpos]:X2} ";
                 readerpos += 1;
             }
-            End.Nodes.Add("Unknown 6 [6]: " + s);
+            End.Nodes.Add($"Unknown 6 [6]: {s}");
 
             //4 bytes data
             s = "";
             for (int i = 38; i < 42; i++)
             {
                 endChunk.data[i] = memory[readerpos];
-                s += memory[readerpos].ToString("X2") + " ";
+                s += $"{memory[readerpos]:X2} ";
                 readerpos += 1;
             }
-            End.Nodes.Add("Unknown 7 [4]: " + s);
+            End.Nodes.Add($"Unknown 7 [4]: {s}");
 
             //6 bytes zeroes
             s = "";
             for (int i = 42; i < 48; i++)
             {
                 endChunk.data[i] = memory[readerpos];
-                s += memory[readerpos].ToString("X2") + " ";
+                s += $"{memory[readerpos]:X2} ";
                 readerpos += 1;
             }
-            End.Nodes.Add("Unknown 8 [6]: " + s);
+            End.Nodes.Add($"Unknown 8 [6]: {s}");
 
 
             //4 bytes zeroes
@@ -792,7 +814,7 @@ namespace ME3Explorer.Unreal.Classes
             for (int i = 48; i < 52; i++)
             {
                 endChunk.data[i] = memory[readerpos];
-                s += memory[readerpos].ToString("X2") + " ";
+                s += $"{memory[readerpos]:X2} ";
                 readerpos += 1;
             }
             End.Nodes.Add("Unknown 9 [4]: " + s);
@@ -802,10 +824,10 @@ namespace ME3Explorer.Unreal.Classes
             for (int i = 52; i < 68; i++)
             {
                 endChunk.data[i] = memory[readerpos];
-                s += memory[readerpos].ToString("X2") + " ";
+                s += $"{memory[readerpos]:X2} ";
                 readerpos += 1;
             }
-            End.Nodes.Add("Unknown 10 [16]: " + s);
+            End.Nodes.Add($"Unknown 10 [16]: {s}");
             Mesh.End = endChunk;
             res.Nodes.Add(End);
             Mesh.End.t = End;
@@ -879,13 +901,13 @@ namespace ME3Explorer.Unreal.Classes
 
         public void WriteTriangles(FileStream fs)
         {
-            byte[] size = new byte[4];
+            var size = new byte[4];
             size[0] = 8;
 
             fs.Write(size, 0, 4);
-            fs.Write(BitConverter.GetBytes(Mesh.RawTris.RawTriangles.Count()), 0, 4);
+            fs.Write(BitConverter.GetBytes(Mesh.RawTris.RawTriangles.Count), 0, 4);
 
-            for (int i = 0; i < Mesh.RawTris.RawTriangles.Count(); i++)
+            for (int i = 0; i < Mesh.RawTris.RawTriangles.Count; i++)
             {
                 fs.Write(BitConverter.GetBytes(Mesh.RawTris.RawTriangles[i].v0), 0, 2);
                 fs.Write(BitConverter.GetBytes(Mesh.RawTris.RawTriangles[i].v1), 0, 2);
@@ -942,17 +964,17 @@ namespace ME3Explorer.Unreal.Classes
 
         public void WriteVerts(FileStream fs)
         {
-            byte[] size = new byte[4];
+            var size = new byte[4];
             size[0] = 12;
 
             fs.Write(size, 0, 4);
             fs.Write(BitConverter.GetBytes(Mesh.Vertices.Points.Count), 0, 4);
 
-            for (int i = 0; i < Mesh.Vertices.Points.Count; i++)
+            foreach (Vector3 v in Mesh.Vertices.Points)
             {
-                fs.Write(BitConverter.GetBytes(Mesh.Vertices.Points[i].X), 0, 4);
-                fs.Write(BitConverter.GetBytes(Mesh.Vertices.Points[i].Y), 0, 4);
-                fs.Write(BitConverter.GetBytes(Mesh.Vertices.Points[i].Z), 0, 4);
+                fs.Write(BitConverter.GetBytes(v.X), 0, 4);
+                fs.Write(BitConverter.GetBytes(v.Y), 0, 4);
+                fs.Write(BitConverter.GetBytes(v.Z), 0, 4);
             }
             //that was easy ^_^
         }
@@ -983,11 +1005,11 @@ namespace ME3Explorer.Unreal.Classes
                 fs.Write(BitConverter.GetBytes(Mesh.Edges.UVSet[i].z2), 0, 1);
                 fs.Write(BitConverter.GetBytes(Mesh.Edges.UVSet[i].w2), 0, 1);
 
-                for (int j = 0; j < Mesh.Edges.UVSet[i].UVs.Count; j++)
+                foreach (Vector2 v in Mesh.Edges.UVSet[i].UVs)
                 {
 
-                    fs.Write(BitConverter.GetBytes(FloatToHalf(Mesh.Edges.UVSet[i].UVs[j].X)), 0, 2);
-                    fs.Write(BitConverter.GetBytes(FloatToHalf(Mesh.Edges.UVSet[i].UVs[j].Y)), 0, 2);
+                    fs.Write(BitConverter.GetBytes(FloatToHalf(v.X)), 0, 2);
+                    fs.Write(BitConverter.GetBytes(FloatToHalf(v.Y)), 0, 2);
                 }
             }
             // You thought you had me there, didn't you? HaHA! 
@@ -1020,7 +1042,7 @@ namespace ME3Explorer.Unreal.Classes
         public void WriteProperties(MemoryStream fs)
 
         {
-            int len = props[props.Count() - 1].offend;            
+            int len = props[props.Count - 1].offend;            
             byte[] buffer = new byte[len];
             for (int i = 0; i < len; i++)
                 buffer[i] = memory[i];
@@ -1052,18 +1074,18 @@ namespace ME3Explorer.Unreal.Classes
 
         public void WriteTriangles(MemoryStream fs)
         {
-            byte[] size = new byte[4];
+            var size = new byte[4];
             size[0] = 8;
 
             fs.Write(size, 0, 4);
-            fs.Write(BitConverter.GetBytes(Mesh.RawTris.RawTriangles.Count()), 0, 4);
+            fs.Write(BitConverter.GetBytes(Mesh.RawTris.RawTriangles.Count), 0, 4);
 
-            for (int i = 0; i < Mesh.RawTris.RawTriangles.Count(); i++)
+            foreach (RawTriangle rawTri in Mesh.RawTris.RawTriangles)
             {
-                fs.Write(BitConverter.GetBytes(Mesh.RawTris.RawTriangles[i].v0), 0, 2);
-                fs.Write(BitConverter.GetBytes(Mesh.RawTris.RawTriangles[i].v1), 0, 2);
-                fs.Write(BitConverter.GetBytes(Mesh.RawTris.RawTriangles[i].v2), 0, 2);
-                fs.Write(BitConverter.GetBytes(Mesh.RawTris.RawTriangles[i].mat), 0, 2);
+                fs.Write(BitConverter.GetBytes(rawTri.v0), 0, 2);
+                fs.Write(BitConverter.GetBytes(rawTri.v1), 0, 2);
+                fs.Write(BitConverter.GetBytes(rawTri.v2), 0, 2);
+                fs.Write(BitConverter.GetBytes(rawTri.mat), 0, 2);
             }
         }
 
@@ -1115,17 +1137,17 @@ namespace ME3Explorer.Unreal.Classes
 
         public void WriteVerts(MemoryStream fs)
         {
-            byte[] size = new byte[4];
+            var size = new byte[4];
             size[0] = 12;
 
             fs.Write(size, 0, 4);
-            fs.Write(BitConverter.GetBytes(Mesh.Vertices.Points.Count()), 0, 4);
+            fs.Write(BitConverter.GetBytes(Mesh.Vertices.Points.Count), 0, 4);
 
-            for (int i = 0; i < Mesh.Vertices.Points.Count; i++)
+            foreach (Vector3 v in Mesh.Vertices.Points)
             {
-                fs.Write(BitConverter.GetBytes(Mesh.Vertices.Points[i].X), 0, 4);
-                fs.Write(BitConverter.GetBytes(Mesh.Vertices.Points[i].Y), 0, 4);
-                fs.Write(BitConverter.GetBytes(Mesh.Vertices.Points[i].Z), 0, 4);
+                fs.Write(BitConverter.GetBytes(v.X), 0, 4);
+                fs.Write(BitConverter.GetBytes(v.Y), 0, 4);
+                fs.Write(BitConverter.GetBytes(v.Z), 0, 4);
             }
             //that was easy ^_^
         }
@@ -1156,11 +1178,11 @@ namespace ME3Explorer.Unreal.Classes
                 fs.Write(BitConverter.GetBytes(Mesh.Edges.UVSet[i].z2), 0, 1);
                 fs.Write(BitConverter.GetBytes(Mesh.Edges.UVSet[i].w2), 0, 1);
 
-                for (int j = 0; j < Mesh.Edges.UVSet[i].UVs.Count; j++)
+                foreach (Vector2 v in Mesh.Edges.UVSet[i].UVs)
                 {
 
-                    fs.Write(BitConverter.GetBytes(FloatToHalf(Mesh.Edges.UVSet[i].UVs[j].X)), 0, 2);
-                    fs.Write(BitConverter.GetBytes(FloatToHalf(Mesh.Edges.UVSet[i].UVs[j].Y)), 0, 2);
+                    fs.Write(BitConverter.GetBytes(FloatToHalf(v.X)), 0, 2);
+                    fs.Write(BitConverter.GetBytes(FloatToHalf(v.Y)), 0, 2);
                 }
             }
         }
@@ -1195,13 +1217,12 @@ namespace ME3Explorer.Unreal.Classes
 
         public void CalcTangentSpace()
         {
-            int vertexCount = Mesh.Vertices.Points.Count();
+            int vertexCount = Mesh.Vertices.Points.Count;
             Vector3[] vertices = ToVec3(Mesh.Vertices.Points);
             Vector3[] normals = new Vector3[vertexCount];
             Vector2[] texcoords = new Vector2[vertexCount];
-            for (int i = 0; i < Mesh.RawTris.RawTriangles.Count(); i++)
+            foreach (RawTriangle raw in Mesh.RawTris.RawTriangles)
             {
-                RawTriangle raw = Mesh.RawTris.RawTriangles[i];
                 Vector3 v1 = Mesh.Vertices.Points[raw.v0];
                 Vector3 v2 = Mesh.Vertices.Points[raw.v1];
                 Vector3 v3 = Mesh.Vertices.Points[raw.v2];
@@ -1218,9 +1239,8 @@ namespace ME3Explorer.Unreal.Classes
                 texcoords[raw.v1] = Mesh.Edges.UVSet[raw.v1].UVs[0];
                 texcoords[raw.v2] = Mesh.Edges.UVSet[raw.v2].UVs[0];
             }
-            for (int i = 0; i < Mesh.RawTris.RawTriangles.Count(); i++)
+            foreach (RawTriangle raw in Mesh.RawTris.RawTriangles)
             {
-                RawTriangle raw = Mesh.RawTris.RawTriangles[i];
                 normals[raw.v0].Normalize();
                 normals[raw.v1].Normalize();
                 normals[raw.v2].Normalize();
@@ -1229,7 +1249,7 @@ namespace ME3Explorer.Unreal.Classes
             Vector4[] bitangents = new Vector4[vertexCount];
             Vector3[] tan1 = new Vector3[vertexCount];
             Vector3[] tan2 = new Vector3[vertexCount];
-            for (int i = 0; i < Mesh.RawTris.RawTriangles.Count(); i++)
+            for (int i = 0; i < Mesh.RawTris.RawTriangles.Count; i++)
             {
                 RawTriangle raw = Mesh.RawTris.RawTriangles[i];
                 Vector3 v1 = vertices[raw.v0];
@@ -1270,10 +1290,12 @@ namespace ME3Explorer.Unreal.Classes
             {
                 Vector3 n = normals[i];
                 Vector3 t = tan1[i];
-                Vector3 tmp = (t - n * Vector3.Dot(n, t));
+                Vector3 tmp = t - n * Vector3.Dot(n, t);
                 tmp.Normalize();
-                tangents[i] = new Vector4(tmp.X, tmp.Y, tmp.Z,0);
-                tangents[i].W = (Vector3.Dot(Vector3.Cross(n, t), tan2[i]) < 0.0f) ? -1.0f : 1.0f;
+                tangents[i] = new Vector4(tmp.X, tmp.Y, tmp.Z, 0)
+                {
+                    W = (Vector3.Dot(Vector3.Cross(n, t), tan2[i]) < 0.0f) ? -1.0f : 1.0f
+                };
             }
             for (int i = 0; i < vertexCount; i++)
             {
@@ -1281,10 +1303,12 @@ namespace ME3Explorer.Unreal.Classes
                 Vector3 t = tan2[i];
                 Vector3 tmp = (t - n * Vector3.Dot(n, t));
                 tmp.Normalize();
-                bitangents[i] = new Vector4(tmp.X, tmp.Y, tmp.Z, 0);
-                bitangents[i].W = (Vector3.Dot(Vector3.Cross(n, t), tan1[i]) < 0.0f) ? -1.0f : 1.0f;
+                bitangents[i] = new Vector4(tmp.X, tmp.Y, tmp.Z, 0)
+                {
+                    W = (Vector3.Dot(Vector3.Cross(n, t), tan1[i]) < 0.0f) ? -1.0f : 1.0f
+                };
             }
-            for (int i = 0; i < Mesh.RawTris.RawTriangles.Count(); i++)
+            for (int i = 0; i < Mesh.RawTris.RawTriangles.Count; i++)
             {
                 RawTriangle raw = Mesh.RawTris.RawTriangles[i];
                 ApplyTangents(raw.v0, tangents[raw.v0] * -1f, bitangents[raw.v0] * -1f);
@@ -1293,9 +1317,9 @@ namespace ME3Explorer.Unreal.Classes
             }
         }
 
-        public float HalfToFloat(UInt16 val)
+        public float HalfToFloat(ushort val)
         {
-            UInt16 u = val;
+            ushort u = val;
             int sign = (u >> 15) & 0x00000001;
             int exp = (u >> 10) & 0x0000001F;
             int mant = u & 0x000003FF;
@@ -1305,7 +1329,7 @@ namespace ME3Explorer.Unreal.Classes
             return BitConverter.ToSingle(buff, 0);
         }
 
-        public UInt16 FloatToHalf(float f)
+        public ushort FloatToHalf(float f)
         {
             byte[] bytes = BitConverter.GetBytes((double)f);
             ulong bits = BitConverter.ToUInt64(bytes, 0);
@@ -1315,10 +1339,10 @@ namespace ME3Explorer.Unreal.Classes
             int placement = (int)((exponent >> 52) - 1023);
             if (placement > 15 || placement < -14)
                 return 0;
-            UInt16 exponentBits = (UInt16)((15 + placement) << 10);
-            UInt16 mantissaBits = (UInt16)(mantissa >> 42);
-            UInt16 signBits = (UInt16)(sign >> 48);
-            return (UInt16)(exponentBits | mantissaBits | signBits);
+            ushort exponentBits = (ushort)((15 + placement) << 10);
+            ushort mantissaBits = (ushort)(mantissa >> 42);
+            ushort signBits = (ushort)(sign >> 48);
+            return (ushort)(exponentBits | mantissaBits | signBits);
         }
 
         public Vector3 ToVec3(PSKFile.PSKPoint p)
@@ -1336,7 +1360,7 @@ namespace ME3Explorer.Unreal.Classes
 
         public Vector3[] ToVec3(PSKFile.PSKPoint[] points)
         {
-            Vector3[] v = new Vector3[points.Count()];
+            Vector3[] v = new Vector3[points.Length];
             int count = 0;
             foreach (PSKFile.PSKPoint p in points)
             {
@@ -1424,15 +1448,7 @@ namespace ME3Explorer.Unreal.Classes
             s.Name = materialname;
             Mesh.Mat.Lods[lod].Sections[section] = s;
             // Load the material if it isn't already loaded
-            bool found = false;
-            for (int i = 0; i < Mesh.Mat.MatInst.Count; i++)
-            {
-                if (Mesh.Mat.MatInst[i].index == materialname - 1)
-                {
-                    found = true;
-                    break;
-                }
-            }
+            bool found = Mesh.Mat.MatInst.Any(t => t.index == materialname - 1);
             if (!found)
             {
                 // Load the material
@@ -1466,7 +1482,7 @@ namespace ME3Explorer.Unreal.Classes
         
         public TreeNode ToTree()
         {
-            TreeNode res = new TreeNode("#" + index + " : Static Mesh");
+            TreeNode res = new TreeNode($"#{index} : Static Mesh");
             if (Mesh.Bounds.t != null)
             {
                 res.Nodes.Add(Mesh.Bounds.t);
@@ -1485,13 +1501,13 @@ namespace ME3Explorer.Unreal.Classes
 
         public TreeNode ToTreeShort()
         {
-            TreeNode res = new TreeNode("#" + index + " : Static Mesh");
+            TreeNode res = new TreeNode($"#{index} : Static Mesh");
             return res;
         }
 
         public byte[] Dump()
         {
-            int startbinary = props[props.Count() - 1].offend;
+            int startbinary = props[props.Count - 1].offend;
             int lenofbinary = memsize - startbinary;
             byte[] buffer = new byte[lenofbinary];
             for (int i = 0; i < lenofbinary; i++)
@@ -1503,10 +1519,17 @@ namespace ME3Explorer.Unreal.Classes
         {
             byte b = 0;
             if (Mesh.Mat.MatInst != null)
+            {
                 for (int i = 0; i < Mesh.Mat.Lods[0].SectionCount; i++)
+                {
                     if (index >= Mesh.Mat.Lods[0].Sections[i].FirstIdx1 &&
                         index < Mesh.Mat.Lods[0].Sections[i].FirstIdx1 + Mesh.Mat.Lods[0].Sections[i].NumFaces1 * 3)
+                    {
                         b = (byte)i;
+                    }
+                }
+            }
+
             return b;
         }
 
@@ -1518,21 +1541,25 @@ namespace ME3Explorer.Unreal.Classes
 
         private PSKFile BuildPSK()
         {
-            PSKFile psk = new PSKFile();
-            PSKFile.PSKContainer pskc = new PSKFile.PSKContainer();
-            pskc.points = new List<PSKFile.PSKPoint>();
+            PSKFile.PSKContainer pskc = new PSKFile.PSKContainer
+            {
+                points = new List<PSKFile.PSKPoint>(),
+                edges = new List<PSKFile.PSKEdge>(),
+                faces = new List<PSKFile.PSKFace>(),
+                materials = new List<PSKFile.PSKMaterial>(),
+                bones = new List<PSKFile.PSKBone>(),
+                weights = new List<PSKFile.PSKWeight>()
+            };
             foreach (Vector3 v in Mesh.Vertices.Points)
                 pskc.points.Add(new PSKFile.PSKPoint(v));
-            pskc.edges = new List<PSKFile.PSKEdge>();
-            for (int i = 0; i < Mesh.Edges.UVSet.Count(); i++)
+            for (int i = 0; i < Mesh.Edges.UVSet.Count; i++)
             {
                 UVSet s = Mesh.Edges.UVSet[i];
                 pskc.edges.Add(new PSKFile.PSKEdge((short)i, s.UVs[0], GetMaterial(i)));
             }
-            pskc.faces = new List<PSKFile.PSKFace>();
-            if (Mesh.IdxBuf.Indexes != null && Mesh.IdxBuf.Indexes.Count() != 0)
+            if (Mesh.IdxBuf.Indexes != null && Mesh.IdxBuf.Indexes.Count != 0)
             {
-                for (int i = 0; i < Mesh.IdxBuf.Indexes.Count() / 3; i++)
+                for (int i = 0; i < Mesh.IdxBuf.Indexes.Count / 3; i++)
                 {
                     int v0 = Mesh.IdxBuf.Indexes[i * 3];
                     int v1 = Mesh.IdxBuf.Indexes[i * 3 + 1];
@@ -1552,7 +1579,7 @@ namespace ME3Explorer.Unreal.Classes
             }
 
             {
-                for (int i = 0; i < Mesh.RawTris.RawTriangles.Count(); i++)
+                for (int i = 0; i < Mesh.RawTris.RawTriangles.Count; i++)
                 {
                     RawTriangle r = Mesh.RawTris.RawTriangles[i];
                     byte material = GetMaterial(i * 3);
@@ -1568,14 +1595,9 @@ namespace ME3Explorer.Unreal.Classes
                     pskc.edges[r.v2] = e;
                 }
             }
-            pskc.materials = new List<PSKFile.PSKMaterial>();
             foreach (Section s in Mesh.Mat.Lods[0].Sections)
                 pskc.materials.Add(new PSKFile.PSKMaterial(pcc.getObjectName(s.Name), 0));
-            pskc.bones = new List<PSKFile.PSKBone>();
-            pskc.weights = new List<PSKFile.PSKWeight>();
-            psk = new PSKFile();
-            psk.psk = pskc;
-            return psk;
+            return new PSKFile { psk = pskc };
         }
 
         public void Export3DS(Lib3dsFile f, Matrix m)
@@ -1587,7 +1609,7 @@ namespace ME3Explorer.Unreal.Classes
             }
             catch (Exception e)
             {
-                DebugOutput.PrintLn("Export to 3ds ERROR: in\"" + MyName + "\" " + e.Message);
+                DebugOutput.PrintLn($"Export to 3ds ERROR: in\"{MyName}\" {e.Message}");
             }
         }
 
@@ -1596,11 +1618,11 @@ namespace ME3Explorer.Unreal.Classes
             using (StreamWriter writer = new StreamWriter(path))
             using (StreamWriter mtlWriter = new StreamWriter(Path.ChangeExtension(path, ".mtl")))
             {
-                writer.WriteLine("mtllib " + Path.GetFileNameWithoutExtension(path) + ".mtl");
+                writer.WriteLine($"mtllib {Path.GetFileNameWithoutExtension(path)}.mtl");
                 // Vertices
                 List<Vector3> points = null;
                 List<Vector2> uvs = null;
-                Dictionary<int, int> LODVertexOffsets = new Dictionary<int, int>(); // offset into the OBJ vertices that each buffer starts at
+                var LODVertexOffsets = new Dictionary<int, int>(); // offset into the OBJ vertices that each buffer starts at
                 points = Mesh.Vertices.Points;
                 uvs = new List<Vector2>();
                 for (int i = 0; i < points.Count; i++)
@@ -1609,14 +1631,14 @@ namespace ME3Explorer.Unreal.Classes
                 }
                 foreach (var mat in Mesh.Mat.MatInst)
                 {
-                    mtlWriter.WriteLine("newmtl " + pcc.getObjectName(mat.index));
+                    mtlWriter.WriteLine($"newmtl {pcc.getObjectName(mat.index)}");
                 }
 
                 for (int i = 0; i < points.Count; i++)
                 {
                     Vector3 v = points[i];
-                    writer.WriteLine("v " + v.X.ToString(CultureInfo.InvariantCulture) + " " + v.Z.ToString(CultureInfo.InvariantCulture) + " " + v.Y.ToString(CultureInfo.InvariantCulture));
-                    writer.WriteLine("vt " + uvs[i].X.ToString(CultureInfo.InvariantCulture) + " " + uvs[i].Y.ToString(CultureInfo.InvariantCulture));
+                    writer.WriteLine($"v {v.X.ToString(CultureInfo.InvariantCulture)} {v.Z.ToString(CultureInfo.InvariantCulture)} {v.Y.ToString(CultureInfo.InvariantCulture)}");
+                    writer.WriteLine($"vt {uvs[i].X.ToString(CultureInfo.InvariantCulture)} {uvs[i].Y.ToString(CultureInfo.InvariantCulture)}");
                 }
 
                 // Triangles
@@ -1624,8 +1646,8 @@ namespace ME3Explorer.Unreal.Classes
                 {
                     foreach (var section in lod.Sections)
                     {
-                        writer.WriteLine("usemtl " + pcc.getObjectName(section.Name));
-                        writer.WriteLine("g " + pcc.getObjectName(section.Name));
+                        writer.WriteLine($"usemtl {pcc.getObjectName(section.Name)}");
+                        writer.WriteLine($"g {pcc.getObjectName(section.Name)}");
                         if (Mesh.IdxBuf.Indexes != null && Mesh.IdxBuf.count > 0)
                         {
                             // Use the index buffer
@@ -1671,8 +1693,8 @@ namespace ME3Explorer.Unreal.Classes
                 Mesh.Vertices.Points.Add(new Vector3(valueX, valueY, valueZ));
 
             }
-            Mesh.Buffers.IndexBuffer = Mesh.Vertices.Points.Count();
-            byte[] buff = BitConverter.GetBytes(Mesh.Vertices.Points.Count());
+            Mesh.Buffers.IndexBuffer = Mesh.Vertices.Points.Count;
+            byte[] buff = BitConverter.GetBytes(Mesh.Vertices.Points.Count);
             for (int i = 0; i < 4; i++)
                 Mesh.UnknownPart.data[24 + i] = buff[i];
             #endregion
@@ -1684,7 +1706,7 @@ namespace ME3Explorer.Unreal.Classes
                 PSKFile.PSKFace e = psk.psk.faces[i];
                 int mat = e.material;
                 
-                if (mat >= l.Sections.Count())
+                if (mat >= l.Sections.Count)
                 {
                     int min = i * 3;
                     int minv = e.v0;
@@ -1740,7 +1762,7 @@ namespace ME3Explorer.Unreal.Classes
                     l.Sections[mat] = s;
                 }
             }
-            l.SectionCount = l.Sections.Count();
+            l.SectionCount = l.Sections.Count;
             for (int i = 0; i < l.SectionCount; i++)
             {
                 Select_Material selm = new Select_Material();
@@ -1766,11 +1788,11 @@ namespace ME3Explorer.Unreal.Classes
                 l.Sections[i] = s;
                 selm.Close();
             }
-            l.NumVert = psk.psk.points.Count();
+            l.NumVert = psk.psk.points.Count;
             Mesh.Mat.Lods[0] = l;
 #endregion
 #region Edges
-            int oldcount = Mesh.Edges.UVSet[0].UVs.Count();
+            int oldcount = Mesh.Edges.UVSet[0].UVs.Count;
             Mesh.Buffers.UV1 = oldcount;
             Mesh.Buffers.UV2 = oldcount * 4 + 8;
             Mesh.Edges = new Edges();
@@ -1803,17 +1825,17 @@ namespace ME3Explorer.Unreal.Classes
             {
                 RawTriangle r = new RawTriangle();
                 PSKFile.PSKFace f = psk.psk.faces[i];
-                r.v0 = (Int16)f.v0;
-                r.v1 = (Int16)f.v1;
-                r.v2 = (Int16)f.v2;
+                r.v0 = (short)f.v0;
+                r.v1 = (short)f.v1;
+                r.v2 = (short)f.v2;
                 r.mat = f.material;
                 Mesh.RawTris.RawTriangles.Add(r);
                 if (WithIndex)
                 {
-                    Mesh.IdxBuf.Indexes.Add((UInt16)f.v0);
-                    Mesh.IdxBuf.Indexes.Add((UInt16)f.v1);
-                    Mesh.IdxBuf.Indexes.Add((UInt16)f.v2);
-                    Mesh.IdxBuf.count = Mesh.IdxBuf.Indexes.Count();
+                    Mesh.IdxBuf.Indexes.Add((ushort)f.v0);
+                    Mesh.IdxBuf.Indexes.Add((ushort)f.v1);
+                    Mesh.IdxBuf.Indexes.Add((ushort)f.v2);
+                    Mesh.IdxBuf.count = Mesh.IdxBuf.Indexes.Count;
                 }               
             }
             CalcTangentSpace();
@@ -1852,7 +1874,7 @@ namespace ME3Explorer.Unreal.Classes
                 {
                     string line = reader.ReadLine().Trim();
 
-                    if (String.IsNullOrEmpty(line) || line.StartsWith("#"))
+                    if (string.IsNullOrEmpty(line) || line.StartsWith("#"))
                         continue;
 
                     string[] parts = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -1860,22 +1882,22 @@ namespace ME3Explorer.Unreal.Classes
                     if (parts[0] == "v")
                     {
                         // Read position (Note the axis flip)
-                        positions.Add(new Vector3(Single.Parse(parts[1], CultureInfo.InvariantCulture),
-                            Single.Parse(parts[3], CultureInfo.InvariantCulture),
-                            Single.Parse(parts[2], CultureInfo.InvariantCulture)));
+                        positions.Add(new Vector3(float.Parse(parts[1], CultureInfo.InvariantCulture),
+                            float.Parse(parts[3], CultureInfo.InvariantCulture),
+                            float.Parse(parts[2], CultureInfo.InvariantCulture)));
                     }
                     else if (parts[0] == "vt")
                     {
                         // Read UV
-                        uvs.Add(new Vector2(Single.Parse(parts[1], CultureInfo.InvariantCulture),
-                            Single.Parse(parts[2], CultureInfo.InvariantCulture)));
+                        uvs.Add(new Vector2(float.Parse(parts[1], CultureInfo.InvariantCulture),
+                            float.Parse(parts[2], CultureInfo.InvariantCulture)));
                     }
                     else if (parts[0] == "vn")
                     {
                         // Read normal
-                        normals.Add(new Vector3(Single.Parse(parts[1], CultureInfo.InvariantCulture),
-                            Single.Parse(parts[2], CultureInfo.InvariantCulture),
-                            Single.Parse(parts[3], CultureInfo.InvariantCulture)));
+                        normals.Add(new Vector3(float.Parse(parts[1], CultureInfo.InvariantCulture),
+                            float.Parse(parts[2], CultureInfo.InvariantCulture),
+                            float.Parse(parts[3], CultureInfo.InvariantCulture)));
                     }
                     else if (parts[0] == "f")
                     {
@@ -1886,15 +1908,15 @@ namespace ME3Explorer.Unreal.Classes
                             string[] components = parts[v + 1].Split('/');
                             if (components[0].Length > 0)
                             {
-                                triangle.PositionIndices[v] = Int32.Parse(components[0]) - 1;
+                                triangle.PositionIndices[v] = int.Parse(components[0]) - 1;
                             }
                             if (components.Length > 1 && components[1].Length > 0)
                             {
-                                triangle.UVIndices[v] = Int32.Parse(components[1]) - 1;
+                                triangle.UVIndices[v] = int.Parse(components[1]) - 1;
                             }
                             if (components.Length > 2 && components[2].Length > 0)
                             {
-                                triangle.NormalIndices[v] = Int32.Parse(components[2]) - 1;
+                                triangle.NormalIndices[v] = int.Parse(components[2]) - 1;
                             }
                         }
                         triangle.MaterialIndex = currentMaterialIndex;

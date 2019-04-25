@@ -51,9 +51,9 @@
             this.indexingLabel.AutoSize = true;
             this.indexingLabel.Location = new System.Drawing.Point(13, 30);
             this.indexingLabel.Name = "indexingLabel";
-            this.indexingLabel.Size = new System.Drawing.Size(276, 13);
+            this.indexingLabel.Size = new System.Drawing.Size(247, 13);
             this.indexingLabel.TabIndex = 1;
-            this.indexingLabel.Text = "Data entered is 0 based indexing (ME3Explorer indexing).";
+            this.indexingLabel.Text = "Data entered is 1 based indexing (Unreal indexing).";
             // 
             // indexField
             // 

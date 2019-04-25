@@ -1794,6 +1794,9 @@ namespace ME3Explorer
                         StrProperty strp = new StrProperty("Empty String");
                         asp.Add(strp);
                         break;
+                    case ArrayProperty<BoolProperty> abp:
+                        abp.Add(new BoolProperty(false));
+                        break;
                     case ArrayProperty<StringRefProperty> astrf:
                         StringRefProperty strfp = new StringRefProperty();
                         astrf.Add(strfp);

@@ -366,54 +366,55 @@ namespace ME1Explorer.Unreal
                         {
                             filepath = info.pccPath; //Used for dynamic lookup
                         }
-                        IMEPackage importPCC = MEPackageHandler.OpenMEPackage(filepath);
-                        //using (ME1Package importPCC = MEPackageHandler.OpenME1Package(filepath))
-                        //{
-                        byte[] buff;
-                        //Plane and CoverReference inherit from other structs, meaning they don't have default values (who knows why)
-                        //thus, I have hardcoded what those default values should be 
-                        if (className == "Plane")
+
+                        PropertyCollection props;
+                        using (IMEPackage importPCC = MEPackageHandler.OpenMEPackage(filepath))
                         {
-                            buff = PlaneDefault;
-                        }
-                        else if (className == "CoverReference")
-                        {
-                            buff = CoverReferenceDefault;
-                        }
-                        else
-                        {
-                            var exportToRead = importPCC.Exports[info.exportIndex];
-                            buff = exportToRead.Data.Skip(0x30).ToArray();
-                        }
-                        PropertyCollection props = PropertyCollection.ReadProps(importPCC, new MemoryStream(buff), className);
-                        if (stripTransients)
-                        {
-                            var toRemove = new List<UProperty>();
-                            foreach (var prop in props)
+                            byte[] buff;
+                            //Plane and CoverReference inherit from other structs, meaning they don't have default values (who knows why)
+                            //thus, I have hardcoded what those default values should be 
+                            if (className == "Plane")
                             {
-                                //remove transient props
-                                if (info.properties.TryGetValue(prop.Name, out PropertyInfo propInfo))
+                                buff = PlaneDefault;
+                            }
+                            else if (className == "CoverReference")
+                            {
+                                buff = CoverReferenceDefault;
+                            }
+                            else
+                            {
+                                var exportToRead = importPCC.Exports[info.exportIndex];
+                                buff = exportToRead.Data.Skip(0x30).ToArray();
+                            }
+                            props = PropertyCollection.ReadProps(importPCC, new MemoryStream(buff), className);
+                            if (stripTransients)
+                            {
+                                var toRemove = new List<UProperty>();
+                                foreach (var prop in props)
                                 {
-                                    if (propInfo.transient)
+                                    //remove transient props
+                                    if (info.properties.TryGetValue(prop.Name, out PropertyInfo propInfo))
                                     {
-                                        toRemove.Add(prop);
+                                        if (propInfo.transient)
+                                        {
+                                            toRemove.Add(prop);
+                                        }
                                     }
+                                    //if (!info.properties.ContainsKey(prop.Name) && info.baseClass == "Class")
+                                    //{
+                                    //    toRemove.Add(prop);
+                                    //}
                                 }
-                                //if (!info.properties.ContainsKey(prop.Name) && info.baseClass == "Class")
-                                //{
-                                //    toRemove.Add(prop);
-                                //}
-                            }
-                            foreach (var prop in toRemove)
-                            {
-                                Debug.WriteLine("ME1: Get Default Struct value (" + className + ") - removing transient prop: " + prop.Name);
-                                props.Remove(prop);
+                                foreach (var prop in toRemove)
+                                {
+                                    Debug.WriteLine($"ME1: Get Default Struct value ({className}) - removing transient prop: {prop.Name}");
+                                    props.Remove(prop);
+                                }
                             }
                         }
-                        importPCC.Release();
+
                         return props;
                     }
-                    //}
                 }
                 catch
                 {

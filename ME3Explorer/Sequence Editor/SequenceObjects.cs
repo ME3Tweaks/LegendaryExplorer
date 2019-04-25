@@ -19,6 +19,19 @@ using ME1Explorer;
 namespace ME3Explorer.SequenceObjects
 {
     public enum VarTypes { Int, Bool, Object, Float, StrRef, MatineeData, Extern, String };
+    public abstract class SeqEdEdge : PPath
+    {
+        public PNode start;
+        public PNode end;
+    }
+    public class VarEdge : SeqEdEdge
+    {
+    }
+
+    public class ActionEdge : SeqEdEdge
+    {
+        public int inputIndex;
+    }
 
     public abstract class SObj : PNode, IDisposable
     {
@@ -30,6 +43,8 @@ namespace ME3Explorer.SequenceObjects
         static readonly Color boolColor = Color.FromArgb(215, 37, 33); //red
         static readonly Color objectColor = Color.FromArgb(219, 39, 217);//purple
         static readonly Color interpDataColor = Color.FromArgb(222, 123, 26);//orange
+        protected static Color titleColor = Color.FromArgb(255, 255, 128);
+        protected static Brush titleBoxBrush = new SolidBrush(Color.FromArgb(112, 112, 112));
         protected static Brush mostlyTransparentBrush = new SolidBrush(Color.FromArgb(1, 255, 255, 255));
         protected static Brush nodeBrush = new SolidBrush(Color.FromArgb(140, 140, 140));
         protected static Pen selectedPen = new Pen(Color.FromArgb(255, 255, 0));
@@ -38,21 +53,25 @@ namespace ME3Explorer.SequenceObjects
         public static PNode dragTarget;
         public static bool OutputNumbers;
 
-        public int Index => index;
+        public RectangleF posAtDragStart;
+
+        public int Index => export.Index;
+
+        public int UIndex => export.UIndex;
         //public float Width { get { return shape.Width; } }
         //public float Height { get { return shape.Height; } }
+        public IExportEntry Export => export;
+        public virtual bool IsSelected { get; set; }
 
-        protected int index;
         protected IExportEntry export;
         protected Pen outlinePen;
         protected SText comment;
 
-        protected SObj(int idx, IMEPackage p, GraphEditor grapheditor)
+        protected SObj(IExportEntry entry, GraphEditor grapheditor)
         {
-            pcc = p;
+            pcc = entry.FileRef;
+            export = entry;
             g = grapheditor;
-            index = idx;
-            export = pcc.getExport(index);
             comment = new SText(GetComment(), commentColor, false)
             {
                 Pickable = false,
@@ -63,23 +82,9 @@ namespace ME3Explorer.SequenceObjects
             Pickable = true;
         }
 
-        protected SObj(int idx, IMEPackage p)
-        {
-            pcc = p;
-            index = idx;
-            export = pcc.getExport(index);
-            comment = new SText(GetComment(), commentColor, false);
-            comment.X = 0;
-            comment.Y = 0 - comment.Height;
-            comment.Pickable = false;
-            AddChild(comment);
-            Pickable = true;
-        }
-
-        public virtual void CreateConnections(ref List<SObj> objects) { }
-        public virtual void Layout(float x, float y) { }
-        public virtual void Select() { }
-        public virtual void Deselect() { }
+        public virtual void CreateConnections(IList<SObj> objects) { }
+        public virtual void Layout() { }
+        public virtual void Layout(float x, float y) => this.SetOffset(x, y);
 
         protected string GetComment()
         {
@@ -133,11 +138,17 @@ namespace ME3Explorer.SequenceObjects
             return VarTypes.Extern;
         }
 
-        public abstract void Dispose();
+        public virtual void Dispose()
+        {
+            g = null;
+            pcc = null;
+            export = null;
+        }
     }
 
     public class SVar : SObj
     {
+        public const float RADIUS = 30;
         public VarTypes type { get; set; }
         readonly SText val;
         protected PPath shape;
@@ -147,16 +158,16 @@ namespace ME3Explorer.SequenceObjects
             set => val.Text = value;
         }
 
-        public SVar(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
-            : base(idx, p, grapheditor)
+        public SVar(IExportEntry entry, float x, float y, GraphEditor grapheditor)
+            : base(entry, grapheditor)
         {
             string s = export.ObjectName;
             s = s.Replace("BioSeqVar_", "");
             s = s.Replace("SFXSeqVar_", "");
             s = s.Replace("SeqVar_", "");
             type = getType(s);
-            const float w = 60;
-            const float h = 60;
+            const float w = RADIUS * 2;
+            const float h = RADIUS * 2;
             shape = PPath.CreateEllipse(0, 0, w, h);
             outlinePen = new Pen(getColor(type));
             shape.Pen = outlinePen;
@@ -311,7 +322,7 @@ namespace ME3Explorer.SequenceObjects
                         }
                         return "???";
                     case VarTypes.MatineeData:
-                        return $"#{index}\nInterpData";
+                        return $"#{UIndex}\nInterpData";
                     default:
                         return "???";
                 }
@@ -336,14 +347,23 @@ namespace ME3Explorer.SequenceObjects
             }
         }
 
-        public override void Select()
+        private bool _isSelected;
+        public override bool IsSelected
         {
-            shape.Pen = selectedPen;
-        }
-
-        public override void Deselect()
-        {
-            shape.Pen = outlinePen;
+            get => _isSelected;
+            set
+            {
+                _isSelected = value;
+                if (value)
+                {
+                    shape.Pen = selectedPen;
+                    MoveToFront();
+                }
+                else
+                {
+                    shape.Pen = outlinePen;
+                }
+            }
         }
 
         public override bool Intersects(RectangleF bounds)
@@ -382,8 +402,8 @@ namespace ME3Explorer.SequenceObjects
     {
         protected PPath shape;
         protected PPath titleBox;
-        public SFrame(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
-            : base(idx, p, grapheditor)
+        public SFrame(IExportEntry entry, float x, float y, GraphEditor grapheditor)
+            : base(entry, grapheditor)
         {
             string s = $"{export.ObjectName}_{export.indexValue}";
             float w = 0;
@@ -423,8 +443,8 @@ namespace ME3Explorer.SequenceObjects
 
         protected void MakeTitleBox(string s)
         {
-            s = "#" + index + " : " + s;
-            SText title = new SText(s, Color.FromArgb(255, 255, 128))
+            s = $"#{UIndex} : {s}";
+            SText title = new SText(s, titleColor)
             {
                 TextAlignment = StringAlignment.Center,
                 ConstrainWidthToTextWidth = false,
@@ -435,7 +455,7 @@ namespace ME3Explorer.SequenceObjects
             title.Width += 20;
             titleBox = PPath.CreateRectangle(0, 0, title.Width, title.Height + 5);
             titleBox.Pen = outlinePen;
-            titleBox.Brush = new SolidBrush(Color.FromArgb(112, 112, 112));
+            titleBox.Brush = titleBoxBrush;
             titleBox.AddChild(title);
             titleBox.Pickable = false;
         }
@@ -443,9 +463,7 @@ namespace ME3Explorer.SequenceObjects
 
     public abstract class SBox : SObj
     {
-        protected static Color titleBrush = Color.FromArgb(255, 255, 128);
         protected static Brush outputBrush = new SolidBrush(Color.Black);
-        protected static Brush titleBoxBrush = new SolidBrush(Color.FromArgb(112, 112, 112));
 
         public struct OutputLink
         {
@@ -476,22 +494,21 @@ namespace ME3Explorer.SequenceObjects
         protected PPath titleBox;
         protected PPath varLinkBox;
         protected PPath outLinkBox;
-        public List<OutputLink> Outlinks;
-        public List<VarLink> Varlinks;
-        protected VarDragHandler varDragHandler;
-        protected SBox(int idx, IMEPackage p, GraphEditor grapheditor)
-            : base(idx, p, grapheditor)
-        {
+        public readonly List<OutputLink> Outlinks = new List<OutputLink>();
+        public readonly List<VarLink> Varlinks = new List<VarLink>();
+        protected readonly VarDragHandler varDragHandler;
+        protected readonly OutputDragHandler outputDragHandler;
+        private static readonly PointF[] downwardTrianglePoly = { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) };
+        protected PPath CreateActionLinkBox() => PPath.CreateRectangle(0, -4, 10, 8);
 
+        protected SBox(IExportEntry entry, GraphEditor grapheditor)
+            : base(entry, grapheditor)
+        {
+            varDragHandler = new VarDragHandler(grapheditor, this);
+            outputDragHandler = new OutputDragHandler(grapheditor, this);
         }
 
-        protected SBox(int idx, IMEPackage p)
-            : base(idx, p)
-        {
-
-        }
-
-        public override void CreateConnections(ref List<SObj> objects)
+        public override void CreateConnections(IList<SObj> objects)
         {
             foreach (OutputLink outLink in Outlinks)
             {
@@ -499,21 +516,20 @@ namespace ME3Explorer.SequenceObjects
                 {
                     for (int j = 0; j < outLink.Links.Count; j++)
                     {
-                        if (objects[i].Index == outLink.Links[j])
+                        if (objects[i].UIndex == outLink.Links[j])
                         {
                             PPath p1 = outLink.node;
                             SObj p2 = (SObj)g.nodeLayer[i];
-                            PPath edge = new PPath();
+                            var edge = new ActionEdge();
                             if (p1.Tag == null)
                                 p1.Tag = new ArrayList();
                             if (p2.Tag == null)
                                 p2.Tag = new ArrayList();
                             ((ArrayList)p1.Tag).Add(edge);
                             ((ArrayList)p2.Tag).Add(edge);
-                            edge.Tag = new ArrayList();
-                            ((ArrayList)edge.Tag).Add(p1);
-                            ((ArrayList)edge.Tag).Add(p2);
-                            ((ArrayList)edge.Tag).Add(outLink.InputIndices[j]);
+                            edge.start = p1;
+                            edge.end = p2;
+                            edge.inputIndex = outLink.InputIndices[j];
                             g.addEdge(edge);
                         }
                     }
@@ -525,23 +541,21 @@ namespace ME3Explorer.SequenceObjects
                 {
                     foreach (int link in v.Links)
                     {
-                        if (objects[i].Index == link)
+                        if (objects[i].UIndex == link)
                         {
                             PPath p1 = v.node;
                             PNode p2 = g.nodeLayer[i];
-                            PPath edge = new PPath();
+                            var edge = new VarEdge();
+                            if (p2.ChildrenCount > 1)
+                                edge.Pen = ((PPath)p2[1]).Pen;
                             if (p1.Tag == null)
                                 p1.Tag = new ArrayList();
                             if (p2.Tag == null)
                                 p2.Tag = new ArrayList();
                             ((ArrayList)p1.Tag).Add(edge);
                             ((ArrayList)p2.Tag).Add(edge);
-                            edge.Tag = new ArrayList();
-                            if (p2.ChildrenCount > 1)
-                                edge.Pen = ((PPath)p2[1]).Pen;
-                            ((ArrayList)edge.Tag).Add(p1);
-                            ((ArrayList)edge.Tag).Add(p2);
-                            ((ArrayList)edge.Tag).Add(-1);//is a var link
+                            edge.start = p1;
+                            edge.end = p2;
                             g.addEdge(edge);
                         }
                     }
@@ -551,8 +565,8 @@ namespace ME3Explorer.SequenceObjects
 
         protected float GetTitleBox(string s, float w)
         {
-            s = "#" + index + " : " + s;
-            SText title = new SText(s, titleBrush)
+            s = $"#{UIndex} : {s}";
+            SText title = new SText(s, titleColor)
             {
                 TextAlignment = StringAlignment.Center,
                 ConstrainWidthToTextWidth = false,
@@ -575,7 +589,6 @@ namespace ME3Explorer.SequenceObjects
 
         protected void GetVarLinks()
         {
-            Varlinks = new List<VarLink>();
             var varLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("VariableLinks");
             if (varLinksProp != null)
             {
@@ -588,41 +601,34 @@ namespace ME3Explorer.SequenceObjects
                         VarLink l = new VarLink
                         {
                             Links = new List<int>(),
-                            Desc = props.GetProp<StrProperty>("LinkDesc")
+                            Desc = props.GetProp<StrProperty>("LinkDesc"),
+                            type = getType(pcc.getObjectName(props.GetProp<ObjectProperty>("ExpectedType").Value))
                         };
-                        if (linkedVars.Count != 0)
+                        foreach (var objProp in linkedVars)
                         {
-                            foreach (var objProp in linkedVars)
-                            {
-                                l.Links.Add(objProp.Value - 1);
-                            }
+                            l.Links.Add(objProp.Value);
                         }
-                        else
-                        {
-                            l.Links.Add(-1);
-                        }
-                        l.type = getType(pcc.getObjectName(props.GetProp<ObjectProperty>("ExpectedType").Value));
-                        l.writeable = props.GetProp<BoolProperty>("bWriteable").Value;
-                        if (l.writeable)
+                        PPath dragger;
+                        if (props.GetProp<BoolProperty>("bWriteable").Value)
                         {
                             //downward pointing triangle
-                            l.node = PPath.CreatePolygon(new[] { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) });
-                            l.node.AddChild(PPath.CreatePolygon(new[] { new PointF(-4, 0), new PointF(4, 0), new PointF(0, 10) }));
+                            l.node = PPath.CreatePolygon(downwardTrianglePoly);
+                            dragger = PPath.CreatePolygon(downwardTrianglePoly);
                         }
                         else
                         {
                             l.node = PPath.CreateRectangle(-4, 0, 8, 10);
-                            l.node.AddChild(PPath.CreateRectangle(-4, 0, 8, 10));
+                            dragger = PPath.CreateRectangle(-4, 0, 8, 10);
                         }
                         l.node.Brush = new SolidBrush(getColor(l.type));
                         l.node.Pen = new Pen(getColor(l.type));
                         l.node.Pickable = false;
-                        l.node[0].Brush = mostlyTransparentBrush;
-                        ((PPath)l.node[0]).Pen = l.node.Pen;
-                        l.node[0].X = l.node.X;
-                        l.node[0].Y = l.node.Y;
-                        varDragHandler = new VarDragHandler(); //track for memory release
-                        l.node[0].AddInputEventListener(varDragHandler);
+                        dragger.Brush = mostlyTransparentBrush;
+                        dragger.Pen = l.node.Pen;
+                        dragger.X = l.node.X;
+                        dragger.Y = l.node.Y;
+                        dragger.AddInputEventListener(varDragHandler);
+                        l.node.AddChild(dragger);
                         Varlinks.Add(l);
                     }
                 }
@@ -631,7 +637,6 @@ namespace ME3Explorer.SequenceObjects
 
         protected void GetOutputLinks()
         {
-            Outlinks = new List<OutputLink>();
             var outLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("OutputLinks");
             if (outLinksProp != null)
             {
@@ -647,32 +652,23 @@ namespace ME3Explorer.SequenceObjects
                             InputIndices = new List<int>(),
                             Desc = props.GetProp<StrProperty>("LinkDesc")
                         };
-                        if (linksProp.Count != 0)
+                        for (int i = 0; i < linksProp.Count; i++)
                         {
-                            for (int i = 0; i < linksProp.Count; i += 1)
-                            {
-                                int linkedOp = linksProp[i].GetProp<ObjectProperty>("LinkedOp").Value - 1;
-                                l.Links.Add(linkedOp);
-                                l.InputIndices.Add(linksProp[i].GetProp<IntProperty>("InputLinkIdx"));
-                                if (OutputNumbers)
-                                    l.Desc = l.Desc + (i > 0 ? "," : ": ") + "#" + (linkedOp);
-                            }
-                        }
-                        else
-                        {
-                            l.Links.Add(-1);
-                            l.InputIndices.Add(0);
+                            int linkedOp = linksProp[i].GetProp<ObjectProperty>("LinkedOp").Value;
+                            l.Links.Add(linkedOp);
+                            l.InputIndices.Add(linksProp[i].GetProp<IntProperty>("InputLinkIdx"));
                             if (OutputNumbers)
-                                l.Desc = l.Desc + ": #-1";
+                                l.Desc = l.Desc + (i > 0 ? "," : ": ") + "#" + linkedOp;
                         }
-                        l.node = PPath.CreateRectangle(0, -4, 10, 8);
+                        l.node = CreateActionLinkBox();
                         l.node.Brush = outputBrush;
                         l.node.Pickable = false;
-                        l.node.AddChild(PPath.CreateRectangle(0, -4, 10, 8));
-                        l.node[0].Brush = mostlyTransparentBrush;
-                        l.node[0].X = l.node.X;
-                        l.node[0].Y = l.node.Y;
-                        l.node[0].AddInputEventListener(new OutputDragHandler());
+                        PPath dragger = CreateActionLinkBox();
+                        dragger.Brush = mostlyTransparentBrush;
+                        dragger.X = l.node.X;
+                        dragger.Y = l.node.Y;
+                        dragger.AddInputEventListener(outputDragHandler);
+                        l.node.AddChild(dragger);
                         Outlinks.Add(l);
                     }
                 }
@@ -681,6 +677,13 @@ namespace ME3Explorer.SequenceObjects
 
         protected class OutputDragHandler : PDragEventHandler
         {
+            private readonly GraphEditor graphEditor;
+            private readonly SBox sObj;
+            public OutputDragHandler(GraphEditor graph, SBox obj)
+            {
+                graphEditor = graph;
+                sObj = obj;
+            }
             public override bool DoesAcceptEvent(PInputEventArgs e)
             {
                 return e.IsMouseEvent && (e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave) && !e.Handled;
@@ -688,21 +691,20 @@ namespace ME3Explorer.SequenceObjects
 
             protected override void OnStartDrag(object sender, PInputEventArgs e)
             {
-                e.PickedNode.Parent.Parent.Parent.Parent.MoveToBack();
+                sObj.MoveToBack();
                 e.Handled = true;
                 PNode p1 = ((PNode)sender).Parent;
                 PNode p2 = (PNode)sender;
-                PPath edge = new PPath();
+                var edge = new ActionEdge();
                 if (p1.Tag == null)
                     p1.Tag = new ArrayList();
                 if (p2.Tag == null)
                     p2.Tag = new ArrayList();
                 ((ArrayList)p1.Tag).Add(edge);
                 ((ArrayList)p2.Tag).Add(edge);
-                edge.Tag = new ArrayList();
-                ((ArrayList)edge.Tag).Add(p1);
-                ((ArrayList)edge.Tag).Add(p2);
-                ((SBox)e.PickedNode.Parent.Parent.Parent.Parent).g.addEdge(edge);
+                edge.start = p1;
+                edge.end = p2;
+                graphEditor.addEdge(edge);
                 base.OnStartDrag(sender, e);
                 draggingOutlink = true;
             }
@@ -711,7 +713,7 @@ namespace ME3Explorer.SequenceObjects
             {
                 base.OnDrag(sender, e);
                 e.Handled = true;
-                GraphEditor.UpdateEdge((PPath)((ArrayList)((PNode)sender).Tag)[0]);
+                GraphEditor.UpdateEdge((SeqEdEdge)((ArrayList)((PNode)sender).Tag)[0]);
             }
 
             protected override void OnEndDrag(object sender, PInputEventArgs e)
@@ -719,19 +721,26 @@ namespace ME3Explorer.SequenceObjects
                 PPath edge = (PPath)((ArrayList)((PNode)sender).Tag)[0];
                 ((PNode)sender).SetOffset(0, 0);
                 ((ArrayList)((PNode)sender).Parent.Tag).Remove(edge);
-                ((SBox)e.PickedNode.Parent.Parent.Parent.Parent).g.edgeLayer.RemoveChild(edge);
+                graphEditor.edgeLayer.RemoveChild(edge);
                 ((ArrayList)((PNode)sender).Tag).RemoveAt(0);
                 base.OnEndDrag(sender, e);
                 draggingOutlink = false;
                 if (dragTarget != null)
                 {
-                    ((SBox)e.PickedNode.Parent.Parent.Parent.Parent).CreateOutlink(((PPath)sender).Parent, dragTarget);
+                    sObj.CreateOutlink(((PPath)sender).Parent, dragTarget);
                 }
             }
         }
 
         protected class VarDragHandler : PDragEventHandler
         {
+            private readonly GraphEditor graphEditor;
+            private readonly SBox sObj;
+            public VarDragHandler(GraphEditor graph, SBox obj)
+            {
+                graphEditor = graph;
+                sObj = obj;
+            }
 
             public override bool DoesAcceptEvent(PInputEventArgs e)
             {
@@ -740,22 +749,20 @@ namespace ME3Explorer.SequenceObjects
 
             protected override void OnStartDrag(object sender, PInputEventArgs e)
             {
-                e.PickedNode.Parent.Parent.Parent.Parent.MoveToBack();
+                sObj.MoveToBack();
                 e.Handled = true;
                 PNode p1 = ((PNode)sender).Parent;
                 PNode p2 = (PNode)sender;
-                PPath edge = new PPath();
+                var edge = new VarEdge();
                 if (p1.Tag == null)
                     p1.Tag = new ArrayList();
                 if (p2.Tag == null)
                     p2.Tag = new ArrayList();
                 ((ArrayList)p1.Tag).Add(edge);
                 ((ArrayList)p2.Tag).Add(edge);
-                edge.Tag = new ArrayList();
-                ((ArrayList)edge.Tag).Add(p1);
-                ((ArrayList)edge.Tag).Add(p2);
-                ((ArrayList)edge.Tag).Add(-1);
-                ((SBox)e.PickedNode.Parent.Parent.Parent.Parent).g.addEdge(edge);
+                edge.start = p1;
+                edge.end = p2;
+                graphEditor.addEdge(edge);
                 base.OnStartDrag(sender, e);
                 draggingVarlink = true;
 
@@ -765,7 +772,7 @@ namespace ME3Explorer.SequenceObjects
             {
                 base.OnDrag(sender, e);
                 e.Handled = true;
-                GraphEditor.UpdateEdge((PPath)((ArrayList)((PNode)sender).Tag)[0]);
+                GraphEditor.UpdateEdge((SeqEdEdge)((ArrayList)((PNode)sender).Tag)[0]);
             }
 
             protected override void OnEndDrag(object sender, PInputEventArgs e)
@@ -773,13 +780,13 @@ namespace ME3Explorer.SequenceObjects
                 PPath edge = (PPath)((ArrayList)((PNode)sender).Tag)[0];
                 ((PNode)sender).SetOffset(0, 0);
                 ((ArrayList)((PNode)sender).Parent.Tag).Remove(edge);
-                ((SBox)e.PickedNode.Parent.Parent.Parent.Parent).g.edgeLayer.RemoveChild(edge);
+                graphEditor.edgeLayer.RemoveChild(edge);
                 ((ArrayList)((PNode)sender).Tag).RemoveAt(0);
                 base.OnEndDrag(sender, e);
                 draggingVarlink = false;
                 if (dragTarget != null)
                 {
-                    ((SBox)e.PickedNode.Parent.Parent.Parent.Parent).CreateVarlink(((PPath)sender).Parent, (SVar)dragTarget);
+                    sObj.CreateVarlink(((PPath)sender).Parent, (SVar)dragTarget);
                 }
             }
         }
@@ -788,13 +795,13 @@ namespace ME3Explorer.SequenceObjects
         {
             SBox start = (SBox)n1.Parent.Parent.Parent;
             SAction end = (SAction)n2.Parent.Parent.Parent;
-            IExportEntry startExport = pcc.getExport(start.Index);
+            IExportEntry startExport = start.export;
             string linkDesc = null;
             foreach (OutputLink l in start.Outlinks)
             {
                 if (l.node == n1)
                 {
-                    if (l.Links.Contains(end.Index))
+                    if (l.Links.Contains(end.UIndex))
                         return;
                     linkDesc = l.Desc;
                     break;
@@ -822,7 +829,7 @@ namespace ME3Explorer.SequenceObjects
                     {
                         var linksProp = prop.GetProp<ArrayProperty<StructProperty>>("Links");
                         linksProp.Add(new StructProperty("SeqOpOutputInputLink", false,
-                            new ObjectProperty(end.index + 1, "LinkedOp"),
+                            new ObjectProperty(end.export, "LinkedOp"),
                             new IntProperty(inputIndex, "InputLinkIdx")));
                         startExport.WriteProperty(outLinksProp);
                         return;
@@ -834,13 +841,13 @@ namespace ME3Explorer.SequenceObjects
         public void CreateVarlink(PNode p1, SVar end)
         {
             SBox start = (SBox)p1.Parent.Parent.Parent;
-            IExportEntry startExport = pcc.getExport(start.Index);
+            IExportEntry startExport = start.export;
             string linkDesc = null;
             foreach (VarLink l in start.Varlinks)
             {
                 if (l.node == p1)
                 {
-                    if (l.Links.Contains(end.Index))
+                    if (l.Links.Contains(end.UIndex))
                         return;
                     linkDesc = l.Desc;
                     break;
@@ -855,7 +862,7 @@ namespace ME3Explorer.SequenceObjects
                 {
                     if (prop.GetProp<StrProperty>("LinkDesc") == linkDesc)
                     {
-                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Add(new ObjectProperty(end.Index + 1));
+                        prop.GetProp<ArrayProperty<ObjectProperty>>("LinkedVariables").Add(new ObjectProperty(end.Export));
                         startExport.WriteProperty(varLinksProp);
                     }
                 }
@@ -898,12 +905,25 @@ namespace ME3Explorer.SequenceObjects
                 }
             }
         }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            if (outputDragHandler != null)
+            {
+                Outlinks.ForEach(x => x.node[0].RemoveInputEventListener(outputDragHandler));
+            }
+            if (varDragHandler != null)
+            {
+                Varlinks.ForEach(x => x.node[0].RemoveInputEventListener(varDragHandler));
+            }
+        }
     }
 
     public class SEvent : SBox
     {
-        public SEvent(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
-            : base(idx, p, grapheditor)
+        public SEvent(IExportEntry entry, float x, float y, GraphEditor grapheditor)
+            : base(entry, grapheditor)
         {
             outlinePen = new Pen(Color.FromArgb(214, 30, 28));
             string s = export.ObjectName;
@@ -917,21 +937,18 @@ namespace ME3Explorer.SequenceObjects
             float midW = 0;
             varLinkBox = new PPath();
             GetVarLinks();
-            for (int i = 0; i < Varlinks.Count; i++)
+            foreach(var varLink in Varlinks)
             {
-                string d = "";
-                foreach (int l in Varlinks[i].Links)
-                    d = d + "#" + l + ",";
-                d = d.Remove(d.Length - 1);
-                SText t2 = new SText(d + "\n" + Varlinks[i].Desc)
+                string d = string.Join(",", varLink.Links.Select(l => $"#{l}"));
+                SText t2 = new SText(d + "\n" + varLink.Desc)
                 {
                     X = w,
                     Y = 0,
                     Pickable = false
                 };
                 w += t2.Width + 20;
-                Varlinks[i].node.TranslateBy(t2.X + t2.Width / 2, t2.Y + t2.Height);
-                t2.AddChild(Varlinks[i].node);
+                varLink.node.TranslateBy(t2.X + t2.Width / 2, t2.Y + t2.Height);
+                t2.AddChild(varLink.node);
                 varLinkBox.AddChild(t2);
             }
             if (Varlinks.Count != 0)
@@ -993,29 +1010,27 @@ namespace ME3Explorer.SequenceObjects
             this.TranslateBy(x, y);
         }
 
-        public override void Select()
+        private bool _isSelected;
+        public override bool IsSelected
         {
-            titleBox.Pen = selectedPen;
-            varLinkBox.Pen = selectedPen;
-            outLinkBox.Pen = selectedPen;
-        }
-
-        public override void Deselect()
-        {
-            titleBox.Pen = outlinePen;
-            varLinkBox.Pen = outlinePen;
-            outLinkBox.Pen = outlinePen;
-        }
-
-        public override void Dispose()
-        {
-            if (varDragHandler != null)
+            get => _isSelected;
+            set
             {
-                Outlinks.ForEach(x => x.node.RemoveInputEventListener(varDragHandler));
+                _isSelected = value;
+                if (value)
+                {
+                    titleBox.Pen = selectedPen;
+                    varLinkBox.Pen = selectedPen;
+                    outLinkBox.Pen = selectedPen;
+                    MoveToFront();
+                }
+                else
+                {
+                    titleBox.Pen = outlinePen;
+                    varLinkBox.Pen = outlinePen;
+                    outLinkBox.Pen = outlinePen;
+                }
             }
-            g = null;
-            pcc = null;
-            export = null;
         }
 
         //public override bool Intersects(RectangleF bounds)
@@ -1035,8 +1050,10 @@ namespace ME3Explorer.SequenceObjects
         protected float originalX;
         protected float originalY;
 
-        public SAction(int idx, float x, float y, IMEPackage p, GraphEditor grapheditor)
-            : base(idx, p, grapheditor)
+        protected InputDragHandler inputDragHandler = new InputDragHandler();
+
+        public SAction(IExportEntry entry, float x, float y, GraphEditor grapheditor)
+            : base(entry, grapheditor)
         {
             GetVarLinks();
             GetOutputLinks();
@@ -1044,61 +1061,44 @@ namespace ME3Explorer.SequenceObjects
             originalY = y;
         }
 
-        public SAction(int idx, float x, float y, IMEPackage p)
-            : base(idx, p)
+        private bool _isSelected;
+        public override bool IsSelected
         {
-            GetVarLinks();
-            GetOutputLinks();
-            originalX = x;
-            originalY = y;
-        }
-        public override void Select()
-        {
-            titleBox.Pen = selectedPen;
-            ((PPath)this[1]).Pen = selectedPen;
+            get => _isSelected;
+            set
+            {
+                _isSelected = value;
+                if (value)
+                {
+                    titleBox.Pen = selectedPen;
+                    ((PPath)this[1]).Pen = selectedPen;
+                    MoveToFront();
+                }
+                else
+                {
+                    titleBox.Pen = outlinePen;
+                    ((PPath)this[1]).Pen = outlinePen;
+                }
+            }
         }
 
-        public override void Deselect()
+        public override void Layout()
         {
-            titleBox.Pen = outlinePen;
-            ((PPath)this[1]).Pen = outlinePen;
+            Layout(originalX, originalY);
         }
 
         public override void Layout(float x, float y)
         {
-            if (pcc.Game == MEGame.ME1)
-            {
-                // ==
-                if (Math.Abs(x - -0.1f) < float.Epsilon)
-                    x = originalX;
-                // ==
-                if (Math.Abs(y - -0.1f) < float.Epsilon)
-                    y = originalY;
-            }
-            else
-            {
-                // ==
-                if (Math.Abs(originalX - -1) > float.Epsilon)
-                    x = originalX;
-                // ==
-                if (Math.Abs(originalY - -1) > float.Epsilon)
-                    y = originalY;
-            }
             outlinePen = new Pen(Color.Black);
             string s = export.ObjectName;
-            s = s.Replace("BioSeqAct_", "");
-            s = s.Replace("SFXSeqAct_", "");
-            s = s.Replace("SeqAct_", "");
-            s = s.Replace("SeqCond_", "");
+            s = s.Replace("BioSeqAct_", "").Replace("SFXSeqAct_", "")
+                 .Replace("SeqAct_", "").Replace("SeqCond_", "");
             float starty = 8;
             float w = 20;
             varLinkBox = new PPath();
             for (int i = 0; i < Varlinks.Count; i++)
             {
-                string d = "";
-                foreach (int l in Varlinks[i].Links)
-                    d = d + "#" + l + ",";
-                d = d.Remove(d.Length - 1);
+                string d = string.Join(",", Varlinks[i].Links.Select(l => $"#{l}"));
                 SText t2 = new SText(d + "\n" + Varlinks[i].Desc)
                 {
                     X = w,
@@ -1201,7 +1201,7 @@ namespace ME3Explorer.SequenceObjects
             this.AddChild(varLinkBox);
             this.AddChild(outLinkBox);
             this.AddChild(inputLinkBox);
-            this.TranslateBy(x, y);
+            SetOffset(x, y);
         }
 
         private void GetInputLinks()
@@ -1216,22 +1216,28 @@ namespace ME3Explorer.SequenceObjects
                     inputLinksProp = pcc.getExport(oSequenceReference.Value - 1).GetProperty<ArrayProperty<StructProperty>>("InputLinks");
                 }
             }
+
+            void CreateInputLink(string desc, int idx, bool hasName = true)
+            {
+                InputLink l = new InputLink
+                {
+                    Desc = desc,
+                    hasName = hasName,
+                    index = idx,
+                    node = CreateActionLinkBox()
+                };
+                l.node.Brush = outputBrush;
+                l.node.MouseEnter += OnMouseEnter;
+                l.node.MouseLeave += OnMouseLeave;
+                l.node.AddInputEventListener(inputDragHandler);
+                InLinks.Add(l);
+            }
+
             if (inputLinksProp != null)
             {
                 for (int i = 0; i < inputLinksProp.Count; i++)
                 {
-                    InputLink l = new InputLink
-                    {
-                        Desc = inputLinksProp[i].GetProp<StrProperty>("LinkDesc"),
-                        hasName = true,
-                        index = i,
-                        node = PPath.CreateRectangle(0, -4, 10, 8)
-                    };
-                    l.node.Brush = outputBrush;
-                    l.node.MouseEnter += OnMouseEnter;
-                    l.node.MouseLeave += OnMouseLeave;
-                    l.node.AddInputEventListener(new InputDragHandler());
-                    InLinks.Add(l);
+                    CreateInputLink(inputLinksProp[i].GetProp<StrProperty>("LinkDesc"), i);
                 }
             }
             else if (pcc.Game == MEGame.ME3)
@@ -1242,18 +1248,7 @@ namespace ME3Explorer.SequenceObjects
                     {
                         for (int i = 0; i < inputLinks.Count; i++)
                         {
-                            InputLink l = new InputLink
-                            {
-                                Desc = inputLinks[i],
-                                hasName = true,
-                                index = i,
-                                node = PPath.CreateRectangle(0, -4, 10, 8)
-                            };
-                            l.node.Brush = outputBrush;
-                            l.node.MouseEnter += OnMouseEnter;
-                            l.node.MouseLeave += OnMouseLeave;
-                            l.node.AddInputEventListener(new InputDragHandler());
-                            InLinks.Add(l);
+                            CreateInputLink(inputLinks[i], i);
                         }
                     }
                 }
@@ -1265,32 +1260,21 @@ namespace ME3Explorer.SequenceObjects
             if (this.Tag != null)
             {
                 int numInputs = InLinks.Count;
-                foreach (PPath edge in ((ArrayList)this.Tag))
+                foreach (ActionEdge edge in ((ArrayList)this.Tag))
                 {
-                    int inputNum = (int)((ArrayList)edge.Tag)[2];
+                    int inputNum = edge.inputIndex;
                     //if there are inputs with an index greater than is accounted for by
                     //the current number of inputs, create enough inputs to fill up to that index
                     if (inputNum + 1 > numInputs)
                     {
                         for (int i = numInputs; i <= inputNum; i++)
                         {
-                            InputLink l = new InputLink
-                            {
-                                Desc = ":" + i,
-                                hasName = false,
-                                index = i,
-                                node = PPath.CreateRectangle(0, -4, 10, 8)
-                            };
-                            l.node.Brush = outputBrush;
-                            l.node.MouseEnter += OnMouseEnter;
-                            l.node.MouseLeave += OnMouseLeave;
-                            l.node.AddInputEventListener(new InputDragHandler());
-                            InLinks.Add(l);
+                            CreateInputLink($":{i}", i, false);
                         }
                         numInputs = inputNum + 1;
                     }
                     if (inputNum >= 0)
-                        ((ArrayList)edge.Tag)[1] = InLinks[inputNum].node;
+                        edge.end = InLinks[inputNum].node;
                 }
             }
         }
@@ -1335,13 +1319,11 @@ namespace ME3Explorer.SequenceObjects
 
         public override void Dispose()
         {
-            if (varDragHandler != null)
+            base.Dispose();
+            if (inputDragHandler != null)
             {
-                Outlinks.ForEach(x => x.node.RemoveInputEventListener(varDragHandler));
+                InLinks.ForEach(x => x.node.RemoveInputEventListener(inputDragHandler));
             }
-            g = null;
-            pcc = null;
-            export = null;
         }
     }
 

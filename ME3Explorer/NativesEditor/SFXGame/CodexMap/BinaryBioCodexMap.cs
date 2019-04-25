@@ -18,19 +18,19 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
 
 		public long PagesOffset
 		{
-			get { return _pagesOffset; }
-			set { SetProperty(ref _pagesOffset, value); }
+			get => _pagesOffset;
+		    set => SetProperty(ref _pagesOffset, value);
 		}
 
 		public long SectionsOffset
 		{
-			get { return _sectionsOffset; }
-			set { SetProperty(ref _sectionsOffset, value); }
+			get => _sectionsOffset;
+		    set => SetProperty(ref _sectionsOffset, value);
 		}
 
 		public static BioCodexMap Load(string path)
 		{
-			if (path.IsNullOrEmpty())
+			if (string.IsNullOrEmpty(path))
 			{
 				throw new ArgumentNullException(nameof(path));
 			}
@@ -93,7 +93,7 @@ namespace Gammtek.Conduit.MassEffect3.SFXGame.CodexMap
 
 		public void Save(string path)
 		{
-			if (path.IsNullOrEmpty())
+			if (string.IsNullOrEmpty(path))
 			{
 				throw new ArgumentNullException(nameof(path));
 			}

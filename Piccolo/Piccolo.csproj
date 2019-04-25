@@ -59,9 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Piccolo\GraphEditor.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Piccolo\Extensions.cs" />
     <Compile Include="Piccolo\Activities\NamespaceDoc.cs" />
     <Compile Include="Piccolo\Activities\PActivity.cs" />
     <Compile Include="Piccolo\Activities\PActivityScheduler.cs" />

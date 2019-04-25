@@ -46,9 +46,9 @@ namespace ME3Explorer
             {
                 wpf.handleUpdate(updates);
             }
-            else if (winform != null)
+            else
             {
-                winform.handleUpdate(updates);
+                winform?.handleUpdate(updates);
             }
         }
 
@@ -80,9 +80,9 @@ namespace ME3Explorer
             {
                 wpf.Close();
             }
-            else if (winform != null)
+            else
             {
-                winform.Close();
+                winform?.Close();
             }
         }
 
@@ -92,9 +92,9 @@ namespace ME3Explorer
             {
                 wpf.RestoreAndBringToFront();
             }
-            else if (winform != null)
+            else
             {
-                winform.RestoreAndBringToFront();
+                winform?.RestoreAndBringToFront();
             }
         }
 

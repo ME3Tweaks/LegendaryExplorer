@@ -245,7 +245,7 @@ namespace ME3Explorer.Packages
         }
 
         public ImportEntry getImport(int index) => imports[index];
-        public ImportEntry getUImport(int index) => imports[Math.Abs(index) - 1];
+        public ImportEntry getUImport(int uindex) => imports[Math.Abs(uindex) - 1];
 
         #endregion
 
@@ -290,6 +290,8 @@ namespace ME3Explorer.Packages
                 return imports[-index - 1];
             return null;
         }
+        public bool isEntry(int uindex) => (uindex > 0 && uindex <= ExportCount) || (Math.abs(index) > 0 && Math.Abs(index) <= ImportCount);
+
         #endregion
 
         public string FollowLink(int Link)
@@ -461,8 +463,7 @@ namespace ME3Explorer.Packages
                 Task task = Task.Delay(queuingDelay);
                 taskCompletion[task.Id] = false;
                 tasks.Add(task);
-                //var itemx = TaskScheduler.FromCurrentSynchronizationContext();
-                task.ContinueWith(x =>
+                task.ContinueWithOnUIThread(x =>
                 {
                     taskCompletion[x.Id] = true;
                     if (tasks.TrueForAll(t => taskCompletion[t.Id]))
@@ -476,7 +477,7 @@ namespace ME3Explorer.Packages
                         pendingUpdates.Clear();
                         OnPropertyChanged(nameof(IsModified));
                     }
-                }, App.SYNCHRONIZATION_CONTEXT); //TaskScheduler.FromCurrentSynchronizationContext());
+                });
             }
         }
 

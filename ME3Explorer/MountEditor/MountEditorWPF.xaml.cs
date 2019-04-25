@@ -24,8 +24,8 @@ namespace ME3Explorer.MountEditor
     public partial class MountEditorWPF : NotifyPropertyChangedWindowBase
     {
         public ObservableCollectionExtended<UIMountFlag> MountIDValues { get; } = new ObservableCollectionExtended<UIMountFlag>();
-        private List<UIMountFlag> ME2MountFlags = new List<UIMountFlag>();
-        private List<UIMountFlag> ME3MountFlags = new List<UIMountFlag>();
+        private readonly List<UIMountFlag> ME2MountFlags = new List<UIMountFlag>();
+        private readonly List<UIMountFlag> ME3MountFlags = new List<UIMountFlag>();
         private bool _isME2;
         public bool IsME2
         {
@@ -75,9 +75,8 @@ namespace ME3Explorer.MountEditor
             // Insert the previewed text into the existing text in the textbox.
             var fullText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
 
-            double val;
             // If parsing is successful, set Handled to false
-            e.Handled = !double.TryParse(fullText, out val);
+            e.Handled = !double.TryParse(fullText, out double _);
         }
 
         public class UIMountFlag
@@ -88,8 +87,8 @@ namespace ME3Explorer.MountEditor
                 this.DisplayString = displayString;
             }
 
-            public EMountFileFlag Flag { get; private set; }
-            public string DisplayString { get; private set; }
+            public EMountFileFlag Flag { get; }
+            public string DisplayString { get; }
         }
 
         private void LoadMountFile_Click(object sender, RoutedEventArgs e)
@@ -106,7 +105,7 @@ namespace ME3Explorer.MountEditor
                 ME2CheckBox.IsChecked = mf.IsME2;
                 DLCFolder_TextBox.Text = mf.IsME2 ? mf.ME2Only_DLCFolderName : "Not used in ME3";
                 HumanReadable_TextBox.Text = mf.IsME2 ? mf.ME2Only_DLCHumanName : "Not used in ME3";
-                var flag = (IsME2 ? ME2MountFlags : ME3MountFlags).First(x => x.Flag == mf.MountFlag); ;
+                var flag = (IsME2 ? ME2MountFlags : ME3MountFlags).First(x => x.Flag == mf.MountFlag);
                 MountComboBox.SelectedItem = flag;
                 TLKID_TextBox.Text = mf.TLKID.ToString();
                 MountPriority_TextBox.Text = mf.MountPriority.ToString();
@@ -149,7 +148,7 @@ namespace ME3Explorer.MountEditor
 
         private bool validate()
         {
-            if (!ushort.TryParse(MountPriority_TextBox.Text, out ushort value))
+            if (!ushort.TryParse(MountPriority_TextBox.Text, out ushort _))
             {
                 Xceed.Wpf.Toolkit.MessageBox.Show("Mount priority must be a value between 1 and " + ushort.MaxValue + ".", "Validation error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
@@ -185,9 +184,8 @@ namespace ME3Explorer.MountEditor
             // Insert the previewed text into the existing text in the textbox.
             var fullText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
 
-            double val;
             //Handled means it won't appear.
-            var handled = double.TryParse(fullText, out val);
+            var handled = double.TryParse(fullText, out double _);
 
             //Validate it
             if (handled)

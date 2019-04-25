@@ -5,31 +5,32 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using ME3Explorer.Packages;
+using static ME1Explorer.Unreal.Classes.TalkFile;
 
 namespace ME1Explorer
 {
     class HuffmanCompression
     {
-        private List<TLKEntry> _inputData = new List<TLKEntry>();
+        private List<TLKStringRef> _inputData = new List<TLKStringRef>();
         private Dictionary<char, int> frequencyCount = new Dictionary<char, int>();
         private List<HuffmanNode> _huffmanTree = new List<HuffmanNode>();
         private Dictionary<char, BitArray> _huffmanCodes = new Dictionary<char, BitArray>();
 
-        private class TLKEntry
-        {
-            public int StringID;
-            public int Flags;
-            public string data;
-            public int index;
+        //private class TLKEntry
+        //{
+        //    public int StringID;
+        //    public int Flags;
+        //    public string data;
+        //    public int index;
 
-            public TLKEntry(int StringID, int flags, string data)
-            {
-                this.StringID = StringID;
-                this.Flags = flags;
-                this.data = data;
-                index = -1;
-            }
-        }
+        //    public TLKEntry(int StringID, int flags, string data)
+        //    {
+        //        this.StringID = StringID;
+        //        this.Flags = flags;
+        //        this.data = data;
+        //        index = -1;
+        //    }
+        //}
 
         private class HuffmanNode
         {
@@ -82,7 +83,26 @@ namespace ME1Explorer
             PrepareHuffmanCoding();
         }
 
-        public void replaceTlkwithFile(ME1Package pcc, int Index)
+        /// <summary>
+        /// Loads a file into memory and prepares for compressing it to TLK
+        /// </summary>
+        /// <param name="fileName"></param>
+        public void LoadInputData(List<TLKStringRef> tlkEntries)
+        {
+            _inputData = tlkEntries;
+            PrepareHuffmanCoding();
+        }
+
+        public void serializeTLKStrListToExport(IExportEntry export, bool savePackage = false)
+        {
+            if (export.FileRef.Game != MEGame.ME1)
+            {
+                throw new Exception("Cannot save a ME1 TLK to a game that is not Mass Effect 1.");
+            }
+            serializeTalkfileToExport(export.FileRef as ME1Package, export.Index, savePackage);
+        }
+
+        public void serializeTalkfileToExport(ME1Package pcc, int Index, bool savePackage = false)
         {
             /* converts Huffmann Tree to binary form */
             byte[] treeBuffer = ConvertHuffmanTreeToBuffer();
@@ -94,24 +114,25 @@ namespace ME1Explorer
                 if (entry.Flags == 0)
                 {
                     if (entry.StringID > 0)
-                        entry.index = -1;
+                        entry.Index = -1;
                     else
-                        entry.index = 0;
+                        entry.Index = 0;
                 }
                 else
                 {
-                    entry.index = i;
+                    entry.Index = i;
                     i++;
                     List<BitArray> binaryData = new List<BitArray>();
                     int binaryLength = 0;
+                    
                     /* for every character in a string, put it's binary code into data array */
-                    foreach (char c in entry.data)
+                    foreach (char c in entry.ASCIIData)
                     {
                         binaryData.Add(_huffmanCodes[c]);
                         binaryLength += _huffmanCodes[c].Count;
                     }
                     byte[] buffer = BitArrayListToByteArray(binaryData, binaryLength);
-                    encodedStrings.Add(new EncodedString(entry.data.Length, buffer.Length, buffer));
+                    encodedStrings.Add(new EncodedString(entry.ASCIIData.Length, buffer.Length, buffer));
                 }
             }
 
@@ -128,11 +149,11 @@ namespace ME1Explorer
 
             /* writing entries */
             m.Write(BitConverter.GetBytes(_inputData.Count), 0, 4);
-            foreach (TLKEntry entry in _inputData)
+            foreach (TLKStringRef entry in _inputData)
             {
                 m.Write(BitConverter.GetBytes(entry.StringID), 0, 4);
                 m.Write(BitConverter.GetBytes(entry.Flags), 0, 4);
-                m.Write(BitConverter.GetBytes(entry.index), 0, 4);
+                m.Write(BitConverter.GetBytes(entry.Index), 0, 4);
             }
 
             /* writing HuffmanTree */
@@ -149,7 +170,10 @@ namespace ME1Explorer
 
             byte[] buff = m.ToArray();
             pcc.Exports[Index].Data = buff;
-            pcc.save(pcc.FileName); 
+            if (savePackage)
+            {
+                pcc.save(pcc.FileName);
+            }
         }
 
         /// <summary>
@@ -181,7 +205,7 @@ namespace ME1Explorer
                     /* every string should be NULL-terminated */
                     if (id > 0)
                         data += '\0';
-                    _inputData.Add(new TLKEntry(id, flags, data));
+                    _inputData.Add(new TLKStringRef(id, flags, data));
                 }
             }
             xmlReader.Close();
@@ -199,7 +223,7 @@ namespace ME1Explorer
             {
                 if (entry.StringID <= 0)
                     continue;
-                foreach (char c in entry.data)
+                foreach (char c in entry.ASCIIData)
                 {
                     if (!frequencyCount.ContainsKey(c))
                         frequencyCount.Add(c, 0);

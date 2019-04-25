@@ -7,6 +7,8 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 using KFreonLib.MEDirectories;
+using ME3Explorer.Sequence_Editor;
+using ME3Explorer.SharedUI;
 using ME3Explorer.Pathfinding_Editor;
 using Newtonsoft.Json;
 
@@ -270,6 +272,19 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
+                name = "Property Database",
+                type = typeof(Propertydb.PropertyDB),
+                icon = Application.Current.FindResource("iconPropertyDatabase") as ImageSource,
+                open = () =>
+                {
+                    (new Propertydb.PropertyDB()).Show();
+                },
+                tags = new List<string> { "utility" },
+                subCategory = "Databases",
+                description = "Scans ME3 and creates a database of all the classes and properties for those classes that Bioware uses.\n\nThis is different than Package Dumper, as it looks across all instances of the class and what is actually used."
+            });
+            set.Add(new Tool
+            {
                 name = "PSA Viewer",
                 type = typeof(PSAViewer),
                 icon = Application.Current.FindResource("iconPSAViewer") as ImageSource,
@@ -514,7 +529,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "developer", "pcc", "cloning", "import", "export", "sfm", "upk", ".u", "me2", "me1", "me3", "name" },
                 subCategory = "Core",
-                description = "Package Editor Classic is a tool for editing trilogy package files in various formats (PCC, SFM, UPK). Properties, arrays, names, curve data, and more can all be easily added and edited.\n\nPackage Editor Classic has been mostly replaced by Package Editor WPF, and will eventually placed into a deprecated status."
+                description = "Package Editor Classic is a tool for editing trilogy package files in various formats (PCC, SFM, UPK). Properties, arrays, names, curve data, and more can all be easily added and edited.\n\nPackage Editor Classic has been deprecated and is scheduled for removal in the next release."
             });
             set.Add(new Tool
             {
@@ -559,11 +574,11 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "Sequence Editor",
-                type = typeof(SequenceEditor),
+                type = typeof(SequenceEditorWPF),
                 icon = Application.Current.FindResource("iconSequenceEditor") as ImageSource,
                 open = () =>
                 {
-                    (new SequenceEditor()).Show();
+                    (new SequenceEditorWPF()).Show();
                 },
                 tags = new List<string> { "user", "developer", "kismet", "me1", "me2", "me3" },
                 subCategory = "Core",

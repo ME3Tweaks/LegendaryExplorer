@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shell;
 using KFreonLib.MEDirectories;
+using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using Microsoft.Win32;
 
