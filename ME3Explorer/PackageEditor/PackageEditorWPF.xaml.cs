@@ -2149,14 +2149,14 @@ namespace ME3Explorer
                         Dispatcher.BeginInvoke(DispatcherPriority.Background, (NoArgDelegate)delegate { nodes[0].ParentNodeValue.SelectItem(nodes[0]); });
                     }
                 }*/
-                DispatcherHelper.EmptyQueue();
+                //DispatcherHelper.EmptyQueue();
                 var list = AllTreeViewNodesX[0].FlattenTree();
                 List<TreeViewEntry> selectNode = list.Where(s => s.Entry != null && s.UIndex == entryIndex).ToList();
                 if (selectNode.Any())
                 {
                     //selectNode[0].ExpandParents();
                     selectNode[0].IsProgramaticallySelecting = true;
-                    selectNode[0].IsSelected = true;
+                    SelectedItem = selectNode[0];
                     //FocusTreeViewNodeOld(selectNode[0]);
 
                     //selectNode[0].Focus(LeftSide_TreeView);
@@ -2722,7 +2722,7 @@ namespace ME3Explorer
                     if (node.Entry.ClassName.Equals(searchClass))
                     {
                         node.IsProgramaticallySelecting = true;
-                        node.IsSelected = true;
+                        SelectedItem = node;
                         break;
                     }
                 }
@@ -2864,7 +2864,8 @@ namespace ME3Explorer
                     if (node.Entry.ObjectName.ToLower().Contains(searchTerm))
                     {
                         node.IsProgramaticallySelecting = true;
-                        node.IsSelected = true;
+                        SelectedItem = node;
+                        //node.IsSelected = true;
                         break;
                     }
                 }

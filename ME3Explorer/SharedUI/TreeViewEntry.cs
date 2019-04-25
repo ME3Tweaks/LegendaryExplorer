@@ -16,13 +16,13 @@ namespace ME3Explorer
 
         public bool IsProgramaticallySelecting;
 
-        private bool isSelected;
+        /*private bool isSelected;
         public bool IsSelected
         {
             get => isSelected;
             set
             {
-                if (!IsProgramaticallySelecting && isSelected != value)
+               /* if (!IsProgramaticallySelecting && isSelected != value)
                 {
                     //user is selecting
                     isSelected = value;
@@ -80,7 +80,7 @@ namespace ME3Explorer
                 // execute all of the queued operations in descending DipatecherPriority order (expansion before selection)
                 var unused = DispatcherHelper.ProcessQueueAsync();
             }
-        }
+        }*/
 
         private bool isExpanded;
         public bool IsExpanded

@@ -509,6 +509,7 @@
     <Compile Include="Sequence Editor\GraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="SharedUI\PeregrineTreeView\NodeTreeSelectionBehavior.cs" />
     <Compile Include="SharedUI\TreeViewEntry.cs" />
     <Compile Include="Packages\UDKPackage.cs" />
     <Compile Include="Packages\MEPackage.cs" />
