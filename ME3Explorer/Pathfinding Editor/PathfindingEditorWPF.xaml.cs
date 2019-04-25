@@ -106,17 +106,6 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public PathfindingEditorWPF()
         {
-            Initialize();
-        }
-
-        public PathfindingEditorWPF(string fileName)
-        {
-            FileQueuedForLoad = fileName;
-            Initialize();
-        }
-
-        private void Initialize()
-        {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Pathfinding Editor WPF", new WeakReference(this));
             DataContext = this;
             StatusText = "Select package file to load";
@@ -147,6 +136,11 @@ namespace ME3Explorer.Pathfinding_Editor
             InitializeComponent();
             pathfindingMouseListener = new PathfindingMouseListener(this); //Must be member so we can release reference
             graphEditor.AddInputEventListener(pathfindingMouseListener);
+        }
+
+        public PathfindingEditorWPF(string fileName) : this()
+        {
+            FileQueuedForLoad = fileName;
         }
 
         #region Properties and Bindings
