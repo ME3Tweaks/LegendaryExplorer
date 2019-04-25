@@ -172,6 +172,32 @@ namespace ME3Explorer
         {
             //Nothing to dispose in this control
         }
-    }
 
+        private void ImportToExcel_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Excel sheet must be formatted so: \r\nFIRST ROW must have the same column headings as current sheet. \r\nFIRST COLUMN has row numbers. \r\nIf using a multisheet excel file, the sheet tab must be named 'Import'.", "IMPORTANT INFORMATION:" );
+            OpenFileDialog oDlg = new OpenFileDialog
+            {
+                Filter = "Excel Files (*.xlsx)|*.xlsx"
+            };
+            oDlg.Title = "Import Excel table";
+            var result = oDlg.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                if (MessageBox.Show("This will overwrite the existing 2DA table.", "WARNING", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                {
+                    Bio2DA resulting2DA = Bio2DA.ReadExcelTo2DA(CurrentLoadedExport, oDlg.FileName);
+                    if (resulting2DA != null)
+                    {
+                        if (resulting2DA.IsIndexed != Table2DA.IsIndexed)
+                        {
+                            if (resulting2DA.IsIndexed == true) { MessageBox.Show("Warning: Imported sheet contains blank cells. Underlying sheet does not."); }
+                            else { MessageBox.Show("Warning: Underlying sheet contains blank cells. Imported sheet does not."); }
+                        }
+                        resulting2DA.Write2DAToExport();
+                    }
+                }
+            }
+        }
+    }
 }

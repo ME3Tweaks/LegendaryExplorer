@@ -269,7 +269,8 @@ namespace UMD.HCIL.Piccolo.Event {
 		/// <value>The picked node.</value>
 		public virtual PNode PickedNode {
 			get { return Path.PickedNode; }
-		}
+            set { Path.PushNode(value); }
+        }
 		#endregion
 
 		#region Basics

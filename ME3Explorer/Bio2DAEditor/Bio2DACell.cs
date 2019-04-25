@@ -13,7 +13,7 @@ namespace ME3Explorer
     {
         public byte[] Data { get; set; }
         public int Offset { get; private set; }
-        public IMEPackage Pcc { get; private set; }
+        public IMEPackage Pcc { get; set; }
         private bool _isModified = false;
         public bool IsModified
         {
@@ -25,17 +25,30 @@ namespace ME3Explorer
 
         public enum Bio2DADataType
         {
+            TYPE_UNDEFINED = -1,
             TYPE_INT = 0,
             TYPE_NAME = 1,
             TYPE_FLOAT = 2
         }
 
         public Bio2DADataType Type { get; set; }
+
         public Bio2DACell(IMEPackage pcc, int offset, byte type, byte[] data)
         {
             Offset = offset;
             Pcc = pcc;
             Type = (Bio2DADataType)type;
+            Data = data;
+        }
+
+        public Bio2DACell()
+        {
+
+        }
+
+        public Bio2DACell(Bio2DADataType type, byte[] data)
+        {
+            Type = type;
             Data = data;
         }
 

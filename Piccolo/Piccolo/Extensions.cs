@@ -9,6 +9,14 @@ namespace UMD.HCIL.Piccolo
 {
     public static class Extensions
     {
+        public static void OffsetBy(this IEnumerable<PNode> nodes, float dx, float dy)
+        {
+            foreach (PNode node in nodes)
+            {
+                node.OffsetBy(dx, dy);
+            }
+        }
+
         public static RectangleF BoundingRect(this IEnumerable<PNode> nodes)
         {
             return nodes.Select(node => node.GlobalFullBounds).BoundingRect();
@@ -37,6 +45,22 @@ namespace UMD.HCIL.Piccolo
                 }
             }
             return result;
+        }
+
+        public static float Difference(this float a, float b)
+        {
+            return Math.Abs(a - b);
+        }
+
+        public static void Deconstruct(this PointF point, out float x, out float y)
+        {
+            x = point.X;
+            y = point.Y;
+        }
+        public static void Deconstruct(this RectangleF rect, out float x, out float y)
+        {
+            x = rect.X;
+            y = rect.Y;
         }
     }
 }

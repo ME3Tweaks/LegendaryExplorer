@@ -3082,17 +3082,19 @@ namespace ME3Explorer
 
         private void PackageEditorWPF_Closing(object sender, CancelEventArgs e)
         {
-            SoundTab_Soundpanel.FreeAudioResources();
-            foreach (var el in ExportLoaders.Keys)
+            if (!e.Cancel)
             {
-                el.Dispose(); //Remove hosted winforms references
+                SoundTab_Soundpanel.FreeAudioResources();
+                foreach (var el in ExportLoaders.Keys)
+                {
+                    el.Dispose(); //Remove hosted winforms references
+                }
+                LeftSideList_ItemsSource.ClearEx();
+                LeftSide_TreeView = null; //peregrine treeview dispatcher leak
+                AllTreeViewNodesX.ClearEx();
+                Pcc = null; //Package object leak
+                DispatcherHelper.EmptyQueue();
             }
-            LeftSideList_ItemsSource.ClearEx();
-            LeftSide_TreeView = null; //peregrine treeview dispatcher leak
-            AllTreeViewNodesX.ClearEx();
-            Pcc = null; //Package object leak
-            DispatcherHelper.EmptyQueue();
-
         }
 
         private void OpenIn_Clicked(object sender, RoutedEventArgs e)

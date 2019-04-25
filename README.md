@@ -1,10 +1,10 @@
 [![Download latest release](https://raw.github.com/Mgamerz/ME3Explorer/Beta/ME3Explorer/Resources/toolset_splash.png)](https://github.com/Mgamerz/ME3Explorer/releases/latest)
 ME3Explorer is a fan-made modding toolkit for _Mass Effect 3_ on the PC. It has limited support for both _Mass Effect_ and _Mass Effect 2_. ME3Explorer does not support Mass Effect games on any other platforms.
 
-This fork is updated by Mgamerz and contains bleeding edge features for developers. Development is done on the [beta branch](https://github.com/Mgamerz/ME3Explorer/tree/Beta), and releases are merged into the [master](https://github.com/Mgamerz/ME3Explorer/tree/master) branch. This fork is not affiliated with the upstream main version of ME3Explorer, however my changes are ocassionally pulled upstream by some of the developers, so you may see features developed here on the main branch. I track changes from mainline and will cherry-pick pull them into this fork at regular intervals.
+This fork is updated by ME3Tweaks and contains bleeding edge features for developers. Development is done on the [beta branch](https://github.com/Mgamerz/ME3Explorer/tree/Beta), and releases are merged into the [master](https://github.com/Mgamerz/ME3Explorer/tree/master) branch. This fork is not affiliated with the upstream main version of ME3Explorer and is the only actively maintained version of the toolset.
 
 ## Features
-All releases starting with 3.0.7.0 on this fork are signed with my code signing certificate.
+All releases starting with 3.0.7.0 on this fork are signed with the ME3Tweaks code signing certificate.
 
 Some highlights of features that were developed on this fork:
  - Jumplists in the taskbar allow you to right click to open tools
@@ -17,8 +17,13 @@ Some highlights of features that were developed on this fork:
   
 You can get these releases in Mass Effect 3 Mod Manager from the tools menu, or you can download from the releases tab above.
 
+## Enhanced by JetBrains
+JetBrains has kindly given us several open source licenses for their tools that allow us to create better modding tools for you. Thanks, JetBrains!
+
+[<img src="https://raw.githubusercontent.com/ME3Tweaks/ME3Explorer/resources/jetbrains-variant-4.png" height="250"/>](https://jetbrains.com)
+
 ## Contributing
-[You can check out my contributing guidelines and tips document](https://github.com/Mgamerz/ME3Explorer/blob/Beta/CONTRIBUTING.md), for both developers and end-users who need features.
+[You can check out the contributing guidelines and tips document](https://github.com/Mgamerz/ME3Explorer/blob/Beta/CONTRIBUTING.md), for both developers and end-users who need features.
 
 ## License
-My fork of ME3Explorer is licensed under GPLv3.
+The ME3Tweaks fork of ME3Explorer is licensed under GPLv3.

@@ -31,6 +31,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Printing;
@@ -411,8 +412,8 @@ namespace UMD.HCIL.Piccolo
         /// </remarks>
         public const int PROPERTY_CODE_PARENT = 1 << 9;
 
-        [NonSerialized] private PNode parent;
-        private PNodeList children;
+		[NonSerialized] private PNode parent;
+		private List<PNode> children;
 
         /// <summary>
         /// The bounds of this node, stored in local coordinates.
@@ -2370,12 +2371,12 @@ namespace UMD.HCIL.Piccolo
                 InvalidatePaint();
                 SignalBoundsChanged();
 
-                // Don't put any invalidating code here or else nodes with volatile bounds will
-                // create a soft infinite loop (calling Control.BeginInvoke()) when they validate
-                // their bounds.
-                return true;
-            }
-            return false;
+				// Don't put any invalidating code here or else nodes with volatile bounds will
+				// create a soft infinite loop (calling Control.BeginInvoke()) when they validate
+				// their bounds.
+				return true;
+			}
+			return false;
         }
 
         /// <summary>
@@ -3962,34 +3963,35 @@ namespace UMD.HCIL.Piccolo
             return false;
         }
 
-        /// <summary>
-        /// Checks this node and it's descendents for intersection with the given bounds
-        /// and adds any intersecting nodes to the given list.
-        /// </summary>
-        /// <param name="fullBounds">
-        /// The bounds to check for intersection, in parent coordinates.
-        /// </param>
-        /// <param name="results">
-        /// The resulting list of nodes.
-        /// </param>
-        public void FindIntersectingNodes(RectangleF fullBounds, PNodeList results)
+		/// <summary>
+		/// Checks this node and it's descendents for intersection with the given bounds
+		/// and adds any intersecting nodes to the given list.
+		/// </summary>
+		/// <param name="fullBounds">
+		/// The bounds to check for intersection, in parent coordinates.
+		/// </param>
+		/// <param name="results">
+		/// The resulting list of nodes.
+		/// </param>
+		public List<PNode> FindIntersectingNodes(RectangleF fullBounds)
         {
-            if (FullIntersects(fullBounds))
-            {
-                RectangleF bounds = ParentToLocal(fullBounds);
+            var results = new List<PNode>();
+			if (FullIntersects(fullBounds)) {
+				RectangleF bounds = ParentToLocal(fullBounds);
 
                 if (Intersects(bounds))
                 {
                     results.Add(this);
                 }
 
-                int count = ChildrenCount;
-                for (int i = count - 1; i >= 0; i--)
-                {
-                    PNode each = children[i];
-                    each.FindIntersectingNodes(bounds, results);
-                }
-            }
+				int count = ChildrenCount;
+				for (int i = count - 1; i >= 0; i--) {
+					PNode each = children[i];
+					results.AddRange(each.FindIntersectingNodes(bounds));
+				}
+			}
+
+            return results;
         }
 
         /// <summary>
@@ -4095,43 +4097,22 @@ namespace UMD.HCIL.Piccolo
         }
 
         /// <summary>
-        /// Add a list of nodes to be children of this node.
-        /// </summary>
-        /// <param name="nodes">A list of nodes to be added to this node.</param>
-        /// <remarks>
-        /// If these nodes already have parents they will first be removed from
-        /// those parents.
-        /// </remarks>
-        public virtual void AddChildren(PNodeList nodes)
-        {
-            AddChildren((ICollection)nodes);
-        }
-
-        /// <summary>
         /// Add a collection of nodes to be children of this node.
         /// </summary>
         /// <param name="nodes">
         /// A collection of nodes to be added to this node.
         /// </param>
         /// <remarks>
-        /// This method allows you to pass in any <see cref="ICollection"/>, rather than a
-        /// <see cref="PNodeList"/>.  This can be useful if you are using an ArrayList
-        /// or some other collection type to store PNodes.  Note, however, that this list
-        /// still must contain only objects that extend PNode otherwise you will get a
-        /// runtime error.  To protect against problems of this type, use the
-        /// <see cref="AddChildren(PNodeList)">AddChildren(PNodeList)</see> method instead.
         /// <para>
         /// If these nodes already have parents they will first be removed from
         /// those parents.
         /// </para>
         /// </remarks>
-        protected virtual void AddChildren(ICollection nodes)
-        {
-            foreach (PNode each in nodes)
-            {
-                AddChild(each);
-            }
-        }
+        protected virtual void AddChildren(IEnumerable<PNode> nodes) {
+			foreach (PNode each in nodes) {
+				AddChild(each);
+			}
+		}
 
         /// <summary>
         /// Return true if this node is an ancestor of the parameter node.
@@ -4312,71 +4293,22 @@ namespace UMD.HCIL.Piccolo
         }
 
         /// <summary>
-        /// Remove all the children in the given list from this node’s list
-        /// of children.
-        /// </summary>
-        /// <param name="childrenNodes">The list of children to remove.</param>
-        /// <remarks>All removed nodes will have their parent set to null.</remarks>
-        public virtual void RemoveChildren(PNodeList childrenNodes)
-        {
-            RemoveChildren((ICollection)childrenNodes);
-        }
-
-        /// <summary>
-        /// Remove all the children in the given list from this ArrayList
-        /// of children.
-        /// </summary>
-        /// <param name="childrenNodes">The list of children to remove.</param>
-        /// <remarks>All removed nodes will have their parent set to null.</remarks>
-        public virtual void RemoveChildren(ArrayList childrenNodes)
-        {
-            foreach (PNode each in childrenNodes)
-            {
-                RemoveChild(each);
-            }
-        }
-
-        /// <summary>
-        /// Remove all the children in the given list from this node’s list
-        /// of children.
-        /// </summary>
-        /// <param name="childrenNodes">The list of children to remove.</param>
-        /// <remarks>All removed nodes will have their parent set to null.</remarks>
-        public virtual void RemoveChildrenList(List<PNode> childrenNodes)
-        {
-            foreach (PNode each in childrenNodes)
-            {
-                RemoveChild(each);
-            }
-        }
-
-
-        /// <summary>
-        /// Remove all the children in the given collection from this node’s
+        /// Remove all the children in the given enumerable from this node’s
         /// list of children.
         /// </summary>
         /// <param name="childrenNodes">
         /// The collection of children to remove.
         /// </param>
         /// <remarks>
-        /// This method allows you to pass in any <see cref="ICollection"/>, rather than a
-        /// <see cref="PNodeList"/>.  This can be useful if you are using an ArrayList
-        /// or some other collection type to store PNodes.  Note, however, that this list
-        /// still must contain only objects that extend PNode otherwise you will get a
-        /// runtime error.  To protect against problems of this type, use the
-        /// <see cref="RemoveChildren(PNodeList)">RemoveChildren(PNodeList)</see> method
-        /// instead.
         /// <para>
         /// All removed nodes will have their parent set to null.
         /// </para>
         /// </remarks>
-        protected virtual void RemoveChildren(ICollection childrenNodes)
-        {
-            foreach (PNode each in childrenNodes)
-            {
-                RemoveChild(each);
-            }
-        }
+        protected virtual void RemoveChildren(IEnumerable<PNode> childrenNodes) {
+			foreach (PNode each in childrenNodes) {
+				RemoveChild(each);
+			}
+		}
 
         /// <summary>
         /// Remove all the children from this node.
@@ -4503,22 +4435,19 @@ namespace UMD.HCIL.Piccolo
             }
         }
 
-        /// <summary>
-        /// Gets a reference to the list used to manage this node’s children.
-        /// </summary>
-        /// <value>A reference to the list of children.</value>
-        /// <remarks>This list should not be modified.</remarks>
-        public virtual PNodeList ChildrenReference
-        {
-            get
-            {
-                if (children == null)
-                {
-                    children = new PNodeList();
-                }
-                return children;
-            }
-        }
+		/// <summary>
+		/// Gets a reference to the list used to manage this node’s children.
+		/// </summary>
+		/// <value>A reference to the list of children.</value>
+		/// <remarks>This list should not be modified.</remarks>
+		public virtual List<PNode> ChildrenReference {
+			get {
+				if (children == null) {
+					children = new List<PNode>();
+				}
+				return children;
+			}
+		}
 
         /// <summary>
         /// Return an enumerator for this node’s direct descendent children.
@@ -4577,39 +4506,35 @@ namespace UMD.HCIL.Piccolo
             }
         }
 
-        /// <summary>
-        /// Gets a list containing this node and all of its descendent nodes.
-        /// </summary>
-        /// <value>A list containing this node and all its descendents.</value>
-        public virtual PNodeList AllNodes
-        {
-            get { return GetAllNodes(null, null); }
-        }
+		/// <summary>
+		/// Gets a list containing this node and all of its descendent nodes.
+		/// </summary>
+		/// <value>A list containing this node and all its descendents.</value>
+		public virtual List<PNode> AllNodes {
+			get { return GetAllNodes(null, null); }
+		}
 
-        /// <summary>
-        /// Gets a list containing the subset of this node and all of its descendent nodes
-        /// that are accepted by the given node filter. 
-        /// </summary>
-        /// <param name="filter">The filter used to determine the subset.</param>
-        /// <param name="results">The list used to collect the subset; can be null.</param>
-        /// <returns>
-        /// A list containing the subset of this node and all its descendents accepted by
-        /// the filter.
-        /// </returns>
-        /// <remarks>
-        /// If the filter is null then all nodes will be accepted. If the results parameter is not
-        /// null then it will be used to store this subset instead of creating a new list.
-        /// </remarks>
-        public virtual PNodeList GetAllNodes(PNodeFilter filter, PNodeList results)
-        {
-            if (results == null)
-            {
-                results = new PNodeList();
-            }
-            if (filter == null || filter.Accept(this))
-            {
-                results.Add(this);
-            }
+		/// <summary>
+		/// Gets a list containing the subset of this node and all of its descendent nodes
+		/// that are accepted by the given node filter. 
+		/// </summary>
+		/// <param name="filter">The filter used to determine the subset.</param>
+		/// <param name="results">The list used to collect the subset; can be null.</param>
+		/// <returns>
+		/// A list containing the subset of this node and all its descendents accepted by
+		/// the filter.
+		/// </returns>
+		/// <remarks>
+		/// If the filter is null then all nodes will be accepted. If the results parameter is not
+		/// null then it will be used to store this subset instead of creating a new list.
+		/// </remarks>
+		public virtual List<PNode> GetAllNodes(PNodeFilter filter, List<PNode> results) {
+			if (results == null) {
+				results = new List<PNode>();
+			}
+			if (filter == null || filter.Accept(this)) {
+				results.Add(this);
+			}
 
             if (filter == null || filter.AcceptChildrenOf(this))
             {

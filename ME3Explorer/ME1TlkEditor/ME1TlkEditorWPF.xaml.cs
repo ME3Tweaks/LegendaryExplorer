@@ -123,8 +123,8 @@ namespace ME3Explorer.ME1TlkEditor
         public override void Dispose()
         {
             CurrentLoadedExport = null;
-            LoadedStrings.Clear();
-            CleanedStrings.ClearEx();
+            LoadedStrings?.Clear();
+            CleanedStrings?.ClearEx();
         }
 
         public override void LoadExport(IExportEntry exportEntry)

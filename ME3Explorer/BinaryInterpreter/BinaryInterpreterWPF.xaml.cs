@@ -29,7 +29,6 @@ using ME3Explorer.Soundplorer;
 using ME3Explorer.Unreal;
 using StreamHelpers;
 using static ME3Explorer.BinaryInterpreter;
-using static ME3Explorer.EnumExtensions;
 using static ME3Explorer.PackageEditorWPF;
 
 namespace ME3Explorer
@@ -970,7 +969,7 @@ namespace ME3Explorer
                 subnodes.Add(objectFlagsNode);
 
                 //Create objectflags tree
-                foreach (UnrealFlags.EPropertyFlags flag in GetValues<UnrealFlags.EPropertyFlags>())
+                foreach (UnrealFlags.EPropertyFlags flag in Enums.GetValues<UnrealFlags.EPropertyFlags>())
                 {
                     if ((ObjectFlagsMask & flag) != UnrealFlags.EPropertyFlags.None)
                     {
@@ -1556,7 +1555,7 @@ namespace ME3Explorer
                 subnodes.Add(classFlagsNode);
 
                 //Create claskmask tree
-                foreach (UnrealFlags.EClassFlags flag in GetValues<UnrealFlags.EClassFlags>())
+                foreach (UnrealFlags.EClassFlags flag in Enums.GetValues<UnrealFlags.EClassFlags>())
                 {
                     if ((ClassFlags & flag) != UnrealFlags.EClassFlags.None)
                     {

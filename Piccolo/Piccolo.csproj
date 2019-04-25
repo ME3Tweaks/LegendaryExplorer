@@ -97,7 +97,6 @@
     <Compile Include="Piccolo\Util\PLayerList.cs" />
     <Compile Include="Piccolo\Util\PMatrix.cs" />
     <Compile Include="Piccolo\Util\PNodeFilter.cs" />
-    <Compile Include="Piccolo\Util\PNodeList.cs" />
     <Compile Include="Piccolo\Util\PPaintContext.cs" />
     <Compile Include="Piccolo\Util\PPickPath.cs" />
     <Compile Include="Piccolo\Util\PStream.cs" />
@@ -108,9 +107,6 @@
     <EmbeddedResource Include="Piccolo\PCanvas.resx">
       <DependentUpon>PCanvas.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Piccolo\UMD.HCIL.Piccolo.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
