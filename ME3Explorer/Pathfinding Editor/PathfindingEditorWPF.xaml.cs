@@ -2733,7 +2733,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
 
             //remove all edges except new one ways (so they don't have to be re-added to the graph)
-            graphEditor.edgeLayer.RemoveChildrenList(new List<PNode>(nodeToUpdate.Edges.Where(x => !newOneWayEdges.Contains(x)).Cast<PNode>()));
+            graphEditor.edgeLayer.RemoveChildren(nodeToUpdate.Edges.Where(x => !newOneWayEdges.Contains(x)));
             nodeToUpdate.Edges.Clear();
             nodeToUpdate.CreateConnections(GraphNodes);
             foreach (var onewayedge in newOneWayEdges)
@@ -3096,7 +3096,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 var graphNodesToRemove = GraphNodes.Where(x => smc.CollectionItems.Contains(x.export)).ToList();
                 GraphNodes = GraphNodes.Except(graphNodesToRemove).ToList();
-                graphEditor.nodeLayer.RemoveChildrenList(graphNodesToRemove.ToList<PNode>()); // sigh.
+                graphEditor.nodeLayer.RemoveChildren(graphNodesToRemove);
             }
             graphEditor.Refresh();
         }

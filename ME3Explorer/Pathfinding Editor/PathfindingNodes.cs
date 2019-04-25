@@ -119,9 +119,8 @@ namespace ME3Explorer.PathfindingNodes
                     edgesToRemove.Add(edge);
                 }
             }
-            Debug.WriteLine("Remaining edges: " + Edges.Count);
-            //don't know why i have to cast since my edge class is subclass of pnode already
-            g.edgeLayer.RemoveChildrenList(edgesToRemove.Cast<UMD.HCIL.Piccolo.PNode>().ToList());
+            //Debug.WriteLine("Remaining edges: " + Edges.Count);
+            g.edgeLayer.RemoveChildren(edgesToRemove);
             //Edges.Clear();
 
             //CreateConnections(graphNodes);

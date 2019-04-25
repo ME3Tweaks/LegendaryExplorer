@@ -4304,7 +4304,7 @@ namespace UMD.HCIL.Piccolo
         /// All removed nodes will have their parent set to null.
         /// </para>
         /// </remarks>
-        protected virtual void RemoveChildren(IEnumerable<PNode> childrenNodes) {
+        public virtual void RemoveChildren(IEnumerable<PNode> childrenNodes) {
 			foreach (PNode each in childrenNodes) {
 				RemoveChild(each);
 			}
