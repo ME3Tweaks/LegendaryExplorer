@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Gammtek.Conduit.Extensions.Collections.Generic;
 using ME3Explorer.Packages;
 using ME3Explorer.Unreal;
 using Newtonsoft.Json;
@@ -448,6 +449,43 @@ namespace ME3Explorer.Pathfinding_Editor
                     ClassesDBLoaded = true;
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets a list of the reachspec exports listed in the PathList array property
+        /// </summary>
+        /// <param name="export">export to read PathList from</param>
+        /// <returns></returns>
+        internal static List<IExportEntry> GetReachspecExports(IExportEntry export)
+        {
+            var pathlist = export.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+            if (pathlist == null) return new List<IExportEntry>(); //nothing
+            var returnlist = new List<IExportEntry>(pathlist.Count);
+            pathlist.ForEach(x =>
+            {
+                if (x.Value > 0)
+                {
+                    returnlist.Add(export.FileRef.getUExport(x.Value));
+                }
+            });
+            return returnlist;
+        }
+
+        internal static IExportEntry GetReachSpecEndExport(IExportEntry reachSpec, PropertyCollection props = null)
+        {
+            if (props == null)
+            {
+                props = reachSpec.GetProperties();
+            }
+
+            if (props.GetProp<StructProperty>("End") is StructProperty endProperty &&
+                endProperty.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(reachSpec)) is ObjectProperty otherNodeValue
+                && reachSpec.FileRef.isUExport(otherNodeValue.Value))
+            {
+                return reachSpec.FileRef.getUExport(otherNodeValue.Value);
+            }
+
+            return null; //can't get end, or is external
         }
     }
 

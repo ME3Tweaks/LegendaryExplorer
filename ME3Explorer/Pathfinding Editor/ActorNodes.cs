@@ -258,9 +258,9 @@ namespace ME3Explorer.ActorNodes
                 {
                     PathfindingEditorEdge edge = new PathfindingEditorEdge();
                     edge.Pen = annexZoneLocPen;
-                    edge.EndPoints.Add(this);
-                    edge.EndPoints.Add(othernode);
-                    if (!Edges.Any(x => x.DoesEdgeConnectSameNodes(edge)) && othernode.Edges.Any(x=>x.DoesEdgeConnectSameNodes(edge)))
+                    edge.EndPoints[0] = this;
+                    edge.EndPoints[1] = othernode;
+                    if (!Edges.Any(x => x.DoesEdgeConnectSameNodes(edge)) && !othernode.Edges.Any(x=>x.DoesEdgeConnectSameNodes(edge)))
                     {
                         Edges.Add(edge);
                         othernode.Edges.Add(edge);

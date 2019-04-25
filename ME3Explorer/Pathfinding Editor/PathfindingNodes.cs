@@ -8,6 +8,7 @@ using UMD.HCIL.Piccolo.Nodes;
 using ME3Explorer.Pathfinding_Editor;
 using ME3Explorer.SequenceObjects;
 using System.Diagnostics;
+using System.Drawing.Drawing2D;
 
 namespace ME3Explorer.PathfindingNodes
 {
@@ -87,10 +88,11 @@ namespace ME3Explorer.PathfindingNodes
         }
 
         /// <summary>
-        /// Clears all edges on this node, and removes connecting nodes incoming connections, and then recreates them and triggers an edge update on them
+        /// Refreshes reachspecs after one has been removed from this node.
         /// </summary>
-        public void RefreshConnections(List<PathfindingNodeMaster> graphNodes)
+        public void RefreshConnectionsAfterReachspecRemoval(List<PathfindingNodeMaster> graphNodes)
         {
+            List<PathfindingEditorEdge> edgesToRemove = new List<PathfindingEditorEdge>();
             foreach (PathfindingEditorEdge edge in Edges)
             {
                 //Remove remote connections
@@ -106,15 +108,23 @@ namespace ME3Explorer.PathfindingNodes
                 {
                     pn1.Edges.Remove(edge);
                     Debug.WriteLine("Removed edge during refresh on endpoint 1");
+                }
 
+                if (edge.IsOneWayOnly())
+                {
+                    edge.Pen.DashStyle = DashStyle.Dash;
+                }
+                else if (!edge.HasAnyOutboundConnections())
+                {
+                    edgesToRemove.Add(edge);
                 }
             }
             Debug.WriteLine("Remaining edges: " + Edges.Count);
             //don't know why i have to cast since my edge class is subclass of pnode already
-            g.edgeLayer.RemoveChildrenList(Edges.Cast<UMD.HCIL.Piccolo.PNode>().ToList());
-            Edges.Clear();
+            g.edgeLayer.RemoveChildrenList(edgesToRemove.Cast<UMD.HCIL.Piccolo.PNode>().ToList());
+            //Edges.Clear();
 
-            CreateConnections(graphNodes);
+            //CreateConnections(graphNodes);
             Edges.ForEach(x => PathingGraphEditor.UpdateEdgeStraight(x));
         }
 
@@ -123,125 +133,129 @@ namespace ME3Explorer.PathfindingNodes
         /// </summary>
         public override void CreateConnections(List<PathfindingNodeMaster> graphNodes)
         {
-            ReachSpecs.Clear();
-            var outLinksProp = export.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-            if (outLinksProp != null)
+            ReachSpecs = (SharedPathfinding.GetReachspecExports(export));
+            foreach (IExportEntry spec in ReachSpecs)
             {
-                foreach (var prop in outLinksProp)
+                Pen penToUse = blackPen;
+                switch (spec.ObjectName)
                 {
-                    //System.Diagnostics.Debug.WriteLine("Outlink: " + prop.Value);
-                    if (prop.Value != 0)
-                    {
-                        ReachSpecs.Add(pcc.getUExport(prop.Value));
-                    }
+                    case "SlotToSlotReachSpec":
+                        penToUse = slotToSlotPen;
+                        break;
+                    case "CoverSlipReachSpec":
+                        penToUse = coverSlipPen;
+                        break;
+                    case "SFXLadderReachSpec":
+                        penToUse = sfxLadderPen;
+                        break;
+                    case "SFXLargeBoostReachSpec":
+                        penToUse = sfxLargeBoostPen;
+                        break;
+                    case "SFXBoostReachSpec":
+                        penToUse = sfxBoostPen;
+                        break;
+                    case "SFXJumpDownReachSpec":
+                        penToUse = sfxJumpDownPen;
+                        break;
                 }
+                //Get ending
+                PathfindingNodeMaster othernode = null;
+                PropertyCollection props = spec.GetProperties();
+                IExportEntry otherEndExport = SharedPathfinding.GetReachSpecEndExport(spec, props);
 
-                foreach (IExportEntry spec in ReachSpecs)
+                /*
+                if (props.GetProp<StructProperty>("End") is StructProperty endProperty &&
+                    endProperty.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(spec)) is ObjectProperty otherNodeValue)
                 {
-                    Pen penToUse = halfReachSpecPen;
-                    switch (spec.ObjectName)
-                    {
-                        case "SlotToSlotReachSpec":
-                            penToUse = slotToSlotPen;
-                            break;
-                        case "CoverSlipReachSpec":
-                            penToUse = coverSlipPen;
-                            break;
-                        case "SFXLadderReachSpec":
-                            penToUse = sfxLadderPen;
-                            break;
-                        case "SFXLargeBoostReachSpec":
-                            penToUse = sfxLargeBoostPen;
-                            break;
-                        case "SFXBoostReachSpec":
-                            penToUse = sfxBoostPen;
-                            break;
-                        case "SFXJumpDownReachSpec":
-                            penToUse = sfxJumpDownPen;
-                            break;
-                    }
-                    //Get ending
-                    PathfindingNodeMaster othernode = null;
-                    int othernodeidx = 0;
-                    PropertyCollection props = spec.GetProperties();
-                    if (props.GetProp<StructProperty>("End") is StructProperty endProperty &&
-                        endProperty.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(spec)) is ObjectProperty otherNodeValue)
-                    {
-                        othernodeidx = otherNodeValue.Value;
-                    }
+                    othernodeidx = otherNodeValue.Value;
+                }*/
 
-                    if (othernodeidx != 0)
+                if (otherEndExport != null)
+                {
+                    bool isTwoWay = false;
+                    othernode = graphNodes.FirstOrDefault(x => x.export == otherEndExport);
+                    if (othernode != null)
                     {
-                        othernode = graphNodes.FirstOrDefault(x => x.export.UIndex == othernodeidx);
-                        if (othernode != null)
+                        //Check for returning reachspec for pen drawing. This is going to incur a significant performance penalty...
+                        var othernodeSpecs = SharedPathfinding.GetReachspecExports(otherEndExport);
+                        foreach (var path in othernodeSpecs)
                         {
-                            //Check for returning reachspec for pen drawing. This is going to incur a significant performance penalty...
-                            IExportEntry otherNode = othernode.export;
-                            var otherNodePathList = otherNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
-                            if (otherNodePathList != null)
+                            if (SharedPathfinding.GetReachSpecEndExport(path) == export)
                             {
-                                foreach (var path in otherNodePathList)
-                                {
-                                    int reachspecexport = path.Value;
-                                    IExportEntry possibleIncomingSpec = pcc.getUExport(reachspecexport);
-                                    PropertyCollection otherSpecProperties = possibleIncomingSpec.GetProperties();
-
-                                    if (otherSpecProperties.GetProp<StructProperty>("End") is StructProperty endStruct)
-                                    {
-                                        if (endStruct.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(possibleIncomingSpec)) is ObjectProperty incomingTargetIdx)
-                                        {
-                                            if (incomingTargetIdx.Value == export.UIndex)
-                                            {
-                                                if (penToUse == halfReachSpecPen)
-                                                {
-                                                    penToUse = blackPen;
-                                                }
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            //if (othernode != null)
-                            //{
-                            IntProperty radius = props.GetProp<IntProperty>("CollisionRadius");
-                            IntProperty height = props.GetProp<IntProperty>("CollisionHeight");
-
-                            if (radius != null && height != null && (radius >= ReachSpecSize.MINIBOSS_RADIUS || height >= ReachSpecSize.MINIBOSS_HEIGHT))
-                            {
-                                penToUse = (Pen)penToUse.Clone();
-                                if (radius >= ReachSpecSize.BOSS_RADIUS && height >= ReachSpecSize.BOSS_HEIGHT)
-                                {
-                                    penToUse.Width = 3;
-                                }
-                                else
-                                {
-                                    penToUse.Width = 2;
-                                }
-                            }
-
-                            PathfindingEditorEdge edge = new PathfindingEditorEdge();
-                            edge.Pen = penToUse;
-                            edge.EndPoints.Add(this);
-                            edge.EndPoints.Add(othernode);
-                            if (!Edges.Any(x => x.DoesEdgeConnectSameNodes(edge)) && !othernode.Edges.Any(x => x.DoesEdgeConnectSameNodes(edge)))
-                            {
-                                Edges.Add(edge);
-                                othernode.Edges.Add(edge);
-                                g.edgeLayer.AddChild(edge);
+                                isTwoWay = true;
+                                break;
                             }
                         }
-                        //if ()
 
-                        //((ArrayList)Tag).Add(edge); //add edge to my tracked items
-                        //((ArrayList)othernode.Tag).Add(edge); //add edge to other node's tracked items
-                        //edge.Tag = new ArrayList();
-                        //((ArrayList)edge.Tag).Add(this); //Add edge's tracked item for me
-                        //((ArrayList)edge.Tag).Add(othernode); //Add edge's tracked item for the other
+                        //var 
+                        //    PropertyCollection otherSpecProperties = possibleIncomingSpec.GetProperties();
 
-                        //g.edgeLayer.AddChild(edge);
+                        //    if (otherSpecProperties.GetProp<StructProperty>("End") is StructProperty endStruct)
+                        //    {
+                        //        if (endStruct.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(possibleIncomingSpec)) is ObjectProperty incomingTargetIdx)
+                        //        {
+                        //            if (incomingTargetIdx.Value == export.UIndex)
+                        //            {
+                        //                isTwoWay = true;
+                        //                break;
+                        //            }
+                        //        }
+                        //    }
+                        //}
+
+                        //if (othernode != null)
+                        //{
+                        IntProperty radius = props.GetProp<IntProperty>("CollisionRadius");
+                        IntProperty height = props.GetProp<IntProperty>("CollisionHeight");
+
+                        bool penCloned = false;
+                        if (radius != null && height != null && (radius >= ReachSpecSize.MINIBOSS_RADIUS || height >= ReachSpecSize.MINIBOSS_HEIGHT))
+                        {
+                            penCloned = true;
+                            penToUse = (Pen)penToUse.Clone();
+
+                            if (radius >= ReachSpecSize.BOSS_RADIUS && height >= ReachSpecSize.BOSS_HEIGHT)
+                            {
+                                penToUse.Width = 3;
+                            }
+                            else
+                            {
+                                penToUse.Width = 2;
+                            }
+                        }
+                        if (!isTwoWay)
+                        {
+                            if (!penCloned)
+                            {
+                                penToUse = (Pen)penToUse.Clone();
+                                penCloned = true;
+                            }
+                            penToUse.DashStyle = DashStyle.Dash;
+                        }
+
+                        PathfindingEditorEdge edge = new PathfindingEditorEdge();
+                        edge.Pen = penToUse;
+                        edge.EndPoints[0] = this;
+                        edge.EndPoints[1] = othernode;
+                        edge.OutboundConnections[0] = true;
+                        edge.OutboundConnections[1] = isTwoWay;
+                        if (!Edges.Any(x => x.DoesEdgeConnectSameNodes(edge)) && !othernode.Edges.Any(x => x.DoesEdgeConnectSameNodes(edge)))
+                        {
+                            //Only add edge if neither node contains this edge
+                            Edges.Add(edge);
+                            othernode.Edges.Add(edge);
+                            g.edgeLayer.AddChild(edge);
+                        }
                     }
+
+                    //if ()
+                    //((ArrayList)Tag).Add(edge); //add edge to my tracked items
+                    //((ArrayList)othernode.Tag).Add(edge); //add edge to other node's tracked items
+                    //edge.Tag = new ArrayList();
+                    //((ArrayList)edge.Tag).Add(this); //Add edge's tracked item for me
+                    //((ArrayList)edge.Tag).Add(othernode); //Add edge's tracked item for the other
+
+                    //g.edgeLayer.AddChild(edge);
                 }
             }
         }

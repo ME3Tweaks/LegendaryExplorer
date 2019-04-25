@@ -10,6 +10,7 @@ using UMD.HCIL.Piccolo.Nodes;
 using ME3Explorer.SequenceObjects;
 using System.Numerics;
 using System.Diagnostics;
+using ME3Explorer.PathfindingNodes;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -283,7 +284,8 @@ namespace ME3Explorer.Pathfinding_Editor
     [DebuggerDisplay("PathfindingEdge - {DebugTarget}")]
     public class PathfindingEditorEdge : PPath
     {
-        public List<PNode> EndPoints = new List<PNode>(2); //initialize to 2 as that is how much they will need to store. optimization <<
+        public bool[] OutboundConnections = new bool[2];
+        public PNode[] EndPoints = new PNode[2];
         public PathfindingEditorEdge()
         {
         }
@@ -292,7 +294,7 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             get
             {
-                return EndPoints[0] + " to " + EndPoints[1] + ", " + EndPoints.Count + " tags";
+                return EndPoints[0] + " to " + EndPoints[1] + ", " + EndPoints.Count() + " tags";
 
             }
         }
@@ -300,6 +302,45 @@ namespace ME3Explorer.Pathfinding_Editor
         public bool DoesEdgeConnectSameNodes(PathfindingEditorEdge otherEdge)
         {
             return EndPoints.All(otherEdge.EndPoints.Contains);
+        }
+
+        internal bool HasAnyOutboundConnections()
+        {
+            return OutboundConnections[0] || OutboundConnections[1];
+        }
+
+        internal bool IsOneWayOnly()
+        {
+            return OutboundConnections[0] != OutboundConnections[1]; //one has to be true here
+        }
+
+        internal PNode GetOtherEnd(PathfindingNodeMaster currentPoint)
+        {
+            return EndPoints[0] == currentPoint ? EndPoints[1] : EndPoints[0];
+        }
+
+        internal void RemoveOutboundFrom(PathfindingNode pn)
+        {
+            if (EndPoints[0] == pn)
+            {
+                OutboundConnections[0] = false;
+            }
+            else if (EndPoints[1] == pn)
+            {
+                OutboundConnections[1] = false;
+            }
+        }
+
+        internal void ReAttachEdgesToEndpoints()
+        {
+            if (EndPoints[0] is PathfindingNode pn0 && !pn0.Edges.Contains(this))
+            {
+                pn0.Edges.Add(this);
+            }
+            if (EndPoints[1] is PathfindingNode pn1 && !pn1.Edges.Contains(this))
+            {
+                pn1.Edges.Add(this);
+            }
         }
     }
 }

@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -22,6 +23,7 @@ using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
 using static ME3Explorer.PathfindingNodes.PathfindingNode;
+using DashStyle = System.Drawing.Drawing2D.DashStyle;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -2146,6 +2148,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         var newlocation = GetLocation(node);
                         PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == node.UIndex);
                         s.SetOffset((float)newlocation.X, (float)newlocation.Y);
+
                         UpdateEdgesForCurrentNode(s);
                         //foreach (PNode i in s.AllNodes)
                         //{
@@ -2670,7 +2673,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     //TODO: Figure out what this does
                     if (s is PathfindingNode pn)
                     {
-                        pn.RefreshConnections(GraphNodes);
+                        UpdateEdgesForCurrentNode(pn);
                     }
                     //foreach (PNode node in s.AllNodes)
                     //{
@@ -2694,20 +2697,58 @@ namespace ME3Explorer.Pathfinding_Editor
                 nodeToUpdate = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
             }
 
-            if (nodeToUpdate != null && nodeToUpdate is PathfindingNode pn)
+            List<PathfindingEditorEdge> edgesToRemove = new List<PathfindingEditorEdge>();
+            List<PathfindingEditorEdge> newOneWayEdges = new List<PathfindingEditorEdge>();
+
+            if (nodeToUpdate is PathfindingNode pn)
             {
-                pn.RefreshConnections(GraphNodes);
-                graphEditor.Refresh();
+                var existingSpecs = pn.ReachSpecs;
+                var newReachSpecs = SharedPathfinding.GetReachspecExports(pn.export);
+                if (existingSpecs.Count > newReachSpecs.Count)
+                {
+                    //We have deleted at least one outbound spec.
+                    //we need to either turn the link dashed or remove it (don't save in newOneWayEdge list)
+                    var removedSpecs = existingSpecs.Except(newReachSpecs);
+                    var endpointsToCheck = removedSpecs.Select(x => SharedPathfinding.GetReachSpecEndExport(x)).ToList();
+                    foreach (var edge in nodeToUpdate.Edges)
+                    {
+                        if (edge.GetOtherEnd(nodeToUpdate) is PathfindingNode othernode && endpointsToCheck.Contains(othernode.export))
+                        {
+                            //the link to this node has been removed
+                            edge.RemoveOutboundFrom(pn);
+
+                            if (edge.HasAnyOutboundConnections())
+                            {
+                                edge.Pen.DashStyle = DashStyle.Dash;
+                                newOneWayEdges.Add(edge);
+                            }
+                        }
+                    }
+                }
             }
-            /*   nodeToUpdate.Refres
-               graphEditor.edgeLayer.RemoveChildrenList(new List<PNode>(nodeToUpdate.Edges.Cast<PNode>()));
-               nodeToUpdate.Edges.Clear();
-               nodeToUpdate.CreateConnections(GraphNodes);
-               foreach (PathfindingEditorEdge edge in nodeToUpdate.Edges)
-               {
-                   PathingGraphEditor.UpdateEdgeStraight(edge);
-               }*/
-        
+
+            //Remove reference to our edges from connected nodes via our edges.
+            foreach (var edge in nodeToUpdate.Edges)
+            {
+                if (edge.GetOtherEnd(nodeToUpdate) is PathfindingNode othernode)
+                {
+                    othernode.Edges.Remove(edge); //we will regenerate this link from our current one
+                }
+            }
+
+            //remove all edges except new one ways (so they don't have to be re-added to the graph)
+            graphEditor.edgeLayer.RemoveChildrenList(new List<PNode>(nodeToUpdate.Edges.Where(x => !newOneWayEdges.Contains(x)).Cast<PNode>()));
+            nodeToUpdate.Edges.Clear();
+            nodeToUpdate.CreateConnections(GraphNodes);
+            foreach (var onewayedge in newOneWayEdges)
+            {
+                //reattach edge back to endpoints
+                onewayedge.ReAttachEdgesToEndpoints();
+            }
+            foreach (PathfindingEditorEdge edge in nodeToUpdate.Edges)
+            {
+                PathingGraphEditor.UpdateEdgeStraight(edge);
+            }
         }
 
         private void SetLocation(IExportEntry export, float x, float y, float z)
