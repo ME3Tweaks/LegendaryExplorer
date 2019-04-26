@@ -160,7 +160,7 @@
         <BitmapImage x:Key="iconAutoTOC" UriSource="Resources/autotoc_256x256.ico"/>
         <BitmapImage x:Key="iconModMaker" UriSource="Icons/modmaker_64x64.png"/>
         <BitmapImage x:Key="iconSFARTOCUpdater" UriSource="Icons/SFARTOC_64x64.png"/>
-        <BitmapImage x:Key="iconTPFTools" UriSource="Icons/TPFTools_64x64.png"/>
+        <BitmapImage x:Key="iconTPFTools" UriSource="Resources/tpftools_256x256.ico"/>
 
         <!--<BitmapImage x:Key="iconAudioEditor" UriSource="Resources/audio_editor_icon.ico"/>-->
         <BitmapImage x:Key="iconAnimationExplorer" UriSource="Resources/animation_explorer_64x64.png"/>

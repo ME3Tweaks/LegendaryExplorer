@@ -1596,6 +1596,7 @@
     <Resource Include="Resources\udkexplorer_256x256.ico" />
     <Resource Include="Resources\wwisebankeditor_256x256.ico" />
     <Resource Include="Resources\meshdatabase_256x256.ico" />
+    <Resource Include="Resources\tpftools_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
