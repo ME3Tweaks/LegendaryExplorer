@@ -11,6 +11,7 @@ using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Pathfinding_Editor;
 using Newtonsoft.Json;
+using ME3Explorer.AutoTOC;
 
 namespace ME3Explorer
 {
@@ -65,14 +66,14 @@ namespace ME3Explorer
             set.Add(new Tool
             {
                 name = "AutoTOC",
-                type = typeof(AutoTOC),
+                type = typeof(AutoTOCWPF),
                 icon = Application.Current.FindResource("iconAutoTOC") as ImageSource,
                 open = () =>
                 {
-                    (new AutoTOC()).Show();
+                    (new AutoTOCWPF()).Show();
                 },
                 tags = new List<string> { "user", "toc", "tocing", "crash", "infinite", "loop", "loading" },
-                description = "AutoTOC is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
+                description = "AutoTOC WPF is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
             });
             set.Add(new Tool
             {
@@ -582,7 +583,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "user", "developer", "kismet", "me1", "me2", "me3" },
                 subCategory = "Core",
-                description = "Sequence Editor is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
+                description = "Sequence Editor WPF is the toolset’s version of UDK’s UnrealKismet. With this cross-game tool, users can edit and create new sequences that control gameflow within and across levels.",
             });
             set.Add(new Tool
             {
