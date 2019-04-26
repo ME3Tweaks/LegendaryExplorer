@@ -78,6 +78,18 @@ namespace ME3Explorer.MetadataEditor
             AllEntriesList.ReplaceAll(allEntriesNew);
         }
 
+        public override void PopOut()
+        {
+            if (CurrentLoadedEntry is IExportEntry export)
+            {
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new MetadataEditorWPF(), export);
+                elhw.Height = 620;
+                elhw.Width = 780;
+                elhw.Title = $"Metadata Editor - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {export.FileRef.FileName}";
+                elhw.Show();
+            }
+        }
+
         public override void LoadExport(IExportEntry exportEntry)
         {
             loadingNewData = true;

@@ -66,6 +66,16 @@ namespace ME3Explorer
                    exportEntry.ClassName == "TextureFlipBook";
         }
 
+        public override void PopOut()
+        {
+            if (CurrentLoadedExport != null)
+            {
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new EmbeddedTextureViewer(), CurrentLoadedExport);
+                elhw.Title = $"Texture Viewer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                elhw.Show();
+            }
+        }
+
         public override void LoadExport(IExportEntry exportEntry)
         {
             TextureImage.Source = null;

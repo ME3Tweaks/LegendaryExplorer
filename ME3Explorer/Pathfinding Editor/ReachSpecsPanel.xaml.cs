@@ -62,7 +62,10 @@ namespace ME3Explorer.Pathfinding_Editor
             get => ReachableNodes_ComboBox.SelectedItem is ReachSpec;
         }
 
-
+        public override void PopOut()
+        {
+            //This loader is coupled with Pathfinding Editor's UI and cannot be popped out.
+        }
 
         private bool _toExternalNodeChecked;
         public bool ToExternalNodeChecked

@@ -79,6 +79,16 @@ namespace ME3Explorer.ME1TlkEditor
             SetNewID();
         }
 
+        public override void PopOut()
+        {
+            if (CurrentLoadedExport != null)
+            {
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new ME1TlkEditorWPF(), CurrentLoadedExport);
+                elhw.Title = $"TLK Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                elhw.Show();
+            }
+        }
+
         private bool StringIsSelected(object obj)
         {
             return StringSelected;

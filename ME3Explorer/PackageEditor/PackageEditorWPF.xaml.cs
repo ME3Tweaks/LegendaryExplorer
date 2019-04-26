@@ -165,7 +165,7 @@ namespace ME3Explorer
         public ICommand SetPackageAsFilenamePackageCommand { get; set; }
         public ICommand OpenInInterpViewerCommand { get; set; }
         public ICommand FindEntryViaTagCommand { get; set; }
-
+        public ICommand PopoutCurrentViewCommand { get; set; }
         private void LoadCommands()
         {
             ComparePackagesCommand = new RelayCommand(ComparePackages, PackageIsLoaded);
@@ -191,6 +191,18 @@ namespace ME3Explorer
             SetPackageAsFilenamePackageCommand = new RelayCommand(SetSelectedAsFilenamePackage, PackageExportIsSelected);
             OpenInInterpViewerCommand = new RelayCommand(OpenInInterpViewer, CanOpenInInterpViewer);
             FindEntryViaTagCommand = new RelayCommand(FindEntryViaTag, PackageIsLoaded);
+            PopoutCurrentViewCommand = new RelayCommand(PopoutCurrentView, ExportIsSelected);
+        }
+
+        private void PopoutCurrentView(object obj)
+        {
+            if (EditorTabs.SelectedItem is TabItem tab)
+            {
+                if (tab.Content is ExportLoaderControl exportLoader)
+                {
+                    exportLoader.PopOut();
+                }
+            }
         }
 
         private void FindEntryViaTag(object obj)
@@ -3571,7 +3583,7 @@ namespace ME3Explorer
                         foreach (IExportEntry export in package.Exports)
                         {
                             if ((export.ClassName == "BioSWF"))
-                                //|| export.ClassName == "Bio2DANumberedRows") && export.ObjectName.Contains("BOS"))
+                            //|| export.ClassName == "Bio2DANumberedRows") && export.ObjectName.Contains("BOS"))
                             {
                                 Debug.WriteLine($"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
                             }
