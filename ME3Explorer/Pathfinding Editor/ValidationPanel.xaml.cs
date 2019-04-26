@@ -37,7 +37,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public IExportEntry PersistentLevel { get; private set; }
         public IMEPackage Pcc { get => _pcc; private set => SetProperty(ref _pcc, value); }
         BackgroundWorker fixAndValidateWorker;
-        public ObservableCollectionExtended<ValidationTask> ValidationTasks { get; } = new ObservableCollectionExtended<ValidationTask>();
+        public ObservableCollectionExtended<ListBoxTask> ValidationTasks { get; } = new ObservableCollectionExtended<ListBoxTask>();
         private object _myCollectionLock = new object();
 
         private string _lastRunOnText;
@@ -97,26 +97,26 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void Background_FixAndValidate(object sender, DoWorkEventArgs e)
         {
-            var task = new ValidationTask("Recalculating reachspecs");
+            var task = new ListBoxTask("Recalculating reachspecs");
             ValidationTasks.Add(task);
             recalculateReachspecs(task);
 
-            task = new ValidationTask("Fixing stack headers");
+            task = new ListBoxTask("Fixing stack headers");
             ValidationTasks.Add(task);
             fixStackHeaders(task);
 
-            task = new ValidationTask("Finding duplicate GUIDs");
+            task = new ListBoxTask("Finding duplicate GUIDs");
             ValidationTasks.Add(task);
             findDuplicateGUIDs(task);
 
-            task = new ValidationTask("Relinking pathfinding chain");
+            task = new ListBoxTask("Relinking pathfinding chain");
             ValidationTasks.Add(task);
             relinkPathfindingChain(task);
 
             LastRunOnText = "Last ran at " + DateTime.Now;
         }
 
-        public void recalculateReachspecs(ValidationTask task = null)
+        public void recalculateReachspecs(ListBoxTask task = null)
         {
             //Figure out which exports have PathList.
             HashSet<int> reachSpecExportIndexes = new HashSet<int>();
@@ -207,7 +207,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 if (startNodeExport != null && startNode.UIndex != startNodeExport.UIndex)
                 {
                     //ERROR!
-                    ValidationTasks.Add(new ValidationTask
+                    ValidationTasks.Add(new ListBoxTask
                     {
                         Header = reachSpecExport.UIndex + " " + reachSpecExport.ObjectName + " start does not match it's containing pathlist reference (" + startNodeExport.UIndex + " " + startNodeExport.ObjectName + ")",
                         Icon = FontAwesomeIcon.Times,
@@ -303,7 +303,7 @@ namespace ME3Explorer.Pathfinding_Editor
             return false;
         }
 
-        public void fixStackHeaders(ValidationTask task = null)
+        public void fixStackHeaders(ListBoxTask task = null)
         {
             int itemcount = 2;
             int numUpdated = 0;
@@ -427,7 +427,7 @@ namespace ME3Explorer.Pathfinding_Editor
             //}
         }
 
-        public void relinkPathfindingChain(ValidationTask task = null)
+        public void relinkPathfindingChain(ListBoxTask task = null)
         {
             List<IExportEntry> pathfindingChain = new List<IExportEntry>();
 
@@ -512,7 +512,7 @@ namespace ME3Explorer.Pathfinding_Editor
         }
 
 
-        private void findDuplicateGUIDs(ValidationTask task = null)
+        private void findDuplicateGUIDs(ListBoxTask task = null)
         {
             var navGuidLists = new Dictionary<string, List<UnrealGUID>>();
             var duplicateGuids = new List<UnrealGUID>();
@@ -574,7 +574,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         //Debug.WriteLine(guid.levelListIndex + " Duplicate: " + guid.export.ObjectName);
                         duplicateGuids.Add(guid);
-                        ValidationTask v = new ValidationTask
+                        ListBoxTask v = new ListBoxTask
                         {
                             Header = "Dupliate GUID found on export " + guid.export.UIndex + " " + guid.export.ObjectName + "_" + guid.export.indexValue,
                             Icon = FontAwesomeIcon.TimesRectangle,
@@ -618,42 +618,5 @@ namespace ME3Explorer.Pathfinding_Editor
 
 
         #endregion
-
-        public class ValidationTask : NotifyPropertyChangedBase
-        {
-            private string _header;
-            public string Header { get => _header; set => SetProperty(ref _header, value); }
-
-            private FontAwesomeIcon _icon = FontAwesomeIcon.Spinner;
-            public FontAwesomeIcon Icon { get => _icon; set => SetProperty(ref _icon, value); }
-
-            private Brush _foreground = Brushes.Gray;
-            public Brush Foreground { get => _foreground; set => SetProperty(ref _foreground, value); }
-
-            public bool _spinning = true;
-            public bool Spinning { get => _spinning; set => SetProperty(ref _spinning, value); }
-
-            public ValidationTask()
-            {
-
-            }
-
-            public ValidationTask(string header)
-            {
-                Header = header;
-            }
-
-            /// <summary>
-            /// Completes this task
-            /// </summary>
-            /// <param name="v"></param>
-            internal void Complete(string v)
-            {
-                Header = v;
-                Icon = FontAwesomeIcon.CheckSquare;
-                Spinning = false;
-                Foreground = Brushes.Green;
-            }
-        }
     }
 }

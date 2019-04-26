@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using KFreonLib.MEDirectories;
 using System.Threading.Tasks;
 
-namespace ME3Explorer
+namespace ME3Explorer.T
 {
     public partial class AutoTOC : Form
     {

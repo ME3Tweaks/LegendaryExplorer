@@ -11,6 +11,8 @@ using ME3Explorer.Sequence_Editor;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Pathfinding_Editor;
 using Newtonsoft.Json;
+using ME3Explorer.AutoTOCx;
+using ME3Explorer.T;
 
 namespace ME3Explorer
 {
@@ -73,6 +75,18 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "user", "toc", "tocing", "crash", "infinite", "loop", "loading" },
                 description = "AutoTOC is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
+            });
+            set.Add(new Tool
+            {
+                name = "AutoTOC WPF",
+                type = typeof(AutoTOCWPF),
+                icon = Application.Current.FindResource("iconAutoTOC") as ImageSource,
+                open = () =>
+                {
+                    (new AutoTOCWPF()).Show();
+                },
+                tags = new List<string> { "user", "toc", "tocing", "crash", "infinite", "loop", "loading" },
+                description = "AutoTOC WPF is a tool for ME3 that updates and/or creates the PCConsoleTOC.bin files associated with the base game and each DLC.\n\nRunning this tool upon mod installation is imperative to ensuring proper functionality of the game."
             });
             set.Add(new Tool
             {

@@ -234,6 +234,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="AutoTOC\AutoTOCWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="BinaryInterpreter\BinaryInterpreterWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -274,6 +278,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="AutoTOC\AutoTOCWPF.xaml.cs">
+      <DependentUpon>AutoTOCWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="BinaryInterpreter\BinaryAddPropertyDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -510,6 +517,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SharedUI\PeregrineTreeView\NodeTreeSelectionBehavior.cs" />
+    <Compile Include="SharedUI\ListBoxTask.cs" />
     <Compile Include="SharedUI\TreeViewEntry.cs" />
     <Compile Include="Packages\UDKPackage.cs" />
     <Compile Include="Packages\MEPackage.cs" />
