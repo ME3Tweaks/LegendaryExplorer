@@ -30,6 +30,15 @@ namespace ME3Explorer
 
         public static string Version => GetVersion();
 
+        public static Visibility IsDebug
+        {
+#if DEBUG
+            get { return Visibility.Visible; }
+#else
+        get { return Visibility.Collapsed; }
+#endif
+        }
+
         public static string GetVersion()
         {
             Version ver = Assembly.GetExecutingAssembly().GetName().Version;

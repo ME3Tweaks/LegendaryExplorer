@@ -1367,7 +1367,6 @@ namespace ME3Explorer.Pathfinding_Editor
             ActiveNodes.ClearEx();
             StaticMeshCollections.ClearEx();
             CombatZones.ClearEx();
-            StatusBar_GameID_Container.Visibility = Visibility.Collapsed;
             StatusText = "Loading " + System.IO.Path.GetFileName(fileName);
             Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
 
@@ -1384,27 +1383,6 @@ namespace ME3Explorer.Pathfinding_Editor
                 return;
             }
             Mouse.OverrideCursor = Cursors.Wait;
-
-            switch (Pcc.Game)
-            {
-                case MEGame.ME1:
-                    StatusBar_GameID_Text.Text = "ME1";
-                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Navy);
-                    break;
-                case MEGame.ME2:
-                    StatusBar_GameID_Text.Text = "ME2";
-                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.Maroon);
-                    break;
-                case MEGame.ME3:
-                    StatusBar_GameID_Text.Text = "ME3";
-                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.DarkSeaGreen);
-                    break;
-                case MEGame.UDK:
-                    StatusBar_GameID_Text.Text = "UDK";
-                    StatusBar_GameID_Text.Background = new SolidColorBrush(Colors.IndianRed);
-                    break;
-            }
-            StatusBar_GameID_Container.Visibility = Visibility.Visible;
             Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
 
             graphEditor.nodeLayer.RemoveAllChildren();
