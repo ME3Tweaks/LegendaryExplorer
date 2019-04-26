@@ -122,7 +122,7 @@
                             <DataTrigger Binding="{Binding RawPropertyType}" Value="ArrayProperty">
                                 <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#382c4c"/>-->
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#382c4c"/>
-                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#BBffe2ba"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#99ffe2ba"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding RawPropertyType}" Value="BoolProperty">
                                 <!--<Setter TargetName="PropertyItem_DisplayValue" Property="Foreground" Value="#43563a"/>-->
@@ -153,12 +153,10 @@
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d4818"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88ffb759"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding HasChanges}" Value="True">
+                            <!--<DataTrigger Binding="{Binding HasChanges}" Value="True">
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="Maroon"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="Yellow"/>
-                            </DataTrigger>
-
-
+                            </DataTrigger>-->
                         </HierarchicalDataTemplate.Triggers>
                     </HierarchicalDataTemplate>
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
