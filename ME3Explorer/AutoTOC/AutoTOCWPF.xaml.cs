@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -10,8 +11,10 @@ using System.Windows.Media;
 using FontAwesome.WPF;
 using KFreonLib.MEDirectories;
 using ME3Explorer.SharedUI;
+using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
-namespace ME3Explorer.AutoTOCx
+namespace ME3Explorer.AutoTOC
 {
     /// <summary>
     /// Interaction logic for AutoTOCWPF.xaml
@@ -38,6 +41,9 @@ namespace ME3Explorer.AutoTOCx
 
 
         public ICommand RunAutoTOCCommand { get; private set; }
+        public ICommand GenerateDLCTOCCommand { get; private set; }
+        public ICommand BuildME1FileListCommand { get; private set; }
+
         public BackgroundWorker TOCWorker;
         /// <summary>
         /// Used to determine if this window will automatically close when an ME3 autotoc completes
@@ -47,6 +53,97 @@ namespace ME3Explorer.AutoTOCx
         private void LoadCommands()
         {
             RunAutoTOCCommand = new GenericCommand(RunAutoTOC, CanRunAutoTOC);
+            GenerateDLCTOCCommand = new GenericCommand(GenerateSingleDLCTOC, BackgroundThreadNotRunning);
+            BuildME1FileListCommand = new GenericCommand(GenerateME1FileList, BackgroundThreadNotRunning);
+        }
+
+        private void GenerateME1FileList()
+        {
+            CommonOpenFileDialog outputDlg = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                EnsurePathExists = true,
+                Title = "Select DLC CookedPC folder to create Fileindex",
+                InitialDirectory = ME1Directory.DLCPath,
+            };
+            if (outputDlg.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                //Validate
+                if (Path.GetFileName(outputDlg.FileName).Equals("CookedPC", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    TOCWorker = new BackgroundWorker();
+                    TOCWorker.DoWork += GenerateFileList_BackgroundThread;
+                    TOCWorker.RunWorkerCompleted += GenerateAllTOCs_Completed;
+                    TOCWorker.RunWorkerAsync(outputDlg.FileName);
+                }
+                else
+                {
+                    MessageBox.Show("Chosen directory be named CookedPC.");
+                }
+            }
+        }
+
+        private void GenerateFileList_BackgroundThread(object sender, DoWorkEventArgs e)
+        {
+            TOCTasks.ClearEx();
+            string[] extensions = { ".sfm", ".upk", ".bik", ".u", ".isb" };
+
+            //remove trailing slash
+            string dlcCookedDir = Path.GetFullPath(e.Argument as string); //standardize 
+            ListBoxTask task = new ListBoxTask($"Generating file index for {dlcCookedDir}");
+            TOCTasks.Add(task);
+            int rootLength = dlcCookedDir.Length + 1; //trailing slash path separator. This is used to strip off the absolute part of the path and leave only relative
+
+            //Where first as not all files need to be selected and then filtered, they should be filtered and then selected
+            var files = (Directory.EnumerateFiles(dlcCookedDir, "*.*", SearchOption.AllDirectories)
+                .Where(s => extensions.Any(ext => ext == Path.GetExtension(s).ToLower()))
+                .Select(p => p.Remove(0, rootLength))).ToList();
+
+            string fileName = Path.Combine(dlcCookedDir, "FileIndex.txt");
+            File.WriteAllLines(fileName, files);
+            task.Complete($"Generated file index for {dlcCookedDir}");
+            TOCTasks.Add(new ListBoxTask
+            {
+                Header = "Done",
+                Icon = FontAwesomeIcon.Check,
+                Foreground = Brushes.Green,
+                Spinning = false
+            });
+        }
+
+
+        private void GenerateSingleDLCTOC()
+        {
+            SaveFileDialog d = new SaveFileDialog();
+            d.Filter = "PCConsoleTOC.bin|PCConsoleTOC.bin";
+            d.FileName = "PCConsoleTOC.bin";
+            var result = d.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                string path = Path.GetDirectoryName(d.FileName) + "\\";
+                TOCWorker = new BackgroundWorker();
+                TOCWorker.DoWork += GenerateSingleTOC_BackgroundThread;
+                TOCWorker.RunWorkerCompleted += GenerateAllTOCs_Completed;
+                TOCWorker.RunWorkerAsync(path);
+            }
+        }
+
+        private void GenerateSingleTOC_BackgroundThread(object sender, DoWorkEventArgs e)
+        {
+            TOCTasks.ClearEx();
+            prepareToCreateTOC(e.Argument as string);
+            TOCTasks.Add(new ListBoxTask
+            {
+                Header = "TOC created",
+                Icon = FontAwesomeIcon.Check,
+                Foreground = Brushes.Green,
+                Spinning = false
+            });
+        }
+
+        private bool BackgroundThreadNotRunning()
+        {
+            return TOCWorker == null;
         }
 
         private void RunAutoTOC()
@@ -90,7 +187,7 @@ namespace ME3Explorer.AutoTOCx
         }
 
         /// <summary>
-        /// Prepares to create the listed TOC file by gathering data and then passing it to the TOC creation function
+        /// Prepares to create the indexed TOC file by gathering data and then passing it to the TOC creation function
         /// </summary>
         /// <param name="consoletocFile"></param>
         public void prepareToCreateTOC(string consoletocFile)
@@ -209,13 +306,6 @@ namespace ME3Explorer.AutoTOCx
             List<string> folders = (new DirectoryInfo(ME3Directory.DLCPath)).GetDirectories().Select(d => d.FullName).ToList();
             folders.Add(ME3Directory.gamePath + @"BIOGame\");
             folders.ForEach(prepareToCreateTOC);
-        }
-
-        internal static void GenerateAllTOCsAutoClose()
-        {
-
-            //Used by texplorer
-            //throw new NotImplementedException();
         }
 
         private void AutoTOCWPF_Loaded(object sender, System.Windows.RoutedEventArgs e)

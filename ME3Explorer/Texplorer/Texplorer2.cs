@@ -24,7 +24,7 @@ using UsefulThings;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using CSharpImageLibrary;
 using CSharpImageLibrary.General;
-using ME3Explorer.AutoTOCx;
+using ME3Explorer.AutoTOC;
 
 namespace ME3Explorer
 {
@@ -1355,7 +1355,7 @@ namespace ME3Explorer
             if (WhichGame == 3)
             {
                 DebugOutput.PrintLn("Updating TOCs...");
-                AutoTOCWPF auto = new AutoTOCWPF(autoClose);
+                AutoTOCWPF auto = new AutoTOCWPF(true);
                 auto.ShowDialog();
                 DebugOutput.PrintLn("TOCs updated.");
             }

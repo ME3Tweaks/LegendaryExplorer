@@ -867,12 +867,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AutoTOC\AutoTOC.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AutoTOC\AutoTOC.Designer.cs">
-      <DependentUpon>AutoTOC.cs</DependentUpon>
-    </Compile>
     <Compile Include="BIKExtract\BIKExtract.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1227,9 +1221,6 @@
     </Compile>
     <EmbeddedResource Include="AnimationExplorer\AnimationExplorer.resx">
       <DependentUpon>AnimationExplorer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="AutoTOC\AutoTOC.resx">
-      <DependentUpon>AutoTOC.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="BIKExtract\BIKExtract.resx">
       <DependentUpon>BIKExtract.cs</DependentUpon>
