@@ -334,5 +334,17 @@ namespace ME3Explorer.Properties {
                 this["PathfindingEditorShowNodeSizes"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PackageEditorWPF_TreeViewShowNetIndex {
+            get {
+                return ((bool)(this["PackageEditorWPF_TreeViewShowNetIndex"]));
+            }
+            set {
+                this["PackageEditorWPF_TreeViewShowNetIndex"] = value;
+            }
+        }
     }
 }

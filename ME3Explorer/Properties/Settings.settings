@@ -80,5 +80,8 @@
     <Setting Name="PathfindingEditorShowNodeSizes" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="PackageEditorWPF_TreeViewShowNetIndex" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

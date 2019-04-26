@@ -16,71 +16,72 @@ namespace ME3Explorer
 
         public bool IsProgramaticallySelecting;
 
-        /*private bool isSelected;
+        private bool isSelected;
         public bool IsSelected
         {
             get => isSelected;
-            set
-            {
-               /* if (!IsProgramaticallySelecting && isSelected != value)
-                {
-                    //user is selecting
-                    isSelected = value;
-                    OnPropertyChanged();
-                    return;
-                }
-                // build a priority queue of dispatcher operations
+            set => SetProperty(ref isSelected, value);
+        }
+        /*   {
+              /* if (!IsProgramaticallySelecting && isSelected != value)
+               {
+                   //user is selecting
+                   isSelected = value;
+                   OnPropertyChanged();
+                   return;
+               }
+               // build a priority queue of dispatcher operations
 
-                // All operations relating to tree item expansion are added with priority = DispatcherPriority.ContextIdle, so that they are
-                // sorted before any operations relating to selection (which have priority = DispatcherPriority.ApplicationIdle).
-                // This ensures that the visual container for all items are created before any selection operation is carried out.
-                // First expand all ancestors of the selected item - those closest to the root first
-                // Expanding a node will scroll as many of its children as possible into view - see perTreeViewItemHelper, but these scrolling
-                // operations will be added to the queue after all of the parent expansions.
-                if (value)
-                {
-                    var ancestorsToExpand = new Stack<TreeViewEntry>();
+               // All operations relating to tree item expansion are added with priority = DispatcherPriority.ContextIdle, so that they are
+               // sorted before any operations relating to selection (which have priority = DispatcherPriority.ApplicationIdle).
+               // This ensures that the visual container for all items are created before any selection operation is carried out.
+               // First expand all ancestors of the selected item - those closest to the root first
+               // Expanding a node will scroll as many of its children as possible into view - see perTreeViewItemHelper, but these scrolling
+               // operations will be added to the queue after all of the parent expansions.
+               if (value)
+               {
+                   var ancestorsToExpand = new Stack<TreeViewEntry>();
 
-                    var parent = Parent;
-                    while (parent != null)
-                    {
-                        if (!parent.IsExpanded)
-                            ancestorsToExpand.Push(parent);
+                   var parent = Parent;
+                   while (parent != null)
+                   {
+                       if (!parent.IsExpanded)
+                           ancestorsToExpand.Push(parent);
 
-                        parent = parent.Parent;
-                    }
+                       parent = parent.Parent;
+                   }
 
-                    while (ancestorsToExpand.Any())
-                    {
-                        var parentToExpand = ancestorsToExpand.Pop();
-                        DispatcherHelper.AddToQueue(() => parentToExpand.IsExpanded = true, DispatcherPriority.ContextIdle);
-                    }
-                }
+                   while (ancestorsToExpand.Any())
+                   {
+                       var parentToExpand = ancestorsToExpand.Pop();
+                       DispatcherHelper.AddToQueue(() => parentToExpand.IsExpanded = true, DispatcherPriority.ContextIdle);
+                   }
+               }
 
-                //cancel if we're currently selected.
-                if (isSelected == value)
-                    return;
+               //cancel if we're currently selected.
+               if (isSelected == value)
+                   return;
 
-                // Set the item's selected state - use DispatcherPriority.ApplicationIdle so this operation is executed after all
-                // expansion operations, no matter when they were added to the queue.
-                // Selecting a node will also scroll it into view - see perTreeViewItemHelper
-                DispatcherHelper.AddToQueue(() =>
-                {
-                    if (value != isSelected)
-                    {
-                        this.isSelected = value;
-                        OnPropertyChanged(nameof(IsSelected));
-                        IsProgramaticallySelecting = false;
-                    }
-                }, DispatcherPriority.ApplicationIdle);
+               // Set the item's selected state - use DispatcherPriority.ApplicationIdle so this operation is executed after all
+               // expansion operations, no matter when they were added to the queue.
+               // Selecting a node will also scroll it into view - see perTreeViewItemHelper
+               DispatcherHelper.AddToQueue(() =>
+               {
+                   if (value != isSelected)
+                   {
+                       this.isSelected = value;
+                       OnPropertyChanged(nameof(IsSelected));
+                       IsProgramaticallySelecting = false;
+                   }
+               }, DispatcherPriority.ApplicationIdle);
 
-                // note that by rule, a TreeView can only have one selected item, but this is handled automatically by 
-                // the control - we aren't required to manually unselect the previously selected item.
+               // note that by rule, a TreeView can only have one selected item, but this is handled automatically by 
+               // the control - we aren't required to manually unselect the previously selected item.
 
-                // execute all of the queued operations in descending DipatecherPriority order (expansion before selection)
-                var unused = DispatcherHelper.ProcessQueueAsync();
-            }
-        }*/
+               // execute all of the queued operations in descending DipatecherPriority order (expansion before selection)
+               var unused = DispatcherHelper.ProcessQueueAsync();
+           }
+       }*/
 
         private bool isExpanded;
         public bool IsExpanded
@@ -143,11 +144,17 @@ namespace ME3Explorer
                 {
                     if (_displayName != null) return _displayName;
                     string type = UIndex < 0 ? "Imp" : "Exp";
-                    return $"({type}) {UIndex} {Entry.ObjectName}({Entry.ClassName})";
+                    string returnvalue = $"({type}) {UIndex} {Entry.ObjectName}";
+                    if (Properties.Settings.Default.PackageEditorWPF_TreeViewShowNetIndex && Entry.indexValue != 0)
+                    {
+                        returnvalue += $"_{Entry.indexValue}";
+                    }
+                    returnvalue += $"({Entry.ClassName})";
+                    return returnvalue;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    return "ERROR!";
+                    return "ERROR GETTING DISPLAY NAME!";
                 }
             }
             set { _displayName = value; OnPropertyChanged(); }
