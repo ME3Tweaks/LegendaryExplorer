@@ -681,12 +681,6 @@
     <Compile Include="Soundplorer\Soundpanel.xaml.cs">
       <DependentUpon>Soundpanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Soundplorer\Soundplorer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Soundplorer\Soundplorer.Designer.cs">
-      <DependentUpon>Soundplorer.cs</DependentUpon>
-    </Compile>
     <Compile Include="Soundplorer\SoundplorerWPF.xaml.cs">
       <DependentUpon>SoundplorerWPF.xaml</DependentUpon>
     </Compile>
@@ -1335,9 +1329,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Soundplorer\DirectReplace.resx">
       <DependentUpon>DirectReplace.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Soundplorer\Soundplorer.resx">
-      <DependentUpon>Soundplorer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SubtitleScanner\SubtitleScanner.resx">
       <DependentUpon>SubtitleScanner.cs</DependentUpon>
