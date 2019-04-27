@@ -141,29 +141,29 @@
         <!--<BitmapImage x:Key="iconClassViewer" UriSource="Resources/class_viewer_64x64.png"/>-->
         <BitmapImage x:Key="iconHexConverter" UriSource="Resources/hexconverter_256x256.ico"/>
         <BitmapImage x:Key="iconImageEngine" UriSource="Resources/ImageEngine_256x256.ico"/>
-        <BitmapImage x:Key="iconInterpViewer" UriSource="Resources/interp_viewer_icon_64x64.png"/>
+        <BitmapImage x:Key="iconInterpViewer" UriSource="Resources/interpviewer_256x256.ico"/>
         <!--<BitmapImage x:Key="iconLevelDatabase" UriSource="Resources/level_database_icon.ico"/>-->
         <!--<BitmapImage x:Key="iconPCCRepacker" UriSource="Resources/pcc_repacker_64x64.png"/>-->
         <BitmapImage x:Key="iconPlotDatabase" UriSource="Resources/plotdatabase_256x256.ico"/>
         <BitmapImage x:Key="iconPropertyDatabase" UriSource="Resources/propertydatabase_256x256.ico"/>
-        <BitmapImage x:Key="iconPSAViewer" UriSource="Resources/psa_viewer_64x64.png"/>
-        <BitmapImage x:Key="iconPSKViewer" UriSource="Resources/psk_viewer_64x64.png"/>
+        <BitmapImage x:Key="iconPSAViewer" UriSource="Resources/psaviewer_256x256.ico"/>
+        <BitmapImage x:Key="iconPSKViewer" UriSource="Resources/pskviewer_256x256.ico"/>
         <!--<BitmapImage x:Key="iconSaveGameEditor" UriSource="Resources/save_gameeditor_icon.ico"/>-->
         <!--<BitmapImage x:Key="iconSaveGameOperator" UriSource="Resources/save_gameoperator_icon.ico"/>-->
         <BitmapImage x:Key="iconPathfindingEditor" UriSource="Resources/pathfindingeditor_256x256.ico"/>
-        <BitmapImage x:Key="iconScriptDatabase" UriSource="Resources/script_database_icon.ico"/>
-        <BitmapImage x:Key="iconSubtitleScanner" UriSource="Resources/subtitle_scanner_64x64.png"/>
+        <BitmapImage x:Key="iconScriptDatabase" UriSource="Resources/scriptdatabase_256x256.ico"/>
+        <BitmapImage x:Key="iconSubtitleScanner" UriSource="Resources/subtitlescanner_256x256.ico"/>
         <!--<BitmapImage x:Key="iconLanguageSelector" UriSource="Icons/lang_select_64x64.png"/>-->
         <!--<BitmapImage x:Key="iconME3BackupTool" UriSource="Icons/backup_64x64.png"/>-->
         <BitmapImage x:Key="iconWwiseBankEditor" UriSource="Resources/wwisebankeditor_256x256.ico"/>
 
         <BitmapImage x:Key="iconAutoTOC" UriSource="Resources/autotoc_256x256.ico"/>
         <BitmapImage x:Key="iconModMaker" UriSource="Icons/modmaker_64x64.png"/>
-        <BitmapImage x:Key="iconSFARTOCUpdater" UriSource="Icons/SFARTOC_64x64.png"/>
+        <!--<BitmapImage x:Key="iconSFARTOCUpdater" UriSource="Icons/SFARTOC_64x64.png"/>-->
         <BitmapImage x:Key="iconTPFTools" UriSource="Resources/tpftools_256x256.ico"/>
 
         <!--<BitmapImage x:Key="iconAudioEditor" UriSource="Resources/audio_editor_icon.ico"/>-->
-        <BitmapImage x:Key="iconAnimationExplorer" UriSource="Resources/animation_explorer_64x64.png"/>
+        <BitmapImage x:Key="iconAnimationExplorer" UriSource="Resources/animationexplorer_256x256.ico"/>
         <BitmapImage x:Key="iconCameraTool" UriSource="Resources/camera_tool_64x64.png"/>
         <BitmapImage x:Key="iconCoalescedEditor" UriSource="Resources/coalesced_editor_64.png"/>
         <BitmapImage x:Key="iconDLCUnpacker" UriSource="Resources/dlc_unpacker_256x256.ico"/>
@@ -173,7 +173,7 @@
         <BitmapImage x:Key="iconFaceFXEditor" UriSource="Resources/facefxeditor_256x256.ico"/>
         <BitmapImage x:Key="iconInterpreter" UriSource="Icons/interpreter_icon.ico"/>
         <BitmapImage x:Key="iconPlaceholder" UriSource="Icons/placeholder_64x64.png"/>
-        <BitmapImage x:Key="iconLevelEditor" UriSource="Resources/level_explorer_64x64.png"/>
+        <!--<BitmapImage x:Key="iconLevelEditor" UriSource="Resources/level_explorer_64x64.png"/>-->
         <BitmapImage x:Key="iconMemoryAnalyzer" UriSource="Resources/memoryanalyzer_256x256.ico"/>
         <BitmapImage x:Key="iconMeshplorer" UriSource="Resources/meshplorer_256x256.ico"/>
         <BitmapImage x:Key="iconMeshDatabase" UriSource="Resources/meshdatabase_256x256.ico"/>

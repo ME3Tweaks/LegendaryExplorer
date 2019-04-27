@@ -19,7 +19,7 @@ namespace ME3Explorer.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -113,16 +113,6 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap interp_viewer_icon_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("interp_viewer_icon_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap interpreter_icon_64x64 {
             get {
                 object obj = ResourceManager.GetObject("interpreter_icon_64x64", resourceCulture);
@@ -181,26 +171,6 @@ namespace ME3Explorer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap psa_viewer_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("psa_viewer_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap psk_viewer_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("psk_viewer_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to // This has to match the data in the vertex buffer.
         ///struct VS_IN {
         ///	float3 pos : POSITION;
@@ -235,16 +205,6 @@ namespace ME3Explorer.Properties {
         public static string StandardShader {
             get {
                 return ResourceManager.GetString("StandardShader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap subtitle_scanner_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("subtitle_scanner_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

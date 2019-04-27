@@ -1427,14 +1427,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\autotoc_64x64.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Icons\BIK_movie_64x64.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\interpreter_icon.ico" />
-    <Resource Include="Icons\interp_viewer_icon.ico" />
     <Resource Include="Resources\About_icon.ico" />
     <Resource Include="Resources\close_icon.ico" />
     <Resource Include="Resources\create_mods_icon.ico" />
@@ -1454,8 +1450,6 @@
     <Resource Include="Resources\document-save.png" />
     <Resource Include="Resources\animation_explorer_64x64.png" />
     <Resource Include="Icons\udk_explorer_64x64.png" />
-    <Resource Include="Icons\TPFTools_64x64.png" />
-    <Resource Include="Icons\plot_DB_64x64.png" />
     <Resource Include="Icons\placeholder_64x64.png" />
     <Resource Include="Icons\modmaker_64x64.png" />
     <Page Include="CurveEd\CurveEditor.xaml">
@@ -1581,6 +1575,11 @@
     <Resource Include="Resources\meshdatabase_256x256.ico" />
     <Resource Include="Resources\tpftools_256x256.ico" />
     <Resource Include="Resources\propertydatabase_256x256.ico" />
+    <Resource Include="Resources\animationexplorer_256x256.ico" />
+    <Resource Include="Resources\psaviewer_256x256.ico" />
+    <Resource Include="Resources\pskviewer_256x256.ico" />
+    <Resource Include="Resources\scriptdatabase_256x256.ico" />
+    <Resource Include="Resources\subtitlescanner_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
