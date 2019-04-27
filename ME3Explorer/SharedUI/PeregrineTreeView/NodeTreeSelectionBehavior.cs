@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interactivity;
 
+// From https://stackoverflow.com/questions/183636/selecting-a-node-in-virtualized-treeview-with-wpf?answertab=votes#tab-top
+
 namespace ME3Explorer.SharedUI
 {
     public class NodeTreeSelectionBehavior : Behavior<TreeView>
@@ -40,6 +42,8 @@ namespace ME3Explorer.SharedUI
             {
                 // first try the easy way
                 var newParent = currentParent.ItemContainerGenerator.ContainerFromItem(node) as TreeViewItem;
+                var index = 0;
+                VirtualizingPanel virtualizingPanel = null;
                 if (newParent == null)
                 {
                     // if this failed, it's probably because of virtualization, and we will have to do it the hard way.
@@ -56,16 +60,24 @@ namespace ME3Explorer.SharedUI
                         currentParent.UpdateLayout();
                     }
 
-                    var virtualizingPanel = GetItemsHost(currentParent) as VirtualizingPanel;
+                    virtualizingPanel = GetItemsHost(currentParent) as VirtualizingPanel;
                     CallEnsureGenerator(virtualizingPanel);
-                    var index = currentParent.Items.IndexOf(node);
+                    index = currentParent.Items.IndexOf(node);
                     if (index < 0)
                     {
                         throw new InvalidOperationException("Node '" + node + "' cannot be fount in container");
                     }
-                    virtualizingPanel.BringIndexIntoViewPublic(index);
-                    //CallBringIndexIntoView(virtualizingPanel, index);
+                    if (virtualizingPanel != null)
+                    {
+                        virtualizingPanel.BringIndexIntoViewPublic(index);
+                    }
                     newParent = currentParent.ItemContainerGenerator.ContainerFromIndex(index) as TreeViewItem;
+                    if (newParent == null)
+                    {
+                        currentParent.UpdateLayout();
+                        virtualizingPanel.BringIndexIntoViewPublic(index);
+                        newParent = currentParent.ItemContainerGenerator.ContainerFromIndex(index) as TreeViewItem;
+                    }
                 }
 
                 if (newParent == null)
