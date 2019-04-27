@@ -49,7 +49,7 @@ namespace ME3Explorer
 
         public EmbeddedTextureViewer()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("[PackEdWPF] Texture ExportLoader", new WeakReference(this));
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Embedded Texture Viewer Export Loader", new WeakReference(this));
 
             DataContext = this;
             CannotShowTextureText = "Select a mip to view";

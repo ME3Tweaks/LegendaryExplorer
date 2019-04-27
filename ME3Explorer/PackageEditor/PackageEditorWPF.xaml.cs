@@ -3105,10 +3105,9 @@ namespace ME3Explorer
                     el.Dispose(); //Remove hosted winforms references
                 }
                 LeftSideList_ItemsSource.ClearEx();
-                LeftSide_TreeView = null; //peregrine treeview dispatcher leak
+                //LeftSide_TreeView = null; //peregrine treeview dispatcher leak //we don't use peregrine tree view anymore
                 AllTreeViewNodesX.ClearEx();
                 Pcc = null; //Package object leak
-                DispatcherHelper.EmptyQueue();
             }
         }
 

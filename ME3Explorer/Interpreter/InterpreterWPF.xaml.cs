@@ -88,7 +88,7 @@ namespace ME3Explorer
 
         public InterpreterWPF()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("InterpreterWPF", new WeakReference(this));
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Interpreter WPF Export Loader", new WeakReference(this));
             LoadCommands();
             InitializeComponent();
             EditorSetElements.Add(Value_TextBox); //str, strref, int, float, obj
