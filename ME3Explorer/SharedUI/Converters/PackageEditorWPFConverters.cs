@@ -132,7 +132,7 @@ namespace ME3Explorer.SharedUI.Converters
     }
 
     [ValueConversion(typeof(IEntry), typeof(Visibility))]
-    public class EntryTypeVisibilityConverter : IValueConverter
+    public class EntryClassVisibilityConveter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

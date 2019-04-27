@@ -40,7 +40,7 @@
         <Converters:EntryFileTypeIconPathConverter x:Key="EntryFileTypeIconPathConverter"/>
         <Converters:EmbeddedFileToolTipConverter x:Key="EmbeddedFileToolTipConverter"/>
         <Converters:GameTypeConverter x:Key="GameTypeConverter"/>
-        <Converters:EntryTypeVisibilityConverter x:Key="EntryTypeVisibilityConverter"/>
+        <Converters:EntryClassVisibilityConveter x:Key="EntryTypeVisibilityConverter"/>
         <ContextMenu x:Key="EntryContextMenu">
             <MenuItem Header="Copy name text" ToolTip="Copies the name text to the clipboard" Command="{Binding CopyNameCommand}" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
             <MenuItem Header="Add name" ToolTip="Add a name to this package" Command="{Binding AddNameCommand}" CommandParameter="FromContextMenu" Visibility="{Binding Path=IsEnabled,RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
@@ -264,7 +264,7 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
