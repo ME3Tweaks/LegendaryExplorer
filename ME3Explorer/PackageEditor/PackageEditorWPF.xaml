@@ -137,7 +137,10 @@
                         <MenuItem Name="PropertyParsing_ME3UnknownArrayAsObj_MenuItem" Header="ME3: Parse Unknown array types as objects instead of int" Click="PropertyParsing_ME3UnknownArrayAsObj_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=PropertyParsingME3UnknownArrayAsObject, Mode=TwoWay}" ToolTip="Return unknown array types as object arrays instead of integer. This only affects parsing and resolving of values. This setting only applies to ME3."/>
                     </MenuItem>
                     <MenuItem Header="Binary Interpreter">
-                        <MenuItem Name="BinaryInterpreterWPF_AlwaysAutoParse_MenuItem" Header="Auto-parse generic scans > 20KB" Click="BinaryInterpreterWPF_AlwaysAutoParse_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=BinaryInterpreterWPFAutoScanAlways, Mode=TwoWay}" ToolTip="Automatically parse exports that use Generic Scan that are larger than 20KB.&#10;By default, this is disabled to improve performance."/>
+                        <MenuItem Name="BinaryInterpreterWPF_AlwaysAutoParse_MenuItem" Header="Auto-parse generic scans > 20KB" Click="BinaryInterpreterWPF_AlwaysAutoParse_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=BinaryInterpreterWPFAutoScanAlways, Mode=TwoWay}" ToolTip="Automatically parse exports that use Generic Scan that are larger than 20KB.&#10;By default, this is disabled to improve performance"/>
+                    </MenuItem>
+                    <MenuItem Header="Texture Viewer">
+                        <MenuItem Name="EmbeddedTextureViewerWPF_AutoPreviewTextures" Header="Automatically preview textures on export selection" Click="EmbeddedTextureViewer_AutoLoad_Click" StaysOpenOnClick="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=EmbeddedTextureViewer_AutoLoad, Mode=TwoWay}" ToolTip="Automatically load texture exports for viewing. Turn this feature off to improve performance and increase application stability"/>
                     </MenuItem>
                 </MenuItem>
                 <MenuItem Header="Debugging" Padding="4">

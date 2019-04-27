@@ -3773,5 +3773,11 @@ namespace ME3Explorer
             Properties.Settings.Default.PackageEditorWPF_TreeViewShowNetIndex = !Properties.Settings.Default.PackageEditorWPF_TreeViewShowNetIndex;
             Properties.Settings.Default.Save();
         }
+
+        private void EmbeddedTextureViewer_AutoLoad_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.EmbeddedTextureViewer_AutoLoad = !Properties.Settings.Default.EmbeddedTextureViewer_AutoLoad;
+            Properties.Settings.Default.Save();
+        }
     }
 }

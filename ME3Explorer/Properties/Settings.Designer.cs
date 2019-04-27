@@ -346,5 +346,17 @@ namespace ME3Explorer.Properties {
                 this["PackageEditorWPF_TreeViewShowNetIndex"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool EmbeddedTextureViewer_AutoLoad {
+            get {
+                return ((bool)(this["EmbeddedTextureViewer_AutoLoad"]));
+            }
+            set {
+                this["EmbeddedTextureViewer_AutoLoad"] = value;
+            }
+        }
     }
 }
