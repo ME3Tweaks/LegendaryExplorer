@@ -43,5 +43,13 @@ namespace ME3Explorer.SharedUI
                 hostedControl.LoadExport(LoadedExport);
             }));
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!e.Cancel)
+            {
+                hostedControl.Dispose();
+            }
+        }
     }
 }

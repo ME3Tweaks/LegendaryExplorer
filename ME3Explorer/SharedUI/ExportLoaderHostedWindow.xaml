@@ -7,6 +7,7 @@
              x:Class="ME3Explorer.SharedUI.ExportLoaderHostedWindow"
              mc:Ignorable="d" 
              Loaded="Window_Loaded"
+             Closing="Window_Closing"
              d:DesignHeight="297.789" d:DesignWidth="600.737" Title="Hosted Export Loader">
     <!-- Codebehind will add a child to this panel-->
     <DockPanel Name="RootPanel"/>
