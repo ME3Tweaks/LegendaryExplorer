@@ -73,8 +73,22 @@ namespace ME3Explorer
         //IMEPackage CurrentPackage; //used to tell when to update WwiseEvents list
         //private Dictionary<IExportEntry, List<Tuple<string, int, double>>> WemIdsToWwwiseEventIdMapping = new Dictionary<IExportEntry, List<Tuple<string, int, double>>>();
 
+        public override void PopOut()
+        {
+            if (CurrentLoadedExport != null)
+            {
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new Soundpanel(), CurrentLoadedExport);
+                elhw.Title = $"Sound Player - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                elhw.Height = 400;
+                elhw.Width = 400;
+                elhw.Show();
+            }
+        }
+
         public Soundpanel()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Soundpanel Export Loader", new WeakReference(this));
+
             PlayPauseIcon = FontAwesomeIcon.Play;
             LoadCommands();
             CurrentVolume = 1;
@@ -1545,11 +1559,14 @@ namespace ME3Explorer
 
         private void Soundpanel_Unloaded(object sender, RoutedEventArgs e)
         {
+            Debug.WriteLine("Unloading soundpanel");
             seekbarUpdateTimer?.Stop();
         }
 
         public override void Dispose()
         {
+            Debug.WriteLine("Disposing soundpanel");
+            FreeAudioResources();
             SoundpanelHIRC_Hexbox = null;
             HIRC_Hexbox_Host.Child.Dispose();
             HIRC_Hexbox_Host.Dispose();

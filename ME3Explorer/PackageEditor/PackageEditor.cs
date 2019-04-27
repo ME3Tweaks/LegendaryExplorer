@@ -14,6 +14,7 @@ using ME3Explorer.SharedUI;
 using Gibbed.IO;
 using System.Globalization;
 using System.Collections;
+using ME3Explorer.Pathfinding_Editor;
 
 namespace ME3Explorer
 {
@@ -1926,8 +1927,8 @@ namespace ME3Explorer
             int n = 0;
             if (GetSelected(out n) && n >= 0 && Pcc.Game == MEGame.ME3)
             {
-                CurveEd.CurveEditorHost c = new CurveEd.CurveEditorHost(Pcc.getExport(n));
-                c.Show();
+                CurveEd.CurveEditor.OpenCurveEditorInWindow(Pcc.getExport(n));
+
             }
         }
 
@@ -2175,9 +2176,7 @@ namespace ME3Explorer
         {
             if (Pcc != null)
             {
-                PathfindingEditor editor = new PathfindingEditor();
-                editor.LoadFile(Pcc.FileName);
-                editor.BringToFront();
+                PathfindingEditorWPF editor = new PathfindingEditorWPF(Pcc.FileName);
                 editor.Show();
             }
         }

@@ -131,6 +131,25 @@ namespace ME3Explorer.SharedUI.Converters
         }
     }
 
+    [ValueConversion(typeof(IEntry), typeof(Visibility))]
+    public class EntryClassVisibilityConveter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is IExportEntry exp && parameter is string type)
+            {
+                return exp.ClassName == type ? Visibility.Visible : Visibility.Collapsed;
+            }
+
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {    // Don't need any convert back
+            return null;
+        }
+    }
+
     [ValueConversion(typeof(IEntry), typeof(string))]
     public class EmbeddedFileToolTipConverter : IValueConverter
     {

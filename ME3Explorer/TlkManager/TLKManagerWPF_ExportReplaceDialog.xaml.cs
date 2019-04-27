@@ -27,6 +27,7 @@ namespace ME3Explorer.TlkManagerNS
     {
         public ICommand ReplaceSelectedTLK { get; private set; }
         public ICommand ExportSelectedTLK { get; private set; }
+        public ICommand EditSelectedTLK { get; private set; }
 
         public ObservableCollectionExtended<LoadedTLK> TLKSources { get; set; } = new ObservableCollectionExtended<LoadedTLK>();
 
@@ -59,6 +60,26 @@ namespace ME3Explorer.TlkManagerNS
         {
             ReplaceSelectedTLK = new RelayCommand(ReplaceTLK, TLKSelected);
             ExportSelectedTLK = new RelayCommand(ExportTLK, TLKSelected);
+            EditSelectedTLK = new RelayCommand(EditTLK, CanEditTLK);
+        }
+
+        private void EditTLK(object obj)
+        {
+            if (TLKList.SelectedItem is LoadedTLK tlk && tlk.embedded)
+            {
+                //Need to find a way for the export loader to register usage of the pcc.
+                ME1Package pcc = MEPackageHandler.OpenME1Package(tlk.tlkPath);
+                var export = pcc.getUExport(tlk.exportNumber);
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new ME1TlkEditor.ME1TlkEditorWPF(), export);
+                elhw.Title = $"TLK Editor - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {export.FileRef.FileName}";
+                elhw.Show();
+            }
+        }
+
+        private bool CanEditTLK(object obj)
+        {
+            //Current code checks if it is ME1 as currently only ME1 TLK can be loaded into an export loader for ME1TLKEditor.
+            return TLKList.SelectedItem is LoadedTLK tlk && tlk.embedded;
         }
 
         private void ExportTLK(object obj)

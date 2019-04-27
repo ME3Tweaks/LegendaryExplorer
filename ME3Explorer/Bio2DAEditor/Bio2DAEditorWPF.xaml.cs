@@ -68,6 +68,15 @@ namespace ME3Explorer
             CurrentLoadedExport = null;
         }
 
+        public override void PopOut()
+        {
+            if (CurrentLoadedExport != null)
+            {
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new Bio2DAEditorWPF(), CurrentLoadedExport);
+                elhw.Title = $"Bio2DA Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                elhw.Show();
+            }
+        }
         private void DataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
             if (CachedME12DA_TalentEffectLevels == null && CurrentLoadedExport.FileRef.FileName.Contains("Engine.u"))
@@ -191,7 +200,8 @@ namespace ME3Explorer
                     {
                         if (resulting2DA.IsIndexed != Table2DA.IsIndexed)
                         {
-                            MessageBox.Show("Warning: Imported sheet contains blank cells. Underlying sheet does not.");
+                            if (resulting2DA.IsIndexed == true) { MessageBox.Show("Warning: Imported sheet contains blank cells. Underlying sheet does not."); }
+                            else { MessageBox.Show("Warning: Underlying sheet contains blank cells. Imported sheet does not."); }
                         }
                         resulting2DA.Write2DAToExport();
                     }

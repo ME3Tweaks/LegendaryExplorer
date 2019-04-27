@@ -36,10 +36,10 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <DockPanel LastChildFill="True" HorizontalAlignment="Stretch">
-                            <TextBlock TextWrapping="Wrap" Text="{Binding AllocationTime}" FontStyle="Italic"/>
+                        <TextBlock TextWrapping="Wrap" Text="{Binding AllocationTime}" FontStyle="Italic"  Foreground="{Binding DrawColor}"/>
                             <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" Margin="10,0,0,0">
-                                <TextBlock TextWrapping="Wrap" DockPanel.Dock="Left"  Text="{Binding Path=ReferenceName}"/>
-                                <TextBlock TextWrapping="Wrap" DockPanel.Dock="Right" TextAlignment="Right" Text="{Binding Path=ReferenceStatus}" FontWeight="Bold"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Left"  Text="{Binding Path=ReferenceName}" Foreground="{Binding DrawColor}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Right" TextAlignment="Right" Text="{Binding Path=ReferenceStatus}" FontWeight="Bold" Foreground="{Binding DrawColor}"/>
                             </DockPanel>
                         </DockPanel>
                     </DataTemplate>

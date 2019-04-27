@@ -170,7 +170,7 @@
                             ToolTip="Flags for this entry&#10;It is very rare you will ever need to change these"/>
         <Separator Grid.ColumnSpan="2" Grid.Row="9"/>
 
-        <TextBox Name="InfoTab_Headersize_TextBox"  VerticalAlignment="Center" IsEnabled="False" Grid.Row="10" Grid.Column="1" IsReadOnly="true"/>
+        <TextBox Name="InfoTab_Headersize_TextBox" VerticalAlignment="Center" IsEnabled="False" Grid.Row="10" Grid.Column="1" IsReadOnly="true"/>
         <TextBox Name="InfoTab_ExportDataSize_TextBox" Grid.Row="11" Grid.Column="1" IsReadOnly ="true" VerticalAlignment="Center"/>
         <TextBox Name="InfoTab_ExportOffsetHex_TextBox" Grid.Row="12" Grid.Column="1" IsReadOnly ="true" VerticalAlignment="Center"/>
         <TextBox Name="InfoTab_ExportOffsetDec_TextBox" Grid.Row="13" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
@@ -179,12 +179,12 @@
         <TextBox Name="InfoTab_ExportGUID_TextBox" Grid.Row="16" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
         <TextBox Name="InfoTab_ExportUnknown2_TextBox" Grid.Row="17" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
         <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Grid.Row="18">
-            <Button Name="Info_HeaderHexSaveChanges" Content="Save hex changes"  Margin="3,0,3,0" Padding="2" Click="Info_HeaderHexSaveChanges_Click"/>
+            <Button Name="Info_HeaderHexSaveChanges" Content="Save hex changes"  Margin="0,0,3,0" Padding="5,2" Click="Info_HeaderHexSaveChanges_Click"/>
             <TextBlock Name="Info_Header_UnsavedChanges" Text="Changes not yet saved" Foreground="Red" Margin="0,0,3,0"  VerticalAlignment="Center" Visibility="Hidden"/>
         </StackPanel>
         <!--<StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Grid.Row="10"  Width="Auto" Height="Auto" Margin="0,5,0,0"  MaxWidth="650">-->
         <!--Grid.Row="10" Grid.ColumnSpan="2"-->
-        <WindowsFormsHost Name="Header_Hexbox_Host" Background="Yellow" Grid.Row="19" Grid.ColumnSpan="2" Margin="0,5,0,0"  MaxWidth="730" HorizontalAlignment="Stretch">
+        <WindowsFormsHost Name="Header_Hexbox_Host" Grid.Row="19" Grid.ColumnSpan="2" Margin="0,5,0,0"  MaxWidth="730" HorizontalAlignment="Stretch">
             <hb1:HexBox  MinBytesPerLine="4" MaxBytesPerLine="16" BytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" VScrollBarVisible="True" UseFixedBytesPerLine="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="hb1_SelectionChanged" SelectionLengthChanged="hb1_SelectionChanged">
             </hb1:HexBox>
         </WindowsFormsHost>

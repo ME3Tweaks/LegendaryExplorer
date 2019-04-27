@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Composition.Primitives;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -31,7 +32,8 @@ using MessageBox = System.Windows.MessageBox;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using Path = System.IO.Path;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
-using InterpEditor = ME3Explorer.Matinee.InterpEditor; 
+using InterpEditor = ME3Explorer.Matinee.InterpEditor;
+using System.Windows.Threading;
 
 namespace ME3Explorer.Sequence_Editor
 {
@@ -107,24 +109,8 @@ namespace ME3Explorer.Sequence_Editor
 
         public SequenceEditorWPF(IExportEntry export) : this()
         {
-            LoadFile(export.FileRef.FileName);
-            foreach (IExportEntry exp in SequenceExports)
-            {
-                var seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                if (seqObjs != null)
-                {
-                    foreach (ObjectProperty seqObj in seqObjs)
-                    {
-                        if (export.UIndex == seqObj.Value)
-                        {
-                            //This is our sequence
-                            LoadSequence(exp);
-                            CurrentObjects_ListBox.SelectedItem = export;
-                            return;
-                        }
-                    }
-                }
-            }
+            FileQueuedForLoad = export.FileRef.FileName;
+            ExportQueuedForFocusing = export;
         }
 
         #region Properties and Bindings
@@ -354,19 +340,23 @@ namespace ME3Explorer.Sequence_Editor
                 extraSaveData.Clear();
                 selectedExports.Clear();
             }
+#if !DEBUG
             try
             {
+#endif
                 GenerateGraph();
                 if (selectedExports.Count == 1 && CurrentObjects.FirstOrDefault(obj => obj.Export == selectedExports[0]) is SObj selectedObj)
                 {
                     panToSelection = false;
                     CurrentObjects_ListBox.SelectedItem = selectedObj;
                 }
+#if !DEBUG
             }
             catch (Exception e)
             {
                 MessageBox.Show($"Error loading sequences from file:\n{e.Message}");
             }
+#endif
             graphEditor.Enabled = true;
             graphEditor.UseWaitCursor = false;
         }
@@ -467,9 +457,16 @@ namespace ME3Explorer.Sequence_Editor
                 o.MouseDown += node_MouseDown;
                 o.Click += node_Click;
             }
-            if (SavedPositions.Count == 0 && CurrentFile.Contains("_LOC_INT") && Pcc.Game != MEGame.ME1)
+            if (SavedPositions.IsEmpty() && Pcc.Game != MEGame.ME1)
             {
-                LoadDialogueObjects();
+                if (CurrentFile.Contains("_LOC_INT"))
+                {
+                    LoadDialogueObjects();
+                }
+                else
+                {
+                    AutoLayout();
+                }
             }
         }
 
@@ -493,7 +490,7 @@ namespace ME3Explorer.Sequence_Editor
                         break;
                 }
             }
-            
+
             if (s.StartsWith("BioSeqEvt_") || s.StartsWith("SeqEvt_") || s.StartsWith("SFXSeqEvt_") || s.StartsWith("SeqEvent_"))
             {
                 return new SEvent(export, x, y, graphEditor);
@@ -609,55 +606,68 @@ namespace ME3Explorer.Sequence_Editor
         {
             foreach (SObj obj in CurrentObjects)
             {
-                obj.SetOffset(0,0); //remove existing positioning
+                obj.SetOffset(0, 0); //remove existing positioning
             }
             const float HORIZONTAL_SPACING = 40;
             const float VERTICAL_SPACING = 20;
             const float VAR_SPACING = 10;
             var visitedNodes = new HashSet<int>();
             var eventNodes = CurrentObjects.OfType<SEvent>().ToList();
+            SObj firstNode = eventNodes.FirstOrDefault();
             var varNodeLookup = CurrentObjects.OfType<SVar>().ToDictionary(obj => obj.UIndex);
             var opNodeLookup = CurrentObjects.OfType<SBox>().ToDictionary(obj => obj.UIndex);
             var rootTree = new List<SObj>();
+            //SEvents are natural root nodes. ALmost everything will proceed from one of these
             foreach (SEvent eventNode in eventNodes)
             {
-                visitedNodes.Add(eventNode.UIndex);
-                var subTree = LayoutTree(eventNode);
-                float width = subTree.BoundingRect().Width + HORIZONTAL_SPACING;
-                //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
-                float dy = rootTree.Where(node => node.GlobalFullBounds.Left < width).BoundingRect().Bottom;
-                if (dy > 0) dy += 10 * VERTICAL_SPACING;
-                foreach (var obj in subTree) obj.TranslateBy(0, dy);
-                rootTree.AddRange(subTree);
+                LayoutTree(eventNode, 5 * VERTICAL_SPACING);
             }
 
-            //some Sequence Objects are orphans, stick them below everything else
-            var orphans = CurrentObjects.OfType<SBox>().Where(obj => !visitedNodes.Contains(obj.UIndex));
-            foreach (SBox orphan in orphans)
+            //Find SActions with no inputs. These will not have been reached from an SEvent
+            var orphanRoots = CurrentObjects.OfType<SAction>().Where(node => node.InputEdges.IsEmpty());
+            foreach (SAction orphan in orphanRoots)
             {
-                visitedNodes.Add(orphan.UIndex);
-                var subTree = LayoutTree(orphan);
-                float width = subTree.BoundingRect().Width + HORIZONTAL_SPACING;
-                //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
-                float dy = rootTree.Where(node => node.GlobalFullBounds.Left < width).BoundingRect().Bottom;
-                if (dy > 0) dy += VERTICAL_SPACING;
-                foreach (var obj in subTree) obj.TranslateBy(0, dy);
-                rootTree.AddRange(subTree);
+                LayoutTree(orphan, VERTICAL_SPACING);
             }
 
+            //It's possible that there are groups of otherwise unconnected SActions that form cycles.
+            //Might be possible to make a better heuristic for choosing a root than sequence order, but this situation is so rare it's not worth the effort
+            var cycleNodes = CurrentObjects.OfType<SAction>().Where(node => !visitedNodes.Contains(node.UIndex));
+            foreach (SAction cycleNode in cycleNodes)
+            {
+                LayoutTree(cycleNode, VERTICAL_SPACING);
+            }
+
+            //Lonely unconnected variables. Put them in a row below everything else
             var unusedVars = CurrentObjects.OfType<SVar>().Where(obj => !visitedNodes.Contains(obj.UIndex));
             float varOffset = 0;
             float vertOffset = rootTree.BoundingRect().Bottom + VERTICAL_SPACING;
             foreach (SVar unusedVar in unusedVars)
             {
-                unusedVar.TranslateBy(varOffset, vertOffset);
+                unusedVar.OffsetBy(varOffset, vertOffset);
                 varOffset += unusedVar.GlobalFullWidth + HORIZONTAL_SPACING;
             }
+
+            if (firstNode != null) CurrentObjects.OffsetBy(0, -firstNode.OffsetY);
 
             foreach (SeqEdEdge edge in graphEditor.edgeLayer)
                 GraphEditor.UpdateEdge(edge);
 
-            List<SObj> LayoutTree(SBox root)
+
+            void LayoutTree(SBox sAction, float verticalSpacing)
+            {
+                if (firstNode == null) firstNode = sAction;
+                visitedNodes.Add(sAction.UIndex);
+                var subTree = LayoutSubTree(sAction);
+                float width = subTree.BoundingRect().Width + HORIZONTAL_SPACING;
+                //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
+                float dy = rootTree.Where(node => node.GlobalFullBounds.Left < width).BoundingRect().Bottom;
+                if (dy > 0) dy += verticalSpacing;
+                subTree.OffsetBy(0, dy);
+                rootTree.AddRange(subTree);
+            }
+
+            List<SObj> LayoutSubTree(SBox root)
             {
                 var tree = new List<SObj>();
                 var vars = new List<SVar>();
@@ -684,7 +694,7 @@ namespace ME3Explorer.Sequence_Editor
                     visitedNodes.Add(uIndex);
                     if (opNodeLookup.TryGetValue(uIndex, out SBox node))
                     {
-                        List<SObj> subTree = LayoutTree(node);
+                        List<SObj> subTree = LayoutSubTree(node);
                         childTrees.Add(subTree);
                     }
                 }
@@ -693,25 +703,25 @@ namespace ME3Explorer.Sequence_Editor
                     float dx = root.GlobalFullWidth + (HORIZONTAL_SPACING * (1 + childTrees.Count * 0.4f));
                     foreach (List<SObj> subTree in childTrees)
                     {
-                        float width = subTree.BoundingRect().Width + HORIZONTAL_SPACING + dx;
+                        float subTreeWidth = subTree.BoundingRect().Width + HORIZONTAL_SPACING + dx;
                         //ignore nodes that are further to the right than this subtree is wide. This allows tighter spacing
-                        float dy = tree.Where(node => node.GlobalFullBounds.Left < width).BoundingRect().Bottom;
+                        float dy = tree.Where(node => node.GlobalFullBounds.Left < subTreeWidth).BoundingRect().Bottom;
                         if (dy > 0) dy += VERTICAL_SPACING;
-                        foreach (var obj in subTree) obj.OffsetBy(dx, dy);
+                        subTree.OffsetBy(dx, dy);
+                        float treeWidth = tree.BoundingRect().Width + HORIZONTAL_SPACING;
+                        //tighten spacing when this subtree is wider than existing tree. 
+                        dy -= subTree.Where(node => node.GlobalFullBounds.Left < treeWidth).BoundingRect().Top;
+                        if (dy < 0) dy += VERTICAL_SPACING;
+                        subTree.OffsetBy(0, dy);
+
                         tree.AddRange(subTree);
                     }
-                }
-
-                //center the root if there is more than one child
-                if (childTrees.Any())
-                {
+                    //center the root on its children
                     float centerOffset = tree.OfType<SBox>().BoundingRect().Height / 2 - root.GlobalFullHeight / 2;
                     root.OffsetBy(0, centerOffset);
-                    foreach (SVar sVar in vars)
-                    {
-                        sVar.OffsetBy(0, centerOffset);
-                    }
+                    vars.OffsetBy(0, centerOffset);
                 }
+
                 tree.AddRange(vars);
                 tree.Add(root);
                 return tree;
@@ -724,7 +734,7 @@ namespace ME3Explorer.Sequence_Editor
             LoadSequence(SelectedSequence, false);
         }
 
-        #region Recents
+#region Recents
 
         private readonly List<Button> RecentButtons = new List<Button>();
         public List<string> RFiles;
@@ -845,7 +855,7 @@ namespace ME3Explorer.Sequence_Editor
             Recents_MenuItem.IsEnabled = true;
         }
 
-        #endregion Recents
+#endregion Recents
 
         private void backMouseDown_Handler(object sender, PInputEventArgs e)
         {
@@ -947,6 +957,8 @@ namespace ME3Explorer.Sequence_Editor
 
         private readonly List<SaveData> extraSaveData = new List<SaveData>();
         private bool panToSelection = true;
+        private string FileQueuedForLoad;
+        private IExportEntry ExportQueuedForFocusing;
 
         private void saveView(bool toFile = true)
         {
@@ -985,7 +997,7 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (FindResource("nodeContextMenu") is ContextMenu contextMenu)
             {
-                if (obj is SBox sBox && (sBox.Varlinks.Any() || sBox.Outlinks.Any()) 
+                if (obj is SBox sBox && (sBox.Varlinks.Any() || sBox.Outlinks.Any())
                  && contextMenu.GetChild("breakLinksMenuItem") is MenuItem breakLinksMenuItem)
                 {
                     bool hasLinks = false;
@@ -1073,7 +1085,7 @@ namespace ME3Explorer.Sequence_Editor
 
         private void removeAllLinks(object sender, RoutedEventArgs args)
         {
-            IExportEntry export = (IExportEntry) ((MenuItem) sender).Tag;
+            IExportEntry export = (IExportEntry)((MenuItem)sender).Tag;
             var props = export.GetProperties();
             var outLinksProp = props.GetProp<ArrayProperty<StructProperty>>("OutputLinks");
             if (outLinksProp != null)
@@ -1609,6 +1621,42 @@ namespace ME3Explorer.Sequence_Editor
             if (CurrentObjects.Any())
             {
                 SetupJSON(SelectedSequence);
+            }
+        }
+
+        private void SequenceEditorWPF_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (FileQueuedForLoad != null)
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
+                {
+                    //Wait for all children to finish loading
+                    LoadFile(FileQueuedForLoad);
+                    FileQueuedForLoad = null;
+
+                    if (ExportQueuedForFocusing != null)
+                    {
+                        foreach (IExportEntry exp in SequenceExports)
+                        {
+                            if (ExportQueuedForFocusing == exp)
+                            {
+                                SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == exp.UIndex);
+                                break;
+                            }
+                            var seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                            if (seqObjs != null && seqObjs.Any(objProp => objProp.Value == ExportQueuedForFocusing.UIndex))
+                            {
+                                //This is our sequence
+                                SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == exp.UIndex);
+                                CurrentObjects_ListBox.SelectedItem = CurrentObjects.FirstOrDefault(x => x.Export == ExportQueuedForFocusing);
+                                break;
+                            }
+                        }
+
+                        ExportQueuedForFocusing = null;
+                    }
+                    Activate();
+                }));
             }
         }
     }

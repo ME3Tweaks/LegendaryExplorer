@@ -44,6 +44,12 @@ namespace ME3Explorer
         public abstract void UnloadExport();
 
         /// <summary>
+        /// Creates a new ExportLoaderHostedWindow to pop open with a new instance of the export loader
+        /// pointing to the current export
+        /// </summary>
+        public abstract void PopOut();
+
+        /// <summary>
         /// Free resources for this control
         /// </summary>
         public abstract void Dispose();

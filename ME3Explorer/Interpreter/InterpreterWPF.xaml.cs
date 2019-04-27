@@ -88,6 +88,7 @@ namespace ME3Explorer
 
         public InterpreterWPF()
         {
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Interpreter WPF Export Loader", new WeakReference(this));
             LoadCommands();
             InitializeComponent();
             EditorSetElements.Add(Value_TextBox); //str, strref, int, float, obj
@@ -112,7 +113,7 @@ namespace ME3Explorer
         public ICommand SortParsedArrayDescendingCommand { get; set; } //obj, name only
         public ICommand SortValueArrayAscendingCommand { get; set; }
         public ICommand SortValueArrayDescendingCommand { get; set; }
-
+        public ICommand PopoutInterpreterForObjectValueCommand { get; set; }
         private void LoadCommands()
         {
             RemovePropertyCommand = new RelayCommand(RemoveProperty, CanRemoveProperty);
@@ -125,7 +126,24 @@ namespace ME3Explorer
             SortParsedArrayDescendingCommand = new RelayCommand(SortParsedArrayDescending, CanSortArrayPropByParsedValue);
             SortValueArrayAscendingCommand = new RelayCommand(SortValueArrayAscending, CanSortArrayPropByValue);
             SortValueArrayDescendingCommand = new RelayCommand(SortValueArrayDescending, CanSortArrayPropByValue);
+            PopoutInterpreterForObjectValueCommand = new RelayCommand(PopoutInterpreterForObj, ObjectPropertyExportIsSelected);
+        }
 
+        private void PopoutInterpreterForObj(object obj)
+        {
+            if (Interpreter_TreeView.SelectedItem is UPropertyTreeViewEntry tvi && tvi.Property is ObjectProperty op && CurrentLoadedExport.FileRef.isUExport(op.Value))
+            {
+                IExportEntry export = CurrentLoadedExport.FileRef.getUExport(op.Value);
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), export);
+                elhw.Title = $"Interpreter - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                elhw.Show();
+            }
+        }
+
+        private bool ObjectPropertyExportIsSelected(object obj)
+        {
+            UPropertyTreeViewEntry tvi = Interpreter_TreeView.SelectedItem as UPropertyTreeViewEntry;
+            return tvi?.Property is ObjectProperty op && CurrentLoadedExport.FileRef.isUExport(op.Value);
         }
 
         private void SortParsedArrayAscending(object obj)
@@ -249,6 +267,13 @@ namespace ME3Explorer
             {
                 SetChildrenExpandedStateRecursive(tvi, IsExpanded);
             }
+        }
+
+        internal void hideHexBox()
+        {
+            Interpreter_Hexbox_Host.Visibility = HexProps_GridSplitter.Visibility = SaveHexChange_Button.Visibility = ToggleHexboxWidth_Button.Visibility = SaveToggle_Separator.Visibility = Visibility.Collapsed;
+            Grid.SetColumn(Interpreter_TreeView, 0);
+            Grid.SetColumnSpan(Interpreter_TreeView, 4);
         }
 
         private bool CanExpandOrCollapseChildren(object obj)
@@ -1877,6 +1902,16 @@ namespace ME3Explorer
             Interpreter_Hexbox = null;
             Interpreter_Hexbox_Host.Child.Dispose();
             Interpreter_Hexbox_Host.Dispose();
+        }
+
+        public override void PopOut()
+        {
+            if (CurrentLoadedExport != null)
+            {
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), CurrentLoadedExport);
+                elhw.Title = $"Interpreter - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                elhw.Show();
+            }
         }
     }
 

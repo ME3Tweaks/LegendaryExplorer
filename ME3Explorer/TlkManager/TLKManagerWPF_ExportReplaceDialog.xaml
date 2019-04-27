@@ -24,6 +24,7 @@
 
             </ListView>
             <Button Content="Export"  Grid.Row="1"  Margin="0,5,0,0" Command="{Binding ExportSelectedTLK}" ToolTip="Export TLK to XML file"/>
+            <Button Content="Edit"  Grid.Row="1" Grid.Column="1" Margin="0,5,0,0" Command="{Binding EditSelectedTLK}" ToolTip="Edit the selected TLK in TLK Editor"/>
             <Button Content="Replace" Grid.Column="2" Grid.Row="1" Margin="0,5,0,0" Command="{Binding ReplaceSelectedTLK}" ToolTip="Replace this TLK from an XML file"/>
         </Grid>
     </xctk:BusyIndicator>

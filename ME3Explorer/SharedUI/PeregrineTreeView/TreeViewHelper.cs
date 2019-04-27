@@ -22,8 +22,8 @@ namespace ME3Explorer.SharedUI.PeregrineTreeView
 
         private static void OnBoundSelectedItemChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
         {
-            if (args.NewValue is TreeViewEntry item)
-                item.IsSelected = true;
+            //if (args.NewValue is TreeViewEntry item)
+            //    item.IsSelected = true;
         }
 
         protected override void OnAttached()

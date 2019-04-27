@@ -31,7 +31,6 @@ namespace ME3Explorer
         public ObservableCollectionExtended<Texture2DMipInfo> MipList { get; private set; } = new ObservableCollectionExtended<Texture2DMipInfo>();
         private string CurrentLoadedFormat;
         private string CurrentLoadedCacheName;
-        private bool CurrentLoadedNeverStreamFlag = false;
         private string CurrentLoadedBasePackageName;
 
         private string _cannotShowTextureText;
@@ -50,7 +49,7 @@ namespace ME3Explorer
 
         public EmbeddedTextureViewer()
         {
-            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("[PackEdWPF] Texture ExportLoader", new WeakReference(this));
+            ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Embedded Texture Viewer Export Loader", new WeakReference(this));
 
             DataContext = this;
             CannotShowTextureText = "Select a mip to view";
@@ -66,6 +65,16 @@ namespace ME3Explorer
                    exportEntry.ClassName == "TextureFlipBook";
         }
 
+        public override void PopOut()
+        {
+            if (CurrentLoadedExport != null)
+            {
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new EmbeddedTextureViewer(), CurrentLoadedExport);
+                elhw.Title = $"Texture Viewer - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                elhw.Show();
+            }
+        }
+
         public override void LoadExport(IExportEntry exportEntry)
         {
             TextureImage.Source = null;
@@ -78,11 +87,7 @@ namespace ME3Explorer
                 {
                     CurrentLoadedCacheName = cache.Value.Name;
                 }
-                var neverStream = properties.GetProp<BoolProperty>("NeverStream");
-                if (neverStream != null)
-                {
-                    CurrentLoadedNeverStreamFlag = true;
-                }
+                var neverStream = properties.GetProp<BoolProperty>("NeverStream") ?? false;
 
                 MemoryStream ms = new MemoryStream(exportEntry.Data);
                 ms.Seek(properties.endOffset, SeekOrigin.Begin);
@@ -102,7 +107,8 @@ namespace ME3Explorer
                         uncompressedSize = ms.ReadInt32(),
                         compressedSize = ms.ReadInt32(),
                         externalOffset = ms.ReadInt32(),
-                        packageOffset = (int)ms.Position
+                        packageOffset = (int)ms.Position,
+                        cacheFile = CurrentLoadedCacheName
                     };
                     switch (mip.storageType)
                     {
@@ -140,7 +146,7 @@ namespace ME3Explorer
                     }
                     else
                     {
-                        if (baseName != "" && !CurrentLoadedNeverStreamFlag)
+                        if (baseName != "" && !neverStream)
                         {
                             MEDirectories MEExDirecs = new MEDirectories
                             {
@@ -160,17 +166,37 @@ namespace ME3Explorer
                 CurrentLoadedExport = exportEntry;
                 CurrentLoadedFormat = format.Value.Name;
                 MipList.ReplaceAll(mips);
-                LoadMip(topmip);
+                if (Properties.Settings.Default.EmbeddedTextureViewer_AutoLoad)
+                {
+                    Mips_ListBox.SelectedIndex = MipList.IndexOf(topmip);
+                }
+                //
+                //LoadMip(topmip);
             }
             catch (Exception e)
             {
-
+                //Error loading texture
             }
         }
 
         private void LoadMip(Texture2DMipInfo mipToLoad)
         {
-            if (mipToLoad == null || mipToLoad.storageType == StorageTypes.empty) { return; }
+            if (mipToLoad == null)
+            {
+                TextureImage.Source = null;
+                CannotShowTextureText = "Select a mip to view";
+                CannotShowTextureTextVisibility = Visibility.Visible;
+                return;
+            }
+
+            if (mipToLoad.storageType == StorageTypes.empty)
+            {
+                TextureImage.Source = null;
+                CannotShowTextureText = "Selected mip is null/empty";
+                CannotShowTextureTextVisibility = Visibility.Visible;
+                return;
+            }
+
             byte[] imagebytes = new byte[mipToLoad.uncompressedSize];
 
             if (mipToLoad.storageType == StorageTypes.pccUnc)
@@ -306,10 +332,10 @@ namespace ME3Explorer
 
         private void MipList_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (MipList.Count > 0 && MipListView.SelectedIndex >= 0)
+            if (MipList.Count > 0 && Mips_ListBox.SelectedIndex >= 0)
             {
-                Debug.WriteLine("Loading mip: " + MipListView.SelectedIndex);
-                LoadMip(MipList[MipListView.SelectedIndex]);
+                Debug.WriteLine("Loading mip: " + Mips_ListBox.SelectedIndex);
+                LoadMip(MipList[Mips_ListBox.SelectedIndex]);
             }
         }
 
@@ -327,6 +353,7 @@ namespace ME3Explorer
             public int height;
             public int externalOffset;
             public int packageOffset;
+            public string cacheFile;
             public StorageTypes storageType;
 
             public string MipDisplayString
@@ -336,6 +363,11 @@ namespace ME3Explorer
                     string mipinfostring = "Mip " + index;
                     mipinfostring += "\nStorage Type: ";
                     mipinfostring += storageType;
+                    if (storageType == StorageTypes.extLZO || storageType == StorageTypes.extZlib || storageType == StorageTypes.extUnc)
+                    {
+                        mipinfostring += "\nLocated in: ";
+                        mipinfostring += cacheFile;
+                    }
                     mipinfostring += "\nUncompressed size: ";
                     mipinfostring += uncompressedSize;
                     mipinfostring += "\nCompressed size: ";
@@ -349,6 +381,7 @@ namespace ME3Explorer
                     return mipinfostring;
                 }
             }
+
         }
 
     }

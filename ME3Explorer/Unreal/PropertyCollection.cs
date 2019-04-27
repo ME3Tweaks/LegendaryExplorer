@@ -25,9 +25,10 @@ namespace ME3Explorer.Unreal
         public int endOffset;
 
         /// <summary>
-        /// Gets the UProperty with the specified name, returns null if not found
+        /// Gets the UProperty with the specified name, returns null if not found. The property name is checked case insensitively. 
+        /// Ensure the generic type matches the result you want or you will receive a null object back.
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">Name of property to find</param>
         /// <returns>specified UProperty or null if not found</returns>
         public T GetProp<T>(string name) where T : UProperty
         {
@@ -64,6 +65,16 @@ namespace ME3Explorer.Unreal
             {
                 stream.WriteNoneProperty(pcc);
             }
+        }
+
+        /// <summary>
+        /// Checks if a property with the specified name exists in this property collection
+        /// </summary>
+        /// <param name="name">Name of property to find. If an empty name is passed in, any property without a name will cause this to return true.</param>
+        /// <returns>True if property is found, false if list is empty or not found</returns>
+        public bool ContainsNamedProp(NameReference name)
+        {
+            return Count > 0 && this.Any(x => x.Name == name);
         }
 
         public static PropertyCollection ReadProps(IMEPackage pcc, MemoryStream stream, string typeName, bool includeNoneProperty = false, bool requireNoneAtEnd = true, IEntry entry = null)
@@ -309,7 +320,17 @@ namespace ME3Explorer.Unreal
                     }
                     foreach (var prop in defaultProps)
                     {
-                        UProperty uProperty = ReadSpecialStructProp(pcc, stream, prop, structType);
+                        UProperty uProperty = null;
+                        if (prop is StructProperty defaultStructProperty)
+                        {
+                            //Set correct struct type
+                            uProperty = ReadImmutableStructProp(pcc, stream, prop, structType, defaultStructProperty.StructType);
+                        }
+                        else
+                        {
+                            uProperty = ReadImmutableStructProp(pcc, stream, prop, structType);
+                        }
+
                         if (uProperty.PropType != PropertyType.None)
                         {
                             props.Add(uProperty);
@@ -482,7 +503,7 @@ namespace ME3Explorer.Unreal
                         //Debug.WriteLine("ME2: Build immuatable struct properties for struct type " + structType);
                         foreach (var prop in defaultProps)
                         {
-                            UProperty uProperty = ReadSpecialStructProp(pcc, stream, prop, structType);
+                            UProperty uProperty = ReadImmutableStructProp(pcc, stream, prop, structType);
                             //Debug.WriteLine("  >> ME2: Built immutable property: " + uProperty.Name + " at 0x" + uProperty.StartOffset.ToString("X5"));
                             if (uProperty.PropType != PropertyType.None)
                             {
@@ -528,7 +549,7 @@ namespace ME3Explorer.Unreal
                         {
                             //Debug.WriteLine("  > ME1: Building immutable property: " + prop.Name + " at 0x" + stream.Position.ToString("X5"));
 
-                            UProperty uProperty = ReadSpecialStructProp(pcc, stream, prop, structType);
+                            UProperty uProperty = ReadImmutableStructProp(pcc, stream, prop, structType);
                             //Debug.WriteLine("  >> ME1: Built immutable property: " + uProperty.Name + " at 0x" + uProperty.StartOffset.ToString("X5"));
                             if (uProperty.PropType != PropertyType.None)
                             {
@@ -548,7 +569,8 @@ namespace ME3Explorer.Unreal
             return props;
         }
 
-        static UProperty ReadSpecialStructProp(IMEPackage pcc, MemoryStream stream, UProperty template, string structType)
+        //Nested struct type is for structs in structs
+        static UProperty ReadImmutableStructProp(IMEPackage pcc, MemoryStream stream, UProperty template, string structType, string nestedStructType = null)
         {
             if (stream.Position + 1 >= stream.Length)
             {
@@ -589,7 +611,7 @@ namespace ME3Explorer.Unreal
                 case PropertyType.StructProperty:
                     long valuePos = stream.Position;
                     PropertyCollection structProps = ReadImmutableStruct(pcc, stream, UnrealObjectInfo.GetPropertyInfo(pcc.Game, template.Name, structType).reference, 0);
-                    var structProp = new StructProperty(structType, structProps, template.Name, true);
+                    var structProp = new StructProperty(nestedStructType ?? structType, structProps, template.Name, true);
                     structProp.StartOffset = startPos;
                     structProp.ValueOffset = valuePos;
                     return structProp;//this implementation needs checked, as I am not 100% sure of it's validity.
@@ -867,7 +889,7 @@ namespace ME3Explorer.Unreal
         public readonly bool IsImmutable;
 
         public string StructType { get; }
-        public PropertyCollection Properties { get; }
+        public PropertyCollection Properties { get; set; }
 
         public StructProperty(string structType, PropertyCollection props, NameReference? name = null, bool isImmutable = false) : base(name)
         {

@@ -7,5 +7,6 @@ namespace ME3Explorer
         IExportEntry CurrentLoadedExport { get; set; }
         void LoadExport(IExportEntry exportEntry);
         void UnloadExport();
+        void PopOut();
     }
 }

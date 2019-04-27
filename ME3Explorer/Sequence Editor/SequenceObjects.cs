@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
@@ -86,6 +85,7 @@ namespace ME3Explorer.SequenceObjects
         public virtual void Layout() { }
         public virtual void Layout(float x, float y) => SetOffset(x, y);
 
+        public virtual IEnumerable<SeqEdEdge> Edges => Enumerable.Empty<SeqEdEdge>();
         protected string GetComment()
         {
             string res = "";
@@ -149,6 +149,9 @@ namespace ME3Explorer.SequenceObjects
     public class SVar : SObj
     {
         public const float RADIUS = 30;
+
+        public List<VarEdge> connections = new List<VarEdge>();
+        public override IEnumerable<SeqEdEdge> Edges => connections;
         public VarTypes type { get; set; }
         readonly SText val;
         protected PPath shape;
@@ -463,6 +466,8 @@ namespace ME3Explorer.SequenceObjects
 
     public abstract class SBox : SObj
     {
+        public override IEnumerable<SeqEdEdge> Edges => Outlinks.SelectMany(l => l.Edges).Union(Varlinks.SelectMany(l => l.Edges).Cast<SeqEdEdge>());
+
         protected static Brush outputBrush = new SolidBrush(Color.Black);
 
         public struct OutputLink
@@ -471,6 +476,7 @@ namespace ME3Explorer.SequenceObjects
             public List<int> Links;
             public List<int> InputIndices;
             public string Desc;
+            public List<ActionEdge> Edges;
         }
 
         public struct VarLink
@@ -480,7 +486,7 @@ namespace ME3Explorer.SequenceObjects
             public string Desc;
             public VarTypes type;
             public bool writeable;
-            public List<int> offsets;
+            public List<VarEdge> Edges;
         }
 
         public struct InputLink
@@ -489,6 +495,7 @@ namespace ME3Explorer.SequenceObjects
             public string Desc;
             public int index;
             public bool hasName;
+            public List<ActionEdge> Edges;
         }
 
         protected PPath titleBox;
@@ -512,51 +519,47 @@ namespace ME3Explorer.SequenceObjects
         {
             foreach (OutputLink outLink in Outlinks)
             {
-                for (int i = 0; i < objects.Count; i++)
+                foreach (SAction destAction in objects.OfType<SAction>())
                 {
                     for (int j = 0; j < outLink.Links.Count; j++)
                     {
-                        if (objects[i].UIndex == outLink.Links[j])
+                        if (destAction.UIndex == outLink.Links[j])
                         {
                             PPath p1 = outLink.node;
-                            SObj p2 = (SObj)g.nodeLayer[i];
                             var edge = new ActionEdge();
                             if (p1.Tag == null)
-                                p1.Tag = new ArrayList();
-                            if (p2.Tag == null)
-                                p2.Tag = new ArrayList();
-                            ((ArrayList)p1.Tag).Add(edge);
-                            ((ArrayList)p2.Tag).Add(edge);
+                                p1.Tag = new List<ActionEdge>();
+                            ((List<ActionEdge>)p1.Tag).Add(edge);
+                            destAction.InputEdges.Add(edge);
                             edge.start = p1;
-                            edge.end = p2;
+                            edge.end = destAction;
                             edge.inputIndex = outLink.InputIndices[j];
                             g.addEdge(edge);
+                            outLink.Edges.Add(edge);
                         }
                     }
                 }
             }
-            foreach (VarLink v in Varlinks)
+            foreach (VarLink varLink in Varlinks)
             {
-                for (int i = 0; i < objects.Count; i++)
+                foreach (SVar destVar in objects.OfType<SVar>())
                 {
-                    foreach (int link in v.Links)
+                    foreach (int link in varLink.Links)
                     {
-                        if (objects[i].UIndex == link)
+                        if (destVar.UIndex == link)
                         {
-                            PPath p1 = v.node;
-                            PNode p2 = g.nodeLayer[i];
+                            PPath p1 = varLink.node;
                             var edge = new VarEdge();
-                            if (p2.ChildrenCount > 1)
-                                edge.Pen = ((PPath)p2[1]).Pen;
+                            if (destVar.ChildrenCount > 1)
+                                edge.Pen = ((PPath)destVar[1]).Pen;
                             if (p1.Tag == null)
-                                p1.Tag = new ArrayList();
-                            if (p2.Tag == null)
-                                p2.Tag = new ArrayList();
-                            ((ArrayList)p1.Tag).Add(edge);
-                            ((ArrayList)p2.Tag).Add(edge);
+                                p1.Tag = new List<VarEdge>();
+                            ((List<VarEdge>)p1.Tag).Add(edge);
+                            destVar.connections.Add(edge);
                             edge.start = p1;
-                            edge.end = p2;
+                            edge.end = destVar;
                             g.addEdge(edge);
+                            varLink.Edges.Add(edge);
                         }
                     }
                 }
@@ -601,6 +604,7 @@ namespace ME3Explorer.SequenceObjects
                         VarLink l = new VarLink
                         {
                             Links = new List<int>(),
+                            Edges = new List<VarEdge>(),
                             Desc = props.GetProp<StrProperty>("LinkDesc"),
                             type = getType(pcc.getObjectName(props.GetProp<ObjectProperty>("ExpectedType").Value))
                         };
@@ -650,6 +654,7 @@ namespace ME3Explorer.SequenceObjects
                         {
                             Links = new List<int>(),
                             InputIndices = new List<int>(),
+                            Edges = new List<ActionEdge>(),
                             Desc = props.GetProp<StrProperty>("LinkDesc")
                         };
                         for (int i = 0; i < linksProp.Count; i++)
@@ -697,11 +702,11 @@ namespace ME3Explorer.SequenceObjects
                 PNode p2 = (PNode)sender;
                 var edge = new ActionEdge();
                 if (p1.Tag == null)
-                    p1.Tag = new ArrayList();
+                    p1.Tag = new List<ActionEdge>();
                 if (p2.Tag == null)
-                    p2.Tag = new ArrayList();
-                ((ArrayList)p1.Tag).Add(edge);
-                ((ArrayList)p2.Tag).Add(edge);
+                    p2.Tag = new List<ActionEdge>();
+                ((List<ActionEdge>)p1.Tag).Add(edge);
+                ((List<ActionEdge>)p2.Tag).Add(edge);
                 edge.start = p1;
                 edge.end = p2;
                 graphEditor.addEdge(edge);
@@ -713,21 +718,22 @@ namespace ME3Explorer.SequenceObjects
             {
                 base.OnDrag(sender, e);
                 e.Handled = true;
-                GraphEditor.UpdateEdge((SeqEdEdge)((ArrayList)((PNode)sender).Tag)[0]);
+                GraphEditor.UpdateEdge(((List<ActionEdge>)((PNode)sender).Tag)[0]);
             }
 
             protected override void OnEndDrag(object sender, PInputEventArgs e)
             {
-                PPath edge = (PPath)((ArrayList)((PNode)sender).Tag)[0];
+                ActionEdge edge = ((List<ActionEdge>)((PNode)sender).Tag)[0];
                 ((PNode)sender).SetOffset(0, 0);
-                ((ArrayList)((PNode)sender).Parent.Tag).Remove(edge);
+                ((List<ActionEdge>)((PNode)sender).Parent.Tag).Remove(edge);
                 graphEditor.edgeLayer.RemoveChild(edge);
-                ((ArrayList)((PNode)sender).Tag).RemoveAt(0);
+                ((List<ActionEdge>)((PNode)sender).Tag).RemoveAt(0);
                 base.OnEndDrag(sender, e);
                 draggingOutlink = false;
                 if (dragTarget != null)
                 {
                     sObj.CreateOutlink(((PPath)sender).Parent, dragTarget);
+                    dragTarget = null;
                 }
             }
         }
@@ -755,11 +761,11 @@ namespace ME3Explorer.SequenceObjects
                 PNode p2 = (PNode)sender;
                 var edge = new VarEdge();
                 if (p1.Tag == null)
-                    p1.Tag = new ArrayList();
+                    p1.Tag = new List<VarEdge>();
                 if (p2.Tag == null)
-                    p2.Tag = new ArrayList();
-                ((ArrayList)p1.Tag).Add(edge);
-                ((ArrayList)p2.Tag).Add(edge);
+                    p2.Tag = new List<VarEdge>();
+                ((List<VarEdge>)p1.Tag).Add(edge);
+                ((List<VarEdge>)p2.Tag).Add(edge);
                 edge.start = p1;
                 edge.end = p2;
                 graphEditor.addEdge(edge);
@@ -772,21 +778,22 @@ namespace ME3Explorer.SequenceObjects
             {
                 base.OnDrag(sender, e);
                 e.Handled = true;
-                GraphEditor.UpdateEdge((SeqEdEdge)((ArrayList)((PNode)sender).Tag)[0]);
+                GraphEditor.UpdateEdge(((List<VarEdge>)((PNode)sender).Tag)[0]);
             }
 
             protected override void OnEndDrag(object sender, PInputEventArgs e)
             {
-                PPath edge = (PPath)((ArrayList)((PNode)sender).Tag)[0];
+                VarEdge edge = ((List<VarEdge>)((PNode)sender).Tag)[0];
                 ((PNode)sender).SetOffset(0, 0);
-                ((ArrayList)((PNode)sender).Parent.Tag).Remove(edge);
+                ((List<VarEdge>)((PNode)sender).Parent.Tag).Remove(edge);
                 graphEditor.edgeLayer.RemoveChild(edge);
-                ((ArrayList)((PNode)sender).Tag).RemoveAt(0);
+                ((List<VarEdge>)((PNode)sender).Tag).RemoveAt(0);
                 base.OnEndDrag(sender, e);
                 draggingVarlink = false;
                 if (dragTarget != null)
                 {
                     sObj.CreateVarlink(((PPath)sender).Parent, (SVar)dragTarget);
+                    dragTarget = null;
                 }
             }
         }
@@ -922,6 +929,7 @@ namespace ME3Explorer.SequenceObjects
 
     public class SEvent : SBox
     {
+
         public SEvent(IExportEntry entry, float x, float y, GraphEditor grapheditor)
             : base(entry, grapheditor)
         {
@@ -1044,6 +1052,8 @@ namespace ME3Explorer.SequenceObjects
 
     public class SAction : SBox
     {
+        public override IEnumerable<SeqEdEdge> Edges => InLinks.SelectMany(l => l.Edges).Union(base.Edges);
+        public List<ActionEdge> InputEdges = new List<ActionEdge>();
         public List<InputLink> InLinks;
         protected PNode inputLinkBox;
         protected PPath box;
@@ -1224,7 +1234,8 @@ namespace ME3Explorer.SequenceObjects
                     Desc = desc,
                     hasName = hasName,
                     index = idx,
-                    node = CreateActionLinkBox()
+                    node = CreateActionLinkBox(),
+                    Edges = new List<ActionEdge>()
                 };
                 l.node.Brush = outputBrush;
                 l.node.MouseEnter += OnMouseEnter;
@@ -1257,14 +1268,15 @@ namespace ME3Explorer.SequenceObjects
                     InLinks.Clear();
                 }
             }
-            if (this.Tag != null)
+            if (InputEdges.Any())
             {
                 int numInputs = InLinks.Count;
-                foreach (ActionEdge edge in ((ArrayList)this.Tag))
+                foreach (ActionEdge edge in InputEdges)
                 {
                     int inputNum = edge.inputIndex;
                     //if there are inputs with an index greater than is accounted for by
                     //the current number of inputs, create enough inputs to fill up to that index
+                    //With current toolset advances this is unlikely to occur, but no harm in leaving it in
                     if (inputNum + 1 > numInputs)
                     {
                         for (int i = numInputs; i <= inputNum; i++)
@@ -1273,8 +1285,12 @@ namespace ME3Explorer.SequenceObjects
                         }
                         numInputs = inputNum + 1;
                     }
+                    //change the end of the edge to the input box, not the SAction
                     if (inputNum >= 0)
+                    {
                         edge.end = InLinks[inputNum].node;
+                        InLinks[inputNum].Edges.Add(edge);
+                    }
                 }
             }
         }

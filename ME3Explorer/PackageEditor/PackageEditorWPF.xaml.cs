@@ -165,7 +165,7 @@ namespace ME3Explorer
         public ICommand SetPackageAsFilenamePackageCommand { get; set; }
         public ICommand OpenInInterpViewerCommand { get; set; }
         public ICommand FindEntryViaTagCommand { get; set; }
-
+        public ICommand PopoutCurrentViewCommand { get; set; }
         private void LoadCommands()
         {
             ComparePackagesCommand = new RelayCommand(ComparePackages, PackageIsLoaded);
@@ -191,6 +191,18 @@ namespace ME3Explorer
             SetPackageAsFilenamePackageCommand = new RelayCommand(SetSelectedAsFilenamePackage, PackageExportIsSelected);
             OpenInInterpViewerCommand = new RelayCommand(OpenInInterpViewer, CanOpenInInterpViewer);
             FindEntryViaTagCommand = new RelayCommand(FindEntryViaTag, PackageIsLoaded);
+            PopoutCurrentViewCommand = new RelayCommand(PopoutCurrentView, ExportIsSelected);
+        }
+
+        private void PopoutCurrentView(object obj)
+        {
+            if (EditorTabs.SelectedItem is TabItem tab)
+            {
+                if (tab.Content is ExportLoaderControl exportLoader)
+                {
+                    exportLoader.PopOut();
+                }
+            }
         }
 
         private void FindEntryViaTag(object obj)
@@ -438,7 +450,28 @@ namespace ME3Explorer
                 }
 
                 IExportEntry existingTrashTopLevel = Pcc.Exports.FirstOrDefault(x => x.idxLink == 0 && x.ObjectName == "ME3ExplorerTrashPackage");
-                ImportEntry packageImport = Pcc.Imports.First(x => x.GetFullPath == "Core.Package");
+                ImportEntry packageImport = Pcc.Imports.FirstOrDefault(x => x.GetFullPath == "Core.Package");
+                if (packageImport == null)
+                {
+                    ImportEntry coreImport = Pcc.Imports.FirstOrDefault(x => x.GetFullPath == "Core");
+                    if (coreImport == null)
+                    {
+                        //really small file
+                        coreImport = new ImportEntry(Pcc);
+                        coreImport.idxObjectName = Pcc.FindNameOrAdd("Core");
+                        coreImport.idxClassName = Pcc.FindNameOrAdd("Package");
+                        coreImport.idxLink = 0;
+                        coreImport.idxPackageFile = Pcc.FindNameOrAdd("Core");
+                        Pcc.addImport(coreImport);
+                    }
+                    //Package isn't an import, could be one of the 2DA files or other small ones
+                    packageImport = new ImportEntry(Pcc);
+                    packageImport.idxObjectName = Pcc.FindNameOrAdd("Package");
+                    packageImport.idxClassName = Pcc.FindNameOrAdd("Class");
+                    packageImport.idxLink = coreImport.UIndex;
+                    packageImport.idxPackageFile = Pcc.FindNameOrAdd("Core");
+                    Pcc.addImport(packageImport);
+                }
                 foreach (TreeViewEntry entry in itemsToTrash)
                 {
                     IExportEntry newTrash = TrashEntry(entry.Entry, existingTrashTopLevel, packageImport.UIndex);
@@ -825,7 +858,7 @@ namespace ME3Explorer
         {
             if (obj is string parameter)
             {
-                if (parameter == "FromTreeView")
+                if (parameter == "FromContextMenu")
                 {
                     //Ensure we are on names view - used for menu item
                     return PackageIsLoaded(null) && CurrentView == CurrentViewMode.Names;
@@ -1309,6 +1342,8 @@ namespace ME3Explorer
             LoadCommands();
 
             InitializeComponent();
+            ((FrameworkElement)this.Resources["EntryContextMenu"]).DataContext = this;
+
             //map export loaders to their tabs
             ExportLoaders[InterpreterTab_Interpreter] = Interpreter_Tab;
             ExportLoaders[MetadataTab_MetadataEditor] = Metadata_Tab;
@@ -1904,6 +1939,8 @@ namespace ME3Explorer
             }
         }
 
+
+
         private void RefreshNames(List<PackageUpdate> updates = null)
         {
             if (updates == null)
@@ -2126,14 +2163,14 @@ namespace ME3Explorer
                         Dispatcher.BeginInvoke(DispatcherPriority.Background, (NoArgDelegate)delegate { nodes[0].ParentNodeValue.SelectItem(nodes[0]); });
                     }
                 }*/
-                DispatcherHelper.EmptyQueue();
+                //DispatcherHelper.EmptyQueue();
                 var list = AllTreeViewNodesX[0].FlattenTree();
                 List<TreeViewEntry> selectNode = list.Where(s => s.Entry != null && s.UIndex == entryIndex).ToList();
                 if (selectNode.Any())
                 {
                     //selectNode[0].ExpandParents();
                     selectNode[0].IsProgramaticallySelecting = true;
-                    selectNode[0].IsSelected = true;
+                    SelectedItem = selectNode[0];
                     //FocusTreeViewNodeOld(selectNode[0]);
 
                     //selectNode[0].Focus(LeftSide_TreeView);
@@ -2699,7 +2736,7 @@ namespace ME3Explorer
                     if (node.Entry.ClassName.Equals(searchClass))
                     {
                         node.IsProgramaticallySelecting = true;
-                        node.IsSelected = true;
+                        SelectedItem = node;
                         break;
                     }
                 }
@@ -2841,7 +2878,8 @@ namespace ME3Explorer
                     if (node.Entry.ObjectName.ToLower().Contains(searchTerm))
                     {
                         node.IsProgramaticallySelecting = true;
-                        node.IsSelected = true;
+                        SelectedItem = node;
+                        //node.IsSelected = true;
                         break;
                     }
                 }
@@ -3067,10 +3105,9 @@ namespace ME3Explorer
                     el.Dispose(); //Remove hosted winforms references
                 }
                 LeftSideList_ItemsSource.ClearEx();
-                LeftSide_TreeView = null; //peregrine treeview dispatcher leak
+                //LeftSide_TreeView = null; //peregrine treeview dispatcher leak //we don't use peregrine tree view anymore
                 AllTreeViewNodesX.ClearEx();
                 Pcc = null; //Package object leak
-                DispatcherHelper.EmptyQueue();
             }
         }
 
@@ -3108,8 +3145,7 @@ namespace ME3Explorer
                     facefxEditor.Show();
                     break;
                 case "PathfindingEditor":
-                    var pathEditor = new PathfindingEditor();
-                    pathEditor.LoadFile(Pcc.FileName);
+                    var pathEditor = new PathfindingEditorWPF(Pcc.FileName);
                     pathEditor.Show();
                     break;
                 case "SoundplorerWPF":
@@ -3401,6 +3437,8 @@ namespace ME3Explorer
             }
         }
 
+
+
         private void GenerateNewGUIDForPackageFile_Clicked(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("This process applies immediately and cannot be undone.\nEnsure the file you are going to regenerate is not open in ME3Explorer in any tools.\nBe absolutely sure you know what you're doing before you use this!");
@@ -3546,7 +3584,7 @@ namespace ME3Explorer
                         foreach (IExportEntry export in package.Exports)
                         {
                             if ((export.ClassName == "BioSWF"))
-                                //|| export.ClassName == "Bio2DANumberedRows") && export.ObjectName.Contains("BOS"))
+                            //|| export.ClassName == "Bio2DANumberedRows") && export.ObjectName.Contains("BOS"))
                             {
                                 Debug.WriteLine($"{export.ClassName}({export.ObjectName}) in {fi.Name} at export {export.UIndex}");
                             }
@@ -3728,6 +3766,19 @@ namespace ME3Explorer
         private void MountEditor_Click(object sender, RoutedEventArgs e)
         {
             new MountEditor.MountEditorWPF().Show();
+        }
+
+        private void ShowNetIndexes_Click(object sender, RoutedEventArgs e)
+        {
+
+            Properties.Settings.Default.PackageEditorWPF_TreeViewShowNetIndex = !Properties.Settings.Default.PackageEditorWPF_TreeViewShowNetIndex;
+            Properties.Settings.Default.Save();
+        }
+
+        private void EmbeddedTextureViewer_AutoLoad_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.EmbeddedTextureViewer_AutoLoad = !Properties.Settings.Default.EmbeddedTextureViewer_AutoLoad;
+            Properties.Settings.Default.Save();
         }
     }
 }

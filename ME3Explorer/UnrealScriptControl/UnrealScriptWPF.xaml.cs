@@ -79,6 +79,16 @@ namespace ME3Explorer
             StartFunctionScan(CurrentLoadedExport.Data);
         }
 
+        public override void PopOut()
+        {
+            if (CurrentLoadedExport != null)
+            {
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new UnrealScriptWPF(), CurrentLoadedExport);
+                elhw.Title = $"UnrealScript Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                elhw.Show();
+            }
+        }
+
         private void StartFunctionScan(byte[] data)
         {
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)

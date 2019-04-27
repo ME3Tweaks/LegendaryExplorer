@@ -19,7 +19,6 @@ using ME3Explorer.Packages;
 using ME3Explorer.SharedUI;
 using ME3Explorer.Unreal;
 using Xceed.Wpf.Toolkit.Primitives;
-using static ME3Explorer.EnumExtensions;
 using static ME3Explorer.PackageEditorWPF;
 using static ME3Explorer.Unreal.UnrealFlags;
 
@@ -49,7 +48,7 @@ namespace ME3Explorer.MetadataEditor
         private const int HEADER_OFFSET_IMP_IDXOBJECTNAME = 0x14;
         private const int HEADER_OFFSET_IMP_IDXPACKAGEFILE = 0x0;
         private IEntry CurrentLoadedEntry;
-        public ObservableCollectionExtended<object> AllEntriesList { get; set; } = new ObservableCollectionExtended<object>();
+        public ObservableCollectionExtended<object> AllEntriesList { get; } = new ObservableCollectionExtended<object>();
         private HexBox Header_Hexbox;
         private bool loadingNewData = false;
 
@@ -77,6 +76,18 @@ namespace ME3Explorer.MetadataEditor
                 allEntriesNew.Add(exp);
             }
             AllEntriesList.ReplaceAll(allEntriesNew);
+        }
+
+        public override void PopOut()
+        {
+            if (CurrentLoadedEntry is IExportEntry export)
+            {
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new MetadataEditorWPF(), export);
+                elhw.Height = 620;
+                elhw.Width = 780;
+                elhw.Title = $"Metadata Editor - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {export.FileRef.FileName}";
+                elhw.Show();
+            }
         }
 
         public override void LoadExport(IExportEntry exportEntry)
@@ -143,7 +154,7 @@ namespace ME3Explorer.MetadataEditor
                 {
                     InfoTab_Archetype_ComboBox.SelectedIndex = exportEntry.FileRef.Imports.Count; //Class, 0
                 }
-                var flagsList = GetValues<EObjectFlags>().Distinct().ToList();
+                var flagsList = Enums.GetValues<EObjectFlags>().Distinct().ToList();
                 //Don't even get me started on how dumb it is that SelectedItems is read only...
                 string selectedFlags = "";
                 foreach (EObjectFlags flag in flagsList)

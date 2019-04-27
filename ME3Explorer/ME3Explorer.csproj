@@ -234,6 +234,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="AutoTOC\AutoTOCWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="BinaryInterpreter\BinaryInterpreterWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -241,10 +245,6 @@
     <Page Include="Bio2DAEditor\Bio2DAEditorWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CurveEd\CurveEditorHost.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="DLCUnpacker\DLCUnpacker.xaml">
       <SubType>Designer</SubType>
@@ -274,6 +274,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="AutoTOC\AutoTOCWPF.xaml.cs">
+      <DependentUpon>AutoTOCWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="BinaryInterpreter\BinaryAddPropertyDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -307,9 +310,6 @@
     </Compile>
     <Compile Include="Bio2DAEditor\Bio2DAEditorWPF.xaml.cs">
       <DependentUpon>Bio2DAEditorWPF.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CurveEd\CurveEditorHost.xaml.cs">
-      <DependentUpon>CurveEditorHost.xaml</DependentUpon>
     </Compile>
     <Compile Include="DLCUnpacker\DLCUnpacker.xaml.cs">
       <DependentUpon>DLCUnpacker.xaml</DependentUpon>
@@ -509,22 +509,25 @@
     <Compile Include="Sequence Editor\GraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="SharedUI\PeregrineTreeView\NodeTreeSelectionBehavior.cs" />
+    <Compile Include="SharedUI\ListBoxTask.cs" />
     <Compile Include="SharedUI\TreeViewEntry.cs" />
     <Compile Include="Packages\UDKPackage.cs" />
     <Compile Include="Packages\MEPackage.cs" />
+    <Compile Include="Pathfinding Editor\PathfindingEditorConverters.cs" />
+    <Compile Include="Pathfinding Editor\PathfindingEditorWPF.xaml.cs">
+      <DependentUpon>PathfindingEditorWPF.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pathfinding Editor\PathingGraphEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Pathfinding Editor\ReachSpecsPanel.xaml.cs">
+      <DependentUpon>ReachSpecsPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pathfinding Editor\SplineNodes.cs" />
     <Compile Include="Pathfinding Editor\ActorNodes.cs" />
-    <Compile Include="Pathfinding Editor\DuplicateGUIDWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Pathfinding Editor\DuplicateGUIDWindow.Designer.cs">
-      <DependentUpon>DuplicateGUIDWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Pathfinding Editor\HeightFilterForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Pathfinding Editor\HeightFilterForm.Designer.cs">
-      <DependentUpon>HeightFilterForm.cs</DependentUpon>
+    <Compile Include="Pathfinding Editor\ValidationPanel.xaml.cs">
+      <DependentUpon>ValidationPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -546,6 +549,8 @@
     </Compile>
     <Compile Include="SharedUI\BuildInfo.cs" />
     <Compile Include="SharedUI\Converters\EntryTypeVisibiltyConverter.cs" />
+    <Compile Include="SharedUI\Converters\InverseBooleanConverter.cs" />
+    <Compile Include="SharedUI\Converters\IsIntEqualConverters.cs" />
     <Compile Include="SharedUI\Converters\GameTypeConverter.cs" />
     <Compile Include="SharedUI\Converters\UnsavedChangesForegroundConverter.cs" />
     <Compile Include="SharedUI\Converters\NullVisibilityConverter.cs" />
@@ -557,10 +562,16 @@
     <Compile Include="SharedUI\Converters\NullEnabledConverter.cs" />
     <Compile Include="SharedUI\Converters\PackageEditorWPFConverters.cs" />
     <Compile Include="SharedUI\Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="SharedUI\ExportLoaderHostedWindow.xaml.cs">
+      <DependentUpon>ExportLoaderHostedWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SharedUI\EditableComboBox.cs" />
     <Compile Include="SharedUI\EditableTextBlock.cs" />
     <Compile Include="SharedUI\EditableComboBoxAdorner.cs" />
     <Compile Include="SharedUI\EditableTextBlockAdorner.cs" />
+    <Compile Include="SharedUI\EntrySelectorDialogWPF.xaml.cs">
+      <DependentUpon>EntrySelectorDialogWPF.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SharedUI\ExceptionHandlerDialogWPF.xaml.cs">
       <DependentUpon>ExceptionHandlerDialogWPF.xaml</DependentUpon>
     </Compile>
@@ -568,25 +579,7 @@
     <Compile Include="SharedUI\ListDialog.xaml.cs">
       <DependentUpon>ListDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pathfinding Editor\PathfindingNodeInfoPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Pathfinding Editor\PathfindingNodeInfoPanel.Designer.cs">
-      <DependentUpon>PathfindingNodeInfoPanel.cs</DependentUpon>
-    </Compile>
     <Compile Include="Pathfinding Editor\PathfindingNodeMaster.cs" />
-    <Compile Include="Pathfinding Editor\ReachSpecCreatorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Pathfinding Editor\ReachSpecCreatorForm.Designer.cs">
-      <DependentUpon>ReachSpecCreatorForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Pathfinding Editor\ReachSpecRecalculator.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Pathfinding Editor\ReachSpecRecalculator.Designer.cs">
-      <DependentUpon>ReachSpecRecalculator.cs</DependentUpon>
-    </Compile>
     <Compile Include="Pathfinding Editor\SharedPathfinding.cs" />
     <Compile Include="SharedUI\PeriodicUpdater.cs" />
     <Compile Include="Main Window\SearchPanel.xaml.cs">
@@ -642,12 +635,6 @@
     </Compile>
     <Compile Include="ScriptDB\ScriptDB.Designer.cs">
       <DependentUpon>ScriptDB.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Pathfinding Editor\PathfindingEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Pathfinding Editor\PathfindingEditor.Designer.cs">
-      <DependentUpon>PathfindingEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Pathfinding Editor\PathfindingNodes.cs" />
     <Compile Include="Sequence Editor\SequenceObjects.cs" />
@@ -873,12 +860,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AutoTOC\AutoTOC.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AutoTOC\AutoTOC.Designer.cs">
-      <DependentUpon>AutoTOC.cs</DependentUpon>
-    </Compile>
     <Compile Include="BIKExtract\BIKExtract.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1041,7 +1022,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pathfinding Editor\PathfindingEditorWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pathfinding Editor\ReachSpecsPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pathfinding Editor\ValidationPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SharedUI\AddPropertyDialogWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SharedUI\ExportLoaderHostedWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SharedUI\EntrySelectorDialogWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1214,9 +1215,6 @@
     <EmbeddedResource Include="AnimationExplorer\AnimationExplorer.resx">
       <DependentUpon>AnimationExplorer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AutoTOC\AutoTOC.resx">
-      <DependentUpon>AutoTOC.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="BIKExtract\BIKExtract.resx">
       <DependentUpon>BIKExtract.cs</DependentUpon>
     </EmbeddedResource>
@@ -1309,21 +1307,6 @@
       <DependentUpon>PackageEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Pathfinding Editor\DuplicateGUIDWindow.resx">
-      <DependentUpon>DuplicateGUIDWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Pathfinding Editor\HeightFilterForm.resx">
-      <DependentUpon>HeightFilterForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Pathfinding Editor\PathfindingNodeInfoPanel.resx">
-      <DependentUpon>PathfindingNodeInfoPanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Pathfinding Editor\ReachSpecCreatorForm.resx">
-      <DependentUpon>ReachSpecCreatorForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Pathfinding Editor\ReachSpecRecalculator.resx">
-      <DependentUpon>ReachSpecRecalculator.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="PlotVarDB\PlotVarDB.resx">
       <DependentUpon>PlotVarDB.cs</DependentUpon>
     </EmbeddedResource>
@@ -1343,9 +1326,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ScriptDB\ScriptDB.resx">
       <DependentUpon>ScriptDB.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Pathfinding Editor\PathfindingEditor.resx">
-      <DependentUpon>PathfindingEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SFAREditor2\SFAREditor2.resx">
       <DependentUpon>SFAREditor2.cs</DependentUpon>
@@ -1473,11 +1453,8 @@
     <Resource Include="Resources\taskbar.ico" />
     <Resource Include="Resources\wwisebank_editor_64x64.png" />
     <Resource Include="Resources\subtitle_scanner_64x64.png" />
-    <Resource Include="Resources\sfar_editor2_icon_64x64.png" />
     <Resource Include="Resources\psk_viewer_64x64.png" />
     <Resource Include="Resources\psa_viewer_64x64.png" />
-    <Resource Include="Resources\meshplorer2_64x64.png" />
-    <Resource Include="Resources\meshplorer_64x64.png" />
     <Resource Include="Resources\interpreter_icon_64x64.png" />
     <Resource Include="Resources\interp_viewer_icon_64x64.png" />
     <Resource Include="Resources\info.ico" />
@@ -1605,6 +1582,13 @@
     <Resource Include="Resources\ImageEngine_256x256.ico" />
     <Resource Include="Resources\facefxa_256x256.ico" />
     <Resource Include="Resources\memoryanalyzer_256x256.ico" />
+    <Resource Include="Resources\BikExtractor_256x256.ico" />
+    <Resource Include="Resources\InterpViewer_256x256.ico" />
+    <Resource Include="Resources\sfareditor_256x256.ico" />
+    <Resource Include="Resources\udkexplorer_256x256.ico" />
+    <Resource Include="Resources\wwisebankeditor_256x256.ico" />
+    <Resource Include="Resources\meshdatabase_256x256.ico" />
+    <Resource Include="Resources\tpftools_256x256.ico" />
     <Resource Include="Resources\propertydatabase_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>

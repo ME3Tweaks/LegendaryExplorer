@@ -139,6 +139,14 @@ namespace ME3Explorer.Packages
             }
         }
 
+        public string GetNetIndexedFullPath
+        {
+            get
+            {
+                return GetFullPath + "_" + indexValue;
+            }
+        }
+
         //NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
         protected byte[] _data;
         /// <summary>
@@ -275,6 +283,30 @@ namespace ME3Explorer.Packages
             props.AddOrReplaceProp(prop);
             WriteProperties(props);
         }
+
+        public bool RemoveProperty(string propname)
+        {
+            var props = GetProperties();
+            UProperty propToRemove = null;
+            foreach (UProperty prop in props)
+            {
+                if (prop.Name.Name == propname)
+                {
+                    propToRemove = prop;
+                    break;
+                }
+            }
+
+            //outside for concurrent collection modification
+            if (propToRemove != null)
+            {
+                props.Remove(propToRemove);
+                WriteProperties(props);
+                return true;
+            }
+            return false;
+        }
+
 
         public int GetPropertyStart()
         {

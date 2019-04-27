@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections;
 using System.Drawing;
-using System.Drawing.Text;
-using System.Linq;
-using System.Windows.Forms;
 using ME3Explorer.Unreal;
 using ME3Explorer.Packages;
-
-using UMD.HCIL.Piccolo;
 using UMD.HCIL.Piccolo.Nodes;
-using UMD.HCIL.Piccolo.Event;
-using UMD.HCIL.Piccolo.Util;
-using UMD.HCIL.PathingGraphEditor;
 using ME3Explorer.Pathfinding_Editor;
-using System.Diagnostics;
-using static SharpDX.Vector3;
 using ME3Explorer.SequenceObjects;
 
 namespace ME3Explorer.SplineNodes
@@ -39,7 +28,7 @@ namespace ME3Explorer.SplineNodes
             pcc = p;
             g = grapheditor;
             index = idx;
-            export = pcc.getExport(index);
+            export = pcc.getUExport(index);
             comment = new SText(GetComment(), commentColor, false);
             comment.X = 0;
             comment.Y = 52 + comment.Height;
@@ -54,7 +43,7 @@ namespace ME3Explorer.SplineNodes
             index = idx;
             if (idx >= 0)
             {
-                export = pcc.getExport(index);
+                export = pcc.getUExport(index);
                 comment = new SText(GetComment(), commentColor, false);
             }
 
@@ -98,7 +87,7 @@ namespace ME3Explorer.SplineNodes
         /// <summary>
         /// Creates the reachspec connections from this pathfinding node to others.
         /// </summary>
-        public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
+        public override void CreateConnections(List<PathfindingNodeMaster> Objects)
         {
             var outLinksProp = export.GetProperty<ArrayProperty<StructProperty>>("Connections");
             if (outLinksProp != null)
@@ -244,10 +233,10 @@ namespace ME3Explorer.SplineNodes
                 ArrayProperty<StructProperty> pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
                 StructProperty point0 = pointsProp[0];
                 StructProperty point1 = pointsProp[1];
-                a = PathfindingEditor.GetVector2(point0.GetProp<StructProperty>("OutVal"));
-                tan1 = PathfindingEditor.GetVector2(point0.GetProp<StructProperty>("LeaveTangent"));
-                tan2 = PathfindingEditor.GetVector2(point1.GetProp<StructProperty>("ArriveTangent"));
-                d = PathfindingEditor.GetVector2(point1.GetProp<StructProperty>("OutVal"));
+                a = SharedPathfinding.GetVector2(point0.GetProp<StructProperty>("OutVal"));
+                tan1 = SharedPathfinding.GetVector2(point0.GetProp<StructProperty>("LeaveTangent"));
+                tan2 = SharedPathfinding.GetVector2(point1.GetProp<StructProperty>("ArriveTangent"));
+                d = SharedPathfinding.GetVector2(point1.GetProp<StructProperty>("OutVal"));
                 // = getType(s);
                 float w = 25;
                 float h = 25;
@@ -277,9 +266,9 @@ namespace ME3Explorer.SplineNodes
         /// <summary>
         /// This beginning node of the spline connects to the destination point over a bezier curve.
         /// </summary>
-        public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
+        public override void CreateConnections(List<PathfindingNodeMaster> Objects)
         {
-            PPath edge = new PPath();
+            PathfindingEditorEdge edge = new PathfindingEditorEdge();
             edge.Pen = splineconnnectorPen;
 
             //TODO: Calculate where points B and C lie in actual space for calculating the overhead curve
@@ -330,7 +319,7 @@ namespace ME3Explorer.SplineNodes
         /// <summary>
         /// This has no outbound connections.
         /// </summary>
-        public override void CreateConnections(ref List<PathfindingNodeMaster> Objects)
+        public override void CreateConnections(List<PathfindingNodeMaster> Objects)
         {
 
         }

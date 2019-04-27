@@ -112,8 +112,7 @@ namespace ME3Explorer
             int curroffset = binstartoffset;
 
             int cellcount = BitConverter.ToInt32(data, curroffset);
-            //if (cellcount == 0) Debugger.Break();
-            if (cellcount > 0)
+            if ( cellcount > 0 ) 
             {
                 curroffset += 4;
                 for (int rowindex = 0; rowindex < RowCount; rowindex++)
@@ -130,7 +129,7 @@ namespace ME3Explorer
                         curroffset += dataSize;
                     }
                 }
-                //PopulatedCellCount = RowCount * ColumnCount;
+                PopulatedCellCount = RowCount * ColumnCount;  //Required for edits to write correct count if SaveToExport
             }
             else
             {
