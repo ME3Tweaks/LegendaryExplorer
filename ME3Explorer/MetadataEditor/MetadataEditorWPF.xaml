@@ -179,7 +179,7 @@
         <TextBox Name="InfoTab_ExportGUID_TextBox" Grid.Row="16" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
         <TextBox Name="InfoTab_ExportUnknown2_TextBox" Grid.Row="17" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
         <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Grid.Row="18">
-            <Button Name="Info_HeaderHexSaveChanges" Content="Save hex changes"  Margin="3,0,3,0" Padding="2" Click="Info_HeaderHexSaveChanges_Click"/>
+            <Button Name="Info_HeaderHexSaveChanges" Content="Save hex changes"  Margin="0,0,3,0" Padding="5,2" Click="Info_HeaderHexSaveChanges_Click"/>
             <TextBlock Name="Info_Header_UnsavedChanges" Text="Changes not yet saved" Foreground="Red" Margin="0,0,3,0"  VerticalAlignment="Center" Visibility="Hidden"/>
         </StackPanel>
         <!--<StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Grid.Row="10"  Width="Auto" Height="Auto" Margin="0,5,0,0"  MaxWidth="650">-->
