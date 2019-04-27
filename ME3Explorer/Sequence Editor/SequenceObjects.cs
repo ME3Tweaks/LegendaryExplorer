@@ -1383,7 +1383,7 @@ namespace ME3Explorer.SequenceObjects
                 uint tmp = 0;
                 AddFontMemResourceEx(fontPtr, (uint)(fontData.Length), IntPtr.Zero, ref tmp);
                 Marshal.FreeCoTaskMem(fontPtr);
-                kismetFont = new Font(fontcollection.Families[0], 6);
+                kismetFont = new Font(fontcollection.Families[0], 6, GraphicsUnit.Pixel);
             }
         }
 
