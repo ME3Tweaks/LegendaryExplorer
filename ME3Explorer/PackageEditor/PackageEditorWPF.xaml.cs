@@ -3779,5 +3779,10 @@ namespace ME3Explorer
             Properties.Settings.Default.EmbeddedTextureViewer_AutoLoad = !Properties.Settings.Default.EmbeddedTextureViewer_AutoLoad;
             Properties.Settings.Default.Save();
         }
+
+        private void TreeView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            Debug.WriteLine("hello");
+        }
     }
 }
