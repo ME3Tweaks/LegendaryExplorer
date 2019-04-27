@@ -40,7 +40,7 @@
                 </TextBlock>
                 <TextBlock Text="Additional contributors" FontFamily="{StaticResource TitilliumWeb-SemiBold}" FontSize="14"/>
                 <TextBlock FontFamily="{StaticResource TitilliumWeb-Light}" FontSize="15" Margin="7,0,0,0">
-                    <Run Text="• SirCxyrtyx - Developer&#10;• Aquadran - Developer&#10;• Benji - 3D Developer"/>
+                    <Run Text="• SirCxyrtyx - Developer&#10;• Aquadran - Developer&#10;• Benji - 3D Developer&#10;• Kinkojiro - Developer"/>
                 </TextBlock>
 
             </StackPanel>
@@ -92,6 +92,7 @@
                         MrFob         <LineBreak/>
                         Heff          <LineBreak/>
                         Benji         <LineBreak/>
+                        Kinkojiro         <LineBreak/>
                         </TextBlock>
                     </ScrollViewer>
                 </TabItem>
