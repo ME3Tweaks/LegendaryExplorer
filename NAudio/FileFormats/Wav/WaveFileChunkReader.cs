@@ -57,7 +57,6 @@ namespace NAudio.FileFormats.Wav
             {
                 Int32 chunkIdentifier = br.ReadInt32();
                 string chunkName = Encoding.ASCII.GetString(BitConverter.GetBytes(chunkIdentifier));
-                Debug.WriteLine("Reading chunk: " + chunkName);
                 var chunkLength = br.ReadUInt32();
                 if (chunkIdentifier == dataChunkId)
                 {
