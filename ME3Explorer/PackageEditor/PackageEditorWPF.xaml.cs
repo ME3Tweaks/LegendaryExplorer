@@ -858,7 +858,7 @@ namespace ME3Explorer
         {
             if (obj is string parameter)
             {
-                if (parameter == "FromTreeView")
+                if (parameter == "FromContextMenu")
                 {
                     //Ensure we are on names view - used for menu item
                     return PackageIsLoaded(null) && CurrentView == CurrentViewMode.Names;
@@ -1342,6 +1342,8 @@ namespace ME3Explorer
             LoadCommands();
 
             InitializeComponent();
+            ((FrameworkElement)this.Resources["EntryContextMenu"]).DataContext = this;
+
             //map export loaders to their tabs
             ExportLoaders[InterpreterTab_Interpreter] = Interpreter_Tab;
             ExportLoaders[MetadataTab_MetadataEditor] = Metadata_Tab;
