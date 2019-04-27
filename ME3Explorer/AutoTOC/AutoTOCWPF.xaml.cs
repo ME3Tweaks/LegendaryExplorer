@@ -312,7 +312,7 @@ namespace ME3Explorer.AutoTOC
         {
             if (Automated)
             {
-                GenerateAllTOCs();
+                RunAutoTOC();
             }
         }
     }

@@ -6,6 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:fa="http://schemas.fontawesome.io/icons/"
     mc:Ignorable="d"
+    Loaded="AutoTOCWPF_Loaded"
     SizeToContent="Height"
     Icon="/Resources/autotoc_256x256.ico"
     Title="AutoTOC WPF" Height="Auto" Width="700">
