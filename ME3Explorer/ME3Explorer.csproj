@@ -1438,17 +1438,11 @@
     <Resource Include="Resources\minimize_icon.ico" />
     <Resource Include="Resources\resize_icon.ico" />
     <Resource Include="Resources\taskbar.ico" />
-    <Resource Include="Resources\wwisebank_editor_64x64.png" />
-    <Resource Include="Resources\subtitle_scanner_64x64.png" />
-    <Resource Include="Resources\psk_viewer_64x64.png" />
-    <Resource Include="Resources\psa_viewer_64x64.png" />
     <Resource Include="Resources\interpreter_icon_64x64.png" />
-    <Resource Include="Resources\interp_viewer_icon_64x64.png" />
     <Resource Include="Resources\info.ico" />
     <Resource Include="Resources\help-browser.png" />
     <Resource Include="Resources\folder.png" />
     <Resource Include="Resources\document-save.png" />
-    <Resource Include="Resources\animation_explorer_64x64.png" />
     <Resource Include="Icons\udk_explorer_64x64.png" />
     <Resource Include="Icons\placeholder_64x64.png" />
     <Resource Include="Icons\modmaker_64x64.png" />
@@ -1522,25 +1516,12 @@
     <Resource Include="Resources\close.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\script_database_icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\level_explorer_64x64.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\level_editor_64x64.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="NativesEditor\SFXGame\BioDefine\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\TLK_ME23_editor_icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\excel.png" />
     <None Include="Resources\excel.gif" />
     <Resource Include="Resources\error_x.png" />
-    <Resource Include="Resources\coalesced_editor_64.png" />
     <Resource Include="Resources\coalesced_editor_newB.ico" />
     <Resource Include="Resources\me3tweaks_fork.png" />
     <Resource Include="PackageEditor\EntryIcons\icon_swf.png" />
@@ -1580,6 +1561,9 @@
     <Resource Include="Resources\pskviewer_256x256.ico" />
     <Resource Include="Resources\scriptdatabase_256x256.ico" />
     <Resource Include="Resources\subtitlescanner_256x256.ico" />
+    <Resource Include="Resources\modmaker_256x256.ico" />
+    <Resource Include="Resources\coalescededitor_256x256.ico" />
+    <Resource Include="Resources\me2me3tlkeditor_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

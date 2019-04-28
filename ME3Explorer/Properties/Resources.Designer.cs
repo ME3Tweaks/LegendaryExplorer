@@ -133,16 +133,6 @@ namespace ME3Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap level_editor_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("level_editor_64x64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap logo_OFF {
             get {
                 object obj = ResourceManager.GetObject("logo_OFF", resourceCulture);
@@ -156,16 +146,6 @@ namespace ME3Explorer.Properties {
         public static System.Drawing.Bitmap logo_ON {
             get {
                 object obj = ResourceManager.GetObject("logo_ON", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap modmaker_64x64 {
-            get {
-                object obj = ResourceManager.GetObject("modmaker_64x64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

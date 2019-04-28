@@ -203,7 +203,7 @@ namespace ME3Explorer
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
                 ofd.Title = "Select .mod to load";
-                ofd.Filter = "ME3 ModMaker Files|*.mod";
+                ofd.Filter = "ME3 Mod Maker Files|*.mod";
                 ofd.Multiselect = true;
                 if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     backbone.AddToBackBone(b =>
@@ -566,7 +566,7 @@ namespace ME3Explorer
                             System.Threading.Thread.Sleep(100);
 
                         File.Delete(ExecFolder + "ModData.cache");
-                        DebugOutput.PrintLn("-----Execution of ModMaker closing...-----");
+                        DebugOutput.PrintLn("-----Execution of Mod Maker closing...-----");
                         KFreonLib.Scripting.ModMaker.JobList.Clear();
                         currentInstance = null;
                         this.Close();
@@ -575,7 +575,7 @@ namespace ME3Explorer
                 e.Cancel = true;
             }
             KFreonLib.Scripting.ModMaker.JobList.Clear();
-            DebugOutput.PrintLn("-----Execution of ModMaker closing...-----");
+            DebugOutput.PrintLn("-----Execution of Mod Maker closing...-----");
             currentInstance = null;
         }
 
