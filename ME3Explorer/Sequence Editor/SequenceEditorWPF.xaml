@@ -36,6 +36,12 @@
             <MenuItem Header="Add Object" Click="AddObject_Clicked" ToolTip="Add existing Sequence Object to this Sequence"/>
         </ContextMenu>
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key="L" Modifiers="Control"  Command="{Binding AutoLayoutCommand}"/>
+        <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
+    </Window.InputBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File" Padding="4" >
