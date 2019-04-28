@@ -39,6 +39,9 @@ namespace ME3Explorer
 #endif
         }
 
+        public static string RepositoryURL => "http://github.com/ME3Tweaks/ME3Explorer/";
+        public static string BugReportURL => $"{RepositoryURL}issues/";
+
         public static string GetVersion()
         {
             Version ver = Assembly.GetExecutingAssembly().GetName().Version;

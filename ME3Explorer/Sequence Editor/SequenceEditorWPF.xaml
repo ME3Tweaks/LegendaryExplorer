@@ -227,11 +227,6 @@
                             <Setter Property="vhelp:TreeViewItemHelper.BringExpandedChildrenIntoView" Value="True" />
                         </Style>
                     </TreeView.ItemContainerStyle>
-                    <TreeView.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Clone" Command="{Binding CloneCommand}"/>
-                        </ContextMenu>
-                    </TreeView.ContextMenu>
                     <i:Interaction.Behaviors>
                         <vhelp:TreeViewHelper BoundSelectedItem="{Binding SelectedItem}" />
                     </i:Interaction.Behaviors>

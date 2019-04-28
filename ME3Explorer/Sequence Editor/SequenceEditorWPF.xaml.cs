@@ -153,6 +153,7 @@ namespace ME3Explorer.Sequence_Editor
                 }
                 if (SetProperty(ref _selectedItem, value) && value != null)
                 {
+                    value.IsSelected = true;
                     LoadSequence((IExportEntry)value.Entry);
                 }
             }
@@ -207,10 +208,9 @@ namespace ME3Explorer.Sequence_Editor
                 LoadMEPackage(fileName);
                 CurrentFile = System.IO.Path.GetFileName(fileName);
                 LoadSequences();
-                if (!TreeViewRootNodes.Any())
+                if (TreeViewRootNodes.IsEmpty())
                 {
-                    Pcc.Release();
-                    Pcc = null;
+                    UnLoadMEPackage();
                     MessageBox.Show("This file does not contain any Sequences!");
                     StatusText = "Select a package file to load";
                     return;
@@ -231,6 +231,7 @@ namespace ME3Explorer.Sequence_Editor
                 MessageBox.Show("Error:\n" + ex.Message);
                 Title = "Sequence Editor WPF";
                 CurrentFile = null;
+                UnLoadMEPackage();
             }
         }
 
@@ -1201,8 +1202,6 @@ namespace ME3Explorer.Sequence_Editor
             GraphHost.Child = null; //This seems to be required to clear OnChildGotFocus handler from WinFormsHost
             GraphHost.Dispose();
             DataContext = null;
-
-            DispatcherHelper.EmptyQueue();
         }
 
         private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)
@@ -1628,7 +1627,7 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (FileQueuedForLoad != null)
             {
-                Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
+                Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(async () =>
                 {
                     //Wait for all children to finish loading
                     LoadFile(FileQueuedForLoad);
@@ -1652,7 +1651,6 @@ namespace ME3Explorer.Sequence_Editor
                                 break;
                             }
                         }
-
                         ExportQueuedForFocusing = null;
                     }
                     Activate();
