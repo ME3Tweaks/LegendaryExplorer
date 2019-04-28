@@ -1723,6 +1723,9 @@ namespace ME3Explorer
                             updated = true;
                         }
                         break;
+                    default:
+                        System.Windows.MessageBox.Show("This type cannot be set, please pester Mgamerz to fix this: " + property);
+                        break;
                 }
                 //PropertyCollection props = CurrentLoadedExport.GetProperties();
                 //props.Remove(tag);

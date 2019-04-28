@@ -20,7 +20,7 @@
         <Rectangle Height="6" Fill="#FFF3F3F3"/>
         <TextBlock FontFamily="{StaticResource Exo-SemiBold}" Foreground="#FF080808" FontSize="18" HorizontalAlignment="Center" Margin="0,9">
             <Run Text="Source code available at "/>
-            <Hyperlink NavigateUri="http://github.com/Mgamerz/ME3Explorer/" Foreground="#FF182574" local:HyperlinkExtensions.IsExternal="True">https://github.com/Mgamerz/ME3Explorer</Hyperlink>
+            <Hyperlink NavigateUri="http://github.com/ME3Tweaks/ME3Explorer/" Foreground="#FF182574" local:HyperlinkExtensions.IsExternal="True">https://github.com/ME3Tweaks/ME3Explorer</Hyperlink>
         </TextBlock>
         <Grid Height="32" Background="#FFBFBFBF">
             <TextBlock Text="Credits" Foreground="#FF080808" FontSize="18" VerticalAlignment="Center" 

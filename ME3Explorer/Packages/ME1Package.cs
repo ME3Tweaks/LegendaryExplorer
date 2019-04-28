@@ -196,7 +196,7 @@ namespace ME3Explorer.Packages
             }
             else
             {
-                throw new Exception("Cannot save ME1 packages with a SeekFreeShaderCache. Please make an issue on github: https://github.com/Mgamerz/ME3Explorer/issues");
+                throw new Exception("Cannot save ME1 packages with a SeekFreeShaderCache. Please make an issue on github: https://github.com/ME3Tweaks/ME3Explorer/issues");
             }
         }
 
