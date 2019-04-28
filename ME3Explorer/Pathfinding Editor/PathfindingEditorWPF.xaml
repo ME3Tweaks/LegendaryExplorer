@@ -58,11 +58,12 @@
         <KeyBinding Key="F2" Command="{Binding ToggleActorsCommand}"/>
         <KeyBinding Key="F3" Command="{Binding ToggleSplinesCommand}"/>
         <KeyBinding Key="F4" Command="{Binding ToggleEverythingElseCommand}"/>
-
-
         <KeyBinding Key="F5" Command="{Binding RefreshCommand}"/>
         <KeyBinding Key="F" Modifiers="Control" Command="{Binding FocusFindCommand}"/>
         <KeyBinding Key="G" Modifiers="Control" Command="{Binding FocusGotoCommand}"/>
+        <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand}"/>
+        <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
     </Window.InputBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top">

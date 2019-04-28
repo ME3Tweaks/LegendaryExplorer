@@ -171,7 +171,7 @@ namespace ME3Explorer.ActorNodes
 
     public class DynamicBlockingVolume : ActorNode
     {
-        private static Color outlinePenColor = Color.FromArgb(255, 0, 0);
+        private static Color outlinePenColor = Color.FromArgb(20, 255, 20);
         private static PointF[] outlineShape = new PointF[] { new PointF(0, 0), new PointF(50, 0), new PointF(50, 50), new PointF(0, 50) };
 
         public DynamicBlockingVolume(int idx, float x, float y, IMEPackage p, PathingGraphEditor grapheditor, bool drawPolygon)
@@ -179,6 +179,7 @@ namespace ME3Explorer.ActorNodes
         {
             Bounds = new RectangleF(0, 0, 50, 50);
             SetShape(drawPolygon);
+            shape.Brush = dynamicPathfindingNodeBrush;
             TranslateBy(x, y);
         }
 
