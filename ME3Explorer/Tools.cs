@@ -77,7 +77,7 @@ namespace ME3Explorer
             });
             set.Add(new Tool
             {
-                name = "ModMaker",
+                name = "Mod Maker",
                 type = typeof(ModMaker),
                 icon = Application.Current.FindResource("iconModMaker") as ImageSource,
                 open = () =>
@@ -86,7 +86,7 @@ namespace ME3Explorer
                 },
                 tags = new List<string> { "utility", ".mod", "mod", "mesh" },
                 subCategory = "Mod Packagers",
-                description = "MODMAKER IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nModMaker is used to create and install files with the \".mod\" extension. MOD files are compatible with ME3 and may be packaged with meshes and other game resources."
+                description = "MOD MAKER IS UNSUPPORTED IN ME3EXPLORER ME3TWEAKS FORK\n\nMod Maker is used to create and install files with the \".mod\" extension. MOD files are compatible with ME3 and may be packaged with meshes and other game resources."
             });
 #if DEBUG
             set.Add(new Tool

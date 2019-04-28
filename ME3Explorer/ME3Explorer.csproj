@@ -1580,6 +1580,7 @@
     <Resource Include="Resources\pskviewer_256x256.ico" />
     <Resource Include="Resources\scriptdatabase_256x256.ico" />
     <Resource Include="Resources\subtitlescanner_256x256.ico" />
+    <Resource Include="Resources\modmaker_256x256.ico" />
     <Content Include="Scene3D\StandardShader.hlsl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

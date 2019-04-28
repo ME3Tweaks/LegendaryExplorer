@@ -158,7 +158,7 @@
         <BitmapImage x:Key="iconWwiseBankEditor" UriSource="Resources/wwisebankeditor_256x256.ico"/>
 
         <BitmapImage x:Key="iconAutoTOC" UriSource="Resources/autotoc_256x256.ico"/>
-        <BitmapImage x:Key="iconModMaker" UriSource="Icons/modmaker_64x64.png"/>
+        <BitmapImage x:Key="iconModMaker" UriSource="Resources/modmaker_256x256.ico"/>
         <!--<BitmapImage x:Key="iconSFARTOCUpdater" UriSource="Icons/SFARTOC_64x64.png"/>-->
         <BitmapImage x:Key="iconTPFTools" UriSource="Resources/tpftools_256x256.ico"/>
 
