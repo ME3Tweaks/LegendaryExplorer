@@ -482,6 +482,7 @@ namespace ME3Explorer
             Set_Button.Visibility = Visibility.Collapsed;
             EditorSet_Separator.Visibility = Visibility.Collapsed;
             (Interpreter_Hexbox?.ByteProvider as DynamicByteProvider)?.Bytes.Clear();
+            Interpreter_Hexbox.Refresh();
             HasUnsavedChanges = false;
             PropertyNodes.Clear();
         }
