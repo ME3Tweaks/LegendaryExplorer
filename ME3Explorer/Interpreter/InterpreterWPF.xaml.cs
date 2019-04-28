@@ -823,7 +823,6 @@ namespace ME3Explorer
                     else if (sp.StructType == "TimelineEffect")
                     {
                         string timelineEffectType = "(";
-                        bool isFirst = true;
                         EnumProperty typeProp = sp.Properties.GetProp<EnumProperty>("Type");
                         FloatProperty timeIndex = sp.Properties.GetProp<FloatProperty>("TimeIndex");
                         if (typeProp != null)
@@ -1113,6 +1112,12 @@ namespace ME3Explorer
                             Value_ComboBox.ItemsSource = values;
                             int indexSelected = values.IndexOf(ep.Value.Name);
                             Value_ComboBox.SelectedIndex = indexSelected;
+                        }
+                        break;
+                    case ByteProperty bp:
+                        {
+                            Value_TextBox.Text = bp.Value.ToString();
+                            SupportedEditorSetElements.Add(Value_TextBox);
                         }
                         break;
                     case StringRefProperty strrefp:
