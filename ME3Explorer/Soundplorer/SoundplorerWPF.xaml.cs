@@ -224,11 +224,7 @@ namespace ME3Explorer.Soundplorer
 
                 StatusBar_GameID_Container.Visibility = Visibility.Visible;
 
-                if (Pcc != null)
-                {
-                    Pcc.Release();
-                    Pcc = null;
-                }
+                UnLoadMEPackage();
                 LoadedISBFile = null;
 
                 if (System.IO.Path.GetExtension(fileName).ToLower() == ".isb")

@@ -375,7 +375,10 @@
                                 <LineBreak/>
                                  - The ME3Tweaks Discord's ME3Explorer channel (accessible via the ME3Tweaks Fork icon in the main window)
                                 <LineBreak/>
-                                 - The issues list on GitHub at https://github.com/ME3Tweaks/ME3Explorer/issues
+                                 - The issues list on GitHub at 
+                                <Hyperlink NavigateUri="{Binding Source={x:Static global:App.BugReportURL}, Mode=OneTime}" Foreground="#FF182574" global:HyperlinkExtensions.IsExternal="True">
+                                    <Run Text="{Binding Source={x:Static global:App.BugReportURL}, Mode=OneTime}"/>
+                                </Hyperlink>
                             </TextBlock>
 
                             <Grid HorizontalAlignment="Left" Margin="20" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">

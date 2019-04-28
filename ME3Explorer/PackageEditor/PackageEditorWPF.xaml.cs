@@ -3107,7 +3107,6 @@ namespace ME3Explorer
                 LeftSideList_ItemsSource.ClearEx();
                 //LeftSide_TreeView = null; //peregrine treeview dispatcher leak //we don't use peregrine tree view anymore
                 AllTreeViewNodesX.ClearEx();
-                Pcc = null; //Package object leak
             }
         }
 

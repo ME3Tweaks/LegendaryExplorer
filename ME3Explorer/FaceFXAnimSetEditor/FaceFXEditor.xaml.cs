@@ -67,8 +67,7 @@ namespace ME3Explorer.FaceFX
             }
             catch (Exception ex)
             {
-                Pcc?.Release(wpfWindow: this);
-                Pcc = null;
+                UnLoadMEPackage();
                 MessageBox.Show("Error:\n" + ex.Message);
             }
         }
@@ -307,7 +306,13 @@ namespace ME3Explorer.FaceFX
                 {
                     if (!(line is ME2FaceFXLine))
                     {
-                        MessageBox.Show("Cannot add ME3 FaceFX lines to ME2 FaceFXAnimsets. If you require this feature, please make an issue on the project's Github page");
+                        var result = MessageBox.Show("Cannot add ME3 FaceFX lines to ME2 FaceFXAnimsets. " +
+                                                     "If you require this feature, please make an issue on the project's Github page. Would you like to go the Github page now?",
+                                                     "Feature Not Implemented", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            System.Diagnostics.Process.Start(App.BugReportURL);
+                        }
                         return;
                     }
                     line.animations = line.animations.Select(x => new ME2NameRef

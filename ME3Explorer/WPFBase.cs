@@ -20,7 +20,7 @@ namespace ME3Explorer
         public IMEPackage Pcc
         {
             get => pcc;
-            set => SetProperty(ref pcc, value);
+            private set => SetProperty(ref pcc, value);
         }
 
         protected WPFBase()
@@ -43,14 +43,20 @@ namespace ME3Explorer
 
         public void LoadMEPackage(string s)
         {
-            pcc?.Release(wpfWindow: this);
+            UnLoadMEPackage();
             Pcc = MEPackageHandler.OpenMEPackage(s, wpfWindow: this);
         }
 
         public void LoadME3Package(string s)
         {
-            pcc?.Release(wpfWindow: this);
+            UnLoadMEPackage();
             Pcc = MEPackageHandler.OpenME3Package(s, wpfWindow: this);
+        }
+
+        protected void UnLoadMEPackage()
+        {
+            pcc?.Release(wpfWindow: this);
+            Pcc = null;
         }
 
         public abstract void handleUpdate(List<PackageUpdate> updates);

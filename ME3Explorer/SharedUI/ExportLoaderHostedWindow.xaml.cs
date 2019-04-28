@@ -11,8 +11,8 @@ namespace ME3Explorer.SharedUI
     /// </summary>
     public partial class ExportLoaderHostedWindow : WPFBase
     {
-        private IExportEntry LoadedExport;
-        private ExportLoaderControl hostedControl;
+        private readonly IExportEntry LoadedExport;
+        private readonly ExportLoaderControl hostedControl;
         public ExportLoaderHostedWindow(ExportLoaderControl hostedControl, IExportEntry exportToLoad)
         {
             this.hostedControl = hostedControl;

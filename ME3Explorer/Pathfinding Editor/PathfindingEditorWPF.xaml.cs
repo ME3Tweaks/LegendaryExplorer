@@ -1374,8 +1374,7 @@ namespace ME3Explorer.Pathfinding_Editor
             PersisentLevelExport = Pcc.Exports.FirstOrDefault(x => x.ClassName == "Level" && x.ObjectName == "PersistentLevel");
             if (PersisentLevelExport == null)
             {
-                Pcc.Release();
-                Pcc = null;
+                UnLoadMEPackage();
                 StatusText = "Select a package file to load";
                 PathfindingEditorWPF_ReachSpecsPanel.UnloadExport();
                 PathfindingEditorWPF_ValidationPanel.UnloadPackage();
