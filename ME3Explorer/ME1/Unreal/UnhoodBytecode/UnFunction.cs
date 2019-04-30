@@ -32,6 +32,11 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             _operatorPrecedence = operatorPrecedence;
         }
 
+        public string GetFlags()
+        {
+            return _flags.GetFlagsString();
+        }
+
         public byte[] Bytecode
         {
             get { return _bytecode; }

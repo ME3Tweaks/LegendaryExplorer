@@ -91,17 +91,19 @@ namespace ME3Explorer
 
         private void StartFunctionScan(byte[] data)
         {
+            DecompiledScriptBlocks.ClearEx();
+            TokenList.ClearEx();
+            ScriptHeaderBlocks.ClearEx();
+            ScriptFooterBlocks.ClearEx();
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
             {
                 var func = new ME3Explorer.Unreal.Classes.Function(data, CurrentLoadedExport.FileRef, CurrentLoadedExport.ClassName == "State" ? Convert.ToInt32(StartOffset_Changer.Text) : 32);
-                DecompiledScriptBlocks.Clear();
-                TokenList.Clear();
+
 
                 func.ParseFunction();
                 DecompiledScriptBlocks.AddRange(func.ScriptBlocks);
                 TokenList.AddRange(func.SingularTokenList);
 
-                ScriptHeaderBlocks.Clear();
                 int pos = 16;
                 var nextItemCompilingChain = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Next item in loading chain", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? CurrentLoadedExport : null));
@@ -116,7 +118,6 @@ namespace ME3Explorer
                 pos += 4;
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Size", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
 
-                ScriptFooterBlocks.Clear();
                 pos = CurrentLoadedExport.Data.Length - 6;
                 string flagStr = func.GetFlags();
                 ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", BitConverter.ToInt16(CurrentLoadedExport.Data, pos), pos));
@@ -125,10 +126,59 @@ namespace ME3Explorer
             }
             else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
             {
-                DecompiledScriptBlocks.Clear();
-                var funcoutput = UE3FunctionReader.ReadFunction(CurrentLoadedExport);
-                var result = funcoutput.Split(new[] { '\r', '\n' }).Where(x=>x != "").ToList();
-                DecompiledScriptBlocks.AddRange(result);
+                var func = UE3FunctionReader.ReadFunction(CurrentLoadedExport);
+                //var result = func.Split(new[] { '\r', '\n' }).Where(x=>x != "").ToList();
+                //DecompiledScriptBlocks.AddRange(result);
+
+
+                //Header
+                int pos = 16;
+
+                var nextItemCompilingChain = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Next item in loading chain", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? CurrentLoadedExport : null));
+
+                pos += 8;
+                nextItemCompilingChain = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Children Probe Start", nextItemCompilingChain, pos, nextItemCompilingChain > 0 ? CurrentLoadedExport : null));
+
+                pos += 4;
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 1 (??)", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
+
+                pos += 4;
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 2 (Line??)", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
+
+                pos += 4;
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Unknown 3 (TextPos??)", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
+
+                pos += 4;
+                ScriptHeaderBlocks.Add(new ScriptHeaderItem("Script Size", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
+
+                //Footer
+                pos = CurrentLoadedExport.Data.Length - (func.HasFlag("Net") ? 19 : 17);
+                string flagStr = func.GetFlags();
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Native Index", BitConverter.ToInt16(CurrentLoadedExport.Data, pos), pos));
+                pos += 2;
+
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Operator Precedence", CurrentLoadedExport.Data[pos], pos));
+                pos++;
+
+                int functionFlags = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Flags", $"0x{functionFlags.ToString("X8")} {flagStr}", pos));
+                pos += 4;
+
+                //if ((functionFlags & func._flagSet.GetMask("Net")) != 0)
+                //{
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 1 (RepOffset?)", $"0x{BitConverter.ToInt16(CurrentLoadedExport.Data, pos).ToString("X4")}", pos));
+                pos += 2;
+                //}
+
+                int friendlyNameIndex = BitConverter.ToInt32(CurrentLoadedExport.Data, pos);
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Friendly Name Table Index", $"0x{friendlyNameIndex.ToString("X8")} {CurrentLoadedExport.FileRef.getNameEntry(friendlyNameIndex)}", pos));
+                pos += 4;
+
+                ScriptFooterBlocks.Add(new ScriptHeaderItem("Unknown 2", $"0x{BitConverter.ToInt32(CurrentLoadedExport.Data, pos).ToString("X8")}", pos));
+                pos += 4;
+
                 //ME1Explorer.Unreal.Classes.Function func = new ME1Explorer.Unreal.Classes.Function(data, CurrentLoadedExport.FileRef as ME1Package);
                 //try
                 //{
@@ -319,6 +369,15 @@ namespace ME3Explorer
                 this.offset = offset;
                 length = 4;
             }
+
+            public ScriptHeaderItem(string id, byte value, int offset)
+            {
+                this.id = id;
+                this.value = value.ToString();
+                this.offset = offset;
+                length = 1;
+            }
+
             public ScriptHeaderItem(string id, short value, int offset)
             {
                 this.id = id;
