@@ -14,6 +14,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
     public class BytecodeToken
     {
+        public int NativeIndex; 
         private string _text;
         private readonly int _offset;
 
@@ -39,7 +40,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         {
             return new BytecodeSingularToken
             {
-                opCode = $"[0x{((byte)OpCode):X2}]{OpCode}",
+                opCode = $"[0x{((byte)OpCode):X2}]{((byte)OpCode >= 0x60 ? "EX_NativeCall" : OpCode.ToString())}",
                 startPos = _offset + scriptStartOffset
             };
         }
@@ -405,20 +406,23 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         /// This method is used to prevent significant modifications to ReadNextInternal() (originally ReadNext)
         /// </summary>
         /// <returns></returns>
-        public BytecodeToken ReadNext()
+        public BytecodeToken ReadNext(bool dontAddToken = false)
         {
             ME1OpCodes b = (ME1OpCodes)_reader.ReadByte();
             _reader.BaseStream.Position--;
             BytecodeToken bct = ReadNextInternal();
             bct.OpCode = b;
-            ReadTokens.Add(bct);
+            if (!dontAddToken)
+            {
+                ReadTokens.Add(bct);
+            }
             return bct;
         }
 
         private BytecodeToken ReadNextInternal()
         {
             int readerpos = (int)_reader.BaseStream.Position;
-            ME1OpCodes b = (ME1OpCodes) _reader.ReadByte();
+            ME1OpCodes b = (ME1OpCodes)_reader.ReadByte();
             switch (b)
             {
                 case ME1OpCodes.EX_LocalVariable:
@@ -490,7 +494,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
                 case ME1OpCodes.EX_Skip:
                     _reader.ReadInt16();
-                    return ReadNext();
+                    //Returning readnext causes a new token to be read
+                    return ReadNext(true);
 
                 case ME1OpCodes.EX_EatReturnValue:
                     _reader.ReadInt32();
@@ -790,7 +795,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         private BytecodeToken CompareDelegates(string op)
         {
-            int readerpos = (int)_reader.BaseStream.Position;
+            int readerpos = (int)_reader.BaseStream.Position - 1;
 
             var operand1 = ReadNext();
             if (IsInvalid(operand1)) return operand1;
@@ -802,7 +807,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         private BytecodeToken ReadDynArray1ArgMethod(string methodName)
         {
-            int readerpos = (int)_reader.BaseStream.Position;
+            int readerpos = (int)_reader.BaseStream.Position - 1;
 
             var array = ReadNext();
             if (IsInvalid(array)) return array;
@@ -843,7 +848,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         private BytecodeToken CompareStructs(string op)
         {
-            int pos = (int)_reader.BaseStream.Position;
+            int pos = (int)_reader.BaseStream.Position - 1;
 
             int structIndex = _reader.ReadInt32();
             var operand1 = ReadNext();
@@ -853,9 +858,12 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             return Token(operand1 + " " + op + " " + operand2, pos);
         }
 
-        internal static BytecodeToken Token(string text, int offset)
+        internal static BytecodeToken Token(string text, int offset, int nativeindex = 0)
         {
-            return new BytecodeToken(text, offset);
+            return new BytecodeToken(text, offset)
+            {
+                NativeIndex = nativeindex
+            };
         }
 
         internal BytecodeToken ErrToken(string text, int invalidBytecode)
@@ -896,7 +904,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         internal BytecodeToken ReadRef(Func<IEntry, string> func)
         {
-            int pos = (int)_reader.BaseStream.Position;
+            int pos = (int)_reader.BaseStream.Position - 1; //We already read the bytecode token.
 
             int index = _reader.ReadInt32();
             IEntry item = _package.getEntry(index);
@@ -942,7 +950,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         private BytecodeToken ReadCall(string functionName)
         {
-            int pos = (int)_reader.BaseStream.Position;
+            int pos = (int)_reader.BaseStream.Position - 1;
 
             BytecodeToken p;
             var builder = new StringBuilder(functionName + "(");
@@ -991,8 +999,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 if (IsInvalid(p)) return p;
                 ReadNext();   // end of parms
                 if (function.PreOperator)
-                    return Token((function.HumanReadableControlToken ?? function.Name) + p, pos);
-                return Token(p + (function.HumanReadableControlToken ?? function.Name), pos);
+                    return Token((function.HumanReadableControlToken ?? function.Name) + p, pos, nativeIndex);
+                return Token(p + (function.HumanReadableControlToken ?? function.Name), pos, nativeIndex);
             }
             if (function.Operator)
             {
@@ -1001,7 +1009,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 var p2 = ReadNext();
                 if (IsInvalid(p2)) return WrapErrToken(p1 + " " + function.Name + " " + p2, p2);
                 ReadNext();  // end of parms
-                return Token(p1 + " " + (function.HumanReadableControlToken ?? function.Name) + " " + p2, pos);
+                return Token(p1 + " " + (function.HumanReadableControlToken ?? function.Name) + " " + p2, pos,nativeIndex);
             }
             return ReadCall(function.Name);
         }
