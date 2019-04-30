@@ -256,7 +256,7 @@ namespace ME3Explorer
 
         private bool CanOpenInInterpViewer(object obj)
         {
-            if ((CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Tree) && GetSelected(out int _))
+            if ((CurrentView == CurrentViewMode.Tree) && GetSelected(out int _)) //NB TO DO THIS DOESN'T WORK FOR EXPORTS PAGE ONLY IN TREEVIEW
             {
                 TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
 
@@ -2714,9 +2714,7 @@ namespace ME3Explorer
             if (ClassDropdown_Combobox.SelectedItem == null)
                 return;
 
-
             string searchClass = ClassDropdown_Combobox.SelectedItem.ToString();
-            //TODO: Implement for Imports, Exports
 
             if (CurrentView == CurrentViewMode.Tree)
             {
@@ -2741,6 +2739,37 @@ namespace ME3Explorer
                     }
                 }
             }
+            else 
+            {
+                int n = LeftSide_ListView.SelectedIndex;
+                int start;
+                if (n == -1)
+                    start = 0;
+                else
+                    start = n + 1;
+                if (CurrentView == CurrentViewMode.Exports)
+                {
+                    IReadOnlyList<IExportEntry> pccObjectList = Pcc.Exports;
+                    for (int i = start; i < pccObjectList.Count; i++)
+                        if (pccObjectList[i].ClassName == searchClass)
+                        {
+                            LeftSide_ListView.SelectedIndex = i;
+                            break;
+                        }
+                }
+                else if (CurrentView == CurrentViewMode.Imports)
+                {
+                    IReadOnlyList<ImportEntry> pccObjectList = Pcc.Imports;
+                    for (int i = start; i < pccObjectList.Count; i++)
+                        if (pccObjectList[i].ClassName == searchClass)
+                        {
+                            LeftSide_ListView.SelectedIndex = i;
+                            break;
+                        }
+                }
+
+            }
+            
         }
 
         /// <summary>
