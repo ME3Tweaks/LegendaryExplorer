@@ -127,6 +127,21 @@ namespace ME3Explorer
             else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
             {
                 var func = UE3FunctionReader.ReadFunction(CurrentLoadedExport);
+                func.Decompile(new TextBuilder(), true); //parse bytecode
+
+                /*TextBuilder tb = new TextBuilder();
+                func.DecompileBytecode(func.Statements, tb, true);
+                DecompiledScriptBlocks.Add(tb.ToString());*/
+
+                for (int i = 0; i < func.Statements.statements.Count; i++)
+                {
+                    Statement s = func.Statements.statements[i];
+                    TextBuilder tb = new TextBuilder();
+                    s.Print(tb, null, false, false);
+                    DecompiledScriptBlocks.Add(tb.ToString());
+
+                }
+
                 //var result = func.Split(new[] { '\r', '\n' }).Where(x=>x != "").ToList();
                 //DecompiledScriptBlocks.AddRange(result);
 

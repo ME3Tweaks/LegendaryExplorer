@@ -5,7 +5,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
     public class StatementList
     {
         private Statement _parent;
-        private readonly List<Statement> _statements = new List<Statement>();
+        public readonly List<Statement> statements = new List<Statement>();
 
         public StatementList()
         {
@@ -18,12 +18,12 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         internal StatementList(List<Statement> statements)
         {
-            _statements = statements;
+            this.statements = statements;
         }
 
         internal void Add(Statement statement)
         {
-            _statements.Add(statement);
+            statements.Add(statement);
             statement.Parent = _parent;
         }
 
@@ -33,51 +33,51 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             set
             {
                 _parent = value;
-                _statements.ForEach(s => s.Parent = value);
+                statements.ForEach(s => s.Parent = value);
             }
         }
-        public int Count { get { return _statements.Count; } }
-        internal Statement this[int index] { get { return _statements[index]; } }
+        public int Count { get { return statements.Count; } }
+        internal Statement this[int index] { get { return statements[index]; } }
 
         public void Print(TextBuilder result, LabelTableToken labelTable, bool showStartOffset)
         {
             result.PushIndent();
-            _statements.ForEach(s => s.Print(result, labelTable, showStartOffset));
+            statements.ForEach(s => s.Print(result, labelTable, showStartOffset));
             result.PopIndent();
         }
 
         public int FindByTargetOffset(int offset, int startIndex)
         {
-            if (startIndex > _statements.Count) return -1;
+            if (startIndex > statements.Count) return -1;
             var composite = Parent as CompositeStatement;
             if (composite != null && composite.EndOffset == offset)
             {
-                return _statements.Count;
+                return statements.Count;
             }
-            if (_statements[_statements.Count - 1].StartOffset < offset)
+            if (statements[statements.Count - 1].StartOffset < offset)
             {
-                return _statements.Count;
+                return statements.Count;
             }
-            return _statements.FindIndex(startIndex, s => s.StartOffset == offset);
+            return statements.FindIndex(startIndex, s => s.StartOffset == offset);
         }
 
         internal void ReplaceRange(int startIndex, int count, Statement statement)
         {
-            _statements.RemoveRange(startIndex, count);
-            _statements.Insert(startIndex, statement);
+            statements.RemoveRange(startIndex, count);
+            statements.Insert(startIndex, statement);
             statement.Parent = _parent;
         }
 
         internal void ReplaceRange(int index, StatementList oldStatements, Statement newStatement)
         {
-            oldStatements._statements.ForEach(c => _statements.Remove(c));
-            _statements.Insert(index, newStatement);
+            oldStatements.statements.ForEach(c => statements.Remove(c));
+            statements.Insert(index, newStatement);
             newStatement.Parent = _parent;
         }
 
         public StatementList GetRange(int startIndex, int count)
         {
-            List<Statement> statements = _statements.GetRange(startIndex, count);
+            List<Statement> statements = this.statements.GetRange(startIndex, count);
             return new StatementList(statements);
         }
 
@@ -94,12 +94,12 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         internal Statement Find(Predicate<Statement> func)
         {
-            return _statements.Find(func);
+            return statements.Find(func);
         }
 
         public void RemoveRange(int startIndex, int count)
         {
-            _statements.RemoveRange(startIndex, count);
+            statements.RemoveRange(startIndex, count);
         }
 
         public void CreateControlStatements()
@@ -226,7 +226,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             if (endIndex >= 0)
             {
                 int count = endIndex - startIndex - 1;
-                var endOffset = endIndex < _statements.Count ? _statements[endIndex].StartOffset : this[endIndex - 1].EndOffset;
+                var endOffset = endIndex < statements.Count ? statements[endIndex].StartOffset : this[endIndex - 1].EndOffset;
                 var statement = new SwitchStatement(this[startIndex].StartOffset, token.Expr, GetRange(startIndex + 1, count),
                                                     endOffset);
                 ReplaceRange(startIndex, endIndex - startIndex, statement);
@@ -243,29 +243,29 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 if ((this[i].Token is CaseToken || this[i].Token is DefaultToken) && this[i - 1].Token is UncondJumpToken)
                 {
                     var targetOffset = ((UncondJumpToken)this[i - 1].Token).TargetOffset;
-                    return _statements.FindIndex(s => s.StartOffset == targetOffset);
+                    return statements.FindIndex(s => s.StartOffset == targetOffset);
                 }
                 if (this[i].Token is SwitchToken) return -1;
             }
-            if (_statements.Count > 0)
+            if (statements.Count > 0)
             {
-                var returnToken = _statements[_statements.Count - 1].Token as ReturnToken;
+                var returnToken = statements[statements.Count - 1].Token as ReturnToken;
                 if (returnToken != null && returnToken.ReturnValue is ErrorBytecodeToken)
                 {
-                    return _statements.Count - 1;
+                    return statements.Count - 1;
                 }
             }
-            return _statements.Count;
+            return statements.Count;
         }
 
         public void RemoveRedundantReturns()
         {
-            if (_statements.Count > 0)
+            if (statements.Count > 0)
             {
-                var returnToken = _statements[_statements.Count - 1].Token as ReturnToken;
+                var returnToken = statements[statements.Count - 1].Token as ReturnToken;
                 if (returnToken != null && returnToken.ReturnValue is ErrorBytecodeToken)
                 {
-                    _statements.RemoveRange(_statements.Count - 1, 1);
+                    statements.RemoveRange(statements.Count - 1, 1);
                 }
             }
 
@@ -288,7 +288,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         public bool IsIncompleteControlFlow()
         {
-            foreach (var statement in _statements)
+            foreach (var statement in statements)
             {
                 if (statement is CompositeStatement && ((CompositeStatement)statement).Children.IsIncompleteControlFlow())
                 {
@@ -310,11 +310,11 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         public bool HasErrors()
         {
-            return _statements.Exists(s => s.Token is ErrorBytecodeToken);
+            return statements.Exists(s => s.Token is ErrorBytecodeToken);
         }
     }
 
-    class Statement
+    public class Statement
     {
         public Statement(int startOffset, BytecodeToken token)
         {
@@ -336,7 +336,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         internal Statement Parent { get; set; }
 
-        public virtual void Print(TextBuilder result, LabelTableToken labelTable, bool showStartOffset)
+        public virtual void Print(TextBuilder result, LabelTableToken labelTable, bool showStartOffset, bool addEmptyline = true)
         {
             if (Token.ToString() == "") return;
             PrintLabel(labelTable, result);
@@ -346,7 +346,10 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 result.Append("/* ").Append(StartOffset).Append(" */ ");
             }
             result.Append(Token.ToString(), StartOffset, EndOffset).Append(";");
-            result.Append("\n");
+            if (addEmptyline)
+            {
+                result.Append("\n");
+            }
         }
 
         protected void PrintLabel(LabelTableToken labelTable, TextBuilder result)
@@ -378,7 +381,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             EndOffset = endOffset;
         }
 
-        public override void Print(TextBuilder result, LabelTableToken labelTable, bool showStartOffsets)
+        public override void Print(TextBuilder result, LabelTableToken labelTable, bool showStartOffsets, bool addEmptyLine = true)
         {
             PrintLabel(labelTable, result);
             result.Indent();
@@ -388,7 +391,10 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             PrintChildren(result, labelTable, showStartOffsets);
             result.Indent().Append("}");
             //            result.Append("   // ").Append(_endOffset.ToString());
-            result.NewLine();
+            if (addEmptyLine)
+            {
+                result.NewLine();
+            }
         }
 
         protected virtual void PrintChildren(TextBuilder result, LabelTableToken labelTable, bool showStartOffsets)
@@ -572,9 +578,13 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             _text = text;
         }
 
-        public override void Print(TextBuilder result, LabelTableToken labelTable, bool offset)
+        public override void Print(TextBuilder result, LabelTableToken labelTable, bool offset, bool addEmptyLine = true)
         {
-            result.Indent().Append(_text).Append(";").NewLine();
+            result.Indent().Append(_text).Append(";");
+            if (addEmptyLine)
+            {
+                result.NewLine();
+            }
         }
     }
 }
