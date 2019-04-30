@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using ME3Explorer.Unreal;
+
 namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 {
     public class StatementList
@@ -323,14 +325,16 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             Token = token;
         }
 
-        public Statement(int startOffset, int endOffset, BytecodeToken token)
+        public Statement(int startOffset, int endOffset, BytecodeToken token, BytecodeReader Reader)
         {
             StartOffset = startOffset;
             EndOffset = endOffset;
             Token = token;
+            this.Reader = Reader;
         }
 
         public BytecodeToken Token { get; protected set; }
+        public BytecodeReader Reader { get; }
         public int StartOffset { get; private set; }
         public int EndOffset { get; protected set; }
 

@@ -126,26 +126,6 @@ namespace ME3Explorer
             }
             else if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
             {
-                var func = UE3FunctionReader.ReadFunction(CurrentLoadedExport);
-                func.Decompile(new TextBuilder(), true); //parse bytecode
-
-                /*TextBuilder tb = new TextBuilder();
-                func.DecompileBytecode(func.Statements, tb, true);
-                DecompiledScriptBlocks.Add(tb.ToString());*/
-
-                for (int i = 0; i < func.Statements.statements.Count; i++)
-                {
-                    Statement s = func.Statements.statements[i];
-                    TextBuilder tb = new TextBuilder();
-                    s.Print(tb, null, false, false);
-                    DecompiledScriptBlocks.Add(tb.ToString());
-
-                }
-
-                //var result = func.Split(new[] { '\r', '\n' }).Where(x=>x != "").ToList();
-                //DecompiledScriptBlocks.AddRange(result);
-
-
                 //Header
                 int pos = 16;
 
@@ -167,7 +147,32 @@ namespace ME3Explorer
 
                 pos += 4;
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Script Size", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
+                pos += 4;
 
+                var func = UE3FunctionReader.ReadFunction(CurrentLoadedExport);
+                func.Decompile(new TextBuilder(), true); //parse bytecode
+
+                /*TextBuilder tb = new TextBuilder();
+                func.DecompileBytecode(func.Statements, tb, true);
+                DecompiledScriptBlocks.Add(tb.ToString());*/
+
+                for (int i = 0; i < func.Statements.statements.Count; i++)
+                {
+                    Statement s = func.Statements.statements[i];
+                    TextBuilder tb = new TextBuilder();
+                    s.Print(tb, null, false, false);
+                    DecompiledScriptBlocks.Add(tb.ToString());
+                    if (s.Reader != null)
+                    {
+                        TokenList.AddRange(s.Reader.ReadTokens.Select(x => x.ToBytecodeSingularToken(pos)).OrderBy(x=>x.startPos));
+                    }
+                }
+
+                //var result = func.Split(new[] { '\r', '\n' }).Where(x=>x != "").ToList();
+                //DecompiledScriptBlocks.AddRange(result);
+
+
+                
                 //Footer
                 pos = CurrentLoadedExport.Data.Length - (func.HasFlag("Net") ? 19 : 17);
                 string flagStr = func.GetFlags();

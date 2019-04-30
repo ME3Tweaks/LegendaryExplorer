@@ -16,6 +16,9 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
     {
         private string _text;
         private readonly int _offset;
+
+        public BytecodeReader.ME1OpCodes OpCode { get; internal set; }
+
         public BytecodeToken(string text, int offset)
         {
             _text = text;
@@ -32,16 +35,15 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             return _text;
         }
 
-        public BytecodeSingularToken ToBytecodeSingularToken()
+        public BytecodeSingularToken ToBytecodeSingularToken(int scriptStartOffset)
         {
-            BytecodeSingularToken bcst = new BytecodeSingularToken();
-            bcst.opCode = "EX_TOKENME1";
-            bcst.startPos = _offset;
-            //Todo: Make bytecodesingulartoken for right side parsing. Will need list of bytecode to human names
-            
-            //bcst.tokenIndex
-            return bcst;
+            return new BytecodeSingularToken
+            {
+                opCode = $"[0x{((byte)OpCode):X2}]{OpCode}",
+                startPos = _offset + scriptStartOffset
+            };
         }
+
     }
 
     class ReturnToken : BytecodeToken
@@ -210,9 +212,99 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         }
     }
 
-    class BytecodeReader
+    public class BytecodeReader
     {
-        private const int EX_LocalVariable = 0x00;
+        public List<BytecodeToken> ReadTokens = new List<BytecodeToken>();
+        public enum ME1OpCodes
+        {
+            EX_LocalVariable = 0x00,
+            EX_InstanceVariable = 0x01,
+            EX_DefaultVariable = 0x02,
+            EX_Return = 0x04,
+            EX_Switch = 0x05,
+            EX_Jump = 0x06,
+            EX_JumpIfNot = 0x07,
+            EX_Stop = 0x08,
+            EX_Assert = 0x09,
+            EX_Case = 0x0A,
+            EX_Nothing = 0x0B,
+            EX_LabelTable = 0x0C,
+            EX_GotoLabel = 0x0D,
+            EX_EatReturnValue = 0x0E,
+            EX_Let = 0x0F,
+            EX_DynArrayElement = 0x10,
+            EX_New = 0x11,
+            EX_ClassContext = 0x12,
+            EX_Metacast = 0x13,
+            EX_LetBool = 0x14,
+            // EX_EndParmValue = 0x15?
+            EX_EndFunctionParms = 0x16,
+            EX_Self = 0x17,
+            EX_Skip = 0x18,
+            EX_Context = 0x19,
+            EX_ArrayElement = 0x1A,
+            EX_VirtualFunction = 0x1B,
+            EX_FinalFunction = 0x1C,
+            EX_IntConst = 0x1D,
+            EX_FloatConst = 0x1E,
+            EX_StringConst = 0x1F,
+            EX_ObjectConst = 0x20,
+            EX_NameConst = 0x21,
+            EX_RotationConst = 0x22,
+            EX_VectorConst = 0x23,
+            EX_ByteConst = 0x24,
+            EX_IntZero = 0x25,
+            EX_IntOne = 0x26,
+            EX_True = 0x27,
+            EX_False = 0x28,
+            EX_NativeParm = 0x29,
+            EX_NoObject = 0x2A,
+            EX_IntConstByte = 0x2C,
+            EX_BoolVariable = 0x2D,
+            EX_DynamicCast = 0x2E,
+            EX_Iterator = 0x2F,
+            EX_IteratorPop = 0x30,
+            EX_IteratorNext = 0x31,
+            EX_StructCmpEq = 0x32,
+            EX_StructCmpNe = 0x33,
+            EX_UnicodeStringConst = 0x34,
+            EX_StructMember = 0x35,
+            EX_DynArrayLength = 0x36,
+            EX_GlobalFunction = 0x37,
+            EX_PrimitiveCast = 0x38,
+            EX_DynArrayInsert = 0x39,
+            EX_ByteToInt = 0x3A,        // EX_ReturnNothing = 0x3A
+            EX_EqualEqual_DelDel = 0x3B,
+            EX_NotEqual_DelDel = 0x3C,
+            EX_EqualEqual_DelFunc = 0x3D,
+            EX_NotEqual_DelFunc = 0x3E,
+            EX_EmptyDelegate = 0x3F,
+            EX_DynArrayRemove = 0x40,
+            EX_DebugInfo = 0x41,
+            EX_DelegateFunction = 0x42,
+            EX_DelegateProperty = 0x43,
+            EX_LetDelegate = 0x44,
+            EX_Conditional = 0x45,
+            EX_DynArrayFind = 0x46,
+            EX_DynArrayFindStruct = 0x47,
+            EX_LocalOutVariable = 0x48,
+            EX_DefaultParmValue = 0x49,
+            EX_EmptyParmValue = 0x4A,
+            EX_InstanceDelegate = 0x4B,
+            EX_GoW_DefaultValue = 0x50,
+            EX_InterfaceContext = 0x51,
+            EX_InterfaceCast = 0x52,
+            EX_EndOfScript = 0x53,
+            EX_DynArrayAdd = 0x54,
+            EX_DynArrayAddItem = 0x55,
+            EX_DynArrayRemoveItem = 0x56,
+            EX_DynArrayInsertItem = 0x57,
+            EX_DynArrayIterator = 0x58,
+
+            EX_ExtendedNative = 0x60,
+            EX_FirstNative = 0x70
+        }
+        /*private const int EX_LocalVariable = 0x00;
         private const int EX_InstanceVariable = 0x01;
         private const int EX_DefaultVariable = 0x02;
         private const int EX_Return = 0x04;
@@ -297,7 +389,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         private const int EX_DynArrayIterator = 0x58;
 
         private const int EX_ExtendedNative = 0x60;
-        private const int EX_FirstNative = 0x70;
+        private const int EX_FirstNative = 0x70;*/
 
         private readonly IMEPackage _package;
         private readonly BinaryReader _reader;
@@ -308,39 +400,54 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             _reader = reader;
         }
 
-        internal BytecodeToken ReadNext()
+        /// <summary>
+        /// ME3Explorer intercepting function to build the token list. As tokens are read the tokens list will be updated.
+        /// This method is used to prevent significant modifications to ReadNextInternal() (originally ReadNext)
+        /// </summary>
+        /// <returns></returns>
+        public BytecodeToken ReadNext()
+        {
+            ME1OpCodes b = (ME1OpCodes)_reader.ReadByte();
+            _reader.BaseStream.Position--;
+            BytecodeToken bct = ReadNextInternal();
+            bct.OpCode = b;
+            ReadTokens.Add(bct);
+            return bct;
+        }
+
+        private BytecodeToken ReadNextInternal()
         {
             int readerpos = (int)_reader.BaseStream.Position;
-            byte b = _reader.ReadByte();
+            ME1OpCodes b = (ME1OpCodes) _reader.ReadByte();
             switch (b)
             {
-                case EX_LocalVariable:
-                case EX_InstanceVariable:
-                case EX_NativeParm:
+                case ME1OpCodes.EX_LocalVariable:
+                case ME1OpCodes.EX_InstanceVariable:
+                case ME1OpCodes.EX_NativeParm:
                     return ReadRef(r => r.ObjectName);
 
-                case EX_DefaultVariable:
+                case ME1OpCodes.EX_DefaultVariable:
                     return ReadRef(r => "Default." + r.ObjectName);
 
-                case EX_Return:
+                case ME1OpCodes.EX_Return:
                     {
                         BytecodeToken returnValue = ReadNext();
                         return new ReturnToken(returnValue, readerpos);
                     }
-                case EX_Assert:
+                case ME1OpCodes.EX_Assert:
                     {
                         _reader.ReadInt16();
                         _reader.ReadByte();
                         return WrapNextBytecode(c => new BytecodeToken("assert(" + c + ")", readerpos));
                     }
 
-                case EX_Switch:
+                case ME1OpCodes.EX_Switch:
                     {
                         byte b1 = _reader.ReadByte();
                         BytecodeToken switchExpr = ReadNext();
                         return new SwitchToken(switchExpr.ToString(), switchExpr, readerpos);
                     }
-                case EX_Case:
+                case ME1OpCodes.EX_Case:
                     {
                         short offset = _reader.ReadInt16();
                         if (offset == -1) return new DefaultToken(readerpos);
@@ -348,13 +455,13 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         return new CaseToken(caseExpr.ToString(), readerpos);
                     }
 
-                case EX_Jump:
+                case ME1OpCodes.EX_Jump:
                     {
                         int offset = _reader.ReadInt16();
                         return new UncondJumpToken(offset, readerpos);
                     }
 
-                case EX_JumpIfNot:
+                case ME1OpCodes.EX_JumpIfNot:
                     {
                         short offset = _reader.ReadInt16();
                         BytecodeToken condition = ReadNext();
@@ -362,7 +469,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         return new JumpIfNotToken(offset, condition, readerpos);
                     }
 
-                case EX_LabelTable:
+                case ME1OpCodes.EX_LabelTable:
                     {
                         var token = new LabelTableToken(readerpos);
                         while (true)
@@ -375,69 +482,69 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         return token;
                     }
 
-                case EX_GotoLabel:
+                case ME1OpCodes.EX_GotoLabel:
                     return WrapNextBytecode(op => Token("goto " + op, readerpos));
 
-                case EX_Self:
+                case ME1OpCodes.EX_Self:
                     return Token("self", readerpos);
 
-                case EX_Skip:
+                case ME1OpCodes.EX_Skip:
                     _reader.ReadInt16();
                     return ReadNext();
 
-                case EX_EatReturnValue:
+                case ME1OpCodes.EX_EatReturnValue:
                     _reader.ReadInt32();
                     return ReadNext();
 
-                case EX_Nothing:
+                case ME1OpCodes.EX_Nothing:
                     return new NothingToken(readerpos);
 
-                case EX_Stop:
+                case ME1OpCodes.EX_Stop:
                     _reader.ReadInt16();
                     return new NothingToken(readerpos);
 
-                case EX_IntZero:
+                case ME1OpCodes.EX_IntZero:
                     return Token("0", readerpos);
 
-                case EX_IntOne:
+                case ME1OpCodes.EX_IntOne:
                     return Token("1", readerpos);
 
-                case EX_True:
+                case ME1OpCodes.EX_True:
                     return Token("true", readerpos);
 
-                case EX_False:
+                case ME1OpCodes.EX_False:
                     return Token("false", readerpos);
 
-                case EX_NoObject:
-                case EX_EmptyDelegate:
+                case ME1OpCodes.EX_NoObject:
+                case ME1OpCodes.EX_EmptyDelegate:
                     return Token("None", readerpos);
 
-                case EX_Let:
-                case EX_LetBool:
-                case EX_LetDelegate:
+                case ME1OpCodes.EX_Let:
+                case ME1OpCodes.EX_LetBool:
+                case ME1OpCodes.EX_LetDelegate:
                     BytecodeToken lhs = ReadNext();
                     if (IsInvalid(lhs)) return lhs;
                     BytecodeToken rhs = ReadNext();
                     if (IsInvalid(rhs)) return WrapErrToken(lhs + " = " + rhs, rhs);
                     return Token(lhs + " = " + rhs, readerpos);
 
-                case EX_IntConst:
+                case ME1OpCodes.EX_IntConst:
                     return Token(_reader.ReadInt32().ToString(), readerpos);
 
-                case EX_FloatConst:
+                case ME1OpCodes.EX_FloatConst:
                     return Token(_reader.ReadSingle().ToString(), readerpos);
 
-                case EX_StringConst:
+                case ME1OpCodes.EX_StringConst:
                     {
                         var s = ReadAsciiz().Replace("\n", "\\n").Replace("\t", "\\t");
                         return Token("\"" + s + "\"", readerpos);
                     }
 
-                case EX_ByteConst:
-                case EX_IntConstByte:
+                case ME1OpCodes.EX_ByteConst:
+                case ME1OpCodes.EX_IntConstByte:
                     return Token(_reader.ReadByte().ToString(), readerpos);
 
-                case EX_ObjectConst:
+                case ME1OpCodes.EX_ObjectConst:
                     {
                         int objectIndex = _reader.ReadInt32();
                         var item = _package.getEntry(objectIndex);
@@ -445,14 +552,14 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         return Token(item.ClassName + "'" + item.ObjectName + "'", readerpos);
                     }
 
-                case EX_NameConst:
+                case ME1OpCodes.EX_NameConst:
                     return Token("'" + _package.getNameEntry((int)_reader.ReadInt64()) + "'", readerpos);
 
-                case EX_EndFunctionParms:
+                case ME1OpCodes.EX_EndFunctionParms:
                     return new EndParmsToken(")", readerpos);
 
-                case EX_ClassContext:
-                case EX_Context:
+                case ME1OpCodes.EX_ClassContext:
+                case ME1OpCodes.EX_Context:
                     {
                         var context = ReadNext();
                         if (IsInvalid(context)) return context;
@@ -463,10 +570,10 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         return Token(context + "." + value, readerpos);
                     }
 
-                case EX_InterfaceContext:
+                case ME1OpCodes.EX_InterfaceContext:
                     return ReadNext();
 
-                case EX_FinalFunction:
+                case ME1OpCodes.EX_FinalFunction:
                     {
                         int functionIndex = _reader.ReadInt32();
                         var item = _package.getEntry(functionIndex);
@@ -475,31 +582,31 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         return ReadCall(functionName);
                     }
 
-                case EX_PrimitiveCast:
+                case ME1OpCodes.EX_PrimitiveCast:
                     {
                         var prefix = _reader.ReadByte();
                         var v = ReadNext();
                         return v;
                     }
 
-                case EX_VirtualFunction:
+                case ME1OpCodes.EX_VirtualFunction:
                     return ReadCall(ReadName());
 
-                case EX_GlobalFunction:
+                case ME1OpCodes.EX_GlobalFunction:
                     return ReadCall("Global." + ReadName());
 
-                case EX_BoolVariable:
-                case EX_ByteToInt:
+                case ME1OpCodes.EX_BoolVariable:
+                case ME1OpCodes.EX_ByteToInt:
                     return ReadNext();
 
-                case EX_DynamicCast:
+                case ME1OpCodes.EX_DynamicCast:
                     {
                         int typeIndex = _reader.ReadInt32();
                         var item = _package.getEntry(typeIndex);
                         return WrapNextBytecode(op => Token(item.ObjectName + "(" + op + ")", readerpos));
                     }
 
-                case EX_Metacast:
+                case ME1OpCodes.EX_Metacast:
                     {
                         int typeIndex = _reader.ReadInt32();
                         var item = _package.getEntry(typeIndex);
@@ -507,7 +614,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         return WrapNextBytecode(op => Token("Class<" + item.ObjectName + ">(" + op + ")", readerpos));
                     }
 
-                case EX_StructMember:
+                case ME1OpCodes.EX_StructMember:
                     {
                         var field = ReadRef();
                         var structType = ReadRef();
@@ -517,8 +624,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         return Token(token + "." + field.ObjectName, readerpos);
                     }
 
-                case EX_ArrayElement:
-                case EX_DynArrayElement:
+                case ME1OpCodes.EX_ArrayElement:
+                case ME1OpCodes.EX_DynArrayElement:
                     {
                         var index = ReadNext();
                         if (IsInvalid(index)) return index;
@@ -527,23 +634,23 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         return Token(array + "[" + index + "]", readerpos);
                     }
 
-                case EX_DynArrayLength:
+                case ME1OpCodes.EX_DynArrayLength:
                     return WrapNextBytecode(op => Token(op + ".Length", readerpos));
 
-                case EX_StructCmpEq:
+                case ME1OpCodes.EX_StructCmpEq:
                     return CompareStructs("==");
 
-                case EX_StructCmpNe:
+                case ME1OpCodes.EX_StructCmpNe:
                     return CompareStructs("!=");
 
-                case EX_EndOfScript:
+                case ME1OpCodes.EX_EndOfScript:
                     return new EndOfScriptToken(readerpos);
 
-                case EX_EmptyParmValue:
-                case EX_GoW_DefaultValue:
+                case ME1OpCodes.EX_EmptyParmValue:
+                case ME1OpCodes.EX_GoW_DefaultValue:
                     return new DefaultValueToken("", readerpos);
 
-                case EX_DefaultParmValue:
+                case ME1OpCodes.EX_DefaultParmValue:
                     {
                         var size = _reader.ReadInt16();
                         var offset = _reader.BaseStream.Position;
@@ -552,25 +659,25 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         return new DefaultParamValueToken(defaultValueExpr.ToString(), readerpos);
                     }
 
-                case EX_LocalOutVariable:
+                case ME1OpCodes.EX_LocalOutVariable:
                     int valueIndex = _reader.ReadInt32();
                     var packageItem = _package.getEntry(valueIndex);
                     if (packageItem == null) return ErrToken("Unresolved package item " + packageItem);
                     return Token(packageItem.ObjectName, readerpos);
 
-                case EX_Iterator:
+                case ME1OpCodes.EX_Iterator:
                     var expr = ReadNext();
                     int loopEnd = _reader.ReadInt16();
                     if (IsInvalid(expr)) return WrapErrToken("foreach " + expr, expr);
                     return new ForeachToken(loopEnd, expr, readerpos);
 
-                case EX_IteratorPop:
+                case ME1OpCodes.EX_IteratorPop:
                     return new IteratorPopToken(readerpos);
 
-                case EX_IteratorNext:
+                case ME1OpCodes.EX_IteratorNext:
                     return new IteratorNextToken(readerpos);
 
-                case EX_New:
+                case ME1OpCodes.EX_New:
                     var outer = ReadNext();
                     if (IsInvalid(outer)) return outer;
                     var name = ReadNext();
@@ -581,25 +688,25 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     if (IsInvalid(cls)) return cls;
                     return Token("new(" + JoinTokens(outer, name, flags, cls) + ")", readerpos);
 
-                case EX_VectorConst:
+                case ME1OpCodes.EX_VectorConst:
                     var f1 = _reader.ReadSingle();
                     var f2 = _reader.ReadSingle();
                     var f3 = _reader.ReadSingle();
                     return Token("vect(" + f1 + "," + f2 + "," + f3 + ")", readerpos);
 
-                case EX_RotationConst:
+                case ME1OpCodes.EX_RotationConst:
                     var i1 = _reader.ReadInt32();
                     var i2 = _reader.ReadInt32();
                     var i3 = _reader.ReadInt32();
                     return Token("rot(" + i1 + "," + i2 + "," + i3 + ")", readerpos);
 
-                case EX_InterfaceCast:
+                case ME1OpCodes.EX_InterfaceCast:
                     {
                         var interfaceName = ReadRef();
                         return WrapNextBytecode(op => Token(interfaceName.ObjectName + "(" + op + ")", readerpos));
                     }
 
-                case EX_Conditional:
+                case ME1OpCodes.EX_Conditional:
                     {
                         var condition = ReadNext();
                         if (IsInvalid(condition)) return condition;
@@ -617,28 +724,28 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         return Token(condition + " ? " + truePart + " : " + falsePart, readerpos);
                     }
 
-                case EX_DynArrayFind:
+                case ME1OpCodes.EX_DynArrayFind:
                     return ReadDynArray1ArgMethod("Find");
 
-                case EX_DynArrayFindStruct:
+                case ME1OpCodes.EX_DynArrayFindStruct:
                     return ReadDynArray2ArgMethod("Find", true);
 
-                case EX_DynArrayRemove:
+                case ME1OpCodes.EX_DynArrayRemove:
                     return ReadDynArray2ArgMethod("Remove", false);
 
-                case EX_DynArrayInsert:
+                case ME1OpCodes.EX_DynArrayInsert:
                     return ReadDynArray2ArgMethod("Insert", false);
 
-                case EX_DynArrayAddItem:
+                case ME1OpCodes.EX_DynArrayAddItem:
                     return ReadDynArray1ArgMethod("AddItem");
 
-                case EX_DynArrayRemoveItem:
+                case ME1OpCodes.EX_DynArrayRemoveItem:
                     return ReadDynArray1ArgMethod("RemoveItem");
 
-                case EX_DynArrayInsertItem:
+                case ME1OpCodes.EX_DynArrayInsertItem:
                     return ReadDynArray2ArgMethod("InsertItem", true);
 
-                case EX_DynArrayIterator:
+                case ME1OpCodes.EX_DynArrayIterator:
                     {
                         var array = ReadNext();
                         if (IsInvalid(array)) return array;
@@ -649,11 +756,11 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         return new ForeachToken(endOffset, array, iteratorVar, readerpos);
                     }
 
-                case EX_DelegateProperty:
-                case EX_InstanceDelegate:
+                case ME1OpCodes.EX_DelegateProperty:
+                case ME1OpCodes.EX_InstanceDelegate:
                     return Token(ReadName(), readerpos);
 
-                case EX_DelegateFunction:
+                case ME1OpCodes.EX_DelegateFunction:
                     {
                         var receiver = ReadNext();
                         if (IsInvalid(receiver)) return receiver;
@@ -665,19 +772,19 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         return ReadCall(receiver + "." + methodName);
                     }
 
-                case EX_EqualEqual_DelDel:
-                case EX_EqualEqual_DelFunc:
+                case ME1OpCodes.EX_EqualEqual_DelDel:
+                case ME1OpCodes.EX_EqualEqual_DelFunc:
                     return CompareDelegates("==");
 
-                case EX_NotEqual_DelDel:
+                case ME1OpCodes.EX_NotEqual_DelDel:
                     return CompareDelegates("!=");
 
                 default:
-                    if (b >= 0x60)
+                    if ((int)b >= 0x60)
                     {
-                        return ReadNativeCall(b);
+                        return ReadNativeCall((byte)b);
                     }
-                    return ErrToken("// unknown bytecode " + b.ToString("X2"), b);
+                    return ErrToken("// unknown bytecode " + b.ToString("X2"), (int)b);
             }
         }
 
