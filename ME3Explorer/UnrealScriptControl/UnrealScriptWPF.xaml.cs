@@ -154,10 +154,6 @@ namespace ME3Explorer
                 var func = UE3FunctionReader.ReadFunction(CurrentLoadedExport);
                 func.Decompile(new TextBuilder(), false); //parse bytecode
 
-                /*TextBuilder tb = new TextBuilder();
-                func.DecompileBytecode(func.Statements, tb, true);
-                DecompiledScriptBlocks.Add(tb.ToString());*/
-                //func.Statements.CalculateStatementOffsets();
                 bool defined = func.HasFlag("Defined");
                 if (defined)
                 {
@@ -170,9 +166,6 @@ namespace ME3Explorer
                 for (int i = 0; i < func.Statements.statements.Count; i++)
                 {
                     Statement s = func.Statements.statements[i];
-                    /*TextBuilder tb = new TextBuilder();
-                    s.Print(tb, null, false, false);
-                    string indentedStr = IndentString(tb.ToString());*/
                     DecompiledScriptBlocks.Add(s);
                     if (s.Reader != null)
                     {
@@ -184,11 +177,6 @@ namespace ME3Explorer
                 {
                     DecompiledScriptBlocks.Add("}");
                 }
-
-                //var result = func.Split(new[] { '\r', '\n' }).Where(x=>x != "").ToList();
-                //DecompiledScriptBlocks.AddRange(result);
-
-
 
                 //Footer
                 pos = CurrentLoadedExport.Data.Length - (func.HasFlag("Net") ? 19 : 17);

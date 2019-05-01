@@ -820,7 +820,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     {
                         return ReadNativeCall((byte)b);
                     }
-                    return ErrToken("// unknown bytecode " + b.ToString("X2"), (int)b);
+                    return ErrToken("// unknown bytecode " + ((byte)b).ToString("X2"), (int)b);
             }
         }
 
