@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
@@ -14,7 +15,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
     public class BytecodeToken
     {
-        public int NativeIndex; 
+        public int NativeIndex;
         private string _text;
         private readonly int _offset;
 
@@ -38,11 +39,22 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         public BytecodeSingularToken ToBytecodeSingularToken(int scriptStartOffset)
         {
-            return new BytecodeSingularToken
+            BytecodeSingularToken bcst = new BytecodeSingularToken();
+            string opcodetext = OpCode.ToString();
+
+            if (NativeIndex > 0)
             {
-                opCode = $"[0x{((byte)OpCode):X2}]{((byte)OpCode >= 0x60 ? "EX_NativeCall" : OpCode.ToString())}",
-                startPos = _offset + scriptStartOffset
-            };
+                var function = CachedNativeFunctionInfo.GetNativeFunction(NativeIndex); //this could be done dynamically. But if you're able to add native functions to the exe you probably know more about the engine than me
+                if (function != null)
+                {
+                    opcodetext = function.Name;
+                }
+            }
+            opcodetext = $"[{((byte)OpCode):X2}] {opcodetext}";
+            bcst.CurrentStack = _text;
+            bcst.OpCode = opcodetext;
+            bcst.StartPos = _offset + scriptStartOffset;
+            return bcst;
         }
 
     }
@@ -401,6 +413,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             _reader = reader;
         }
 
+
+        private ME1OpCodes[] OpCodesThatReturnNextToken = new ME1OpCodes[] { ME1OpCodes.EX_Skip, ME1OpCodes.EX_EatReturnValue, ME1OpCodes.EX_ByteToInt, ME1OpCodes.EX_BoolVariable, ME1OpCodes.EX_InterfaceContext };
         /// <summary>
         /// ME3Explorer intercepting function to build the token list. As tokens are read the tokens list will be updated.
         /// This method is used to prevent significant modifications to ReadNextInternal() (originally ReadNext)
@@ -410,10 +424,27 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         {
             ME1OpCodes b = (ME1OpCodes)_reader.ReadByte();
             _reader.BaseStream.Position--;
-            BytecodeToken bct = ReadNextInternal();
-            bct.OpCode = b;
-            if (!dontAddToken)
+
+            if (OpCodesThatReturnNextToken.Contains(b))
             {
+                BytecodeToken t = new BytecodeToken("", (int)_reader.BaseStream.Position);
+
+                t.OpCode = b;
+                ReadTokens.Add(t);
+            }
+
+            //if (b == ME1OpCodes.EX_Skip)
+            //{
+            //    Debugger.Break();
+            //}
+
+            Debug.WriteLine("Read bytecode " + ((byte)b).ToString("X2") + " " + b + " at " + _reader.BaseStream.Position.ToString("X8"));
+            BytecodeToken bct = ReadNextInternal();
+            //Debug.WriteLine("Bytecode finished: " + ((byte)b).ToString("X2") + " " + b + " from " + _reader.BaseStream.Position.ToString("X8"));
+
+            if (!OpCodesThatReturnNextToken.Contains(b))
+            {
+                bct.OpCode = b;
                 ReadTokens.Add(bct);
             }
             return bct;
@@ -495,7 +526,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 case ME1OpCodes.EX_Skip:
                     _reader.ReadInt16();
                     //Returning readnext causes a new token to be read
-                    return ReadNext(true);
+                    return ReadNext();
 
                 case ME1OpCodes.EX_EatReturnValue:
                     _reader.ReadInt32();
@@ -978,7 +1009,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 
         private BytecodeToken ReadNativeCall(byte b)
         {
-            int pos = (int)_reader.BaseStream.Position;
+            int pos = (int)_reader.BaseStream.Position - 1;
 
             int nativeIndex;
             if ((b & 0xF0) == 0x60)
@@ -1009,7 +1040,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 var p2 = ReadNext();
                 if (IsInvalid(p2)) return WrapErrToken(p1 + " " + function.Name + " " + p2, p2);
                 ReadNext();  // end of parms
-                return Token(p1 + " " + (function.HumanReadableControlToken ?? function.Name) + " " + p2, pos,nativeIndex);
+                return Token(p1 + " " + (function.HumanReadableControlToken ?? function.Name) + " " + p2, pos, nativeIndex);
             }
             return ReadCall(function.Name);
         }

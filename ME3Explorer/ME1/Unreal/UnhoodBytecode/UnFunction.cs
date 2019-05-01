@@ -22,7 +22,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         private readonly FlagValues _flags;
         private readonly int _nativeIndex;
         private readonly int _operatorPrecedence;
-        public StatementList Statements;
+        public StatementList Statements { get; set; }
         public List<BytecodeSingularToken> Tokens;
 
         internal UnFunction(IExportEntry export, string name, FlagValues flags, byte[] bytecode, int nativeIndex, int operatorPrecedence)
@@ -63,6 +63,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         {
             return _flags.HasFlag(name);
         }
+
+        public string FunctionSignature = "";
 
         public void Decompile(TextBuilder result, bool createControlStatements)
         {
@@ -178,6 +180,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 //}
             }
             result.Append(")");
+
+            FunctionSignature = result.ToString();
             if (HasFlag("Defined"))
             {
                 result.NewLine().Indent().Append("{").NewLine();

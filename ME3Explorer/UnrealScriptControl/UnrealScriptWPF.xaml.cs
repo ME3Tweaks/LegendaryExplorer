@@ -150,29 +150,43 @@ namespace ME3Explorer
                 pos += 4;
 
                 var func = UE3FunctionReader.ReadFunction(CurrentLoadedExport);
-                func.Decompile(new TextBuilder(), true); //parse bytecode
+                func.Decompile(new TextBuilder(), false); //parse bytecode
 
                 /*TextBuilder tb = new TextBuilder();
                 func.DecompileBytecode(func.Statements, tb, true);
                 DecompiledScriptBlocks.Add(tb.ToString());*/
-
+                bool defined = func.HasFlag("Defined");
+                if (defined)
+                {
+                    DecompiledScriptBlocks.Add(func.FunctionSignature + " {");
+                }
+                else
+                {
+                    DecompiledScriptBlocks.Add(func.FunctionSignature);
+                }
                 for (int i = 0; i < func.Statements.statements.Count; i++)
                 {
                     Statement s = func.Statements.statements[i];
-                    TextBuilder tb = new TextBuilder();
+                    /*TextBuilder tb = new TextBuilder();
                     s.Print(tb, null, false, false);
-                    DecompiledScriptBlocks.Add(tb.ToString());
+                    string indentedStr = IndentString(tb.ToString());*/
+                    DecompiledScriptBlocks.Add(s);
                     if (s.Reader != null)
                     {
-                        TokenList.AddRange(s.Reader.ReadTokens.Select(x => x.ToBytecodeSingularToken(pos)).OrderBy(x=>x.startPos));
+                        TokenList.AddRange(s.Reader.ReadTokens.Select(x => x.ToBytecodeSingularToken(pos)).OrderBy(x => x.StartPos));
                     }
+                }
+
+                if (defined)
+                {
+                    DecompiledScriptBlocks.Add("}");
                 }
 
                 //var result = func.Split(new[] { '\r', '\n' }).Where(x=>x != "").ToList();
                 //DecompiledScriptBlocks.AddRange(result);
 
 
-                
+
                 //Footer
                 pos = CurrentLoadedExport.Data.Length - (func.HasFlag("Net") ? 19 : 17);
                 string flagStr = func.GetFlags();
@@ -213,6 +227,20 @@ namespace ME3Explorer
             {
                 //Function_TextBox.Text = "Parsing UnrealScript Functions for this game is not supported.";
             }
+        }
+
+        private static string IndentString(string stringToIndent)
+        {
+            string[] lines = stringToIndent.Split(
+                new[] { Environment.NewLine },
+                StringSplitOptions.None
+            );
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string line = lines[i];
+                lines[i] = "    "+line; //textbuilder use 4 spaces
+            }
+            return string.Join("\n", lines);
         }
 
         public override void UnloadExport()
@@ -287,7 +315,7 @@ namespace ME3Explorer
                         Function_ListBox.SelectedItem = token;
                     }
 
-                    BytecodeSingularToken bst = TokenList.FirstOrDefault(x => x.startPos == start);
+                    BytecodeSingularToken bst = TokenList.FirstOrDefault(x => x.StartPos == start);
                     if (bst != null)
                     {
                         Tokens_ListBox.SelectedItem = bst;
@@ -354,10 +382,15 @@ namespace ME3Explorer
             if (selectedToken != null)
             {
                 TokenChanging = true;
-                ScriptEditor_Hexbox.SelectionStart = selectedToken.startPos;
+                ScriptEditor_Hexbox.SelectionStart = selectedToken.StartPos;
                 ScriptEditor_Hexbox.SelectionLength = 1;
                 TokenChanging = false;
             }
+        }
+
+        public class ME1WrappedStatement
+        {
+
         }
 
 
@@ -410,10 +443,17 @@ namespace ME3Explorer
         private void Function_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Token token = Function_ListBox.SelectedItem as Token;
+            Statement me1statement = Function_ListBox.SelectedItem as Statement;
             ScriptEditor_Hexbox.UnhighlightAll();
             if (token != null)
             {
                 ScriptEditor_Hexbox.Highlight(token.pos, token.raw.Length);
+            }
+
+            if (me1statement != null)
+            {
+                //todo: figure out how length could be calculated
+                //ScriptEditor_Hexbox.Highlight(me1statement.Token.GetOffset(), me1statement.Token.);
             }
         }
 
