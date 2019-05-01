@@ -141,6 +141,12 @@ namespace ME3Explorer
         }
         #endregion
 
+        private string _searchHintText = "Object name";
+        public string SearchHintText { get => _searchHintText; set => SetProperty(ref _searchHintText, value); }
+
+        private string _gotoHintText = "UIndex";
+        public string GotoHintText { get => _gotoHintText; set => SetProperty(ref _gotoHintText, value); }
+
         #region Commands
         public ICommand ComparePackagesCommand { get; set; }
         public ICommand ExportAllDataCommand { get; set; }
@@ -1746,18 +1752,26 @@ namespace ME3Explorer
 
         private void TreeView_Click(object sender, RoutedEventArgs e)
         {
+            SearchHintText = "Object name";
+            GotoHintText = "UIndex";
             CurrentView = CurrentViewMode.Tree;
         }
         private void NamesView_Click(object sender, RoutedEventArgs e)
         {
+            SearchHintText = "Name";
+            GotoHintText = "Index";
             CurrentView = CurrentViewMode.Names;
         }
         private void ImportsView_Click(object sender, RoutedEventArgs e)
         {
+            SearchHintText = "Object name";
+            GotoHintText = "UIndex";
             CurrentView = CurrentViewMode.Imports;
         }
         private void ExportsView_Click(object sender, RoutedEventArgs e)
         {
+            SearchHintText = "Object name";
+            GotoHintText = "UIndex";
             CurrentView = CurrentViewMode.Exports;
         }
 

@@ -213,7 +213,7 @@
             </StatusBar>
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="32"/>
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -227,17 +227,17 @@
                     <Button Content="Exports" Padding="7,0" VerticalAlignment="Stretch" Click="ExportsView_Click" ToolTip="View Exports Table" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Exports'}"/>
                     <Button Content="Tree View" Padding="7,0" VerticalAlignment="Stretch"  Click="TreeView_Click" ToolTip="View imports and exports in package hierarchy" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  Background="{Binding CurrentView, Converter={StaticResource PackageEditorWPFActiveViewHighlightConverter}, ConverterParameter='Tree'}"/>
                     <Separator/>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0" Height="22">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0" Height="24">
                         <xctk:WatermarkComboBox Watermark="Class Selector" Name="ClassDropdown_Combobox" Width="140" ItemsPanel="{StaticResource VSP}" ItemsSource="{Binding ClassDropdownList}" IsTextSearchEnabled="True" KeyUp="ClassDropdown_Combobox_OnKeyUpHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" VerticalContentAlignment="Center"/>
                         <!--<ComboBox Name="ClassDropdown_Combobox" Width="140" ItemsPanel="{StaticResource VSP}" ItemsSource="{Binding ClassDropdownList}" IsTextSearchEnabled="True" KeyUp="ClassDropdown_Combobox_OnKeyUpHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type ComboBox}}" VerticalContentAlignment="Center"/>-->
                         <Button Content="Find object by class" Click="FindObjectByClass_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type Button}}" Padding="10,0"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0" Height="22">
-                        <TextBox Name="Search_TextBox" Width="70" KeyUp="Searchbox_OnKeyUpHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type TextBox}}"  VerticalContentAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0" Height="24">
+                        <xctk:WatermarkTextBox Watermark="{Binding SearchHintText}" Name="Search_TextBox" Width="90" KeyUp="Searchbox_OnKeyUpHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" VerticalContentAlignment="Center"/>
                         <Button Content="Search" Click="SearchButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type Button}}"  Padding="10,0"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0" Height="22">
-                        <TextBox Name="Goto_TextBox" Width="70" KeyUp="Goto_TextBox_KeyUp" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type TextBox}}"  VerticalContentAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0" Height="24">
+                        <xctk:WatermarkTextBox Watermark="{Binding GotoHintText}" Name="Goto_TextBox" Width="70" KeyUp="Goto_TextBox_KeyUp" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  VerticalContentAlignment="Center"/>
                         <Button Content="Goto #" Click="GotoButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type Button}}" Padding="7,0"/>
                     </StackPanel>
                     <!--This is outside so that it doesn't hide the whole box if it is too long to show -->
