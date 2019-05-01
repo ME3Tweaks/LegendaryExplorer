@@ -30,6 +30,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using ME3Explorer.CurveEd;
 using static ME3Explorer.Packages.MEPackage;
 using static ME3Explorer.Unreal.UnrealFlags;
 
@@ -38,7 +39,7 @@ namespace ME3Explorer
     /// <summary>
     /// Interaction logic for PackageEditorWPF.xaml
     /// </summary>
-    public partial class PackageEditorWPF : WPFBase, GongSolutions.Wpf.DragDrop.IDropTarget, IBusyUIHost
+    public partial class PackageEditorWPF : WPFBase, IDropTarget, IBusyUIHost
     {
         public enum CurrentViewMode
         {
@@ -158,7 +159,6 @@ namespace ME3Explorer
         public ICommand FindEntryViaOffsetCommand { get; set; }
         public ICommand CheckForDuplicateIndexesCommand { get; set; }
         public ICommand EditNameCommand { get; set; }
-        public ICommand ExportImportDataVisibilityCommand { get; set; }
         public ICommand AddNameCommand { get; set; }
         public ICommand CopyNameCommand { get; set; }
         public ICommand RebuildStreamingLevelsCommand { get; set; }
@@ -174,44 +174,40 @@ namespace ME3Explorer
         public ICommand PopoutCurrentViewCommand { get; set; }
         private void LoadCommands()
         {
-            ComparePackagesCommand = new RelayCommand(ComparePackages, PackageIsLoaded);
-            ExportAllDataCommand = new RelayCommand(ExportAllData, ExportIsSelected);
-            ExportBinaryDataCommand = new RelayCommand(ExportBinaryData, ExportIsSelected);
-            ImportAllDataCommand = new RelayCommand(ImportAllData, ExportIsSelected);
-            ImportBinaryDataCommand = new RelayCommand(ImportBinaryData, ExportIsSelected);
-            CloneCommand = new RelayCommand(CloneEntry, EntryIsSelected);
-            CloneTreeCommand = new RelayCommand(CloneTree, TreeEntryIsSelected);
-            FindEntryViaOffsetCommand = new RelayCommand(FindEntryViaOffset, PackageIsLoaded);
-            CheckForDuplicateIndexesCommand = new RelayCommand(CheckForDuplicateIndexes, PackageIsLoaded);
-            EditNameCommand = new RelayCommand(EditName, NameIsSelected);
+            ComparePackagesCommand = new GenericCommand(ComparePackages, PackageIsLoaded);
+            ExportAllDataCommand = new GenericCommand(ExportAllData, ExportIsSelected);
+            ExportBinaryDataCommand = new GenericCommand(ExportBinaryData, ExportIsSelected);
+            ImportAllDataCommand = new GenericCommand(ImportAllData, ExportIsSelected);
+            ImportBinaryDataCommand = new GenericCommand(ImportBinaryData, ExportIsSelected);
+            CloneCommand = new GenericCommand(CloneEntry, EntryIsSelected);
+            CloneTreeCommand = new GenericCommand(CloneTree, TreeEntryIsSelected);
+            FindEntryViaOffsetCommand = new GenericCommand(FindEntryViaOffset, PackageIsLoaded);
+            CheckForDuplicateIndexesCommand = new GenericCommand(CheckForDuplicateIndexes, PackageIsLoaded);
+            EditNameCommand = new GenericCommand(EditName, NameIsSelected);
             AddNameCommand = new RelayCommand(AddName, CanAddName);
-            CopyNameCommand = new RelayCommand(CopyName, NameIsSelected);
-            ExportImportDataVisibilityCommand = new RelayCommand(o => { }, ExportIsSelected); //no execution command
-            RebuildStreamingLevelsCommand = new RelayCommand(RebuildStreamingLevels, PackageIsLoaded);
-            ExportEmbeddedFileCommand = new RelayCommand(ExportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
-            ImportEmbeddedFileCommand = new RelayCommand(ImportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
-            ReindexCommand = new RelayCommand(ReindexObjectByName, ExportIsSelected);
-            TrashCommand = new RelayCommand(TrashEntryAndChildren, EntryIsSelected);
-            PackageHeaderViewerCommand = new RelayCommand(ViewPackageInfo, PackageIsLoaded);
-            CreateNewPackageGUIDCommand = new RelayCommand(GenerateNewGUIDForSelected, PackageExportIsSelected);
-            SetPackageAsFilenamePackageCommand = new RelayCommand(SetSelectedAsFilenamePackage, PackageExportIsSelected);
-            OpenInInterpViewerCommand = new RelayCommand(OpenInInterpViewer, CanOpenInInterpViewer);
-            FindEntryViaTagCommand = new RelayCommand(FindEntryViaTag, PackageIsLoaded);
-            PopoutCurrentViewCommand = new RelayCommand(PopoutCurrentView, ExportIsSelected);
+            CopyNameCommand = new GenericCommand(CopyName, NameIsSelected);
+            RebuildStreamingLevelsCommand = new GenericCommand(RebuildStreamingLevels, PackageIsLoaded);
+            ExportEmbeddedFileCommand = new GenericCommand(ExportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
+            ImportEmbeddedFileCommand = new GenericCommand(ImportEmbeddedFile, DoesSelectedItemHaveEmbeddedFile);
+            ReindexCommand = new GenericCommand(ReindexObjectByName, ExportIsSelected);
+            TrashCommand = new GenericCommand(TrashEntryAndChildren, TreeEntryIsSelected);
+            PackageHeaderViewerCommand = new GenericCommand(ViewPackageInfo, PackageIsLoaded);
+            CreateNewPackageGUIDCommand = new GenericCommand(GenerateNewGUIDForSelected, PackageExportIsSelected);
+            SetPackageAsFilenamePackageCommand = new GenericCommand(SetSelectedAsFilenamePackage, PackageExportIsSelected);
+            OpenInInterpViewerCommand = new GenericCommand(OpenInInterpViewer, CanOpenInInterpViewer);
+            FindEntryViaTagCommand = new GenericCommand(FindEntryViaTag, PackageIsLoaded);
+            PopoutCurrentViewCommand = new GenericCommand(PopoutCurrentView, ExportIsSelected);
         }
 
-        private void PopoutCurrentView(object obj)
+        private void PopoutCurrentView()
         {
-            if (EditorTabs.SelectedItem is TabItem tab)
+            if (EditorTabs.SelectedItem is TabItem tab && tab.Content is ExportLoaderControl exportLoader)
             {
-                if (tab.Content is ExportLoaderControl exportLoader)
-                {
-                    exportLoader.PopOut();
-                }
+                exportLoader.PopOut();
             }
         }
 
-        private void FindEntryViaTag(object obj)
+        private void FindEntryViaTag()
         {
             List<IndexedName> indexedList = Pcc.Names.Select((nr, i) => new IndexedName(i, nr)).ToList();
 
@@ -250,34 +246,22 @@ namespace ME3Explorer
             }
         }
 
-        private void OpenInInterpViewer(object obj)
+        private void OpenInInterpViewer()
         {
-            TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+            if (!TryGetSelectedExport(out IExportEntry export)) return;
             Matinee.InterpEditor p = new Matinee.InterpEditor();
             p.Show();
-            p.LoadPCC(selected.Entry.FileRef.FileName); //hmm...
-            p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(selected.Entry.Index);
-            p.loadInterpData(selected.Entry.Index);
+            p.LoadPCC(export.FileRef.FileName); //hmm...
+            p.toolStripComboBox1.SelectedIndex = p.objects.IndexOf(export.Index);
+            p.loadInterpData(export.Index);
         }
 
-        private bool CanOpenInInterpViewer(object obj)
-        {
-            if ((CurrentView == CurrentViewMode.Tree) && GetSelected(out int _)) //NB TO DO THIS DOESN'T WORK FOR EXPORTS PAGE ONLY IN TREEVIEW
-            {
-                TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
+        private bool CanOpenInInterpViewer() 
+            => TryGetSelectedExport(out IExportEntry export) && export.FileRef.Game == MEGame.ME3 && export.ClassName == "InterpData" && !export.ObjectName.Contains("Default__");
 
-                if (selected.Entry is IExportEntry export && export.FileRef.Game == MEGame.ME3 && export.ClassName == "InterpData" && !export.ObjectName.Contains("Default__"))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private void SetSelectedAsFilenamePackage(object obj)
+        private void SetSelectedAsFilenamePackage()
         {
-            TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
-            IExportEntry export = selected.Entry as IExportEntry;
+            if (!TryGetSelectedExport(out IExportEntry export)) return;
             byte[] fileGUID = export.FileRef.getHeader().Skip(0x4E).Take(16).ToArray();
             string fname = Path.GetFileNameWithoutExtension(export.FileRef.FileName);
 
@@ -292,10 +276,9 @@ namespace ME3Explorer
             export.idxObjectName = export.FileRef.FindNameOrAdd(fname);
         }
 
-        private void GenerateNewGUIDForSelected(object obj)
+        private void GenerateNewGUIDForSelected()
         {
-            TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
-            IExportEntry export = selected.Entry as IExportEntry;
+            if (!TryGetSelectedExport(out IExportEntry export)) return;
             Guid newGuid = Guid.NewGuid();
             byte[] header = export.GetHeader();
             int preguidcountoffset = Pcc.Game == MEGame.ME3 ? 0x2C : 0x30;
@@ -305,7 +288,7 @@ namespace ME3Explorer
             export.Header = header;
         }
 
-        private void ViewPackageInfo(object obj)
+        private void ViewPackageInfo()
         {
             var items = new List<string>();
             try
@@ -441,9 +424,9 @@ namespace ME3Explorer
             new SharedUI.ListDialog(items, Path.GetFileName(Pcc.FileName) + " header information", "Below is information about this package from the header.", this).Show();
         }
 
-        private void TrashEntryAndChildren(object obj)
+        private void TrashEntryAndChildren()
         {
-            if (GetSelected(out int _))
+            if (TreeEntryIsSelected())
             {
                 TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
 
@@ -463,19 +446,23 @@ namespace ME3Explorer
                     if (coreImport == null)
                     {
                         //really small file
-                        coreImport = new ImportEntry(Pcc);
-                        coreImport.idxObjectName = Pcc.FindNameOrAdd("Core");
-                        coreImport.idxClassName = Pcc.FindNameOrAdd("Package");
-                        coreImport.idxLink = 0;
-                        coreImport.idxPackageFile = Pcc.FindNameOrAdd("Core");
+                        coreImport = new ImportEntry(Pcc)
+                        {
+                            idxObjectName = Pcc.FindNameOrAdd("Core"),
+                            idxClassName = Pcc.FindNameOrAdd("Package"),
+                            idxLink = 0,
+                            idxPackageFile = Pcc.FindNameOrAdd("Core")
+                        };
                         Pcc.addImport(coreImport);
                     }
                     //Package isn't an import, could be one of the 2DA files or other small ones
-                    packageImport = new ImportEntry(Pcc);
-                    packageImport.idxObjectName = Pcc.FindNameOrAdd("Package");
-                    packageImport.idxClassName = Pcc.FindNameOrAdd("Class");
-                    packageImport.idxLink = coreImport.UIndex;
-                    packageImport.idxPackageFile = Pcc.FindNameOrAdd("Core");
+                    packageImport = new ImportEntry(Pcc)
+                    {
+                        idxObjectName = Pcc.FindNameOrAdd("Package"),
+                        idxClassName = Pcc.FindNameOrAdd("Class"),
+                        idxLink = coreImport.UIndex,
+                        idxPackageFile = Pcc.FindNameOrAdd("Core")
+                    };
                     Pcc.addImport(packageImport);
                 }
                 foreach (TreeViewEntry entry in itemsToTrash)
@@ -566,18 +553,10 @@ namespace ME3Explorer
             return new Guid(hashedBytes);
         }
 
-        private void ReindexObjectByName(object obj)
+        private void ReindexObjectByName()
         {
-            IExportEntry exp = null;
-            if (CurrentView == CurrentViewMode.Exports && LeftSide_ListView.SelectedItem is IExportEntry entry)
-            {
-                exp = entry;
-            }
-            if (CurrentView == CurrentViewMode.Tree && LeftSide_TreeView.SelectedItem is TreeViewEntry tvi && tvi.Entry is IExportEntry exportEntry)
-            {
-                exp = exportEntry;
-            }
-            ReindexObjectsByName(exp, true);
+            if (!TryGetSelectedExport(out IExportEntry export)) return;
+            ReindexObjectsByName(export, true);
         }
 
         private void ReindexObjectsByName(IExportEntry exp, bool showUI)
@@ -615,11 +594,14 @@ namespace ME3Explorer
             }
         }
 
-        private void CopyName(object obj)
+        private void CopyName()
         {
             try
             {
-                Clipboard.SetText((LeftSide_ListView.SelectedItem as IndexedName).Name);
+                if (LeftSide_ListView.SelectedItem is IndexedName iName)
+                {
+                    Clipboard.SetText(iName.Name);
+                }
             }
             catch (Exception)
             {
@@ -627,21 +609,11 @@ namespace ME3Explorer
             }
         }
 
-        private bool DoesSelectedItemHaveEmbeddedFile(object obj)
+        private bool DoesSelectedItemHaveEmbeddedFile()
         {
-            IExportEntry exp = null;
-            if (CurrentView == CurrentViewMode.Exports && LeftSide_ListView.SelectedItem is IExportEntry entry)
+            if (TryGetSelectedExport(out IExportEntry export))
             {
-                exp = entry;
-            }
-            if (CurrentView == CurrentViewMode.Tree && LeftSide_TreeView.SelectedItem is TreeViewEntry tvi && tvi.Entry is IExportEntry exportEntry)
-            {
-                exp = exportEntry;
-            }
-
-            if (exp != null)
-            {
-                switch (exp.ClassName)
+                switch (export.ClassName)
                 {
                     case "BioSWF":
                     case "GFxMovieInfo":
@@ -651,19 +623,9 @@ namespace ME3Explorer
             return false;
         }
 
-        private void ExportEmbeddedFile(object obj)
+        private void ExportEmbeddedFile()
         {
-            IExportEntry exp = null;
-            if (CurrentView == CurrentViewMode.Exports && LeftSide_ListView.SelectedItem is IExportEntry entry)
-            {
-                exp = entry;
-            }
-            if (CurrentView == CurrentViewMode.Tree && LeftSide_TreeView.SelectedItem is TreeViewEntry tvi && tvi.Entry is IExportEntry exportEntry)
-            {
-                exp = exportEntry;
-            }
-
-            if (exp != null)
+            if (TryGetSelectedExport(out IExportEntry exp))
             {
                 switch (exp.ClassName)
                 {
@@ -696,20 +658,9 @@ namespace ME3Explorer
             }
         }
 
-        private void ImportEmbeddedFile(object obj)
+        private void ImportEmbeddedFile()
         {
-
-            IExportEntry exp = null;
-            if (CurrentView == CurrentViewMode.Exports && LeftSide_ListView.SelectedItem is IExportEntry entry)
-            {
-                exp = entry;
-            }
-            if (CurrentView == CurrentViewMode.Tree && LeftSide_TreeView.SelectedItem is TreeViewEntry tvi && tvi.Entry is IExportEntry exportEntry)
-            {
-                exp = exportEntry;
-            }
-
-            if (exp != null)
+            if (TryGetSelectedExport(out IExportEntry exp))
             {
                 switch (exp.ClassName)
                 {
@@ -765,7 +716,7 @@ namespace ME3Explorer
             }
         }
 
-        private void RebuildStreamingLevels(object obj)
+        private void RebuildStreamingLevels()
         {
             try
             {
@@ -840,21 +791,18 @@ namespace ME3Explorer
             if (!string.IsNullOrEmpty(result))
             {
                 int idx = Pcc.FindNameOrAdd(result);
+                if (CurrentView == CurrentViewMode.Names)
+                {
+                    LeftSide_ListView.SelectedIndex = idx;
+                }
                 if (idx != Pcc.Names.Count - 1)
                 {
                     //not the last
-                    if (CurrentView == CurrentViewMode.Names)
-                    {
-                        LeftSide_ListView.SelectedIndex = idx;
-                    }
                     MessageBox.Show($"{result} already exists in this package file.\nName index: {idx} (0x{idx:X8})", "Name already exists");
                 }
                 else
                 {
-                    if (CurrentView == CurrentViewMode.Names)
-                    {
-                        LeftSide_ListView.SelectedIndex = idx;
-                    }
+                    
                     MessageBox.Show($"{result} has been added as a name.\nName index: {idx} (0x{idx:X8})", "Name added");
                 }
             }
@@ -867,23 +815,20 @@ namespace ME3Explorer
                 if (parameter == "FromContextMenu")
                 {
                     //Ensure we are on names view - used for menu item
-                    return PackageIsLoaded(null) && CurrentView == CurrentViewMode.Names;
+                    return PackageIsLoaded() && CurrentView == CurrentViewMode.Names;
                 }
             }
-            return PackageIsLoaded(null);
+            return PackageIsLoaded();
         }
 
-        private bool TreeEntryIsSelected(object obj)
+        private bool TreeEntryIsSelected()
         {
-            return CurrentView == CurrentViewMode.Tree && EntryIsSelected(null);
+            return CurrentView == CurrentViewMode.Tree && EntryIsSelected();
         }
 
-        private bool NameIsSelected(object obj)
-        {
-            return (CurrentView == CurrentViewMode.Names && LeftSide_ListView.SelectedItem is IndexedName);
-        }
+        private bool NameIsSelected() => CurrentView == CurrentViewMode.Names && LeftSide_ListView.SelectedItem is IndexedName;
 
-        private void EditName(object obj)
+        private void EditName()
         {
             if (LeftSide_ListView.SelectedItem is IndexedName iName)
             {
@@ -897,7 +842,7 @@ namespace ME3Explorer
             }
         }
 
-        private void CheckForDuplicateIndexes(object obj)
+        private void CheckForDuplicateIndexes()
         {
             if (Pcc == null)
             {
@@ -944,7 +889,7 @@ namespace ME3Explorer
             }
         }
 
-        private void FindEntryViaOffset(object obj)
+        private void FindEntryViaOffset()
         {
             if (Pcc == null)
             {
@@ -1011,9 +956,9 @@ namespace ME3Explorer
             }
         }
 
-        private void CloneTree(object obj)
+        private void CloneTree()
         {
-            if (GetSelected(out int n))
+            if (CurrentView == CurrentViewMode.Tree && TryGetSelectedEntry(out IEntry entry))
             {
                 int nextIndex; //used to select the final node
                                /*crossPCCObjectMap = new SortedDictionary<int, int>();
@@ -1036,24 +981,24 @@ namespace ME3Explorer
                                }*/
 
                 crossPCCObjectMap = new SortedDictionary<int, int>();
-                TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
-                TreeViewEntry newEntry = null;
-                if (n >= 0)
+                TreeViewEntry newEntry;
+                if (entry is IExportEntry exp)
                 {
 
-                    IExportEntry ent = (selected.Entry as IExportEntry).Clone();
+                    IExportEntry ent = exp.Clone();
                     Pcc.addExport(ent);
                     newEntry = new TreeViewEntry(ent);
-                    crossPCCObjectMap[n] = ent.Index; //0 based. map old index to new index
+                    crossPCCObjectMap[exp.Index] = ent.Index; //0 based. map old index to new index
                 }
                 else
                 {
-                    ImportEntry imp = (selected.Entry as ImportEntry).Clone();
+                    ImportEntry imp = ((ImportEntry)entry).Clone();
                     Pcc.addImport(imp);
                     newEntry = new TreeViewEntry(imp);
                     //Imports are not relinked when locally cloning a tree
                 }
                 nextIndex = newEntry.UIndex;
+                TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
                 newEntry.Parent = selected.Parent;
                 selected.Parent.Sublinks.Add(newEntry);
                 selected.Parent.SortChildren();
@@ -1068,24 +1013,32 @@ namespace ME3Explorer
             }
         }
 
-        private void CloneEntry(object obj)
+        private void CloneEntry()
         {
-            if (GetSelected(out int n))
+            if (TryGetSelectedEntry(out IEntry entry))
             {
-                TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
                 TreeViewEntry newEntry;
-                if (n >= 0)
+                if (entry is IExportEntry export)
                 {
 
-                    IExportEntry ent = (selected.Entry as IExportEntry).Clone();
+                    IExportEntry ent = export.Clone();
                     Pcc.addExport(ent);
                     newEntry = new TreeViewEntry(ent);
                 }
                 else
                 {
-                    ImportEntry imp = (selected.Entry as ImportEntry).Clone();
+                    ImportEntry imp = ((ImportEntry)entry).Clone();
                     Pcc.addImport(imp);
                     newEntry = new TreeViewEntry(imp);
+                }
+                TreeViewEntry selected;
+                if (CurrentView == CurrentViewMode.Tree)
+                {
+                    selected = (TreeViewEntry) LeftSide_TreeView.SelectedItem;
+                }
+                else
+                {
+                    selected = GetTreeViewEntryByUIndex(entry.UIndex);
                 }
                 newEntry.Parent = selected.Parent;
                 selected.Parent.Sublinks.Add(newEntry);
@@ -1143,23 +1096,16 @@ namespace ME3Explorer
             newRootNode.SortChildren();
         }
 
-        private void ImportBinaryData(object obj)
-        {
-            ImportExpData(true);
-        }
+        private void ImportBinaryData() => ImportExpData(true);
 
-        private void ImportAllData(object obj)
-        {
-            ImportExpData(false);
-        }
+        private void ImportAllData() => ImportExpData(false);
 
         private void ImportExpData(bool binaryOnly)
         {
-            if (!GetSelected(out int n))
+            if (!TryGetSelectedExport(out IExportEntry export))
             {
                 return;
             }
-            IExportEntry export = Pcc.getEntry(n) as IExportEntry;
             OpenFileDialog d = new OpenFileDialog
             {
                 Filter = "*.bin|*.bin",
@@ -1180,23 +1126,16 @@ namespace ME3Explorer
             }
         }
 
-        private void ExportBinaryData(object obj)
-        {
-            ExportExpData(true);
-        }
+        private void ExportBinaryData() => ExportExpData(true);
 
-        private void ExportAllData(object obj)
-        {
-            ExportExpData(false);
-        }
+        private void ExportAllData() => ExportExpData(false);
 
         private void ExportExpData(bool binaryOnly)
         {
-            if (!GetSelected(out int n))
+            if (!TryGetSelectedExport(out IExportEntry export))
             {
                 return;
             }
-            IExportEntry export = Pcc.getEntry(n) as IExportEntry;
             SaveFileDialog d = new SaveFileDialog
             {
                 Filter = "*.bin|*.bin",
@@ -1204,57 +1143,26 @@ namespace ME3Explorer
             };
             if (d.ShowDialog() == true)
             {
-                if (binaryOnly)
-                {
-                    File.WriteAllBytes(d.FileName, export.getBinaryData());
-                }
-                else
-                {
-                    File.WriteAllBytes(d.FileName, export.Data);
-                }
+                File.WriteAllBytes(d.FileName, binaryOnly ? export.getBinaryData() : export.Data);
                 MessageBox.Show("Done.");
             }
         }
 
-        private bool ExportIsSelected(object obj)
+        private bool ExportIsSelected() => TryGetSelectedExport(out _);
+
+        private bool PackageExportIsSelected()
         {
-            if (GetSelected(out int n))
-            {
-                return n > 0;
-            }
-            return false;
+            TryGetSelectedEntry(out IEntry entry);
+            return entry?.ClassName == "Package";
         }
 
-        private bool PackageExportIsSelected(object obj)
-        {
-            TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
-            return selected?.Entry != null && selected.Entry.ClassName == "Package";
-        }
+        private bool ImportIsSelected() => TryGetSelectedImport(out _);
 
-        private bool ImportIsSelected(object obj)
-        {
-            if (GetSelected(out int n))
-            {
-                return n < 0;
-            }
-            return false;
-        }
+        private bool EntryIsSelected() => TryGetSelectedEntry(out _);
 
-        private bool EntryIsSelected(object obj)
-        {
-            if (GetSelected(out int n))
-            {
-                return n != 0;
-            }
-            return false;
-        }
+        private bool PackageIsLoaded() => Pcc != null;
 
-        private bool PackageIsLoaded(object obj)
-        {
-            return Pcc != null;
-        }
-
-        private void ComparePackages(object obj)
+        private void ComparePackages()
         {
             if (Pcc != null)
             {
@@ -1782,26 +1690,11 @@ namespace ME3Explorer
         /// <returns>True if an item was selected, false if nothing was selected.</returns>
         private bool GetSelected(out int n)
         {
-            /*if (CurrentView == View.Tree && LeftSide_TreeView.SelectedItem != null && ((TreeViewItem)LeftSide_TreeView.SelectedItem).Name.StartsWith("_"))
-            {
-                string name = ((TreeViewItem)LeftSide_TreeView.SelectedItem).Name.Substring(1); //get rid of _
-                if (name.StartsWith("n"))
-                {
-                    //its negative
-                    name = $"-{name.Substring(1)}";
-                }
-                n = Convert.ToInt32(name);
-                return true;
-            }*/
-
             switch (CurrentView)
             {
-                case CurrentViewMode.Tree when LeftSide_TreeView.SelectedItem != null:
-                    {
-                        TreeViewEntry selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
-                        n = Convert.ToInt32(selected.UIndex);
-                        return true;
-                    }
+                case CurrentViewMode.Tree when LeftSide_TreeView.SelectedItem is TreeViewEntry selected:
+                    n = selected.UIndex;
+                    return true;
                 case CurrentViewMode.Exports when LeftSide_ListView.SelectedItem != null:
                     n = LeftSide_ListView.SelectedIndex + 1; //to unreal indexing
                     return true;
@@ -1812,6 +1705,38 @@ namespace ME3Explorer
                     n = 0;
                     return false;
             }
+        }
+
+        private bool TryGetSelectedEntry(out IEntry entry)
+        {
+            if (GetSelected(out int uIndex) && Pcc.isEntry(uIndex))
+            {
+                entry = Pcc.getEntry(uIndex);
+                return true;
+            }
+            entry = null;
+            return false;
+        }
+
+        private bool TryGetSelectedExport(out IExportEntry export)
+        {
+            if (GetSelected(out int uIndex) && Pcc.isUExport(uIndex))
+            {
+                export = Pcc.getUExport(uIndex);
+                return true;
+            }
+            export = null;
+            return false;
+        }
+        private bool TryGetSelectedImport(out ImportEntry import)
+        {
+            if (GetSelected(out int uIndex) && Pcc.isUImport(uIndex))
+            {
+                import = Pcc.getUImport(uIndex);
+                return true;
+            }
+            import = null;
+            return false;
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)
@@ -2040,6 +1965,11 @@ namespace ME3Explorer
                     {
                         if (entry.Key.CanParse(exportEntry))
                         {
+                            if (isRefresh && entry.Key is CurveEditor && entry.Value.Visibility == Visibility.Visible)
+                            {
+                                //CurveEditor handles its own refresh
+                                continue;
+                            }
                             entry.Key.LoadExport(exportEntry);
                             entry.Value.Visibility = Visibility.Visible;
 
@@ -2164,39 +2094,42 @@ namespace ME3Explorer
                 QueuedGotoNumber = entryIndex;
                 return;
             }
-            if (CurrentView == CurrentViewMode.Tree)
+            switch (CurrentView)
             {
-                /*if (entryIndex >= -pcc.ImportCount && entryIndex < pcc.ExportCount)
+                case CurrentViewMode.Tree:
                 {
-                    //List<AdvancedTreeViewItem<TreeViewItem>> noNameNodes = AllTreeViewNodes.Where(s => s.Name.Length == 0).ToList();
-                    var nodeName = entryIndex.ToString().Replace("-", "n");
-                    List<AdvancedTreeViewItem<TreeViewItem>> nodes = AllTreeViewNodes.Where(s => s.Name.Length > 0 && s.Name.Substring(1) == nodeName).ToList();
-                    if (nodes.Count > 0)
+                    /*if (entryIndex >= -pcc.ImportCount && entryIndex < pcc.ExportCount)
                     {
-                        nodes[0].BringIntoView();
-                        Dispatcher.BeginInvoke(DispatcherPriority.Background, (NoArgDelegate)delegate { nodes[0].ParentNodeValue.SelectItem(nodes[0]); });
-                    }
-                }*/
-                //DispatcherHelper.EmptyQueue();
-                var list = AllTreeViewNodesX[0].FlattenTree();
-                List<TreeViewEntry> selectNode = list.Where(s => s.Entry != null && s.UIndex == entryIndex).ToList();
-                if (selectNode.Any())
-                {
-                    //selectNode[0].ExpandParents();
-                    selectNode[0].IsProgramaticallySelecting = true;
-                    SelectedItem = selectNode[0];
-                    //FocusTreeViewNodeOld(selectNode[0]);
+                        //List<AdvancedTreeViewItem<TreeViewItem>> noNameNodes = AllTreeViewNodes.Where(s => s.Name.Length == 0).ToList();
+                        var nodeName = entryIndex.ToString().Replace("-", "n");
+                        List<AdvancedTreeViewItem<TreeViewItem>> nodes = AllTreeViewNodes.Where(s => s.Name.Length > 0 && s.Name.Substring(1) == nodeName).ToList();
+                        if (nodes.Count > 0)
+                        {
+                            nodes[0].BringIntoView();
+                            Dispatcher.BeginInvoke(DispatcherPriority.Background, (NoArgDelegate)delegate { nodes[0].ParentNodeValue.SelectItem(nodes[0]); });
+                        }
+                    }*/
+                    //DispatcherHelper.EmptyQueue();
+                    var list = AllTreeViewNodesX[0].FlattenTree();
+                    List<TreeViewEntry> selectNode = list.Where(s => s.Entry != null && s.UIndex == entryIndex).ToList();
+                    if (selectNode.Any())
+                    {
+                        //selectNode[0].ExpandParents();
+                        selectNode[0].IsProgramaticallySelecting = true;
+                        SelectedItem = selectNode[0];
+                        //FocusTreeViewNodeOld(selectNode[0]);
 
-                    //selectNode[0].Focus(LeftSide_TreeView);
+                        //selectNode[0].Focus(LeftSide_TreeView);
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Could not find node");
+                    }
+
+                    break;
                 }
-                else
-                {
-                    Debug.WriteLine("Could not find node");
-                }
-            }
-            else
-            {
-                if (CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Imports)
+                case CurrentViewMode.Exports:
+                case CurrentViewMode.Imports:
                 {
                     //Check bounds
                     var entry = Pcc.getEntry(entryIndex);
@@ -2214,12 +2147,13 @@ namespace ME3Explorer
 
                         LeftSide_ListView.SelectedIndex = Math.Abs(entryIndex) - 1;
                     }
+
+                    break;
                 }
-                else if (CurrentView == CurrentViewMode.Names && entryIndex >= 0 && entryIndex < LeftSide_ListView.Items.Count)
-                {
+                case CurrentViewMode.Names when entryIndex >= 0 && entryIndex < LeftSide_ListView.Items.Count:
                     //Names
                     LeftSide_ListView.SelectedIndex = entryIndex;
-                }
+                    break;
             }
         }
 
@@ -3606,7 +3540,7 @@ namespace ME3Explorer
                         }
                     }
                 }
-                File.WriteAllText(System.Windows.Forms.Application.StartupPath + "//exec//ME1NativeFunctionInfo.json", JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
+                File.WriteAllText(Path.Combine(App.ExecFolder, "ME1NativeFunctionInfo.json"), JsonConvert.SerializeObject(new { NativeFunctionInfo = newCachedInfo }, Formatting.Indented));
                 Debug.WriteLine("Done");
             }
         }

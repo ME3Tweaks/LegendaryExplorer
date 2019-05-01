@@ -281,13 +281,13 @@ namespace ME3Explorer.Packages
         /// <summary>
         ///     gets Export or Import entry
         /// </summary>
-        /// <param name="index">unreal index</param>
-        public IEntry getEntry(int index)
+        /// <param name="uindex">unreal index</param>
+        public IEntry getEntry(int uindex)
         {
-            if (index > 0 && index <= ExportCount)
-                return exports[index - 1];
-            if (-index > 0 && -index <= ImportCount)
-                return imports[-index - 1];
+            if (uindex > 0 && uindex <= ExportCount)
+                return exports[uindex - 1];
+            if (-uindex > 0 && -uindex <= ImportCount)
+                return imports[-uindex - 1];
             return null;
         }
         public bool isEntry(int uindex) => (uindex > 0 && uindex <= ExportCount) || (Math.Abs(uindex) > 0 && Math.Abs(uindex) <= ImportCount);

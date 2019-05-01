@@ -151,10 +151,10 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void LoadCommands()
         {
-            CreateReachSpecCommand = new RelayCommand(CreateReachSpec, CanCreateReachSpec);
-            ChangeExternalFileCommand = new RelayCommand(ChangeExternalFile, CanChangeExternalFile);
-            ToExternalNodeCommand = new RelayCommand(ToExternalCommandChanging, ExportIsLoaded);
-            DeleteSelectedReachSpecCommand = new RelayCommand(DeleteSelectedReachSpec, (o) => true); //will be fixed in merge
+            CreateReachSpecCommand = new GenericCommand(CreateReachSpec, CanCreateReachSpec);
+            ChangeExternalFileCommand = new GenericCommand(ChangeExternalFile, CanChangeExternalFile);
+            ToExternalNodeCommand = new GenericCommand(ToExternalCommandChanging, ExportIsLoaded);
+            DeleteSelectedReachSpecCommand = new RelayCommand(DeleteSelectedReachSpec);
         }
 
         private void DeleteSelectedReachSpec(object obj)
@@ -167,7 +167,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        private void ToExternalCommandChanging(object obj)
+        private void ToExternalCommandChanging()
         {
             bool returnSetting = CreateReturningReachSpec;
 
@@ -187,17 +187,11 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        private bool ExportIsLoaded(object obj)
-        {
-            return CurrentLoadedExport != null;
-        }
+        private bool ExportIsLoaded() => CurrentLoadedExport != null;
 
-        private bool CanChangeExternalFile(object obj)
-        {
-            return ToExternalNodeChecked;
-        }
+        private bool CanChangeExternalFile() => ToExternalNodeChecked;
 
-        private void ChangeExternalFile(object obj)
+        private void ChangeExternalFile()
         {
             bool returnSetting = CreateReturningReachSpec;
             LoadExternalFile();
@@ -226,7 +220,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         ExternalFile.Release();
                         ExternalFile = null;
-                        MessageBox.Show(d.FileName + " does not have a PersistentLevel export.");
+                        MessageBox.Show($"{d.FileName} does not have a PersistentLevel export.");
                         return;
                     }
 
@@ -238,18 +232,19 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     ExternalFile = null;
                     ExternalFileShortNameText = "Error opening file";
-                    MessageBox.Show("Unable to open file:\n" + ex.Message);
+                    MessageBox.Show($"Unable to open file:\n{ex.Message}");
 
                 }
             }
         }
 
-        private bool CanCreateReachSpec(object obj)
+        private bool CanCreateReachSpec()
         {
             //Validation
             if (CurrentLoadedExport == null) return false;
             IMEPackage packageToValidateAgainst = ToExternalNodeChecked ? ExternalFile : CurrentLoadedExport.FileRef;
-            if (CurrentLoadedExport != null && int.TryParse(CreateReachSpecDestination_TextBox.Text, out int destIndex) && packageToValidateAgainst.isUExport(destIndex))
+            if (CurrentLoadedExport != null && int.TryParse(CreateReachSpecDestination_TextBox.Text, out int destIndex) &&
+                packageToValidateAgainst != null && packageToValidateAgainst.isUExport(destIndex))
             {
                 //Parse
                 IExportEntry destExport = packageToValidateAgainst.getUExport(destIndex);
@@ -257,7 +252,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 if (ToExternalNodeChecked || (ParentWindow != null && ParentWindow.ActiveNodes.Contains(destExport)))
                 {
-                    var destPoint = PathfindingEditorWPF.GetLocation(destExport);
+                    var destPoint = SharedPathfinding.GetLocation(destExport);
 
                     if (destPoint != null)
                     {
@@ -294,7 +289,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                             }
                         }
-                        var sourcePoint = PathfindingEditorWPF.GetLocation(CurrentLoadedExport);
+                        var sourcePoint = SharedPathfinding.GetLocation(CurrentLoadedExport);
                         double distance = sourcePoint.getDistanceToOtherPoint(destPoint);
 
                         if (distance > 0.01)
@@ -310,15 +305,15 @@ namespace ME3Explorer.Pathfinding_Editor
 
 
 
-        private void CreateReachSpec(object obj)
+        private void CreateReachSpec()
         {
             if (int.TryParse(CreateReachSpecDestination_TextBox.Text, out int destIndex))
             {
                 if (ToExternalNodeChecked)
                 {
+                    //nested because we don't want to switch to the other case if this is null
                     if (ExternalFile != null)
                     {
-                        //nested because we don't want to switch to the other case if this is null
                         IExportEntry destExport = ExternalFile.getUExport(destIndex);
 
                         var navguid = destExport.GetProperty<StructProperty>("NavGuid");
@@ -336,10 +331,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        public override bool CanParse(IExportEntry export)
-        {
-            return true;
-        }
+        public override bool CanParse(IExportEntry export) => true;
 
         public override void LoadExport(IExportEntry export)
         {
@@ -374,7 +366,7 @@ namespace ME3Explorer.Pathfinding_Editor
             //Reachspecs
             ReachSpecs.ClearEx();
 
-            ArrayProperty<ObjectProperty> PathList = props.GetProp<ArrayProperty<ObjectProperty>>("PathList");
+            var PathList = props.GetProp<ArrayProperty<ObjectProperty>>("PathList");
             if (PathList != null)
             {
                 foreach (ObjectProperty prop in PathList)
@@ -445,8 +437,7 @@ namespace ME3Explorer.Pathfinding_Editor
         private void ReachSpecs_SelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
             RefreshSelectedReachSpec();
-            ReachSpec selectedSpec = ReachableNodes_ComboBox.SelectedItem as ReachSpec;
-            if (selectedSpec != null)
+            if (ReachableNodes_ComboBox.SelectedItem is ReachSpec selectedSpec)
             {
                 if (ParentWindow != null && !selectedSpec.ExternalTarget)
                 {
@@ -466,7 +457,7 @@ namespace ME3Explorer.Pathfinding_Editor
             bool preAllow = AllowChanges;
             AllowChanges = false;
             ReachSpec selectedSpec = ReachableNodes_ComboBox.SelectedItem as ReachSpec;
-            AvailableReachSpecSizes.RemoveRange(AvailableReachSpecSizes.Where(x => x.CustomSized).ToList());
+            AvailableReachSpecSizes.RemoveRange(AvailableReachSpecSizes.Where(x => x.CustomSized));
             ReachSpecConnection_Panel.IsEnabled = selectedSpec != null;
             if (selectedSpec != null)
             {
@@ -518,11 +509,11 @@ namespace ME3Explorer.Pathfinding_Editor
                 IExportEntry destExport = DestinationPackageToUse.getUExport(destIndex);
                 if (ToExternalNodeChecked || (ParentWindow != null && ParentWindow.ActiveNodes.Contains(destExport)))
                 {
-                    var destPoint = PathfindingEditorWPF.GetLocation(destExport);
+                    var destPoint = SharedPathfinding.GetLocation(destExport);
 
                     if (destPoint != null)
                     {
-                        var sourcePoint = PathfindingEditorWPF.GetLocation(CurrentLoadedExport);
+                        var sourcePoint = SharedPathfinding.GetLocation(CurrentLoadedExport);
                         double distance = sourcePoint.getDistanceToOtherPoint(destPoint);
 
                         //Calculate direction vectors
@@ -545,36 +536,35 @@ namespace ME3Explorer.Pathfinding_Editor
                             //Distance 0
                             DestinationNodeName = $"{destExport.ObjectName}_{destExport.indexValue}";
                             NewReachSpecDistance = "Distance: 0 - Move node";
-                            NewReachSpecDirectionX = "Direction X: N/A";
-                            NewReachSpecDirectionY = "Direction Y: N/A";
-                            NewReachSpecDirectionZ = "Direction Z: N/A";
+                            SetDirectionsNA();
                         }
                     }
                     else
                     {
                         //Does not have location
-                        DestinationNodeName = $"Not a valid node";
+                        DestinationNodeName = "Not a valid node";
                         NewReachSpecDistance = "Distance: N/A";
-                        NewReachSpecDirectionX = "Direction X: N/A";
-                        NewReachSpecDirectionY = "Direction Y: N/A";
-                        NewReachSpecDirectionZ = "Direction Z: N/A";
+                        SetDirectionsNA();
                     }
                 }
                 else
                 {
                     //Not in level
-                    DestinationNodeName = $"Export not part of level";
+                    DestinationNodeName = "Export not part of level";
                     NewReachSpecDistance = "Distance: N/A";
-                    NewReachSpecDirectionX = "Direction X: N/A";
-                    NewReachSpecDirectionY = "Direction Y: N/A";
-                    NewReachSpecDirectionZ = "Direction Z: N/A";
+                    SetDirectionsNA();
                 }
             }
             else
             {
                 //invalid input
-                DestinationNodeName = $"Not a valid node";
+                DestinationNodeName = "Not a valid node";
                 NewReachSpecDistance = "Distance: N/A";
+                SetDirectionsNA();
+            }
+
+            void SetDirectionsNA()
+            {
                 NewReachSpecDirectionX = "Direction X: N/A";
                 NewReachSpecDirectionY = "Direction Y: N/A";
                 NewReachSpecDirectionZ = "Direction Z: N/A";
@@ -583,7 +573,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void CreateReachSpecDestination_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            var textBox = sender as TextBox;
+            var textBox = (TextBox)sender;
             // Use SelectionStart property to find the caret position.
             // Insert the previewed text into the existing text in the textbox.
             var fullText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
@@ -629,20 +619,9 @@ namespace ME3Explorer.Pathfinding_Editor
             public IExportEntry StartNode { get; internal set; }
             public IExportEntry EndNode { get; internal set; }
             public bool ExternalTarget { get; internal set; }
-            public string DestinationTextUI
-            {
-                get
-                {
-                    return ExternalTarget ? "Ext" : EndNode.UIndex.ToString();
-                }
-            }
-            public string DestinationTypeTextUI
-            {
-                get
-                {
-                    return ExternalTarget ? "External Node" : $"{EndNode.ObjectName}_{ EndNode.indexValue}";
-                }
-            }
+            public string DestinationTextUI => ExternalTarget ? "Ext" : EndNode.UIndex.ToString();
+
+            public string DestinationTypeTextUI => ExternalTarget ? "External Node" : $"{EndNode.ObjectName}_{ EndNode.indexValue}";
         }
 
         [DebuggerDisplay("NodeSize | {Header} {NodeHeight}x{NodeRadius}")]
@@ -686,6 +665,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
             public bool Equals(NodeSize other)
             {
+                if (other == null) return false;
                 return NodeRadius == other.NodeRadius && NodeHeight == other.NodeHeight;
             }
         }
@@ -694,8 +674,8 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             if (AllowChanges)
             {
-                ReachSpecSize newSize = ReachSpecSize_ComboBox.SelectedItem as ReachSpecSize;
-                ReachSpec spec = ReachableNodes_ComboBox.SelectedItem as ReachSpec;
+                ReachSpecSize newSize = (ReachSpecSize)ReachSpecSize_ComboBox.SelectedItem;
+                ReachSpec spec = (ReachSpec)ReachableNodes_ComboBox.SelectedItem;
                 PropertyCollection props = spec.SpecExport.GetProperties();
 
                 IntProperty radius = props.GetProp<IntProperty>("CollisionRadius");
@@ -706,10 +686,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     radius.Value = spec.SpecSize.SpecRadius = newSize.SpecRadius;
                     height.Value = spec.SpecSize.SpecHeight = newSize.SpecHeight;
                     spec.SpecExport.WriteProperties(props);
-                    if (ParentWindow != null)
-                    {
-                        ParentWindow.UpdateEdgesForCurrentNode();
-                    }
+                    ParentWindow?.UpdateEdgesForCurrentNode();
                 }
             }
         }
@@ -718,7 +695,7 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             if (AllowChanges)
             {
-                NodeSize size = NodeSize_ComboBox.SelectedItem as NodeSize;
+                NodeSize size = (NodeSize)NodeSize_ComboBox.SelectedItem;
 
                 PropertyCollection props = CurrentLoadedExport.GetProperties();
                 StructProperty maxPathSize = props.GetProp<StructProperty>("MaxPathSize");

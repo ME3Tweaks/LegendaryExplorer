@@ -26,7 +26,7 @@ namespace ME3Explorer.Pathfinding_Editor
     /// <summary>
     /// Interaction logic for ValidationPanel.xaml
     /// </summary>
-    public partial class ValidationPanel : UserControl, INotifyPropertyChanged
+    public partial class ValidationPanel : NotifyPropertyChangedControlBase
     {
 
         private const int MAX_DISTANCE_TOLERANCE = 5;
@@ -38,7 +38,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public IMEPackage Pcc { get => _pcc; private set => SetProperty(ref _pcc, value); }
         BackgroundWorker fixAndValidateWorker;
         public ObservableCollectionExtended<ListBoxTask> ValidationTasks { get; } = new ObservableCollectionExtended<ListBoxTask>();
-        private object _myCollectionLock = new object();
+        private readonly object _myCollectionLock = new object();
 
         private string _lastRunOnText;
         public string LastRunOnText { get => _lastRunOnText; set => SetProperty(ref _lastRunOnText, value); }
@@ -51,9 +51,9 @@ namespace ME3Explorer.Pathfinding_Editor
             BindingOperations.EnableCollectionSynchronization(ValidationTasks, _myCollectionLock);
         }
 
-        public void SetLevel(IExportEntry PersistentLevel)
+        public void SetLevel(IExportEntry persistentLevel)
         {
-            this.PersistentLevel = PersistentLevel;
+            PersistentLevel = persistentLevel;
             Pcc = PersistentLevel.FileRef;
             LastRunOnText = "Not yet run";
         }
@@ -68,15 +68,15 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void LoadCommands()
         {
-            FixAndValidateCommand = new RelayCommand(FixAndValidate, CanFixAndValidate);
+            FixAndValidateCommand = new GenericCommand(FixAndValidate, CanFixAndValidate);
         }
 
-        private bool CanFixAndValidate(object obj)
+        private bool CanFixAndValidate()
         {
             return Pcc != null && (fixAndValidateWorker == null || fixAndValidateWorker.IsBusy == false);
         }
 
-        private void FixAndValidate(object obj)
+        private void FixAndValidate()
         {
             if (Pcc != null && (fixAndValidateWorker == null || fixAndValidateWorker.IsBusy == false))
             {
@@ -90,7 +90,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        private void FixAndValidate_Completed(object sender, RunWorkerCompletedEventArgs e)
+        private static void FixAndValidate_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
             CommandManager.InvalidateRequerySuggested(); //Recalculate commands.
         }
@@ -119,15 +119,15 @@ namespace ME3Explorer.Pathfinding_Editor
         public void recalculateReachspecs(ListBoxTask task = null)
         {
             //Figure out which exports have PathList.
-            HashSet<int> reachSpecExportIndexes = new HashSet<int>();
-            List<string> badSpecs = new List<string>();
+            var reachSpecExportIndexes = new HashSet<int>();
+            var badSpecs = new List<string>();
             //HashSet<string> names = new HashSet<string>();
 
             int numNeedingRecalc = 0;
             for (int i = 0; i < Pcc.ExportCount; i++)
             {
                 IExportEntry exp = Pcc.Exports[i];
-                ArrayProperty<ObjectProperty> pathList = exp.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                var pathList = exp.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
                 if (pathList != null)
                 {
                     if (task != null)
@@ -144,7 +144,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         if (start.Value != exp.UIndex)
                         {
                             isBad = true;
-                            badSpecs.Add(reachSpecObj.Value.ToString() + " " + spec.ObjectName + " start value does not match the node that references it (" + exp.UIndex + ")");
+                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName} start value does not match the node that references it ({exp.UIndex})");
                         }
 
                         //get end
@@ -153,19 +153,19 @@ namespace ME3Explorer.Pathfinding_Editor
                         if (endActorObj.Value == start.Value)
                         {
                             isBad = true;
-                            badSpecs.Add(reachSpecObj.Value.ToString() + " " + spec.ObjectName + " start and end property is the same. This will crash the game.");
+                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName} start and end property is the same. This will crash the game.");
                         }
 
                         var guid = new UnrealGUID(end.GetProp<StructProperty>("Guid"));
                         if ((guid.A | guid.B | guid.C | guid.D) == 0 && endActorObj.Value == 0)
                         {
                             isBad = true;
-                            badSpecs.Add(reachSpecObj.Value.ToString() + " " + spec.ObjectName + " has no external guid and has no endactor.");
+                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName} has no external guid and has no endactor.");
                         }
                         if (endActorObj.Value > Pcc.ExportCount || endActorObj.Value < 0)
                         {
                             isBad = true;
-                            badSpecs.Add(reachSpecObj.Value.ToString() + " " + spec.ObjectName + " has invalid end property (past end of bounds or less than 0).");
+                            badSpecs.Add($"{reachSpecObj.Value} {spec.ObjectName} has invalid end property (past end of bounds or less than 0).");
                         }
                         /*if (endActorObj.Value > 0)
                         {
@@ -184,7 +184,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 }
             }
-            task?.Complete(numNeedingRecalc + " ReachSpec" + (numNeedingRecalc == 1 ? "" : "s") + " were recalculated");
+            task?.Complete($"{numNeedingRecalc} ReachSpec{(numNeedingRecalc == 1 ? "" : "s")} were recalculated");
         }
 
         private bool calculateReachSpec(IExportEntry reachSpecExport, IExportEntry startNodeExport = null)
@@ -197,122 +197,107 @@ namespace ME3Explorer.Pathfinding_Editor
 
             ObjectProperty endActorObj = end.GetProp<ObjectProperty>(SharedPathfinding.GetReachSpecEndName(reachSpecExport));
 
-            if (start.Value > 0 && endActorObj.Value > 0)
+            if (start.Value <= 0 || endActorObj.Value <= 0) return false;
+
+            //We should capture GUID here
+
+            IExportEntry startNode = reachSpecExport.FileRef.getUExport(start.Value);
+            IExportEntry endNode = reachSpecExport.FileRef.getUExport(endActorObj.Value);
+
+            if (startNodeExport != null && startNode.UIndex != startNodeExport.UIndex)
             {
-                //We should capture GUID here
-
-                IExportEntry startNode = reachSpecExport.FileRef.getUExport(start.Value);
-                IExportEntry endNode = reachSpecExport.FileRef.getUExport(endActorObj.Value);
-
-                if (startNodeExport != null && startNode.UIndex != startNodeExport.UIndex)
+                //ERROR!
+                ValidationTasks.Add(new ListBoxTask
                 {
-                    //ERROR!
-                    ValidationTasks.Add(new ListBoxTask
-                    {
-                        Header = reachSpecExport.UIndex + " " + reachSpecExport.ObjectName + " start does not match it's containing pathlist reference (" + startNodeExport.UIndex + " " + startNodeExport.ObjectName + ")",
-                        Icon = FontAwesomeIcon.Times,
-                        Foreground = Brushes.Red,
-                        Spinning = false
-                    });
+                    Header = $"{reachSpecExport.UIndex} {reachSpecExport.ObjectName} start does not match it's containing pathlist reference ({startNodeExport.UIndex} {startNodeExport.ObjectName})",
+                    Icon = FontAwesomeIcon.Times,
+                    Foreground = Brushes.Red,
+                    Spinning = false
+                });
 
-                    //MessageBox.Show(
-                }
-
-                float startX = 0, startY = 0, startZ = 0;
-                float destX = 0, destY = 0, destZ = 0;
-
-                StructProperty startLocationProp = startNode.GetProperty<StructProperty>("location");
-                StructProperty endLocationProp = endNode.GetProperty<StructProperty>("location");
-
-                if (startLocationProp != null && endLocationProp != null)
-                {
-                    startX = startLocationProp.GetProp<FloatProperty>("X");
-                    startY = startLocationProp.GetProp<FloatProperty>("Y");
-                    startZ = startLocationProp.GetProp<FloatProperty>("Z");
-                    destX = endLocationProp.GetProp<FloatProperty>("X");
-                    destY = endLocationProp.GetProp<FloatProperty>("Y");
-                    destZ = endLocationProp.GetProp<FloatProperty>("Z");
-
-                    Point3D startPoint = new Point3D(startX, startY, startZ);
-                    Point3D destPoint = new Point3D(destX, destY, destZ);
-
-                    double distance = startPoint.getDistanceToOtherPoint(destPoint);
-                    if (distance != 0)
-                    {
-                        float dirX = (float)((destPoint.X - startPoint.X) / distance);
-                        float dirY = (float)((destPoint.Y - startPoint.Y) / distance);
-                        float dirZ = (float)((destPoint.Z - startPoint.Z) / distance);
-
-
-                        //Get Original Values, for comparison.
-                        StructProperty specDirection = properties.GetProp<StructProperty>("Direction");
-                        float origX = 0, origY = 0, origZ = 0;
-                        if (specDirection != null)
-                        {
-                            origX = specDirection.GetProp<FloatProperty>("X");
-                            origY = specDirection.GetProp<FloatProperty>("Y");
-                            origZ = specDirection.GetProp<FloatProperty>("Z");
-                            IntProperty origDistanceProp = properties.GetProp<IntProperty>("Distance");
-                            if (origDistanceProp != null)
-                            {
-                                int origDistance = origDistanceProp.Value;
-                                int calculatedProperDistance = SharedPathfinding.RoundDoubleToInt(distance);
-                                int distanceDiff = Math.Abs(origDistance - calculatedProperDistance);
-
-                                if (distanceDiff > MAX_DISTANCE_TOLERANCE)
-                                {
-                                    // Difference.
-                                    Debug.WriteLine("Diff Distance is > tolerance: " + distanceDiff + ", should be " + calculatedProperDistance);
-                                    return true;
-                                }
-
-                                float diffX = origX - dirX;
-                                float diffY = origY - dirY;
-                                float diffZ = origZ - dirZ;
-                                if (Math.Abs(diffX) > MAX_DIRECTION_TOLERANCE)
-                                {
-                                    // Difference.
-                                    Debug.WriteLine("Diff Direction X is > tolerance: " + diffX + ", should be " + dirX);
-                                    return true;
-                                }
-                                if (Math.Abs(diffY) > MAX_DIRECTION_TOLERANCE)
-                                {
-                                    // Difference.
-                                    Debug.WriteLine("Diff Direction Y is > tolerance: " + diffY + ", should be " + dirY);
-                                    return true;
-
-                                }
-                                if (Math.Abs(diffZ) > MAX_DIRECTION_TOLERANCE)
-                                {
-                                    // Difference.
-                                    Debug.WriteLine("Diff Direction Z is > tolerance: " + diffZ + ", should be " + dirZ);
-                                    return true;
-                                }
-
-                                return false;
-                            }
-                        }
-
-                    }
-
-
-
-                }
+                //MessageBox.Show(
             }
-            //We really shouldn't reach here, hopefully.
+
+            StructProperty startLocationProp = startNode.GetProperty<StructProperty>("location");
+            StructProperty endLocationProp = endNode.GetProperty<StructProperty>("location");
+
+            if (startLocationProp == null || endLocationProp == null) return false;
+
+            float startX = startLocationProp.GetProp<FloatProperty>("X");
+            float startY = startLocationProp.GetProp<FloatProperty>("Y");
+            float startZ = startLocationProp.GetProp<FloatProperty>("Z");
+            float destX = endLocationProp.GetProp<FloatProperty>("X");
+            float destY = endLocationProp.GetProp<FloatProperty>("Y");
+            float destZ = endLocationProp.GetProp<FloatProperty>("Z");
+
+            Point3D startPoint = new Point3D(startX, startY, startZ);
+            Point3D destPoint = new Point3D(destX, destY, destZ);
+
+            double distance = startPoint.getDistanceToOtherPoint(destPoint);
+            if (distance == 0) return false;
+
+            float dirX = (float)((destPoint.X - startPoint.X) / distance);
+            float dirY = (float)((destPoint.Y - startPoint.Y) / distance);
+            float dirZ = (float)((destPoint.Z - startPoint.Z) / distance);
+
+
+            //Get Original Values, for comparison.
+            StructProperty specDirection = properties.GetProp<StructProperty>("Direction");
+            if (specDirection == null) return false;
+
+            float origX = specDirection.GetProp<FloatProperty>("X");
+            float origY = specDirection.GetProp<FloatProperty>("Y");
+            float origZ = specDirection.GetProp<FloatProperty>("Z");
+            IntProperty origDistanceProp = properties.GetProp<IntProperty>("Distance");
+            if (origDistanceProp == null) return false;
+
+            int origDistance = origDistanceProp.Value;
+            int calculatedProperDistance = SharedPathfinding.RoundDoubleToInt(distance);
+            int distanceDiff = Math.Abs(origDistance - calculatedProperDistance);
+
+            if (distanceDiff > MAX_DISTANCE_TOLERANCE)
+            {
+                // Difference.
+                Debug.WriteLine("Diff Distance is > tolerance: " + distanceDiff + ", should be " + calculatedProperDistance);
+                return true;
+            }
+
+            float diffX = origX - dirX;
+            float diffY = origY - dirY;
+            float diffZ = origZ - dirZ;
+            if (Math.Abs(diffX) > MAX_DIRECTION_TOLERANCE)
+            {
+                // Difference.
+                Debug.WriteLine("Diff Direction X is > tolerance: " + diffX + ", should be " + dirX);
+                return true;
+            }
+            if (Math.Abs(diffY) > MAX_DIRECTION_TOLERANCE)
+            {
+                // Difference.
+                Debug.WriteLine("Diff Direction Y is > tolerance: " + diffY + ", should be " + dirY);
+                return true;
+
+            }
+            if (Math.Abs(diffZ) > MAX_DIRECTION_TOLERANCE)
+            {
+                // Difference.
+                Debug.WriteLine("Diff Direction Z is > tolerance: " + diffZ + ", should be " + dirZ);
+                return true;
+            }
+
             return false;
+            //We really shouldn't reach here, hopefully.
         }
 
         public void fixStackHeaders(ListBoxTask task = null)
         {
-            int itemcount = 2;
             int numUpdated = 0;
 
-            Dictionary<int, List<int>> mpIDs = new Dictionary<int, List<int>>();
+            var mpIDs = new Dictionary<int, List<int>>();
             Debug.WriteLine("Start of header fix scan===================");
 
             //start full scan.
-            itemcount = 2;
+            int itemcount = 2;
 
             //This will update netindex'es for all items that start with TheWorld.PersistentLevel and are 3 items long.
             foreach (IExportEntry exportEntry in Pcc.Exports)
@@ -334,12 +319,12 @@ namespace ME3Explorer.Pathfinding_Editor
                     //Debug.WriteLine(maybe_MPID);
 
                     int metadataClass = exportEntry.idxClass;
-                    if ((classId1 != metadataClass) || (classId2 != metadataClass))
+                    if (classId1 != metadataClass || classId2 != metadataClass)
                     {
-                        Debug.WriteLine("Updating class type at start of export data " + exportEntry.UIndex + " " + exportEntry.ClassName);
+                        Debug.WriteLine($"Updating class type at start of export data {exportEntry.UIndex} {exportEntry.ClassName}");
                         //Update unreal header
-                        SharedPathfinding.WriteMem(exportData, 0, BitConverter.GetBytes(metadataClass));
-                        SharedPathfinding.WriteMem(exportData, 4, BitConverter.GetBytes(metadataClass));
+                        exportData.OverwriteRange(0, BitConverter.GetBytes(metadataClass));
+                        exportData.OverwriteRange(4, BitConverter.GetBytes(metadataClass));
                         numUpdated++;
                         exportEntry.Data = exportData;
 
@@ -423,16 +408,16 @@ namespace ME3Explorer.Pathfinding_Editor
             }*/
             //if (showUI)
             //{
-            task?.Complete(numUpdated + " export" + (numUpdated != 1 ? "s" : "") + " stack headers updated");
+            task?.Complete($"{numUpdated} export{(numUpdated != 1 ? "s" : "")} stack headers updated");
             //}
         }
 
         public void relinkPathfindingChain(ListBoxTask task = null)
         {
-            List<IExportEntry> pathfindingChain = new List<IExportEntry>();
+            var pathfindingChain = new List<IExportEntry>();
 
-            int start = PersistentLevel.propsEnd();
-            byte[] data = PersistentLevel.Data;
+            byte[] data = PersistentLevel.getBinaryData();
+            int start = 4;
             uint numberofitems = BitConverter.ToUInt32(data, start);
             int countoffset = start;
 
@@ -464,7 +449,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
 
             //Filter so it only has nextNavigationPoint. This will drop the end node
-            List<IExportEntry> nextNavigationPointChain = new List<IExportEntry>();
+            var nextNavigationPointChain = new List<IExportEntry>();
             foreach (IExportEntry exportEntry in pathfindingChain)
             {
                 ObjectProperty nextNavigationPointProp = exportEntry.GetProperty<ObjectProperty>("nextNavigationPoint");
@@ -504,7 +489,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 ObjectProperty nextNav = chainItem.GetProperty<ObjectProperty>("nextNavigationPoint");
 
                 byte[] expData = chainItem.Data;
-                SharedPathfinding.WriteMem(expData, (int)nextNav.ValueOffset, BitConverter.GetBytes(nextchainItem.UIndex));
+                expData.OverwriteRange((int)nextNav.ValueOffset, BitConverter.GetBytes(nextchainItem.UIndex));
                 chainItem.Data = expData;
                 //Debug.WriteLine(chainItem.UIndex + " Chain link -> " + nextchainItem.UIndex);
             }
@@ -539,8 +524,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         UnrealGUID nav = new UnrealGUID(navguid);
 
-                        List<UnrealGUID> list;
-                        if (navGuidLists.TryGetValue(nav.ToString(), out list))
+                        if (navGuidLists.TryGetValue(nav.ToString(), out List<UnrealGUID> list))
                         {
                             list.Add(nav);
                         }
@@ -568,7 +552,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 if (guidList.Count > 1)
                 {
                     numduplicates++;
-                    Debug.WriteLine("Number of duplicates: " + guidList.Count);
+                    Debug.WriteLine($"Number of duplicates: {guidList.Count}");
                     //contains duplicates
                     foreach (UnrealGUID guid in guidList)
                     {
@@ -576,7 +560,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         duplicateGuids.Add(guid);
                         ListBoxTask v = new ListBoxTask
                         {
-                            Header = "Dupliate GUID found on export " + guid.export.UIndex + " " + guid.export.ObjectName + "_" + guid.export.indexValue,
+                            Header = $"Dupliate GUID found on export {guid.export.UIndex} {guid.export.ObjectName}_{guid.export.indexValue}",
                             Icon = FontAwesomeIcon.TimesRectangle,
                             Spinning = false,
                             Foreground = Brushes.Red
@@ -587,36 +571,5 @@ namespace ME3Explorer.Pathfinding_Editor
             }
             task?.Complete(numduplicates + " duplicate GUID" + (numduplicates != 1 ? "s" : "") + " were found");
         }
-        #region PropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Notifies listeners when given property is updated.
-        /// </summary>
-        /// <param name="propertyname">Name of property to give notification for. If called in property, argument can be ignored as it will be default.</param>
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyname = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
-        }
-
-        /// <summary>
-        /// Sets given property and notifies listeners of its change. IGNORES setting the property to same value.
-        /// Should be called in property setters.
-        /// </summary>
-        /// <typeparam name="T">Type of given property.</typeparam>
-        /// <param name="field">Backing field to update.</param>
-        /// <param name="value">New value of property.</param>
-        /// <param name="propertyName">Name of property.</param>
-        /// <returns>True if success, false if backing field and new value aren't compatible.</returns>
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-
-
-        #endregion
     }
 }

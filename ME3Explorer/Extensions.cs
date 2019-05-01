@@ -289,6 +289,29 @@ namespace ME3Explorer
         {
             return !enumerable.Any();
         }
+        /// <summary>
+        /// Creates a sequence of tuples by combining the two sequences. The resulting sequence will length of the shortest of the two.
+        /// </summary>
+        public static IEnumerable<(TFirst, TSecond)> ZipTuple<TFirst, TSecond>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second)
+        {
+            return first.Zip(second, ValueTuple.Create);
+        }
+    }
+
+    public static class DictionaryExtensions
+    {
+        /// <summary>
+        /// Adds <paramref name="value"/> to List&lt;<typeparamref name="T"/>&gt; associated with <paramref name="key"/>. Creates List&lt;<typeparamref name="T"/>&gt; if neccesary.
+        /// </summary>
+        public static void AddToListAt<K, T>(this Dictionary<K, List<T>> dict, K key, T value)
+        {
+            if (!dict.TryGetValue(key, out List<T> list))
+            {
+                list = new List<T>();
+                dict[key] = list;
+            }
+            list.Add(value);
+        }
     }
 
     public static class StringExtensions

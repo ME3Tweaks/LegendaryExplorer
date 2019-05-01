@@ -18,15 +18,16 @@ namespace ME2Explorer.Unreal
         public static Dictionary<string, ClassInfo> Structs = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, List<string>> Enums = new Dictionary<string, List<string>>();
 
+        private static readonly string jsonPath = Path.Combine(ME3Explorer.App.ExecFolder, "ME2ObjectInfo.json");
+
         public static void loadfromJSON()
         {
-            string path = Application.StartupPath + "//exec//ME2ObjectInfo.json";
 
             try
             {
-                if (File.Exists(path))
+                if (File.Exists(jsonPath))
                 {
-                    string raw = File.ReadAllText(path);
+                    string raw = File.ReadAllText(jsonPath);
                     var blob = JsonConvert.DeserializeAnonymousType(raw, new { Classes, Structs, Enums });
                     Classes = blob.Classes;
                     Structs = blob.Structs;
@@ -494,7 +495,7 @@ namespace ME2Explorer.Unreal
                 type = PropertyType.ArrayProperty,
                 reference = "Class"
             };
-            File.WriteAllText(Application.StartupPath + "//exec//ME2ObjectInfo.json", JsonConvert.SerializeObject(new { Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented));
+            File.WriteAllText(jsonPath, JsonConvert.SerializeObject(new { Classes = NewClasses, Structs = NewStructs, Enums = NewEnums }, Formatting.Indented));
             MessageBox.Show("Done");
         }
 

@@ -19,9 +19,10 @@ namespace ME1Explorer.Unreal
         public static Dictionary<string, ClassInfo> Structs = new Dictionary<string, ClassInfo>();
         public static Dictionary<string, List<string>> Enums = new Dictionary<string, List<string>>();
 
+        private static readonly string jsonPath = Path.Combine(ME3Explorer.App.ExecFolder, "ME1ObjectInfo.json");
         public static void loadfromJSON()
         {
-            string path = Application.StartupPath + "//exec//ME1ObjectInfo.json";
+            string path = jsonPath;
 
             try
             {
@@ -496,7 +497,7 @@ namespace ME1Explorer.Unreal
             Classes.Add("LightMapTexture2D", info);
 
 
-            File.WriteAllText(Application.StartupPath + "//exec//ME1ObjectInfo.json", JsonConvert.SerializeObject(new { Classes = Classes, Structs = Structs, Enums = Enums }, Formatting.Indented));
+            File.WriteAllText(jsonPath, JsonConvert.SerializeObject(new { Classes = Classes, Structs = Structs, Enums = Enums }, Formatting.Indented));
             MessageBox.Show("Done");
         }
 

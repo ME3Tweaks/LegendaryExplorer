@@ -19,7 +19,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public static Dictionary<string, Dictionary<string, string>> ImportClassDB = new Dictionary<string, Dictionary<string, string>>(); //SFXGame.Default__SFXEnemySpawnPoint -> class, packagefile (can infer link and name)
         public static List<PathfindingDB_ExportType> ExportClassDB = new List<PathfindingDB_ExportType>(); //SFXEnemy SpawnPoint -> class, name, ...etc
         private static bool ClassesDBLoaded;
-        internal static string ClassesDatabasePath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "exec", "pathfindingclassdb.json");
+        internal static string ClassesDatabasePath = Path.Combine(App.ExecFolder, "pathfindingclassdb.json");
 
         /// <summary>
         /// Converts struct property to SharpDX Vector 3
@@ -28,10 +28,12 @@ namespace ME3Explorer.Pathfinding_Editor
         /// <returns></returns>
         public static Vector3 GetVector3(StructProperty vectorStruct)
         {
-            Vector3 v = new Vector3();
-            v.X = vectorStruct.GetProp<FloatProperty>("X");
-            v.Y = vectorStruct.GetProp<FloatProperty>("Y");
-            v.Z = vectorStruct.GetProp<FloatProperty>("Z");
+            Vector3 v = new Vector3
+            {
+                X = vectorStruct.GetProp<FloatProperty>("X"),
+                Y = vectorStruct.GetProp<FloatProperty>("Y"),
+                Z = vectorStruct.GetProp<FloatProperty>("Z")
+            };
             return v;
         }
 
@@ -42,9 +44,11 @@ namespace ME3Explorer.Pathfinding_Editor
         /// <returns></returns>
         public static Vector2 GetVector2(StructProperty vectorStruct)
         {
-            Vector2 v = new Vector2();
-            v.X = vectorStruct.GetProp<FloatProperty>("X");
-            v.Y = vectorStruct.GetProp<FloatProperty>("Y");
+            Vector2 v = new Vector2
+            {
+                X = vectorStruct.GetProp<FloatProperty>("X"),
+                Y = vectorStruct.GetProp<FloatProperty>("Y")
+            };
             return v;
         }
 
@@ -60,10 +64,10 @@ namespace ME3Explorer.Pathfinding_Editor
                 IntProperty D = guidProp.GetProp<IntProperty>("D");
                 byte[] data = export.Data;
 
-                WriteMem(data, (int)A.ValueOffset, BitConverter.GetBytes(rnd.Next()));
-                WriteMem(data, (int)B.ValueOffset, BitConverter.GetBytes(rnd.Next()));
-                WriteMem(data, (int)C.ValueOffset, BitConverter.GetBytes(rnd.Next()));
-                WriteMem(data, (int)D.ValueOffset, BitConverter.GetBytes(rnd.Next()));
+                data.OverwriteRange((int)A.ValueOffset, BitConverter.GetBytes(rnd.Next()));
+                data.OverwriteRange((int)B.ValueOffset, BitConverter.GetBytes(rnd.Next()));
+                data.OverwriteRange((int)C.ValueOffset, BitConverter.GetBytes(rnd.Next()));
+                data.OverwriteRange((int)D.ValueOffset, BitConverter.GetBytes(rnd.Next()));
                 export.Data = data;
             }
         }
@@ -152,12 +156,12 @@ namespace ME3Explorer.Pathfinding_Editor
                     outgoingSpecEndProp.Value = destinationNode.UIndex;
 
                     //Add to source node prop
-                    ArrayProperty<ObjectProperty> PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                    var PathList = startNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
                     PathList.Add(new ObjectProperty(outgoingSpec.UIndex));
                     startNode.WriteProperty(PathList);
 
                     //Write Spec Size
-                    SetReachSpecSize(Pcc, outgoingSpecProperties, size.SpecRadius, size.SpecHeight);
+                    SetReachSpecSize(outgoingSpecProperties, size.SpecRadius, size.SpecHeight);
                     outgoingSpec.WriteProperties(outgoingSpecProperties);
 
                     if (createTwoWay)
@@ -179,12 +183,12 @@ namespace ME3Explorer.Pathfinding_Editor
 
 
                         //Add reachspec to destination node's path list (returning)
-                        ArrayProperty<ObjectProperty> DestPathList = destinationNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                        var DestPathList = destinationNode.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
                         DestPathList.Add(new ObjectProperty(incomingSpec.UIndex));
                         destinationNode.WriteProperty(DestPathList);
 
                         //destNode.WriteProperty(DestPathList);
-                        SetReachSpecSize(Pcc, incomingSpecProperties, size.SpecRadius, size.SpecHeight);
+                        SetReachSpecSize(incomingSpecProperties, size.SpecRadius, size.SpecHeight);
 
                         incomingSpec.WriteProperties(incomingSpecProperties);
                     }
@@ -201,7 +205,7 @@ namespace ME3Explorer.Pathfinding_Editor
         /// <param name="specProperties"></param>
         /// <param name="radius"></param>
         /// <param name="height"></param>
-        public static void SetReachSpecSize(IMEPackage Pcc, PropertyCollection specProperties, int radius, int height)
+        public static void SetReachSpecSize(PropertyCollection specProperties, int radius, int height)
         {
             IntProperty radiusProp = specProperties.GetProp<IntProperty>("CollisionRadius");
             IntProperty heightProp = specProperties.GetProp<IntProperty>("CollisionHeight");
@@ -224,7 +228,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public static void SetReachSpecSize(IExportEntry spec, int radius, int height)
         {
             PropertyCollection specProperties = spec.GetProperties();
-            SetReachSpecSize(spec.FileRef, specProperties, radius, height);
+            SetReachSpecSize(specProperties, radius, height);
             spec.WriteProperties(specProperties); //write it back.
         }
 
@@ -256,10 +260,10 @@ namespace ME3Explorer.Pathfinding_Editor
             int upstreamCount = 1;
 
             IEntry upstreamEntryToAttachTo = null;
-            string upstreamfullpath = null;
-            while (upstreamCount < importParts.Count())
+            string upstreamfullpath;
+            while (upstreamCount < importParts.Length)
             {
-                upstreamfullpath = string.Join(".", importParts, 0, importParts.Count() - upstreamCount);
+                upstreamfullpath = String.Join(".", importParts, 0, importParts.Length - upstreamCount);
                 var upstreammatchinglist = fullPathMappingList.Where(x => x.fullpath == upstreamfullpath).ToList();
                 if (upstreammatchinglist.Count == 1)
                 {
@@ -316,10 +320,10 @@ namespace ME3Explorer.Pathfinding_Editor
             while (upstreamCount > 0)
             {
                 upstreamCount--;
-                string fullobjectname = string.Join(".", importParts, 0, importParts.Count() - upstreamCount);
+                string fullobjectname = String.Join(".", importParts, 0, importParts.Length - upstreamCount);
                 Dictionary<string, string> importdbinfo = ImportClassDB[fullobjectname];
 
-                int downstreamName = Pcc.FindNameOrAdd(importParts[importParts.Count() - upstreamCount - 1]);
+                int downstreamName = Pcc.FindNameOrAdd(importParts[importParts.Length - upstreamCount - 1]);
                 Debug.WriteLine(Pcc.Names[downstreamName]);
                 int downstreamLinkIdx = upstreamEntryToAttachTo.UIndex;
                 Debug.WriteLine(upstreamEntryToAttachTo.GetFullPath);
@@ -344,11 +348,13 @@ namespace ME3Explorer.Pathfinding_Editor
                 //    throw new Exception("No class was found for importing");
                 //}
 
-                mostdownstreamimport = new ImportEntry(Pcc);
-                mostdownstreamimport.idxLink = downstreamLinkIdx;
-                mostdownstreamimport.idxClassName = downstreamClassNameIdx;
-                mostdownstreamimport.idxObjectName = downstreamName;
-                mostdownstreamimport.idxPackageFile = downstreamPackageName;
+                mostdownstreamimport = new ImportEntry(Pcc)
+                {
+                    idxLink = downstreamLinkIdx,
+                    idxClassName = downstreamClassNameIdx,
+                    idxObjectName = downstreamName,
+                    idxPackageFile = downstreamPackageName
+                };
                 Pcc.addImport(mostdownstreamimport);
                 upstreamEntryToAttachTo = mostdownstreamimport;
             }
@@ -375,10 +381,7 @@ namespace ME3Explorer.Pathfinding_Editor
         /// </summary>
         /// <param name="export">export used to determine which game is being parsed</param>
         /// <returns>Actor for ME2/ME3, Nav for ME1</returns>
-        public static string GetReachSpecEndName(IExportEntry export)
-        {
-            return export.FileRef.Game != MEGame.ME1 ? "Actor" : "Nav";
-        }
+        public static string GetReachSpecEndName(IExportEntry export) => export.FileRef.Game == MEGame.ME1 ? "Nav" : "Actor";
 
         /// <summary>
         /// Rounds a double to an int. Because apparently Microsoft doesn't know how to round numbers.
@@ -404,9 +407,10 @@ namespace ME3Explorer.Pathfinding_Editor
             StructProperty navGuid = export.GetProperty<StructProperty>("NavGuid");
             if (navGuid != null)
             {
-                UnrealGUID guid = new UnrealGUID(navGuid);
-                guid.export = export;
-                return guid;
+                return new UnrealGUID(navGuid)
+                {
+                    export = export
+                };
             }
 
             return null;
@@ -442,7 +446,6 @@ namespace ME3Explorer.Pathfinding_Editor
                     JObject o = JObject.Parse(raw);
                     JToken exportjson = o.SelectToken("exporttypes");
                     JToken importjson = o.SelectToken("importtypes");
-                    var obj = JsonConvert.DeserializeObject<dynamic>(exportjson.ToString());
 
                     ExportClassDB = JsonConvert.DeserializeObject<List<PathfindingDB_ExportType>>(exportjson.ToString());
                     ImportClassDB = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(importjson.ToString());
@@ -461,13 +464,14 @@ namespace ME3Explorer.Pathfinding_Editor
             var pathlist = export.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
             if (pathlist == null) return new List<IExportEntry>(); //nothing
             var returnlist = new List<IExportEntry>(pathlist.Count);
-            pathlist.ForEach(x =>
+            foreach (ObjectProperty prop in pathlist)
             {
-                if (x.Value > 0)
+                if (prop.Value > 0)
                 {
-                    returnlist.Add(export.FileRef.getUExport(x.Value));
+                    returnlist.Add(export.FileRef.getUExport(prop.Value));
                 }
-            });
+            }
+
             return returnlist;
         }
 
@@ -487,13 +491,38 @@ namespace ME3Explorer.Pathfinding_Editor
 
             return null; //can't get end, or is external
         }
+
+        public static Point3D GetLocation(IExportEntry export)
+        {
+            float x = 0, y = 0, z = int.MinValue;
+            var prop = export.GetProperty<StructProperty>("location");
+            if (prop != null)
+            {
+                foreach (var locprop in prop.Properties)
+                {
+                    switch (locprop)
+                    {
+                        case FloatProperty fltProp when fltProp.Name == "X":
+                            x = fltProp;
+                            break;
+                        case FloatProperty fltProp when fltProp.Name == "Y":
+                            y = fltProp;
+                            break;
+                        case FloatProperty fltProp when fltProp.Name == "Z":
+                            z = fltProp;
+                            break;
+                    }
+                }
+                return new Point3D(x, y, z);
+            }
+            return null;
+        }
     }
 
     public class UnrealGUID
     {
-        public int A, B, C, D;
+        public readonly int A, B, C, D;
         public IExportEntry export;
-        private StructProperty originalGUID;
 
         public UnrealGUID(StructProperty guid)
         {
@@ -506,21 +535,17 @@ namespace ME3Explorer.Pathfinding_Editor
             B = guid.GetProp<IntProperty>("B");
             C = guid.GetProp<IntProperty>("C");
             D = guid.GetProp<IntProperty>("D");
-            this.originalGUID = guid;
         }
 
         public static bool operator ==(UnrealGUID b1, UnrealGUID b2)
         {
-            if ((object)null == b1)
-                return (null == b2);
+            if (b1 is null)
+                return b2 is null;
 
             return b1.Equals(b2);
         }
 
-        public static bool operator !=(UnrealGUID b1, UnrealGUID b2)
-        {
-            return !(b1 == b2);
-        }
+        public static bool operator !=(UnrealGUID b1, UnrealGUID b2) => !(b1 == b2);
 
         public override bool Equals(object obj)
         {
@@ -530,10 +555,7 @@ namespace ME3Explorer.Pathfinding_Editor
             return other.A == A && other.B == B && other.C == C && other.D == D;
         }
 
-        public override int GetHashCode()
-        {
-            return (A, B, C, D).GetHashCode();
-        }
+        public override int GetHashCode() => (A, B, C, D).GetHashCode();
 
         public override string ToString()
         {
@@ -596,6 +618,10 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public bool Equals(ReachSpecSize other)
         {
+            if (other is null)
+            {
+                return false;
+            }
             return SpecRadius == other.SpecRadius && SpecHeight == other.SpecHeight;
         }
     }
@@ -646,12 +672,12 @@ namespace ME3Explorer.Pathfinding_Editor
             double deltaY = Y - other.Y;
             double deltaZ = Z - other.Z;
 
-            return (double)Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+            return Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
         }
 
         public override string ToString()
         {
-            return X + "," + Y + "," + Z;
+            return $"{X},{Y},{Z}";
         }
     }
 }

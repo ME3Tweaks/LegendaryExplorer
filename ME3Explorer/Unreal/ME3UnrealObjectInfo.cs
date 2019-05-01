@@ -215,6 +215,8 @@ namespace ME3Explorer.Unreal
             "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimTransform", "AimTransform", "AimOffsetProfile", "FontCharacter",
             "CoverReference", "CoverInfo", "CoverSlot", "BioRwBox", "BioMask4Property", "RwVector2", "RwVector3", "RwVector4", "BioRwBox44" };
 
+        private static readonly string jsonPath = Path.Combine(App.ExecFolder, "ME3ObjectInfo.json");
+
         public static bool isImmutableStruct(string structName)
         {
             return ImmutableStructs.Contains(structName);
@@ -248,13 +250,12 @@ namespace ME3Explorer.Unreal
 
         public static void loadfromJSON()
         {
-            string path = Application.StartupPath + "//exec//ME3ObjectInfo.json";
 
             try
             {
-                if (File.Exists(path))
+                if (File.Exists(jsonPath))
                 {
-                    string raw = File.ReadAllText(path);
+                    string raw = File.ReadAllText(jsonPath);
                     var blob = JsonConvert.DeserializeAnonymousType(raw, new { SequenceObjects, Classes, Structs, Enums });
                     SequenceObjects = blob.SequenceObjects;
                     Classes = blob.Classes;
@@ -779,7 +780,7 @@ namespace ME3Explorer.Unreal
 
             #endregion
 
-            File.WriteAllText(Application.StartupPath + "//exec//ME3ObjectInfo.json",
+            File.WriteAllText(jsonPath,
                 JsonConvert.SerializeObject(new { SequenceObjects, Classes, Structs, Enums }, Formatting.Indented));
             MessageBox.Show("Done");
         }

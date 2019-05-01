@@ -24,9 +24,9 @@ namespace ME3Explorer.Pathfinding_Editor
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
-        private static int DEFAULT_WIDTH = 1;
-        private static int DEFAULT_HEIGHT = 1;
+        private Container components;
+        private static readonly int DEFAULT_WIDTH = 1;
+        private static readonly int DEFAULT_HEIGHT = 1;
         public bool showVolumeBrushes = true;
 
         public bool updating = false;
@@ -41,15 +41,15 @@ namespace ME3Explorer.Pathfinding_Editor
         public PathingGraphEditor(int width, int height)
         {
             InitializeComponent();
-            this.Size = new Size(width, height);
+            Size = new Size(width, height);
             nodeLayer = this.Layer;
             edgeLayer = new PLayer();
             Root.AddChild(edgeLayer);
-            this.Camera.AddLayer(0, edgeLayer);
+            Camera.AddLayer(0, edgeLayer);
             backLayer = new PLayer();
             Root.AddChild(backLayer);
             backLayer.MoveToBack();
-            this.Camera.AddLayer(1, backLayer);
+            Camera.AddLayer(1, backLayer);
             dragHandler = new NodeDragHandler();
             nodeLayer.AddInputEventListener(dragHandler);
         }
@@ -145,41 +145,13 @@ namespace ME3Explorer.Pathfinding_Editor
             PointF start = node1.GlobalBounds.Location;
             PointF end = node2.GlobalBounds.Location;
 
-
-            //float h1x, h1y, h2x;
-            //if (nodes.Count > 2 && (int)nodes[2] == -1) //var link
-            //{
-            //    start.X += node1.GlobalBounds.Width * 0.5f;
-            //    start.Y += node1.GlobalBounds.Height;
-            //    h1x = h2x = 0;
-            //    h1y = end.Y > start.Y ? 200 * (float)Math.Log10((end.Y - start.Y) / 200 + 1) : 200 * (float)Math.Log10((start.Y - end.Y) / 100 + 1);
-            //    if (h1y < 15)
-            //    {
-            //        h1y = 15;
-            //    }
-            //    end.X += node2.GlobalBounds.Width / 2;
-            //    end.Y += node2.GlobalBounds.Height / 2;
-            //}
-            //else
-            //{
-            //    start.X += node1.GlobalBounds.Width;
-            //    start.Y += node1.GlobalBounds.Height * 0.5f;
-            //    end.Y += node2.GlobalBounds.Height * 0.5f;
-            //    h1x = h2x = end.X > start.X ? 200 * (float)Math.Log10((end.X - start.X) / 200 + 1) : 200 * (float)Math.Log10((start.X - end.X) / 100 + 1);
-            //    if (h1x < 15)
-            //    {
-            //        h1x = h2x = 15;
-            //    }
-            //    h1y = 0;
-            //}
-
             edge.Reset();
             edge.AddLine(start.X + node1.GlobalBounds.Width * 0.5f, start.Y + node1.GlobalBounds.Height * 0.5f, end.X + node2.GlobalBounds.Width * 0.5f, end.Y + node2.GlobalBounds.Height * 0.5f);
         }
 
         public void ScaleViewTo(float scale)
         {
-            this.Camera.ViewScale = scale;
+            Camera.ViewScale = scale;
         }
 
         /// <summary>
@@ -193,7 +165,7 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             public override bool DoesAcceptEvent(PInputEventArgs e)
             {
-                return e.IsMouseEvent && (e.Button == MouseButtons.Left || e.IsMouseEnterOrMouseLeave); //(e.Button != MouseButtons.None || e.IsMouseEnterOrMouseLeave);
+                return e.IsMouseEvent && (e.Button == MouseButtons.Left || e.IsMouseEnterOrMouseLeave);
             }
 
             protected override void OnStartDrag(object sender, PInputEventArgs e)
@@ -214,17 +186,15 @@ namespace ME3Explorer.Pathfinding_Editor
                         {
                             foreach (PathfindingEditorEdge edge in pn.Edges)
                             {
-                                PathingGraphEditor.UpdateEdgeStraight(edge);
+                                UpdateEdgeStraight(edge);
                             }
                         }
-                        else
+                        else if (node.Tag is ArrayList edges)
                         {
-                            ArrayList edges = (ArrayList)node.Tag;
-                            if (edges != null)
-                                foreach (PathfindingEditorEdge edge in edges)
-                                {
-                                    PathingGraphEditor.UpdateEdgeStraight(edge);
-                                }
+                            foreach (PathfindingEditorEdge edge in edges)
+                            {
+                                UpdateEdgeStraight(edge);
+                            }
                         }
                     }
                 }
@@ -238,8 +208,7 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             if (disposing)
             {
-                if (components != null)
-                    components.Dispose();
+                components?.Dispose();
             }
             nodeLayer.RemoveAllChildren();
             edgeLayer.RemoveAllChildren();

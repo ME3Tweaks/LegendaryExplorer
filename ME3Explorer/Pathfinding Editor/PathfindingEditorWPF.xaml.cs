@@ -25,6 +25,7 @@ using UMD.HCIL.Piccolo.Event;
 using UMD.HCIL.Piccolo.Nodes;
 using static ME3Explorer.PathfindingNodes.PathfindingNode;
 using DashStyle = System.Drawing.Drawing2D.DashStyle;
+using Point = System.Windows.Point;
 
 namespace ME3Explorer.Pathfinding_Editor
 {
@@ -62,39 +63,35 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public static string[] splineNodeClasses = { "SplineActor" };
 
-        public static string[]
-            ignoredobjectnames =
-            {
-                "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1"
-            }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
+        public static string[] ignoredobjectnames =
+        {
+            "PREFAB_Ladders_3M_Arc0", "PREFAB_Ladders_3M_Arc1"
+        }; //These come up as parsed classes but aren't actually part of the level, only prefabs. They should be ignored
 
         //Layers
         private List<PathfindingNodeMaster> GraphNodes;
         private bool ChangingSelectionByGraphClick;
         private IExportEntry PersisentLevelExport;
 
-        private PathingGraphEditor graphEditor;
+        private readonly PathingGraphEditor graphEditor;
         private bool AllowRefresh;
-        private PathingZoomController zoomController;
+        public PathingZoomController zoomController;
 
         private string FileQueuedForLoad;
 
-        public ObservableCollectionExtended<IExportEntry> ActiveNodes { get; set; } =
-            new ObservableCollectionExtended<IExportEntry>();
+        public ObservableCollectionExtended<IExportEntry> ActiveNodes { get; set; } = new ObservableCollectionExtended<IExportEntry>();
 
         public ObservableCollectionExtended<string> TagsList { get; set; } = new ObservableCollectionExtended<string>();
 
-        public ObservableCollectionExtended<StaticMeshCollection> StaticMeshCollections { get; set; } =
-            new ObservableCollectionExtended<StaticMeshCollection>();
+        public ObservableCollectionExtended<StaticMeshCollection> StaticMeshCollections { get; set; } = new ObservableCollectionExtended<StaticMeshCollection>();
 
         public ObservableCollectionExtended<Zone> CombatZones { get; } = new ObservableCollectionExtended<Zone>();
 
-        public ObservableCollectionExtended<Zone> CurrentNodeCombatZones { get; } =
-            new ObservableCollectionExtended<Zone>();
+        public ObservableCollectionExtended<Zone> CurrentNodeCombatZones { get; } = new ObservableCollectionExtended<Zone>();
 
-        private List<IExportEntry> AllLevelObjects = new List<IExportEntry>();
+        private readonly List<IExportEntry> AllLevelObjects = new List<IExportEntry>();
         public string CurrentFile;
-        private PathfindingMouseListener pathfindingMouseListener;
+        private readonly PathfindingMouseListener pathfindingMouseListener;
 
         private string _currentNodeXY = "Undefined";
 
@@ -111,7 +108,7 @@ namespace ME3Explorer.Pathfinding_Editor
             StatusText = "Select package file to load";
             LoadCommands();
             InitializeComponent();
-            ContextMenu contextMenu = this.FindResource("nodeContextMenu") as ContextMenu;
+            ContextMenu contextMenu = (ContextMenu)FindResource("nodeContextMenu");
             contextMenu.DataContext = this;
             graphEditor = (PathingGraphEditor)GraphHost.Child;
             graphEditor.BackColor = System.Drawing.Color.FromArgb(130, 130, 130);
@@ -120,7 +117,7 @@ namespace ME3Explorer.Pathfinding_Editor
             RefreshRecent(false);
             zoomController = new PathingZoomController(graphEditor);
             SharedPathfinding.LoadClassesDB();
-            var types = SharedPathfinding.ExportClassDB.Where(x => x.pathnode).ToList();
+            List<PathfindingDB_ExportType> types = SharedPathfinding.ExportClassDB.Where(x => x.pathnode).ToList();
             foreach (var type in types)
             {
                 NodeType nt = new NodeType(type, false);
@@ -260,40 +257,39 @@ namespace ME3Explorer.Pathfinding_Editor
         public ICommand OpenRefInSequenceEditorCommand { get; set; }
         private void LoadCommands()
         {
-            RefreshCommand = new RelayCommand(RefreshGraph, PackageIsLoaded);
-            FocusGotoCommand = new RelayCommand(FocusGoto, PackageIsLoaded);
-            FocusFindCommand = new RelayCommand(FocusFind, PackageIsLoaded);
-            OpenCommand = new RelayCommand(OpenPackage, (o) => { return true; });
-            SaveCommand = new RelayCommand(SavePackage, PackageIsLoaded);
-            SaveAsCommand = new RelayCommand(SavePackageAs, PackageIsLoaded);
+            RefreshCommand = new GenericCommand(RefreshGraph, PackageIsLoaded);
+            FocusGotoCommand = new GenericCommand(FocusGoto, PackageIsLoaded);
+            FocusFindCommand = new GenericCommand(FocusFind, PackageIsLoaded);
+            OpenCommand = new GenericCommand(OpenPackage);
+            SaveCommand = new GenericCommand(SavePackage, PackageIsLoaded);
+            SaveAsCommand = new GenericCommand(SavePackageAs, PackageIsLoaded);
 
-            TogglePathfindingCommand = new RelayCommand(TogglePathfindingNodes, PackageIsLoaded);
-            ToggleEverythingElseCommand = new RelayCommand(ToggleEverythingElse, PackageIsLoaded);
-            ToggleActorsCommand = new RelayCommand(ToggleActors, PackageIsLoaded);
-            ToggleSplinesCommand = new RelayCommand(ToggleSplines, PackageIsLoaded);
-            ToggleSequenceReferencesCommand = new RelayCommand(ToggleSequenceReferences, PackageIsLoaded);
-            ShowBioTriggerVolumesCommand = new RelayCommand(ShowBioTriggerVolumes, PackageIsLoaded);
-            ShowBioTriggerStreamsCommand = new RelayCommand(ShowBioTriggerStreams, PackageIsLoaded);
-            ShowBlockingVolumesCommand = new RelayCommand(ShowBlockingVolumes, PackageIsLoaded);
-            ShowDynamicBlockingVolumesCommand = new RelayCommand(ShowDynamicBlockingVolumes, PackageIsLoaded);
-            ShowSFXBlockingVolumeLedgesCommand = new RelayCommand(ShowSFXBlockingVolumeLedges, PackageIsLoaded);
-            ShowSFXCombatZonesCommand = new RelayCommand(ShowSFXCombatZones, PackageIsLoaded);
-            ShowWwiseAudioVolumesCommand = new RelayCommand(ShowWwiseAudioVolumes, PackageIsLoaded);
+            TogglePathfindingCommand = new GenericCommand(TogglePathfindingNodes, PackageIsLoaded);
+            ToggleEverythingElseCommand = new GenericCommand(ToggleEverythingElse, PackageIsLoaded);
+            ToggleActorsCommand = new GenericCommand(ToggleActors, PackageIsLoaded);
+            ToggleSplinesCommand = new GenericCommand(ToggleSplines, PackageIsLoaded);
+            ToggleSequenceReferencesCommand = new GenericCommand(ToggleSequenceReferences, PackageIsLoaded);
+            ShowBioTriggerVolumesCommand = new GenericCommand(ShowBioTriggerVolumes, PackageIsLoaded);
+            ShowBioTriggerStreamsCommand = new GenericCommand(ShowBioTriggerStreams, PackageIsLoaded);
+            ShowBlockingVolumesCommand = new GenericCommand(ShowBlockingVolumes, PackageIsLoaded);
+            ShowDynamicBlockingVolumesCommand = new GenericCommand(ShowDynamicBlockingVolumes, PackageIsLoaded);
+            ShowSFXBlockingVolumeLedgesCommand = new GenericCommand(ShowSFXBlockingVolumeLedges, PackageIsLoaded);
+            ShowSFXCombatZonesCommand = new GenericCommand(ShowSFXCombatZones, PackageIsLoaded);
+            ShowWwiseAudioVolumesCommand = new GenericCommand(ShowWwiseAudioVolumes, PackageIsLoaded);
 
-            FlipLevelCommand = new RelayCommand(FlipLevel, PackageIsLoaded);
-            BuildPathfindingChainCommand = new RelayCommand(BuildPathfindingChainExperiment, PackageIsLoaded);
+            FlipLevelCommand = new GenericCommand(FlipLevel, PackageIsLoaded);
+            BuildPathfindingChainCommand = new GenericCommand(BuildPathfindingChainExperiment, PackageIsLoaded);
 
-            ShowNodeSizesCommand = new RelayCommand(ToggleNodeSizesDisplay, (o) => { return true; });
-            AddExportToLevelCommand = new RelayCommand(AddExportToLevel, PackageIsLoaded);
+            ShowNodeSizesCommand = new GenericCommand(ToggleNodeSizesDisplay);
+            AddExportToLevelCommand = new GenericCommand(AddExportToLevel, PackageIsLoaded);
 
             PopoutInterpreterCommand = new RelayCommand(PopoutInterpreterWPF, NodeIsSelected);
-            NodeTypeChangeCommand = new RelayCommand(ChangeNodeType, CanChangeNodetype);
+            NodeTypeChangeCommand = new GenericCommand(ChangeNodeType, CanChangeNodetype);
             OpenRefInSequenceEditorCommand = new RelayCommand(OpenRefInSequenceEditor, NodeIsSelected);
         }
 
-        private void OpenRefInSequenceEditor(object obj)
+        private static void OpenRefInSequenceEditor(object obj)
         {
-            //Will change to sequence editor wpf on merge
             if (obj is IExportEntry exp)
             {
                 SequenceEditorWPF seqed = new SequenceEditorWPF(exp);
@@ -302,13 +298,13 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        private void ToggleSequenceReferences(object obj)
+        private void ToggleSequenceReferences()
         {
             ShowSequenceReferences = !ShowSequenceReferences;
             RefreshGraph();
         }
 
-        private void ChangeNodeType(object obj)
+        private void ChangeNodeType()
         {
             Debug.WriteLine("Changing node type");
             if (ActiveNodes_ListBox.SelectedItem is IExportEntry exp &&
@@ -319,10 +315,7 @@ namespace ME3Explorer.Pathfinding_Editor
         }
 
 
-        private bool CanChangeNodetype(object obj)
-        {
-            return true;
-        }
+        private bool CanChangeNodetype() => true;
 
         /// <summary>
         /// This method changes a node's type. It does many steps:
@@ -332,7 +325,7 @@ namespace ME3Explorer.Pathfinding_Editor
         /// It changes the node class and object name
         /// </summary>
         /// <param name="nodeEntry"></param>
-        /// <param name="newType"></param>
+        /// <param name="newNodeType"></param>
         private void changeNodeType(IExportEntry nodeEntry, NodeType newNodeType)
         {
             var exportTypeInfo = newNodeType.TypeInfo;
@@ -340,8 +333,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
             if (nodeEntry.ClassName == exportTypeInfo.nodetypename)
             {
-                if (!exportTypeInfo.usesbtop || (nodeProperties.FirstOrDefault(x => x.Name == "bTopNode") is BoolProperty bTop
-                        && bTop.Value == newNodeType.Top))
+                if (!exportTypeInfo.usesbtop || (nodeProperties.FirstOrDefault(x => x.Name == "bTopNode") is BoolProperty bTop && bTop.Value == newNodeType.Top))
                 {
                     return; //same, not changing.
                 }
@@ -349,7 +341,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
             if (exportTypeInfo != null)
             {
-                List<UProperty> ensuredProperties = new List<UProperty>();
+                var ensuredProperties = new List<UProperty>();
                 foreach (var ensuredProp in exportTypeInfo.ensuredproperties)
                 {
                     switch (ensuredProp.type)
@@ -429,7 +421,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                     //If items on the other end of a reachspec are also the same type,
                     //Ensure outbound and returning reachspec type and sizes are correct.
-                    ArrayProperty<ObjectProperty> pathList = nodeProperties.GetProp<ArrayProperty<ObjectProperty>>("PathList");
+                    var pathList = nodeProperties.GetProp<ArrayProperty<ObjectProperty>>("PathList");
                     if (pathList != null)
                     {
                         foreach (ObjectProperty pathObj in pathList)
@@ -826,7 +818,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
                         if (outbound)
                         {
-                            ArrayProperty<ObjectProperty> pathList = specDest.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
+                            var pathList = specDest.GetProperty<ArrayProperty<ObjectProperty>>("PathList");
                             if (pathList != null)
                             {
                                 foreach (ObjectProperty pathObj in pathList)
@@ -849,9 +841,11 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void PopoutInterpreterWPF(object obj)
         {
-            IExportEntry export = ActiveNodes_ListBox.SelectedItem as IExportEntry;
-            ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), export);
-            elhw.Title = $"Interpreter - {export.UIndex} {export.GetNetIndexedFullPath} - {Pcc.FileName}";
+            IExportEntry export = (IExportEntry) ActiveNodes_ListBox.SelectedItem;
+            ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new InterpreterWPF(), export)
+            {
+                Title = $"Interpreter - {export.UIndex} {export.GetNetIndexedFullPath} - {Pcc.FileName}"
+            };
             elhw.Show();
         }
 
@@ -860,11 +854,11 @@ namespace ME3Explorer.Pathfinding_Editor
             return ActiveNodes_ListBox.SelectedItem is IExportEntry;
         }
 
-        private void AddExportToLevel(object obj)
+        private void AddExportToLevel()
         {
             using (EntrySelectorDialogWPF dialog = new EntrySelectorDialogWPF(this, Pcc, EntrySelectorDialogWPF.SupportedTypes.Exports))
             {
-                if (dialog.ShowDialog().Value && dialog.ChosenEntry is IExportEntry selectedEntry)
+                if (dialog.ShowDialog() is true && dialog.ChosenEntry is IExportEntry selectedEntry)
                 {
 
                     if (!AllLevelObjects.Contains(selectedEntry))
@@ -877,7 +871,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         start += 4;
                         uint numberofitems = BitConverter.ToUInt32(leveldata, start);
                         numberofitems++;
-                        SharedPathfinding.WriteMem(leveldata, start, BitConverter.GetBytes(numberofitems));
+                        leveldata.OverwriteRange(start, BitConverter.GetBytes(numberofitems));
 
                         //Debug.WriteLine("Size before: {memory.Length);
                         //memory = RemoveIndices(memory, offset, size);
@@ -890,13 +884,13 @@ namespace ME3Explorer.Pathfinding_Editor
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show($"{selectedEntry.UIndex} {selectedEntry.GetNetIndexedFullPath} is already in the level.");
+                        MessageBox.Show($"{selectedEntry.UIndex} {selectedEntry.GetNetIndexedFullPath} is already in the level.");
                     }
                 }
             }
         }
 
-        private void ToggleNodeSizesDisplay(object obj)
+        private void ToggleNodeSizesDisplay()
         {
             ShowNodeSizes_MenuItem.IsChecked = !ShowNodeSizes_MenuItem.IsChecked;
             Properties.Settings.Default.PathfindingEditorShowNodeSizes = ShowNodeSizes_MenuItem.IsChecked;
@@ -904,15 +898,15 @@ namespace ME3Explorer.Pathfinding_Editor
             RefreshGraph();
         }
 
-        private void BuildPathfindingChainExperiment(object obj)
+        private void BuildPathfindingChainExperiment()
         {
-            OpenFileDialog d = new OpenFileDialog();
-            d.Filter = "Point Logger ASI file output (txt)|*txt";
-            string pathfindingChainFile = null;
-            var result = d.ShowDialog();
-            if (result.HasValue && result.Value)
+            OpenFileDialog d = new OpenFileDialog
             {
-                pathfindingChainFile = d.FileName;
+                Filter = "Point Logger ASI file output (txt)|*txt"
+            };
+            if (d.ShowDialog() == true)
+            {
+                string pathfindingChainFile = d.FileName;
 
 
                 var pointsStrs = File.ReadAllLines(pathfindingChainFile);
@@ -939,19 +933,19 @@ namespace ME3Explorer.Pathfinding_Editor
                     StructProperty prop = newNode.GetProperty<StructProperty>("location");
                     if (prop != null)
                     {
-                        PropertyCollection nodelocprops = (prop as StructProperty).Properties;
+                        PropertyCollection nodelocprops = prop.Properties;
                         foreach (var locprop in nodelocprops)
                         {
-                            switch (locprop.Name)
+                            switch (locprop)
                             {
-                                case "X":
-                                    (locprop as FloatProperty).Value = (float)point.X;
+                                case FloatProperty fltProp when fltProp.Name == "X":
+                                    fltProp.Value = (float)point.X;
                                     break;
-                                case "Y":
-                                    (locprop as FloatProperty).Value = (float)point.Y;
+                                case FloatProperty fltProp when fltProp.Name == "Y":
+                                    fltProp.Value = (float)point.Y;
                                     break;
-                                case "Z":
-                                    (locprop as FloatProperty).Value = (float)point.Z;
+                                case FloatProperty fltProp when fltProp.Name == "Z":
+                                    fltProp.Value = (float)point.Z;
                                     break;
                             }
                         }
@@ -979,7 +973,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        private void FlipLevel(object obj)
+        private void FlipLevel()
         {
             foreach (IExportEntry exp in Pcc.Exports)
             {
@@ -991,11 +985,11 @@ namespace ME3Explorer.Pathfinding_Editor
 
                             byte[] data = exp.Data;
                             //get a list of staticmesh stuff from the props.
-                            int listsize = System.BitConverter.ToInt32(data, 28);
-                            List<IExportEntry> smacitems = new List<IExportEntry>();
+                            int listsize = BitConverter.ToInt32(data, 28);
+                            var smacitems = new List<IExportEntry>();
                             for (int i = 0; i < listsize; i++)
                             {
-                                int offset = (32 + i * 4);
+                                int offset = 32 + i * 4;
                                 //fetch exports
                                 int entryval = BitConverter.ToInt32(data, offset);
                                 if (entryval > 0 && entryval < Pcc.ExportCount)
@@ -1029,13 +1023,13 @@ namespace ME3Explorer.Pathfinding_Editor
                                 float x = BitConverter.ToSingle(data, start + smcaindex * 64 + (12 * 4));
                                 float y = BitConverter.ToSingle(data, start + smcaindex * 64 + (13 * 4));
                                 float z = BitConverter.ToSingle(data, start + smcaindex * 64 + (14 * 4));
-                                data = SharedPathfinding.WriteMem(data, start + smcaindex * 64 + (12 * 4), BitConverter.GetBytes(x * -1));
-                                data = SharedPathfinding.WriteMem(data, start + smcaindex * 64 + (13 * 4), BitConverter.GetBytes(y * -1));
-                                data = SharedPathfinding.WriteMem(data, start + smcaindex * 64 + (14 * 4), BitConverter.GetBytes(z * -1));
+                                data.OverwriteRange(start + smcaindex * 64 + (12 * 4), BitConverter.GetBytes(x * -1));
+                                data.OverwriteRange(start + smcaindex * 64 + (13 * 4), BitConverter.GetBytes(y * -1));
+                                data.OverwriteRange(start + smcaindex * 64 + (14 * 4), BitConverter.GetBytes(z * -1));
 
                                 InvertScalingOnExport(smacitems[smcaindex], "Scale3D");
                                 smcaindex++;
-                                Debug.WriteLine(exp.Index + " " + smcaindex + " SMAC Flipping " + x + "," + y + "," + z);
+                                Debug.WriteLine($"{exp.Index} {smcaindex} SMAC Flipping {x},{y},{z}");
                             }
                             exp.Data = data;
                         }
@@ -1049,11 +1043,11 @@ namespace ME3Explorer.Pathfinding_Editor
                                 FloatProperty xProp = locationProp.Properties.GetProp<FloatProperty>("X");
                                 FloatProperty yProp = locationProp.Properties.GetProp<FloatProperty>("Y");
                                 FloatProperty zProp = locationProp.Properties.GetProp<FloatProperty>("Z");
-                                Debug.WriteLine(exp.Index + " " + exp.ObjectName + "Flipping " + xProp.Value + "," + yProp.Value + "," + zProp.Value);
+                                Debug.WriteLine($"{exp.Index} {exp.ObjectName}Flipping {xProp.Value},{yProp.Value},{zProp.Value}");
 
-                                xProp.Value = xProp.Value * -1;
-                                yProp.Value = yProp.Value * -1;
-                                zProp.Value = zProp.Value * -1;
+                                xProp.Value *= -1;
+                                yProp.Value *= -1;
+                                zProp.Value *= -1;
 
                                 exp.WriteProperty(locationProp);
                                 InvertScalingOnExport(exp, "DrawScale3D");
@@ -1065,7 +1059,7 @@ namespace ME3Explorer.Pathfinding_Editor
             MessageBox.Show("Items flipped.", "Flipping complete");
         }
 
-        private void InvertScalingOnExport(IExportEntry exp, string propname)
+        private static void InvertScalingOnExport(IExportEntry exp, string propname)
         {
             var drawScale3D = exp.GetProperty<StructProperty>(propname);
             bool hasDrawScale = drawScale3D != null;
@@ -1073,11 +1067,12 @@ namespace ME3Explorer.Pathfinding_Editor
             {
 
                 //What in god's name is this still doing here
-                PropertyCollection threeDProps = new PropertyCollection();
-                threeDProps.Add(new FloatProperty(0, "X"));
-                threeDProps.Add(new FloatProperty(0, "Y"));
-                threeDProps.Add(new FloatProperty(0, "Z"));
-                drawScale3D = new StructProperty("Vector", threeDProps, "DrawScale3D", true);
+                drawScale3D = new StructProperty("Vector", new PropertyCollection
+                {
+                    new FloatProperty(0, "X"),
+                    new FloatProperty(0, "Y"),
+                    new FloatProperty(0, "Z")
+                }, "DrawScale3D", true);
             }
             var drawScaleX = drawScale3D.GetProp<FloatProperty>("X");
             var drawScaleY = drawScale3D.GetProp<FloatProperty>("Y");
@@ -1097,82 +1092,96 @@ namespace ME3Explorer.Pathfinding_Editor
             exp.WriteProperty(drawScale3D);
         }
 
-        private void ShowWwiseAudioVolumes(object obj)
+        private void ShowWwiseAudioVolumes()
         {
-            var WwiseAudioVolumes = GraphNodes.Where(x => x is WwiseAudioVolume).Select(x => x as WwiseAudioVolume).ToList();
-            WwiseAudioVolumes.ForEach(x => x.SetShape(ShowVolumes_WwiseAudioVolumes));
+            foreach (var node in GraphNodes.OfType<WwiseAudioVolume>())
+            {
+                node.SetShape(ShowVolumes_WwiseAudioVolumes);
+            }
             graphEditor.Refresh();
         }
 
-        private void ShowSFXCombatZones(object obj)
+        private void ShowSFXCombatZones()
         {
-            var CombatZones = GraphNodes.Where(x => x is SFXCombatZone).Select(x => x as SFXCombatZone).ToList();
-            CombatZones.ForEach(x => x.SetShape(ShowVolumes_SFXCombatZones));
+            foreach (var node in GraphNodes.OfType<SFXCombatZone>())
+            {
+                node.SetShape(ShowVolumes_SFXCombatZones);
+            }
             graphEditor.Refresh();
         }
 
-        private void ShowSFXBlockingVolumeLedges(object obj)
+        private void ShowSFXBlockingVolumeLedges()
         {
-            var Ledges = GraphNodes.Where(x => x is SFXBlockingVolume_Ledge).Select(x => x as SFXBlockingVolume_Ledge).ToList();
-            Ledges.ForEach(x => x.SetShape(ShowVolumes_SFXBlockingVolume_Ledges));
+            foreach (var x in GraphNodes.OfType<SFXBlockingVolume_Ledge>())
+            {
+                x.SetShape(ShowVolumes_SFXBlockingVolume_Ledges);
+            }
             graphEditor.Refresh();
         }
 
-        private void ShowDynamicBlockingVolumes(object obj)
+        private void ShowDynamicBlockingVolumes()
         {
-            var DynamicBlockingVolumes = GraphNodes.Where(x => x is DynamicBlockingVolume).Select(x => x as DynamicBlockingVolume).ToList();
-            DynamicBlockingVolumes.ForEach(x => x.SetShape(ShowVolumes_DynamicBlockingVolumes));
+            foreach (var x in GraphNodes.OfType<DynamicBlockingVolume>())
+            {
+                x.SetShape(ShowVolumes_DynamicBlockingVolumes);
+            }
             graphEditor.Refresh();
         }
 
-        private void ShowBlockingVolumes(object obj)
+        private void ShowBlockingVolumes()
         {
-            var BlockingVolumes = GraphNodes.Where(x => x is BlockingVolume).Select(x => x as BlockingVolume).ToList();
-            BlockingVolumes.ForEach(x => x.SetShape(ShowVolumes_BlockingVolumes));
+            foreach (var x in GraphNodes.OfType<BlockingVolume>())
+            {
+                x.SetShape(ShowVolumes_BlockingVolumes);
+            }
             graphEditor.Refresh();
         }
 
-        private void ShowBioTriggerVolumes(object obj)
+        private void ShowBioTriggerVolumes()
         {
-            var BioTriggerVolumes = GraphNodes.Where(x => x is BioTriggerVolume).Select(x => x as BioTriggerVolume).ToList();
-            BioTriggerVolumes.ForEach(x => x.SetShape(ShowVolumes_BioTriggerVolumes));
+            foreach (var x in GraphNodes.OfType<BioTriggerVolume>())
+            {
+                x.SetShape(ShowVolumes_BioTriggerVolumes);
+            }
             graphEditor.Refresh();
         }
 
-        private void ShowBioTriggerStreams(object obj)
+        private void ShowBioTriggerStreams()
         {
-            var BioTriggerStreams = GraphNodes.Where(x => x is BioTriggerStream).Select(x => x as BioTriggerStream).ToList();
-            BioTriggerStreams.ForEach(x => x.SetShape(ShowVolumes_BioTriggerStreams));
+            foreach (var x in GraphNodes.OfType<BioTriggerStream>())
+            {
+                x.SetShape(ShowVolumes_BioTriggerStreams);
+            }
             graphEditor.Refresh();
         }
 
-        private void ToggleActors(object obj)
+        private void ToggleActors()
         {
             ShowActorsLayer = !ShowActorsLayer;
             RefreshGraph();
         }
 
-        private void ToggleSplines(object obj)
+        private void ToggleSplines()
         {
             ShowSplinesLayer = !ShowSplinesLayer;
             RefreshGraph();
         }
 
-        private void ToggleEverythingElse(object obj)
+        private void ToggleEverythingElse()
         {
             ShowEverythingElseLayer = !ShowEverythingElseLayer;
             RefreshGraph();
         }
 
-        private void TogglePathfindingNodes(object obj)
+        private void TogglePathfindingNodes()
         {
             ShowPathfindingNodesLayer = !ShowPathfindingNodesLayer;
             RefreshGraph();
         }
 
-        private void SavePackageAs(object obj)
+        private void SavePackageAs()
         {
-            string extension = System.IO.Path.GetExtension(Pcc.FileName);
+            string extension = Path.GetExtension(Pcc.FileName);
             SaveFileDialog d = new SaveFileDialog { Filter = $"*{extension}|*{extension}" };
             if (d.ShowDialog() == true)
             {
@@ -1183,7 +1192,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         public void FocusNode(IExportEntry node, bool select, long duration = 1000)
         {
-            PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == node.UIndex); //Will change to uindex eventually
+            PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == node.UIndex);
             if (s != null)
             {
                 if (select)
@@ -1202,12 +1211,9 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        private void SavePackage(object obj)
-        {
-            Pcc.save();
-        }
+        private void SavePackage() => Pcc.save();
 
-        private void OpenPackage(object obj)
+        private void OpenPackage()
         {
             OpenFileDialog d = new OpenFileDialog { Filter = App.FileFilter };
             if (d.ShowDialog() == true)
@@ -1227,21 +1233,12 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        private bool PackageIsLoaded(object obj)
-        {
-            return Pcc != null;
-        }
-
-        private void RefreshGraph(object obj)
-        {
-            RefreshGraph();
-        }
+        private bool PackageIsLoaded() => Pcc != null;
 
         private void RefreshGraph()
         {
             if (AllowRefresh)
             {
-                IExportEntry currentSelectedItem = (IExportEntry)ActiveNodes_ListBox.SelectedItem;
                 graphEditor.nodeLayer.RemoveAllChildren();
                 graphEditor.edgeLayer.RemoveAllChildren();
                 ActiveNodes.ClearEx();
@@ -1254,15 +1251,9 @@ namespace ME3Explorer.Pathfinding_Editor
             }
         }
 
-        private void FocusGoto(object obj)
-        {
-            FindByNumber_TextBox.Focus();
-        }
+        private void FocusGoto() => FindByNumber_TextBox.Focus();
 
-        private void FocusFind(object obj)
-        {
-            FindByTag_ComboBox.Focus();
-        }
+        private void FocusFind() => FindByTag_ComboBox.Focus();
 
         private string _nodeName = "Loading...";
         public string NodeName
@@ -1295,15 +1286,16 @@ namespace ME3Explorer.Pathfinding_Editor
                     case EZFilterIncludeDirection.None:
                         return "Showing all nodes";
                     case EZFilterIncludeDirection.Above:
-                        return "Showing all nodes above Z=" + ZFilteringValue;
+                        return $"Showing all nodes above Z={ZFilteringValue}";
                     case EZFilterIncludeDirection.AboveEquals:
-                        return "Showing all nodes at or above Z=" + ZFilteringValue;
+                        return $"Showing all nodes at or above Z={ZFilteringValue}";
                     case EZFilterIncludeDirection.Below:
-                        return "Showing all nodes below Z=" + ZFilteringValue;
+                        return $"Showing all nodes below Z={ZFilteringValue}";
                     case EZFilterIncludeDirection.BelowEquals:
-                        return "Showing all nodes at or below Z=" + ZFilteringValue;
+                        return $"Showing all nodes at or below Z={ZFilteringValue}";
+                    default:
+                        return "Unknown";
                 }
-                return "Unknown";
             }
         }
 
@@ -1311,32 +1303,17 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             get
             {
-                if (ActiveNodes_ListBox != null && ActiveNodes_ListBox.SelectedItem is IExportEntry CurrentLoadedExport)
+                if (ActiveNodes_ListBox?.SelectedItem is IExportEntry CurrentLoadedExport)
                 {
                     if (SharedPathfinding.ExportClassDB.FirstOrDefault(x => x.nodetypename == CurrentLoadedExport.ClassName) is PathfindingDB_ExportType classinfo)
                     {
                         return classinfo.description;
                     }
-                    else
-                    {
-                        return "This node type does not have any information detailed about its purpose.";
-                    }
-                    /*switch (CurrentLoadedExport.ClassName)
-                    {
-                        case "PathNode": return "A basic pathing node that all basic movement can use.";
-                        case "SFXNav_LargeBoostNode": return "A node that allows large creatures to boost to another LargeBoostNode, such as a Banshee floating up or down vertical distances.";
-                        case "SFXNav_TurretPoint": return "A basic pathing node that a Cerberus Engineer can place a turret at.";
 
-                        case "CoverSlotMarker": return "A node where AI can take cover. It is owned by a CoverLink and is part of a chain of continuous CoverSlotMarkers.";
-                        case "BioPathPoint": return "A basic pathing node that can be enabled or disabled in Kismet.";
-                        case "SFXEnemySpawnPoint": return "A basic pathing node that can be used as a spawn point for Mass Effect 3 Multiplayer enemies. It contains a list of required sync actions that using this spawn point will require to enter the main area of the map.";
-                        case "SFXNav_LargeMantleNode": return "A node that can be large mantled over to reach another large mantle node. This action is used when climbing over large cover by AI.";
-                    }*/
+                    return "This node type does not have any information detailed about its purpose.";
                 }
-                else
-                {
-                    return "No node is currently selected";
-                }
+
+                return "No node is currently selected";
             }
         }
 
@@ -1347,14 +1324,13 @@ namespace ME3Explorer.Pathfinding_Editor
         /// </summary>
         public void OpenContextMenu()
         {
-            ContextMenu contextMenu = this.FindResource("nodeContextMenu") as ContextMenu;
-            IExportEntry export = ActiveNodes_ListBox.SelectedItem as IExportEntry;
-            if (export != null)
+            ContextMenu contextMenu = (ContextMenu)FindResource("nodeContextMenu");
+            if (ActiveNodes_ListBox.SelectedItem is IExportEntry export)
             {
-                PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
+                PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == export.UIndex);
                 var debug = s.Tag;
-                var currentlocation = GetLocation(export);
-                CurrentNodeXY = s.GlobalBounds.X + "," + s.GlobalBounds.Y;
+                var currentlocation = SharedPathfinding.GetLocation(export);
+                CurrentNodeXY = $"{s.GlobalBounds.X},{s.GlobalBounds.Y}";
 
             }
             contextMenu.IsOpen = true;
@@ -1367,7 +1343,7 @@ namespace ME3Explorer.Pathfinding_Editor
             ActiveNodes.ClearEx();
             StaticMeshCollections.ClearEx();
             CombatZones.ClearEx();
-            StatusText = "Loading " + System.IO.Path.GetFileName(fileName);
+            StatusText = $"Loading {Path.GetFileName(fileName)}";
             Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
 
             LoadMEPackage(fileName);
@@ -1405,11 +1381,11 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     NodeName = "No node selected";
                 }
-                CurrentFile = System.IO.Path.GetFileName(fileName);
+                CurrentFile = Path.GetFileName(fileName);
                 AddRecent(fileName, false);
                 SaveRecentList();
                 RefreshRecent(true, RFiles);
-                Title = "Pathfinding Editor WPF - " + fileName;
+                Title = $"Pathfinding Editor WPF - {fileName}";
                 StatusText = null; //Nothing to prepend.
                 PathfindingEditorWPF_ValidationPanel.SetLevel(PersisentLevelExport);
             }
@@ -1534,7 +1510,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         if (ShowSplinesLayer && isAllowedVisibleByZFiltering(exportEntry))
                         {
                             bulkActiveNodes.Add(exportEntry);
-                            ArrayProperty<StructProperty> connectionsProp = exportEntry.GetProperty<ArrayProperty<StructProperty>>("Connections");
+                            var connectionsProp = exportEntry.GetProperty<ArrayProperty<StructProperty>>("Connections");
                             if (connectionsProp != null)
                             {
                                 foreach (StructProperty connectionProp in connectionsProp)
@@ -1597,7 +1573,7 @@ namespace ME3Explorer.Pathfinding_Editor
         private bool isAllowedVisibleByZFiltering(IExportEntry exportEntry)
         {
             if (ZFilteringMode == EZFilterIncludeDirection.None) { return true; }
-            Point3D position = GetLocation(exportEntry);
+            Point3D position = SharedPathfinding.GetLocation(exportEntry);
             if (position != null)
             {
                 switch (ZFilteringMode)
@@ -1623,7 +1599,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
             double fullx = 0;
             double fully = 0;
-            int currentcount = ActiveNodes.Count(); //Some objects load additional objects. We need to count before we iterate over the graphsnode list as it may be appended to during this loop.
+            int currentcount = ActiveNodes.Count; //Some objects load additional objects. We need to count before we iterate over the graphsnode list as it may be appended to during this loop.
             for (int i = 0; i < currentcount; i++)
             {
                 PointF pos = LoadObject(ActiveNodes[i]);
@@ -1643,30 +1619,19 @@ namespace ME3Explorer.Pathfinding_Editor
                     if (export.ClassName == "SFXSeqEvt_Touch" || export.ClassName.StartsWith("SeqVar") || export.ClassName.StartsWith("SFXSeq"))
                     {
                         var props = export.GetProperties();
-                        var originator = props.GetProp<ObjectProperty>("Originator");
-                        var objvalue = props.GetProp<ObjectProperty>("ObjValue");
 
+                        var originator = props.GetProp<ObjectProperty>("Originator");
                         if (originator != null)
                         {
                             var uindex = originator.Value; //0-based indexing is used here
-                            List<IExportEntry> list;
-                            if (!referencemap.TryGetValue(uindex, out list))
-                            {
-                                list = new List<IExportEntry>();
-                                referencemap[uindex] = list;
-                            }
-                            list.Add(export);
+                            referencemap.AddToListAt(uindex, export);
                         }
+
+                        var objvalue = props.GetProp<ObjectProperty>("ObjValue");
                         if (objvalue != null)
                         {
                             var uindex = objvalue.Value;
-                            List<IExportEntry> list;
-                            if (!referencemap.TryGetValue(uindex, out list))
-                            {
-                                list = new List<IExportEntry>();
-                                referencemap[uindex] = list;
-                            }
-                            list.Add(export);
+                            referencemap.AddToListAt(uindex, export);
                         }
                     }
                 }
@@ -1678,7 +1643,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     {
                         //node is referenced
                         pnm.SequenceReferences.AddRange(list);
-                        pnm.comment.Text += "\nReferenced in " + list.Count() + " sequence object" + (list.Count() != 1 ? "s" : "") + ":";
+                        pnm.comment.Text += $"\nReferenced in {list.Count} sequence object{(list.Count != 1 ? "s" : "")}:";
                         foreach (IExportEntry x in list)
                         {
                             string shortpath = x.GetFullPath;
@@ -1686,7 +1651,7 @@ namespace ME3Explorer.Pathfinding_Editor
                             {
                                 shortpath = shortpath.Substring("TheWorld.PersistentLevel.".Length);
                             }
-                            pnm.comment.Text += "\n  " + x.UIndex + " " + shortpath + "_" + x.indexValue;
+                            pnm.comment.Text += $"\n  {x.UIndex} {shortpath}_{x.indexValue}";
                         }
                     }
                 }
@@ -1698,7 +1663,7 @@ namespace ME3Explorer.Pathfinding_Editor
             foreach (var node in GraphNodes)
             {
                 node.MouseDown += node_MouseDown;
-                if (node.NodeTag != null && node.NodeTag != "" && !TagsList.Contains(node.NodeTag))
+                if (!string.IsNullOrEmpty(node.NodeTag) && !TagsList.Contains(node.NodeTag))
                 {
                     TagsList.Add(node.NodeTag);
                 }
@@ -1716,7 +1681,7 @@ namespace ME3Explorer.Pathfinding_Editor
             PathfindingNodeMaster node = (PathfindingNodeMaster)sender;
             //int n = node.Index;
 
-            if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            if (e.Shift)
             {
                 PathfindingEditorWPF_ReachSpecsPanel.SetDestinationNode(node.UIndex);
                 return;
@@ -1725,7 +1690,7 @@ namespace ME3Explorer.Pathfinding_Editor
             ChangingSelectionByGraphClick = true;
 
             ActiveNodes_ListBox.SelectedItem = node.export;
-            if ((node is SplinePoint0Node) || (node is SplinePoint1Node))
+            if (node is SplinePoint0Node || node is SplinePoint1Node)
             {
                 node.Select();
             }
@@ -1745,7 +1710,7 @@ namespace ME3Explorer.Pathfinding_Editor
             int uindex = exporttoLoad.UIndex;
             int x = 0, y = 0, z = int.MinValue;
             var props = exporttoLoad.GetProperties();
-            Point3D position = GetLocation(exporttoLoad);
+            Point3D position = SharedPathfinding.GetLocation(exporttoLoad);
             if (position != null)
             {
                 x = (int)position.X;
@@ -1793,75 +1758,75 @@ namespace ME3Explorer.Pathfinding_Editor
             //IExportEntry export = pcc.getExport(index);
             if (pathfindingNodeClasses.Contains(exporttoLoad.ClassName))
             {
-                PathfindingNode pathNode = null;
+                PathfindingNode pathNode;
                 switch (exporttoLoad.ClassName)
                 {
                     case "PathNode":
-                        pathNode = new PathfindingNodes.PathNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new PathNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXEnemySpawnPoint":
-                        pathNode = new PathfindingNodes.SFXEnemySpawnPoint(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXEnemySpawnPoint(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXNav_JumpNode":
-                        pathNode = new PathfindingNodes.SFXNav_JumpNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXNav_JumpNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXNav_LeapNodeHumanoid":
-                        pathNode = new PathfindingNodes.SFXNav_LeapNodeHumanoid(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXNav_LeapNodeHumanoid(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXDoorMarker":
                         pathNode = new PathfindingNodes.SFXDoorMarker(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXNav_LargeMantleNode":
-                        pathNode = new PathfindingNodes.SFXNav_LargeMantleNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXNav_LargeMantleNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXDynamicPathNode":
                     case "BioPathPoint":
-                        pathNode = new PathfindingNodes.BioPathPoint(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new BioPathPoint(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "PathNode_Dynamic":
-                        pathNode = new PathfindingNodes.PathNode_Dynamic(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new PathNode_Dynamic(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXNav_LargeBoostNode":
-                        pathNode = new PathfindingNodes.SFXNav_LargeBoostNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXNav_LargeBoostNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXNav_TurretPoint":
-                        pathNode = new PathfindingNodes.SFXNav_TurretPoint(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXNav_TurretPoint(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "CoverLink":
-                        pathNode = new PathfindingNodes.CoverLink(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new CoverLink(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXNav_JumpDownNode":
-                        pathNode = new PathfindingNodes.SFXNav_JumpDownNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXNav_JumpDownNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXNav_LadderNode":
-                        pathNode = new PathfindingNodes.SFXNav_LadderNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXNav_LadderNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXDynamicCoverLink":
-                        pathNode = new PathfindingNodes.SFXDynamicCoverLink(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXDynamicCoverLink(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
 
 
 
                     case "CoverSlotMarker":
-                        pathNode = new PathfindingNodes.CoverSlotMarker(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new CoverSlotMarker(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXDynamicCoverSlotMarker":
-                        pathNode = new PathfindingNodes.SFXDynamicCoverSlotMarker(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXDynamicCoverSlotMarker(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "MantleMarker":
-                        pathNode = new PathfindingNodes.MantleMarker(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new MantleMarker(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
 
 
                     case "SFXNav_HarvesterMoveNode":
-                        pathNode = new PathfindingNodes.SFXNav_HarvesterMoveNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXNav_HarvesterMoveNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
 
                     case "SFXNav_BoostNode":
-                        pathNode = new PathfindingNodes.SFXNav_BoostNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new SFXNav_BoostNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     default:
-                        pathNode = new PathfindingNodes.PendingNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        pathNode = new PendingNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                 }
 
@@ -1889,9 +1854,9 @@ namespace ME3Explorer.Pathfinding_Editor
                 return new PointF(x, y);
             } //End if Pathnode Class 
 
-            else if (actorNodeClasses.Contains(exporttoLoad.ClassName))
+            if (actorNodeClasses.Contains(exporttoLoad.ClassName))
             {
-                ActorNode actorNode = null;
+                ActorNode actorNode;
                 switch (exporttoLoad.ClassName)
                 {
                     case "BlockingVolume":
@@ -1910,61 +1875,61 @@ namespace ME3Explorer.Pathfinding_Editor
                         actorNode = new InterpActorNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "BioTriggerVolume":
-                        actorNode = new ActorNodes.BioTriggerVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_BioTriggerVolumes);
+                        actorNode = new BioTriggerVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_BioTriggerVolumes);
                         break;
                     case "BioTriggerStream":
-                        actorNode = new ActorNodes.BioTriggerStream(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_BioTriggerStreams);
+                        actorNode = new BioTriggerStream(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_BioTriggerStreams);
                         break;
                     case "SFXGrenadeContainer":
-                        actorNode = new ActorNodes.SFXGrenadeContainer(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXGrenadeContainer(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXAmmoContainer":
-                        actorNode = new ActorNodes.SFXAmmoContainer(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXAmmoContainer(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXAmmoContainer_Simulator":
-                        actorNode = new ActorNodes.SFXAmmoContainer_Simulator(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXAmmoContainer_Simulator(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXBlockingVolume_Ledge":
-                        actorNode = new ActorNodes.SFXBlockingVolume_Ledge(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXBlockingVolume_Ledge(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXCombatZone":
-                        actorNode = new ActorNodes.SFXCombatZone(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_SFXCombatZones);
+                        actorNode = new SFXCombatZone(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_SFXCombatZones);
                         break;
                     case "BioStartLocation":
                     case "BioStartLocationMP":
-                        actorNode = new ActorNodes.BioStartLocation(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new BioStartLocation(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "StaticMeshActor":
-                        actorNode = new ActorNodes.StaticMeshActorNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new StaticMeshActorNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXStuntActor":
-                        actorNode = new ActorNodes.SFXStuntActor(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXStuntActor(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SkeletalMeshActor":
-                        actorNode = new ActorNodes.SkeletalMeshActor(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SkeletalMeshActor(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXPlaceable_Generator":
                     case "SFXPlaceable_ShieldGenerator":
-                        actorNode = new ActorNodes.SFXPlaceable(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXPlaceable(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "WwiseAmbientSound":
-                        actorNode = new ActorNodes.WwiseAmbientSound(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new WwiseAmbientSound(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "WwiseAudioVolume":
-                        actorNode = new ActorNodes.WwiseAudioVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_WwiseAudioVolumes);
+                        actorNode = new WwiseAudioVolume(uindex, x, y, exporttoLoad.FileRef, graphEditor, ShowVolumes_WwiseAudioVolumes);
                         break;
                     case "SFXArmorNode":
                     case "SFXTreasureNode":
-                        actorNode = new ActorNodes.SFXTreasureNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXTreasureNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXMedStation":
-                        actorNode = new ActorNodes.SFXMedStation(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXMedStation(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "TargetPoint":
-                        actorNode = new ActorNodes.TargetPoint(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new TargetPoint(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     case "SFXOperation_ObjectiveSpawnPoint":
-                        actorNode = new ActorNodes.SFXObjectiveSpawnPoint(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXObjectiveSpawnPoint(uindex, x, y, exporttoLoad.FileRef, graphEditor);
 
                         //Create annex node if required
                         var annexZoneLocProp = props.GetProp<ObjectProperty>("AnnexZoneLocation");
@@ -1978,7 +1943,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         }
                         break;
                     case "SFXMedkit":
-                        actorNode = new ActorNodes.SFXMedKit(uindex, x, y, exporttoLoad.FileRef, graphEditor);
+                        actorNode = new SFXMedKit(uindex, x, y, exporttoLoad.FileRef, graphEditor);
                         break;
                     default:
                         actorNode = new PendingActorNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
@@ -1989,15 +1954,15 @@ namespace ME3Explorer.Pathfinding_Editor
                 return new PointF(x, y);
             }
 
-            else if (splineNodeClasses.Contains(exporttoLoad.ClassName))
+            if (splineNodeClasses.Contains(exporttoLoad.ClassName))
             {
-                SplineNode splineNode = null;
+                SplineNode splineNode;
                 switch (exporttoLoad.ClassName)
                 {
                     case "SplineActor":
                         splineNode = new SplineActorNode(uindex, x, y, exporttoLoad.FileRef, graphEditor);
 
-                        ArrayProperty<StructProperty> connectionsProp = exporttoLoad.GetProperty<ArrayProperty<StructProperty>>("Connections");
+                        var connectionsProp = exporttoLoad.GetProperty<ArrayProperty<StructProperty>>("Connections");
                         if (connectionsProp != null)
                         {
                             foreach (StructProperty connectionProp in connectionsProp)
@@ -2008,8 +1973,8 @@ namespace ME3Explorer.Pathfinding_Editor
                                 StructProperty splineInfo = splineComponentExport.GetProperty<StructProperty>("SplineInfo");
                                 if (splineInfo != null)
                                 {
-                                    ArrayProperty<StructProperty> pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
-                                    StructProperty point1 = pointsProp[0].GetProp<StructProperty>("OutVal");
+                                    var pointsProp = splineInfo.GetProp<ArrayProperty<StructProperty>>("Points");
+                                    var point1 = pointsProp[0].GetProp<StructProperty>("OutVal");
                                     double xf = point1.GetProp<FloatProperty>("X");
                                     double yf = point1.GetProp<FloatProperty>("Y");
                                     //double zf = point1.GetProp<FloatProperty>("Z");
@@ -2026,8 +1991,8 @@ namespace ME3Explorer.Pathfinding_Editor
                                     GraphNodes.Add(point0node);
                                     GraphNodes.Add(point1node);
 
-                                    StructProperty reparamProp = splineComponentExport.GetProperty<StructProperty>("SplineReparamTable");
-                                    ArrayProperty<StructProperty> reparamPoints = reparamProp.GetProp<ArrayProperty<StructProperty>>("Points");
+                                    var reparamProp = splineComponentExport.GetProperty<StructProperty>("SplineReparamTable");
+                                    var reparamPoints = reparamProp.GetProp<ArrayProperty<StructProperty>>("Points");
                                 }
                             }
                         }
@@ -2039,52 +2004,39 @@ namespace ME3Explorer.Pathfinding_Editor
                 GraphNodes.Add(splineNode);
                 return new PointF(x, y);
             }
-            else
-            {
-                //everything else
-                GraphNodes.Add(new EverythingElseNode(uindex, x, y, exporttoLoad.FileRef, graphEditor));
-                return new PointF(x, y);
-            }
-            //Hopefully we don't see this.
-            return new PointF(0, 0);
+
+            //everything else
+            GraphNodes.Add(new EverythingElseNode(uindex, x, y, exporttoLoad.FileRef, graphEditor));
+            return new PointF(x, y);
         }
 
         private void actornode_DoubleClick(object sender, PInputEventArgs e)
         {
-            ActorNode an = sender as ActorNode;
-            if (an != null)
+            if (sender is ActorNode an)
             {
                 an.SetShape(!an.ShowAsPolygon);
+                an.InvalidateFullBounds();
+                graphEditor.Refresh();
+                graphEditor.Camera.AnimateViewToCenterBounds(an.GlobalFullBounds, false, 500);
             }
-            an.InvalidateFullBounds();
-            graphEditor.Refresh();
-            graphEditor.Camera.AnimateViewToCenterBounds(an.GlobalFullBounds, false, 500);
         }
 
         public void CreateConnections()
         {
             if (GraphNodes != null && GraphNodes.Count != 0)
             {
-                for (int i = 0; i < GraphNodes.Count; i++)
+                foreach (PathfindingNodeMaster node in GraphNodes)
                 {
-                    graphEditor.addNode(GraphNodes[i]);
+                    graphEditor.addNode(node);
                 }
-                foreach (PathfindingNodeMaster o in graphEditor.nodeLayer)
+                foreach (PathfindingNodeMaster node in graphEditor.nodeLayer)
                 {
-                    o.CreateConnections(GraphNodes);
+                    node.CreateConnections(GraphNodes);
                 }
 
                 foreach (PPath edge in graphEditor.edgeLayer)
                 {
-                    //if (edge.BezierPoints != null)
-                    //{
-                    //    //Currently not implemented, will hopefully come in future update
-                    //    PathingGraphEditor.UpdateEdgeBezier(edge);
-                    //}
-                    //else
-                    //{
                     PathingGraphEditor.UpdateEdgeStraight(edge as PathfindingEditorEdge);
-                    //}
                 }
             }
         }
@@ -2118,8 +2070,8 @@ namespace ME3Explorer.Pathfinding_Editor
                     if (nodesToUpdate.Contains(node.Index))
                     {
                         //Reposition the node
-                        var newlocation = GetLocation(node);
-                        PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == node.UIndex);
+                        var newlocation = SharedPathfinding.GetLocation(node);
+                        PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == node.UIndex);
                         s.SetOffset((float)newlocation.X, (float)newlocation.Y);
 
                         UpdateEdgesForCurrentNode(s);
@@ -2150,7 +2102,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public string StatusText
         {
             get => _statusText;
-            set => SetProperty(ref _statusText, CurrentFile + " " + value);
+            set => SetProperty(ref _statusText, $"{CurrentFile} {value}");
         }
 
         #region Busy variables
@@ -2183,7 +2135,7 @@ namespace ME3Explorer.Pathfinding_Editor
         public List<string> RFiles;
         private bool IsCombatZonesSingleSelecting;
         private bool IsReadingLevel;
-        public static readonly string PathfindingEditorDataFolder = System.IO.Path.Combine(App.AppDataFolder, @"PathfindingEditor\");
+        public static readonly string PathfindingEditorDataFolder = Path.Combine(App.AppDataFolder, @"PathfindingEditor\");
         private readonly string RECENTFILES_FILE = "RECENTFILES";
 
         private void LoadRecentList()
@@ -2222,10 +2174,8 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             if (propogate && recents != null)
             {
-                //we are posting an update to other instances of packed
-
-                //This code can be removed when non-WPF package editor is removed.
-                foreach (var form in App.Current.Windows)
+                //we are posting an update to other instances of PathEd
+                foreach (var form in Application.Current.Windows)
                 {
                     if (form is PathfindingEditorWPF wpf && this != wpf)
                     {
@@ -2247,19 +2197,19 @@ namespace ME3Explorer.Pathfinding_Editor
             Recents_MenuItem.IsEnabled = true;
 
             int i = 0;
-            foreach (string filepath in RFiles)
+            foreach ((string filepath, Button recentButton) in RFiles.ZipTuple(RecentButtons))
             {
-                MenuItem fr = new MenuItem()
+                MenuItem fr = new MenuItem
                 {
                     Header = filepath.Replace("_", "__"),
                     Tag = filepath
                 };
-                RecentButtons[i].Visibility = Visibility.Visible;
-                RecentButtons[i].Content = System.IO.Path.GetFileName(filepath.Replace("_", "__"));
-                RecentButtons[i].Click -= RecentFile_click;
-                RecentButtons[i].Click += RecentFile_click;
-                RecentButtons[i].Tag = filepath;
-                RecentButtons[i].ToolTip = filepath;
+                recentButton.Visibility = Visibility.Visible;
+                recentButton.Content = Path.GetFileName(filepath.Replace("_", "__"));
+                recentButton.Click -= RecentFile_click;
+                recentButton.Click += RecentFile_click;
+                recentButton.Tag = filepath;
+                recentButton.ToolTip = filepath;
                 fr.Click += RecentFile_click;
                 Recents_MenuItem.Items.Add(fr);
                 i++;
@@ -2280,7 +2230,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
             else
             {
-                MessageBox.Show("File does not exist: " + s);
+                MessageBox.Show($"File does not exist: {s}");
             }
         }
 
@@ -2359,7 +2309,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 Properties_InterpreterWPF.LoadExport(export);
                 CurrentNodeCombatZones.ClearEx();
 
-                PathfindingNodeMaster selectedNode = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
+                PathfindingNodeMaster selectedNode = GraphNodes.First(o => o.UIndex == export.UIndex);
                 CurrentNodeSequenceReferences.ReplaceAll(selectedNode.SequenceReferences);
                 if (selectedNode is PathfindingNode)
                 {
@@ -2500,7 +2450,7 @@ namespace ME3Explorer.Pathfinding_Editor
                         graphEditor.Camera.AnimateViewToCenterBounds(selectedNode.GlobalFullBounds, false, 1000);
                     }
 
-                    Point3D position = GetLocation(export);
+                    Point3D position = SharedPathfinding.GetLocation(export);
                     if (position != null)
                     {
                         NodePositionX_TextBox.Text = position.X.ToString();
@@ -2554,7 +2504,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private List<Zone> CloneCombatZonesForSelections()
         {
-            List<Zone> clones = new List<Zone>();
+            var clones = new List<Zone>();
             foreach (Zone z in CombatZones)
             {
                 clones.Add(new Zone(z));
@@ -2563,15 +2513,9 @@ namespace ME3Explorer.Pathfinding_Editor
             return clones;
         }
 
-        private void ContextMenu_Closed(object sender, RoutedEventArgs e)
-        {
-            graphEditor.AllowDragging();
-        }
+        private void ContextMenu_Closed(object sender, RoutedEventArgs e) => graphEditor.AllowDragging();
 
-        private void FindByTag_Click(object sender, RoutedEventArgs e)
-        {
-            FindByTag();
-        }
+        private void FindByTag_Click(object sender, RoutedEventArgs e) => FindByTag();
 
         private void FindByTag()
         {
@@ -2580,28 +2524,26 @@ namespace ME3Explorer.Pathfinding_Editor
             if (currentIndex < 0 || currentIndex >= ActiveNodes.Count - 1) currentIndex = -1; //nothing selected or the final item is selected
             currentIndex++; //search next item
 
-            string nodeTagToFind = FindByTag_ComboBox.SelectedItem as string;
-            if (nodeTagToFind is null) return; //empty
-
-            for (int i = 0; i < ActiveNodes.Count(); i++) //activenodes size should match graphnodes size... in theory of course.
+            if (FindByTag_ComboBox.SelectedItem is string nodeTagToFind)
             {
-                PathfindingNodeMaster ci = GraphNodes[(i + currentIndex) % GraphNodes.Count()];
-                if (ci.NodeTag == nodeTagToFind)
+                for (int i = 0; i < ActiveNodes.Count; i++) //activenodes size should match graphnodes size... in theory of course.
                 {
-                    ActiveNodes_ListBox.SelectedItem = ci.export;
-                    if (ci.export == currnentSelectedItem)
+                    PathfindingNodeMaster ci = GraphNodes[(i + currentIndex) % GraphNodes.Count];
+                    if (ci.NodeTag == nodeTagToFind)
                     {
-                        ActiveNodesList_SelectedItemChanged(null, null); //refocus node
+                        ActiveNodes_ListBox.SelectedItem = ci.export;
+                        if (ci.export == currnentSelectedItem)
+                        {
+                            ActiveNodesList_SelectedItemChanged(null, null); //refocus node
+                        }
+
+                        break;
                     }
-                    break;
                 }
             }
         }
 
-        private void FindByNumber_Click(object sender, RoutedEventArgs e)
-        {
-            FindByNumber();
-        }
+        private void FindByNumber_Click(object sender, RoutedEventArgs e) => FindByNumber();
 
         private void FindByNumber()
         {
@@ -2634,31 +2576,28 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void PositionBoxes_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Return)
+            if (e.Key == Key.Return && ActiveNodes_ListBox.SelectedItem is IExportEntry export &&
+                int.TryParse(NodePositionX_TextBox.Text, out int x) && int.TryParse(NodePositionY_TextBox.Text, out int y) && int.TryParse(NodePositionZ_TextBox.Text, out int z))
             {
-                IExportEntry export = ActiveNodes_ListBox.SelectedItem as IExportEntry;
-                if (export != null && int.TryParse(NodePositionX_TextBox.Text, out int x) && int.TryParse(NodePositionY_TextBox.Text, out int y) && int.TryParse(NodePositionZ_TextBox.Text, out int z))
-                {
-                    SetLocation(export, x, y, z);
-                    PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
-                    s.SetOffset(x, y);
+                SetLocation(export, x, y, z);
+                PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == export.UIndex);
+                s.SetOffset(x, y);
 
-                    //TODO: Figure out what this does
-                    if (s is PathfindingNode pn)
-                    {
-                        UpdateEdgesForCurrentNode(pn);
-                    }
-                    //foreach (PNode node in s.AllNodes)
-                    //{
-                    //    ArrayList edges = (ArrayList)node.Tag;
-                    //    if (edges != null)
-                    //        foreach (PPath edge in edges)
-                    //        {
-                    //            PathingGraphEditor.UpdateEdgeStraight(edge);
-                    //        }
-                    //}
-                    graphEditor.Refresh(); //repaint invalidated areas
+                //TODO: Figure out what this does
+                if (s is PathfindingNode pn)
+                {
+                    UpdateEdgesForCurrentNode(pn);
                 }
+                //foreach (PNode node in s.AllNodes)
+                //{
+                //    ArrayList edges = (ArrayList)node.Tag;
+                //    if (edges != null)
+                //        foreach (PPath edge in edges)
+                //        {
+                //            PathingGraphEditor.UpdateEdgeStraight(edge);
+                //        }
+                //}
+                graphEditor.Refresh(); //repaint invalidated areas
             }
         }
 
@@ -2670,8 +2609,13 @@ namespace ME3Explorer.Pathfinding_Editor
                 nodeToUpdate = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
             }
 
-            List<PathfindingEditorEdge> edgesToRemove = new List<PathfindingEditorEdge>();
-            List<PathfindingEditorEdge> newOneWayEdges = new List<PathfindingEditorEdge>();
+            if (nodeToUpdate == null)
+            {
+                throw new ArgumentNullException(nameof(node), "No Selected Node!");
+            }
+
+            var edgesToRemove = new List<PathfindingEditorEdge>();
+            var newOneWayEdges = new List<PathfindingEditorEdge>();
 
             if (nodeToUpdate is PathfindingNode pn)
             {
@@ -2733,51 +2677,13 @@ namespace ME3Explorer.Pathfinding_Editor
             export.WriteProperty(prop);
         }
 
-        private void SetLocation(IExportEntry export, int x, int y, int z)
-        {
-            StructProperty prop = export.GetProperty<StructProperty>("location");
-            prop.GetProp<FloatProperty>("X").Value = x;
-            prop.GetProp<FloatProperty>("Y").Value = y;
-            prop.GetProp<FloatProperty>("Z").Value = z;
-            export.WriteProperty(prop);
-        }
-
-        public static Point3D GetLocation(IExportEntry export)
-        {
-            int x = 0, y = 0, z = int.MinValue;
-            var props = export.GetProperties();
-            StructProperty prop = props.GetProp<StructProperty>("location");
-            if (prop != null)
-            {
-                PropertyCollection nodelocprops = (prop as StructProperty).Properties;
-                foreach (var locprop in nodelocprops)
-                {
-                    switch (locprop.Name)
-                    {
-                        case "X":
-                            x = Convert.ToInt32((locprop as FloatProperty).Value);
-                            break;
-                        case "Y":
-                            y = Convert.ToInt32((locprop as FloatProperty).Value);
-                            break;
-                        case "Z":
-                            z = Convert.ToInt32((locprop as FloatProperty).Value);
-                            break;
-                    }
-                }
-                return new Point3D(x, y, z);
-            }
-            return null;
-        }
-
         private void SetGraphXY_Clicked(object sender, RoutedEventArgs e)
         {
             //Find node
-            IExportEntry export = ActiveNodes_ListBox.SelectedItem as IExportEntry;
-            if (export != null)
+            if (ActiveNodes_ListBox.SelectedItem is IExportEntry export)
             {
-                PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
-                var currentlocation = GetLocation(export);
+                PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == export.UIndex);
+                var currentlocation = SharedPathfinding.GetLocation(export);
                 SetLocation(export, s.GlobalBounds.X, s.GlobalBounds.Y, (float)currentlocation.Z);
                 MessageBox.Show($"Location set to {s.GlobalBounds.X}, { s.GlobalBounds.Y}");
             }
@@ -2791,8 +2697,7 @@ namespace ME3Explorer.Pathfinding_Editor
 
         private void OpenInPackageEditor_Clicked(object sender, RoutedEventArgs e)
         {
-            IExportEntry export = ActiveNodes_ListBox.SelectedItem as IExportEntry;
-            if (export != null)
+            if (ActiveNodes_ListBox.SelectedItem is IExportEntry export)
             {
                 PackageEditorWPF p = new PackageEditorWPF();
                 p.Show();
@@ -2814,7 +2719,7 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             if (nodeEntry != null)
             {
-                ObjectProperty collisionComponentProperty = nodeEntry.GetProperty<ObjectProperty>("CollisionComponent");
+                var collisionComponentProperty = nodeEntry.GetProperty<ObjectProperty>("CollisionComponent");
                 IExportEntry collisionEntry = nodeEntry.FileRef.getUExport(collisionComponentProperty.Value);
 
 
@@ -2830,7 +2735,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 //empty the pathlist
                 PropertyCollection newExportProps = newNodeEntry.GetProperties();
 
-                ArrayProperty<ObjectProperty> PathList = newExportProps.GetProp<ArrayProperty<ObjectProperty>>("PathList");
+                var PathList = newExportProps.GetProp<ArrayProperty<ObjectProperty>>("PathList");
                 if (PathList != null && PathList.Count > 0)
                 {
                     changed = true;
@@ -2839,9 +2744,8 @@ namespace ME3Explorer.Pathfinding_Editor
 
                 foreach (UProperty prop in newExportProps)
                 {
-                    if (prop is ObjectProperty)
+                    if (prop is ObjectProperty objProp)
                     {
-                        var objProp = prop as ObjectProperty;
                         if (objProp.Value == collisionEntry.UIndex)
                         {
                             objProp.Value = newCollisionEntry.UIndex;
@@ -2855,7 +2759,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     newNodeEntry.WriteProperties(newExportProps);
                 }
 
-                var oldloc = GetLocation(newNodeEntry);
+                var oldloc = SharedPathfinding.GetLocation(newNodeEntry);
                 SetLocation(newNodeEntry, (float)oldloc.X + 50, (float)oldloc.Y + 50, (float)oldloc.Z);
                 /*
                 collisionComponentProperty = newNodeEntry.GetProperty<ObjectProperty>("CollisionComponent");
@@ -2906,12 +2810,13 @@ namespace ME3Explorer.Pathfinding_Editor
             public bool Active { get => _active; set => SetProperty(ref _active, value); }
 
             public List<IExportEntry> CollectionItems = new List<IExportEntry>();
-            public IExportEntry export { get; private set; }
-            public string DisplayString { get => $"{export.UIndex}\t{CollectionItems.Count} items"; }
+            public IExportEntry export { get; }
+            public string DisplayString => $"{export.UIndex}\t{CollectionItems.Count} items";
+
             public StaticMeshCollection(IExportEntry smac)
             {
                 export = smac;
-                ArrayProperty<ObjectProperty> smacItems = smac.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
+                var smacItems = smac.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
                 if (smacItems != null)
                 {
                     //Read exports...
@@ -2935,11 +2840,11 @@ namespace ME3Explorer.Pathfinding_Editor
             /// Retreives a list of position data, in order, of all items. Null items return a point at double.min, double.min
             /// </summary>
             /// <returns></returns>
-            public List<System.Windows.Point> GetLocationData()
+            public List<Point> GetLocationData()
             {
                 byte[] smacData = export.Data;
                 int binarypos = export.propsEnd();
-                List<System.Windows.Point> positions = new List<System.Windows.Point>();
+                var positions = new List<Point>();
                 foreach (var item in CollectionItems)
                 {
                     if (item != null)
@@ -2949,11 +2854,11 @@ namespace ME3Explorer.Pathfinding_Editor
                         float x = BitConverter.ToSingle(smacData, offset);
                         float y = BitConverter.ToSingle(smacData, offset + 4);
                         //Debug.WriteLine(offset.ToString("X4") + " " + x + "," + y);
-                        positions.Add(new System.Windows.Point(x, y));
+                        positions.Add(new Point(x, y));
                     }
                     else
                     {
-                        positions.Add(new System.Windows.Point(double.MinValue, double.MinValue));
+                        positions.Add(new Point(double.MinValue, double.MinValue));
                     }
                     binarypos += 64;
                 }
@@ -2965,11 +2870,11 @@ namespace ME3Explorer.Pathfinding_Editor
         [DebuggerDisplay("{export.UIndex} Combat Zone (Active: {Active})")]
         public class Zone : NotifyPropertyChangedBase
         {
-            public IExportEntry export { get; private set; }
+            public IExportEntry export { get; }
 
             private bool _active;
             public bool Active { get => _active; set => SetProperty(ref _active, value); }
-            public string DisplayString { get => $"{export.UIndex} {export.ObjectName}_{export.indexValue}"; }
+            public string DisplayString => $"{export.UIndex} {export.ObjectName}_{export.indexValue}";
 
             public Zone(IExportEntry combatZone)
             {
@@ -3014,7 +2919,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 {
                     foreach (var item in GraphNodes)
                     {
-                        if (item is PathfindingNode node && node.Volumes.Count() > 0)
+                        if (item is PathfindingNode node && node.Volumes.Any())
                         {
                             if (node.Volumes.Any(x => x.ActorUIndex == activeZone.export.UIndex))
                             {
@@ -3050,8 +2955,8 @@ namespace ME3Explorer.Pathfinding_Editor
             StaticMeshCollection smc = (StaticMeshCollection)e.Item;
             if (e.IsSelected)
             {
-                var locations = smc.GetLocationData();
-                for (int i = 0; i < smc.CollectionItems.Count(); i++)
+                List<Point> locations = smc.GetLocationData();
+                for (int i = 0; i < smc.CollectionItems.Count; i++)
                 {
                     var item = smc.CollectionItems[i];
                     var location = locations[i];
@@ -3068,7 +2973,7 @@ namespace ME3Explorer.Pathfinding_Editor
             }
             else
             {
-                var activeNodesToRemove = ActiveNodes.Where(x => !smc.CollectionItems.Contains(x)).ToList();
+                var activeNodesToRemove = ActiveNodes.Where(x => !smc.CollectionItems.Contains(x));
                 ActiveNodes.ReplaceAll(activeNodesToRemove);
 
                 var graphNodesToRemove = GraphNodes.Where(x => smc.CollectionItems.Contains(x.export)).ToList();
@@ -3082,7 +2987,7 @@ namespace ME3Explorer.Pathfinding_Editor
         /// The current Z filtering value. This only is used if ZFilteringMode is not equal to None.
         /// </summary>
         public double ZFilteringValue { get => _zfilteringvalue; set => SetProperty(ref _zfilteringvalue, value); }
-        private double _zfilteringvalue = 0;
+        private double _zfilteringvalue;
 
         private EZFilterIncludeDirection _zfilteringmode = EZFilterIncludeDirection.None;
         private bool CombatZonesLoading;
@@ -3105,34 +3010,21 @@ namespace ME3Explorer.Pathfinding_Editor
         }
 
 
-        private void ShowNodes_Below_Click(object sender, RoutedEventArgs e)
-        {
-            SetFilteringMode(EZFilterIncludeDirection.Below);
-        }
+        private void ShowNodes_Below_Click(object sender, RoutedEventArgs e) => SetFilteringMode(EZFilterIncludeDirection.Below);
 
-        private void ShowNodes_Above_Click(object sender, RoutedEventArgs e)
-        {
-            SetFilteringMode(EZFilterIncludeDirection.Above);
-        }
+        private void ShowNodes_Above_Click(object sender, RoutedEventArgs e) => SetFilteringMode(EZFilterIncludeDirection.Above);
 
-        private void ShowNodes_BelowEqual_Click(object sender, RoutedEventArgs e)
-        {
-            SetFilteringMode(EZFilterIncludeDirection.BelowEquals);
-        }
+        private void ShowNodes_BelowEqual_Click(object sender, RoutedEventArgs e) => SetFilteringMode(EZFilterIncludeDirection.BelowEquals);
 
-        private void ShowNodes_AboveEqual_Click(object sender, RoutedEventArgs e)
-        {
-            SetFilteringMode(EZFilterIncludeDirection.AboveEquals);
-        }
+        private void ShowNodes_AboveEqual_Click(object sender, RoutedEventArgs e) => SetFilteringMode(EZFilterIncludeDirection.AboveEquals);
 
         private void SetFilteringMode(EZFilterIncludeDirection newfilter)
         {
             bool shouldRefresh = newfilter != ZFilteringMode;
-            IExportEntry export = ActiveNodes_ListBox.SelectedItem as IExportEntry;
-            if (export != null && newfilter != EZFilterIncludeDirection.None)
+            if (ActiveNodes_ListBox.SelectedItem is IExportEntry export && newfilter != EZFilterIncludeDirection.None)
             {
                 PathfindingNodeMaster s = GraphNodes.FirstOrDefault(o => o.UIndex == export.UIndex);
-                var currentlocation = GetLocation(export);
+                var currentlocation = SharedPathfinding.GetLocation(export);
                 shouldRefresh |= currentlocation.Z == ZFilteringValue;
                 ZFilteringValue = currentlocation.Z;
             }
@@ -3155,8 +3047,7 @@ namespace ME3Explorer.Pathfinding_Editor
             if (!CombatZonesLoading && e.Item is Zone itemChanging &&
                 ActiveNodes_ListBox.SelectedItem is IExportEntry nodeExport)
             {
-                ArrayProperty<StructProperty> volumesList =
-                    nodeExport.GetProperty<ArrayProperty<StructProperty>>("Volumes");
+                var volumesList = nodeExport.GetProperty<ArrayProperty<StructProperty>>("Volumes");
                 if (e.IsSelected && volumesList == null)
                 {
                     volumesList = new ArrayProperty<StructProperty>(ArrayType.Struct, "Volumes");
@@ -3175,11 +3066,8 @@ namespace ME3Explorer.Pathfinding_Editor
                     volumesList.Add(actorReference);
 
                     PathfindingNode s = GraphNodes.FirstOrDefault(o => o.UIndex == nodeExport.UIndex) as PathfindingNode;
-                    if (s != null)
-                    {
-                        s.Volumes.Add(new Volume(actorReference));
-                        //todo: update and active combat zone pen for this node
-                    }
+                    s?.Volumes.Add(new Volume(actorReference));
+                    //todo: update and active combat zone pen for this node
                 }
                 else
                 {
@@ -3198,8 +3086,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     if (itemToRemove != null)
                     {
                         volumesList.Remove(itemToRemove);
-                        PathfindingNode s = GraphNodes.FirstOrDefault(o => o.UIndex == nodeExport.UIndex) as PathfindingNode;
-                        if (s != null)
+                        if (GraphNodes.FirstOrDefault(o => o.UIndex == nodeExport.UIndex) is PathfindingNode s)
                         {
                             foreach (Volume v in s.Volumes)
                             {
@@ -3222,7 +3109,7 @@ namespace ME3Explorer.Pathfinding_Editor
                 else
                 {
                     var removed = nodeExport.RemoveProperty("Volumes");
-                    Debug.WriteLine("prop removed: " + removed);
+                    Debug.WriteLine($"prop removed: {removed}");
                 }
             }
         }
@@ -3233,7 +3120,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 // Note that you can have more than one file.
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                string ext = System.IO.Path.GetExtension(files[0]).ToLower();
+                string ext = Path.GetExtension(files[0]).ToLower();
                 if (ext != ".upk" && ext != ".pcc" && ext != ".sfm")
                 {
                     e.Effects = DragDropEffects.None;
@@ -3253,7 +3140,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 // Note that you can have more than one file.
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                string ext = System.IO.Path.GetExtension(files[0]).ToLower();
+                string ext = Path.GetExtension(files[0]).ToLower();
                 if (ext == ".upk" || ext == ".pcc" || ext == ".sfm")
                 {
                     LoadFile(files[0]);
@@ -3267,7 +3154,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 // Note that you can have more than one file.
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                string ext = System.IO.Path.GetExtension(files[0]).ToLower();
+                string ext = Path.GetExtension(files[0]).ToLower();
                 if (ext == ".upk" || ext == ".pcc" || ext == ".sfm")
                 {
                     LoadFile(files[0]);
@@ -3281,7 +3168,7 @@ namespace ME3Explorer.Pathfinding_Editor
             {
                 // Note that you can have more than one file.
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                string ext = System.IO.Path.GetExtension(files[0]).ToLower();
+                string ext = Path.GetExtension(files[0]).ToLower();
                 if (ext != ".upk" && ext != ".pcc" && ext != ".sfm")
                 {
                     e.Effect = System.Windows.Forms.DragDropEffects.None;
@@ -3433,7 +3320,7 @@ namespace ME3Explorer.Pathfinding_Editor
         private void RemoveFromLevel_Clicked(object sender, RoutedEventArgs e)
         {
             AllowRefresh = false;
-            IExportEntry nodeEntry = ActiveNodes_ListBox.SelectedItem as IExportEntry;
+            IExportEntry nodeEntry = (IExportEntry)ActiveNodes_ListBox.SelectedItem;
 
             //Read persistent level binary
             byte[] data = PersisentLevelExport.Data;

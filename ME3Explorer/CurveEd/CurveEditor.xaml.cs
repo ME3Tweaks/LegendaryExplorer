@@ -35,21 +35,26 @@ namespace ME3Explorer.CurveEd
         {
             if (CurrentLoadedExport != null)
             {
-                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new CurveEditor(), CurrentLoadedExport);
-                elhw.Title = $"Curve Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}";
+                ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new CurveEditor(), CurrentLoadedExport)
+                {
+                    Title = $"Curve Editor - {CurrentLoadedExport.UIndex} {CurrentLoadedExport.GetFullPath}_{CurrentLoadedExport.indexValue} - {CurrentLoadedExport.FileRef.FileName}"
+                };
                 elhw.Show();
             }
         }
 
         public static void OpenCurveEditorInWindow(IExportEntry export)
         {
-            ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new CurveEditor(), export);
-            elhw.Title = $"Curve Editor - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {export.FileRef.FileName}";
+            ExportLoaderHostedWindow elhw = new ExportLoaderHostedWindow(new CurveEditor(), export)
+            {
+                Title = $"Curve Editor - {export.UIndex} {export.GetFullPath}_{export.indexValue} - {export.FileRef.FileName}"
+            };
             elhw.Show();
         }
 
         public override void LoadExport(IExportEntry exportEntry)
         {
+            graph.Clear();
             CurrentLoadedExport = exportEntry;
             Load();
         }

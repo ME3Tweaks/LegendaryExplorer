@@ -739,9 +739,11 @@ namespace ME3Explorer.Unreal
                                 try
                                 {
                                     PropertyCollection structProps = ReadImmutableStruct(pcc, stream, arrayStructType, arraySize / count, parsingEntry: parsingEntry);
-                                    StructProperty structP = new StructProperty(arrayStructType, structProps, isImmutable: true) { StartOffset = offset };
-                                    structP.ValueOffset = offset;
-                                    props.Add(structP);
+                                    props.Add(new StructProperty(arrayStructType, structProps, isImmutable: true)
+                                    {
+                                        StartOffset = offset,
+                                        ValueOffset = offset
+                                    });
                                 }
                                 catch (Exception e)
                                 {
@@ -757,9 +759,11 @@ namespace ME3Explorer.Unreal
                                 long structOffset = stream.Position;
                                 //Debug.WriteLine("reading array struct: " + arrayStructType + " at 0x" + stream.Position.ToString("X5"));
                                 PropertyCollection structProps = ReadProps(pcc, stream, arrayStructType, includeNoneProperty: IncludeNoneProperties);
-                                StructProperty structP = new StructProperty(arrayStructType, structProps) { StartOffset = structOffset };
-                                structP.ValueOffset = structProps[0].StartOffset;
-                                props.Add(structP);
+                                props.Add(new StructProperty(arrayStructType, structProps)
+                                {
+                                    StartOffset = structOffset,
+                                    ValueOffset = structProps[0].StartOffset
+                                });
                             }
                         }
                         return new ArrayProperty<StructProperty>(arrayOffset, props, arrayType, name);
@@ -851,6 +855,7 @@ namespace ME3Explorer.Unreal
         /// Gets the length of this property in bytes. Do not use this if this is an ArrayProperty child object.
         /// </summary>
         /// <param name="pcc"></param>
+        /// <param name="valueOnly"></param>
         /// <returns></returns>
         public long GetLength(IMEPackage pcc, bool valueOnly = false)
         {
