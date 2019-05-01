@@ -79,6 +79,24 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 }
             }
         }
+
+        public string GetFlagsString()
+        {
+            string result = "";
+            for (int i = 0; i < _set.Flags.Length; i++)
+            {
+                var mask = (_flags & (1 << i));
+                if (mask != 0)
+                {
+                    if (_set.Flags[i] != null)
+                    {
+                        result += _set.Flags[i].ToString() + " ";
+                    }
+                }
+            }
+
+            return result;
+        }
     }
 
 }

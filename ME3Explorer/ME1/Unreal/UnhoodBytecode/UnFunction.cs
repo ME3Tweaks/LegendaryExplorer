@@ -22,6 +22,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         private readonly FlagValues _flags;
         private readonly int _nativeIndex;
         private readonly int _operatorPrecedence;
+        public StatementList Statements { get; set; }
+        public List<BytecodeSingularToken> Tokens;
 
         internal UnFunction(IExportEntry export, string name, FlagValues flags, byte[] bytecode, int nativeIndex, int operatorPrecedence)
             : base(export, bytecode)
@@ -30,6 +32,11 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             _flags = flags;
             _nativeIndex = nativeIndex;
             _operatorPrecedence = operatorPrecedence;
+        }
+
+        public string GetFlags()
+        {
+            return _flags.GetFlagsString();
         }
 
         public byte[] Bytecode
@@ -45,6 +52,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         internal bool Operator { get { return HasFlag("Operator"); } }
         internal bool PostOperator { get { return Operator && _operatorPrecedence == 0; } }
 
+        public List<Token> ScriptTokens = new List<Token>();
+
         public override void Decompile(TextBuilder result)
         {
             Decompile(result, true);
@@ -54,6 +63,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
         {
             return _flags.HasFlag(name);
         }
+
+        public string FunctionSignature = "";
 
         public void Decompile(TextBuilder result, bool createControlStatements)
         {
@@ -83,10 +94,12 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             int paramCount = 0;
             var locals = new List<IExportEntry>();
 
-            var statements = ReadBytecode();
+            Tokens = new List<BytecodeSingularToken>();
+            Statements = ReadBytecode();
             List<IExportEntry> childrenReversed = _self.FileRef.Exports.Where(x => x.idxLink == _self.UIndex).ToList();
             childrenReversed.Reverse();
-            //  foreach (IExportEntry export in _self.Children.Reverse())
+
+            //Get local children of this function
             foreach (IExportEntry export in childrenReversed)
             {
                 //Reading parameters info...
@@ -117,14 +130,14 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                         result.Append(export.ObjectName);
                         paramCount++;
 
-                        if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.OptionalParm) && statements.Count > 0)
+                        if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.OptionalParm) && Statements.Count > 0)
                         {
-                            if (statements[0].Token is NothingToken)
-                                statements.RemoveRange(0, 1);
-                            else if (statements[0].Token is DefaultParamValueToken)
+                            if (Statements[0].Token is NothingToken)
+                                Statements.RemoveRange(0, 1);
+                            else if (Statements[0].Token is DefaultParamValueToken)
                             {
-                                result.Append(" = ").Append(statements[0].Token.ToString());
-                                statements.RemoveRange(0, 1);
+                                result.Append(" = ").Append(Statements[0].Token.ToString());
+                                Statements.RemoveRange(0, 1);
                             }
                         }
                     }
@@ -167,6 +180,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                 //}
             }
             result.Append(")");
+
+            FunctionSignature = result.ToString();
             if (HasFlag("Defined"))
             {
                 result.NewLine().Indent().Append("{").NewLine();
@@ -176,7 +191,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     result.Indent().Append("local ").Append(GetPropertyType(local)).Append(" ").Append(local.ObjectName).Append(";").NewLine();
                 }
                 result.PopIndent();   // will be pushed again in DecompileBytecode()
-                DecompileBytecode(statements, result, createControlStatements);
+                DecompileBytecode(Statements, result, createControlStatements);
                 result.Indent().Append("}").NewLine().NewLine();
             }
             else

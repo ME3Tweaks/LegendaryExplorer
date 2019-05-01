@@ -93,6 +93,11 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             return this;
         }
 
+        public int GetIndent()
+        {
+            return _indent;
+        }
+
         public TextBuilder NewLine()
         {
             _builder.Append("\r\n");

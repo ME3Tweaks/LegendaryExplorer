@@ -393,7 +393,6 @@
     <Compile Include="ME1\Unreal\UnhoodBytecode\UE3FunctionReader.cs" />
     <Compile Include="ME1\Unreal\UnhoodBytecode\UnClass.cs" />
     <Compile Include="ME1\Unreal\UnhoodBytecode\UnFunction.cs" />
-    <Compile Include="ME1\Unreal\UnhoodBytecode\UnhoodFunction.cs" />
     <Compile Include="ME2\FaceFXAnimSetEditor.cs">
       <SubType>Form</SubType>
     </Compile>

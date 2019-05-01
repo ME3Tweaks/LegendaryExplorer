@@ -675,7 +675,7 @@ namespace ME3Explorer.Unreal
             {
                 done = true;
                 for (int i = 0; i < _debug.Count - 1; i++)
-                    if (_debug[i].tokenIndex > _debug[i + 1].tokenIndex)
+                    if (_debug[i].TokenIndex > _debug[i + 1].TokenIndex)
                     {
                         BytecodeSingularToken t = _debug[i];
                         _debug[i] = _debug[i + 1];
@@ -1272,10 +1272,10 @@ namespace ME3Explorer.Unreal
             string op = $"[0x{t:X2}] {opname}";
             string tokenpos = "0x" + (start + 32).ToString("X");
             string data = res.text;
-            msg.opCode = op;
-            msg.currentStack = data;
-            msg.tokenIndex = thiscount;
-            msg.startPos = start + 0x20; //start of script data in ME3
+            msg.OpCode = op;
+            msg.CurrentStack = data;
+            msg.TokenIndex = thiscount;
+            msg.StartPos = start + 0x20; //start of script data in ME3
             _debug.Add(msg);
             return res;
         }
@@ -4776,19 +4776,19 @@ namespace ME3Explorer.Unreal
 
     public class BytecodeSingularToken : IComparable<BytecodeSingularToken>
     {
-        public int tokenIndex;
-        public string opCode;
-        public string currentStack;
-        internal int startPos;
+        public int TokenIndex { get; set; }
+        public string OpCode { get; set; }
+        public string CurrentStack { get; set; }
+        public int StartPos { get; set;  }
 
         public override string ToString()
         {
-            return $"0x{startPos.ToString("X4")}: {opCode} {currentStack}";
+            return $"0x{StartPos.ToString("X4")}: {OpCode} {CurrentStack}";
         }
 
         public int CompareTo(BytecodeSingularToken that)
         {
-            return this.tokenIndex.CompareTo(that.tokenIndex);
+            return this.TokenIndex.CompareTo(that.TokenIndex);
         }
     }
 
