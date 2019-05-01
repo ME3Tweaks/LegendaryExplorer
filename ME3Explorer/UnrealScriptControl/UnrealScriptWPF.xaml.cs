@@ -36,6 +36,7 @@ namespace ME3Explorer
         public ObservableCollectionExtended<ScriptHeaderItem> ScriptFooterBlocks { get; private set; } = new ObservableCollectionExtended<ScriptHeaderItem>();
 
         private bool TokenChanging = false;
+        private int BytecodeStart;
 
         private bool _bytesHaveChanged { get; set; }
         public bool BytesHaveChanged
@@ -62,6 +63,7 @@ namespace ME3Explorer
 
         public override void LoadExport(IExportEntry exportEntry)
         {
+            BytecodeStart = 0;
             CurrentLoadedExport = exportEntry;
             ScriptEditor_Hexbox.ByteProvider = new DynamicByteProvider(CurrentLoadedExport.Data);
             ScriptEditor_Hexbox.ByteProvider.Changed += ByteProviderBytesChanged;
@@ -148,13 +150,14 @@ namespace ME3Explorer
                 pos += 4;
                 ScriptHeaderBlocks.Add(new ScriptHeaderItem("Script Size", BitConverter.ToInt32(CurrentLoadedExport.Data, pos), pos));
                 pos += 4;
-
+                BytecodeStart = pos;
                 var func = UE3FunctionReader.ReadFunction(CurrentLoadedExport);
                 func.Decompile(new TextBuilder(), false); //parse bytecode
 
                 /*TextBuilder tb = new TextBuilder();
                 func.DecompileBytecode(func.Statements, tb, true);
                 DecompiledScriptBlocks.Add(tb.ToString());*/
+                //func.Statements.CalculateStatementOffsets();
                 bool defined = func.HasFlag("Defined");
                 if (defined)
                 {
@@ -388,12 +391,6 @@ namespace ME3Explorer
             }
         }
 
-        public class ME1WrappedStatement
-        {
-
-        }
-
-
         public class ScriptHeaderItem
         {
             public string id { get; set; }
@@ -453,7 +450,7 @@ namespace ME3Explorer
             if (me1statement != null)
             {
                 //todo: figure out how length could be calculated
-                //ScriptEditor_Hexbox.Highlight(me1statement.Token.GetOffset(), me1statement.Token.);
+                ScriptEditor_Hexbox.Highlight(me1statement.StartOffset + BytecodeStart, me1statement.EndOffset-me1statement.StartOffset);
             }
         }
 
