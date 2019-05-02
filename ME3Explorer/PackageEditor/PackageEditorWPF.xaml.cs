@@ -1034,7 +1034,7 @@ namespace ME3Explorer
                 TreeViewEntry selected;
                 if (CurrentView == CurrentViewMode.Tree)
                 {
-                    selected = (TreeViewEntry) LeftSide_TreeView.SelectedItem;
+                    selected = (TreeViewEntry)LeftSide_TreeView.SelectedItem;
                 }
                 else
                 {
@@ -1848,8 +1848,15 @@ namespace ME3Explorer
 
             if (changes.Contains(PackageChange.Names))
             {
-                //reloads names - used by metadata editor control as well as names list
+                foreach (ExportLoaderControl elc in ExportLoaders.Keys)
+                {
+                    elc.SignalNamelistAboutToUpdate();
+                }
                 RefreshNames(updates.Where(x => x.change == PackageChange.Names).ToList());
+                foreach (ExportLoaderControl elc in ExportLoaders.Keys)
+                {
+                    elc.SignalNamelistChanged();
+                }
             }
 
             if (CurrentView == CurrentViewMode.Imports && importChanges ||
@@ -1980,7 +1987,7 @@ namespace ME3Explorer
                         Script_Tab.IsSelected = true;
                     }
                 }
-                else if(selectedEntry is ImportEntry importEntry)
+                else if (selectedEntry is ImportEntry importEntry)
                 {
                     MetadataTab_MetadataEditor.LoadImport(importEntry);
                     foreach (KeyValuePair<ExportLoaderControl, TabItem> entry in ExportLoaders)

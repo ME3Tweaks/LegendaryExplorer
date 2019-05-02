@@ -33,10 +33,31 @@ namespace ME3Explorer
         }
 
         /// <summary>
+        /// Signals to the export loader that namelist is about to be modified
+        /// and that anything selected that is bound to a namelist (typically IndexedName)
+        /// should cached their current values until the change has completed
+        /// and SignalNamelistChanged() fires.
+        /// </summary>
+        public virtual void SignalNamelistAboutToUpdate()
+        {
+
+        }
+
+        /// <summary>
         /// Loads an export into this control and initializes the control
         /// </summary>
         /// <param name="exportEntry"></param>
         public abstract void LoadExport(IExportEntry exportEntry);
+
+        /// <summary>
+        /// Signals to the export loader control that the namelist has changed, and that
+        /// anything that is bound to a list of names (typically IndexedName) should have its
+        /// selected item restored.
+        /// </summary>
+        public virtual void SignalNamelistChanged()
+        {
+            
+        }
 
         /// <summary>
         /// Unloads any loaded exports from this control and resets the control UI

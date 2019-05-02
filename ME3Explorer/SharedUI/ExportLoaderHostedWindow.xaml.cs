@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 using ME3Explorer.Packages;
+using static ME3Explorer.PackageEditorWPF;
 
 namespace ME3Explorer.SharedUI
 {
@@ -13,16 +15,26 @@ namespace ME3Explorer.SharedUI
     {
         private readonly IExportEntry LoadedExport;
         private readonly ExportLoaderControl hostedControl;
+        public ObservableCollectionExtended<IndexedName> NamesList { get; } = new ObservableCollectionExtended<IndexedName>();
         public ExportLoaderHostedWindow(ExportLoaderControl hostedControl, IExportEntry exportToLoad)
         {
             this.hostedControl = hostedControl;
             this.LoadedExport = exportToLoad;
+            NamesList.ReplaceAll(LoadedExport.FileRef.Names.Select((name, i) => new IndexedName(i, name))); //we replaceall so we don't add one by one and trigger tons of notifications
+
             InitializeComponent();
             RootPanel.Children.Add(hostedControl);
         }
 
         public override void handleUpdate(List<PackageUpdate> updates)
         {
+            if (updates.Any(x => x.change == PackageChange.Names))
+            {
+                hostedControl.SignalNamelistAboutToUpdate();
+                NamesList.ReplaceAll(Pcc.Names.Select((name, i) => new IndexedName(i, name))); //we replaceall so we don't add one by one and trigger tons of notifications
+                hostedControl.SignalNamelistChanged();
+            }
+
             //Put code to reload the export here
             foreach (var update in updates)
             {

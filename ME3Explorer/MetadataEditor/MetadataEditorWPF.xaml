@@ -11,6 +11,7 @@
     mc:Ignorable="d" 
     Loaded="MetadataEditor_Loaded"   
     xmlns:Packages="clr-namespace:ME3Explorer.Packages"
+    xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
     d:DesignHeight="630" d:DesignWidth="800">
     <global:ExportLoaderControl.Resources>
         <System:Int32 x:Key="InfoTab_TopMargins">24</System:Int32>
@@ -40,6 +41,7 @@
                 </TextBlock>
             </StackPanel>
         </DataTemplate>
+        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </global:ExportLoaderControl.Resources>
     <Grid Margin="5" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
@@ -179,8 +181,8 @@
         <TextBox Name="InfoTab_ExportGUID_TextBox" Grid.Row="16" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
         <TextBox Name="InfoTab_ExportUnknown2_TextBox" Grid.Row="17" Grid.Column="1" IsReadOnly="True" VerticalAlignment="Center"/>
         <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Grid.Row="18">
-            <Button Name="Info_HeaderHexSaveChanges" Content="Save hex changes"  Margin="0,0,3,0" Padding="5,2" Click="Info_HeaderHexSaveChanges_Click"/>
-            <TextBlock Name="Info_Header_UnsavedChanges" Text="Changes not yet saved" Foreground="Red" Margin="0,0,3,0"  VerticalAlignment="Center" Visibility="Hidden"/>
+            <Button Name="Info_HeaderHexSaveChanges" Content="Save hex changes"  Margin="0,0,3,0" Padding="5,2" Command="{Binding SaveHexChangesCommand}"/>
+            <TextBlock Text="Changes not yet saved" Foreground="Red" Margin="0,0,3,0"  VerticalAlignment="Center" Visibility="{Binding HexChanged, Converter={StaticResource BoolToVisibilityConverter}}"/>
         </StackPanel>
         <!--<StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Grid.Row="10"  Width="Auto" Height="Auto" Margin="0,5,0,0"  MaxWidth="650">-->
         <!--Grid.Row="10" Grid.ColumnSpan="2"-->

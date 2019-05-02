@@ -34,6 +34,11 @@ namespace Be.Windows.Forms
             _bytes = bytes;
         }
 
+        public DynamicByteProvider()
+        {
+            _bytes = new List<byte>();
+        }
+
         /// <summary>
         /// Raises the Changed event.
         /// </summary>
@@ -186,6 +191,21 @@ namespace Be.Windows.Forms
         public bool SupportsDeleteBytes()
         {
             return true;
+        }
+
+        public void ReplaceBytes(byte[] header)
+        {
+            _bytes.Clear();
+            _bytes.AddRange(header);
+            OnLengthChanged(EventArgs.Empty);
+            OnChanged(EventArgs.Empty);
+        }
+
+        public void ClearBytes()
+        {
+            _bytes.Clear();
+            OnLengthChanged(EventArgs.Empty);
+            OnChanged(EventArgs.Empty);
         }
         #endregion
 
