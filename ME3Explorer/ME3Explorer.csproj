@@ -508,6 +508,7 @@
     <Compile Include="Sequence Editor\GraphEditor.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="SharedUI\Converters\EntryTypeBooleanConverter.cs" />
     <Compile Include="SharedUI\PeregrineTreeView\NodeTreeSelectionBehavior.cs" />
     <Compile Include="SharedUI\ListBoxTask.cs" />
     <Compile Include="SharedUI\TreeViewEntry.cs" />

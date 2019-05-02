@@ -27,10 +27,10 @@
         <soundplorer:HIRCMediaFetchTypeConverter x:Key="HIRCMediaFetchTypeConverter"/>
         <soundplorer:HIRCObjectTypeVisibilityConverter x:Key="HIRCObjectTypeVisibilityConverter"/>
         <Converters:FontAwesomeStateColorConverter x:Key="FontAwesomeStateColorConverter"/>
-
+        <Converters:EntryTypeBooleanConverter x:Key="EntryTypeBooleanConverter"/>
     </UserControl.Resources>
-    <TabControl>
-        <TabItem Header="Player">
+    <TabControl Name="SoundPanel_TabsControl">
+        <TabItem Header="Player" Name="SoundPanel_PlayerTab">
             <Grid Margin="0,0,0,8">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
@@ -121,10 +121,10 @@
 
             </Grid>
         </TabItem>
-        <TabItem Header="Bank Info">
+        <TabItem Header="Bank Info" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource EntryTypeBooleanConverter}, ConverterParameter=WwiseBank}">
             <TextBox Text="{Binding QuickScanText}" IsReadOnly="True" VerticalScrollBarVisibility="Auto"/>
         </TabItem>
-        <TabItem Header="HIRCs">
+        <TabItem Header="HIRCs" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource EntryTypeBooleanConverter}, ConverterParameter=WwiseBank}">
             <DockPanel LastChildFill="True">
                 <StatusBar Height="23" DockPanel.Dock="Bottom" Width="Auto">
                     <StatusBarItem>

@@ -143,6 +143,7 @@ namespace ME3Explorer
                 ExportInformationList.Add($"#{exportEntry.Index} {exportEntry.ClassName} : {exportEntry.ObjectName}");
                 if (exportEntry.ClassName == "WwiseStream")
                 {
+                    SoundPanel_TabsControl.SelectedItem = SoundPanel_PlayerTab;
                     WwiseStream w = new WwiseStream(exportEntry);
                     ExportInformationList.Add($"Filename : {w.FileName ?? "Stored in this PCC"}");
                     ExportInformationList.Add($"Data size: {w.DataSize} bytes");
