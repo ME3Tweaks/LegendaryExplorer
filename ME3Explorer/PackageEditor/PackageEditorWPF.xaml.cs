@@ -256,7 +256,7 @@ namespace ME3Explorer
             p.loadInterpData(export.Index);
         }
 
-        private bool CanOpenInInterpViewer() 
+        private bool CanOpenInInterpViewer()
             => TryGetSelectedExport(out IExportEntry export) && export.FileRef.Game == MEGame.ME3 && export.ClassName == "InterpData" && !export.ObjectName.Contains("Default__");
 
         private void SetSelectedAsFilenamePackage()
@@ -802,7 +802,7 @@ namespace ME3Explorer
                 }
                 else
                 {
-                    
+
                     MessageBox.Show($"{result} has been added as a name.\nName index: {idx} (0x{idx:X8})", "Name added");
                 }
             }
@@ -1340,16 +1340,21 @@ namespace ME3Explorer
             if (QueuedGotoNumber != 0)
             {
                 //Wait for UI to render
-                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.Background, null);
+                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ApplicationIdle, null);
                 BusyText = $"Navigating to {QueuedGotoNumber}";
+
                 GoToNumber(QueuedGotoNumber);
                 if (QueuedGotoNumber > 0)
                 {
                     Interpreter_Tab.IsSelected = true;
                 }
                 QueuedGotoNumber = 0;
+                IsBusy = false;
             }
-            IsBusy = false;
+            else
+            {
+                IsBusy = false;
+            }
         }
 
         private void InitializeTreeViewBackground(object sender, DoWorkEventArgs e)
@@ -1363,16 +1368,6 @@ namespace ME3Explorer
                 return;
             }
 
-            int link = QueuedGotoNumber;
-            var entriesToExpand = new List<int>();
-            if (Pcc.isEntry(link))
-            {
-                while (link != 0)
-                {
-                    entriesToExpand.Add(link);
-                    link = Pcc.getEntry(link)?.idxLink ?? 0;
-                }
-            }
             IReadOnlyList<ImportEntry> Imports = Pcc.Imports;
             IReadOnlyList<IExportEntry> Exports = Pcc.Exports;
             int importsOffset = Exports.Count;
@@ -1405,10 +1400,6 @@ namespace ME3Explorer
                     entry.Parent = parent;
                     itemsToRemove.Add(entry); //remove from this level as we have added it to another already
 
-                    if (entriesToExpand.Contains(parent.UIndex))
-                    {
-                        parent.IsExpanded = true;
-                    }
                 }
             }
             e.Result = new ObservableCollectionExtended<TreeViewEntry>(rootNodes.Except(itemsToRemove).ToList());
@@ -2097,59 +2088,59 @@ namespace ME3Explorer
             switch (CurrentView)
             {
                 case CurrentViewMode.Tree:
-                {
-                    /*if (entryIndex >= -pcc.ImportCount && entryIndex < pcc.ExportCount)
                     {
-                        //List<AdvancedTreeViewItem<TreeViewItem>> noNameNodes = AllTreeViewNodes.Where(s => s.Name.Length == 0).ToList();
-                        var nodeName = entryIndex.ToString().Replace("-", "n");
-                        List<AdvancedTreeViewItem<TreeViewItem>> nodes = AllTreeViewNodes.Where(s => s.Name.Length > 0 && s.Name.Substring(1) == nodeName).ToList();
-                        if (nodes.Count > 0)
+                        /*if (entryIndex >= -pcc.ImportCount && entryIndex < pcc.ExportCount)
                         {
-                            nodes[0].BringIntoView();
-                            Dispatcher.BeginInvoke(DispatcherPriority.Background, (NoArgDelegate)delegate { nodes[0].ParentNodeValue.SelectItem(nodes[0]); });
+                            //List<AdvancedTreeViewItem<TreeViewItem>> noNameNodes = AllTreeViewNodes.Where(s => s.Name.Length == 0).ToList();
+                            var nodeName = entryIndex.ToString().Replace("-", "n");
+                            List<AdvancedTreeViewItem<TreeViewItem>> nodes = AllTreeViewNodes.Where(s => s.Name.Length > 0 && s.Name.Substring(1) == nodeName).ToList();
+                            if (nodes.Count > 0)
+                            {
+                                nodes[0].BringIntoView();
+                                Dispatcher.BeginInvoke(DispatcherPriority.Background, (NoArgDelegate)delegate { nodes[0].ParentNodeValue.SelectItem(nodes[0]); });
+                            }
+                        }*/
+                        //DispatcherHelper.EmptyQueue();
+                        var list = AllTreeViewNodesX[0].FlattenTree();
+                        List<TreeViewEntry> selectNode = list.Where(s => s.Entry != null && s.UIndex == entryIndex).ToList();
+                        if (selectNode.Any())
+                        {
+                            //selectNode[0].ExpandParents();
+                            selectNode[0].IsProgramaticallySelecting = true;
+                            SelectedItem = selectNode[0];
+                            //FocusTreeViewNodeOld(selectNode[0]);
+
+                            //selectNode[0].Focus(LeftSide_TreeView);
                         }
-                    }*/
-                    //DispatcherHelper.EmptyQueue();
-                    var list = AllTreeViewNodesX[0].FlattenTree();
-                    List<TreeViewEntry> selectNode = list.Where(s => s.Entry != null && s.UIndex == entryIndex).ToList();
-                    if (selectNode.Any())
-                    {
-                        //selectNode[0].ExpandParents();
-                        selectNode[0].IsProgramaticallySelecting = true;
-                        SelectedItem = selectNode[0];
-                        //FocusTreeViewNodeOld(selectNode[0]);
+                        else
+                        {
+                            Debug.WriteLine("Could not find node");
+                        }
 
-                        //selectNode[0].Focus(LeftSide_TreeView);
+                        break;
                     }
-                    else
-                    {
-                        Debug.WriteLine("Could not find node");
-                    }
-
-                    break;
-                }
                 case CurrentViewMode.Exports:
                 case CurrentViewMode.Imports:
-                {
-                    //Check bounds
-                    var entry = Pcc.getEntry(entryIndex);
-                    if (entry != null)
                     {
-                        //UI switch
-                        if (CurrentView == CurrentViewMode.Exports && entry is ImportEntry)
+                        //Check bounds
+                        var entry = Pcc.getEntry(entryIndex);
+                        if (entry != null)
                         {
-                            CurrentView = CurrentViewMode.Imports;
-                        }
-                        else if (CurrentView == CurrentViewMode.Imports && entry is IExportEntry)
-                        {
-                            CurrentView = CurrentViewMode.Exports;
+                            //UI switch
+                            if (CurrentView == CurrentViewMode.Exports && entry is ImportEntry)
+                            {
+                                CurrentView = CurrentViewMode.Imports;
+                            }
+                            else if (CurrentView == CurrentViewMode.Imports && entry is IExportEntry)
+                            {
+                                CurrentView = CurrentViewMode.Exports;
+                            }
+
+                            LeftSide_ListView.SelectedIndex = Math.Abs(entryIndex) - 1;
                         }
 
-                        LeftSide_ListView.SelectedIndex = Math.Abs(entryIndex) - 1;
+                        break;
                     }
-
-                    break;
-                }
                 case CurrentViewMode.Names when entryIndex >= 0 && entryIndex < LeftSide_ListView.Items.Count:
                     //Names
                     LeftSide_ListView.SelectedIndex = entryIndex;
@@ -2687,7 +2678,7 @@ namespace ME3Explorer
                     }
                 }
             }
-            else 
+            else
             {
                 int n = LeftSide_ListView.SelectedIndex;
                 int start;
@@ -2717,7 +2708,7 @@ namespace ME3Explorer
                 }
 
             }
-            
+
         }
 
         /// <summary>
@@ -3004,67 +2995,6 @@ namespace ME3Explorer
             }
         }
 
-        private void FocusTreeViewNodeOld(TreeViewEntry node)
-        {
-            if (node == null) return;
-            var nodes = (IEnumerable<TreeViewEntry>)LeftSide_TreeView.ItemsSource;
-            if (nodes == null) return;
-
-            var stack = new Stack<TreeViewEntry>();
-            stack.Push(node);
-            var parent = node.Parent;
-            while (parent != null)
-            {
-                stack.Push(parent);
-                parent = parent.Parent;
-            }
-            TreeViewItem container = null;
-            var generator = LeftSide_TreeView.ItemContainerGenerator;
-            while (stack.Count > 0)
-            {
-                //pop the next child off the stack
-                var dequeue = stack.Pop();
-                var index = generator.Items.IndexOf(dequeue);
-
-                //see if the container is already loaded. If not, we will have to generate them until we get it (why microsoft...)
-                TreeViewItem treeViewItem = generator.ContainerFromIndex(index) as TreeViewItem;
-                //if (treeViewItem == null && container != null) treeViewItem = GetTreeViewItem(container, dequeue);
-                Action action = () => { treeViewItem?.BringIntoView(); };
-                //This needs to be stress tested - this can cause deadlock, but if it doesn't return fast enough the code
-                //may continue to null and not work.
-                //Sigh, treeview.
-                Dispatcher.BeginInvoke(action, DispatcherPriority.Background);
-                if (treeViewItem == null)
-                {
-                    Debug.WriteLine("This shouldn't be null");
-                }
-
-                if (stack.Count > 0)
-                {
-                    action = () => { if (treeViewItem != null) treeViewItem.IsExpanded = true; };
-                    Dispatcher.Invoke(action, DispatcherPriority.ContextIdle);
-                }
-                else
-                {
-                    if (treeViewItem == null)
-                    {
-                        //Hope this doesn't happen anymore.
-                        Debug.WriteLine("FocusNode has triggered null item - CANNOT FOCUS!");
-                        //Debugger.Break();
-                    }
-                    else
-                    {
-                        Rect newTargetRect = new Rect(-1000, 0, treeViewItem.ActualWidth + 1000, treeViewItem.ActualHeight);
-                        treeViewItem.BringIntoView(newTargetRect);
-                    }
-                }
-                if (treeViewItem != null)
-                {
-                    container = treeViewItem;
-                    generator = treeViewItem.ItemContainerGenerator;
-                }
-            }
-        }
 
         private void TouchComfyMode_Clicked(object sender, RoutedEventArgs e)
         {
