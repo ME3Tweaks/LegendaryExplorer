@@ -54,20 +54,21 @@ namespace ME3Explorer.SharedUI
             DataContext = this;
             LoadCommands();
             InitializeComponent();
+            EntrySelector_ComboBox.Focus();
         }
 
         public ICommand OKCommand { get; private set; }
         private void LoadCommands()
         {
-            OKCommand = new RelayCommand(AcceptSelection, CanAcceptSelection);
+            OKCommand = new GenericCommand(AcceptSelection, CanAcceptSelection);
         }
 
-        private bool CanAcceptSelection(object obj)
+        private bool CanAcceptSelection()
         {
             return EntrySelector_ComboBox.SelectedItem is IEntry;
         }
 
-        private void AcceptSelection(object obj)
+        private void AcceptSelection()
         {
             DialogResult = true;
             ChosenEntry = EntrySelector_ComboBox.SelectedItem as IEntry;
@@ -116,26 +117,17 @@ namespace ME3Explorer.SharedUI
                     Pcc = null;
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
                 // TODO: set large fields to null.
 
                 disposedValue = true;
             }
         }
 
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~EntrySelectorDialogWPF() {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
-
         // This code added to correctly implement the disposable pattern.
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
         }
         #endregion
 
@@ -148,6 +140,14 @@ namespace ME3Explorer.SharedUI
         {
             DialogResult = false;
             Dispose();
+        }
+
+        private void EntrySelector_ComboBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && OKCommand.CanExecute(null))
+            {
+                OKCommand.Execute(null);
+            }
         }
     }
 }
