@@ -858,7 +858,7 @@ namespace ME3Explorer.Pathfinding_Editor
         {
             using (EntrySelectorDialogWPF dialog = new EntrySelectorDialogWPF(this, Pcc, EntrySelectorDialogWPF.SupportedTypes.Exports))
             {
-                if (dialog.ShowDialog() is true && dialog.ChosenEntry is IExportEntry selectedEntry)
+                if (dialog.ShowDialog() == true && dialog.ChosenEntry is IExportEntry selectedEntry)
                 {
 
                     if (!AllLevelObjects.Contains(selectedEntry))

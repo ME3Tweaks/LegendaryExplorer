@@ -121,6 +121,7 @@ namespace ME3Explorer.Sequence_Editor
         public ICommand SaveImageCommand { get; set; }
         public ICommand SaveViewCommand { get; set; }
         public ICommand AutoLayoutCommand { get; set; }
+        public ICommand GotoCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -130,6 +131,16 @@ namespace ME3Explorer.Sequence_Editor
             SaveImageCommand = new GenericCommand(SaveImage, CurrentObjects.Any);
             SaveViewCommand = new GenericCommand(() => saveView(), CurrentObjects.Any);
             AutoLayoutCommand = new GenericCommand(AutoLayout, CurrentObjects.Any);
+            GotoCommand = new GenericCommand(GoTo, PackageIsLoaded);
+        }
+
+        private void GoTo()
+        {
+            var dialog = new EntrySelectorDialogWPF(this, Pcc, EntrySelectorDialogWPF.SupportedTypes.Exports);
+            if (dialog.ShowDialog() == true && dialog.ChosenEntry is IExportEntry export)
+            {
+                GoToExport(export);
+            }
         }
 
         private string _statusText;
@@ -1627,7 +1638,7 @@ namespace ME3Explorer.Sequence_Editor
         {
             if (FileQueuedForLoad != null)
             {
-                Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(async () =>
+                Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
                 {
                     //Wait for all children to finish loading
                     LoadFile(FileQueuedForLoad);
@@ -1635,26 +1646,32 @@ namespace ME3Explorer.Sequence_Editor
 
                     if (ExportQueuedForFocusing != null)
                     {
-                        foreach (IExportEntry exp in SequenceExports)
-                        {
-                            if (ExportQueuedForFocusing == exp)
-                            {
-                                SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == exp.UIndex);
-                                break;
-                            }
-                            var seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
-                            if (seqObjs != null && seqObjs.Any(objProp => objProp.Value == ExportQueuedForFocusing.UIndex))
-                            {
-                                //This is our sequence
-                                SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == exp.UIndex);
-                                CurrentObjects_ListBox.SelectedItem = CurrentObjects.FirstOrDefault(x => x.Export == ExportQueuedForFocusing);
-                                break;
-                            }
-                        }
+                        GoToExport(ExportQueuedForFocusing);
                         ExportQueuedForFocusing = null;
                     }
                     Activate();
                 }));
+            }
+        }
+
+        private void GoToExport(IExportEntry export)
+        {
+            foreach (IExportEntry exp in SequenceExports)
+            {
+                if (export == exp)
+                {
+                    SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == exp.UIndex);
+                    break;
+                }
+
+                var seqObjs = exp.GetProperty<ArrayProperty<ObjectProperty>>("SequenceObjects");
+                if (seqObjs != null && seqObjs.Any(objProp => objProp.Value == export.UIndex))
+                {
+                    //This is our sequence
+                    SelectedItem = TreeViewRootNodes.SelectMany(node => node.FlattenTree()).First(node => node.UIndex == exp.UIndex);
+                    CurrentObjects_ListBox.SelectedItem = CurrentObjects.FirstOrDefault(x => x.Export == export);
+                    break;
+                }
             }
         }
     }

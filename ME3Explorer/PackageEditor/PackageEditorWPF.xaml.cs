@@ -1919,15 +1919,15 @@ namespace ME3Explorer
         /// Prepares the right side of PackageEditorWPF for the current selected entry.
         /// This may take a moment if the data that is being loaded is large or complex.
         /// </summary>
-        /// <param name="isRefresh">(needs testing what this does)</param>
+        /// <param name="isRefresh">true if this is just a refresh of the currently-loaded export</param>
         private void Preview(bool isRefresh = false)
         {
-            if (!GetSelected(out int n))
+            if (!TryGetSelectedEntry(out IEntry selectedEntry))
             {
                 InterpreterTab_Interpreter.UnloadExport();
                 return;
             }
-            if (n == 0)
+            if (selectedEntry == null)
             {
                 foreach (KeyValuePair<ExportLoaderControl, TabItem> e in ExportLoaders)
                 {
@@ -1948,10 +1948,9 @@ namespace ME3Explorer
 
             if (CurrentView == CurrentViewMode.Imports || CurrentView == CurrentViewMode.Exports || CurrentView == CurrentViewMode.Tree)
             {
-                Interpreter_Tab.IsEnabled = n >= 0;
-                if (n >= 0)
+                Interpreter_Tab.IsEnabled = selectedEntry is IExportEntry;
+                if (selectedEntry is IExportEntry exportEntry)
                 {
-                    IExportEntry exportEntry = Pcc.getExport(n - 1);
                     foreach (KeyValuePair<ExportLoaderControl, TabItem> entry in ExportLoaders)
                     {
                         if (entry.Key.CanParse(exportEntry))
@@ -1981,11 +1980,8 @@ namespace ME3Explorer
                         Script_Tab.IsSelected = true;
                     }
                 }
-                else
+                else if(selectedEntry is ImportEntry importEntry)
                 {
-                    //import
-
-                    ImportEntry importEntry = Pcc.getImport(-n - 1);
                     MetadataTab_MetadataEditor.LoadImport(importEntry);
                     foreach (KeyValuePair<ExportLoaderControl, TabItem> entry in ExportLoaders)
                     {
