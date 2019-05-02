@@ -50,8 +50,8 @@
                   IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"
                   ToolTip="Type a UIndex value to automatically select it"/>
 
-        <TextBlock Foreground="Gray" FontSize="10" Text="Select the dropdown then type a UIndex to locate in the list"/>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+        <TextBlock Foreground="Gray" FontSize="14" Text="Select the dropdown then type a UIndex to locate in the list"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
             <!-- Not command based as this is the only thing we need in the window-->
             <Button Content="OK"  Width="40" Command="{Binding OKCommand}"/>
             <Button Content="Cancel" Padding="5,3" Margin="5,0" Click="CancelButton_Click"/>

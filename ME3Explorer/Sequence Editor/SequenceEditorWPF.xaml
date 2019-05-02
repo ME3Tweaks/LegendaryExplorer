@@ -53,6 +53,7 @@
             </MenuItem>
 
             <MenuItem Header="Tools" Padding="4">
+                <MenuItem Header="Goto #" Command="{Binding GotoCommand}"/>
                 <MenuItem Header="Add Object" Click="AddObject_Clicked" ToolTip="Add existing Sequence Object to this Sequence" IsEnabled="{Binding SelectedSequence, Converter={StaticResource NullEnabledConverter}}"/>
                 <MenuItem Header="Save View" Command="{Binding SaveViewCommand}" ToolTip="Save the node layout"/>
                 <MenuItem Header="Save Image" Command="{Binding SaveImageCommand}" ToolTip="Save image of full Sequence"/>
@@ -141,10 +142,11 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="300"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
+                <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
                     <TextBlock Margin="5" Text="Welcome to Sequence Editor WPF, the rewritten version of Sequence Editor" FontWeight="Bold"/>
                     <TextBlock Margin="5">
                             Sequence Editor WPF is a bit different from the classic Sequence Editor.
@@ -163,7 +165,7 @@
                     </TextBlock>
                 </StackPanel>
 
-                <Grid HorizontalAlignment="Center" Margin="20,0,20,15" Grid.Column="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
+                <Grid HorizontalAlignment="Center" Margin="20,0,20,15" Grid.Column="3" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
@@ -237,8 +239,8 @@
                         <vhelp:TreeViewHelper BoundSelectedItem="{Binding SelectedItem}" />
                     </i:Interaction.Behaviors>
                 </TreeView>
-                <!-- Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}" -->
-                <global:InterpreterWPF x:Name="Properties_InterpreterWPF" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                <GridSplitter Grid.Row="0" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"/>
+                <global:InterpreterWPF x:Name="Properties_InterpreterWPF" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}"/>
             </Grid>
             <WindowsFormsHost Grid.Column="0" Grid.Row="0" Name="GraphHost" VerticalAlignment="Stretch">
                 <grapheditor:GraphEditor/>

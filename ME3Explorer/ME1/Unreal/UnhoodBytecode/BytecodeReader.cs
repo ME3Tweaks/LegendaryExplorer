@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection.Emit;
 using System.Text;
 using System.Windows.Forms;
 using ME3Explorer.Unreal;
