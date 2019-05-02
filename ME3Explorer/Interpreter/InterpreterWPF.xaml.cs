@@ -517,6 +517,10 @@ namespace ME3Explorer
             (Interpreter_Hexbox.ByteProvider as DynamicByteProvider)?.Bytes.AddRange(export.Data);
             Interpreter_Hexbox.Invalidate();
             hb1_SelectionChanged(null, null); //refresh bottom text
+
+            //This makes the hexbox widen by 1 and then shrink by 1
+            //For some rason it won't calculate the scrollbar again unless you do this
+            //which is very annoying.
             var currentWidth = Interpreter_Hexbox_Host.Width;
             if (currentWidth > 500)
             {
@@ -530,47 +534,11 @@ namespace ME3Explorer
                 Interpreter_Hexbox_Host.UpdateLayout();
                 Interpreter_Hexbox.Width -= 1;
             }
-            //Interpreter_Hexbox.Width += 1;
+
             Interpreter_Hexbox_Host.UpdateLayout();
-            //Interpreter_Hexbox.Width -= 1;
-            //InterpreterWPF_DockPanel.UpdateLayout();
-            //Interpreter_Hexbox_Host.UpdateLayout();
-            //Interpreter_Hexbox.Height = (int) Interpreter_Hexbox_Host.ActualHeight;
-            //            Interpreter_Hexbox_Host.UpdateLayout();
-            //.size = true;
             Interpreter_Hexbox.Select(0, 1);
             Interpreter_Hexbox.ScrollByteIntoView();
             isLoadingNewData = false;
-            //if (CurrentLoadedExport.FileRef.Game == MEGame.ME1)
-            //{
-            //    if (CurrentLoadedExport.ClassName != "Class")
-            //    {
-            //        // attempt to find a TlkFileSet associated with the object, else just pick the first one and hope it's correct
-            //        if (editorTlkSet == null)
-            //        {
-            //            try
-            //            {
-            //                IntProperty tlkSetRef = export.GetProperty<IntProperty>("m_oTlkFileSet");
-            //                if (tlkSetRef != null)
-            //                {
-            //                    tlkset = new BioTlkFileSet(CurrentLoadedExport.FileRef as ME1Package, tlkSetRef.Value - 1);
-            //                }
-            //                else
-            //                {
-            //                    tlkset = new BioTlkFileSet(CurrentLoadedExport.FileRef as ME1Package);
-            //                }
-            //            }
-            //            catch (Exception e)
-            //            {
-            //                tlkset = new BioTlkFileSet(CurrentLoadedExport.FileRef as ME1Package);
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        tlkset = editorTlkSet;
-            //    }
-            //}
             StartScan();
         }
 

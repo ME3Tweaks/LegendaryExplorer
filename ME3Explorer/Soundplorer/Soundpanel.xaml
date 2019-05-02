@@ -27,6 +27,7 @@
         <soundplorer:HIRCMediaFetchTypeConverter x:Key="HIRCMediaFetchTypeConverter"/>
         <soundplorer:HIRCObjectTypeVisibilityConverter x:Key="HIRCObjectTypeVisibilityConverter"/>
         <Converters:FontAwesomeStateColorConverter x:Key="FontAwesomeStateColorConverter"/>
+        <Converters:UnsavedChangesForegroundConverter x:Key="UnsavedChangesForegroundConverter"/>
         <Converters:EntryTypeBooleanConverter x:Key="EntryTypeBooleanConverter"/>
     </UserControl.Resources>
     <TabControl Name="SoundPanel_TabsControl">
@@ -133,15 +134,11 @@
                 </StatusBar>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="200*" MinHeight="200"/>
+                        <RowDefinition Height="200*"/>
                         <RowDefinition Height="3" MinHeight="3"/>
-                        <RowDefinition Height="*" MinHeight="200"/>
+                        <RowDefinition MinHeight="230"/>
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="220" MaxWidth="718" Width="285" Name="HexboxColumnDefinition" />
-                        <ColumnDefinition Width="3" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+
                     <ListBox ItemsSource="{Binding HIRCObjects}" Name="HIRC_ListBox" SelectionChanged="HIRC_ListBox_SelectionChanged" Grid.Row="0" Grid.ColumnSpan="3">
                         <ListBox.Resources>
                             <DataTemplate DataType="{x:Type unrealclasses:WwiseBank+HIRCObject}">
@@ -164,17 +161,34 @@
                       BorderThickness="0,5"
                       BorderBrush="Transparent"
                       Panel.ZIndex="60"/>
-                    <WindowsFormsHost Name="HIRC_Hexbox_Host" Grid.Row="2" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" MinWidth="220" MaxWidth="718">
-                        <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="Soundpanel_HIRCHexbox_SelectionChanged" VScrollBarVisible="True">
-                        </hb1:HexBox>
-                    </WindowsFormsHost>
-                    <GridSplitter Grid.Column="1" 
-                      Grid.Row="2" HorizontalAlignment="Stretch" 
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition MinWidth="220" MaxWidth="718" Width="285" Name="HexboxColumnDefinition" />
+                            <ColumnDefinition Width="3" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition MaxHeight="27" MinHeight="27" Height="27"/>
+                            <RowDefinition MinHeight="200"/>
+                        </Grid.RowDefinitions>
+                        <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top" Grid.Row="0" Grid.ColumnSpan="3">
+                            <Button Name="SaveHexChange_Button" ToolTip="Commit hex changes to the HIRC (and export)" Content="Save Hex Changes" Foreground="{Binding HasUnsavedChanges, Converter={StaticResource UnsavedChangesForegroundConverter}}" Click="HIRC_SaveHexChanges_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
+                            <Button Name="ToggleHexboxWidth_Button" Content="Toggle Hexbox Width" ToolTip="Toggle between 4 and 16 byte widths" Click="HIRC_ToggleHexboxWidth_Click"/>
+                            <Separator Name="SaveToggle_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                        </ToolBar>
+                        <WindowsFormsHost Name="HIRC_Hexbox_Host" Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" MinWidth="220" MaxWidth="718">
+                            <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" MinimumSize="200,50" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="Soundpanel_HIRCHexbox_SelectionChanged" VScrollBarVisible="True">
+                            </hb1:HexBox>
+                        </WindowsFormsHost>
+                        <GridSplitter Grid.Column="1" 
+                      Grid.Row="1" HorizontalAlignment="Stretch" 
                       Margin="-5,0"
                       BorderThickness="5,0"
                       BorderBrush="Transparent"
                       Panel.ZIndex="60"/>
-                    <Label Name="TempLabel" Grid.Column="2"  Grid.Row="2">Select a HIRC to get started</Label>
+                        <Label Name="TempLabel" Grid.Column="2"  Grid.Row="1">Select a HIRC to get started</Label>
+                    </Grid>
+                    
                 </Grid>
             </DockPanel>
         </TabItem>

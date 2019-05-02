@@ -282,6 +282,27 @@ namespace ME3Explorer
                         ExportInformationList.Add("This soundbank has no embedded WEM files");
                     }
                     CurrentLoadedExport = exportEntry;
+
+                    //This makes the hexbox widen by 1 and then shrink by 1
+                    //For some rason it won't calculate the scrollbar again unless you do this
+                    //which is very annoying.
+                    var currentWidth = HIRC_Hexbox_Host.Width;
+                    if (currentWidth > 500)
+                    {
+                        SoundpanelHIRC_Hexbox.Width -= 1;
+                        HIRC_Hexbox_Host.UpdateLayout();
+                        SoundpanelHIRC_Hexbox.Width += 1;
+                    }
+                    else
+                    {
+                        SoundpanelHIRC_Hexbox.Width += 1;
+                        HIRC_Hexbox_Host.UpdateLayout();
+                        SoundpanelHIRC_Hexbox.Width -= 1;
+                    }
+
+                    HIRC_Hexbox_Host.UpdateLayout();
+                    SoundpanelHIRC_Hexbox.Select(0, 1);
+                    SoundpanelHIRC_Hexbox.ScrollByteIntoView();
                 }
                 if (exportEntry.ClassName == "SoundNodeWave")
                 {
@@ -1555,6 +1576,7 @@ namespace ME3Explorer
                 catch (Exception)
                 {
                 }
+                SoundpanelHIRC_Hexbox.Refresh();
             }
         }
 
@@ -1571,6 +1593,32 @@ namespace ME3Explorer
             SoundpanelHIRC_Hexbox = null;
             HIRC_Hexbox_Host.Child.Dispose();
             HIRC_Hexbox_Host.Dispose();
+        }
+
+        private void HIRC_SaveHexChanges_Click(object sender, RoutedEventArgs e)
+        {
+            if (SoundpanelHIRC_Hexbox.ByteProvider is IByteProvider provider)
+            {
+                MemoryStream m = new MemoryStream();
+                for (int i = 0; i < provider.Length; i++)
+                    m.WriteByte(provider.ReadByte(i));
+                
+                //todo: code to write hirc back
+                //CurrentLoadedExport.Data = m.ToArray();
+            }
+        }
+
+        private void HIRC_ToggleHexboxWidth_Click(object sender, RoutedEventArgs e)
+        {
+            GridLength len = HexboxColumnDefinition.Width;
+            if (len.Value < HexboxColumnDefinition.MaxWidth)
+            {
+                HexboxColumnDefinition.Width = new GridLength(HexboxColumnDefinition.MaxWidth);
+            }
+            else
+            {
+                HexboxColumnDefinition.Width = new GridLength(HexboxColumnDefinition.MinWidth);
+            }
         }
     }
 
