@@ -193,10 +193,10 @@ namespace Be.Windows.Forms
             return true;
         }
 
-        public void ReplaceBytes(byte[] header)
+        public void ReplaceBytes(byte[] bytes)
         {
             _bytes.Clear();
-            _bytes.AddRange(header);
+            _bytes.AddRange(bytes);
             OnLengthChanged(EventArgs.Empty);
             OnChanged(EventArgs.Empty);
         }
