@@ -277,6 +277,7 @@
     <Compile Include="AutoTOC\AutoTOCWPF.xaml.cs">
       <DependentUpon>AutoTOCWPF.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AutoTOC\Ini.cs" />
     <Compile Include="BinaryInterpreter\BinaryAddPropertyDialog.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -59,28 +59,33 @@ namespace ME3Explorer.AutoTOC
 
         private void GenerateME1FileList()
         {
-            CommonOpenFileDialog outputDlg = new CommonOpenFileDialog
-            {
-                IsFolderPicker = true,
-                EnsurePathExists = true,
-                Title = "Select DLC CookedPC folder to create Fileindex",
-                InitialDirectory = ME1Directory.DLCPath,
-            };
-            if (outputDlg.ShowDialog() == CommonFileDialogResult.Ok)
-            {
-                //Validate
-                if (Path.GetFileName(outputDlg.FileName).Equals("CookedPC", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    TOCWorker = new BackgroundWorker();
-                    TOCWorker.DoWork += GenerateFileList_BackgroundThread;
-                    TOCWorker.RunWorkerCompleted += GenerateAllTOCs_Completed;
-                    TOCWorker.RunWorkerAsync(outputDlg.FileName);
-                }
-                else
-                {
-                    MessageBox.Show("Chosen directory be named CookedPC.");
-                }
-            }
+            //CommonOpenFileDialog outputDlg = new CommonOpenFileDialog
+            //{
+            //    IsFolderPicker = true,
+            //    EnsurePathExists = true,
+            //    Title = "Select DLC CookedPC folder to create Fileindex",
+            //    InitialDirectory = ME1Directory.DLCPath,
+            //};
+            //if (outputDlg.ShowDialog() == CommonFileDialogResult.Ok)
+            //{
+            //    //Validate
+            //    if (Path.GetFileName(outputDlg.FileName).Equals("CookedPC", StringComparison.InvariantCultureIgnoreCase))
+            //    {
+            //        TOCWorker = new BackgroundWorker();
+            //        TOCWorker.DoWork += GenerateFileList_BackgroundThread;
+            //        TOCWorker.RunWorkerCompleted += GenerateAllTOCs_Completed;
+            //        TOCWorker.RunWorkerAsync(outputDlg.FileName);
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("Chosen directory be named CookedPC.");
+            //    }
+            //}
+
+            //IList() me1DLCs; // set list of directorys
+            string DLCDirectory = ME1Directory.DLCPath;
+            MessageBox.Show(DLCDirectory); //DEBUG
+            
         }
 
         private void GenerateFileList_BackgroundThread(object sender, DoWorkEventArgs e)
