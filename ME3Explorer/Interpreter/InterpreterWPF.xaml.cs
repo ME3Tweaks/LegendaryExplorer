@@ -513,29 +513,8 @@ namespace ME3Explorer
             }
             CurrentLoadedExport = export;
             isLoadingNewData = true;
-            (Interpreter_Hexbox.ByteProvider as DynamicByteProvider)?.Bytes.Clear();
-            (Interpreter_Hexbox.ByteProvider as DynamicByteProvider)?.Bytes.AddRange(export.Data);
-            Interpreter_Hexbox.Invalidate();
+            (Interpreter_Hexbox.ByteProvider as DynamicByteProvider)?.ReplaceBytes(export.Data);
             hb1_SelectionChanged(null, null); //refresh bottom text
-
-            //This makes the hexbox widen by 1 and then shrink by 1
-            //For some rason it won't calculate the scrollbar again unless you do this
-            //which is very annoying.
-            var currentWidth = Interpreter_Hexbox_Host.Width;
-            if (currentWidth > 500)
-            {
-                Interpreter_Hexbox.Width -= 1;
-                Interpreter_Hexbox_Host.UpdateLayout();
-                Interpreter_Hexbox.Width += 1;
-            }
-            else
-            {
-                Interpreter_Hexbox.Width += 1;
-                Interpreter_Hexbox_Host.UpdateLayout();
-                Interpreter_Hexbox.Width -= 1;
-            }
-
-            Interpreter_Hexbox_Host.UpdateLayout();
             Interpreter_Hexbox.Select(0, 1);
             Interpreter_Hexbox.ScrollByteIntoView();
             isLoadingNewData = false;

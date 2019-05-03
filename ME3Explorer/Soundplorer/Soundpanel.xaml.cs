@@ -1454,11 +1454,10 @@ namespace ME3Explorer
         private void HIRC_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             TempLabel.Content = "hi";
-            HIRCObject h = (HIRCObject)HIRC_ListBox.SelectedItem;
-            if (h != null)
+            if (HIRC_ListBox.SelectedItem is HIRCObject h)
             {
-                (SoundpanelHIRC_Hexbox.ByteProvider as DynamicByteProvider).Bytes.Clear();
-                (SoundpanelHIRC_Hexbox.ByteProvider as DynamicByteProvider).Bytes.AddRange(h.Data);
+                DynamicByteProvider hircBP = (DynamicByteProvider)SoundpanelHIRC_Hexbox.ByteProvider;
+                hircBP.ReplaceBytes(h.Data);
                 SoundpanelHIRC_Hexbox.Refresh();
 
                 string hircStr = $"0x000000: Type: 0x{h.ObjType:X2}\n";
@@ -1602,7 +1601,7 @@ namespace ME3Explorer
                 MemoryStream m = new MemoryStream();
                 for (int i = 0; i < provider.Length; i++)
                     m.WriteByte(provider.ReadByte(i));
-                
+
                 //todo: code to write hirc back
                 //CurrentLoadedExport.Data = m.ToArray();
             }
