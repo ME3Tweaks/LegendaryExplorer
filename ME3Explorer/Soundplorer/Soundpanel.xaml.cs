@@ -93,7 +93,7 @@ namespace ME3Explorer
 
             PlayPauseIcon = FontAwesomeIcon.Play;
             LoadCommands();
-            CurrentVolume = 1;
+            CurrentVolume = 0.65f;
             _playbackState = PlaybackState.Stopped;
             seekbarUpdateTimer.Interval = new TimeSpan(0, 0, 1);
             seekbarUpdateTimer.Tick += UpdateSeekBarPos;
@@ -1626,7 +1626,7 @@ namespace ME3Explorer
 
         private void HIRC_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            TempLabel.Content = "hi";
+            //TempLabel.Content = "hi";
             if (HIRC_ListBox.SelectedItem is HIRCObject h)
             {
                 OriginalHIRCHex = h.Data;
