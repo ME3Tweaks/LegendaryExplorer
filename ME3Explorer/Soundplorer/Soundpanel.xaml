@@ -198,7 +198,7 @@
                             <RowDefinition MinHeight="200"/>
                         </Grid.RowDefinitions>
                         <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top" Grid.Row="0" Grid.ColumnSpan="3">
-                            <Button Name="SaveHexChange_Button" ToolTip="Commit hex changes to the HIRC (and export)" Content="Save Hex Changes" Command="{Binding SaveHIRCHexCommand}">
+                            <Button Name="SaveHexChange_Button" ToolTip="Commit hex changes to the HIRC object. This does not commit the changes to the export." Content="Save Hex Changes" Command="{Binding SaveHIRCHexCommand}">
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}">
                                         <Style.Triggers>
