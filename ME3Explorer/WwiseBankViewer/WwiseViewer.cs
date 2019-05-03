@@ -264,7 +264,7 @@ namespace ME3Explorer.WwiseBankEditor
         {
             if (bank == null)
                 return;
-            int n = bank.MyIndex;
+            int n = bank.ExportIndex;
             byte[] tmp = bank.RecreateBinary();
             Pcc.Exports[n].Data = tmp;
         }
@@ -352,9 +352,9 @@ namespace ME3Explorer.WwiseBankEditor
                                                                             x.change != PackageChange.ImportAdd &&
                                                                             x.change != PackageChange.Names);
             List<int> updatedExports = relevantUpdates.Select(x => x.index).ToList();
-            if (updatedExports.Contains(bank.MyIndex))
+            if (updatedExports.Contains(bank.ExportIndex))
             {
-                int index = bank.MyIndex;
+                int index = bank.ExportIndex;
                 //loaded sequence is no longer a sequence
                 if (Pcc.getExport(index).ClassName != "WwiseBank")
                 {

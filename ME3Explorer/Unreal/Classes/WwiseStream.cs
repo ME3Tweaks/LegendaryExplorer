@@ -375,11 +375,10 @@ namespace ME3Explorer.Unreal.Classes
         public static MemoryStream ConvertOggToWave(string oggPath)
         {
             //convert OGG to WAV
-            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
             MemoryStream outputData = new MemoryStream();
 
-            System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\oggdec.exe", $"--stdout \"{oggPath}\"");
-            procStartInfo.WorkingDirectory = loc;
+            System.Diagnostics.ProcessStartInfo procStartInfo = new System.Diagnostics.ProcessStartInfo(Path.Combine(App.ExecFolder, "oggdec.exe"), $"--stdout \"{oggPath}\"");
+            procStartInfo.WorkingDirectory = App.ExecFolder;
             procStartInfo.RedirectStandardOutput = true;
             procStartInfo.UseShellExecute = false;
             procStartInfo.CreateNoWindow = true;
@@ -427,17 +426,16 @@ namespace ME3Explorer.Unreal.Classes
                 System.Diagnostics.Debug.WriteLine("Error: input file does not exist");
             }
 
-            string loc = Path.GetDirectoryName(Application.ExecutablePath) + "\\exec";
             System.Diagnostics.ProcessStartInfo procStartInfo = null;
             if (!fullSetup)
             {
-                procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\ww2ogg.exe", "--stdout \"" + riffPath + "\"");
+                procStartInfo = new System.Diagnostics.ProcessStartInfo(Path.Combine(App.ExecFolder, "ww2ogg.exe"), "--stdout \"" + riffPath + "\"");
             }
             else
             {
-                procStartInfo = new System.Diagnostics.ProcessStartInfo(loc + "\\ww2ogg.exe", "--stdout --full-setup \"" + riffPath + "\"");
+                procStartInfo = new System.Diagnostics.ProcessStartInfo(Path.Combine(App.ExecFolder, "ww2ogg.exe"), "--stdout --full-setup \"" + riffPath + "\"");
             }
-            procStartInfo.WorkingDirectory = loc;
+            procStartInfo.WorkingDirectory = App.ExecFolder;
             procStartInfo.RedirectStandardOutput = true;
             procStartInfo.RedirectStandardError = true;
 

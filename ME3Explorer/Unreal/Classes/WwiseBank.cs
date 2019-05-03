@@ -13,7 +13,7 @@ namespace ME3Explorer.Unreal.Classes
         public byte[] memory;
         public int memsize;
         public IExportEntry export;
-        public int MyIndex;
+        public int ExportIndex;
         public IMEPackage pcc;
         public List<byte[]> Chunks;
         public List<byte[]> HIRCObjects;
@@ -24,7 +24,7 @@ namespace ME3Explorer.Unreal.Classes
         public WwiseBank(IExportEntry export)
         {
             this.export = export;
-            MyIndex = export.Index;
+            ExportIndex = export.Index;
             pcc = export.FileRef;
             memory = export.Data;
             memsize = memory.Length;

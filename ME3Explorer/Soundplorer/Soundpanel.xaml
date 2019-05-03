@@ -15,6 +15,7 @@
              xmlns:Converters="clr-namespace:ME3Explorer.SharedUI.Converters"
              xmlns:soundplorer="clr-namespace:ME3Explorer.Soundplorer"
                            xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
+                           xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                            mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -132,6 +133,26 @@
                         <TextBlock Name="HIRCStatusBar_LeftMostText" Text="Nothing selected"/>
                     </StatusBarItem>
                 </StatusBar>
+                <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
+                    <Button Command="{Binding CommitCommand}" Content="Commit" ToolTip="Commit changes to this Wwisebank file back to the export" VerticalAlignment="Stretch" Padding="7,0">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsEnabled" Value="True">
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                        <Setter Property="Foreground" Value="Red"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Separator Margin="5,0,5,0"/>
+                    <xctk:WatermarkTextBox Watermark="Search for hex" Name="SearchHIRCHex_TextBox" Width="90" KeyUp="Searchbox_OnKeyUpHandler" VerticalContentAlignment="Center"/>
+                    <Button Content="Search" Command="{Binding SearchHIRCHexCommand}" Padding="10,0" VerticalAlignment="Stretch" Margin="5,0"/>
+                    <!--<CheckBox Content="Search Big Endian" ToolTip="Searches bytes in reverse order endian (Big Endian). Search will read bytes as if they were text on a page, left to right."/>-->
+                    <TextBlock Text="{Binding SearchStatusText}" VerticalAlignment="Center" Margin="5,0" Foreground="Gray"/>
+                </ToolBar>
+
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="200*"/>

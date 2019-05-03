@@ -105,6 +105,7 @@ namespace ME3Explorer
             {
                 ExportInformationList.ClearEx();
                 AllWems.Clear();
+                CurrentLoadedWwisebank = null;
                 //Check if we need to first gather wwiseevents for wem IDing
                 //Uncomment when HIRC stuff is implemented, if ever...
                 /*if (exportEntry.FileRef != CurrentPackage)
@@ -167,7 +168,7 @@ namespace ME3Explorer
 
                             if (File.Exists(samefolderfilepath))
                             {
-                                using (FileStream fs = new FileStream(samefolderfilepath, FileMode.Open,FileAccess.Read,FileShare.ReadWrite))
+                                using (FileStream fs = new FileStream(samefolderfilepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                                 {
                                     fs.Seek(w.DataOffset, SeekOrigin.Begin);
                                     fs.Read(headerbytes, 0, 0x56);
@@ -229,6 +230,7 @@ namespace ME3Explorer
                         List<HIRCObject> hircObjects = wb.ParseHIRCObjects(wb.GetChunk("HIRC"));
                         HIRCObjects.Clear();
                         HIRCObjects.AddRange(hircObjects);
+                        CurrentLoadedWwisebank = wb;
                     }
                     else
                     {
@@ -593,6 +595,9 @@ namespace ME3Explorer
         public ICommand TrackControlMouseDownCommand { get; set; }
         public ICommand TrackControlMouseUpCommand { get; set; }
         public ICommand VolumeControlValueChangedCommand { get; set; }
+        public ICommand CommitCommand { get; set; }
+        public GenericCommand SearchHIRCHexCommand { get; private set; }
+
         /// <summary>
         /// The cached stream source is used to determine if we should unload the current vorbis stream
         /// when pressing play again after playback has been stopped.
@@ -600,6 +605,13 @@ namespace ME3Explorer
         private object CachedStreamSource { get; set; }
         public ISBankEntry CurrentLoadedISACTEntry { get; private set; }
         public AFCFileEntry CurrentLoadedAFCFileEntry { get; private set; }
+        public WwiseBank CurrentLoadedWwisebank { get; private set; }
+        private string _searchStatusText;
+        public string SearchStatusText
+        {
+            get => _searchStatusText;
+            private set => SetProperty(ref _searchStatusText, value);
+        }
 
         private enum PlaybackState
         {
@@ -621,6 +633,103 @@ namespace ME3Explorer
             TrackControlMouseDownCommand = new RelayCommand(TrackControlMouseDown, CanTrackControlMouseDown);
             TrackControlMouseUpCommand = new RelayCommand(TrackControlMouseUp, CanTrackControlMouseUp);
             VolumeControlValueChangedCommand = new RelayCommand(VolumeControlValueChanged, CanVolumeControlValueChanged);
+
+            //WwisebankEditor commands
+            CommitCommand = new GenericCommand(CommitBankToFile, CanCommitBankToFile);
+            SearchHIRCHexCommand = new GenericCommand(SearchHIRCHex, CanSearchHIRCHex);
+        }
+
+        private bool CanSearchHIRCHex()
+        {
+            string hexString = SearchHIRCHex_TextBox.Text.Replace(" ", string.Empty);
+            if (hexString.Length == 0)
+                return false;
+            if (!isHexString(hexString))
+            {
+                return false;
+            }
+            if (hexString.Length % 2 != 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private void SearchHIRCHex()
+        {
+            if (CurrentLoadedWwisebank == null)
+                return;
+            int currentSelectedHIRCIndex = HIRC_ListBox.SelectedIndex;
+            if (currentSelectedHIRCIndex == -1)
+                currentSelectedHIRCIndex = 0;
+            string hexString = SearchHIRCHex_TextBox.Text.Replace(" ", string.Empty);
+            if (hexString.Length == 0)
+                return;
+            if (!isHexString(hexString))
+            {
+                SearchStatusText = "Illegal characters in Hex String";
+                return;
+            }
+            if (hexString.Length % 2 != 0)
+            {
+                SearchStatusText = "Odd number of characters in Hex String";
+                return;
+            }
+            byte[] buff = new byte[hexString.Length / 2];
+            for (int i = 0; i < hexString.Length / 2; i++)
+            {
+                buff[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
+            }
+            byte[] hirc;
+            int count = HIRCObjects.Count;
+            int hexboxIndex = (int)SoundpanelHIRC_Hexbox.SelectionStart + 1;
+            for (int i = 0; i < count; i++)
+            {
+                hirc = HIRCObjects[(i + currentSelectedHIRCIndex) % count].Data; //search from selected index, and loop back around
+                int indexIn = hirc.IndexOfArray(buff, hexboxIndex);
+                if (indexIn > -1)
+                {
+                    HIRC_ListBox.SelectedIndex = (i + currentSelectedHIRCIndex) % count;
+                    SoundpanelHIRC_Hexbox.Select(indexIn, buff.Length);
+                    //searchHexStatus.Text = "";
+                    return;
+                }
+                hexboxIndex = 0;
+            }
+            SearchStatusText = "Hex not found";
+        }
+
+        /// <summary>
+        /// Ported from WwiseViewer
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static bool isHexString(string s)
+        {
+            string hexChars = "0123456789abcdefABCDEF";
+            for (int i = 0; i < s.Length; i++)
+            {
+                int f = -1;
+                for (int j = 0; j < hexChars.Length; j++)
+                    if (s[i] == hexChars[j])
+                    {
+                        f = j;
+                        break;
+                    }
+                if (f == -1)
+                    return false;
+            }
+            return true;
+        }
+
+        private bool CanCommitBankToFile()
+        {
+            return false;// CurrentLoadedWwisebank.HasChanges();
+        }
+
+        private void CommitBankToFile()
+        {
+            //throw new NotImplementedException();
         }
 
         internal void LoadISACTEntry(ISBankEntry entry)
@@ -1624,17 +1733,16 @@ namespace ME3Explorer
 
         private void Soundpanel_Unloaded(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine("Unloading soundpanel");
             seekbarUpdateTimer?.Stop();
         }
 
         public override void Dispose()
         {
-            Debug.WriteLine("Disposing soundpanel");
             FreeAudioResources();
             SoundpanelHIRC_Hexbox = null;
             HIRC_Hexbox_Host.Child.Dispose();
             HIRC_Hexbox_Host.Dispose();
+            CurrentLoadedWwisebank = null;
         }
 
         private void HIRC_SaveHexChanges_Click(object sender, RoutedEventArgs e)
@@ -1660,6 +1768,14 @@ namespace ME3Explorer
             else
             {
                 HexboxColumnDefinition.Width = new GridLength(HexboxColumnDefinition.MinWidth);
+            }
+        }
+
+        private void Searchbox_OnKeyUpHandler(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return && CanSearchHIRCHex())
+            {
+                SearchHIRCHex();
             }
         }
     }

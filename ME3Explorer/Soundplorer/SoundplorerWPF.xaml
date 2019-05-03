@@ -103,9 +103,9 @@
             </StatusBar>
             <Grid Margin="5">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition MinWidth="200" Width="400"/>
                     <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*" MinWidth="200"/>
                 </Grid.ColumnDefinitions>
                 <ListBox Name="SoundExports_ListBox" Margin="0" Padding="0" Grid.Column="0" SelectionChanged="SoundExports_ListBox_SelectionChanged" ItemsSource="{Binding BindedItemsList}" ItemContainerStyle="{StaticResource SoundExports_ListboxItemStyle}" PreviewKeyDown="SoundExportItem_KeyDown" MouseDoubleClick="SoundExports_ListBox_MouseDoubleClick">
                     <ListBox.Resources>
