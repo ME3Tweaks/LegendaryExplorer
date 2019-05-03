@@ -1669,6 +1669,9 @@ namespace ME3Explorer
             else
             {
                 TempLabel.Content = "Nothing selected";
+                OriginalHIRCHex = null;
+                hircHexProvider.ClearBytes();
+                SoundpanelHIRC_Hexbox.Refresh();
             }
         }
 
