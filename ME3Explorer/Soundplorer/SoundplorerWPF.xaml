@@ -15,7 +15,6 @@
         Drop="Window_Drop"
         AllowDrop="True"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="Soundplorer" Height="450" Width="830">
     <Window.Resources>
         <Converters:NullEnabledConverter x:Key="NullEnabledConverter"/>

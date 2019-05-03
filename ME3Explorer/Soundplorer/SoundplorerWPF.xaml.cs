@@ -103,10 +103,7 @@ namespace ME3Explorer.Soundplorer
             soundPanel.PopOut();
         }
 
-        private bool ExportIsSelected()
-        {
-            return SoundExports_ListBox.SelectedItem is SoundplorerExport;
-        }
+        private bool ExportIsSelected() => SoundExports_ListBox.SelectedItem is SoundplorerExport;
 
         private void LoadRecentList()
         {

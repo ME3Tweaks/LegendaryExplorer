@@ -597,8 +597,8 @@ namespace ME3Explorer
         public ICommand TrackControlMouseUpCommand { get; set; }
         public ICommand VolumeControlValueChangedCommand { get; set; }
         public ICommand CommitCommand { get; set; }
-        public GenericCommand SearchHIRCHexCommand { get; private set; }
-        public GenericCommand SaveHIRCHexCommand { get; private set; }
+        public ICommand SearchHIRCHexCommand { get; private set; }
+        public ICommand SaveHIRCHexCommand { get; private set; }
 
         /// <summary>
         /// The cached stream source is used to determine if we should unload the current vorbis stream
@@ -648,13 +648,9 @@ namespace ME3Explorer
 
         private void SaveHIRCHex()
         {
-            MemoryStream m = new MemoryStream();
-            for (int i = 0; i < hircHexProvider.Length; i++)
-                m.WriteByte(hircHexProvider.ReadByte(i));
-
             if (HIRC_ListBox.SelectedItem is HIRCObject ho)
             {
-                ho.Data = m.ToArray();
+                ho.Data = hircHexProvider.Bytes.ToArray();
                 HIRCHexChanged = false;
                 OnPropertyChanged(nameof(HIRCHexChanged));
             }
@@ -747,8 +743,7 @@ namespace ME3Explorer
 
         private void CommitBankToFile()
         {
-            byte[] exportData = CurrentLoadedWwisebank.RecreateBinary(HIRCObjects.Select(x => x.Data).ToList());
-            CurrentLoadedExport.Data = exportData;
+            CurrentLoadedExport.Data = CurrentLoadedWwisebank.RecreateBinary(HIRCObjects.Select(x => x.Data).ToList());
         }
 
         private bool _hircHexChanged;
@@ -1686,7 +1681,6 @@ namespace ME3Explorer
                 hircHexProvider = new DynamicByteProvider();
 
                 SoundpanelHIRC_Hexbox.ByteProvider = hircHexProvider;
-                //remove in the event this object is reloaded again
                 SoundpanelHIRC_Hexbox.ByteProvider.Changed += SoundpanelHIRC_Hexbox_BytesChanged;
                 ControlLoaded = true;
             }
@@ -1774,11 +1768,9 @@ namespace ME3Explorer
             CurrentLoadedWwisebank = null;
         }
 
-        public bool HasPendingHIRCChanges
-        {
-            get => HIRCObjects.Any(x => x.DataChanged);
-        }
-        public byte[] OriginalHIRCHex;
+        public bool HasPendingHIRCChanges => HIRCObjects.Any(x => x.DataChanged);
+
+        private byte[] OriginalHIRCHex;
 
         private void HIRC_ToggleHexboxWidth_Click(object sender, RoutedEventArgs e)
         {
