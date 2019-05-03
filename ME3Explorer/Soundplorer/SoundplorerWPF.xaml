@@ -62,6 +62,7 @@
         <KeyBinding Key="O" Modifiers="Control" Command="Open"/>
         <KeyBinding Key="S" Modifiers="Control" Command="Save"/>
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="SaveAs"/>
+        <KeyBinding Key="P" Modifiers="Ctrl" Command="{Binding PopoutCurrentViewCommand}"/>
     </Window.InputBindings>
     <xctk:BusyIndicator IsBusy="{Binding Path=IsBusy}" BusyContent="{Binding BusyText}">
         <DockPanel>
@@ -83,6 +84,7 @@
                 <MenuItem Header="_Options" Padding="4">
                     <MenuItem Name="ReverseEndianDisplayOfIDs_MenuItem" Header="Reverse endianness of displayed ID's" Click="ReverseEndiannessOfIDs_Clicked" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=SoundplorerReverseIDDisplayEndianness, Mode=TwoWay}"/>
                     <MenuItem Name="RebuildWwiseBankToFile_MenuItem" Header="Debugging: Rebuild wwisebank to file" Click="DebugWriteBankToFileRebuild_Clicked" />
+                    <MenuItem Header="Pop out current view into new window" ToolTip="Opens the panel on the right side in a new window" Command="{Binding PopoutCurrentViewCommand}" InputGestureText="CTRL + P"/>
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
@@ -107,7 +109,8 @@
                     <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="1*" MinWidth="200"/>
                 </Grid.ColumnDefinitions>
-                <ListBox Name="SoundExports_ListBox" Margin="0" Padding="0" Grid.Column="0" SelectionChanged="SoundExports_ListBox_SelectionChanged" ItemsSource="{Binding BindedItemsList}" ItemContainerStyle="{StaticResource SoundExports_ListboxItemStyle}" PreviewKeyDown="SoundExportItem_KeyDown" MouseDoubleClick="SoundExports_ListBox_MouseDoubleClick">
+                <ListBox Name="SoundExports_ListBox" Margin="0" Padding="0" Grid.Column="0" SelectionChanged="SoundExports_ListBox_SelectionChanged" ItemsSource="{Binding BindedItemsList}" 
+                         ItemContainerStyle="{StaticResource SoundExports_ListboxItemStyle}" PreviewKeyDown="SoundExportItem_KeyDown" MouseDoubleClick="SoundExports_ListBox_MouseDoubleClick" HorizontalContentAlignment="Stretch">
                     <ListBox.Resources>
                         <DataTemplate DataType="{x:Type local:SoundplorerExport}">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0" x:Name="ExportContainer">

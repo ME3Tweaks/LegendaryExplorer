@@ -73,7 +73,7 @@ namespace ME3Explorer.Soundplorer
             set => SetProperty(ref _busyText, value);
         }
 
-        private string _taskbarText;
+        private string _taskbarText = "Open a file to view sound-related exports/data";
         public string TaskbarText
         {
             get => _taskbarText;
@@ -84,12 +84,28 @@ namespace ME3Explorer.Soundplorer
         public SoundplorerWPF()
         {
             ME3ExpMemoryAnalyzer.MemoryAnalyzer.AddTrackedMemoryItem("Soundplorer WPF", new WeakReference(this));
-
-            TaskbarText = "Open a file to view sound-related exports/data";
+            DataContext = this;
+            LoadCommands();
             InitializeComponent();
 
             LoadRecentList();
             RefreshRecent(false);
+        }
+
+        public ICommand PopoutCurrentViewCommand { get; set; }
+        private void LoadCommands()
+        {
+            PopoutCurrentViewCommand = new GenericCommand(PopoutSoundpanel, ExportIsSelected);
+        }
+
+        private void PopoutSoundpanel()
+        {
+            soundPanel.PopOut();
+        }
+
+        private bool ExportIsSelected()
+        {
+            return SoundExports_ListBox.SelectedItem is SoundplorerExport;
         }
 
         private void LoadRecentList()

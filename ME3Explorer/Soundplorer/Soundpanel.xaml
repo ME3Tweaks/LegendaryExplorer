@@ -160,11 +160,11 @@
                         <RowDefinition MinHeight="230"/>
                     </Grid.RowDefinitions>
 
-                    <ListBox ItemsSource="{Binding HIRCObjects}" Name="HIRC_ListBox" SelectionChanged="HIRC_ListBox_SelectionChanged" Grid.Row="0" Grid.ColumnSpan="3">
+                    <ListBox ItemsSource="{Binding HIRCObjects}" Name="HIRC_ListBox" SelectionChanged="HIRC_ListBox_SelectionChanged" Grid.Row="0" Grid.ColumnSpan="3" HorizontalContentAlignment="Stretch">
                         <ListBox.Resources>
                             <DataTemplate DataType="{x:Type unrealclasses:WwiseBank+HIRCObject}">
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding Index}" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                <StackPanel Name="HIRCContainer" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Index}" VerticalAlignment="Center" Margin="0,0,5,0" Padding="10,0,10,0"/>
                                     <StackPanel>
                                         <TextBlock Text="{Binding ID,StringFormat='HIRC 0x{0:X8}'}"/>
                                         <TextBlock Text="{Binding Path=ObjType, Converter={StaticResource HIRCObjectTypeConverter}}" FontStyle="Italic"/>
@@ -173,6 +173,11 @@
                                         </Border>
                                     </StackPanel>
                                 </StackPanel>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding Path=DataChanged}" Value="true">
+                                        <Setter Property="Background" Value="Yellow" TargetName="HIRCContainer"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
                             </DataTemplate>
                         </ListBox.Resources>
                     </ListBox>
@@ -193,7 +198,17 @@
                             <RowDefinition MinHeight="200"/>
                         </Grid.RowDefinitions>
                         <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top" Grid.Row="0" Grid.ColumnSpan="3">
-                            <Button Name="SaveHexChange_Button" ToolTip="Commit hex changes to the HIRC (and export)" Content="Save Hex Changes" Foreground="{Binding HasUnsavedChanges, Converter={StaticResource UnsavedChangesForegroundConverter}}" Click="HIRC_SaveHexChanges_Click" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}"/>
+                            <Button Name="SaveHexChange_Button" ToolTip="Commit hex changes to the HIRC (and export)" Content="Save Hex Changes" Command="{Binding SaveHIRCHexCommand}">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled" Value="True">
+                                                <Setter Property="Foreground" Value="Red"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
                             <Button Name="ToggleHexboxWidth_Button" Content="Toggle Hexbox Width" ToolTip="Toggle between 4 and 16 byte widths" Click="HIRC_ToggleHexboxWidth_Click"/>
                             <Separator Name="SaveToggle_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                         </ToolBar>

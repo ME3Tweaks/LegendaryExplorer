@@ -65,8 +65,9 @@ namespace ME3Explorer.MetadataEditor
             InitializeComponent();
         }
 
-        private bool _hexChanged;
         private bool ControlLoaded;
+
+        private bool _hexChanged;
 
         public bool HexChanged
         {

@@ -52,6 +52,7 @@ namespace ME3Explorer
         private bool SeekDragging = false;
         Stream vorbisStream;
         private HexBox SoundpanelHIRC_Hexbox;
+        private DynamicByteProvider hircHexProvider;
 
         public IBusyUIHost HostingControl
         {
@@ -597,6 +598,7 @@ namespace ME3Explorer
         public ICommand VolumeControlValueChangedCommand { get; set; }
         public ICommand CommitCommand { get; set; }
         public GenericCommand SearchHIRCHexCommand { get; private set; }
+        public GenericCommand SaveHIRCHexCommand { get; private set; }
 
         /// <summary>
         /// The cached stream source is used to determine if we should unload the current vorbis stream
@@ -637,6 +639,25 @@ namespace ME3Explorer
             //WwisebankEditor commands
             CommitCommand = new GenericCommand(CommitBankToFile, CanCommitBankToFile);
             SearchHIRCHexCommand = new GenericCommand(SearchHIRCHex, CanSearchHIRCHex);
+            SaveHIRCHexCommand = new GenericCommand(SaveHIRCHex, CanSaveHIRCHex);
+        }
+
+
+
+        private bool CanSaveHIRCHex() => HIRCHexChanged;
+
+        private void SaveHIRCHex()
+        {
+            MemoryStream m = new MemoryStream();
+            for (int i = 0; i < hircHexProvider.Length; i++)
+                m.WriteByte(hircHexProvider.ReadByte(i));
+
+            if (HIRC_ListBox.SelectedItem is HIRCObject ho)
+            {
+                ho.Data = m.ToArray();
+                HIRCHexChanged = false;
+                OnPropertyChanged(nameof(HIRCHexChanged));
+            }
         }
 
         private bool CanSearchHIRCHex()
@@ -722,14 +743,19 @@ namespace ME3Explorer
             return true;
         }
 
-        private bool CanCommitBankToFile()
-        {
-            return false;// CurrentLoadedWwisebank.HasChanges();
-        }
+        private bool CanCommitBankToFile() => HasPendingHIRCChanges;
 
         private void CommitBankToFile()
         {
-            //throw new NotImplementedException();
+            byte[] exportData = CurrentLoadedWwisebank.RecreateBinary(HIRCObjects.Select(x => x.Data).ToList());
+            CurrentLoadedExport.Data = exportData;
+        }
+
+        private bool _hircHexChanged;
+        public bool HIRCHexChanged
+        {
+            get => _hircHexChanged;
+            private set => SetProperty(ref _hircHexChanged, value);
         }
 
         internal void LoadISACTEntry(ISBankEntry entry)
@@ -1608,8 +1634,8 @@ namespace ME3Explorer
             TempLabel.Content = "hi";
             if (HIRC_ListBox.SelectedItem is HIRCObject h)
             {
-                DynamicByteProvider hircBP = (DynamicByteProvider)SoundpanelHIRC_Hexbox.ByteProvider;
-                hircBP.ReplaceBytes(h.Data);
+                OriginalHIRCHex = h.Data;
+                hircHexProvider.ReplaceBytes(h.Data);
                 SoundpanelHIRC_Hexbox.Refresh();
 
                 string hircStr = $"0x000000: Type: 0x{h.ObjType:X2}\n";
@@ -1651,24 +1677,27 @@ namespace ME3Explorer
             }
         }
 
+        private bool ControlLoaded;
         private void Soundpanel_Loaded(object sender, RoutedEventArgs e)
         {
-            SoundpanelHIRC_Hexbox = (HexBox)HIRC_Hexbox_Host.Child;
-            if (SoundpanelHIRC_Hexbox.ByteProvider == null)
+            if (!ControlLoaded)
             {
-                SoundpanelHIRC_Hexbox.ByteProvider = new DynamicByteProvider(new byte[] { });
+                SoundpanelHIRC_Hexbox = (HexBox)HIRC_Hexbox_Host.Child;
+                hircHexProvider = new DynamicByteProvider();
+
+                SoundpanelHIRC_Hexbox.ByteProvider = hircHexProvider;
+                //remove in the event this object is reloaded again
+                SoundpanelHIRC_Hexbox.ByteProvider.Changed += SoundpanelHIRC_Hexbox_BytesChanged;
+                ControlLoaded = true;
             }
-            //remove in the event this object is reloaded again
-            SoundpanelHIRC_Hexbox.ByteProvider.Changed -= SoundpanelHIRC_Hexbox_BytesChanged;
-            SoundpanelHIRC_Hexbox.ByteProvider.Changed += SoundpanelHIRC_Hexbox_BytesChanged;
         }
 
         private void SoundpanelHIRC_Hexbox_BytesChanged(object sender, EventArgs e)
         {
-            //if (!isLoadingNewData)
-            //{
-            //    HasUnsavedChanges = true;
-            //}
+            if (OriginalHIRCHex != null)
+            {
+                HIRCHexChanged = !hircHexProvider.Bytes.SequenceEqual(OriginalHIRCHex);
+            }
         }
 
         private void Soundpanel_HIRCHexbox_SelectionChanged(object sender, EventArgs e)
@@ -1745,18 +1774,11 @@ namespace ME3Explorer
             CurrentLoadedWwisebank = null;
         }
 
-        private void HIRC_SaveHexChanges_Click(object sender, RoutedEventArgs e)
+        public bool HasPendingHIRCChanges
         {
-            if (SoundpanelHIRC_Hexbox.ByteProvider is IByteProvider provider)
-            {
-                MemoryStream m = new MemoryStream();
-                for (int i = 0; i < provider.Length; i++)
-                    m.WriteByte(provider.ReadByte(i));
-
-                //todo: code to write hirc back
-                //CurrentLoadedExport.Data = m.ToArray();
-            }
+            get => HIRCObjects.Any(x => x.DataChanged);
         }
+        public byte[] OriginalHIRCHex;
 
         private void HIRC_ToggleHexboxWidth_Click(object sender, RoutedEventArgs e)
         {
