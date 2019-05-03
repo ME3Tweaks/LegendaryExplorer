@@ -1153,8 +1153,18 @@ namespace ME3Explorer.Soundplorer
                 return;
             }
 
-            string convertedFolder = await soundPanel.RunWwiseConversion(wwisePath, dlg.FileName);
-            MessageBox.Show("Done. Converted ogg files have been placed into:\n" + convertedFolder);
+            SoundReplaceOptionsDialog srod = new SoundReplaceOptionsDialog();
+            if (srod.ShowDialog().Value)
+            {
+                string convertedFolder = await soundPanel.RunWwiseConversion(wwisePath, dlg.FileName, srod.ChosenSettings);
+                MessageBox.Show("Done. Converted ogg files have been placed into:\n" + convertedFolder);
+            }
+            else
+            {
+                return; //user didn't choose any settings
+            }
+
+
         }
 
         private void ExtractAllAudio_Clicked(object sender, RoutedEventArgs e)

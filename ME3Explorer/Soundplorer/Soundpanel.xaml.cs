@@ -21,6 +21,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Xml;
 using System.Xml.Linq;
 using Be.Windows.Forms;
 using FontAwesome.WPF;
@@ -166,7 +167,7 @@ namespace ME3Explorer
 
                             if (File.Exists(samefolderfilepath))
                             {
-                                using (FileStream fs = new FileStream(samefolderfilepath, FileMode.Open))
+                                using (FileStream fs = new FileStream(samefolderfilepath, FileMode.Open,FileAccess.Read,FileShare.ReadWrite))
                                 {
                                     fs.Seek(w.DataOffset, SeekOrigin.Begin);
                                     fs.Read(headerbytes, 0, 0x56);
@@ -679,7 +680,7 @@ namespace ME3Explorer
             }
         }
 
-        private async void ReplaceWEMAudioFromWave(string sourceFile = null)
+        private async void ReplaceWEMAudioFromWave(string sourceFile = null, WwiseConversionSettingsPackage conversionSettings = null)
         {
             if (ExportInfoListBox.SelectedItem is EmbeddedWEMFile wemToReplace && CurrentLoadedExport.FileRef.Game == MEGame.ME3)
             {
@@ -697,10 +698,23 @@ namespace ME3Explorer
                     {
                         return;
                     }
+
+                    if (conversionSettings == null)
+                    {
+                        SoundReplaceOptionsDialog srod = new SoundReplaceOptionsDialog(Window.GetWindow(this));
+                        if (srod.ShowDialog().Value)
+                        {
+                            conversionSettings = srod.ChosenSettings;
+                        }
+                        else
+                        {
+                            return; //user didn't choose any settings
+                        }
+                    }
                 }
 
                 //Convert and replace
-                ReplaceWEMAudioFromWwiseOgg(await RunWwiseConversion(wwisePath, sourceFile), wemToReplace);
+                ReplaceWEMAudioFromWwiseOgg(await RunWwiseConversion(wwisePath, sourceFile, conversionSettings), wemToReplace);
             }
         }
 
@@ -747,7 +761,7 @@ namespace ME3Explorer
             MessageBox.Show("Done");
         }
 
-        public async Task ReplaceAudioFromWave(string sourceFile = null, IExportEntry forcedExport = null)
+        public async Task ReplaceAudioFromWave(string sourceFile = null, IExportEntry forcedExport = null, WwiseConversionSettingsPackage conversionSettings = null)
         {
             string wwisePath = GetWwiseCLIPath(false);
             if (wwisePath == null) return;
@@ -764,6 +778,20 @@ namespace ME3Explorer
                     return;
                 }
             }
+
+            if (conversionSettings == null)
+            {
+                SoundReplaceOptionsDialog srod = new SoundReplaceOptionsDialog(Window.GetWindow(this));
+                if (srod.ShowDialog().Value)
+                {
+                    conversionSettings = srod.ChosenSettings;
+                }
+                else
+                {
+                    return; //user didn't choose any settings
+                }
+            }
+
             //Convert and replace
             if (HostingControl != null)
             {
@@ -772,20 +800,27 @@ namespace ME3Explorer
             }
             var conversion = await Task.Run(async () =>
             {
-                return await RunWwiseConversion(wwisePath, sourceFile);
+                return await RunWwiseConversion(wwisePath, sourceFile, conversionSettings);
             });
 
             ReplaceAudioFromWwiseOgg(conversion, forcedExport);
         }
 
-        public async Task<string> RunWwiseConversion(string wwisePath, string fileOrFolderPath)
+        /// <summary>
+        /// Converts a 
+        /// </summary>
+        /// <param name="wwiseCLIPath">Path to Wwise CLI executable</param>
+        /// <param name="fileOrFolderPath">Path of file or folder to convert</param>
+        /// <param name="conversionSettings">Settings to place into the templated project that will be used when CLI runs</param>
+        /// <returns></returns>
+        public async Task<string> RunWwiseConversion(string wwiseCLIPath, string fileOrFolderPath, WwiseConversionSettingsPackage conversionSettings)
         {
             /* The process for converting is going to be pretty in depth but will make converting files much easier and faster.
                          * 1. User chooses a folder of .wav (or this method is passed a .wav and we will return that)
                          * 2. Conversion takes place
                          * 
                          * Program steps when conversion starts:
-                         * 1. Extract the Wwise TemplateProject as it is required for command line . This is extracted to the root of %Temp%
+                         * 1. Extract the Wwise TemplateProject as it is required for command line. This is extracted to the root of %Temp%.
                          * 2. Generate the external sources file that points to the folder and each item to convert within it
                          * 3. Run the generate command
                          * 4. Move files from OutputFiles directory in the project
@@ -826,6 +861,7 @@ namespace ME3Explorer
             }
 
 
+
             XElement externalSourcesList = new XElement("ExternalSourcesList", new XAttribute("SchemaVersion", 1.ToString()), new XAttribute("Root", folderParent));
             foreach (string file in filesToConvert)
             {
@@ -839,13 +875,20 @@ namespace ME3Explorer
             File.WriteAllText(wsourcesFile, externalSourcesList.ToString());
             Debug.WriteLine(externalSourcesList.ToString());
 
+            string conversionSettingsFile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TemplateProject", "Conversion Settings", "Default Work Unit.wwu");
+            XmlDocument conversionDoc = new XmlDocument();
+            conversionDoc.Load(conversionSettingsFile);
 
+            //Samplerate
+            XmlNode node = conversionDoc.DocumentElement.SelectSingleNode("/WwiseDocument/Conversions/Conversion/PropertyList/Property[@Name='SampleRate']/ValueList/Value[@Platform='Windows']");
+            node.InnerText = conversionSettings.TargetSamplerate.ToString();
+            conversionDoc.Save(conversionSettingsFile);
             //Run Conversion
 
             //uncomment the following lines to view output from wwisecli
             //DebugOutput.StartDebugger("Wwise Wav to Ogg Converter");
             Process process = new Process();
-            process.StartInfo.FileName = wwisePath;
+            process.StartInfo.FileName = wwiseCLIPath;
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
             //process.OutputDataReceived += (s, eventArgs) => { Debug.WriteLine(eventArgs.Data); DebugOutput.PrintLn(eventArgs.Data); };

@@ -95,6 +95,11 @@
                 <StatusBarItem Padding="0">
                     <TextBlock Name="StatusBar_LeftMostText" Text="{Binding TaskbarText}"/>
                 </StatusBarItem>
+                <StatusBarItem HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Name="StatusBar_RightSide_LastSaved" Text="{Binding Pcc.LastSaved, StringFormat='Last saved at {0}'}" Foreground="Gray"/>
+                    </StackPanel>
+                </StatusBarItem>
             </StatusBar>
             <Grid Margin="5">
                 <Grid.ColumnDefinitions>
