@@ -1461,10 +1461,10 @@ namespace UDKExplorer
 
         private void hexConverterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string loc = Path.GetDirectoryName(Application.ExecutablePath);
-            if (File.Exists(loc + @"\HexConverterWPF.exe"))
+            string loc = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "HexConverterWPF.exe");
+            if (File.Exists(loc))
             {
-                Process.Start(loc + @"\HexConverterWPF.exe");
+                Process.Start(loc);
             }
         }
 

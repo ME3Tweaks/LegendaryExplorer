@@ -142,10 +142,6 @@
       <Project>{26C5F25F-B450-4CAF-AD8B-B8D11AE73457}</Project>
       <Name>Be.Windows.Forms.HexBox</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HexConverter\HexConverter.csproj">
-      <Project>{bc67f053-755a-45e9-b157-8b063f1f6509}</Project>
-      <Name>HexConverter</Name>
-    </ProjectReference>
     <ProjectReference Include="..\KFreonLib\KFreonLib.csproj">
       <Project>{8B07ED45-42F4-4B0E-A581-2C257F77241E}</Project>
       <Name>KFreonLib</Name>
