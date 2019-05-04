@@ -225,7 +225,7 @@
                             </ListBox>
                         </DockPanel>
                     </TabItem>
-                    <TabItem Header="Validation">
+                    <TabItem Name="ValidationPanel_Tab" Header="Validation">
                         <local:ValidationPanel x:Name="PathfindingEditorWPF_ValidationPanel"/>
                     </TabItem>
                 </TabControl>

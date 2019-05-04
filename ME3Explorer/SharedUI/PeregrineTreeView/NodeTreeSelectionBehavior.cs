@@ -69,6 +69,8 @@ namespace ME3Explorer.SharedUI
                     }
                     if (virtualizingPanel != null)
                     {
+                        //This can cause an exception still (InvalidOperationException) if content generation is in progress. 
+                        //Will have to figure out how to deal with it.
                         virtualizingPanel.BringIndexIntoViewPublic(index);
                     }
                     newParent = currentParent.ItemContainerGenerator.ContainerFromIndex(index) as TreeViewItem;

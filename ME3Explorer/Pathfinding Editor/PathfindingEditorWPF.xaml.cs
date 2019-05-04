@@ -2298,11 +2298,10 @@ namespace ME3Explorer.Pathfinding_Editor
                 pfm.Deselect();
             }
 
-            if (ActiveNodes_ListBox.SelectedItem != null)
+            if (ActiveNodes_ListBox.SelectedItem is IExportEntry export)
             {
                 CombatZonesLoading = true;
 
-                IExportEntry export = (IExportEntry)ActiveNodes_ListBox.SelectedItem;
                 NodeName = $"{export.ObjectName}_{export.indexValue}";
                 NodeNameSubText = $"Export {export.UIndex}";
                 ActiveNodes_ListBox.ScrollIntoView(export);
@@ -2363,6 +2362,7 @@ namespace ME3Explorer.Pathfinding_Editor
                     ReachSpecs_TabItem.IsEnabled = false;
                     CombatZones_TabItem.IsEnabled = false;
                     NodeType_TabItem.IsEnabled = false;
+                    PathfindingNodeTabControl.SelectedItem = ValidationPanel_Tab;
                 }
 
                 CombatZonesLoading = false;
@@ -2577,7 +2577,7 @@ namespace ME3Explorer.Pathfinding_Editor
         private void PositionBoxes_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return && ActiveNodes_ListBox.SelectedItem is IExportEntry export &&
-                int.TryParse(NodePositionX_TextBox.Text, out int x) && int.TryParse(NodePositionY_TextBox.Text, out int y) && int.TryParse(NodePositionZ_TextBox.Text, out int z))
+                float.TryParse(NodePositionX_TextBox.Text, out float x) && float.TryParse(NodePositionY_TextBox.Text, out float y) && float.TryParse(NodePositionZ_TextBox.Text, out float z))
             {
                 SetLocation(export, x, y, z);
                 PathfindingNodeMaster s = GraphNodes.First(o => o.UIndex == export.UIndex);
