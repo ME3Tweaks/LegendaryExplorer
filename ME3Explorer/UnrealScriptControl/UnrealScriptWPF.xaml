@@ -152,8 +152,16 @@
             <ListBox Name="Tokens_ListBox" VerticalAlignment="Stretch" ItemsSource="{Binding TokenList}" SelectionChanged="Tokens_ListBox_SelectionChanged">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Vertical">
-                            <StackPanel.Style>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.Style>
                                 <Style>
                                     <Setter Property="TextBlock.FontWeight" Value="Regular"/>
                                     <Style.Triggers>
@@ -162,18 +170,11 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </StackPanel.Style>
-                            <TextBlock>
-                                <TextBlock.Text>
-                                    <MultiBinding StringFormat="{}{0}: {1}">
-                                        <Binding Path="StartPos" />
-                                        <Binding Path="OpCode" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-
-                            <TextBlock Text="{Binding CurrentStack}" Foreground="Gray" Visibility="{Binding CurrentStack, Converter={StaticResource NullOrEmptyStringVisibilityConverter}}"/>
-                        </StackPanel>
+                            </Grid.Style>
+                            <TextBlock Grid.Row="0" Text="{Binding StartPos, StringFormat='0x{0:X5}:'}"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding OpCode}" Foreground="Navy"/>
+                            <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding CurrentStack}" Foreground="Gray" Visibility="{Binding CurrentStack, Converter={StaticResource NullOrEmptyStringVisibilityConverter}}"/>
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

@@ -99,10 +99,11 @@ namespace ME3Explorer
             ScriptFooterBlocks.ClearEx();
             if (CurrentLoadedExport.FileRef.Game == MEGame.ME3)
             {
-                var func = new ME3Explorer.Unreal.Classes.Function(data, CurrentLoadedExport.FileRef, CurrentLoadedExport.ClassName == "State" ? Convert.ToInt32(StartOffset_Changer.Text) : 32);
+                var func = new ME3Explorer.Unreal.Classes.Function(data, CurrentLoadedExport, CurrentLoadedExport.ClassName == "State" ? Convert.ToInt32(StartOffset_Changer.Text) : 32);
 
 
                 func.ParseFunction();
+                DecompiledScriptBlocks.Add(func.GetSignature());
                 DecompiledScriptBlocks.AddRange(func.ScriptBlocks);
                 TokenList.AddRange(func.SingularTokenList);
 

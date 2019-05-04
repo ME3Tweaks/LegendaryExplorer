@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
 {
-    class FlagSet
+    public class FlagSet
     {
         private readonly Dictionary<string, int> _masks = new Dictionary<string, int>();
 

@@ -55,7 +55,7 @@ namespace ME3Explorer.ScriptDB
                         {
                             if (ent.ClassName == "Function")
                             {
-                                Function f = new Function(ent.Data, pcc);
+                                Function f = new Function(ent.Data, ent);
                                 ScriptEntry n = new ScriptEntry();
                                 n.file = Path.GetFileName(file);
                                 n.name = ent.PackageFullName + "." + ent.ObjectName;

@@ -4474,12 +4474,13 @@ namespace ME3Explorer.Unreal
         {
             Token t = new Token();
             int size = BitConverter.ToInt16(memory, start + 1);
-            Token a = ReadToken(start + 3);
-            t.inPackageReferences.AddRange(a.inPackageReferences);
+            Token expression = ReadToken(start + 3);
+            t.inPackageReferences.AddRange(expression.inPackageReferences);
 
-            int pos = start + a.raw.Length + 3;
+            int pos = start + expression.raw.Length + 3;
             int len = pos - start;
-            t.text = "DefaultParameterValue(" + a.text + ")";
+            //var expression = ReadToken(pos);
+            t.text = "DefaultParameterValue(" + expression.text + ")";
             t.raw = new byte[len];
             if (start + len <= memsize)
                 for (int i = 0; i < len; i++)

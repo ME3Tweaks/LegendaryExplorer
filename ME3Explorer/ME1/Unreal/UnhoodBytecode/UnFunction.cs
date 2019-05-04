@@ -200,7 +200,7 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
             }
         }
 
-        private string GetPropertyType(IExportEntry exp)
+        public static string GetPropertyType(IExportEntry exp)
         {
             switch (exp.ClassName)
             {
@@ -220,6 +220,8 @@ namespace ME3Explorer.ME1.Unreal.UnhoodBytecode
                     return "stringref";
                 case "ClassProperty":
                     return "UClass";
+                case "ComponentProperty":
+                    return "Component";
                 default:
                     return "???";
             }

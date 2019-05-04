@@ -549,7 +549,7 @@ namespace ME3Explorer
                         }
 
                         IExportEntry exportEntry = Pcc.getExport(n);
-                        if (exportEntry.ClassName == "Function")
+                        /*if (exportEntry.ClassName == "Function")
                         {
                             if (!packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
                             {
@@ -557,7 +557,7 @@ namespace ME3Explorer
                             }
                             if (Pcc.Game == MEGame.ME3)
                             {
-                                Function func = new Function(exportEntry.Data, Pcc);
+                                Function func = new Function(exportEntry.Data, exportEntry);
                                 func.ParseFunction();
                                 string text = func.ScriptText;
                                 text += "\nDebug print:\n\n";
@@ -581,8 +581,8 @@ namespace ME3Explorer
                             {
                                 rtb1.Text = "Parsing UnrealScript Functions for this game is not supported.";
                             }
-                        }
-                        else if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
+                        }*/
+                        if (packageEditorTabPane.TabPages.ContainsKey(nameof(scriptTab)))
                         {
                             packageEditorTabPane.TabPages.Remove(scriptTab);
                         }
