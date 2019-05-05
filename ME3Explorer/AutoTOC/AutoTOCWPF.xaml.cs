@@ -117,12 +117,12 @@ namespace ME3Explorer.AutoTOC
             }
             // ADD BASEGAME = 0
             dlcTable.Add(0, "BioGame");
-
+            
 
             // 3. REMOVE ALL SEEKFREEPCPATHs FROM $DOCUMENTS$\BIOWARE\MASS EFFECT\CONFIG\BIOENGINE.ini
             IniFile BioEngine = new IniFile("$DOCUMENTS$\\Bioware\\Mass Effect\\Config\\BioEngine.ini");
             BioEngine.IniRemoveKey("[Core.System]", "SeekFreePCPaths");
-
+            dlcTable.OrderByDescending(k => k.Key); //SORT INTO REVERSE ORDER 0 => HIGHEST FOR BIOENGINE
 
             // 4. ADD SEEKFREE PATHS IN REVERSE ORDER (HIGHEST= BIOGAME, ETC).
             foreach (KeyValuePair<int,string> item in dlcTable)
@@ -145,10 +145,51 @@ namespace ME3Explorer.AutoTOC
             }
 
             // SET UP MASTER FILE LIST VARIABLE
-            var masterList = new List<string>;
+            var masterList = new Dictionary<string, string>(null, null);  //Setup master list as int and string
 
             // CALL FUNCTION TO BUILD EACH FILEINDEX.  START WITH HIGHEST DLC MOUNT -> ADD TO MASTER FILE LIST
             // DO NOT ADD DUPLICATES
+
+            dlcTable.OrderBy(k => k.Key);
+            foreach (KeyValuePair<int, string> fileListStem in dlcTable)
+            {
+                if (fileListStem.Value == "BioGame")
+                {
+                    GenerateFileList(ME1Directory.cookedPath.ToString());
+                }
+                else
+                {
+                    GenerateFileList(ME1Directory.DLCPath + "\\" + fileListStem + "\\CookedPC");
+                }
+            }
+        }
+
+        private void GenerateFileList(string CookedPath)
+        {
+            TOCTasks.ClearEx();
+            string[] extensions = { ".sfm", ".upk", ".bik", ".u", ".isb" };
+
+            //remove trailing slash
+            string dlcCookedDir = Path.GetFullPath(CookedPath); //standardize Need to CHECK FOR DUPLICATION WITH HIGHER MOUNTED FILES. 
+            ListBoxTask task = new ListBoxTask($"Generating file index for {dlcCookedDir}");
+            TOCTasks.Add(task);
+            int rootLength = dlcCookedDir.Length + 1; //trailing slash path separator. This is used to strip off the absolute part of the path and leave only relative
+
+            //Where first as not all files need to be selected and then filtered, they should be filtered and then selected
+            var files = (Directory.EnumerateFiles(dlcCookedDir, "*.*", SearchOption.AllDirectories)
+                .Where(s => extensions.Any(ext => ext == Path.GetExtension(s).ToLower()))
+                .Select(p => p.Remove(0, rootLength))).ToList();
+
+            string fileName = Path.Combine(dlcCookedDir, "FileIndex.txt");
+            File.WriteAllLines(fileName, files);
+            task.Complete($"Generated file index for {dlcCookedDir}");
+            TOCTasks.Add(new ListBoxTask
+            {
+                Header = "Done",
+                Icon = FontAwesomeIcon.Check,
+                Foreground = Brushes.Green,
+                Spinning = false
+            });
         }
 
         private void GenerateFileList_BackgroundThread(object sender, DoWorkEventArgs e)
